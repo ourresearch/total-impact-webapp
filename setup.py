@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'totalimpact',
+    name = 'totalimpactwebapp',
     version = '0.2.0',
     packages = find_packages(),
     install_requires = [
@@ -10,15 +10,12 @@ setup(
         "Flask-WTF",
         "couchdb",
         "requests",
-        "BeautifulSoup",
-        "beautifulsoup4",
-        "lxml",
         "simplejson"
 				],
     url = '',
     author = 'total-impact',
     author_email = 'totalimpactdev@gmail.com',
-    description = 'source code for the service at http://total-impact.org',
+    description = 'source code for the webapp at http://total-impact.org',
     license = 'MIT',
     classifiers = [
         'Intended Audience :: Developers',

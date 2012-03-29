@@ -1,6 +1,6 @@
 import os, uuid, sys, json
 
-from totalimpact.tilogging import logging
+from totalimpactwebapp.tilogging import logging
 logger = logging.getLogger(__name__)
 
 CONFIG_FILE = "./config/totalimpact.conf.json"
