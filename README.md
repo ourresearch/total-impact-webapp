@@ -11,6 +11,7 @@ See [http://total-impact/about](http://total-impact/about).
 
 How to install for dev:
 
+    cd total-impact-webapp
     pip install -e .
 
 How to install:
@@ -25,7 +26,7 @@ How to run tests:
 How to run the web app:
 
     cd total-impact-webapp
-    python totalimpact/web.py
+    python totalimpactwebapp/web.py
     then surf up http://127.0.0.1:5000/
 
 # total-impact-core
