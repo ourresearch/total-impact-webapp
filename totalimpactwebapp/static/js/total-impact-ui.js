@@ -99,9 +99,6 @@ $(document).ready(function(){
         $(this).siblings("div").slideToggle();
     });
 
-    $("div.quick-collection a").click(function(){
-        $(this).parent().next().slideToggle();
-    }).parent().next().hide();
 
     // click to remove object IDs in the edit pane
     $("ul#collection-list li").live("click", function(){
@@ -241,17 +238,5 @@ $(document).ready(function(){
         return false;
     })
 
-    // mendeley quick-collections
-    $("div.quick-collection div.response a").live("click", function(){
-        showWaitBox();
-        $.get(
-            './update.php',
-            this.href.replace(/[^?]+\?/, ""),
-            function(data){
-                location.href="./collection/" +data;
-            });
-        return false;
-
-    });
 
 });

@@ -319,30 +319,6 @@ div#create-collection input#name {
     width:100%;
 }
 
-div.quick-collection {
-    margin: 40px 0 0 10px;
-    float:left;
-}
-div.quick-collection p {
-    margin:0;
-    clear:both;
-}
-div.quick-collection button {
-    float: left;
-}
-div.quick-collection span.loading {
-    display:block;
-    float:left;
-}
-#input div.quick-collection input {
-    width: 98%;
-    float:none;
-}
-#input div.quick-collection button, #input div.quick-collection span.loading {
-    float:left;
-    width: 50%;
-    margin:6px 0 0 0;
-}
 
 #create-collection p#name-collection {
     float:left;
