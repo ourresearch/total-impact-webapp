@@ -1,3 +1,5 @@
+import requests
+
 from flask import Flask, jsonify, json, request, redirect, abort, make_response
 from flask import render_template, flash
 
@@ -13,9 +15,19 @@ def home():
     return render_template('index.html')
 
 @app.route('/about')
-def content():
-    return render_template('about.html')
+def about():
+	return render_template('about.html')
 
+@app.route('/call_api/<path:api_base>', 
+	methods = ['GET', 'PUT', 'POST', 'DELETE'])
+def call_api(api_base):
+	api_host = 'http://localhost:5001/'
+	api_url = api_host + api_base
+	api_method = getattr(requests, request.method.lower())
+	
+	api_response = api_method(api_url, params=request.args)
+
+	return api_response.text
 
 if __name__ == "__main__":
     # run it
