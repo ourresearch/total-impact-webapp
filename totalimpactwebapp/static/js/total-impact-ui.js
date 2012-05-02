@@ -207,7 +207,7 @@ $(document).ready(function(){
         var aliases = [];
         $("ul#collection-list span.object-id").each(function(){
            var thisAlias = [];
-           thisAlias[0] = $(this).find("span.namespace").text()
+           thisAlias[0] = $(this).find("span.namespace").text().split(':')[0]
            thisAlias[1] = $(this).find("span.id").text()
            aliases.push(thisAlias);
         });
@@ -215,13 +215,18 @@ $(document).ready(function(){
             alert("Looks like you haven't added any research objects to the collection yet.")
             return false;
         } else {
-            showWaitBox("Creating");
-            $.post(
-                './collection',
-                {list: JSON.stringify(aliases), name: $("#name").val()},
-                function(returnedData){
-                    location.href="./collection/" +returnedData;
-                });
+            
+            $.ajax({
+                url: '/call_api/items',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(aliases),
+                success: function(returnedData){
+                    console.log(returnedData)
+                    //location.href="./collection/" +returnedData;
+                }
+            });
             return false;
         }
     });

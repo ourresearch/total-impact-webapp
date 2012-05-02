@@ -24,8 +24,16 @@ def call_api(api_base):
 	api_host = 'http://localhost:5001/'
 	api_url = api_host + api_base
 	api_method = getattr(requests, request.method.lower())
-	
-	api_response = api_method(api_url, params=request.args)
+
+        headers = {}
+        for k, v in request.headers.iteritems():
+            headers[k] = v
+
+	api_response = api_method(
+            api_url,
+            params=request.args,
+            headers=headers,
+            data=request.data)
 
 	return api_response.text
 
