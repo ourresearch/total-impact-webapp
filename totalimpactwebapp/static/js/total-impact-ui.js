@@ -237,12 +237,12 @@ $(document).ready(function(){
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
                         data:  JSON.stringify(returnedTiids),
-                        success: function(returnedCollectionId){
+                        success: function(returnedCollection){
 
                             // we've created the items and the collection; our
                             // work here is done.
-                            console.log(returnedCollectionId)
-                            //location.href="./collection/" +returnedData;
+                            console.log(returnedCollection)
+                            location.href="./collection/" +returnedCollection.id;
                         }
                     });
                 }
