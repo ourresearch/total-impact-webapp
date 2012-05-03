@@ -16,12 +16,12 @@ parseImporterArgs = function(argStr){
 parseTextareaArtifacts = function(str) {
     var ids = str.split("\n");
     var ret = [];
-    for (i=0; i<ids.length; i++){
-        var artifact = {};
+    for (i=0; i<ids.length-1; i++){
+        var artifact = [];
         var thisId = ids[i];
         if (thisId.indexOf(":") > 0) {
-            artifact.namespace = thisId.split(':')[0];
-            artifact.id = thisId.substr(artifact.namespace.length + 1)
+            artifact[0] = thisId.split(':')[0]; // namespace
+            artifact[1] = thisId.substr(artifact[0].length + 1) // id
         }
         else {
             artifact.namespace = "unknown";
@@ -122,11 +122,13 @@ $(document).ready(function(){
         var providerIdQuery = "?query=" + $(this).siblings("input").val();
 
         if ($thisDiv.find("textarea")[0]) { // there's a sibling textarea
+            console.log(parseTextareaArtifacts($thisDiv.find("textarea").val()))
             addIdsToEditPane(parseTextareaArtifacts($thisDiv.find("textarea").val()));
         }
         else {
             $(this).hide().after("<span class='loading'>"+ajax_load+" Loading...<span>");
             $.get("./call_api/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+                console.log(response)
                 addIdsToEditPane(response);
                 $thisDiv.find("span.loading")
                     .empty()
@@ -231,12 +233,17 @@ $(document).ready(function(){
                 data: JSON.stringify(aliases),
                 success: function(returnedTiids){
                     // make a new collection, populated by our freshly-minted tiids
+                    var requestObj = {
+                        title: $('#name').val(),
+                        items: returnedTiids
+                    }
+
                     $.ajax({
                         url: '/call_api/collection',
                         type: "POST",
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
-                        data:  JSON.stringify(returnedTiids),
+                        data:  JSON.stringify(requestObj),
                         success: function(returnedCollection){
 
                             // we've created the items and the collection; our
