@@ -205,26 +205,46 @@ $(document).ready(function(){
     // creating a collection by submitting the object IDs from the homepage
     $("#id-form").submit(function(){
         var aliases = [];
+
+        // get the user-supplied aliases to upload
         $("ul#collection-list span.object-id").each(function(){
            var thisAlias = [];
            thisAlias[0] = $(this).find("span.namespace").text().split(':')[0]
            thisAlias[1] = $(this).find("span.id").text()
            aliases.push(thisAlias);
         });
+
+        // make sure the user input something at all
         if (aliases.length == 0) {
             alert("Looks like you haven't added any research objects to the collection yet.")
             return false;
+
+        // created items and put them in a collection, then redirect to
+        // the collection report page:
         } else {
-            
+            // first we upload the new items and get tiids back.
             $.ajax({
                 url: '/call_api/items',
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(aliases),
-                success: function(returnedData){
-                    console.log(returnedData)
-                    //location.href="./collection/" +returnedData;
+                success: function(returnedTiids){
+                    // make a new collection, populated by our freshly-minted tiids
+                    $.ajax({
+                        url: '/call_api/collection',
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data:  JSON.stringify(returnedTiids),
+                        success: function(returnedCollectionId){
+
+                            // we've created the items and the collection; our
+                            // work here is done.
+                            console.log(returnedCollectionId)
+                            //location.href="./collection/" +returnedData;
+                        }
+                    });
                 }
             });
             return false;
