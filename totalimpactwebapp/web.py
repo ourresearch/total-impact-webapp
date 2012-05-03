@@ -18,6 +18,16 @@ def home():
 def about():
 	return render_template('about.html')
 
+@app.route('/collection/<collection_id>')
+def collection_report(collection_id):
+    r = requests.get('http://localhost:5001/collection/' + collection_id)
+    if r.status_code == 200:
+        collection = json.loads(r.text)
+        return render_template('collection.html', collection=collection)
+    else:
+        abort(404)
+
+
 @app.route('/call_api/<path:api_base>', 
 	methods = ['GET', 'PUT', 'POST', 'DELETE'])
 def call_api(api_base):
