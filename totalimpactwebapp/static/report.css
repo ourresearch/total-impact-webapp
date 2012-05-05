@@ -141,17 +141,31 @@ input.report {
     height:28px;
 }
 
+/** updating *******************************************/
+#metrics h2.updating {
+    font-size: 25px;
+    background-color: #b20;
+    color: #fff;
+    margin-top: 0;
+    text-align: center;
+    padding: 10px 0;
+}
+#metrics h2.updating img {
+    height: 30px;
+    width: 30px;
+    margin-bottom:-5px;
+}
 
 
 
 
 /** report printout ******************************************************/
 div#metrics {
+    margin-top:50px;
+    padding-top:0;
     background: none repeat scroll 0 0 #FFFFFF;
     border-top: 1px solid #ddd;
     float: left;
-    margin-top: 54px;
-    padding-top: 50px;
     width: 100%;
 }
 div#metrics div.wrapper {

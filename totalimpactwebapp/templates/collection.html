@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div id="report">
+        <!-- START report-meta -->
+        <div class="wrapper">
+            <div id="report-meta">
+                <h2><span class="title">{{ collection.title }}</span></h2>
+                <div id="report-button">
+                    <a class="report-button" id="update-report-button" name="{{ collection.id }}" href="#">run update</a>
+                    <a class="report-button" href="/collection/{{ collection.id }}.csv">download data</a>
+                </div>
+                <div id="report-info">
+                    <span class="badge artifacts-count"><span class="num">{{ collection.item_tiids|length }}</span> artifacts;</span>
+                </div>
+
+                <div id="share">
+                    <span id="permalink"><span class="label"> Permalink: </span><a class="copyable", href="http://total-impact.org/collection/{{ collection.id }}">http://total-impact.org/collection/{{ collection.id }}</a></span>
+                    <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
+                    <!-- based on code here: https://dev.twitter.com/docs/tweet-button -->
+                    <span class="tweet-this">
+                        <a href="https://twitter.com/share" class="twitter-share-button"
+                           data-url="http://total-impact.org/collection/{{ collection.id }}"
+                           data-via="mytotalImpact"
+                           data-text="Check out the total-Impact of {{ collection.id }}: "
+                           data-count="horizontal">Tweet</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div id="metrics">
+            <h2 class="updating"><img src="../static/img/ajax-loader-rev.gif" alt="spinning graphic" />Metrics are updating now...</h2>
+        </div>
+        <p class="something-missing">More detail on <a href="./about/#whichmetrics">available metrics</a>.  Missing some artifacts or metrics? See <a href="./about/#limitations">current limitations.</a>  </p>
+    </div>
+
+{% endblock %}
