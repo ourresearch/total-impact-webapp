@@ -74,9 +74,33 @@ addIdsToEditPane = function(returnedIds){
 }
 
 
-function update_collection_report() {
-    console.log("i ran")
+function get_item_info() {
+    var itemHtmls = []
+    for (var i in tiids){
+        $.ajax({
+            url: '/call_api/item/'+tiids[i]+'.html',
+            type: "GET",
+            dataType: "html",
+            contentType: "application/json; charset=utf-8",
+            success: function(data){ 
+                console.log(data)
+                //itemHtmls.push(d)
+            }
+        });
+    }
+
+    // for each tiid
+        // call call_api/item/:tiid.html
+        // append that to the array of items
+    // return an array of item html items
 }
+
+function update_collection_report(items_array) {
+    // for array items
+        // append the item to the items list OR replace ones already there.
+    // return true on change
+}
+
 
 
 $(document).ready(function(){
@@ -278,7 +302,7 @@ $(document).ready(function(){
 
     /* creating and updating reports
      * *************************************************************************/
-
+    get_item_info();
     update_collection_report();
 
 });
