@@ -73,6 +73,12 @@ addIdsToEditPane = function(returnedIds){
 
 }
 
+
+function update_collection_report() {
+    console.log("i ran")
+}
+
+
 $(document).ready(function(){
     
     // report page stuff
@@ -270,5 +276,9 @@ $(document).ready(function(){
         return false;
     })
 
+    /* creating and updating reports
+     * *************************************************************************/
+
+    update_collection_report();
 
 });
