@@ -73,7 +73,7 @@ addIdsToEditPane = function(returnedIds){
 
 }
 
-function update_collection_with_new_item(itemHtmlStr) {
+function updateReportWithNewItem(itemHtmlStr) {
     tiid = $(itemHtmlStr).attr("id");
     // search for id
     $itemHtmlInDom = $("#"+tiid);
@@ -85,7 +85,7 @@ function update_collection_with_new_item(itemHtmlStr) {
     }
 }
 
-function update_collection_report() {
+function getNewItemsAndUpdateReport() {
     for (var i in tiids){
         $.ajax({
             url: '/call_api/item/'+tiids[i]+'.html',
@@ -94,13 +94,35 @@ function update_collection_report() {
             contentType: "application/json; charset=utf-8",
             success: function(data){
                 if (data.indexOf("<title>404 Not Found</title>") < 0) {
-                    update_collection_with_new_item(data);
+                    updateReportWithNewItem(data);
                 }
             }
         });
     }
 }
 
+function pollApiAndUpdateCollection(interval, oldText, tries){
+    console.log("running update")
+    getNewItemsAndUpdateReport();
+    // has anything changed?
+    currentText = $("#metrics").text()
+    if (currentText == oldText) {
+        console.log("current and old text match; on try "+tries)
+        tries++;
+        if (tries > 6) {
+            console.log("quitting.")
+            $("#metrics h2.updating").slideUp(500)
+            return false
+        }
+    }
+    else {
+        tries = 0
+    }
+
+    setTimeout(function(){
+        pollApiAndUpdateCollection(interval, currentText, tries);
+    }, interval)
+}
 
 
 
@@ -257,6 +279,7 @@ $(document).ready(function(){
         // the collection report page:
         } else {
             // first we upload the new items and get tiids back.
+            console.log("adding new items.")
             $.ajax({
                 url: '/call_api/items',
                 type: "POST",
@@ -265,6 +288,7 @@ $(document).ready(function(){
                 data: JSON.stringify(aliases),
                 success: function(returnedTiids){
                     // make a new collection, populated by our freshly-minted tiids
+                    console.log("items created. making collection.")
                     var requestObj = {
                         title: $('#name').val(),
                         items: returnedTiids
@@ -304,6 +328,6 @@ $(document).ready(function(){
 
     /* creating and updating reports
      * *************************************************************************/
-    update_collection_report();
+    pollApiAndUpdateCollection(500, "", 0);
 
 });
