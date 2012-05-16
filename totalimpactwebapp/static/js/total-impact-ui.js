@@ -22,6 +22,12 @@ parseTextareaArtifacts = function(str) {
         if (thisId.indexOf(":") > 0) {
             artifact[0] = thisId.split(':')[0]; // namespace
             artifact[1] = thisId.substr(artifact[0].length + 1) // id
+            
+            // handle urls:
+            if (artifact[0] == "http"){
+                artifact[0] = "url";
+                artifact[1] = thisId
+            }
         }
         else {
             artifact.namespace = "unknown";
