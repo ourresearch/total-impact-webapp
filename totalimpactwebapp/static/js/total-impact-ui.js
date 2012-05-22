@@ -79,37 +79,24 @@ addIdsToEditPane = function(returnedIds){
 
 }
 
+
 function renderItemBiblio(biblio, url) {
     var html = ""
-    if (typeof biblio.author == "object") {
-        var authors = biblio.author.join(",");
-    }
-    else {
-        var authors = "";
+    
+    biblio.url = url;
+    biblio.title = biblio.title || "no title";
+    if (biblio.create_date) {
+        biblio.year = biblio.create_date.slice(0,4)
     }
     
-    var title = (biblio.title) ? biblio.title : "no title";
-    var repo = (biblio.repository) ? biblio.repository : "";
+    var templateName = "biblio_" + biblio.genre
+    html = ich[templateName](biblio, true)
     
-    if (biblio.genre == "dataset") {
-        html += "<span class='author'>"+authors+"</span>";
-        html += "<span class='year'>"+biblio.year+"</span>";
-        if (url){
-            html += "<a class='url title' href='"+url+"'>"+title+"</a>"
-        }
-        html += "<span class='repo'>"+repo+"</span>"
-    }
-    else if (biblio.genre == "article") {
-        html = "article not implemented"
-    }
-    else {
-        html = "other stuff not implemented"
-    }
+
     return html
 }
 
 function renderItem(item){
-    console.log(item.aliases.doi)
     console.log(item.biblio.genre)
     console.log(item)
     
