@@ -37,5 +37,54 @@
         </div>
         <p class="something-missing">More detail on <a href="./about/#whichmetrics">available metrics</a>.  Missing some artifacts or metrics? See <a href="./about/#limitations">current limitations.</a>  </p>
     </div>
+    {% raw %}
+    <div id="templates">
+        <!-- These templates are for rendering items with javascript using
+        Mustache -->
+        <script id="title" class="partial" type="text/html">
+            <h5>
+                {{#url}}
+                    <a class="url title" href="{{ url }}">{{ title }}</a>
+                {{/url}}
+                {{^url}}
+                    {{ title }}
+                {{/url}}
+            </h5>
+        </script>
+
+        <script id="biblio_dataset" type="text/html">
+            {{#year}}
+                <span class="year">{{ year }}</span>
+            {{/year}}
+            {{>title}}
+            <span class="repo">{{ repository }}</span>
+        </script>
+        <script id="biblio_article" type="text/html">
+            <span class="authors">{{ authors }}</span>
+            {{#year}}
+                <span class="year">{{ year }}</span>
+            {{/year}}
+            {{>title}}
+            <span class="repo">{{ journal }}</span>
+        </script>
+        <script id="biblio_webpage" type="text/html">
+            {{>title}}
+        </script>
+        <script id="biblio_slides" type="text/html">
+            {{>title}}
+            <span class="repo">Slideshare</span>
+        </script>
+        <script id="biblio_software" type="text/html">
+            <span class="year">{{ year }}</span>
+            {{>title}}
+            <span class="descr">{{ description }}</span>
+            <span class="repo">GitHub</span>
+        </script>
+        <script id="biblio_unknown" type="text/html">
+            {{>title}}
+        </script>
+
+    </div>
+    {% endraw %}
 
 {% endblock %}

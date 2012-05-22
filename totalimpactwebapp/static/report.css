@@ -254,10 +254,15 @@ div.biblio {
     margin:0;
     padding:0;
     color:#222;
+    font-size: 14px;
+}
+
+div.biblio h5 {
+    display: inline;
+    font-size:1em;
 }
 
 div.biblio span.year {
-    margin-right: 8px;
     color:#aaa;
 }
 
