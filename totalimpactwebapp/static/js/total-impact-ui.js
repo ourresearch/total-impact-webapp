@@ -79,34 +79,70 @@ addIdsToEditPane = function(returnedIds){
 
 }
 
-function updateReportWithNewItem(itemHtmlStr) {
-    tiid = $(itemHtmlStr).attr("id");
-    // search for id
-    $itemHtmlInDom = $("#"+tiid);
-    if ($itemHtmlInDom.size()) {
-        $itemHtmlInDom.replaceWith(itemHtmlStr);
+function renderItemBiblio(biblio, url) {
+    var html = ""
+    if (typeof biblio.author == "object") {
+        var authors = biblio.author.join(",");
     }
     else {
-        $("#items").append(itemHtmlStr);
+        var authors = "";
     }
+    
+    var title = (biblio.title) ? biblio.title : "no title";
+    var repo = (biblio.repository) ? biblio.repository : "";
+    
+    if (biblio.genre == "dataset") {
+        html += "<span class='author'>"+authors+"</span>";
+        html += "<span class='year'>"+biblio.year+"</span>";
+        if (url){
+            html += "<a class='url title' href='"+url+"'>"+title+"</a>"
+        }
+        html += "<span class='repo'>"+repo+"</span>"
+    }
+    else if (biblio.genre == "article") {
+        html = "article not implemented"
+    }
+    else {
+        html = "other stuff not implemented"
+    }
+    return html
+}
+
+function renderItem(item){
+    console.log(item.aliases.doi)
+    console.log(item.biblio.genre)
+    console.log(item)
+    
+    var url = (item.aliases.url) ?  item.aliases.url[0] : false
+    
+    html =  "<li class='item' id='"+item.id+"'>\n";
+    html +=    "<div class='biblio'>"+renderItemBiblio(item.biblio, url)+"</div>\n"
+    html += "</li>"
+
+    return html
+}
+
+function updateReportWithNewItem(item) {
+    itemHtml = renderItem(item)
+    $("ul#items").append(itemHtml)
 }
 
 function getNewItemsAndUpdateReport() {
-    for (var i in tiids){
-        $.ajax({
-            url: '/call_api/item/'+tiids[i]+'.html',
-            type: "GET",
-            dataType: "html",
-            contentType: "application/json; charset=utf-8",
-            success: function(data){
-                if (data.indexOf("<title>404 Not Found</title>") < 0) {
-                    updateReportWithNewItem(data);
-                }
-            }
-        });
-    }
-}
+    tiidsStr = tiids.join(",")
 
+    $.ajax({
+        url: '/call_api/items/'+tiidsStr,
+        type: "GET",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(data){
+            for (i in data){
+                updateReportWithNewItem(data[i])
+            }
+        }
+    });
+}
+ /*
 function pollApiAndUpdateCollection(interval, oldText, tries){
     console.log("running update")
     getNewItemsAndUpdateReport();
@@ -130,7 +166,7 @@ function pollApiAndUpdateCollection(interval, oldText, tries){
     }, interval)
 }
 
-
+*/
 
 
 $(document).ready(function(){
@@ -334,6 +370,6 @@ $(document).ready(function(){
 
     /* creating and updating reports
      * *************************************************************************/
-    pollApiAndUpdateCollection(500, "", 0);
+    //pollApiAndUpdateCollection(500, "", 0);
 
 });
