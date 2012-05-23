@@ -182,6 +182,7 @@ li.item {
     list-style-type: none;
     margin: 0 auto 1em;
     width: 1150px;
+    min-height: 4em;
 }
 
 li.item h4 {

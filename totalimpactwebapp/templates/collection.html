@@ -84,6 +84,23 @@
             {{>title}}
         </script>
 
+        <script id="item" type="text/html">
+            <li class="item" id="{{ id }}">
+                <div class="biblio"></div>
+                <ul class="metrics">{{#metricsArr}}
+                    <li>
+                        <a href="{{provenance_url}}">
+                            <span class="last-update">{{ ts }}</span>
+                            <span class="metric-value">{{ value }}</span>
+                            <span class="metric-name-img">
+                                <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
+                                <span class="metric-name">{{ static_meta.provider }} {{ static_meta.display_name }}</span>
+                            </span>
+                        </a>
+                    </li>
+                {{/metricsArr}}</ul>
+            </li>
+        </script>
     </div>
     {% endraw %}
 

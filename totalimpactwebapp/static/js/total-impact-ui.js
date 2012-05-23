@@ -83,35 +83,56 @@ addIdsToEditPane = function(returnedIds){
 function renderItemBiblio(biblio, url) {
     var html = ""
     
-    biblio.url = url;
-    biblio.title = biblio.title || "no title";
+    biblio.url = url
+    biblio.title = biblio.title || "no title"
     if (biblio.create_date) {
         biblio.year = biblio.create_date.slice(0,4)
     }
     
     var templateName = "biblio_" + biblio.genre
-    html = ich[templateName](biblio, true)
-    
+    return ich[templateName](biblio, true)
+}
 
-    return html
+getLatestTs = function(metricSnaps) {
+    var latestTs = false
+    for (ts in metricSnaps) {
+        if (ts > latestTs) {
+            latestTs = ts
+        }
+    }
+    return latestTs
 }
 
 function renderItem(item){
-    console.log(item.biblio.genre)
-    console.log(item)
+
+    item.metricsArr = []
+    for (metricName in item.metrics){
+        thisMetric = item.metrics[metricName]
+        thisMetric.name = metricName
+        var latestTs = getLatestTs(item.metrics[metricName].values)
+        if (latestTs) {
+            var latestVal = item.metrics[metricName].values[latestTs]
+            thisMetric.ts = latestTs
+            thisMetric.value = latestVal
+        }
+
+        // if no values, no point in printing
+        if (thisMetric.value) {
+            item.metricsArr.push(thisMetric)
+        }
+    }
     
     var url = (item.aliases.url) ?  item.aliases.url[0] : false
+    var html$ = ich.item(item)
+    var biblioHtml = renderItemBiblio(item.biblio, url)
+    html$.find("div.biblio").append(biblioHtml)
     
-    html =  "<li class='item' id='"+item.id+"'>\n";
-    html +=    "<div class='biblio'>"+renderItemBiblio(item.biblio, url)+"</div>\n"
-    html += "</li>"
-
-    return html
+    return html$
 }
 
 function updateReportWithNewItem(item) {
-    itemHtml = renderItem(item)
-    $("ul#items").append(itemHtml)
+    itemHtml$ = renderItem(item)
+    $("ul#items").replaceWith(itemHtml$)
 }
 
 function getNewItemsAndUpdateReport() {
@@ -123,13 +144,17 @@ function getNewItemsAndUpdateReport() {
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(data){
+            $("ul#items").empty()
             for (i in data){
-                updateReportWithNewItem(data[i])
+                // make the set of all newly-rendered items
+                // this is a very slow way to do this...should bundle together,
+                // then make one replace.
+                $("ul#items").append(renderItem(data[i]))
             }
         }
     });
 }
- /*
+ 
 function pollApiAndUpdateCollection(interval, oldText, tries){
     console.log("running update")
     getNewItemsAndUpdateReport();
@@ -138,7 +163,7 @@ function pollApiAndUpdateCollection(interval, oldText, tries){
     if (currentText == oldText) {
         console.log("current and old text match; on try "+tries)
         tries++;
-        if (tries > 6) {
+        if (tries > 10) {
             console.log("quitting.")
             $("#metrics h2.updating").slideUp(500)
             return false
@@ -153,7 +178,7 @@ function pollApiAndUpdateCollection(interval, oldText, tries){
     }, interval)
 }
 
-*/
+
 
 
 $(document).ready(function(){
@@ -357,6 +382,6 @@ $(document).ready(function(){
 
     /* creating and updating reports
      * *************************************************************************/
-    //pollApiAndUpdateCollection(500, "", 0);
+    pollApiAndUpdateCollection(500, "", 0);
 
 });
