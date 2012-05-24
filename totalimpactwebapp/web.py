@@ -28,14 +28,14 @@ def collection_report(collection_id):
         abort(404)
 
 
-@app.route('/call_api/<path:api_base>', 
-	methods = ['GET', 'PUT', 'POST', 'DELETE'])
+@app.route('/call_api/<path:api_base>',methods = ['GET', 'PUT', 'POST', 'DELETE'])
 def call_api(api_base):
 	api_host = 'http://localhost:5001/'
 	api_url = api_host + api_base
 	api_method = getattr(requests, request.method.lower())
 
         headers = {}
+        
         for k, v in request.headers.iteritems():
             headers[k] = v
 
@@ -45,7 +45,13 @@ def call_api(api_base):
             headers=headers,
             data=request.data)
 
-	return api_response.text
+        resp = make_response(api_response.text)
+        for k, v in api_response.headers.iteritems():
+            resp.headers.add(k, v)
+
+        # hack becasue Requests doesn't seem to see the Content-Type header...
+
+        return resp
 
 if __name__ == "__main__":
     # run it
