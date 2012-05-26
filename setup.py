@@ -10,8 +10,10 @@ setup(
         "Flask-WTF",
         "couchdb",
         "requests",
-        "simplejson"
-				],
+        "simplejson",
+        "iso8601",
+        "pytz"
+	],
     url = '',
     author = 'total-impact',
     author_email = 'totalimpactdev@gmail.com',

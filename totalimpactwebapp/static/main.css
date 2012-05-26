@@ -263,6 +263,7 @@ div.recent-changes {
     float: left;
     margin-left: 2%;
 }
+
 div.recent-changes h4 {
     margin:10px 0;
 }
@@ -276,7 +277,13 @@ div.recent-changes ul {
 }
 div.recent-changes ul li {
     list-style-type: none;
-    margin-bottom: .7em;
+    min-height: 2em;
+    clear:both;
+}
+
+div.recent-changes ul li img {
+    float:left;
+    margin: 3px 5px 0 0;
 }
 
 div.altmetrics {

@@ -23,15 +23,4 @@ def jsonp(f):
     return decorated_function
 
 
-# derived from http://flask.pocoo.org/snippets/45/ (pd) and customised
-# should be replaced with negotiator
-def request_wants_json():
-    best = request.accept_mimetypes \
-        .best_match(['application/json', 'text/html'])
-    best == 'application/json' and \
-        request.accept_mimetypes[best] > \
-        request.accept_mimetypes['text/html']
-    if request.values.get('format','').lower() == 'json' or request.url().endswith(".json"):
-        best = True
-    return best
 
