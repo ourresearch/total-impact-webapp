@@ -274,7 +274,8 @@ $(document).ready(function(){
 
     // dialog for supported IDs
     $("div#manual-add p.prompt a").click(function(){
-        TINY.box.show({url:'supported-ids.php'})
+        // get the contents
+        TINY.box.show({url:'../static/whichartifacts.html'})
         return false;
     });
 

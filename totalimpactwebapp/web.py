@@ -1,4 +1,4 @@
-import requests, iso8601
+import requests, iso8601, os
 
 from flask import Flask, jsonify, json, request, redirect, abort, make_response
 from flask import render_template, flash
@@ -59,7 +59,19 @@ def home():
 
 @app.route('/about')
 def about():
-	return render_template('about.html', commits=GithubCommits.get(requests))
+    which_artifacts_loc = os.path.join(
+        os.path.dirname(__file__),
+        "static",
+        "whichartifacts.html"
+        )
+    which_artifacts = open(which_artifacts_loc).read()
+    which_metrics = "which metrics! who knows?"
+    return render_template(
+        'about.html',
+        commits=GithubCommits.get(requests),
+        which_artifacts=which_artifacts,
+        which_metrics=which_metrics
+        )
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
