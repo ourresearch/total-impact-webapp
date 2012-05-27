@@ -13,8 +13,6 @@ def make_str(time=False):
     if type(time) is int:
         diff = now - datetime.fromtimestamp(time)
     elif isinstance(time,datetime):
-        print time
-        print now
         diff = now - time 
     elif not time:
         diff = now - now
