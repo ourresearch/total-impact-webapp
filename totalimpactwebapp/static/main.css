@@ -288,16 +288,37 @@ div.recent-changes ul li img {
 
 div.altmetrics {
     float:right;
-    text-align: right;
+    text-align: left;
     margin-top: 10px;
     width: 25%;
     padding-right:0;
     border-right:none;
 }
 
+div.altmetrics img#altmetrics-logo {
+    margin-bottom:-2px;
+}
+
 div.altmetrics p {
     padding: 0;
     margin: 0;
+}
+
+#footer div.altmetrics li {
+	list-style-type: none;
+	display: block;
+	float:left;
+	margin:3px 7px;
+	max-width: 177px;
+}
+#footer div.altmetrics li img {
+	width: auto;
+	height:40px;
+	border: 2px solid #fff;
+}
+
+#footer div.altmetrics li a {
+	color: #333;
 }
 
 
