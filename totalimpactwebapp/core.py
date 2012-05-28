@@ -1,7 +1,6 @@
 from totalimpactwebapp import default_settings
 import os
 from flask import Flask
-from flaskext.login import LoginManager, current_user
 
 login_manager = LoginManager()
 
