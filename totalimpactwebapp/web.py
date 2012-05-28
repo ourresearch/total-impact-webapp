@@ -49,8 +49,10 @@ class GithubCommits():
 
         return commits_arr[0:7]
 
-
-
+'''
+@app.route('/<dir>/static/<path:to_get>')
+def fix_static_calls(dir, to_get):
+    return redirect("/static/" + to_get)'''
     
 # static pages
 @app.route('/')
