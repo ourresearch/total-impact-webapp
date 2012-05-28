@@ -94,7 +94,7 @@ function renderItemBiblio(biblio, url) {
 }
 
 getLatestTs = function(metricSnaps) {
-    var latestTs = false
+    var latestTs = "1999-01-01T00:00:00.000000"
     for (ts in metricSnaps) {
         if (ts > latestTs) {
             latestTs = ts
