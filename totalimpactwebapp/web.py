@@ -61,18 +61,25 @@ def home():
 
 @app.route('/about')
 def about():
+
+    # get the table of artifacts and identifiers
     which_artifacts_loc = os.path.join(
         os.path.dirname(__file__),
         "static",
         "whichartifacts.html"
         )
     which_artifacts = open(which_artifacts_loc).read()
+
+    # get the static_meta info for each metric
+    r = requests.get('http://localhost:5001/provider')
+    metadata = json.loads(r.text)
+    
     which_metrics = "which metrics! who knows?"
     return render_template(
         'about.html',
         commits=GithubCommits.get(requests),
         which_artifacts=which_artifacts,
-        which_metrics=which_metrics
+        provider_metadata=metadata
         )
 
 @app.route('/collection/<collection_id>')
