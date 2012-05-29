@@ -2,13 +2,10 @@ from totalimpactwebapp import default_settings
 import os
 from flask import Flask
 
-login_manager = LoginManager()
-
 def create_app():
     app = Flask(__name__)
     configure_app(app)
     setup_error_email(app)
-    login_manager.setup_app(app)
     return app
 
 def configure_app(app):
