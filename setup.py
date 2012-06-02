@@ -20,10 +20,8 @@ setup(
     description = 'source code for the webapp at http://total-impact.org',
     license = 'MIT',
     classifiers = [
-        'Intended Audience :: Developers',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Topic :: Software Development :: Libraries :: Python Modules'
     ],
 )
 
