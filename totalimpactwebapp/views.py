@@ -4,12 +4,13 @@ from flask import Flask, jsonify, json, request, redirect, abort, make_response
 from flask import render_template, flash
 
 from totalimpactwebapp.tilogging import logging
-from totalimpactwebapp.core import app
+from totalimpactwebapp import app
 from totalimpactwebapp import pretty_date
 
 logger = logging.getLogger(__name__)
 
 class GithubCommits():
+    ''' this should be moved out of views into a model'''
 
     urls = {
         "core": "https://api.github.com/repos/total-impact/total-impact-core/commits",
