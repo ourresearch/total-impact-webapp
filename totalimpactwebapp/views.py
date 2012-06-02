@@ -122,7 +122,3 @@ def call_api(api_base):
 
         return resp
 
-if __name__ == "__main__":
-    # run it
-    app.run(host='0.0.0.0', debug=True)
-
