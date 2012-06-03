@@ -164,7 +164,7 @@ function pollApiAndUpdateCollection(interval, oldText, tries){
         console.log("current and old text match; on try "+tries)
         tries++;
         if (tries > 10) {
-            console.log("quitting.")
+            console.log("done with updating")
             $("#metrics h2.updating").slideUp(500)
             return false
         }
@@ -234,10 +234,10 @@ $(document).ready(function(){
         else {
             if ($thisDiv.find("textarea")[0]) { 
                 var providerTypeQuery = "&type=import"
-                var providerIdQuery = "?query=" + $thisDiv.find("textarea").val();
+                var providerIdQuery = "?query=" + escape($thisDiv.find("textarea").val());
             } else {
                 var providerTypeQuery = "&type=" + $(this).siblings("input").attr("name");
-                var providerIdQuery = "?query=" + $(this).siblings("input").val();
+                var providerIdQuery = "?query=" + escape($(this).siblings("input").val());
             }
             $(this).hide().after("<span class='loading'>"+ajax_load+" Loading...<span>");
             $.get("./call_api/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
