@@ -61,7 +61,24 @@ Total-Impact data can be:
 
 <p>Metrics are computed based on the following data sources:</p>
 
-{{ which_metrics }}
+<ul id="providers-metadata"> <!-- list of providers -->
+{% for provider_name, provider in provider_metadata.iteritems() %}
+    {% if provider.metrics %}
+    <li> <!-- the provider -->
+        <a href="{{ provider.url }}">{{ provider_name }}</a> <span class="descr">{{ provider.descr|safe() }}</span>
+        <ul> <!-- list of metrics supplied by this provider -->
+            {% for metric_name, metric in provider.metrics.iteritems() %}
+            <li> <!-- information about a particular metric -->
+                <img src="{{ metric.icon }}" width="16" height="16" />
+                <strong>{{ metric_name }}</strong>
+                <span class="metric-descr">{{ metric.description }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endif %}
+{% endfor %}
+</ul>
 
 <h2 id="whereisif">where is the journal impact factor?</h2>
 

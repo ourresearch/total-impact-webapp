@@ -229,6 +229,17 @@ th {
     padding-bottom: 50px;
 }
 
+ul#providers-metadata > li {
+    margin-bottom: 15px;
+}
+
+ul#providers-metadata li ul li{
+    list-style-type: none;
+}
+
+ul#providers-metadata li img {
+    margin-bottom: -.2em;
+}
 
 
 
