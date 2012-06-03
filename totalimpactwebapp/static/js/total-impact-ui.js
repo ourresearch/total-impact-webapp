@@ -226,14 +226,19 @@ $(document).ready(function(){
         var $thisDiv = $(this).parent();
         var idStrParts = $(this).attr("id").split('-');
         var providerName = idStrParts[0];
-        var providerTypeQuery = "&type=" + $(this).siblings("input").attr("name");
-        var providerIdQuery = "?query=" + $(this).siblings("input").val();
 
-        if ($thisDiv.find("textarea")[0]) { // there's a sibling textarea
+        if ($thisDiv.find("#manual_input")[0]) { // there's a sibling textarea
             console.log(parseTextareaArtifacts($thisDiv.find("textarea").val()))
             addIdsToEditPane(parseTextareaArtifacts($thisDiv.find("textarea").val()));
         }
         else {
+            if ($thisDiv.find("textarea")[0]) { 
+                var providerTypeQuery = "&type=import"
+                var providerIdQuery = "?query=" + $thisDiv.find("textarea").val();
+            } else {
+                var providerTypeQuery = "&type=" + $(this).siblings("input").attr("name");
+                var providerIdQuery = "?query=" + $(this).siblings("input").val();
+            }
             $(this).hide().after("<span class='loading'>"+ajax_load+" Loading...<span>");
             $.get("./call_api/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
                 console.log(response)
@@ -313,17 +318,22 @@ $(document).ready(function(){
         });
     }
 
-    // creating a collection by submitting the object IDs from the homepage
-    $("#id-form").submit(function(){
+    getAliases = function() {
         var aliases = [];
 
-        // get the user-supplied aliases to upload
+        // get the user-supplied aliases
         $("ul#collection-list span.object-id").each(function(){
            var thisAlias = [];
            thisAlias[0] = $(this).find("span.namespace").text().split(':')[0]
            thisAlias[1] = $(this).find("span.id").text()
            aliases.push(thisAlias);
         });
+        return(aliases)
+    }
+
+    // creating a collection by submitting the object IDs from the homepage
+    $("#id-form").submit(function(){
+        var aliases = getAliases();
 
         // make sure the user input something at all
         if (aliases.length == 0) {
@@ -371,13 +381,18 @@ $(document).ready(function(){
 
     // updating the collection from the report page
     $("#update-report-button").click(function(){
-        showWaitBox();
-        $.post(
-            './update.php',
-            {id: this.name},
-            function(data){
-                window.location.reload(false);
-            });
+        $("#metrics h2.updating").slideDown(500)
+        $.ajax({
+            url: '/call_api/items',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(tiids),
+            success: function(data){
+                //window.location.reload(false);
+                console.log("updating.")
+                pollApiAndUpdateCollection(500, "", 0);
+            }});
         return false;
     })
 
