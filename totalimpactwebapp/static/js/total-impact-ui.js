@@ -156,7 +156,6 @@ function getNewItemsAndUpdateReport() {
 }
  
 function pollApiAndUpdateCollection(interval, oldText, tries){
-    console.log("running update")
     getNewItemsAndUpdateReport();
     // has anything changed?
     currentText = $("#metrics").text()
@@ -178,6 +177,16 @@ function pollApiAndUpdateCollection(interval, oldText, tries){
     }, interval)
 }
 
+function showCommits() {
+    $.get('./commits', function(data){
+        var foo = {commits: data}
+        var commitsList = ich.commits_template(foo)
+        $("div.recent-changes").append(commitsList)
+        console.log(data)
+        console.log(commitsList)
+    })
+}
+
 
 
 
@@ -193,6 +202,9 @@ $(document).ready(function(){
         }
     });
     $('#about-metrics').hide();
+    
+    // show github commits in the footer
+    showCommits()
 
     // show/hide stuff
     $('#importers ul li')
@@ -398,6 +410,8 @@ $(document).ready(function(){
 
     /* creating and updating reports
      * *************************************************************************/
-    pollApiAndUpdateCollection(500, "", 0);
+    if (typeof tiids != "undefined"){
+        pollApiAndUpdateCollection(500, "", 0);
+    }
 
 });

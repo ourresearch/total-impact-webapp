@@ -102,14 +102,7 @@
                 </div>
                 <div class="recent-changes footercol">
                     <h4>Latest changes on <a href="https://github.com/total-impact">GitHub</a></h4>
-                    <!-- drop in something here to get the recent changes from the repo -->
-                    <ul> {% for commit_obj in commits %}
-                        <li>
-                            <img src="{{ commit_obj.img }}" width="24" height="24">
-                            <a class="date" href="{{ commit_obj.link }}">{{ commit_obj.date }}</a>
-                            <span class="message">{{ commit_obj.message }}</span>
-                        </li>
-                        {% endfor %}</ul>
+                    <!-- put commits here with js -->
                 </div>
                 <div class="altmetrics footercol">
 
@@ -126,5 +119,88 @@
             </div>
         </div> <!-- end footer -->
 
+
+        {% raw %}
+        <div id="templates">
+            <!-- These templates are for rendering items with javascript using
+            Mustache -->
+            
+            
+            
+            
+            
+            <script id="title" class="partial" type="text/html">
+                <h5>
+                    {{#url}}
+                    <a class="url title" href="{{ url }}">{{ title }}</a>
+                    {{/url}}
+                    {{^url}}
+                    {{ title }}
+                    {{/url}}
+                </h5>
+            </script>
+
+            <script id="biblio_dataset" type="text/html">
+                {{#year}}
+                <span class="year">{{ year }}</span>
+                {{/year}}
+                {{>title}}
+                <span class="repo">{{ repository }}</span>
+            </script>
+            <script id="biblio_article" type="text/html">
+                <span class="authors">{{ authors }}</span>
+                {{#year}}
+                <span class="year">{{ year }}</span>
+                {{/year}}
+                {{>title}}
+                <span class="repo">{{ journal }}</span>
+            </script>
+            <script id="biblio_webpage" type="text/html">
+                {{>title}}
+            </script>
+            <script id="biblio_slides" type="text/html">
+                {{>title}}
+                <span class="repo">Slideshare</span>
+            </script>
+            <script id="biblio_software" type="text/html">
+                <span class="year">{{ year }}</span>
+                {{>title}}
+                <span class="descr">{{ description }}</span>
+                <span class="repo">GitHub</span>
+            </script>
+            <script id="biblio_unknown" type="text/html">
+                {{>title}}
+            </script>
+
+            <script id="item" type="text/html">
+                <li class="item" id="{{ id }}">
+                    <div class="biblio"></div>
+                    <ul class="metrics">{{#metricsArr}}
+                        <li>
+                            <a href="{{provenance_url}}">
+                                <span class="last-update">{{ ts }}</span>
+                                <span class="metric-value">{{ value }}</span>
+                                <span class="metric-name-img">
+                                    <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
+                                    <span class="metric-name">{{ static_meta.provider }} {{ static_meta.display_name }}</span>
+                                </span>
+                            </a>
+                        </li>
+                        {{/metricsArr}}</ul>
+                </li>
+            </script>
+            
+            <script id="commits_template" type="text/html">
+            <ul> {{#commits}}
+                <li>
+                    <img src="{{ img }}" width="24" height="24">
+                    <a class="date" href="{{ link }}">{{ date }}</a>
+                    <span class="message">{{ message }}</span>
+                </li>
+                {{/commits}}</ul>
+            </script>
+            
+        </div>
+        {% endraw %}    
     </body>
 </html>
