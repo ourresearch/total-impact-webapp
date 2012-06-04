@@ -12,7 +12,8 @@ setup(
         "requests",
         "simplejson",
         "iso8601",
-        "pytz"
+        "pytz",
+        "gunicorn"
 	],
     url = '',
     author = 'total-impact',
