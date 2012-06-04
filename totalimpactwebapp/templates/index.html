@@ -23,9 +23,6 @@
 <p class="prompt" >Add one DOI, PubMed ID, URL, or other <a target="_blank" href="./about/#whichartifacts">supported identifier</a> per line:</p>
 <textarea rows="11" cols="40" id="manual_input" class="artifactList" >
 doi:10.1371/journal.pcbi.1000361
-pmid:20334632
-pdb:2BAK
-geo:GSE2109
 doi:10.5061/dryad.1295
 http://www.carlboettiger.info/research/lab-notebook
 http://www.slideshare.net/phylogenomics/eisenall-hands
@@ -59,6 +56,24 @@ http://www.slideshare.net/phylogenomics/eisenall-hands
 <p class="prompt">https://github.com/</p>
 <input id="github_users_input" name="github_user" type="text" size="20" value="egonw"/>
 <button class="import-button" id="github">Import</button>
+</div>
+</li>
+<li>
+<a class="toggler" id="bibtex_toggler" >BibTeX importer</a><br/>
+<div class="toggler_contents" id="bibtex_toggler_contents">
+<p class="prompt" title="Paste in BibTeX contents: will try to look up DOIs">BibTeX items</p>
+<textarea id="bibtex_input" name="bibtex" type="text" cols="30" rows="8"> @article{neylon2009article,
+  title={Article-level metrics and the evolution of scientific impact},
+  author={Neylon, C. and Wu, S.},
+  journal={PLoS biology},
+  volume={7},
+  number={11},
+  pages={e1000242},
+  year={2009},
+  publisher={Public Library of Science}
+}
+</textarea>
+<button class="import-button" id="bibtex">Import</button>
 </div>
 </li>
 </ul>
