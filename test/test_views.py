@@ -17,3 +17,13 @@ class TestViews(unittest.TestCase):
         res = self.app.get('/about')
         assert res.status == '200 OK', res.status
 
+    def test_commits(self):
+        res = self.app.get('/commits')
+        assert res.status == '200 OK', res.status
+        assert res.mimetype == 'application/json', res.__dict__
+        
+        res_obj = json.loads(res.data)
+        assert len(res_obj) > 0, res_obj
+        
+        
+        

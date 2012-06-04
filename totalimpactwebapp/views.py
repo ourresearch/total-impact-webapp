@@ -1,4 +1,4 @@
-import requests, iso8601, os
+import requests, iso8601, os, json
 
 from flask import Flask, jsonify, json, request, redirect, abort, make_response
 from flask import render_template, flash
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 # static pages
 @app.route('/')
 def home():
-    return render_template('index.html', commits=Github.get_commits(requests))
+    return render_template('index.html')
 
 @app.route('/about')
 def about(): 
@@ -33,10 +33,8 @@ def about():
     except requests.ConnectionError:
         metadata = {}
     
-    which_metrics = "which metrics! who knows?"
     return render_template(
         'about.html',
-        commits=Github.get_commits(requests),
         which_artifacts=which_artifacts,
         provider_metadata=metadata
         )
@@ -48,11 +46,17 @@ def collection_report(collection_id):
         collection = json.loads(r.text)
         return render_template(
         'collection.html',
-        collection=collection,
-        commits=Github.get_commits(requests)
+        collection=collection
         )
     else:
         abort(404)
+        
+@app.route("/commits")
+def get_github_commits():
+    commits = Github.get_commits(requests)
+    resp = make_response( json.dumps(commits, sort_keys=True, indent=4), 200)        
+    resp.mimetype = "application/json"
+    return resp
 
 
 @app.route('/call_api/<path:api_base>',methods = ['GET', 'PUT', 'POST', 'DELETE'])
