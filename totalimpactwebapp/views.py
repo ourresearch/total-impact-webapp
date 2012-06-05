@@ -1,14 +1,13 @@
-import requests, iso8601, os, json
+import requests, iso8601, os, json, logging
 
 from flask import Flask, jsonify, json, request, redirect, abort, make_response
 from flask import render_template, flash
 
-from totalimpactwebapp.tilogging import logging
 from totalimpactwebapp import app
 from totalimpactwebapp.models import Github
 from totalimpactwebapp import pretty_date
 
-logger = logging.getLogger(__name__) 
+logger = logging.getLogger("webapp.views")
     
 # static pages
 @app.route('/')
