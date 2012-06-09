@@ -60,8 +60,8 @@ def get_github_commits():
 
 @app.route('/call_api/<path:api_base>',methods = ['GET', 'PUT', 'POST', 'DELETE'])
 def call_api(api_base):
-	api_host = 'http://localhost:5001/'
-	api_url = api_host + api_base
+	api_url = "http://" + os.environ["API_ROOT"] +'/'+ api_base
+        print api_url
 	api_method = getattr(requests, request.method.lower())
 
         headers = {}
