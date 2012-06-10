@@ -60,29 +60,30 @@ def get_github_commits():
 
 @app.route('/call_api/<path:api_base>',methods = ['GET', 'PUT', 'POST', 'DELETE'])
 def call_api(api_base):
-        logger.warning(api_base)
 	api_url = "http://" + os.environ["API_ROOT"] +'/'+ api_base
-        print "API URL IS HERE!!!"
-        print api_url
 
+        # get the Requests http verb we'll use
 	api_method = getattr(requests, request.method.lower())
+        logger.debug("calling api url: " + api_url)
 
+        # read the headers we got from the client
         headers = {}
-        
         for k, v in request.headers.iteritems():
             headers[k] = v
 
+        # use Requests to call the total-impact-core api, wherever it lives
 	api_response = api_method(
             api_url,
             params=request.args,
             headers=headers,
             data=request.data)
 
+        logger.debug("got api response back" + api_response)
+
+        # pass the response we got from Requests back to our client
         resp = make_response(api_response.text)
         for k, v in api_response.headers.iteritems():
             resp.headers.add(k, v)
-
-        # hack becasue Requests doesn't seem to see the Content-Type header...
 
         return resp
 
