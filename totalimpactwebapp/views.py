@@ -62,7 +62,6 @@ def get_github_commits():
 def call_api(api_base):
 	api_url = "http://" + os.environ["API_ROOT"] +'/'+ api_base
 
-
         # get the Requests http verb we'll use
 	api_method = getattr(requests, request.method.lower())
 
@@ -70,8 +69,8 @@ def call_api(api_base):
         headers = {}
         for k, v in request.headers.iteritems():
             headers[k] = v
-
-        print headers
+        
+        del headers["Host"] # hack; no idea why we need to do this, but is sure does break if we don't...
 
         # use Requests to call the total-impact-core api, wherever it lives
 	api_response = api_method(
@@ -79,8 +78,6 @@ def call_api(api_base):
             params=request.args,
             headers=headers,
             data=request.data)
-
-        print api_response.__dict__
 
         # pass the response we got from Requests back to our client
         resp = make_response(api_response.text)
