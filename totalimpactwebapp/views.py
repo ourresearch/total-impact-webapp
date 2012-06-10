@@ -62,19 +62,11 @@ def get_github_commits():
 def call_api(api_base):
 	api_url = "http://" + os.environ["API_ROOT"] +'/'+ api_base
 
-        res = requests.get("http://www.google.com")
-        print res.__dict__
-        
-        res2 = requests.get("http://total-impact-core.herokuapp.com")
-        print res2.__dict__
-
         res3 = requests.get("http://total-impact-core.herokuapp.com/provider/dryad/memberitems?query=Otto%2C+Sarah+P.&type=dryad_author")
         print res3.__dict__
 
         # get the Requests http verb we'll use
 	api_method = getattr(requests, request.method.lower())
-        print "calling api url: "
-        print api_url
 
         # read the headers we got from the client
         headers = {}
@@ -84,12 +76,9 @@ def call_api(api_base):
         # use Requests to call the total-impact-core api, wherever it lives
 	api_response = api_method(
             api_url,
-            params=request.args,
-            headers=headers,
-            data=request.data)
+            params=request.args)
 
         print api_response.__dict__
-        print api_response
 
         # pass the response we got from Requests back to our client
         resp = make_response(api_response.text)
