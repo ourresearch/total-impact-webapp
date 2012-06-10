@@ -64,7 +64,8 @@ def call_api(api_base):
 
         # get the Requests http verb we'll use
 	api_method = getattr(requests, request.method.lower())
-        logger.info("calling api url: " + api_url)
+        print "calling api url: "
+        print api_url
 
         # read the headers we got from the client
         headers = {}
@@ -78,7 +79,8 @@ def call_api(api_base):
             headers=headers,
             data=request.data)
 
-        logger.info("got api response back" + api_response)
+        print api_response.__dict__
+        print api_response
 
         # pass the response we got from Requests back to our client
         resp = make_response(api_response.text)
