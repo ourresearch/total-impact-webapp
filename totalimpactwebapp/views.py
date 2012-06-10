@@ -7,7 +7,7 @@ from totalimpactwebapp import app
 from totalimpactwebapp.models import Github
 from totalimpactwebapp import pretty_date
 
-logger = logging.getLogger("webapp.views")
+logger = logging.getLogger("tiwebapp.views")
     
 # static pages
 @app.route('/')
@@ -61,7 +61,6 @@ def get_github_commits():
 @app.route('/call_api/<path:api_base>',methods = ['GET', 'PUT', 'POST', 'DELETE'])
 def call_api(api_base):
 	api_url = "http://" + os.environ["API_ROOT"] +'/'+ api_base
-        print api_url
 	api_method = getattr(requests, request.method.lower())
 
         headers = {}
