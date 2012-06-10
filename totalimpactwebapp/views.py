@@ -62,6 +62,15 @@ def get_github_commits():
 def call_api(api_base):
 	api_url = "http://" + os.environ["API_ROOT"] +'/'+ api_base
 
+        res = requests.get("http://www.google.com")
+        print res.__dict__
+        
+        res2 = requests.get("http://total-impact-core.herokuapp.com")
+        print res2.__dict__
+
+        res3 = requests.get("http://total-impact-core.herokuapp.com/provider/dryad/memberitems?query=Otto%2C+Sarah+P.&type=dryad_author")
+        print res3.__dict__
+
         # get the Requests http verb we'll use
 	api_method = getattr(requests, request.method.lower())
         print "calling api url: "
