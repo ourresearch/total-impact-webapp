@@ -40,7 +40,7 @@ def about():
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
-    r = requests.get('http://localhost:5001/collection/' + collection_id)
+    r = requests.get("http://" + os.environ["API_ROOT"] +'/collection/' + collection_id)
     if r.status_code == 200:
         collection = json.loads(r.text)
         return render_template(
@@ -48,7 +48,7 @@ def collection_report(collection_id):
         collection=collection
         )
     else:
-        abort(404)
+        abort(404, "This collection doesn't seem to exist yet.")
         
 @app.route("/commits")
 def get_github_commits():
