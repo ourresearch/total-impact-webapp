@@ -2,7 +2,6 @@
 body {
     font-family: "Helvetica", sans-serif;
     margin: 0;
-    border-top:4px solid #b20;
     background-color: #eee;
     background-image: url(./img/body-bg-grad.jpeg);
     background-position: 50% -76px;
@@ -71,6 +70,71 @@ div#tooltip p, div#tooltip div, div#tooltip h3 {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+
+div#header{
+    width:100%;
+    position:absolute;
+    top:0;
+    left:0;
+    box-shadow: 0px 3px 16px -3px #666;
+    background: #fff;
+}
+
+
+h1 {
+    margin:0;
+    padding:0 0 0 20px;
+    float:left;
+    font-size:20px;
+    
+}
+h1 a {
+    background-image:url(./img/ti_logo2.png);
+    background-repeat: no-repeat;
+    text-indent: -9999px;
+    display:block;
+    width: 262px;
+    height: 43px;
+    margin: 9px 0 0;
+}
+h1 a:hover {
+    color:#DD4814;
+    text-decoration: none;
+}
+h1 span.loc {
+    font-weight:normal;
+    color:#888;
+}
+
+
+ul#nav a {
+    color:#888;
+    padding: 4px 0.5em;
+    display:block;
+    font-size:15px;
+    background-repeat:repeat-x;
+    background-position:center center;
+}
+body ul#nav a:hover {
+/*    background-image: url('./img/header-bg-down.png');*/
+    text-decoration: none;
+    color:#DD4814;
+    background:#f6f6f6;
+
+}
+ul#nav {
+    float:right;
+    margin:18px 20px 0;
+}
+ul#nav li {
+    float:left;
+    list-style: none;
+    padding: 0;
+}
+
+
+/*************** old header ***********************
+
 #header {
     position: absolute;
     top:0;
@@ -148,7 +212,7 @@ ul#nav li a:hover {
     padding-top: 3px;
 }
 
-
+*/
 
 
 
