@@ -9,22 +9,22 @@
                 <h2><span class="title">{{ collection.title }}</span></h2>
                 <div id="report-button">
                     <a class="report-button" id="update-report-button" name="{{ collection.id }}" href="#">run update</a>
-                    <a class="report-button" href="../call_api/items/{{ collection.item_tiids|join(',')}}.csv">download csv</a>
-                    <a class="report-button" href="../call_api/items/{{ collection.item_tiids|join(',')}}">view json</a>
+                    <a class="report-button" href="http://localhost:5001/items/{{ collection.item_tiids|join(',')}}.csv">download csv</a>
+                    <a class="report-button" href="http://localhost:5001/items/{{ collection.item_tiids|join(',')}}">view json</a>
                 </div>
                 <div id="report-info">
                     <span class="badge artifacts-count"><span class="num">{{ collection.item_tiids|length }}</span> artifacts;</span>
                 </div>
 
                 <div id="share">
-                    <span id="permalink"><span class="label"> Permalink: </span><a class="copyable", href="http://total-impact.org/collection/{{ collection.id }}">http://total-impact.org/collection/{{ collection.id }}</a></span>
+                    <span id="permalink"><span class="label"> Permalink: </span>{{ request.url }}</span>
                     <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
                     <!-- based on code here: https://dev.twitter.com/docs/tweet-button -->
                     <span class="tweet-this">
                         <a href="https://twitter.com/share" class="twitter-share-button"
-                           data-url="http://total-impact.org/collection/{{ collection.id }}"
+                           data-url={{ request.url }}
                            data-via="mytotalImpact"
-                           data-text="Check out the total-Impact of {{ collection.id }}: "
+                           data-text="Check out the total-Impact of {{ collection.title }}: {{ request.url }}"
                            data-count="horizontal">Tweet</a>
                     </span>
                 </div>

@@ -6,7 +6,6 @@ from flask import render_template, flash
 from totalimpactwebapp import app
 from totalimpactwebapp.models import Github
 from totalimpactwebapp import pretty_date
-from totalimpactwebapp.crossdomain import crossdomain
 
 logger = logging.getLogger("tiwebapp.views")
     
@@ -58,33 +57,4 @@ def get_github_commits():
     resp.mimetype = "application/json"
     return resp
 
-
-@app.route('/call_api/<path:api_base>',methods = ['GET', 'PUT', 'POST', 'DELETE'])
-@crossdomain(origin='*')
-def call_api(api_base):
-	api_url = "http://" + os.environ["API_ROOT"] +'/'+ api_base
-
-        # get the Requests http verb we'll use
-	api_method = getattr(requests, request.method.lower())
-
-        # read the headers we got from the client
-        headers = {}
-        for k, v in request.headers.iteritems():
-            headers[k] = v
-        
-        del headers["Host"] # hack; no idea why we need to do this, but is sure does break if we don't...
-
-        # use Requests to call the total-impact-core api, wherever it lives
-	api_response = api_method(
-            api_url,
-            params=request.args,
-            headers=headers,
-            data=request.data)
-
-        # pass the response we got from Requests back to our client
-        resp = make_response(api_response.text)
-        for k, v in api_response.headers.iteritems():
-            resp.headers.add(k, v)
-
-        return resp
 

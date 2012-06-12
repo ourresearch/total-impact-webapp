@@ -144,7 +144,7 @@ function getNewItemsAndUpdateReport() {
     tiidsStr = tiids.join(",")
 
     $.ajax({
-        url: '/call_api/items/'+tiidsStr,
+        url: 'http://localhost:5001/items/'+tiidsStr,                        
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
@@ -268,7 +268,7 @@ $(document).ready(function(){
                 var providerIdQuery = "?query=" + escape($(this).siblings("input").val());
             }
             $(this).hide().after("<span class='loading'>"+ajax_load+" Loading...<span>");
-            $.get("./call_api/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+            $.get("http://localhost:5001/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){                                                
                 console.log(response)
                 addIdsToEditPane(response);
                 $thisDiv.find("span.loading")
@@ -374,7 +374,7 @@ $(document).ready(function(){
             // first we upload the new items and get tiids back.
             console.log("adding new items.")
             $.ajax({
-                url: '/call_api/items',
+                url: 'http://localhost:5001/items',                
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -382,14 +382,14 @@ $(document).ready(function(){
                 success: function(returnedTiids){
                     // make a new collection, populated by our freshly-minted tiids
                     console.log("items created. making collection.")
-                    showWaitBox()
+                    //showWaitBox()
                     var requestObj = {
                         title: $('#name').val(),
                         items: returnedTiids
                     }
 
                     $.ajax({
-                        url: '/call_api/collection',
+                        url: 'http://localhost:5001/collection',                        
                         type: "POST",
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
@@ -412,7 +412,7 @@ $(document).ready(function(){
     $("#update-report-button").click(function(){
         $("#metrics h2.updating").slideDown(500)
         $.ajax({
-            url: '/call_api/items',
+            url: 'http://localhost:5001/items',
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
