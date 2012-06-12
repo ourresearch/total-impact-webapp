@@ -160,9 +160,9 @@ function getNewItemsAndUpdateReport() {
             }
 
             // hide the empty genres
-            for (i in $("div.genre h3 span")) {
-                var genre = $("div.genre h3 span")[i].innerText
-                if ($("div." + genre).find("li").length < 1) {
+            for (i in $("div.genre")) {
+                var genre = $("div.genre")[i].classList[1]
+                if ($("div." + genre + " li").length < 1) {
                     $("div." + genre).hide()
                 }
             }
@@ -336,7 +336,7 @@ $(document).ready(function(){
         verb = (typeof verb == "undefined") ? "Updating" : verb
         var $waitMsg = $("<div class='loading'></div")
             .append("<h2><img src='./static/img/ajax-loader-rev.gif' />"+verb+" your report now.</h2>")
-            .append("<p>(Hang in there; it usually takes a few minutes...)</p>")
+            .append("<p>(Hang in there; it can take a few minutes...)</p>")
 
         TINY.box.show({
             html:$("<div>").append($waitMsg).html(),
@@ -382,6 +382,7 @@ $(document).ready(function(){
                 success: function(returnedTiids){
                     // make a new collection, populated by our freshly-minted tiids
                     console.log("items created. making collection.")
+                    showWaitBox()
                     var requestObj = {
                         title: $('#name').val(),
                         items: returnedTiids
