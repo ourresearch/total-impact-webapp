@@ -154,8 +154,19 @@ function getNewItemsAndUpdateReport() {
                 // make the set of all newly-rendered items
                 // this is a very slow way to do this...should bundle together,
                 // then make one replace.
-                $("ul#items").append(renderItem(data[i]))
+                var genre = data[i].biblio.genre
+                var genreItems = "div." + genre + " ul#items"
+                $(genreItems).append(renderItem(data[i]))
             }
+
+            // hide the empty genres
+            for (i in $("div.genre h3 span")) {
+                var genre = $("div.genre h3 span")[i].innerText
+                if ($("div." + genre).find("li").length < 1) {
+                    $("div." + genre).hide()
+                }
+            }
+
         }
     });
 }
