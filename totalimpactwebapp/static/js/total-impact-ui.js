@@ -103,8 +103,16 @@ getLatestTs = function(metricSnaps) {
     return latestTs
 }
 
-function renderItem(item){
 
+function sortByMetricValueDesc(metric1, metric2){
+  if (metric1.value < metric2.value)
+     return 1;
+  if (metric1.value > metric2.value)
+    return -1;
+  return 0;
+}
+
+function renderItem(item){
     item.metricsArr = []
     for (metricName in item.metrics){
         thisMetric = item.metrics[metricName]
@@ -121,6 +129,8 @@ function renderItem(item){
             item.metricsArr.push(thisMetric)
         }
     }
+
+    item.metricsArr.sort(sortByMetricValueDesc)
     
     var url = (item.aliases.url) ?  item.aliases.url[0] : false
     var html$ = ich.item(item)
@@ -128,11 +138,6 @@ function renderItem(item){
     html$.find("div.biblio").append(biblioHtml)
     
     return html$
-}
-
-function updateReportWithNewItem(item) {
-    itemHtml$ = renderItem(item)
-    $("ul#items").replaceWith(itemHtml$)
 }
 
 function getNewItemsAndUpdateReport() {
