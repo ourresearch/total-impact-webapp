@@ -6,6 +6,7 @@ from flask import render_template, flash
 from totalimpactwebapp import app
 from totalimpactwebapp.models import Github
 from totalimpactwebapp import pretty_date
+from totalimpactwebapp.crossdomain import crossdomain
 
 logger = logging.getLogger("tiwebapp.views")
     
@@ -59,6 +60,7 @@ def get_github_commits():
 
 
 @app.route('/call_api/<path:api_base>',methods = ['GET', 'PUT', 'POST', 'DELETE'])
+@crossdomain(origin='*')
 def call_api(api_base):
 	api_url = "http://" + os.environ["API_ROOT"] +'/'+ api_base
 
