@@ -33,8 +33,36 @@
         <div id="metrics">
             <h2 class="updating"><img src="../static/img/ajax-loader-rev.gif" alt="spinning graphic" />We're getting your data...</h2>
             <script type="text/javascript">var tiids = ["{{ collection.item_tiids|join('","')|safe }}"]</script>
-            <ul id="items">
-            </ul>
+            <div class="genre article">
+                <h3><span>articles</span></h3>
+                <ul id="items">
+                </ul>
+            </div>
+            <div class="genre dataset">
+                <h3><span>datasets</span></h3>
+                <ul id="items">
+                </ul>
+            </div>
+            <div class="genre software">
+                <h3><span>software</span></h3>
+                <ul id="items">
+                </ul>
+            </div>
+            <div class="genre slides">
+                <h3><span>slides</span></h3>
+                <ul id="items">
+                </ul>
+            </div>
+            <div class="genre webpage">
+                <h3><span>webpages</span></h3>
+                <ul id="items">
+                </ul>
+            </div>
+            <div class="genre unknown">
+                <h3><span>unknown</span></h3>
+                <ul id="items">
+                </ul>
+            </div>
         </div>
         <p class="something-missing">More detail on <a href="../about#whichmetrics">available metrics</a>.  Missing some artifacts or metrics? See <a href="../about#limitations">current limitations.</a>  </p>
     </div>
