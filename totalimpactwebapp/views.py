@@ -27,7 +27,7 @@ def about():
 
     # get the static_meta info for each metric
     try:
-        r = requests.get('http://localhost:5001/provider')
+        r = requests.get('http://total-impact-core.herokuapp.com/provider')
         metadata = json.loads(r.text)
     except requests.ConnectionError:
         metadata = {}
