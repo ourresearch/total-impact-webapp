@@ -144,7 +144,7 @@ function getNewItemsAndUpdateReport() {
     tiidsStr = tiids.join(",")
 
     $.ajax({
-        url: 'http://localhost:5001/items/'+tiidsStr,                        
+        url: 'http://total-impact-core.herokuapp.com/items/'+tiidsStr,                        
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
@@ -268,7 +268,7 @@ $(document).ready(function(){
                 var providerIdQuery = "?query=" + escape($(this).siblings("input").val());
             }
             $(this).hide().after("<span class='loading'>"+ajax_load+" Loading...<span>");
-            $.get("http://localhost:5001/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){                                                
+            $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){                                                
                 console.log(response)
                 addIdsToEditPane(response);
                 $thisDiv.find("span.loading")
@@ -374,7 +374,7 @@ $(document).ready(function(){
             // first we upload the new items and get tiids back.
             console.log("adding new items.")
             $.ajax({
-                url: 'http://localhost:5001/items',                
+                url: 'http://total-impact-core.herokuapp.com/items',                
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -389,7 +389,7 @@ $(document).ready(function(){
                     }
 
                     $.ajax({
-                        url: 'http://localhost:5001/collection',                        
+                        url: 'http://total-impact-core.herokuapp.com/collection',                        
                         type: "POST",
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
@@ -412,7 +412,7 @@ $(document).ready(function(){
     $("#update-report-button").click(function(){
         $("#metrics h2.updating").slideDown(500)
         $.ajax({
-            url: 'http://localhost:5001/items',
+            url: 'http://total-impact-core.herokuapp.com/items',
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",

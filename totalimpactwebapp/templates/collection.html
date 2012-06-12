@@ -9,8 +9,8 @@
                 <h2><span class="title">{{ collection.title }}</span></h2>
                 <div id="report-button">
                     <a class="report-button" id="update-report-button" name="{{ collection.id }}" href="#">run update</a>
-                    <a class="report-button" href="http://localhost:5001/items/{{ collection.item_tiids|join(',')}}.csv">download csv</a>
-                    <a class="report-button" href="http://localhost:5001/items/{{ collection.item_tiids|join(',')}}">view json</a>
+                    <a class="report-button" href="http://total-impact-core.herokuapp.com/items/{{ collection.item_tiids|join(',')}}.csv">download csv</a>
+                    <a class="report-button" href="http://total-impact-core.herokuapp.com/items/{{ collection.item_tiids|join(',')}}">view json</a>
                 </div>
                 <div id="report-info">
                     <span class="badge artifacts-count"><span class="num">{{ collection.item_tiids|length }}</span> artifacts;</span>
