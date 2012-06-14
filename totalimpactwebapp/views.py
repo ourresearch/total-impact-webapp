@@ -38,6 +38,10 @@ def about():
         provider_metadata=metadata
         )
 
+@app.route('/collection/create')
+def collection_create():
+    return render_template('create-collection.html')
+
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
     r = requests.get("http://" + os.environ["API_ROOT"] +'/collection/' + collection_id)
