@@ -14,6 +14,7 @@ parseImporterArgs = function(argStr){
 
 // puts the textarea-entered ids in a format that addIdsToEditPane likes
 parseTextareaArtifacts = function(str) {
+    str = str + "\n"
     var ids = str.split("\n");
     var ret = [];
     for (i=0; i<ids.length-1; i++){
@@ -30,10 +31,14 @@ parseTextareaArtifacts = function(str) {
             }
         }
         else {
-            artifact.namespace = "unknown";
-            artifact.id = thisId;
+            if (thisId.length > 0) {
+                artifact[0] = "unknown"
+                artifact[1] = thisId
+            }
         }
-        ret.push(artifact);
+        if (typeof artifact[1] != "undefined") {
+            ret.push(artifact);
+        }
     }
     return ret;
 }
