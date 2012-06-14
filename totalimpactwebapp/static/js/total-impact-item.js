@@ -1,8 +1,7 @@
 $.ajaxSetup ({
     cache: false
 });
-var ajax_load = "<img src='./static/img/ajax-loader.gif' alt='loading...' />";
-
+var ajax_load = "<img src='/static/img/ajax-loader.gif' alt='loading...' />";
 
 
 getLatestTs = function(metricSnaps) {
@@ -105,9 +104,9 @@ getAliases = function(input) {
 var tiids = []
 
 $(document).ready(function(){
-
     // updating the collection from the report page
     $("span#ti-id").hide()
+    $("#total-impact div#ti-data").html(ajax_load+" Loading...")
     aliases = getAliases($("span#ti-id").html());
 
     console.log("adding new items.")
