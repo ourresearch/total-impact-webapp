@@ -387,7 +387,7 @@ $(document).ready(function(){
                 success: function(returnedTiids){
                     // make a new collection, populated by our freshly-minted tiids
                     console.log("items created. making collection.")
-                    //showWaitBox()
+                    showWaitBox()
                     var requestObj = {
                         title: $('#name').val(),
                         items: returnedTiids
