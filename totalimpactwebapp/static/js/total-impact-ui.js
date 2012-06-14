@@ -202,9 +202,6 @@ $(document).ready(function(){
         }
     });
     $('#about-metrics').hide();
-    
-    // show github commits in the footer
-    showCommits()
 
     // show/hide stuff
     $('#importers ul li')
