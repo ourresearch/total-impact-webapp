@@ -12,25 +12,16 @@
 /* report meta *************/
 #report h2 {
     text-align:left;
-    font-family: 'Lobster Two';
-    font-weight: normal;
-    color: #333;
-    font-style: italic;
+    font-family: rockwell, georgia, serif;
+    color: #fff;
     margin-right:0;
 }
-#report h2 span.title {
-    font-family: 'helvitica', 'arial', sans-serif;
-    font-weight: bold;
-    font-style: normal;
-    font-size:50px;
-    color:#0;
-    text-shadow: 1px 1px 0px #FFF;
+#report h2 span.artifacts-count {
+    font-size:16px;
+    margin-left:10px;
 }
+
 #report-meta {
-    left: 0;
-    margin-left: 402px;
-    position: relative;
-    top: 41px;
 }
 
 div#report-info{
@@ -42,36 +33,44 @@ div#report-info{
     margin-left:5px;
 }
 
-
+div#report-button {
+    float:right;
+    margin-top: -24px;
+}
 a.report-button  {
     margin-right: 5px;
     margin-bottom: 5px;
-    background: #aaa;
-    padding: 2px 3px;
-    border: 1px solid #888;
+    background: #555;
+    padding: 1px 3px;
     -webkit-border-radius: 3px;    /* CSS3 rounded borders for Safari                    */
     -moz-border-radius: 3px;       /* CSS3 rounded borders for Firefox                   */
+    text-shadow: 0 -1px 0px black;
     border-radius: 3px;
-    font-size: 90%;
     text-decoration: none;
-    color: #fff;
+    color: #eee;
     display: block;
     height:1.3em;
     padding-left:8px;
     padding-right:8px;
     float:left;
+    background-image: -webkit-gradient(
+	linear,
+	bottom,
+	top,
+	color-stop(1, #222),
+	color-stop(1, #333)
+);
 }
 a.report-button:hover {
-    background: #FF4E00;
+    background: #999;
     color:#fff;
     text-shadow:none;
     text-decoration:none;
 }
 
 #share {
-    clear:both;
-    padding-top:7px;
-    float:left;
+    float:right;
+    margin-top: -23px;
 }
 
 #permalink {
@@ -160,7 +159,7 @@ input.report {
 
 /** report printout ******************************************************/
 div#metrics {
-    margin-top:50px;
+    margin-top:10px;
     padding-top:0;
     background: none repeat scroll 0 0 #FFFFFF;
     border-top: 1px solid #ddd;
