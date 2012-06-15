@@ -237,7 +237,7 @@ $(document).ready(function(){
 
     // table of contents
     if ($("#toc")[0]) {
-        $('#toc').tocBuilder({type: 'headings', startLevel: 2, endLevel: 2, backLinkText: 'back to contents'});
+        $('#toc').tocBuilder({type: 'headings', startLevel: 3, endLevel: 3, backLinkText: 'back to contents'});
     }
 
 
