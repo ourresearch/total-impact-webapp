@@ -262,19 +262,6 @@ $(document).ready(function(){
 
 /* creating and updating reports
  * *****************************************************************************/
-    showWaitBox = function(verb){
-        verb = (typeof verb == "undefined") ? "Updating" : verb
-        var $waitMsg = $("<div class='loading'></div")
-            .append("<h2><img src='./static/img/ajax-loader-rev.gif' />"+verb+" your report now.</h2>")
-            .append("<p>(Hang in there; it can take a few minutes...)</p>")
-
-        TINY.box.show({
-            html:$("<div>").append($waitMsg).html(),
-            animate: false,
-            close: false,
-            removeable: false
-        });
-    }
 
     getAliases = function() {
         // flattens id values that are themselves arrays (like github)
@@ -310,6 +297,7 @@ $(document).ready(function(){
         } else {
             // first we upload the new items and get tiids back.
             console.log("adding new items.")
+            $("#go-button").replaceWith("<span class='loading'>"+ajaxLoadImg+"<span>")
             $.ajax({
                 url: 'http://total-impact-core.herokuapp.com/items',                
                 type: "POST",
@@ -319,7 +307,6 @@ $(document).ready(function(){
                 success: function(returnedTiids){
                     // make a new collection, populated by our freshly-minted tiids
                     console.log("items created. making collection.")
-                    showWaitBox()
                     var requestObj = {
                         title: $('#name').val(),
                         items: returnedTiids
