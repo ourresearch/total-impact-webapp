@@ -14,6 +14,7 @@
     text-align:left;
     font-family: 'Lobster Two';
     font-weight: normal;
+    color: #333;
     font-style: italic;
     margin-right:0;
 }
@@ -22,7 +23,7 @@
     font-weight: bold;
     font-style: normal;
     font-size:50px;
-    color:#b20;
+    color:#0;
     text-shadow: 1px 1px 0px #FFF;
 }
 #report-meta {
@@ -61,7 +62,7 @@ a.report-button  {
     float:left;
 }
 a.report-button:hover {
-    background: #b20;
+    background: #FF4E00;
     color:#fff;
     text-shadow:none;
     text-decoration:none;
@@ -99,7 +100,7 @@ a.report-button:hover {
     text-decoration: underline;
 }
 #permalink a#copy-permalink.hover {
-    color: #b20;
+    color: #FF4E00;
 }
 #permalink a {
     text-decoration: none;
@@ -135,22 +136,20 @@ input.report {
     border-left: none;
     border-bottom: 1px solid #EEE;
     border-right: 1px solid #EEE;
-    background-color: #b20;
+    background-color: #FF4E00;
     color: #FFF;
     margin-top:3px;
     height:28px;
 }
 
 /** updating *******************************************/
-#metrics h2.updating {
+#metrics h3.updating {
     font-size: 25px;
-    background-color: #b20;
-    color: #fff;
     margin-top: 0;
     text-align: center;
     padding: 10px 0;
 }
-#metrics h2.updating img {
+#metrics h3.updating img {
     height: 30px;
     width: 30px;
     margin-bottom:-5px;
@@ -316,11 +315,11 @@ ul.metrics a:hover {
     text-decoration: none;
 }
 ul.metrics a:hover span.metric-value {
-    background: #b20;
+    background: #FF4E00;
     color:#fff;
 }
 ul.metrics li:hover span.metric-name {
-    color:#b20;
+    color:#FF4E00;
 }
 .metric-name {
     -moz-transform: rotate(45deg);
