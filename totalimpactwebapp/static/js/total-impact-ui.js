@@ -126,9 +126,11 @@ function getNewItemsAndUpdateReport() {
 
             // hide the empty genres
             for (i in $("div.genre")) {
-                var genre = $("div.genre")[i].classList[1]
-                if ($("div." + genre + " li").length < 1) {
-                    $("div." + genre).hide()
+                var genre_classes = $("div.genre")[i].classList
+                if (typeof genre_classes != "undefined") {
+                    if ($("div." + genre + " li").length < 1) {
+                        $("div." + genre).hide()
+                    }
                 }
             }
 
