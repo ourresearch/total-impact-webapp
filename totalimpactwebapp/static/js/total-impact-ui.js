@@ -198,23 +198,21 @@ $(document).ready(function(){
     });
 
 
-    // use the textarea to paste ids
+    // use the textarea to paste ids. lots of duplicated code with below function...
     $("#paste_input").blur(function(){
         if (!$(this).val().trim()) {
             console.log("fail")
             return false;
         }
         newIds = parseTextareaArtifacts($(this).val());
-        console.log(newIds)
         $.merge(newCollectionIds, newIds)
         
         // how many items are in the new collection now?
         $("#artcounter span.count").html(newCollectionIds.length);
-        $(this).after("<span class='added'><span class='count'>"+newIds.length+"</span> added</span>")
+        $(this).after("<span class='added'><span class='count'>"+newIds.length+"</span> items added.</span>")
         return true;
         
     })
-    
 
     
 
@@ -239,25 +237,11 @@ $(document).ready(function(){
         $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
             console.log(response)
             addNewCollectionIds(response);
-            $this.siblings().find("span.loading")
-            .empty()
-            .append(
-                $("<span class='response'><span class='count'>"+response.length+"</span> added</span>")
-                .hide()
-                .fadeIn(500, function(){
-                    $(this).delay(2000).fadeOut(500, function(){
-                        $(this)
-                        .parent()
-                        .siblings("button")
-                        .fadeIn(500)
-                        .siblings("span.loading")
-                        .remove()
-
-                    })
-                })
-                )
+            $this.siblings().find("span.loading").remove()
             // how many items are in the new collection now?
-            $("#artcounter span.count").replace(newCollectionIds.length)        
+            $("#artcounter span.count").html(newCollectionIds.length);
+            $(this).after("<span class='added'><span class='count'>"+newIds.length+"</span> items added.</span>")
+        
         }, "json");
     });
 

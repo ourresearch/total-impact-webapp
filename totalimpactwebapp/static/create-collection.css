@@ -15,12 +15,20 @@ div#input textarea, div#input input{
     border: 2px solid #aaa;
     color: #555;
     font-size: 20px;
+    float:left;
+    margin-right: 10px;
 }
 
 div#input textarea:focus, div#input input:focus{
 /*    border-color: #ff4e00;*/
 }
-
+#input ul {
+    padding-left:0;
+}
+#input ul li {
+    list-style-type: none;
+    clear:both;
+}
 
 
 div#input legend {
@@ -43,23 +51,27 @@ div#input legend a:hover {
 div#input span.paren {
     display:block;
 }
-div#pullers ul {
-    padding-left:0;
-    margin-top: 35px;
+
+ul#pullers {
+    float: left;
+    clear:both;
+    padding-top: 30px;
 }
-div#pullers ul li {
-    list-style-type: none;
-} 
+
+
+/* go-button section */
 p#artcounter {
     font-size: 20px;
     margin:0 0 10px 325px;
+    font-weight: normal;
 }
 p#artcounter span.count{
     font-size: 28px;
     color: #ff4e00;
+    font-weight: bold;
 }
 div#create-button {
-    margin-top: 50px;
+    padding-top: 50px;
     clear:both;
 }
 div#create-button legend, div#create-button input {
@@ -74,6 +86,13 @@ div#create-button input {
 }
 span.added {
     display:block;
+    font-size: 20px;
+    font-weight: normal;
+    color: #555;
+    padding-top: .2em;
+}
+span.added span.count {
+    font-weight: bold;
 }
 #go-button {
     width: 100px;
