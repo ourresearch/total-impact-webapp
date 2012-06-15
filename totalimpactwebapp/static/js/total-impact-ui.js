@@ -214,8 +214,6 @@ $(document).ready(function(){
         
     })
 
-    
-
     // use importers to add objects pulled from member_items calls
     $("#pullers input").add("#bibtex_input").blur(function(){
         var idStrParts = $(this).attr("id").split('_');
@@ -236,11 +234,11 @@ $(document).ready(function(){
         $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
         $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
             console.log(response)
-            addNewCollectionIds(response);
-            $this.siblings().find("span.loading").remove()
+            $.merge(newCollectionIds, response)
+            $("span.loading").remove()
             // how many items are in the new collection now?
             $("#artcounter span.count").html(newCollectionIds.length);
-            $(this).after("<span class='added'><span class='count'>"+newIds.length+"</span> items added.</span>")
+            $this.after("<span class='added'><span class='count'>"+response.length+"</span> items added.</span>")
         
         }, "json");
     });
