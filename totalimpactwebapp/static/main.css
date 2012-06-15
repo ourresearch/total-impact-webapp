@@ -305,7 +305,7 @@ td {
     border-right:none;
 }
 th {
-    background: #b20;
+    background: #FF4E00;
     color:#fff;
     border:none;
 }
@@ -314,7 +314,7 @@ th {
 #faq {
     margin-top: 100px;
     background: #fff;
-    border-top: 3px solid #b20;
+    border-top: 3px solid #FF4E00;
     padding-bottom: 50px;
 }
 
@@ -349,7 +349,7 @@ a.tocBackLink {
     font-weight: normal;
     margin-left: 10px;
 }
-body#about h2 {
+body#about h3 {
     margin-top: 40px;
 }
 
@@ -401,7 +401,7 @@ div#footer-text{
 /** TinyBox (modal js dialog) styles
 *******************************************************************************/
 .tbox {position:absolute; display:none; padding:14px 17px; z-index:900}
-.tbox h1 {margin:0; font-size: 25px; color: #b20;}
+.tbox h1 {margin:0; font-size: 25px; color: #FF4E00;}
 .tinner {padding:15px 15px 30px 15px; -moz-border-radius:5px; border-radius:5px; background:#fff url(./img/ajax-loader.gif) no-repeat 50% 50%; border-right:1px solid #333; border-bottom:1px solid #333}
 .tmask {position:absolute; display:none; top:0px; left:0px; height:100%; width:100%; background:#000; z-index:800}
 .tclose {position:absolute; top:0px; right:0px; width:30px; height:30px; cursor:pointer; background:url(./img/tinybox-close.png) no-repeat}
