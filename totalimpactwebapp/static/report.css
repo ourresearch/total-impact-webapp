@@ -136,6 +136,7 @@ input.report {
 
 /** report printout ******************************************************/
 div#metrics {
+    min-height: 500px;
     margin-top:7px;
     padding-top:15px;
     background: none repeat scroll 0 0 #FFFFFF;
