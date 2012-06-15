@@ -213,7 +213,8 @@ a#create-collection {
 #call-to-action ul.alternate-actions a:hover {
     /* do some stuff */
 }
-#call-to-action ul.alternate-actions a,span {
+#call-to-action ul.alternate-actions a, 
+#call-to-action ul.alternate-actions span {
     font-family:Rockwell, georgia, serif;
     color:#fff;
     font-size:20px;
