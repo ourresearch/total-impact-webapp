@@ -15,7 +15,6 @@ parseImporterArgs = function(argStr){
 
 // puts the textarea-entered ids in a format that addNewCollectionIds likes
 parseTextareaArtifacts = function(str) {
-    str = str + "\n"
     var ids = str.split("\n");
     var ret = [];
     for (i=0; i<ids.length; i++){
