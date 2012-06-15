@@ -277,21 +277,28 @@ $(document).ready(function(){
     }
 
     getAliases = function() {
+        // flattens id values that are themselves arrays (like github)
         var aliases = [];
+        aliases = newCollectionIds;
+        numIds = newCollectionIds.length;
+        for (var i=0; i<numIds; i++ ) {
+            var val = newCollectionIds[i][1]
+            if( Object.prototype.toString.call( val ) === '[object Array]' ) {
+                var strVal = val.join(",")
+            }
+            else {
+                var strVal = val
+            }
+            aliases[i][1] = strVal
+        }
 
-        // get the user-supplied aliases
-        $("ul#collection-list span.object-id").each(function(){
-           var thisAlias = [];
-           thisAlias[0] = $(this).find("span.namespace").text().split(':')[0]
-           thisAlias[1] = $(this).find("span.id").text()
-           aliases.push(thisAlias);
-        });
         return(aliases)
     }
 
     // creating a collection by submitting the object IDs from the homepage
     $("#id-form").submit(function(){
         var aliases = getAliases();
+        
 
         // make sure the user input something at all
         if (aliases.length == 0) {
@@ -329,7 +336,7 @@ $(document).ready(function(){
                             // we've created the items and the collection; our
                             // work here is done.
                             console.log(returnedCollection)
-                            location.href="./collection/" +returnedCollection.id;
+                            location.href="./" +returnedCollection.id;
                         }
                     });
                 }
