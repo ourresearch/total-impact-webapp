@@ -122,18 +122,8 @@ function getNewItemsAndUpdateReport() {
                 var genre = data[i].biblio.genre
                 var genreItems = "div." + genre + " ul#items"
                 $(genreItems).append(renderItem(data[i]))
+                $("div." + genre).show()  // would ideally only do this once
             }
-
-            // hide the empty genres
-            for (i in $("div.genre")) {
-                var genre_classes = $("div.genre")[i].classList
-                if (typeof genre_classes != "undefined") {
-                    if ($("div." + genre + " li").length < 1) {
-                        $("div." + genre).hide()
-                    }
-                }
-            }
-
         }
     });
 }
