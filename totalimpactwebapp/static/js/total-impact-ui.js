@@ -190,6 +190,7 @@ $(document).ready(function(){
         
         // how many items are in the new collection now?
         $("#artcounter span.count").html(newCollectionIds.length);
+        $(this).after("<span class='added'><span class='count'>"+newIds.length+"</span> added</span>")
         return true;
         
     })
