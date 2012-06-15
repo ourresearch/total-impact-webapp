@@ -137,7 +137,7 @@ function pollApiAndUpdateCollection(interval, oldText, tries){
         tries++;
         if (tries > 10) {
             console.log("done with updating")
-            $("#metrics h2.updating").slideUp(500)
+            $("h2 img").hide()
             return false
         }
     }
@@ -326,7 +326,7 @@ $(document).ready(function(){
 
     // updating the collection from the report page
     $("#update-report-button").click(function(){
-        $("#metrics h2.updating").slideDown(500)
+        $("h2 img").show()
         $.ajax({
             url: 'http://total-impact-core.herokuapp.com/items',
             type: "POST",

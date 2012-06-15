@@ -14,7 +14,11 @@
     text-align:left;
     font-family: rockwell, georgia, serif;
     color: #fff;
+    float:left;
     margin-right:0;
+}
+#report h2 img {
+    margin-left:-32px;
 }
 #report h2 span.artifacts-count {
     font-size:16px;
@@ -35,79 +39,52 @@ div#report-info{
 
 div#report-button {
     float:right;
-    margin-top: -24px;
+    margin-top: 37px;
 }
-a.report-button  {
+span.report-button a  {
     margin-right: 5px;
     margin-bottom: 5px;
-    background: #555;
-    padding: 1px 3px;
-    -webkit-border-radius: 3px;    /* CSS3 rounded borders for Safari                    */
-    -moz-border-radius: 3px;       /* CSS3 rounded borders for Firefox                   */
-    text-shadow: 0 -1px 0px black;
-    border-radius: 3px;
+    background: #eee;
+    padding: 4px 11px;
+    -webkit-border-radius: 15px;    /* CSS3 rounded borders for Safari                    */
+    -moz-border-radius: 15px;       /* CSS3 rounded borders for Firefox                   */
+    text-shadow: 0 1px 0px #fff;
+    border-radius: 15px;
     text-decoration: none;
-    color: #eee;
+    color: #555;
     display: block;
-    height:1.3em;
-    padding-left:8px;
-    padding-right:8px;
     float:left;
-    background-image: -webkit-gradient(
-	linear,
-	bottom,
-	top,
-	color-stop(1, #222),
-	color-stop(1, #333)
-);
 }
-a.report-button:hover {
-    background: #999;
-    color:#fff;
-    text-shadow:none;
+span.report-button a.report-button-left{
+    margin-right:0;
+    padding-right: 5px;
+    -moz-border-radius-topright: 0;
+    -webkit-border-top-right-radius: 0;
+    -moz-border-radius-bottomright: 0;
+    -webkit-border-bottom-right-radius: 0;
+}
+span.report-button a.report-button-right{
+    margin-left:0;
+    padding-left:5px;
+    -moz-border-radius-topleft:0;
+    -webkit-border-top-left-radius: 0;
+    -moz-border-radius-bottomleft: 0;
+    -webkit-border-bottom-left-radius: 0;
+}
+a.report-button-full {
+    
+}
+
+span.report-button a:hover {
+    background: #aaa;
+    color:#000;
     text-decoration:none;
 }
 
 #share {
     float:right;
-    margin-top: -23px;
-}
-
-#permalink {
-    float:left;
-    margin-right: 25px;
-}
-#permalink  {
-    margin-top: 3px;
-    margin-right: 5px;
-    margin-bottom: 3px;
-    padding: 2px 3px;
-    border: 1px solid #CCC;
-    -webkit-border-radius: 3px;    /* CSS3 rounded borders for Safari                    */
-    -moz-border-radius: 3px;       /* CSS3 rounded borders for Firefox                   */
-    border-radius: 3px;
-    text-shadow: 1px 1px 0px #FFF;
-    font-size: 12px;
-    text-decoration: none;
-    color: #999;
-    background:#fff;
-}
-#permalink a#copy-permalink {
-    font-size: 75%;
-    cursor: pointer;
-    color:#999;
-    text-decoration: underline;
-}
-#permalink a#copy-permalink.hover {
-    color: #FF4E00;
-}
-#permalink a {
-    text-decoration: none;
-}
-#permalink span.label {
-    font-family:'Lobster Two';
-    font-style:italic;
-    color:#555;
+    margin: 42px 0 0 15px;
+    width: 80px;
 }
 
 
@@ -159,8 +136,8 @@ input.report {
 
 /** report printout ******************************************************/
 div#metrics {
-    margin-top:10px;
-    padding-top:0;
+    margin-top:7px;
+    padding-top:15px;
     background: none repeat scroll 0 0 #FFFFFF;
     border-top: 1px solid #ddd;
     float: left;
@@ -179,7 +156,7 @@ li.item {
     clear: left;
     list-style-type: none;
     margin: 0 auto 1em;
-    width: 1150px;
+    width: 1100px;
     min-height: 4em;
 }
 
@@ -200,37 +177,31 @@ li.item span.genre {
 }
 
 div.genre h3 {
-    font-family: "Lobster Two";
-    font-style:italic;
-    font-size:34px;
+    font-family: rockwell, georgia, serif;
+    font-size:35px;
     color:#555;
-    font-weight:normal;
-    margin:-40px 0 0 130px;
-    float:left;
-    background:url(./img/genre-tab-r.png) no-repeat top right;
-    padding: 0 24px 0 0;
+    font-weight:bold;
+    margin:20px 0 0 155px;
+    padding: 0 24px 10px 120px;
+    width: 1100px;
+    margin:0 auto;
 }
-div.genre h3 span {
-    background: url(./img/genre-tab.png) no-repeat top left;
-    padding: 0 0 0 30px;
-}
+
 
 div.genre {
     float:left;
     width:100%;
     padding:0 0 30px;
     background-color:#fff;
-    background-image:url(./img/genre-bg.png);
-    background-repeat: repeat-x;
-    background-position: left bottom;
-    border-bottom: 1px solid #ddd;
-    display:none; /* show() when items are added */
+    display:none /* show when items are added */
+}
+div.genre ul {
+    padding:0;
+    margin:0;
 }
 div.genre:first-child {
-    margin-top: -50px;
 }
 div.genre:first-child h3 {
-    margin-top: -40px;
     border-bottom:none;
 }
 div.genre:last-child {
