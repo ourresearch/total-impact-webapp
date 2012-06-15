@@ -102,4 +102,6 @@ span.added span.count {
     font-size: 30px;
     -moz-border-radius: 25px;
     -webkit-border-radius: 25px;
+    cursor: pointer;
 }
+
