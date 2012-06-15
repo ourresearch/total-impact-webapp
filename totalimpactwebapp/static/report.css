@@ -224,6 +224,7 @@ div.genre {
     background-repeat: repeat-x;
     background-position: left bottom;
     border-bottom: 1px solid #ddd;
+    display:none; /* show() when items are added */
 }
 div.genre:first-child {
     margin-top: -50px;
