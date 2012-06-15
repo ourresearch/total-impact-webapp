@@ -34,35 +34,12 @@ http://www.slideshare.net/phylogenomics/eisenall-hands
 <div id="pullers">
 <h3 clas="entry-method">...or pull object IDs from existing collections.</h3>
 <ul>
+
 <li>
-<a class="toggler" id="slideshare_toggler" >Slideshare accounts</a><br/>
-<div class="toggler_contents" id="slideshare_toggler_contents">
-<p class="prompt">http://www.slideshare.net/</p>
-<input id="slideshare_profile_input" name="slideshare_profile" type="text" size="20" value="cavlec"/>
-<button class="import-button" id="slideshare">Import</button>
-</div>
-</li>
-<li>
-<a class="toggler" id="dryad_toggler" >Dryad dataset authors</a><br/>
-<div class="toggler_contents" id="dryad_toggler_contents">
-<p class="prompt" title="Fill in the dc:contributor.author value in <em>Show Full Metadata</em> to retrieve a list of datasets">Dryad author name</p>
-<input id="dryad_author_input" name="dryad_author" type="text" size="20" value="Otto, Sarah P."/>
-<button class="import-button" id="dryad">Import</button>
-</div>
-</li>
-<li>
-<a class="toggler" id="github_users_toggler" >GitHub users</a><br/>
-<div class="toggler_contents" id="github_users_toggler_contents">
-<p class="prompt">https://github.com/</p>
-<input id="github_users_input" name="github_user" type="text" size="20" value="egonw"/>
-<button class="import-button" id="github">Import</button>
-</div>
-</li>
-<li>
-<a class="toggler" id="bibtex_toggler" >BibTeX importer</a><br/>
+<a class="toggler" id="bibtex_toggler" >BibTeX items</a><br/>
 <div class="toggler_contents" id="bibtex_toggler_contents">
-<p class="prompt" title="Paste in BibTeX contents: will try to look up DOIs">BibTeX items</p>
-<textarea id="bibtex_input" name="bibtex" type="text" cols="30" rows="8"> @article{neylon2009article,
+<p class="prompt" title="Paste in BibTeX contents: will try to look up DOIs">Paste in BibTeX contents: will try to look up DOIs</p>
+<textarea id="bibtex_input" name="bibtex" type="text" cols="40" rows="8"> @article{neylon2009article,
   title={Article-level metrics and the evolution of scientific impact},
   author={Neylon, C. and Wu, S.},
   journal={PLoS biology},
@@ -76,6 +53,34 @@ http://www.slideshare.net/phylogenomics/eisenall-hands
 <button class="import-button" id="bibtex">Import</button>
 </div>
 </li>
+
+<li>
+<a class="toggler" id="dryad_toggler" >Dryad datasets</a><br/>
+<div class="toggler_contents" id="dryad_toggler_contents">
+<p class="prompt" title="Fill in the dc:contributor.author value in <em>Show Full Metadata</em> to retrieve a list of datasets">Dryad author name</p>
+<input id="dryad_author_input" name="dryad_author" type="text" size="20" value="Otto, Sarah P."/>
+<button class="import-button" id="dryad">Import</button>
+</div>
+</li>
+
+<li>
+<a class="toggler" id="github_users_toggler" >GitHub repos</a><br/>
+<div class="toggler_contents" id="github_users_toggler_contents">
+<p class="prompt">GitHub username at https://github.com/...</p>
+<input id="github_users_input" name="github_user" type="text" size="20" value="egonw"/>
+<button class="import-button" id="github">Import</button>
+</div>
+</li>
+
+<li>
+<a class="toggler" id="slideshare_toggler" >Slideshare slides</a><br/>
+<div class="toggler_contents" id="slideshare_toggler_contents">
+<p class="prompt">Slideshare profile name at http://www.slideshare.net/...</p>
+<input id="slideshare_profile_input" name="slideshare_profile" type="text" size="20" value="cavlec"/>
+<button class="import-button" id="slideshare">Import</button>
+</div>
+</li>
+
 </ul>
 <div class="something-missing"><p>Something missing on import?<br/> See a list of <a href="./about#limitations">current limitations.</a> </p></div>
 </div>
