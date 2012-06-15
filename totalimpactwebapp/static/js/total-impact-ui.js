@@ -15,6 +15,7 @@ parseImporterArgs = function(argStr){
 
 // puts the textarea-entered ids in a format that addNewCollectionIds likes
 parseTextareaArtifacts = function(str) {
+    str = str + "\n"
     var ids = str.split("\n");
     var ret = [];
     for (i=0; i<ids.length; i++){
@@ -31,10 +32,14 @@ parseTextareaArtifacts = function(str) {
             }
         }
         else {
-            artifact.namespace = "unknown";
-            artifact.id = thisId;
+            if (thisId.length > 0) {
+                artifact[0] = "unknown"
+                artifact[1] = thisId
+            }
         }
-        ret.push(artifact);
+        if (typeof artifact[1] != "undefined") {
+            ret.push(artifact);
+        }
     }
     return ret;
 }
@@ -64,8 +69,16 @@ getLatestTs = function(metricSnaps) {
     return latestTs
 }
 
-function renderItem(item){
 
+function sortByMetricValueDesc(metric1, metric2){
+  if (metric1.value < metric2.value)
+     return 1;
+  if (metric1.value > metric2.value)
+    return -1;
+  return 0;
+}
+
+function renderItem(item){
     item.metricsArr = []
     for (metricName in item.metrics){
         thisMetric = item.metrics[metricName]
@@ -82,6 +95,8 @@ function renderItem(item){
             item.metricsArr.push(thisMetric)
         }
     }
+
+    item.metricsArr.sort(sortByMetricValueDesc)
     
     var url = (item.aliases.url) ?  item.aliases.url[0] : false
     var html$ = ich.item(item)
@@ -91,16 +106,11 @@ function renderItem(item){
     return html$
 }
 
-function updateReportWithNewItem(item) {
-    itemHtml$ = renderItem(item)
-    $("ul#items").replaceWith(itemHtml$)
-}
-
 function getNewItemsAndUpdateReport() {
     tiidsStr = tiids.join(",")
 
     $.ajax({
-        url: '/call_api/items/'+tiidsStr,
+        url: 'http://total-impact-core.herokuapp.com/items/'+tiidsStr,                        
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
@@ -110,8 +120,19 @@ function getNewItemsAndUpdateReport() {
                 // make the set of all newly-rendered items
                 // this is a very slow way to do this...should bundle together,
                 // then make one replace.
-                $("ul#items").append(renderItem(data[i]))
+                var genre = data[i].biblio.genre
+                var genreItems = "div." + genre + " ul#items"
+                $(genreItems).append(renderItem(data[i]))
             }
+
+            // hide the empty genres
+            for (i in $("div.genre")) {
+                var genre = $("div.genre")[i].classList[1]
+                if ($("div." + genre + " li").length < 1) {
+                    $("div." + genre).hide()
+                }
+            }
+
         }
     });
 }
@@ -216,7 +237,7 @@ $(document).ready(function(){
             var providerIdQuery = "?query=" + escape($this.val());
         }
         $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
-        $.get("../call_api/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+        $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
             console.log(response)
             addNewCollectionIds(response);
             $this.siblings().find("span.loading")
@@ -264,7 +285,7 @@ $(document).ready(function(){
         verb = (typeof verb == "undefined") ? "Updating" : verb
         var $waitMsg = $("<div class='loading'></div")
             .append("<h2><img src='./static/img/ajax-loader-rev.gif' />"+verb+" your report now.</h2>")
-            .append("<p>(Hang in there; it usually takes a few minutes...)</p>")
+            .append("<p>(Hang in there; it can take a few minutes...)</p>")
 
         TINY.box.show({
             html:$("<div>").append($waitMsg).html(),
@@ -302,7 +323,7 @@ $(document).ready(function(){
             // first we upload the new items and get tiids back.
             console.log("adding new items.")
             $.ajax({
-                url: '/call_api/items',
+                url: 'http://total-impact-core.herokuapp.com/items',                
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -310,13 +331,14 @@ $(document).ready(function(){
                 success: function(returnedTiids){
                     // make a new collection, populated by our freshly-minted tiids
                     console.log("items created. making collection.")
+                    showWaitBox()
                     var requestObj = {
                         title: $('#name').val(),
                         items: returnedTiids
                     }
 
                     $.ajax({
-                        url: '/call_api/collection',
+                        url: 'http://total-impact-core.herokuapp.com/collection',                        
                         type: "POST",
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
@@ -339,7 +361,7 @@ $(document).ready(function(){
     $("#update-report-button").click(function(){
         $("#metrics h2.updating").slideDown(500)
         $.ajax({
-            url: '/call_api/items',
+            url: 'http://total-impact-core.herokuapp.com/items',
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",

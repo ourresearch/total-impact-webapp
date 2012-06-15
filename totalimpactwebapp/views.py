@@ -27,7 +27,7 @@ def about():
 
     # get the static_meta info for each metric
     try:
-        r = requests.get('http://localhost:5001/provider')
+        r = requests.get('http://total-impact-core.herokuapp.com/provider')
         metadata = json.loads(r.text)
     except requests.ConnectionError:
         metadata = {}
@@ -44,7 +44,8 @@ def collection_create():
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
-    r = requests.get("http://" + os.environ["API_ROOT"] +'/collection/' + collection_id)
+    #r = requests.get("http://" + os.environ["API_ROOT"] +'/collection/' + collection_id)
+    r = requests.get("http://total-impact-core.herokuapp.com/collection/" + collection_id)    
     if r.status_code == 200:
         collection = json.loads(r.text)
         return render_template(
@@ -61,32 +62,4 @@ def get_github_commits():
     resp.mimetype = "application/json"
     return resp
 
-
-@app.route('/call_api/<path:api_base>',methods = ['GET', 'PUT', 'POST', 'DELETE'])
-def call_api(api_base):
-	api_url = "http://" + os.environ["API_ROOT"] +'/'+ api_base
-
-        # get the Requests http verb we'll use
-	api_method = getattr(requests, request.method.lower())
-
-        # read the headers we got from the client
-        headers = {}
-        for k, v in request.headers.iteritems():
-            headers[k] = v
-        
-        del headers["Host"] # hack; no idea why we need to do this, but is sure does break if we don't...
-
-        # use Requests to call the total-impact-core api, wherever it lives
-	api_response = api_method(
-            api_url,
-            params=request.args,
-            headers=headers,
-            data=request.data)
-
-        # pass the response we got from Requests back to our client
-        resp = make_response(api_response.text)
-        for k, v in api_response.headers.iteritems():
-            resp.headers.add(k, v)
-
-        return resp
 
