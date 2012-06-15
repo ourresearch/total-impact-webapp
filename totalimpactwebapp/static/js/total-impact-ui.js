@@ -1,7 +1,8 @@
 $.ajaxSetup ({
     cache: false
 });
-var ajax_load = "<img src='./static/img/ajax-loader.gif' alt='loading...' />";
+var ajaxLoadImg = "<img src='../static/img/ajax-loader.gif' alt='loading...' />";
+var newCollectionIds = []
 
 parseImporterArgs = function(argStr){
     var args = argStr.split('-');
@@ -12,12 +13,11 @@ parseImporterArgs = function(argStr){
     return urlArgs
 }
 
-// puts the textarea-entered ids in a format that addIdsToEditPane likes
+// puts the textarea-entered ids in a format that addNewCollectionIds likes
 parseTextareaArtifacts = function(str) {
-    str = str + "\n"
     var ids = str.split("\n");
     var ret = [];
-    for (i=0; i<ids.length-1; i++){
+    for (i=0; i<ids.length; i++){
         var artifact = [];
         var thisId = ids[i];
         if (thisId.indexOf(":") > 0) {
@@ -43,46 +43,6 @@ parseTextareaArtifacts = function(str) {
     return ret;
 }
 
-addIdsToEditPane = function(returnedIds){
-    if ($("#importers").width() > 340){
-        $("#pullers")
-            .animate({
-                "margin-top": 0,
-                left: 0
-            }, 1000)
-            .parent().siblings(" #edit-collection")
-            .animate({
-                width: "340px",
-                "padding-right": "40px"
-            }, 1000)
-            .siblings("#importers")
-            .animate({
-                width: "340px"
-            }, 1000, function(){
-                return addIdsToEditPane(returnedIds);
-            })
-    }
-    else {
-        var len = returnedIds.length
-        for (i=0; i<len; i++) {
-            var namespace = returnedIds[i][0]
-            var id = returnedIds[i][1];
-            returnedIds[i] = "<li><a class='remove' href='#'>remove</a><span class='object-id'>";
-            returnedIds[i] += "<span class='namespace'>"+namespace+": </span>";
-            returnedIds[i] += "<span class='id'>"+id+"</span></span></li>";
-        }
-        $("ul#collection-list").append(
-            $(returnedIds.join("")).hide().fadeIn(1000)
-        );
-        $("#artcounter")
-//            .css("background-color", "#b20")
-//            .animate({"background-color": "#eeeeee"}, 1000)
-            .find("span.count")
-            .text($("ul#collection-list li").size())
-        return true;
-    }
-
-}
 
 
 function renderItemBiblio(biblio, url) {
@@ -223,9 +183,6 @@ $(document).ready(function(){
         }
     });
     $('#about-metrics').hide();
-    
-    // show github commits in the footer
-    showCommits()
 
     // show/hide stuff
     $('#importers ul li')
@@ -241,96 +198,66 @@ $(document).ready(function(){
     });
 
 
-    // click to remove object IDs in the edit pane
-    $("ul#collection-list li").live("click", function(){
-        $(this).slideUp(250, function(){$(this).remove();} );
-        $("#artcounter span.count").text($("ul#collection-list li").size())
-        return false;
+    // use the textarea to paste ids. lots of duplicated code with below function...
+    $("#paste_input").blur(function(){
+        if (!$(this).val().trim()) {
+            console.log("fail")
+            return false;
+        }
+        newIds = parseTextareaArtifacts($(this).val());
+        $.merge(newCollectionIds, newIds)
+        
+        // how many items are in the new collection now?
+        $("#artcounter span.count").html(newCollectionIds.length);
+        $(this).after("<span class='added'><span class='count'>"+newIds.length+"</span> items added.</span>")
+        return true;
+        
     })
-    $("a#clear-artifacts").click(function(){
-        $("ul#collection-list").empty();
-        $("#artcounter span.count").text("0")
-        return false;
-    });
 
+    
 
-    // use importers to add objects to the edit pane
-    $("button.import-button").click(function(){
-        var $thisDiv = $(this).parent();
-        var idStrParts = $(this).attr("id").split('-');
+    // use importers to add objects pulled from member_items calls
+    $("#pullers input").add("#bibtex_input").blur(function(){
+        var idStrParts = $(this).attr("id").split('_');
         var providerName = idStrParts[0];
-
-        if ($thisDiv.find("#manual_input")[0]) { // there's a sibling textarea
-            console.log(parseTextareaArtifacts($thisDiv.find("textarea").val()))
-            addIdsToEditPane(parseTextareaArtifacts($thisDiv.find("textarea").val()));
+        $this = $(this)
+        console.log($this.val())
+        if (!$this.val().trim()) {
+            return false;
         }
-        else {
-            if ($thisDiv.find("textarea")[0]) { 
-                var providerTypeQuery = "&type=import"
-                var providerIdQuery = "?query=" + escape($thisDiv.find("textarea").val());
-            } else {
-                var providerTypeQuery = "&type=" + $(this).siblings("input").attr("name");
-                var providerIdQuery = "?query=" + escape($(this).siblings("input").val());
-            }
-            $(this).hide().after("<span class='loading'>"+ajax_load+" Loading...<span>");
-            $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){                                                
-                console.log(response)
-                addIdsToEditPane(response);
-                $thisDiv.find("span.loading")
-                    .empty()
-                    .append(
-                        $("<span class='response'><span class='count'>"+response.length+"</span> added</span>")
-                        .hide()
-                        .fadeIn(500, function(){
-                            $(this).delay(2000).fadeOut(500, function(){
-                                $(this)
-                                .parent()
-                                .siblings("button")
-                                .fadeIn(500)
-                                .siblings("span.loading")
-                                .remove()
 
-                            })
-                        })
-                    )
-            }, "json");
+        if (providerName == "bibtex") { // hack, should generalize for all textareas
+            var providerTypeQuery = "&type=import"
+            var providerIdQuery = "?query=" + escape($this.val());
+        } else {
+            var providerTypeQuery = "&type=" + $this.attr("name");
+            var providerIdQuery = "?query=" + escape($this.val());
         }
+        $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
+        $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+            console.log(response)
+            addNewCollectionIds(response);
+            $this.siblings().find("span.loading").remove()
+            // how many items are in the new collection now?
+            $("#artcounter span.count").html(newCollectionIds.length);
+            $(this).after("<span class='added'><span class='count'>"+newIds.length+"</span> items added.</span>")
+        
+        }, "json");
     });
 
 
-
-    // remove prepoluated values in form inputs
-    $("textarea").add("input").focus(function(){
-        if (this.defaultValue == this.value) {
-            this.value = "";
-        }
-    }).blur(function(){
-        if ($(this).val() == "") {
-            $(this).val(this.defaultValue);
-        }
-    })
 
     // dialog for supported IDs
-    $("div#manual-add p.prompt a").click(function(){
+    $("div#paste-ids legend a").click(function(){
         // get the contents
         TINY.box.show({url:'../static/whichartifacts.html'})
         return false;
     });
 
-    // scroll down to recently shared reports
-    $("#link-to-recently-shared").click(function(){
-        $("html, body").animate({scrollTop: $(document).height()}, 1000)
-            .find("#twitterfeed h4")
-            .css("cssText", "background: transparent !important")
-            .parent()
-            .css("background", "#933")
-            .animate({"background-color": "#eee"}, 1500, "linear")
-        return false;
-    });
 
     // table of contents
     if ($("#toc")[0]) {
-        $('#toc').tocBuilder({type: 'headings', startLevel: 2, endLevel: 2, backLinkText: 'back to contents'});
+        $('#toc').tocBuilder({type: 'headings', startLevel: 3, endLevel: 3, backLinkText: 'back to contents'});
     }
 
 
