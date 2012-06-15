@@ -7,38 +7,37 @@
 <h2 class="heading"><span class="wrapper">Collect your research objects</span></h2>
 <div id="input">
     <div class="wrapper">
-        <div id="manual-add">
-            <div id="paste-ids">
-                <legend for="paste_input" class="prompt" >Paste URLs, DOIs, or other <a target="_blank" href="./about/#whichartifacts">supported identifiers</a><span class="paren">(one per line)</span></legend>
-                <textarea rows="4" cols="40" id="paste_input" class="artifactList" ></textarea>
-            </div>
-            <div id="paste-bibtex">
-                <legend for="bibtex_input" class="prompt" title="Paste in BibTeX contents: will try to look up DOIs">Paste BibTeX items</legend>
-                <textarea id="bibtex_input" name="bibtex" type="text" cols="30" rows="4"></textarea>            </div>
-        </div>
-        <div id="pullers">
-            <ul>
-                <li>
-                    <div class="toggler_contents" id="slideshare_toggler_contents">
-                        <legend for="""slideshare_profile_input" class="prompt">Slideshare username</legend>
-                        <input id="slideshare_profile_input" name="slideshare_profile" type="text" size="20" />
-                    </div>
-                </li>
-                <li>
-                    <div class="toggler_contents" id="dryad_toggler_contents">
-                        <legend for="dryad_author_input" class="prompt" title="Fill in the dc:contributor.author value in <em>Show Full Metadata</em> to retrieve a list of datasets">Dryad author name</legend>
-                        <input id="dryad_author_input" name="dryad_author" type="text" size="20" />
-                    </div>
-                </li>
-                <li>
-                    <div class="toggler_contents" id="github_users_toggler_contents">
-                        <legend for="github_users_input" class="prompt">GitHub username</legend>
-                        <input id="github_users_input" name="github_user" type="text" size="20" />
-                    </div>
-                </li>
+        <ul id="manual-add">
+            <li id="paste-ids">
+            <legend for="paste_input" class="prompt" >Paste URLs, DOIs, or other <a target="_blank" href="./about/#whichartifacts">supported identifiers</a><span class="paren">(one per line)</span></legend>
+            <textarea rows="4" cols="40" id="paste_input" class="artifactList" ></textarea>
+            </li>
+            <li id="paste-bibtex">
+            <legend for="bibtex_input" class="prompt" title="Paste in BibTeX contents: will try to look up DOIs">Paste BibTeX items</legend>
+            <textarea id="bibtex_input" name="bibtex" type="text" cols="30" rows="4"></textarea>            
+            </li>
+        </ul>
+        <ul id="pullers">
+            <li>
+                <div class="toggler_contents" id="slideshare_toggler_contents">
+                    <legend for="""slideshare_profile_input" class="prompt">Slideshare username</legend>
+                    <input id="slideshare_profile_input" name="slideshare_profile" type="text" size="20" />
+                </div>
+            </li>
+            <li>
+                <div class="toggler_contents" id="dryad_toggler_contents">
+                    <legend for="dryad_author_input" class="prompt" title="Fill in the dc:contributor.author value in <em>Show Full Metadata</em> to retrieve a list of datasets">Dryad author name</legend>
+                    <input id="dryad_author_input" name="dryad_author" type="text" size="20" />
+                </div>
+            </li>
+            <li>
+                <div class="toggler_contents" id="github_users_toggler_contents">
+                    <legend for="github_users_input" class="prompt">GitHub username</legend>
+                    <input id="github_users_input" name="github_user" type="text" size="20" />
+                </div>
+            </li>
 
-            </ul>
-        </div>
+        </ul>
         <div id="create-button" class="inputcol">
             <form name="id_form" action="./fetch/" id="id-form">
                 <p id="artcounter">You're got <span class="count">0</span> objects in your collection.</p>
