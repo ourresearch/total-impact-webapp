@@ -12,7 +12,7 @@ logger = logging.getLogger("tiwebapp.views")
 # static pages
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html', body_class="homepage")
 
 @app.route('/about')
 def about(): 
@@ -37,6 +37,10 @@ def about():
         which_artifacts=which_artifacts,
         provider_metadata=metadata
         )
+
+@app.route('/collection/create')
+def collection_create():
+    return render_template('create-collection.html', body_class="create-collection")
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):

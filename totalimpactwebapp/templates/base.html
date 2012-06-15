@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Total Impact: uncover the invisible impact of reseach</title>
+        <title>total-impact: uncover the invisible impact of research</title>
         <meta name="description" content="Total Impact">
         <meta name="author" content="Total Impact">
 
@@ -13,7 +13,7 @@
 
         <link href='http://fonts.googleapis.com/css?family=Lobster+Two:400italic' rel='stylesheet' type='text/css' />
         <link rel="stylesheet" type="text/css" href="/static/main.css" />
-        <link rel="stylesheet" type="text/css" href="/static/homepage.css" />
+        <link rel="stylesheet" type="text/css" href="/static/create-collection.css" />
         <link rel="stylesheet" type="text/css" href="/static/report.css" />
         <link rel="icon" type="image/ico" href="/static/img/favicon.ico" />
 
@@ -43,153 +43,106 @@
         </script>
     </head>
 
-    <body>
-        
-	<div id="header">
-            <h1 id="blog-title"><span class="main"><a href="/">total-impact</a></span></h1>
-            <ul id="nav">
-                <li><a href="http://twitter.com/#!/totalImpactdev">twitter</a></li>
-                <li><a href="http://total-impact.tumblr.com/">blog</a></li>
-                <li><a href="/about">about</a></li>
-            </ul>
-	</div><!--  #header -->
-        
+    <body class="{{ body_class|default('default') }}">
+
+        <div id="header">
+            <div class="wrapper">
+                <h1 id="blog-title"><span class="main"><a href="/">total-impact</a></span></h1>
+                <ul id="nav">
+                    <li><a href="/about">about</a></li>
+                    <li><a href="http://total-impact.tumblr.com">blog</a></li>                    
+                    <li><a href="http://twitter.com/#!/totalImpactdev">twitter</a></li>
+                    <li><a href="mailto:totalimpactdev@gmail.com">contact</a>
+                </ul>
+            </div>
+        </div><!--  #header -->
+
 
         {% block content %}{% endblock %}
 
-
         <div id="footer">
             <div class="wrapper">
-                <div id="twitterfeed" class="footercol">
-
-                    <!--<h2 class="grey" id="recent">Recent reports</h2>-->
-                    <!-- https://twitter.com/about/resources/widgets/widget_search -->
-
-                    <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-                    <script>
-                        new TWTR.Widget({
-                            version: 2,
-                            type: 'search',
-                            search: 'via @mytotalImpact',
-                            interval: 30000,
-                            subject: 'Latest tweeted reports:',
-                            width: "100%",
-                            height: 250,
-                            theme: {
-                                shell: {
-                                    background: '#eeeeee',
-                                    color: '#000'
-                                },
-                                tweets: {
-                                    background: '#eeeeee',
-                                    color: '#000',
-                                    links: '#b20'
-                                }
-                            },
-                            features: {
-                                scrollbar: true,
-                                loop: false,
-                                live: true,
-                                hashtags: true,
-                                timestamp: true,
-                                avatars: true,
-                                toptweets: true,
-                                behavior: 'all'
-                            }
-                        }).render().start();
-                    </script>
-                </div>
-                <div class="recent-changes footercol">
-                    <h4>Latest changes on <a href="https://github.com/total-impact">GitHub</a></h4>
-                    <!-- put commits here with js -->
-                </div>
-                <div class="altmetrics footercol">
-
-                    total-impact is an <a class="img" href="http://altmetrics.org" title="an altmetrics project"><img id="altmetrics-logo" src="{{ url_for('static', filename='img/altmetrics_logo.png') }}" alt="altmetrics" width="80"/></a> project, supported by:
-                    <ul>
-                        <li><a class="img" href="http://sloan.org/"><img src="{{ url_for('static', filename='img/sloan-logo.jpg') }}" width="80"/></a></li>
-                        <li><a class="img" href="http://www.nsf.gov/"><img src="{{ url_for('static', filename='img/nsf-logo.gif') }}"  width="80"/></a></li>
-                        <li><a class="img" href="http://www.dataone.org/"><img src="{{ url_for('static', filename='img/DataONE_LOGO.jpg') }}"  width="80"/></a></li>
-                        <li><a class="img" href="http://www.soros.org/"><img src="{{ url_for('static', filename='img/OSF_logo.jpg') }}" width="80"/></a></li>
-                        <li><a href="http://gradschool.unc.edu/programs/royster">Royster Society of Fellows</a></li>
-                    </ul>
-
+                <a href="http://sloan.org/"><img src="{{ url_for('static', filename='img/sloan-logo.jpg') }}" width="200"/></a>
+                <div id="footer-text"> 
+                    <p>total-impact is supported by the <a href="http://sloan.org/">Alfred P. Sloan Foundation</a> and <a href="about#funding">others. </a></p>
+                    <p>Follow us on <a href="http://total-impact.tumblr.com">Tumblr</a>, <a href="https://twitter.com/#!/totalimpactdev">Twitter</a>, or <a href="https://github.com/total-impact">GitHub</a>.
                 </div>
             </div>
-        </div> <!-- end footer -->
+        </div>
+    </div> <!-- end footer -->
 
 
-        {% raw %}
-        <div id="templates">
-            <!-- These templates are for rendering items with javascript using
-            Mustache -->
-            
-            
-            
-            
-            
-            <script id="title" class="partial" type="text/html">
-                <h5>
-                    {{#url}}
-                    <a class="url title" href="{{ url }}">{{ title }}</a>
-                    {{/url}}
-                    {{^url}}
-                    {{ title }}
-                    {{/url}}
-                </h5>
-            </script>
+    {% raw %}
+    <div id="templates">
+        <!-- These templates are for rendering items with javascript using
+        Mustache -->
 
-            <script id="biblio_dataset" type="text/html">
-                {{#year}}
-                <span class="year">{{ year }}</span>
-                {{/year}}
-                {{>title}}
-                <span class="repo">{{ repository }}</span>
-            </script>
-            <script id="biblio_article" type="text/html">
-                <span class="authors">{{ authors }}</span>
-                {{#year}}
-                <span class="year">{{ year }}</span>
-                {{/year}}
-                {{>title}}
-                <span class="repo">{{ journal }}</span>
-            </script>
-            <script id="biblio_webpage" type="text/html">
-                {{>title}}
-            </script>
-            <script id="biblio_slides" type="text/html">
-                {{>title}}
-                <span class="repo">Slideshare</span>
-            </script>
-            <script id="biblio_software" type="text/html">
-                <span class="year">{{ year }}</span>
-                {{>title}}
-                <span class="descr">{{ description }}</span>
-                <span class="repo">GitHub</span>
-            </script>
-            <script id="biblio_unknown" type="text/html">
-                {{>title}}
-            </script>
 
-            <script id="item" type="text/html">
-                <li class="item" id="{{ id }}">
-                    <div class="biblio"></div>
-                    <ul class="metrics">{{#metricsArr}}
-                        <li>
-                            <a href="{{provenance_url}}">
-                                <span class="last-update">{{ ts }}</span>
-                                <span class="metric-value">{{ value }}</span>
-                                <span class="metric-name-img">
-                                    <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
-                                    <span class="metric-name">{{ static_meta.provider }} {{ static_meta.display_name }}</span>
-                                </span>
-                            </a>
-                        </li>
-                        {{/metricsArr}}</ul>
-                </li>
-            </script>
-            
-            <script id="commits_template" type="text/html">
+
+
+
+        <script id="title" class="partial" type="text/html">
+            <h5>
+                {{#url}}
+                <a class="url title" href="{{ url }}">{{ title }}</a>
+                {{/url}}
+                {{^url}}
+                {{ title }}
+                {{/url}}
+            </h5>
+        </script>
+
+        <script id="biblio_dataset" type="text/html">
+            {{#year}}
+            <span class="year">{{ year }}</span>
+            {{/year}}
+            {{>title}}
+            <span class="repo">{{ repository }}</span>
+        </script>
+        <script id="biblio_article" type="text/html">
+            <span class="authors">{{ authors }}</span>
+            {{#year}}
+            <span class="year">{{ year }}</span>
+            {{/year}}
+            {{>title}}
+            <span class="repo">{{ journal }}</span>
+        </script>
+        <script id="biblio_webpage" type="text/html">
+            {{>title}}
+        </script>
+        <script id="biblio_slides" type="text/html">
+            {{>title}}
+            <span class="repo">Slideshare</span>
+        </script>
+        <script id="biblio_software" type="text/html">
+            <span class="year">{{ year }}</span>
+            {{>title}}
+            <span class="descr">{{ description }}</span>
+            <span class="repo">GitHub</span>
+        </script>
+        <script id="biblio_unknown" type="text/html">
+            {{>title}}
+        </script>
+
+        <script id="item" type="text/html">
+            <li class="item" id="{{ id }}">
+                <div class="biblio"></div>
+                <ul class="metrics">{{#metricsArr}}
+                    <li>
+                        <a href="{{provenance_url}}">
+                            <span class="last-update">{{ ts }}</span>
+                            <span class="metric-value">{{ value }}</span>
+                            <span class="metric-name-img">
+                                <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
+                                <span class="metric-name">{{ static_meta.provider }} {{ static_meta.display_name }}</span>
+                            </span>
+                        </a>
+                    </li>
+                    {{/metricsArr}}</ul>
+            </li>
+        </script>
+
+        <script id="commits_template" type="text/html">
             <ul> {{#commits}}
                 <li>
                     <img src="{{ img }}" width="24" height="24">
@@ -197,9 +150,9 @@
                     <span class="message">{{ message }}</span>
                 </li>
                 {{/commits}}</ul>
-            </script>
-            
-        </div>
-        {% endraw %}    
-    </body>
+        </script>
+
+    </div>
+    {% endraw %}    
+</body>
 </html>
