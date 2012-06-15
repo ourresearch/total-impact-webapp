@@ -1,0 +1,106 @@
+body.create-collection {
+}
+body.create-collection #header {
+}
+div#input {
+/*    background: url(./img/lightpaperfibers.png);*/
+    background: #fff;
+    padding: 50px 0 150px;
+    color: #333;
+    font-weight: bold;
+    box-shadow: 0px 3px 16px -3px #333;
+}
+div#input textarea, div#input input{
+    width: 400px;
+    border: 2px solid #aaa;
+    color: #555;
+    font-size: 20px;
+    float:left;
+    margin-right: 10px;
+}
+
+div#input textarea:focus, div#input input:focus{
+/*    border-color: #ff4e00;*/
+}
+#input ul {
+    padding-left:0;
+}
+#input ul li {
+    list-style-type: none;
+    clear:both;
+}
+
+
+div#input legend {
+    width: 300px;
+    float:left;
+    clear:left;
+    font-size: 20px;
+    text-align: right;
+    padding: .2em 20px 0 0;
+    line-height: 1.3;
+}
+div#input legend a {
+    color: #ff4e00;
+    text-decoration: none;
+    border-bottom: 2px dotted #ff4e00;
+}
+div#input legend a:hover {
+    border-bottom:2px solid #ff4e00;
+}
+div#input span.paren {
+    display:block;
+}
+
+ul#pullers {
+    float: left;
+    clear:both;
+    padding-top: 30px;
+}
+
+
+/* go-button section */
+p#artcounter {
+    font-size: 20px;
+    margin:0 0 10px 325px;
+    font-weight: normal;
+}
+p#artcounter span.count{
+    font-size: 28px;
+    color: #ff4e00;
+    font-weight: bold;
+}
+div#create-button {
+    padding-top: 50px;
+    clear:both;
+}
+div#create-button legend, div#create-button input {
+    font-size:30px;
+    font-weight: bold;
+}
+div#create-button input {
+    font-weight: normal;
+    width: 280px;
+    float:left;
+    margin-right: 10px
+}
+span.added {
+    display:block;
+    font-size: 20px;
+    font-weight: normal;
+    color: #555;
+    padding-top: .2em;
+}
+span.added span.count {
+    font-weight: bold;
+}
+#go-button {
+    width: 100px;
+    background: #ff4e00;
+    color: #fff;
+    font-weight: bold;
+    border:none;
+    font-size: 30px;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 25px;
+}
