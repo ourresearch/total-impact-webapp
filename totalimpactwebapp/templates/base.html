@@ -13,7 +13,7 @@
 
         <link href='http://fonts.googleapis.com/css?family=Lobster+Two:400italic' rel='stylesheet' type='text/css' />
         <link rel="stylesheet" type="text/css" href="/static/main.css" />
-        <link rel="stylesheet" type="text/css" href="/static/homepage.css" />
+        <link rel="stylesheet" type="text/css" href="/static/create-collection.css" />
         <link rel="stylesheet" type="text/css" href="/static/report.css" />
         <link rel="icon" type="image/ico" href="/static/favicon.ico" />
 
@@ -43,15 +43,17 @@
         </script>
     </head>
 
-    <body>
+    <body class="{{ body_class|default('default') }}">
 
         <div id="header">
-            <h1 id="blog-title"><span class="main"><a href="/">total-impact</a></span></h1>
-            <ul id="nav">
-                <li><a href="/about">about</a></li>
-                <li><a href="http://twitter.com/#!/totalImpactdev">follow</a></li>
-                <li><a href="mailto:totalimpactdev@gmail.com">contact</a>
-            </ul>
+            <div class="wrapper">
+                <h1 id="blog-title"><span class="main"><a href="/">total-impact</a></span></h1>
+                <ul id="nav">
+                    <li><a href="/about">about</a></li>
+                    <li><a href="http://twitter.com/#!/totalImpactdev">follow</a></li>
+                    <li><a href="mailto:totalimpactdev@gmail.com">contact</a>
+                </ul>
+            </div>
         </div><!--  #header -->
 
 
