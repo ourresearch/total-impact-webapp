@@ -56,7 +56,9 @@ div#tooltip p, div#tooltip div, div#tooltip h3 {
     padding:0;
 }
 
-
+p, ul {
+    line-height: 1.5;
+}
 
 
 
@@ -170,6 +172,7 @@ div#tagline {
 
 div#tagline p{
     font-size: 18px;
+    line-height: 1.2;
 }
 div#tagline p a {
     color: #fff;
@@ -237,7 +240,7 @@ div#selling-points{
 div#selling-points p {
     margin-bottom:0;
     color: #bbb;
-    line-height: 1.2;
+    line-height: 1.4;
 }
 
 #selling-points ul li {
