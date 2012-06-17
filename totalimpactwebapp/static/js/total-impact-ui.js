@@ -120,7 +120,7 @@ createCollectionInit = function(){
             var idStrParts = $(this).attr("id").split('_');
             var providerName = idStrParts[0];
 
-            if (providerName == "bibtex") { // hack, should generalize for all textareas
+            if ((providerName == "bibtex") || (providerName == "crossref")) { // hack, should generalize for all textareas
                 var providerTypeQuery = "&type=import"
                 var providerIdQuery = "?query=" + escape($this.val());
             } else {
