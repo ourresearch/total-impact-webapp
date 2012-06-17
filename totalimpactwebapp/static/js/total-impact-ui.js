@@ -1,7 +1,7 @@
 $.ajaxSetup ({
     cache: false
 });
-var ajaxLoadImg = "<img src='../static/img/ajax-loader.gif' alt='loading...' />";
+var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
 var collectionIds = []
 var currentUserInputValue = ""
 

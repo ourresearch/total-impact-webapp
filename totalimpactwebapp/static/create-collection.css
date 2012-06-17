@@ -56,7 +56,9 @@ ul#pullers {
     padding-top: 30px;
     width: 100%;
 }
-
+img.loading {
+    height: 26px;
+}
 
 /* go-button section */
 p#artcounter {
