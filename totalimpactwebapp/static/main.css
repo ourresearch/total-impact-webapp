@@ -354,7 +354,70 @@ body#about h3 {
 }
 
 
+/* "api" page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
 
+table {
+    border-collapse: collapse;
+    padding:2px;
+    border-color: #ccc;
+    width: 700px;
+}
+td {
+    padding: 3px 8px;
+    border:1px solid #ccc;
+    border-left:none;
+    border-right:none;
+}
+th {
+    background: #FF4E00;
+    color:#fff;
+    border:none;
+}
+
+
+
+
+div#api{
+    margin-top: 120px;
+}
+#toc {
+    border: 1px solid #333333;
+    float: right;
+    margin: 16px 21px 12px;
+    padding: 16px;
+    text-align: left;
+    -webkit-border-radius: 4px;    /* CSS3 rounded borders for Safari      */
+    -moz-border-radius: 4px;       /* CSS3 rounded borders for Firefox   */
+}
+
+a.tocBackLink {
+    text-align: right;
+    font-size: 10px;
+    font-weight: normal;
+    margin-left: 10px;
+}
+.apicall {
+    margin-top: 40px;
+    font-family:consolas;
+}
+.apireturn {
+    white-space: normal !important;
+    font-family:consolas;
+}
+
+#docs {
+    margin-top: 100px;
+    background: #fff;
+    border-top: 3px solid #FF4E00;
+    padding-bottom: 50px;
+}
+
+.description {
+    margin-left: 50px;
+}
 
 /* footer
 *****************************************************************************

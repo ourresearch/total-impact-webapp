@@ -38,6 +38,10 @@ def about():
         provider_metadata=metadata
         )
 
+@app.route('/api-docs')
+def apidocs(): 
+    return render_template('api-docs.html')
+
 @app.route('/collection/create')
 def collection_create():
     return render_template('create-collection.html', body_class="create-collection")
