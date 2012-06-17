@@ -12,6 +12,11 @@
             <legend for="paste_input" class="prompt" >Paste URLs, DOIs, or other <a target="_blank" href="./about/#whichartifacts">supported identifiers</a><span class="paren">(one per line)</span></legend>
             <textarea rows="4" cols="40" id="paste_input" class="artifactList" ></textarea>
             </li>
+            <li id="paste-crossref">
+            <legend for="crossref_input" class="prompt" title="Paste in author and titles: will try to look up DOIs">FirstAuthor|Title</legend>
+            <textarea id="crossref_input" name="crossref" type="text" cols="30" rows="4"></textarea>            
+            </li>
+            </li>
             <li id="paste-bibtex">
             <legend for="bibtex_input" class="prompt" title="Paste in BibTeX contents: will try to look up DOIs">Paste BibTeX items</legend>
             <textarea id="bibtex_input" name="bibtex" type="text" cols="30" rows="4"></textarea>            
