@@ -57,7 +57,8 @@ div#tooltip p, div#tooltip div, div#tooltip h3 {
 }
 
 p, ul {
-    line-height: 1.5;
+    line-height: 1.4;
+    font-size: 18px;
 }
 
 
@@ -156,6 +157,17 @@ h2 {
 
 div.main {
     box-shadow: 0px 3px 16px -3px #333;
+    background: #fff;
+    padding-top: 30px;
+    font-size: 18px;
+    padding-bottom: 50px;
+    color: #333;
+}
+div.main p {
+}
+div.main h3:first {
+    margin-top: 0;
+    
 }
 
 /* homepage
@@ -232,7 +244,7 @@ a#create-collection {
 div#selling-points{
     background:#333;
     padding: 30px 0;
-    min-height: 250px;
+    min-height: 275px;
     border-top: 1px solid #000;
     background:url(img/noise.jpg);
 }
@@ -297,7 +309,7 @@ div.loading img {
 
 
 
-/* "about" page
+/* "faq" page
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
@@ -339,9 +351,6 @@ ul#providers-metadata li img {
     margin-bottom: -.2em;
 }
 
-div#about{
-    margin-top: 120px;
-}
 #toc {
     border: 1px solid #333333;
     line-height: 1.5;
@@ -354,11 +363,31 @@ div#about{
 }
 
 
-body#about h3 {
-    margin-top: 40px;
+
+
+/* "about" page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+
+div#about img {
+    float:left;
+    margin:5px 15px 10px 0;
+    border:1px solid #555;
 }
-body#about h3:first {
-    margin-top:0;
+div#about p {
+    margin-top: 0;
+    margin-bottom: .5em;
+}
+div#about h3 {
+    margin-top: 50px;
+    font-family:Rockwell, Georgia, serif;
+    color: #555;
+    margin-bottom: 10px;
+    font-size: 30px;
+}
+div#about div.team-member.second {
+    margin-top: 50px;
 }
 
 
