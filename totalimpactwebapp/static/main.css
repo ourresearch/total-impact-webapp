@@ -148,7 +148,8 @@ h2 {
     margin:0;
     padding-top: 20px;
     float:none;
-    background: #ff4e00;
+    background-color: #ff4e00;
+    background: url(img/h2-bg.png) bottom  left repeat-x;
 }
 
 /* homepage
@@ -160,7 +161,9 @@ h2 {
 div#tagline {
     color:#fff;
     margin-top:30px;
+    background:url(img/tagline-bg.png) bottom left repeat-x;
 }
+
 div#tagline p{
     font-size: 18px;
 }
@@ -180,6 +183,9 @@ div#tagline p a:hover {
     font-weight: bold;
     margin-bottom:0;
     line-height: .8;
+    background: transparent;
+    text-shadow: 1px 2px 5px #631c00;
+
 }
 #tagline div.text {
     width:600px;
@@ -191,15 +197,11 @@ div#tagline p a:hover {
     margin-bottom: -27px;
 }
 a#create-collection {
-    color: #fff;
-    font-size: 25px;
-    font-family:Rockwell, georgia, serif;
-    background: #18698d;
-    padding:.3em 1em;
+    background: url(img/call-to-action-button.png) no-repeat;
+    height:60px;
+    width:330px;
     display: block;
-    width:12em;
-    -webkit-border-radius: 40px;    /* CSS3 rounded borders for Safari      */
-    -moz-border-radius: 40px;       /* CSS3 rounded borders for Firefox   */
+    text-indent: -999999px;       /* CSS3 rounded borders for Firefox   */
 }
 
 #call-to-action {
@@ -225,6 +227,7 @@ div#selling-points{
     padding: 30px 0;
     min-height: 250px;
     border-top: 1px solid #000;
+    background:url(img/noise.jpg);
 }
 
 div#selling-points p {
@@ -312,10 +315,9 @@ th {
 #faq div.wrapper{
 }
 #faq {
-    margin-top: 100px;
     background: #fff;
-    border-top: 3px solid #FF4E00;
     padding-bottom: 50px;
+    padding-top: 40px;
 }
 
 ul#providers-metadata > li {
@@ -335,6 +337,7 @@ div#about{
 }
 #toc {
     border: 1px solid #333333;
+    line-height: 1.5;
     float: right;
     margin: 16px 21px 12px;
     padding: 16px;
@@ -344,6 +347,8 @@ div#about{
 }
 
 a.tocBackLink {
+    /* can also be deactivated in the plugin call... */
+    display: none;
     text-align: right;
     font-size: 10px;
     font-weight: normal;
@@ -351,6 +356,9 @@ a.tocBackLink {
 }
 body#about h3 {
     margin-top: 40px;
+}
+body#about h3:first {
+    margin-top:0;
 }
 
 
@@ -431,7 +439,7 @@ div#footer {
     padding-top: 50px;
 }
 body.homepage div#footer {
-    background:#333;
+    background:url(img/noise.jpg);
     
 }
 div#footer div.wrapper{
