@@ -4,7 +4,7 @@
 
 <div id="docs">
 
-<h2><span class="wrapper">docs api</span></h2>
+<h2><span class="wrapper">api docs</span></h2>
 
 <div id="toc"></div>
 
@@ -54,7 +54,6 @@ Connection: keep-alive
 
 <h3 class="apicall">POST /tiid/:namespace/:namespaceid</h3>
 <div class="description">
-
     Assign a total-impact ID (tiid) to an item if it doesn't have one yet.  Returns the assigned tiid.
 
     <h4>returns</h4>
@@ -82,7 +81,6 @@ Connection: keep-alive
 
 <h3 class="apicall">GET /tiid/:namespace/:namespaceid</h3>
 <div class="description">
-
     Get the total-impact ID (tiid) of an item. 
 
     <h4>returns</h4>
@@ -448,8 +446,8 @@ Connection: keep-alive
 </div>
 
 <h3 class="apicall">GET /items/[:tiid1, :tiid2, ...].csv</h3>
-Get the metrics for a list of items in csv format, given total-impact IDs (tiids).
 <div class="description">
+    Get the metrics for a list of items in csv format, given total-impact IDs (tiids).
     <h4>returns</h4>
         Metrics values in comma separated format.
 
@@ -482,9 +480,8 @@ ec698118b33311e1bfcd12313d2a0ee9,,,,2,16,1,,,,,,,,,,,,,,26,285,
 </div>
 
 <h3 class="apicall">POST /collection</h3>
-Create a collection given a list of total-impact IDs.
 <div class="description">
-    Get the metrics for a list of items, given total-impact IDs (tiids).
+    Create a collection given a list of total-impact IDs.
 
     <h4>input data</h4>
         {
@@ -531,8 +528,9 @@ Connection: keep-alive
 </div>
 
 <h3 class="apicall">GET /collection:collectionId</h3>
-Get the tiids in a collection, given a collection id
 <div class="description">
+    Get the tiids in a collection, given a collection id
+    
     <h4>returns</h4>
         A collection object.
 
@@ -575,6 +573,7 @@ Connection: keep-alive
 <h3 class="apicall">GET /provider</h3>
 Get all metadata for the providers.
 <div class="description">
+    
     <h4>returns</h4>
         A list of metrics objects.
 
