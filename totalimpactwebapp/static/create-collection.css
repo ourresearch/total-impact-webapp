@@ -8,7 +8,6 @@ div#input {
     padding: 50px 0 150px;
     color: #333;
     font-weight: bold;
-    box-shadow: 0px 3px 16px -3px #333;
 }
 div#input textarea, div#input input{
     width: 400px;
