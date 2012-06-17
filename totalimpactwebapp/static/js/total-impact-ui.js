@@ -2,7 +2,8 @@ $.ajaxSetup ({
     cache: false
 });
 var ajaxLoadImg = "<img src='../static/img/ajax-loader.gif' alt='loading...' />";
-var newCollectionIds = []
+var collectionIds = []
+var currentUserInputValue = ""
 
 /*****************************************************************************
  * create collection page
@@ -26,13 +27,14 @@ flatten = function(idsArr) {
     return(aliases)
 }
 
-addCollectionIds = function(idsArr) {
-    newIds = flatten(idsArr);
+addCollectionIds = function(idsArr, $this) {
+    var startingCollectionLength = collectionIds.length
+    var newIds = flatten(idsArr);
     
     // make an object with the unique key values
     var uniqueNamespaceIdPairs = {}
-    for  (var i=0; i<newCollectionIds.length; i++){
-        var namespaceIdPair = newCollectionIds[i].join(":")
+    for  (var i=0; i<collectionIds.length; i++){
+        var namespaceIdPair = collectionIds[i].join(":")
         uniqueNamespaceIdPairs[namespaceIdPair] = 1
     }
     console.log(uniqueNamespaceIdPairs)
@@ -40,12 +42,29 @@ addCollectionIds = function(idsArr) {
     for (var i=0; i < newIds.length; i++){
         var newNamespaceIdPair = newIds[i].join(":")
         if (!uniqueNamespaceIdPairs[newNamespaceIdPair]) {
-            newCollectionIds.push(newIds[i])
+            collectionIds.push(newIds[i])
         }
     }
+    $("span.loading").remove()
+    
+    // how many items are in the new collection now?
+    var endingCollectionLength = collectionIds.length;
+    numIdsAdded = endingCollectionLength - startingCollectionLength;
+    $("#artcounter span.count").html(endingCollectionLength);
+    if (numIdsAdded) {
+        $this.siblings("span.added").remove()
+        $this.after("<span class='added'><span class='count'>"+numIdsAdded+"</span> items added.</span>")
+        $this.siblings("span.added")
+            .find("span.count")
+                .css({color: "#ff4e00"})
+                .animate({color: "#555555"}, 1000)
+        
+    }
+    return true;
+
 }
 
-// puts the textarea-entered ids in a format that addNewCollectionIds likes
+// puts the textarea-entered ids in a format that addcollectionIds likes
 parseTextareaArtifacts = function(str) {
     var ids = str.split("\n");
     var ret = [];
@@ -74,59 +93,54 @@ parseTextareaArtifacts = function(str) {
     }
     return ret;
 }
+userInputHandler = function($this, prevValue) {
+    $this.blur(function(){
+
+
+    });    
+    
+}
 
 createCollectionInit = function(){
-    // use the textarea to paste ids. lots of duplicated code with below function...
-    $("#paste_input").blur(function(){
-        if (!$(this).val().trim()) {
-            console.log("fail")
-            return false;
-        }
-        newIds = parseTextareaArtifacts($(this).val());
-        addCollectionIds(newIds)
-        
-        // how many items are in the new collection now?
-        $("#artcounter span.count").html(newCollectionIds.length);
-        $(this).after("<span class='added'><span class='count'>"+newIds.length+"</span> items added.</span>")
-        return true;
-        
+    
+    $("li input, li textarea")
+    .focus(function(){
+        currentUserInputValue = $(this).val();
     })
-
-    // use importers to add objects pulled from member_items calls
-    $("#pullers input").add("#bibtex_input").blur(function(){
-        var idStrParts = $(this).attr("id").split('_');
-        var providerName = idStrParts[0];
+    .blur(function(){
         $this = $(this)
-        console.log($this.val())
-        if (!$this.val().trim()) {
+        if ($this.val() == currentUserInputValue) {
             return false;
         }
-
-        if (providerName == "bibtex") { // hack, should generalize for all textareas
-            var providerTypeQuery = "&type=import"
-            var providerIdQuery = "?query=" + escape($this.val());
-        } else {
-            var providerTypeQuery = "&type=" + $this.attr("name");
-            var providerIdQuery = "?query=" + escape($this.val());
+        if ($this.attr("id") == "paste_input") {
+            newIds = parseTextareaArtifacts($(this).val());
+            addCollectionIds(newIds, $(this))
         }
-        $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
-        $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
-            console.log(response)
-            addCollectionIds(response)
-            $("span.loading").remove()
-            // how many items are in the new collection now?
-            $("#artcounter span.count").html(newCollectionIds.length);
-            $this.after("<span class='added'><span class='count'>"+response.length+"</span> items added.</span>")
-        
-        }, "json");
-    });    
+        else {
+            var idStrParts = $(this).attr("id").split('_');
+            var providerName = idStrParts[0];
+
+            if (providerName == "bibtex") { // hack, should generalize for all textareas
+                var providerTypeQuery = "&type=import"
+                var providerIdQuery = "?query=" + escape($this.val());
+            } else {
+                var providerTypeQuery = "&type=" + $this.attr("name");
+                var providerIdQuery = "?query=" + escape($this.val());
+            }
+            $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
+            $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+                addCollectionIds(response, $this)
+            }, "json");
+            
+        }        
+    })
 
 
     // creating a collection by submitting the object IDs from the homepage
     $("#id-form").submit(function(){
 
         // make sure the user input something at all
-        if (newCollectionIds.length == 0) {
+        if (collectionIds.length == 0) {
             alert("Looks like you haven't added any research objects to the collection yet.")
             return false;
 
@@ -141,7 +155,7 @@ createCollectionInit = function(){
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(newCollectionIds),
+                data: JSON.stringify(collectionIds),
                 success: function(returnedTiids){
                     // make a new collection, populated by our freshly-minted tiids
                     console.log("items created. making collection.")
