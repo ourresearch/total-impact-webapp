@@ -16,14 +16,17 @@ def home():
 
 @app.route('/about')
 def about(): 
+    return render_template('about.html')
 
-    # get the table of artifacts and identifiers
-    which_artifacts_loc = os.path.join(
+@app.route('/faq')
+def faq(): 
+    # get the table of items and identifiers
+    which_items_loc = os.path.join(
         os.path.dirname(__file__),
         "static",
         "whichartifacts.html"
         )
-    which_artifacts = open(which_artifacts_loc).read()
+    which_item_types = open(which_items_loc).read()
 
     # get the static_meta info for each metric
     try:
@@ -33,8 +36,8 @@ def about():
         metadata = {}
     
     return render_template(
-        'about.html',
-        which_artifacts=which_artifacts,
+        'faq.html',
+        which_artifacts=which_item_types,
         provider_metadata=metadata
         )
 
