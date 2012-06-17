@@ -346,14 +346,7 @@ div#about{
     -moz-border-radius: 4px;       /* CSS3 rounded borders for Firefox   */
 }
 
-a.tocBackLink {
-    /* can also be deactivated in the plugin call... */
-    display: none;
-    text-align: right;
-    font-size: 10px;
-    font-weight: normal;
-    margin-left: 10px;
-}
+
 body#about h3 {
     margin-top: 40px;
 }
