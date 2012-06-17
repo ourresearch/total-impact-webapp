@@ -3,6 +3,7 @@ body {
     font-family: "Helvetica", sans-serif;
     margin: 0;
     background: #ff4e00;
+    height: 100%
 }
 
 body a:link {
@@ -11,6 +12,10 @@ body a:link {
 }
 body a:hover {
     text-decoration: underline;
+}
+#container { /* used for sticky footer */
+   min-height:100%;
+   position:relative;
 }
 
 .wrapper {
@@ -270,38 +275,6 @@ div#selling-points p {
 }
 
 
-/* "updating" page
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-div.loading {
-    width: 600px;
-    height: 150px;
-    color: #fff;
-    background: #b20000
-}
-div.loading h2 {
-    font-family: 'Lobster Two', Helvetica, Arial, sans-serif;
-    color: #fff;
-    font-style: italic;
-    font-size: 50px;
-    text-align:center;
-    margin: 0;
-    font-weight:normal;
-    padding: 20px 0 0;
-}
-div.loading p {
-    font-size: 15px;
-    font-weight: bold;
-    font-family: "Helvetica Neue", "helvetica", 'arial', sans-serif;
-    text-align: center;
-}
-div.loading img {
-    margin: 0 10px -5px 0;
-    height: 45px;
-}
-
-
 
 
 
@@ -466,6 +439,7 @@ div#footer {
     clear:both;
     color: #555;
     padding-top: 50px;
+    height: 100px;
 }
 body.homepage div#footer {
     background:url(img/noise.jpg);
