@@ -4,13 +4,45 @@ $.ajaxSetup ({
 var ajaxLoadImg = "<img src='../static/img/ajax-loader.gif' alt='loading...' />";
 var newCollectionIds = []
 
-parseImporterArgs = function(argStr){
-    var args = argStr.split('-');
-    var urlArgs = "id=" + args[0];
-    if (args.length > 1) {
-        urlArgs = urlArgs + "&type=" + args[1];
+/*****************************************************************************
+ * create collection page
+ ****************************************************************************/
+
+flatten = function(idsArr) {
+    // flattens id values that are themselves arrays (like github)
+    var aliases = [];
+    numIds = idsArr.length;
+    for (var i=0; i<numIds; i++ ) {
+        var id = idsArr[i][1]
+        var namespace = idsArr[i][0]
+        if( Object.prototype.toString.call( id ) === '[object Array]' ) {
+            var strVal = id.join(",")
+        }
+        else {
+            var strVal = id
+        }
+        aliases.push([namespace, id])
     }
-    return urlArgs
+    return(aliases)
+}
+
+addCollectionIds = function(idsArr) {
+    newIds = flatten(idsArr);
+    
+    // make an object with the unique key values
+    var uniqueNamespaceIdPairs = {}
+    for  (var i=0; i<newCollectionIds.length; i++){
+        var namespaceIdPair = newCollectionIds[i].join(":")
+        uniqueNamespaceIdPairs[namespaceIdPair] = 1
+    }
+    console.log(uniqueNamespaceIdPairs)
+    
+    for (var i=0; i < newIds.length; i++){
+        var newNamespaceIdPair = newIds[i].join(":")
+        if (!uniqueNamespaceIdPairs[newNamespaceIdPair]) {
+            newCollectionIds.push(newIds[i])
+        }
+    }
 }
 
 // puts the textarea-entered ids in a format that addNewCollectionIds likes
@@ -43,7 +75,113 @@ parseTextareaArtifacts = function(str) {
     return ret;
 }
 
+createCollectionInit = function(){
+    // use the textarea to paste ids. lots of duplicated code with below function...
+    $("#paste_input").blur(function(){
+        if (!$(this).val().trim()) {
+            console.log("fail")
+            return false;
+        }
+        newIds = parseTextareaArtifacts($(this).val());
+        addCollectionIds(newIds)
+        
+        // how many items are in the new collection now?
+        $("#artcounter span.count").html(newCollectionIds.length);
+        $(this).after("<span class='added'><span class='count'>"+newIds.length+"</span> items added.</span>")
+        return true;
+        
+    })
 
+    // use importers to add objects pulled from member_items calls
+    $("#pullers input").add("#bibtex_input").blur(function(){
+        var idStrParts = $(this).attr("id").split('_');
+        var providerName = idStrParts[0];
+        $this = $(this)
+        console.log($this.val())
+        if (!$this.val().trim()) {
+            return false;
+        }
+
+        if (providerName == "bibtex") { // hack, should generalize for all textareas
+            var providerTypeQuery = "&type=import"
+            var providerIdQuery = "?query=" + escape($this.val());
+        } else {
+            var providerTypeQuery = "&type=" + $this.attr("name");
+            var providerIdQuery = "?query=" + escape($this.val());
+        }
+        $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
+        $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+            console.log(response)
+            addCollectionIds(response)
+            $("span.loading").remove()
+            // how many items are in the new collection now?
+            $("#artcounter span.count").html(newCollectionIds.length);
+            $this.after("<span class='added'><span class='count'>"+response.length+"</span> items added.</span>")
+        
+        }, "json");
+    });    
+
+
+    // creating a collection by submitting the object IDs from the homepage
+    $("#id-form").submit(function(){
+
+        // make sure the user input something at all
+        if (newCollectionIds.length == 0) {
+            alert("Looks like you haven't added any research objects to the collection yet.")
+            return false;
+
+        // created items and put them in a collection, then redirect to
+        // the collection report page:
+        } else {
+            // first we upload the new items and get tiids back.
+            console.log("adding new items.")
+            $("#go-button").replaceWith("<span class='loading'>"+ajaxLoadImg+"<span>")
+            $.ajax({
+                url: 'http://total-impact-core.herokuapp.com/items',                
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(newCollectionIds),
+                success: function(returnedTiids){
+                    // make a new collection, populated by our freshly-minted tiids
+                    console.log("items created. making collection.")
+                    var requestObj = {
+                        title: $('#name').val(),
+                        items: returnedTiids
+                    }
+
+                    $.ajax({
+                        url: 'http://total-impact-core.herokuapp.com/collection',                        
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data:  JSON.stringify(requestObj),
+                        success: function(returnedCollection){
+
+                            // we've created the items and the collection; our
+                            // work here is done.
+                            console.log(returnedCollection)
+                            location.href="./" +returnedCollection.id;
+                        }
+                    });
+                }
+            });
+            return false;
+        }
+    });
+}
+
+
+
+
+
+
+
+
+
+/*****************************************************************************
+ * report page
+ ****************************************************************************/
 
 function renderItemBiblio(biblio, url) {
     var html = ""
@@ -150,92 +288,12 @@ function pollApiAndUpdateCollection(interval, oldText, tries){
     }, interval)
 }
 
-function showCommits() {
-    $.get('./commits', function(data){
-        var foo = {commits: data}
-        var commitsList = ich.commits_template(foo)
-        $("div.recent-changes").append(commitsList)
-        console.log(data)
-        console.log(commitsList)
-    })
-}
-
-
 
 
 $(document).ready(function(){
     
     // report page stuff
     $('ul.metrics li').tooltip();
-    $('a#copy-permalink').zclip({
-        path:'ui/js/ZeroClipboard.swf',
-        copy:$('#permalink a.copyable').text(),
-        afterCopy:function(){
-            $('a#copy-permalink').text('copied.');
-        }
-    });
-    $('#about-metrics').hide();
-
-    // show/hide stuff
-    $('#importers ul li')
-        .prepend('<span class="pointer">?</span>') // hack; these arrows should be entities, but that causes probs when replacing...
-        .children("div")
-        .hide();
-
-    $('#importers ul li').children("a").click(function(){
-        var arrow = $(this).siblings("span").text();
-        arrow = (arrow == "?") ? "?" : "?";
-        $(this).siblings("span").text(arrow);
-        $(this).siblings("div").slideToggle();
-    });
-
-
-    // use the textarea to paste ids. lots of duplicated code with below function...
-    $("#paste_input").blur(function(){
-        if (!$(this).val().trim()) {
-            console.log("fail")
-            return false;
-        }
-        newIds = parseTextareaArtifacts($(this).val());
-        $.merge(newCollectionIds, newIds)
-        
-        // how many items are in the new collection now?
-        $("#artcounter span.count").html(newCollectionIds.length);
-        $(this).after("<span class='added'><span class='count'>"+newIds.length+"</span> items added.</span>")
-        return true;
-        
-    })
-
-    // use importers to add objects pulled from member_items calls
-    $("#pullers input").add("#bibtex_input").blur(function(){
-        var idStrParts = $(this).attr("id").split('_');
-        var providerName = idStrParts[0];
-        $this = $(this)
-        console.log($this.val())
-        if (!$this.val().trim()) {
-            return false;
-        }
-
-        if (providerName == "bibtex") { // hack, should generalize for all textareas
-            var providerTypeQuery = "&type=import"
-            var providerIdQuery = "?query=" + escape($this.val());
-        } else {
-            var providerTypeQuery = "&type=" + $this.attr("name");
-            var providerIdQuery = "?query=" + escape($this.val());
-        }
-        $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
-        $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
-            console.log(response)
-            $.merge(newCollectionIds, response)
-            $("span.loading").remove()
-            // how many items are in the new collection now?
-            $("#artcounter span.count").html(newCollectionIds.length);
-            $this.after("<span class='added'><span class='count'>"+response.length+"</span> items added.</span>")
-        
-        }, "json");
-    });
-
-
 
     // dialog for supported IDs
     $("div#paste-ids legend a").click(function(){
@@ -243,86 +301,15 @@ $(document).ready(function(){
         TINY.box.show({url:'../static/whichartifacts.html'})
         return false;
     });
-
-
+    
     // table of contents
     if ($("#toc")[0]) {
         $('#toc').tocBuilder({type: 'headings', startLevel: 3, endLevel: 3, backLinkText: 'back to contents'});
+    
     }
-
-
-
-/* creating and updating reports
- * *****************************************************************************/
-
-    getAliases = function() {
-        // flattens id values that are themselves arrays (like github)
-        var aliases = [];
-        aliases = newCollectionIds;
-        numIds = newCollectionIds.length;
-        for (var i=0; i<numIds; i++ ) {
-            var val = newCollectionIds[i][1]
-            if( Object.prototype.toString.call( val ) === '[object Array]' ) {
-                var strVal = val.join(",")
-            }
-            else {
-                var strVal = val
-            }
-            aliases[i][1] = strVal
-        }
-
-        return(aliases)
-    }
-
-    // creating a collection by submitting the object IDs from the homepage
-    $("#id-form").submit(function(){
-        var aliases = getAliases();
-        
-
-        // make sure the user input something at all
-        if (aliases.length == 0) {
-            alert("Looks like you haven't added any research objects to the collection yet.")
-            return false;
-
-        // created items and put them in a collection, then redirect to
-        // the collection report page:
-        } else {
-            // first we upload the new items and get tiids back.
-            console.log("adding new items.")
-            $("#go-button").replaceWith("<span class='loading'>"+ajaxLoadImg+"<span>")
-            $.ajax({
-                url: 'http://total-impact-core.herokuapp.com/items',                
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(aliases),
-                success: function(returnedTiids){
-                    // make a new collection, populated by our freshly-minted tiids
-                    console.log("items created. making collection.")
-                    var requestObj = {
-                        title: $('#name').val(),
-                        items: returnedTiids
-                    }
-
-                    $.ajax({
-                        url: 'http://total-impact-core.herokuapp.com/collection',                        
-                        type: "POST",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data:  JSON.stringify(requestObj),
-                        success: function(returnedCollection){
-
-                            // we've created the items and the collection; our
-                            // work here is done.
-                            console.log(returnedCollection)
-                            location.href="./" +returnedCollection.id;
-                        }
-                    });
-                }
-            });
-            return false;
-        }
-    });
+    
+    createCollectionInit();
+    
 
     // updating the collection from the report page
     $("#update-report-button").click(function(){
@@ -341,8 +328,7 @@ $(document).ready(function(){
         return false;
     })
 
-    /* creating and updating reports
-     * *************************************************************************/
+
     if (typeof tiids != "undefined"){
         pollApiAndUpdateCollection(500, "", 0);
     }
