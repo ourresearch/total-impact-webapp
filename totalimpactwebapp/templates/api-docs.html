@@ -1,0 +1,697 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="docs">
+
+<h2><span class="wrapper">docs api</span></h2>
+
+<div id="toc"></div>
+
+<h3 id="api">general</h3>
+
+<ul>
+    <li>api root is at http://api.total-impact.org/v1/</li>
+    <li>all return JSON</li>
+    <li>Cross-Origin Resource Sharing (CORS) is enabled</li>    
+    <li>please pass in email=YOUREMAIL to all requests</li>
+    <li>all api endpoints return 500 in case of internal error</li>
+    <li>after items have been assigned a total-impact id, total-impact will periodically update the metric values</li>
+</ul>
+
+<h3 class="apicall">GET /v1</h3>
+<div class="description">
+    Welcome to the API.
+
+    <h4>returns</h4>
+        A welcome message.
+
+    <h4>example</h4> 
+        <div class="apicall"><pre>
+curl -i -X GET http://total-impact-core.herokuapp.com/v1
+
+
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+Date: Sun, 17 Jun 2012 00:18:27 GMT
+Server: gunicorn/0.14.3
+Content-Length: 224
+Connection: keep-alive
+
+{
+    "contact": "totalimpactdev@gmail.com", 
+    "hello": "world", 
+    "message": "Congratulations! You have found the total-Impact API.", 
+    "moreinfo": "http://total-impact.tumblr.com/", 
+    "version": "jean-claude"
+}
+        </pre></div>
+
+</div>
+
+<h3 class="apicall">POST /tiid/:namespace/:namespaceid</h3>
+<div class="description">
+
+    Assign a total-impact ID (tiid) to an item if it doesn't have one yet.  Returns the assigned tiid.
+
+    <h4>returns</h4>
+        Return the tiid for the item (return code 201).
+
+    <h4>example</h4> 
+
+        <div class="apicall"><pre>
+curl -i -X POST -H "Content-Type: application/json" -d '{}' http://total-impact-core.herokuapp.com/tiid/doi/10.1371/journal.pcbi.1000361
+
+
+
+HTTP/1.1 201 CREATED
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+Date: Sun, 17 Jun 2012 01:04:00 GMT
+Server: gunicorn/0.14.3
+Content-Length: 34
+Connection: keep-alive
+
+"0df8aa0eb2c911e19e181231381b0f5a"
+        </pre></div>
+</div>
+
+<h3 class="apicall">GET /tiid/:namespace/:namespaceid</h3>
+<div class="description">
+
+    Get the total-impact ID (tiid) of an item. 
+
+    <h4>returns</h4>
+        The tiid for an item if one has been previously assigned (return code 303), otherwise an error.
+
+    <h4>errors</h4>
+        <ul>
+            <li>404 if no tiid found for that item</li>
+        </ul>
+
+    <h4>example</h4> 
+
+        <div class="apicall"><pre>
+curl -i -X GET http://total-impact-core.herokuapp.com/tiid/doi/10.1371/journal.pcbi.1000361
+
+
+
+HTTP/1.1 303 SEE OTHER
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+Date: Sun, 17 Jun 2012 00:18:03 GMT
+Server: gunicorn/0.14.3
+Content-Length: 34
+Connection: keep-alive
+
+"0df8aa0eb2c911e19e181231381b0f5a"
+        </pre></div>
+</div>
+
+
+
+<h3 class="apicall">POST /items</h3>
+<div class="description">
+    Assigns total-impact IDs (tiids) to items. Create total-impact database records for these items.  Returns an unsorted list of total-impact IDs.
+
+    <h4>input data</h4>
+        [[namespace1, id1], [namespace2, id2], ...]
+
+    <h4>returns</h4>
+        A list of tiids for the items (response code 201).
+
+    <h4>example</h4> 
+
+        <div class="apicall"><pre>
+curl -i -X POST -H "Content-Type: application/json" -d '[["doi", "10.1371/journal.pcbi.1000361"]]' http://total-impact-core.herokuapp.com/items
+
+
+
+HTTP/1.1 201 CREATED
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+Date: Sun, 17 Jun 2012 00:56:38 GMT
+Server: gunicorn/0.14.3
+Content-Length: 36
+Connection: keep-alive
+
+["0df8aa0eb2c911e19e181231381b0f5a"]
+        </pre></div>
+</div>
+
+<h3 class="apicall">GET /item/:tiid</h3>
+<div class="description">
+    Get the metrics for items, given its total-impact ID (tiid).
+
+    <h4>returns</h4>
+        An item object.
+
+    <h4>errors</h4>
+        <ul>
+            <li>404 if no tiid found for an item</li>
+        </ul>
+
+    <h4>example</h4> 
+
+        <div class="apicall"><pre>
+curl -i -X GET http://total-impact-core.herokuapp.com/item/0df8aa0eb2c911e19e181231381b0f5a
+
+
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+Date: Sun, 17 Jun 2012 00:21:24 GMT
+Server: gunicorn/0.14.3
+Content-Length: 10475
+Connection: keep-alive
+
+{
+    "aliases": {
+        "created": "2012-06-10T06:53:59.039734", 
+        "doi": [
+            "10.1371/journal.pcbi.1000361"
+        ], 
+        "last_modified": "2012-06-15T09:51:44.322086", 
+        "title": [
+            "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article"
+        ], 
+        "url": [
+            "http://dx.doi.org/10.1371/journal.pcbi.1000361", 
+            "http://dx.plos.org/10.1371/journal.pcbi.1000361"
+        ]
+    }, 
+    "biblio": {
+        "authors": "Shotton, Portwin, Klyne, Miles", 
+        "genre": "article", 
+        "h1": "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a\n               Research Article", 
+        "journal": "PLoS Computational Biology", 
+        "title": "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article", 
+        "year": 2009
+    }, 
+    "created": "2012-06-10T06:53:59.039711", 
+    "id": "0df8aa0eb2c911e19e181231381b0f5a", 
+    "last_modified": "2012-06-10T06:53:59.039711", 
+    "metrics": {
+        "citeulike:bookmarks": {
+            "provenance_url": "http://www.citeulike.org/doi/10.1371/journal.pcbi.1000361", 
+            "static_meta": {
+                "description": "Number of users who have bookmarked this item.", 
+                "display_name": "bookmarks", 
+                "icon": "http://citeulike.org/favicon.ico", 
+                "provider": "CiteULike", 
+                "provider_url": "http://www.citeulike.org/"
+            }, 
+            "values": {
+                "2012-06-15T06:32:33.837934": 60
+            }
+        }, 
+        "mendeley:groups": {
+            "provenance_url": "http://api.mendeley.com/research/snps-prescriptions-predict-drug-response/", 
+            "static_meta": {
+                "description": "The number of groups who have added the article to their libraries", 
+                "display_name": "groups", 
+                "icon": "http://www.mendeley.com/favicon.ico", 
+                "provider": "Mendeley", 
+                "provider_url": "http://www.mendeley.com/"
+            }, 
+            "values": {
+                "2012-06-15T06:32:33.761749": 5
+            }
+        }, 
+        "mendeley:readers": {
+            "provenance_url": "http://api.mendeley.com/research/snps-prescriptions-predict-drug-response/", 
+            "static_meta": {
+                "description": "The number of readers who have added the article to their libraries", 
+                "display_name": "readers", 
+                "icon": "http://www.mendeley.com/favicon.ico", 
+                "provider": "Mendeley", 
+                "provider_url": "http://www.mendeley.com/"
+            }, 
+            "values": {
+                "2012-06-15T06:32:33.897130": 52
+            }
+        }, 
+        "plosalm:html_views": {
+            "provenance_url": "http://www.plosreports.org/services/rest?method=usage.stats&doi=10.1371/journal.pcbi.1000361", 
+            "static_meta": {
+                "description": "the number of views of the PLoS HTML article", 
+                "display_name": "html views", 
+                "icon": "http://a0.twimg.com/profile_images/67542107/Globe_normal.jpg", 
+                "provider": "PLoS", 
+                "provider_url": "http://www.plos.org/"
+            }, 
+            "values": {
+                "2012-06-15T06:32:54.924743": 11558
+            }
+        }, 
+...
+        "wikipedia:mentions": {
+            "provenance_url": "http://en.wikipedia.org/wiki/Special:Search?search='10.1371/journal.pcbi.1000361'&go=Go", 
+            "static_meta": {
+                "description": "The number of Wikipedia articles that mentioned this object.", 
+                "display_name": "mentions", 
+                "icon": "http://wikipedia.org/favicon.ico", 
+                "provider": "Wikipedia", 
+                "provider_url": "http://www.wikipedia.org/"
+            }, 
+            "values": {
+                "2012-06-15T06:32:33.183823": 1
+            }
+        }
+    }, 
+    "type": "item"
+}
+        </pre></div>
+</div>
+
+<h3 class="apicall">GET /items/:tiid1[,:tiid2,...]</h3>
+<div class="description">
+    Get the metrics for a list of items, given total-impact IDs (tiids).
+
+    <h4>returns</h4>
+        A list of item objects.
+
+    <h4>errors</h4>
+        <ul>
+            <li>404 if not found</li>
+        </ul>
+
+    <h4>example</h4> 
+
+        <div class="apicall"><pre>
+curl -i -X GET http://total-impact-core.herokuapp.com/items/ec698118b33311e1bfcd12313d2a0ee9,0df8aa0eb2c911e19e181231381b0f5a
+
+
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+Date: Sun, 17 Jun 2012 00:27:25 GMT
+Server: gunicorn/0.14.3
+Content-Length: 14946
+Connection: keep-alive
+
+[
+    {
+        "aliases": {
+            "created": "2012-06-10T19:38:58.886745", 
+            "last_modified": "2012-06-10T19:38:58.886765", 
+            "url": [
+                "http://total-impact.org"
+            ]
+        }, 
+        "biblio": {
+            "genre": "webpage", 
+            "h1": null, 
+            "title": "total-impact: uncover the invisible impact of reseach"
+        }, 
+        "created": "2012-06-10T19:38:58.886730", 
+        "id": "ec698118b33311e1bfcd12313d2a0ee9", 
+        "last_modified": "2012-06-10T19:38:58.886730", 
+        "metrics": {
+            "delicious:bookmarks": {
+                "provenance_url": "http://www.delicious.com/url/67f16bb3bafe455083e67759e012f428", 
+                "static_meta": {
+                    "description": "The number of bookmarks to this artifact (maximum=100).", 
+                    "display_name": "bookmarks", 
+                    "icon": "http://www.delicious.com/favicon.ico", 
+                    "provider": "Delicious", 
+                    "provider_url": "http://www.delicious.com/"
+                }, 
+                "values": {
+                    "2012-06-10T19:39:00.861656": 2
+                }
+            }, 
+            "facebook:likes": {
+                "provenance_url": "", 
+                "static_meta": {
+                    "description": "Number of users who Liked a post about the item", 
+                    "display_name": "likes", 
+                    "icon": "http://www.facebook.com/favicon.ico", 
+                    "provider": "Facebook", 
+                    "provider_url": "http://www.facebook.com/"
+                }, 
+                "values": {
+                    "2012-06-10T19:52:46.246786": 16
+                }
+            }, 
+            "facebook:shares": {
+                "provenance_url": "", 
+                "static_meta": {
+                    "description": "Number of users who shared a post about the item", 
+                    "display_name": "shares", 
+                    "icon": "http://www.facebook.com/favicon.ico", 
+                    "provider": "Facebook", 
+                    "provider_url": "http://www.facebook.com/"
+                }, 
+                "values": {
+                    "2012-06-10T19:52:46.349778": 1
+                }
+            }, 
+            "topsy:influential_tweets": {
+                "provenance_url": "http://topsy.com/total-impact.org?utm_source=otter", 
+                "static_meta": {
+                    "description": "Number of times the item has been tweeted by influential tweeters", 
+                    "display_name": "influencial tweets", 
+                    "icon": "http://twitter.com/phoenix/favicon.ico", 
+                    "provider": "Topsy", 
+                    "provider_url": "http://www.topsy.com/"
+                }, 
+                "values": {
+                    "2012-06-10T19:39:00.754701": 26
+                }
+            }, 
+            "topsy:tweets": {
+                "provenance_url": "http://topsy.com/total-impact.org?utm_source=otter", 
+                "static_meta": {
+                    "description": "Number of times the item has been tweeted", 
+                    "display_name": "tweets", 
+                    "icon": "http://twitter.com/phoenix/favicon.ico", 
+                    "provider": "Topsy", 
+                    "provider_url": "http://www.topsy.com/"
+                }, 
+                "values": {
+                    "2012-06-10T19:39:00.868062": 285
+                }
+            }
+        }, 
+        "type": "item"
+    }, 
+    {
+        "aliases": {
+            "created": "2012-06-10T06:53:59.039734", 
+            "doi": [
+                "10.1371/journal.pcbi.1000361"
+            ], 
+            "last_modified": "2012-06-15T09:51:44.322086", 
+            "title": [
+                "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article"
+            ], 
+            "url": [
+                "http://dx.doi.org/10.1371/journal.pcbi.1000361", 
+                "http://dx.plos.org/10.1371/journal.pcbi.1000361"
+            ]
+        }, 
+        "biblio": {
+            "authors": "Shotton, Portwin, Klyne, Miles", 
+            "genre": "article", 
+            "h1": "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a\n               Research Article", 
+            "journal": "PLoS Computational Biology", 
+            "title": "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article", 
+            "year": 2009
+        }, 
+        "created": "2012-06-10T06:53:59.039711", 
+        "id": "0df8aa0eb2c911e19e181231381b0f5a", 
+        "last_modified": "2012-06-10T06:53:59.039711", 
+        "metrics": {
+            "citeulike:bookmarks": {
+                "provenance_url": "http://www.citeulike.org/doi/10.1371/journal.pcbi.1000361", 
+                "static_meta": {
+                    "description": "Number of users who have bookmarked this item.", 
+                    "display_name": "bookmarks", 
+                    "icon": "http://citeulike.org/favicon.ico", 
+                    "provider": "CiteULike", 
+                    "provider_url": "http://www.citeulike.org/"
+                }, 
+                "values": {
+                    "2012-06-15T06:32:33.837934": 60
+                }
+            }, 
+            ...
+            "wikipedia:mentions": {
+                "provenance_url": "http://en.wikipedia.org/wiki/Special:Search?search='10.1371/journal.pcbi.1000361'&go=Go", 
+                "static_meta": {
+                    "description": "The number of Wikipedia articles that mentioned this object.", 
+                    "display_name": "mentions", 
+                    "icon": "http://wikipedia.org/favicon.ico", 
+                    "provider": "Wikipedia", 
+                    "provider_url": "http://www.wikipedia.org/"
+                }, 
+                "values": {
+                    "2012-06-15T06:32:33.183823": 1
+                }
+            }
+        }, 
+        "type": "item"
+    }
+]
+        </pre></div>
+</div>
+
+<h3 class="apicall">GET /items/[:tiid1, :tiid2, ...].csv</h3>
+Get the metrics for a list of items in csv format, given total-impact IDs (tiids).
+<div class="description">
+    <h4>returns</h4>
+        Metrics values in comma separated format.
+
+    <h4>errors</h4>
+        <ul>
+            <li>404 if not found</li>
+        </ul>
+
+    <h4>example</h4> 
+
+        <div class="apicall"><pre>
+curl -i -X GET http://total-impact-core.herokuapp.com/items/ec698118b33311e1bfcd12313d2a0ee9,0df8aa0eb2c911e19e181231381b0f5a.csv
+
+
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Origin: *
+Content-Disposition: attachment; filename=ti.csv
+Content-Type: text/csv; charset=utf-8
+Date: Sun, 17 Jun 2012 00:28:49 GMT
+Server: gunicorn/0.14.3
+Content-Length: 660
+Connection: keep-alive
+
+tiid,title,doi,citeulike:bookmarks,delicious:bookmarks,facebook:likes,facebook:shares,mendeley:groups,mendeley:readers,plosalm:crossref,plosalm:html_views,plosalm:pdf_views,plosalm:pmc_abstract,plosalm:pmc_figure,plosalm:pmc_full-text,plosalm:pmc_pdf,plosalm:pmc_supp-data,plosalm:pmc_unique-ip,plosalm:pubmed_central,plosalm:scopus,topsy:influential_tweets,topsy:tweets,wikipedia:mentions
+ec698118b33311e1bfcd12313d2a0ee9,,,,2,16,1,,,,,,,,,,,,,,26,285,
+0df8aa0eb2c911e19e181231381b0f5a,"Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article",10.1371/journal.pcbi.1000361,60,,,,5,52,13,11558,1100,70,39,624,149,6,580,12,24,,,1
+        </pre></div>
+</div>
+
+<h3 class="apicall">POST /collection</h3>
+Create a collection given a list of total-impact IDs.
+<div class="description">
+    Get the metrics for a list of items, given total-impact IDs (tiids).
+
+    <h4>input data</h4>
+        {
+            items:[ [tiid1,tii2,...],
+            title: "My Collection"
+        }
+
+    <h4>returns</h4>
+        The collection id
+
+    <h4>errors</h4>
+        <ul>
+            <li>404 if not found</li>
+        </ul>
+
+    <h4>example</h4> 
+
+        <div class="apicall"><pre>
+curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":["ec698118b33311e1bfcd12313d2a0ee9","0df8aa0eb2c911e19e181231381b0f5a"],"title":"My Collection"}' http://total-impact-core.herokuapp.com/collection
+
+
+
+HTTP/1.1 201 CREATED
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+Date: Sun, 17 Jun 2012 01:05:23 GMT
+Server: gunicorn/0.14.3
+Content-Length: 294
+Connection: keep-alive
+
+{
+    "created": "2012-06-17T01:05:23.444710", 
+    "id": "8lr01n", 
+    "item_tiids": [
+        "ec698118b33311e1bfcd12313d2a0ee9", 
+        "0df8aa0eb2c911e19e181231381b0f5a"
+    ], 
+    "last_modified": "2012-06-17T01:05:23.444710", 
+    "title": "My Collection", 
+    "type": "collection"
+}
+        </pre></div>
+</div>
+
+<h3 class="apicall">GET /collection:collectionId</h3>
+Get the tiids in a collection, given a collection id
+<div class="description">
+    <h4>returns</h4>
+        A collection object.
+
+    <h4>errors</h4>
+        <ul>
+            <li>404 if not found</li>
+        </ul>
+
+    <h4>example</h4> 
+
+        <div class="apicall"><pre>
+curl -i -X GET http://total-impact-core.herokuapp.com/collection/8iwgwi
+
+
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+Date: Sun, 17 Jun 2012 00:34:05 GMT
+Server: gunicorn/0.14.3
+Content-Length: 275
+Connection: keep-alive
+
+{
+    "created": "2012-06-17T00:22:43.484154", 
+    "id": "24c2d58eb81411e180fe1231381b0711", 
+    "item_tiids": [
+        "ec698118b33311e1bfcd12313d2a0ee9"
+    ], 
+    "last_modified": "2012-06-17T00:22:43.484154", 
+    "title": "My Collection", 
+    "type": "collection"
+}
+        </pre></div>
+</div>
+
+
+
+<h3 class="apicall">GET /provider</h3>
+Get all metadata for the providers.
+<div class="description">
+    <h4>returns</h4>
+        A list of metrics objects.
+
+    <h4>errors</h4>
+        <ul>
+            <li>404 if not found</li>
+        </ul>
+
+    <h4>example</h4> 
+
+        <div class="apicall"><pre>
+curl -i -X GET http://total-impact-core.herokuapp.com/provider
+
+
+
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+Date: Sun, 17 Jun 2012 00:34:49 GMT
+Server: gunicorn/0.14.3
+Content-Length: 14235
+Connection: keep-alive
+
+{
+    "bibtex": {
+        "descr": "", 
+        "provides_aliases": false, 
+        "provides_metrics": false, 
+        "url": ""
+    }, 
+    "citeulike": {
+        "descr": "CiteULike is a free service to help you to store, organise and share the scholarly papers you are reading.", 
+        "metrics": {
+            "bookmarks": {
+                "description": "Number of users who have bookmarked this item.", 
+                "display_name": "bookmarks", 
+                "icon": "http://citeulike.org/favicon.ico", 
+                "provider": "CiteULike", 
+                "provider_url": "http://www.citeulike.org/"
+            }
+        }, 
+        "provides_aliases": false, 
+        "provides_metrics": true, 
+        "url": "http://www.citeulike.org/"
+    }, 
+    "crossref": {
+        "descr": "An official Digital Object Identifier (DOI) Registration Agency of the International DOI Foundation.", 
+        "provides_aliases": true, 
+        "provides_metrics": false, 
+        "url": "http://www.crossref.org/"
+    }, 
+    "delicious": {
+        "descr": "Online social bookmarking service", 
+        "metrics": {
+            "bookmarks": {
+                "description": "The number of bookmarks to this artifact (maximum=100).", 
+                "display_name": "bookmarks", 
+                "icon": "http://www.delicious.com/favicon.ico", 
+                "provider": "Delicious", 
+                "provider_url": "http://www.delicious.com/"
+            }
+        }, 
+        "provides_aliases": false, 
+        "provides_metrics": true, 
+        "url": "http://www.delicious.com"
+    }, 
+    "dryad": {
+        "descr": "An international repository of data underlying peer-reviewed articles in the basic and applied biology.", 
+        "metrics": {
+            "most_downloaded_file": {
+                "description": "Dryad most downloaded file: number of downloads of the most commonly downloaded data package component", 
+                "display_name": "most downloaded file", 
+                "icon": "http:\\/\\/datadryad.org\\/favicon.ico", 
+                "provider": "Dryad", 
+                "provider_url": "http:\\/\\/www.datadryad.org\\/"
+            }, 
+            "package_views": {
+                "description": "Dryad package views: number of views of the main package page", 
+                "display_name": "package views", 
+                "icon": "http:\\/\\/datadryad.org\\/favicon.ico", 
+                "provider": "Dryad", 
+                "provider_url": "http:\\/\\/www.datadryad.org\\/"
+            }, 
+            "total_downloads": {
+                "description": "Dryad total downloads: combined number of downloads of the data package and data files", 
+                "display_name": "total downloads", 
+                "icon": "http:\\/\\/datadryad.org\\/favicon.ico", 
+                "provider": "Dryad", 
+                "provider_url": "http:\\/\\/www.datadryad.org\\/"
+            }
+        }, 
+        "provides_aliases": true, 
+        "provides_metrics": true, 
+        "url": "http://www.datadryad.org"
+    }, 
+    ... 
+    "wikipedia": {
+        "descr": "The free encyclopedia that anyone can edit.", 
+        "metrics": {
+            "mentions": {
+                "description": "The number of Wikipedia articles that mentioned this object.", 
+                "display_name": "mentions", 
+                "icon": "http://wikipedia.org/favicon.ico", 
+                "provider": "Wikipedia", 
+                "provider_url": "http://www.wikipedia.org/"
+            }
+        }, 
+        "provides_aliases": false, 
+        "provides_metrics": true, 
+        "url": "http://www.wikipedia.org/"
+    }
+}
+        </pre></div>
+</div>
+
+</div><!-- end faq -->
+</div>
+
+{% endblock %}
