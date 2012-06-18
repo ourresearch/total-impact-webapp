@@ -66,7 +66,7 @@ def collection_create():
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
     #r = requests.get("http://" + os.environ["API_ROOT"] +'/collection/' + collection_id)
-    r = requests.get("http://total-impact-core.herokuapp.com/collection/" + collection_id)    
+    r = requests.get("http://localhost:5001/collection/" + collection_id)    
     if r.status_code == 200:
         collection = json.loads(r.text)
         return render_template(
