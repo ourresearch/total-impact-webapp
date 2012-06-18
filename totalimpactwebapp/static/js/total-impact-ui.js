@@ -2,6 +2,7 @@ $.ajaxSetup ({
     cache: false
 });
 var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
+var ajaxLoadImgRev = "<img class='loading' src='../static/img/ajax-loader-reverse.gif' alt='loading...' />";
 var collectionIds = []
 var currentUserInputValue = ""
 
@@ -289,7 +290,11 @@ function pollApiAndUpdateCollection(interval, oldText, tries){
         tries++;
         if (tries > 10) {
             console.log("done with updating")
-            $("h2 img").hide()
+            $("#page-header img").remove()
+            $("<span id='num-items'>"+tiids.length+" items</span>")
+                .hide()
+                .insertAfter("#report-button")
+                .show();
             return false
         }
     }
@@ -344,6 +349,7 @@ $(document).ready(function(){
 
 
     if (typeof tiids != "undefined"){
+        $("h2").before(ajaxLoadImgRev)
         pollApiAndUpdateCollection(500, "", 0);
     }
 
