@@ -59,6 +59,7 @@ def apidocs():
 def collection_create():
     return render_template(
         'create-collection.html', 
+        api_root=os.environ["API_ROOT"],
         page_title="create collection",
         body_class="create-collection"
         )
@@ -71,6 +72,7 @@ def collection_report(collection_id):
         collection = json.loads(r.text)
         return render_template(
             'collection.html',
+            api_root=os.environ["API_ROOT"],
             page_title=collection["title"],
             collection=collection
         )
