@@ -20,8 +20,8 @@
                 <div id="report-button">
                     <span class="report-button"><a class="report-button-full" id="update-report-button" name="{{ collection.id }}" href="#">update</a></span>
                     <span class="report-button">
-                        <a class="report-button-left" href="http://total-impact-core.herokuapp.com/items/{{ collection.item_tiids|join(',')}}">json</a>
-                        <a class="report-button-right" href="http://total-impact-core.herokuapp.com/items/{{ collection.item_tiids|join(',')}}.csv">csv</a>
+                        <a class="report-button-left" href="http://localhost:5001/items/{{ collection.item_tiids|join(',')}}">json</a>
+                        <a class="report-button-right" href="http://localhost:5001/items/{{ collection.item_tiids|join(',')}}.csv">csv</a>
                     </span>
                 </div>
                 

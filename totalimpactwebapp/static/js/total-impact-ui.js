@@ -6,6 +6,8 @@ var ajaxLoadImgRev = "<img class='loading' src='../static/img/ajax-loader-revers
 var collectionIds = []
 var currentUserInputValue = ""
 
+
+
 /*****************************************************************************
  * create collection page
  ****************************************************************************/
@@ -84,7 +86,12 @@ parseTextareaArtifacts = function(str) {
         }
         else {
             if (thisId.length > 0) {
-                artifact[0] = "unknown"
+                // handle dois entered without the doi prefix
+                if (thisId.substring(0,3) == "10.") {
+                    artifact[0] = "doi"
+                } else {
+                   artifact[0] = "unknown"
+                }
                 artifact[1] = thisId
             }
         }
@@ -94,13 +101,26 @@ parseTextareaArtifacts = function(str) {
     }
     return ret;
 }
-userInputHandler = function($this, prevValue) {
-    $this.blur(function(){
 
 
-    });    
-    
-}
+upload_bibtex = function(files) {
+    var fileInput = document.getElementById('input_bibtex');
+    var file = fileInput.files[0];
+    var formData = new FormData();
+    formData.append('file', file);
+    $.ajax({
+            url: 'http://localhost:5001/provider/bibtex/memberitems',                
+            type: "POST",
+            processData: false,
+            contentType: false,
+            data: formData,
+            success:  function(response,status,xhr){
+                alert(response);
+                addCollectionIds(response, $("li input_bibtex"))
+        }});
+    }
+
+
 
 createCollectionInit = function(){
     
@@ -121,7 +141,7 @@ createCollectionInit = function(){
             var idStrParts = $(this).attr("id").split('_');
             var providerName = idStrParts[0];
 
-            if ((providerName == "bibtex") || (providerName == "crossref")) { // hack, should generalize for all textareas
+            if (providerName == "crossref") { // hack, should generalize for all textareas
                 var providerTypeQuery = "&type=import"
                 var providerIdQuery = "?query=" + escape($this.val());
             } else {
@@ -129,7 +149,7 @@ createCollectionInit = function(){
                 var providerIdQuery = "?query=" + escape($this.val());
             }
             $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
-            $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+            $.get("http://localhost:5001/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
                 addCollectionIds(response, $this)
             }, "json");
             
@@ -152,7 +172,7 @@ createCollectionInit = function(){
             console.log("adding new items.")
             $("#go-button").replaceWith("<span class='loading'>"+ajaxLoadImg+"<span>")
             $.ajax({
-                url: 'http://total-impact-core.herokuapp.com/items',                
+                url: 'http://localhost:5001/items',                
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -166,7 +186,7 @@ createCollectionInit = function(){
                     }
 
                     $.ajax({
-                        url: 'http://total-impact-core.herokuapp.com/collection',                        
+                        url: 'http://localhost:5001/collection',                        
                         type: "POST",
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
@@ -262,7 +282,7 @@ function getNewItemsAndUpdateReport() {
     tiidsStr = tiids.join(",")
 
     $.ajax({
-        url: 'http://total-impact-core.herokuapp.com/items/'+tiidsStr,                        
+        url: 'http://localhost:5001/items/'+tiidsStr,                        
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
@@ -334,7 +354,7 @@ $(document).ready(function(){
     $("#update-report-button").click(function(){
         $("h2 img").show()
         $.ajax({
-            url: 'http://total-impact-core.herokuapp.com/items',
+            url: 'http://localhost:5001/items',
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -352,5 +372,23 @@ $(document).ready(function(){
         $("h2").before(ajaxLoadImgRev)
         pollApiAndUpdateCollection(500, "", 0);
     }
+
+    // api docs page stuff
+    $('div.rawembedcode').html('<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="http://total-impact-webapp.herokuapp.com/static/main.css" />
+        <link rel="stylesheet" type="text/css" href="http://total-impact-webapp.herokuapp.com/static/report.css" />
+        <script type="text/javascript" src="http://total-impact-webapp.herokuapp.com/static/js/icanhaz.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+        <script type="text/javascript" src="http://total-impact-webapp.herokuapp.com/static/js/total-impact-item.js"></script>
+    </head>
+    <body>
+            <div id="total-impact">
+                <span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
+                <div id="ti-data"></div>
+            </div>
+    </body>
+</html>')
 
 });
