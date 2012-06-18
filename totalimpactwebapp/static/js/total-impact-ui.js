@@ -6,6 +6,8 @@ var ajaxLoadImgRev = "<img class='loading' src='../static/img/ajax-loader-revers
 var collectionIds = []
 var currentUserInputValue = ""
 
+
+
 /*****************************************************************************
  * create collection page
  ****************************************************************************/
@@ -84,7 +86,12 @@ parseTextareaArtifacts = function(str) {
         }
         else {
             if (thisId.length > 0) {
-                artifact[0] = "unknown"
+                // handle dois entered without the doi prefix
+                if (thisId.substring(0,3) == "10.") {
+                    artifact[0] = "doi"
+                } else {
+                   artifact[0] = "unknown"
+                }
                 artifact[1] = thisId
             }
         }
@@ -101,6 +108,24 @@ userInputHandler = function($this, prevValue) {
     });    
     
 }
+upload_bibtex = function(files) {
+    var fileInput = document.getElementById('input_bibtex');
+    var file = fileInput.files[0];
+    var formData = new FormData();
+    formData.append('file', file);
+    $.ajax({
+            url: 'http://localhost:5001/provider/bibtex/memberitems',                
+            type: "POST",
+            processData: false,
+            contentType: false,
+            data: formData,
+            success:  function(response,status,xhr){
+                alert(response);
+                addCollectionIds(response, $("li input_bibtex"))
+        }});
+    }
+
+
 
 createCollectionInit = function(){
     
@@ -121,7 +146,7 @@ createCollectionInit = function(){
             var idStrParts = $(this).attr("id").split('_');
             var providerName = idStrParts[0];
 
-            if ((providerName == "bibtex") || (providerName == "crossref")) { // hack, should generalize for all textareas
+            if (providerName == "crossref") { // hack, should generalize for all textareas
                 var providerTypeQuery = "&type=import"
                 var providerIdQuery = "?query=" + escape($this.val());
             } else {
