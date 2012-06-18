@@ -223,7 +223,7 @@ div#tagline p.subtagline{
     line-height: 1.2;
     width: 550px;
     margin-left: 13px;
-    top: 116px;
+    top: 106px;
     position: absolute;
     font-family: rockwell, georgia, sans-serif;
 }
@@ -252,14 +252,14 @@ div#tagline p a:hover {
 #tagline h2 {
     color: #fff;
     font-family: 'rockwell', 'georgia', serif;
-    font-size: 34px;
-    padding: 16px 200px 20px 34px;
+    font-size: 46px;
+    padding: 0 200px 20px 34px;
     font-weight: bold;
     margin-bottom:0;
-    line-height: 1;
+    line-height: .8;
     background: transparent;
     text-shadow: 1px 2px 5px #631c00;
-    background:url(img/tagline.png) no-repeat;
+/*    background:url(img/tagline.png) no-repeat;*/
     margin-left:-22px;
     height: 144px;
 
