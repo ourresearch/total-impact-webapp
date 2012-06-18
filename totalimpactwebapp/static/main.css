@@ -223,8 +223,6 @@ div#tagline p.subtagline{
     line-height: 1.2;
     width: 550px;
     margin-left: 13px;
-    top: 106px;
-    position: absolute;
     font-family: rockwell, georgia, sans-serif;
 }
 p#show-sample {
@@ -242,7 +240,7 @@ p#show-sample a {
 }
 div#tagline p a {
     color: #fff;
-    text-decoration: none;
+    text-decoration: none; 
     border-bottom: 2px dotted #fff;
 }
 div#tagline p a:hover {
@@ -261,7 +259,7 @@ div#tagline p a:hover {
     text-shadow: 1px 2px 5px #631c00;
 /*    background:url(img/tagline.png) no-repeat;*/
     margin-left:-22px;
-    height: 144px;
+    height: 46px;
 
 }
 #tagline div.text {
@@ -295,6 +293,22 @@ a#create-collection:hover {
 
 #call-to-action {
     margin-top: 253px;
+}
+p#example-collection {
+    width: 100px;
+    font-size: 14px;
+    float: left;
+    width: 100px;
+    margin-top: 3px;
+    padding-left: 15px;
+    border-left: 1px solid 
+    #EEE;
+    margin-left: 5px;
+}
+p#example-collection a {
+    font-size: 22px;
+    display: block;
+    width: 175px
 }
 
 
