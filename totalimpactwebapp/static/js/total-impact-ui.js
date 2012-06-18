@@ -129,7 +129,7 @@ createCollectionInit = function(){
                 var providerIdQuery = "?query=" + escape($this.val());
             }
             $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
-            $.get("http://total-impact-core.herokuapp.com/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+            $.get(api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
                 addCollectionIds(response, $this)
             }, "json");
             
@@ -152,7 +152,7 @@ createCollectionInit = function(){
             console.log("adding new items.")
             $("#go-button").replaceWith("<span class='loading'>"+ajaxLoadImg+"<span>")
             $.ajax({
-                url: 'http://total-impact-core.herokuapp.com/items',                
+                url: api_root+'/items',                
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -166,7 +166,7 @@ createCollectionInit = function(){
                     }
 
                     $.ajax({
-                        url: 'http://total-impact-core.herokuapp.com/collection',                        
+                        url: api_root+'/collection',                        
                         type: "POST",
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
@@ -262,7 +262,7 @@ function getNewItemsAndUpdateReport() {
     tiidsStr = tiids.join(",")
 
     $.ajax({
-        url: 'http://total-impact-core.herokuapp.com/items/'+tiidsStr,                        
+        url: api_root+'/items/'+tiidsStr,                        
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
@@ -334,7 +334,7 @@ $(document).ready(function(){
     $("#update-report-button").click(function(){
         $("h2 img").show()
         $.ajax({
-            url: 'http://total-impact-core.herokuapp.com/items',
+            url: api_root+'/items',
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
