@@ -5,7 +5,6 @@ body.create-collection #header {
 div#input {
 /*    background: url(./img/lightpaperfibers.png);*/
     background: #fff;
-    padding: 50px 0 150px;
     color: #333;
     font-weight: bold;
 }
@@ -74,6 +73,11 @@ div#create-button {
     padding-top: 50px;
     clear:both;
 }
+div#create-button img {
+    height: auto;
+    margin-top: 4px;
+    float:left;
+}
 div#create-button legend, div#create-button input {
     font-size:30px;
     font-weight: bold;
@@ -84,6 +88,10 @@ div#create-button input {
     float:left;
     margin-right: 10px
 }
+div#create-button div.clearfix {
+    clear:both;
+}
+
 span.added {
     display:block;
     font-size: 20px;
@@ -95,6 +103,7 @@ span.added span.count {
     font-weight: bold;
 }
 #go-button {
+    float:left;
     width: 100px;
     background: #ff4e00;
     color: #fff;

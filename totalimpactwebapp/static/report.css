@@ -4,28 +4,24 @@
 *****************************************************************************
 *****************************************************************************/
 
-
-#report {
-    min-height: 245px;
-}
-
-/* report meta *************/
-#report h2 {
-    text-align:left;
-    font-family: rockwell, georgia, serif;
-    color: #fff;
-    float:left;
-    margin-right:0;
-}
-#report h2 img {
-    margin-left:-32px;
-}
-#report h2 span.artifacts-count {
+#page-header h2 span {
     font-size:16px;
     margin-left:10px;
+    font-family: helvetica, arial, sans-serif;
 }
-
+#report {
+    padding-bottom: 20px;
+}
 #report-meta {
+    margin-top: -100px;
+    float:right;
+}
+#report-meta span#num-items {
+    color:white;
+    padding-top: 41px;
+    display: block;
+    float: right;
+    padding-right: 11px;
 }
 
 div#report-info{
@@ -96,7 +92,6 @@ p.something-missing {
     background:#fff;
     text-align: right;
     margin:0;
-    box-shadow: 0 2px 5px 0 #999999;
 }
 
 .tweet-this iframe {
@@ -140,7 +135,6 @@ div#metrics {
     margin-top:7px;
     padding-top:15px;
     background: none repeat scroll 0 0 #FFFFFF;
-    border-top: 1px solid #ddd;
     float: left;
     width: 100%;
 }

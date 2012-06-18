@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>total-impact: uncover the invisible impact of research</title>
+        <title>total-impact: {{ page_title }}</title>
         <meta name="description" content="Total Impact">
         <meta name="author" content="Total Impact">
 
@@ -57,6 +57,11 @@
                 </ul>
             </div>
         </div><!--  #header -->
+        <div id="page-header">
+            <div class="wrapper">
+                <h2>{{ page_title }}</h2>
+            </div>
+        </div>
 
 
         {% block content %}{% endblock %}

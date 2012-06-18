@@ -6,8 +6,6 @@
         <!-- START report-meta -->
         <div class="wrapper">
             <div id="report-meta">
-                <h2><img src="../static/img/ajax-loader-reverse.gif" alt="spinning graphic" /><span class="title">{{ collection.title }}</span><span class="artifacts-count">(<span class="num">{{ collection.item_tiids|length }}</span> items)</span></h2>
-
                 <div id="share">
                     <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
                     <!-- based on code here: https://dev.twitter.com/docs/tweet-button -->
@@ -26,6 +24,7 @@
                         <a class="report-button-right" href="http://total-impact-core.herokuapp.com/items/{{ collection.item_tiids|join(',')}}.csv">csv</a>
                     </span>
                 </div>
+                
             </div>
         </div>
         <div id="metrics">
