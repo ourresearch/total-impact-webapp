@@ -36,7 +36,7 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        r = requests.get('http://total-impact-core.herokuapp.com/provider')
+        r = requests.get("http://" + os.environ["API_ROOT"] +'/provider')
         metadata = json.loads(r.text)
     except requests.ConnectionError:
         metadata = {}
@@ -52,7 +52,8 @@ def faq():
 def apidocs(): 
     return render_template(
         'api-docs.html',
-        page_title="api"
+        api_root=os.environ["API_ROOT"],
+        page_title="api & embed code"
         )
 
 @app.route('/collection/create')
@@ -66,8 +67,7 @@ def collection_create():
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
-    #r = requests.get("http://" + os.environ["API_ROOT"] +'/collection/' + collection_id)
-    r = requests.get("http://total-impact-core.herokuapp.com/collection/" + collection_id)    
+    r = requests.get("http://" + os.environ["API_ROOT"] +'/collection/' + collection_id)
     if r.status_code == 200:
         collection = json.loads(r.text)
         return render_template(

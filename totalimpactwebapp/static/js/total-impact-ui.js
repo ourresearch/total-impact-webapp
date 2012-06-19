@@ -114,7 +114,7 @@ upload_bibtex = function(files) {
     var formData = new FormData();
     formData.append('file', file);
     $.ajax({
-            url: 'http://localhost:5001/provider/bibtex/memberitems',                
+            url: "http://"+api_root+'/provider/bibtex/memberitems',
             type: "POST",
             processData: false,
             contentType: false,
@@ -154,7 +154,7 @@ createCollectionInit = function(){
                 var providerIdQuery = "?query=" + escape($this.val());
             }
             $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
-            $.get(api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+            $.get("http://"+api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
                 addCollectionIds(response, $this)
             }, "json");
             
@@ -177,7 +177,7 @@ createCollectionInit = function(){
             console.log("adding new items.")
             $("#go-button").replaceWith("<span class='loading'>"+ajaxLoadImg+"<span>")
             $.ajax({
-                url: api_root+'/items',                
+                url: "http://"+api_root+'/items',                
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -287,7 +287,7 @@ function getNewItemsAndUpdateReport() {
     tiidsStr = tiids.join(",")
 
     $.ajax({
-        url: api_root+'/items/'+tiidsStr,                        
+        url: "http://"+api_root+'/items/'+tiidsStr,                        
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
@@ -359,7 +359,7 @@ $(document).ready(function(){
     $("#update-report-button").click(function(){
         $("h2 img").show()
         $.ajax({
-            url: api_root+'/items',
+            url: "http://"+api_root+'/items',
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
