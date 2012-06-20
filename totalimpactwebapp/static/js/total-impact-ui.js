@@ -12,6 +12,16 @@ var currentUserInputValue = ""
  * create collection page
  ****************************************************************************/
 
+exampleStrings = {
+    paste_input:"doi:10.123/somejournal/123\nhttp://www.example.com",
+    crossref_input: "Watson:  A Structure for Deoxyribose Nucleic Acid\nGeertz: Deep play: Notes on the Balinese cockfight",
+    name: "My Collection"
+}
+
+inputExamplesIClickHandler = function(thisInput) {
+    
+}
+
 flatten = function(idsArr) {
     // flattens id values that are themselves arrays (like github)
     var aliases = [];
@@ -130,15 +140,30 @@ upload_bibtex = function(files) {
 
 createCollectionInit = function(){
     
-    $("li input, li textarea")
+    $("li textarea, input#name").each(function(){
+        $(this).val(exampleStrings[this.id])
+    })
+    $("li input, li textarea, input#name")
     .focus(function(){
         currentUserInputValue = $(this).val();
+        $(this).removeClass("no-input-yet")
+        
+        // hid the example strings if they're still up.
+        if (currentUserInputValue == exampleStrings[this.id]) {
+            $(this).val("")
+        }
     })
     .blur(function(){
         $this = $(this)
-        if ($this.val() == currentUserInputValue) {
+        if ($this.val() == "") {
+            $this.addClass("no-input-yet")
+            $this.val(exampleStrings[this.id]) 
             return false;
         }
+        else if ($this.val() == currentUserInputValue) {
+            return false;
+        }
+        
         if ($this.attr("id") == "paste_input") {
             newIds = parseTextareaArtifacts($(this).val());
             addCollectionIds(newIds, $(this))
@@ -149,7 +174,8 @@ createCollectionInit = function(){
 
             if (providerName == "crossref") { // hack, should generalize for all textareas
                 var providerTypeQuery = "&type=import"
-                var providerIdQuery = "?query=" + escape($this.val());
+                var pipeVal = $this.val().replace(":", "|");
+                var providerIdQuery = "?query=" + escape(pipeVal);
             } else {
                 var providerTypeQuery = "&type=" + $this.attr("name");
                 var providerIdQuery = "?query=" + escape($this.val());

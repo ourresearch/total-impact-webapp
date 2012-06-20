@@ -8,12 +8,12 @@
     <div class="wrapper">
         <ul id="manual-add">
             <li id="paste-ids">
-            <legend for="paste_input" class="prompt" >Paste URLs, DOIs, or other <a target="_blank" href="/faq#whichartifacts">supported identifiers</a><span class="paren">(one per line)</span></legend>
-            <textarea rows="4" cols="40" id="paste_input" class="artifactList" ></textarea>
+            <legend for="paste_input" class="prompt" title="Paste DOIs or URLS for items you want to look up." >URLs or DOIs</legend>
+            <textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>
             </li>
             <li id="paste-crossref">
-            <legend for="crossref_input" class="prompt" title="Paste in author and titles: will try to look up DOIs">FirstAuthor|Title<br/>for DOI lookup<br/>(one per line)</legend>
-            <textarea id="crossref_input" name="crossref" type="text" cols="30" rows="4"></textarea>            
+            <legend for="crossref_input" class="prompt" title="Paste titles with the surname of their first author; we'll look them up by DOI. Conference proceedings and smaller journals tend not to work so well.">Titles with first author's surname</legend>
+            <textarea id="crossref_input" name="crossref" class="no-input-yet" type="text" cols="30" rows="4"></textarea>            
             </li>
             <!--li id="paste-bibtex">
             <legend for="bibtex_input" class="prompt" title="Paste in BibTeX contents: will try to look up DOIs">Paste BibTeX items</legend>
@@ -50,7 +50,7 @@
             <form name="id_form" action="./fetch/" id="id-form">
                 <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
                 <legend for="name">Collection name:</legend>
-                <input name="name" id="name" title="Add a meaningful title to this collection" value="My Collection" />
+                <input name="name" class="no-input-yet" id="name" title="Add a meaningful title to this collection" />
                 <button name="run" type="submit" id="go-button" class="go-button">go!</button>
                 <input name="list" id="artifacts-list" type="hidden" value="" />
             </form>
