@@ -191,7 +191,7 @@ createCollectionInit = function(){
                     }
 
                     $.ajax({
-                        url: api_root+'/collection',                        
+                        url: "http://"+api_root+'/collection',                        
                         type: "POST",
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
