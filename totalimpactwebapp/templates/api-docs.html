@@ -7,16 +7,57 @@
 
         <div id="toc"></div>
 
-        <h3 id="api">general</h3>
+        <h3 id="embed">recommended approach: embed code</h3>
 
-        <ul>
-            <li>api root is at http://api.total-impact.org/v1/</li>
-            <li>all return JSON</li>
-            <li>Cross-Origin Resource Sharing (CORS) is enabled</li>    
-            <li>please pass in email=YOUREMAIL to all requests</li>
-            <li>all api endpoints return 500 in case of internal error</li>
-            <li>after items have been assigned a total-impact id, total-impact will periodically update the metric values</li>
-        </ul>
+            <p>The easiest way to include total-impact metrics in a webpage is through  embed code.  To use the total-impact embed code in your webapge, simply include the code below in a webpage, exactly as given, subtituting the placeholder "doi:10.1371/journal.pcbi.1000355" string with your doi or other valid "namespace:id" string. </p>
+
+            <p>We plan to refine and simplify this embed code in response to feedback: please let us know what you think, and sign up for our newsletter if you'd like to be informed of changes.</p>
+
+            <p>This embed code:</p>
+
+            <div class="rawembedcode"><blockquote>
+                {{
+                '<html>
+                    <head>
+                        <link rel="stylesheet" type="text/css" href="http://total-impact-webapp.herokuapp.com/static/embed.css" />
+                        <script type="text/javascript" src="http://total-impact-webapp.herokuapp.com/static/js/icanhaz.min.js"></script>
+                        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+                        <script type="text/javascript" src="http://total-impact-webapp.herokuapp.com/static/js/total-impact-item.js"></script>
+                    </head>
+                    <body>
+                            <div id="total-impact">
+                                <span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
+                                <div id="ti-data"></div>
+                            </div>
+                    </body>
+                </html>' 
+|tojson}}
+            </blockquote>
+            
+            <p>returns</p>
+
+            <script type="text/javascript" src="http://total-impact-webapp.herokuapp.com/static/js/total-impact-item.js"></script>
+
+            <div id="total-impact">
+                <span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
+                <div id="ti-data"></div>
+            </div>
+        </div>
+
+        <br>
+        <h3 id="api">api background</h3>
+
+            <p>If the embed code described above doesn't meet your needs, you can use our api directly.  The total-impact webapp itself is built directly on top of this api. </p>
+
+            <ul>
+                <!--li>api root is at http://api.total-impact.org/v1/</li-->
+                <li>api calls return JSON</li>
+                <li>api calls return return 500 in case of internal error</li>
+                <li>Cross-Origin Resource Sharing (CORS) is enabled</li>    
+                <!--li>please pass in email=YOUREMAIL to all requests</li-->
+                <li>after an item has been assigned a total-impact id (tiid), total-impact will periodically update its metric values.</li>
+            </ul>
+
 
         <h3 class="apicall">GET /v1</h3>
         <div class="description">
