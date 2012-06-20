@@ -54,7 +54,7 @@ function getNewItemsAndUpdateReport() {
     tiidsStr = tiids.join(",")
 
     $.ajax({
-        url: "http://"+api_root+'/items/'+tiidsStr,                
+        url: 'http://total-impact-core.herokuapp.com/items/'+tiidsStr,                
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
@@ -111,7 +111,7 @@ $(document).ready(function(){
 
     console.log("adding new items.")
     $.ajax({
-        url: "http://"+api_root+'/items',                        
+        url: "http://total-impact-core.herokuapp.com/items',                        
         type: "POST",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
