@@ -108,11 +108,15 @@ userInputHandler = function($this, prevValue) {
     });    
     
 }
+
 upload_bibtex = function(files) {
-    var fileInput = document.getElementById('input_bibtex');
+    var fileInput = $("li #input_bibtex")[0];
     var file = fileInput.files[0];
     var formData = new FormData();
     formData.append('file', file);
+    $("li #input_bibtex").siblings("span.added").remove()
+    $("li #input_bibtex").after("<span class='loading'>"+ajaxLoadImg+"<span>");
+
     $.ajax({
             url: "http://"+api_root+'/provider/bibtex/memberitems',
             type: "POST",
@@ -120,12 +124,9 @@ upload_bibtex = function(files) {
             contentType: false,
             data: formData,
             success:  function(response,status,xhr){
-                alert(response);
-                addCollectionIds(response, $("li input_bibtex"))
+                addCollectionIds(response, $("li #input_bibtex"))
         }});
     }
-
-
 
 createCollectionInit = function(){
     
@@ -153,6 +154,7 @@ createCollectionInit = function(){
                 var providerTypeQuery = "&type=" + $this.attr("name");
                 var providerIdQuery = "?query=" + escape($this.val());
             }
+            $(this).siblings("span.added").remove()
             $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
             $.get("http://"+api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
                 addCollectionIds(response, $this)
@@ -201,7 +203,7 @@ createCollectionInit = function(){
                             // we've created the items and the collection; our
                             // work here is done.
                             console.log(returnedCollection)
-                            location.href="./" +returnedCollection.id;
+                            location.href = "/collection/" +returnedCollection.id;
                         }
                     });
                 }
