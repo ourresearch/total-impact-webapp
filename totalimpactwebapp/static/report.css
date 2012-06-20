@@ -9,6 +9,11 @@
     margin-left:10px;
     font-family: helvetica, arial, sans-serif;
 }
+#page-header img.loading {
+    height: 32px;
+    margin-top: -2px;
+    margin-right: 5px;
+}
 #report {
     padding-bottom: 20px;
 }
@@ -113,18 +118,7 @@ input.report {
     height:28px;
 }
 
-/** updating *******************************************/
-#metrics h3.updating {
-    font-size: 25px;
-    margin-top: 0;
-    text-align: center;
-    padding: 10px 0;
-}
-#metrics h3.updating img {
-    height: 30px;
-    width: 30px;
-    margin-bottom:-5px;
-}
+
 
 
 
