@@ -139,7 +139,7 @@ ul#nav a {
     font-size:18px;
     background-repeat:repeat-x;
     background-position:center center;
-    font-family: Rockwell, georgia, serif;
+    font-family: rokkitt, georgia, serif;
 }
 body ul#nav a:hover {
 /*    background-image: url('./img/header-bg-down.png');*/
@@ -184,7 +184,7 @@ div#page-header {
 /*    background: url(img/h2-bg.png) bottom  left repeat-x;*/
 }
 div#page-header h2 {
-    font-family: Rockwell, georgia, sans-serif;
+    font-family: rokkitt, georgia, sans-serif;
     color: #fff;
     font-size: 40px;
     margin:0;
@@ -223,7 +223,7 @@ div#tagline p.subtagline{
     line-height: 1.2;
     width: 550px;
     margin-left: 13px;
-    font-family: rockwell, georgia, sans-serif;
+    font-family: rokkitt, georgia, sans-serif;
 }
 p#show-sample {
     margin-top: 0;
@@ -249,7 +249,7 @@ div#tagline p a:hover {
 
 #tagline h2 {
     color: #fff;
-    font-family: 'rockwell', 'georgia', serif;
+    font-family: 'rokkitt', 'georgia', serif;
     font-size: 46px;
     padding: 0 200px 20px 34px;
     font-weight: bold;
@@ -346,7 +346,7 @@ div#selling-points p {
 
 #selling-points h3{
     color:#fff;
-    font-family:Rockwell, georgia, serif;
+    font-family:rokkitt, georgia, serif;
     font-weight: normal;
     font-size: 26px;
     height: 61px;
@@ -455,7 +455,7 @@ div#about p {
 }
 div#about h3 {
     margin-top: 50px;
-    font-family:Rockwell, Georgia, serif;
+    font-family:rokkitt, Georgia, serif;
     color: #555;
     margin-bottom: 10px;
     font-size: 30px;
