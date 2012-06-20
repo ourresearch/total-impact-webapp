@@ -111,7 +111,7 @@ $(document).ready(function(){
 
     console.log("adding new items.")
     $.ajax({
-        url: "http://total-impact-core.herokuapp.com/items',                        
+        url: "http://total-impact-core.herokuapp.com/items",                        
         type: "POST",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
