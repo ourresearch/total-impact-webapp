@@ -56,7 +56,7 @@ def apidocs():
         page_title="api & embed code"
         )
 
-@app.route('/collection/create')
+@app.route('/create')
 def collection_create():
     return render_template(
         'create-collection.html', 
