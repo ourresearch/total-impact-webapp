@@ -12,14 +12,13 @@
             <textarea rows="4" cols="40" id="paste_input" class="artifactList" ></textarea>
             </li>
             <li id="paste-crossref">
-            <legend for="crossref_input" class="prompt" title="Paste in author and titles: will try to look up DOIs">FirstAuthor|Title</legend>
+            <legend for="crossref_input" class="prompt" title="Paste in author and titles: will try to look up DOIs">FirstAuthor|Title<br/>for DOI lookup<br/>(one per line)</legend>
             <textarea id="crossref_input" name="crossref" type="text" cols="30" rows="4"></textarea>            
             </li>
-            </li>
-            <li id="paste-bibtex">
+            <!--li id="paste-bibtex">
             <legend for="bibtex_input" class="prompt" title="Paste in BibTeX contents: will try to look up DOIs">Paste BibTeX items</legend>
             <textarea id="bibtex_input" name="bibtex" type="text" cols="30" rows="4"></textarea>            
-            </li>
+            </li-->
         </ul>
         <ul id="pullers">
             <li>
@@ -40,7 +39,12 @@
                     <input id="dryad_author_input" name="dryad_author" type="text" size="20" />
                 </div>
             </li>
-
+            <li>
+            <div class="toggler_contents" id="bibtex_toggler_contents">
+            <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Upload a BibTeX file</legend>
+            <input type="file" id="input_bibtex" onchange="upload_bibtex(this.files)"/>
+            </div>
+            </li>
         </ul>
         <div id="create-button" class="inputcol">
             <form name="id_form" action="./fetch/" id="id-form">

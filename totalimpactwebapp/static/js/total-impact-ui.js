@@ -6,6 +6,8 @@ var ajaxLoadImgRev = "<img class='loading' src='../static/img/ajax-loader-revers
 var collectionIds = []
 var currentUserInputValue = ""
 
+
+
 /*****************************************************************************
  * create collection page
  ****************************************************************************/
@@ -84,7 +86,12 @@ parseTextareaArtifacts = function(str) {
         }
         else {
             if (thisId.length > 0) {
-                artifact[0] = "unknown"
+                // handle dois entered without the doi prefix
+                if (thisId.substring(0,3) == "10.") {
+                    artifact[0] = "doi"
+                } else {
+                   artifact[0] = "unknown"
+                }
                 artifact[1] = thisId
             }
         }
@@ -101,6 +108,25 @@ userInputHandler = function($this, prevValue) {
     });    
     
 }
+
+upload_bibtex = function(files) {
+    var fileInput = $("li #input_bibtex")[0];
+    var file = fileInput.files[0];
+    var formData = new FormData();
+    formData.append('file', file);
+    $("li #input_bibtex").siblings("span.added").remove()
+    $("li #input_bibtex").after("<span class='loading'>"+ajaxLoadImg+"<span>");
+
+    $.ajax({
+            url: "http://"+api_root+'/provider/bibtex/memberitems',
+            type: "POST",
+            processData: false,
+            contentType: false,
+            data: formData,
+            success:  function(response,status,xhr){
+                addCollectionIds(response, $("li #input_bibtex"))
+        }});
+    }
 
 createCollectionInit = function(){
     
@@ -121,15 +147,16 @@ createCollectionInit = function(){
             var idStrParts = $(this).attr("id").split('_');
             var providerName = idStrParts[0];
 
-            if ((providerName == "bibtex") || (providerName == "crossref")) { // hack, should generalize for all textareas
+            if (providerName == "crossref") { // hack, should generalize for all textareas
                 var providerTypeQuery = "&type=import"
                 var providerIdQuery = "?query=" + escape($this.val());
             } else {
                 var providerTypeQuery = "&type=" + $this.attr("name");
                 var providerIdQuery = "?query=" + escape($this.val());
             }
+            $(this).siblings("span.added").remove()
             $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
-            $.get(api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+            $.get("http://"+api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
                 addCollectionIds(response, $this)
             }, "json");
             
@@ -152,7 +179,7 @@ createCollectionInit = function(){
             console.log("adding new items.")
             $("#go-button").replaceWith("<span class='loading'>"+ajaxLoadImg+"<span>")
             $.ajax({
-                url: api_root+'/items',                
+                url: "http://"+api_root+'/items',                
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -166,7 +193,7 @@ createCollectionInit = function(){
                     }
 
                     $.ajax({
-                        url: api_root+'/collection',                        
+                        url: "http://"+api_root+'/collection',                        
                         type: "POST",
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
@@ -176,7 +203,7 @@ createCollectionInit = function(){
                             // we've created the items and the collection; our
                             // work here is done.
                             console.log(returnedCollection)
-                            location.href="./" +returnedCollection.id;
+                            location.href = "/collection/" +returnedCollection.id;
                         }
                     });
                 }
@@ -262,7 +289,7 @@ function getNewItemsAndUpdateReport() {
     tiidsStr = tiids.join(",")
 
     $.ajax({
-        url: api_root+'/items/'+tiidsStr,                        
+        url: "http://"+api_root+'/items/'+tiidsStr,                        
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
@@ -334,7 +361,7 @@ $(document).ready(function(){
     $("#update-report-button").click(function(){
         $("h2 img").show()
         $.ajax({
-            url: api_root+'/items',
+            url: "http://"+api_root+'/items',
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",

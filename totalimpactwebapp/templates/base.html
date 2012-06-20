@@ -17,7 +17,7 @@
         <link rel="stylesheet" type="text/css" href="/static/report.css" />
         <link rel="icon" type="image/ico" href="/static/img/favicon.ico" />
 
-        <script type="text/javascript">var api_root={{ api_root }}</script>
+        <script type="text/javascript">var api_root='{{ api_root }}'</script>
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
         <script type="text/javascript" src="/static/js/json2.min.js"></script>
         <script type="text/javascript" src="/static/js/tinybox.js"></script>
@@ -51,6 +51,7 @@
             <div class="wrapper">
                 <h1 id="blog-title"><span class="main"><a href="/">total-impact</a></span></h1>
                 <ul id="nav">
+                    <li><a href="/create">create</a></li>
                     <li><a href="/about">about</a></li>
                     <li><a href="/api-docs">api</a></li>                    
                     <li><a href="http://total-impact.tumblr.com">blog</a></li>
