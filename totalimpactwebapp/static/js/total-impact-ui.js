@@ -35,7 +35,7 @@ flatten = function(idsArr) {
         else {
             var strVal = id
         }
-        aliases.push([namespace, id])
+        aliases.push([namespace, strVal])
     }
     return(aliases)
 }
