@@ -345,6 +345,11 @@ function pollApiAndUpdateCollection(interval, oldText, tries){
         if (tries > 10) {
             console.log("done with updating")
             $("#page-header img").remove()
+            
+            
+            // let's do this thing
+            
+            $("#num-items").remove();
             $("<span id='num-items'>"+tiids.length+" items</span>")
                 .hide()
                 .insertAfter("#report-button")
@@ -386,7 +391,7 @@ $(document).ready(function(){
 
     // updating the collection from the report page
     $("#update-report-button").click(function(){
-        $("h2 img").show()
+        $("h2").before(ajaxLoadImgTransparent)
         $.ajax({
             url: "http://"+api_root+'/items',
             type: "POST",
