@@ -74,6 +74,7 @@ def collection_report(collection_id):
             'collection.html',
             api_root=os.environ["API_ROOT"],
             page_title=collection["title"],
+            body_class="report",
             collection=collection
         )
     else:
