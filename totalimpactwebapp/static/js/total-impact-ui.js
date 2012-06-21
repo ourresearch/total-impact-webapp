@@ -407,7 +407,7 @@ $(document).ready(function(){
     })
 
 
-    if (typeof tiids != "undefined"){
+    if (typeof tiids != "undefined" && $("body.create-collection")[0]){
         $("h2").before(ajaxLoadImgTransparent)
         pollApiAndUpdateCollection(500, "", 0);
     }
