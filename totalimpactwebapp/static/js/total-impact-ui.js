@@ -181,8 +181,7 @@ createCollectionInit = function(){
                 var providerIdQuery = "?query=" + escape($this.val());
             }
             $(this).siblings("span.added").remove()
-            $(this).find("li input, li textarea")
-                .after("<span class='loading'>"+ajaxLoadImg+"<span>");
+            $(this).not("input#name").after("<span class='loading'>"+ajaxLoadImg+"<span>");
             $.get("http://"+api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
                 addCollectionIds(response, $this)
             }, "json");
