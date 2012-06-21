@@ -2,7 +2,7 @@ $.ajaxSetup ({
     cache: false
 });
 var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
-var ajaxLoadImgRev = "<img class='loading' src='../static/img/ajax-loader-reverse.gif' alt='loading...' />";
+var ajaxLoadImgTransparent = "<img class='loading' src='../static/img/ajax-loader-transparent.gif' alt='loading...' />";
 var collectionIds = []
 var currentUserInputValue = ""
 
@@ -181,7 +181,7 @@ createCollectionInit = function(){
                 var providerIdQuery = "?query=" + escape($this.val());
             }
             $(this).siblings("span.added").remove()
-            $(this).after("<span class='loading'>"+ajaxLoadImg+"<span>");
+            $(this).not("input#name").after("<span class='loading'>"+ajaxLoadImg+"<span>");
             $.get("http://"+api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
                 addCollectionIds(response, $this)
             }, "json");
@@ -344,6 +344,11 @@ function pollApiAndUpdateCollection(interval, oldText, tries){
         if (tries > 10) {
             console.log("done with updating")
             $("#page-header img").remove()
+            
+            
+            // let's do this thing
+            
+            $("#num-items").remove();
             $("<span id='num-items'>"+tiids.length+" items</span>")
                 .hide()
                 .insertAfter("#report-button")
@@ -385,7 +390,7 @@ $(document).ready(function(){
 
     // updating the collection from the report page
     $("#update-report-button").click(function(){
-        $("h2 img").show()
+        $("h2").before(ajaxLoadImgTransparent)
         $.ajax({
             url: "http://"+api_root+'/items',
             type: "POST",
@@ -401,8 +406,8 @@ $(document).ready(function(){
     })
 
 
-    if (typeof tiids != "undefined"){
-        $("h2").before(ajaxLoadImgRev)
+    if (typeof tiids != "undefined" && $("body.report")[0]){
+        $("h2").before(ajaxLoadImgTransparent)
         pollApiAndUpdateCollection(500, "", 0);
     }
 

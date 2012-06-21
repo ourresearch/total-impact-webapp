@@ -15,26 +15,26 @@
 
             <p>This embed code:</p>
 
-            <div class="rawembedcode"><blockquote>
-                {{
-                '<html>
-                    <head>
-                        <link rel="stylesheet" type="text/css" href="http://total-impact-webapp.herokuapp.com/static/embed.css" />
-                        <script type="text/javascript" src="http://total-impact-webapp.herokuapp.com/static/js/icanhaz.min.js"></script>
-                        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
-                        <script type="text/javascript" src="http://total-impact-webapp.herokuapp.com/static/js/total-impact-item.js"></script>
-                    </head>
-                    <body>
-                            <div id="total-impact">
-                                <span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
-                                <div id="ti-data"></div>
-                            </div>
-                    </body>
-                </html>' 
-|tojson}}
-            </blockquote>
+            <div class="rawembedcode"><pre>
+{{
+'<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="http://total-impact-webapp.herokuapp.com/static/embed.css" />
+        <script type="text/javascript" src="http://total-impact-webapp.herokuapp.com/static/js/icanhaz.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+        <script type="text/javascript" src="http://total-impact-webapp.herokuapp.com/static/js/total-impact-item.js"></script>
+    </head>
+    <body>
+            <div id="total-impact">
+                <span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
+                <div id="ti-data"></div>
+            </div>
+    </body>
+</html>'|escape()
+}}
+            </pre>
             
-            <p>returns</p>
+            <p>returns this widget:</p>
 
             <script type="text/javascript" src="http://total-impact-webapp.herokuapp.com/static/js/total-impact-item.js"></script>
 
@@ -71,16 +71,6 @@
 curl -i -X GET http://total-impact-core.herokuapp.com/v1
 
 
-
-HTTP/1.1 200 OK
-Access-Control-Allow-Headers: Content-Type
-Access-Control-Allow-Origin: *
-Content-Type: application/json
-Date: Sun, 17 Jun 2012 00:18:27 GMT
-Server: gunicorn/0.14.3
-Content-Length: 224
-Connection: keep-alive
-
 {
     "contact": "totalimpactdev@gmail.com", 
     "hello": "world", 
@@ -105,16 +95,6 @@ Connection: keep-alive
 curl -i -X POST -H "Content-Type: application/json" -d '{}' http://total-impact-core.herokuapp.com/tiid/doi/10.1371/journal.pcbi.1000361
 
 
-
-HTTP/1.1 201 CREATED
-Access-Control-Allow-Headers: Content-Type
-Access-Control-Allow-Origin: *
-Content-Type: application/json
-Date: Sun, 17 Jun 2012 01:04:00 GMT
-Server: gunicorn/0.14.3
-Content-Length: 34
-Connection: keep-alive
-
 "0df8aa0eb2c911e19e181231381b0f5a"
                 </pre></div>
         </div>
@@ -136,16 +116,6 @@ Connection: keep-alive
             <div class="apicall"><pre>
 curl -i -X GET http://total-impact-core.herokuapp.com/tiid/doi/10.1371/journal.pcbi.1000361
 
-
-
-HTTP/1.1 303 SEE OTHER
-Access-Control-Allow-Headers: Content-Type
-Access-Control-Allow-Origin: *
-Content-Type: application/json
-Date: Sun, 17 Jun 2012 00:18:03 GMT
-Server: gunicorn/0.14.3
-Content-Length: 34
-Connection: keep-alive
 
 "0df8aa0eb2c911e19e181231381b0f5a"
                 </pre></div>
@@ -169,16 +139,6 @@ Connection: keep-alive
 curl -i -X POST -H "Content-Type: application/json" -d '[["doi", "10.1371/journal.pcbi.1000361"]]' http://total-impact-core.herokuapp.com/items
 
 
-
-HTTP/1.1 201 CREATED
-Access-Control-Allow-Headers: Content-Type
-Access-Control-Allow-Origin: *
-Content-Type: application/json
-Date: Sun, 17 Jun 2012 00:56:38 GMT
-Server: gunicorn/0.14.3
-Content-Length: 36
-Connection: keep-alive
-
 ["0df8aa0eb2c911e19e181231381b0f5a"]
                 </pre></div>
         </div>
@@ -200,16 +160,6 @@ Connection: keep-alive
             <div class="apicall"><pre>
 curl -i -X GET http://total-impact-core.herokuapp.com/item/0df8aa0eb2c911e19e181231381b0f5a
 
-
-
-HTTP/1.1 200 OK
-Access-Control-Allow-Headers: Content-Type
-Access-Control-Allow-Origin: *
-Content-Type: application/json
-Date: Sun, 17 Jun 2012 00:21:24 GMT
-Server: gunicorn/0.14.3
-Content-Length: 10475
-Connection: keep-alive
 
 {
     "aliases": {
@@ -327,16 +277,6 @@ Connection: keep-alive
             <div class="apicall"><pre>
 curl -i -X GET http://total-impact-core.herokuapp.com/items/ec698118b33311e1bfcd12313d2a0ee9,0df8aa0eb2c911e19e181231381b0f5a
 
-
-
-HTTP/1.1 200 OK
-Access-Control-Allow-Headers: Content-Type
-Access-Control-Allow-Origin: *
-Content-Type: application/json
-Date: Sun, 17 Jun 2012 00:27:25 GMT
-Server: gunicorn/0.14.3
-Content-Length: 14946
-Connection: keep-alive
 
 [
     {
@@ -502,17 +442,6 @@ Connection: keep-alive
 curl -i -X GET http://total-impact-core.herokuapp.com/items/ec698118b33311e1bfcd12313d2a0ee9,0df8aa0eb2c911e19e181231381b0f5a.csv
 
 
-
-HTTP/1.1 200 OK
-Access-Control-Allow-Headers: Content-Type
-Access-Control-Allow-Origin: *
-Content-Disposition: attachment; filename=ti.csv
-Content-Type: text/csv; charset=utf-8
-Date: Sun, 17 Jun 2012 00:28:49 GMT
-Server: gunicorn/0.14.3
-Content-Length: 660
-Connection: keep-alive
-
 tiid,title,doi,citeulike:bookmarks,delicious:bookmarks,facebook:likes,facebook:shares,mendeley:groups,mendeley:readers,plosalm:crossref,plosalm:html_views,plosalm:pdf_views,plosalm:pmc_abstract,plosalm:pmc_figure,plosalm:pmc_full-text,plosalm:pmc_pdf,plosalm:pmc_supp-data,plosalm:pmc_unique-ip,plosalm:pubmed_central,plosalm:scopus,topsy:influential_tweets,topsy:tweets,wikipedia:mentions
 ec698118b33311e1bfcd12313d2a0ee9,,,,2,16,1,,,,,,,,,,,,,,26,285,
 0df8aa0eb2c911e19e181231381b0f5a,"Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article",10.1371/journal.pcbi.1000361,60,,,,5,52,13,11558,1100,70,39,624,149,6,580,12,24,,,1
@@ -541,17 +470,6 @@ ec698118b33311e1bfcd12313d2a0ee9,,,,2,16,1,,,,,,,,,,,,,,26,285,
 
             <div class="apicall"><pre>
 curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":["ec698118b33311e1bfcd12313d2a0ee9","0df8aa0eb2c911e19e181231381b0f5a"],"title":"My Collection"}' http://total-impact-core.herokuapp.com/collection
-
-
-
-HTTP/1.1 201 CREATED
-Access-Control-Allow-Headers: Content-Type
-Access-Control-Allow-Origin: *
-Content-Type: application/json
-Date: Sun, 17 Jun 2012 01:05:23 GMT
-Server: gunicorn/0.14.3
-Content-Length: 294
-Connection: keep-alive
 
 {
     "created": "2012-06-17T01:05:23.444710", 
@@ -585,16 +503,6 @@ Connection: keep-alive
 curl -i -X GET http://total-impact-core.herokuapp.com/collection/8iwgwi
 
 
-
-HTTP/1.1 200 OK
-Access-Control-Allow-Headers: Content-Type
-Access-Control-Allow-Origin: *
-Content-Type: application/json
-Date: Sun, 17 Jun 2012 00:34:05 GMT
-Server: gunicorn/0.14.3
-Content-Length: 275
-Connection: keep-alive
-
 {
     "created": "2012-06-17T00:22:43.484154", 
     "id": "24c2d58eb81411e180fe1231381b0711", 
@@ -626,17 +534,6 @@ Connection: keep-alive
 
             <div class="apicall"><pre>
 curl -i -X GET http://total-impact-core.herokuapp.com/provider
-
-
-
-HTTP/1.1 200 OK
-Access-Control-Allow-Headers: Content-Type
-Access-Control-Allow-Origin: *
-Content-Type: application/json
-Date: Sun, 17 Jun 2012 00:34:49 GMT
-Server: gunicorn/0.14.3
-Content-Length: 14235
-Connection: keep-alive
 
 {
     "bibtex": {
@@ -730,6 +627,6 @@ Connection: keep-alive
                 </pre></div>
         </div>
     </div>
-</div><!
+</div>
 
 {% endblock %}
