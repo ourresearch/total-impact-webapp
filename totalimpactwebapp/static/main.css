@@ -527,13 +527,16 @@ h3.apicall {
     white-space: normal !important;
     font-family:consolas, monospace;
     margin-top: 150px;
-    font-size:35px;
+    font-size:30px;
     color: #555;
     margin-bottom: 10px;
 }
 div#docs h4 {
     font-size: 22px;
     margin-bottom: 5px;
+}
+div#docs ul.metrics {
+    margin-left: 0;
 }
 
 
