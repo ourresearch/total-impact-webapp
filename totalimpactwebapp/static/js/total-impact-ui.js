@@ -312,6 +312,19 @@ function renderItem(item){
     return html$
 }
 
+function addDataToGenres(data) {
+    $("ul#items").empty()
+    for (i in data){
+        // make the set of all newly-rendered items
+        // this is a very slow way to do this...should bundle together,
+        // then make one replace.
+        var genre = data[i].biblio.genre
+        var genreItems = "div." + genre + " ul#items"
+        $(genreItems).append(renderItem(data[i]))
+        $("div." + genre).show()  // would ideally only do this once
+    }
+}
+
 function getNewItemsAndUpdateReport(interval) {
     tiidsStr = tiids.join(",")
 
@@ -322,24 +335,15 @@ function getNewItemsAndUpdateReport(interval) {
         contentType: "application/json; charset=utf-8",
         statusCode: {
             210: function(data){
-                console.log("still updating; on try "+tries)
-                $("ul#items").empty()
-                for (i in data){
-                    // make the set of all newly-rendered items
-                    // this is a very slow way to do this...should bundle together,
-                    // then make one replace.
-                    var genre = data[i].biblio.genre
-                    var genreItems = "div." + genre + " ul#items"
-                    $(genreItems).append(renderItem(data[i]))
-                    $("div." + genre).show()  // would ideally only do this once
-                }
-                
+                console.log("still updating")
+                addDataToGenres(data)                
                 setTimeout(function(){
-                    getNewItemsAndUpdateReport(inteval)
+                    getNewItemsAndUpdateReport(interval)
                 })
             },
             200: function(data) {
                 console.log("done with updating")
+                addDataToGenres(data)
                 $("#page-header img").remove()
 
                 $("#num-items").remove();
@@ -388,7 +392,7 @@ $(document).ready(function(){
             success: function(data){
                 //window.location.reload(false);
                 console.log("updating.")
-                pollApiAndUpdateCollection(500);
+                getNewItemsAndUpdateReport(500);
             }});
         return false;
     })
