@@ -5,6 +5,7 @@ var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt=
 var ajaxLoadImgTransparent = "<img class='loading' src='../static/img/ajax-loader-transparent.gif' alt='loading...' />";
 var collectionIds = []
 var currentUserInputValue = ""
+var currentlyUpdating = false
 
 
 
@@ -311,7 +312,7 @@ function renderItem(item){
     return html$
 }
 
-function getNewItemsAndUpdateReport() {
+function getNewItemsAndUpdateReport(interval) {
     tiidsStr = tiids.join(",")
 
     $.ajax({
@@ -319,50 +320,37 @@ function getNewItemsAndUpdateReport() {
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
-        success: function(data){
-            $("ul#items").empty()
-            for (i in data){
-                // make the set of all newly-rendered items
-                // this is a very slow way to do this...should bundle together,
-                // then make one replace.
-                var genre = data[i].biblio.genre
-                var genreItems = "div." + genre + " ul#items"
-                $(genreItems).append(renderItem(data[i]))
-                $("div." + genre).show()  // would ideally only do this once
+        statusCode: {
+            210: function(data){
+                console.log("still updating; on try "+tries)
+                $("ul#items").empty()
+                for (i in data){
+                    // make the set of all newly-rendered items
+                    // this is a very slow way to do this...should bundle together,
+                    // then make one replace.
+                    var genre = data[i].biblio.genre
+                    var genreItems = "div." + genre + " ul#items"
+                    $(genreItems).append(renderItem(data[i]))
+                    $("div." + genre).show()  // would ideally only do this once
+                }
+                
+                setTimeout(function(){
+                    getNewItemsAndUpdateReport(inteval)
+                })
+            },
+            200: function(data) {
+                console.log("done with updating")
+                $("#page-header img").remove()
+
+                $("#num-items").remove();
+                $("<span id='num-items'>"+tiids.length+" items</span>")
+                    .hide()
+                    .insertAfter("#report-button")
+                    .show();
+                return false;
             }
         }
     });
-}
- 
-function pollApiAndUpdateCollection(interval, oldText, tries){
-    getNewItemsAndUpdateReport();
-    // has anything changed?
-    currentText = $("#metrics").text()
-    if (currentText == oldText) {
-        console.log("current and old text match; on try "+tries)
-        tries++;
-        if (tries > 10) {
-            console.log("done with updating")
-            $("#page-header img").remove()
-            
-            
-            // let's do this thing
-            
-            $("#num-items").remove();
-            $("<span id='num-items'>"+tiids.length+" items</span>")
-                .hide()
-                .insertAfter("#report-button")
-                .show();
-            return false
-        }
-    }
-    else {
-        tries = 0
-    }
-
-    setTimeout(function(){
-        pollApiAndUpdateCollection(interval, currentText, tries);
-    }, interval)
 }
 
 
@@ -400,7 +388,7 @@ $(document).ready(function(){
             success: function(data){
                 //window.location.reload(false);
                 console.log("updating.")
-                pollApiAndUpdateCollection(500, "", 0);
+                pollApiAndUpdateCollection(500);
             }});
         return false;
     })
@@ -408,7 +396,7 @@ $(document).ready(function(){
 
     if (typeof tiids != "undefined" && $("body.report")[0]){
         $("h2").before(ajaxLoadImgTransparent)
-        pollApiAndUpdateCollection(500, "", 0);
+        getNewItemsAndUpdateReport(500)
     }
 
 });
