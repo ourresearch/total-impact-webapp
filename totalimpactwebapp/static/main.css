@@ -94,6 +94,7 @@ div#header div.wrapper{
     height: 65px;
     padding-top:10px;
     margin: 0 auto;
+    position: relative;
     box-shadow: 0px 3px 16px -3px #333;
     border-top:none;
     background-position: bottom;
@@ -110,6 +111,11 @@ div#header  {
 /*    background: url(img/orange-noise.png);*/
 }
 
+div#header img {
+    position: absolute;
+    top: 0;
+    right: 10px;
+}
 
 h1 {
     margin:0;
@@ -154,7 +160,7 @@ body ul#nav a:hover {
 }
 ul#nav {
     float:right;
-    margin:4px 20px 0;
+    margin:4px 140px 0;
 }
 ul#nav li {
     float:left;
@@ -268,11 +274,12 @@ div#tagline p a:hover {
 
 }
 #tagline div.text {
-    width:600px;
+    width:575px;
     float:left;
 }
 #tagline img {
-    height:400px;
+    height:440px;
+    margin-top: -13px;
     width:auto;
     margin-bottom: -27px;
 }
