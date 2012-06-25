@@ -22,8 +22,11 @@ div#input textarea#paste_input {
     font-size: 18px;
 }
 div#input textarea#crossref_input {
-    height: 30px;
+    height: 26px;
     font-size: 18px;
+}
+li#paste-crossref {
+    padding-top: 5px;    
 }
 div#input textarea.no-input-yet, div#input input.no-input-yet {
     color: #aaa;
