@@ -15,7 +15,7 @@ var currentlyUpdating = false
 
 exampleStrings = {
     paste_input:"doi:10.123/somejournal/123\nhttp://www.example.com",
-    crossref_input: "Watson:  A Structure for Deoxyribose Nucleic Acid\nGeertz: Deep play: Notes on the Balinese cockfight",
+    crossref_input: "Watson : A Structure for Deoxyribose Nucleic Acid",
     name: "My Collection"
 }
 
@@ -136,7 +136,13 @@ upload_bibtex = function(files) {
             data: formData,
             success:  function(response,status,xhr){
                 addCollectionIds(response, $("li #input_bibtex"))
-        }});
+            },
+          error: function(XMLHttpRequest, textStatus, errorThrown) { 
+            $("li #input_bibtex").siblings("span.added").remove()
+            $("li #input_bibtex").siblings("span.loading").remove()
+            $("li #input_bibtex").after("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
+            }    
+        });
     }
 
 createCollectionInit = function(){
@@ -167,6 +173,8 @@ createCollectionInit = function(){
         
         if ($this.attr("id") == "paste_input") {
             newIds = parseTextareaArtifacts($(this).val());
+            // limit to adding first 10 lines
+            newIds = newIds.slice(0,10)
             addCollectionIds(newIds, $(this))
         }
         else {
@@ -183,10 +191,19 @@ createCollectionInit = function(){
             }
             $(this).siblings("span.added").remove()
             $(this).not("input#name").after("<span class='loading'>"+ajaxLoadImg+"<span>");
-            $.get("http://"+api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+            $.ajax({
+              url: "http://"+api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery,
+              type: "GET",
+              dataType: "json",
+              success: function(response,status,xhr){
                 addCollectionIds(response, $this)
-            }, "json");
-            
+                },
+              error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                $("span.loading").remove()
+                $this.siblings("span.added").remove()
+                $this.after("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
+                }    
+            });                        
         }        
     })
 
@@ -312,6 +329,19 @@ function renderItem(item){
     return html$
 }
 
+function addDataToGenres(data) {
+    $("ul#items").empty()
+    for (i in data){
+        // make the set of all newly-rendered items
+        // this is a very slow way to do this...should bundle together,
+        // then make one replace.
+        var genre = data[i].biblio.genre
+        var genreItems = "div." + genre + " ul#items"
+        $(genreItems).append(renderItem(data[i]))
+        $("div." + genre).show()  // would ideally only do this once
+    }
+}
+
 function getNewItemsAndUpdateReport(interval) {
     tiidsStr = tiids.join(",")
 
@@ -322,24 +352,15 @@ function getNewItemsAndUpdateReport(interval) {
         contentType: "application/json; charset=utf-8",
         statusCode: {
             210: function(data){
-                console.log("still updating; on try "+tries)
-                $("ul#items").empty()
-                for (i in data){
-                    // make the set of all newly-rendered items
-                    // this is a very slow way to do this...should bundle together,
-                    // then make one replace.
-                    var genre = data[i].biblio.genre
-                    var genreItems = "div." + genre + " ul#items"
-                    $(genreItems).append(renderItem(data[i]))
-                    $("div." + genre).show()  // would ideally only do this once
-                }
-                
+                console.log("still updating")
+                addDataToGenres(data)                
                 setTimeout(function(){
-                    getNewItemsAndUpdateReport(inteval)
+                    getNewItemsAndUpdateReport(interval)
                 })
             },
             200: function(data) {
                 console.log("done with updating")
+                addDataToGenres(data)
                 $("#page-header img").remove()
 
                 $("#num-items").remove();
@@ -388,7 +409,7 @@ $(document).ready(function(){
             success: function(data){
                 //window.location.reload(false);
                 console.log("updating.")
-                pollApiAndUpdateCollection(500);
+                getNewItemsAndUpdateReport(500);
             }});
         return false;
     })
