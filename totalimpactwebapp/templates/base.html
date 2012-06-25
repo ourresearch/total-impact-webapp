@@ -42,6 +42,7 @@
             })();
 
         </script>
+            
     </head>
 
     <body class="{{ body_class|default('default') }}">
@@ -57,6 +58,7 @@
                     <li><a href="http://total-impact.tumblr.com">blog</a></li>
                     <li><a href="http://twitter.com/#!/totalImpactdev">twitter</a></li>
                 </ul>
+                <a href="javascript:UserVoice.showPopupWidget();" title="Open feedback & support dialog (powered by UserVoice)"><img src="{{ url_for('static', filename='img/beta-ribbon.png') }}" /></a>
             </div>
         </div><!--  #header -->
         <div id="page-header">
@@ -162,5 +164,13 @@
 
     </div>
     {% endraw %}    
+    <script type="text/javascript">
+        var uvOptions = {};
+        (function() {
+            var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
+            uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/NGq30CjdUftugLRbNlRNw.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+        })();
+    </script>
 </body>
 </html>
