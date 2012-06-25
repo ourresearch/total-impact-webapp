@@ -136,7 +136,13 @@ upload_bibtex = function(files) {
             data: formData,
             success:  function(response,status,xhr){
                 addCollectionIds(response, $("li #input_bibtex"))
-        }});
+            },
+          error: function(XMLHttpRequest, textStatus, errorThrown) { 
+            $("li #input_bibtex").siblings("span.added").remove()
+            $("li #input_bibtex").siblings("span.loading").remove()
+            $("li #input_bibtex").after("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
+            }    
+        });
     }
 
 createCollectionInit = function(){
@@ -185,10 +191,19 @@ createCollectionInit = function(){
             }
             $(this).siblings("span.added").remove()
             $(this).not("input#name").after("<span class='loading'>"+ajaxLoadImg+"<span>");
-            $.get("http://"+api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery, function(response,status,xhr){
+            $.ajax({
+              url: "http://"+api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery,
+              type: "GET",
+              dataType: "json",
+              success: function(response,status,xhr){
                 addCollectionIds(response, $this)
-            }, "json");
-            
+                },
+              error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                $("span.loading").remove()
+                $this.siblings("span.added").remove()
+                $this.after("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
+                }    
+            });                        
         }        
     })
 
