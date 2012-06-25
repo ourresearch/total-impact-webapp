@@ -8,17 +8,13 @@
     <div class="wrapper">
         <ul id="manual-add">
             <li id="paste-ids">
-            <legend for="paste_input" class="prompt" title="Paste DOIs or URLS for items you want to look up." >URLs or DOIs</legend>
+            <legend for="paste_input" class="prompt" title="Paste DOIs or URLS for items you want to look up." >URLs or DOIs<span class="limit">(adds first 10 lines)</span></legend>
             <textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>
             </li>
             <li id="paste-crossref">
-            <legend for="crossref_input" class="prompt" title="Paste titles with the surname of their first author; we'll look them up by DOI. Conference proceedings and smaller journals tend not to work so well.">Titles with first author's surname</legend>
-            <textarea id="crossref_input" name="crossref" class="no-input-yet" type="text" cols="30" rows="4"></textarea>            
+            <legend for="crossref_input" class="prompt" title="Paste titles with the surname of their first author; we'll look them up by DOI. Conference proceedings and smaller journals tend not to work so well.">First author's surname <strong>:</strong> Title</legend>
+            <textarea id="crossref_input" name="crossref" class="no-input-yet" type="text" cols="30" rows="1"></textarea>            
             </li>
-            <!--li id="paste-bibtex">
-            <legend for="bibtex_input" class="prompt" title="Paste in BibTeX contents: will try to look up DOIs">Paste BibTeX items</legend>
-            <textarea id="bibtex_input" name="bibtex" type="text" cols="30" rows="4"></textarea>            
-            </li-->
         </ul>
         <ul id="pullers">
             <li>
@@ -41,7 +37,7 @@
             </li>
             <li>
             <div class="toggler_contents" id="bibtex_toggler_contents">
-            <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Upload a BibTeX file</legend>
+            <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Upload a BibTeX file<span class="limit">(looks up first 10 entries)</span></legend>
             <input type="file" id="input_bibtex" onchange="upload_bibtex(this.files)"/>
             </div>
             </li>
