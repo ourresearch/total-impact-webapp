@@ -138,3 +138,9 @@ span.added span.count {
     cursor: pointer;
 }
 
+span.sorry {
+    display:block;
+    color: #888;    
+    font-size: 15px;
+}
+
