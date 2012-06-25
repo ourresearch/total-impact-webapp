@@ -111,11 +111,16 @@ div#header  {
 /*    background: url(img/orange-noise.png);*/
 }
 
-div#header img {
+div#header a#uservoice {
     position: absolute;
-    top: 0;
+    top: -2px;
     right: 10px;
+    display:block;
 }
+div#header a#uservoice:hover {
+    top: 0;
+}
+
 
 h1 {
     margin:0;
