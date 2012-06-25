@@ -3,12 +3,24 @@
 {% block content %}
 
 <div id="tagline">
-    <div class="wrapper">
-        <div class="text">
+    <div id="img-bar">
+        <div class="wrapper">
+            <img src="{{ url_for('static', filename='img/monitor.png') }}" width="80"/>
+        </div>
+    </div>
+
+    <div id="text-bar">
+        <div class="wrapper">
             <div id="tagline-and-subtagline">
                 <h2>Uncover the invisible impacts of your research.</h2>
                 <p class="subtagline">total-impact aggregates <a href="http://altmetrics.org/manifesto">altmetrics</a>: diverse impacts from your articles, datasets, blog posts, and more.</p>
             </div>
+        </div>
+    </div>
+
+    <div id="button-bar">
+        <div class="wrapper">
+
             <div id="call-to-action">
                 <span class="container"><a href="/create" id="create-collection">Make my impact report</a></span>
                 <p id="example-collection">or, show me a <a href="/collection/kn5auf" id="view-sample-collection">sample collection</a></p>
@@ -18,11 +30,7 @@
                                             <input type="submit" value="Subscribe to mailing list" name="subscribe" id="mc-embedded-subscribe" class="button"></form>
                                     </li>-->
             </div>
-
         </div>
-
-
-        <img src="{{ url_for('static', filename='img/monitor.png') }}" width="80"/>
     </div>
 </div>
 <div id="selling-points">
