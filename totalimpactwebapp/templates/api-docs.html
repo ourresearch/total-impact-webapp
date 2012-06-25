@@ -485,7 +485,7 @@ curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":[
                 </pre></div>
         </div>
 
-        <h3 class="apicall">GET /collection:collectionId</h3>
+        <h3 class="apicall">GET /collection/:collectionId</h3>
         <div class="description">
             Get the tiids in a collection, given a collection id
 
@@ -523,7 +523,7 @@ curl -i -X GET http://total-impact-core.herokuapp.com/collection/8iwgwi
         <div class="description">
 
             <h4>returns</h4>
-            A list of metrics objects.
+            A dictionary of providers and their metadata.
 
             <h4>errors</h4>
             <ul>
