@@ -15,7 +15,7 @@ var currentlyUpdating = false
 
 exampleStrings = {
     paste_input:"doi:10.123/somejournal/123\nhttp://www.example.com",
-    crossref_input: "Watson:  A Structure for Deoxyribose Nucleic Acid\nGeertz: Deep play: Notes on the Balinese cockfight",
+    crossref_input: "Watson : A Structure for Deoxyribose Nucleic Acid",
     name: "My Collection"
 }
 
@@ -167,6 +167,8 @@ createCollectionInit = function(){
         
         if ($this.attr("id") == "paste_input") {
             newIds = parseTextareaArtifacts($(this).val());
+            // limit to adding first 10 lines
+            newIds = newIds.slice(0,10)
             addCollectionIds(newIds, $(this))
         }
         else {
