@@ -228,7 +228,7 @@ div#page-header img {
 
 div#tagline {
     color:#fff;
-    height: 466px;
+    height: 475px;
     position: relative;
 /*    background:url(img/tagline-bg.png) bottom left repeat-x;*/
 }
@@ -291,6 +291,7 @@ div#tagline p.subtagline{
     line-height: 1.2;
     width: 550px;
     font-family: rokkitt, georgia, sans-serif;
+    margin-top: 14px;
 }
 div#tagline p a {
     color: #fff;
