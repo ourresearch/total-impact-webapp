@@ -17,7 +17,7 @@ setup(
 	],
     url = '',
     author = 'total-impact',
-    author_email = 'totalimpactdev@gmail.com',
+    author_email = 'team@total-impact.org',
     description = 'source code for the webapp at http://total-impact.org',
     license = 'MIT',
     classifiers = [
