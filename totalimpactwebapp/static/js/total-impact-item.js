@@ -1,10 +1,4 @@
-$.ajaxSetup ({
-    cache: false
-});
-var ajax_load = "<img src='/static/img/ajax-loader.gif' alt='loading...' />";
-
-
-getLatestTs = function(metricSnaps) {
+function getLatestTimestamp(metricSnaps) {
     var latestTs = "1999-01-01T00:00:00.000000"
     for (ts in metricSnaps) {
         if (ts > latestTs) {
@@ -28,7 +22,7 @@ function renderItem(item){
     for (metricName in item.metrics){
         thisMetric = item.metrics[metricName]
         thisMetric.name = metricName
-        var latestTs = getLatestTs(item.metrics[metricName].values)
+        var latestTs = getLatestTimestamp(item.metrics[metricName].values)
         if (latestTs) {
             var latestVal = item.metrics[metricName].values[latestTs]
             thisMetric.ts = latestTs
@@ -89,7 +83,7 @@ function getNewItemsAndUpdateReport(interval) {
 }
 
 
-getAliases = function(input) {
+function getAliases(input) {
     // get the user-supplied aliases
    var aliases = [];
    var thisAlias = [];
@@ -99,10 +93,39 @@ getAliases = function(input) {
     return(aliases)
 }
 
+
+// Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
+function requestStylesheet(stylesheet_url) {
+    var stylesheet = document.createElement("link");
+    stylesheet.rel = "stylesheet";
+    stylesheet.type = "text/css";
+    stylesheet.href = stylesheet_url;
+    stylesheet.media = "all";
+    document.lastChild.firstChild.appendChild(stylesheet);
+}
+
+
+// Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
+function requestScript(script_url) {
+    var script = document.createElement('script');
+    script.src = script_url;
+    // IE7 doesn't like this: document.body.appendChild(script);
+    // Instead use:
+    document.getElementsByTagName('head')[0].appendChild(script);
+}
+
+
+$.ajaxSetup ({
+    cache: false
+});
 var tiids = []
+var ajax_load = "<img src='/static/img/ajax-loader.gif' alt='loading...' />";
 
 $(document).ready(function(){
     // updating the collection from the report page
+    //requestStylesheet("http://total-impact-webapp.herokuapp.com/static/embed.css")
+    //requestScript("http://total-impact-webapp.herokuapp.com/static/js/icanhaz.min.js")
+
     $("span#ti-id").hide()
     $("#total-impact div#ti-data").html(ajax_load+" Loading...")
     aliases = getAliases($("span#ti-id").html());
