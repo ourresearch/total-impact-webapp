@@ -148,7 +148,7 @@ curl -i -X POST -H "Content-Type: application/json" -d '[["doi", "10.1371/journa
             Get the metrics for items, given its total-impact ID (tiid).
 
             <h4>returns</h4>
-            An item object.
+            An item object. Response code 210 if it is currently being updated, 200 otherwise.
 
             <h4>errors</h4>
             <ul>
@@ -265,7 +265,8 @@ curl -i -X GET http://total-impact-core.herokuapp.com/item/0df8aa0eb2c911e19e181
             Get the metrics for a list of items, given total-impact IDs (tiids).
 
             <h4>returns</h4>
-            A list of item objects.
+            A list of item objects. Response code 210 if it is currently being updated, 200 otherwise.
+
 
             <h4>errors</h4>
             <ul>
