@@ -44,52 +44,50 @@ function renderItem(item){
     item.metricsArr.sort(sortByMetricValueDesc)
     
     var url = (item.aliases.url) ?  item.aliases.url[0] : false
-    ich.addTemplate("item", '<div class=\"item\" id=\"{{ id }}\">\r\n  <div class=\"biblio\"><\/div>\r\n  <ul class=\"metrics\">{{#metricsArr}}\r\n    <li>\r\n      <a href=\"{{provenance_url}}\">\r\n        <span class=\"last-update\">{{ ts }}<\/span>\r\n        <span class=\"metric-value\">{{ value }}<\/span>\r\n        <span class=\"metric-name-img\">\r\n          <img src=\"{{ static_meta.icon }}\" width=\"16\" height=\"16\" border=\"0\">\r\n          <span class=\"metric-name\">{{ static_meta.provider }} {{ static_meta.display_name }}<\/span>\r\n        <\/span>\r\n      <\/a>\r\n    <\/li>\r\n    {{\/metricsArr}}\r\n  <\/ul>\r\n<\/div>')
-    var html$ = ich.item(item)
+    if (typeof ich.itemtemplate == "undefined"){ 
+        ich.addTemplate("itemtemplate", '<div class=\"item\" id=\"{{ id }}\">\r\n  <div class=\"biblio\"><\/div>\r\n  <ul class=\"metrics\">{{#metricsArr}}\r\n    <li>\r\n      <a href=\"{{provenance_url}}\">\r\n        <span class=\"last-update\">{{ ts }}<\/span>\r\n        <span class=\"metric-value\">{{ value }}<\/span>\r\n        <span class=\"metric-name-img\">\r\n          <img src=\"{{ static_meta.icon }}\" width=\"16\" height=\"16\" border=\"0\">\r\n          <span class=\"metric-name\">{{ static_meta.provider }} {{ static_meta.display_name }}<\/span>\r\n        <\/span>\r\n      <\/a>\r\n    <\/li>\r\n    {{\/metricsArr}}\r\n  <\/ul>\r\n<\/div>')
+    }
+    var html$ = ich.itemtemplate(item)
     
     return html$
 }
 
-function getNewItemsAndUpdateReport() {
+function addDataToPage(data) {
+    $("#total-impact div#ti-data").empty()
+    for (i in data){
+        // make the set of all newly-rendered items
+        // this is a very slow way to do this...should bundle together,
+        // then make one replace.
+        $("#total-impact div#ti-data").append(renderItem(data[i]))
+    }
+}    
+
+ 
+function getNewItemsAndUpdateReport(interval) {
     tiidsStr = tiids.join(",")
 
     $.ajax({
-        url: 'http://total-impact-core.herokuapp.com/items/'+tiidsStr,                
+        url: 'http://total-impact-core.herokuapp.com/items/'+tiidsStr,                        
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
-        success: function(data){
-            $("#total-impact div#ti-data").empty()
-            for (i in data){
-                // make the set of all newly-rendered items
-                // this is a very slow way to do this...should bundle together,
-                // then make one replace.
-                $("#total-impact div#ti-data").append(renderItem(data[i]))
+        statusCode: {
+            210: function(data){
+                console.log("still updating")
+                addDataToPage(data)                
+                setTimeout(function(){
+                    getNewItemsAndUpdateReport(interval)
+                })
+            },
+            200: function(data) {
+                console.log("done with updating")
+                addDataToPage(data)                
+                return false;
             }
         }
     });
 }
- 
-function pollApiAndUpdateCollection(interval, oldText, tries){
-    getNewItemsAndUpdateReport();
-    // has anything changed?
-    currentText = $("#total-impact div#ti-data").html()
-    if (currentText == oldText) {
-        console.log("current and old text match; on try "+tries)
-        tries++;
-        if (tries > 10) {
-            console.log("done with updating")
-            return false
-        }
-    }
-    else {
-        tries = 0
-    }
 
-    setTimeout(function(){
-        pollApiAndUpdateCollection(interval, currentText, tries);
-    }, interval)
-}
 
 getAliases = function(input) {
     // get the user-supplied aliases
@@ -120,14 +118,7 @@ $(document).ready(function(){
             // make a new collection, populated by our freshly-minted tiids
             console.log("items created. ")
             tiids = returnedTiids
+            getNewItemsAndUpdateReport(500)
         }
     });
-
-
-    /* creating and updating reports
-     * *************************************************************************/
-    if (typeof tiids != "undefined"){
-        pollApiAndUpdateCollection(500, "", 0);
-    }
-
 });
