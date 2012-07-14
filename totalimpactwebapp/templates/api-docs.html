@@ -9,7 +9,7 @@
 
         <h3 id="embed">recommended approach: embed code</h3>
 
-            <p>The easiest way to include total-impact metrics in a webpage is through  embed code.  To use the total-impact embed code in your webpage, simply include the code below on your page, exactly as given, substituting the placeholder "doi:10.1371/journal.pcbi.1000355" string with your doi or other valid "namespace:id" string. </p>
+            <p>The easiest way to include total-impact metrics in a webpage is through  embed code.  To use the total-impact embed code in your webapge, simply include the code below in a webpage, exactly as given, subtituting the placeholder "doi:10.1371/journal.pcbi.1000355" string with your doi or other valid "namespace:id" string. </p>
 
             <p>We plan to refine and simplify this embed code in response to feedback: please let us know what you think, and join the <a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">total-impact newsgroup</a> if you'd like to be informed of changes.</p>
 
@@ -148,7 +148,7 @@ curl -i -X POST -H "Content-Type: application/json" -d '[["doi", "10.1371/journa
             Get the metrics for items, given its total-impact ID (tiid).
 
             <h4>returns</h4>
-            An item object.
+            An item object. Response code 210 if it is currently being updated, 200 otherwise.
 
             <h4>errors</h4>
             <ul>
@@ -265,7 +265,8 @@ curl -i -X GET http://total-impact-core.herokuapp.com/item/0df8aa0eb2c911e19e181
             Get the metrics for a list of items, given total-impact IDs (tiids).
 
             <h4>returns</h4>
-            A list of item objects.
+            A list of item objects. Response code 210 if it is currently being updated, 200 otherwise.
+
 
             <h4>errors</h4>
             <ul>
