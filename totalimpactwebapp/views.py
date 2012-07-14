@@ -67,7 +67,9 @@ def collection_create():
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
-    r = requests.get("http://" + os.environ["API_ROOT"] +'/collection/' + collection_id)
+    url = "http://" + os.environ["API_ROOT"] +'/collection/' + collection_id
+    
+    r = requests.get(url)
     if r.status_code == 200:
         collection = json.loads(r.text)
         return render_template(
@@ -78,5 +80,5 @@ def collection_report(collection_id):
             collection=collection
         )
     else:
-        abort(404, "This collection doesn't seem to exist yet.")
+        abort(404, "This collection doesn't seem to exist yet. "+url)
 
