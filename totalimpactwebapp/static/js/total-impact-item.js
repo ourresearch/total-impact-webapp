@@ -105,7 +105,7 @@
                                console.log("still updating");
                                addDataToPage(data);
                                setTimeout(function () {
-                                   getNewItemsAndUpdateReport(interval)
+                                   getNewItemAndUpdateReport(interval)
                                })
                            },
                            200:function (data) {
