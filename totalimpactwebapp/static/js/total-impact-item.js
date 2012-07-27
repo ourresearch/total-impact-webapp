@@ -105,7 +105,7 @@
                                console.log("still updating");
                                addDataToPage(data);
                                setTimeout(function () {
-                                   getNewItemAndUpdateReport(interval)
+                                   getNewItemAndUpdateReport(tiid, interval)
                                })
                            },
                            200:function (data) {
@@ -177,7 +177,7 @@
                 success:function (returnedTiid) {
                    // make a new collection, populated by our freshly-minted tiids
                    console.log("item created. ");
-                   getNewItemAndUpdateReport(returnedTiid, 500);
+                   getNewItemAndUpdateReport(returnedTiid, 1000);
                 }
            });
         });
