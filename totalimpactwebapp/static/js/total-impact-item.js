@@ -106,7 +106,7 @@
                                addDataToPage(data);
                                setTimeout(function () {
                                    getNewItemAndUpdateReport(tiid, interval)
-                               })
+                               }, interval)
                            },
                            200:function (data) {
                                console.log("done with updating");
