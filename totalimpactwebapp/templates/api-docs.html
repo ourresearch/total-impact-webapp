@@ -35,7 +35,7 @@
             <p>If the embed code described above doesn't meet your needs, you can use our api directly.  The total-impact webapp itself is built directly on top of this api. </p>
 
             <ul>
-                <!--li>api root is at http://api.total-impact.org/v1/</li-->
+                <!--li>api root is at http://api.total-impact.org</li-->
                 <li>api calls return JSON</li>
                 <li>api calls return return 500 in case of internal error</li>
                 <li>Cross-Origin Resource Sharing (CORS) is enabled</li>    
@@ -46,7 +46,7 @@
             <p>Here are the API methods:</p>
 
 
-        <h3 class="apicall">GET /v1</h3>
+        <h3 class="apicall">GET /</h3>
         <div class="description">
             Welcome to the API.
 
@@ -55,7 +55,7 @@
 
             <h4>example</h4> 
             <div class="apicall"><pre>
-curl -i -X GET http://total-impact-core.herokuapp.com/v1
+curl -i -X GET http://api.total-impact.org
 
 
 {
@@ -79,7 +79,7 @@ curl -i -X GET http://total-impact-core.herokuapp.com/v1
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X POST -H "Content-Type: application/json" -d '{}' http://total-impact-core.herokuapp.com/tiid/doi/10.1371/journal.pcbi.1000361
+curl -i -X POST -H "Content-Type: application/json" -d '{}' http://api.total-impact.org/tiid/doi/10.1371/journal.pcbi.1000361
 
 
 "0df8aa0eb2c911e19e181231381b0f5a"
@@ -101,7 +101,7 @@ curl -i -X POST -H "Content-Type: application/json" -d '{}' http://total-impact-
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://total-impact-core.herokuapp.com/tiid/doi/10.1371/journal.pcbi.1000361
+curl -i -X GET http://api.total-impact.org/tiid/doi/10.1371/journal.pcbi.1000361
 
 
 "0df8aa0eb2c911e19e181231381b0f5a"
@@ -123,7 +123,7 @@ curl -i -X GET http://total-impact-core.herokuapp.com/tiid/doi/10.1371/journal.p
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X POST -H "Content-Type: application/json" -d '[["doi", "10.1371/journal.pcbi.1000361"]]' http://total-impact-core.herokuapp.com/items
+curl -i -X POST -H "Content-Type: application/json" -d '[["doi", "10.1371/journal.pcbi.1000361"]]' http://api.total-impact.org/items
 
 
 ["0df8aa0eb2c911e19e181231381b0f5a"]
@@ -145,7 +145,7 @@ curl -i -X POST -H "Content-Type: application/json" -d '[["doi", "10.1371/journa
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://total-impact-core.herokuapp.com/item/0df8aa0eb2c911e19e181231381b0f5a
+curl -i -X GET http://api.total-impact.org/item/0df8aa0eb2c911e19e181231381b0f5a
 
 
 {
@@ -263,7 +263,7 @@ curl -i -X GET http://total-impact-core.herokuapp.com/item/0df8aa0eb2c911e19e181
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://total-impact-core.herokuapp.com/items/ec698118b33311e1bfcd12313d2a0ee9,0df8aa0eb2c911e19e181231381b0f5a
+curl -i -X GET http://api.total-impact.org/items/ec698118b33311e1bfcd12313d2a0ee9,0df8aa0eb2c911e19e181231381b0f5a
 
 
 [
@@ -427,7 +427,7 @@ curl -i -X GET http://total-impact-core.herokuapp.com/items/ec698118b33311e1bfcd
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://total-impact-core.herokuapp.com/items/ec698118b33311e1bfcd12313d2a0ee9,0df8aa0eb2c911e19e181231381b0f5a.csv
+curl -i -X GET http://api.total-impact.org/items/ec698118b33311e1bfcd12313d2a0ee9,0df8aa0eb2c911e19e181231381b0f5a.csv
 
 
 tiid,title,doi,citeulike:bookmarks,delicious:bookmarks,facebook:likes,facebook:shares,mendeley:groups,mendeley:readers,plosalm:crossref,plosalm:html_views,plosalm:pdf_views,plosalm:pmc_abstract,plosalm:pmc_figure,plosalm:pmc_full-text,plosalm:pmc_pdf,plosalm:pmc_supp-data,plosalm:pmc_unique-ip,plosalm:pubmed_central,plosalm:scopus,topsy:influential_tweets,topsy:tweets,wikipedia:mentions
@@ -457,7 +457,7 @@ ec698118b33311e1bfcd12313d2a0ee9,,,,2,16,1,,,,,,,,,,,,,,26,285,
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":["ec698118b33311e1bfcd12313d2a0ee9","0df8aa0eb2c911e19e181231381b0f5a"],"title":"My Collection"}' http://total-impact-core.herokuapp.com/collection
+curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":["ec698118b33311e1bfcd12313d2a0ee9","0df8aa0eb2c911e19e181231381b0f5a"],"title":"My Collection"}' http://api.total-impact.org/collection
 
 {
     "created": "2012-06-17T01:05:23.444710", 
@@ -488,7 +488,7 @@ curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":[
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://total-impact-core.herokuapp.com/collection/8iwgwi
+curl -i -X GET http://api.total-impact.org/collection/8iwgwi
 
 
 {
@@ -521,7 +521,7 @@ curl -i -X GET http://total-impact-core.herokuapp.com/collection/8iwgwi
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://total-impact-core.herokuapp.com/provider
+curl -i -X GET http://api.total-impact.org/provider
 
 {
     "bibtex": {

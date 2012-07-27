@@ -173,9 +173,12 @@ createCollectionInit = function(){
         
         if ($this.attr("id") == "paste_input") {
             newIds = parseTextareaArtifacts($(this).val());
-            // limit to adding first 10 lines
-            newIds = newIds.slice(0,10)
+            // limit to adding first 100 lines
+            newIds = newIds.slice(0,100)
             addCollectionIds(newIds, $(this))
+        }
+        else if ($this.attr("id") == "name") {
+            // do nothing, it's just an entry field. hack, ick.
         }
         else {
             var idStrParts = $(this).attr("id").split('_');
