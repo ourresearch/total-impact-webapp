@@ -250,7 +250,7 @@ createCollectionInit = function(){
                             // we've created the items and the collection; our
                             // work here is done.
                             console.log(returnedCollection)
-                            location.href = "/collection/" +returnedCollection.id;
+                            location.href = "/collection/" +returnedCollection._id;
                         }
                     });
                 }
