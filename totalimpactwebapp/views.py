@@ -14,7 +14,7 @@ logger = logging.getLogger("tiwebapp.views")
 def home():
     return render_template(
     'index.html', 
-    page_title="uncover the invisible impact of research",
+    page_title="tell the full story of your research impact",
     body_class="homepage")
 
 @app.route('/about')
