@@ -295,6 +295,21 @@ getLatestTs = function(metricSnaps) {
     return latestTs
 }
 
+function showHideExtraMetrics(item$) {
+    var numMetrics = item$.find("ul.metrics li").length
+    console.log("numMetrics=" + numMetrics)
+    var extraMetrics = (11 - numMetrics) * -1
+    console.log(extraMetrics)
+    if (extraMetrics > 0) {
+        $("<a class='showhide'>+"+extraMetrics+" more...</a>")
+            .click(function() {
+                   $(this).hide().prev().find("li").show()
+               })
+            .insertAfter(item$.find("ul.metrics"))
+        item$.find("li:gt(10)").hide()
+
+    }
+}
 
 function sortByMetricValueDesc(metric1, metric2){
   if (metric1.value < metric2.value)
@@ -323,9 +338,10 @@ function renderItem(item){
     }
 
     item.metricsArr.sort(sortByMetricValueDesc)
-    
+
     var url = (item.aliases.url) ?  item.aliases.url[0] : false
     var html$ = ich.item(item)
+    showHideExtraMetrics(html$)
     var biblioHtml = renderItemBiblio(item.biblio, url)
     html$.find("div.biblio").append(biblioHtml)
     

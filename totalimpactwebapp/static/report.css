@@ -165,6 +165,20 @@ li.item span.genre {
     margin-left:0;
 }
 
+li.item a.showhide {
+    width:50px;
+    font-weight: bold;
+    color: #fff;
+    background: #777;
+    padding: 2px 8px;
+    -webkit-border-radius: 3px;    /* CSS3 rounded borders for Safari  */
+    -moz-border-radius: 3px;       /* CSS3 rounded borders for Firefox  */
+}
+li.item a.showhide:hover{
+    background: #FF4E00;
+    text-decoration: none;
+}
+
 div.genre h3 {
     font-family: rokkitt, georgia, serif;
     font-size:35px;
@@ -211,8 +225,8 @@ ul.metrics li, ul.biblio li, ul.about li{
 div.biblio {
     width:350px;
     float:left;
-    margin:0;
-    padding:0;
+    margin:2px 0 0 0;
+    padding:0 10px 0 0;
     color:#222;
     font-size: 14px;
 }
@@ -282,13 +296,10 @@ ul.metrics li:hover span.metric-name {
     color:#FF4E00;
 }
 .metric-name {
-    -moz-transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    -ms-filter: 'progid:DXImageTransform.Microsoft.BasicImage(rotation=3)';
     color: #aaa;
     display: block;
     font-size: 9px;
-    width: 30px;
+    width: 43px;
     margin: 7px auto 0;
 }
 span.meta-doi {
