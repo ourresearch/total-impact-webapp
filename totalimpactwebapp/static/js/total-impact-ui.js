@@ -393,7 +393,7 @@ function add_derived_metrics(metricsArr) {
         mendeleyItem = get_copy_of_mendeley_item(metricsArr)
         mendeleyItem = update_metric(mendeleyItem, 
                                     "mendeley:developing_countries",
-                                    "developing countries reader",
+                                    "developing countries readers",
                                     total)        
         metricsArr.push(mendeleyItem)
     }
