@@ -389,7 +389,7 @@ function add_derived_metrics(metricsArr) {
         mendeleyItem = get_copy_of_mendeley_item(metricsArr)
         mendeleyItem = update_metric(mendeleyItem, 
                                     "mendeley:student_readers",
-                                    "student readers",
+                                    "readers: students",
                                     total)
         metricsArr.push(mendeleyItem)
     }
@@ -408,7 +408,7 @@ function add_derived_metrics(metricsArr) {
         mendeleyItem = get_copy_of_mendeley_item(metricsArr)
         mendeleyItem = update_metric(mendeleyItem, 
                                     "mendeley:developing_countries",
-                                    "developing countries readers",
+                                    "readers: developing countries",
                                     total)        
         metricsArr.push(mendeleyItem)
     }
