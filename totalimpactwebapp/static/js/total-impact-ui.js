@@ -1,6 +1,10 @@
 $.ajaxSetup ({
     cache: false
 });
+if (!window.console) {
+    console = {log: function() {}}; 
+}
+
 var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
 var ajaxLoadImgTransparent = "<img class='loading' src='../static/img/ajax-loader-transparent.gif' alt='loading...' />";
 var collectionIds = []

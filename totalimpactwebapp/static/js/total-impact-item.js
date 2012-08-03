@@ -41,6 +41,10 @@
 
     function main() {
 
+        if (!window.console) {
+           console = {log: function() {}}; 
+        }
+        
         function getLatestTimestamp(metricSnaps) {
             var latestTs = "1999-01-01T00:00:00.000000";
             for (ts in metricSnaps) {
