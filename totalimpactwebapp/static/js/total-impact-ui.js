@@ -304,6 +304,98 @@ function sortByMetricValueDesc(metric1, metric2){
   return 0;
 }
 
+// developing countries as per IMF 2012, plus Cuba and North Korea (not IMF members)
+// see http://www.imf.org/external/pubs/ft/weo/2012/01/pdf/text.pdf
+developing_countries = "Afghanistan|Albania|Algeria|Angola|Antigua and Barbuda|Argentina|Armenia|Azerbaijan|Bahamas|Bahrain|Bangladesh|Barbados|Belarus|Belize|Benin|Bhutan|Bolivia|Bosnia and Herzegovina|Botswana|Brazil|Brunei|Bulgaria|Burkina Faso|Burma|Burundi|Cambodia|Cameroon|Cape Verde|Central African Republic|Chad|Chile|China|Colombia|Comoros|Cuba|Democratic Republic of the Congo|Republic of the Congo|Costa Rica|Côte d Ivoire|Croatia|Djibouti|Dominica|Dominican Republic|Ecuador|Egypt|El Salvador|Equatorial Guinea|Eritrea|Ethiopia|Fiji|Gabon|The Gambia|Georgia|Ghana|Grenada|Guatemala|Guinea|Guinea-Bissau|Guyana|Haiti|Honduras|Hungary|India|Indonesia|Iran|Iraq|Jamaica|Jordan|Kazakhstan|Kenya|Kiribati|Kuwait|Kyrgyzstan|Laos|Latvia|Lebanon|Lesotho|Liberia|Libya|Lithuania|Macedonia|Madagascar|Malawi|Malaysia|Maldives|Mali|Marshall Islands|Mauritania|Mauritius|Mexico|Federated States of Micronesia|Moldova|Mongolia|Montenegro|Morocco|Mozambique|Namibia|Nauru|Nepal|Nicaragua|Niger|Nigeria|North Korea|Oman|Pakistan|Palau|Panama|Papua New Guinea|Paraguay|Peru|Philippines|Poland|Qatar|Romania|Russia|Rwanda|Saint Kitts and Nevis|Saint Lucia|Saint Vincent and the Grenadines|Samoa|São Tomé and Príncipe|Saudi Arabia|Senegal|Serbia|Seychelles|Sierra Leone|Solomon Islands|Somalia|South Africa|South Sudan|Sri Lanka|Sudan|Suriname|Swaziland|Syria|Tajikistan|Tanzania|Thailand|Timor-Leste|Togo|Tonga|Trinidad and Tobago|Tunisia|Turkey|Turkmenistan|Tuvalu|Uganda|Ukraine|United Arab Emirates|Uruguay|Uzbekistan|Vanuatu|Venezuela|Vietnam|Yemen|Zambia|Zimbabwe"
+
+function get_mendeley_percent(metricsArr, dict_key, key_substring) {
+    mendeleyRelevantDict = metricsArr.filter(function(x) {return x["name"]==dict_key})
+    if (typeof mendeleyRelevantDict[0] == "undefined") {
+        return(0)
+    }
+
+    var re = new RegExp(key_substring, 'i');
+    mendeleyRelevantKeys = mendeleyRelevantDict[0].value.filter(function(x) {return x["name"].match(re)})
+    if (typeof mendeleyRelevantKeys[0] == "undefined") {
+        return(0)
+    }
+
+    mendeleyPercentages = mendeleyRelevantKeys.map(function(x) {return x["value"]})
+    if (typeof mendeleyPercentages[0] == "undefined") {
+        return(0)
+    }
+
+    sum = eval(mendeleyPercentages.join("+"))
+    return(sum)
+}
+
+function mendeley_reader_subset_count(metricsArr, subset_type){
+    mendeleyReaders = metricsArr.filter(function(x) {return x["name"]=="mendeley:readers"})
+    if (typeof mendeleyReaders[0] == "undefined") {
+        return(0)
+    }
+    total_mendeley_readers = mendeleyReaders[0].value
+
+    if (subset_type == "student") {
+        percent = get_mendeley_percent(metricsArr, "mendeley:career_stage", "student")
+    }
+    if (subset_type == "developing_countries") {
+        percent = get_mendeley_percent(metricsArr, "mendeley:country", developing_countries)
+    }
+
+    total = Math.round(total_mendeley_readers * percent / 100)
+    console.log(total_mendeley_readers + " mendeley readers * " + percent + "% " + subset_type + " = " + total)
+
+    return(total)
+}
+
+function get_copy_of_mendeley_item(metricsArr) {
+    // do a deep copy    
+    mendeleyReaders = metricsArr.filter(function(x) {return x["name"]=="mendeley:readers"})
+    copyMendeleyReaders = $.extend(true, [], mendeleyReaders[0]);
+    return(copyMendeleyReaders)
+}
+
+function add_derived_metrics(metricsArr) {
+    // mendeley student readers
+    total = mendeley_reader_subset_count(metricsArr, "student")
+    if (total > 0) {
+        mendeleyItem = get_copy_of_mendeley_item(metricsArr)
+        mendeleyItem["name"] = "mendeley:student_readers"
+        mendeleyItem["static_meta"]["display_name"] = "student readers"
+        mendeleyItem["value"] = total
+        metricsArr.push(mendeleyItem)
+    }
+    //if (total >= 5) {
+    //    mendeleyItem = get_copy_of_mendeley_item(metricsArr)
+    //    mendeleyItem["name"] = "mendeley:student_readers_star"
+    //    mendeleyItem["static_meta"]["display_name"] = "student readers"
+    //    mendeleyItem["value"] = 0.1
+    //    mendeleyItem["static_meta"]["icon"] = "http://total-impact.org/static/img/favicon.png"
+    //    metricsArr.push(mendeleyItem)
+    //}
+
+    // mendeley developing countries
+    total = mendeley_reader_subset_count(metricsArr, "developing_countries")
+    if (total > 0) {
+        mendeleyItem = get_copy_of_mendeley_item(metricsArr)
+        mendeleyItem["name"] = "mendeley:developing_countries"
+        mendeleyItem["static_meta"]["display_name"] = "developing countries reader"
+        mendeleyItem["value"] = total
+        metricsArr.push(mendeleyItem)
+    }
+    //if (total >= 5) {
+    //    mendeleyItem = get_copy_of_mendeley_item(metricsArr)
+    //    mendeleyItem["name"] = "mendeley:developing_countries_star"
+    //    mendeleyItem["static_meta"]["display_name"] = "developing countries reader"
+    //    mendeleyItem["value"] = 0.1
+    //    mendeleyItem["static_meta"]["icon"] = "http://total-impact.org/static/img/favicon.png"
+    //    metricsArr.push(mendeleyItem)
+    //}
+
+    return(metricsArr)
+}
+
 function renderItem(item){
     item.metricsArr = []
     for (metricName in item.metrics){
@@ -322,6 +414,13 @@ function renderItem(item){
         }
     }
 
+    // add on the derived metrics
+    item.metricsArr = add_derived_metrics(item.metricsArr)
+
+    // remove the dictionaries from what will be displayed
+    item.metricsArr = item.metricsArr.filter(function(x) {return typeof x["value"] == "number"})
+
+    // sort by descending order of metrics
     item.metricsArr.sort(sortByMetricValueDesc)
     
     var url = (item.aliases.url) ?  item.aliases.url[0] : false
