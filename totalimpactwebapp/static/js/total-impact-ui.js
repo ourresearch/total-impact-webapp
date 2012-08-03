@@ -356,14 +356,22 @@ function get_copy_of_mendeley_item(metricsArr) {
     return(copyMendeleyReaders)
 }
 
+function update_metric(item, metric_name, display_name, value) {
+    item["name"] = metric_name
+    item["static_meta"]["display_name"] = display_name
+    item["value"] = value
+    return(item)
+}
+
 function add_derived_metrics(metricsArr) {
     // mendeley student readers
     total = mendeley_reader_subset_count(metricsArr, "student")
     if (total > 0) {
         mendeleyItem = get_copy_of_mendeley_item(metricsArr)
-        mendeleyItem["name"] = "mendeley:student_readers"
-        mendeleyItem["static_meta"]["display_name"] = "student readers"
-        mendeleyItem["value"] = total
+        mendeleyItem = update_metric(mendeleyItem, 
+                                    "mendeley:student_readers",
+                                    "student readers",
+                                    total)
         metricsArr.push(mendeleyItem)
     }
     //if (total >= 5) {
@@ -379,9 +387,10 @@ function add_derived_metrics(metricsArr) {
     total = mendeley_reader_subset_count(metricsArr, "developing_countries")
     if (total > 0) {
         mendeleyItem = get_copy_of_mendeley_item(metricsArr)
-        mendeleyItem["name"] = "mendeley:developing_countries"
-        mendeleyItem["static_meta"]["display_name"] = "developing countries reader"
-        mendeleyItem["value"] = total
+        mendeleyItem = update_metric(mendeleyItem, 
+                                    "mendeley:developing_countries",
+                                    "developing countries reader",
+                                    total)        
         metricsArr.push(mendeleyItem)
     }
     //if (total >= 5) {
@@ -415,7 +424,9 @@ function renderItem(item){
     }
 
     // add on the derived metrics
-    item.metricsArr = add_derived_metrics(item.metricsArr)
+    if (typeof item.metricsArr[0] != "undefined") {
+        item.metricsArr = add_derived_metrics(item.metricsArr)
+    }
 
     // remove the dictionaries from what will be displayed
     item.metricsArr = item.metricsArr.filter(function(x) {return typeof x["value"] == "number"})
