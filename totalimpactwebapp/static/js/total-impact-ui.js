@@ -316,11 +316,15 @@ function showHideExtraMetrics(item$) {
 }
 
 function sortByMetricValueDesc(metric1, metric2){
-  if (metric1.value < metric2.value)
-     return 1;
-  if (metric1.value > metric2.value)
-    return -1;
-  return 0;
+    if (typeof metric1.value != "number")
+        return 1
+    if (typeof metric2.value != "number")
+        return -1
+    if (metric1.value < metric2.value)
+        return 1;
+    if (metric1.value > metric2.value)
+       return -1;
+    return 0;
 }
 
 // developing countries as per IMF 2012, plus Cuba and North Korea (not IMF members)
