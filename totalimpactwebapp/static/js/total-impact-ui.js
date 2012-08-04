@@ -448,7 +448,13 @@ function renderItem(item){
     }
 
     // remove the dictionaries from what will be displayed
-    item.metricsArr = item.metricsArr.filter(function(x) {return typeof x["value"] == "number"})
+    item.metricsArr = item.metricsArr.filter(function(x) {   
+            good_to_print = (typeof x["value"] == "number")
+            if (typeof x["value"] == "string") {
+                good_to_print = true
+            }
+            return good_to_print
+        })
 
     // sort by descending order of metrics
     item.metricsArr.sort(sortByMetricValueDesc)
