@@ -518,7 +518,12 @@ function getNewItemsAndUpdateReport(interval) {
 
 
 $(document).ready(function(){
-    
+
+    if (typeof collectionId != "undefined" ){
+        $("h2").before(ajaxLoadImgTransparent)
+        getNewItemsAndUpdateReport(500)
+    }
+
     // report page stuff
     $('ul.metrics li').tooltip();
 
@@ -556,9 +561,6 @@ $(document).ready(function(){
     })
 
 
-    if (typeof tiids != "undefined" && $("body.report")[0]){
-        $("h2").before(ajaxLoadImgTransparent)
-        getNewItemsAndUpdateReport(500)
-    }
+
 
 });

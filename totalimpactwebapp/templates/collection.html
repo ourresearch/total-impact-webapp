@@ -17,7 +17,7 @@
                     </span>
                 </div>
                 <div id="report-button">
-                    <span class="report-button"><a class="report-button-full" id="update-report-button" name="{{ collection.id }}" href="#">update</a></span>
+                    <span class="report-button"><a class="report-button-full" id="update-report-button" name="{{ collection_id }}" href="#">update</a></span>
                     <span class="report-button">
                         <a class="report-button-left" href="http://{{ api_root }}/collection/{{ collection_id }}">json</a>
                         <a class="report-button-right" href="http://{{ api_root }}/collection/{{ collection_id }}.csv">csv</a>
@@ -27,7 +27,9 @@
             </div>
         </div>
         <div id="metrics">
-            <div class="genre article">
+           <script type="text/javascript">var collectionId = ["{{ collection_id }}"]</script>
+
+           <div class="genre article">
                 <h3><span>articles</span></h3>
                 <ul id="items">
                 </ul>

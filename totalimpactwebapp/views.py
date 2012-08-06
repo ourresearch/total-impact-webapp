@@ -80,7 +80,7 @@ def collection_report(collection_id):
             api_root=os.environ["API_ROOT"],
             page_title=collection["title"],
             body_class="report",
-            collection_id=collection._id
+            collection_id=collection["_id"]
         )
     else:
         abort(404, "This collection doesn't seem to exist yet. "+url)
