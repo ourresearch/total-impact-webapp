@@ -109,27 +109,6 @@ curl -i -X GET http://api.total-impact.org/tiid/doi/10.1371/journal.pcbi.1000361
         </div>
 
 
-
-        <h3 class="apicall">POST /items</h3>
-        <div class="description">
-            Assigns total-impact IDs (tiids) to items. Create total-impact database records for these items.  Returns an unsorted list of total-impact IDs.
-
-            <h4>input data</h4>
-            [[namespace1, id1], [namespace2, id2], ...]
-
-            <h4>returns</h4>
-            A list of tiids for the items (response code 201).
-
-            <h4>example</h4> 
-
-            <div class="apicall"><pre>
-curl -i -X POST -H "Content-Type: application/json" -d '[["doi", "10.1371/journal.pcbi.1000361"]]' http://api.total-impact.org/items
-
-
-["0df8aa0eb2c911e19e181231381b0f5a"]
-                </pre></div>
-        </div>
-
         <h3 class="apicall">GET /item/:tiid</h3>
         <div class="description">
             Get the metrics for items, given its total-impact ID (tiid).
