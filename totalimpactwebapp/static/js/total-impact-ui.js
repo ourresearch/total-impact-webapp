@@ -486,8 +486,6 @@ function addDataToGenres(data) {
 }
 
 function getNewItemsAndUpdateReport(interval) {
-    tiidsStr = tiids.join(",")
-
     $.ajax({
         url: "http://"+api_root+'/collection/'+collectionId,
         type: "GET",
@@ -503,11 +501,11 @@ function getNewItemsAndUpdateReport(interval) {
             },
             200: function(data) {
                 console.log("done with updating")
-                addDataToGenres(data)
+                addDataToGenres(data.items)
                 $("#page-header img").remove()
 
                 $("#num-items").remove();
-                $("<span id='num-items'>"+tiids.length+" items</span>")
+                $("<span id='num-items'>"+data.items.length+" items</span>")
                     .hide()
                     .insertAfter("#report-button")
                     .show();

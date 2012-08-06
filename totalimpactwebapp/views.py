@@ -67,7 +67,10 @@ def collection_create():
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
-    url = "http://" + os.environ["API_ROOT"] +'/collection/' + collection_id
+    url = "http://{root}/collection/{collection_id}?include_items=0".format(
+        root=os.getenv("API_ROOT"),
+        collection_id=collection_id
+    )
     
     r = requests.get(url)
     if r.status_code == 200:
@@ -77,7 +80,7 @@ def collection_report(collection_id):
             api_root=os.environ["API_ROOT"],
             page_title=collection["title"],
             body_class="report",
-            collection=collection
+            collection_id=collection._id
         )
     else:
         abort(404, "This collection doesn't seem to exist yet. "+url)

@@ -430,13 +430,14 @@ curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":[
                 </pre></div>
         </div>
 
-        <h3 class="apicall">GET /collection/:collectionId [.csv]</h3>
+        <h3 class="apicall">GET /collection/:collectionId [?include_items=false] [.csv]</h3>
         <div class="description">
             Get the items and metadata associated with a given collection
 
             <h4>returns</h4>
-            A collection object, which includes both collection metadata and a list of items in the collection.
-            Format is json by default, but appending <code>.csv</code> will return csv.
+            A collection object, which includes both collection metadata and a list of items in the collection
+           (pass <code>include_items=false</code> to leave the items out).
+            Format is json by default, but appending <code>.csv</code> returns a csv file, with one row per item.
 
             <h4>return codes</h4>
             <ul>
