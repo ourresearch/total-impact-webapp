@@ -177,8 +177,8 @@ createCollectionInit = function(){
         
         if ($this.attr("id") == "paste_input") {
             newIds = parseTextareaArtifacts($(this).val());
-            // limit to adding first 100 lines
-            newIds = newIds.slice(0,100)
+            // limit to adding first 500 lines
+            newIds = newIds.slice(0, 500)
             addCollectionIds(newIds, $(this))
         }
         else if ($this.attr("id") == "name") {
