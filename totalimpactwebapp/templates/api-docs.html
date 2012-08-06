@@ -392,28 +392,6 @@ curl -i -X GET http://api.total-impact.org/items/ec698118b33311e1bfcd12313d2a0ee
                 </pre></div>
         </div>
 
-        <h3 class="apicall">GET /items/:tiid1[,:tiid2,...].csv</h3>
-        <div class="description">
-            Get the metrics for a list of items in csv format, given total-impact IDs (tiids).
-            <h4>returns</h4>
-            Metrics values in comma separated format.
-
-            <h4>errors</h4>
-            <ul>
-                <li>404 if not found</li>
-            </ul>
-
-            <h4>example</h4> 
-
-            <div class="apicall"><pre>
-curl -i -X GET http://api.total-impact.org/items/ec698118b33311e1bfcd12313d2a0ee9,0df8aa0eb2c911e19e181231381b0f5a.csv
-
-
-tiid,title,doi,citeulike:bookmarks,delicious:bookmarks,facebook:likes,facebook:shares,mendeley:groups,mendeley:readers,plosalm:crossref,plosalm:html_views,plosalm:pdf_views,plosalm:pmc_abstract,plosalm:pmc_figure,plosalm:pmc_full-text,plosalm:pmc_pdf,plosalm:pmc_supp-data,plosalm:pmc_unique-ip,plosalm:pubmed_central,plosalm:scopus,topsy:influential_tweets,topsy:tweets,wikipedia:mentions
-ec698118b33311e1bfcd12313d2a0ee9,,,,2,16,1,,,,,,,,,,,,,,26,285,
-0df8aa0eb2c911e19e181231381b0f5a,"Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article",10.1371/journal.pcbi.1000361,60,,,,5,52,13,11558,1100,70,39,624,149,6,580,12,24,,,1
-                </pre></div>
-        </div>
 
         <h3 class="apicall">POST /collection</h3>
         <div class="description">
@@ -452,12 +430,13 @@ curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":[
                 </pre></div>
         </div>
 
-        <h3 class="apicall">GET /collection/:collectionId</h3>
+        <h3 class="apicall">GET /collection/:collectionId [.csv]</h3>
         <div class="description">
             Get the items and metadata associated with a given collection
 
             <h4>returns</h4>
             A collection object, which includes both collection metadata and a list of items in the collection.
+            Format is json by default, but appending <code>.csv</code> will return csv.
 
             <h4>return codes</h4>
             <ul>

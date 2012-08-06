@@ -496,7 +496,7 @@ function getNewItemsAndUpdateReport(interval) {
         statusCode: {
             210: function(data){
                 console.log("still updating")
-                addDataToGenres(data)                
+                addDataToGenres(data.items)
                 setTimeout(function(){
                     getNewItemsAndUpdateReport(interval)
                 })
