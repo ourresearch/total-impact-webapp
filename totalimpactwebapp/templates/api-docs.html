@@ -475,14 +475,15 @@ curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":[
 
         <h3 class="apicall">GET /collection/:collectionId</h3>
         <div class="description">
-            Get the tiids in a collection, given a collection id
+            Get the items and metadata associated with a given collection
 
             <h4>returns</h4>
-            A collection object.
+            A collection object, which includes both collection metadata and a list of items in the collection.
 
             <h4>errors</h4>
             <ul>
                 <li>404 if not found</li>
+               <li>(not sure of code yet) if one of the items is not found.</li>
             </ul>
 
             <h4>example</h4> 
@@ -494,9 +495,10 @@ curl -i -X GET http://api.total-impact.org/collection/8iwgwi
 {
     "created": "2012-06-17T00:22:43.484154", 
     "id": "24c2d58eb81411e180fe1231381b0711", 
-    "item_tiids": [
-        "ec698118b33311e1bfcd12313d2a0ee9"
-    ], 
+    "items": [
+        {tiid: "aiekcjvls86s3lkf29slk", "created": "2012-06-17T00:22:33.", ...},
+        {tiid: "abbkikjfj49ijfllkjoas", "created": "2012-06-17T00:22:32.", ...}
+    ],
     "last_modified": "2012-06-17T00:22:43.484154", 
     "title": "My Collection", 
     "type": "collection"
