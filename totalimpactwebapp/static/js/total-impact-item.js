@@ -56,11 +56,15 @@
         }
 
 
-        function sortByMetricValueDesc(metric1, metric2) {
+        function sortByMetricValueDesc(metric1, metric2){
+            if (typeof metric1.value != "number")
+                return 1
+            if (typeof metric2.value != "number")
+                return -1
             if (metric1.value < metric2.value)
                 return 1;
             if (metric1.value > metric2.value)
-                return -1;
+               return -1;
             return 0;
         }
 
@@ -81,6 +85,15 @@
                     item.metricsArr.push(thisMetric);
                 }
             }
+
+            // remove the dictionaries from what will be displayed
+            item.metricsArr = item.metricsArr.filter(function(x) {   
+                    good_to_print = (typeof x["value"] == "number")
+                    if (typeof x["value"] == "string") {
+                        good_to_print = true
+                    }
+                    return good_to_print
+                })
 
             item.metricsArr.sort(sortByMetricValueDesc);
 

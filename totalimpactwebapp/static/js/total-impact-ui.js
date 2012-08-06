@@ -177,8 +177,8 @@ createCollectionInit = function(){
         
         if ($this.attr("id") == "paste_input") {
             newIds = parseTextareaArtifacts($(this).val());
-            // limit to adding first 100 lines
-            newIds = newIds.slice(0,100)
+            // limit to adding first 500 lines
+            newIds = newIds.slice(0, 500)
             addCollectionIds(newIds, $(this))
         }
         else if ($this.attr("id") == "name") {
@@ -316,11 +316,15 @@ function showHideExtraMetrics(item$) {
 }
 
 function sortByMetricValueDesc(metric1, metric2){
-  if (metric1.value < metric2.value)
-     return 1;
-  if (metric1.value > metric2.value)
-    return -1;
-  return 0;
+    if (typeof metric1.value != "number")
+        return 1
+    if (typeof metric2.value != "number")
+        return -1
+    if (metric1.value < metric2.value)
+        return 1;
+    if (metric1.value > metric2.value)
+       return -1;
+    return 0;
 }
 
 // developing countries as per IMF 2012, plus Cuba and North Korea (not IMF members)
@@ -448,7 +452,13 @@ function renderItem(item){
     }
 
     // remove the dictionaries from what will be displayed
-    item.metricsArr = item.metricsArr.filter(function(x) {return typeof x["value"] == "number"})
+    item.metricsArr = item.metricsArr.filter(function(x) {   
+            good_to_print = (typeof x["value"] == "number")
+            if (typeof x["value"] == "string") {
+                good_to_print = true
+            }
+            return good_to_print
+        })
 
     // sort by descending order of metrics
     item.metricsArr.sort(sortByMetricValueDesc)
