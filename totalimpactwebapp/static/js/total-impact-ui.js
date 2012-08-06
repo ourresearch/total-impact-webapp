@@ -7,7 +7,7 @@ if (!window.console) {
 
 var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
 var ajaxLoadImgTransparent = "<img class='loading' src='../static/img/ajax-loader-transparent.gif' alt='loading...' />";
-var collectionIds = []
+var collectionAliases = []
 var currentUserInputValue = ""
 var currentlyUpdating = false
 
@@ -46,13 +46,13 @@ flatten = function(idsArr) {
 }
 
 addCollectionIds = function(idsArr, $this) {
-    var startingCollectionLength = collectionIds.length
+    var startingCollectionLength = collectionAliases.length
     var newIds = flatten(idsArr);
     
     // make an object with the unique key values
     var uniqueNamespaceIdPairs = {}
-    for  (var i=0; i<collectionIds.length; i++){
-        var namespaceIdPair = collectionIds[i].join(":")
+    for  (var i=0; i<collectionAliases.length; i++){
+        var namespaceIdPair = collectionAliases[i].join(":")
         uniqueNamespaceIdPairs[namespaceIdPair] = 1
     }
     console.log(uniqueNamespaceIdPairs)
@@ -60,13 +60,13 @@ addCollectionIds = function(idsArr, $this) {
     for (var i=0; i < newIds.length; i++){
         var newNamespaceIdPair = newIds[i].join(":")
         if (!uniqueNamespaceIdPairs[newNamespaceIdPair]) {
-            collectionIds.push(newIds[i])
+            collectionAliases.push(newIds[i])
         }
     }
     $("span.loading").remove()
     
     // how many items are in the new collection now?
-    var endingCollectionLength = collectionIds.length;
+    var endingCollectionLength = collectionAliases.length;
     numIdsAdded = endingCollectionLength - startingCollectionLength;
     $("#artcounter span.count").html(endingCollectionLength);
     if (numIdsAdded) {
@@ -219,7 +219,7 @@ createCollectionInit = function(){
     $("#id-form").submit(function(){
 
         // make sure the user input something at all
-        if (collectionIds.length == 0) {
+        if (collectionAliases.length == 0) {
             alert("Looks like you haven't added any research objects to the collection yet.")
             return false;
 
@@ -234,7 +234,7 @@ createCollectionInit = function(){
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(collectionIds),
+                data: JSON.stringify(collectionAliases),
                 success: function(returnedTiids){
                     // make a new collection, populated by our freshly-minted tiids
                     console.log("items created. making collection.")
@@ -489,7 +489,7 @@ function getNewItemsAndUpdateReport(interval) {
     tiidsStr = tiids.join(",")
 
     $.ajax({
-        url: "http://"+api_root+'/items/'+tiidsStr,                        
+        url: "http://"+api_root+'/collection/'+collectionId,
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",

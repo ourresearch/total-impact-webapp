@@ -480,9 +480,11 @@ curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":[
             <h4>returns</h4>
             A collection object, which includes both collection metadata and a list of items in the collection.
 
-            <h4>errors</h4>
+            <h4>return codes</h4>
             <ul>
                 <li>404 if not found</li>
+               <li>200 if all the collections objects are found and are done updating.</li>
+               <li>210 if all the collection's objects are found, but some are still updating.</li>
                <li>(not sure of code yet) if one of the items is not found.</li>
             </ul>
 
