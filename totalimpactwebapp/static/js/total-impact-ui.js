@@ -137,6 +137,7 @@ upload_bibtex = function(files) {
             type: "POST",
             processData: false,
             contentType: false,
+            timeout: 120*1000,  // 120 seconds, because bibtex is very slow
             data: formData,
             success:  function(response,status,xhr){
                 addCollectionIds(response, $("li #input_bibtex"))
