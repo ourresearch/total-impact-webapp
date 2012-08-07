@@ -547,11 +547,8 @@ $(document).ready(function(){
     $("#update-report-button").click(function(){
         $("h2").before(ajaxLoadImgTransparent)
         $.ajax({
-            url: "http://"+api_root+'/items',
+            url: "http://"+api_root+'/collection/'+collectionId,
             type: "POST",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(tiids),
             success: function(data){
                 //window.location.reload(false);
                 console.log("updating.")
