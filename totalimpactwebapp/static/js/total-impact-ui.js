@@ -361,10 +361,10 @@ function mendeley_reader_subset_count(metricsArr, subset_type){
     total_mendeley_readers = mendeleyReaders[0].value
 
     if (subset_type == "student") {
-        percent = get_mendeley_percent(metricsArr, "mendeley:career_stage_top_3_percentages", "student")
+        percent = get_mendeley_percent(metricsArr, "mendeley:career_stage", "student")
     }
     if (subset_type == "developing_countries") {
-        percent = get_mendeley_percent(metricsArr, "mendeley:country_top_3_percentages", developing_countries)
+        percent = get_mendeley_percent(metricsArr, "mendeley:country", developing_countries)
     }
 
     total = Math.round(total_mendeley_readers * percent / 100)
