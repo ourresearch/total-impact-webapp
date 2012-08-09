@@ -70,7 +70,7 @@
                     {% for metric_name, metric in provider.metrics.iteritems() %}
                     <li> <!-- information about a particular metric -->
                         <img src="{{ metric.icon }}" width="16" height="16" />
-                        <strong>{{ metric_name }}</strong>
+                        <strong>{{ metric.display_name }}</strong>
                         <span class="metric-descr">{{ metric.description }}</span>
                     </li>
                     {% endfor %}
