@@ -13,7 +13,7 @@
             </li>
             <li id="paste-crossref">
             <legend for="crossref_input" class="prompt" title="Paste titles with the surname of their first author; we'll look them up by DOI. Conference proceedings and smaller journals tend not to work so well.">First author's surname <strong>:</strong> Title<span class="limit">(experimental)</span></legend>
-            <textarea id="crossref_input" name="crossref" class="no-input-yet" type="text" cols="30" rows="1"></textarea>            
+            <textarea id="crossref_input" name="crossref" class="no-input-yet" type="text" cols="30" rows="1"></textarea>
             </li>
         </ul>
         <ul id="pullers">
@@ -39,6 +39,7 @@
             <div class="toggler_contents" id="bibtex_toggler_contents">
             <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Upload a BibTeX file<span class="limit">(experimental, takes up to 2 minutes)</span></legend>
             <input type="file" id="input_bibtex" onchange="upload_bibtex(this.files)"/>
+            <div class="progressbar"></div>
             </div>
             </li>
         </ul>

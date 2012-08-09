@@ -63,8 +63,9 @@ addCollectionIds = function(idsArr, $this) {
             collectionAliases.push(newIds[i])
         }
     }
+    $("div.progressbar").empty()
     $("span.loading").remove()
-    
+
     // how many items are in the new collection now?
     var endingCollectionLength = collectionAliases.length;
     numIdsAdded = endingCollectionLength - startingCollectionLength;
@@ -124,6 +125,40 @@ userInputHandler = function($this, prevValue) {
     
 }
 
+progressbar = function(total, done, loc$) {
+    percentDone = Math.round(done / total * 100)
+    loc$.html(percentDone + "% done...")
+}
+
+update_bibtex_progress = function(key) {
+    $.ajax({
+               url: "http://"+api_root+"/provider/bibtex/memberitems/"+key+"?method=async",
+               type: "GET",
+               dataType: "json",
+               success: function(response,status,xhr){
+                   console.log("searched using key " + key)
+                   console.log(response)
+                   if (response.pages == response.complete) {
+                       aliases = []
+                       for (i=0; i<response.memberitems.length; i++) {
+                           aliases = aliases.concat(response.memberitems[i])
+                       }
+                       addCollectionIds(aliases, $("li #input_bibtex"))
+                   }
+                   else {
+                       progressbar(response.pages, response.complete, $("#bibtex_toggler_contents div.progressbar"))
+                       setTimeout(function () {
+                           update_bibtex_progress(key)
+                       }, 500)
+                   }
+               },
+               error: function(XMLHttpRequest, textStatus, errorThrown) {
+                   $("span.loading").remove()
+                   $("li #input_bibtex").siblings("span.added").remove()
+                   $("li #input_bibtex").after("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
+               }
+           });  }
+
 upload_bibtex = function(files) {
     var fileInput = $("li #input_bibtex")[0];
     var file = fileInput.files[0];
@@ -132,6 +167,9 @@ upload_bibtex = function(files) {
     $("li #input_bibtex").siblings("span.added").remove()
     $("li #input_bibtex").after("<span class='loading'>"+ajaxLoadImg+"<span>");
 
+    console.log("starting ajax request now.")
+
+    progressbar(1, 0, $("#bibtex_toggler_contents div.progressbar"))
     $.ajax({
             url: "http://"+api_root+'/provider/bibtex/memberitems',
             type: "POST",
@@ -140,7 +178,8 @@ upload_bibtex = function(files) {
             timeout: 120*1000,  // 120 seconds, because bibtex is very slow
             data: formData,
             success:  function(response,status,xhr){
-                addCollectionIds(response, $("li #input_bibtex"))
+                console.log("started update request; got this key back: " + response)
+                update_bibtex_progress(response)
             },
           error: function(XMLHttpRequest, textStatus, errorThrown) { 
             $("li #input_bibtex").siblings("span.added").remove()
@@ -498,7 +537,7 @@ function getNewItemsAndUpdateReport(interval) {
                 addDataToGenres(data.items)
                 setTimeout(function(){
                     getNewItemsAndUpdateReport(interval)
-                })
+                }, 500)
             },
             200: function(data) {
                 console.log("done with updating")
