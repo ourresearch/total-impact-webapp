@@ -68,7 +68,8 @@ div#input span.paren {
 
 legend span.limit {
     display:block;
-    color: #888;    
+    color: #888;
+    font-weight: normal;
     font-size: 15px;
 }
 

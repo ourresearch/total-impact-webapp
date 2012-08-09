@@ -231,19 +231,19 @@ createCollectionInit = function(){
             if (providerName == "crossref") { // hack, should generalize for all textareas
                 var providerTypeQuery = "&type=import"
                 var pipeVal = $this.val().replace(":", "|");
-                var providerIdQuery = "?query=" + escape(pipeVal);
+                var providerIdQuery = escape(pipeVal);
             } else {
-                var providerTypeQuery = "&type=" + $this.attr("name");
-                var providerIdQuery = "?query=" + escape($this.val());
+                var providerIdQuery = escape($this.val());
             }
             $(this).siblings("span.added").remove()
             $(this).not("input#name").after("<span class='loading'>"+ajaxLoadImg+"<span>");
+            console.log("running memberitems")
             $.ajax({
-              url: "http://"+api_root+"/provider/"+providerName+"/memberitems"+providerIdQuery+providerTypeQuery,
+              url: "http://"+api_root+"/provider/"+providerName+"/memberitems/"+providerIdQuery+"?method=sync",
               type: "GET",
               dataType: "json",
               success: function(response,status,xhr){
-                addCollectionIds(response, $this)
+                addCollectionIds(response.memberitems, $this)
                 },
               error: function(XMLHttpRequest, textStatus, errorThrown) { 
                 $("span.loading").remove()

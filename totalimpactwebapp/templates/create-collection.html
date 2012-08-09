@@ -8,11 +8,11 @@
     <div class="wrapper">
         <ul id="manual-add">
             <li id="paste-ids">
-            <legend for="paste_input" class="prompt" title="Paste DOIs or URLS for items you want to look up." >URLs or DOIs<span class="limit">(limit 500)</span></legend>
+            <legend for="paste_input" class="prompt" title="Paste DOIs or URLS for items you want to look up." >URLs or DOIs<span class="limit">limit 500</span></legend>
             <textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>
             </li>
             <li id="paste-crossref">
-            <legend for="crossref_input" class="prompt" title="Paste titles with the surname of their first author; we'll look them up by DOI. Conference proceedings and smaller journals tend not to work so well.">First author's surname <strong>:</strong> Title<span class="limit">(experimental)</span></legend>
+            <legend for="crossref_input" class="prompt" title="Paste titles with the surname of their first author; we'll look them up by DOI. Conference proceedings and smaller journals tend not to work so well.">First author's surname <strong>:</strong> Title<span class="limit">experimental</span></legend>
             <textarea id="crossref_input" name="crossref" class="no-input-yet" type="text" cols="30" rows="1"></textarea>
             </li>
         </ul>
@@ -37,7 +37,7 @@
             </li>
             <li>
             <div class="toggler_contents" id="bibtex_toggler_contents">
-            <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Upload a BibTeX file<span class="limit">(experimental, takes up to 2 minutes)</span></legend>
+            <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Upload a BibTeX file<span class="limit">experimental, takes up to 2 minutes</span></legend>
             <input type="file" id="input_bibtex" onchange="upload_bibtex(this.files)"/>
             <div class="progressbar"></div>
             </div>
