@@ -58,6 +58,7 @@ def apidocs():
 
 @app.route('/create')
 def collection_create():
+    logger.info("%30s requesting /create" % request.remote_addr)
     return render_template(
         'create-collection.html', 
         api_root=os.environ["API_ROOT"],
