@@ -9,6 +9,12 @@ from totalimpactwebapp import pretty_date
 
 logger = logging.getLogger("tiwebapp.views")
     
+@app.before_request
+def log_ip_address():
+    if request.endpoint != "static":
+        ip_address = request.remote_addr
+        logger.info("%30s %s calling %s" % (ip_address, request.method, request.url))
+
 # static pages
 @app.route('/')
 def home():
@@ -58,7 +64,6 @@ def apidocs():
 
 @app.route('/create')
 def collection_create():
-    logger.info("%30s requesting /create" % request.remote_addr)
     return render_template(
         'create-collection.html', 
         api_root=os.environ["API_ROOT"],
