@@ -13,7 +13,7 @@ logger = logging.getLogger("tiwebapp.views")
 def log_ip_address():
     if request.endpoint != "static":
         ip_address = request.remote_addr
-        logger.info("%30s %s calling %s" % (ip_address, request.method, request.url))
+        logger.info("%30s IP address calling %s %s" % (ip_address, request.method, request.url))
 
 # static pages
 @app.route('/')
