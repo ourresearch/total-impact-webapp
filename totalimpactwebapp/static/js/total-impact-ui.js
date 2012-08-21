@@ -263,40 +263,28 @@ createCollectionInit = function(){
             alert("Looks like you haven't added any research objects to the collection yet.")
             return false;
 
-        // created items and put them in a collection, then redirect to
-        // the collection report page:
+        // create a collection with these aliases
         } else {
-            // first we upload the new items and get tiids back.
-            console.log("adding new items.")
+            // 
+            console.log("adding collection with new items.")
+
             $("#go-button").replaceWith("<span class='loading'>"+ajaxLoadImg+"<span>")
+
+            var requestObj = {
+                title: $('#name').val(),
+                aliases: collectionAliases
+            }
+
             $.ajax({
-                url: "http://"+api_root+'/items',                
+                url: "http://"+api_root+'/collection',                
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(collectionAliases),
-                success: function(returnedTiids){
-                    // make a new collection, populated by our freshly-minted tiids
-                    console.log("items created. making collection.")
-                    var requestObj = {
-                        title: $('#name').val(),
-                        items: returnedTiids
-                    }
-
-                    $.ajax({
-                        url: "http://"+api_root+'/collection',                        
-                        type: "POST",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data:  JSON.stringify(requestObj),
-                        success: function(returnedCollection){
-
-                            // we've created the items and the collection; our
-                            // work here is done.
-                            console.log(returnedCollection)
-                            location.href = "/collection/" +returnedCollection._id;
-                        }
-                    });
+                data:  JSON.stringify(requestObj),
+                success: function(returnedCollection){
+                    // zoom to the collection page!
+                    console.log(returnedCollection)
+                    location.href = "/collection/" +returnedCollection._id;
                 }
             });
             return false;
