@@ -169,9 +169,10 @@ body ul#nav a:hover {
 
 body ul#nav li#register-link a {
     color: #DD4814;
+    display:none;
 }
 body ul#nav li#register-link {
-    background: #eee;
+    /*background: url(img/grey-noise.png);*/
 }
 
 
@@ -231,23 +232,28 @@ div#page-header img {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-#header #register form {
+#header #register div.pointer {
+    border: solid 15px transparent;
+    border-bottom-color: #e2e2e2;
+    margin-top: -50px;
+    width: 0px;
+    float: right;
+}
+
+#header #register {
     z-index: 10;
     position: absolute;
-    top: 80;
     float: right;
     right: 140px;
     width: 320px;
-    background: #eee;
-    margin-top: 65px;
+    background: url(img/grey-noise.png);
+    margin-top: 56px;
     padding: 20px;
-    box-shadow: 0px 6px 10px -1px #333;
-    -moz-border-radius-bottomright: 10px;
-    -moz-border-radius-bottomleft: 10px;
-    -moz-border-radius-topleft: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    -webkit-border-bottom-left-radius: 10px;
-    -webkit-border-top-left-radius: 10px;
+    box-shadow: 0px 6px 15px -3px #333;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border:1px solid #eee;
+    display:none;
 }
 
 #header #register form div.form-q {
