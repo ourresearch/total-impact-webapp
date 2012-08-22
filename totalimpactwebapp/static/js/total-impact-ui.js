@@ -281,7 +281,8 @@ createCollectionInit = function(){
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 data:  JSON.stringify(requestObj),
-                success: function(returnedCollection){
+                success: function(ret){
+                    returnedCollection=ret.collection
                     // zoom to the collection page!
                     console.log(returnedCollection)
                     location.href = "/collection/" +returnedCollection._id;
