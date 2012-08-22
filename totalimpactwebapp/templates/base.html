@@ -1,176 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>total-impact: {{ page_title }}</title>
-        <meta name="description" content="Total Impact">
-        <meta name="author" content="Total Impact">
+<head>
+   <meta charset="utf-8">
+   <title>total-impact: {{ page_title }}</title>
+   <meta name="description" content="Total Impact">
+   <meta name="author" content="Total Impact">
 
-        <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-        <!--[if lt IE 9]>
-          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+   <!--[if lt IE 9]>
+   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+   <![endif]-->
 
-        <link href='http://fonts.googleapis.com/css?family=Rokkitt:400,700' rel='stylesheet' type='text/css' />
-        <link rel="stylesheet" type="text/css" href="/static/main.css" />
-        <link rel="stylesheet" type="text/css" href="/static/create-collection.css" />
-        <link rel="stylesheet" type="text/css" href="/static/report.css" />
-        <link rel="icon" type="image/ico" href="/static/img/favicon.ico" />
+   <link href='http://fonts.googleapis.com/css?family=Rokkitt:400,700' rel='stylesheet' type='text/css' />
+   <link rel="stylesheet" type="text/css" href="/static/main.css" />
+   <link rel="stylesheet" type="text/css" href="/static/create-collection.css" />
+   <link rel="stylesheet" type="text/css" href="/static/report.css" />
+   <link rel="icon" type="image/ico" href="/static/img/favicon.ico" />
 
-        <script type="text/javascript">var api_root='{{ api_root }}'</script>
-        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-        <script type="text/javascript" src="/static/js/json2.min.js"></script>
-        <script type="text/javascript" src="/static/js/tinybox.js"></script>
-        <script type="text/javascript" src="/static/js/jquery.headerlinks.js"></script>
-        <script type="text/javascript" src="/static/js/jquery.tooltip.js"></script>
-        <script type="text/javascript" src="/static/js/jquery.zclip.js"></script>
-        <script type="text/javascript" src="/static/js/jquery.color.js"></script>
-        <script type="text/javascript" src="/static/js/icanhaz.min.js"></script>
-        <script type="text/javascript" src="/static/js/total-impact-ui.js"></script>
-        <script type="text/javascript">
-            // google analytics code
+   <script type="text/javascript">var api_root='{{ api_root }}'</script>
+   <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+   <script type="text/javascript" src="/static/js/json2.min.js"></script>
+   <script type="text/javascript" src="/static/js/tinybox.js"></script>
+   <script type="text/javascript" src="/static/js/jquery.headerlinks.js"></script>
+   <script type="text/javascript" src="/static/js/jquery.tooltip.js"></script>
+   <script type="text/javascript" src="/static/js/jquery.zclip.js"></script>
+   <script type="text/javascript" src="/static/js/jquery.color.js"></script>
+   <script type="text/javascript" src="/static/js/icanhaz.min.js"></script>
+   <script type="text/javascript" src="/static/js/total-impact-ui.js"></script>
+   <script type="text/javascript">
+      // google analytics code
 
-            var _gaq = _gaq || [];
-            // acct id hardcoded for now, should pull out into config
-            _gaq.push(['_setAccount', 'UA-23384030-1']);
-            _gaq.push(['_trackPageview']);
+      var _gaq = _gaq || [];
+      // acct id hardcoded for now, should pull out into config
+      _gaq.push(['_setAccount', 'UA-23384030-1']);
+      _gaq.push(['_trackPageview']);
 
-            (function() {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
+      (function() {
+         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
 
-        </script>
-            
-    </head>
+   </script>
 
-    <body class="{{ body_class|default('default') }}">
-        <div id="container">
+</head>
 
-        <div id="header">
-            <div class="wrapper">
-                <h1 id="blog-title"><span class="main"><a href="/">total-impact</a></span></h1>
-                <ul id="nav">
-                    <li><a href="/create">create</a></li>
-                    <li><a href="/about">about</a></li>
-                    <li><a href="/api-docs">api</a></li>                    
-                    <li><a href="http://total-impact.tumblr.com">blog</a></li>
-                    <li><a href="http://twitter.com/#!/totalImpactdev">twitter</a></li>
-                </ul>
-                <a id="uservoice" href="javascript:UserVoice.showPopupWidget();" title="Open feedback & support dialog (powered by UserVoice)"><img src="{{ url_for('static', filename='img/beta-ribbon.png') }}" /></a>
-            </div>
-        </div><!--  #header -->
-        <div id="page-header">
-            <div class="wrapper">
-                <h2>{{ page_title }}</h2>
-            </div>
-        </div>
+<body class="{{ body_class|default('default') }}">
+<div id="container">
 
+   <div id="header">
+      <div class="wrapper">
+         <h1 id="blog-title"><span class="main"><a href="/">total-impact</a></span></h1>
+         <ul id="nav">
+            <li><a href="/create">create</a></li>
+            <li><a href="/about">about</a></li>
+            <li><a href="/api-docs">api</a></li>
+            <li><a href="http://total-impact.tumblr.com">blog</a></li>
+            <li><a href="http://twitter.com/#!/totalImpactdev">twitter</a></li>
+            <li id="register-link"><a href="#">register</a></li>
+         </ul>
+         <a id="uservoice" href="javascript:UserVoice.showPopupWidget();" title="Open feedback & support dialog (powered by UserVoice)"><img src="{{ url_for('static', filename='img/beta-ribbon.png') }}" /></a>
 
-        {% block content %}{% endblock %}
-
-        <div id="footer">
-            <div class="wrapper">
-                <a href="http://sloan.org/"><img src="{{ url_for('static', filename='img/sloan-logo.jpg') }}" width="200"/></a>
-                <div id="footer-text"> 
-                    <p>total-impact is supported by the <a href="http://sloan.org/">Alfred P. Sloan Foundation</a> and <a href="about#funding">others. </a></p>
-                    <p>Follow us on <a href="http://total-impact.tumblr.com">Tumblr</a>, <a href="https://twitter.com/#!/totalimpactdev">Twitter</a>, or <a href="https://github.com/total-impact">GitHub</a>.
-                </div>
-            </div>
-        </div> <!-- end footer -->
-    </div> 
-
-
-    {% raw %}
-    <div id="templates">
-        <!-- These templates are for rendering items with javascript using
-        Mustache -->
-
-
-
+         <div id="register">
+            <form>
+               <div class="form-q">
+                  <input type="text" name="email" id="email" />
+                  <legend for="email">email</legend>
+               </div>
+               <div class="form-q">
+                  <input type="password" name="pw" id="pw" />
+                  <legend for="pw">password</span></legend>
+               </div>
+               <div class="form-q">
+                  <input type="checkbox" name="contact-me" id="contact-me" />
+                  <legend id="contact-me-legend" for="contact-me">You can ask me for advice on how to make total-impact awesome</legend>
+               </div>
+               <div class="form-q">
+                  <input type="submit" name="submit" id="submit" value="Make it so."/>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div><!--  #header -->
+   <div id="page-header">
+      <div class="wrapper">
+         <h2>{{ page_title }}</h2>
+      </div>
+   </div>
 
 
-        <script id="title" class="partial" type="text/html">
-            <h5>
-                {{#url}}
-                <a class="url title" href="{{ url }}">{{ title }}</a>
-                {{/url}}
-                {{^url}}
-                {{ title }}
-                {{/url}}
-            </h5>
-        </script>
+   {% block content %}{% endblock %}
 
-        <script id="biblio_dataset" type="text/html">
-            {{#year}}
-            <span class="year">{{ year }}</span>
-            {{/year}}
-            {{>title}}
-            <span class="repo">{{ repository }}</span>
-        </script>
-        <script id="biblio_article" type="text/html">
-            <span class="authors">{{ authors }}</span>
-            {{#year}}
-            <span class="year">{{ year }}</span>
-            {{/year}}
-            {{>title}}
-            <span class="repo">{{ journal }}</span>
-        </script>
-        <script id="biblio_webpage" type="text/html">
-            {{>title}}
-        </script>
-        <script id="biblio_slides" type="text/html">
-            {{>title}}
-            <span class="repo">Slideshare</span>
-        </script>
-        <script id="biblio_software" type="text/html">
-            <span class="year">{{ year }}</span>
-            {{>title}}
-            <span class="descr">{{ description }}</span>
-            <span class="repo">GitHub</span>
-        </script>
-        <script id="biblio_unknown" type="text/html">
-            {{>title}}
-        </script>
+   <div id="footer">
+      <div class="wrapper">
+         <a href="http://sloan.org/"><img src="{{ url_for('static', filename='img/sloan-logo.jpg') }}" width="200"/></a>
+         <div id="footer-text">
+            <p>total-impact is supported by the <a href="http://sloan.org/">Alfred P. Sloan Foundation</a> and <a href="about#funding">others. </a></p>
+            <p>Follow us on <a href="http://total-impact.tumblr.com">Tumblr</a>, <a href="https://twitter.com/#!/totalimpactdev">Twitter</a>, or <a href="https://github.com/total-impact">GitHub</a>.
+         </div>
+      </div>
+   </div> <!-- end footer -->
+</div>
 
-        <script id="item" type="text/html">
-            <li class="item" id="{{ id }}">
-                <div class="biblio"></div>
-                <ul class="metrics">{{#metricsArr}}
-                    <li>
-                        <a href="{{provenance_url}}">
-                            <span class="last-update">{{ ts }}</span>
-                            <span class="metric-value">{{ value }}</span>
+
+{% raw %}
+<div id="templates">
+   <!-- These templates are for rendering items with javascript using
+  Mustache -->
+
+
+
+
+
+   <script id="title" class="partial" type="text/html">
+      <h5>
+         {{#url}}
+         <a class="url title" href="{{ url }}">{{ title }}</a>
+         {{/url}}
+         {{^url}}
+         {{ title }}
+         {{/url}}
+      </h5>
+   </script>
+
+   <script id="biblio_dataset" type="text/html">
+      {{#year}}
+      <span class="year">{{ year }}</span>
+      {{/year}}
+      {{>title}}
+      <span class="repo">{{ repository }}</span>
+   </script>
+   <script id="biblio_article" type="text/html">
+      <span class="authors">{{ authors }}</span>
+      {{#year}}
+      <span class="year">{{ year }}</span>
+      {{/year}}
+      {{>title}}
+      <span class="repo">{{ journal }}</span>
+   </script>
+   <script id="biblio_webpage" type="text/html">
+      {{>title}}
+   </script>
+   <script id="biblio_slides" type="text/html">
+      {{>title}}
+      <span class="repo">Slideshare</span>
+   </script>
+   <script id="biblio_software" type="text/html">
+      <span class="year">{{ year }}</span>
+      {{>title}}
+      <span class="descr">{{ description }}</span>
+      <span class="repo">GitHub</span>
+   </script>
+   <script id="biblio_unknown" type="text/html">
+      {{>title}}
+   </script>
+
+   <script id="item" type="text/html">
+      <li class="item" id="{{ id }}">
+         <div class="biblio"></div>
+         <ul class="metrics">{{#metricsArr}}
+            <li>
+               <a href="{{provenance_url}}">
+                  <span class="last-update">{{ ts }}</span>
+                  <span class="metric-value">{{ value }}</span>
                             <span class="metric-name-img">
                                 <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
                                 <span class="metric-name">{{ static_meta.provider }} {{ static_meta.display_name }}</span>
                             </span>
-                        </a>
-                    </li>
-                    {{/metricsArr}}</ul>
+               </a>
             </li>
-        </script>
+            {{/metricsArr}}</ul>
+      </li>
+   </script>
 
-        <script id="commits_template" type="text/html">
-            <ul> {{#commits}}
-                <li>
-                    <img src="{{ img }}" width="24" height="24">
-                    <a class="date" href="{{ link }}">{{ date }}</a>
-                    <span class="message">{{ message }}</span>
-                </li>
-                {{/commits}}</ul>
-        </script>
+   <script id="commits_template" type="text/html">
+      <ul> {{#commits}}
+         <li>
+            <img src="{{ img }}" width="24" height="24">
+            <a class="date" href="{{ link }}">{{ date }}</a>
+            <span class="message">{{ message }}</span>
+         </li>
+         {{/commits}}</ul>
+   </script>
 
-    </div>
-    {% endraw %}    
-    <script type="text/javascript">
-        var uvOptions = {};
-        (function() {
-            var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
-            uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/NGq30CjdUftugLRbNlRNw.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
-        })();
-    </script>
+</div>
+{% endraw %}
+<script type="text/javascript">
+   var uvOptions = {};
+   (function() {
+      var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
+      uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/NGq30CjdUftugLRbNlRNw.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+   })();
+</script>
 </body>
 </html>

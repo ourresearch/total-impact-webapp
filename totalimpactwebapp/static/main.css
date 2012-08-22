@@ -96,7 +96,6 @@ p, ul {
 div#header div.wrapper{
     width:1000px;
     height: 65px;
-    padding-top:10px;
     margin: 0 auto;
     position: relative;
     box-shadow: 0px 3px 16px -3px #333;
@@ -111,7 +110,7 @@ div#header div.wrapper{
 }
 
 div#header  {
-    height: 90px;
+    height: 70px;
 /*    background: url(img/orange-noise.png);*/
 }
 
@@ -129,7 +128,7 @@ div#header a#uservoice:hover {
 
 h1 {
     margin:0;
-    padding:0 0 0 20px;
+    padding:5px 0 0 20px;
     float:left;
     font-size:20px;
     
@@ -166,16 +165,25 @@ body ul#nav a:hover {
 /*    background-image: url('./img/header-bg-down.png');*/
     text-decoration: none;
     color:#DD4814;
-
 }
+
+body ul#nav li#register-link a {
+    color: #DD4814;
+}
+body ul#nav li#register-link {
+    background: #eee;
+}
+
+
 ul#nav {
     float:right;
-    margin:4px 140px 0;
+    margin:0 140px 0;
 }
 ul#nav li {
     float:left;
     list-style: none;
     padding: 0;
+    height:65px
 }
 
 
@@ -219,6 +227,78 @@ div#page-header img {
 }
 
 
+/* register form
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+#header #register form {
+    z-index: 10;
+    position: absolute;
+    top: 80;
+    float: right;
+    right: 140px;
+    width: 320px;
+    background: #eee;
+    margin-top: 65px;
+    padding: 20px;
+    box-shadow: 0px 6px 10px -1px #333;
+    -moz-border-radius-bottomright: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    -moz-border-radius-topleft: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -webkit-border-top-left-radius: 10px;
+}
+
+#header #register form div.form-q {
+    clear:both;
+}
+
+#header #register input, #header #register legend {
+}
+#header #register input {
+    float:right;
+}
+#header #register legend {
+    display: inline;
+    text-align: right;
+    float: right;
+    max-width: 189px;
+    color: #555;
+    margin-top: 10px;
+    margin-right: 3px;
+    font-size:16px;
+}
+#header #register #contact-me-legend {
+    font-size: 12px;
+}
+#register input#contact-me{
+    height: 20px;
+    width: 20px;
+    margin-top: 17px;
+}
+#register input {
+    border: 1px solid #888;
+    font-size: 22px;
+}
+
+#header #register input#submit {
+    float: none;
+    margin: 0 auto;
+    border:none;
+    margin-top: 20px;
+    text-align: center;
+    width: 300px;
+    color: #fff;
+    background: #FF4E00;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    padding:5px;
+    cursor: pointer;
+    margin-left: 10px
+}
+
+
 /* homepage
 *****************************************************************************
 *****************************************************************************
@@ -250,11 +330,11 @@ body.homepage div#page-header {
     position: relative;
 }
 #tagline img {
-    height:450px;
-    width:auto;
+    height: 430px;
+    width: auto;
     position: absolute;
-    right:0;
-    top:17px;
+    right: 0;
+    top: 35px;
     z-index: 2;
 }
 
