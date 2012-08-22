@@ -151,6 +151,16 @@ h1 span.loc {
     color:#888;
 }
 
+ul#nav li#logged-in span.username{
+    font-weight: bold;
+}
+ul#nav li#logged-in span#logout-link{
+    font-size:10px;
+    font-family: helvetica, arial, sans-serif;
+}
+ul#nav li#logged-in a:hover {
+    color:inherit;
+}
 
 ul#nav a {
     color:#555;
@@ -169,16 +179,19 @@ body ul#nav a:hover {
 
 body ul#nav li#register-link a {
     color: #DD4814;
-    display:none;
 }
 body ul#nav li#register-link {
     /*background: url(img/grey-noise.png);*/
 }
 
+body ul#nav li#logged-in {
+    display:none;
+}
+
 
 ul#nav {
     float:right;
-    margin:0 140px 0;
+    margin:5px 140px 0 0;
 }
 ul#nav li {
     float:left;

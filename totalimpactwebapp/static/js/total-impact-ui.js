@@ -552,7 +552,113 @@ function getNewItemsAndUpdateReport(interval) {
 
 
 
+
+
+
+
+
+
+/*****************************************************************************
+ * account management
+ ****************************************************************************/
+
+function User(userViews) {
+    this.userViews = userViews;
+
+    this.loginFromCookie = function() {
+        userdata = JSON.parse($.cookie("userdata"))
+        userkey = $.cookie("userkey")
+        if (userkey && userdata) {
+            this.login(userdata._id, userkey)
+        }
+    }
+
+    this.login = function(userid, key) {
+        var userViews = this.userViews
+        $.ajax({
+            url: "http://"+api_root+"/user/"+userid+"?key="+key,
+            type: "GET",
+            dataType:"json",
+            contentType: "application/json; charset=utf-8",
+            statusCode: {
+                404: function(data){
+                    userViews.loginFail(data)
+                },
+                200: function(data) {
+                    $.cookie("userkey", key)
+                    console.log(data)
+                    $.cookie("userdata", JSON.stringify(data))
+                    userViews.login(data._id)
+                }
+            }
+        })
+    }
+
+    this.logout = function() {
+        $.removeCookie("userdata")
+        this.userViews.logout()
+    }
+
+    this.register = function(userid, key) {
+        var userViews = this.userViews
+        thisThing = this
+        $.ajax({
+            url: "http://"+api_root+"/user/"+userid+"?key="+key,
+            type: "POST",
+            dataType:"json",
+            contentType: "application/json; charset=utf-8",
+            statusCode: {
+               404: function(data){
+                   userViews.registerFail(data)
+               },
+               200: function(data) {
+                   $.cookie("userkey", key)
+                   $.cookie("userdata", JSON.stringify(data))
+                   userViews.register(data)
+                   thisThing.login(userid, key)
+               }
+            }
+            })
+    }
+    return true
+}
+
+function UserViews() {
+    this.loginFail = function(data) {
+        console.log("login fail!")
+    }
+    this.login = function(username) {
+        $("#register-link, #log-in-link").hide()
+            .siblings("li#logged-in").show()
+            .find("span.username").html(username+"!")
+        console.log("logged in!")
+    }
+    this.register = function(data) {
+        console.log("account created!")
+    }
+    this.registerFail = function(data) {
+        console.log("oh noes, registration fail!")
+    }
+    this.logout = function(){
+        console.log("logged out.")
+    }
+    return true
+}
+
+function UserController() {
+    // first try to load a user
+
+    this.login = function() {
+
+    }
+
+    return true
+}
+
+
 $(document).ready(function(){
+
+    $.cookie.defaults = {path: "/", raw: 1}
 
     if (typeof collectionId != "undefined" ){
         $("h2").before(ajaxLoadImgTransparent)

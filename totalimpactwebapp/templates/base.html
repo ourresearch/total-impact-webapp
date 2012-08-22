@@ -25,6 +25,7 @@
    <script type="text/javascript" src="/static/js/jquery.tooltip.js"></script>
    <script type="text/javascript" src="/static/js/jquery.zclip.js"></script>
    <script type="text/javascript" src="/static/js/jquery.color.js"></script>
+   <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
    <script type="text/javascript" src="/static/js/icanhaz.min.js"></script>
    <script type="text/javascript" src="/static/js/total-impact-ui.js"></script>
    <script type="text/javascript">
@@ -57,7 +58,14 @@
             <li><a href="/api-docs">api</a></li>
             <li><a href="http://total-impact.tumblr.com">blog</a></li>
             <li><a href="http://twitter.com/#!/totalImpactdev">twitter</a></li>
+            <li id="log-in-link"><a href="#">log in</a></li>
             <li id="register-link"><a href="#">register</a></li>
+            <li id="logged-in"><a href="#">
+               <span class="hi">hi,</span>
+               <span class="username"></span>
+               <span id="logout-link">(logout)</span>
+            </a>
+            </li>
          </ul>
          <a id="uservoice" href="javascript:UserVoice.showPopupWidget();" title="Open feedback & support dialog (powered by UserVoice)"><img src="{{ url_for('static', filename='img/beta-ribbon.png') }}" /></a>
 

@@ -21,13 +21,17 @@ def home():
     return render_template(
     'index.html', 
     page_title="tell the full story of your research impact",
-    body_class="homepage")
+    body_class="homepage",
+    api_root=os.environ["API_ROOT"]
+    )
+
 
 @app.route('/about')
 def about(): 
     return render_template(
         'about.html',
-        page_title="about"
+        page_title="about",
+        api_root=os.environ["API_ROOT"]
         )
 
 @app.route('/faq')
@@ -51,7 +55,8 @@ def faq():
         'faq.html',
         page_title="faq",
         which_artifacts=which_item_types,
-        provider_metadata=metadata
+        provider_metadata=metadata,
+        api_root=os.environ["API_ROOT"]
         )
 
 @app.route('/api-docs')
