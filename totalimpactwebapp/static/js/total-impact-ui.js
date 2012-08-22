@@ -530,9 +530,9 @@ function getNewItemsAndUpdateReport(interval) {
             210: function(data){
                 console.log("still updating")
                 addDataToGenres(data.items)
-                setTimeout(function(){
-                    getNewItemsAndUpdateReport(interval)
-                }, 500)
+                setTimeout(
+                    function(){getNewItemsAndUpdateReport(interval)}, 
+                    interval)
             },
             200: function(data) {
                 console.log("done with updating")
@@ -554,9 +554,11 @@ function getNewItemsAndUpdateReport(interval) {
 
 $(document).ready(function(){
 
+    var pollIntervalInMilliseconds = 500
+
     if (typeof collectionId != "undefined" ){
         $("h2").before(ajaxLoadImgTransparent)
-        getNewItemsAndUpdateReport(500)
+        getNewItemsAndUpdateReport(pollIntervalInMilliseconds)
     }
 
     // report page stuff
@@ -587,7 +589,7 @@ $(document).ready(function(){
             success: function(data){
                 //window.location.reload(false);
                 console.log("updating.")
-                getNewItemsAndUpdateReport(500);
+                getNewItemsAndUpdateReport(pollIntervalInMilliseconds);
             }});
         return false;
     })
