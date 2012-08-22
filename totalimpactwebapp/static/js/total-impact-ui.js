@@ -248,7 +248,13 @@ createCollectionInit = function(){
               error: function(XMLHttpRequest, textStatus, errorThrown) { 
                 $("span.loading").remove()
                 $this.siblings("span.added").remove()
-                $this.after("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
+                var explainString;
+                if (XMLHttpRequest.status == 404) {
+                    explainString = "sorry, not found."
+                } else {
+                    explainString = "sorry, there was an error."                    
+                }
+                $this.after("<span class='added'><span class='sorry'>" + explainString + "</span></span>")
                 }    
             });                        
         }        
