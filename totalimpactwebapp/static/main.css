@@ -151,8 +151,29 @@ h1 span.loc {
     color:#888;
 }
 
+ul#nav {
+    float:right;
+    padding:0;
+    margin-top: 5px;
+}
+ul#nav ul {
+    padding:0;
+    float:left;
+}
+ul#nav li#acct-mgt {
+    margin-right:140px;
+}
+ul#nav li#acct-mgt div.sep {
+    border-left: 1px solid #DDD;
+    height: 25px;
+    float: left;
+    margin: 15px 8px;
+}
 ul#nav li#logged-in span.username{
     font-weight: bold;
+}
+ul#nav li#logged-in span#logout-link:hover {
+    color: #DD4814;
 }
 ul#nav li#logged-in span#logout-link{
     font-size:10px;
@@ -189,10 +210,6 @@ body ul#nav li#logged-in {
 }
 
 
-ul#nav {
-    float:right;
-    margin:5px 140px 0 0;
-}
 ul#nav li {
     float:left;
     list-style: none;
@@ -245,76 +262,88 @@ div#page-header img {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-#header #register div.pointer {
+#header #register-login div.pointer {
     border: solid 15px transparent;
     border-bottom-color: #e2e2e2;
     margin-top: -50px;
     width: 0px;
     float: right;
 }
+#header #register-login.register div.pointer {
+    margin-right:-20px;
+}
+#header #register-login.log-in div.pointer {
+    margin-right:44px;
+}
 
-#header #register {
+#header #register-login {
     z-index: 10;
     position: absolute;
     float: right;
-    right: 140px;
-    width: 320px;
+    top:65px;
+    right: 160px;
+    width: 330px;
     background: url(img/grey-noise.png);
-    margin-top: 56px;
     padding: 20px;
     box-shadow: 0px 6px 15px -3px #333;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
     border:1px solid #eee;
     display:none;
+    font-family: rokkitt, georgia, serif;
 }
 
-#header #register form div.form-q {
+#header #register-login form div.form-q {
     clear:both;
 }
 
-#header #register input, #header #register legend {
+#header #register-login input, #header #register-login legend {
 }
-#header #register input {
+#header #register-login input {
     float:right;
 }
-#header #register legend {
+#header #register-login legend {
     display: inline;
     text-align: right;
     float: right;
-    max-width: 189px;
+    max-width: 290px;
     color: #555;
     margin-top: 10px;
     margin-right: 3px;
-    font-size:16px;
+    font-size:20px;
 }
-#header #register #contact-me-legend {
+#header #register-login #contact-me-legend {
     font-size: 12px;
+    font-family: Helvetica, Arial, sans-serif;
 }
-#register input#contact-me{
+#register-login input#contact-me{
     height: 20px;
     width: 20px;
     margin-top: 17px;
 }
-#register input {
+#register-login input {
     border: 1px solid #888;
     font-size: 22px;
 }
 
-#header #register input#submit {
+#header #register-login input#submit {
     float: none;
     margin: 0 auto;
     border:none;
     margin-top: 20px;
     text-align: center;
     width: 300px;
+    font-size: 30px;
     color: #fff;
     background: #FF4E00;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     padding:5px;
     cursor: pointer;
-    margin-left: 10px
+    margin-left: 15px;
+    font-family: rokkitt, georgia, serif;
 }
 
 

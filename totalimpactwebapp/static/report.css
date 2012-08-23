@@ -147,7 +147,25 @@ li.item {
     margin: 0 auto 1em;
     width: 1100px;
     min-height: 4em;
+    position: relative;
 }
+
+a.item-delete-button {
+    left:-50px;
+    width: 50px;
+    height: 30px;
+    color: red;
+    display:block;
+    position: absolute;
+    padding:2px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    font-size:12px;
+    display:none;
+}
+a.item-delete-button:hover {
+}
+
 
 li.item h4 {
     font-weight: normal;

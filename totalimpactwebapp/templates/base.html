@@ -27,7 +27,10 @@
    <script type="text/javascript" src="/static/js/jquery.color.js"></script>
    <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
    <script type="text/javascript" src="/static/js/icanhaz.min.js"></script>
-   <script type="text/javascript" src="/static/js/total-impact-ui.js"></script>
+   <script type="text/javascript" src="/static/js/ti-item.js"></script>
+   <script type="text/javascript" src="/static/js/ti-user.js"></script>
+   <script type="text/javascript" src="/static/js/ti-coll.js"></script>
+   <script type="text/javascript" src="/static/js/ti-ui.js"></script>
    <script type="text/javascript">
       // google analytics code
 
@@ -58,18 +61,23 @@
             <li><a href="/api-docs">api</a></li>
             <li><a href="http://total-impact.tumblr.com">blog</a></li>
             <li><a href="http://twitter.com/#!/totalImpactdev">twitter</a></li>
-            <li id="log-in-link"><a href="#">log in</a></li>
-            <li id="register-link"><a href="#">register</a></li>
-            <li id="logged-in"><a href="#">
-               <span class="hi">hi,</span>
-               <span class="username"></span>
-               <span id="logout-link">(logout)</span>
-            </a>
+            <li id="acct-mgt">
+               <div class="sep"></div>
+               <ul>
+                  <li id="log-in-link"><a href="#">log in</a></li>
+                  <li id="register-link"><a href="#">register</a></li>
+                  <li id="logged-in"><a href="#">
+                     <span class="hi">hi,</span>
+                     <span class="username"></span>
+                     <span id="logout-link">(logout)</span>
+                  </a>
+                  </li>
+               </ul>
             </li>
          </ul>
          <a id="uservoice" href="javascript:UserVoice.showPopupWidget();" title="Open feedback & support dialog (powered by UserVoice)"><img src="{{ url_for('static', filename='img/beta-ribbon.png') }}" /></a>
 
-         <div id="register">
+         <div id="register-login" class="register">
             <div class="pointer"></div>
             <form>
                <div class="form-q">
@@ -80,10 +88,10 @@
                   <input type="password" name="pw" id="pw" />
                   <legend for="pw">password</span></legend>
                </div>
-               <div class="form-q">
-                  <input type="checkbox" name="contact-me" id="contact-me" />
-                  <legend id="contact-me-legend" for="contact-me">You can ask me for advice on how to make total-impact awesome</legend>
-               </div>
+               <!--<div class="form-q">-->
+                  <!--<input type="checkbox" name="contact-me" id="contact-me" />-->
+                  <!--<legend id="contact-me-legend" for="contact-me">You can occasionally ask me for advice on how to make total-impact awesome.</legend>-->
+               <!--</div>-->
                <div class="form-q">
                   <input type="submit" name="submit" id="submit" value="Make it so."/>
                </div>
@@ -165,8 +173,8 @@
    </script>
 
    <script id="item" type="text/html">
-      <li class="item" id="{{ id }}">
-         <div class="biblio"></div>
+      <li class="item" id="{{ _id }}">
+         <div class="biblio"><a href="#" class="item-delete-button">delete</a></div>
          <ul class="metrics">{{#metricsArr}}
             <li>
                <a href="{{provenance_url}}">
