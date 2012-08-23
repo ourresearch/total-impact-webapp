@@ -329,21 +329,6 @@ $(document).ready(function(){
     createCollectionInit();
     
 
-    // updating the collection from the report page
-    $("#update-report-button").click(function(){
-        $("h2").before(ajaxLoadImgTransparent)
-        $.ajax({
-            url: "http://"+api_root+'/collection/'+collectionId,
-            type: "POST",
-            success: function(data){
-                //window.location.reload(false);
-                console.log("updating.")
-                getNewItemsAndUpdateReport(500);
-            }});
-        return false;
-    })
-
-
 
 
 });

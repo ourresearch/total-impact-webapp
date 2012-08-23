@@ -13,8 +13,21 @@ function Coll(collViews, user){
         }
     }
 
-    this.update = function(interval) {
+    this.update = function() {
         thisThing = this
+        this.views.startUpdating()
+        $.ajax({
+            url: "http://"+api_root+'/collection/'+this.id,
+            type: "POST",
+            success: function(data){
+               console.log("updating.")
+               thisThing.get(1000);
+            }});
+        }
+
+    this.get = function(interval) {
+        thisThing = this
+        this.views.startUpdating()
         $.ajax({
             url: "http://"+api_root+'/collection/'+thisThing.id,
             type: "GET",
@@ -26,7 +39,7 @@ function Coll(collViews, user){
                    thisThing.addItems(data.items)
                    thisThing.views.render(thisThing.items)
                    setTimeout(function(){
-                       thisThing.update(interval)
+                       thisThing.get(interval)
                    }, 500)
                },
                200: function(data) {
@@ -43,8 +56,9 @@ function Coll(collViews, user){
 }
 
 function CollViews() {
-    this.startUpdating = function(data){
-
+    this.startUpdating = function(){
+        $("img.loading").remove()
+        $("h2").before(ajaxLoadImgTransparent)
     }
     this.finishUpdating = function(items){
         $("#page-header img").remove()
@@ -54,6 +68,7 @@ function CollViews() {
             .hide()
             .insertAfter("#report-button")
             .show();
+        $("img.loading").remove()
     }
     this.render = function(itemObjsDict) {
         $("ul#items").empty()
@@ -75,6 +90,13 @@ function CollViews() {
 function CollController(coll, collViews) {
     if (typeof collectionId != 'undefined') {
         coll.id = collectionId
-        coll.update(1000)
+        coll.get(1000)
     }
+
+
+    $("#update-report-button").click(function(){
+        coll.update();
+        return false;
+    })
+
 }

@@ -262,27 +262,27 @@ div#page-header img {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-#header #register-login div.pointer {
+#header div.header-dialog div.pointer {
     border: solid 15px transparent;
     border-bottom-color: #e2e2e2;
     margin-top: -50px;
     width: 0px;
     float: right;
 }
-#header #register-login.register div.pointer {
+#header div.header-dialog.register div.pointer {
     margin-right:-20px;
 }
-#header #register-login.log-in div.pointer {
+#header div.header-dialog.log-in div.pointer {
     margin-right:44px;
 }
 
-#header #register-login {
+#header div.header-dialog {
     z-index: 10;
     position: absolute;
     float: right;
     top:65px;
     right: 160px;
-    width: 330px;
+    width: 290px;
     background: url(img/grey-noise.png);
     padding: 20px;
     box-shadow: 0px 6px 15px -3px #333;
@@ -290,7 +290,8 @@ div#page-header img {
     -moz-border-radius-bottomright: 10px;
     -webkit-border-bottom-right-radius: 10px;
     -webkit-border-bottom-left-radius: 10px;
-    border:1px solid #eee;
+    border:1px solid #fff;
+    border-top:1px solid #999;
     display:none;
     font-family: rokkitt, georgia, serif;
 }
@@ -325,27 +326,35 @@ div#page-header img {
 }
 #register-login input {
     border: 1px solid #888;
-    font-size: 22px;
+    font-size: 18px;
+    color: #333;
+    padding: 4px;
 }
 
 #header #register-login input#submit {
     float: none;
     margin: 0 auto;
-    border:none;
+    border: none;
     margin-top: 20px;
     text-align: center;
-    width: 300px;
+    width: 196px;
     font-size: 30px;
-    color: #fff;
+    color: white;
     background: #FF4E00;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    padding:5px;
+    padding: 5px;
     cursor: pointer;
-    margin-left: 15px;
+    margin-left: 93px;
     font-family: rokkitt, georgia, serif;
 }
 
+#header #my-colls {
+    display:none;
+}
+#header #my-colls div.pointer {
+    margin-right:50px;
+}
 
 /* homepage
 *****************************************************************************
