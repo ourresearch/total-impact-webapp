@@ -7,13 +7,71 @@
 function User(userViews) {
     this.userViews = userViews;
 
+    this.addColl = function(cid) {
+        userCols = JSON.parse($.cookie("usercols"))
+        userData.colls.push(cid)
+        userData.colls = userData.colls.unique()
+        $.cookie("userdata", JSON.stringify(userdata))
+        return true
+    }
+
+    this.removeColl = function(cid) {
+        userData = JSON.parse($.cookie("userdata"))
+        index = userdata.colls.indexOf("cid")
+        if (index > -1) {
+            userdata.colls.splice(index, 1)
+        }
+        $.cookie("userdata", JSON.stringify(userdata))
+        return true
+    }
+
+    this.getColls = function(){
+        userData = JSON.parse($.cookie("userdata"))
+        return userData["colls"]
+    }
+
+    this.getCollsWithTitles = function() {
+        thisThing = this
+        colls = JSON.parse($.cookie("userdata"))["colls"]
+        collsStr = colls.join(",")
+        $.ajax({
+                   url: "http://"+api_root+"/collections/"+colls,
+                   type: "GET",
+                   dataType:"json",
+                   contentType: "application/json; charset=utf-8",
+                   statusCode: {
+                       404: function(data){
+                           console.log("that broke. probably oughta have some error handling.")
+                       },
+                       200: function(data) {
+                           thisThing.userViews.showColls(data)
+                       }
+                   }
+               })
+
+    }
+
+
+
+    this.updateServer = function() {
+
+    }
+
     this.loginFromCookie = function() {
         userdata = JSON.parse($.cookie("userdata"))
         userkey = $.cookie("userkey")
         if (userkey && userdata) {
-            this.login(userdata._id, userkey)
+            if (typeof userdata._id != "undefined"){
+                this.login(userdata._id, userkey)
+            }
         }
     }
+
+    this.createAnonUser = function(){
+        userdata = {colls: []}
+        $.cookie("userdata", JSON.stringify(userdata))
+    }
+
 
     this.login = function(userid, key) {
         var userViews = this.userViews
@@ -42,27 +100,35 @@ function User(userViews) {
 
     this.register = function(userid, key) {
         var userViews = this.userViews
-        thisThing = this
+        var thisThing = this
+        var anonUserColls = JSON.parse($.cookie("userdata"))["colls"]
+        var queryString = JSON.stringify({key: key, colls: anonUserColls})
         $.ajax({
-                   url: "http://"+api_root+"/user/"+userid+"?key="+key,
-                   type: "POST",
-                   dataType:"json",
-                   contentType: "application/json; charset=utf-8",
-                   statusCode: {
-                       404: function(data){
-                           userViews.registerFail(data)
-                       },
-                       409: function(data) {
-                           userViews.registerFail(data)
-                       },
-                       200: function(data) {
-                           $.cookie("userkey", key)
-                           $.cookie("userdata", JSON.stringify(data))
-                           userViews.register(data)
-                           thisThing.login(userid, key)
-                       }
-                   }
-               })
+            url: "http://"+api_root+"/user/"+userid,
+            type: "POST",
+            data: queryString,
+            dataType:"json",
+            contentType: "application/json; charset=utf-8",
+            statusCode: {
+               400: function(data){
+                   userViews.registerFail(data)
+               },
+               404: function(data){
+                   userViews.registerFail(data)
+               },
+               409: function(data) {
+                   userViews.registerFail(data)
+               },
+               500: function(data){console.log("wo, server error.")},
+               200: function(data) {
+                   $.cookie("userdata", JSON.stringify(data))
+                   $.cookie("userkey", key)
+
+                   userViews.register(data)
+                   thisThing.login(userid, key)
+               }
+            }
+            })
     }
     return true
 }
@@ -99,6 +165,10 @@ function UserViews() {
             .siblings("li#logged-in").hide()
         console.log("logged out.")
     }
+
+    this.showColls = function(colls) {
+        console.log(colls)
+    }
     return true
 }
 
@@ -111,7 +181,8 @@ function UserController(user, userViews) {
         user = this.user
         userViews = this.userViews
 
-        user.loginFromCookie()
+        user.createAnonUser()
+        user.loginFromCookie() // if we can login, Anon's data is overwritten.
 
 
         // registration
@@ -157,6 +228,7 @@ function UserController(user, userViews) {
             user.logout();
             return false;
         })
+
     }
 
     return true

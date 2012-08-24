@@ -13,6 +13,9 @@ var currentlyUpdating = false
 
 
 
+
+
+
 /*****************************************************************************
  * create collection page
  ****************************************************************************/
@@ -289,6 +292,10 @@ createCollectionInit = function(){
                 data:  JSON.stringify(requestObj),
                 success: function(ret){
                     returnedCollection=ret.collection
+
+                    // add the id of the newly-creatd coll to the user's coll list
+                    user.addColl(eturnedCollection=ret.collection)
+
                     // zoom to the collection page!
                     console.log(returnedCollection)
                     location.href = "/collection/" +returnedCollection._id;
