@@ -293,8 +293,8 @@ createCollectionInit = function(){
                 success: function(ret){
                     returnedCollection=ret.collection
 
-                    // add the id of the newly-creatd coll to the user's coll list
-                    user.addColl(eturnedCollection=ret.collection)
+                    // add the id of the newly-created coll to the user's coll list
+                    user.addColl(returnedCollection._id, ret.key)
 
                     // zoom to the collection page!
                     console.log(returnedCollection)

@@ -7,28 +7,145 @@
 function User(userViews) {
     this.userViews = userViews;
 
-    this.addColl = function(cid) {
-        userCols = JSON.parse($.cookie("usercols"))
-        userData.colls.push(cid)
-        userData.colls = userData.colls.unique()
-        $.cookie("userdata", JSON.stringify(userdata))
-        return true
+    // (for constructor stuff, see bottom of this function.)
+
+    /*  Handling data (CRUD) locally
+     ************************/
+
+
+    // Create
+    this.create = function(){
+        this.userdata({colls: {}})
+    }
+
+
+    // Read
+    this.userdata = function(toSave) {
+        if (toSave) {
+            return $.cookie("userdata", JSON.stringify(toSave))
+        }
+        else {
+            return JSON.parse($.cookie("userdata"))
+        }
+    }
+    this.userkey = function(toSave) {
+        if (toSave) {
+            return $.cookie("userkey", JSON.stringify(toSave))
+        }
+        else {
+            return JSON.parse($.cookie("userkey"))
+        }
+    }
+    this.hasCreds = function() {
+        return (
+            typeof this.userdata()._id != "undefined" && this.userkey() != null)
+    }
+
+
+    // Update
+    this.addColl = function(cid, updateKey) {
+        u = this.userdata()
+        u.colls[cid] = updateKey
+        return this.userdata(u)
+    }
+
+    this.clearCreds = function(){
+        u = this.userdata()
+        delete u._id
+        this.userdata(u)
+        $.removeCookie("userkey")
+    }
+
+    this.setCreds = function(username, pw) {
+        u = this.userdata()
+        u._id = username
+        this.userdata(u)
+
+        // this doesn't provide any extra security, since anyone with access
+        // to this machine can still use this key to login to this user's ti
+        // acct. but it keep us from storing users' passwords, which may be
+        // also used elsewhere, in plaintext.
+        this.userkey(CryptoJS.HmacSHA1(pw, "a8d9e12a2903eecf554").toString())
     }
 
     this.removeColl = function(cid) {
-        userData = JSON.parse($.cookie("userdata"))
-        index = userdata.colls.indexOf("cid")
-        if (index > -1) {
-            userdata.colls.splice(index, 1)
-        }
-        $.cookie("userdata", JSON.stringify(userdata))
+        u = this.userdata()
+        delete u.colls[cid]
         return true
     }
 
-    this.getColls = function(){
-        userData = JSON.parse($.cookie("userdata"))
-        return userData["colls"]
+
+    // Delete
+    this.deleteLocal = function() {
+        $.removeCookie("userdata")
+        $.removeCookie("userkey")
+        this.create()
+        this.userViews.logout()
     }
+
+
+
+    /*  Persisting state with the server.
+     ************************/
+
+
+    this.syncWithServer = function(isNewUser) {
+        if (!this.hasCreds()) {
+            return false;
+        }
+
+        if (isNewUser) {
+            var httpMethod = "POST"
+            var colls = this.userdata()["colls"]
+            var bodyString = JSON.stringify({key: this.userkey(), colls: colls})
+        }
+        else {
+            var httpMethod = "PUT"
+            u = this.userdata()
+            u.key = this.userkey()
+            var bodyString = JSON.stringify(u)
+        }
+
+        var userViews = this.userViews
+        var thisThing = this
+        var url = "http://"+api_root+"/user/"+this.userdata()._id
+
+        $.ajax({
+            url: url,
+            type: httpMethod,
+            data: bodyString,
+            dataType:"json",
+            contentType: "application/json; charset=utf-8",
+            statusCode: {
+                200: function(data) {
+                    userViews.login(data._id)
+
+                    // merge the colls from the server in
+                    u = thisThing.userdata()
+                    data.colls = $.extend({}, data.colls,  u.colls)
+                    thisThing.userdata(data)
+                },
+                400: function(data){
+                   userViews.registerFail(data)
+                   thisThing.clearCreds()
+                },
+                403: function(data){
+                   userViews.registerFail(data)
+                   thisThing.clearCreds()
+                },
+                404: function(data) {
+                   thisThing.clearCreds()
+                   userViews.registerFail(data)
+                },
+                409: function(data) {
+                   thisThing.clearCreds()
+                   userViews.registerFail(data)
+                },
+                500: function(data){console.log("wo, server error.")}
+        }
+        })
+    }
+
 
     this.getCollsWithTitles = function() {
         thisThing = this
@@ -51,87 +168,27 @@ function User(userViews) {
 
     }
 
-
-
-    this.updateServer = function() {
-
+    // constructor here, because has to read the rest of function first it seems.
+    if (this.hasCreds()) {
+        this.userViews.login(this.userdata()._id)
+        this.syncWithServer()
+        this.create()
+    }
+    else if (this.userdata()) {
+        // nothing, we'll keep storing events and wait for the user to login
+    }
+    else {
+        this.create()
     }
 
-    this.loginFromCookie = function() {
-        userdata = JSON.parse($.cookie("userdata"))
-        userkey = $.cookie("userkey")
-        if (userkey && userdata) {
-            if (typeof userdata._id != "undefined"){
-                this.login(userdata._id, userkey)
-            }
-        }
-    }
-
-    this.createAnonUser = function(){
-        userdata = {colls: []}
-        $.cookie("userdata", JSON.stringify(userdata))
-    }
-
-
-    this.login = function(userid, key) {
-        var userViews = this.userViews
-        $.ajax({
-                   url: "http://"+api_root+"/user/"+userid+"?key="+key,
-                   type: "GET",
-                   dataType:"json",
-                   contentType: "application/json; charset=utf-8",
-                   statusCode: {
-                       404: function(data){
-                           userViews.loginFail(data)
-                       },
-                       200: function(data) {
-                           $.cookie("userkey", key)
-                           $.cookie("userdata", JSON.stringify(data))
-                           userViews.login(data._id)
-                       }
-                   }
-               })
-    }
-
-    this.logout = function() {
-        $.removeCookie("userdata")
-        this.userViews.logout()
-    }
-
-    this.register = function(userid, key) {
-        var userViews = this.userViews
-        var thisThing = this
-        var anonUserColls = JSON.parse($.cookie("userdata"))["colls"]
-        var queryString = JSON.stringify({key: key, colls: anonUserColls})
-        $.ajax({
-            url: "http://"+api_root+"/user/"+userid,
-            type: "POST",
-            data: queryString,
-            dataType:"json",
-            contentType: "application/json; charset=utf-8",
-            statusCode: {
-               400: function(data){
-                   userViews.registerFail(data)
-               },
-               404: function(data){
-                   userViews.registerFail(data)
-               },
-               409: function(data) {
-                   userViews.registerFail(data)
-               },
-               500: function(data){console.log("wo, server error.")},
-               200: function(data) {
-                   $.cookie("userdata", JSON.stringify(data))
-                   $.cookie("userkey", key)
-
-                   userViews.register(data)
-                   thisThing.login(userid, key)
-               }
-            }
-            })
-    }
     return true
 }
+
+
+
+
+
+
 
 function UserViews() {
     this.loginFail = function(data) {
@@ -142,9 +199,6 @@ function UserViews() {
             .siblings("li#logged-in").show()
             .find("span.username").html(username+"!")
         console.log("logged in!")
-    }
-    this.register = function(data) {
-        console.log("account created!")
     }
     this.registerFormStart = function(loginOrRegister) {
         if (loginOrRegister == "register") {
@@ -172,6 +226,12 @@ function UserViews() {
     return true
 }
 
+
+
+
+
+
+
 function UserController(user, userViews) {
     this.user = user;
     this.userViews = userViews;
@@ -181,51 +241,35 @@ function UserController(user, userViews) {
         user = this.user
         userViews = this.userViews
 
-        user.createAnonUser()
-        user.loginFromCookie() // if we can login, Anon's data is overwritten.
 
+        /* registration and login
+         ******************************************/
 
-        // registration
         $("#register-link a").click(function(){
             userViews.registerFormStart("register");
             return false;
         })
-        $("#register-login form").submit(function(){
 
-            var email = $("#email").val()
-            var pw = $("#pw").val()
-            var isRegisterForm = $(this).parent().hasClass("register")
-
-            if (isRegisterForm) {
-                user.register(email, pw)
-            }
-            else  {
-                user.login(email, pw)
-            }
-            userViews.registerFormFinished();
-            return false;
-        })
-
-
-        // login
         $("#log-in-link").click(function(){
             userViews.registerFormStart("login");
             return false;
         })
-        $("#register-login.log-in form").submit(function(){
-            console.log("submitting login form.")
-            user.login(
-                $("#email").val(),
-                $("#pw").val()
-            )
+
+        // works for both the registration and login forms.
+        $("#register-login form").submit(function(){
+
+            var email = $("#email").val()
+            var pw = $("#pw").val()
+            user.setCreds(email, pw)
+            var isNewUser = $(this).parent().hasClass("register")
+            user.syncWithServer(isNewUser)
+
             userViews.registerFormFinished();
             return false;
         })
 
-
-        // log out
         $("#logout-link").click(function(){
-            user.logout();
+            user.deleteLocal();
             return false;
         })
 
