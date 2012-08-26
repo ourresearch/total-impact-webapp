@@ -18,7 +18,7 @@
     padding-bottom: 20px;
 }
 #report-meta {
-    margin-top: -100px;
+    margin: -55px 90px 0 0;
     float:right;
 }
 #report-meta span#num-items {
@@ -45,7 +45,7 @@ div#report-button {
 span.report-button a  {
     margin-right: 5px;
     margin-bottom: 5px;
-    background: #eee;
+    background: #ddd;
     padding: 4px 11px;
     -webkit-border-radius: 15px;    /* CSS3 rounded borders for Safari                    */
     -moz-border-radius: 15px;       /* CSS3 rounded borders for Firefox                   */
@@ -77,7 +77,7 @@ a.report-button-full {
 }
 
 span.report-button a:hover {
-    background: #aaa;
+    background: #ccc;
     color:#000;
     text-decoration:none;
 }
@@ -126,11 +126,10 @@ input.report {
 /** report printout ******************************************************/
 div#metrics {
     min-height: 500px;
-    margin-top:7px;
-    padding-top:15px;
     background: none repeat scroll 0 0 #FFFFFF;
     float: left;
     width: 100%;
+    margin-top:25px;
 }
 div#metrics div.wrapper {
 }
