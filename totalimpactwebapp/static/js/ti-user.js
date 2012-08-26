@@ -262,8 +262,9 @@ function UserViews() {
     }
     this.showNoColls = function() {
         $("#my-colls")
-            .empty()
-            .append("</h3>You don't have any collections yet. Care to <a href='/create'>make one</a>?</h3>")
+            .find("ul, h3").remove()
+            .andSelf()
+            .append("<h3>You don't have any collections yet. Care to <a href='/create'>make one</a>?</h3>")
             .slideDown(250)
 
     }
@@ -277,7 +278,7 @@ function UserViews() {
             hasColls = true
         }
         if (hasColls) {
-            $("#my-colls").empty().append(collsList$)
+            $("#my-colls").append(collsList$)
         }
     }
 
