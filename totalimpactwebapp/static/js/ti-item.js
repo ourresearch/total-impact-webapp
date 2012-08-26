@@ -193,10 +193,10 @@ function ItemView() {
         html$.find("div.biblio").append(biblioHtml)
             .hover(
             function(){
-                $(this).find("a.item-delete-button").fadeIn("fast");
+//                $(this).find("a.item-delete-button").fadeIn("fast");
             },
             function(){
-                $(this).find("a.item-delete-button").fadeOut("fast");
+//                $(this).find("a.item-delete-button").fadeOut("fast");
             }
         )
 
