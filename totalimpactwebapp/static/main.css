@@ -42,6 +42,12 @@ body a:hover {
 .clearfix {
     clear:both;
 }
+.valid {
+    color:green;
+}
+.invalid {
+    color:red;
+}
 h3 {
     margin: 0px;
     margin-top:20px;
@@ -310,6 +316,21 @@ li#acct-mgt li.loading img{
     margin-right: 3px;
     font-size:20px;
 }
+#header #register-login span.validation {
+    float: right;
+    text-align: right;
+    width: 195px;
+    height: 15px;
+    font-family: helvetica, arial, sans-serif;
+    font-size: 12px;
+}
+#header #register-login span.validation img.loading{
+    height: 20px;
+    margin-top: -6px;
+    float:right;
+}
+
+
 #header #register-login #contact-me-legend {
     font-size: 12px;
     font-family: Helvetica, Arial, sans-serif;

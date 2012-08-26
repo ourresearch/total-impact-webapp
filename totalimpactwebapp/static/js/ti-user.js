@@ -89,28 +89,27 @@ function User(userViews) {
 
     /*  Persisting state with the server.
      ************************/
-
-
-    this.syncWithServer = function(isNewUser) {
+    this.syncWithServer = function(method, callbacks) {
         if (!this.hasCreds()) {
             return false;
         }
-
-        if (isNewUser) {
-            var httpMethod = "POST"
-            var colls = this.userdata()["colls"]
-            var bodyString = JSON.stringify({key: this.userkey(), colls: colls})
-        }
-        else {
-            var httpMethod = "PUT"
+        if (typeof callbacks == "undefined") callbacks = {}
+        if (method == "push"){
+            var httpMethod =  "PUT"
+            var url = "http://"+api_root+"/user"
             u = this.userdata()
             u.key = this.userkey()
             var bodyString = JSON.stringify(u)
         }
+        else if (method == "pull"){
+            var bodyString = "key="+this.userkey()
+            var httpMethod = "GET"
+            var url = "http://"+api_root+"/user/"+this.userdata()._id
+
+        }
 
         var userViews = this.userViews
         var thisThing = this
-        var url = "http://"+api_root+"/user/"+this.userdata()._id
 
         $.ajax({
             url: url,
@@ -121,34 +120,26 @@ function User(userViews) {
             statusCode: {
                 200: function(data) {
                     userViews.login(data._id)
-
-                    // merge the colls from the server in
-                    u = thisThing.userdata()
-                    data.colls = $.extend({}, data.colls,  u.colls)
                     thisThing.userdata(data)
-                },
-                400: function(data){
-                   userViews.registerFail(data)
-                   thisThing.clearCreds()
+                    if (typeof callbacks.on200 !== "undefined") callbacks.on200()
                 },
                 403: function(data){
-                   userViews.registerFail(data)
-                   thisThing.clearCreds()
+                    userViews.registerFail(data)
+                    thisThing.clearCreds()
+                    if (typeof callbacks.on403!== "undefined") callbacks.on403()
                 },
                 404: function(data) {
                    thisThing.clearCreds()
                    userViews.registerFail(data)
-                },
-                409: function(data) {
-                   thisThing.clearCreds()
-                   userViews.registerFail(data)
+                    if (typeof callbacks.on404!== "undefined") callbacks.on404()
                 },
                 500: function(data){console.log("wo, server error.")}
-        }
+            }
         })
     }
 
-
+    /*  odds and ends.
+     ************************/
     this.getCollInfo = function() {
 
         cids = []
@@ -180,10 +171,25 @@ function User(userViews) {
 
     }
 
+    this.checkUsername = function(username, successCallback, failCallback){
+        $.ajax({
+            url:"http://"+api_root+"/user/"+username,
+            type:"GET",
+            statusCode: {
+               403: function(data){ // forbidden, cause no pw. but the name is right!
+                   failCallback()
+               },
+               404: function(data) { // doesn't exist.
+                   successCallback()
+               }
+            }
+               })
+    }
+
     // constructor here, because has to read the rest of function first it seems.
     if (this.hasCreds()) {
         this.userViews.login(this.userdata()._id)
-        this.syncWithServer()
+        this.syncWithServer("pull")
         this.create()
     }
     else if (this.userdata()) {
@@ -211,6 +217,7 @@ function UserViews() {
             .siblings("li#logged-in").show()
             .find("span.username").html(username+"!")
         $("li.loading").remove()
+        $("#inline-register").remove()
 
         console.log("logged in!")
     }
@@ -270,6 +277,23 @@ function UserViews() {
         if (hasColls) {
             $("#my-colls").append(collsList$)
         }
+    }
+
+    this.userNameExists = function() {
+        $("input.username.register")
+            .siblings("span.validation")
+            .addClass("invalid")
+            .removeClass("valid")
+            .empty()
+            .html("sorry, that's taken.")
+    }
+    this.userNameValid = function() {
+        $("input.username.register")
+            .siblings("span.validation")
+            .addClass("valid")
+            .removeClass("invalid")
+            .empty()
+            .html("looks good!")
     }
 
 
@@ -332,11 +356,12 @@ function UserController(user, userViews) {
         $("#register-login form").submit(function(){
 
             userViews.startRegistration()
+
             var email = $("#email").val()
             var pw = $("#pw").val()
             user.setCreds(email, pw)
-            var isNewUser = $(this).parent().hasClass("register")
-            user.syncWithServer(isNewUser)
+            var method = $(this).parent().hasClass("register") ? "push" : "pull"
+            user.syncWithServer(method)
 
             userViews.finishRegistration();
             return false;
@@ -356,6 +381,19 @@ function UserController(user, userViews) {
             }
             return false;
         })
+
+        $("input.username").blur(function(){
+            if (!$(this).val()) return true
+            if ($(this).parents("div.log-in").length) return true
+
+            $(this).siblings("span.validation").empty().append(ajaxLoadImg)
+            user.checkUsername(
+                $(this).val(),
+                userViews.userNameValid,
+                userViews.userNameExists
+            )
+        })
+
 
     }
 

@@ -274,7 +274,6 @@ createCollectionInit = function(){
 
         // create a collection with these aliases
         } else {
-            // 
             console.log("adding collection with new items.")
 
             $("#go-button").replaceWith("<span class='loading'>"+ajaxLoadImg+"<span>")
@@ -296,9 +295,17 @@ createCollectionInit = function(){
                     // add the id of the newly-created coll to the user's coll list
                     user.addColl(returnedCollection._id, ret.key)
 
-                    // zoom to the collection page!
-                    console.log(returnedCollection)
-                    location.href = "/collection/" +returnedCollection._id;
+                    var email = $("#inline-register-email").val()
+                    var pw = $("#inline-register-pw").val()
+                    if (email && pw){
+                        user.setCreds(email, pw)
+                    }
+
+                    on200 = function(){
+                        location.href = "/collection/" +returnedCollection._id
+                    }
+
+                    user.syncWithServer("push", {on200: on200})
                 }
             });
             return false;

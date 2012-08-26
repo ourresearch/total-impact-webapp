@@ -77,6 +77,7 @@ ul#pullers {
     float: left;
     padding-top: 30px;
     width: 100%;
+    margin-bottom: 50px;
 }
 img.loading {
     height: 30px;
@@ -98,7 +99,6 @@ div.progressbar {
 *****************************************************************************/
 
 #inline-register {
-    padding-top: 50px;
     clear:both;
 }
 #inline-register fieldset {
@@ -123,6 +123,19 @@ div#input #inline-register  div.form-item legend{
     font-size: 14px;
     color:#555;
     margin:4px 0 0 3px;
+}
+#inline-register div.form-item span.validation {
+    margin-top: -15px;
+    float: left;
+    margin-left: 43px;
+    font-size: 12px;
+    font-weight: normal;
+}
+#inline-register div.form-item img.loading {
+    height: 20px;
+    display: inline;
+    margin-top: -6px;
+    margin-left: 0;
 }
 div#input #inline-register input {
     width: 100%;
@@ -155,7 +168,7 @@ div#create-button {
 }
 div#create-button img.loading {
     height: 41px;
-    margin-top: 4px;
+    margin: 4px 0 0 40px;
     float:left;
 }
 div#create-button legend, div#create-button input {
