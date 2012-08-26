@@ -39,8 +39,12 @@ function User(userViews) {
         }
     }
     this.hasCreds = function() {
-        return (
-            typeof this.userdata()._id != "undefined" && this.userkey() != null)
+        if (this.userdata()){
+            if (this.userdata()._id != "undefined" && this.userkey() != null){
+                return true
+            }
+        }
+        return false
     }
 
 
