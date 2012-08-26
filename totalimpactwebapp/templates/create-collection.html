@@ -39,13 +39,26 @@
             </div>
             </li>
         </ul>
+       <form id="inline-register">
+          <legend for="inline-user-signup" class="prompt" >Register<span class="limit">optional; let's you save and modify your collection later.</span></legend>
+          <fieldset id="inline-user-creds">
+             <div class="form-item">
+                <legend for="inline-register-email">email</legend>
+               <input id="inline-register-email" type="text" />
+             </div>
+             <div class="form-item">
+                <legend for="inline-register-pw">password</legend>
+               <input id="inline-register-pw" type="password" />
+             </div>
+          </fieldset>
+       </form>
         <div id="create-button" class="inputcol">
             <form name="id_form" action="./fetch/" id="id-form">
-                <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
                 <legend for="name">Collection name:</legend>
                 <input name="name" class="no-input-yet" id="name" title="Add a meaningful title to this collection" />
-                <button name="run" type="submit" id="go-button" class="go-button">go!</button>
                 <input name="list" id="artifacts-list" type="hidden" value="" />
+                <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
+                <button name="run" type="submit" id="go-button" class="go-button">go!</button>
             </form>
             <div class="clearfix">&nbsp;</div>
         </div>

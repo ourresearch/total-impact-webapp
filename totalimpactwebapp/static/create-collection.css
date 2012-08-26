@@ -45,7 +45,7 @@ div#input textarea:focus, div#input input:focus{
 
 
 div#input legend {
-    width: 300px;
+    width: 250px;
     color: #555;
     float:left;
     clear:left;
@@ -89,19 +89,69 @@ div.progressbar {
     float:left;
 }
 
-/* go-button section */
+
+
+
+/* inline registration form
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+
+#inline-register {
+    padding-top: 50px;
+    clear:both;
+}
+#inline-register fieldset {
+    border:none;
+    width:450px;
+    margin:0;
+    padding:0;
+}
+
+#inline-register div.form-item{
+    float:left;
+    width: 49%;
+}
+#inline-register div.form-item:first-child {
+    margin-right:2%;
+}
+div#input #inline-register  div.form-item legend{
+    display: block;
+    float:left;
+    width:100%;
+    text-align: left;
+    font-size: 14px;
+    color:#555;
+    margin:4px 0 0 3px;
+}
+div#input #inline-register input {
+    width: 100%;
+}
+
+
+
+
+
+
+
+/* go-button section
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
 p#artcounter {
     font-size: 20px;
-    margin:0 0 10px 325px;
+    margin:17px 0 10px 270px;
     font-weight: normal;
+    float:left;
+    clear:left;
 }
 p#artcounter span.count{
     color: #ff4e00;
     font-weight: bold;
 }
 div#create-button {
-    padding-top: 50px;
     clear:both;
+    margin-top:25px;
 }
 div#create-button img.loading {
     height: 41px;
@@ -114,7 +164,7 @@ div#create-button legend, div#create-button input {
 }
 div#create-button input {
     font-weight: normal;
-    width: 336px;
+    width: 450px;
     float:left;
     color: #555;
     margin-right: 10px;
@@ -134,16 +184,18 @@ span.added span.count {
     font-weight: bold;
 }
 #go-button {
-    float:left;
+    display:block;
     width: 100px;
     background: #ff4e00;
     color: #fff;
     font-weight: bold;
+    float:left;
     border:none;
     font-size: 30px;
     -moz-border-radius: 25px;
     -webkit-border-radius: 25px;
     cursor: pointer;
+    margin:10px 0 0 20px;
 }
 
 span.sorry {

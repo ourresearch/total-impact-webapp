@@ -40,7 +40,6 @@ body a:hover {
     width: 1000px;
 }
 .clearfix {
-    display:none;
     clear:both;
 }
 h3 {
@@ -254,7 +253,7 @@ li#acct-mgt li.loading img{
 
 
 
-/* registration, login, and collections dialogs
+/* ion, login, and collections dialogs
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
