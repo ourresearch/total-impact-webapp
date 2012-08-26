@@ -14,7 +14,7 @@ function Coll(collViews, user){
     }
 
     this.update = function() {
-        thisThing = this
+        var thisThing = this
         this.views.startUpdating()
         $.ajax({
             url: "http://"+api_root+'/collection/'+this.id,
@@ -26,7 +26,7 @@ function Coll(collViews, user){
         }
 
     this.get = function(interval) {
-        thisThing = this
+        var thisThing = this
         this.views.startUpdating()
         $.ajax({
             url: "http://"+api_root+'/collection/'+thisThing.id,

@@ -103,8 +103,8 @@ div#create-button {
     padding-top: 50px;
     clear:both;
 }
-div#create-button img {
-    height: auto;
+div#create-button img.loading {
+    height: 41px;
     margin-top: 4px;
     float:left;
 }

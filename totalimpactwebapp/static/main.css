@@ -12,6 +12,13 @@ body {
     height: 100%;
     padding-bottom: 0;
 }
+ul, li {
+    padding: 0;
+    margin: 0;
+}
+li {
+    list-style-type: none;
+}
 pre {
     margin-left:0;
     padding-left: 0;
@@ -25,10 +32,7 @@ body a:link {
 body a:hover {
     text-decoration: underline;
 }
-/*#container { 
-   min-height:100%;
-   position:relative;
-}*/
+
 
 .wrapper {
     margin: 0 auto;
@@ -160,27 +164,12 @@ ul#nav ul {
     padding:0;
     float:left;
 }
-ul#nav li#acct-mgt {
-    margin-right:140px;
-}
-ul#nav li#acct-mgt div.sep {
-    border-left: 1px solid #DDD;
-    height: 25px;
-    float: left;
-    margin: 15px 8px;
-}
-ul#nav li#logged-in span.username{
-    font-weight: bold;
-}
-ul#nav li#logged-in span#logout-link:hover {
-    color: #DD4814;
-}
-ul#nav li#logged-in span#logout-link{
-    font-size:10px;
-    font-family: helvetica, arial, sans-serif;
-}
-ul#nav li#logged-in a:hover {
-    color:inherit;
+
+ul#nav li {
+    float:left;
+    list-style: none;
+    padding: 0;
+    height:65px
 }
 
 ul#nav a {
@@ -198,67 +187,74 @@ body ul#nav a:hover {
     color:#DD4814;
 }
 
-body ul#nav li#register-link a {
-    color: #DD4814;
-}
-body ul#nav li#register-link {
-    /*background: url(img/grey-noise.png);*/
-}
-
-body ul#nav li#logged-in {
-    display:none;
-}
 
 
-ul#nav li {
-    float:left;
-    list-style: none;
-    padding: 0;
-    height:65px
-}
-
-
-div.main {
-    box-shadow: 0px 3px 16px -3px #333;
-    background: #fff;
-    padding-top: 30px;
-    font-size: 18px;
-    padding-bottom: 100px;
-    color: #333;
-    min-height: 400px
-}
-div.main p {
-}
-div.main h3:first {
-    margin-top: 0;
-    
-}
-
-/* page header
+/* account-management links on nav bar
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div#page-header {
-    padding-top: 30px;
-/*    background-color: #ff4e00;*/
-/*    background: url(img/h2-bg.png) bottom  left repeat-x;*/
+
+li#acct-mgt {
+    margin-right:140px;
+    min-width:150px;
 }
-div#page-header h2 {
-    font-family: rokkitt, georgia, sans-serif;
-    color: #fff;
-    font-size: 40px;
-    margin:0;
-    float:none;
+li#acct-mgt ul {
+
 }
-div#page-header img {
-    margin-left:-32px;
-    height:auto;
-    float:left;
-    padding-top: 7px;
+li#acct-mgt ul li {
+}
+li#acct-mgt div.sep {
+    border-left: 1px solid #DDD;
+    height: 25px;
+    float: left;
+    margin: 15px 8px;
+}
+li#logged-in span{
+    display: inline-block;
+    padding: 20px 0;
+    margin-top: -20px;
+}
+li#logged-in span.username{
+    font-weight: bold;
+}
+li#logged-in span#logout-link:hover {
+    color: #DD4814;
+}
+li#logged-in span.username:hover {
+    color: #DD4814;
+}
+li#logged-in span#logout-link{
+    font-size:10px;
+    font-family: helvetica, arial, sans-serif;
+}
+ul#nav li#logged-in a:hover {
+    color:#333;
+}
+
+li#register-link a {
+    color: #DD4814;
+}
+li#register-link {
+    /*background: url(img/grey-noise.png);*/
+}
+
+li#logged-in {
+    display:none;
+}
+li#acct-mgt li.loading {
+    width: 115px;
+    margin-top: 13px;
+}
+li#acct-mgt li.loading img{
+    float:right;
+    margin-right:32px
 }
 
 
-/* register form
+
+
+
+/* registration, login, and collections dialogs
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
@@ -351,10 +347,69 @@ div#page-header img {
 
 #header #my-colls {
     display:none;
+    width: 200px;
+    /*min-height: 70px;*/
 }
 #header #my-colls div.pointer {
-    margin-right:50px;
+    margin-right:40px;
 }
+#header #my-colls h3 {
+    text-shadow:  1px 0px white;
+    margin: 0 0 10px 0;
+    border-bottom:1px solid #ccc;
+}
+#my-colls li {
+    padding-left:30px;
+    line-height: 1;
+    height:30px; /* so as to be as tall as the loading gif */
+}
+#my-colls img {
+    display:block;
+    float:none;
+    margin: 0 auto;
+}
+
+
+/* page header
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div#page-header {
+    padding-top: 30px;
+    /*    background-color: #ff4e00;*/
+    /*    background: url(img/h2-bg.png) bottom  left repeat-x;*/
+}
+div#page-header h2 {
+    font-family: rokkitt, georgia, sans-serif;
+    color: #fff;
+    font-size: 40px;
+    margin:0;
+    float:none;
+}
+div#page-header img {
+    margin-left:-32px;
+    height:auto;
+    float:left;
+    padding-top: 7px;
+}
+
+
+div.main {
+    box-shadow: 0px 3px 16px -3px #333;
+    background: #fff;
+    padding-top: 30px;
+    font-size: 18px;
+    padding-bottom: 100px;
+    color: #333;
+    min-height: 400px
+}
+div.main p {
+}
+div.main h3:first {
+    margin-top: 0;
+
+}
+
 
 /* homepage
 *****************************************************************************

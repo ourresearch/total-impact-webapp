@@ -1,4 +1,6 @@
 
+var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
+
 
 /*****************************************************************************
  * account management
@@ -147,12 +149,22 @@ function User(userViews) {
     }
 
 
-    this.getCollsWithTitles = function() {
-        thisThing = this
-        colls = JSON.parse($.cookie("userdata"))["colls"]
-        collsStr = colls.join(",")
+    this.getCollInfo = function() {
+
+        cids = []
+        for (cid in this.userdata()["colls"]) {
+            cids.push(cid)
+        }
+        if (!cids.length) {
+            this.userViews.showNoColls()
+        }
+        else {
+            this.userViews.startShowColls()
+        }
+        cidsString = cids.join(",")
+        var thisThing = this
         $.ajax({
-                   url: "http://"+api_root+"/collections/"+colls,
+                   url: "http://"+api_root+"/collections/"+cidsString,
                    type: "GET",
                    dataType:"json",
                    contentType: "application/json; charset=utf-8",
@@ -198,18 +210,27 @@ function UserViews() {
         $("#register-link, #log-in-link").hide()
             .siblings("li#logged-in").show()
             .find("span.username").html(username+"!")
+        $("li.loading").remove()
+
         console.log("logged in!")
     }
+
+    // i think this shoudl actually be in the controller, since it's input.
     this.registerFormStart = function(loginOrRegister) {
         if (loginOrRegister == "register") {
-            $("div#register-login").slideDown().removeClass("log-in").addClass("register")
+            $("div#register-login").slideDown(250).removeClass("log-in").addClass("register")
         }
         else {
-            $("div#register-login").slideDown().removeClass("register").addClass("log-in")
+            $("div#register-login").slideDown(250).removeClass("register").addClass("log-in")
         }
     }
-    this.registerFormFinished = function(){
+    this.finishRegistration = function(){
+    }
+
+    this.startRegistration = function() {
         $("div#register-login").slideUp();
+        $("#register-link, #log-in-link").hide()
+        $("li#acct-mgt ul").append("<li class='loading'>"+ajaxLoadImg+"</li>")
     }
     this.registerFail = function(data) {
         console.log("oh noes, registration fail!")
@@ -217,12 +238,52 @@ function UserViews() {
     this.logout = function(){
         $("#register-link, #log-in-link").show()
             .siblings("li#logged-in").hide()
+        $("div.header-dialog").slideUp(250)
         console.log("logged out.")
     }
 
-    this.showColls = function(colls) {
-        console.log(colls)
+    this.startShowColls = function() {
+        $("#my-colls")
+            .find("ul, h3").remove()
+            .andSelf()
+            .append("<h3>Collections:</h3>").append(ajaxLoadImg)
+            .slideDown(250)
     }
+    this.showNoColls = function() {
+        $("#my-colls")
+            .append("</h3>You don't have any collections yet. Care to <a href='/create'>make one</a>?</h3>")
+            .slideDown(250)
+            .find("ul, h3")
+            .remove()
+            .parent()
+
+    }
+    this.showColls = function(titles) {
+        $("#my-colls img.loading").remove()
+        var collsList$ = $("<ul></ul>")
+        var hasColls = false
+        for (cid in titles) {
+            var collLink = '<a href="/collection/'+ cid +'">'+ titles[cid] +'</a>'
+            collsList$.append("<li>"+collLink+"</li>")
+            hasColls = true
+        }
+        if (hasColls) {
+            $("#my-colls").append(collsList$)
+        }
+    }
+
+
+    // clicking anywhere else will slideup the coll list
+    $("html").bind("click", function(e){
+        if (!$(e.target).closest("div.header-dialog").length) {
+            $("div.header-dialog").slideUp("fast")
+        }
+    })
+
+
+
+
+
     return true
 }
 
@@ -245,31 +306,54 @@ function UserController(user, userViews) {
         /* registration and login
          ******************************************/
 
+        // should be refactored into a method w/ the log-in-link form block below...
         $("#register-link a").click(function(){
-            userViews.registerFormStart("register");
+            if ($("div.header-dialog.register").is(":visible")){
+                $("div.header-dialog").slideUp(250)
+            }
+            else {
+                userViews.registerFormStart("register");
+            }
             return false;
         })
 
-        $("#log-in-link").click(function(){
-            userViews.registerFormStart("login");
+        $("#log-in-link").click(function(e){
+            if ($("div.header-dialog.log-in").is(":visible")){
+                $("div.header-dialog").slideUp(250)
+            }
+            else {
+                userViews.registerFormStart("log-in");
+            }
             return false;
         })
+
 
         // works for both the registration and login forms.
         $("#register-login form").submit(function(){
 
+            userViews.startRegistration()
             var email = $("#email").val()
             var pw = $("#pw").val()
             user.setCreds(email, pw)
             var isNewUser = $(this).parent().hasClass("register")
             user.syncWithServer(isNewUser)
 
-            userViews.registerFormFinished();
+            userViews.finishRegistration();
             return false;
         })
 
         $("#logout-link").click(function(){
             user.deleteLocal();
+            return false;
+        })
+
+        $("#logged-in span.username").click(function(){
+            if ($("div.header-dialog").is(":visible")){
+                $("div.header-dialog").slideUp(250)
+            }
+            else {
+                user.getCollInfo()
+            }
             return false;
         })
 
