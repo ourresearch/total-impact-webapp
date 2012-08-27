@@ -139,27 +139,23 @@ function ItemView() {
         return ich[templateName](biblio, true)
     }
 
-    this.getLatestTs = function(metricSnaps) {
-        var latestTs = "1999-01-01T00:00:00.000000"
-        for (ts in metricSnaps) {
-            if (ts > latestTs) {
-                latestTs = ts
-            }
-        }
-        return latestTs
-    }
-
     this.render = function(item){
         item.metricsArr = []
         for (metricName in item.metrics){
             thisMetric = item.metrics[metricName]
             thisMetric.name = metricName
-            var latestTs = this.getLatestTs(item.metrics[metricName].values)
-            if (latestTs) {
-                var latestVal = item.metrics[metricName].values[latestTs]
-                thisMetric.ts = latestTs
-                thisMetric.value = latestVal
+            thisMetric.value = item.metrics[metricName]["values"]["raw"]
+
+            // for now, hardcode we only have normed values for articles
+            if (item.biblio.genre == "article") {
+                if (typeof item.metrics[metricName]["values"]["nih"] != "undefined") {
+
+                    // for now, hardcode only have one norm called nih
+                    thisMetric.norm = item.metrics[metricName]["values"]["nih"]
+                    thisMetric.value = thisMetric.value + " [" + thisMetric.norm + "]"
+                }
             }
+
 
             // if no values, no point in printing
             if (thisMetric.value) {
@@ -178,6 +174,9 @@ function ItemView() {
             if (typeof x["value"] == "string") {
                 good_to_print = true
             }
+            if (typeof x["norm"] != "undefined") {
+                good_to_print = true
+            }            
             return good_to_print
         })
 
