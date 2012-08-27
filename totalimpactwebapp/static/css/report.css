@@ -1,0 +1,309 @@
+/* report
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+#page-header h2 span {
+  font-size: 16px;
+  margin-left: 10px;
+  font-family: helvetica, arial, sans-serif;
+}
+#page-header img.loading {
+  height: 32px;
+  margin-top: -2px;
+  margin-right: 5px;
+}
+#report {
+  padding-bottom: 20px;
+}
+#report-meta {
+  margin: -102px 90px 0 0;
+  float: right;
+}
+#report-meta span#num-items {
+  color: white;
+  padding-top: 41px;
+  display: block;
+  float: right;
+  padding-right: 11px;
+}
+div#report-info {
+  float: left;
+  font-size: 12px;
+  padding-top: 5px;
+}
+#report-info span.badge {
+  margin-left: 5px;
+}
+div#report-button {
+  float: right;
+  margin-top: 37px;
+}
+span.report-button a {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  background: #ddd;
+  padding: 4px 11px;
+  -webkit-border-radius: 15px;
+  /* CSS3 rounded borders for Safari                    */
+
+  -moz-border-radius: 15px;
+  /* CSS3 rounded borders for Firefox                   */
+
+  text-shadow: 0 1px 0px #fff;
+  border-radius: 15px;
+  text-decoration: none;
+  color: #555;
+  display: block;
+  float: left;
+}
+span.report-button a.report-button-left {
+  margin-right: 0;
+  padding-right: 5px;
+  -moz-border-radius-topright: 0;
+  -webkit-border-top-right-radius: 0;
+  -moz-border-radius-bottomright: 0;
+  -webkit-border-bottom-right-radius: 0;
+}
+span.report-button a.report-button-right {
+  margin-left: 0;
+  padding-left: 5px;
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-bottom-left-radius: 0;
+}
+span.report-button a:hover {
+  background: #ccc;
+  color: #000;
+  text-decoration: none;
+}
+#share {
+  float: right;
+  margin: 42px 0 0 15px;
+  width: 80px;
+}
+p.something-missing {
+  clear: left;
+  padding: 50px 20px 20px 0;
+  font-size: 75%;
+  color: #999;
+  background: #fff;
+  text-align: right;
+  margin: 0;
+}
+.tweet-this iframe {
+  width: 97px;
+}
+.twitter-feed {
+  clear: both;
+  padding-top: 30px;
+}
+input.report {
+  border-top: none;
+  border-left: none;
+  border-bottom: 1px solid #EEE;
+  border-right: 1px solid #EEE;
+  background-color: #FF4E00;
+  color: #FFF;
+  margin-top: 3px;
+  height: 28px;
+}
+/** report printout ******************************************************/
+div#metrics {
+  min-height: 500px;
+  background: none repeat scroll 0 0 #FFFFFF;
+  float: left;
+  width: 100%;
+  margin-top: 25px;
+}
+li.item {
+  border: 0 solid #CCCCCC;
+  clear: left;
+  list-style-type: none;
+  margin: 0 auto 1em;
+  width: 1100px;
+  min-height: 4em;
+  position: relative;
+}
+a.item-delete-button {
+  left: -50px;
+  width: 50px;
+  height: 50px;
+  color: red;
+  display: block;
+  position: absolute;
+  padding: 2px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  font-size: 12px;
+  display: none;
+}
+li.item h4 {
+  font-weight: normal;
+  margin: 0;
+  color: #AAA;
+  font-size: 12px;
+}
+li.item span.repo,
+li.item span.genre {
+  color: #aaa;
+  font-size: 12px;
+  margin-left: 5px;
+}
+li.item span.genre {
+  margin-left: 0;
+}
+li.item a.showhide {
+  width: 50px;
+  font-weight: bold;
+  font-size: 12px;
+  color: #fff;
+  background: #777;
+  padding: 2px 8px;
+  -webkit-border-radius: 3px;
+  /* CSS3 rounded borders for Safari  */
+
+  -moz-border-radius: 3px;
+  /* CSS3 rounded borders for Firefox  */
+
+}
+li.item a.showhide:hover {
+  background: #FF4E00;
+  text-decoration: none;
+}
+div.genre h3 {
+  font-family: rokkitt, georgia, serif;
+  font-size: 35px;
+  color: #555;
+  font-weight: bold;
+  margin: 20px 0 0 155px;
+  padding: 0 24px 10px 120px;
+  width: 1100px;
+  margin: 0 auto;
+}
+div.genre {
+  float: left;
+  width: 100%;
+  padding: 0 0 30px;
+  background-color: #fff;
+  display: none /* show when items are added */
+;
+}
+div.genre ul {
+  padding: 0;
+  margin: 0;
+}
+div.genre:first-child h3 {
+  border-bottom: none;
+}
+div.genre:last-child {
+  background-image: none;
+  border-bottom: none;
+}
+div.genre ul.artifact-list {
+  padding: 30px 0 0;
+  width: 100%;
+  float: left;
+  margin: 0;
+}
+ul.metrics li,
+ul.biblio li,
+ul.about li {
+  list-style-type: none;
+}
+div.biblio {
+  width: 350px;
+  float: left;
+  margin: 2px 0 0 -50px;
+  padding: 0 10px 0 50px;
+  color: #222;
+  font-size: 14px;
+}
+div.biblio h5 {
+  display: inline;
+  font-size: 1em;
+}
+div.biblio span.year {
+  color: #aaa;
+}
+div.biblio span.year:before {
+  content: "(";
+}
+div.biblio span.year:after {
+  content: ")";
+}
+span.missing.biblio {
+  font-size: 12px;
+}
+span.missing {
+  font-style: italic;
+  color: #333;
+}
+ul.biblio span.meta-repo {
+  font-size: 70%;
+  font-style: italic;
+}
+ul.metrics {
+  margin-left: 365px;
+}
+ul.metrics li,
+ul.metrics span.missing {
+  float: left;
+  height: 6em;
+  margin-right: 12px;
+}
+ul.metrics a {
+  text-align: center;
+}
+ul.metrics span.last-update {
+  display: none;
+  /* figure out how to display this later */
+
+}
+ul.metrics span.metric-value {
+  font-weight: bold;
+  list-style-type: none;
+  padding: 0 5px;
+  margin-bottom: 2px;
+  -webkit-border-radius: 3px;
+  /* CSS3 rounded borders for Safari                    */
+
+  -moz-border-radius: 3px;
+  /* CSS3 rounded borders for Firefox                   */
+
+  border-radius: 3px;
+  display: block;
+}
+ul.metrics a:hover {
+  text-decoration: none;
+}
+ul.metrics a:hover span.metric-value {
+  background: #FF4E00;
+  color: #fff;
+}
+ul.metrics li:hover span.metric-name {
+  color: #FF4E00;
+}
+.metric-name {
+  color: #aaa;
+  display: block;
+  font-size: 9px;
+  width: 43px;
+  margin: 7px auto 0;
+}
+span.meta-doi {
+  display: none;
+}
+ul.source-list {
+  padding: 0;
+}
+span.metric-name-img {
+  margin: 4px 3px;
+}
+span.metric-name-img img {
+  margin: 0 auto;
+  display: block;
+}
+.metric-img-name {
+  display: block;
+}

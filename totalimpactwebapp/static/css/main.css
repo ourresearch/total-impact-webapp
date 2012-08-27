@@ -1,0 +1,817 @@
+/* globals */
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+body {
+  font-family: "Helvetica", sans-serif;
+  margin: 0;
+  background: #ff4e00;
+  background: url(../img/orange-noise.png);
+  height: 100%;
+  padding-bottom: 0;
+}
+ul,
+li {
+  padding: 0;
+  margin: 0;
+}
+li {
+  list-style-type: none;
+}
+pre {
+  margin-left: 0;
+  padding-left: 0;
+  margin-top: 0;
+}
+body a:link {
+  text-decoration: none;
+  cursor: pointer;
+}
+body a:hover {
+  text-decoration: underline;
+}
+.wrapper {
+  margin: 0 auto;
+  display: block;
+  width: 1000px;
+}
+.clearfix {
+  clear: both;
+}
+.valid {
+  color: green;
+}
+.invalid {
+  color: red;
+}
+h3 {
+  margin: 0px;
+  margin-top: 20px;
+}
+a {
+  color: #ff4e00;
+  cursor: pointer;
+}
+body div#tooltip {
+  position: absolute;
+  z-index: 3000;
+  border: 1px solid #777;
+  background-color: #333;
+  padding: 10px;
+  color: #eee;
+  opacity: 0.9;
+  font-size: 10px;
+  font-family: Helvetica, Arial, sans-serif;
+  width: 200px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  box-shadow: 2px 2px 3px #555;
+}
+body div#tooltip.viewport-right {
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px;
+  -moz-border-radius-topright: 0;
+  -webkit-border-top-right-radius: 0;
+}
+div#tooltip p,
+div#tooltip div,
+div#tooltip h3 {
+  margin: 0;
+  padding: 0;
+}
+p,
+ul {
+  line-height: 1.4;
+  font-size: 18px;
+}
+/* header
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div#header div.wrapper {
+  width: 1100px;
+  height: 55px;
+  margin: 0 auto;
+  position: relative;
+  box-shadow: 0px 3px 16px -3px #333333;
+  border-top: none;
+  background-position: bottom;
+  background-repeat: repeat-x;
+  -moz-border-radius-bottomleft: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  background: #fff;
+}
+div#header {
+  height: 70px;
+  /*    background: url(img/orange-noise.png);*/
+
+}
+div#header a#uservoice {
+  position: absolute;
+  top: -2px;
+  right: 10px;
+  display: block;
+  z-index: 3;
+}
+div#header a#uservoice:hover {
+  top: 0;
+}
+h1 {
+  margin: 0;
+  padding: 0 0 0 20px;
+  float: left;
+  font-size: 20px;
+}
+h1 a {
+  background-image: url(../img/ti_logo2.png);
+  background-repeat: no-repeat;
+  text-indent: -9999px;
+  display: block;
+  width: 262px;
+  height: 43px;
+  margin: 4px 0 0;
+}
+h1 a:hover {
+  color: #DD4814;
+  text-decoration: none;
+}
+h1 span.loc {
+  font-weight: normal;
+  color: #888;
+}
+ul#nav {
+  float: right;
+  padding: 0;
+}
+ul#nav ul {
+  padding: 0;
+  float: left;
+}
+ul#nav li {
+  float: left;
+  list-style: none;
+  padding: 0;
+  height: 55px;
+}
+ul#nav a {
+  color: #555;
+  padding: 15px 0.5em;
+  display: block;
+  font-size: 18px;
+  background-repeat: repeat-x;
+  background-position: center center;
+  font-family: rokkitt, georgia, serif;
+}
+body ul#nav a:hover {
+  /*    background-image: url('./img/header-bg-down.png');*/
+
+  text-decoration: none;
+  color: #DD4814;
+}
+/* account-management links on nav bar
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+li#acct-mgt {
+  margin-right: 140px;
+  min-width: 150px;
+}
+li#acct-mgt div.sep {
+  border-left: 1px solid #DDD;
+  height: 25px;
+  float: left;
+  margin: 15px 8px;
+}
+li#logged-in span {
+  display: inline-block;
+  padding: 20px 0;
+  margin-top: -20px;
+}
+li#logged-in span.username {
+  font-weight: bold;
+}
+li#logged-in span#logout-link:hover {
+  color: #DD4814;
+}
+li#logged-in span.username:hover {
+  color: #DD4814;
+}
+li#logged-in span#logout-link {
+  font-size: 10px;
+  font-family: helvetica, arial, sans-serif;
+}
+ul#nav li#logged-in a:hover {
+  color: #333;
+}
+li#register-link {
+  /*background: url(img/grey-noise.png);*/
+
+}
+li#logged-in {
+  display: none;
+}
+li#acct-mgt li.loading {
+  width: 115px;
+  margin-top: 13px;
+}
+li#acct-mgt li.loading img {
+  float: right;
+  margin-right: 32px;
+}
+/* ion, login, and collections dialogs
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+#header div.header-dialog div.pointer {
+  border: solid 10px transparent;
+  border-bottom-color: #e2e2e2;
+  margin-top: -40px;
+  width: 0px;
+  float: right;
+}
+#header div.header-dialog.log-in div.pointer {
+  margin-right: -20px;
+}
+#header div.header-dialog.register div.pointer {
+  margin-right: 44px;
+}
+#header div.header-dialog {
+  z-index: 10;
+  position: absolute;
+  float: right;
+  top: 55px;
+  right: 160px;
+  width: 290px;
+  background: url(../img/grey-noise.png);
+  padding: 20px;
+  box-shadow: 0px 6px 15px -3px #333333;
+  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  border: 1px solid #fff;
+  border-top: 1px solid #999;
+  display: none;
+  font-family: rokkitt, georgia, serif;
+}
+#header #register-login form div.form-q {
+  clear: both;
+}
+#header #register-login input {
+  float: right;
+}
+#header #register-login legend {
+  display: inline;
+  text-align: right;
+  float: right;
+  max-width: 290px;
+  color: #555;
+  margin-top: 10px;
+  margin-right: 3px;
+  font-size: 20px;
+}
+#header #register-login span.validation {
+  float: right;
+  text-align: right;
+  width: 195px;
+  height: 15px;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 12px;
+}
+#header #register-login span.validation img.loading {
+  height: 20px;
+  margin-top: -6px;
+  float: right;
+}
+#header #register-login #contact-me-legend {
+  font-size: 12px;
+  font-family: Helvetica, Arial, sans-serif;
+}
+#register-login input#contact-me {
+  height: 20px;
+  width: 20px;
+  margin-top: 17px;
+}
+#register-login input {
+  border: 1px solid #888;
+  font-size: 18px;
+  color: #333;
+  padding: 4px;
+}
+#header #register-login input#submit {
+  float: none;
+  margin: 0 auto;
+  border: none;
+  margin-top: 20px;
+  text-align: center;
+  width: 196px;
+  font-size: 30px;
+  color: white;
+  background: #FF4E00;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+  margin-left: 93px;
+  font-family: rokkitt, georgia, serif;
+}
+#header #my-colls {
+  display: none;
+  width: 200px;
+  /*min-height: 70px;*/
+
+}
+#header #my-colls div.pointer {
+  margin-right: 40px;
+}
+#header #my-colls h3 {
+  text-shadow: 1px 0px white;
+  margin: 0 0 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+#my-colls li {
+  padding-left: 30px;
+  line-height: 1;
+  height: 30px;
+  /* so as to be as tall as the loading gif */
+
+}
+#my-colls img {
+  display: block;
+  float: none;
+  margin: 0 auto;
+}
+/* page header
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div#page-header {
+  padding-top: 30px;
+  /*    background-color: #ff4e00;*/
+
+  /*    background: url(img/h2-bg.png) bottom  left repeat-x;*/
+
+}
+div#page-header h2 {
+  font-family: rokkitt, georgia, sans-serif;
+  color: #fff;
+  font-size: 40px;
+  margin: 0;
+  float: none;
+}
+div#page-header img {
+  margin-left: -32px;
+  height: auto;
+  float: left;
+  padding-top: 7px;
+}
+div.main {
+  box-shadow: 0px 3px 16px -3px #333333;
+  background: #fff;
+  padding-top: 30px;
+  font-size: 18px;
+  padding-bottom: 100px;
+  color: #333;
+  min-height: 400px;
+}
+div.main h3:first {
+  margin-top: 0;
+}
+/* homepage
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div#tagline {
+  color: #fff;
+  height: 455px;
+  position: relative;
+  /*    background:url(img/tagline-bg.png) bottom left repeat-x;*/
+
+}
+div#tagline div.wrapper {
+  position: relative;
+}
+body.homepage div#page-header {
+  display: none;
+}
+/* the image */
+#tagline #img-bar {
+  position: relative;
+}
+#tagline img {
+  height: 430px;
+  width: auto;
+  position: absolute;
+  right: 0;
+  top: 15px;
+  z-index: 2;
+}
+/* the tagline and subtagline */
+#tagline #text-bar {
+  padding: 20px 0 0 0;
+  position: absolute;
+  width: 100%;
+  top: 50px;
+  /*    background: #da5015;*/
+
+}
+#tagline #text-bar h2 {
+  color: #fff;
+  font-family: 'rokkitt', 'georgia', serif;
+  font-size: 46px;
+  font-weight: bold;
+  margin-bottom: 0;
+  line-height: .8;
+  background: transparent;
+  width: 576px;
+  margin: 0;
+  padding: 0;
+}
+div#tagline p.subtagline {
+  font-size: 23px;
+  line-height: 1.2;
+  width: 550px;
+  font-family: rokkitt, georgia, sans-serif;
+  margin-top: 14px;
+}
+div#tagline p a {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 2px dotted #fff;
+}
+div#tagline p a:hover {
+  border-bottom: 2px solid #fff;
+}
+/* the call-to-action button and environs */
+#button-bar {
+  width: 100%;
+  position: absolute;
+  top: 300px;
+}
+#call-to-action span.container {
+  height: 114px;
+  display: block;
+  float: left;
+  width: 330px;
+  background: url(../img/call-to-action-shadow.png) bottom left no-repeat;
+}
+a#create-collection {
+  background: url(../img/call-to-action-button.png) no-repeat;
+  background-position: 0 -66px;
+  height: 63px;
+  width: 330px;
+  float: left;
+  display: block;
+  text-indent: -999999px;
+  /* CSS3 rounded borders for Firefox   */
+
+}
+a#create-collection:hover {
+  background-position: 0 0;
+}
+p#example-collection {
+  font-size: 14px;
+  float: left;
+  width: 100px;
+  margin-top: 3px;
+  padding-left: 15px;
+  border-left: 1px solid 
+    #EEE;
+  margin-left: 5px;
+}
+p#example-collection a {
+  font-size: 22px;
+  display: block;
+  width: 175px;
+}
+/* the "selling points" section
+*************************************************/
+div#selling-points {
+  background-color: #444;
+  padding: 20px 0;
+  margin-top: -34px;
+  min-height: 350px;
+  border-top: 1px solid #fff;
+  background-image: url(../img/selling-points-bg.png);
+  background-position: bottom;
+  background-repeat: repeat-x;
+}
+div#selling-points p {
+  margin-top: 0;
+  color: #bbb;
+  line-height: 1.4;
+}
+#selling-points ul li {
+  float: left;
+  width: 27%;
+  padding-right: 3%;
+  margin-right: 3%;
+  border-right: 1px dotted #555;
+  list-style-type: none;
+  min-height: 350px;
+}
+#selling-points ul li:last-child {
+  border-right: none;
+}
+#selling-points h3 {
+  color: #fff;
+  font-family: rokkitt, georgia, serif;
+  font-weight: normal;
+  font-size: 26px;
+  height: 61px;
+  padding-top: 8px;
+  padding-bottom: 0;
+  line-height: 1;
+  margin-top: 0px;
+  text-shadow: 3px 3px 7px #111;
+  padding-bottom: 10px;
+}
+h3#metrics-in-seconds {
+  background: url(../img/stopwatch-icon.png) no-repeat top left;
+  padding-left: 72px;
+}
+h3#embed-metrics-anywhere {
+  background: url(../img/suitcase-icon.png) no-repeat top left;
+  padding-left: 79px;
+}
+h3#its-on-us {
+  background: url(../img/free-icon.png) no-repeat top left;
+  padding-left: 122px;
+  padding-top: 30px;
+  margin-left: -30px;
+  height: 47px;
+  padding-bottom: 0;
+}
+/* "faq" page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+table {
+  border-collapse: collapse;
+  padding: 2px;
+  border-color: #ccc;
+  width: 700px;
+}
+td {
+  padding: 3px 8px;
+  border: 1px solid #ccc;
+  border-left: none;
+  border-right: none;
+}
+th {
+  background: #FF4E00;
+  color: #fff;
+  border: none;
+}
+#faq {
+  background: #fff;
+  padding-bottom: 50px;
+  padding-top: 40px;
+}
+ul#providers-metadata > li {
+  margin-bottom: 15px;
+}
+ul#providers-metadata li ul li {
+  list-style-type: none;
+}
+ul#providers-metadata li img {
+  margin-bottom: -0.2em;
+}
+#toc {
+  border: 1px solid #333333;
+  line-height: 1.5;
+  float: right;
+  margin: 16px 21px 12px;
+  padding: 16px;
+  text-align: left;
+  -webkit-border-radius: 4px;
+  /* CSS3 rounded borders for Safari      */
+
+  -moz-border-radius: 4px;
+  /* CSS3 rounded borders for Firefox   */
+
+}
+/* "about" page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div#about img {
+  float: left;
+  margin: 5px 15px 10px 0;
+  border: 1px solid #555;
+}
+div#about p {
+  margin-top: 0;
+  margin-bottom: .5em;
+}
+div#about h3 {
+  margin-top: 50px;
+  font-family: rokkitt, Georgia, serif;
+  color: #555;
+  margin-bottom: 10px;
+  font-size: 30px;
+}
+div#about div.team-member.second {
+  margin-top: 50px;
+}
+/* "api" page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+table {
+  border-collapse: collapse;
+  padding: 2px;
+  border-color: #ccc;
+  width: 700px;
+}
+td {
+  padding: 3px 8px;
+  border: 1px solid #ccc;
+  border-left: none;
+  border-right: none;
+}
+th {
+  background: #FF4E00;
+  color: #fff;
+  border: none;
+}
+h2#api {
+  clear: both;
+  /* clears the floated ti-data embedded stuff */
+
+  padding-top: 70px;
+}
+h3.apicall:first-of-type {
+  margin-top: 50px;
+}
+div#api {
+  margin-top: 120px;
+}
+#toc {
+  border: 1px solid #333333;
+  float: right;
+  margin: 16px 21px 12px;
+  padding: 16px;
+  text-align: left;
+  -webkit-border-radius: 4px;
+  /* CSS3 rounded borders for Safari      */
+
+  -moz-border-radius: 4px;
+  /* CSS3 rounded borders for Firefox   */
+
+}
+a.tocBackLink {
+  text-align: right;
+  font-size: 10px;
+  font-weight: normal;
+  margin-left: 10px;
+}
+pre {
+  font-family: consolas, monospace;
+  background: #333;
+  color: #eee;
+  padding: 1em;
+  width: 965px;
+  overflow-x: scroll;
+}
+h3.apicall {
+  white-space: normal !important;
+  font-family: consolas, monospace;
+  margin-top: 150px;
+  font-size: 30px;
+  color: #555;
+  margin-bottom: 10px;
+}
+div#docs h4 {
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+div#docs ul.metrics {
+  margin-left: 0;
+}
+.description {
+  /*    margin-left: 50px;*/
+
+}
+/* footer
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div#footer {
+  font-size: 100%;
+  clear: both;
+  color: #555;
+  padding-top: 50px;
+  width: 100%;
+}
+body.homepage div#footer {
+  background: #333;
+}
+div#footer div.wrapper {
+  padding: 20px 30px 50px;
+  margin-top: 50px;
+  height: 50px;
+  width: 1100px;
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px;
+  -moz-border-radius-topright: 10px;
+  -webkit-border-top-right-radius: 10px;
+  background: #fff;
+  margin: 0 auto;
+}
+div#footer p {
+  margin: 6px 0 0 0;
+  line-height: 1;
+  font-size: 14px;
+  line-height: 1.3;
+}
+div#footer img {
+  float: left;
+  padding-right: 20px;
+  padding-left: 10px;
+}
+div#footer-text {
+  padding-top: 12px;
+}
+/** TinyBox (modal js dialog) styles
+*******************************************************************************/
+.tbox {
+  position: absolute;
+  display: none;
+  padding: 14px 17px;
+  z-index: 900;
+}
+.tbox h1 {
+  margin: 0;
+  font-size: 25px;
+  color: #FF4E00;
+}
+.tinner {
+  padding: 15px 15px 30px 15px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background: #ffffff url(../img/ajax-loader.gif) no-repeat 50% 50%;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333333;
+}
+.tmask {
+  position: absolute;
+  display: none;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  background: #000;
+  z-index: 800;
+}
+.tclose {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  background: url(../img/tinybox-close.png) no-repeat;
+}
+.tclose:hover {
+  background-position: 0 -30px;
+}
+#error {
+  background: #ff6969;
+  color: #fff;
+  text-shadow: 1px 1px #cf5454;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  padding: 0;
+}
+#error .tcontent {
+  padding: 10px 14px 11px;
+  border: 1px solid #ffb8b8;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+#success {
+  background: #2ea125;
+  color: #fff;
+  text-shadow: 1px 1px #1b6116;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  padding: 10;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+#bluemask {
+  background: #4195aa;
+}
+#frameless {
+  padding: 0;
+}
+#frameless .tclose {
+  left: 6px;
+}
