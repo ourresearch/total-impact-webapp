@@ -301,11 +301,15 @@ createCollectionInit = function(){
                         user.setCreds(email, pw)
                     }
 
-                    on200 = function(){
+                    var success = function(){
                         location.href = "/collection/" +returnedCollection._id
                     }
-
-                    user.syncWithServer("push", {on200: on200})
+                    if (user.hasCreds()){
+                        user.syncWithServer("push", {on200: success})
+                    }
+                    else {
+                        success()
+                    }
                 }
             });
             return false;
