@@ -146,16 +146,13 @@ function ItemView() {
             thisMetric.name = metricName
             thisMetric.value = item.metrics[metricName]["values"]["raw"]
 
-            // for now, hardcode we only have normed values for articles
-            if (item.biblio.genre == "article") {
-                if (typeof item.metrics[metricName]["values"]["nih"] != "undefined") {
-
-                    // for now, hardcode only have one norm called nih
-                    thisMetric.norm = item.metrics[metricName]["values"]["nih"]
-                    thisMetric.value = thisMetric.value + " [" + thisMetric.norm + "]"
-                }
-            }
-
+            // disable displaying normalization values for now.  See TURN_ON_FOR_NORM_DISPLAY
+            //// for now, hardcode we only have normed values for articles
+            //if (typeof item.metrics[metricName]["values"]["nih"] != "undefined") {
+            //    // for now, hardcode only have one norm called nih
+            //    thisMetric.norm = item.metrics[metricName]["values"]["nih"]
+            //    thisMetric.value = thisMetric.value + " [" + thisMetric.norm + "]"
+            //}
 
             // if no values, no point in printing
             if (thisMetric.value) {
@@ -174,9 +171,10 @@ function ItemView() {
             if (typeof x["value"] == "string") {
                 good_to_print = true
             }
-            if (typeof x["norm"] != "undefined") {
-                good_to_print = true
-            }            
+            // disable displaying normalization values for now.  See TURN_ON_FOR_NORM_DISPLAY
+            //if (typeof x["norm"] != "undefined") {
+            //    good_to_print = true
+            //}            
             return good_to_print
         })
 
