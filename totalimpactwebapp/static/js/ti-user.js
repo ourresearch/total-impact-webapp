@@ -217,7 +217,7 @@ function UserViews() {
         console.log("login fail!")
     }
     this.login = function(username) {
-        $("#register-link, #log-in-link").hide()
+        $("#register-link, #login-link").hide()
             .siblings("li#logged-in").show()
             .find("span.username").html(username+"!")
         $("li.loading").remove()
@@ -226,28 +226,19 @@ function UserViews() {
         console.log("logged in!")
     }
 
-    // i think this shoudl actually be in the controller, since it's input.
-    this.registerFormStart = function(loginOrRegister) {
-        if (loginOrRegister == "register") {
-            $("div#register-login").slideDown(250).removeClass("log-in").addClass("register")
-        }
-        else {
-            $("div#register-login").slideDown(250).removeClass("register").addClass("log-in")
-        }
-    }
+
     this.finishRegistration = function(){
     }
-
     this.startRegistration = function() {
         $("div#register-login").slideUp();
-        $("#register-link, #log-in-link").hide()
+        $("#register-link, #login-link").hide()
         $("li#acct-mgt ul").append("<li class='loading'>"+ajaxLoadImg+"</li>")
     }
     this.registerFail = function(data) {
         console.log("oh noes, registration fail!")
     }
     this.logout = function(){
-        $("#register-link, #log-in-link").show()
+        $("#register-link, #login-link").show()
             .siblings("li#logged-in").hide()
         $("div.header-dialog").slideUp(250)
         console.log("logged out.")
@@ -284,31 +275,20 @@ function UserViews() {
 
     this.userNameExists = function() {
         $("input.username.register")
-            .siblings("span.validation")
-            .addClass("invalid")
-            .removeClass("valid")
-            .empty()
-            .html("sorry, that's taken.")
+            .parents("div.control-group")
+            .addClass("error")
+            .removeClass("success")
+            .find("span.help-inline")
+            .html("sorry, that email's taken.")
     }
     this.userNameValid = function() {
         $("input.username.register")
-            .siblings("span.validation")
-            .addClass("valid")
-            .removeClass("invalid")
-            .empty()
+            .parents("div.control-group")
+            .addClass("success")
+            .removeClass("error")
+            .find("span.help-inline")
             .html("looks good!")
     }
-
-
-    // clicking anywhere else will slideup the coll list
-    $("html").bind("click", function(e){
-        if (!$(e.target).closest("div.header-dialog").length) {
-            $("div.header-dialog").slideUp("fast")
-        }
-    })
-
-
-
 
 
     return true
@@ -332,28 +312,6 @@ function UserController(user, userViews) {
 
         /* registration and login
          ******************************************/
-
-        // should be refactored into a method w/ the log-in-link form block below...
-        $("#register-link a").click(function(){
-            if ($("div.header-dialog.register").is(":visible")){
-                $("div.header-dialog").slideUp(250)
-            }
-            else {
-                userViews.registerFormStart("register");
-            }
-            return false;
-        })
-
-        $("#log-in-link").click(function(e){
-            if ($("div.header-dialog.log-in").is(":visible")){
-                $("div.header-dialog").slideUp(250)
-            }
-            else {
-                userViews.registerFormStart("log-in");
-            }
-            return false;
-        })
-
 
         // works for both the registration and login forms.
         $("#register-login form").submit(function(){
@@ -385,11 +343,9 @@ function UserController(user, userViews) {
             return false;
         })
 
-        $("input.username").blur(function(){
+        $("input.username.register").blur(function(){
             if (!$(this).val()) return true
-            if ($(this).parents("div.log-in").length) return true
-
-            $(this).siblings("span.validation").empty().append(ajaxLoadImg)
+            $(this).siblings("span.help-inline").empty().append(ajaxLoadImg)
             user.checkUsername(
                 $(this).val(),
                 userViews.userNameValid,

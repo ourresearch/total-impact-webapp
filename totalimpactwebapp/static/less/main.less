@@ -108,20 +108,29 @@ div.navbar {
       margin-top: -8px;
    }
 
-   li.acct-mgt div.dropdown-menu {
-      padding:15px 20px 20px;
-      background:url(../img/grey-noise.png);
+   li.acct-mgt {
+      &#logged-in {display:none; }
 
-      .btn-primary {
-         margin-top:0;
-         float:right;
-         font-size:20px;
-      }
-      span.help-text {
-         height:22px;
-         float: right;
-         font-family: helvetica, aria, sans-serif;
-         font-size:12px;
+      .control-group { margin: 0; }
+
+      div.dropdown-menu {
+         padding:15px 20px 20px;
+         background:url(../img/grey-noise.png);
+
+         .btn-primary {
+            margin-top:0;
+            float:right;
+            font-size:20px;
+         }
+         span.help-inline {
+            height:22px;
+            min-width: 40px;
+            float: right;
+            font-family: helvetica, aria, sans-serif;
+            font-size:12px;
+
+            img { height:22px; float:right; }
+         }
       }
    }
 

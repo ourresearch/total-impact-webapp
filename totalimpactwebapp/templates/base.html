@@ -34,7 +34,7 @@
    <script type="text/javascript" src="/static/js/ti-item.js"></script>
    <script type="text/javascript" src="/static/js/ti-user.js"></script>
    <script type="text/javascript" src="/static/js/ti-coll.js"></script>
-   <!--<script type="text/javascript" src="/static/js/ti-ui.js"></script>-->
+   <script type="text/javascript" src="/static/js/ti-ui.js"></script>
    <script type="text/javascript">
       // google analytics code
 
@@ -74,8 +74,10 @@
                <a href="#"  class="dropdown-toggle" data-toggle="dropdown">register</a>
                <div  class="dropdown-menu">
                   <form >
-                     <span class="help-text">looks good!</span>
-                     <input type="text" name="email" class="username register" id="register-email" placeholder="email" />
+                     <div class="control-group">
+                        <span class="help-inline"></span>
+                        <input type="text" name="email" class="username register" id="register-email" placeholder="email" />
+                     </div>
                      <input type="password" name="pw" id="register-pw" placeholder="password"/>
                      <input type="submit" name="submit" class="btn btn-primary" id="register-submit" value="register"/>
                   </form>

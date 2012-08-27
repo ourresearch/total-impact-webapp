@@ -2,7 +2,7 @@ $.ajaxSetup ({
     cache: false
 });
 if (!window.console) {
-    console = {log: function() {}}; 
+    console = {log: function() {}};
 }
 
 var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
@@ -27,7 +27,7 @@ exampleStrings = {
 }
 
 inputExamplesIClickHandler = function(thisInput) {
-    
+
 }
 
 flatten = function(idsArr) {
@@ -51,7 +51,7 @@ flatten = function(idsArr) {
 addCollectionIds = function(idsArr, $this) {
     var startingCollectionLength = collectionAliases.length
     var newIds = flatten(idsArr);
-    
+
     // make an object with the unique key values
     var uniqueNamespaceIdPairs = {}
     for  (var i=0; i<collectionAliases.length; i++){
@@ -59,7 +59,7 @@ addCollectionIds = function(idsArr, $this) {
         uniqueNamespaceIdPairs[namespaceIdPair] = 1
     }
     console.log(uniqueNamespaceIdPairs)
-    
+
     for (var i=0; i < newIds.length; i++){
         var newNamespaceIdPair = newIds[i].join(":")
         if (!uniqueNamespaceIdPairs[newNamespaceIdPair]) {
@@ -80,7 +80,7 @@ addCollectionIds = function(idsArr, $this) {
             .find("span.count")
                 .css({color: "#ff4e00"})
                 .animate({color: "#555555"}, 1000)
-        
+
     }
     return true;
 
@@ -96,7 +96,7 @@ parseTextareaArtifacts = function(str) {
         if (thisId.indexOf(":") > 0) {
             artifact[0] = thisId.split(':')[0]; // namespace
             artifact[1] = thisId.substr(artifact[0].length + 1) // id
-            
+
             // handle urls:
             if (artifact[0] == "http"){
                 artifact[0] = "url";
@@ -124,8 +124,8 @@ userInputHandler = function($this, prevValue) {
     $this.blur(function(){
 
 
-    });    
-    
+    });
+
 }
 
 progressbar = function(total, done, loc$) {
@@ -184,24 +184,24 @@ upload_bibtex = function(files) {
                 console.log("started update request; got this key back: " + response)
                 update_bibtex_progress(response)
             },
-          error: function(XMLHttpRequest, textStatus, errorThrown) { 
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
             $("li #input_bibtex").siblings("span.added").remove()
             $("li #input_bibtex").siblings("span.loading").remove()
             $("li #input_bibtex").after("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
-            }    
+            }
         });
     }
 
 createCollectionInit = function(){
-    
+
     $("li textarea, input#name").each(function(){
         $(this).val(exampleStrings[this.id])
     })
-    $("li input, li textarea, input#name")
+    $("ul.pullers input, ul.manual-add textarea, input#name")
     .focus(function(){
         currentUserInputValue = $(this).val();
         $(this).removeClass("no-input-yet")
-        
+
         // hid the example strings if they're still up.
         if (currentUserInputValue == exampleStrings[this.id]) {
             $(this).val("")
@@ -211,13 +211,13 @@ createCollectionInit = function(){
         $this = $(this)
         if ($this.val() == "") {
             $this.addClass("no-input-yet")
-            $this.val(exampleStrings[this.id]) 
+            $this.val(exampleStrings[this.id])
             return false;
         }
         else if ($this.val() == currentUserInputValue) {
             return false;
         }
-        
+
         if ($this.attr("id") == "paste_input") {
             newIds = parseTextareaArtifacts($(this).val());
             // limit to adding first 500 lines
@@ -248,19 +248,19 @@ createCollectionInit = function(){
               success: function(response,status,xhr){
                 addCollectionIds(response.memberitems, $this)
                 },
-              error: function(XMLHttpRequest, textStatus, errorThrown) { 
+              error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $("span.loading").remove()
                 $this.siblings("span.added").remove()
                 var explainString;
                 if (XMLHttpRequest.status == 404) {
                     explainString = "sorry, not found."
                 } else {
-                    explainString = "sorry, there was an error."                    
+                    explainString = "sorry, there was an error."
                 }
                 $this.after("<span class='added'><span class='sorry'>" + explainString + "</span></span>")
-                }    
-            });                        
-        }        
+                }
+            });
+        }
     })
 
 
@@ -284,7 +284,7 @@ createCollectionInit = function(){
             }
 
             $.ajax({
-                url: "http://"+api_root+'/collection',                
+                url: "http://"+api_root+'/collection',
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
@@ -333,15 +333,15 @@ $(document).ready(function(){
         TINY.box.show({url:'../static/whichartifacts.html'})
         return false;
     });
-    
+
     // table of contents
     if ($("#toc")[0]) {
         $('#toc').tocBuilder({type: 'headings', startLevel: 3, endLevel: 3, insertBackLinks: 0});
-    
+
     }
-    
+
     createCollectionInit();
-    
+
 
 
 

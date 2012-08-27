@@ -98,6 +98,12 @@ div.navbar a.brand img {
   height: 40px;
   margin-top: -8px;
 }
+div.navbar li.acct-mgt#logged-in {
+  display: none;
+}
+div.navbar li.acct-mgt .control-group {
+  margin: 0;
+}
 div.navbar li.acct-mgt div.dropdown-menu {
   padding: 15px 20px 20px;
   background: url(../img/grey-noise.png);
@@ -107,11 +113,16 @@ div.navbar li.acct-mgt div.dropdown-menu .btn-primary {
   float: right;
   font-size: 20px;
 }
-div.navbar li.acct-mgt div.dropdown-menu span.help-text {
+div.navbar li.acct-mgt div.dropdown-menu span.help-inline {
   height: 22px;
+  min-width: 40px;
   float: right;
   font-family: helvetica, aria, sans-serif;
   font-size: 12px;
+}
+div.navbar li.acct-mgt div.dropdown-menu span.help-inline img {
+  height: 22px;
+  float: right;
 }
 div.navbar .nav li .dropdown-menu::after {
   border-bottom: 6px solid #E2E2E2;
