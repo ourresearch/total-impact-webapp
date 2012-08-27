@@ -34,7 +34,7 @@
    <script type="text/javascript" src="/static/js/ti-item.js"></script>
    <script type="text/javascript" src="/static/js/ti-user.js"></script>
    <script type="text/javascript" src="/static/js/ti-coll.js"></script>
-   <script type="text/javascript" src="/static/js/ti-ui.js"></script>
+   <!--<script type="text/javascript" src="/static/js/ti-ui.js"></script>-->
    <script type="text/javascript">
       // google analytics code
 
@@ -55,58 +55,53 @@
 
 <body class="{{ body_class|default('default') }}">
 <div id="container">
-
-   <div id="header">
-      <div class="wrapper">
-         <h1 id="blog-title"><span class="main"><a href="/">total-impact</a></span></h1>
-         <ul id="nav">
+   <div class="navbar">
+      <div class="navbar-inner">
+         <a class="brand" href="/"><img src="/static/img/ti_logo2.png" alt="total-impact logo" /></a>
+         <ul class="nav pull-right">
             <li><a href="/create">create</a></li>
             <li><a href="/about">about</a></li>
-            <li><a href="/api-docs">api</a></li>
-            <li><a href="http://total-impact.tumblr.com">blog</a></li>
-            <li><a href="http://twitter.com/#!/totalImpactdev">twitter</a></li>
-            <li id="acct-mgt">
-               <div class="sep"></div>
-               <ul>
-                  <li id="register-link"><a href="#">register</a></li>
-                  <li id="log-in-link"><a href="#">log in</a></li>
-                  <li id="logged-in"><a href="#">
-                     <span class="hi">hi,</span>
-                     <span class="username"></span>
-                     <span id="logout-link">(logout)</span>
-                  </a>
-                  </li>
+            <li class="dropdown">
+               <a href="#"  class="dropdown-toggle" data-toggle="dropdown">follow</a>
+               <!-- Link or button to toggle dropdown -->
+               <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                  <li><a href="http://total-impact.tumblr.com">blog</a></li>
+                  <li><a href="http://twitter.com/#!/totalImpactdev">twitter</a></li>
                </ul>
             </li>
+            <li class="divider-vertical"></li>
+            <li class="acct-mgt dropdown" id="register-link" data-dropdown='dropdown'>
+               <a href="#"  class="dropdown-toggle" data-toggle="dropdown">register</a>
+               <div  class="dropdown-menu">
+                  <form >
+                     <span class="help-text">looks good!</span>
+                     <input type="text" name="email" class="username register" id="register-email" placeholder="email" />
+                     <input type="password" name="pw" id="register-pw" placeholder="password"/>
+                     <input type="submit" name="submit" class="btn btn-primary" id="register-submit" value="register"/>
+                  </form>
+               </div>
+            </li>
+            <li class="acct-mgt dropdown" id="login-link">
+               <a href="#"  class="dropdown-toggle" data-toggle="dropdown">log in</a>
+               <div  class="dropdown-menu">
+                  <form >
+                     <input type="text" name="email" class="username login" id="login-email" placeholder="email" />
+                     <input type="password" name="pw" id="login-pw" placeholder="password"/>
+                     <input type="submit" name="submit" class="btn btn-primary" id="login-submit" value="log in"/>
+                  </form>
+               </div>
+            </li>
+            <li class="acct-mgt" id="logged-in">
+               <a href="#">
+                  <span class="hi">hi,</span>
+                  <span class="username"></span>
+                  <span id="logout-link">(logout)</span>
+               </a>
+            </li>
+            <li> <a id="uservoice" href="javascript:UserVoice.showPopupWidget();" title="Open feedback & support dialog (powered by UserVoice)"><img src="{{ url_for('static', filename='img/beta-ribbon.png') }}" /></a></li>
          </ul>
-         <a id="uservoice" href="javascript:UserVoice.showPopupWidget();" title="Open feedback & support dialog (powered by UserVoice)"><img src="{{ url_for('static', filename='img/beta-ribbon.png') }}" /></a>
-
-         <div id="register-login" class="register header-dialog">
-            <div class="pointer"></div>
-            <form>
-               <div class="form-q">
-                  <span class="validation"></span>
-                  <input type="text" name="email" class="username register" id="email" />
-                  <legend for="email">email</legend>
-               </div>
-               <div class="form-q">
-                  <input type="password" name="pw" id="pw" />
-                  <legend for="pw">password</span></legend>
-               </div>
-               <!--<div class="form-q">-->
-                  <!--<input type="checkbox" name="contact-me" id="contact-me" />-->
-                  <!--<legend id="contact-me-legend" for="contact-me">You can occasionally ask me for advice on how to make total-impact awesome.</legend>-->
-               <!--</div>-->
-               <div class="form-q">
-                  <input type="submit" name="submit" id="submit" value="Make it so."/>
-               </div>
-            </form>
-         </div>
-         <div id="my-colls" class="header-dialog">
-            <div class="pointer"></div>
-         </div>
       </div>
-   </div><!--  #header -->
+   </div>
    <div id="page-header">
       <div class="wrapper">
          <h2>{{ page_title }}</h2>
