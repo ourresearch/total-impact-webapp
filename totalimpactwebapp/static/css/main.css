@@ -32,6 +32,9 @@ body a:link {
 body a:hover {
   text-decoration: underline;
 }
+.btn-primary {
+  font-family: rokkitt, cambria, serif;
+}
 .wrapper {
   margin: 0 auto;
   display: block;
@@ -459,21 +462,10 @@ div#tagline p a:hover {
   display: block;
   float: left;
   width: 330px;
-  background: url(../img/call-to-action-shadow.png) bottom left no-repeat;
 }
 a#create-collection {
-  background: url(../img/call-to-action-button.png) no-repeat;
-  background-position: 0 -66px;
-  height: 63px;
-  width: 330px;
-  float: left;
-  display: block;
-  text-indent: -999999px;
-  /* CSS3 rounded borders for Firefox   */
-
-}
-a#create-collection:hover {
-  background-position: 0 0;
+  margin: 3px 0 0 20px;
+  font-size: 2.1em;
 }
 p#example-collection {
   font-size: 14px;
