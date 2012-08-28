@@ -146,17 +146,18 @@ function User(userViews) {
      ************************/
     this.getCollInfo = function() {
 
-        cids = []
+        var cids = []
         for (cid in this.userdata()["colls"]) {
             cids.push(cid)
         }
         if (!cids.length) {
             this.userViews.showNoColls()
+            return false;
         }
         else {
             this.userViews.startShowColls()
         }
-        cidsString = cids.join(",")
+        var cidsString = cids.join(",")
         var thisThing = this
         $.ajax({
                    url: "http://"+api_root+"/collections/"+cidsString,
@@ -230,7 +231,6 @@ function UserViews() {
     this.finishRegistration = function(){
     }
     this.startRegistration = function() {
-        $("div#register-login").slideUp();
         $("#register-link, #login-link").hide()
         $("li#acct-mgt ul").append("<li class='loading'>"+ajaxLoadImg+"</li>")
     }
@@ -240,27 +240,24 @@ function UserViews() {
     this.logout = function(){
         $("#register-link, #login-link").show()
             .siblings("li#logged-in").hide()
-        $("div.header-dialog").slideUp(250)
         console.log("logged out.")
     }
 
     this.startShowColls = function() {
-        $("#my-colls")
+        $("#logged-in div.dropdown-menu")
             .find("ul, h3").remove()
             .andSelf()
             .append("<h3>Collections:</h3>").append(ajaxLoadImg)
-            .slideDown(250)
     }
     this.showNoColls = function() {
-        $("#my-colls")
+        $("#logged-in div.dropdown-menu")
             .find("ul, h3").remove()
             .andSelf()
-            .append("<h3>You don't have any collections yet. Care to <a href='/create'>make one</a>?</h3>")
-            .slideDown(250)
+            .append("<h3 class='none'>You don't have any collections yet. Care to <a href='/create'>make one</a>?</h3>")
 
     }
     this.showColls = function(titles) {
-        $("#my-colls img.loading").remove()
+        $("div.dropdown-menu img.loading").remove()
         var collsList$ = $("<ul></ul>")
         var hasColls = false
         for (cid in titles) {
@@ -269,7 +266,7 @@ function UserViews() {
             hasColls = true
         }
         if (hasColls) {
-            $("#my-colls").append(collsList$)
+            $("#logged-in div.dropdown-menu").append(collsList$)
         }
     }
 
@@ -314,14 +311,14 @@ function UserController(user, userViews) {
          ******************************************/
 
         // works for both the registration and login forms.
-        $("#register-login form").submit(function(){
+        $(".acct-mgt form").submit(function(){
 
             userViews.startRegistration()
 
-            var email = $("#email").val()
-            var pw = $("#pw").val()
+            var email = $(this).find("input.username").val()
+            var pw = $(this).find("input.pw").val()
             user.setCreds(email, pw)
-            var method = $(this).parent().hasClass("register") ? "push" : "pull"
+            var method = $(this).hasClass("register") ? "push" : "pull"
             user.syncWithServer(method)
 
             userViews.finishRegistration();
@@ -333,14 +330,9 @@ function UserController(user, userViews) {
             return false;
         })
 
-        $("#logged-in span.username").click(function(){
-            if ($("div.header-dialog").is(":visible")){
-                $("div.header-dialog").slideUp(250)
-            }
-            else {
-                user.getCollInfo()
-            }
-            return false;
+        $("li#logged-in span.username").on("click", function(){
+            user.getCollInfo()
+            $("#logged-in div.dropdown-menu a").attr("data-toggle", "dropdown").click();
         })
 
         $("input.username.register").blur(function(){

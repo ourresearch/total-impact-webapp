@@ -73,12 +73,12 @@
             <li class="acct-mgt dropdown" id="register-link" data-dropdown='dropdown'>
                <a href="#"  class="dropdown-toggle" data-toggle="dropdown">register</a>
                <div  class="dropdown-menu">
-                  <form >
+                  <form class="register">
                      <div class="control-group">
                         <span class="help-inline"></span>
                         <input type="text" name="email" class="username register" id="register-email" placeholder="email" />
                      </div>
-                     <input type="password" name="pw" id="register-pw" placeholder="password"/>
+                     <input class="pw" type="password" name="pw" id="register-pw" placeholder="password"/>
                      <input type="submit" name="submit" class="btn btn-primary" id="register-submit" value="register"/>
                   </form>
                </div>
@@ -86,19 +86,20 @@
             <li class="acct-mgt dropdown" id="login-link">
                <a href="#"  class="dropdown-toggle" data-toggle="dropdown">log in</a>
                <div  class="dropdown-menu">
-                  <form >
+                  <form class="login">
                      <input type="text" name="email" class="username login" id="login-email" placeholder="email" />
-                     <input type="password" name="pw" id="login-pw" placeholder="password"/>
+                     <input type="password" class="pw" name="pw" id="login-pw" placeholder="password"/>
                      <input type="submit" name="submit" class="btn btn-primary" id="login-submit" value="log in"/>
                   </form>
                </div>
             </li>
-            <li class="acct-mgt" id="logged-in">
-               <a href="#">
+            <li class="acct-mgt dropdown" id="logged-in" >
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <span class="hi">hi,</span>
                   <span class="username"></span>
                   <span id="logout-link">(logout)</span>
                </a>
+               <div class="dropdown-menu"></div>
             </li>
             <li> <a id="uservoice" href="javascript:UserVoice.showPopupWidget();" title="Open feedback & support dialog (powered by UserVoice)"><img src="{{ url_for('static', filename='img/beta-ribbon.png') }}" /></a></li>
          </ul>

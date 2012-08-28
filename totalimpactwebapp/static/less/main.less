@@ -1,3 +1,9 @@
+
+// useful mixins, from https://github.com/dmitryf/elements
+@import "elements.less";
+
+@linkColor: #FF4E00;
+
 /* globals */
 html {
     margin:0;
@@ -24,7 +30,9 @@ pre {
     padding-left: 0;
     margin-top: 0;
 }
-
+legend {
+   border-bottom: none;
+}
 body a:link {
     text-decoration: none;
     cursor: pointer;    
@@ -52,35 +60,6 @@ a {
     color: #ff4e00;
     cursor: pointer;
 }
-body div#tooltip {
-    position: absolute;
-    z-index: 3000;
-    border: 1px solid #777;
-    background-color: #333;
-    padding: 10px;
-    color:#eee;
-    opacity: 0.9;
-    font-size: 10px;
-    font-family: Helvetica, Arial, sans-serif;
-    width: 200px;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius-topleft: 0;
-    -webkit-border-top-left-radius: 0;
-    box-shadow: 2px 2px 3px #555;
-}
-body div#tooltip.viewport-right {
-    -moz-border-radius-topleft: 10px;
-    -webkit-border-top-left-radius: 10px;
-    -moz-border-radius-topright: 0;
-    -webkit-border-top-right-radius: 0;
-}
-
-
-div#tooltip p, div#tooltip div, div#tooltip h3 {
-    margin:0;
-    padding:0;
-}
 
 p, ul {
     line-height: 1.4;
@@ -103,19 +82,38 @@ div.navbar {
    margin: 0 auto;
    font-family: rokkitt, cambria, serif;
 
+   .navbar-inner{
+      .border-radius(0, 5px, 5px, 0);
+      .drop-shadow(0, 5px, 10px, 0.3);
+   }
+
    a.brand img{
       height: 40px;
       margin-top: -8px;
    }
 
    li.acct-mgt {
-      &#logged-in {display:none; }
+      &#logged-in {
+         display:none;
+
+         span.username {
+            font-weight: bold;
+            &:hover {color: @linkColor;}
+         }
+         span#logout-link {
+            font-size: 12px; font-family: Helvetica, arial;
+            &:hover {color: @linkColor;}
+         }
+      }
 
       .control-group { margin: 0; }
 
       div.dropdown-menu {
          padding:15px 20px 20px;
          background:url(../img/grey-noise.png);
+         &::after {
+            border-bottom:6px solid #E2E2E2;
+         }
 
          .btn-primary {
             margin-top:0;
@@ -134,22 +132,41 @@ div.navbar {
       }
    }
 
-   .nav li .dropdown-menu::after {
-         border-bottom:6px solid #E2E2E2;
-    }
+   li#logged-in {
+      div.dropdown-menu{
+         min-width: 200px;
+         padding:5px 0 10px 0;
+         h3{
+            margin-top: 0;
+            border-bottom: 1px solid #ccc;
+            text-align:center;
+
+            &.none {
+               text-align: left;
+               line-height: 1;
+               font-size:16px;
+               padding: 20px;
+
+               a {color: @linkColor; display:inline; padding:0;}
+            }
+         }
+         img.loading {margin:5px auto 0; float:none; display:block;}
+      }
+   }
+
+   a#uservoice {
+      position: relative;
+      display: block;
+      margin-top: -22px;
+      z-index: 3;
+
+      &:hover {margin-top: -21px;}
+   }
 }
 
 
 
-a#uservoice {
-   position: relative;
-   display: block;
-   margin-top: -22px;
-   z-index: 3;
-}
-div#header a#uservoice:hover {
-    top: 0;
-}
+
 
 
 /* page header
