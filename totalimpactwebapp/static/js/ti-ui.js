@@ -197,7 +197,7 @@ createCollectionInit = function(){
     $("li textarea, input#name").each(function(){
         $(this).val(exampleStrings[this.id])
     })
-    $("ul#pullers input, ul.manual-add textarea, input#name")
+    $("ul#pullers input, ul#manual-add textarea, input#name")
     .focus(function(){
         currentUserInputValue = $(this).val();
         $(this).removeClass("no-input-yet")
