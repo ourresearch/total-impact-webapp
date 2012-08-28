@@ -285,6 +285,7 @@ ul.metrics li:hover span.metric-name {
   color: #FF4E00;
 }
 .metric-name {
+  line-height: 1.2;
   color: #aaa;
   display: block;
   font-size: 9px;
