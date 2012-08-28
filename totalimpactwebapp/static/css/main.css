@@ -99,6 +99,10 @@ div.navbar .navbar-inner {
   -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding-right: 0;
+}
+div.navbar .navbar-inner .nav {
+  position: static;
 }
 div.navbar a.brand img {
   height: 40px;
@@ -176,6 +180,7 @@ div.navbar a#uservoice {
   display: block;
   margin-top: -22px;
   z-index: 3;
+  padding-right: 0;
 }
 div.navbar a#uservoice:hover {
   margin-top: -21px;
