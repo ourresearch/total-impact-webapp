@@ -105,10 +105,16 @@ parseTextareaArtifacts = function(str) {
         }
         else {
             if (thisId.length > 0) {
+                var isnum_with_possible_period = /^[\d\.]+$/.test(thisId)
                 // handle dois entered without the doi prefix
                 if (thisId.substring(0,3) == "10.") {
                     artifact[0] = "doi"
-                } else {
+                } else if (isnum_with_possible_period && (thisId.length > 5) && (thisId.length <= 8)) {
+                    // definition of pmid from http://www.nlm.nih.gov/bsd/mms/medlineelements.html#pmid
+                    // this doesn't catch short PMIDs, but that's ok
+                    artifact[0] = "pmid"
+                }
+                else {
                    artifact[0] = "unknown"
                 }
                 artifact[1] = thisId
