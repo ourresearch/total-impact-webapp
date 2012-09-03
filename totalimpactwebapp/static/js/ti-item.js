@@ -1,49 +1,80 @@
 
 function Item(dict, itemView) {
 
-    this.dict = dict
-    this.itemView = itemView
-
-    this.render = function() {
-        console.log("here is the item I've got:");
-        console.log(this.dict)
-        return this.itemView.render(dict)
+    // [<audience>, <engagement type>, <display level>]
+    var metricInfo = {
+        "citeulike:bookmarks": ["scholarly", "save", "glyph"],
+        "delicious:bookmarks": ["general", "save", "glyph"],
+        "dryad:most_downloaded_file": ["scholarly", "view", "glyph"],
+        "dryad:package_views": ["scholarly", "view", "glyph"],
+        "dryad:total_downloads": ["scholarly", "view", "glyph"],
+        "facebook:shares":["general", "converse", "glyph"],
+        "facebook:comments":["general", "converse", "glyph"],
+        "facebook:likes":["general", "converse", "glyph"],
+        "facebook:clicks":["general", "converse", "glyph"],
+        "github:forks":["general", "use", "glyph"],
+        "github:watchers":["general", "save", "glyph"],
+        "mendeley:career_stage":["", "", 0],
+        "mendeley:country":["", "", 0],
+        "mendeley:discipline":["", "", 0],
+        "mendeley:student_readers":["scholarly", "save", "zoom"],
+        "mendeley:developing_countries":["scholarly", "save", "zoom"],
+        "mendeley:groups":["scholarly", "save", "glyph"],
+        "mendeley:readers":["scholarly", "save", "glyph"],
+        "plos:crossref": [],                    // figure it out
+        "plos:html_views": [],                  // figure it out
+        "plos:pdf_views": [],                   // figure it out
+        "plos:pmc_abstract": ["", "", 0],
+        "plos:pmc_figure": ["", "", 0],
+        "plos:pmc_full-text": ["", "", 0],
+        "plos:pmc_pdf": ["", "", 0],
+        "plos:pmc_supp-data": ["", "", 0],
+        "plos:pmc_unique-ip": ["", "", 0],
+        "plos:pubmed_central": ["", "", 0],
+        "plos:scopus": [],                      // figure it out
+        "pubmed:f1000": ["scholarly", "recommend", "glyph"],
+        "pubmed:pmc_citations": ["scholarly", "use", "glyph"],
+        "pubmed:pmc_citations_editorials": ["scholarly", "recommend", "zoom"],
+        "pubmed:pmc_citations_reviews": ["scholarly", "use", "zoom"],
+        "slideshare:comments": ["general", "converse"],
+        "slideshare:downloads": ["general", "view"],
+        "slideshare:favorites": ["general", "save"],
+        "slideshare:views": ["general", "view"],
+        "topsy:influential_tweets": ["general", "converse", "zoom"],
+        "topsy:tweets": ["general", "converse", "glyph"],
+        "wikipedia:mentions": ["general", "use", "glyph"]
     }
-    return true
-}
 
-function ItemView() {
 
     // developing countries as per IMF 2012, plus Cuba and North Korea (not IMF members)
     // see http://www.imf.org/external/pubs/ft/weo/2012/01/pdf/text.pdf
     this.developing_countries = "Afghanistan|Albania|Algeria|Angola|Antigua and Barbuda|Argentina|Armenia|Azerbaijan|Bahamas|Bahrain|Bangladesh|Barbados|Belarus|Belize|Benin|Bhutan|Bolivia|Bosnia and Herzegovina|Botswana|Brazil|Brunei|Bulgaria|Burkina Faso|Burma|Burundi|Cambodia|Cameroon|Cape Verde|Central African Republic|Chad|Chile|China|Colombia|Comoros|Cuba|Democratic Republic of the Congo|Republic of the Congo|Costa Rica|Côte d Ivoire|Croatia|Djibouti|Dominica|Dominican Republic|Ecuador|Egypt|El Salvador|Equatorial Guinea|Eritrea|Ethiopia|Fiji|Gabon|The Gambia|Georgia|Ghana|Grenada|Guatemala|Guinea|Guinea-Bissau|Guyana|Haiti|Honduras|Hungary|India|Indonesia|Iran|Iraq|Jamaica|Jordan|Kazakhstan|Kenya|Kiribati|Kuwait|Kyrgyzstan|Laos|Latvia|Lebanon|Lesotho|Liberia|Libya|Lithuania|Macedonia|Madagascar|Malawi|Malaysia|Maldives|Mali|Marshall Islands|Mauritania|Mauritius|Mexico|Federated States of Micronesia|Moldova|Mongolia|Montenegro|Morocco|Mozambique|Namibia|Nauru|Nepal|Nicaragua|Niger|Nigeria|North Korea|Oman|Pakistan|Palau|Panama|Papua New Guinea|Paraguay|Peru|Philippines|Poland|Qatar|Romania|Russia|Rwanda|Saint Kitts and Nevis|Saint Lucia|Saint Vincent and the Grenadines|Samoa|São Tomé and Príncipe|Saudi Arabia|Senegal|Serbia|Seychelles|Sierra Leone|Solomon Islands|Somalia|South Africa|South Sudan|Sri Lanka|Sudan|Suriname|Swaziland|Syria|Tajikistan|Tanzania|Thailand|Timor-Leste|Togo|Tonga|Trinidad and Tobago|Tunisia|Turkey|Turkmenistan|Tuvalu|Uganda|Ukraine|United Arab Emirates|Uruguay|Uzbekistan|Vanuatu|Venezuela|Vietnam|Yemen|Zambia|Zimbabwe"
 
-    this.showHideExtraMetrics = function(item$) {
-        var numMetrics = item$.find("ul.metrics li").length
-        var extraMetrics = (11 - numMetrics) * -1
-        if (extraMetrics > 0) {
-            $("<a class='showhide'>+"+extraMetrics+" more...</a>")
-                .click(function() {
-                           $(this).hide().prev().find("li").show()
-                       })
-                .insertAfter(item$.find("ul.metrics"))
-            item$.find("li:gt(10)").hide()
+    this.render = function() {
+        return this.itemView.render(dict)
+    }
 
+    this.makeEngagementTable = function(dict, metricInfo){
+        var engagementTable = {
+            "general":{"read":[], "converse":[], "save":[], "use":[], "recommend":[]},
+            "scholarly":{"read":[], "converse":[], "save":[], "use":[], "recommend":[]}
         }
-    }
+        for (var metricName in dict.metrics) {
+            console.log("looking up how to display " + metricName)
+            var display = metricInfo[metricName][2]
+            if (!display) {
+                continue // don't bother putting in table, we don't show it anyway
+            }
+            var audience = metricInfo[metricName][0]
+            var engagementType = metricInfo[metricName][1]
 
-    this.sortByMetricValueDesc = function(metric1, metric2){
-        if (typeof metric1.value != "number")
-            return 1
-        if (typeof metric2.value != "number")
-            return -1
-        if (metric1.value < metric2.value)
-            return 1;
-        if (metric1.value > metric2.value)
-            return -1;
-        return 0;
-    }
+            metric = this.dict.metrics[metricName]
+            metric.display = display
+            engagementTable[audience][engagementType].push(metric)
+        }
 
+        return engagementTable
+    }
 
     this.get_mendeley_percent = function(metricsArr, dict_key, key_substring) {
         mendeleyRelevantDict = metricsArr.filter(function(x) {return x["name"]==dict_key})
@@ -81,30 +112,24 @@ function ItemView() {
         }
 
         total = Math.round(total_mendeley_readers * percent / 100)
-        console.log(total_mendeley_readers + " mendeley readers * " + percent + "% " + subset_type + " = " + total)
 
         return(total)
     }
 
-    this.get_copy_of_mendeley_item = function(metricsArr) {
-        // do a deep copy
-        mendeleyReaders = metricsArr.filter(function(x) {return x["name"]=="mendeley:readers"})
-        copyMendeleyReaders = $.extend(true, [], mendeleyReaders[0]);
-        return(copyMendeleyReaders)
-    }
 
-    this.update_metric = function(item, metric_name, display_name, value) {
-        item["name"] = metric_name
+    this.update_metric = function(item, display_name, value) {
         item["static_meta"]["display_name"] = display_name
-        item["value"] = value
+        item["values"] = {}
+        item["values"]['raw'] = value
         return(item)
     }
 
-    this.add_derived_metrics = function(metricsArr) {
+
+    this.add_derived_metrics = function(metricsDict) {
         // mendeley student readers
-        total = this.mendeley_reader_subset_count(metricsArr, "student")
+        total = this.mendeley_reader_subset_count(metricsDict, "student")
         if (total > 0) {
-            mendeleyItem = this.get_copy_of_mendeley_item(metricsArr)
+            mendeleyItem = $.extend(true, [], metricsDict["mendeley:readers"])
             mendeleyItem = this.update_metric(mendeleyItem,
                                               "mendeley:student_readers",
                                               "readers: students",
@@ -115,7 +140,7 @@ function ItemView() {
         // mendeley developing countries
         total = this.mendeley_reader_subset_count(metricsArr, "developing_countries")
         if (total > 0) {
-            mendeleyItem = this.get_copy_of_mendeley_item(metricsArr)
+            mendeleyItem = $.extend(true, [], metricsDict["mendeley:readers"])
             mendeleyItem = this.update_metric(mendeleyItem,
                                               "mendeley:developing_countries",
                                               "readers: developing countries",
@@ -125,6 +150,47 @@ function ItemView() {
 
         return(metricsArr)
     }
+
+    // constructor
+    this.dict = dict
+    this.dict.metrics = this.add_derived_metrics(this.dict.metrics)
+    this.dict.enagementTable = this.makeEngagementTable(dict, metricInfo)
+    this.itemView = itemView
+
+    console.log(dict)
+
+    return true
+}
+
+function ItemView() {
+
+    this.showHideExtraMetrics = function(item$) {
+        var numMetrics = item$.find("ul.metrics li").length
+        var extraMetrics = (11 - numMetrics) * -1
+        if (extraMetrics > 0) {
+            $("<a class='showhide'>+"+extraMetrics+" more...</a>")
+                .click(function() {
+                           $(this).hide().prev().find("li").show()
+                       })
+                .insertAfter(item$.find("ul.metrics"))
+            item$.find("li:gt(10)").hide()
+
+        }
+    }
+
+    this.sortByMetricValueDesc = function(metric1, metric2){
+        if (typeof metric1.value != "number")
+            return 1
+        if (typeof metric2.value != "number")
+            return -1
+        if (metric1.value < metric2.value)
+            return 1;
+        if (metric1.value > metric2.value)
+            return -1;
+        return 0;
+    }
+
+
 
     this.renderBiblio = function(biblio, url) {
         var html = ""
