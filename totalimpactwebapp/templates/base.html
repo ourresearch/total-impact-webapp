@@ -66,6 +66,7 @@
                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                   <li><a href="/about">team</a></li>
                   <li><a href="/faq">faq</a></li>
+                  <li><a href="/api-docs">api</a></li>
                </ul>
             </li>
 
@@ -138,10 +139,6 @@
    <!-- These templates are for rendering items with javascript using
   Mustache -->
 
-
-
-
-
    <script id="title" class="partial" type="text/html">
       <h5>
          {{#url}}
@@ -185,33 +182,47 @@
       {{>title}}
    </script>
 
-   <script id="item" type="text/html">
+   <script id="displayItem" type="text/html">
       <li class="item" id="{{ _id }}">
          <div class="biblio"><a href="#" class="item-delete-button">delete</a></div>
-         <ul class="metrics">{{#metricsArr}}
-            <li>
-               <a href="{{provenance_url}}">
-                  <span class="last-update">{{ ts }}</span>
-                  <span class="metric-value">{{ value }}</span>
-                            <span class="metric-name-img">
-                                <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
-                                <span class="metric-name">{{ static_meta.provider }} {{ static_meta.display_name }}</span>
-                            </span>
-               </a>
-            </li>
-            {{/metricsArr}}</ul>
+         <div class="zoom"></div>
       </li>
    </script>
 
-   <script id="commits_template" type="text/html">
-      <ul> {{#commits}}
-         <li>
-            <img src="{{ img }}" width="24" height="24">
-            <a class="date" href="{{ link }}">{{ date }}</a>
-            <span class="message">{{ message }}</span>
-         </li>
-         {{/commits}}</ul>
+   <script id="zoomTable" type="text/html">
+      <table class="zoom">
+         <tr class="header"><th></th><th>read</th><th>discuss</th><th>save</th><th>use</th><th>recommend</th></tr>
+         {{#rows}}
+         <tr class="{{ name }}">
+            <td>{{ name }}</td>{{#cells}}
+            <td>
+               <ul class="metrics">{{#metrics}}
+                  <li>
+                     <a href="{{provenance_url}}">
+                     <span class="last-update">{{ ts }}</span>
+                     <span class="metric-name-img">
+                        <span class="metric-name">{{ static_meta.provider }} {{ static_meta.display_name }}</span>
+                        <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
+                     </span>
+                     <span class="metric-value">{{ value }}</span>
+                     </a>
+                  </li>
+                  {{/metrics}}</ul>
+
+            </td>
+            {{/cells}}</tr>
+         {{/rows}}
+      </table>
    </script>
+
+
+
+
+   <script id="zoomTableRow" class="partial" type="text/html">
+      <tr>{{ row</tr>
+   </script>
+
+
 
 </div>
 {% endraw %}

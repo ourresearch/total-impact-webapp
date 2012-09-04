@@ -248,8 +248,7 @@ ul.metrics {
 }
 ul.metrics li,
 ul.metrics span.missing {
-  float: left;
-  height: 6em;
+  text-align: right;
   margin-right: 12px;
 }
 ul.metrics a {
@@ -287,7 +286,6 @@ ul.metrics li:hover span.metric-name {
 .metric-name {
   line-height: 1.2;
   color: #aaa;
-  display: block;
   font-size: 9px;
   width: 43px;
   margin: 7px auto 0;
@@ -303,7 +301,6 @@ span.metric-name-img {
 }
 span.metric-name-img img {
   margin: 0 auto;
-  display: block;
 }
 .metric-img-name {
   display: block;

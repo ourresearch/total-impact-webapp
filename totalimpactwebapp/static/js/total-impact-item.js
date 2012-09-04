@@ -177,7 +177,7 @@
         var ajax_load = '<img src="http://total-impact.org/static/img/ajax-loader.gif" alt="loading..." />';
 
         jQuery(document).ready(function ($) {
-            requestStylesheet("http://total-impact.org/static/embed.css");
+            requestStylesheet("http://total-impact.org/static/css/embed.css");
             requestScript("http://total-impact.org/static/js/icanhaz.min.js");
 
             $("span#ti-id").hide();

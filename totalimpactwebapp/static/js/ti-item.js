@@ -5,9 +5,9 @@ function Item(dict, itemView) {
     var metricInfo = {
         "citeulike:bookmarks": ["scholarly", "save", "glyph"],
         "delicious:bookmarks": ["general", "save", "glyph"],
-        "dryad:most_downloaded_file": ["scholarly", "view", "glyph"],
-        "dryad:package_views": ["scholarly", "view", "glyph"],
-        "dryad:total_downloads": ["scholarly", "view", "glyph"],
+        "dryad:most_downloaded_file": ["scholarly", "read", "glyph"],
+        "dryad:package_views": ["scholarly", "read", "glyph"],
+        "dryad:total_downloads": ["scholarly", "read", "glyph"],
         "facebook:shares":["general", "converse", "glyph"],
         "facebook:comments":["general", "converse", "glyph"],
         "facebook:likes":["general", "converse", "glyph"],
@@ -37,9 +37,9 @@ function Item(dict, itemView) {
         "pubmed:pmc_citations_editorials": ["scholarly", "recommend", "zoom"],
         "pubmed:pmc_citations_reviews": ["scholarly", "use", "zoom"],
         "slideshare:comments": ["general", "converse"],
-        "slideshare:downloads": ["general", "view"],
+        "slideshare:downloads": ["general", "read"],
         "slideshare:favorites": ["general", "save"],
-        "slideshare:views": ["general", "view"],
+        "slideshare:views": ["general", "read"],
         "topsy:influential_tweets": ["general", "converse", "zoom"],
         "topsy:tweets": ["general", "converse", "glyph"],
         "wikipedia:mentions": ["general", "use", "glyph"]
@@ -51,7 +51,7 @@ function Item(dict, itemView) {
     this.developing_countries = "Afghanistan|Albania|Algeria|Angola|Antigua and Barbuda|Argentina|Armenia|Azerbaijan|Bahamas|Bahrain|Bangladesh|Barbados|Belarus|Belize|Benin|Bhutan|Bolivia|Bosnia and Herzegovina|Botswana|Brazil|Brunei|Bulgaria|Burkina Faso|Burma|Burundi|Cambodia|Cameroon|Cape Verde|Central African Republic|Chad|Chile|China|Colombia|Comoros|Cuba|Democratic Republic of the Congo|Republic of the Congo|Costa Rica|Côte d Ivoire|Croatia|Djibouti|Dominica|Dominican Republic|Ecuador|Egypt|El Salvador|Equatorial Guinea|Eritrea|Ethiopia|Fiji|Gabon|The Gambia|Georgia|Ghana|Grenada|Guatemala|Guinea|Guinea-Bissau|Guyana|Haiti|Honduras|Hungary|India|Indonesia|Iran|Iraq|Jamaica|Jordan|Kazakhstan|Kenya|Kiribati|Kuwait|Kyrgyzstan|Laos|Latvia|Lebanon|Lesotho|Liberia|Libya|Lithuania|Macedonia|Madagascar|Malawi|Malaysia|Maldives|Mali|Marshall Islands|Mauritania|Mauritius|Mexico|Federated States of Micronesia|Moldova|Mongolia|Montenegro|Morocco|Mozambique|Namibia|Nauru|Nepal|Nicaragua|Niger|Nigeria|North Korea|Oman|Pakistan|Palau|Panama|Papua New Guinea|Paraguay|Peru|Philippines|Poland|Qatar|Romania|Russia|Rwanda|Saint Kitts and Nevis|Saint Lucia|Saint Vincent and the Grenadines|Samoa|São Tomé and Príncipe|Saudi Arabia|Senegal|Serbia|Seychelles|Sierra Leone|Solomon Islands|Somalia|South Africa|South Sudan|Sri Lanka|Sudan|Suriname|Swaziland|Syria|Tajikistan|Tanzania|Thailand|Timor-Leste|Togo|Tonga|Trinidad and Tobago|Tunisia|Turkey|Turkmenistan|Tuvalu|Uganda|Ukraine|United Arab Emirates|Uruguay|Uzbekistan|Vanuatu|Venezuela|Vietnam|Yemen|Zambia|Zimbabwe"
 
     this.render = function() {
-        return this.itemView.render(dict)
+        return this.itemView.render(this.dict)
     }
 
     this.makeEngagementTable = function(dict, metricInfo){
@@ -60,7 +60,6 @@ function Item(dict, itemView) {
             "scholarly":{"read":[], "converse":[], "save":[], "use":[], "recommend":[]}
         }
         for (var metricName in dict.metrics) {
-            console.log("looking up how to display " + metricName)
             var display = metricInfo[metricName][2]
             if (!display) {
                 continue // don't bother putting in table, we don't show it anyway
@@ -76,107 +75,132 @@ function Item(dict, itemView) {
         return engagementTable
     }
 
-    this.get_mendeley_percent = function(metricsArr, dict_key, key_substring) {
-        mendeleyRelevantDict = metricsArr.filter(function(x) {return x["name"]==dict_key})
-        if (typeof mendeleyRelevantDict[0] == "undefined") {
-            return(0)
+    this.get_mendeley_percent = function(metricDict, key_substring) {
+
+        if (metricDict == undefined) {
+            return 0
         }
 
+        // values.raw holds an array of {name:<name>, value: <value>} objects.
+        // this gets just ones where key_substring is a substring of <name>
         var re = new RegExp(key_substring, 'i');
-        mendeleyRelevantKeys = mendeleyRelevantDict[0].value.filter(function(x) {return x["name"].match(re)})
+        mendeleyRelevantKeys = metricDict.values.raw.filter(function(x) {return x["name"].match(re)})
         if (typeof mendeleyRelevantKeys[0] == "undefined") {
+            // no students or developing countries or whatever
             return(0)
         }
 
+        // list the percent scores for values whose names match our substring
         mendeleyPercentages = mendeleyRelevantKeys.map(function(x) {return x["value"]})
-        if (typeof mendeleyPercentages[0] == "undefined") {
+        if (typeof mendeleyPercentages[0] == "undefined") {  // not sure if this needs to be here?
             return(0)
         }
 
-        sum = eval(mendeleyPercentages.join("+"))
+        sum = eval(mendeleyPercentages.join("+")) // dangerous, replace
         return(sum)
     }
 
-    this.mendeley_reader_subset_count = function(metricsArr, subset_type){
-        mendeleyReaders = metricsArr.filter(function(x) {return x["name"]=="mendeley:readers"})
-        if (typeof mendeleyReaders[0] == "undefined") {
+    this.mendeley_reader_subset_count = function(metricsDict, subset_type){
+
+        // given all the metrics, gets the count of a certain subset of readers by type
+        if (typeof metricsDict["mendeley:readers"] == "undefined") {
+            // can't get a subset of readers if there are no readers
             return(0)
         }
-        total_mendeley_readers = mendeleyReaders[0].value
 
         if (subset_type == "student") {
-            percent = this.get_mendeley_percent(metricsArr, "mendeley:career_stage", "student")
+            percent = this.get_mendeley_percent(
+                metricsDict["mendeley:career_stage"],
+                "student"
+            )
         }
         if (subset_type == "developing_countries") {
-            percent = this.get_mendeley_percent(metricsArr, "mendeley:country", this.developing_countries)
+            percent = this.get_mendeley_percent(
+                metricsDict["mendeley:country"],
+                this.developing_countries
+            )
         }
 
+        total_mendeley_readers = metricsDict["mendeley:readers"].values.raw
+
+        // here we figure actual number from percentage
         total = Math.round(total_mendeley_readers * percent / 100)
 
         return(total)
     }
 
 
-    this.update_metric = function(item, display_name, value) {
-        item["static_meta"]["display_name"] = display_name
-        item["values"] = {}
-        item["values"]['raw'] = value
-        return(item)
+    this.update_metric = function(metric, display_name, value) {
+        metric["static_meta"]["display_name"] = display_name
+        metric["values"] = {}
+        metric["values"]['raw'] = value
+        return(metric)
     }
 
 
     this.add_derived_metrics = function(metricsDict) {
         // mendeley student readers
-        total = this.mendeley_reader_subset_count(metricsDict, "student")
+        var total = this.mendeley_reader_subset_count(metricsDict, "student")
         if (total > 0) {
-            mendeleyItem = $.extend(true, [], metricsDict["mendeley:readers"])
-            mendeleyItem = this.update_metric(mendeleyItem,
-                                              "mendeley:student_readers",
+            var templateMetric = $.extend(true, {}, metricsDict["mendeley:readers"])
+            var newMetric = this.update_metric(templateMetric,
                                               "readers: students",
                                               total)
-            metricsArr.push(mendeleyItem)
+            metricsDict["mendeley:student_readers"] = newMetric
         }
 
         // mendeley developing countries
-        total = this.mendeley_reader_subset_count(metricsArr, "developing_countries")
+        var total = this.mendeley_reader_subset_count(metricsDict, "developing_countries")
         if (total > 0) {
-            mendeleyItem = $.extend(true, [], metricsDict["mendeley:readers"])
-            mendeleyItem = this.update_metric(mendeleyItem,
-                                              "mendeley:developing_countries",
+            var templateMetric = $.extend(true, [], metricsDict["mendeley:readers"])
+            var newMetric = this.update_metric(templateMetric,
                                               "readers: developing countries",
                                               total)
-            metricsArr.push(mendeleyItem)
+            metricsDict["mendeley:developing_countries"] = newMetric
         }
 
-        return(metricsArr)
+        return(metricsDict)
     }
+
+    this.fixPlosMetricName = function(metricsDict) {
+        // sometime plos metrics have "plos:" in front, sometimes "plosalm:". ick.
+        for(var metricName in metricsDict){
+            if (metricName.indexOf("plos") === 0) {
+                var newKey = metricName.replace("plos:", "plosalm:")
+                metricsDict[newKey] = metricsDict[metricName]
+                delete metricsDict[metricName]
+            }
+        }
+        return metricsDict
+    }
+
+
 
     // constructor
     this.dict = dict
+    this.dict.metrics = this.fixPlosMetricName(this.dict.metrics)
     this.dict.metrics = this.add_derived_metrics(this.dict.metrics)
-    this.dict.enagementTable = this.makeEngagementTable(dict, metricInfo)
+    this.dict.engagementTable = this.makeEngagementTable(this.dict, metricInfo)
     this.itemView = itemView
 
-    console.log(dict)
 
     return true
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 function ItemView() {
-
-    this.showHideExtraMetrics = function(item$) {
-        var numMetrics = item$.find("ul.metrics li").length
-        var extraMetrics = (11 - numMetrics) * -1
-        if (extraMetrics > 0) {
-            $("<a class='showhide'>+"+extraMetrics+" more...</a>")
-                .click(function() {
-                           $(this).hide().prev().find("li").show()
-                       })
-                .insertAfter(item$.find("ul.metrics"))
-            item$.find("li:gt(10)").hide()
-
-        }
-    }
 
     this.sortByMetricValueDesc = function(metric1, metric2){
         if (typeof metric1.value != "number")
@@ -190,6 +214,20 @@ function ItemView() {
         return 0;
     }
 
+    this.formatEngagementTableForMustache = function(table) {
+        // converts from nested objs to nested arrays
+
+        ret = []
+        for (var rowName in table) {
+            var row = {name: rowName, cells: [] }
+            for (colName in table[rowName]) {
+                var cell = table[rowName][colName]
+                row.cells.push({metrics: cell})
+            }
+            ret.push(row)
+        }
+        return {"rows": ret}
+    }
 
 
     this.renderBiblio = function(biblio, url) {
@@ -206,54 +244,23 @@ function ItemView() {
     }
 
     this.render = function(item){
-        item.metricsArr = []
-        for (metricName in item.metrics){
-            thisMetric = item.metrics[metricName]
-            thisMetric.name = metricName
-            thisMetric.value = item.metrics[metricName]["values"]["raw"]
+        var item$ = ich.displayItem(item)
 
-            // disable displaying normalization values for now.  See TURN_ON_FOR_NORM_DISPLAY
-            //// for now, hardcode we only have normed values for articles
-            //if (typeof item.metrics[metricName]["values"]["nih"] != "undefined") {
-            //    // for now, hardcode only have one norm called nih
-            //    thisMetric.norm = item.metrics[metricName]["values"]["nih"]
-            //    thisMetric.value = thisMetric.value + " [" + thisMetric.norm + "]"
-            //}
+        // make the zoom table
+        convertedTable = this.formatEngagementTableForMustache(item.engagementTable)
+        console.log("here's the converted table: ")
+        console.log(convertedTable)
 
-            // if no values, no point in printing
-            if (thisMetric.value) {
-                item.metricsArr.push(thisMetric)
-            }
-        }
+        zoomHtml = ich.zoomTable(convertedTable, true)
+        item$.find("div.zoom").append(zoomHtml)
 
-        // add on the derived metrics
-        if (typeof item.metricsArr[0] != "undefined") {
-            item.metricsArr = this.add_derived_metrics(item.metricsArr)
-        }
 
-        // remove the dictionaries from what will be displayed
-        item.metricsArr = item.metricsArr.filter(function(x) {
-            good_to_print = (typeof x["value"] == "number")
-            if (typeof x["value"] == "string") {
-                good_to_print = true
-            }
-            // disable displaying normalization values for now.  See TURN_ON_FOR_NORM_DISPLAY
-            //if (typeof x["norm"] != "undefined") {
-            //    good_to_print = true
-            //}            
-            return good_to_print
-        })
-
-        // sort by descending order of metrics
-        item.metricsArr.sort(this.sortByMetricValueDesc)
-
+        // take care of biblio
         var url = (item.aliases.url) ?  item.aliases.url[0] : false
-        var html$ = ich.item(item)
-        this.showHideExtraMetrics(html$)
         var biblioHtml = this.renderBiblio(item.biblio, url)
 
         // show/hide the delete-item button.
-        html$.find("div.biblio").append(biblioHtml)
+        item$.find("div.biblio").append(biblioHtml)
             .hover(
             function(){
 //                $(this).find("a.item-delete-button").fadeIn("fast");
@@ -264,12 +271,12 @@ function ItemView() {
         )
 
         // setup the delete-item button
-        html$.find("a.item-delete-button").click(function(){
+        item$.find("a.item-delete-button").click(function(){
             var tiid = $(this).parent().parent().attr("id")
             console.log("this is where I would delete "+tiid)
         })
 
-        return html$
+        return item$
     }
 }
 
