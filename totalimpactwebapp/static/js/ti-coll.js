@@ -81,7 +81,7 @@ function CollViews() {
             var genre = itemObjsDict[tiid].dict.biblio.genre
             var genreItems = "div." + genre + " ul#items"
             $(genreItems).append(itemObjsDict[tiid].render())
-            $("div." + genre).show()  // would ideally only do this once
+            $("#metrics div." + genre).show()  // would ideally only do this once
         }
     }
 }

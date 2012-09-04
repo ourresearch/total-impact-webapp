@@ -2,66 +2,67 @@
 
 {% block content %}
 
-    <div class="main" id="report">
-        <!-- START report-meta -->
-        <div class="wrapper">
-            <div id="report-meta">
-                <div id="share">
-                    <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
-                    <!-- based on code here: https://dev.twitter.com/docs/tweet-button -->
+<div class="main" id="report">
+   <!-- START report-meta -->
+   <div class="wrapper">
+      <div id="report-meta">
+         <div id="share">
+            <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
+            <!-- based on code here: https://dev.twitter.com/docs/tweet-button -->
                     <span class="tweet-this">
                         <a href="https://twitter.com/share" class="twitter-share-button"
                            data-via="mytotalImpact"
                            data-text="Check out the total-Impact of {{ page_title }}: {{ request.url }}"
                            data-count="horizontal">Tweet</a>
                     </span>
-                </div>
-                <div id="report-button">
-                    <span class="report-button"><a class="report-button-full" id="update-report-button" name="{{ collection_id }}" href="#">update</a></span>
+         </div>
+         <div id="report-button">
+            <span class="report-button"><a class="report-button-full" id="update-report-button" name="{{ collection_id }}" href="#">update</a></span>
                     <span class="report-button">
                         <a class="report-button-left" href="http://{{ api_root }}/collection/{{ collection_id }}">json</a>
                         <a class="report-button-right" href="http://{{ api_root }}/collection/{{ collection_id }}.csv">csv</a>
                     </span>
-                </div>
-                
-            </div>
-        </div>
-        <div id="metrics">
-           <script type="text/javascript">var collectionId = "{{ collection_id }}"</script>
+         </div>
 
-           <div class="genre article">
-                <h3><span>articles</span></h3>
-                <ul id="items">
-                </ul>
-            </div>
-            <div class="genre dataset">
-                <h3><span>datasets</span></h3>
-                <ul id="items">
-                </ul>
-            </div>
-            <div class="genre software">
-                <h3><span>software</span></h3>
-                <ul id="items">
-                </ul>
-            </div>
-            <div class="genre slides">
-                <h3><span>slides</span></h3>
-                <ul id="items">
-                </ul>
-            </div>
-            <div class="genre webpage">
-                <h3><span>webpages</span></h3>
-                <ul id="items">
-                </ul>
-            </div>
-            <div class="genre unknown">
-                <h3><span>unknown</span></h3>
-                <ul id="items">
-                </ul>
-            </div>
-        </div>
-        <p class="something-missing">More detail on <a href="../about#whichmetrics">available metrics</a>.  Missing some artifacts or metrics? See <a href="../about#limitations">current limitations.</a>  </p>
-    </div>
+      </div>
+   </div>
+   <div id="metrics">
+      <script type="text/javascript">var collectionId = "{{ collection_id }}"</script>
+      <div class="wrapper">
+         <div class="genre article">
+            <h3><span>articles</span></h3>
+            <ul id="items">
+            </ul>
+         </div>
+         <div class="genre dataset">
+            <h3><span>datasets</span></h3>
+            <ul id="items">
+            </ul>
+         </div>
+         <div class="genre software">
+            <h3><span>software</span></h3>
+            <ul id="items">
+            </ul>
+         </div>
+         <div class="genre slides">
+            <h3><span>slides</span></h3>
+            <ul id="items">
+            </ul>
+         </div>
+         <div class="genre webpage">
+            <h3><span>webpages</span></h3>
+            <ul id="items">
+            </ul>
+         </div>
+         <div class="genre unknown">
+            <h3><span>unknown</span></h3>
+            <ul id="items">
+            </ul>
+         </div>
+      </div>
+      <p class="something-missing">More detail on <a href="../about#whichmetrics">available metrics</a>.  Missing some artifacts or metrics? See <a href="../about#limitations">current limitations.</a>  </p>
+   </div>
+</div>
 
 
 {% endblock %}

@@ -1,4 +1,7 @@
 
+@linkColor: #FF4E00;
+
+
 /* report
 *****************************************************************************
 *****************************************************************************
@@ -125,20 +128,54 @@ input.report {
 
 /** report printout ******************************************************/
 div#metrics {
-    min-height: 500px;
-    background: none repeat scroll 0 0 #FFFFFF;
-    float: left;
-    width: 100%;
-    margin-top:25px;
+   min-height: 500px;
+   background: none repeat scroll 0 0 #FFFFFF;
+   float: left;
+   width: 100%;
+   margin-top:25px;
+   div.wrapper {
+      width: 1100px;
+   }
+
+   h3 {
+      font-family: rokkitt, georgia, serif;
+      font-size:35px;
+      color:#555;
+      font-weight:bold;
+      margin:20px 0 0 0;
+      padding: 20px 0 0 50px;
+   }
+   div.genre {display:none}
 }
-div#metrics div.wrapper {
+
+// li.item is in #metrics, but big enough it gets its own block.
+li.item {
+   div.biblio{
+      a.item-delete-button{
+         margin-left:-50px;
+         width: 50px;
+         height: 50px;
+         color: red;
+         display:block;
+         font-size:12px;
+         float:left;
+      }
+      h5 {
+         font-size:16px;
+         margin: 0 0 -3px 0;
+
+         a {
+            color: #555;
+            &:hover {color: @linkColor;}
+         }
+      }
+
+      span.year, span.authors, span.repo, span.descr {font-size:12px; color: #888;}
+      span.repo {font-style:italic;}
+   }
 }
 
-ul#items {
-
-}
-
-
+/*
 li.item {
     border: 0 solid #CCCCCC;
     clear: left;
@@ -189,8 +226,6 @@ li.item a.showhide {
     color: #fff;
     background: #777;
     padding: 2px 8px;
-    -webkit-border-radius: 3px;    /* CSS3 rounded borders for Safari  */
-    -moz-border-radius: 3px;       /* CSS3 rounded borders for Firefox  */
 }
 li.item a.showhide:hover{
     background: #FF4E00;
@@ -214,7 +249,7 @@ div.genre {
     width:100%;
     padding:0 0 30px;
     background-color:#fff;
-    display:none /* show when items are added */
+    display:none
 }
 div.genre ul {
     padding:0;
@@ -289,7 +324,7 @@ ul.metrics a {
 }
 
 ul.metrics span.last-update {
-    display:none; /* figure out how to display this later */
+    display:none;
 }
 
 ul.metrics span.metric-value {
@@ -297,8 +332,6 @@ ul.metrics span.metric-value {
     list-style-type:none;
     padding:0 5px;
     margin-bottom: 2px;
-    -webkit-border-radius: 3px;    /* CSS3 rounded borders for Safari                    */
-    -moz-border-radius: 3px;       /* CSS3 rounded borders for Firefox                   */
     border-radius: 3px;
     display:block;
 }
@@ -338,3 +371,5 @@ span.metric-name-img img {
 .metric-img-name {
     display:block;
 }
+
+*/
