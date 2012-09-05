@@ -122,10 +122,8 @@ div#metrics div.wrapper {
 div#metrics h3 {
   font-family: rokkitt, georgia, serif;
   font-size: 35px;
-  color: #555;
+  color: #ff4e00;
   font-weight: bold;
-  margin: 20px 0 0 0;
-  padding: 20px 0 0 50px;
 }
 div#metrics div.genre {
   display: none;
@@ -148,6 +146,7 @@ li.item div.biblio h5 a {
 }
 li.item div.biblio h5 a:hover {
   color: #ff4e00;
+  text-decoration: none;
 }
 li.item div.biblio span.year,
 li.item div.biblio span.authors,
@@ -158,6 +157,73 @@ li.item div.biblio span.descr {
 }
 li.item div.biblio span.repo {
   font-style: italic;
+}
+li.item div.zoom {
+  margin-bottom: 100px;
+}
+li.item div.zoom span.value {
+  font-weight: bold;
+}
+li.item div.zoom table {
+  margin-top: 10px;
+  width: 100%;
+}
+li.item div.zoom table tr .row-label {
+  width: 10%;
+  font-family: rokkitt, georgia, serif;
+  font-size: 22px;
+  color: #888;
+}
+li.item div.zoom table tr th {
+  width: 18%;
+  font-size: 14px;
+  font-weight: normal;
+  text-align: left;
+  background: #888;
+}
+li.item div.zoom table tr td {
+  padding: 5px;
+  vertical-align: top;
+}
+li.item div.zoom table tr td ul.metrics li {
+  float: left;
+  width: 100%;
+  margin: 0 0 15px 0;
+}
+li.item div.zoom table tr td ul.metrics li img {
+  float: left;
+  margin: 7px 7px 0 0;
+}
+li.item div.zoom table tr td ul.metrics li span.numbers {
+  float: left;
+  text-align: right;
+  width: 36%;
+  color: #555;
+  margin-right: 10px;
+  display: inline-block;
+}
+li.item div.zoom table tr td ul.metrics li span.numbers span.no-perc {
+  color: #999;
+  font-size: 15px;
+}
+li.item div.zoom table tr td ul.metrics li span.numbers span.metric-value {
+  display: block;
+  margin-top: -3px;
+  font-size: 12px;
+  color: #666;
+}
+li.item div.zoom table tr td ul.metrics li span.numbers span.metric-value span.value {
+  color: #555;
+}
+li.item div.zoom table tr td ul.metrics li span.meta {
+  width: 40%;
+  display: inline-block;
+}
+li.item div.zoom table tr td ul.metrics li span.meta span.metric-name {
+  font-size: 10px;
+  color: #aaa;
+  line-height: 1.4;
+  display: block;
 }
 /*
 li.item {

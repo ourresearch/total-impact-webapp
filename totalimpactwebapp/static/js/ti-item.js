@@ -54,7 +54,12 @@ function Item(dict, itemView) {
         return this.itemView.render(this.dict)
     }
 
-    this.makeEngagementTable = function(dict, metricInfo){
+    this.makeEngagementTable = function(dict, metricInfo, normRefSetName){
+
+        if (typeof normRefSetName == "undefined") {
+            normRefSetName = "nih"
+        }
+
         var engagementTable = {
             "general":{"read":[], "converse":[], "save":[], "use":[], "recommend":[]},
             "scholarly":{"read":[], "converse":[], "save":[], "use":[], "recommend":[]}
@@ -69,9 +74,18 @@ function Item(dict, itemView) {
 
             metric = this.dict.metrics[metricName]
             metric.display = display
+
+            // setup the percentage range, based on the reference set we're to use
+            if (metric.values[normRefSetName]) {
+                metric.hasPercentiles = true
+                metric.percentileRangeStart = metric.values[normRefSetName][0]
+                metric.percentileRangeEnd = metric.values[normRefSetName][1]
+            }
+
             engagementTable[audience][engagementType].push(metric)
         }
 
+        console.log(engagementTable)
         return engagementTable
     }
 
@@ -214,6 +228,7 @@ function ItemView() {
         return 0;
     }
 
+
     this.formatEngagementTableForMustache = function(table) {
         // converts from nested objs to nested arrays
 
@@ -226,6 +241,7 @@ function ItemView() {
             }
             ret.push(row)
         }
+        ret.reverse()
         return {"rows": ret}
     }
 

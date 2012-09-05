@@ -1,5 +1,7 @@
 
 @linkColor: #FF4E00;
+@metricsSectionWidth: 1100px;
+@zoomCellWidth: (@metricsSectionWidth / 6);
 
 
 /* report
@@ -134,16 +136,14 @@ div#metrics {
    width: 100%;
    margin-top:25px;
    div.wrapper {
-      width: 1100px;
+      width: @metricsSectionWidth;
    }
 
    h3 {
       font-family: rokkitt, georgia, serif;
       font-size:35px;
-      color:#555;
+      color:@linkColor;
       font-weight:bold;
-      margin:20px 0 0 0;
-      padding: 20px 0 0 50px;
    }
    div.genre {display:none}
 }
@@ -166,12 +166,84 @@ li.item {
 
          a {
             color: #555;
-            &:hover {color: @linkColor;}
+            &:hover {color: @linkColor; text-decoration: none;}
          }
       }
 
       span.year, span.authors, span.repo, span.descr {font-size:12px; color: #888;}
       span.repo {font-style:italic;}
+   }
+
+   div.zoom {
+      margin-bottom: 100px;
+      span.value{ font-weight: bold;}
+      table {
+         margin-top: 10px;
+         width: 100%;
+//         border: 1px solid #ddd;
+         tr {
+            .row-label {
+               width: 10%;
+               font-family: rokkitt, georgia, serif;
+               font-size:22px;
+               color: #888;
+            }
+            th{
+               width: 18%;
+               font-size: 14px;
+               font-weight: normal;
+               text-align: left;
+               background: #888;
+            }
+            td {
+               padding: 5px;
+               vertical-align: top;
+               ul.metrics li {
+                  float:left;
+                  width: 100%;
+                  margin: 0 0 15px 0;
+                  img {
+                     float:left;
+                     margin: 7px 7px 0 0;
+                  }
+
+                  span.numbers{
+                     float:left;
+                     text-align: right;
+                     width: 36%;
+                     color: #555;
+                     margin-right:10px;
+                     display:inline-block;
+                     span.start, span.end {
+                     }
+                     span.no-perc {
+                        color: #999;
+                        font-size:15px;
+                     }
+                     span.metric-value {
+                        display:block;
+                        margin-top: -3px;
+                        font-size: 12px;
+                        color: #666;
+                        span.value {
+                           color: #555;
+                        }
+                     }
+                  }
+                  span.meta {
+                     width: 40%;
+                     display:inline-block;
+                     span.metric-name {
+                        font-size:10px;
+                        color: #aaa;
+                        line-height: 1.4;
+                        display:block;
+                     }
+                  }
+               }
+            }
+         }
+      }
    }
 }
 

@@ -191,21 +191,31 @@
 
    <script id="zoomTable" type="text/html">
       <table class="zoom">
-         <tr class="header"><th></th><th>read</th><th>discuss</th><th>save</th><th>use</th><th>recommend</th></tr>
+         <tr class="header"><th class="row-label"></th><th>read</th><th>discuss</th><th>save</th><th>use</th><th>recommend</th></tr>
          {{#rows}}
          <tr class="{{ name }}">
-            <td>{{ name }}</td>{{#cells}}
+            <td class="row-label">{{ name }}</td>{{#cells}}
             <td>
                <ul class="metrics">{{#metrics}}
                   <li>
-                     <a href="{{provenance_url}}">
-                     <span class="last-update">{{ ts }}</span>
-                     <span class="metric-name-img">
-                        <span class="metric-name">{{ static_meta.provider }} {{ static_meta.display_name }}</span>
-                        <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
+                     <span class="numbers">
+                        <span class="metric-perc-range">
+                           <!-- if there are percentiles, show 'em; otherwise,
+                           show a "no percentiles" msg-->
+                           {{#percentileRangeStart}}
+                           <span class="start"><span class="value">{{percentileRangeStart}}</span>-</span>
+                           <span class="end"><span class="value">{{percentileRangeEnd}}</span>%</span>
+                           {{/percentileRangeStart}}
+                           {{^percentileRangeStart}}
+                           <span class="no-perc">NA %</span>
+                           {{/percentileRangeStart}}
+                        </span>
+                        <span class="metric-value"><span class="value">{{ values.raw }}</span> total</span>
                      </span>
-                     <span class="metric-value">{{ value }}</span>
-                     </a>
+                     <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
+                     <span class="meta">
+                        <span class="metric-name">{{ static_meta.display_name }}</span>
+                     </span>
                   </li>
                   {{/metrics}}</ul>
 
