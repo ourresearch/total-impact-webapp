@@ -128,8 +128,38 @@ div#metrics h3 {
 div#metrics div.genre {
   display: none;
 }
+li.item.zoomed div.biblio h5 a {
+  color: #ff4e00;
+}
+li.item div.glyph {
+  float: left;
+  margin: 3px 7px 0 0;
+}
+li.item div.glyph ul.glyph {
+  width: 50px;
+}
+li.item div.glyph ul.glyph li {
+  height: 15px;
+  overflow: hidden;
+}
+li.item div.glyph ul.glyph li.scholarly li {
+  background: #ff4e00;
+  margin-bottom: 1px;
+}
+li.item div.glyph ul.glyph li.general li {
+  background: #1a78e1;
+}
+li.item div.glyph ul.glyph li li {
+  width: 9px;
+  height: 100%;
+  border-right: 1px solid #ffffff;
+  float: left;
+}
+li.item div.glyph ul.glyph li li span.value {
+  display: none;
+}
 li.item div.biblio a.item-delete-button {
-  margin-left: -50px;
+  margin-left: -100px;
   width: 50px;
   height: 25px;
   color: #999;
@@ -184,6 +214,7 @@ li.item div.zoom table tr th {
   text-align: left;
   padding-left: 10px;
   background: #888;
+  border-left: 1px solid #fff;
 }
 li.item div.zoom table tr td {
   padding: 5px;
@@ -208,6 +239,12 @@ li.item div.zoom table tr td ul.metrics li span.numbers {
 li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.perc-symbol {
   font-size: 14px;
   margin-left: 2px;
+}
+li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.median {
+  display: none;
+}
+li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.error-margin {
+  display: none;
 }
 li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.no-perc {
   color: #999;

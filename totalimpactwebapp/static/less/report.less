@@ -150,9 +150,39 @@ div#metrics {
 
 // li.item is in #metrics, but big enough it gets its own block.
 li.item {
+
+   &.zoomed {
+      div.biblio h5 a {color: @linkColor;}
+   }
+
+   div.glyph {
+      float:left;
+      margin:3px 7px 0 0;
+      ul.glyph {
+         width: 50px;
+         li {
+            height: 15px;
+            overflow:hidden;
+            &.scholarly li {
+               background: @linkColor;
+               margin-bottom:1px;
+            }
+            &.general  li {background: #1a78e1;}
+            li {
+               width: 9px;
+               height: 100%;
+               border-right:1px solid #ffffff;
+               float:left;
+               span.value{display:none;}
+            }
+         }
+
+      }
+   }
+
    div.biblio{
       a.item-delete-button{
-         margin-left:-50px;
+         margin-left:-100px;
          width: 50px;
          height: 25px;
          color: #999;
@@ -196,6 +226,7 @@ li.item {
                text-align: left;
                padding-left:10px;
                background: #888;
+               border-left:1px solid #fff;
             }
             td {
                padding: 5px;
@@ -217,8 +248,8 @@ li.item {
                      display:block;
                      span.metric-perc-range{
                         span.perc-symbol {font-size:14px; margin-left:2px}
-                        span.end {
-                        }
+                        span.median { display:none; }
+                        span.error-margin {display:none;}
                         span.no-perc {
                            color: #999;
                            padding: 0 5px;

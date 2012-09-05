@@ -1,3 +1,4 @@
+//$("span.value").css("color", $.Color("#555555").transition( "#FF4E00", 0.2 ).toHexString() );
 
 function Item(dict, itemView) {
 
@@ -54,6 +55,18 @@ function Item(dict, itemView) {
         return this.itemView.render(this.dict)
     }
 
+    this.getCellScore = function(metricsList){
+        // get the highest percentileMedian from this set of metrics
+        // returns 0 if no metric has a percentileMedian defined
+        topMetric = metricsList.sort(function(x,y){x.percentileMedian, y.percentileMedian})[0]
+        if (topMetric === undefined) {
+            return 0
+        }
+        else {
+            return topMetric.percentileMedian
+        }
+    }
+
     this.makeEngagementTable = function(dict, metricInfo, normRefSetName){
 
         if (typeof normRefSetName == "undefined") {
@@ -64,6 +77,8 @@ function Item(dict, itemView) {
             "general":{"read":[], "converse":[], "save":[], "use":[], "recommend":[]},
             "scholarly":{"read":[], "converse":[], "save":[], "use":[], "recommend":[]}
         }
+
+        // make the table
         for (var metricName in dict.metrics) {
             var display = metricInfo[metricName][2]
             if (!display) {
@@ -80,13 +95,32 @@ function Item(dict, itemView) {
                 metric.hasPercentiles = true
                 metric.percentileRangeStart = metric.values[normRefSetName][0]
                 metric.percentileRangeEnd = metric.values[normRefSetName][1]
+                metric.percentileMedian = (metric.percentileRangeEnd + metric.percentileRangeStart) / 2
+                metric.percentileErrorMargin = (metric.percentileRangeEnd - metric.percentileRangeStart) / 2
             }
 
             engagementTable[audience][engagementType].push(metric)
         }
 
-        console.log(engagementTable)
-        return engagementTable
+        // convert the engagement table from a nested hashes to nested arrays
+        ret = []
+        for (var rowName in engagementTable) {
+            var row = {name: rowName, cells: [] }
+            for (colName in engagementTable[rowName]) {
+                var cell = engagementTable[rowName][colName]
+                cellContents = {
+                    metrics: cell,
+                    score: this.getCellScore(cell)
+                }
+                row.cells.push(cellContents)
+            }
+            ret.push(row)
+        }
+        ret.reverse()
+        return {"rows": ret}
+
+        console.log(ret)
+        return ret
     }
 
     this.get_mendeley_percent = function(metricDict, key_substring) {
@@ -229,21 +263,6 @@ function ItemView() {
     }
 
 
-    this.formatEngagementTableForMustache = function(table) {
-        // converts from nested objs to nested arrays
-
-        ret = []
-        for (var rowName in table) {
-            var row = {name: rowName, cells: [] }
-            for (colName in table[rowName]) {
-                var cell = table[rowName][colName]
-                row.cells.push({metrics: cell})
-            }
-            ret.push(row)
-        }
-        ret.reverse()
-        return {"rows": ret}
-    }
 
 
     this.renderBiblio = function(biblio, url) {
@@ -256,28 +275,42 @@ function ItemView() {
         }
 
         var templateName = "biblio_" + biblio.genre
-        return ich[templateName](biblio, true)
+        return $(ich[templateName](biblio, true))
+    }
+
+    this.renderGlyph = function(engagementTable){
+        glyph$ = $(ich["glyphTemplate"](engagementTable, true))
+        glyph$("li.glyph-cell").each(function(){
+            var myHeight = $(this).find("span.value").text()
+            $(this).css("height", (myHeight) +"%")
+        })
+        return glyph$
+    }
+
+    this.renderZoom = function(engagementTable) {
+        var zoom$ = $(ich.zoomTable(engagementTable, true))
+        zoom$.find("span.metric-perc-range span.median").each(function(){
+            var value = $(this).text()
+            var newColor = $.Color("#555555").transition("#FF4E00", value*.01).toHexString()
+            $(this).parent().find("span.value").css("color", newColor)
+        })
+        return zoom$
     }
 
     this.render = function(item){
         var item$ = ich.displayItem(item)
 
-        // make the zoom table
-        convertedTable = this.formatEngagementTableForMustache(item.engagementTable)
-        console.log("here's the converted table: ")
-        console.log(convertedTable)
+        var glyph$ = this.renderGlyph(item.engagementTable, true)
+        item$.find("div.glyph").append(glyph$)
 
-        zoomHtml = ich.zoomTable(convertedTable, true)
+        var url = (item.aliases.url) ?  item.aliases.url[0] : false
+        var biblio$ = this.renderBiblio(item.biblio, url)
+        item$.find("div.biblio").append(biblio$)
+
+        var zoom$ = this.renderZoom(item.engagementTable, true)
         item$.find("div.zoom").append(zoomHtml)
 
-
-        // take care of biblio
-        var url = (item.aliases.url) ?  item.aliases.url[0] : false
-        var biblioHtml = this.renderBiblio(item.biblio, url)
-
-        // show/hide the delete-item button.
-        item$.find("div.biblio").append(biblioHtml)
-            .hover(
+        item$.hover(
             function(){
 //                $(this).find("a.item-delete-button").fadeIn("fast");
             },
@@ -286,10 +319,17 @@ function ItemView() {
             }
         )
 
-        // setup the delete-item button
-        item$.find("a.item-delete-button").click(function(){
-            var tiid = $(this).parent().parent().attr("id")
-            console.log("this is where I would delete "+tiid)
+        item$.click(function(e){
+            if ($(e.target).hasClass("item-delete-button")){
+                var tiid = $(this).parent().parent().attr("id")
+                console.log("this is where I would delete "+tiid)
+            }
+            else {
+                $(this).parents("li.item")
+                    .toggleClass("zoomed")
+                    .find("div.zoom")
+                    .slideToggle(250)
+            }
         })
 
         return item$

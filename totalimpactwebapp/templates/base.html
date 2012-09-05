@@ -184,9 +184,22 @@
 
    <script id="displayItem" type="text/html">
       <li class="item" id="{{ _id }}">
+         <div class="glyph"></div>
          <div class="biblio"><a href="#" class="item-delete-button">delete</a></div>
          <div class="zoom"></div>
       </li>
+   </script>
+
+   <script id="glyphTemplate" type="text/html">
+      <ul class="glyph">{{#rows}}
+         <li class="{{name}} glyph-row">
+            <ul>{{#cells}}
+               <li class="glyph-cell"><span class="value">{{score}}</span></li>
+            {{/cells}}</ul>
+         </li>
+
+      {{/rows}}</ul>
+
    </script>
 
    <script id="zoomTable" type="text/html">
@@ -204,6 +217,8 @@
                            <!-- if there are percentiles, show 'em; otherwise,
                            show a "no percentiles" msg-->
                            {{#percentileRangeStart}}
+                           <span class="median"><span class="value">{{percentileMedian}}</span></span>
+                           <span class="error-margin"><span class="plus-minus">+-</span></span><span class="value">{{percentileErrorMargin}}</span></span>
                            <span class="start"><span class="value">{{percentileRangeStart}}</span>-</span>
                            <span class="end"><span class="value">{{percentileRangeEnd}}</span><span class="perc-symbol">%</span></span>
                            {{/percentileRangeStart}}
