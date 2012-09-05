@@ -154,11 +154,12 @@ li.item {
       a.item-delete-button{
          margin-left:-50px;
          width: 50px;
-         height: 50px;
-         color: red;
+         height: 25px;
+         color: #999;
          display:block;
          font-size:12px;
          float:left;
+         &:hover {color:red;}
       }
       h5 {
          font-size:16px;
@@ -178,7 +179,7 @@ li.item {
       margin-bottom: 100px;
       span.value{ font-weight: bold;}
       table {
-         margin-top: 10px;
+         margin-top: 5px;
          width: 100%;
 //         border: 1px solid #ddd;
          tr {
@@ -193,6 +194,7 @@ li.item {
                font-size: 14px;
                font-weight: normal;
                text-align: left;
+               padding-left:10px;
                background: #888;
             }
             td {
@@ -204,38 +206,48 @@ li.item {
                   margin: 0 0 15px 0;
                   img {
                      float:left;
-                     margin: 7px 7px 0 0;
+                     margin: 2px 7px 0 0;
                   }
 
                   span.numbers{
                      float:left;
-                     text-align: right;
-                     width: 36%;
+                     margin-right:2px;
+                     font-size:16px;
                      color: #555;
-                     margin-right:10px;
-                     display:inline-block;
-                     span.start, span.end {
+                     display:block;
+                     span.metric-perc-range{
+                        span.perc-symbol {font-size:14px; margin-left:2px}
+                        span.end {
+                        }
+                        span.no-perc {
+                           color: #999;
+                           padding: 0 5px;
+                        }
                      }
-                     span.no-perc {
-                        color: #999;
-                        font-size:15px;
-                     }
-                     span.metric-value {
+                     a.metric-value  {
                         display:block;
-                        margin-top: -3px;
+                        margin-top: -1px;
+                        float:left;
+                        clear:left;
                         font-size: 12px;
-                        color: #666;
+                        white-space: nowrap;
+                        color: #999;
+                        padding-right:16px;
+                        background: url(../img/linkout-icon.png);
+                        background-repeat: no-repeat;
+                        background-position: right 4px;
+
+                        &:hover { background-position: right -20px; color:@linkColor;}
                         span.value {
-                           color: #555;
                         }
                      }
                   }
                   span.meta {
-                     width: 40%;
+                     width: 45%;
                      display:inline-block;
                      span.metric-name {
-                        font-size:10px;
-                        color: #aaa;
+                        font-size:11px;
+                        color: #555;
                         line-height: 1.4;
                         display:block;
                      }

@@ -131,11 +131,14 @@ div#metrics div.genre {
 li.item div.biblio a.item-delete-button {
   margin-left: -50px;
   width: 50px;
-  height: 50px;
-  color: red;
+  height: 25px;
+  color: #999;
   display: block;
   font-size: 12px;
   float: left;
+}
+li.item div.biblio a.item-delete-button:hover {
+  color: red;
 }
 li.item div.biblio h5 {
   font-size: 16px;
@@ -165,7 +168,7 @@ li.item div.zoom span.value {
   font-weight: bold;
 }
 li.item div.zoom table {
-  margin-top: 10px;
+  margin-top: 5px;
   width: 100%;
 }
 li.item div.zoom table tr .row-label {
@@ -179,6 +182,7 @@ li.item div.zoom table tr th {
   font-size: 14px;
   font-weight: normal;
   text-align: left;
+  padding-left: 10px;
   background: #888;
 }
 li.item div.zoom table tr td {
@@ -192,36 +196,47 @@ li.item div.zoom table tr td ul.metrics li {
 }
 li.item div.zoom table tr td ul.metrics li img {
   float: left;
-  margin: 7px 7px 0 0;
+  margin: 2px 7px 0 0;
 }
 li.item div.zoom table tr td ul.metrics li span.numbers {
   float: left;
-  text-align: right;
-  width: 36%;
+  margin-right: 2px;
+  font-size: 16px;
   color: #555;
-  margin-right: 10px;
-  display: inline-block;
-}
-li.item div.zoom table tr td ul.metrics li span.numbers span.no-perc {
-  color: #999;
-  font-size: 15px;
-}
-li.item div.zoom table tr td ul.metrics li span.numbers span.metric-value {
   display: block;
-  margin-top: -3px;
-  font-size: 12px;
-  color: #666;
 }
-li.item div.zoom table tr td ul.metrics li span.numbers span.metric-value span.value {
-  color: #555;
+li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.perc-symbol {
+  font-size: 14px;
+  margin-left: 2px;
+}
+li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.no-perc {
+  color: #999;
+  padding: 0 5px;
+}
+li.item div.zoom table tr td ul.metrics li span.numbers a.metric-value {
+  display: block;
+  margin-top: -1px;
+  float: left;
+  clear: left;
+  font-size: 12px;
+  white-space: nowrap;
+  color: #999;
+  padding-right: 16px;
+  background: url(../img/linkout-icon.png);
+  background-repeat: no-repeat;
+  background-position: right 4px;
+}
+li.item div.zoom table tr td ul.metrics li span.numbers a.metric-value:hover {
+  background-position: right -20px;
+  color: #ff4e00;
 }
 li.item div.zoom table tr td ul.metrics li span.meta {
-  width: 40%;
+  width: 45%;
   display: inline-block;
 }
 li.item div.zoom table tr td ul.metrics li span.meta span.metric-name {
-  font-size: 10px;
-  color: #aaa;
+  font-size: 11px;
+  color: #555;
   line-height: 1.4;
   display: block;
 }

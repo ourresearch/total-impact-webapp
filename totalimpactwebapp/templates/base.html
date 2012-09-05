@@ -199,20 +199,20 @@
                <ul class="metrics">{{#metrics}}
                   <li>
                      <span class="numbers">
+                     <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
                         <span class="metric-perc-range">
                            <!-- if there are percentiles, show 'em; otherwise,
                            show a "no percentiles" msg-->
                            {{#percentileRangeStart}}
                            <span class="start"><span class="value">{{percentileRangeStart}}</span>-</span>
-                           <span class="end"><span class="value">{{percentileRangeEnd}}</span>%</span>
+                           <span class="end"><span class="value">{{percentileRangeEnd}}</span><span class="perc-symbol">%</span></span>
                            {{/percentileRangeStart}}
                            {{^percentileRangeStart}}
-                           <span class="no-perc">NA %</span>
+                           <span class="no-perc">NA<span class="perc-symbol">%</span></span>
                            {{/percentileRangeStart}}
                         </span>
-                        <span class="metric-value"><span class="value">{{ values.raw }}</span> total</span>
+                        <a href="{{provenance_url}}" class="metric-value">total: <span class="value">{{ values.raw }}</span></a>
                      </span>
-                     <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
                      <span class="meta">
                         <span class="metric-name">{{ static_meta.display_name }}</span>
                      </span>
