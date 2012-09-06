@@ -291,7 +291,14 @@ function ItemView() {
         var zoom$ = $(ich.zoomTable(engagementTable, true))
         zoom$.find("span.metric-perc-range span.median").each(function(){
             var value = $(this).text()
-            var newColor = $.Color("#555555").transition("#FF4E00", value*.01).toHexString()
+            if ($(this).parents("tr").hasClass("scholarly")) {
+                var happyColor = "#ff4300"
+            }
+            else {
+                var happyColor = "#1a78e1"
+            }
+
+            var newColor = $.Color("#555555").transition(happyColor, value*.01).toHexString()
             $(this).parent().parent().find("span.value").css("color", newColor)
         })
         return zoom$
