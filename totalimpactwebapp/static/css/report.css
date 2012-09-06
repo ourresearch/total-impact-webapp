@@ -128,12 +128,19 @@ div#metrics h3 {
 div#metrics div.genre {
   display: none;
 }
+li.item {
+  margin-bottom: 10px;
+}
+li.item.zoomed {
+  margin-bottom: 100px;
+}
 li.item.zoomed div.biblio h5 a {
   color: #ff4e00;
 }
 li.item div.glyph {
   float: left;
   margin: 3px 7px 0 0;
+  cursor: pointer;
 }
 li.item div.glyph ul.glyph {
   width: 50px;
@@ -163,28 +170,51 @@ li.item div.glyph ul.glyph li ul li span.value {
   height: 0;
   text-indent: -9999px;
 }
-li.item div.biblio a.item-delete-button {
-  margin-left: -100px;
+li.item a.item-delete-button {
+  margin-left: -50px;
   width: 50px;
   height: 25px;
   color: #999;
   display: block;
   font-size: 12px;
   float: left;
+  display: none;
 }
-li.item div.biblio a.item-delete-button:hover {
+li.item a.item-delete-button:hover {
   color: red;
 }
 li.item div.biblio h5 {
   font-size: 16px;
   margin: 0 0 -3px 0;
+  cursor: pointer;
 }
-li.item div.biblio h5 a {
-  color: #555;
-}
-li.item div.biblio h5 a:hover {
+li.item div.biblio h5 span.title:hover {
   color: #ff4e00;
   text-decoration: none;
+}
+li.item div.biblio h5 a {
+  width: 12px;
+  height: 12px;
+  background: url(../img/linkout-icon.png);
+  background-repeat: no-repeat;
+  background-position: right 1px;
+  display: inline-block;
+}
+li.item div.biblio h5 a span.help-text {
+  display: none;
+  padding-left: 16px;
+  float: left;
+  margin-top: -2px;
+  color: #ff4e00;
+  font-size: 12px;
+  font-weight: normal;
+  text-decoration: none;
+}
+li.item div.biblio h5 a:hover {
+  background-position: right -23px;
+}
+li.item div.biblio h5 a:hover span.help-text {
+  display: inline-block;
 }
 li.item div.biblio span.year,
 li.item div.biblio span.authors,
@@ -195,9 +225,6 @@ li.item div.biblio span.descr {
 }
 li.item div.biblio span.repo {
   font-style: italic;
-}
-li.item div.zoom {
-  margin-bottom: 100px;
 }
 li.item div.zoom span.value {
   font-weight: bold;
@@ -246,9 +273,6 @@ li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range s
   margin-left: 2px;
 }
 li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.median {
-  display: none;
-}
-li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.error-margin {
   display: none;
 }
 li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.no-perc {

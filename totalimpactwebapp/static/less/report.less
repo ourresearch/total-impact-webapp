@@ -150,14 +150,16 @@ div#metrics {
 
 // li.item is in #metrics, but big enough it gets its own block.
 li.item {
-
+   margin-bottom:10px;
    &.zoomed {
+      margin-bottom:100px;
       div.biblio h5 a {color: @linkColor;}
    }
 
    div.glyph {
       float:left;
       margin:3px 7px 0 0;
+      cursor:pointer;
       ul.glyph {
          width: 50px;
          li.scholarly li {
@@ -191,24 +193,47 @@ li.item {
       }
    }
 
+   a.item-delete-button{
+      margin-left:-50px;
+      width: 50px;
+      height: 25px;
+      color: #999;
+      display:block;
+      font-size:12px;
+      float:left;
+      &:hover {color:red;}
+      display:none; // show when item is zoomed
+   }
+
    div.biblio{
-      a.item-delete-button{
-         margin-left:-100px;
-         width: 50px;
-         height: 25px;
-         color: #999;
-         display:block;
-         font-size:12px;
-         float:left;
-         &:hover {color:red;}
-      }
       h5 {
          font-size:16px;
          margin: 0 0 -3px 0;
-
-         a {
-            color: #555;
+         cursor:pointer;
+         span.title{
             &:hover {color: @linkColor; text-decoration: none;}
+         }
+         a {
+            width: 12px;
+            height: 12px;
+            background: url(../img/linkout-icon.png);
+            background-repeat: no-repeat;
+            background-position: right 1px;
+            display:inline-block;
+            span.help-text{
+               display:none;
+               padding-left:16px;
+               float:left;
+               margin-top:-2px;
+               color: @linkColor;
+               font-size:12px;
+               font-weight: normal;
+               text-decoration: none;
+            }
+            &:hover {
+               background-position: right -23px;
+               span.help-text{display: inline-block;}
+            }
          }
       }
 
@@ -217,7 +242,6 @@ li.item {
    }
 
    div.zoom {
-      margin-bottom: 100px;
       span.value{ font-weight: bold;}
       table {
          margin-top: 5px;
@@ -260,7 +284,6 @@ li.item {
                      span.metric-perc-range{
                         span.perc-symbol {font-size:14px; margin-left:2px}
                         span.median { display:none; }
-                        span.error-margin {display:none;}
                         span.no-perc {
                            color: #999;
                            padding: 0 5px;

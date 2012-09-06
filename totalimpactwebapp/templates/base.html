@@ -141,11 +141,9 @@
 
    <script id="title" class="partial" type="text/html">
       <h5>
+         <span class="title">{{title}}</span>
          {{#url}}
-         <a class="url title" href="{{ url }}">{{ title }}</a>
-         {{/url}}
-         {{^url}}
-         {{ title }}
+         <a class="url title" href="{{ url }}"><span class="help-text">linkout</span></a>
          {{/url}}
       </h5>
    </script>
@@ -184,8 +182,9 @@
 
    <script id="displayItem" type="text/html">
       <li class="item" id="{{ _id }}">
+         <a href="#" class="item-delete-button">delete</a>
          <div class="glyph"></div>
-         <div class="biblio"><a href="#" class="item-delete-button">delete</a></div>
+         <div class="biblio"></div>
          <div class="zoom"></div>
       </li>
    </script>
@@ -218,7 +217,7 @@
                            show a "no percentiles" msg-->
                            {{#percentileRangeStart}}
                            <span class="median"><span class="value">{{percentileMedian}}</span></span>
-                           <span class="error-margin"><span class="plus-minus">+-</span></span><span class="value">{{percentileErrorMargin}}</span></span>
+                           <!--<span class="error-margin"><span class="plus-minus">&plusmn;</span></span><span class="value">{{percentileErrorMargin}}</span></span>-->
                            <span class="start"><span class="value">{{percentileRangeStart}}</span>-</span>
                            <span class="end"><span class="value">{{percentileRangeEnd}}</span><span class="perc-symbol">%</span></span>
                            {{/percentileRangeStart}}

@@ -292,7 +292,7 @@ function ItemView() {
         zoom$.find("span.metric-perc-range span.median").each(function(){
             var value = $(this).text()
             var newColor = $.Color("#555555").transition("#FF4E00", value*.01).toHexString()
-            $(this).parent().find("span.value").css("color", newColor)
+            $(this).parent().parent().find("span.value").css("color", newColor)
         })
         return zoom$
     }
@@ -308,7 +308,7 @@ function ItemView() {
         item$.find("div.biblio").append(biblio$)
 
         var zoom$ = this.renderZoom(item.engagementTable, true)
-        item$.find("div.zoom").append(zoom$)
+        item$.find("div.zoom").append(zoom$).hide()
 
         item$.hover(
             function(){
@@ -319,17 +319,20 @@ function ItemView() {
             }
         )
 
-        item$.click(function(e){
-            if ($(e.target).hasClass("item-delete-button")){
-                var tiid = $(this).parent().parent().attr("id")
-                console.log("this is where I would delete "+tiid)
-            }
-            else {
-                $(this).parents("li.item")
-                    .toggleClass("zoomed")
-                    .find("div.zoom")
-                    .slideToggle(250)
-            }
+        item$.find("a.item-delete-button").click(function(){
+            var tiid = $(this).parent().id
+            console.log("this is where I would delete "+tiid)
+            return false
+        })
+
+        item$.find("div.glyph, div.biblio").click(function(){
+            $(this)
+                .parents("li.item")
+                .toggleClass("zoomed")
+                .find("div.zoom")
+                .slideToggle(500)
+                .end()
+                .find("a.item-delete-button").fadeToggle(500)
         })
 
         return item$
