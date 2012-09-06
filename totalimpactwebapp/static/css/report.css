@@ -134,7 +134,7 @@ li.item {
 li.item.zoomed {
   margin-bottom: 100px;
 }
-li.item.zoomed div.biblio h5 a {
+li.item.zoomed div.biblio h5 span.title {
   color: #ff4e00;
 }
 li.item div.glyph {
@@ -232,6 +232,12 @@ li.item div.zoom span.value {
 li.item div.zoom table {
   margin-top: 5px;
   width: 100%;
+}
+li.item div.zoom table tr.scholarly td.row-label {
+  color: #ff4e00;
+}
+li.item div.zoom table tr.general td.row-label {
+  color: #1a78e1;
 }
 li.item div.zoom table tr .row-label {
   width: 10%;
