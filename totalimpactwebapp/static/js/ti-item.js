@@ -279,9 +279,9 @@ function ItemView() {
     }
 
     this.renderGlyph = function(engagementTable){
-        glyph$ = $(ich["glyphTemplate"](engagementTable, true))
-        glyph$("li.glyph-cell").each(function(){
-            var myHeight = $(this).find("span.value").text()
+        var glyph$ = $(ich["glyphTemplate"](engagementTable, true))
+        glyph$.find("li.glyph-cell span.value").each(function(){
+            var myHeight = $(this).text()
             $(this).css("height", (myHeight) +"%")
         })
         return glyph$
@@ -308,7 +308,7 @@ function ItemView() {
         item$.find("div.biblio").append(biblio$)
 
         var zoom$ = this.renderZoom(item.engagementTable, true)
-        item$.find("div.zoom").append(zoomHtml)
+        item$.find("div.zoom").append(zoom$)
 
         item$.hover(
             function(){

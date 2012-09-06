@@ -138,25 +138,30 @@ li.item div.glyph {
 li.item div.glyph ul.glyph {
   width: 50px;
 }
-li.item div.glyph ul.glyph li {
-  height: 15px;
-  overflow: hidden;
-}
 li.item div.glyph ul.glyph li.scholarly li {
-  background: #ff4e00;
   margin-bottom: 1px;
+  bottom: 0;
 }
-li.item div.glyph ul.glyph li.general li {
+li.item div.glyph ul.glyph li.scholarly li span.value {
+  background: #ff4e00;
+}
+li.item div.glyph ul.glyph li.general span.value {
   background: #1a78e1;
+  top: 0;
 }
-li.item div.glyph ul.glyph li li {
-  width: 9px;
-  height: 100%;
+li.item div.glyph ul.glyph li ul li {
+  height: 15px;
+  position: relative;
   border-right: 1px solid #ffffff;
+  width: 9px;
   float: left;
 }
-li.item div.glyph ul.glyph li li span.value {
-  display: none;
+li.item div.glyph ul.glyph li ul li span.value {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  height: 0;
+  text-indent: -9999px;
 }
 li.item div.biblio a.item-delete-button {
   margin-left: -100px;

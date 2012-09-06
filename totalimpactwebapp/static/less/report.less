@@ -160,20 +160,31 @@ li.item {
       margin:3px 7px 0 0;
       ul.glyph {
          width: 50px;
+         li.scholarly li {
+            span.value {background: @linkColor;}
+            margin-bottom:1px;
+            bottom:0;
+         }
+         li.general span.value {
+            background: #1a78e1;
+            top:0;
+         }
          li {
-            height: 15px;
-            overflow:hidden;
-            &.scholarly li {
-               background: @linkColor;
-               margin-bottom:1px;
-            }
-            &.general  li {background: #1a78e1;}
-            li {
-               width: 9px;
-               height: 100%;
-               border-right:1px solid #ffffff;
-               float:left;
-               span.value{display:none;}
+            ul{
+               li {
+                  height: 15px;
+                  position: relative;
+                  border-right:1px solid #ffffff;
+                  width: 9px;
+                  float:left;
+                  span.value{
+                     width: 100%;
+                     position: absolute;
+                     bottom:0;
+                     height: 0;
+                     text-indent: -9999px; // hide the values
+                  }
+               }
             }
          }
 
