@@ -4,24 +4,24 @@ function Item(dict, itemView) {
 
     // [<audience>, <engagement type>, <display level>]
     var metricInfo = {
-        "citeulike:bookmarks": ["scholarly", "save", "glyph"],
-        "delicious:bookmarks": ["general", "save", "glyph"],
-        "dryad:most_downloaded_file": ["scholarly", "read", "glyph"],
-        "dryad:package_views": ["scholarly", "read", "glyph"],
-        "dryad:total_downloads": ["scholarly", "read", "glyph"],
-        "facebook:shares":["general", "converse", "glyph"],
-        "facebook:comments":["general", "converse", "glyph"],
-        "facebook:likes":["general", "converse", "glyph"],
-        "facebook:clicks":["general", "converse", "glyph"],
-        "github:forks":["general", "use", "glyph"],
-        "github:watchers":["general", "save", "glyph"],
+        "citeulike:bookmarks": ["scholarly", "saved", "glyph"],
+        "delicious:bookmarks": ["general", "saved", "glyph"],
+        "dryad:most_downloaded_file": ["scholarly", "viewed", "glyph"],
+        "dryad:package_views": ["scholarly", "viewed", "glyph"],
+        "dryad:total_downloads": ["scholarly", "viewed", "glyph"],
+        "facebook:shares":["general", "discussed", "glyph"],
+        "facebook:comments":["general", "discussed", "glyph"],
+        "facebook:likes":["general", "discussed", "glyph"],
+        "facebook:clicks":["general", "discussed", "glyph"],
+        "github:forks":["general", "cited", "glyph"],
+        "github:watchers":["general", "saved", "glyph"],
         "mendeley:career_stage":["", "", 0],
         "mendeley:country":["", "", 0],
         "mendeley:discipline":["", "", 0],
-        "mendeley:student_readers":["scholarly", "save", "zoom"],
-        "mendeley:developing_countries":["scholarly", "save", "zoom"],
-        "mendeley:groups":["scholarly", "save", "glyph"],
-        "mendeley:readers":["scholarly", "save", "glyph"],
+        "mendeley:student_readers":["scholarly", "saved", "zoom"],
+        "mendeley:developing_countries":["scholarly", "saved", "zoom"],
+        "mendeley:groups":["scholarly", "saved", "glyph"],
+        "mendeley:readers":["scholarly", "saved", "glyph"],
         "plos:crossref": [],                    // figure it out
         "plos:html_views": [],                  // figure it out
         "plos:pdf_views": [],                   // figure it out
@@ -33,17 +33,17 @@ function Item(dict, itemView) {
         "plos:pmc_unique-ip": ["", "", 0],
         "plos:pubmed_central": ["", "", 0],
         "plos:scopus": [],                      // figure it out
-        "pubmed:f1000": ["scholarly", "recommend", "glyph"],
-        "pubmed:pmc_citations": ["scholarly", "use", "glyph"],
-        "pubmed:pmc_citations_editorials": ["scholarly", "recommend", "zoom"],
-        "pubmed:pmc_citations_reviews": ["scholarly", "use", "zoom"],
-        "slideshare:comments": ["general", "converse"],
-        "slideshare:downloads": ["general", "read"],
-        "slideshare:favorites": ["general", "save"],
-        "slideshare:views": ["general", "read"],
-        "topsy:influential_tweets": ["general", "converse", "zoom"],
-        "topsy:tweets": ["general", "converse", "glyph"],
-        "wikipedia:mentions": ["general", "use", "glyph"]
+        "pubmed:f1000": ["scholarly", "rec'd", "glyph"],
+        "pubmed:pmc_citations": ["scholarly", "cited", "glyph"],
+        "pubmed:pmc_citations_editorials": ["scholarly", "rec'd", "zoom"],
+        "pubmed:pmc_citations_reviews": ["scholarly", "cited", "zoom"],
+        "slideshare:comments": ["general", "discussed"],
+        "slideshare:downloads": ["general", "viewed"],
+        "slideshare:favorites": ["general", "saved"],
+        "slideshare:views": ["general", "viewed"],
+        "topsy:influential_tweets": ["general", "discussed", "zoom"],
+        "topsy:tweets": ["general", "discussed", "glyph"],
+        "wikipedia:mentions": ["general", "cited", "glyph"]
     }
 
 
@@ -74,8 +74,11 @@ function Item(dict, itemView) {
         }
 
         var engagementTable = {
-            "general":{"read":[], "converse":[], "save":[], "use":[], "recommend":[]},
-            "scholarly":{"read":[], "converse":[], "save":[], "use":[], "recommend":[]}
+            "viewed": {"scholarly":[], "general": []},
+            "discussed": {"scholarly":[], "general": []},
+            "saved": {"scholarly":[], "general": []},
+            "cited": {"scholarly":[], "general": []},
+            "rec'd": {"scholarly":[], "general": []}
         }
 
         // make the table
@@ -87,10 +90,10 @@ function Item(dict, itemView) {
             var audience = metricInfo[metricName][0]
             var engagementType = metricInfo[metricName][1]
 
-            metric = this.dict.metrics[metricName]
+            var metric = this.dict.metrics[metricName]
             metric.display = display
 
-            // setup the percentage range, based on the reference set we're to use
+            // setup the percentage range, based on the reference set we're to cited
             if (metric.values[normRefSetName]) {
                 metric.hasPercentiles = true
                 metric.percentileRangeStart = metric.values[normRefSetName][0]
@@ -99,13 +102,14 @@ function Item(dict, itemView) {
                 metric.percentileErrorMargin = (metric.percentileRangeEnd - metric.percentileRangeStart) / 2
             }
 
-            engagementTable[audience][engagementType].push(metric)
+            console.log(engagementType)
+            engagementTable[engagementType][audience].push(metric)
         }
 
         // convert the engagement table from a nested hashes to nested arrays
         ret = []
         for (var rowName in engagementTable) {
-            var row = {name: rowName, cells: [] }
+            var row = {engagementType: rowName, cells: [] }
             for (colName in engagementTable[rowName]) {
                 var cell = engagementTable[rowName][colName]
                 cellContents = {

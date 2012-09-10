@@ -203,10 +203,10 @@
 
    <script id="zoomTable" type="text/html">
       <table class="zoom">
-         <tr class="header"><th class="row-label"></th><th>read</th><th>discuss</th><th>save</th><th>use</th><th>recommend</th></tr>
+         <tr class="header"><th class="row-label"></th><th class="scholarly">scholarly</th><th class="general">general</th></tr>
          {{#rows}}
          <tr class="{{ name }}">
-            <td class="row-label">{{ name }}</td>{{#cells}}
+            <td class="row-label">{{ engagementType }}</td>{{#cells}}
             <td>
                <ul class="metrics">{{#metrics}}
                   <li>
