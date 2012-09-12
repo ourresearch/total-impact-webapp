@@ -17,12 +17,13 @@
                     </span>
          </div>
          <div id="report-button">
-            <span class="report-button"><a class="report-button-full" id="update-report-button" name="{{ collection_id }}" href="#">update</a></span>
-                    <span class="report-button">
-                        <a class="report-button-left" href="http://{{ api_root }}/collection/{{ collection_id }}">json</a>
-                        <a class="report-button-right" href="http://{{ api_root }}/collection/{{ collection_id }}.csv">csv</a>
-                    </span>
+            <button class="btn btn-small" id="update-report-button" name="{{ collection_id }}" href="#">update</button>
+            <div class="btn-group download">
+               <button class="btn btn-small" value="http://{{ api_root }}/collection/{{ collection_id }}">json</button>
+               <button class="btn btn-small" value="http://{{ api_root }}/collection/{{ collection_id }}.csv">csv</button>
+            </div>
          </div>
+         <div id="num-items"><span class="value"></span> items <a href="#">(expand all)</a></div>
 
       </div>
    </div>

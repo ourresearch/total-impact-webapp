@@ -202,41 +202,50 @@
    </script>
 
    <script id="zoomTable" type="text/html">
-      <table class="zoom">
-         <tr class="header"><th class="row-label"></th><th class="scholarly">scholarly</th><th class="general">general</th></tr>
-         {{#rows}}
-         <tr class="{{ name }}">
-            <td class="row-label">{{ engagementType }}</td>{{#cells}}
-            <td>
+      {{#audiences}}
+      <div class="audience {{ audience }}">
+         <!--<h5 >{{ audience }}</h5>-->
+         <ul class="engagement-types">{{#cells}}
+            <li class="engagement-type {{engagementType}}">
+               <h6>
+                  <span class="descr">
+                     <span class="engagement-type">{{engagementType}}</span> by
+                     <span class="audience">{{ audience }}</span>
+                  </span>
+               </h6>
                <ul class="metrics">{{#metrics}}
                   <li>
-                     <span class="numbers">
-                     <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
-                        <span class="metric-perc-range">
-                           <!-- if there are percentiles, show 'em; otherwise,
-                           show a "no percentiles" msg-->
-                           {{#percentileRangeStart}}
-                           <span class="median"><span class="value">{{percentileMedian}}</span></span>
-                           <!--<span class="error-margin"><span class="plus-minus">&plusmn;</span></span><span class="value">{{percentileErrorMargin}}</span></span>-->
-                           <span class="start"><span class="value">{{percentileRangeStart}}</span>-</span>
-                           <span class="end"><span class="value">{{percentileRangeEnd}}</span><span class="perc-symbol">%</span></span>
-                           {{/percentileRangeStart}}
-                           {{^percentileRangeStart}}
-                           <span class="no-perc">NA<span class="perc-symbol">%</span></span>
-                           {{/percentileRangeStart}}
+                     <div class="meta">
+                        <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
+                        <span class="value-and-name">
+                           <span class="metric-value value">{{ values.raw }}</span>
+                           <span class="metric-name">{{ static_meta.display_name }}</span>
                         </span>
-                        <a href="{{provenance_url}}" class="metric-value">total: <span class="value">{{ values.raw }}</span></a>
-                     </span>
-                     <span class="meta">
-                        <span class="metric-name">{{ static_meta.display_name }}</span>
-                     </span>
+                     </div>
+
+                     <div class="line">
+                        <!-- if we've got ranges, show 'em, along sizeable div to show range -->
+                        {{#percentileRangeStart}}
+                        <div class="metric-perc-range">
+                           <span class="start endpoint"><span class="value">{{percentileRangeStart}}</span></span>
+                           <span class="bar"></span>
+                           <span class="end endpoint"><span class="value">{{percentileRangeEnd}}</span></span>
+                        </div>
+                        {{/percentileRangeStart}}
+
+                        <!-- if no ranges, show an NA -->
+                        {{^percentileRangeStart}}
+                        <div class="percentile-fail">
+                              <span class="no-perc">no percentile data.</span>
+                        </div>
+                        {{/percentileRangeStart}}
+                     </div>
                   </li>
                   {{/metrics}}</ul>
-
-            </td>
-            {{/cells}}</tr>
-         {{/rows}}
-      </table>
+               </li>
+         {{/cells}}</ul>
+      </div>
+      {{/audiences}}
    </script>
 
 

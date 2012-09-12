@@ -4,24 +4,24 @@ function Item(dict, itemView) {
 
     // [<audience>, <engagement type>, <display level>]
     var metricInfo = {
-        "citeulike:bookmarks": ["scholarly", "saved", "glyph"],
-        "delicious:bookmarks": ["general", "saved", "glyph"],
-        "dryad:most_downloaded_file": ["scholarly", "viewed", "glyph"],
-        "dryad:package_views": ["scholarly", "viewed", "glyph"],
-        "dryad:total_downloads": ["scholarly", "viewed", "glyph"],
-        "facebook:shares":["general", "discussed", "glyph"],
-        "facebook:comments":["general", "discussed", "glyph"],
-        "facebook:likes":["general", "discussed", "glyph"],
-        "facebook:clicks":["general", "discussed", "glyph"],
-        "github:forks":["general", "cited", "glyph"],
-        "github:watchers":["general", "saved", "glyph"],
+        "citeulike:bookmarks": ["scholars", "saved", "glyph"],
+        "delicious:bookmarks": ["public", "saved", "glyph"],
+        "dryad:most_downloaded_file": ["scholars", "viewed", "glyph"],
+        "dryad:package_views": ["scholars", "viewed", "glyph"],
+        "dryad:total_downloads": ["scholars", "viewed", "glyph"],
+        "facebook:shares":["public", "discussed", "glyph"],
+        "facebook:comments":["public", "discussed", "glyph"],
+        "facebook:likes":["public", "discussed", "glyph"],
+        "facebook:clicks":["public", "discussed", "glyph"],
+        "github:forks":["public", "cited", "glyph"],
+        "github:watchers":["public", "saved", "glyph"],
         "mendeley:career_stage":["", "", 0],
         "mendeley:country":["", "", 0],
         "mendeley:discipline":["", "", 0],
-        "mendeley:student_readers":["scholarly", "saved", "zoom"],
-        "mendeley:developing_countries":["scholarly", "saved", "zoom"],
-        "mendeley:groups":["scholarly", "saved", "glyph"],
-        "mendeley:readers":["scholarly", "saved", "glyph"],
+        "mendeley:student_readers":["scholars", "saved", 0],
+        "mendeley:developing_countries":["scholars", "saved", 0],
+        "mendeley:groups":["scholars", "saved", "glyph"],
+        "mendeley:readers":["scholars", "saved", "glyph"],
         "plos:crossref": [],                    // figure it out
         "plos:html_views": [],                  // figure it out
         "plos:pdf_views": [],                   // figure it out
@@ -33,17 +33,17 @@ function Item(dict, itemView) {
         "plos:pmc_unique-ip": ["", "", 0],
         "plos:pubmed_central": ["", "", 0],
         "plos:scopus": [],                      // figure it out
-        "pubmed:f1000": ["scholarly", "rec'd", "glyph"],
-        "pubmed:pmc_citations": ["scholarly", "cited", "glyph"],
-        "pubmed:pmc_citations_editorials": ["scholarly", "rec'd", "zoom"],
-        "pubmed:pmc_citations_reviews": ["scholarly", "cited", "zoom"],
-        "slideshare:comments": ["general", "discussed"],
-        "slideshare:downloads": ["general", "viewed"],
-        "slideshare:favorites": ["general", "saved"],
-        "slideshare:views": ["general", "viewed"],
-        "topsy:influential_tweets": ["general", "discussed", "zoom"],
-        "topsy:tweets": ["general", "discussed", "glyph"],
-        "wikipedia:mentions": ["general", "cited", "glyph"]
+        "pubmed:f1000": ["scholars", "recommended", "glyph"],
+        "pubmed:pmc_citations": ["scholars", "cited", "glyph"],
+        "pubmed:pmc_citations_editorials": ["scholars", "recommended", "zoom"],
+        "pubmed:pmc_citations_reviews": ["scholars", "cited", "zoom"],
+        "slideshare:comments": ["public", "discussed"],
+        "slideshare:downloads": ["public", "viewed"],
+        "slideshare:favorites": ["public", "saved"],
+        "slideshare:views": ["public", "viewed"],
+        "topsy:influential_tweets": ["public", "discussed", "zoom"],
+        "topsy:tweets": ["public", "discussed", "glyph"],
+        "wikipedia:mentions": ["public", "cited", "glyph"]
     }
 
 
@@ -74,11 +74,8 @@ function Item(dict, itemView) {
         }
 
         var engagementTable = {
-            "viewed": {"scholarly":[], "general": []},
-            "discussed": {"scholarly":[], "general": []},
-            "saved": {"scholarly":[], "general": []},
-            "cited": {"scholarly":[], "general": []},
-            "rec'd": {"scholarly":[], "general": []}
+            "scholars": {"viewed": [], "discussed": [], "saved": [], "cited": [], "recommended": []},
+            "public": {"viewed": [], "discussed": [], "saved": [], "cited": [], "recommended": []}
         }
 
         // make the table
@@ -102,29 +99,31 @@ function Item(dict, itemView) {
                 metric.percentileErrorMargin = (metric.percentileRangeEnd - metric.percentileRangeStart) / 2
             }
 
-            console.log(engagementType)
-            engagementTable[engagementType][audience].push(metric)
+            engagementTable[audience][engagementType].push(metric)
         }
 
         // convert the engagement table from a nested hashes to nested arrays
+        // mostly because mustache.js needs it this way. should probably break this
+        // but out as a method.
         ret = []
         for (var rowName in engagementTable) {
-            var row = {engagementType: rowName, cells: [] }
+            var row = {audience: rowName, cells: [] }
             for (colName in engagementTable[rowName]) {
                 var cell = engagementTable[rowName][colName]
+
+                if (!cell.length) continue // we don't do anything with empty cells
+
                 cellContents = {
                     metrics: cell,
-                    score: this.getCellScore(cell)
+                    score: this.getCellScore(cell),
+                    engagementType: colName,
+                    audience: rowName // because mustache can't access parent context
                 }
                 row.cells.push(cellContents)
             }
             ret.push(row)
         }
-        ret.reverse()
-        return {"rows": ret}
-
-        console.log(ret)
-        return ret
+        return {"audiences": ret}
     }
 
     this.get_mendeley_percent = function(metricDict, key_substring) {
@@ -291,19 +290,43 @@ function ItemView() {
         return glyph$
     }
 
+    this.findBarLabelOffsets = function(start, end) {
+
+    }
+
     this.renderZoom = function(engagementTable) {
         var zoom$ = $(ich.zoomTable(engagementTable, true))
-        zoom$.find("span.metric-perc-range span.median").each(function(){
-            var value = $(this).text()
-            if ($(this).parents("tr").hasClass("scholarly")) {
+        zoom$.find("div.metric-perc-range").each(function(){
+
+            // where does the bar go?
+            var startValue = $(this).find("span.start span.value").text()
+            var endValue = $(this).find("span.end span.value").text()
+
+            var startNumberOffset = 0
+            if (startValue - 80 > 0) var startNumberOffset = (startValue - 80) * -1
+
+            var endNumberOffset = 0
+            if (20 - endValue >  0) var endNumberOffset = (10 - endValue) * -1
+
+            // what color do we use?
+            if ($(this).parents("tr").hasClass("scholars")) {
                 var happyColor = "#ff4300"
             }
             else {
                 var happyColor = "#1a78e1"
             }
 
-            var newColor = $.Color("#555555").transition(happyColor, value*.01).toHexString()
-            $(this).parent().parent().find("span.value").css("color", newColor)
+//            var newColor = $.Color("#555555").transition(happyColor, value*.01).toHexString()
+
+
+            $(this).css(
+                {
+                    "margin-left":startValue+"%",
+                    "margin-right":(100 - endValue)+"%"
+                })
+                .find("span.endpoint.start").css("left", startNumberOffset+"px")
+                .end()
+                .find("span.endpoint.end").css("right", endNumberOffset+"px")
         })
         return zoom$
     }

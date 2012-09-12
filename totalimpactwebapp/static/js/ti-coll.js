@@ -63,11 +63,7 @@ function CollViews() {
     this.finishUpdating = function(items){
         $("#page-header img").remove()
 
-        $("#num-items").remove();
-        $("<span id='num-items'>"+items.length+" items</span>")
-            .hide()
-            .insertAfter("#report-button")
-            .show();
+        $("#num-items span.value").text(items.length)
         $("img.loading").remove()
     }
     this.render = function(itemObjsDict) {
@@ -94,9 +90,25 @@ function CollController(coll, collViews) {
     }
 
 
+    // the report controls
     $("#update-report-button").click(function(){
         coll.update();
         return false;
     })
+    $("div.btn-group.download button").click(function(){
+        console.log("click")
+        location.href = $(this).val()
+    })
+    $("div#num-items a").toggle(
+        function(){
+            $(this).html("(collapse all)")
+            $("li.item").toggleClass("zoomed").find("div.zoom").show()
+        },
+        function(){
+            $(this).html("(expand all)")
+            $("li.item").toggleClass("zoomed").find("div.zoom").hide()
+        }
+    )
+
 
 }

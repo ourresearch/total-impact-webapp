@@ -19,67 +19,41 @@
   margin: -102px 90px 0 0;
   float: right;
 }
-#report-meta span#num-items {
+#report-meta div#num-items {
   color: white;
   padding-top: 41px;
   display: block;
   float: right;
   padding-right: 11px;
+  font-size: 14px;
 }
-div#report-info {
-  float: left;
-  font-size: 12px;
-  padding-top: 5px;
+#report-meta div#num-items span.value {
+  font-weight: bold;
+  font-size: 16px;
 }
-#report-info span.badge {
-  margin-left: 5px;
+#report-meta div#num-items a {
+  color: #fff;
 }
-div#report-button {
+#report-meta div#num-items a:hover {
+  color: #fff;
+}
+#report-meta div#report-button {
+  width: 155px;
   float: right;
   margin-top: 37px;
 }
-span.report-button a {
-  margin-right: 5px;
+#report-meta div#report-button div.download {
+  margin-left: 10px;
+  float: left;
+}
+#report-meta div#report-button button {
   margin-bottom: 5px;
-  background: #ddd;
-  padding: 4px 11px;
-  -webkit-border-radius: 15px;
-  /* CSS3 rounded borders for Safari                    */
-
-  -moz-border-radius: 15px;
-  /* CSS3 rounded borders for Firefox                   */
-
-  text-shadow: 0 1px 0px #fff;
-  border-radius: 15px;
-  text-decoration: none;
-  color: #555;
   display: block;
   float: left;
 }
-span.report-button a.report-button-left {
-  margin-right: 0;
-  padding-right: 5px;
-  -moz-border-radius-topright: 0;
-  -webkit-border-top-right-radius: 0;
-  -moz-border-radius-bottomright: 0;
-  -webkit-border-bottom-right-radius: 0;
-}
-span.report-button a.report-button-right {
-  margin-left: 0;
-  padding-left: 5px;
-  -moz-border-radius-topleft: 0;
-  -webkit-border-top-left-radius: 0;
-  -moz-border-radius-bottomleft: 0;
-  -webkit-border-bottom-left-radius: 0;
-}
-span.report-button a:hover {
-  background: #ccc;
-  color: #000;
-  text-decoration: none;
-}
-#share {
+#report-meta #share {
   float: right;
-  margin: 42px 0 0 15px;
+  margin: 42px 0 0 0;
   width: 80px;
 }
 p.something-missing {
@@ -123,6 +97,7 @@ div#metrics h3 {
   font-family: rokkitt, georgia, serif;
   font-size: 35px;
   color: #ff4e00;
+  clear: both;
   font-weight: bold;
 }
 div#metrics div.genre {
@@ -130,6 +105,7 @@ div#metrics div.genre {
 }
 li.item {
   margin-bottom: 10px;
+  clear: both;
 }
 li.item.zoomed {
   margin-bottom: 100px;
@@ -139,20 +115,19 @@ li.item.zoomed div.biblio h5 span.title {
 }
 li.item div.glyph {
   float: left;
-  margin: 3px 7px 0 0;
   cursor: pointer;
 }
 li.item div.glyph ul.glyph {
   width: 50px;
 }
-li.item div.glyph ul.glyph li.scholarly li {
+li.item div.glyph ul.glyph li.scholars li {
   margin-bottom: 1px;
   bottom: 0;
 }
-li.item div.glyph ul.glyph li.scholarly li span.value {
-  background: #ff4e00;
+li.item div.glyph ul.glyph li.scholars li span.value {
+  background: #377eb8;
 }
-li.item div.glyph ul.glyph li.general span.value {
+li.item div.glyph ul.glyph li.public span.value {
   background: #1a78e1;
   top: 0;
 }
@@ -222,291 +197,121 @@ li.item div.biblio span.repo,
 li.item div.biblio span.descr {
   font-size: 12px;
   color: #888;
+  line-height: 1.4;
 }
 li.item div.biblio span.repo {
   font-style: italic;
 }
+li.item div.zoom {
+  float: left;
+  margin-bottom: 50px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  border-top: 1px solid #eee;
+}
 li.item div.zoom span.value {
   font-weight: bold;
 }
-li.item div.zoom table {
-  margin-top: 5px;
-  width: 100%;
-}
-li.item div.zoom table tr.scholarly td.row-label {
-  color: #ff4e00;
-}
-li.item div.zoom table tr.general td.row-label {
-  color: #0053b0;
-}
-li.item div.zoom table tr .row-label {
-  width: 10%;
-  font-family: rokkitt, georgia, serif;
-  font-size: 22px;
-  color: #888;
-}
-li.item div.zoom table tr th {
-  width: 18%;
-  font-size: 14px;
-  font-weight: normal;
-  text-align: left;
-  padding-left: 10px;
-  background: #888;
-  border-left: 1px solid #fff;
-}
-li.item div.zoom table tr td {
-  padding: 5px;
-  vertical-align: top;
-}
-li.item div.zoom table tr td ul.metrics li {
+li.item div.zoom div.audience {
+  width: 370px;
   float: left;
-  width: 100%;
-  margin: 0 0 15px 0;
 }
-li.item div.zoom table tr td ul.metrics li img {
-  float: left;
-  margin: 2px 7px 0 0;
+li.item div.zoom div.audience.scholars {
+  margin-right: 50px;
 }
-li.item div.zoom table tr td ul.metrics li span.numbers {
-  float: left;
-  margin-right: 2px;
-  font-size: 16px;
+li.item div.zoom div.audience.scholars span.bar {
+  background: #377eb8;
+}
+li.item div.zoom div.audience.scholars h6 {
+  color: #377eb8;
+}
+li.item div.zoom div.audience.public span.bar {
+  background: #4daf4a;
+}
+li.item div.zoom div.audience.public h6 {
+  color: #4daf4a;
+}
+li.item div.zoom div.audience h5 {
+  margin-bottom: 0;
+  margin-left: 162px;
   color: #555;
-  display: block;
 }
-li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.perc-symbol {
-  font-size: 14px;
-  margin-left: 2px;
+li.item div.zoom div.audience h5:after {
+  content: " audience";
 }
-li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.median {
-  display: none;
-}
-li.item div.zoom table tr td ul.metrics li span.numbers span.metric-perc-range span.no-perc {
-  color: #999;
-  padding: 0 5px;
-}
-li.item div.zoom table tr td ul.metrics li span.numbers a.metric-value {
-  display: block;
-  margin-top: -1px;
+li.item div.zoom div.audience ul.engagement-types li.engagement-type {
+  margin-bottom: 25px;
   float: left;
-  clear: left;
-  font-size: 12px;
-  white-space: nowrap;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type h6 {
+  font-weight: normal;
+  font-size: 13px;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type h6 span.engagement-type {
+  font-weight: bold;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li {
+  float: left;
+  width: 100%;
+  margin: 0 0 5px 0;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line {
+  width: 250px;
+  height: 16px;
+  margin-top: -6px;
+  border-bottom: 1px solid #bbb;
+  float: left;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.percentile-fail {
   color: #999;
-  padding-right: 16px;
-  background: url(../img/linkout-icon.png);
-  background-repeat: no-repeat;
-  background-position: right 4px;
+  font-size: 11px;
+  margin-top: 6px;
+  background: #fff;
 }
-li.item div.zoom table tr td ul.metrics li span.numbers a.metric-value:hover {
-  background-position: right -20px;
-  color: #ff4e00;
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.percentile-fail span {
+  text-align: left;
+  padding: 0 4px;
 }
-li.item div.zoom table tr td ul.metrics li span.meta {
-  width: 45%;
-  display: inline-block;
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range {
+  position: relative;
 }
-li.item div.zoom table tr td ul.metrics li span.meta span.metric-name {
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.bar {
+  height: 5px;
+  margin-top: 12px;
+  display: block;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint {
+  font-size: 10px;
+  display: block;
+  position: absolute;
+  top: 2px;
+  color: #999;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
+  left: 0;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.end {
+  right: 0;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta {
+  width: 100px;
+  margin-right: 10px;
+  float: left;
+  display: block;
+  text-align: right;
   font-size: 11px;
   color: #555;
-  line-height: 1.4;
-  display: block;
 }
-/*
-li.item {
-    border: 0 solid #CCCCCC;
-    clear: left;
-    list-style-type: none;
-    margin: 0 auto 1em;
-    width: 1100px;
-    min-height: 4em;
-    position: relative;
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta span.value-and-name {
+  width: 130px;
+  display: inline-block;
+  width: 75px;
+  line-height: 1.3;
+  margin-right: 5px;
 }
-
-a.item-delete-button {
-    left:-50px;
-    width: 50px;
-    height: 50px;
-    color: red;
-    display:block;
-    position: absolute;
-    padding:2px;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    font-size:12px;
-    display:none;
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta span.value-and-name span.value {
+  font-weight: normal;
 }
-a.item-delete-button:hover {
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta img {
+  float: right;
 }
-
-
-li.item h4 {
-    font-weight: normal;
-    margin:0;
-    color: #AAA;
-    font-size : 12px;
-}
-
-li.item span.repo, li.item span.genre {
-    color: #aaa;
-    font-size:12px;
-    margin-left: 5px;
-}
-li.item span.genre {
-    margin-left:0;
-}
-
-li.item a.showhide {
-    width:50px;
-    font-weight: bold;
-    font-size:12px;
-    color: #fff;
-    background: #777;
-    padding: 2px 8px;
-}
-li.item a.showhide:hover{
-    background: #FF4E00;
-    text-decoration: none;
-}
-
-div.genre h3 {
-    font-family: rokkitt, georgia, serif;
-    font-size:35px;
-    color:#555;
-    font-weight:bold;
-    margin:20px 0 0 155px;
-    padding: 0 24px 10px 120px;
-    width: 1100px;
-    margin:0 auto;
-}
-
-
-div.genre {
-    float:left;
-    width:100%;
-    padding:0 0 30px;
-    background-color:#fff;
-    display:none
-}
-div.genre ul {
-    padding:0;
-    margin:0;
-}
-div.genre:first-child {
-}
-div.genre:first-child h3 {
-    border-bottom:none;
-}
-div.genre:last-child {
-    background-image:none;
-    border-bottom:none;
-}
-
-
-div.genre ul.artifact-list {
-    padding:30px 0 0;
-    width:100%;
-    float:left;
-    margin:0;
-}
-ul.metrics li, ul.biblio li, ul.about li{
-    list-style-type:none;
-}
-div.biblio {
-    width:350px;
-    float:left;
-    margin:2px 0 0 -50px;
-    padding:0 10px 0 50px;
-    color:#222;
-    font-size: 14px;
-}
-
-div.biblio h5 {
-    display: inline;
-    font-size:1em;
-}
-
-div.biblio span.year {
-    color:#aaa;
-}
-
-div.biblio span.year:before {
-    content:"(";
-}
-div.biblio span.year:after {
-    content:")";
-}
-
-span.missing.biblio {
-    font-size:12px;
-}
-span.missing {
-    font-style:italic;
-    color:#333;
-}
-ul.biblio span.meta-repo {
-    font-size:70%;
-    font-style: italic;
-}
-ul.metrics {
-    margin-left: 365px;
-}
-ul.metrics li, ul.metrics span.missing {
-    text-align:right;
-    margin-right: 12px;
-}
-
-ul.metrics a {
-    text-align:center;
-}
-
-ul.metrics span.last-update {
-    display:none;
-}
-
-ul.metrics span.metric-value {
-    font-weight: bold;
-    list-style-type:none;
-    padding:0 5px;
-    margin-bottom: 2px;
-    border-radius: 3px;
-    display:block;
-}
-ul.metrics a:hover {
-    text-decoration: none;
-}
-ul.metrics a:hover span.metric-value {
-    background: #FF4E00;
-    color:#fff;
-}
-ul.metrics li:hover span.metric-name {
-    color:#FF4E00;
-}
-.metric-name {
-   line-height: 1.2;
-    color: #aaa;
-    font-size: 9px;
-    width: 43px;
-    margin: 7px auto 0;
-}
-span.meta-doi {
-    display: none;
-}
-
-ul.source-list {
-    padding: 0;
-}
-
-span.metric-name-img {
-    margin: 4px 3px;
-}
-
-span.metric-name-img img {
-    margin: 0 auto;
-}
-
-.metric-img-name {
-    display:block;
-}
-
-*/
