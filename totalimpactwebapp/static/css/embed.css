@@ -4,6 +4,9 @@
   height: 100%;
   padding-bottom: 0;
 }
+#ti-data .metric-img-name {
+  display: block;
+}
 #ti-data a {
   color: #FF4E00;
   cursor: pointer;
@@ -83,9 +86,6 @@
   margin: 0 auto;
   display: block;
 }
-#ti-data .metric-img-name {
-  display: block;
-}
 #ti-data li.item {
   border: 0 solid #CCCCCC;
   clear: left;
@@ -108,4 +108,8 @@
 }
 #ti-data li.item span.genre {
   margin-left: 0;
+}
+#ti-data img#ti-loading {
+  height: 25px;
+  margin-bottom: -6px;
 }
