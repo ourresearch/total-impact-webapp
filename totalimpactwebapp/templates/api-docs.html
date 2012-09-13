@@ -35,12 +35,12 @@
             <p>If the embed code described above doesn't meet your needs, you can use our api directly.  The total-impact webapp itself is built directly on top of this api. </p>
 
             <ul>
-                <!--li>api root is at http://api.total-impact.org</li-->
-                <li>api calls return JSON</li>
-                <li>api calls return return 500 in case of internal error</li>
-                <li>Cross-Origin Resource Sharing (CORS) is enabled</li>    
+                <li>- api root is at http://api.total-impact.org</li>
+                <li>- api calls return JSON</li>
+                <li>- api calls return return 500 in case of internal error</li>
+                <li>- Cross-Origin Resource Sharing (CORS) is enabled</li>    
                 <!--li>please pass in email=YOUREMAIL to all requests</li-->
-                <li>after an item has been assigned a total-impact id (tiid), total-impact will periodically update its metric values.</li>
+                <li>- after an item has been assigned a total-impact id (tiid), total-impact will periodically update its metric values.</li>
             </ul>
 
             <p>Here are the API methods:</p>
@@ -69,7 +69,7 @@ curl -i -X GET http://api.total-impact.org
 
         </div>
 
-        <h3 class="apicall">POST /tiid/:namespace/:namespaceid</h3>
+        <h3 class="apicall">POST /item/:namespace/:namespaceid</h3>
         <div class="description">
             Assign a total-impact ID (tiid) to an item if it doesn't have one yet.  Returns the assigned tiid.
 
@@ -79,10 +79,10 @@ curl -i -X GET http://api.total-impact.org
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X POST -H "Content-Type: application/json" -d '{}' http://api.total-impact.org/tiid/doi/10.1371/journal.pcbi.1000361
+curl -i -X POST -H "Content-Type: application/json" -d '{}' http://api.total-impact.org/item/doi/10.1371/journal.pcbi.1000361
 
 
-"0df8aa0eb2c911e19e181231381b0f5a"
+"1b2f4fc2bea711e1bdf912313d1a5e63"
                 </pre></div>
         </div>
 
@@ -104,7 +104,7 @@ curl -i -X POST -H "Content-Type: application/json" -d '{}' http://api.total-imp
 curl -i -X GET http://api.total-impact.org/tiid/doi/10.1371/journal.pcbi.1000361
 
 
-"0df8aa0eb2c911e19e181231381b0f5a"
+"1b2f4fc2bea711e1bdf912313d1a5e63"
                 </pre></div>
         </div>
 
@@ -124,104 +124,69 @@ curl -i -X GET http://api.total-impact.org/tiid/doi/10.1371/journal.pcbi.1000361
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://api.total-impact.org/item/0df8aa0eb2c911e19e181231381b0f5a
-
+curl -i -X GET http://api.total-impact.org/item/1b2f4fc2bea711e1bdf912313d1a5e63
 
 {
+    "_id": "1b2f4fc2bea711e1bdf912313d1a5e63",
+    "_rev": "251-ddcc8266fa0c9a61035a270ce0c67c84",
     "aliases": {
-        "created": "2012-06-10T06:53:59.039734", 
+        "created": "2012-06-25T09:21:12.272747",
         "doi": [
             "10.1371/journal.pcbi.1000361"
-        ], 
-        "last_modified": "2012-06-15T09:51:44.322086", 
+        ],
+        "last_modified": "2012-07-29T02:00:34.889973",
         "title": [
             "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article"
-        ], 
+        ],
         "url": [
-            "http://dx.doi.org/10.1371/journal.pcbi.1000361", 
-            "http://dx.plos.org/10.1371/journal.pcbi.1000361"
+            "http://www.ncbi.nlm.nih.gov/pubmed/19381256",
+            "http://dx.plos.org/10.1371/journal.pcbi.1000361",
+            "http://dx.doi.org/10.1371/journal.pcbi.1000361"
         ]
-    }, 
+    },
     "biblio": {
-        "authors": "Shotton, Portwin, Klyne, Miles", 
-        "genre": "article", 
-        "h1": "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a\n               Research Article", 
-        "journal": "PLoS Computational Biology", 
-        "title": "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article", 
+        "authors": "Shotton, Portwin, Klyne, Miles",
+        "genre": "article",
+        "h1": "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article",
+        "journal": "PLoS Comput Biol",
+        "title": "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article",
         "year": 2009
-    }, 
-    "created": "2012-06-10T06:53:59.039711", 
-    "id": "0df8aa0eb2c911e19e181231381b0f5a", 
-    "last_modified": "2012-06-10T06:53:59.039711", 
+    },
+    "created": "2012-06-25T09:21:12.272733",
+    "currently_updating": false,
+    "last_modified": "2012-06-25T09:21:12.272733",
     "metrics": {
         "citeulike:bookmarks": {
-            "provenance_url": "http://www.citeulike.org/doi/10.1371/journal.pcbi.1000361", 
+            "provenance_url": "http://www.citeulike.org/doi/10.1371/journal.pcbi.1000361",
             "static_meta": {
-                "description": "Number of users who have bookmarked this item.", 
-                "display_name": "bookmarks", 
-                "icon": "http://citeulike.org/favicon.ico", 
-                "provider": "CiteULike", 
+                "description": "Number of users who have bookmarked this item.",
+                "display_name": "bookmarks",
+                "icon": "http://citeulike.org/favicon.ico",
+                "provider": "CiteULike",
                 "provider_url": "http://www.citeulike.org/"
-            }, 
+            },
             "values": {
-                "2012-06-15T06:32:33.837934": 60
+                "nih": [
+                    91,
+                    99
+                ],
+                "raw": 59
             }
-        }, 
-        "mendeley:groups": {
-            "provenance_url": "http://api.mendeley.com/research/snps-prescriptions-predict-drug-response/", 
+        },
+        "delicious:bookmarks": {
+            "provenance_url": "http://www.delicious.com/url/5c760b706cde2538e558e8643da51ac4",
             "static_meta": {
-                "description": "The number of groups who have added the article to their libraries", 
-                "display_name": "groups", 
-                "icon": "http://www.mendeley.com/favicon.ico", 
-                "provider": "Mendeley", 
-                "provider_url": "http://www.mendeley.com/"
-            }, 
+                "description": "The number of bookmarks to this artifact (maximum=100).",
+                "display_name": "bookmarks",
+                "icon": "http://www.delicious.com/favicon.ico",
+                "provider": "Delicious",
+                "provider_url": "http://www.delicious.com/"
+            },
             "values": {
-                "2012-06-15T06:32:33.761749": 5
+                "raw": 1
             }
-        }, 
-        "mendeley:readers": {
-            "provenance_url": "http://api.mendeley.com/research/snps-prescriptions-predict-drug-response/", 
-            "static_meta": {
-                "description": "The number of readers who have added the article to their libraries", 
-                "display_name": "readers", 
-                "icon": "http://www.mendeley.com/favicon.ico", 
-                "provider": "Mendeley", 
-                "provider_url": "http://www.mendeley.com/"
-            }, 
-            "values": {
-                "2012-06-15T06:32:33.897130": 52
-            }
-        }, 
-        "plosalm:html_views": {
-            "provenance_url": "http://www.plosreports.org/services/rest?method=usage.stats&doi=10.1371/journal.pcbi.1000361", 
-            "static_meta": {
-                "description": "the number of views of the PLoS HTML article", 
-                "display_name": "html views", 
-                "icon": "http://a0.twimg.com/profile_images/67542107/Globe_normal.jpg", 
-                "provider": "PLoS", 
-                "provider_url": "http://www.plos.org/"
-            }, 
-            "values": {
-                "2012-06-15T06:32:54.924743": 11558
-            }
-        }, 
+        },
 ...
-        "wikipedia:mentions": {
-            "provenance_url": "http://en.wikipedia.org/wiki/Special:Search?search='10.1371/journal.pcbi.1000361'&go=Go", 
-            "static_meta": {
-                "description": "The number of Wikipedia articles that mentioned this object.", 
-                "display_name": "mentions", 
-                "icon": "http://wikipedia.org/favicon.ico", 
-                "provider": "Wikipedia", 
-                "provider_url": "http://www.wikipedia.org/"
-            }, 
-            "values": {
-                "2012-06-15T06:32:33.183823": 1
-            }
-        }
-    }, 
-    "type": "item"
 }
                 </pre></div>
         </div>
@@ -235,12 +200,13 @@ curl -i -X GET http://api.total-impact.org/item/0df8aa0eb2c911e19e181231381b0f5a
 
             <h4>input data</h4>
             {
-            items:[ [tiid1,tii2,...],
-            title: "My Collection"
+            aliases:[ ["namespace1", "id1"], ["namespace1", "id2"], ...]
+            title: "My Collection",
+            owner:{}
             }
 
             <h4>returns</h4>
-            The collection id
+            The collection header information
 
             <h4>errors</h4>
             <ul>
@@ -250,19 +216,27 @@ curl -i -X GET http://api.total-impact.org/item/0df8aa0eb2c911e19e181231381b0f5a
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":["ec698118b33311e1bfcd12313d2a0ee9","0df8aa0eb2c911e19e181231381b0f5a"],"title":"My Collection"}' http://api.total-impact.org/collection
+curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"owner":{},"aliases":[["doi","10.1371/journal.pcbi.1000361"],["url","http://total-impact.org"]],"title":"My Collection"}' http://api.total-impact.org/collection
 
 {
-    "created": "2012-06-17T01:05:23.444710", 
-    "id": "8lr01n", 
-    "item_tiids": [
-        "ec698118b33311e1bfcd12313d2a0ee9", 
-        "0df8aa0eb2c911e19e181231381b0f5a"
-    ], 
-    "last_modified": "2012-06-17T01:05:23.444710", 
-    "title": "My Collection", 
-    "type": "collection"
+    "collection": {
+        "_id": "yebmnf",
+        "_rev": "1-3c06eefb6ede0fe29129307fd227bca9",
+        "alias_tiids": {
+            "doi:10.1371/journal.pcbi.1000361": "1b2f4fc2bea711e1bdf912313d1a5e63",
+            "url:http://total-impact.org": "891z0a8meckia5v42ggzm8fy"
+        },
+        "created": "2012-09-06T13:09:05.714115",
+        "ip_address": "96.49.208.194",
+        "key_hash": "sha1$u2xjszDU$95cb28b326afe47726d51d3c59bc7469e0e4c814",
+        "last_modified": "2012-09-06T13:09:05.714115",
+        "owner": {},
+        "title": "My Collection",
+        "type": "collection"
+    },
+    "key": "ekjpt55agtzy10441yv7nh302"
 }
+
                 </pre></div>
         </div>
 
@@ -271,7 +245,7 @@ curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":[
             Get the items and metadata associated with a given collection
 
             <h4>returns</h4>
-            A collection object, which includes both collection metadata and a list of items in the collection
+            A collection object, which includes both collection metadata and the items in the collection
            (pass <code>include_items=false</code> to leave the items out).
             Format is json by default, but appending <code>.csv</code> returns a csv file, with one row per item.
 
@@ -286,20 +260,47 @@ curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":[
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://api.total-impact.org/collection/8iwgwi
+curl -i -X GET http://api.total-impact.org/collection/kn5auf
 
 
 {
-    "created": "2012-06-17T00:22:43.484154", 
-    "id": "24c2d58eb81411e180fe1231381b0711", 
+    "_id": "kn5auf",
+    "_rev": "8-69fdd2a34464f0ca9d02748ef057b1e8",
+    "created": "2012-06-25T09:21:12.673503",
     "items": [
-        {tiid: "aiekcjvls86s3lkf29slk", "created": "2012-06-17T00:22:33.", ...},
-        {tiid: "abbkikjfj49ijfllkjoas", "created": "2012-06-17T00:22:32.", ...}
-    ],
-    "last_modified": "2012-06-17T00:22:43.484154", 
-    "title": "My Collection", 
-    "type": "collection"
-}
+        {
+            "_id": "dr3nrhlex36g9xy4idyn7v3f",
+            "_rev": "164-9631084108ed21dc56fa0e26b6a91fe6",
+            "aliases": {
+                "doi": [
+                    "10.1371/journal.pbio.1000056"
+                ],
+                "pmid": [
+                    "19278298"
+                ],
+                "title": [
+                    "Amazonian Amphibian Diversity Is Primarily Derived from Late Miocene Andean Lineages"
+                ],
+                "url": [
+                    "http://biology.plosjournals.org/perlserv/?request=get-document&doi=10.1371%2Fjournal.pbio.1000056",
+                    "http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2653552&tool=pmcentrez&rendertype=abstract",
+                    "http://www.ncbi.nlm.nih.gov/pubmed/19278298"
+                ]
+            },
+            "biblio": {
+                "authors": "Santos, Coloma, Summers, Caldwell, Ree, Cannatella",
+                "genre": "article",
+                "journal": "Plos Biol",
+                "title": "Amazonian Amphibian Diversity Is Primarily Derived from Late Miocene Andean Lineages",
+                "year": 2009
+            },
+            "created": "2012-08-02T14:56:14.151655",
+            "currently_updating": false,
+            "last_modified": "2012-08-02T14:56:14.151655",
+            "metrics": {
+                "mendeley:career_stage": {
+...
+
                 </pre></div>
         </div>
 
