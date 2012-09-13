@@ -69,7 +69,6 @@ function CollViews() {
     this.render = function(itemObjsDict) {
         $("ul#items").empty()
         console.log("looking through the item objects")
-        console.log(itemObjsDict)
         for (var tiid in itemObjsDict){
             // make the set of all newly-rendered items
             // this is a very slow way to do this...should bundle together,
@@ -102,11 +101,11 @@ function CollController(coll, collViews) {
     $("div#num-items a").toggle(
         function(){
             $(this).html("(collapse all)")
-            $("li.item").toggleClass("zoomed").find("div.zoom").show()
+            $("li.item").addClass("zoomed").find("div.zoom").show()
         },
         function(){
             $(this).html("(expand all)")
-            $("li.item").toggleClass("zoomed").find("div.zoom").hide()
+            $("li.item").removeClass("zoomed").find("div.zoom").hide()
         }
     )
 

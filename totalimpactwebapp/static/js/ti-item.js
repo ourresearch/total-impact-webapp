@@ -67,11 +67,7 @@ function Item(dict, itemView) {
         }
     }
 
-    this.makeEngagementTable = function(dict, metricInfo, normRefSetName){
-
-        if (typeof normRefSetName == "undefined") {
-            normRefSetName = "nih"
-        }
+    this.makeEngagementTable = function(dict, metricInfo){
 
         var engagementTable = {
             "scholars": {"viewed": [], "discussed": [], "saved": [], "cited": [], "recommended": []},
@@ -89,15 +85,6 @@ function Item(dict, itemView) {
 
             var metric = this.dict.metrics[metricName]
             metric.display = display
-
-            // setup the percentage range, based on the reference set we're to cited
-            if (metric.values[normRefSetName]) {
-                metric.hasPercentiles = true
-                metric.percentileRangeStart = metric.values[normRefSetName][0]
-                metric.percentileRangeEnd = metric.values[normRefSetName][1]
-                metric.percentileMedian = (metric.percentileRangeEnd + metric.percentileRangeStart) / 2
-                metric.percentileErrorMargin = (metric.percentileRangeEnd - metric.percentileRangeStart) / 2
-            }
 
             engagementTable[audience][engagementType].push(metric)
         }
@@ -125,6 +112,38 @@ function Item(dict, itemView) {
         }
         return {"audiences": ret}
     }
+
+    this.makeAwards = function(engagementTable) {
+        var awards = []
+        for (var i=0; i < engagementTable.audiences.length; i++) {
+            var row = engagementTable.audiences[i]
+
+            for (var j=0; j < row.cells.length; j++) {
+                var cell = row.cells[j]
+
+                for (var k=0; k < cell.metrics.length; k++) {
+                    var metric = cell.metrics[k]
+
+                    if (metric.percentiles === undefined) {
+                        continue
+                    }
+                    else {
+                        if (metric.percentiles.CI95_lower > 50) {
+                            var award = {
+                                audience: row.audience,
+                                engagementType:cell.engagementType,
+                                metric: metric
+                            }
+                            awards.push(award)
+                        }
+                    }
+
+                }
+            }
+        }
+        return awards
+    }
+
 
     this.get_mendeley_percent = function(metricDict, key_substring) {
 
@@ -213,6 +232,13 @@ function Item(dict, itemView) {
         return(metricsDict)
     }
 
+    this.getMetricPercentiles = function(metricsDict, normRefSetName) {
+        for (var metricName in metricsDict) {
+            metricsDict[metricName].percentiles = metricsDict[metricName].values[normRefSetName]
+        }
+        return metricsDict
+    }
+
     this.fixPlosMetricName = function(metricsDict) {
         // sometime plos metrics have "plos:" in front, sometimes "plosalm:". ick.
         for(var metricName in metricsDict){
@@ -227,11 +253,18 @@ function Item(dict, itemView) {
 
 
 
+
+
+
     // constructor
     this.dict = dict
+    this.dict.metrics = this.getMetricPercentiles(this.dict.metrics, "nih")
     this.dict.metrics = this.fixPlosMetricName(this.dict.metrics)
     this.dict.metrics = this.add_derived_metrics(this.dict.metrics)
     this.dict.engagementTable = this.makeEngagementTable(this.dict, metricInfo)
+    this.awards = this.makeAwards(dict.engagementTable)
+    console.log(this.awards)
+
     this.itemView = itemView
 
 
@@ -291,42 +324,33 @@ function ItemView() {
     }
 
     this.findBarLabelOffsets = function(start, end) {
+        var maxWidth = 20
+        // fix the numbers overlapping when the range is too narrow
+        //only works on the ends...not ideal
+        var startNumberOffset = 0
+        if (startValue - 80 > 0) var startNumberOffset = (startValue - 80) * -1
 
+        var endNumberOffset = 0
+        if (20 - endValue >  0) var endNumberOffset = (10 - endValue) * -1
     }
+
 
     this.renderZoom = function(engagementTable) {
         var zoom$ = $(ich.zoomTable(engagementTable, true))
-        zoom$.find("div.metric-perc-range").each(function(){
+        zoom$.find("div.metric-perc-range.ci").each(function(){
 
             // where does the bar go?
-            var startValue = $(this).find("span.start span.value").text()
-            var endValue = $(this).find("span.end span.value").text()
-
-            var startNumberOffset = 0
-            if (startValue - 80 > 0) var startNumberOffset = (startValue - 80) * -1
-
-            var endNumberOffset = 0
-            if (20 - endValue >  0) var endNumberOffset = (10 - endValue) * -1
-
-            // what color do we use?
-            if ($(this).parents("tr").hasClass("scholars")) {
-                var happyColor = "#ff4300"
-            }
-            else {
-                var happyColor = "#1a78e1"
-            }
-
-//            var newColor = $.Color("#555555").transition(happyColor, value*.01).toHexString()
-
+            var ciStartValue = $(this).find("span.endpoint.start span.value").text()
+            var ciEndValue = $(this).find("span.endpoint.end span.value").text()
 
             $(this).css(
                 {
-                    "margin-left":startValue+"%",
-                    "margin-right":(100 - endValue)+"%"
+                    "margin-left":ciStartValue+"%",
+                    "margin-right":(100 - ciEndValue)+"%"
                 })
-                .find("span.endpoint.start").css("left", startNumberOffset+"px")
+                .find("span.endpoint.start").css("left", 0+"px")
                 .end()
-                .find("span.endpoint.end").css("right", endNumberOffset+"px")
+                .find("span.endpoint.end").css("right", 0+"px")
         })
         return zoom$
     }
@@ -361,10 +385,10 @@ function ItemView() {
 
         item$.find("div.glyph, div.biblio").click(function(){
             $(this)
-                .parents("li.item")
-                .toggleClass("zoomed")
-                .find("div.zoom")
-                .slideToggle(500)
+                .siblings("div.zoom")
+                .slideToggle(500, function(){
+                                             $(this).parents("li.item").toggleClass("zoomed")
+                                         })
                 .end()
                 .find("a.item-delete-button").fadeToggle(500)
         })

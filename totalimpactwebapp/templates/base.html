@@ -217,28 +217,33 @@
                   <li>
                      <div class="meta">
                         <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
-                        <span class="value-and-name">
+                        <a class="value-and-name" href="{{provenance_url}}">
                            <span class="metric-value value">{{ values.raw }}</span>
                            <span class="metric-name">{{ static_meta.display_name }}</span>
-                        </span>
+                        </a>
                      </div>
 
                      <div class="line">
                         <!-- if we've got ranges, show 'em, along sizeable div to show range -->
-                        {{#percentileRangeStart}}
-                        <div class="metric-perc-range">
-                           <span class="start endpoint"><span class="value">{{percentileRangeStart}}</span></span>
+                        {{#percentiles}}
+                        <div class="metric-perc-range ci">
+                           <span class="start endpoint"><span class="value">{{CI95_lower}}</span></span>
                            <span class="bar"></span>
-                           <span class="end endpoint"><span class="value">{{percentileRangeEnd}}</span></span>
+                           <span class="end endpoint"><span class="value">{{CI95_upper}}</span></span>
                         </div>
-                        {{/percentileRangeStart}}
+                        <div class="metric-perc-range estimate">
+                           <span class="start endpoint"><span class="value">{{estimate_lower}}</span></span>
+                           <span class="bar"></span>
+                           <span class="end endpoint"><span class="value">{{estimate_upper}}</span></span>
+                        </div>
+                        {{/percentiles}}
 
                         <!-- if no ranges, show an NA -->
-                        {{^percentileRangeStart}}
+                        {{^percentiles}}
                         <div class="percentile-fail">
                               <span class="no-perc">no percentile data.</span>
                         </div>
-                        {{/percentileRangeStart}}
+                        {{/percentiles}}
                      </div>
                   </li>
                   {{/metrics}}</ul>

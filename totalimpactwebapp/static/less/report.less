@@ -129,7 +129,6 @@ li.item {
    margin-bottom:10px;
    clear:both;
    &.zoomed {
-      margin-bottom:100px;
       div.biblio h5 span.title {color: @linkColor;}
    }
 
@@ -223,17 +222,17 @@ li.item {
 
    div.zoom {
       float:left;
-      margin-bottom: 50px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #eee;
-      border-top: 1px solid #eee;
+      margin: 5px 0 35px;
+      padding-bottom: 15px;
+      border-top: 1px solid #aaa;
+      background: url(../img/shadow-horiz-divider.png) bottom center no-repeat;
 
 
       span.value{ font-weight: bold;}
 
       div.audience {
          &.scholars {
-            margin-right: 50px;
+            margin-right: 40px;
             span.bar {background: @scholarsColor;}
             h6 {color: @scholarsColor;}
          }
@@ -243,6 +242,7 @@ li.item {
          }
          width: 370px;
          float:left;
+         margin-left:10px;
 
 
          h5 {
@@ -289,6 +289,7 @@ li.item {
 
                         div.metric-perc-range {
                            position:relative;
+                           &.estimate {display:none;}
 
                            span.bar{
                               height:5px;
@@ -317,13 +318,15 @@ li.item {
                         font-size:11px;
                         color: #555;
 
-                        span.value-and-name  {
+                        a.value-and-name  {
                            span.value {font-weight: normal;}
                            width: 130px;
                            display:inline-block;
                            width: 75px;
                            line-height: 1.3;
                            margin-right: 5px;
+                           color: #999;
+                           &:hover {color: @linkColor;}
                         }
                         img {
                            float:right;
