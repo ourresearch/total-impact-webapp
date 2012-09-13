@@ -185,8 +185,18 @@
          <a href="#" class="item-delete-button">delete</a>
          <div class="glyph"></div>
          <div class="biblio"></div>
+         <div class="badges"></div>
          <div class="zoom"></div>
       </li>
+   </script>
+
+   <script id="badgesTemplate" type="text/html">
+      <ul class="badges">{{#awards}}
+         <li class="label ti-badge {{audience}}">
+            <span class="modifier">highly</span>
+            <span class="engagement-type">{{engagementType}}</span>
+         </li>
+      {{/awards}}</ul>
    </script>
 
    <script id="glyphTemplate" type="text/html">

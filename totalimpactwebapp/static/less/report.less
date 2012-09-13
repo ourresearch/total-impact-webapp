@@ -127,6 +127,7 @@ div#metrics {
 // li.item is in #metrics, but big enough it gets its own block.
 li.item {
    margin-bottom:10px;
+   float:left;
    clear:both;
    &.zoomed {
       div.biblio h5 span.title {color: @linkColor;}
@@ -181,6 +182,8 @@ li.item {
    }
 
    div.biblio{
+      float:left;
+      width: 800px;
       h5 {
          font-size:16px;
          margin: 0 0 -3px 0;
@@ -218,6 +221,19 @@ li.item {
          line-height: 1.4;
       }
       span.repo {font-style:italic;}
+   }
+
+   div.badges {
+      width: 300px;
+      float:left;
+      ul {
+         li.ti-badge {
+            line-height: 1.4;
+            display:inline-block;
+            &.scholars {background: @scholarsColor;}
+            &.public {background: @publicColor;}
+         }
+      }
    }
 
    div.zoom {

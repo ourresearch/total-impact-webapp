@@ -114,7 +114,7 @@ function Item(dict, itemView) {
     }
 
     this.makeAwards = function(engagementTable) {
-        var awards = []
+        var awardsObj = {}
         for (var i=0; i < engagementTable.audiences.length; i++) {
             var row = engagementTable.audiences[i]
 
@@ -134,14 +134,20 @@ function Item(dict, itemView) {
                                 engagementType:cell.engagementType,
                                 metric: metric
                             }
-                            awards.push(award)
+                            // hack so we don't have multiple awards per table cell
+                            awardsObj[award.audience+award.engagementType] = award
                         }
                     }
 
                 }
             }
         }
-        return awards
+        awardsArr = []
+        for (k in awardsObj) {
+            awardsArr.push(awardsObj[k])
+        }
+
+        return awardsArr
     }
 
 
@@ -262,8 +268,7 @@ function Item(dict, itemView) {
     this.dict.metrics = this.fixPlosMetricName(this.dict.metrics)
     this.dict.metrics = this.add_derived_metrics(this.dict.metrics)
     this.dict.engagementTable = this.makeEngagementTable(this.dict, metricInfo)
-    this.awards = this.makeAwards(dict.engagementTable)
-    console.log(this.awards)
+    this.dict.awards = this.makeAwards(dict.engagementTable)
 
     this.itemView = itemView
 
@@ -355,6 +360,11 @@ function ItemView() {
         return zoom$
     }
 
+    this.renderBadges = function(awards) {
+        var badges$ = $(ich.badgesTemplate({"awards": awards}, true))
+        return badges$
+    }
+
     this.render = function(item){
         var item$ = ich.displayItem(item)
 
@@ -367,6 +377,9 @@ function ItemView() {
 
         var zoom$ = this.renderZoom(item.engagementTable, true)
         item$.find("div.zoom").append(zoom$).hide()
+
+        var badges$ = this.renderBadges(item.awards)
+        item$.find("div.badges").append(badges$)
 
         item$.hover(
             function(){
