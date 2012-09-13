@@ -114,7 +114,8 @@ function Item(dict, itemView) {
     }
 
     this.makeAwards = function(engagementTable) {
-        var awardsObj = {}
+        var above50obj = {}
+        var activeAudiences = {}
         for (var i=0; i < engagementTable.audiences.length; i++) {
             var row = engagementTable.audiences[i]
 
@@ -124,10 +125,7 @@ function Item(dict, itemView) {
                 for (var k=0; k < cell.metrics.length; k++) {
                     var metric = cell.metrics[k]
 
-                    if (metric.percentiles === undefined) {
-                        continue
-                    }
-                    else {
+                    if (metric.percentiles !== undefined) {
                         if (metric.percentiles.CI95_lower > 50) {
                             var award = {
                                 audience: row.audience,
@@ -135,19 +133,33 @@ function Item(dict, itemView) {
                                 metric: metric
                             }
                             // hack so we don't have multiple awards per table cell
-                            awardsObj[award.audience+award.engagementType] = award
+                            above50obj[award.audience+award.engagementType] = award
                         }
                     }
 
+                    // see if it has *any* activity
+                    if (metric.values.raw) {
+                        activeAudiences[row.audience] = true
+                    }
                 }
+
             }
         }
-        awardsArr = []
-        for (k in awardsObj) {
-            awardsArr.push(awardsObj[k])
+
+        above50Arr = []
+        for (k in above50obj) {
+            above50Arr.push(above50obj[k])
         }
 
-        return awardsArr
+        activeAudiencesArr = []
+        for (var audienceName in activeAudiences){
+            activeAudiencesArr.push(audienceName)
+        }
+
+        return {
+            above50: above50Arr,
+            activeAudiences: activeAudiencesArr
+        }
     }
 
 
@@ -310,7 +322,8 @@ function ItemView() {
         var html = ""
 
         biblio.url = url
-        biblio.awards = awards
+        biblio.above50 = awards.above50
+        biblio.activeAudiences = awards.activeAudiences.join(" ")
         biblio.title = biblio.title || "no title"
         if (biblio.create_date) {
             biblio.year = biblio.create_date.slice(0,4)

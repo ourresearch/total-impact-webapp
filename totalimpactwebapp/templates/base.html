@@ -140,17 +140,18 @@
   Mustache -->
 
    <script id="title" class="partial" type="text/html">
-      <h5>
+      <h5 class="{{activeAudiences}}">
          <span class="title">{{title}}</span>
          {{#url}}
          <a class="url title" href="{{ url }}"><span class="help-text">linkout</span></a>
          {{/url}}
-         {{#awards}}
+
+         {{#above50}}
             <span class="label ti-badge {{audience}}">
                <span class="modifier">highly</span>
                <span class="engagement-type">{{engagementType}}</span>
             </span>
-         {{/awards}}
+         {{/above50}}
       </h5>
    </script>
 

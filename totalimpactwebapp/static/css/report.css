@@ -163,6 +163,18 @@ li.item div.biblio h5 {
   font-size: 16px;
   margin: 0 0 -3px 0;
   cursor: pointer;
+  padding-left: 20px;
+  margin-left: -20px;
+  background: url(../img/dots.png) left 40px no-repeat;
+}
+li.item div.biblio h5.public {
+  background-position-y: -47px;
+}
+li.item div.biblio h5.scholars {
+  background-position-y: -105px;
+}
+li.item div.biblio h5.scholars.public {
+  background-position-y: 5px;
 }
 li.item div.biblio h5 span.ti-badge {
   line-height: 1.4;
@@ -209,13 +221,14 @@ li.item div.biblio span.repo,
 li.item div.biblio span.descr {
   font-size: 12px;
   color: #888;
-  line-height: 1.4;
+  line-height: 1.3;
 }
 li.item div.biblio span.repo {
   font-style: italic;
 }
 li.item div.zoom {
   float: left;
+  clear: left;
   margin: 5px 0 35px;
   padding-bottom: 15px;
   border-top: 1px solid #aaa;
