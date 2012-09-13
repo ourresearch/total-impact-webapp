@@ -306,10 +306,11 @@ function ItemView() {
 
 
 
-    this.renderBiblio = function(biblio, url) {
+    this.renderBiblio = function(biblio, awards, url) {
         var html = ""
 
         biblio.url = url
+        biblio.awards = awards
         biblio.title = biblio.title || "no title"
         if (biblio.create_date) {
             biblio.year = biblio.create_date.slice(0,4)
@@ -360,11 +361,6 @@ function ItemView() {
         return zoom$
     }
 
-    this.renderBadges = function(awards) {
-        var badges$ = $(ich.badgesTemplate({"awards": awards}, true))
-        return badges$
-    }
-
     this.render = function(item){
         var item$ = ich.displayItem(item)
 
@@ -372,14 +368,11 @@ function ItemView() {
         item$.find("div.glyph").append(glyph$)
 
         var url = (item.aliases.url) ?  item.aliases.url[0] : false
-        var biblio$ = this.renderBiblio(item.biblio, url)
+        var biblio$ = this.renderBiblio(item.biblio, item.awards, url)
         item$.find("div.biblio").append(biblio$)
 
         var zoom$ = this.renderZoom(item.engagementTable, true)
         item$.find("div.zoom").append(zoom$).hide()
-
-        var badges$ = this.renderBadges(item.awards)
-        item$.find("div.badges").append(badges$)
 
         item$.hover(
             function(){

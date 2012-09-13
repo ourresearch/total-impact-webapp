@@ -104,7 +104,7 @@ div#metrics div.genre {
   display: none;
 }
 li.item {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   float: left;
   clear: both;
 }
@@ -158,12 +158,21 @@ li.item a.item-delete-button:hover {
 }
 li.item div.biblio {
   float: left;
-  width: 800px;
 }
 li.item div.biblio h5 {
   font-size: 16px;
   margin: 0 0 -3px 0;
   cursor: pointer;
+}
+li.item div.biblio h5 span.ti-badge {
+  line-height: 1.4;
+  display: inline-block;
+}
+li.item div.biblio h5 span.ti-badge.scholars {
+  background: #377eb8;
+}
+li.item div.biblio h5 span.ti-badge.public {
+  background: #4daf4a;
 }
 li.item div.biblio h5 span.title:hover {
   color: #ff4e00;
@@ -172,6 +181,7 @@ li.item div.biblio h5 span.title:hover {
 li.item div.biblio h5 a {
   width: 12px;
   height: 12px;
+  margin-right: 5px;
   background: url(../img/linkout-icon.png);
   background-repeat: no-repeat;
   background-position: right 1px;
@@ -203,20 +213,6 @@ li.item div.biblio span.descr {
 }
 li.item div.biblio span.repo {
   font-style: italic;
-}
-li.item div.badges {
-  width: 300px;
-  float: left;
-}
-li.item div.badges ul li.ti-badge {
-  line-height: 1.4;
-  display: inline-block;
-}
-li.item div.badges ul li.ti-badge.scholars {
-  background: #377eb8;
-}
-li.item div.badges ul li.ti-badge.public {
-  background: #4daf4a;
 }
 li.item div.zoom {
   float: left;
