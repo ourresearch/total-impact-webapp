@@ -38,7 +38,7 @@ def pickWosItems(num_total_results, num_subset_results):
 
     pages_and_ids = []
     for result_id in ids_to_sample:
-        page = int(math.floor(result_id / num_results_per_page))
+        page = int(math.floor(result_id / num_results_per_page)) +1
         pages_and_ids.append((page, result_id))
 
     return pages_and_ids
