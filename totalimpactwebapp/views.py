@@ -3,7 +3,7 @@ import requests, iso8601, os, json, logging
 from flask import Flask, jsonify, json, request, redirect, abort, make_response
 from flask import render_template, flash
 
-from totalimpactwebapp import app
+from totalimpactwebapp import app, util
 from totalimpactwebapp.models import Github
 from totalimpactwebapp import pretty_date
 
@@ -96,3 +96,14 @@ def collection_report(collection_id):
     else:
         abort(404, "This collection doesn't seem to exist yet. "+url)
 
+
+@app.route('/wospicker', methods=["GET"])
+def wospicker():
+    num_total = int(request.args.get("total"))
+    num_subset = int(request.args.get("subset"))
+
+    pages_and_ids = util.pickWosItems(num_total, num_subset)
+
+    resp = make_response(json.dumps(pages_and_ids, indent=4), 200)
+    resp.mimetype = "application/json"
+    return resp
