@@ -37,6 +37,7 @@ function Item(dict, itemView) {
         "pubmed:pmc_citations": ["scholars", "cited", "glyph"],
         "pubmed:pmc_citations_editorials": ["scholars", "recommended", "zoom"],
         "pubmed:pmc_citations_reviews": ["scholars", "cited", "zoom"],
+        "scienceseeker:blog_posts": ["scholars", "discussed", "zoom"],
         "slideshare:comments": ["public", "discussed"],
         "slideshare:downloads": ["public", "viewed"],
         "slideshare:favorites": ["public", "saved"],
