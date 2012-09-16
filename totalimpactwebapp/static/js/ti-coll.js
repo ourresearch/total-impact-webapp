@@ -60,6 +60,14 @@ function CollViews() {
         $("img.loading").remove()
         $("h2").before(ajaxLoadImgTransparent)
     }
+
+    this.badgesWeight = function(dict) {
+        var weight = 0
+        weight += dict.awards.cells.length * 10
+        weight += dict.awards.audiences.length * 1
+        return weight
+    }
+
     this.finishUpdating = function(items){
         $("#page-header img").remove()
 
@@ -67,15 +75,29 @@ function CollViews() {
         $("img.loading").remove()
     }
     this.render = function(itemObjsDict) {
+        var thisNow = this
+
+        // convert items dict into array and sort it
+        var itemObjs = []
+        for (tiid in itemObjsDict) {
+            itemObjs.push(itemObjsDict[tiid])
+        }
+
+        itemObjs.sort(function(a,b) {
+            return thisNow.badgesWeight(b.dict) -  thisNow.badgesWeight(a.dict)
+        })
+
+        console.log(itemObjs)
+
         $("ul#items").empty()
         console.log("looking through the item objects")
-        for (var tiid in itemObjsDict){
+        for (var i=0; i<itemObjs.length; i++){
             // make the set of all newly-rendered items
             // this is a very slow way to do this...should bundle together,
             // then make one replace.
-            var genre = itemObjsDict[tiid].dict.biblio.genre
+            var genre = itemObjs[i].dict.biblio.genre
             var genreItems = "div." + genre + " ul#items"
-            $(genreItems).append(itemObjsDict[tiid].render())
+            $(genreItems).append(itemObjs[i].render())
             $("#metrics div." + genre).show()  // would ideally only do this once
         }
     }

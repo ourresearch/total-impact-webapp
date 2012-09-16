@@ -218,7 +218,12 @@ li.item div.badges ul.audience-badges li.ti-badge {
   margin-right: 3px;
   float: right;
   width: 7px;
+}
+li.item div.badges ul.audience-badges li.ti-badge.scholars {
   background: url(../img/blue-dot.png) no-repeat;
+}
+li.item div.badges ul.audience-badges li.ti-badge.public {
+  background: url(../img/green-dot.png) no-repeat;
 }
 li.item div.badges ul.cell-badges li.ti-badge {
   line-height: 1.4;
@@ -342,9 +347,6 @@ li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics 
   line-height: 1.3;
   margin-right: 5px;
   color: #999;
-}
-li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta a.value-and-name span.value {
-  font-weight: normal;
 }
 li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta a.value-and-name:hover {
   color: #ff4e00;

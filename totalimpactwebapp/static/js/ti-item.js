@@ -367,7 +367,6 @@ function ItemView() {
     }
 
     this.renderBadges = function(awards) {
-        console.log(awards)
         var badges$ = $(ich.badgesTemplate({"awards": awards}, true))
         return badges$
     }

@@ -236,7 +236,8 @@ li.item {
             margin-right:3px;
             float:right;
             width: 7px;
-            background: url(../img/blue-dot.png) no-repeat;
+            &.scholars {background: url(../img/blue-dot.png) no-repeat;}
+            &.public {background: url(../img/green-dot.png) no-repeat;}
          }
       }
       ul.cell-badges {
@@ -349,7 +350,6 @@ li.item {
                         color: #555;
 
                         a.value-and-name  {
-                           span.value {font-weight: normal;}
                            width: 130px;
                            display:inline-block;
                            width: 75px;
