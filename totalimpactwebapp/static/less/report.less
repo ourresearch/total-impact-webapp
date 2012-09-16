@@ -183,28 +183,12 @@ li.item {
 
    div.biblio{
       float:left;
+      width: 770px;
+      padding-right: 30px;
       h5 {
          font-size:16px;
          margin: 0 0 -3px 0;
          cursor:pointer;
-         padding-left:20px;
-         margin-left:-20px;
-         background:url(../img/dots.png) left 40px no-repeat;
-         &.public {background-position-y: -47px;}
-         &.scholars {background-position-y: -105px;}
-         &.scholars.public {background-position-y: 5px;}
-
-
-         span.ti-badge {
-            line-height: 1.4;
-            display:inline-block;
-            &.scholars {background: @scholarsColor;}
-            &.public {background: @publicColor;}
-         }
-
-         span.title{
-            &:hover {color: @linkColor; text-decoration: none;}
-         }
          a {
             width: 12px;
             height: 12px;
@@ -236,6 +220,33 @@ li.item {
          line-height: 1.3;
       }
       span.repo {font-style:italic;}
+   }
+
+   div.badges {
+      width: 280px;
+      margin-left: 20px;
+      float:left;
+      ul.audience-badges {
+         float:left;
+         width: 20px;
+         margin-top: 12px;
+         margin-left:-20px;
+         li.ti-badge {
+            height: 7px;
+            margin-right:3px;
+            float:right;
+            width: 7px;
+            background: url(../img/blue-dot.png) no-repeat;
+         }
+      }
+      ul.cell-badges {
+         li.ti-badge {
+            line-height: 1.4;
+            display:inline-block;
+            &.scholars {background: @scholarsColor;}
+            &.public {background: @publicColor;}
+         }
+      }
    }
 
    div.zoom {

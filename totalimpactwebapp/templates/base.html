@@ -145,13 +145,6 @@
          {{#url}}
          <a class="url title" href="{{ url }}"><span class="help-text">linkout</span></a>
          {{/url}}
-
-         {{#above50}}
-            <span class="label ti-badge {{audience}}">
-               <span class="modifier">highly</span>
-               <span class="engagement-type">{{engagementType}}</span>
-            </span>
-         {{/above50}}
       </h5>
    </script>
 
@@ -192,21 +185,22 @@
          <a href="#" class="item-delete-button">delete</a>
          <div class="glyph"></div>
          <div class="biblio"></div>
+         <div class="badges"></div>
          <div class="zoom"></div>
       </li>
    </script>
 
+   <script id="badgesTemplate" type="text/html">
+      <ul class="audience-badges">{{#awards.audiences}}
+         <li class="ti-badge dot {{.}}"></li>
+      {{/awards.audiences}}</ul>
 
-   <script id="glyphTemplate" type="text/html">
-      <ul class="glyph">{{#rows}}
-         <li class="{{name}} glyph-row">
-            <ul>{{#cells}}
-               <li class="glyph-cell"><span class="value">{{score}}</span></li>
-            {{/cells}}</ul>
+      <ul class="cell-badges">{{#awards.cells}}
+         <li class="label ti-badge {{audience}}">
+            <span class="modifier">highly</span>
+            <span class="engagement-type">{{engagementType}}</span>
          </li>
-
-      {{/rows}}</ul>
-
+         {{/awards.cells}}</ul>
    </script>
 
    <script id="zoomTable" type="text/html">

@@ -114,9 +114,10 @@ function Item(dict, itemView) {
         return {"audiences": ret}
     }
 
+
     this.makeAwards = function(engagementTable) {
-        var above50obj = {}
-        var activeAudiences = {}
+        var cells = {}
+        var audiences = {}
         for (var i=0; i < engagementTable.audiences.length; i++) {
             var row = engagementTable.audiences[i]
 
@@ -134,32 +135,32 @@ function Item(dict, itemView) {
                                 metric: metric
                             }
                             // hack so we don't have multiple awards per table cell
-                            above50obj[award.audience+award.engagementType] = award
+                            cells[award.audience+award.engagementType] = award
                         }
                     }
 
                     // see if it has *any* activity
                     if (metric.values.raw) {
-                        activeAudiences[row.audience] = true
+                        audiences[row.audience] = true
                     }
                 }
 
             }
         }
 
-        above50Arr = []
-        for (k in above50obj) {
-            above50Arr.push(above50obj[k])
+        cellsArr = []
+        for (k in cells) {
+            cellsArr.push(cells[k])
         }
 
-        activeAudiencesArr = []
-        for (var audienceName in activeAudiences){
-            activeAudiencesArr.push(audienceName)
+        audiencesArr = []
+        for (var audienceName in audiences){
+            audiencesArr.push(audienceName)
         }
 
         return {
-            above50: above50Arr,
-            activeAudiences: activeAudiencesArr
+            cells: cellsArr,
+            audiences: audiencesArr
         }
     }
 
@@ -319,12 +320,10 @@ function ItemView() {
 
 
 
-    this.renderBiblio = function(biblio, awards, url) {
+    this.renderBiblio = function(biblio, url) {
         var html = ""
 
         biblio.url = url
-        biblio.above50 = awards.above50
-        biblio.activeAudiences = awards.activeAudiences.join(" ")
         biblio.title = biblio.title || "no title"
         if (biblio.create_date) {
             biblio.year = biblio.create_date.slice(0,4)
@@ -334,14 +333,6 @@ function ItemView() {
         return $(ich[templateName](biblio, true))
     }
 
-    this.renderGlyph = function(engagementTable){
-        var glyph$ = $(ich["glyphTemplate"](engagementTable, true))
-        glyph$.find("li.glyph-cell span.value").each(function(){
-            var myHeight = $(this).text()
-            $(this).css("height", (myHeight) +"%")
-        })
-        return glyph$
-    }
 
     this.findBarLabelOffsets = function(start, end) {
         var maxWidth = 20
@@ -375,18 +366,24 @@ function ItemView() {
         return zoom$
     }
 
+    this.renderBadges = function(awards) {
+        console.log(awards)
+        var badges$ = $(ich.badgesTemplate({"awards": awards}, true))
+        return badges$
+    }
+
     this.render = function(item){
         var item$ = ich.displayItem(item)
 
-        var glyph$ = this.renderGlyph(item.engagementTable, true)
-        item$.find("div.glyph").append(glyph$)
-
         var url = (item.aliases.url) ?  item.aliases.url[0] : false
-        var biblio$ = this.renderBiblio(item.biblio, item.awards, url)
+        var biblio$ = this.renderBiblio(item.biblio, url)
         item$.find("div.biblio").append(biblio$)
 
         var zoom$ = this.renderZoom(item.engagementTable, true)
         item$.find("div.zoom").append(zoom$).hide()
+
+        var badges$ = this.renderBadges(item.awards)
+        item$.find("div.badges").append(badges$)
 
         item$.hover(
             function(){

@@ -158,37 +158,13 @@ li.item a.item-delete-button:hover {
 }
 li.item div.biblio {
   float: left;
+  width: 770px;
+  padding-right: 30px;
 }
 li.item div.biblio h5 {
   font-size: 16px;
   margin: 0 0 -3px 0;
   cursor: pointer;
-  padding-left: 20px;
-  margin-left: -20px;
-  background: url(../img/dots.png) left 40px no-repeat;
-}
-li.item div.biblio h5.public {
-  background-position-y: -47px;
-}
-li.item div.biblio h5.scholars {
-  background-position-y: -105px;
-}
-li.item div.biblio h5.scholars.public {
-  background-position-y: 5px;
-}
-li.item div.biblio h5 span.ti-badge {
-  line-height: 1.4;
-  display: inline-block;
-}
-li.item div.biblio h5 span.ti-badge.scholars {
-  background: #377eb8;
-}
-li.item div.biblio h5 span.ti-badge.public {
-  background: #4daf4a;
-}
-li.item div.biblio h5 span.title:hover {
-  color: #ff4e00;
-  text-decoration: none;
 }
 li.item div.biblio h5 a {
   width: 12px;
@@ -225,6 +201,34 @@ li.item div.biblio span.descr {
 }
 li.item div.biblio span.repo {
   font-style: italic;
+}
+li.item div.badges {
+  width: 280px;
+  margin-left: 20px;
+  float: left;
+}
+li.item div.badges ul.audience-badges {
+  float: left;
+  width: 20px;
+  margin-top: 12px;
+  margin-left: -20px;
+}
+li.item div.badges ul.audience-badges li.ti-badge {
+  height: 7px;
+  margin-right: 3px;
+  float: right;
+  width: 7px;
+  background: url(../img/blue-dot.png) no-repeat;
+}
+li.item div.badges ul.cell-badges li.ti-badge {
+  line-height: 1.4;
+  display: inline-block;
+}
+li.item div.badges ul.cell-badges li.ti-badge.scholars {
+  background: #377eb8;
+}
+li.item div.badges ul.cell-badges li.ti-badge.public {
+  background: #4daf4a;
 }
 li.item div.zoom {
   float: left;
