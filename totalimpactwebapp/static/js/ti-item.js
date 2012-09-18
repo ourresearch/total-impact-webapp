@@ -1,4 +1,4 @@
-//$("span.value").css("color", $.Color("#555555").transition( "#FF4E00", 0.2 ).toHexString() );
+
 
 function Item(dict, itemView) {
 
@@ -340,8 +340,6 @@ function ItemView() {
     }
 
 
-
-
     this.renderBiblio = function(biblio, url) {
         var html = ""
 
@@ -349,6 +347,12 @@ function ItemView() {
         biblio.title = biblio.title || "no title"
         if (biblio.create_date) {
             biblio.year = biblio.create_date.slice(0,4)
+        }
+        if (biblio.authors) {
+            // screws up names w/ commas in them
+            var auths = biblio.authors.split(",", 3).join(",") // first 3 authors
+            if (auths.length < biblio.authors.length) auths += " et al."
+            biblio.authors = auths
         }
 
         var templateName = "biblio_" + biblio.genre
