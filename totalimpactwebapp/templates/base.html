@@ -191,16 +191,21 @@
    </script>
 
    <script id="badgesTemplate" type="text/html">
-      <ul class="audience-badges">{{#awards.audiences}}
-         <li class="ti-badge dot {{.}}"></li>
-      {{/awards.audiences}}</ul>
+      <ul class="ti-badges">
 
-      <ul class="cell-badges">{{#awards.cells}}
-         <li class="label ti-badge {{audience}}">
+         {{#over50perc}}
+         <li class="label ti-badge big-badge {{audience}}">
             <span class="modifier">highly</span>
             <span class="engagement-type">{{engagementType}}</span>
          </li>
-         {{/awards.cells}}</ul>
+         {{/over50perc}}
+
+         {{#any}}
+         <li class="label ti-badge lil-badge {{audience}}">
+            <span class="engagement-type">{{engagementType}}</span>
+         </li>
+         {{/any}}
+      </ul>
    </script>
 
    <script id="zoomTable" type="text/html">

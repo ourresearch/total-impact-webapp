@@ -226,26 +226,25 @@ li.item {
       width: 280px;
       margin-left: 20px;
       float:left;
-      ul.audience-badges {
+      ul.ti-badges {
          float:left;
-         width: 20px;
-         margin-top: 12px;
-         margin-left:-20px;
          li.ti-badge {
-            height: 7px;
-            margin-right:3px;
-            float:right;
-            width: 7px;
-            &.scholars {background: url(../img/blue-dot.png) no-repeat;}
-            &.public {background: url(../img/green-dot.png) no-repeat;}
-         }
-      }
-      ul.cell-badges {
-         li.ti-badge {
-            line-height: 1.4;
-            display:inline-block;
-            &.scholars {background: @scholarsColor;}
-            &.public {background: @publicColor;}
+            margin:0 3px 3px 0;
+            float:left;
+            font-size: 12px;
+            font-weight:normal;
+            padding: 3px 6px;
+            &.scholars {background: @scholarsColor; border:1px solid @scholarsColor;}
+            &.public {background: @publicColor; border:1px solid @publicColor;}
+            &.big-badge {
+            }
+            &.lil-badge {
+               &.scholars {color: @scholarsColor;}
+               &.public {color: @publicColor;}
+               background: #fff;
+//               border:none;
+               text-shadow: none;
+            }
          }
       }
    }

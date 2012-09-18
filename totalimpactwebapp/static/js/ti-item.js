@@ -114,10 +114,17 @@ function Item(dict, itemView) {
         return {"audiences": ret}
     }
 
+    this.objToArr = function(obj){
+        var arr = []
+        for (k in obj) {
+            arr.push(obj[k])
+        }
+        return arr
+    }
 
     this.makeAwards = function(engagementTable) {
-        var cells = {}
-        var audiences = {}
+        var any = {}
+        var over50perc = {}
         for (var i=0; i < engagementTable.audiences.length; i++) {
             var row = engagementTable.audiences[i]
 
@@ -126,41 +133,43 @@ function Item(dict, itemView) {
 
                 for (var k=0; k < cell.metrics.length; k++) {
                     var metric = cell.metrics[k]
+                    var cellName = row.audience+"."+cell.engagementType
 
-                    if (metric.percentiles !== undefined) {
-                        if (metric.percentiles.CI95_lower > 50) {
-                            var award = {
-                                audience: row.audience,
-                                engagementType:cell.engagementType,
-                                metric: metric
+                    if (!metric.values.raw) {
+                        continue
+                    }
+                    else {
+
+                        // add a big badge if we can
+                        if (metric.percentiles !== undefined) {
+                            if (metric.percentiles.CI95_lower > 50) {
+                                over50perc[cellName] = {
+                                    audience: row.audience,
+                                    engagementType:cell.engagementType,
+                                    metric: metric
+                                }
                             }
-                            // hack so we don't have multiple awards per table cell
-                            cells[award.audience+award.engagementType] = award
+                        }
+
+                        // quit if there's a big badge; can't improve on that.
+                        if (cellName in over50perc) {
+                            continue
+                        }
+
+                        // finally, assign a lil badge
+                        any[cellName] = {
+                            audience: row.audience,
+                            engagementType:cell.engagementType,
+                            metric: metric
                         }
                     }
-
-                    // see if it has *any* activity
-                    if (metric.values.raw) {
-                        audiences[row.audience] = true
-                    }
                 }
-
             }
         }
 
-        cellsArr = []
-        for (k in cells) {
-            cellsArr.push(cells[k])
-        }
-
-        audiencesArr = []
-        for (var audienceName in audiences){
-            audiencesArr.push(audienceName)
-        }
-
         return {
-            cells: cellsArr,
-            audiences: audiencesArr
+            any: this.objToArr(any),
+            over50perc: this.objToArr(over50perc)
         }
     }
 
@@ -367,7 +376,12 @@ function ItemView() {
     }
 
     this.renderBadges = function(awards) {
-        var badges$ = $(ich.badgesTemplate({"awards": awards}, true))
+        var badges$ = $(ich.badgesTemplate(
+            {
+               over50perc: awards.over50perc,
+               any:awards.any
+            },
+            true))
         return badges$
     }
 

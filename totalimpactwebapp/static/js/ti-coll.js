@@ -63,8 +63,8 @@ function CollViews() {
 
     this.badgesWeight = function(dict) {
         var weight = 0
-        weight += dict.awards.cells.length * 10
-        weight += dict.awards.audiences.length * 1
+        weight += dict.awards.over50perc.length * 10
+        weight += dict.awards.any.length * 1
         return weight
     }
 
