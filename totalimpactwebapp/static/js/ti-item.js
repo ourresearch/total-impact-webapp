@@ -122,6 +122,17 @@ function Item(dict, itemView) {
         return arr
     }
 
+    // returns a copy of obj1, minus the keys it shares with obj2
+    this.subractKeys = function(obj1, obj2) {
+        var newObj1 = {}
+        for (k in obj1) {
+            if (!(k in obj2)) {
+                newObj1[k] = obj1[k]
+            }
+        }
+        return newObj1
+    }
+
     this.makeAwards = function(engagementTable) {
         var any = {}
         var over50perc = {}
@@ -166,6 +177,8 @@ function Item(dict, itemView) {
                 }
             }
         }
+
+        any = this.subractKeys(any, over50perc)
 
         return {
             any: this.objToArr(any),
