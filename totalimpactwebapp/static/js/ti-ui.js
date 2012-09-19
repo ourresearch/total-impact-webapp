@@ -4,7 +4,7 @@ $.ajaxSetup ({
 if (!window.console) {
     console = {log: function() {}};
 }
-
+var tiLinkColor = "#FF4E00"
 var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
 var ajaxLoadImgTransparent = "<img class='loading' src='../static/img/ajax-loader-transparent.gif' alt='loading...' />";
 var collectionAliases = []
@@ -337,12 +337,8 @@ $(document).ready(function(){
     coll = new Coll(collViews)
     collController = new CollController(coll, collViews);
 
-    // dialog for supported IDs
-    $("div#paste-ids legend a").click(function(){
-        // get the contents
-        TINY.box.show({url:'../static/whichartifacts.html'})
-        return false;
-    });
+    itemController = new ItemController()
+
 
     // table of contents
     if ($("#toc")[0]) {

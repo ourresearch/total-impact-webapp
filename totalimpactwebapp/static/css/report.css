@@ -104,69 +104,52 @@ div#metrics div.genre {
   display: none;
 }
 li.item {
-  margin-bottom: 15px;
   float: left;
   clear: both;
 }
 li.item.zoomed div.biblio h5 span.title {
   color: #ff4e00;
 }
-li.item div.glyph {
-  float: left;
+li.item.zoomed div.item-header:hover div.item-controls span.item-expand-button {
+  display: none;
+}
+li.item div.item-header {
+  clear: both;
+  padding-top: 10px;
   cursor: pointer;
 }
-li.item div.glyph ul.glyph {
+li.item div.item-header:hover div.item-controls span.item-expand-button {
+  display: block;
+}
+li.item div.item-header div.item-controls span.item-delete-button {
+  display: none;
+}
+li.item div.item-header div.item-controls span.item-expand-button {
+  margin: 4px 0 0 -58px;
+  text-align: right;
+  line-height: 1;
   width: 50px;
-}
-li.item div.glyph ul.glyph li.scholars li {
-  margin-bottom: 1px;
-  bottom: 0;
-}
-li.item div.glyph ul.glyph li.scholars li span.value {
-  background: #377eb8;
-}
-li.item div.glyph ul.glyph li.public span.value {
-  background: #1a78e1;
-  top: 0;
-}
-li.item div.glyph ul.glyph li ul li {
-  height: 15px;
-  position: relative;
-  border-right: 1px solid #ffffff;
-  width: 9px;
-  float: left;
-}
-li.item div.glyph ul.glyph li ul li span.value {
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  height: 0;
-  text-indent: -9999px;
-}
-li.item a.item-delete-button {
-  margin-left: -50px;
-  width: 50px;
-  height: 25px;
-  color: #999;
+  padding-right: 8px;
+  height: 30px;
+  color: #aaa;
   display: block;
   font-size: 12px;
   float: left;
   display: none;
 }
-li.item a.item-delete-button:hover {
-  color: red;
+li.item div.item-header div.item-controls span.item-expand-button:hover {
+  text-decoration: none;
 }
-li.item div.biblio {
+li.item div.item-header div.biblio {
   float: left;
   width: 770px;
   padding-right: 30px;
 }
-li.item div.biblio h5 {
+li.item div.item-header div.biblio h5 {
   font-size: 16px;
   margin: 0 0 -3px 0;
-  cursor: pointer;
 }
-li.item div.biblio h5 a {
+li.item div.item-header div.biblio h5 a {
   width: 12px;
   height: 12px;
   margin-right: 5px;
@@ -175,7 +158,7 @@ li.item div.biblio h5 a {
   background-position: right 1px;
   display: inline-block;
 }
-li.item div.biblio h5 a span.help-text {
+li.item div.item-header div.biblio h5 a span.help-text {
   display: none;
   padding-left: 16px;
   float: left;
@@ -185,54 +168,55 @@ li.item div.biblio h5 a span.help-text {
   font-weight: normal;
   text-decoration: none;
 }
-li.item div.biblio h5 a:hover {
+li.item div.item-header div.biblio h5 a:hover {
   background-position: right -23px;
 }
-li.item div.biblio h5 a:hover span.help-text {
+li.item div.item-header div.biblio h5 a:hover span.help-text {
   display: inline-block;
 }
-li.item div.biblio span.year,
-li.item div.biblio span.authors,
-li.item div.biblio span.repo,
-li.item div.biblio span.descr {
+li.item div.item-header div.biblio span.year,
+li.item div.item-header div.biblio span.authors,
+li.item div.item-header div.biblio span.repo,
+li.item div.item-header div.biblio span.descr {
+  cursor: pointer;
   font-size: 12px;
   color: #888;
   line-height: 1.3;
 }
-li.item div.biblio span.repo {
+li.item div.item-header div.biblio span.repo {
   font-style: italic;
 }
-li.item div.badges {
+li.item div.item-header div.badges {
   width: 280px;
   margin-left: 20px;
   float: left;
 }
-li.item div.badges ul.ti-badges {
+li.item div.item-header div.badges ul.ti-badges {
   float: left;
 }
-li.item div.badges ul.ti-badges li.ti-badge {
+li.item div.item-header div.badges ul.ti-badges li.ti-badge {
   margin: 0 3px 3px 0;
   float: left;
   font-size: 12px;
   font-weight: normal;
   padding: 3px 6px;
 }
-li.item div.badges ul.ti-badges li.ti-badge.scholars {
+li.item div.item-header div.badges ul.ti-badges li.ti-badge.scholars {
   background: #377eb8;
   border: 1px solid #377eb8;
 }
-li.item div.badges ul.ti-badges li.ti-badge.public {
+li.item div.item-header div.badges ul.ti-badges li.ti-badge.public {
   background: #4daf4a;
   border: 1px solid #4daf4a;
 }
-li.item div.badges ul.ti-badges li.ti-badge.lil-badge {
+li.item div.item-header div.badges ul.ti-badges li.ti-badge.lil-badge {
   background: #fff;
   text-shadow: none;
 }
-li.item div.badges ul.ti-badges li.ti-badge.lil-badge.scholars {
+li.item div.item-header div.badges ul.ti-badges li.ti-badge.lil-badge.scholars {
   color: #377eb8;
 }
-li.item div.badges ul.ti-badges li.ti-badge.lil-badge.public {
+li.item div.item-header div.badges ul.ti-badges li.ti-badge.lil-badge.public {
   color: #4daf4a;
 }
 li.item div.zoom {

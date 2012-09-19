@@ -4,24 +4,24 @@ function Item(dict, itemView) {
 
     // [<audience>, <engagement type>, <display level>]
     var metricInfo = {
-        "citeulike:bookmarks": ["scholars", "saved", "glyph"],
-        "delicious:bookmarks": ["public", "saved", "glyph"],
-        "dryad:most_downloaded_file": ["scholars", "viewed", "glyph"],
-        "dryad:package_views": ["scholars", "viewed", "glyph"],
-        "dryad:total_downloads": ["scholars", "viewed", "glyph"],
-        "facebook:shares":["public", "discussed", "glyph"],
-        "facebook:comments":["public", "discussed", "glyph"],
-        "facebook:likes":["public", "discussed", "glyph"],
-        "facebook:clicks":["public", "discussed", "glyph"],
-        "github:forks":["public", "cited", "glyph"],
-        "github:watchers":["public", "saved", "glyph"],
-        "mendeley:career_stage":["", "", 0],
-        "mendeley:country":["", "", 0],
-        "mendeley:discipline":["", "", 0],
-        "mendeley:student_readers":["scholars", "saved", 0],
-        "mendeley:developing_countries":["scholars", "saved", 0],
-        "mendeley:groups":["scholars", "saved", "glyph"],
-        "mendeley:readers":["scholars", "saved", "glyph"],
+        "citeulike:bookmarks": ["scholars", "saved", "badges", 3],
+        "delicious:bookmarks": ["public", "saved", "badges", 3],
+        "dryad:most_downloaded_file": ["scholars", "viewed", "badges", 100],
+        "dryad:package_views": ["scholars", "viewed", "badges", 100],
+        "dryad:total_downloads": ["scholars", "viewed", "badges", 100],
+        "facebook:shares":["public", "discussed", "badges", 3],
+        "facebook:comments":["public", "discussed", "badges", 3],
+        "facebook:likes":["public", "discussed", "badges", 3],
+        "facebook:clicks":["public", "discussed", "badges", 3],
+        "github:forks":["public", "cited", "badges", 3],
+        "github:watchers":["public", "saved", "badges", 3],
+        "mendeley:career_stage":["", "", 0, 0],
+        "mendeley:country":["", "", 0, 0],
+        "mendeley:discipline":["", "", 0, 0],
+        "mendeley:student_readers":["scholars", "saved", 0, 0],
+        "mendeley:developing_countries":["scholars", "saved", 0, 0],
+        "mendeley:groups":["", "", 0, 0],
+        "mendeley:readers":["scholars", "saved", "badges", 3],
         "plos:crossref": [],                    // figure it out
         "plos:html_views": [],                  // figure it out
         "plos:pdf_views": [],                   // figure it out
@@ -33,18 +33,18 @@ function Item(dict, itemView) {
         "plos:pmc_unique-ip": ["", "", 0],
         "plos:pubmed_central": ["", "", 0],
         "plos:scopus": [],                      // figure it out
-        "pubmed:f1000": ["scholars", "recommended", "glyph"],
-        "pubmed:pmc_citations": ["scholars", "cited", "glyph"],
-        "pubmed:pmc_citations_editorials": ["scholars", "recommended", "zoom"],
-        "pubmed:pmc_citations_reviews": ["scholars", "cited", "zoom"],
-        "scienceseeker:blog_posts": ["scholars", "discussed", "zoom"],
-        "slideshare:comments": ["public", "discussed"],
-        "slideshare:downloads": ["public", "viewed"],
-        "slideshare:favorites": ["public", "saved"],
-        "slideshare:views": ["public", "viewed"],
-        "topsy:influential_tweets": ["public", "discussed", "zoom"],
-        "topsy:tweets": ["public", "discussed", "glyph"],
-        "wikipedia:mentions": ["public", "cited", "glyph"]
+        "pubmed:f1000": ["scholars", "recommended", "badges", 1],
+        "pubmed:pmc_citations": ["scholars", "cited", "badges", 3],
+        "pubmed:pmc_citations_editorials": ["scholars", "recommended", "zoom", 0],
+        "pubmed:pmc_citations_reviews": ["scholars", "cited", "zoom", 0],
+        "scienceseeker:blog_posts": ["scholars", "discussed", "zoom", 0],
+        "slideshare:comments": ["public", "discussed", "badges", 3],
+        "slideshare:downloads": ["public", "viewed", "badges", 3],
+        "slideshare:favorites": ["public", "saved", "badges", 3],
+        "slideshare:views": ["public", "viewed", "badges", 3],
+        "topsy:influential_tweets": ["public", "discussed", "zoom", 0],
+        "topsy:tweets": ["public", "discussed", "badges", 3],
+        "wikipedia:mentions": ["public", "cited", "badges", 1]
     }
 
 
@@ -56,17 +56,6 @@ function Item(dict, itemView) {
         return this.itemView.render(this.dict)
     }
 
-    this.getCellScore = function(metricsList){
-        // get the highest percentileMedian from this set of metrics
-        // returns 0 if no metric has a percentileMedian defined
-        topMetric = metricsList.sort(function(x,y){x.percentileMedian, y.percentileMedian})[0]
-        if (topMetric === undefined) {
-            return 0
-        }
-        else {
-            return topMetric.percentileMedian
-        }
-    }
 
     this.makeEngagementTable = function(dict, metricInfo){
 
@@ -86,6 +75,7 @@ function Item(dict, itemView) {
 
             var metric = this.dict.metrics[metricName]
             metric.display = display
+            metric.minNumForAward = metricInfo[metricName][3]
 
             engagementTable[audience][engagementType].push(metric)
         }
@@ -103,7 +93,6 @@ function Item(dict, itemView) {
 
                 cellContents = {
                     metrics: cell,
-                    score: this.getCellScore(cell),
                     engagementType: colName,
                     audience: rowName // because mustache can't access parent context
                 }
@@ -146,14 +135,11 @@ function Item(dict, itemView) {
                     var metric = cell.metrics[k]
                     var cellName = row.audience+"."+cell.engagementType
 
-                    if (!metric.values.raw) {
-                        continue
-                    }
-                    else {
+                    if (metric.values.raw >= metric.minNumForAward) {
 
                         // add a big badge if we can
                         if (metric.percentiles !== undefined) {
-                            if (metric.percentiles.CI95_lower > 50) {
+                            if (metric.percentiles.CI95_lower >= 75) {
                                 over50perc[cellName] = {
                                     audience: row.audience,
                                     engagementType:cell.engagementType,
@@ -415,36 +401,24 @@ function ItemView() {
         var badges$ = this.renderBadges(item.awards)
         item$.find("div.badges").append(badges$)
 
-        item$.hover(
-            function(){
-//                $(this).find("a.item-delete-button").fadeIn("fast");
-            },
-            function(){
-//                $(this).find("a.item-delete-button").fadeOut("fast");
-            }
-        )
-
-        item$.find("a.item-delete-button").click(function(){
-            var tiid = $(this).parent().id
-            console.log("this is where I would delete "+tiid)
-            return false
-        })
-
-        item$.find("div.glyph, div.biblio").click(function(){
-            $(this)
-                .siblings("div.zoom")
-                .slideToggle(500, function(){
-                                             $(this).parents("li.item").toggleClass("zoomed")
-                                         })
-                .end()
-                .find("a.item-delete-button").fadeToggle(500)
-        })
-
         return item$
     }
 }
 
 
-function ItemController(item, itemView){
+function ItemController(){
+    /* Just meant to be used once, for attaching events to items.
+    I think this is probably not the best way.
+    * */
 
+
+    $("body").on("click", "div.item-header", function(){
+        $(this)
+           .parents("li.item")
+           .find("div.zoom")
+           .slideToggle(500, function(){
+                            $(this).parents("li.item").toggleClass("zoomed")
+                        })
+           .end()
+        })
 }

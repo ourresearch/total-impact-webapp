@@ -20,8 +20,7 @@
    <link rel="icon" type="image/ico" href="/static/img/favicon.ico" />
 
    <script type="text/javascript">var api_root='{{ api_root }}'</script>
-   <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-   <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>   <script type="text/javascript" src="/static/js/bootstrap.js"></script>
    <script type="text/javascript" src="/static/js/json2.min.js"></script>
    <script type="text/javascript" src="/static/js/tinybox.js"></script>
    <script type="text/javascript" src="/static/js/hmac-sha1.js"></script>
@@ -182,10 +181,14 @@
 
    <script id="displayItem" type="text/html">
       <li class="item" id="{{ _id }}">
-         <a href="#" class="item-delete-button">delete</a>
-         <div class="glyph"></div>
-         <div class="biblio"></div>
-         <div class="badges"></div>
+         <div class="item-header">
+            <div class="item-controls">
+               <span href="#" class="item-delete-button">delete</span>
+               <span href="#" class="item-expand-button">click to expand</span>
+            </div>
+            <div class="biblio"></div>
+            <div class="badges"></div>
+         </div>
          <div class="zoom"></div>
       </li>
    </script>
