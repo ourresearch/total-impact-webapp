@@ -4,24 +4,24 @@ function Item(dict, itemView) {
 
     // [<audience>, <engagement type>, <display level>]
     var metricInfo = {
-        "citeulike:bookmarks": ["scholars", "saved", "badges", 3],
-        "delicious:bookmarks": ["public", "saved", "badges", 3],
-        "dryad:most_downloaded_file": ["scholars", "viewed", "badges", 100],
-        "dryad:package_views": ["scholars", "viewed", "badges", 100],
-        "dryad:total_downloads": ["scholars", "viewed", "badges", 100],
-        "facebook:shares":["public", "discussed", "badges", 3],
-        "facebook:comments":["public", "discussed", "badges", 3],
-        "facebook:likes":["public", "discussed", "badges", 3],
-        "facebook:clicks":["public", "discussed", "badges", 3],
-        "github:forks":["public", "cited", "badges", 3],
-        "github:watchers":["public", "saved", "badges", 3],
+        "citeulike:bookmarks": ["scholars", "saved", "badge", 3],
+        "delicious:bookmarks": ["public", "saved", "badge", 3],
+        "dryad:most_downloaded_file": ["scholars", "viewed", "badge", 100],
+        "dryad:package_views": ["scholars", "viewed", "badge", 100],
+        "dryad:total_downloads": ["scholars", "viewed", "badge", 100],
+        "facebook:shares":["public", "discussed", "badge", 3],
+        "facebook:comments":["public", "discussed", "badge", 3],
+        "facebook:likes":["public", "discussed", "badge", 3],
+        "facebook:clicks":["public", "discussed", "badge", 3],
+        "github:forks":["public", "cited", "badge", 3],
+        "github:watchers":["public", "saved", "badge", 3],
         "mendeley:career_stage":["", "", 0, 0],
         "mendeley:country":["", "", 0, 0],
         "mendeley:discipline":["", "", 0, 0],
         "mendeley:student_readers":["scholars", "saved", 0, 0],
         "mendeley:developing_countries":["scholars", "saved", 0, 0],
         "mendeley:groups":["", "", 0, 0],
-        "mendeley:readers":["scholars", "saved", "badges", 3],
+        "mendeley:readers":["scholars", "saved", "badge", 3],
         "plos:crossref": [],                    // figure it out
         "plos:html_views": [],                  // figure it out
         "plos:pdf_views": [],                   // figure it out
@@ -33,18 +33,18 @@ function Item(dict, itemView) {
         "plos:pmc_unique-ip": ["", "", 0],
         "plos:pubmed_central": ["", "", 0],
         "plos:scopus": [],                      // figure it out
-        "pubmed:f1000": ["scholars", "recommended", "badges", 1],
-        "pubmed:pmc_citations": ["scholars", "cited", "badges", 3],
+        "pubmed:f1000": ["scholars", "recommended", "badge", 1],
+        "pubmed:pmc_citations": ["scholars", "cited", "badge", 3],
         "pubmed:pmc_citations_editorials": ["scholars", "recommended", "zoom", 0],
         "pubmed:pmc_citations_reviews": ["scholars", "cited", "zoom", 0],
         "scienceseeker:blog_posts": ["scholars", "discussed", "zoom", 0],
-        "slideshare:comments": ["public", "discussed", "badges", 3],
-        "slideshare:downloads": ["public", "viewed", "badges", 3],
-        "slideshare:favorites": ["public", "saved", "badges", 3],
-        "slideshare:views": ["public", "viewed", "badges", 3],
+        "slideshare:comments": ["public", "discussed", "badge", 3],
+        "slideshare:downloads": ["public", "viewed", "badge", 3],
+        "slideshare:favorites": ["public", "saved", "badge", 3],
+        "slideshare:views": ["public", "viewed", "badge", 3],
         "topsy:influential_tweets": ["public", "discussed", "zoom", 0],
-        "topsy:tweets": ["public", "discussed", "badges", 3],
-        "wikipedia:mentions": ["public", "cited", "badges", 1]
+        "topsy:tweets": ["public", "discussed", "badge", 3],
+        "wikipedia:mentions": ["public", "cited", "badge", 1]
     }
 
 
@@ -135,11 +135,12 @@ function Item(dict, itemView) {
                     var metric = cell.metrics[k]
                     var cellName = row.audience+"."+cell.engagementType
 
-                    if (metric.values.raw >= metric.minNumForAward) {
+                    if (metric.values.raw && metric.display=="badge") {
 
                         // add a big badge if we can
                         if (metric.percentiles !== undefined) {
-                            if (metric.percentiles.CI95_lower >= 75) {
+                            if (metric.percentiles.CI95_lower >= 75 &&
+                                metric.values.raw >= metric.minNumForAward) {
                                 over50perc[cellName] = {
                                     audience: row.audience,
                                     engagementType:cell.engagementType,
