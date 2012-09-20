@@ -196,12 +196,12 @@
    <script id="badgesTemplate" type="text/html">
       <ul class="ti-badges">
 
-         {{#over50perc}}
+         {{#big}}
          <li class="label ti-badge big-badge {{audience}}">
             <span class="modifier">highly</span>
             <span class="engagement-type">{{engagementType}}</span>
          </li>
-         {{/over50perc}}
+         {{/big}}
 
          {{#any}}
          <li class="label ti-badge lil-badge {{audience}}">
@@ -264,10 +264,12 @@
    </script>
 
 
-
-
-   <script id="zoomTableRow" class="partial" type="text/html">
-      <tr>{{ row</tr>
+   <script id="genreTemplate" type="text/html">
+      <div class="genre {{name}}">
+         <h3><span>{{name}}</span></h3>
+         <ul class="items">
+         </ul>
+      </div>
    </script>
 
 

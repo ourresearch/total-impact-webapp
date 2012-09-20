@@ -101,7 +101,8 @@ div#metrics h3 {
   font-weight: bold;
 }
 div#metrics div.genre {
-  display: none;
+  margin-bottom: 50px;
+  float: left;
 }
 li.item {
   float: left;
