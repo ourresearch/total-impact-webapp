@@ -123,6 +123,23 @@ function Item(dict, itemView) {
         return newObj1
     }
 
+    this.getsBigAward = function(raw, minForAward, lowerBound) {
+
+        console.log("does this get an award?")
+        console.log(raw)
+        console.log(minForAward)
+        console.log(lowerBound)
+        if (lowerBound >= 75 && raw >= minForAward) {
+                return true
+        }
+        else if (raw === "Yes") { // hack for F1000
+            return true
+        }
+        else {
+            return false
+        }
+    }
+
     this.makeAwards = function(engagementTable) {
         var any = {}
         var big = {}
@@ -135,13 +152,15 @@ function Item(dict, itemView) {
                 for (var k=0; k < cell.metrics.length; k++) {
                     var metric = cell.metrics[k]
                     var cellName = row.audience+"."+cell.engagementType
+                    var raw = metric.values.raw
+                    var minForAward = metric.minNumForAward
 
                     if (metric.values.raw && metric.display=="badge") {
 
                         // add a big badge if we can
                         if (metric.percentiles !== undefined) {
-                            if (metric.percentiles.CI95_lower >= 75 &&
-                                metric.values.raw >= metric.minNumForAward) {
+                            var lowerBound = metric.percentiles.CI95_lower
+                            if (this.getsBigAward(raw, minForAward, lowerBound) ) {
                                 big[cellName] = {
                                     audience: row.audience,
                                     engagementType:cell.engagementType,
