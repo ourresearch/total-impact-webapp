@@ -2,7 +2,6 @@
 function Genre(name) {
     this.name = name
     this.items = []
-    console.log("new genre made. name: " + this.name)
 
     this.render = function(){
 
@@ -51,16 +50,12 @@ function GenreList(items) {
     }
 
     this.render = function(){
-        console.log("rendering genre list")
-        console.time("render genre")
         var genres = []
         for (var thisGenreName in this.genres){
             var renderedGenre = this.genres[thisGenreName].render()
             genres.push(renderedGenre)
         }
         $("#metrics div.wrapper").append(genres)
-        console.log("done rendering genre list")
-        console.timeEnd("render genre")
     }
 }
 
@@ -170,7 +165,6 @@ function CollController(coll, collViews) {
         return false;
     })
     $("div.btn-group.download button").click(function(){
-        console.log("click")
         location.href = $(this).val()
     })
     $("div#num-items a").toggle(

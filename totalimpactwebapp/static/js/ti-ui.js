@@ -327,6 +327,7 @@ createCollectionInit = function(){
 
 $(document).ready(function(){
 
+
     $.cookie.defaults = {path: "/", raw: 1}
     userViews = new UserViews()
     user = new User(userViews)

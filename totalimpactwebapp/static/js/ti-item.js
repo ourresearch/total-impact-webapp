@@ -22,17 +22,17 @@ function Item(dict, itemView) {
         "mendeley:developing_countries":["scholars", "saved", 0, 0],
         "mendeley:groups":["", "", 0, 0],
         "mendeley:readers":["scholars", "saved", "badge", 3],
-        "plos:crossref": [],                    // figure it out
-        "plos:html_views": [],                  // figure it out
-        "plos:pdf_views": [],                   // figure it out
-        "plos:pmc_abstract": ["", "", 0],
-        "plos:pmc_figure": ["", "", 0],
-        "plos:pmc_full-text": ["", "", 0],
-        "plos:pmc_pdf": ["", "", 0],
-        "plos:pmc_supp-data": ["", "", 0],
-        "plos:pmc_unique-ip": ["", "", 0],
-        "plos:pubmed_central": ["", "", 0],
-        "plos:scopus": [],                      // figure it out
+        "plosalm:crossref": [],                    // figure it out
+        "plosalm:html_views": ["public", "viewed", "badge", 3],
+        "plosalm:pdf_views": ["scholars", "viewed", "badge", 3],
+        "plosalm:pmc_abstract": ["", "", 0],
+        "plosalm:pmc_figure": ["", "", 0],
+        "plosalm:pmc_full-text": ["", "", 0],
+        "plosalm:pmc_pdf": ["", "", 0],
+        "plosalm:pmc_supp-data": ["", "", 0],
+        "plosalm:pmc_unique-ip": ["", "", 0],
+        "plosalm:pubmed_central": ["", "", 0],
+        "plosalm:scopus": [],                      // figure it out
         "pubmed:f1000": ["scholars", "recommended", "badge", 1],
         "pubmed:pmc_citations": ["scholars", "cited", "badge", 3],
         "pubmed:pmc_citations_editorials": ["scholars", "recommended", "zoom", 0],
@@ -273,18 +273,6 @@ function Item(dict, itemView) {
         return metricsDict
     }
 
-    this.fixPlosMetricName = function(metricsDict) {
-        // sometime plos metrics have "plos:" in front, sometimes "plosalm:". ick.
-        for(var metricName in metricsDict){
-            if (metricName.indexOf("plos") === 0) {
-                var newKey = metricName.replace("plos:", "plosalm:")
-                metricsDict[newKey] = metricsDict[metricName]
-                delete metricsDict[metricName]
-            }
-        }
-        return metricsDict
-    }
-
 
 
 
@@ -293,9 +281,12 @@ function Item(dict, itemView) {
     // constructor
     this.dict = dict
     this.dict.metrics = this.getMetricPercentiles(this.dict.metrics, "WoS")
-    this.dict.metrics = this.fixPlosMetricName(this.dict.metrics)
+    console.log(this.dict.biblio.title)
+
     this.dict.metrics = this.add_derived_metrics(this.dict.metrics)
     this.dict.engagementTable = this.makeEngagementTable(this.dict, metricInfo)
+    console.log(this.dict.engagementTable)
+
     this.dict.awards = this.makeAwards(dict.engagementTable)
 
     this.itemView = itemView
@@ -353,33 +344,39 @@ function ItemView() {
 
 
     this.findBarLabelOffsets = function(start, end) {
-        var maxWidth = 20
-        // fix the numbers overlapping when the range is too narrow
-        //only works on the ends...not ideal
-        var startNumberOffset = 0
-        if (startValue - 80 > 0) var startNumberOffset = (startValue - 80) * -1
+        var minWidth = 25
+        var width = end - start
+        if (width < minWidth) {
+            var widthToAdd = width - minWidth
+            var offset = widthToAdd / 2
+        }
+        else {
+            var offset = 0
+        }
 
-        var endNumberOffset = 0
-        if (20 - endValue >  0) var endNumberOffset = (10 - endValue) * -1
+        return offset
     }
 
 
     this.renderZoom = function(engagementTable) {
         var zoom$ = $(ich.zoomTable(engagementTable, true))
+        var thisThing = this
         zoom$.find("div.metric-perc-range.ci").each(function(){
 
             // where does the bar go?
             var ciStartValue = $(this).find("span.endpoint.start span.value").text()
             var ciEndValue = $(this).find("span.endpoint.end span.value").text()
 
+            var offset = thisThing.findBarLabelOffsets(ciStartValue, ciEndValue)
+
             $(this).css(
                 {
                     "margin-left":ciStartValue+"%",
                     "margin-right":(100 - ciEndValue)+"%"
                 })
-                .find("span.endpoint.start").css("left", 0+"px")
+                .find("span.endpoint.start").css("left", offset+"px")
                 .end()
-                .find("span.endpoint.end").css("right", 0+"px")
+                .find("span.endpoint.end").css("right", offset+"px")
         })
 
         return zoom$
@@ -403,7 +400,7 @@ function ItemView() {
         item$.find("div.biblio").append(biblio$)
 
         var zoom$ = this.renderZoom(item.engagementTable, true)
-        item$.find("div.zoom").append(zoom$).hide()
+        item$.find("div.zoom").append(zoom$)
 
         var badges$ = this.renderBadges(item.awards)
         item$.find("div.badges").append(badges$)
@@ -426,6 +423,6 @@ function ItemController(){
            .slideToggle(500, function(){
                             $(this).parents("li.item").toggleClass("zoomed")
                         })
-           .end()
+        return false
         })
 }
