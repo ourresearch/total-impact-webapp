@@ -38,7 +38,6 @@ function Item(dict, itemView) {
         "pubmed:pmc_citations_editorials": ["scholars", "recommended", "zoom", 0],
         "pubmed:pmc_citations_reviews": ["scholars", "cited", "zoom", 0],
         "scienceseeker:blog_posts": ["scholars", "discussed", "zoom", 0],
-        "researchblogging:blogs": ["scholars", "discussed", 0, 0],
         "slideshare:comments": ["public", "discussed", "badge", 3],
         "slideshare:downloads": ["public", "viewed", "badge", 3],
         "slideshare:favorites": ["public", "saved", "badge", 3],
@@ -125,7 +124,7 @@ function Item(dict, itemView) {
 
     this.makeAwards = function(engagementTable) {
         var any = {}
-        var big = {}
+        var over50perc = {}
         for (var i=0; i < engagementTable.audiences.length; i++) {
             var row = engagementTable.audiences[i]
 
@@ -142,7 +141,7 @@ function Item(dict, itemView) {
                         if (metric.percentiles !== undefined) {
                             if (metric.percentiles.CI95_lower >= 75 &&
                                 metric.values.raw >= metric.minNumForAward) {
-                                big[cellName] = {
+                                over50perc[cellName] = {
                                     audience: row.audience,
                                     engagementType:cell.engagementType,
                                     metric: metric
@@ -151,7 +150,7 @@ function Item(dict, itemView) {
                         }
 
                         // quit if there's a big badge; can't improve on that.
-                        if (cellName in big) {
+                        if (cellName in over50perc) {
                             continue
                         }
 
@@ -166,16 +165,12 @@ function Item(dict, itemView) {
             }
         }
 
-        any = this.subractKeys(any, big)
+        any = this.subractKeys(any, over50perc)
 
         return {
             any: this.objToArr(any),
-            big: this.objToArr(big)
+            over50perc: this.objToArr(over50perc)
         }
-    }
-    
-    this.hasAwards = function() {
-        return this.dict.awards.any.length || this.dict.awards.big.length
     }
 
 
@@ -292,7 +287,7 @@ function Item(dict, itemView) {
 
     // constructor
     this.dict = dict
-    this.dict.metrics = this.getMetricPercentiles(this.dict.metrics, "WoS")
+    this.dict.metrics = this.getMetricPercentiles(this.dict.metrics, "nih")
     this.dict.metrics = this.fixPlosMetricName(this.dict.metrics)
     this.dict.metrics = this.add_derived_metrics(this.dict.metrics)
     this.dict.engagementTable = this.makeEngagementTable(this.dict, metricInfo)
@@ -381,14 +376,13 @@ function ItemView() {
                 .end()
                 .find("span.endpoint.end").css("right", 0+"px")
         })
-
         return zoom$
     }
 
     this.renderBadges = function(awards) {
         var badges$ = $(ich.badgesTemplate(
             {
-               big: awards.big,
+               over50perc: awards.over50perc,
                any:awards.any
             },
             true))

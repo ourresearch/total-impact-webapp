@@ -1,49 +1,4 @@
 
-function Genre(name) {
-    this.name = name
-    this.items = []
-    console.log("new genre made. name: " + this.name)
-
-    this.render = function(){
-        var genre$ = $(ich.genreTemplate({name:this.name}, true))
-
-        var renderedItems = []
-        for (var i=0;i<this.items.length;i++){
-            renderedItems.push(this.items[i].render())
-        }
-        genre$.append(renderedItems)
-        return genre$
-    }
-    return true
-}
-
-function GenreList(items) {
-    this.genres = {}
-
-    // put the items in the correct genre objects
-    for (var i=0; i<items.length; i++){
-        var genreName = items[i].dict.biblio.genre
-        if (!this.genres[genreName]) {
-            this.genres[genreName] = new Genre(genreName)
-        }
-        this.genres[genreName].items.push(items[i])
-
-
-    }
-
-    this.render = function(){
-        console.log("rendering genre list")
-        console.time("render genre")
-        var genres = []
-        for (var thisGenreName in this.genres){
-            var renderedGenre = this.genres[thisGenreName].render()
-            genres.push(renderedGenre)
-        }
-        $("#metrics div.wrapper").append(genres)
-        console.log("done rendering genre list")
-        console.timeEnd("render genre")
-    }
-}
 
 function Coll(collViews, user){
     this.views = collViews;
@@ -108,7 +63,7 @@ function CollViews() {
 
     this.badgesWeight = function(dict) {
         var weight = 0
-        weight += dict.awards.big.length * 10
+        weight += dict.awards.over50perc.length * 10
         weight += dict.awards.any.length * 1
         return weight
     }
@@ -132,8 +87,19 @@ function CollViews() {
             return thisNow.badgesWeight(b.dict) -  thisNow.badgesWeight(a.dict)
         })
 
-        var genreList = new GenreList(itemObjs)
-        genreList.render()
+        console.log(itemObjs)
+
+        $("ul#items").empty()
+        console.log("looking through the item objects")
+        for (var i=0; i<itemObjs.length; i++){
+            // make the set of all newly-rendered items
+            // this is a very slow way to do this...should bundle together,
+            // then make one replace.
+            var genre = itemObjs[i].dict.biblio.genre
+            var genreItems = "div." + genre + " ul#items"
+            $(genreItems).append(itemObjs[i].render())
+            $("#metrics div." + genre).show()  // would ideally only do this once
+        }
     }
 }
 
