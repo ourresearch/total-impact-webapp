@@ -14,7 +14,7 @@ function Genre(name) {
         genre$.append(renderedItems)
         return genre$
     }
-    return true
+    return true 
 }
 
 function GenreList(items) {
