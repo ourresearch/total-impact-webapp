@@ -396,12 +396,6 @@ function ItemView() {
         var biblio$ = this.renderBiblio(item.biblio, url)
         item$.find("div.biblio").append(biblio$)
 
-        var zoom$ = this.renderZoom(item.engagementTable, true)
-        item$.find("div.zoom").append(zoom$).hide()
-
-        var badges$ = this.renderBadges(item.awards)
-        item$.find("div.badges").append(badges$)
-
         return item$
     }
 }

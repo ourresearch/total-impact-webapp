@@ -220,6 +220,7 @@ li.item div.item-header div.badges ul.ti-badges li.ti-badge.lil-badge.public {
   color: #4daf4a;
 }
 li.item div.zoom {
+  display: none;
   float: left;
   clear: left;
   margin: 5px 0 35px;
