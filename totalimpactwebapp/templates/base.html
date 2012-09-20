@@ -186,32 +186,6 @@
                <span href="#" class="item-delete-button">delete</span>
                <span href="#" class="item-expand-button">click to expand</span>
             </div>
-<<<<<<< Updated upstream
-            <div class="biblio"></div>
-            <div class="badges"></div>
-         </div>
-         <div class="zoom"></div>
-      </li>
-   </script>
-
-   <script id="badgesTemplate" type="text/html">
-      <ul class="ti-badges">
-
-         {{#over50perc}}
-         <li class="label ti-badge big-badge {{audience}}">
-            <span class="modifier">highly</span>
-            <span class="engagement-type">{{engagementType}}</span>
-         </li>
-         {{/over50perc}}
-
-         {{#any}}
-         <li class="label ti-badge lil-badge {{audience}}">
-            <span class="engagement-type">{{engagementType}}</span>
-         </li>
-         {{/any}}
-      </ul>
-   </script>
-=======
             <div class="biblio"><!--gets added in later--></div>
             <div class="badges">
                <ul class="ti-badges">
@@ -221,7 +195,6 @@
                      <span class="engagement-type">{{engagementType}}</span>
                   </li>
                   {{/awards.big}}
->>>>>>> Stashed changes
 
                   {{#awards.any}}
                   <li class="label ti-badge lil-badge {{audience}}">
@@ -286,10 +259,12 @@
    </script>
 
 
-
-
-   <script id="zoomTableRow" class="partial" type="text/html">
-      <tr>{{ row</tr>
+   <script id="genreTemplate" type="text/html">
+      <div class="genre {{name}}">
+         <h3><span>{{name}}</span></h3>
+         <ul class="items">
+         </ul>
+      </div>
    </script>
 
 
