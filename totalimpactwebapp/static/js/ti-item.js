@@ -173,7 +173,7 @@ function Item(dict, itemView) {
             big: this.objToArr(big)
         }
     }
-    
+
     this.hasAwards = function() {
         return this.dict.awards.any.length || this.dict.awards.big.length
     }
