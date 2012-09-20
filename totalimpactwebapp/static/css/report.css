@@ -101,6 +101,17 @@ div#metrics h3 {
   font-weight: bold;
 }
 div#metrics div.genre {
+  margin-bottom: 50px;
+  float: left;
+}
+div#metrics div.genre h4.plus-more {
+  float: left;
+  font-style: italic;
+  font-size: 14px;
+  color: #777;
+  margin: 20px 0;
+}
+div#metrics div.genre ul.items.inactive {
   display: none;
 }
 li.item {

@@ -5,13 +5,32 @@ function Genre(name) {
     console.log("new genre made. name: " + this.name)
 
     this.render = function(){
+
+
         var genre$ = $(ich.genreTemplate({name:this.name}, true))
 
         var renderedItems = []
+        var itemsWithoutActivity = []
         for (var i=0;i<this.items.length;i++){
-            renderedItems.push(this.items[i].render())
+            var thisItem = this.items[i]
+            if (thisItem.hasAwards()) {
+                renderedItems.push(thisItem.render())
+            }
+            else {
+                itemsWithoutActivity.push(thisItem.render())
+            }
         }
-        genre$.append(renderedItems)
+        genre$.find("ul.items.active").append(renderedItems)
+        genre$.find("ul.items.inactive").append(itemsWithoutActivity)
+        if (itemsWithoutActivity.length) {
+            genre$.find("h4.plus-more span.value")
+                .html(itemsWithoutActivity.length)
+        }
+        else {
+            genre$.find("h4.plus-more").hide()
+
+        }
+
         return genre$
     }
     return true
