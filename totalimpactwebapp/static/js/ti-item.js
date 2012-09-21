@@ -41,7 +41,7 @@ function Item(dict, itemView) {
         "researchblogging:blogs": ["scholars", "discussed", 0, 0],
         "slideshare:comments": ["public", "discussed", "badge", 3],
         "slideshare:downloads": ["public", "viewed", "badge", 3],
-        "slideshare:favorites": ["public", "saved", "badge", 3],
+        "slideshare:favorites": ["public", "recommended", "badge", 3],
         "slideshare:views": ["public", "viewed", "badge", 3],
         "topsy:influential_tweets": ["public", "discussed", "zoom", 0],
         "topsy:tweets": ["public", "discussed", "badge", 3],
