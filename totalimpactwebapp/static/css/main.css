@@ -24,6 +24,27 @@ body {
   height: 100%;
   padding-bottom: 0;
 }
+body div#namechange {
+  font-size: 16px;
+  background: #444;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+}
+body div#namechange em {
+  font-style: normal;
+  color: #ff4e00;
+}
+body div#namechange a.dismiss {
+  float: right;
+  padding-right: 20px;
+  color: #fff;
+  font-size: 14px;
+  border-bottom: #000;
+}
+body div#namechange a.dismiss:hover {
+  color: #ff4e00;
+}
 ul,
 li {
   padding: 0;
@@ -46,6 +67,7 @@ body a:link {
 }
 body a:hover {
   text-decoration: underline;
+  color: #ff4e00;
 }
 .btn-primary {
   font-family: rokkitt, cambria, serif;
@@ -53,7 +75,7 @@ body a:hover {
 .wrapper {
   margin: 0 auto;
   display: block;
-  width: 1000px;
+  width: 1030px;
 }
 .clearfix {
   clear: both;
@@ -68,8 +90,8 @@ a {
 }
 p,
 ul {
-  line-height: 1.4;
-  font-size: 18px;
+  line-height: 1.5;
+  font-size: 16px;
 }
 /* navbar
 *****************************************************************************
@@ -96,17 +118,29 @@ div.navbar .navbar-inner {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   padding-right: 0;
+  height: 62px;
+  background: #fff;
+}
+div.navbar .navbar-inner a.brand {
+  margin-left: -10px;
 }
 div.navbar .navbar-inner .nav {
   position: static;
 }
 div.navbar a.brand img {
-  height: 40px;
-  margin-top: -8px;
+  height: 35px;
+  margin-top: 0;
+}
+div.navbar li {
+  margin-top: 10px;
+}
+div.navbar li.divider-vertical {
+  height: 35px;
+  margin-top: 15px;
 }
 div.navbar li.acct-mgt#logged-in {
   display: none;
@@ -124,29 +158,29 @@ div.navbar li.acct-mgt#logged-in span#logout-link {
 div.navbar li.acct-mgt#logged-in span#logout-link:hover {
   color: #ff4e00;
 }
-div.navbar li.acct-mgt .control-group {
+div.navbar li .control-group {
   margin: 0;
 }
-div.navbar li.acct-mgt div.dropdown-menu {
+div.navbar li div.dropdown-menu {
   padding: 15px 20px 20px;
   background: url(../img/grey-noise.png);
 }
-div.navbar li.acct-mgt div.dropdown-menu::after {
+div.navbar li div.dropdown-menu::after {
   border-bottom: 6px solid #E2E2E2;
 }
-div.navbar li.acct-mgt div.dropdown-menu .btn-primary {
+div.navbar li div.dropdown-menu .btn-primary {
   margin-top: 0;
   float: right;
   font-size: 20px;
 }
-div.navbar li.acct-mgt div.dropdown-menu span.help-inline {
+div.navbar li div.dropdown-menu span.help-inline {
   height: 22px;
   min-width: 40px;
   float: right;
   font-family: helvetica, aria, sans-serif;
   font-size: 12px;
 }
-div.navbar li.acct-mgt div.dropdown-menu span.help-inline img {
+div.navbar li div.dropdown-menu span.help-inline img {
   height: 22px;
   float: right;
 }
@@ -178,12 +212,9 @@ div.navbar li#logged-in div.dropdown-menu img.loading {
 div.navbar a#uservoice {
   position: relative;
   display: block;
-  margin-top: -22px;
+  margin-top: -26px;
   z-index: 3;
   padding-right: 0;
-}
-div.navbar a#uservoice:hover {
-  margin-top: -21px;
 }
 /* page header
 *****************************************************************************
@@ -199,7 +230,7 @@ div#page-header {
 div#page-header h2 {
   font-family: rokkitt, georgia, sans-serif;
   color: #fff;
-  font-size: 40px;
+  font-size: 30px;
   margin: 0;
   float: none;
 }
@@ -216,7 +247,7 @@ div.main {
   font-size: 18px;
   padding-bottom: 100px;
   color: #333;
-  min-height: 400px;
+  min-height: 350px;
 }
 div.main h3:first {
   margin-top: 0;
@@ -320,12 +351,11 @@ p#example-collection a {
 /* the "selling points" section
 *************************************************/
 div#selling-points {
-  background-color: #444;
+  background-color: #333;
   padding: 20px 0;
   margin-top: -34px;
-  min-height: 350px;
+  min-height: 300px;
   border-top: 1px solid #fff;
-  background-image: url(../img/selling-points-bg.png);
   background-position: bottom;
   background-repeat: repeat-x;
 }
@@ -341,7 +371,7 @@ div#selling-points p {
   margin-right: 3%;
   border-right: 1px dotted #555;
   list-style-type: none;
-  min-height: 350px;
+  min-height: 300px;
 }
 #selling-points ul li:last-child {
   border-right: none;
@@ -567,79 +597,15 @@ div#footer img {
 div#footer-text {
   padding-top: 12px;
 }
-/** TinyBox (modal js dialog) styles
-*******************************************************************************/
-.tbox {
-  position: absolute;
-  display: none;
-  padding: 14px 17px;
-  z-index: 900;
+div.tooltip {
+  font-size: 12px;
+  width: 140px;
+  line-height: 1.5;
 }
-.tbox h1 {
-  margin: 0;
-  font-size: 25px;
-  color: #FF4E00;
+div.tooltip.in {
+  opacity: 1;
 }
-.tinner {
-  padding: 15px 15px 30px 15px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  background: #ffffff url(../img/ajax-loader.gif) no-repeat 50% 50%;
-  border-right: 1px solid #333;
-  border-bottom: 1px solid #333333;
-}
-.tmask {
-  position: absolute;
-  display: none;
-  top: 0px;
-  left: 0px;
-  height: 100%;
-  width: 100%;
-  background: #000;
-  z-index: 800;
-}
-.tclose {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  background: url(../img/tinybox-close.png) no-repeat;
-}
-.tclose:hover {
-  background-position: 0 -30px;
-}
-#error {
-  background: #ff6969;
-  color: #fff;
-  text-shadow: 1px 1px #cf5454;
-  border-right: 1px solid #000;
-  border-bottom: 1px solid #000;
-  padding: 0;
-}
-#error .tcontent {
-  padding: 10px 14px 11px;
-  border: 1px solid #ffb8b8;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-}
-#success {
-  background: #2ea125;
-  color: #fff;
-  text-shadow: 1px 1px #1b6116;
-  border-right: 1px solid #000;
-  border-bottom: 1px solid #000;
-  padding: 10;
-  -moz-border-radius: 0;
-  border-radius: 0;
-}
-#bluemask {
-  background: #4195aa;
-}
-#frameless {
-  padding: 0;
-}
-#frameless .tclose {
-  left: 6px;
+div.tooltip div.tooltip-inner {
+  padding-top: 8px;
+  padding-bottom: 8px;
 }

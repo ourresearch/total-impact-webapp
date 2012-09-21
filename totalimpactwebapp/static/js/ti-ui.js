@@ -4,7 +4,7 @@ $.ajaxSetup ({
 if (!window.console) {
     console = {log: function() {}};
 }
-
+var tiLinkColor = "#FF4E00"
 var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
 var ajaxLoadImgTransparent = "<img class='loading' src='../static/img/ajax-loader-transparent.gif' alt='loading...' />";
 var collectionAliases = []
@@ -323,11 +323,29 @@ createCollectionInit = function(){
     });
 }
 
+function showNameChangeBanner(){
+    if ($.cookie("hasDismissedNamechange")){
+        return false
+    }
+    else {
+        $("<div id='namechange'>We've got a new focus and a new name: total-impact is now <em>ImpactStory!</em><a class='dismiss'>dismiss &times;</a></div>")
+            .prependTo("body")
+            .find("a.dismiss")
+            .click(function(){
+                           $(this).parent().slideUp()
+                           $.cookie("hasDismissedNamechange", true)
+                       })
+    }
+
+}
+
 
 
 $(document).ready(function(){
-
     $.cookie.defaults = {path: "/", raw: 1}
+
+    showNameChangeBanner()
+
     userViews = new UserViews()
     user = new User(userViews)
     userController = new UserController(user, userViews);
@@ -337,12 +355,8 @@ $(document).ready(function(){
     coll = new Coll(collViews)
     collController = new CollController(coll, collViews);
 
-    // dialog for supported IDs
-    $("div#paste-ids legend a").click(function(){
-        // get the contents
-        TINY.box.show({url:'../static/whichartifacts.html'})
-        return false;
-    });
+    itemController = new ItemController()
+
 
     // table of contents
     if ($("#toc")[0]) {

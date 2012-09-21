@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
    <meta charset="utf-8">
-   <title>total-impact: {{ page_title }}</title>
-   <meta name="description" content="Total Impact">
-   <meta name="author" content="Total Impact">
+   <title>ImpactStory: {{ page_title }}</title>
+   <meta name="description" content="ImpactStory">
+   <meta name="author" content="ImpactStory">
 
    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
    <!--[if lt IE 9]>
@@ -20,13 +20,11 @@
    <link rel="icon" type="image/ico" href="/static/img/favicon.ico" />
 
    <script type="text/javascript">var api_root='{{ api_root }}'</script>
-   <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-   <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>   <script type="text/javascript" src="/static/js/bootstrap.js"></script>
    <script type="text/javascript" src="/static/js/json2.min.js"></script>
    <script type="text/javascript" src="/static/js/tinybox.js"></script>
    <script type="text/javascript" src="/static/js/hmac-sha1.js"></script>
    <script type="text/javascript" src="/static/js/jquery.headerlinks.js"></script>
-   <script type="text/javascript" src="/static/js/jquery.tooltip.js"></script>
    <script type="text/javascript" src="/static/js/jquery.color.js"></script>
    <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
    <script type="text/javascript" src="/static/js/icanhaz.min.js"></script>
@@ -57,7 +55,7 @@
 <div id="container">
    <div class="navbar">
       <div class="navbar-inner">
-         <a class="brand" href="/"><img src="/static/img/ti_logo2.png" alt="total-impact logo" /></a>
+         <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory logo" /></a>
          <ul class="nav pull-right">
             <li><a href="/create">create</a></li>
 
@@ -74,7 +72,7 @@
                <a href="#"  class="dropdown-toggle" data-toggle="dropdown">follow</a>
                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                   <li><a href="http://total-impact.tumblr.com">blog</a></li>
-                  <li><a href="http://twitter.com/#!/totalimpactorg">twitter</a></li>
+                  <li><a href="http://twitter.com/#!/impactstoryit">twitter</a></li>
                </ul>
             </li>
             <li class="divider-vertical"></li>
@@ -127,7 +125,7 @@
          <a href="http://sloan.org/"><img src="{{ url_for('static', filename='img/sloan-logo.jpg') }}" width="200"/></a>
          <div id="footer-text">
             <p>total-impact is supported by the <a href="http://sloan.org/">Alfred P. Sloan Foundation</a> and <a href="about#history">others. </a></p>
-            <p>Follow us on <a href="http://total-impact.tumblr.com">Tumblr</a>, <a href="https://twitter.com/#!/totalimpactorg">Twitter</a>, or <a href="https://github.com/total-impact">GitHub</a>.
+            <p>Follow us on <a href="http://total-impact.tumblr.com">Tumblr</a>, <a href="https://twitter.com/#!/totalimpactdev">Twitter</a>, or <a href="https://github.com/total-impact">GitHub</a>.
          </div>
       </div>
    </div> <!-- end footer -->
@@ -139,34 +137,28 @@
    <!-- These templates are for rendering items with javascript using
   Mustache -->
 
-
-
-
-
    <script id="title" class="partial" type="text/html">
-      <h5>
+      <h5 class="{{activeAudiences}}">
+         <span class="title">{{title}}</span>
          {{#url}}
-         <a class="url title" href="{{ url }}">{{ title }}</a>
-         {{/url}}
-         {{^url}}
-         {{ title }}
+         <a class="url title" href="{{ url }}"><span class="help-text">linkout</span></a>
          {{/url}}
       </h5>
    </script>
 
    <script id="biblio_dataset" type="text/html">
-      {{#year}}
-      <span class="year">{{ year }}</span>
-      {{/year}}
       {{>title}}
+      {{#year}}
+      <span class="year">({{ year }})</span>
+      {{/year}}
       <span class="repo">{{ repository }}</span>
    </script>
    <script id="biblio_article" type="text/html">
-      <span class="authors">{{ authors }}</span>
-      {{#year}}
-      <span class="year">{{ year }}</span>
-      {{/year}}
       {{>title}}
+      {{#year}}
+      <span class="year">({{ year }})</span>
+      {{/year}}
+      <span class="authors">{{ authors }}</span>
       <span class="repo">{{ journal }}</span>
    </script>
    <script id="biblio_webpage" type="text/html">
@@ -177,8 +169,8 @@
       <span class="repo">Slideshare</span>
    </script>
    <script id="biblio_software" type="text/html">
-      <span class="year">{{ year }}</span>
       {{>title}}
+      <span class="year">({{ year }})</span>
       <span class="descr">{{ description }}</span>
       <span class="repo">GitHub</span>
    </script>
@@ -186,33 +178,108 @@
       {{>title}}
    </script>
 
-   <script id="item" type="text/html">
+   <script id="displayItem" type="text/html">
       <li class="item" id="{{ _id }}">
-         <div class="biblio"><a href="#" class="item-delete-button">delete</a></div>
-         <ul class="metrics">{{#metricsArr}}
-            <li>
-               <a href="{{provenance_url}}">
-                  <span class="last-update">{{ ts }}</span>
-                  <span class="metric-value">{{ value }}</span>
-                            <span class="metric-name-img">
-                                <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
-                                <span class="metric-name">{{ static_meta.provider }} {{ static_meta.display_name }}</span>
-                            </span>
-               </a>
-            </li>
-            {{/metricsArr}}</ul>
+         <div class="item-header">
+            <div class="item-controls">
+               <span href="#" class="item-delete-button">delete</span>
+               <span href="#" class="item-expand-button">click to expand</span>
+            </div>
+            <div class="biblio"></div>
+            <div class="badges"></div>
+         </div>
+         <div class="zoom"><a href="#" class="item-help"><span class="icon"></span>What do these numbers mean?</a></div>
       </li>
    </script>
 
-   <script id="commits_template" type="text/html">
-      <ul> {{#commits}}
-         <li>
-            <img src="{{ img }}" width="24" height="24">
-            <a class="date" href="{{ link }}">{{ date }}</a>
-            <span class="message">{{ message }}</span>
-         </li>
-         {{/commits}}</ul>
+   <script id="badgesTemplate" type="text/html">
+      <ul class="ti-badges">
+
+         {{#big}}
+         <li><a href="#" class="label ti-badge big-badge {{audience}}" rel="tooltip" title='75th percentile (n>{{minForAward}}) in {{engagementTypeNoun}} by {{audience}}'>
+            <span class="modifier">highly</span>
+            <span class="engagement-type">{{engagementType}}</span>
+         </a></li>
+         {{/big}}
+
+         {{#any}}
+         <li><a href="#" class="label ti-badge lil-badge {{audience}}" rel="tooltip"  title='Has been {{engagementType}} by {{audience}}'>
+            <span class="engagement-type">{{engagementType}}</span>
+         </a></li>
+         {{/any}}
+      </ul>
    </script>
+
+   <script id="zoomTable" type="text/html">
+      {{#audiences}}
+      <div class="audience {{ audience }}">
+         <!--<h5 >{{ audience }}</h5>-->
+         <ul class="engagement-types">{{#cells}}
+            <li class="engagement-type {{engagementType}}">
+               <h6>
+                  <span class="descr">
+                     <span class="engagement-type">{{engagementType}}</span> by
+                     <span class="audience">{{ audience }}</span>
+                  </span>
+               </h6>
+               <ul class="metrics">{{#metrics}}
+                  <li>
+                     <div class="meta">
+                        <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
+                        <a class="value-and-name" href="{{provenance_url}}">
+                           <span class="metric-value value">{{ values.raw }}</span>
+                           <span class="metric-name">{{ static_meta.display_name }}</span>
+                        </a>
+                     </div>
+
+                     <div class="line">
+                        <!-- if we've got ranges, show 'em, along sizeable div to show range -->
+                        {{#percentiles}}
+                        <div class="metric-perc-range ci">
+                           <span class="start endpoint"><span class="value">{{CI95_lower}}</span></span>
+                           <span class="bar"></span>
+                           <span class="end endpoint"><span class="value">{{CI95_upper}}</span></span>
+                        </div>
+                        <div class="metric-perc-range estimate">
+                           <span class="start endpoint"><span class="value">{{estimate_lower}}</span></span>
+                           <span class="bar"></span>
+                           <span class="end endpoint"><span class="value">{{estimate_upper}}</span></span>
+                        </div>
+                        {{/percentiles}}
+
+                        <!-- if no ranges, show an NA -->
+                        {{^percentiles}}
+                        <div class="percentile-fail">
+                              <span class="no-perc">no percentile data.</span>
+                        </div>
+                        {{/percentiles}}
+                     </div>
+                  </li>
+                  {{/metrics}}</ul>
+               </li>
+         {{/cells}}</ul>
+      </div>
+      {{/audiences}}
+   </script>
+
+
+
+
+   <script id="genreTemplate" type="text/html">
+      <div class="genre {{name}}">
+         <h3><span>{{name}}</span></h3>
+         <ul class="items active">
+         </ul>
+         <h4 class="plus-more">
+            Plus <span class="value"></span> items with no metrics.
+            <!--<span class="show-hide">(show)</span>-->
+         </h4>
+         <ul class="items inactive">
+         </ul>
+      </div>
+   </script>
+
+
 
 </div>
 {% endraw %}

@@ -113,7 +113,7 @@
 
         function getNewItemAndUpdateReport(tiid, interval) {
             jQuery.ajax({
-                       url:'http://api.total-impact.org/item/' + tiid,
+                       url:'http://api.impactstory.it/item/' + tiid,
                        type:"GET",
                        dataType:"json",
                        contentType:"application/json; charset=utf-8",
@@ -174,7 +174,7 @@
 
 
         jQuery.ajaxSetup({ cache:false });
-        var ajax_load = '<img id="ti-loading" src="http://total-impact.org/static/img/ajax-loader.gif" alt="loading..." />';
+        var ajax_load = '<img id="ti-loading" src="http://impactstory.it/static/img/ajax-loader.gif" alt="loading..." />';
 
         jQuery(document).ready(function ($) {
             requestStylesheet("http://total-impact.org/static/css/embed.css");
@@ -185,9 +185,8 @@
             $("div#ti-data").html(ajax_load + " Loading...");
             var alias = getAlias($("span#ti-id").html());
 
-            console.log("getting the item tiid");
             $.ajax({
-                url:"http://api.total-impact.org/item/" + alias[0] + "/" + alias[1],
+                url:"http://api.impactstory.it/item/" + alias[0] + "/" + alias[1],
                 type:"POST",
                 dataType:"json",
                 contentType:"application/json; charset=utf-8",

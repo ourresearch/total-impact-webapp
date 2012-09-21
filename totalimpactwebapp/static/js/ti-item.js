@@ -1,36 +1,344 @@
 
+
 function Item(dict, itemView) {
 
-    this.dict = dict
-    this.itemView = itemView
-
-    this.render = function() {
-        console.log("here is the item I've got:");
-        console.log(this.dict)
-        return this.itemView.render(dict)
+    // [<audience>, <engagement type>, <display level>]
+    var metricInfo = {
+        "citeulike:bookmarks": ["scholars", "saved", "badge", 3],
+        "delicious:bookmarks": ["public", "saved", "badge", 3],
+        "dryad:most_downloaded_file": ["scholars", "viewed", "badge", 100],
+        "dryad:package_views": ["scholars", "viewed", "badge", 100],
+        "dryad:total_downloads": ["scholars", "viewed", "badge", 100],
+        "facebook:shares":["public", "discussed", "badge", 3],
+        "facebook:comments":["public", "discussed", "badge", 3],
+        "facebook:likes":["public", "discussed", "badge", 3],
+        "facebook:clicks":["public", "discussed", "badge", 3],
+        "github:forks":["public", "cited", "badge", 3],
+        "github:watchers":["public", "saved", "badge", 3],
+        "mendeley:career_stage":["", "", 0, 0],
+        "mendeley:country":["", "", 0, 0],
+        "mendeley:discipline":["", "", 0, 0],
+        "mendeley:student_readers":["scholars", "saved", 0, 0],
+        "mendeley:developing_countries":["scholars", "saved", 0, 0],
+        "mendeley:groups":["", "", 0, 0],
+        "mendeley:readers":["scholars", "saved", "badge", 3],
+        "plosalm:crossref": [],                    // figure it out
+        "plosalm:html_views": ["public", "viewed", "badge", 3],
+        "plosalm:pdf_views": ["scholars", "viewed", "badge", 3],
+        "plosalm:pmc_abstract": ["", "", 0],
+        "plosalm:pmc_figure": ["", "", 0],
+        "plosalm:pmc_full-text": ["", "", 0],
+        "plosalm:pmc_pdf": ["", "", 0],
+        "plosalm:pmc_supp-data": ["", "", 0],
+        "plosalm:pmc_unique-ip": ["", "", 0],
+        "plosalm:pubmed_central": ["", "", 0],
+        "plosalm:scopus": [],                      // figure it out
+        "pubmed:f1000": ["scholars", "recommended", "badge", 1],
+        "pubmed:pmc_citations": ["scholars", "cited", "badge", 3],
+        "pubmed:pmc_citations_editorials": ["scholars", "recommended", "zoom", 0],
+        "pubmed:pmc_citations_reviews": ["scholars", "cited", "zoom", 0],
+        "scienceseeker:blog_posts": ["scholars", "discussed", "zoom", 0],
+        "researchblogging:blogs": ["scholars", "discussed", 0, 0],
+        "slideshare:comments": ["public", "discussed", "badge", 3],
+        "slideshare:downloads": ["public", "viewed", "badge", 3],
+        "slideshare:favorites": ["public", "recommended", "badge", 3],
+        "slideshare:views": ["public", "viewed", "badge", 3],
+        "topsy:influential_tweets": ["public", "discussed", "zoom", 0],
+        "topsy:tweets": ["public", "discussed", "badge", 3],
+        "wikipedia:mentions": ["public", "cited", "badge", 1]
     }
-    return true
-}
 
-function ItemView() {
 
     // developing countries as per IMF 2012, plus Cuba and North Korea (not IMF members)
     // see http://www.imf.org/external/pubs/ft/weo/2012/01/pdf/text.pdf
     this.developing_countries = "Afghanistan|Albania|Algeria|Angola|Antigua and Barbuda|Argentina|Armenia|Azerbaijan|Bahamas|Bahrain|Bangladesh|Barbados|Belarus|Belize|Benin|Bhutan|Bolivia|Bosnia and Herzegovina|Botswana|Brazil|Brunei|Bulgaria|Burkina Faso|Burma|Burundi|Cambodia|Cameroon|Cape Verde|Central African Republic|Chad|Chile|China|Colombia|Comoros|Cuba|Democratic Republic of the Congo|Republic of the Congo|Costa Rica|Côte d Ivoire|Croatia|Djibouti|Dominica|Dominican Republic|Ecuador|Egypt|El Salvador|Equatorial Guinea|Eritrea|Ethiopia|Fiji|Gabon|The Gambia|Georgia|Ghana|Grenada|Guatemala|Guinea|Guinea-Bissau|Guyana|Haiti|Honduras|Hungary|India|Indonesia|Iran|Iraq|Jamaica|Jordan|Kazakhstan|Kenya|Kiribati|Kuwait|Kyrgyzstan|Laos|Latvia|Lebanon|Lesotho|Liberia|Libya|Lithuania|Macedonia|Madagascar|Malawi|Malaysia|Maldives|Mali|Marshall Islands|Mauritania|Mauritius|Mexico|Federated States of Micronesia|Moldova|Mongolia|Montenegro|Morocco|Mozambique|Namibia|Nauru|Nepal|Nicaragua|Niger|Nigeria|North Korea|Oman|Pakistan|Palau|Panama|Papua New Guinea|Paraguay|Peru|Philippines|Poland|Qatar|Romania|Russia|Rwanda|Saint Kitts and Nevis|Saint Lucia|Saint Vincent and the Grenadines|Samoa|São Tomé and Príncipe|Saudi Arabia|Senegal|Serbia|Seychelles|Sierra Leone|Solomon Islands|Somalia|South Africa|South Sudan|Sri Lanka|Sudan|Suriname|Swaziland|Syria|Tajikistan|Tanzania|Thailand|Timor-Leste|Togo|Tonga|Trinidad and Tobago|Tunisia|Turkey|Turkmenistan|Tuvalu|Uganda|Ukraine|United Arab Emirates|Uruguay|Uzbekistan|Vanuatu|Venezuela|Vietnam|Yemen|Zambia|Zimbabwe"
 
-    this.showHideExtraMetrics = function(item$) {
-        var numMetrics = item$.find("ul.metrics li").length
-        var extraMetrics = (11 - numMetrics) * -1
-        if (extraMetrics > 0) {
-            $("<a class='showhide'>+"+extraMetrics+" more...</a>")
-                .click(function() {
-                           $(this).hide().prev().find("li").show()
-                       })
-                .insertAfter(item$.find("ul.metrics"))
-            item$.find("li:gt(10)").hide()
+    this.render = function() {
+        return this.itemView.render(this.dict)
+    }
 
+
+    this.makeEngagementTable = function(dict, metricInfo){
+
+        var engagementTable = {
+            "scholars": {"viewed": [], "discussed": [], "saved": [], "cited": [], "recommended": []},
+            "public": {"viewed": [], "discussed": [], "saved": [], "cited": [], "recommended": []}
+        }
+
+        var engagementTypeNouns = {
+            "viewed":"views",
+            "discussed": "discussion",
+            "saved": "saves",
+            "cited": "citation",
+            "recommended": "recommendation"
+        }
+
+        // make the table
+        for (var metricName in dict.metrics) {
+            var display = metricInfo[metricName][2]
+            if (!display) {
+                continue // don't bother putting in table, we don't show it anyway
+            }
+            var audience = metricInfo[metricName][0]
+            var engagementType = metricInfo[metricName][1]
+
+            var metric = this.dict.metrics[metricName]
+            metric.display = display
+            metric.minNumForAward = metricInfo[metricName][3]
+
+            engagementTable[audience][engagementType].push(metric)
+        }
+
+        // convert the engagement table from a nested hashes to nested arrays
+        // mostly because mustache.js needs it this way. should probably break this
+        // but out as a method.
+        ret = []
+        for (var rowName in engagementTable) {
+            var row = {audience: rowName, cells: [] }
+            for (colName in engagementTable[rowName]) {
+                var cell = engagementTable[rowName][colName]
+
+                if (!cell.length) continue // we don't do anything with empty cells
+
+                cellContents = {
+                    metrics: cell,
+                    engagementType: colName,
+                    engagementTypeNoun: engagementTypeNouns[colName],
+                    audience: rowName // because mustache can't access parent context
+                }
+                row.cells.push(cellContents)
+            }
+            ret.push(row)
+        }
+        return {"audiences": ret}
+    }
+
+    this.objToArr = function(obj){
+        var arr = []
+        for (k in obj) {
+            arr.push(obj[k])
+        }
+        return arr
+    }
+
+    // returns a copy of obj1, minus the keys it shares with obj2
+    this.subractKeys = function(obj1, obj2) {
+        var newObj1 = {}
+        for (k in obj1) {
+            if (!(k in obj2)) {
+                newObj1[k] = obj1[k]
+            }
+        }
+        return newObj1
+    }
+
+    this.getsBigAward = function(raw, minForAward, lowerBound) {
+
+        console.log("does this get an award?")
+        console.log(raw)
+        console.log(minForAward)
+        console.log(lowerBound)
+        if (lowerBound >= 75 && raw >= minForAward) {
+                return true
+        }
+        else if (raw === "Yes") { // hack for F1000
+            return true
+        }
+        else {
+            return false
         }
     }
+
+    this.makeAwards = function(engagementTable) {
+        var any = {}
+        var big = {}
+        for (var i=0; i < engagementTable.audiences.length; i++) {
+            var row = engagementTable.audiences[i]
+
+            for (var j=0; j < row.cells.length; j++) {
+                var cell = row.cells[j]
+
+                for (var k=0; k < cell.metrics.length; k++) {
+                    var metric = cell.metrics[k]
+                    var cellName = row.audience+"."+cell.engagementType
+                    var raw = metric.values.raw
+                    var minForAward = metric.minNumForAward
+
+                    if (metric.values.raw && metric.display=="badge") {
+
+                        // add a big badge if we can
+                        if (metric.percentiles !== undefined) {
+                            var lowerBound = metric.percentiles.CI95_lower
+                            if (this.getsBigAward(raw, minForAward, lowerBound) ) {
+                                big[cellName] = {
+                                    audience: cell.audience,
+                                    engagementType: cell.engagementType,
+                                    minForAward: metric.minNumForAward,
+                                    engagementTypeNoun: cell.engagementTypeNoun,
+                                    metric: metric
+                                }
+                            }
+                        }
+
+                        // quit if there's a big badge; can't improve on that.
+                        if (cellName in big) {
+                            continue
+                        }
+
+                        // finally, assign a lil badge
+                        any[cellName] = {
+                            audience: row.audience,
+                            engagementType:cell.engagementType,
+                            metric: metric
+                        }
+                    }
+                }
+            }
+        }
+
+        any = this.subractKeys(any, big)
+
+        return {
+            any: this.objToArr(any),
+            big: this.objToArr(big)
+        }
+    }
+
+    this.hasAwards = function() {
+        return this.dict.awards.any.length || this.dict.awards.big.length
+    }
+
+
+    this.get_mendeley_percent = function(metricDict, key_substring) {
+
+        if (metricDict == undefined) {
+            return 0
+        }
+
+        // values.raw holds an array of {name:<name>, value: <value>} objects.
+        // this gets just ones where key_substring is a substring of <name>
+        var re = new RegExp(key_substring, 'i');
+        mendeleyRelevantKeys = metricDict.values.raw.filter(function(x) {return x["name"].match(re)})
+        if (typeof mendeleyRelevantKeys[0] == "undefined") {
+            // no students or developing countries or whatever
+            return(0)
+        }
+
+        // list the percent scores for values whose names match our substring
+        mendeleyPercentages = mendeleyRelevantKeys.map(function(x) {return x["value"]})
+        if (typeof mendeleyPercentages[0] == "undefined") {  // not sure if this needs to be here?
+            return(0)
+        }
+
+        sum = eval(mendeleyPercentages.join("+")) // dangerous, replace
+        return(sum)
+    }
+
+    this.mendeley_reader_subset_count = function(metricsDict, subset_type){
+
+        // given all the metrics, gets the count of a certain subset of readers by type
+        if (typeof metricsDict["mendeley:readers"] == "undefined") {
+            // can't get a subset of readers if there are no readers
+            return(0)
+        }
+
+        if (subset_type == "student") {
+            percent = this.get_mendeley_percent(
+                metricsDict["mendeley:career_stage"],
+                "student"
+            )
+        }
+        if (subset_type == "developing_countries") {
+            percent = this.get_mendeley_percent(
+                metricsDict["mendeley:country"],
+                this.developing_countries
+            )
+        }
+
+        total_mendeley_readers = metricsDict["mendeley:readers"].values.raw
+
+        // here we figure actual number from percentage
+        total = Math.round(total_mendeley_readers * percent / 100)
+
+        return(total)
+    }
+
+
+    this.update_metric = function(metric, display_name, value) {
+        metric["static_meta"]["display_name"] = display_name
+        metric["values"] = {}
+        metric["values"]['raw'] = value
+        return(metric)
+    }
+
+
+    this.add_derived_metrics = function(metricsDict) {
+        // mendeley student readers
+        var total = this.mendeley_reader_subset_count(metricsDict, "student")
+        if (total > 0) {
+            var templateMetric = $.extend(true, {}, metricsDict["mendeley:readers"])
+            var newMetric = this.update_metric(templateMetric,
+                                              "readers: students",
+                                              total)
+            metricsDict["mendeley:student_readers"] = newMetric
+        }
+
+        // mendeley developing countries
+        var total = this.mendeley_reader_subset_count(metricsDict, "developing_countries")
+        if (total > 0) {
+            var templateMetric = $.extend(true, [], metricsDict["mendeley:readers"])
+            var newMetric = this.update_metric(templateMetric,
+                                              "readers: developing countries",
+                                              total)
+            metricsDict["mendeley:developing_countries"] = newMetric
+        }
+
+        return(metricsDict)
+    }
+
+    this.getMetricPercentiles = function(metricsDict, normRefSetName) {
+        for (var metricName in metricsDict) {
+            metricsDict[metricName].percentiles = metricsDict[metricName].values[normRefSetName]
+        }
+        return metricsDict
+    }
+
+
+
+
+
+
+    // constructor
+    this.dict = dict
+    this.dict.metrics = this.getMetricPercentiles(this.dict.metrics, "WoS")
+    console.log(this.dict.biblio.title)
+
+    this.dict.metrics = this.add_derived_metrics(this.dict.metrics)
+    this.dict.engagementTable = this.makeEngagementTable(this.dict, metricInfo)
+    console.log(this.dict.engagementTable)
+
+    this.dict.awards = this.makeAwards(dict.engagementTable)
+
+    this.itemView = itemView
+
+
+    return true
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function ItemView() {
 
     this.sortByMetricValueDesc = function(metric1, metric2){
         if (typeof metric1.value != "number")
@@ -45,87 +353,6 @@ function ItemView() {
     }
 
 
-    this.get_mendeley_percent = function(metricsArr, dict_key, key_substring) {
-        mendeleyRelevantDict = metricsArr.filter(function(x) {return x["name"]==dict_key})
-        if (typeof mendeleyRelevantDict[0] == "undefined") {
-            return(0)
-        }
-
-        var re = new RegExp(key_substring, 'i');
-        mendeleyRelevantKeys = mendeleyRelevantDict[0].value.filter(function(x) {return x["name"].match(re)})
-        if (typeof mendeleyRelevantKeys[0] == "undefined") {
-            return(0)
-        }
-
-        mendeleyPercentages = mendeleyRelevantKeys.map(function(x) {return x["value"]})
-        if (typeof mendeleyPercentages[0] == "undefined") {
-            return(0)
-        }
-
-        sum = eval(mendeleyPercentages.join("+"))
-        return(sum)
-    }
-
-    this.mendeley_reader_subset_count = function(metricsArr, subset_type){
-        mendeleyReaders = metricsArr.filter(function(x) {return x["name"]=="mendeley:readers"})
-        if (typeof mendeleyReaders[0] == "undefined") {
-            return(0)
-        }
-        total_mendeley_readers = mendeleyReaders[0].value
-
-        if (subset_type == "student") {
-            percent = this.get_mendeley_percent(metricsArr, "mendeley:career_stage", "student")
-        }
-        if (subset_type == "developing_countries") {
-            percent = this.get_mendeley_percent(metricsArr, "mendeley:country", this.developing_countries)
-        }
-
-        total = Math.round(total_mendeley_readers * percent / 100)
-        console.log(total_mendeley_readers + " mendeley readers * " + percent + "% " + subset_type + " = " + total)
-
-        return(total)
-    }
-
-    this.get_copy_of_mendeley_item = function(metricsArr) {
-        // do a deep copy
-        mendeleyReaders = metricsArr.filter(function(x) {return x["name"]=="mendeley:readers"})
-        copyMendeleyReaders = $.extend(true, [], mendeleyReaders[0]);
-        return(copyMendeleyReaders)
-    }
-
-    this.update_metric = function(item, metric_name, display_name, value) {
-        item["name"] = metric_name
-        item["static_meta"]["display_name"] = display_name
-        item["value"] = value
-        return(item)
-    }
-
-    this.add_derived_metrics = function(metricsArr) {
-        // mendeley student readers
-        total = this.mendeley_reader_subset_count(metricsArr, "student")
-        if (total > 0) {
-            mendeleyItem = this.get_copy_of_mendeley_item(metricsArr)
-            mendeleyItem = this.update_metric(mendeleyItem,
-                                              "mendeley:student_readers",
-                                              "readers: students",
-                                              total)
-            metricsArr.push(mendeleyItem)
-        }
-
-        // mendeley developing countries
-        total = this.mendeley_reader_subset_count(metricsArr, "developing_countries")
-        if (total > 0) {
-            mendeleyItem = this.get_copy_of_mendeley_item(metricsArr)
-            mendeleyItem = this.update_metric(mendeleyItem,
-                                              "mendeley:developing_countries",
-                                              "readers: developing countries",
-                                              total)
-            metricsArr.push(mendeleyItem)
-        }
-
-        return(metricsArr)
-    }
-
     this.renderBiblio = function(biblio, url) {
         var html = ""
 
@@ -134,80 +361,105 @@ function ItemView() {
         if (biblio.create_date) {
             biblio.year = biblio.create_date.slice(0,4)
         }
+        if (biblio.authors) {
+            // screws up names w/ commas in them
+            var auths = biblio.authors.split(",", 3).join(",") // first 3 authors
+            if (auths.length < biblio.authors.length) auths += " et al."
+            biblio.authors = auths
+        }
 
         var templateName = "biblio_" + biblio.genre
-        return ich[templateName](biblio, true)
+        return $(ich[templateName](biblio, true))
+    }
+
+
+    this.findBarLabelOffsets = function(start, end) {
+        var minWidth = 25
+        var width = end - start
+        if (width < minWidth) {
+            var widthToAdd = width - minWidth
+            var offset = widthToAdd / 2
+        }
+        else {
+            var offset = 0
+        }
+
+        return offset
+    }
+
+
+    this.renderZoom = function(engagementTable) {
+        var zoom$ = $(ich.zoomTable(engagementTable, true))
+        var thisThing = this
+        zoom$.find("div.metric-perc-range.ci").each(function(){
+
+            // where does the bar go?
+            var ciStartValue = $(this).find("span.endpoint.start span.value").text()
+            var ciEndValue = $(this).find("span.endpoint.end span.value").text()
+
+            var offset = thisThing.findBarLabelOffsets(ciStartValue, ciEndValue)
+
+            $(this).css(
+                {
+                    "margin-left":ciStartValue+"%",
+                    "margin-right":(100 - ciEndValue)+"%"
+                })
+                .find("span.endpoint.start").css("left", offset+"px")
+                .end()
+                .find("span.endpoint.end").css("right", offset+"px")
+        })
+
+        return zoom$
+    }
+
+    this.renderBadges = function(awards) {
+        var badges$ = $(ich.badgesTemplate(
+            {
+               big: awards.big,
+               any:awards.any
+            },
+            true))
+        badges$.find(".ti-badge").tooltip()
+        return badges$
     }
 
     this.render = function(item){
-        item.metricsArr = []
-        for (metricName in item.metrics){
-            thisMetric = item.metrics[metricName]
-            thisMetric.name = metricName
-            thisMetric.value = item.metrics[metricName]["values"]["raw"]
-
-            // disable displaying normalization values for now.  See TURN_ON_FOR_NORM_DISPLAY
-            //// for now, hardcode we only have normed values for articles
-            //if (typeof item.metrics[metricName]["values"]["nih"] != "undefined") {
-            //    // for now, hardcode only have one norm called nih
-            //    thisMetric.norm = item.metrics[metricName]["values"]["nih"]
-            //    thisMetric.value = thisMetric.value + " [" + thisMetric.norm + "]"
-            //}
-
-            // if no values, no point in printing
-            if (thisMetric.value) {
-                item.metricsArr.push(thisMetric)
-            }
-        }
-
-        // add on the derived metrics
-        if (typeof item.metricsArr[0] != "undefined") {
-            item.metricsArr = this.add_derived_metrics(item.metricsArr)
-        }
-
-        // remove the dictionaries from what will be displayed
-        item.metricsArr = item.metricsArr.filter(function(x) {
-            good_to_print = (typeof x["value"] == "number")
-            if (typeof x["value"] == "string") {
-                good_to_print = true
-            }
-            // disable displaying normalization values for now.  See TURN_ON_FOR_NORM_DISPLAY
-            //if (typeof x["norm"] != "undefined") {
-            //    good_to_print = true
-            //}            
-            return good_to_print
-        })
-
-        // sort by descending order of metrics
-        item.metricsArr.sort(this.sortByMetricValueDesc)
+        var item$ = ich.displayItem(item)
 
         var url = (item.aliases.url) ?  item.aliases.url[0] : false
-        var html$ = ich.item(item)
-        this.showHideExtraMetrics(html$)
-        var biblioHtml = this.renderBiblio(item.biblio, url)
+        var biblio$ = this.renderBiblio(item.biblio, url)
+        item$.find("div.biblio").append(biblio$)
 
-        // show/hide the delete-item button.
-        html$.find("div.biblio").append(biblioHtml)
-            .hover(
-            function(){
-//                $(this).find("a.item-delete-button").fadeIn("fast");
-            },
-            function(){
-//                $(this).find("a.item-delete-button").fadeOut("fast");
-            }
-        )
+        var zoom$ = this.renderZoom(item.engagementTable, true)
+        item$.find("div.zoom").append(zoom$)
 
-        // setup the delete-item button
-        html$.find("a.item-delete-button").click(function(){
-            var tiid = $(this).parent().parent().attr("id")
-            console.log("this is where I would delete "+tiid)
-        })
+        var badges$ = this.renderBadges(item.awards)
+        item$.find("div.badges").append(badges$)
 
-        return html$
+        return item$
     }
 }
 
 
-function ItemController(item, itemView){
+function ItemController(){
+    /* Just meant to be used once, for attaching events to items.
+    I think this is probably not the best way.
+    * */
 
+    var body$ = $("body")
+
+    body$.on("click", "div.item-header", function(){
+        $(this)
+           .parents("li.item")
+           .find("div.zoom")
+           .slideToggle(500, function(){
+                            $(this).parents("li.item").toggleClass("zoomed")
+                        })
+        return false
+        })
+
+    body$.on("click", "a.item-help", function(){
+        $("#item-help-info").modal("show")
+        return false;
+    })
 }

@@ -1,4 +1,63 @@
 
+function Genre(name) {
+    this.name = name
+    this.items = []
+
+    this.render = function(){
+
+
+        var genre$ = $(ich.genreTemplate({name:this.name}, true))
+
+        var renderedItems = []
+        var itemsWithoutActivity = []
+        for (var i=0;i<this.items.length;i++){
+            var thisItem = this.items[i]
+            if (thisItem.hasAwards()) {
+                renderedItems.push(thisItem.render())
+            }
+            else {
+                itemsWithoutActivity.push(thisItem.render())
+            }
+        }
+        genre$.find("ul.items.active").append(renderedItems)
+        genre$.find("ul.items.inactive").append(itemsWithoutActivity)
+        if (itemsWithoutActivity.length) {
+            genre$.find("h4.plus-more span.value")
+                .html(itemsWithoutActivity.length)
+        }
+        else {
+            genre$.find("h4.plus-more").hide()
+        }
+
+        return genre$
+    }
+    return true
+}
+
+function GenreList(items) {
+    this.genres = {}
+
+    // put the items in the correct genre objects
+    for (var i=0; i<items.length; i++){
+        var genreName = items[i].dict.biblio.genre
+        if (!this.genres[genreName]) {
+            this.genres[genreName] = new Genre(genreName)
+        }
+        this.genres[genreName].items.push(items[i])
+
+
+    }
+
+    this.render = function(){
+        var genres = []
+        for (var thisGenreName in this.genres){
+            var renderedGenre = this.genres[thisGenreName].render()
+            genres.push(renderedGenre)
+        }
+        $("div.genre").remove()
+        $("#metrics div.wrapper").append(genres)
+    }
+}
 
 function Coll(collViews, user){
     this.views = collViews;
@@ -60,29 +119,35 @@ function CollViews() {
         $("img.loading").remove()
         $("h2").before(ajaxLoadImgTransparent)
     }
+
+    this.badgesWeight = function(dict) {
+        var weight = 0
+        weight += dict.awards.big.length * 10
+        weight += dict.awards.any.length * 1
+        return weight
+    }
+
     this.finishUpdating = function(items){
         $("#page-header img").remove()
 
-        $("#num-items").remove();
-        $("<span id='num-items'>"+items.length+" items</span>")
-            .hide()
-            .insertAfter("#report-button")
-            .show();
+        $("#num-items span.value").text(items.length)
         $("img.loading").remove()
     }
     this.render = function(itemObjsDict) {
-        $("ul#items").empty()
-        console.log("looking through the item objects")
-        console.log(itemObjsDict)
-        for (var tiid in itemObjsDict){
-            // make the set of all newly-rendered items
-            // this is a very slow way to do this...should bundle together,
-            // then make one replace.
-            var genre = itemObjsDict[tiid].dict.biblio.genre
-            var genreItems = "div." + genre + " ul#items"
-            $(genreItems).append(itemObjsDict[tiid].render())
-            $("div." + genre).show()  // would ideally only do this once
+        var thisNow = this
+
+        // convert items dict into array and sort it
+        var itemObjs = []
+        for (tiid in itemObjsDict) {
+            itemObjs.push(itemObjsDict[tiid])
         }
+
+        itemObjs.sort(function(a,b) {
+            return thisNow.badgesWeight(b.dict) -  thisNow.badgesWeight(a.dict)
+        })
+
+        var genreList = new GenreList(itemObjs)
+        genreList.render()
     }
 }
 
@@ -94,9 +159,26 @@ function CollController(coll, collViews) {
     }
 
 
+    // the report controls
     $("#update-report-button").click(function(){
         coll.update();
         return false;
     })
+    $("div.btn-group.download button").click(function(){
+        location.href = $(this).val()
+    })
+    $("div#num-items a").toggle(
+        function(){
+            $(this).html("(collapse all)")
+            $("li.item").addClass("zoomed").find("div.zoom").show()
+        },
+        function(){
+            $(this).html("(expand all)")
+            $("li.item").removeClass("zoomed").find("div.zoom").hide()
+        }
+    )
+
+
+
 
 }
