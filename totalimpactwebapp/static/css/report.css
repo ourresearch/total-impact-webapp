@@ -232,10 +232,15 @@ li.item div.item-header div.badges ul.ti-badges li a.ti-badge.lil-badge.scholars
 li.item div.item-header div.badges ul.ti-badges li a.ti-badge.lil-badge.public {
   color: #4daf4a;
 }
+li.item div.item-header div.badges ul.ti-badges li a.ti-badge:hover {
+  border: 1px solid #000;
+}
 li.item div.zoom {
   display: none;
   float: left;
   clear: left;
+  width: 800px;
+  position: relative;
   margin: 5px 0 35px;
   padding-bottom: 15px;
   border-top: 1px solid #aaa;
@@ -243,6 +248,19 @@ li.item div.zoom {
 }
 li.item div.zoom span.value {
   font-weight: bold;
+}
+li.item div.zoom a.item-help {
+  left: 822px;
+  top: 5px;
+  position: absolute;
+  width: 300px;
+  font-size: 14px;
+  color: #555;
+}
+li.item div.zoom a.item-help span.icon {
+  padding: 0 9px;
+  background: url(../img/glyphicons-halflings.png);
+  background-position: -96px 64px;
 }
 li.item div.zoom div.audience {
   width: 370px;
@@ -351,4 +369,19 @@ li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics 
 }
 li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta img {
   float: right;
+}
+div#item-help-info p {
+  font-size: 15px;
+}
+div#item-help-info ul {
+  padding-left: 20px;
+}
+div#item-help-info ul li {
+  list-style-type: circle;
+}
+div#item-help-info .modal-body {
+  padding: 30px;
+}
+div#item-help-info .modal-header {
+  padding: 12px 30px;
 }

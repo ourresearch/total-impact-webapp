@@ -243,6 +243,7 @@ li.item {
                      background: #fff;
                      text-shadow: none;
                   }
+                  &:hover {border:1px solid #000;}
                }
             }
          }
@@ -253,6 +254,8 @@ li.item {
       display:none;
       float:left;
       clear:left;
+      width:800px;
+      position: relative;
       margin: 5px 0 35px;
       padding-bottom: 15px;
       border-top: 1px solid #aaa;
@@ -260,6 +263,21 @@ li.item {
 
 
       span.value{ font-weight: bold;}
+
+
+      a.item-help {
+         left:822px;
+         top:5px;
+         position: absolute;
+         width:300px;
+         font-size: 14px;
+         color:#555;
+         span.icon {
+            padding:0 9px;
+            background: url(../img/glyphicons-halflings.png);
+            background-position: -96px 64px;
+         }
+      }
 
       div.audience {
          &.scholars {
@@ -370,3 +388,18 @@ li.item {
    }
 }
 
+div#item-help-info {
+   p {
+      font-size:15px;
+   }
+   ul {
+      padding-left:20px;
+      li {list-style-type: circle;}
+   }
+   .modal-body {
+      padding:30px
+   }
+   .modal-header {
+      padding: 12px 30px;
+   }
+}

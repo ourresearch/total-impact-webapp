@@ -67,6 +67,7 @@ body a:link {
 }
 body a:hover {
   text-decoration: underline;
+  color: #ff4e00;
 }
 .btn-primary {
   font-family: rokkitt, cambria, serif;
@@ -121,7 +122,7 @@ div.navbar .navbar-inner {
   -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   padding-right: 0;
-  height: 65px;
+  height: 62px;
 }
 div.navbar .navbar-inner a.brand {
   margin-left: -10px;
@@ -602,4 +603,8 @@ div.tooltip {
 }
 div.tooltip.in {
   opacity: 1;
+}
+div.tooltip div.tooltip-inner {
+  padding-top: 8px;
+  padding-bottom: 8px;
 }

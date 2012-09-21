@@ -2,7 +2,8 @@
 
 {% block content %}
 
-<div class="main" id="report">
+<div class="main" id="report" xmlns="http://www.w3.org/1999/html"
+     xmlns="http://www.w3.org/1999/html">
    <!-- START report-meta -->
    <div class="wrapper">
       <div id="report-meta">
@@ -27,6 +28,32 @@
 
       </div>
    </div>
+
+   <div id="item-help-info" class="modal hide fade">
+      <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+         <h3>What are these numbers?</h3>
+      </div>
+      <div class="modal-body">
+         <p>ImpactStory classifies metrics along two dimensions: <strong>audience</strong> (<em>scholars</em> or the <em>public</em>) and <strong>type of engagement</strong> with research (<em>view</em>, <em>discuss</em>, <em>save</em>, <em>cite</em>, and <em>recommend</em>).</p>
+
+         <p>For each metric, the coloured bar shows its percentile relative to all articles indexed in the <a href="http://wokinfo.com/products_tools/multidisciplinary/webofscience/">Web of Science</a> that year.  The bars show a range, representing the the 95% confidence interval around your percentile (and also accounting for ties).  Along with ranges, we show “Highly” badges for metrics above the 75th percentile that exceed a minimum frequency.</p>
+
+         <p>Each metric's raw count is shown to the left of its name.  Click the raw count to visit that metric provider's external page for the item; there, you can explore the engagement in more detail.</p>
+
+         <p>For more information, see these blog posts:</p>
+
+         <ul>
+            <li><a href="http://total-impact.tumblr.com/post/31256247948/what-do-we-expect">What do we expect?</a></li>
+            <li><a href="http://total-impact.tumblr.com/post/31524247207/a-new-framework-for-altmetrics">Our framework for classifying altmetrics</a></li>
+            <li>Reference sets: <a href="http://total-impact.tumblr.com/post/31461657926/choosing-reference-sets-good-compared-to-what">Motivation</a>; Choosing Web of Science (TBA)</li>
+            <li>Percentiles: <a href="http://total-impact.tumblr.com/post/31342582590/percentiles">Part 1</a>, <a href="http://total-impact.tumblr.com/post/31408899657/percentiles-the-tricky-bits">Part 2</a>, and <a href="http://total-impact.tumblr.com/post/31411187588/pe">Part 3</a></li>
+            <li>Sampling and 95% confidence (TBA)</li>
+         </ul>
+      </div>
+
+   </div>
+
    <div id="metrics">
       <script type="text/javascript">var collectionId = "{{ collection_id }}"</script>
       <div class="wrapper">

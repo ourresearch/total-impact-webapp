@@ -446,8 +446,9 @@ function ItemController(){
     I think this is probably not the best way.
     * */
 
+    var body$ = $("body")
 
-    $("body").on("click", "div.item-header", function(){
+    body$.on("click", "div.item-header", function(){
         $(this)
            .parents("li.item")
            .find("div.zoom")
@@ -456,4 +457,9 @@ function ItemController(){
                         })
         return false
         })
+
+    body$.on("click", "a.item-help", function(){
+        $("#item-help-info").modal("show")
+        return false;
+    })
 }
