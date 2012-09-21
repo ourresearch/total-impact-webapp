@@ -174,10 +174,11 @@
 
 
         jQuery.ajaxSetup({ cache:false });
-        var ajax_load = '<img id="ti-loading" src="http://total-impact.org/static/img/ajax-loader.gif" alt="loading..." />';
+        var ajax_load = '<img id="ti-loading" src="http://impactstory.it/static/img/ajax-loader.gif" alt="loading..." />';
 
         jQuery(document).ready(function ($) {
-            requestStylesheet("http://total-impact.org/static/css/embed.css");
+//            requestStylesheet("http://total-impact.org/static/css/embed.css");
+            requestStylesheet("http://localhost:5000/static/css/embed.css");
             requestScript("http://total-impact.org/static/js/icanhaz.min.js");
 
             $("span#ti-id").hide();
