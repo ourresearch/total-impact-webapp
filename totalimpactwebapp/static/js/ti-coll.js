@@ -54,6 +54,7 @@ function GenreList(items) {
             var renderedGenre = this.genres[thisGenreName].render()
             genres.push(renderedGenre)
         }
+        $("div.genre").remove()
         $("#metrics div.wrapper").append(genres)
     }
 }
