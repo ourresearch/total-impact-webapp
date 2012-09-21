@@ -27,7 +27,6 @@ function Genre(name) {
         }
         else {
             genre$.find("h4.plus-more").hide()
-
         }
 
         return genre$
@@ -177,6 +176,8 @@ function CollController(coll, collViews) {
             $("li.item").removeClass("zoomed").find("div.zoom").hide()
         }
     )
+
+
 
 
 }

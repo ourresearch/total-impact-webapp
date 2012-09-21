@@ -323,12 +323,29 @@ createCollectionInit = function(){
     });
 }
 
+function showNameChangeBanner(){
+    if ($.cookie("hasDismissedNamechange")){
+        return false
+    }
+    else {
+        $("<div id='namechange'>We've got a new focus and a new name: total-impact is now <em>ImpactStory!</em><a class='dismiss'>dismiss [x]</a></div>")
+            .prependTo("body")
+            .find("a.dismiss")
+            .click(function(){
+                           $(this).parent().slideUp()
+                           $.cookie("hasDismissedNamechange", true)
+                       })
+    }
+
+}
+
 
 
 $(document).ready(function(){
-
-
     $.cookie.defaults = {path: "/", raw: 1}
+
+    showNameChangeBanner()
+
     userViews = new UserViews()
     user = new User(userViews)
     userController = new UserController(user, userViews);

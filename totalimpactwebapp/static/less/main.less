@@ -17,6 +17,23 @@ body {
     background: url(../img/orange-noise.png);
     height: 100%;
     padding-bottom: 0;
+
+   div#namechange {
+      font-size: 16px;
+      background: #444;
+      color: #fff;
+      text-align: center;
+      padding:10px 0;
+      em { font-style: normal; color: @linkColor;}
+      a.dismiss {
+         float:right;
+         padding-right: 20px;
+         color: #fff;
+         font-size: 14px;
+         border-bottom: #000;
+         &:hover{color: @linkColor; }
+      }
+   }
 }
 ul, li {
     padding: 0;
@@ -47,7 +64,7 @@ body a:hover {
 .wrapper {
     margin: 0 auto;
     display: block;
-    width: 1000px;
+    width: 1030px; // to line collection name with logo...hacky
 }
 .clearfix {
     clear:both;
@@ -62,8 +79,8 @@ a {
 }
 
 p, ul {
-    line-height: 1.4;
-    font-size: 18px;
+    line-height: 1.5;
+    font-size: 16px;
 }
 
 
@@ -84,28 +101,42 @@ div.navbar {
 
    .navbar-inner{
       .border-radius(0, 5px, 5px, 0);
-      .drop-shadow(0, 5px, 10px, 0.3);
+      .drop-shadow(0, 5px, 10px, 0.2);
       padding-right:0;
+      height: 65px;
+
+      a.brand {
+         margin-left:-10px;
+      }
 
       .nav { position: static;}
    }
 
    a.brand img{
-      height: 40px;
-      margin-top: -8px;
+      height: 35px;
+      margin-top: 0;
    }
 
-   li.acct-mgt {
-      &#logged-in {
-         display:none;
+   li {
+      margin-top: 10px;
 
-         span.username {
-            font-weight: bold;
-            &:hover {color: @linkColor;}
-         }
-         span#logout-link {
-            font-size: 12px; font-family: Helvetica, arial;
-            &:hover {color: @linkColor;}
+      &.divider-vertical {
+         height: 35px;
+         margin-top: 15px;
+      }
+
+      &.acct-mgt {
+         &#logged-in {
+            display:none;
+
+            span.username {
+               font-weight: bold;
+               &:hover {color: @linkColor;}
+            }
+            span#logout-link {
+               font-size: 12px; font-family: Helvetica, arial;
+               &:hover {color: @linkColor;}
+            }
          }
       }
 
@@ -160,11 +191,11 @@ div.navbar {
    a#uservoice {
       position: relative;
       display: block;
-      margin-top: -22px;
+      margin-top: -26px;
       z-index: 3;
       padding-right:0;
 
-      &:hover {margin-top: -21px;}
+//      &:hover {margin-top: -25px;}
    }
 }
 
@@ -185,7 +216,7 @@ div#page-header {
 div#page-header h2 {
     font-family: rokkitt, georgia, sans-serif;
     color: #fff;
-    font-size: 40px;
+    font-size: 30px;
     margin:0;
     float:none;
 }
@@ -204,7 +235,7 @@ div.main {
     font-size: 18px;
     padding-bottom: 100px;
     color: #333;
-    min-height: 400px
+    min-height: 350px
 }
 div.main p {
 }
@@ -340,12 +371,11 @@ p#example-collection a {
 /* the "selling points" section
 *************************************************/
 div#selling-points{
-    background-color:#444;
+    background-color:#333;
     padding:20px 0;
     margin-top: -34px;
-    min-height: 350px;
+    min-height: 300px;
     border-top: 1px solid #fff;
-    background-image:url(../img/selling-points-bg.png);
     background-position: bottom;
     background-repeat: repeat-x;
 
@@ -364,7 +394,7 @@ div#selling-points p {
     margin-right: 3%;
     border-right: 1px dotted #555;
     list-style-type: none;
-    min-height: 350px;
+    min-height: 300px;
 }
 #selling-points ul li:last-child {
     border-right:none;
