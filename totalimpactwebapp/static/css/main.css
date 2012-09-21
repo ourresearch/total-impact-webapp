@@ -123,6 +123,7 @@ div.navbar .navbar-inner {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   padding-right: 0;
   height: 62px;
+  background: #fff;
 }
 div.navbar .navbar-inner a.brand {
   margin-left: -10px;
