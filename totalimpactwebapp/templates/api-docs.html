@@ -9,38 +9,38 @@
 
         <h2 id="embed">recommended approach: embed code</h2>
 
-            <p>The easiest way to include total-impact metrics in a webpage is through  embed code.  To use the total-impact embed code in your webapge, simply include the code below in a webpage, exactly as given, subtituting the placeholder "doi:10.1371/journal.pcbi.1000355" string with your doi or other valid "namespace:id" string. </p>
+            <p>The easiest way to include ImpactStory metrics in a webpage is through  embed code.  To use the ImpactStory embed code in your webapge, simply include the code below in a webpage, exactly as given, subtituting the placeholder "doi:10.1371/journal.pcbi.1000355" string with your doi or other valid "namespace:id" string. </p>
 
-            <p>We plan to refine and simplify this embed code in response to feedback: please let us know what you think, and join the <a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">total-impact newsgroup</a> if you'd like to be informed of changes.</p>
+            <p>We plan to refine and simplify this embed code in response to feedback: please let us know what you think, and join the <a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">total-impact newsgroup</a> if you'd like to be informed of changes (we're in the process of renaming this).</p>
 
             <p>To use, embed this code on the page that has the item you want to track (currently only works for one item per page). The item's id (url, doi, etc.) goes in the <code>#ti-id</code> span; results will be put in the <code>#ti-data</code> div.</p>
 
             <div class="rawembedcode"><pre>
 {{
-'<script type="text/javascript" src="http://total-impact.org/static/js/total-impact-item.js"></script>
+'<script type="text/javascript" src="http://impactstory.it/static/js/total-impact-item.js"></script>
 <span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
-<div id="ti-data"><!--total-impact puts data here--></div>'|escape()
+<div id="ti-data"><!--ImpactStory puts data here--></div>'|escape()
 }}
             </pre></div>
             
             <p>Here's the code above, embedded live on this page:</p>
 
-            <script type="text/javascript" src="http://total-impact.org/static/js/total-impact-item.js"></script>
+            <script type="text/javascript" src="http://impactstory.it/static/js/total-impact-item.js"></script>
             <span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
             <div id="ti-data"></div>
 
         <br>
         <h2 id="api">more versatile approach: REST api.</h2>
 
-            <p>If the embed code described above doesn't meet your needs, you can use our api directly.  The total-impact webapp itself is built directly on top of this api. </p>
+            <p>If the embed code described above doesn't meet your needs, you can use our api directly.  The ImpactStory webapp itself is built directly on top of this api. </p>
 
             <ul>
-                <!--li>api root is at http://api.total-impact.org</li-->
+                <!--li>api root is at http://api.impactstory.it</li-->
                 <li>api calls return JSON</li>
                 <li>api calls return return 500 in case of internal error</li>
                 <li>Cross-Origin Resource Sharing (CORS) is enabled</li>    
                 <!--li>please pass in email=YOUREMAIL to all requests</li-->
-                <li>after an item has been assigned a total-impact id (tiid), total-impact will periodically update its metric values.</li>
+                <li>after an item has been assigned a ImpactStory id (tiid), ImpactStory will periodically update its metric values.</li>
             </ul>
 
             <p>Here are the API methods:</p>
@@ -55,14 +55,14 @@
 
             <h4>example</h4> 
             <div class="apicall"><pre>
-curl -i -X GET http://api.total-impact.org
+curl -i -X GET http://api.impactstory.it
 
 
 {
-    "contact": "team@total-impact.org", 
+    "contact": "team@impactstory.it",
     "hello": "world", 
-    "message": "Congratulations! You have found the total-Impact API.", 
-    "moreinfo": "http://total-impact.tumblr.com/", 
+    "message": "Congratulations! You have found the ImpactStory API.",
+    "moreinfo": "http://total-impact.tumblr.com/",
     "version": "jean-claude"
 }
                 </pre></div>
@@ -71,7 +71,7 @@ curl -i -X GET http://api.total-impact.org
 
         <h3 class="apicall">POST /tiid/:namespace/:namespaceid</h3>
         <div class="description">
-            Assign a total-impact ID (tiid) to an item if it doesn't have one yet.  Returns the assigned tiid.
+            Assign a ImpactStory ID (tiid) to an item if it doesn't have one yet.  Returns the assigned tiid.
 
             <h4>returns</h4>
             Return the tiid for the item (return code 201).
@@ -79,7 +79,7 @@ curl -i -X GET http://api.total-impact.org
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X POST -H "Content-Type: application/json" -d '{}' http://api.total-impact.org/tiid/doi/10.1371/journal.pcbi.1000361
+curl -i -X POST -H "Content-Type: application/json" -d '{}' http://api.impactstory.it/tiid/doi/10.1371/journal.pcbi.1000361
 
 
 "0df8aa0eb2c911e19e181231381b0f5a"
@@ -88,7 +88,7 @@ curl -i -X POST -H "Content-Type: application/json" -d '{}' http://api.total-imp
 
         <h3 class="apicall">GET /tiid/:namespace/:namespaceid</h3>
         <div class="description">
-            Get the total-impact ID (tiid) of an item. 
+            Get the ImpactStory ID (tiid) of an item.
 
             <h4>returns</h4>
             The tiid for an item if one has been previously assigned (return code 303), otherwise an error.
@@ -101,7 +101,7 @@ curl -i -X POST -H "Content-Type: application/json" -d '{}' http://api.total-imp
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://api.total-impact.org/tiid/doi/10.1371/journal.pcbi.1000361
+curl -i -X GET http://api.impactstory.it/tiid/doi/10.1371/journal.pcbi.1000361
 
 
 "0df8aa0eb2c911e19e181231381b0f5a"
@@ -111,7 +111,7 @@ curl -i -X GET http://api.total-impact.org/tiid/doi/10.1371/journal.pcbi.1000361
 
         <h3 class="apicall">GET /item/:tiid</h3>
         <div class="description">
-            Get the metrics for items, given its total-impact ID (tiid).
+            Get the metrics for items, given its ImpactStory ID (tiid).
 
             <h4>returns</h4>
             An item object. Response code 210 if it is currently being updated, 200 otherwise.
@@ -124,7 +124,7 @@ curl -i -X GET http://api.total-impact.org/tiid/doi/10.1371/journal.pcbi.1000361
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://api.total-impact.org/item/0df8aa0eb2c911e19e181231381b0f5a
+curl -i -X GET http://api.impactstory.it/item/0df8aa0eb2c911e19e181231381b0f5a
 
 
 {
@@ -231,7 +231,7 @@ curl -i -X GET http://api.total-impact.org/item/0df8aa0eb2c911e19e181231381b0f5a
 
         <h3 class="apicall">POST /collection</h3>
         <div class="description">
-            Create a collection given a list of total-impact IDs.
+            Create a collection given a list of ImpactStory IDs.
 
             <h4>input data</h4>
             {
@@ -250,7 +250,7 @@ curl -i -X GET http://api.total-impact.org/item/0df8aa0eb2c911e19e181231381b0f5a
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":["ec698118b33311e1bfcd12313d2a0ee9","0df8aa0eb2c911e19e181231381b0f5a"],"title":"My Collection"}' http://api.total-impact.org/collection
+curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":["ec698118b33311e1bfcd12313d2a0ee9","0df8aa0eb2c911e19e181231381b0f5a"],"title":"My Collection"}' http://api.impactstory.it/collection
 
 {
     "created": "2012-06-17T01:05:23.444710", 
@@ -286,7 +286,7 @@ curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":[
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://api.total-impact.org/collection/8iwgwi
+curl -i -X GET http://api.impactstory.it/collection/8iwgwi
 
 
 {
@@ -320,7 +320,7 @@ curl -i -X GET http://api.total-impact.org/collection/8iwgwi
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://api.total-impact.org/provider
+curl -i -X GET http://api.impactstory.it/provider
 
 {
     "bibtex": {
