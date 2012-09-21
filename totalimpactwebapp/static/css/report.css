@@ -205,29 +205,31 @@ li.item div.item-header div.badges {
 li.item div.item-header div.badges ul.ti-badges {
   float: left;
 }
-li.item div.item-header div.badges ul.ti-badges li.ti-badge {
-  margin: 0 3px 3px 0;
+li.item div.item-header div.badges ul.ti-badges li {
   float: left;
+  margin: 0 3px 5px 0;
+}
+li.item div.item-header div.badges ul.ti-badges li a.ti-badge {
   font-size: 12px;
   font-weight: normal;
   padding: 3px 6px;
 }
-li.item div.item-header div.badges ul.ti-badges li.ti-badge.scholars {
+li.item div.item-header div.badges ul.ti-badges li a.ti-badge.scholars {
   background: #377eb8;
   border: 1px solid #377eb8;
 }
-li.item div.item-header div.badges ul.ti-badges li.ti-badge.public {
+li.item div.item-header div.badges ul.ti-badges li a.ti-badge.public {
   background: #4daf4a;
   border: 1px solid #4daf4a;
 }
-li.item div.item-header div.badges ul.ti-badges li.ti-badge.lil-badge {
+li.item div.item-header div.badges ul.ti-badges li a.ti-badge.lil-badge {
   background: #fff;
   text-shadow: none;
 }
-li.item div.item-header div.badges ul.ti-badges li.ti-badge.lil-badge.scholars {
+li.item div.item-header div.badges ul.ti-badges li a.ti-badge.lil-badge.scholars {
   color: #377eb8;
 }
-li.item div.item-header div.badges ul.ti-badges li.ti-badge.lil-badge.public {
+li.item div.item-header div.badges ul.ti-badges li a.ti-badge.lil-badge.public {
   color: #4daf4a;
 }
 li.item div.zoom {

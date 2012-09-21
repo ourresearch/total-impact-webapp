@@ -25,7 +25,6 @@
    <script type="text/javascript" src="/static/js/tinybox.js"></script>
    <script type="text/javascript" src="/static/js/hmac-sha1.js"></script>
    <script type="text/javascript" src="/static/js/jquery.headerlinks.js"></script>
-   <script type="text/javascript" src="/static/js/jquery.tooltip.js"></script>
    <script type="text/javascript" src="/static/js/jquery.color.js"></script>
    <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
    <script type="text/javascript" src="/static/js/icanhaz.min.js"></script>
@@ -197,16 +196,16 @@
       <ul class="ti-badges">
 
          {{#big}}
-         <li class="label ti-badge big-badge {{audience}}">
+         <li><a href="#" class="label ti-badge big-badge {{audience}}" rel="tooltip" title='75th percentile (n>{{minForAward}}) in {{engagementTypeNoun}} by {{audience}}'>
             <span class="modifier">highly</span>
             <span class="engagement-type">{{engagementType}}</span>
-         </li>
+         </a></li>
          {{/big}}
 
          {{#any}}
-         <li class="label ti-badge lil-badge {{audience}}">
+         <li><a href="#" class="label ti-badge lil-badge {{audience}}" rel="tooltip"  title='Has been {{engagementType}} by {{audience}}'>
             <span class="engagement-type">{{engagementType}}</span>
-         </li>
+         </a></li>
          {{/any}}
       </ul>
    </script>

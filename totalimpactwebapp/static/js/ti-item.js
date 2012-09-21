@@ -65,6 +65,14 @@ function Item(dict, itemView) {
             "public": {"viewed": [], "discussed": [], "saved": [], "cited": [], "recommended": []}
         }
 
+        var engagementTypeNouns = {
+            "viewed":"views",
+            "discussed": "discussion",
+            "saved": "saves",
+            "cited": "citation",
+            "recommended": "recommendation"
+        }
+
         // make the table
         for (var metricName in dict.metrics) {
             var display = metricInfo[metricName][2]
@@ -95,6 +103,7 @@ function Item(dict, itemView) {
                 cellContents = {
                     metrics: cell,
                     engagementType: colName,
+                    engagementTypeNoun: engagementTypeNouns[colName],
                     audience: rowName // because mustache can't access parent context
                 }
                 row.cells.push(cellContents)
@@ -162,8 +171,10 @@ function Item(dict, itemView) {
                             var lowerBound = metric.percentiles.CI95_lower
                             if (this.getsBigAward(raw, minForAward, lowerBound) ) {
                                 big[cellName] = {
-                                    audience: row.audience,
-                                    engagementType:cell.engagementType,
+                                    audience: cell.audience,
+                                    engagementType: cell.engagementType,
+                                    minForAward: metric.minNumForAward,
+                                    engagementTypeNoun: cell.engagementTypeNoun,
                                     metric: metric
                                 }
                             }
@@ -408,6 +419,7 @@ function ItemView() {
                any:awards.any
             },
             true))
+        badges$.find(".ti-badge").tooltip()
         return badges$
     }
 

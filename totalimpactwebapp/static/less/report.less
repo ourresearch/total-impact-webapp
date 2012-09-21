@@ -226,22 +226,23 @@ li.item {
          float:left;
          ul.ti-badges {
             float:left;
-            li.ti-badge {
-               margin:0 3px 3px 0;
+            li {
                float:left;
-               font-size: 12px;
-               font-weight:normal;
-               padding: 3px 6px;
-               &.scholars {background: @scholarsColor; border:1px solid @scholarsColor;}
-               &.public {background: @publicColor; border:1px solid @publicColor;}
-               &.big-badge {
-               }
-               &.lil-badge {
-                  &.scholars {color: @scholarsColor;}
-                  &.public {color: @publicColor;}
-                  background: #fff;
-   //               border:none;
-                  text-shadow: none;
+               margin:0 3px 5px 0;
+               a.ti-badge {
+                  font-size: 12px;
+                  font-weight:normal;
+                  padding: 3px 6px;
+                  &.scholars {background: @scholarsColor; border:1px solid @scholarsColor;}
+                  &.public {background: @publicColor; border:1px solid @publicColor;}
+                  &.big-badge {
+                  }
+                  &.lil-badge {
+                     &.scholars {color: @scholarsColor;}
+                     &.public {color: @publicColor;}
+                     background: #fff;
+                     text-shadow: none;
+                  }
                }
             }
          }
