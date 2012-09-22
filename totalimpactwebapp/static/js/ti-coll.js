@@ -55,6 +55,7 @@ function GenreList(items) {
             genres.push(renderedGenre)
         }
         $("div.genre").remove()
+        $("div.tooltip").remove() // otherwise tooltips from removed badges stick around
         $("#metrics div.wrapper").append(genres)
     }
 }
@@ -128,10 +129,11 @@ function CollViews() {
     }
 
     this.finishUpdating = function(items){
+        // setup page header
         $("#page-header img").remove()
-
         $("#num-items span.value").text(items.length)
-        $("img.loading").remove()
+
+        // setup item-level zooming
         $("li.item div.item-header").addClass("zoomable")
         $("span.item-expand-button")
             .show()
@@ -156,6 +158,7 @@ function CollViews() {
 
         var genreList = new GenreList(itemObjs)
         genreList.render()
+
     }
 }
 
