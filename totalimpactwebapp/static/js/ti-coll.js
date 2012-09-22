@@ -132,7 +132,15 @@ function CollViews() {
 
         $("#num-items span.value").text(items.length)
         $("img.loading").remove()
+        $("li.item div.item-header").addClass("zoomable")
+        $("span.item-expand-button")
+            .show()
+            .css({color: tiLinkColor})
+            .fadeOut(1500, function(){
+                $(this).removeAttr("style")
+            })
     }
+
     this.render = function(itemObjsDict) {
         var thisNow = this
 

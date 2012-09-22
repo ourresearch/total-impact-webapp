@@ -134,10 +134,6 @@ function Item(dict, itemView) {
 
     this.getsBigAward = function(raw, minForAward, lowerBound) {
 
-        console.log("does this get an award?")
-        console.log(raw)
-        console.log(minForAward)
-        console.log(lowerBound)
         if (lowerBound >= 75 && raw >= minForAward) {
                 return true
         }
@@ -448,7 +444,7 @@ function ItemController(){
 
     var body$ = $("body")
 
-    body$.on("click", "div.item-header", function(e){
+    body$.on("click", "div.item-header.zoomable", function(e){
 
         // follow article linkout link instead of dropping down the zoom.
         if ($(e.target).hasClass("help-text")) {
