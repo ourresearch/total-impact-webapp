@@ -18,11 +18,11 @@
   padding-bottom: 20px;
 }
 #report-meta {
-  margin: -102px 90px 0 0;
+  margin: -98px 90px 0 0;
   float: right;
 }
 #report-meta div#num-items {
-  color: white;
+  color: #777;
   padding-top: 41px;
   display: block;
   float: right;
@@ -34,10 +34,10 @@
   font-size: 16px;
 }
 #report-meta div#num-items a {
-  color: #fff;
+  color: #777;
 }
 #report-meta div#num-items a:hover {
-  color: #fff;
+  color: #ff4e00;
 }
 #report-meta div#report-button {
   width: 155px;
@@ -97,7 +97,7 @@ div#metrics div.wrapper {
 }
 div#metrics h3 {
   font-family: rokkitt, georgia, serif;
-  font-size: 30px;
+  font-size: 24px;
   color: #ff4e00;
   clear: both;
   font-weight: bold;

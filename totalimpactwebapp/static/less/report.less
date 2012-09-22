@@ -1,6 +1,6 @@
 
 @linkColor: #FF4E00;
-@generalColor: #0053b0;
+@accentColor: #0053b0;
 
 @publicColor: #4DAF4A;
 @scholarsColor: #377EB8;
@@ -31,10 +31,10 @@
     padding-bottom: 20px;
 }
 #report-meta {
-   margin: -102px 90px 0 0;
+   margin: -98px 90px 0 0;
    float:right;
    div#num-items {
-      color:white;
+      color:#777;
       padding-top: 41px;
       display: block;
       float: right;
@@ -42,8 +42,8 @@
       font-size: 14px;
       span.value {font-weight: bold; font-size: 16px;}
       a {
-         color: #fff;
-         &:hover {color: #fff;}
+         color: #777;
+         &:hover {color: @linkColor;}
       }
    }
 
@@ -120,7 +120,7 @@ div#metrics {
 
    h3 {
       font-family: rokkitt, georgia, serif;
-      font-size:30px;
+      font-size:24px;
       color:@linkColor;
       clear:both;
       font-weight:bold;

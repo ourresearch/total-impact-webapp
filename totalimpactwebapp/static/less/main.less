@@ -2,6 +2,8 @@
 // useful mixins, from https://github.com/dmitryf/elements
 @import "elements.less";
 @linkColor: #FF4E00;
+@accentColor: #0053b0;
+
 
 
 /* globals */
@@ -13,8 +15,8 @@ html {
 body {
     font-family: "Helvetica", sans-serif;
     margin: 0;
-    background: #ff4e00;
-    background: url(../img/orange-noise.png);
+
+   background: url(../img/grey-noise.png);
     height: 100%;
     padding-bottom: 0;
 
@@ -52,7 +54,7 @@ legend {
 }
 body a:link {
     text-decoration: none;
-    cursor: pointer;    
+    cursor: pointer;
 }
 body a:hover {
     text-decoration: underline;
@@ -102,13 +104,15 @@ div.navbar {
 
    .navbar-inner{
       .border-radius(0, 5px, 5px, 0);
-      .drop-shadow(0, 5px, 10px, 0.2);
+      .drop-shadow(0, 3px, 10px, 0.1);
       padding-right:0;
-      height: 62px;
+      height: 65px;
       background:#fff;
+      border:1px solid #aaa;
+      border-top:none;
 
       a.brand {
-         margin-left:-10px;
+         margin: 2px 0 0 -10px;
       }
 
       .nav { position: static;}
@@ -122,9 +126,16 @@ div.navbar {
    li {
       margin-top: 10px;
 
+
       &.divider-vertical {
          height: 35px;
          margin-top: 15px;
+      }
+      &.dropdown.open {
+         a.dropdown-toggle {
+            background: #fff !important;
+            color: @linkColor !important;
+         }
       }
 
       &.acct-mgt {
@@ -146,10 +157,11 @@ div.navbar {
 
       div.dropdown-menu {
          padding:15px 20px 20px;
-         background:url(../img/grey-noise.png);
+         li{ margin: 0; padding: 0;}
          &::after {
             border-bottom:6px solid #E2E2E2;
          }
+
 
          .btn-primary {
             margin-top:0;
@@ -222,16 +234,17 @@ div#page-header h2 {
    margin:0;
    margin-bottom:-5px;
    float:none;
+   color:#555;
 }
 
 
 div.main {
-    box-shadow: 0px 3px 16px -3px #333;
     background: #fff;
     padding-top: 30px;
     font-size: 18px;
     padding-bottom: 100px;
     color: #333;
+   border-top: 1px solid #aaa;
     min-height: 350px
 }
 div.main p {
@@ -246,122 +259,114 @@ div.main h3:first {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-
+body.homepage div#page-header {
+   display:none;
+}
 
 
 div#tagline {
-    color:#fff;
-    height: 455px;
-    position: relative;
-/*    background:url(img/tagline-bg.png) bottom left repeat-x;*/
+   color:@linkColor;
+   height: 412px;
+   position: relative;
+
+
+   div.wrapper {
+       position: relative;
+   }
+   #img-bar {
+      position: relative;
+   }
+
+   img {
+      height: 380px;
+      width: auto;
+      position: absolute;
+      right: 85px;
+      top: 17px;
+      z-index: 2;
+   }
+
+   #text-bar {
+      padding: 20px 0 0 0;
+      position: absolute;
+      width:100%;
+      top: 50px;
+
+      h2 {
+         color: #444;
+         font-family: 'rokkitt', 'georgia', serif;
+         font-size: 46px;
+         font-weight: bold;
+         margin-bottom:0;
+         line-height: .8;
+         background: transparent;
+         width: 576px;
+         margin:0;
+         padding:0;
+
+      }
+      p.subtagline{
+         font-size: 23px;
+         color: #444;
+         line-height: 1.2;
+         width: 550px;
+         font-family: rokkitt, georgia, sans-serif;
+         margin-top: 14px;
+         a {
+            text-decoration: underline;
+            color: @linkColor;
+         }
+      }
+
+   }
+
+   #button-bar {
+      width: 100%;
+      position: absolute;
+      top: 270px;
+
+      #call-to-action span.container {
+         height: 114px;
+         display:block;
+         float:left;
+         width: 330px;
+      }
+      a#create-collection {
+         margin: 3px 0 0 20px;
+         font-size: 2.1em;
+      }
+
+      p#example-collection {
+         width: 100px;
+         font-size: 14px;
+         float: left;
+         width: 100px;
+         color: #777;
+         margin: 2px 0 0 5px;
+         padding: 4px 0 0 15px;
+         border-left: 1px solid #aaa;
+          a {
+            font-size: 25px;
+             margin-top:-5px;
+             color: #444;
+             font-family: 'rokkitt', 'georgia', serif;
+             display: block;
+            width: 175px;
+             &:hover {text-decoration: underline; color: @linkColor;}
+          }
+      }
+   }
+
+
 }
 
 
-div#tagline div.wrapper {
-    position: relative;
-}
-body.homepage div#page-header {
-    display:none;
-}
-
-
-
-
-
-/* the image */
-#tagline #img-bar {
-    position: relative;
-}
-#tagline img {
-    height: 430px;
-    width: auto;
-    position: absolute;
-    right: 0;
-    top: 15px;
-    z-index: 2;
-}
-
-
-
-
-
-/* the tagline and subtagline */
-#tagline #text-bar {
-    padding: 20px 0 0 0;
-    position: absolute;
-    width:100%;
-    top: 50px;
-/*    background: #da5015;*/
-}
-
-
-#tagline #text-bar h2 {
-    color: #fff;
-    font-family: 'rokkitt', 'georgia', serif;
-    font-size: 46px;
-    font-weight: bold;
-    margin-bottom:0;
-    line-height: .8;
-    background: transparent;
-    width: 576px;
-    margin:0;
-    padding:0;
-
-}
-
-div#tagline p.subtagline{
-    font-size: 23px;
-    line-height: 1.2;
-    width: 550px;
-    font-family: rokkitt, georgia, sans-serif;
-    margin-top: 14px;
-}
-div#tagline p a {
-    color: #fff;
-    text-decoration: none; 
-    border-bottom: 2px dotted #fff;
-}
-div#tagline p a:hover {
-    border-bottom:2px solid #fff;
-}
 
 
 
 /* the call-to-action button and environs */
 
-#button-bar {
-    width: 100%;
-    position: absolute;
-    top: 300px;
-}
 
-#call-to-action span.container {
-    height: 114px;
-    display:block;
-    float:left;
-    width: 330px;
-}
-a#create-collection {
-    margin: 3px 0 0 20px;
-   font-size: 2.1em;
-}
-
-p#example-collection {
-    width: 100px;
-    font-size: 14px;
-    float: left;
-    width: 100px;
-    margin-top: 3px;
-    padding-left: 15px;
-    border-left: 1px solid 
-    #EEE;
-    margin-left: 5px;
-}
-p#example-collection a {
-    font-size: 22px;
-    display: block;
-    width: 175px
-}
 
 
 
@@ -369,10 +374,10 @@ p#example-collection a {
 *************************************************/
 div#selling-points{
     background-color:#333;
-    padding:20px 0;
+    padding:45px 0 0;
     margin-top: -34px;
     min-height: 300px;
-    border-top: 1px solid #fff;
+    border-top: 3px solid @linkColor;
     background-position: bottom;
     background-repeat: repeat-x;
 
@@ -380,7 +385,7 @@ div#selling-points{
 
 div#selling-points p {
     margin-top:0;
-    color: #bbb;
+    color: #ddd;
     line-height: 1.4;
 }
 
@@ -389,9 +394,9 @@ div#selling-points p {
     width: 27%;
     padding-right:3%;
     margin-right: 3%;
-    border-right: 1px dotted #555;
+    border-right: 1px solid #555;
     list-style-type: none;
-    min-height: 300px;
+    min-height: 270px;
 }
 #selling-points ul li:last-child {
     border-right:none;
@@ -409,7 +414,7 @@ div#selling-points p {
     margin-top: 0px;
     text-shadow: 3px 3px 7px #111;
     padding-bottom: 10px;
-    
+
 }
 h3#metrics-in-seconds {
     background:url(../img/stopwatch-icon.png) no-repeat top left;
@@ -606,20 +611,24 @@ div#docs ul.metrics {
 *****************************************************************************
 *****************************************************************************/
 
+body.homepage #footer {
+   background: #333;
+   border:none;
+}
 div#footer {
-    font-size:100%;    
+    font-size:100%;
     clear:both;
     color: #555;
     padding-top: 50px;
     width: 100%;
-}
-body.homepage div#footer {
-    background: #333;
+   border-top: 1px solid #aaa;
 }
 div#footer div.wrapper{
     padding: 20px 30px 50px;
     margin-top: 50px;
-    height: 50px;
+   border:1px solid #aaa;
+   border-bottom: none;
+   height: 50px;
     width: 1100px;
     -moz-border-radius-topleft: 10px;
     -webkit-border-top-left-radius: 10px;
@@ -627,7 +636,7 @@ div#footer div.wrapper{
     -webkit-border-top-right-radius: 10px;
     background: #fff;
     margin:0 auto;
-    
+
 }
 div#footer p {
     margin:6px 0 0 0;
@@ -642,7 +651,7 @@ div#footer img {
 }
 div#footer-text{
     padding-top:12px;
-    
+
 }
 
 div.tooltip {

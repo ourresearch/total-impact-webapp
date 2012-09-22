@@ -118,7 +118,7 @@ function Coll(collViews, user){
 function CollViews() {
     this.startUpdating = function(){
         $("img.loading").remove()
-        $("h2").before(ajaxLoadImgTransparent)
+        $("h2").before(ajaxLoadImg)
     }
 
     this.badgesWeight = function(dict) {
