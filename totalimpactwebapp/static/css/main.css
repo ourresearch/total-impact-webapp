@@ -30,8 +30,7 @@ body div#namechange {
   text-align: center;
   padding: 10px 0;
 }
-body div#namechange em {
-  font-style: normal;
+body div#namechange strong {
   color: #ff4e00;
 }
 body div#namechange a.dismiss {
@@ -136,88 +135,88 @@ div.navbar a.brand img {
   height: 35px;
   margin-top: 0;
 }
-div.navbar li {
+div.navbar ul.nav.pull-right > li {
   margin-top: 10px;
 }
-div.navbar li.divider-vertical {
+div.navbar ul.nav.pull-right > li.divider-vertical {
   height: 35px;
   margin-top: 15px;
 }
-div.navbar li.dropdown.open a.dropdown-toggle {
+div.navbar ul.nav.pull-right > li.dropdown.open a.dropdown-toggle {
   background: #fff !important;
   color: #ff4e00 !important;
 }
-div.navbar li.acct-mgt#logged-in {
+div.navbar ul.nav.pull-right > li.acct-mgt#logged-in {
   display: none;
 }
-div.navbar li.acct-mgt#logged-in span.username {
+div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.username {
   font-weight: bold;
 }
-div.navbar li.acct-mgt#logged-in span.username:hover {
+div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.username:hover {
   color: #ff4e00;
 }
-div.navbar li.acct-mgt#logged-in span#logout-link {
+div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span#logout-link {
   font-size: 12px;
   font-family: Helvetica, arial;
 }
-div.navbar li.acct-mgt#logged-in span#logout-link:hover {
+div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span#logout-link:hover {
   color: #ff4e00;
 }
-div.navbar li .control-group {
+div.navbar ul.nav.pull-right > li .control-group {
   margin: 0;
 }
-div.navbar li div.dropdown-menu {
+div.navbar ul.nav.pull-right > li div.dropdown-menu {
   padding: 15px 20px 20px;
 }
-div.navbar li div.dropdown-menu li {
+div.navbar ul.nav.pull-right > li div.dropdown-menu li {
   margin: 0;
   padding: 0;
 }
-div.navbar li div.dropdown-menu::after {
+div.navbar ul.nav.pull-right > li div.dropdown-menu::after {
   border-bottom: 6px solid #E2E2E2;
 }
-div.navbar li div.dropdown-menu .btn-primary {
+div.navbar ul.nav.pull-right > li div.dropdown-menu .btn-primary {
   margin-top: 0;
   float: right;
   font-size: 20px;
 }
-div.navbar li div.dropdown-menu span.help-inline {
+div.navbar ul.nav.pull-right > li div.dropdown-menu span.help-inline {
   height: 22px;
   min-width: 40px;
   float: right;
   font-family: helvetica, aria, sans-serif;
   font-size: 12px;
 }
-div.navbar li div.dropdown-menu span.help-inline img {
+div.navbar ul.nav.pull-right > li div.dropdown-menu span.help-inline img {
   height: 22px;
   float: right;
 }
-div.navbar li#logged-in div.dropdown-menu {
+div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu {
   min-width: 200px;
   padding: 5px 0 10px 0;
 }
-div.navbar li#logged-in div.dropdown-menu h3 {
+div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu h3 {
   margin-top: 0;
   border-bottom: 1px solid #ccc;
   text-align: center;
 }
-div.navbar li#logged-in div.dropdown-menu h3.none {
+div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu h3.none {
   text-align: left;
   line-height: 1;
   font-size: 16px;
   padding: 20px;
 }
-div.navbar li#logged-in div.dropdown-menu h3.none a {
+div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu h3.none a {
   color: #ff4e00;
   display: inline;
   padding: 0;
 }
-div.navbar li#logged-in div.dropdown-menu img.loading {
+div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu img.loading {
   margin: 5px auto 0;
   float: none;
   display: block;
 }
-div.navbar a#uservoice {
+div.navbar ul.nav.pull-right a#uservoice {
   position: relative;
   display: block;
   margin-top: -26px;
