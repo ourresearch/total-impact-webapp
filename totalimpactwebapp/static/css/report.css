@@ -2,6 +2,9 @@
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+body.report main {
+  min-height: 500px;
+}
 #page-header h2 span {
   font-size: 16px;
   margin-left: 10px;
@@ -360,7 +363,7 @@ li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics 
   font-size: 11px;
   color: #555;
 }
-li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta a.value-and-name {
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta .value-and-name {
   width: 130px;
   display: inline-block;
   width: 75px;

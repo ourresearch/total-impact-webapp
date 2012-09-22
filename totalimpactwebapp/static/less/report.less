@@ -12,6 +12,9 @@
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+body.report main{
+   min-height: 500px;
+}
 
 #page-header h2 {
    span {
@@ -373,13 +376,15 @@ li.item {
                         font-size:11px;
                         color: #555;
 
-                        a.value-and-name  {
+                        .value-and-name  {
                            width: 130px;
                            display:inline-block;
                            width: 75px;
                            line-height: 1.3;
                            margin-right: 5px;
                            color: #999;
+                        }
+                        a.value-and-name {
                            &:hover {color: @linkColor;}
                         }
                         img {
