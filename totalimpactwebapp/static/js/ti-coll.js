@@ -175,9 +175,7 @@ function CollController(coll, collViews) {
         coll.update();
         return false;
     })
-    $("div.btn-group.download button").click(function(){
-        location.href = $(this).val()
-    })
+
     $("div#num-items a").toggle(
         function(){
             $(this).html("(collapse all)")
