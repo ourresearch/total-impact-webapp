@@ -2,8 +2,11 @@
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-body.report main {
+body.report #main {
   min-height: 500px;
+}
+body.report #page-header {
+  padding-top: 40px;
 }
 #page-header h2 span {
   font-size: 16px;
@@ -314,7 +317,7 @@ li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics 
   margin: 0 0 5px 0;
 }
 li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line {
-  width: 250px;
+  width: 150px;
   height: 16px;
   margin-top: -6px;
   border-bottom: 1px solid #bbb;
