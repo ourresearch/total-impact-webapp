@@ -78,8 +78,8 @@ def collection_create():
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
-    url = "http://{root}/collection/{collection_id}?include_items=0".format(
-        root=os.getenv("API_ROOT"),
+    url = "http://{api_root}/collection/{collection_id}?include_items=0".format(
+        api_root=os.getenv("API_ROOT"),
         collection_id=collection_id
     )
     
@@ -89,6 +89,7 @@ def collection_report(collection_id):
         return render_template(
             'collection.html',
             api_root=os.environ["API_ROOT"],
+            api_key=os.environ["API_KEY"],
             page_title=collection["title"],
             body_class="report",
             collection_id=collection["_id"]
