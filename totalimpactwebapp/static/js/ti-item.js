@@ -448,7 +448,14 @@ function ItemController(){
 
     var body$ = $("body")
 
-    body$.on("click", "div.item-header", function(){
+    body$.on("click", "div.item-header", function(e){
+
+        // follow article linkout link instead of dropping down the zoom.
+        if ($(e.target).hasClass("help-text")) {
+            console.log("help-text")
+            return true
+        }
+
         $(this)
            .parents("li.item")
            .find("div.zoom")
