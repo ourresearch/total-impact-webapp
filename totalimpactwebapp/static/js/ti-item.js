@@ -293,9 +293,13 @@ function Item(dict, itemView) {
         return(metricsDict)
     }
 
-    this.getMetricPercentiles = function(metricsDict, normRefSetName) {
+    this.getMetricPercentiles = function(metricsDict) {
         for (var metricName in metricsDict) {
-            metricsDict[metricName].percentiles = metricsDict[metricName].values[normRefSetName]
+            for (var normRefSetName in metricsDict[metricName].values) {
+                if (normRefSetName.indexOf("raw") == -1) {
+                    metricsDict[metricName].percentiles = metricsDict[metricName].values[normRefSetName]
+                }
+            }
         }
         return metricsDict
     }
@@ -307,7 +311,7 @@ function Item(dict, itemView) {
 
     // constructor
     this.dict = dict
-    this.dict.metrics = this.getMetricPercentiles(this.dict.metrics, "WoS")
+    this.dict.metrics = this.getMetricPercentiles(this.dict.metrics)
     console.log(this.dict.biblio.title)
 
     this.dict.metrics = this.add_derived_metrics(this.dict.metrics)
@@ -321,15 +325,6 @@ function Item(dict, itemView) {
 
     return true
 }
-
-
-
-
-
-
-
-
-
 
 
 
