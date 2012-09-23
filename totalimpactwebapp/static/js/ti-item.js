@@ -6,7 +6,7 @@ function Item(dict, itemView) {
     var metricInfo = {
         "citeulike:bookmarks": ["scholars", "saved", "badge", 3],
         "delicious:bookmarks": ["public", "saved", "badge", 3],
-        "dryad:most_downloaded_file": ["scholars", "viewed", "badge", 100],
+        "dryad:most_downloaded_file": ["", "", 0],
         "dryad:package_views": ["scholars", "viewed", "badge", 100],
         "dryad:total_downloads": ["scholars", "viewed", "badge", 100],
         "facebook:shares":["public", "discussed", "badge", 3],
