@@ -22,7 +22,18 @@ function Genre(name) {
         genre$.find("ul.items.active").append(renderedItems)
         genre$.find("ul.items.inactive").append(itemsWithoutActivity)
         if (itemsWithoutActivity.length) {
-            genre$.find("h4.plus-more span.value")
+            genre$.find("h4.plus-more")
+                .toggle(
+                    function(){
+                        $(this).addClass("showing").siblings("ul.items.inactive").slideDown()
+                        $(this).find("span.show-hide").html("(hide)")
+                    },
+                    function() {
+                        $(this).removeClass("showing").siblings("ul.items.inactive").slideUp()
+                        $(this).find("span.show-hide").html("(show)")
+                    }
+                )
+                .find("span.value")
                 .html(itemsWithoutActivity.length)
         }
         else {
@@ -134,7 +145,7 @@ function CollViews() {
         $("#num-items span.value").text(items.length)
 
         // setup item-level zooming
-        $("li.item div.item-header").addClass("zoomable")
+        $("ul.active li.item div.item-header").addClass("zoomable")
         $("span.item-expand-button")
             .show()
             .css({color: tiLinkColor})
@@ -186,8 +197,6 @@ function CollController(coll, collViews) {
             $("li.item").removeClass("zoomed").find("div.zoom").hide()
         }
     )
-
-
 
 
 }

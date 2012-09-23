@@ -114,13 +114,36 @@ div#metrics div.genre {
 }
 div#metrics div.genre h4.plus-more {
   float: left;
-  font-style: italic;
-  font-size: 14px;
-  color: #777;
-  margin: 20px 0;
+  font-size: 16px;
+  margin: 40px 0 0 20px;
+  text-indent: -20px;
+  cursor: pointer;
+}
+div#metrics div.genre h4.plus-more:hover {
+  color: #ff4e00;
+}
+div#metrics div.genre h4.plus-more.showing {
+  color: #ff4e00;
+}
+div#metrics div.genre h4.plus-more.showing span.icon {
+  background-position: -24px 64px;
+}
+div#metrics div.genre h4.plus-more span.icon {
+  padding: 0 9px;
+  background: url(../img/glyphicons-halflings.png);
+  background-position: 0 64px;
+}
+div#metrics div.genre h4.plus-more span.show-hide {
+  font-weight: normal;
+  font-style: normal;
+  font-size: 12px;
 }
 div#metrics div.genre ul.items.inactive {
   display: none;
+  margin-left: 20px;
+}
+div#metrics div.genre ul.items.inactive li.item div.biblio h5 {
+  color: #666;
 }
 li.item {
   float: left;
