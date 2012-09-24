@@ -230,7 +230,7 @@
                <ul class="metrics">{{#metrics}}
                   <li>
                      <div class="meta">
-                        <img src="{{ static_meta.icon }}" width="16" height="16" border="0">
+                        <img src="{{ static_meta.icon }}" width="16" height="16" border="0" rel="tooltip" title="<strong>{{static_meta.provider}} {{static_meta.display_name}}</strong>: {{static_meta.description}}">
                         {{#provenance_url}}
                         <a class="value-and-name" target="_blank" href="{{provenance_url}}">
                            <span class="metric-value value">{{ values.raw }}</span>

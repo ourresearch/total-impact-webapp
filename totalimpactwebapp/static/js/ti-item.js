@@ -366,7 +366,11 @@ function ItemView() {
 
 
     this.findBarLabelOffsets = function(start, end) {
-        var minWidth = 25
+        var minWidth = 27
+        if (end == 100) {
+            minWidth = 32
+        }
+
         var width = end - start
         if (width < minWidth) {
             var widthToAdd = width - minWidth
@@ -377,6 +381,21 @@ function ItemView() {
         }
 
         return offset
+    }
+
+    this.findBarMargins = function(CIstart, CIend) {
+        var minWidth = 7
+        var leftMargin = CIstart
+        var rightMargin = 100 - CIend
+
+        var amountLessThanMinWidth = minWidth - (CIend - CIstart)
+        if (amountLessThanMinWidth > 0) {
+            leftMargin -= amountLessThanMinWidth / 2
+            rightMargin -= amountLessThanMinWidth / 2
+        }
+
+
+        return [leftMargin, rightMargin]
     }
 
 
@@ -391,16 +410,18 @@ function ItemView() {
 
             var offset = thisThing.findBarLabelOffsets(ciStartValue, ciEndValue)
 
+            var margins = thisThing.findBarMargins(ciStartValue, ciEndValue)
+
             $(this).css(
                 {
-                    "margin-left":ciStartValue+"%",
-                    "margin-right":(100 - ciEndValue)+"%"
+                    "margin-left":margins[0]+"%",
+                    "margin-right":margins[1]+"%"
                 })
                 .find("span.endpoint.start").css("left", offset+"px")
                 .end()
                 .find("span.endpoint.end").css("right", offset+"px")
         })
-
+        zoom$.find("ul.metrics div.meta img").tooltip()
         return zoom$
     }
 
