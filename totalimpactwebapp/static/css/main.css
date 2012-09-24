@@ -355,7 +355,7 @@ div#selling-points {
   padding: 45px 0 0;
   margin-top: -34px;
   min-height: 300px;
-  border-top: 5px solid #fff;
+  border-top: 1px solid #ff4e00;
   background-position: bottom;
   background-repeat: repeat-x;
 }

@@ -5,65 +5,73 @@
 
 <!-- START input -->
 <div class="main" id="input">
-    <div class="wrapper">
-        <ul id="manual-add">
-            <li id="paste-ids">
+   <div class="wrapper">
+      <!--<div class="fileupload fileupload-new" data-provides="fileupload">-->
+         <!--<div class="fileupload-preview uneditable-input"></div>-->
+         <!--<span class="btn btn-file"><span class="fileupload-new">Select file</span><input type="file" /></span>-->
+      <!--</div>-->
+      <ul id="manual-add">
+         <!--<li id="paste-ids">-->
+            <!--<legend for="paste_input" class="prompt" title="Paste DOIs or URLS for items you want to look up." >URLs or DOIs<span class="limit">limit 250</span></legend>-->
+            <!--<textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>-->
+         <!--</li>-->
+         <li id="paste-ids">
             <legend for="paste_input" class="prompt" title="Paste DOIs or URLS for items you want to look up." >URLs or DOIs<span class="limit">limit 250</span></legend>
             <textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>
-            </li>
-        </ul>
-        <ul id="pullers">
-            <li>
-                <div class="toggler_contents" id="slideshare_toggler_contents">
-                    <legend for=slideshare_profile_input" class="prompt">Slideshare username</legend>
-                    <input id="slideshare_profile_input" name="slideshare_profile" type="text" size="20" />
-                </div>
-            </li>
-            <li>
-                <div class="toggler_contents" id="github_users_toggler_contents">
-                    <legend for="github_users_input" class="prompt">GitHub username</legend>
-                    <input id="github_users_input" name="github_user" type="text" size="20" />
-                </div>
-            </li>
-            <li>
-                <div class="toggler_contents" id="dryad_toggler_contents">
-                    <legend for="dryad_author_input" class="prompt" title="Fill in the dc:contributor.author value in <em>Show Full Metadata</em> to retrieve a list of datasets">Dryad author name</legend>
-                    <input id="dryad_author_input" name="dryad_author" type="text" size="20" />
-                </div>
-            </li>
-            <li>
-            <div class="toggler_contents" id="bibtex_toggler_contents">
-            <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Upload a BibTeX file<span class="limit">experimental, takes up to 2 minutes</span></legend>
-            <input type="file" id="input_bibtex" onchange="upload_bibtex(this.files)"/>
-            <div class="progressbar"></div>
+         </li>
+      </ul>
+      <ul id="pullers">
+         <li>
+            <div class="toggler_contents" id="slideshare_toggler_contents">
+               <legend for=slideshare_profile_input" class="prompt">Slideshare username</legend>
+               <input id="slideshare_profile_input" name="slideshare_profile" type="text" size="20" />
             </div>
-            </li>
-        </ul>
-       <form id="inline-register">
-          <legend for="inline-user-signup" class="prompt" >Register<span class="limit">optional; lets you save and modify your collection later.</span></legend>
-          <fieldset id="inline-user-creds">
-             <div class="form-item control-group">
-                <legend for="inline-register-email">email</legend>
-                <span class="help-inline"></span>
+         </li>
+         <li>
+            <div class="toggler_contents" id="github_users_toggler_contents">
+               <legend for="github_users_input" class="prompt">GitHub username</legend>
+               <input id="github_users_input" name="github_user" type="text" size="20" />
+            </div>
+         </li>
+         <li>
+            <div class="toggler_contents" id="dryad_toggler_contents">
+               <legend for="dryad_author_input" class="prompt" title="Fill in the dc:contributor.author value in <em>Show Full Metadata</em> to retrieve a list of datasets">Dryad author name</legend>
+               <input id="dryad_author_input" name="dryad_author" type="text" size="20" />
+            </div>
+         </li>
+         <li>
+            <div class="toggler_contents" id="bibtex_toggler_contents">
+               <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Upload a BibTeX file<span class="limit">experimental, takes up to 2 minutes</span></legend>
+               <input  type="file" id="input_bibtex" onchange="upload_bibtex(this.files)"/>
+               <div class="progressbar"></div>
+            </div>
+         </li>
+      </ul>
+      <form id="inline-register">
+         <legend for="inline-user-signup" class="prompt" >Register<span class="limit">optional; lets you save and modify your collection later.</span></legend>
+         <fieldset id="inline-user-creds">
+            <div class="form-item control-group">
+               <legend for="inline-register-email">email</legend>
+               <span class="help-inline"></span>
                <input id="inline-register-email" class="username register" type="text" />
-             </div>
-             <div class="form-item">
-                <legend for="inline-register-pw">password</legend>
+            </div>
+            <div class="form-item">
+               <legend for="inline-register-pw">password</legend>
                <input id="inline-register-pw" type="password" />
-             </div>
-          </fieldset>
-       </form>
-        <div id="create-button" class="inputcol">
-            <form name="id_form" action="./fetch/" id="id-form">
-                <legend for="name">Collection name:</legend>
-                <input name="name" class="no-input-yet" id="name" title="Add a meaningful title to this collection" />
-                <input name="list" id="artifacts-list" type="hidden" value="" />
-                <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
-                <button name="run" type="submit" id="go-button" class="btn btn-large btn-primary">go!</button>
-            </form>
-            <div class="clearfix">&nbsp;</div>
-        </div>
-    </div>
+            </div>
+         </fieldset>
+      </form>
+      <div id="create-button" class="inputcol">
+         <form name="id_form" action="./fetch/" id="id-form">
+            <legend for="name">Collection name:</legend>
+            <input name="name" class="no-input-yet" id="name" title="Add a meaningful title to this collection" />
+            <input name="list" id="artifacts-list" type="hidden" value="" />
+            <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
+            <button name="run" type="submit" id="go-button" class="btn btn-large btn-primary">go!</button>
+         </form>
+         <div class="clearfix">&nbsp;</div>
+      </div>
+   </div>
 
 </div><!-- END input -->
 
