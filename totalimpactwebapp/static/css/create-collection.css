@@ -1,3 +1,15 @@
+/*---------------------------------------------------
+    LESS Elements 0.6
+  ---------------------------------------------------
+    A set of useful LESS mixins by Dmitry Fadeyev
+    Special thanks for mixin suggestions to:
+      Kris Van Herzeele,
+      Benoit Adam,
+      Portenart Emile-Victor,
+      Ryan Faerman
+
+    More info at: http://lesselements.com
+-----------------------------------------------------*/
 div#input {
   /*    background: url(./img/lightpaperfibers.png);*/
 
@@ -8,23 +20,15 @@ div#input {
 div#input textarea,
 div#input input {
   width: 450px;
-  border: 2px solid #aaa;
   color: #333;
   font-size: 20px;
   float: left;
   margin-right: 10px;
   background-color: #fff;
 }
-div#input textarea#paste_input {
-  height: 100px;
+div#input textarea.artifactList {
+  height: 66px;
   font-size: 18px;
-}
-div#input textarea#crossref_input {
-  height: 26px;
-  font-size: 18px;
-}
-li#paste-crossref {
-  padding-top: 5px;
 }
 div#input textarea.no-input-yet,
 div#input input.no-input-yet {
@@ -54,12 +58,13 @@ div#input legend {
   margin-bottom: 5px;
 }
 div#input legend a {
-  color: #ff4e00;
   text-decoration: none;
-  border-bottom: 2px dotted #ff4e00;
+  color: #888;
+  border-bottom: 2px dotted #888;
 }
 div#input legend a:hover {
   border-bottom: 2px solid #ff4e00;
+  color: #ff4e00;
 }
 div#input span.paren {
   display: block;
@@ -70,11 +75,14 @@ legend span.limit {
   font-weight: normal;
   font-size: 15px;
 }
-ul#pullers {
+ul.pullers {
   float: left;
-  padding-top: 30px;
   width: 100%;
-  margin-bottom: 50px;
+  margin-bottom: 70px;
+}
+ul.pullers.bibtex {
+  margin-bottom: 20px;
+  margin-top: 50px;
 }
 img.loading {
   height: 30px;
@@ -132,6 +140,28 @@ div#input #inline-register input {
 }
 div#input input#input_bibtex {
   border: none;
+}
+li#bibtex-import span.added {
+  padding-top: 17px;
+  font-size: 24px;
+}
+li#bibtex-import div.toggler_contents span.btn {
+  margin-top: 10px;
+}
+li#bibtex-import div.toggler_contents div.uneditable-input {
+  float: left;
+  width: 450px;
+}
+li#bibtex-import div.toggler_contents span.btn-file {
+  float: left;
+}
+li#bibtex-import div.toggler_contents img.loading {
+  height: 35px;
+  margin-top: 5px;
+}
+li#bibtex-import div.toggler_contents div.progressbar {
+  font-size: 20px;
+  margin-top: 15px;
 }
 /* go-button section
 *****************************************************************************

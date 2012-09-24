@@ -1,3 +1,8 @@
+// useful mixins, from https://github.com/dmitryf/elements
+@import "elements.less";
+@linkColor: #FF4E00;
+@accentColor: #0053b0;
+
 body.create-collection {
 }
 body.create-collection #header {
@@ -10,23 +15,16 @@ div#input {
 }
 div#input textarea, div#input input{
     width: 450px;
-    border: 2px solid #aaa;
     color: #333;
     font-size: 20px;
     float:left;
     margin-right: 10px;
     background-color: #fff;
 }
-div#input textarea#paste_input {
-    height: 100px;
+
+div#input textarea.artifactList {
+    height: 66px;
     font-size: 18px;
-}
-div#input textarea#crossref_input {
-    height: 26px;
-    font-size: 18px;
-}
-li#paste-crossref {
-    padding-top: 5px;    
 }
 div#input textarea.no-input-yet, div#input input.no-input-yet {
     color: #aaa;
@@ -56,12 +54,13 @@ div#input legend {
    margin-bottom: 5px;
 }
 div#input legend a {
-    color: #ff4e00;
     text-decoration: none;
-    border-bottom: 2px dotted #ff4e00;
+   color: #888;
+    border-bottom: 2px dotted #888;
 }
 div#input legend a:hover {
-    border-bottom:2px solid #ff4e00;
+    border-bottom:2px solid @linkColor;
+   color:@linkColor;
 }
 div#input span.paren {
     display:block;
@@ -74,11 +73,14 @@ legend span.limit {
     font-size: 15px;
 }
 
-ul#pullers {
+ul.pullers {
     float: left;
-    padding-top: 30px;
     width: 100%;
-    margin-bottom: 50px;
+    margin-bottom: 70px;
+   &.bibtex {
+      margin-bottom: 20px;
+      margin-top:50px;
+   }
 }
 img.loading {
     height: 30px;
@@ -144,6 +146,33 @@ div#input #inline-register input {
 }
 div#input input#input_bibtex {
    border:none;
+}
+li#bibtex-import {
+   span.added {
+      padding-top:17px;
+      font-size:24px;
+   }
+   div.toggler_contents {
+
+      span.btn {
+         margin-top: 10px;
+      }
+      div.uneditable-input {
+         float:left;
+         width: 450px;
+      }
+      span.btn-file{
+         float:left;
+      }
+      img.loading {
+         height:35px;
+         margin-top: 5px;
+      }
+      div.progressbar {
+         font-size: 20px;
+         margin-top:15px
+      }
+   }
 }
 
 

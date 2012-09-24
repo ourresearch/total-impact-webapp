@@ -21,7 +21,8 @@ var currentlyUpdating = false
  ****************************************************************************/
 
 exampleStrings = {
-    paste_input:"doi:10.123/somejournal/123\nhttp://www.example.com",
+    paste_input:"10.1038/171737a0\n13054692",
+    paste_webpages: "http://www.example.com\nhttp://www.zombo.com",
     crossref_input: "Watson : A Structure for Deoxyribose Nucleic Acid",
     name: "My Collection"
 }
@@ -152,7 +153,7 @@ update_bibtex_progress = function(key) {
                        for (i=0; i<response.memberitems.length; i++) {
                            aliases = aliases.concat(response.memberitems[i])
                        }
-                       addCollectionIds(aliases, $("li #input_bibtex"))
+                       addCollectionIds(aliases, $("div.fileupload"))
                    }
                    else {
                        progressbar(response.pages, response.complete, $("#bibtex_toggler_contents div.progressbar"))
@@ -163,8 +164,8 @@ update_bibtex_progress = function(key) {
                },
                error: function(XMLHttpRequest, textStatus, errorThrown) {
                    $("span.loading").remove()
-                   $("li #input_bibtex").siblings("span.added").remove()
-                   $("li #input_bibtex").after("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
+                   $("div.fileupload span.added").remove()
+                   $("div.fileupload").append("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
                }
            });  }
 
@@ -173,8 +174,8 @@ upload_bibtex = function(files) {
     var file = fileInput.files[0];
     var formData = new FormData();
     formData.append('file', file);
-    $("li #input_bibtex").siblings("span.added").remove()
-    $("li #input_bibtex").after("<span class='loading'>"+ajaxLoadImg+"<span>");
+    $("span.btn-file").remove()
+    $("<span class='loading'>"+ajaxLoadImg+"<span>").insertBefore("div.fileupload div.progressbar");
 
     console.log("starting ajax request now.")
 
@@ -191,19 +192,25 @@ upload_bibtex = function(files) {
                 update_bibtex_progress(response)
             },
           error: function(XMLHttpRequest, textStatus, errorThrown) {
-            $("li #input_bibtex").siblings("span.added").remove()
-            $("li #input_bibtex").siblings("span.loading").remove()
-            $("li #input_bibtex").after("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
-            }
+              $("span.loading").remove()
+              $("div.fileupload span.added").remove()
+              $("div.fileupload").append("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
+          }
         });
     }
 
 createCollectionInit = function(){
 
+
+    $("#google-scholar-help-link").click(function(){
+        $("#google-scholar-help").modal("show")
+        return false
+    })
+
     $("li textarea, input#name").each(function(){
         $(this).val(exampleStrings[this.id])
     })
-    $("ul#pullers input, ul#manual-add textarea, input#name")
+    $("div.toggler_contents input, ul#manual-add textarea, input#name")
     .focus(function(){
         currentUserInputValue = $(this).val();
         $(this).removeClass("no-input-yet")
@@ -224,10 +231,10 @@ createCollectionInit = function(){
             return false;
         }
 
-        if ($this.attr("id") == "paste_input") {
+        if ($this.hasClass("artifactList")) {
             newIds = parseTextareaArtifacts($(this).val());
-            // limit to adding first 500 lines
-            newIds = newIds.slice(0, 500)
+            // limit to adding first 250 lines
+            newIds = newIds.slice(0, 250)
             addCollectionIds(newIds, $(this))
         }
         else if ($this.attr("id") == "name") {
@@ -338,6 +345,9 @@ function showNameChangeBanner(){
     }
 
 }
+
+
+
 
 
 
