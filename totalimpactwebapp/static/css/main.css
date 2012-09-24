@@ -51,6 +51,13 @@ li {
 li {
   list-style-type: none;
 }
+ol {
+  padding-left: 2em;
+}
+ol li {
+  list-style-type: decimal;
+  margin-bottom: .5em;
+}
 pre {
   margin-left: 0;
   padding-left: 0;

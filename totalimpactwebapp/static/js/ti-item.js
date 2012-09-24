@@ -34,7 +34,7 @@ function Item(dict, itemView) {
         "plosalm:pubmed_central": ["", "", 0],
         "plosalm:scopus": [],                      // figure it out
         "pubmed:f1000": ["scholars", "recommended", "badge", 1],
-        "pubmed:pmc_citations": ["scholars", "cited", "badge", 3],
+        "pubmed:pmc_citations": ["scholars", "cited", 0, 0],
         "pubmed:pmc_citations_editorials": ["scholars", "recommended", "zoom", 0],
         "pubmed:pmc_citations_reviews": ["scholars", "cited", "zoom", 0],
         "scienceseeker:blog_posts": ["scholars", "discussed", "zoom", 0],
