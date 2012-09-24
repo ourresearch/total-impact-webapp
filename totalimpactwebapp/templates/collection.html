@@ -9,13 +9,13 @@
       <div id="report-meta">
          <div id="share">
             <!-- from https://twitter.com/about/resources/buttons#tweet -->
-            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id))
+               {js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";
+               fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
             <!-- based on code here: https://dev.twitter.com/docs/tweet-button -->
                     <span class="tweet-this">
-                        <a href="https://twitter.com/share" class="twitter-share-button"
-                           data-via="ImpactStoryit"
-                           data-text="Check out the impact story at {{ page_title }} {{request.url}}"
-                           data-count="horizontal">Tweet</a>
+                        <a href="https://twitter.com/intent/tweet?source=tweetbutton&text=Check%20out%20the%20impact%20story%20at%20{{page_title}} at {{request_url}}&via=ImpactStoryit" 
+                        class="twitter-share-button">Tweet</a>
                     </span>
          </div>
          <div id="report-button">
