@@ -281,23 +281,28 @@ div#tagline #img-bar {
   position: relative;
 }
 div#tagline .carousel {
-  height: 315px;
-  width: 470px;
+  height: 355px;
+  width: 500px;
   position: absolute;
   right: 0;
-  top: 50px;
+  top: 40px;
   z-index: 2;
-  border: 1px solid #fff;
+  border: none;
 }
 div#tagline .carousel img {
   height: auto;
   max-width: 100%;
 }
+div#tagline .carousel div.carousel-caption {
+  background: #fff;
+  color: #333;
+  display: none;
+}
 div#tagline .carousel a.carousel-control {
   height: 30px;
   width: 30px;
   line-height: 20px;
-  top: 89%;
+  top: 93%;
   border: none;
   color: #555;
   background: transparent;
@@ -306,10 +311,10 @@ div#tagline .carousel a.carousel-control:hover {
   color: #ff4e00;
 }
 div#tagline .carousel a.carousel-control.right {
-  right: -30px;
+  right: -20px;
 }
 div#tagline .carousel a.carousel-control.left {
-  left: -30px;
+  left: -20px;
 }
 div#tagline #text-bar {
   padding: 20px 0 0 0;
