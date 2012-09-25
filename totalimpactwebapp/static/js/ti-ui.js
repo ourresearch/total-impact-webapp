@@ -140,13 +140,13 @@ progressbar = function(total, done, loc$) {
     loc$.html(percentDone + "% done...")
 }
 
-update_bibtex_progress = function(key) {
+update_bibtex_progress = function(query_hash) {
     $.ajax({
-               url: "http://"+api_root+"/provider/bibtex/memberitems/"+key+"?method=async",
+               url: "http://"+api_root+"/provider/bibtex/memberitems/"+query_hash+"?method=async",
                type: "GET",
                dataType: "json",
                success: function(response,status,xhr){
-                   console.log("searched using key " + key)
+                   console.log("searched using query_hash " + query_hash)
                    console.log(response)
                    if (response.pages == response.complete) {
                        aliases = []
@@ -158,7 +158,7 @@ update_bibtex_progress = function(key) {
                    else {
                        progressbar(response.pages, response.complete, $("#bibtex_toggler_contents div.progressbar"))
                        setTimeout(function () {
-                           update_bibtex_progress(key)
+                           update_bibtex_progress(query_hash)
                        }, 500)
                    }
                },
@@ -187,9 +187,11 @@ upload_bibtex = function(files) {
             contentType: false,
             timeout: 120*1000,  // 120 seconds, because bibtex is very slow
             data: formData,
+            dataType: "json",
             success:  function(response,status,xhr){
-                console.log("started update request; got this key back: " + response)
-                update_bibtex_progress(response)
+                query_hash = response.query_hash
+                console.log("started update request; got this query_hash back: " + query_hash)
+                update_bibtex_progress(query_hash)
             },
           error: function(XMLHttpRequest, textStatus, errorThrown) {
               $("span.loading").remove()
