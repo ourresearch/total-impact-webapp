@@ -348,6 +348,7 @@ function showNameChangeBanner(){
 
 function homePageInit() {
     $('.carousel').carousel()
+    $('.carousel').carousel("cycle")
 }
 
 
@@ -377,7 +378,7 @@ $(document).ready(function(){
     }
 
     createCollectionInit();
-
+    homePageInit()
 
 
 
