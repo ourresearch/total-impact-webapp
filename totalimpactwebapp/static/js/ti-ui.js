@@ -346,7 +346,9 @@ function showNameChangeBanner(){
 
 }
 
-
+function homePageInit() {
+    $('.carousel').carousel()
+}
 
 
 

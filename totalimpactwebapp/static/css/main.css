@@ -280,13 +280,36 @@ div#tagline div.wrapper {
 div#tagline #img-bar {
   position: relative;
 }
-div#tagline img {
-  height: 380px;
-  width: auto;
+div#tagline .carousel {
+  height: 315px;
+  width: 470px;
   position: absolute;
-  right: 85px;
-  top: 17px;
+  right: 0;
+  top: 40px;
   z-index: 2;
+  border: 1px solid #fff;
+}
+div#tagline .carousel img {
+  height: auto;
+  max-width: 100%;
+}
+div#tagline .carousel a.carousel-control {
+  height: 30px;
+  width: 30px;
+  line-height: 20px;
+  top: 89%;
+  border: none;
+  color: #555;
+  background: transparent;
+}
+div#tagline .carousel a.carousel-control:hover {
+  color: #ff4e00;
+}
+div#tagline .carousel a.carousel-control.right {
+  right: -30px;
+}
+div#tagline .carousel a.carousel-control.left {
+  left: -30px;
 }
 div#tagline #text-bar {
   padding: 20px 0 0 0;

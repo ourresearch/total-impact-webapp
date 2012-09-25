@@ -5,7 +5,30 @@
 <div id="tagline">
     <div id="img-bar">
         <div class="wrapper">
-            <img src="{{ url_for('static', filename='img/monitor.png') }}" width="80"/>
+           <div id="myCarousel" class="carousel slide">
+              <!-- Carousel items -->
+              <div class="carousel-inner">
+                 <div class="active item">
+                    <img src="{{ url_for('static', filename='img/carousel-badges.jpg') }}">
+                    <div class="carousel-caption">
+                       <h4>It's caption time!</h4>
+                       <p>Find where your research succeeds.</p>
+                    </div>
+                 </div>
+                 <div class="item">
+                    <img src="{{ url_for('static', filename='img/carousel-ranges.jpg') }}">
+                    <div class="carousel-caption">
+                       <h4>It's caption time!</h4>
+                       <p>See your percentile ranking in different categories.</p>
+                    </div>
+                 </div>
+                 <div class="item"><img src="http://i.imgur.com/g9kM4.png"></div>
+                 <div class="item"><img src="http://i.imgur.com/g9kM4.png"></div>
+              </div>
+              <!-- Carousel nav -->
+              <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+              <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+           </div>
         </div>
     </div>
 
