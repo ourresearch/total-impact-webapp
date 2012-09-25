@@ -271,7 +271,7 @@ body.homepage div#page-header {
 }
 div#tagline {
   color: #ff4e00;
-  height: 412px;
+  height: 390px;
   position: relative;
 }
 div#tagline div.wrapper {
@@ -285,7 +285,7 @@ div#tagline .carousel {
   width: 470px;
   position: absolute;
   right: 0;
-  top: 40px;
+  top: 50px;
   z-index: 2;
   border: 1px solid #fff;
 }
@@ -377,6 +377,30 @@ div#tagline #button-bar p#example-collection a:hover {
   text-decoration: underline;
   color: #ff4e00;
 }
+div#sources {
+  padding: 20px 20px 0;
+  background: #fff;
+  height: 127px;
+  width: 100%;
+  border-top: 1px solid #444;
+}
+div#sources div.wrapper h2 {
+  float: left;
+  color: #999;
+  font-family: 'rokkitt', 'georgia', serif;
+  font-size: 20px;
+  line-height: 1.1;
+  width: 160px;
+  border-right: 1px solid #ddd;
+  margin-right: 20px;
+}
+div#sources div.wrapper ul#source-logos li {
+  float: left;
+  margin: 0 20px 20px 0;
+}
+div#sources div.wrapper ul#source-logos li img {
+  height: 25px;
+}
 /* the call-to-action button and environs */
 /* the "selling points" section
 *************************************************/
@@ -385,7 +409,6 @@ div#selling-points {
   padding: 45px 0 0;
   margin-top: -34px;
   min-height: 300px;
-  border-top: 1px solid #ff4e00;
   background-position: bottom;
   background-repeat: repeat-x;
 }

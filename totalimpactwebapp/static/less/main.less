@@ -275,7 +275,7 @@ body.homepage div#page-header {
 
 div#tagline {
    color:@linkColor;
-   height: 412px;
+   height: 390px;
    position: relative;
 
 
@@ -295,7 +295,7 @@ div#tagline {
       width: 470px;
       position: absolute;
       right: 0;
-      top: 40px;
+      top: 50px;
       z-index: 2;
       border:1px solid #fff;
       a.carousel-control {
@@ -382,8 +382,36 @@ div#tagline {
           }
       }
    }
+}
 
-
+div#sources {
+   width:100%;
+   padding:20px 20px 0;
+   background:#fff;
+   height: 127px;
+   width: 100%;
+   border-top:1px solid #444;
+   div.wrapper {
+      h2 {
+         float:left;
+         color: #999;
+         font-family: 'rokkitt', 'georgia', serif;
+         font-size: 20px;
+         line-height: 1.1;
+         width: 160px;
+         border-right: 1px solid #ddd;
+         margin-right: 20px;
+      }
+      ul#source-logos {
+         li {
+            float:left;
+            margin:0 20px 20px 0;
+            img {
+               height: 25px;
+            }
+         }
+      }
+   }
 }
 
 
@@ -403,7 +431,7 @@ div#selling-points{
     padding:45px 0 0;
     margin-top: -34px;
     min-height: 300px;
-    border-top: 1px solid @linkColor;
+//    border-top: 1px solid @linkColor;
     background-position: bottom;
     background-repeat: repeat-x;
 
