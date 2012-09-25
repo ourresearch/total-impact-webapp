@@ -8,12 +8,15 @@
    <div class="wrapper">
       <div id="report-meta">
          <div id="share">
+            <!-- from https://twitter.com/about/resources/buttons#tweet -->
             <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
             <!-- based on code here: https://dev.twitter.com/docs/tweet-button -->
                     <span class="tweet-this">
                         <a href="https://twitter.com/share" class="twitter-share-button"
-                           data-via="impactstoryit"
-                           data-text="Check out the impact story at {{ page_title }}: {{ request.url }}"
+                           data-via="ImpactStoryit"
+                           data-url="{{request_url}}"
+                           url="{{request_url}}"
+                           data-text="Check out the impact story at {{ page_title }}: "
                            data-count="horizontal">Tweet</a>
                     </span>
          </div>

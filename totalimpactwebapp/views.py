@@ -90,6 +90,7 @@ def collection_report(collection_id):
             'collection.html',
             api_root=os.environ["API_ROOT"],
             api_key=os.environ["API_KEY"],
+            request_url=request.url,
             page_title=collection["title"],
             body_class="report",
             collection_id=collection["_id"]
