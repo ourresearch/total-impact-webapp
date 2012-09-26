@@ -140,6 +140,7 @@ div#metrics div.genre h4.plus-more span.show-hide {
 }
 div#metrics div.genre ul.items.inactive {
   display: none;
+  clear: both;
   margin-left: 20px;
 }
 div#metrics div.genre ul.items.inactive li.item div.biblio h5 {
