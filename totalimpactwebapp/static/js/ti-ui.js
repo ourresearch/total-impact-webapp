@@ -141,7 +141,8 @@ progressbar = function(total, done, loc$) {
     loc$.html(percentDone + "% done...")
 }
 bibtexUploadDone = function(numItemsTotal, aliases) {
-    var msg$ = $(ich.bibtexUploadDoneMsg({numItemsTotal: numItemsTotal}))
+    var numFailedItems = numItemsTotal - aliases.length
+    var msg$ = $(ich.bibtexUploadDoneMsg({numFailedItems: numFailedItems}))
     msg$.find("a.help-text")
         .clickover()
     addCollectionIds(aliases, $("div.fileupload"), msg$, true)

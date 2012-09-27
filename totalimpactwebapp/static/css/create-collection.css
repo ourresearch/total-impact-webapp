@@ -153,11 +153,13 @@ li#bibtex-import span.added span.items-added-msg span.from {
 }
 li#bibtex-import span.added span.items-added-msg span.from a.help-text {
   font-size: 14px;
+  border-bottom: 1px dotted #888;
   color: #888;
-  margin-left: 37px;
 }
 li#bibtex-import span.added span.items-added-msg span.from a.help-text:hover {
   color: #ff4e00;
+  text-decoration: none;
+  border-bottom: 1px solid #ff4e00;
 }
 li#bibtex-import div.toggler_contents span.btn {
   margin-top: 10px;

@@ -103,6 +103,9 @@ span.icon.help {
   background: url(../img/glyphicons-halflings-light.png);
   background-position: -96px 64px;
 }
+div.popover p {
+  font-size: 14px;
+}
 div.popover a {
   color: #555;
   border-bottom: 1px dotted #555;

@@ -159,9 +159,13 @@ li#bibtex-import {
             color:#888;
             a.help-text {
                font-size: 14px;
+               border-bottom:1px dotted #888;
                color: #888;
-               margin-left: 37px;
-               &:hover{ color: @linkColor;}
+               &:hover{
+                  color: @linkColor;
+                  text-decoration:  none;
+                  border-bottom: 1px solid @linkColor;
+               }
             }
          }
       }

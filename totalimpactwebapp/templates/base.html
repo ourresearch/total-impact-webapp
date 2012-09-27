@@ -298,12 +298,11 @@
 
    <script id="bibtexUploadDoneMsg" type="text/html">
       <span class='items-added-msg'>articles added
-         <span class='from'>out of {{numItemsTotal}} in the uploaded file.
+         <span class='from'>{{numFailedItems}} couldn't be added because of
             <a class="help-text" rel="clickover"
-               data-original-title="Where are my other articles?"
-               data-content="<p>Currently, we can only add Google Scholar articles that have a <a href='http://en.wikipedia.org/wiki/Digital_object_identifier'>DOI</a>; unfortunately, not all of them do. Hang in there, though; we're rolling out better input soon!</p>">
-               <span class="help icon"></span>
-               Why weren't all my articles added?
+               data-original-title="Missing DOIs?"
+               data-content="Most scholarly articles have a publisher-supplied ID called a DOI. For some articles, Google Scholar doesn't provide the DOI; for others (especially conference papers), the DOI doesn't exist. In either case, we can't import. Hang in there, though: we're rolling out new import methods soon!">
+               missing DOIs.
             </a>
          </span>
       </span>
