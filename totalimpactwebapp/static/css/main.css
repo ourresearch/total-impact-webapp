@@ -114,6 +114,10 @@ div.popover a:hover {
   border-bottom: 1px solid #555;
   text-decoration: none;
 }
+div.modal.error div.modal-header {
+  background: #BD362F;
+  color: #fff;
+}
 /* navbar
 *****************************************************************************
 *****************************************************************************

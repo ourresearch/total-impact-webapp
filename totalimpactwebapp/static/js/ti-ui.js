@@ -216,6 +216,12 @@ createCollectionInit = function(){
         $("#google-scholar-help").modal("show")
         return false
     })
+    $("#bibtex-fail-help a").click(function(){
+        $(".modal").modal("hide")
+        if ($(this).hasClass("uservoice")) {
+            UserVoice.showPopupWidget()
+        }
+    })
 
     $("li textarea, input#name").each(function(){
         $(this).val(exampleStrings[this.id])
@@ -360,6 +366,7 @@ function homePageInit() {
     $('.carousel').carousel()
     $('.carousel').carousel("cycle")
 }
+
 
 
 
