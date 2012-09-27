@@ -142,8 +142,22 @@ div#input input#input_bibtex {
   border: none;
 }
 li#bibtex-import span.added {
-  padding-top: 17px;
+  padding-top: 8px;
   font-size: 24px;
+}
+li#bibtex-import span.added span.items-added-msg span.from {
+  font-size: 16px;
+  display: block;
+  margin-top: 5px;
+  color: #888;
+}
+li#bibtex-import span.added span.items-added-msg span.from a.help-text {
+  font-size: 14px;
+  color: #888;
+  margin-left: 37px;
+}
+li#bibtex-import span.added span.items-added-msg span.from a.help-text:hover {
+  color: #ff4e00;
 }
 li#bibtex-import div.toggler_contents span.btn {
   margin-top: 10px;
@@ -208,6 +222,9 @@ span.added {
   font-weight: normal;
   color: #555;
   padding-top: .2em;
+}
+span.added span.items-added-msg {
+  padding-left: .2em;
 }
 span.added span.count {
   font-weight: bold;

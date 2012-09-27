@@ -49,7 +49,12 @@ flatten = function(idsArr) {
     return(aliases)
 }
 
-addCollectionIds = function(idsArr, $this) {
+addCollectionIds = function(idsArr, updateInfoLoc$, itemsAddedMsg$, showZeros) {
+    if (itemsAddedMsg$ === undefined) {
+        var itemsAddedMsg$ = $("<span class='items-added-msg'>items added</span>")
+    }
+
+
     var startingCollectionLength = collectionAliases.length
     var newIds = flatten(idsArr);
 
@@ -74,13 +79,16 @@ addCollectionIds = function(idsArr, $this) {
     var endingCollectionLength = collectionAliases.length;
     numIdsAdded = endingCollectionLength - startingCollectionLength;
     $("#artcounter span.count").html(endingCollectionLength);
-    if (numIdsAdded) {
-        $this.siblings("span.added").remove()
-        $this.after("<span class='added'><span class='count'>"+numIdsAdded+"</span> items added.</span>")
-        $this.siblings("span.added")
+    if (numIdsAdded || showZeros) {
+        updateInfoLoc$.siblings("span.added").remove()
+        $("<span class='added'><span class='count'>"+numIdsAdded+"</span></span>")
+            .append(itemsAddedMsg$)
+            .insertAfter(updateInfoLoc$)
+
+        updateInfoLoc$.siblings("span.added")
             .find("span.count")
                 .css({color: "#ff4e00"})
-                .animate({color: "#555555"}, 1000)
+                .animate({color: "#555555"}, 1500)
 
     }
     return true;
@@ -127,17 +135,16 @@ parseTextareaArtifacts = function(str) {
     }
     return ret;
 }
-userInputHandler = function($this, prevValue) {
-    $this.blur(function(){
-
-
-    });
-
-}
 
 progressbar = function(total, done, loc$) {
     percentDone = Math.round(done / total * 100)
     loc$.html(percentDone + "% done...")
+}
+bibtexUploadDone = function(numItemsTotal, aliases) {
+    var msg$ = $(ich.bibtexUploadDoneMsg({numItemsTotal: numItemsTotal}))
+    msg$.find("a.help-text")
+        .clickover()
+    addCollectionIds(aliases, $("div.fileupload"), msg$, true)
 }
 
 update_bibtex_progress = function(query_hash) {
@@ -151,9 +158,9 @@ update_bibtex_progress = function(query_hash) {
                    if (response.pages == response.complete) {
                        aliases = []
                        for (i=0; i<response.memberitems.length; i++) {
-                           aliases = aliases.concat(response.memberitems[i])
+                           var aliases = aliases.concat(response.memberitems[i])
                        }
-                       addCollectionIds(aliases, $("div.fileupload"))
+                       bibtexUploadDone(response.number_entries, aliases)
                    }
                    else {
                        progressbar(response.pages, response.complete, $("#bibtex_toggler_contents div.progressbar"))
@@ -352,6 +359,7 @@ function homePageInit() {
     $('.carousel').carousel()
     $('.carousel').carousel("cycle")
 }
+
 
 
 

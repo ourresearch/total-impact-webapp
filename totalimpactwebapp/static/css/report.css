@@ -272,7 +272,7 @@ li.item div.zoom {
   display: none;
   float: left;
   clear: left;
-  width: 800px;
+  width: 725px;
   position: relative;
   margin: 5px 0 35px;
   padding-bottom: 15px;
@@ -283,20 +283,15 @@ li.item div.zoom span.value {
   font-weight: bold;
 }
 li.item div.zoom a.item-help {
-  left: 822px;
+  left: 787px;
   top: 5px;
   position: absolute;
   width: 300px;
   font-size: 14px;
   color: #555;
 }
-li.item div.zoom a.item-help span.icon {
-  padding: 0 9px;
-  background: url(../img/glyphicons-halflings.png);
-  background-position: -96px 64px;
-}
 li.item div.zoom div.audience {
-  width: 370px;
+  width: 330px;
   float: left;
   margin-left: 10px;
 }

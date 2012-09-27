@@ -98,6 +98,19 @@ ul {
   line-height: 1.5;
   font-size: 16px;
 }
+span.icon.help {
+  padding: 0 9px;
+  background: url(../img/glyphicons-halflings-light.png);
+  background-position: -96px 64px;
+}
+div.popover a {
+  color: #555;
+  border-bottom: 1px dotted #555;
+}
+div.popover a:hover {
+  border-bottom: 1px solid #555;
+  text-decoration: none;
+}
 /* navbar
 *****************************************************************************
 *****************************************************************************
