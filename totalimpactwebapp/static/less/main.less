@@ -187,6 +187,11 @@ div.navbar {
 
          .control-group { margin: 0; }
 
+         ul.dropdown-menu {
+            font-family: helvetica, arial, sans-serif;
+            font-size:14px;
+            min-width: 120px;
+         }
          div.dropdown-menu {
             padding:15px 20px 20px;
             li{ margin: 0; padding: 0;}
@@ -194,8 +199,6 @@ div.navbar {
             &::after {
                border-bottom:6px solid #f5f5f5;
             }
-
-
             .btn-primary {
                margin-top:0;
                float:right;
@@ -222,11 +225,14 @@ div.navbar {
                border-bottom: 1px solid #ccc;
                text-align:center;
 
+            }
+            p {
                &.none {
                   text-align: left;
-                  line-height: 1;
-                  font-size:16px;
+                  font-family: Helvetica, Arial, sans-serif;
+                  font-size:14px;
                   padding: 20px;
+                  margin-bottom:0;
 
                   a {color: @linkColor; display:inline; padding:0;}
                }

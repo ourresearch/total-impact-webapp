@@ -150,13 +150,11 @@ function User(userViews) {
         for (cid in this.userdata()["colls"]) {
             cids.push(cid)
         }
-        if (!cids.length) {
-            this.userViews.showNoColls()
-            return false;
-        }
-        else {
+
+        if (cids.length)  {
             this.userViews.startShowColls()
         }
+
         var cidsString = cids.join(",")
         var thisThing = this
         $.ajax({
@@ -245,17 +243,10 @@ function UserViews() {
 
     this.startShowColls = function() {
         $("#logged-in div.dropdown-menu")
-            .find("ul, h3").remove()
-            .andSelf()
+            .empty()
             .append("<h3>Collections:</h3>").append(ajaxLoadImg)
     }
-    this.showNoColls = function() {
-        $("#logged-in div.dropdown-menu")
-            .find("ul, h3").remove()
-            .andSelf()
-            .append("<h3 class='none'>You don't have any collections yet. Care to <a href='/create'>make one</a>?</h3>")
 
-    }
     this.showColls = function(titles) {
         $("div.dropdown-menu img.loading").remove()
         var collsList$ = $("<ul></ul>")
@@ -332,7 +323,7 @@ function UserController(user, userViews) {
 
         $("li#logged-in span.username").on("click", function(){
             user.getCollInfo()
-            $("#logged-in div.dropdown-menu a").attr("data-toggle", "dropdown").click();
+            $("#logged-in div.dropdown-menu a#logged-in").attr("data-toggle", "dropdown").click();
         })
 
         $("input.username.register").blur(function(){

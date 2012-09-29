@@ -3,6 +3,7 @@
 function Item(dict, itemView) {
 
     // [<audience>, <engagement type>, <display level>]
+    // display levels: 0 (like it says), "zoom" (only in zoom), "badge" (zoom, + gets badges)
     var metricInfo = {
         "citeulike:bookmarks": ["scholars", "saved", "badge", 3],
         "delicious:bookmarks": ["public", "saved", "badge", 3],
@@ -35,9 +36,9 @@ function Item(dict, itemView) {
         "plosalm:scopus": [],                      // figure it out
         "pubmed:f1000": ["scholars", "recommended", "badge", 1],
         "pubmed:pmc_citations": ["scholars", "cited", 0, 0],
-        "pubmed:pmc_citations_editorials": ["scholars", "recommended", "zoom", 0],
-        "pubmed:pmc_citations_reviews": ["scholars", "cited", "zoom", 0],
-        "scienceseeker:blog_posts": ["scholars", "discussed", "zoom", 0],
+        "pubmed:pmc_citations_editorials": ["scholars", "recommended", 0, 0],
+        "pubmed:pmc_citations_reviews": ["scholars", "cited", 0, 0],
+        "scienceseeker:blog_posts": ["scholars", "discussed", "badge", 0],
         "scopus:citations": ["scholars", "cited", "badge", 3],
         "researchblogging:blogs": ["scholars", "discussed", 0, 0],
         "slideshare:comments": ["public", "discussed", "badge", 3],

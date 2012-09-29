@@ -192,6 +192,11 @@ div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span#logout-link:hover {
 div.navbar ul.nav.pull-right > li .control-group {
   margin: 0;
 }
+div.navbar ul.nav.pull-right > li ul.dropdown-menu {
+  font-family: helvetica, arial, sans-serif;
+  font-size: 14px;
+  min-width: 120px;
+}
 div.navbar ul.nav.pull-right > li div.dropdown-menu {
   padding: 15px 20px 20px;
   background: #f5f5f5;
@@ -228,13 +233,14 @@ div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu h3 {
   border-bottom: 1px solid #ccc;
   text-align: center;
 }
-div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu h3.none {
+div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu p.none {
   text-align: left;
-  line-height: 1;
-  font-size: 16px;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
   padding: 20px;
+  margin-bottom: 0;
 }
-div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu h3.none a {
+div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu p.none a {
   color: #ff4e00;
   display: inline;
   padding: 0;
