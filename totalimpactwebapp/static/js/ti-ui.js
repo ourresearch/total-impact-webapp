@@ -250,7 +250,7 @@ createCollectionInit = function(){
         if ($this.hasClass("artifactList")) {
             newIds = parseTextareaArtifacts($(this).val());
             // limit to adding first 250 lines
-            newIds = newIds.slice(0, 250)
+            newIds = newIds.slice(0, 100)
             addCollectionIds(newIds, $(this))
         }
         else if ($this.attr("id") == "name") {
