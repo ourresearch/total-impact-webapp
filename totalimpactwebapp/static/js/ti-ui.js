@@ -331,8 +331,10 @@ createCollectionInit = function(){
                     }
 
                     var success = function(){
+                        _gaq.push(['_trackPageview', '/user/new_created']);
                         location.href = "/collection/" +returnedCollection._id
                     }
+
                     if (user.hasCreds()){
                         user.syncWithServer("push", {on200: success})
                     }

@@ -225,8 +225,9 @@ function UserViews() {
         console.log("logged in!")
     }
 
-
     this.finishRegistration = function(){
+        console.log("finished registration")
+        _gaq.push(['_trackPageview', '/user/new_created']);
     }
     this.startRegistration = function() {
         $("#register-link, #login-link").hide()
@@ -312,7 +313,9 @@ function UserController(user, userViews) {
             var method = $(this).hasClass("register") ? "push" : "pull"
             user.syncWithServer(method)
 
-            userViews.finishRegistration();
+            userViews.finishRegistration(); // this should be handed as a callback to syncWithServer()
+
+
             return false;
         })
 
