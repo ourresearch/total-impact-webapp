@@ -227,7 +227,7 @@ function UserViews() {
 
     this.finishRegistration = function(){
         console.log("finished registration")
-        _gaq.push(['_trackPageview', '/user/new_created']);
+        _gaq.push(['_trackPageview', '/user/created']);
     }
     this.startRegistration = function() {
         $("#register-link, #login-link").hide()

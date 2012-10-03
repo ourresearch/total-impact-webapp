@@ -331,7 +331,7 @@ createCollectionInit = function(){
                     }
 
                     var success = function(){
-                        _gaq.push(['_trackPageview', '/user/new_created']);
+                        _gaq.push(['_trackPageview', '/user/created']);
                         location.href = "/collection/" +returnedCollection._id
                     }
 
