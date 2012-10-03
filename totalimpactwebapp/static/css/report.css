@@ -111,6 +111,7 @@ div#metrics h3 {
 div#metrics div.genre {
   margin-bottom: 50px;
   float: left;
+  clear: both;
 }
 div#metrics div.genre h4.plus-more {
   float: left;
