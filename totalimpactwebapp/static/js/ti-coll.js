@@ -96,7 +96,11 @@ function Coll(collViews, user){
             }});
         }
 
-    this.get = function(interval) {
+    this.get = function(interval, tries) {
+        if (tries === undefined) {
+            var tries = 0
+        }
+
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
@@ -109,9 +113,16 @@ function Coll(collViews, user){
                    console.log("still updating")
                    thisThing.addItems(data.items)
                    thisThing.views.render(thisThing.items)
-                   setTimeout(function(){
-                       thisThing.get(interval)
-                   }, 500)
+
+                   if (tries > 120) { // give up after 1 minute...
+                       thisThing.render(data.items)
+                       console.log("failed to finish update; giving up after 1min.")
+                   }
+                   else {
+                       setTimeout(function(){
+                           thisThing.get(interval, tries+1)
+                       }, 500)
+                   }
                },
                200: function(data) {
                    console.log("done with updating")
