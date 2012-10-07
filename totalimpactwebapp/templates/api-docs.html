@@ -17,7 +17,7 @@
 
             <div class="rawembedcode"><pre>
 {{
-'<script type="text/javascript" src="http://impactstory.it/static/js/total-impact-item.js"></script>
+'<script type="text/javascript" src="http://impactstory.org/static/js/total-impact-item.js"></script>
 <span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
 <div id="ti-data"><!--ImpactStory puts data here--></div>'|escape()
 }}
@@ -25,7 +25,7 @@
             
             <p>Here's the code above, embedded live on this page:</p>
 
-            <script type="text/javascript" src="http://impactstory.it/static/js/total-impact-item.js"></script>
+            <script type="text/javascript" src="http://impactstory.org/static/js/total-impact-item.js"></script>
             <span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
             <div id="ti-data"></div>
 
@@ -35,7 +35,7 @@
             <p>If the embed code described above doesn't meet your needs, you can use our api directly.  The ImpactStory webapp itself is built directly on top of this api. </p>
 
             <ul>
-                <!--li>api root is at http://api.impactstory.it</li-->
+                <!--li>api root is at http://api.impactstory.org</li-->
                 <li>api calls return JSON</li>
                 <li>api calls return return 500 in case of internal error</li>
                 <li>Cross-Origin Resource Sharing (CORS) is enabled</li>    
@@ -55,11 +55,11 @@
 
             <h4>example</h4> 
             <div class="apicall"><pre>
-curl -i -X GET http://api.impactstory.it
+curl -i -X GET http://api.impactstory.org
 
 
 {
-    "contact": "team@impactstory.it",
+    "contact": "team@impactstory.org",
     "hello": "world", 
     "message": "Congratulations! You have found the ImpactStory API.",
     "moreinfo": "http://total-impact.tumblr.com/",
@@ -101,7 +101,7 @@ curl -i -X POST -H "Content-Type: application/json" -d '{}' http://api.total-imp
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://api.impactstory.it/tiid/doi/10.1371/journal.pcbi.1000361
+curl -i -X GET http://api.impactstory.org/tiid/doi/10.1371/journal.pcbi.1000361
 
 
 "1b2f4fc2bea711e1bdf912313d1a5e63"
@@ -322,7 +322,7 @@ curl -i -X GET http://api.total-impact.org/collection/8iwgwi
             <h4>example</h4> 
 
             <div class="apicall"><pre>
-curl -i -X GET http://api.impactstory.it/provider
+curl -i -X GET http://api.impactstory.org/provider
 
 {
     "bibtex": {
