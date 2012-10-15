@@ -82,6 +82,9 @@ ul.pullers {
 }
 ul.pullers.bibtex {
   margin-bottom: 20px;
+}
+ul.pullers.orcid {
+  margin-bottom: 20px;
   margin-top: 55px;
 }
 img.loading {
