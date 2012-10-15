@@ -6,10 +6,19 @@
 <!-- START input -->
 <div class="main" id="input">
    <div class="wrapper">
+      <ul class="pullers">
+         <li>
+            <div class="toggler_contents" id="orcid_toggler_contents">
+               <legend for="orcid_profile_input" class="prompt">Articles from ORCID<span class="limit"><a id="orcid-help-link" href="#">(Click here for help)</a></span></legend>
+               <input id="orcid_profile_input" name="orcid_profile" type="text" size="20" />
+            </div>
+         </li>
+         <li>
+      <ul>      
       <ul class="bibtex">
          <li id="bibtex-import">
             <div class="toggler_contents fileupload fileupload-new" data-provides="fileupload" id="bibtex_toggler_contents">
-               <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Articles from Google Scholar Profiles<span class="limit"><a id="google-scholar-help-link" href="#">(Click here for help)</a></span></legend>
+               <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Articles from Google Scholar Profile<span class="limit"><a id="google-scholar-help-link" href="#">(Click here for help)</a></span></legend>
                <span class="btn btn-large btn-file">
                   <span class="fileupload-new">Select file</span>
                   <input type="file" id="input_bibtex" onchange="upload_bibtex(this.files)" />
@@ -29,12 +38,6 @@
          </li>
       </ul>
       <ul class="pullers">
-         <li>
-            <div class="toggler_contents" id="orcid_toggler_contents">
-               <legend for="orcid_profile_input" class="prompt">ORCID ID</legend>
-               <input id="orcid_profile_input" name="orcid_profile" type="text" size="20" />
-            </div>
-         </li>
          <li>
             <div class="toggler_contents" id="slideshare_toggler_contents">
                <legend for="slideshare_profile_input" class="prompt">Slideshare username</legend>
@@ -82,10 +85,23 @@
 
 </div><!-- END input -->
 
+<div id="orcid-help" class="modal hide fade">
+   <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Import Articles from ORCID</h3>
+   </div>
+   <div class="modal-body">
+      <ol>
+         <li>Visit your ORCID record</li>
+      </ol>
+
+   </div>
+</div>
+
 <div id="google-scholar-help" class="modal hide fade">
    <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h3>Import Articles from Google Scholar Profiles</h3>
+      <h3>Import Articles from Google Scholar Profile</h3>
    </div>
    <div class="modal-body">
       <ol>

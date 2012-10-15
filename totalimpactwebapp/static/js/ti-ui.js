@@ -216,6 +216,10 @@ createCollectionInit = function(){
         $("#google-scholar-help").modal("show")
         return false
     })
+    $("#orcid-help-link").click(function(){
+        $("#orcid-help").modal("show")
+        return false
+    })
     $("#bibtex-fail-help a").click(function(){
         $(".modal").modal("hide")
         if ($(this).hasClass("uservoice")) {
