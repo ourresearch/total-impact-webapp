@@ -255,12 +255,12 @@
                      <div class="line">
                         <!-- if we've got ranges, show 'em, along sizeable div to show range -->
                         {{#percentiles}}
-                        <div class="metric-perc-range ci">
+                        <div class="metric-perc-range ci" rel="tooltip" title='Percentile range for this metric relative to a random set of items published the same year'>
                            <span class="start endpoint"><span class="value">{{CI95_lower}}</span></span>
                            <span class="bar"></span>
                            <span class="end endpoint"><span class="value">{{CI95_upper}}</span></span>
                         </div>
-                        <div class="metric-perc-range estimate">
+                        <div class="metric-perc-range estimate" rel="tooltip" title='Percentile range for this metric relative to a random set of items published the same year'>
                            <span class="start endpoint"><span class="value">{{estimate_lower}}</span></span>
                            <span class="bar"></span>
                            <span class="end endpoint"><span class="value">{{estimate_upper}}</span></span>
