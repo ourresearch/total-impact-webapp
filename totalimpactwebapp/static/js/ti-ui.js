@@ -107,9 +107,14 @@ parseTextareaArtifacts = function(str) {
             artifact[1] = thisId.substr(artifact[0].length + 1) // id
 
             // handle urls:
-            if (artifact[0] == "http"){
-                artifact[0] = "url";
-                artifact[1] = thisId
+            if (artifact[0] == "http") || (artifact[0] == "https") {
+                if (thisId.indexOf("http://dx.doi.org/") > 0) {
+                    artifact[0] = "doi";
+                    artifact[1] = thisId.replace("http://dx.doi.org/", "")                    
+                } else {
+                    artifact[0] = "url";
+                    artifact[1] = thisId
+                }
             }
         }
         else {
