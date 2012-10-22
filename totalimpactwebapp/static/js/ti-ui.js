@@ -102,18 +102,18 @@ parseTextareaArtifacts = function(str) {
     for (i=0; i<ids.length; i++){
         var artifact = [];
         var thisId = ids[i];
-        if (thisId.indexOf(":") > 0) {
+        if (thisId.indexOf(":") != -1) {
             artifact[0] = thisId.split(':')[0]; // namespace
             artifact[1] = thisId.substr(artifact[0].length + 1) // id
 
             // handle urls:
-            if (artifact[0] == "http") || (artifact[0] == "https") {
-                if (thisId.indexOf("http://dx.doi.org/") > 0) {
+            if ((artifact[0] == "http") || (artifact[0] == "https")) {
+                if (thisId.indexOf("http://dx.doi.org/") != -1) {
                     artifact[0] = "doi";
-                    artifact[1] = thisId.replace("http://dx.doi.org/", "")                    
+                    artifact[1] = thisId.replace("http://dx.doi.org/", "");                    
                 } else {
                     artifact[0] = "url";
-                    artifact[1] = thisId
+                    artifact[1] = thisId;
                 }
             }
         }
