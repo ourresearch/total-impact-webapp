@@ -426,6 +426,7 @@ function ItemView() {
                 .find("span.endpoint.end").css("right", offset+"px")
         })
         zoom$.find("ul.metrics div.meta img").tooltip()
+        zoom$.find("ul.metrics div.metric-perc-range").tooltip()
         return zoom$
     }
 

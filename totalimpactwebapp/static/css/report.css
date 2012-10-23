@@ -354,6 +354,7 @@ li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics 
 }
 li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range {
   position: relative;
+  cursor: default;
 }
 li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range.estimate {
   display: none;
