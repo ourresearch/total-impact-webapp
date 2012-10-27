@@ -6,80 +6,92 @@
 <!-- START input -->
 <div class="main" id="input">
    <div class="wrapper">
-      <ul class="pullers orcid">
-         <li>
-            <div class="toggler_contents" id="orcid_toggler_contents">
-               <legend for="orcid_profile_input" class="prompt">Articles from ORCID<span class="limit"><a id="orcid-help-link" href="#">(Click here for help)</a></span></legend>
+      <form class="importers">
+         <h3><span class="step-number">1:</span> Add articles</h3>
+         <div class="toggler_contents control-group" id="orcid_toggler_contents">
+            <label class="control-label" for="orcid_profile_input" class="prompt">Import from ORCID<span class="limit"><a id="orcid-help-link" href="#">(Click here for help)</a></span></label>
+            <div class="controls">
                <input id="orcid_profile_input" name="orcid_profile" type="text" size="20" />
             </div>
-         </li>
-      </ul>
-      <ul class="bibtex">
-         <li id="bibtex-import">
-            <div class="toggler_contents fileupload fileupload-new" data-provides="fileupload" id="bibtex_toggler_contents">
-               <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Articles from Google Scholar Profile<span class="limit"><a id="google-scholar-help-link" href="#">(Click here for help)</a></span></legend>
+         </div>
+
+         <div class="control-group toggler_contents fileupload fileupload-new" data-provides="fileupload" id="bibtex_toggler_contents">
+            <label class="control-label" for="input_bibtex" class="prompt" title="Import a BibTeX file">Articles from Google Scholar Profile<span class="limit"><a id="google-scholar-help-link" href="#">(Click here for help)</a></span></label>
+             <div class="controls">
                <span class="btn btn-large btn-file">
                   <span class="fileupload-new">Select file</span>
                   <input type="file" id="input_bibtex" onchange="upload_bibtex(this.files)" />
                </span>
                <div class="progressbar"></div>
             </div>
-         </li>
-      </ul>
-      <ul id="manual-add">
-         <li id="paste-ids">
-            <legend for="paste_input" class="prompt" title="Paste DOIs or URLS for items you want to look up." >Article IDs<span class="limit">Paste DOIs or PubMed IDs<br>(limit 100)</legend>
-            <textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>
-         </li>
-         <li id="paste-webpages">
-            <legend for="paste_webpages" class="prompt" >Webpage URLs<span class="limit">(No articles; they go above)</span></legend>
-            <textarea rows="4" cols="40" id="paste_webpages" class="artifactList no-input-yet" ></textarea>
-         </li>
-      </ul>
-      <ul class="pullers">
-         <li>
-            <div class="toggler_contents" id="slideshare_toggler_contents">
-               <legend for="slideshare_profile_input" class="prompt">Slideshare username</legend>
-               <input id="slideshare_profile_input" name="slideshare_profile" type="text" size="20" />
+         </div>
+
+         <div class="control-group">
+            <label for="paste_input" class="control-label" title="Paste DOIs or URLS for items you want to look up." >Article IDs<span class="limit">Paste DOIs or PubMed IDs<br>(limit 100)</label>
+            <div class="controls">
+               <textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>
             </div>
-         </li>
-         <li>
-            <div class="toggler_contents" id="github_users_toggler_contents">
-               <legend for="github_users_input" class="prompt">GitHub username</legend>
-               <input id="github_users_input" name="github_user" type="text" size="20" />
-            </div>
-         </li>
-         <li>
-            <div class="toggler_contents" id="dryad_toggler_contents">
-               <legend for="dryad_author_input" class="prompt" title="Fill in the dc:contributor.author value in <em>Show Full Metadata</em> to retrieve a list of datasets">Dryad author name</legend>
-               <input id="dryad_author_input" name="dryad_author" type="text" size="20" />
-            </div>
-         </li>
-      </ul>
-      <form id="inline-register">
-         <legend for="inline-user-signup" class="prompt" >Register<span class="limit">Optional; lets you save and find your collection later.</span></legend>
-         <fieldset id="inline-user-creds">
-            <div class="form-item control-group">
-               <legend for="inline-register-email">email</legend>
-               <span class="help-inline"></span>
-               <input id="inline-register-email" class="username register" type="text" />
-            </div>
-            <div class="form-item">
-               <legend for="inline-register-pw">password</legend>
-               <input id="inline-register-pw" type="password" />
-            </div>
-         </fieldset>
+         </div>
+
       </form>
-      <div id="create-button" class="inputcol">
-         <form name="id_form" action="./fetch/" id="id-form">
-            <legend for="name">Collection name:</legend>
-            <input name="name" class="no-input-yet" id="name" title="Add a meaningful title to this collection" />
-            <input name="list" id="artifacts-list" type="hidden" value="" />
-            <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
-            <button name="run" type="submit" id="go-button" class="btn btn-large btn-primary">go!</button>
-         </form>
-         <div class="clearfix">&nbsp;</div>
-      </div>
+      <form class="importers">
+         <h3><span class="step-number">2:</span> Add other products</h3>
+
+         <div class="control-group">
+            <label for="paste_webpages" class="control-label">Webpage URLs</label>
+            <div class="controls">
+               <textarea rows="4" cols="40" id="paste_webpages" class="artifactList no-input-yet"></textarea>
+            </div>
+         </div>
+         <div class="control-group">
+            <label class="control-label" for="input_github">GitHub</label>
+            <div class="controls">
+               <input type="text" id="input_github" placeholder="username">
+            </div>
+         </div>
+         <div class="control-group">
+            <label class="control-label" for="input_dryad">Dryad</label>
+            <div class="controls">
+               <input type="text" id="input_dryad" placeholder="author name">
+            </div>
+         </div>
+         <div class="control-group">
+            <label class="control-label" for="input_slideshare">Slideshare</label>
+            <div class="controls">
+               <input type="text" id="input_slideshare" placeholder="username">
+            </div>
+         </div>
+      </form>
+
+
+      <form id="make-collection">
+         <h3><span class="step-number">3:</span> Make report</h3>
+         <h4 class="prompt" >Register<span class="limit"> (optional; lets you save and find your collection later.)</span></h4>
+         <div class="form-item control-group email">
+            <input id="inline-register-email" class="username register" type="text" placeholder="email" />
+         </div>
+
+         <div class="form-item control-group">
+            <input id="inline-register-pw" type="password" placeholder="password"/>
+         </div>
+
+         <div class="control-group" id="collection-name">
+            <label class="control-label" for="name">Collection name:</label>
+            <div class="controls">
+               <input type="text" name="name" class="no-input-yet" id="name" />
+            </div>
+         </div>
+
+         <div class="control-group create-button">
+            <div class="controls">
+               <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
+               <button name="run" type="submit" id="go-button" class="btn btn-large btn-primary">go!</button>
+            </div>
+         </div>
+
+      </form>
+
+      <div class="clearfix">&nbsp;</div>
    </div>
 
 </div><!-- END input -->
