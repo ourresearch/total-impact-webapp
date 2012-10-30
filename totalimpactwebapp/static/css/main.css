@@ -410,7 +410,7 @@ div#tagline #button-bar p#example-collection a:hover {
   color: #ff4e00;
 }
 div#sources {
-  padding: 20px 20px 0;
+  padding: 30px 0 0 0 ;
   background: #fff;
   height: 127px;
   width: 100%;
