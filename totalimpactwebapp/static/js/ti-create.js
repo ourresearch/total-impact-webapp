@@ -1,7 +1,49 @@
 var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
-var ajaxLoadImgTransparent = "<img class='loading' src='../static/img/ajax-loader-transparent.gif' alt='loading...' />";
-var collectionAliases = []
-var currentUserInputValue = ""
+
+
+
+
+
+
+
+
+function AliasSet() {
+
+    this.aliases = []
+
+    this.flatten = function(idsArr) {
+        // flattens id values that are themselves arrays (like github)
+        var aliases = [];
+        numIds = idsArr.length;
+        for (var i=0; i<numIds; i++ ) {
+            var id = idsArr[i][1]
+            var namespace = idsArr[i][0]
+            if( Object.prototype.toString.call( id ) === '[object Array]' ) {
+                var strVal = id.join(",")
+            }
+            else {
+                var strVal = id
+            }
+            aliases.push([namespace, strVal])
+        }
+        return(aliases)
+    }
+
+    this.addAliases = function(aliases) {
+        aliases = this.flatten(idsArr)
+        
+    }
+
+
+
+}
+
+
+
+
+
+
+
 
 exampleStrings = {
     paste_input:"10.1038/171737a0\n13054692",
@@ -14,23 +56,7 @@ inputExamplesIClickHandler = function(thisInput) {
 
 }
 
-flatten = function(idsArr) {
-    // flattens id values that are themselves arrays (like github)
-    var aliases = [];
-    numIds = idsArr.length;
-    for (var i=0; i<numIds; i++ ) {
-        var id = idsArr[i][1]
-        var namespace = idsArr[i][0]
-        if( Object.prototype.toString.call( id ) === '[object Array]' ) {
-            var strVal = id.join(",")
-        }
-        else {
-            var strVal = id
-        }
-        aliases.push([namespace, strVal])
-    }
-    return(aliases)
-}
+
 
 addCollectionIds = function(idsArr, updateInfoLoc$, itemsAddedMsg$, showZeros) {
     if (itemsAddedMsg$ === undefined) {
