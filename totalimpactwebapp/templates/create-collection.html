@@ -19,7 +19,7 @@
             <div class="toggler_contents fileupload fileupload-new" data-provides="fileupload" id="bibtex_toggler_contents">
                <legend for="input_bibtex" class="prompt" title="Upload a BibTeX file">Articles from Google Scholar Profile<span class="limit"><a id="google-scholar-help-link" href="#">(Click here for help)</a></span></legend>
                <span class="btn btn-large btn-file">
-                  <span class="fileupload-new">Select file</span>
+                  <span class="fileupload-new">Select BibTeX file</span>
                   <input type="file" id="input_bibtex" onchange="upload_bibtex(this.files)" />
                </span>
                <div class="progressbar"></div>
@@ -28,7 +28,7 @@
       </ul>
       <ul id="manual-add">
          <li id="paste-ids">
-            <legend for="paste_input" class="prompt" title="Paste DOIs or URLS for items you want to look up." >Article IDs<span class="limit">Paste DOIs or PubMed IDs<br>(limit 100)</legend>
+            <legend for="paste_input" class="prompt" title="Paste DOIs or URLS for items you want to look up." >Article and Dataset IDs<span class="limit">Paste DOIs or PubMed IDs<br>(limit 100)</legend>
             <textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>
          </li>
          <li id="paste-webpages">
@@ -47,12 +47,6 @@
             <div class="toggler_contents" id="github_users_toggler_contents">
                <legend for="github_users_input" class="prompt">GitHub username</legend>
                <input id="github_users_input" name="github_user" type="text" size="20" />
-            </div>
-         </li>
-         <li>
-            <div class="toggler_contents" id="dryad_toggler_contents">
-               <legend for="dryad_author_input" class="prompt" title="Fill in the dc:contributor.author value in <em>Show Full Metadata</em> to retrieve a list of datasets">Dryad author name</legend>
-               <input id="dryad_author_input" name="dryad_author" type="text" size="20" />
             </div>
          </li>
       </ul>
@@ -106,8 +100,8 @@
       <ol>
          <li>Visit your Google Scholar Citations <a href="http://scholar.google.com/citations?hl=en">author profile</a>.  If you don't have one yet, <a href="http://scholar.google.com/intl/en/scholar/citations.html">make one</a>.</li>
          <li>In the green header above your articles you will see a white drop down box that says <strong>Actions</strong>.  Change this to <strong>Export</strong>. </li>
-         <li>You will be redirected to the Export Articles page. Click <strong>Export all my articles</strong> (leave the file format as "BibTex"). Save the file.</li>
-         <li>Return to ImpactStory.  On the create collections page, click <strong>Select File</strong> and upload the previously saved file.  Once the file is 100% loaded, name your collection and click the <strong>go!</strong> button.</li>
+         <li>You will be redirected to the Export Articles page. Click <strong>Export all my articles</strong> (leave the file format as "BibTeX"). Save the file.</li>
+         <li>Return to ImpactStory.  On the create collections page, click <strong>Select BibTeX file</strong> and upload the previously saved file.  Once the file is 100% loaded, name your collection and click the <strong>go!</strong> button.</li>
       </ol>
 
    </div>
