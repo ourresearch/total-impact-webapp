@@ -31,7 +31,7 @@ function AliasSet() {
 
     this.addAliases = function(aliases) {
         aliases = this.flatten(idsArr)
-        
+
     }
 
 
