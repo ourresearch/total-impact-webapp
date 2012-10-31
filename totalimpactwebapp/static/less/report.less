@@ -13,9 +13,7 @@
 *****************************************************************************
 *****************************************************************************/
 body.report {
-   #main{
-      min-height: 500px;
-      min-width: 1212px; // hack so "click to create" shows up on narrow windows
+   div#main{
    }
 
    #page-header { padding-top:40px;}
@@ -37,7 +35,9 @@ body.report {
    padding-top: 7px;
 }
 #report {
-    padding-bottom: 20px;
+   min-height: 500px;
+   min-width: 1212px; // hack so "click to create" shows up on narrow windows
+   padding-bottom: 20px;
 }
 #report-meta {
    margin: -98px 90px 0 0;

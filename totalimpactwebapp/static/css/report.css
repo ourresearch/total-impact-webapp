@@ -2,10 +2,6 @@
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-body.report #main {
-  min-height: 500px;
-  min-width: 1212px;
-}
 body.report #page-header {
   padding-top: 40px;
 }
@@ -22,6 +18,8 @@ body.report #page-header {
   padding-top: 7px;
 }
 #report {
+  min-height: 500px;
+  min-width: 1212px;
   padding-bottom: 20px;
 }
 #report-meta {
