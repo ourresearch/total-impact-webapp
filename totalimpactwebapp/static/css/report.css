@@ -4,6 +4,7 @@
 *****************************************************************************/
 body.report #main {
   min-height: 500px;
+  min-width: 1212px;
 }
 body.report #page-header {
   padding-top: 40px;
@@ -93,10 +94,10 @@ input.report {
 /** report printout ******************************************************/
 div#metrics {
   min-height: 500px;
+  min-width: 1212px;
   background: none repeat scroll 0 0 #FFFFFF;
   float: left;
   width: 100%;
-  margin-top: 25px;
 }
 div#metrics div.wrapper {
   width: 1100px;
@@ -109,9 +110,12 @@ div#metrics h3 {
   font-weight: bold;
 }
 div#metrics div.genre {
-  margin-bottom: 50px;
+  margin-top: 50px;
   float: left;
   clear: both;
+}
+div#metrics div.genre.article {
+  margin-top: 0;
 }
 div#metrics div.genre h4.plus-more {
   float: left;
@@ -370,6 +374,9 @@ li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics 
   position: absolute;
   top: 2px;
   color: #999;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
+  left: 0;
 }
 li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
   left: 0;

@@ -15,6 +15,7 @@
 body.report {
    #main{
       min-height: 500px;
+      min-width: 1212px; // hack so "click to create" shows up on narrow windows
    }
 
    #page-header { padding-top:40px;}
@@ -118,10 +119,10 @@ input.report {
 /** report printout ******************************************************/
 div#metrics {
    min-height: 500px;
+   min-width: 1212px; // make sure "click to expand" shows.
    background: none repeat scroll 0 0 #FFFFFF;
    float: left;
    width: 100%;
-   margin-top:25px;
    div.wrapper {
       width: @metricsSectionWidth;
    }
@@ -134,7 +135,8 @@ div#metrics {
       font-weight:bold;
    }
    div.genre {
-      margin-bottom:50px;
+      margin-top:50px;
+      &.article {margin-top:0} // hack; *generally* Articles is first genre.
       float:left;
       clear:both;
       h4.plus-more {
@@ -384,6 +386,7 @@ li.item {
                               position:absolute;
                               top:2px;
                               color: #999;
+                              &.start {left:0;}
                               &.start {left:0;}
                               &.end {right:0;}
                            }
