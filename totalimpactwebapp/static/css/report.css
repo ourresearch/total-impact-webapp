@@ -405,18 +405,18 @@ li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics 
 li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta img {
   float: right;
 }
-div#item-help-info p {
+div#context p {
   font-size: 15px;
 }
-div#item-help-info ul {
+div#context ul {
   padding-left: 20px;
 }
-div#item-help-info ul li {
+div#context ul li {
   list-style-type: circle;
 }
-div#item-help-info .modal-body {
+div#context .modal-body {
   padding: 30px;
 }
-div#item-help-info .modal-header {
+div#context .modal-header {
   padding: 12px 30px;
 }
