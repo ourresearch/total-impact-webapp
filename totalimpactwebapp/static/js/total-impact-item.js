@@ -111,9 +111,9 @@
         }
 
 
-        function getNewItemAndUpdateReport(tiid, interval) {
+        function getNewItemAndUpdateReport(namespace, nid, interval) {
             jQuery.ajax({
-                       url:'http://api.impactstory.org/item/' + tiid,
+                       url:"http://api.impactstory.org/v1/item/" + namespace + "/" + nid + "?key=EXAMPLE",
                        type:"GET",
                        dataType:"json",
                        contentType:"application/json; charset=utf-8",
@@ -122,7 +122,7 @@
                                console.log("still updating");
                                addDataToPage(data);
                                setTimeout(function () {
-                                   getNewItemAndUpdateReport(tiid, interval)
+                                   getNewItemAndUpdateReport(namespace, nid, interval)
                                }, interval)
                            },
                            200:function (data) {
@@ -184,9 +184,11 @@
             $("span#ti-id").hide();
             $("div#ti-data").html(ajax_load + " Loading...");
             var alias = getAlias($("span#ti-id").html());
+            var namespace = alias[0];
+            var nid = alias[1];
 
             $.ajax({
-                url:"http://api.impactstory.org/item/" + alias[0] + "/" + alias[1],
+                url:"http://api.impactstory.org/v1/item/" + namespace + "/" + nid + "?key=EXAMPLE",
                 type:"POST",
                 dataType:"json",
                 contentType:"application/json; charset=utf-8",
@@ -194,7 +196,7 @@
                 success:function (returnedTiid) {
                    // make a new collection, populated by our freshly-minted tiids
                    console.log("item created. ");
-                   getNewItemAndUpdateReport(returnedTiid, 1000);
+                   getNewItemAndUpdateReport(namespace, nid, 1000);
                 }
            });
         });
