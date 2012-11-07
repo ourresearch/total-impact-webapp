@@ -23,10 +23,14 @@ body {
   height: 100%;
   padding-bottom: 0;
 }
+body div#container {
+  min-width: 1100px;
+}
 body div#namechange {
   font-size: 16px;
   background: #444;
   color: #fff;
+  min-width: 1100px;
   text-align: center;
   padding: 10px 0;
 }
@@ -410,7 +414,7 @@ div#tagline #button-bar p#example-collection a:hover {
   color: #ff4e00;
 }
 div#sources {
-  padding: 20px 20px 0;
+  padding: 30px 0 0 0 ;
   background: #fff;
   height: 127px;
   width: 100%;
@@ -670,7 +674,6 @@ div#footer div.wrapper {
   border: 1px solid #aaa;
   border-bottom: none;
   height: 50px;
-  width: 1100px;
   -moz-border-radius-topleft: 10px;
   -webkit-border-top-left-radius: 10px;
   -moz-border-radius-topright: 10px;

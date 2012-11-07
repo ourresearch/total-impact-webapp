@@ -409,6 +409,11 @@ $(document).ready(function(){
     createCollectionInit();
     homePageInit()
 
+    // let people link straight to the item-help modal
+    if(window.location.href.indexOf('#context') != -1) {
+        $('#context').modal('show');
+    }
+
 
 
 });

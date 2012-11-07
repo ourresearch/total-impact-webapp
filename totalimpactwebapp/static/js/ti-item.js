@@ -484,7 +484,9 @@ function ItemController(){
         })
 
     body$.on("click", "a.item-help", function(){
-        $("#item-help-info").modal("show")
+        $("#context").modal("show")
         return false;
     })
+
+
 }
