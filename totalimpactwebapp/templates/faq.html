@@ -59,7 +59,7 @@
 
         <h3 id="whichmetrics">which metrics are measured?</h3>
 
-        <p>Metrics are computed based on the following data sources:</p>
+        <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>
 
         <ul id="providers-metadata"> <!-- list of providers -->
             {% for provider_name, provider in provider_metadata.iteritems() %}
@@ -72,6 +72,7 @@
                         <img src="{{ metric.icon }}" width="16" height="16" />
                         <strong>{{ metric.display_name }}</strong>
                         <span class="metric-descr">{{ metric.description }}</span>
+                       <span class="csv-name">({{ provider_name }}:{{ metric_name }})</span>
                     </li>
                     {% endfor %}
                 </ul>
