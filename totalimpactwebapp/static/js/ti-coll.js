@@ -80,7 +80,7 @@ function Coll(collViews, user){
     this.addItems = function(newItemDicts) {
         for (var i=0; i<newItemDicts.length; i++) {
             tiid = newItemDicts[i]["_id"]
-            this.items[tiid] = new Item(newItemDicts[i], new ItemView())
+            this.items[tiid] = new Item(newItemDicts[i], new ItemView($), $)
         }
     }
 

@@ -47,13 +47,6 @@
            console = {log: function() {}}; 
         }
 
-
-        function addDataToPage(data) {
-            jQuery("div#ti-data")
-                .empty()
-                .append(renderItem(data));
-        }
-
         // Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
         function requestStylesheet(stylesheet_url) {
             var stylesheet = document.createElement("link");
@@ -75,31 +68,27 @@
         }
 
         jQuery.ajaxSetup({ cache:false });
-        var ajax_load = '<img id="ti-loading" src="http://impactstory.org/static/img/ajax-loader.gif" alt="loading..." />';
+        var ajax_load = '<img id="ti-loading" src=""' + webappRoot + '/static/img/ajax-loader.gif" alt="loading..." />';
+
+        function getItemId() {
+            var doi = jQuery("div#impactstory-embed").attr("data-doi")
+            console.log(doi)
+            return ["doi", doi]
+        }
+
+
+
+        requestStylesheet(webappRoot + "/static/css/embed.css");
+        requestScript(webappRoot + "/static/js/icanhaz.min.js");
+        requestScript(webappRoot + "/static/js/ti-item.js");
 
         jQuery(document).ready(function ($) {
-            requestStylesheet(webappRoot + "/static/css/embed.css");
-            requestScript(webappRoot + "/static/js/icanhaz.min.js");
-            requestScript(webappRoot + "/static/js/item.js");
 
-            $("span#ti-id").hide();
-            $("div#ti-data").html(ajax_load + " Loading...");
-            var alias = getAlias($("span#ti-id").html());
-            var namespace = alias[0];
-            var nid = alias[1];
+            var $ = jQuery
+            var itemController = new ItemController($)
+            var itemId = getItemId()
 
-            $.ajax({
-                url: webappRoot + "/v1/item/" + namespace + "/" + nid + "?key=EXAMPLE",
-                type:"POST",
-                dataType:"json",
-                contentType:"application/json; charset=utf-8",
-                data:JSON.stringify(alias),
-                success:function (returnedTiid) {
-                   // make a new collection, populated by our freshly-minted tiids
-                   console.log("item created. ");
-                   getNewItemAndUpdateReport(namespace, nid, 1000);
-                }
-           });
+
         });
     }
 })()

@@ -397,7 +397,7 @@ $(document).ready(function(){
     coll = new Coll(collViews)
     collController = new CollController(coll, collViews);
 
-    itemController = new ItemController()
+    itemController = new ItemController($)
 
 
     // table of contents

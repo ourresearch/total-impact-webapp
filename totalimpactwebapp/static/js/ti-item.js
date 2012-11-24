@@ -1,6 +1,6 @@
 
 
-function Item(dict, itemView) {
+function Item(dict, itemView, $) {
 
     // [<audience>, <engagement type>, <display level>]
     // display levels: 0 (like it says), "zoom" (only in zoom), "badge" (zoom, + gets badges)
@@ -334,7 +334,7 @@ function Item(dict, itemView) {
 
 
 
-function ItemView() {
+function ItemView($) {
 
     this.sortByMetricValueDesc = function(metric1, metric2){
         if (typeof metric1.value != "number")
@@ -459,7 +459,7 @@ function ItemView() {
 }
 
 
-function ItemController(){
+function ItemController($){
     /* Just meant to be used once, for attaching events to items.
     I think this is probably not the best way.
     * */
