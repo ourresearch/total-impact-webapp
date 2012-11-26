@@ -309,24 +309,28 @@ function Item(itemData, itemView, $) {
     }
 
     /**
-     * Get item data
+     * Get item data and feed it to a callback.
      *
      * @id:                as [namespace, id] array.
-     * @successCallback:   Callback to be called when the item is done loading and we have all data. function(data)
-     * @failureCallback:   Callback function to be called on error: functon(error)
      * @apiRoot            the api endpoint base to call
-     * @apiKey             like it says
+     * @successCallback    function run on success
+     * @errorCallback      function run on error
      */
-    this.get = function(id, successCallback, failureCallback, apiRoot, apiKey) {
-        apiKey = "embed" // no point in having "secret" key in javascript
-
+    this.get = function(id, apiRoot, successCallback, errorCallback) {
+        var apiKey = "embed" // no point in having "secret" key in javascript
+        var thisThing = this
         $.ajax({
             url: apiRoot + "/item/"+id[0]+'/'+ id[1] +'?key='+apiKey,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            success: successCallback,
-            error: failureCallback
+            success: function(data) {
+                dict = thisThing.processDict(data)
+                successCallback("#impactstory-embed", dict, thisThing.itemView)
+            },
+            error: function(data) {
+                console.log("fail!")
+            }
         });
     }
 
@@ -341,6 +345,11 @@ function Item(itemData, itemView, $) {
         dict.awards = this.makeAwards(dict.engagementTable)
 
         return dict
+    }
+
+    this.renderBadgesOnly = function(loc, dict, view, size) {
+        rendered$ = view.render(dict)
+        console.log(rendered$)
     }
 
 
@@ -359,9 +368,9 @@ function Item(itemData, itemView, $) {
         console.log("building an Item object with this id: " + itemData[0] + "/" + itemData[1])
         this.get(
             itemData,
-            function(data){console.log("yay!")},
-            function(data){console.log("fail!")},
-            "http://localhost:5001/v1"
+            "http://localhost:5001/v1",
+            this.renderBadgesOnly,
+            function(){console.log("fail!")}
         )
     }
 
