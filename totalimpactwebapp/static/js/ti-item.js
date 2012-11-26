@@ -321,12 +321,12 @@ function Item(itemData, itemView, $) {
         apiKey = "embed" // no point in having "secret" key in javascript
 
         $.ajax({
-            url: apiRoot + "/item/"+id[0]+'/'+ id[1] +'?api_key='+apiKey,
+            url: apiRoot + "/item/"+id[0]+'/'+ id[1] +'?key='+apiKey,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            success: successCallback(data),
-            failure: failureCallback(data)
+            success: successCallback,
+            error: failureCallback
         });
     }
 
@@ -356,7 +356,13 @@ function Item(itemData, itemView, $) {
     // we've created this item with an id instead of a data object;
     // we'll need to go get the data with the API.
     else {
-        console.log("not doing anything")
+        console.log("building an Item object with this id: " + itemData[0] + "/" + itemData[1])
+        this.get(
+            itemData,
+            function(data){console.log("yay!")},
+            function(data){console.log("fail!")},
+            "http://localhost:5001/v1"
+        )
     }
 
     return true
