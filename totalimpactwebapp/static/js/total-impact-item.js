@@ -85,8 +85,8 @@
         jQuery(document).ready(function ($) {
 
             var $ = jQuery
-            var itemController = new ItemController($)
             var itemId = getItemId()
+            var item = new Item(itemId, new ItemView($), $)
 
 
         });

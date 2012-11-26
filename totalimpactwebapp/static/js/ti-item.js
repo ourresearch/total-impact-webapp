@@ -1,6 +1,6 @@
 
 
-function Item(dict, itemView, $) {
+function Item(itemData, itemView, $) {
 
     // [<audience>, <engagement type>, <display level>]
     // display levels: 0 (like it says), "zoom" (only in zoom), "badge" (zoom, + gets badges)
@@ -87,7 +87,7 @@ function Item(dict, itemView, $) {
             var audience = metricInfo[metricName][0]
             var engagementType = metricInfo[metricName][1]
 
-            var metric = this.dict.metrics[metricName]
+            var metric = dict.metrics[metricName]
             metric.display = display
             metric.minNumForAward = metricInfo[metricName][3]
 
@@ -308,24 +308,56 @@ function Item(dict, itemView, $) {
         return metricsDict
     }
 
+    /**
+     * Get item data
+     *
+     * @id:                as [namespace, id] array.
+     * @successCallback:   Callback to be called when the item is done loading and we have all data. function(data)
+     * @failureCallback:   Callback function to be called on error: functon(error)
+     * @apiRoot            the api endpoint base to call
+     * @apiKey             like it says
+     */
+    this.get = function(id, successCallback, failureCallback, apiRoot, apiKey) {
+        apiKey = "embed" // no point in having "secret" key in javascript
+
+        $.ajax({
+            url: apiRoot + "/item/"+id[0]+'/'+ id[1] +'?api_key='+apiKey,
+            type: "GET",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: successCallback(data),
+            failure: failureCallback(data)
+        });
+    }
+
+    this.processDict = function(dict) {
+        dict.metrics = this.getMetricPercentiles(dict.metrics)
+        console.log(dict.biblio.title)
+
+        dict.metrics = this.add_derived_metrics(dict.metrics)
+        dict.engagementTable = this.makeEngagementTable(dict, metricInfo)
+        console.log(dict.engagementTable)
+
+        dict.awards = this.makeAwards(dict.engagementTable)
+
+        return dict
+    }
 
 
 
 
 
     // constructor
-    this.dict = dict
-    this.dict.metrics = this.getMetricPercentiles(this.dict.metrics)
-    console.log(this.dict.biblio.title)
-
-    this.dict.metrics = this.add_derived_metrics(this.dict.metrics)
-    this.dict.engagementTable = this.makeEngagementTable(this.dict, metricInfo)
-    console.log(this.dict.engagementTable)
-
-    this.dict.awards = this.makeAwards(dict.engagementTable)
-
     this.itemView = itemView
 
+    if (itemData.hasOwnProperty("_id")) {
+        this.dict = this.processDict(itemData)
+    }
+    // we've created this item with an id instead of a data object;
+    // we'll need to go get the data with the API.
+    else {
+        console.log("not doing anything")
+    }
 
     return true
 }
