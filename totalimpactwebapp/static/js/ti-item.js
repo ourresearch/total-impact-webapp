@@ -478,12 +478,10 @@ function ItemView($) {
     }
 
     this.renderBadges = function(awards) {
-        var badges$ = $(ich.badgesTemplate(
-            {
+        var badges$ = ich.badgesTemplate({
                big: awards.big,
                any:awards.any
-            },
-            true))
+            })
         badges$.find(".ti-badge").tooltip()
         return badges$
     }

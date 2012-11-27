@@ -39,44 +39,50 @@
     }
 
 
+    /******** utility functions ******/
+
+    // Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
+    function requestStylesheet(stylesheet_url) {
+        var stylesheet = document.createElement("link");
+        stylesheet.rel = "stylesheet";
+        stylesheet.type = "text/css";
+        stylesheet.href = stylesheet_url;
+        stylesheet.media = "all";
+        document.lastChild.firstChild.appendChild(stylesheet);
+    }
+
+
+    // Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
+    function requestScript(script_url) {
+        var script = document.createElement('script');
+        script.src = script_url;
+        // IE7 doesn't like this: document.body.appendChild(script);
+        // Instead use:
+        document.getElementsByTagName('head')[0].appendChild(script);
+    }
+
+
+    /******** ImpactStory functions ******/
+    function getItemId() {
+        var doi = jQuery("div#impactstory-embed").attr("data-doi")
+        console.log(doi)
+        return ["doi", doi]
+    }
+
+    function loadBadgesTemplate(webAppRoot) {
+        $.get(webAppRoot + "/static/")
+    }
+
+
     /******** Our main function ********/
 
     function main() {
+        jQuery.ajaxSetup({ cache:false });
+        var ajax_load = '<img id="ti-loading" src=""' + webappRoot + '/static/img/ajax-loader.gif" alt="loading..." />';
 
         if (!window.console) {
            console = {log: function() {}}; 
         }
-
-        // Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
-        function requestStylesheet(stylesheet_url) {
-            var stylesheet = document.createElement("link");
-            stylesheet.rel = "stylesheet";
-            stylesheet.type = "text/css";
-            stylesheet.href = stylesheet_url;
-            stylesheet.media = "all";
-            document.lastChild.firstChild.appendChild(stylesheet);
-        }
-
-
-        // Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
-        function requestScript(script_url) {
-            var script = document.createElement('script');
-            script.src = script_url;
-            // IE7 doesn't like this: document.body.appendChild(script);
-            // Instead use:
-            document.getElementsByTagName('head')[0].appendChild(script);
-        }
-
-        jQuery.ajaxSetup({ cache:false });
-        var ajax_load = '<img id="ti-loading" src=""' + webappRoot + '/static/img/ajax-loader.gif" alt="loading..." />';
-
-        function getItemId() {
-            var doi = jQuery("div#impactstory-embed").attr("data-doi")
-            console.log(doi)
-            return ["doi", doi]
-        }
-
-
 
         requestStylesheet(webappRoot + "/static/css/embed.css");
         requestScript(webappRoot + "/static/js/icanhaz.min.js");

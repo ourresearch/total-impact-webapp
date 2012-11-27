@@ -25,6 +25,14 @@ def home():
     api_root=os.environ["API_ROOT"]
     )
 
+@app.route('/embed/templates/badges.html')
+def badges_templates():
+    return render_template("js-template-badges.html")
+
+@app.route("/embed/impactstory.js")
+def impactstory_dot_js():
+    return render_template("impactstory.js")
+
 
 @app.route('/about')
 def about(): 
