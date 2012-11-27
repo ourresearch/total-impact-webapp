@@ -63,6 +63,7 @@ function Item(itemData, itemView, $) {
     }
 
 
+
     this.makeEngagementTable = function(dict, metricInfo){
 
         var engagementTable = {
@@ -316,9 +317,10 @@ function Item(itemData, itemView, $) {
      * @successCallback    function run on success
      * @errorCallback      function run on error
      */
-    this.get = function(id, apiRoot, successCallback, errorCallback) {
+    this.get = function(apiRoot, successCallback, errorCallback) {
         var apiKey = "embed" // no point in having "secret" key in javascript
         var thisThing = this
+        var id = this.itemId
         $.ajax({
             url: apiRoot + "/item/"+id[0]+'/'+ id[1] +'?key='+apiKey,
             type: "GET",
@@ -326,7 +328,7 @@ function Item(itemData, itemView, $) {
             contentType: "application/json; charset=utf-8",
             success: function(data) {
                 dict = thisThing.processDict(data)
-                successCallback("#impactstory-embed", dict, thisThing.itemView)
+                successCallback(dict)
             },
             error: function(data) {
                 console.log("fail!")
@@ -340,19 +342,11 @@ function Item(itemData, itemView, $) {
 
         dict.metrics = this.add_derived_metrics(dict.metrics)
         dict.engagementTable = this.makeEngagementTable(dict, metricInfo)
-        console.log(dict.engagementTable)
 
         dict.awards = this.makeAwards(dict.engagementTable)
 
         return dict
     }
-
-    this.renderBadgesOnly = function(loc, dict, view, size) {
-        rendered$ = view.render(dict)
-        console.log(rendered$)
-    }
-
-
 
 
 
@@ -363,15 +357,10 @@ function Item(itemData, itemView, $) {
         this.dict = this.processDict(itemData)
     }
     // we've created this item with an id instead of a data object;
-    // we'll need to go get the data with the API.
     else {
         console.log("building an Item object with this id: " + itemData[0] + "/" + itemData[1])
-        this.get(
-            itemData,
-            "http://localhost:5001/v1",
-            this.renderBadgesOnly,
-            function(){console.log("fail!")}
-        )
+        this.dict = false
+        this.itemId = itemData
     }
 
     return true
@@ -478,11 +467,11 @@ function ItemView($) {
     }
 
     this.renderBadges = function(awards) {
-        var badges$ = ich.badgesTemplate({
+        var badges$ = $(ich.badges({
                big: awards.big,
                any:awards.any
-            })
-        badges$.find(".ti-badge").tooltip()
+            }), true)
+//        badges$.find(".ti-badge").tooltip()
         return badges$
     }
 
