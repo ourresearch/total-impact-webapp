@@ -26,6 +26,12 @@ function Item(dict, itemView) {
         "mendeley:developing_countries":["scholars", "saved", 0, 0],
         "mendeley:groups":["", "", 0, 0],
         "mendeley:readers":["scholars", "saved", "badge", 3],
+        "pmc:pdf_downloads":["", "", 0, 0],
+        "pmc:abstract_views":["", "", 0, 0],
+        "pmc:fulltext_views":["", "", 0, 0],
+        "pmc:unique_ip_views":["", "", 0, 0],
+        "pmc:figure_views":["", "", 0, 0],
+        "pmc:suppdata_views":["", "", 0, 0],
         "plosalm:crossref": [],                    // figure it out
         "plosalm:html_views": ["public", "viewed", "badge", 3],
         "plosalm:pdf_views": ["scholars", "viewed", "badge", 3],
