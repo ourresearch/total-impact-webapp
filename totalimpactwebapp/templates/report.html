@@ -21,7 +21,8 @@
                     </span>
          </div>
          <div id="report-button">
-            <button class="btn btn-small" id="update-report-button" name="{{ collection_id }}" href="#">update</button>
+            <!-- TODO make work for item reports; currently only works with collections.-->
+            <button class="btn btn-small" id="update-report-button" name="{{ report_id }}" href="#">update</button>
             <div class="btn-group download">
                <a class="btn btn-small" href="http://{{ api_root }}/v1/{{ report_type }}/{{ report_id }}?key=example">json</a>
                <a class="btn btn-small" href="http://{{ api_root }}/v1/{{ report_type }}/{{ report_id }}.csv?key=example">csv</a>
