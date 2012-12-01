@@ -65,9 +65,9 @@
 
     /******** ImpactStory functions ******/
     function getItemId() {
-        var doi = jQuery(".impactstory-embed").attr("data-doi")
-        console.log(doi)
-        return ["doi", doi]
+        var namespace = jQuery(".impactstory-embed").attr("data-id-type")
+        var id = jQuery(".impactstory-embed").attr("data-id")
+        return [namespace, id]
     }
 
     function loadBadgesTemplate(webAppRoot, callback) {

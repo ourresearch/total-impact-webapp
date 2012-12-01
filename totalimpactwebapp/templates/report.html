@@ -23,8 +23,8 @@
          <div id="report-button">
             <button class="btn btn-small" id="update-report-button" name="{{ collection_id }}" href="#">update</button>
             <div class="btn-group download">
-               <a class="btn btn-small" href="http://{{ api_root }}/collection/{{ collection_id }}">json</a>
-               <a class="btn btn-small" href="http://{{ api_root }}/collection/{{ collection_id }}.csv">csv</a>
+               <a class="btn btn-small" href="http://{{ api_root }}/v1/{{ report_type }}/{{ report_id }}?key=example">json</a>
+               <a class="btn btn-small" href="http://{{ api_root }}/v1/{{ report_type }}/{{ report_id }}.csv?key=example">csv</a>
             </div>
          </div>
          <div id="num-items"><span class="value"></span> items <a href="#">(expand all)</a></div>
@@ -59,7 +59,7 @@
 
    <div id="metrics">
       <script type="text/javascript">
-         var reportId = {{ report_id | safe }};
+         var reportId = "{{ report_id | safe }}";
          var reportType = "{{ report_type }}"
       </script>
       <div class="wrapper">

@@ -101,7 +101,7 @@ def collection_report(collection_id):
             request_url=request.url,
             page_title=collection["title"],
             body_class="report",
-            report_id='"'+collection["_id"]+'"', # gross
+            report_id=collection["_id"],
             report_type="collection"
         )
     else:
@@ -127,7 +127,7 @@ def item_report(ns, id):
             request_url=request.url,
             page_title="",
             body_class="report",
-            report_id=json.dumps([ns, id]),
+            report_id="{ns}/{id}".format(ns=ns, id=id),
             report_type="item"
         )
     else:

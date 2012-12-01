@@ -511,7 +511,9 @@ function ItemController($){
         $("#num-items").remove()
 
         var myView = new ItemView($)
-        var myItem = new Item(reportId, myView, $)
+        var idArr = reportId.split(/\/(.+)/, 2) // split on first slash
+
+        var myItem = new Item(idArr, myView, $)
         myItem.get(api_root, this.insertRenderedItemIntoPage)
 
 
