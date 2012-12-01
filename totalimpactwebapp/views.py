@@ -107,6 +107,31 @@ def collection_report(collection_id):
         abort(404, "This collection doesn't seem to exist yet. "+url)
 
 
+@app.route('/item/<ns>/<path:id>')
+def item_report(ns, id):
+    url = "http://{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
+        api_root=os.getenv("API_ROOT"),
+        ns=ns,
+        id=id,
+        api_key=os.environ["API_KEY"]
+    )
+
+    r = requests.get(url)
+    if r.status_code == 200:
+        item = json.loads(r.text)
+        return render_template(
+            'item.html',
+            api_root=os.environ["API_ROOT"],
+            api_key=os.environ["API_KEY"],
+            request_url=request.url,
+            page_title="",
+            body_class="report",
+            item_id=item["_id"]
+        )
+    else:
+        abort(404, "This collection doesn't seem to exist yet. "+url)
+
+
 @app.route('/wospicker', methods=["GET"])
 def wospicker():
     num_total = int(request.args.get("total"))
