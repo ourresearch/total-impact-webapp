@@ -9,25 +9,30 @@
 
         <h2 id="embed">recommended approach: embed code</h2>
 
-            <p>The easiest way to include ImpactStory metrics in a webpage is through  embed code.  To use the ImpactStory embed code in your webapge, simply include the code below in a webpage, exactly as given, subtituting the placeholder "doi:10.1371/journal.pcbi.1000355" string with your doi or other valid "namespace:id" string. </p>
+            <p>The easiest way to include ImpactStory metrics on a webpage is via our  embed code. There's just two steps:</p>
+            <ol>
+               <li>Paste paste javascript line at the top of your page.</li>
+               <li>
+                  Paste the <code>impactstory-embed</code> div where you want the badges to show
+                  Of course you'll need to replace our example <code>data-id</code>
+                  with your own for each item, and declare the appropriate ID type in the <code>data-id-type</code>
+                  field (see the FAQ for a list of <a href="/faq#toc_3_6">supported ID type prefixes</a>).
+                  That's it, you're done!
+               </li>
+            </ol>
 
             <p>We plan to refine and simplify this embed code in response to feedback: please let us know what you think, and join the <a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">total-impact newsgroup</a> if you'd like to be informed of changes (we're in the process of renaming this).</p>
 
-            <p>To use, embed this code on the page that has the item you want to track (currently only works for one item per page). The item's id (url, doi, etc.) goes in the <code>#ti-id</code> span; results will be put in the <code>#ti-data</code> div.</p>
 
             <div class="rawembedcode"><pre>
-{{
-'<script type="text/javascript" src="http://impactstory.org/static/js/total-impact-item.js"></script>
-<span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
-<div id="ti-data"><!--ImpactStory puts data here--></div>'|escape()
-}}
+{{'<script type="text/javascript" src="http://impactstory.org/embed/impactstory.js"></script>
+<div class="impactstory-embed" data-id="19210768" data-id-type="pmid" ></div>'|escape()}}
             </pre></div>
             
             <p>Here's the code above, embedded live on this page:</p>
 
-            <script type="text/javascript" src="http://impactstory.org/static/js/total-impact-item.js"></script>
-            <span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
-            <div id="ti-data"></div>
+           <script type="text/javascript" src="http://localhost:5000/embed/impactstory.js"></script>
+           <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" ></div>
 
         <br>
         <h2 id="api">more versatile approach: REST api.</h2>

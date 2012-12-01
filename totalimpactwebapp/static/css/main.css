@@ -98,7 +98,8 @@ a {
   cursor: pointer;
 }
 p,
-ul {
+ul,
+ol {
   line-height: 1.5;
   font-size: 16px;
 }
@@ -635,6 +636,7 @@ pre {
   background: #333;
   color: #eee;
   padding: 1em;
+  font-size: 16px;
   width: 965px;
   overflow-x: scroll;
 }
@@ -711,4 +713,7 @@ div.tooltip.in {
 div.tooltip div.tooltip-inner {
   padding-top: 8px;
   padding-bottom: 8px;
+}
+code {
+  color: #000;
 }

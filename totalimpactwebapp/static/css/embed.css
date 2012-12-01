@@ -12,6 +12,7 @@ div.impactstory-embed li a {
 div.impactstory-embed li .label {
   font-size: 12px;
   line-height: 14px;
+  font-weight: normal;
   padding: 3px 6px;
   color: #ffffff;
   vertical-align: baseline;
@@ -20,6 +21,7 @@ div.impactstory-embed li .label {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+  text-shadow: none;
 }
 div.impactstory-embed li .label.scholars {
   border: 1px solid #377EB8;
