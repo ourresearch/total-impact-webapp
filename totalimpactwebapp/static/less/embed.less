@@ -13,14 +13,27 @@ div.impactstory-embed {
          color: #ffffff;
          vertical-align: baseline;
          white-space: nowrap;
-         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
          background-color: #999999;
          -webkit-border-radius: 3px;
          -moz-border-radius: 3px;
          border-radius: 3px;
 
-         &.scholars { background: #377EB8;}
-         &.public { background: #4DAF4A;}
+         &.scholars {
+            border: 1px solid #377EB8;
+            background: #377EB8;
+            &.lil-badge {
+               background:#fff;
+               color: #377EB8;
+            }
+         }
+         &.public {
+            border: 1px solid #4DAF4A;
+            background: #4DAF4A;
+            &.lil-badge {
+               background:#fff;
+               color: #4DAF4A;
+            }
+         }
 
          &:hover {
             color: #ffffff;
