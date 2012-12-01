@@ -6,6 +6,9 @@ div.impactstory-embed li {
   float: left;
   margin: 0 3px 5px 0;
 }
+div.impactstory-embed li a {
+  text-decoration: none;
+}
 div.impactstory-embed li .label {
   font-size: 12px;
   line-height: 14px;

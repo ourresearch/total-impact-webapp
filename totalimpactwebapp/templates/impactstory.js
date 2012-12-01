@@ -1,7 +1,7 @@
 (function () {
 //    var webappRoot = "http://impactstory.org"
     var webappRoot = "http://localhost:5000"; // for testing
-    var apiRoot = "http://localhost:5001/v1"
+    var apiRoot = "localhost:5001"
 
 
     /******** Load jQuery if not present *********/
@@ -80,9 +80,11 @@
         )
     }
 
-    function insertBadges(dict) {
+    function insertBadges(dict, id) {
         var itemView = new ItemView(jQuery)
         badges$ = itemView.renderBadges(dict.awards)
+        badges$.find("span.label")
+            .wrap("<a href='" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' />")
         badges$.appendTo(".impactstory-embed")
     }
 

@@ -322,13 +322,14 @@ function Item(itemData, itemView, $) {
         var thisThing = this
         var id = this.itemId
         $.ajax({
-            url: apiRoot + "/item/"+id[0]+'/'+ id[1] +'?key='+apiKey,
+            url: "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function(data) {
                 dict = thisThing.processDict(data)
-                successCallback(dict)
+                thisThing.dict = dict
+                successCallback(dict, id)
             },
             error: function(data) {
                 console.log("fail!")
