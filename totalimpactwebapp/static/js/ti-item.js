@@ -472,7 +472,7 @@ function ItemView($) {
                big: awards.big,
                any:awards.any
             }), true)
-//        badges$.find(".ti-badge").tooltip()
+        badges$.find(".ti-badge").tooltip()
         return badges$
     }
 
