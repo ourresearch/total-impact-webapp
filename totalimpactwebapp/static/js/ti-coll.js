@@ -80,7 +80,7 @@ function Coll(collViews, user){
     this.addItems = function(newItemDicts) {
         for (var i=0; i<newItemDicts.length; i++) {
             tiid = newItemDicts[i]["_id"]
-            this.items[tiid] = new Item(newItemDicts[i], new ItemView())
+            this.items[tiid] = new Item(newItemDicts[i], new ItemView($), $)
         }
     }
 
@@ -186,8 +186,9 @@ function CollViews() {
 
 
 function CollController(coll, collViews) {
-    if (typeof collectionId != 'undefined') {
-        coll.id = collectionId
+
+    this.collReportPageInit = function() {
+        coll.id = reportId
         coll.get(1000)
     }
 

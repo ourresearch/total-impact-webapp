@@ -1,6 +1,6 @@
 
 
-function Item(dict, itemView) {
+function Item(itemData, itemView, $) {
 
     // [<audience>, <engagement type>, <display level>]
     // display levels: 0 (like it says), "zoom" (only in zoom), "badge" (zoom, + gets badges)
@@ -69,6 +69,7 @@ function Item(dict, itemView) {
     }
 
 
+
     this.makeEngagementTable = function(dict, metricInfo){
 
         var engagementTable = {
@@ -93,7 +94,7 @@ function Item(dict, itemView) {
             var audience = metricInfo[metricName][0]
             var engagementType = metricInfo[metricName][1]
 
-            var metric = this.dict.metrics[metricName]
+            var metric = dict.metrics[metricName]
             metric.display = display
             metric.minNumForAward = metricInfo[metricName][3]
 
@@ -314,24 +315,60 @@ function Item(dict, itemView) {
         return metricsDict
     }
 
+    /**
+     * Get item data and feed it to a callback.
+     *
+     * @id:                as [namespace, id] array.
+     * @apiRoot            the api endpoint base to call
+     * @successCallback    function run on success
+     * @errorCallback      function run on error
+     */
+    this.get = function(apiRoot, successCallback, errorCallback) {
+        var apiKey = "embed" // no point in having "secret" key in javascript
+        var thisThing = this
+        var id = this.itemId
+        $.ajax({
+            url: "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey,
+            type: "GET",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function(data) {
+                dict = thisThing.processDict(data)
+                thisThing.dict = dict
+                successCallback(dict, id)
+            },
+            error: function(data) {
+                console.log("fail!")
+            }
+        });
+    }
 
+    this.processDict = function(dict) {
+        dict.metrics = this.getMetricPercentiles(dict.metrics)
+        console.log(dict.biblio.title)
 
+        dict.metrics = this.add_derived_metrics(dict.metrics)
+        dict.engagementTable = this.makeEngagementTable(dict, metricInfo)
+
+        dict.awards = this.makeAwards(dict.engagementTable)
+
+        return dict
+    }
 
 
 
     // constructor
-    this.dict = dict
-    this.dict.metrics = this.getMetricPercentiles(this.dict.metrics)
-    console.log(this.dict.biblio.title)
-
-    this.dict.metrics = this.add_derived_metrics(this.dict.metrics)
-    this.dict.engagementTable = this.makeEngagementTable(this.dict, metricInfo)
-    console.log(this.dict.engagementTable)
-
-    this.dict.awards = this.makeAwards(dict.engagementTable)
-
     this.itemView = itemView
 
+    if (itemData.hasOwnProperty("_id")) {
+        this.dict = this.processDict(itemData)
+    }
+    // we've created this item with an id instead of a data object;
+    else {
+        console.log("building an Item object with this id: " + itemData[0] + "/" + itemData[1])
+        this.dict = false
+        this.itemId = itemData
+    }
 
     return true
 }
@@ -340,7 +377,7 @@ function Item(dict, itemView) {
 
 
 
-function ItemView() {
+function ItemView($) {
 
     this.sortByMetricValueDesc = function(metric1, metric2){
         if (typeof metric1.value != "number")
@@ -437,12 +474,10 @@ function ItemView() {
     }
 
     this.renderBadges = function(awards) {
-        var badges$ = $(ich.badgesTemplate(
-            {
+        var badges$ = $(ich.badges({
                big: awards.big,
                any:awards.any
-            },
-            true))
+            }), true)
         badges$.find(".ti-badge").tooltip()
         return badges$
     }
@@ -465,10 +500,33 @@ function ItemView() {
 }
 
 
-function ItemController(){
+function ItemController($){
     /* Just meant to be used once, for attaching events to items.
     I think this is probably not the best way.
     * */
+
+    this.itemReportPageInit = function() {
+        // hack: clear out controls that don't work or apply
+        $("#update-report-button").remove()
+        $("#num-items").remove()
+
+        var myView = new ItemView($)
+        var myItem = new Item(reportId, myView, $)
+        myItem.get(api_root, this.insertRenderedItemIntoPage)
+
+
+    }
+
+    this.insertRenderedItemIntoPage = function(data) {
+        var myView = new ItemView($)
+        var renderedItem$ = myView.render(data)
+        renderedItem$.find("div.zoom").show()
+
+        $("<div class='genre'></div>")
+            .append(renderedItem$)
+            .appendTo("#metrics div.wrapper")
+
+    }
 
     var body$ = $("body")
 
@@ -493,6 +551,8 @@ function ItemController(){
         $("#context").modal("show")
         return false;
     })
+
+
 
 
 }

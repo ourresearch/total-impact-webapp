@@ -1,4 +1,9 @@
 (function () {
+    var webappRoot = "http://impactstory.org"
+    var apiRoot = "http://api.impactstory.org"
+
+//    var webappRoot = "http://localhost:5000" // for testing
+//    var apiRoot = "http://localhost:5001" // for testing
 
     var jQuery;
 
@@ -42,9 +47,9 @@
     function main() {
 
         if (!window.console) {
-           console = {log: function() {}}; 
+           console = {log: function() {}};
         }
-        
+
         function getLatestTimestamp(metricSnaps) {
             var latestTs = "1999-01-01T00:00:00.000000";
             for (ts in metricSnaps) {
@@ -87,7 +92,7 @@
             }
 
             // remove the dictionaries from what will be displayed
-            item.metricsArr = item.metricsArr.filter(function(x) {   
+            item.metricsArr = item.metricsArr.filter(function(x) {
                     good_to_print = (typeof x["value"] == "number")
                     if (typeof x["value"] == "string") {
                         good_to_print = true
@@ -113,7 +118,7 @@
 
         function getNewItemAndUpdateReport(namespace, nid, interval) {
             jQuery.ajax({
-                       url:"http://api.impactstory.org/v1/item/" + namespace + "/" + nid + "?key=EXAMPLE",
+                       url: apiRoot+"/v1/item/" + namespace + "/" + nid + "?key=EXAMPLE",
                        type:"GET",
                        dataType:"json",
                        contentType:"application/json; charset=utf-8",
@@ -176,10 +181,10 @@
         jQuery.ajaxSetup({ cache:false });
         var ajax_load = '<img id="ti-loading" src="http://impactstory.org/static/img/ajax-loader.gif" alt="loading..." />';
 
-        jQuery(document).ready(function ($) {
-            requestStylesheet("http://total-impact.org/static/css/embed.css");
+        requestStylesheet("http://total-impact.org/static/css/embed.css");
 //            requestStylesheet("http://localhost:5000/static/css/embed.css");
-            requestScript("http://total-impact.org/static/js/icanhaz.min.js");
+        requestScript("http://total-impact.org/static/js/icanhaz.min.js");
+        jQuery(document).ready(function ($) {
 
             $("span#ti-id").hide();
             $("div#ti-data").html(ajax_load + " Loading...");
@@ -188,7 +193,7 @@
             var nid = alias[1];
 
             $.ajax({
-                url:"http://api.impactstory.org/v1/item/" + namespace + "/" + nid + "?key=EXAMPLE",
+                url:apiRoot +"/v1/item/" + namespace + "/" + nid + "?key=EXAMPLE",
                 type:"POST",
                 dataType:"json",
                 contentType:"application/json; charset=utf-8",

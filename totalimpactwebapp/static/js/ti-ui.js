@@ -397,7 +397,20 @@ $(document).ready(function(){
     coll = new Coll(collViews)
     collController = new CollController(coll, collViews);
 
-    itemController = new ItemController()
+    itemController = new ItemController($)
+
+    // report pages
+    if (typeof reportType == "undefined"){
+        // nothing
+    }
+    else if (reportType == "item") {
+        itemController.itemReportPageInit()
+    }
+    else if (reportType = "collection") {
+        console.log("coll report")
+        collController.collReportPageInit()
+    }
+
 
 
     // table of contents
