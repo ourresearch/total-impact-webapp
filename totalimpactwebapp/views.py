@@ -126,7 +126,7 @@ def item_report(ns, id):
             request_url=request.url,
             page_title="",
             body_class="report",
-            item_id=item["_id"]
+            item_id=json.dumps([ns, id])
         )
     else:
         abort(404, "This collection doesn't seem to exist yet. "+url)

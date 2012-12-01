@@ -398,6 +398,7 @@ $(document).ready(function(){
     collController = new CollController(coll, collViews);
 
     itemController = new ItemController($)
+    itemController.itemReportPageInit()
 
 
     // table of contents

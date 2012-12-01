@@ -499,6 +499,30 @@ function ItemController($){
     I think this is probably not the best way.
     * */
 
+    this.itemReportPageInit = function() {
+        // TODO first decide whether or not to call insertRenderedItem
+
+        var myView = new ItemView($)
+        var myItem = new Item(itemId, myView, $)
+        myItem.get(api_root, this.insertRenderedItemIntoPage)
+    }
+
+    this.insertRenderedItemIntoPage = function(data) {
+        // TODO after combining coll+item templates, get itemId this more clever way.
+
+        console.log(itemId)
+        console.log("we got some data back yay!")
+        console.log(data)
+        var myView = new ItemView($)
+        var renderedItem$ = myView.render(data)
+        renderedItem$.find("div.zoom").show()
+
+        $("<div class='genre'></div>")
+            .append(renderedItem$)
+            .appendTo("#metrics div.wrapper")
+
+    }
+
     var body$ = $("body")
 
     body$.on("click", "div.item-header.zoomable", function(e){
@@ -522,6 +546,8 @@ function ItemController($){
         $("#context").modal("show")
         return false;
     })
+
+
 
 
 }
