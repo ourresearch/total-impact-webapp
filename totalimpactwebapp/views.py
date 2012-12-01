@@ -95,13 +95,14 @@ def collection_report(collection_id):
     if r.status_code == 200:
         collection = json.loads(r.text)
         return render_template(
-            'collection.html',
+            'report.html',
             api_root=os.environ["API_ROOT"],
             api_key=os.environ["API_KEY"],
             request_url=request.url,
             page_title=collection["title"],
             body_class="report",
-            collection_id=collection["_id"]
+            report_id='"'+collection["_id"]+'"', # gross
+            report_type="collection"
         )
     else:
         abort(404, "This collection doesn't seem to exist yet. "+url)
@@ -120,16 +121,17 @@ def item_report(ns, id):
     if r.status_code == 200:
         item = json.loads(r.text)
         return render_template(
-            'item.html',
+            'report.html',
             api_root=os.environ["API_ROOT"],
             api_key=os.environ["API_KEY"],
             request_url=request.url,
             page_title="",
             body_class="report",
-            item_id=json.dumps([ns, id])
+            report_id=json.dumps([ns, id]),
+            report_type="item"
         )
     else:
-        abort(404, "This collection doesn't seem to exist yet. "+url)
+        abort(404, "This item doesn't seem to exist yet. "+url)
 
 
 @app.route('/wospicker', methods=["GET"])

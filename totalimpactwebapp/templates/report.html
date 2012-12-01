@@ -58,7 +58,10 @@
    </div>
 
    <div id="metrics">
-      <script type="text/javascript">var collectionId = "{{ collection_id }}"</script>
+      <script type="text/javascript">
+         var reportId = {{ report_id | safe }};
+         var reportType = "{{ report_type }}"
+      </script>
       <div class="wrapper">
       </div>
       <p class="something-missing">More detail on <a href="../faq#whichmetrics">available metrics</a>.  Missing some artifacts or metrics? See <a href="../faq#limitations">current limitations.</a>  </p>

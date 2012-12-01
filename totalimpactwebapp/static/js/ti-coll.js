@@ -186,8 +186,9 @@ function CollViews() {
 
 
 function CollController(coll, collViews) {
-    if (typeof collectionId != 'undefined') {
-        coll.id = collectionId
+
+    this.collReportPageInit = function() {
+        coll.id = reportId
         coll.get(1000)
     }
 
