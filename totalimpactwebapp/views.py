@@ -31,7 +31,12 @@ def badges_templates():
 
 @app.route("/embed/impactstory.js")
 def impactstory_dot_js():
-    return render_template("impactstory.js")
+    return render_template(
+        "impactstory.js",
+        api_root = os.environ["API_ROOT"],
+        webapp_root = os.environ["WEBAPP_ROOT"],
+
+    )
 
 
 @app.route('/about')

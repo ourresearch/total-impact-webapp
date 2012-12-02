@@ -1,9 +1,6 @@
 (function () {
-    // TODO keep/ditch http at front of *both* webaapp and api roots...
-//    var webappRoot = "http://localhost:5000"; // for testing
-//    var apiRoot = "localhost:5001"
-    var webappRoot = "http://impactstory.org"
-    var apiRoot = "api.impactstory.org"
+    var webappRoot = "{{ webapp_root }}"; // for testing
+    var apiRoot = "{{ api_root }}"
 
 
     /******** Load jQuery if not present *********/
@@ -74,7 +71,7 @@
 
     function loadBadgesTemplate(webAppRoot, callback) {
         jQuery.get(
-            webAppRoot + "/embed/templates/badges.html",
+            "http://" + webAppRoot + "/embed/templates/badges.html",
             function(data){
                 ich.addTemplate("badges", data)
                 // do callback stuff...not messing with it for now.
@@ -86,7 +83,7 @@
         var itemView = new ItemView(jQuery)
         badges$ = itemView.renderBadges(dict.awards)
         badges$.find("span.label")
-            .wrap("<a href='" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' />")
+            .wrap("<a href='http://" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' />")
         badges$.appendTo(".impactstory-embed")
 
     }
@@ -126,15 +123,15 @@
 
 
         jQuery.ajaxSetup({ cache:false });
-        var ajax_load = '<img id="ti-loading" src=""' + webappRoot + '/static/img/ajax-loader.gif" alt="loading..." />';
+        var ajax_load = '<img id="ti-loading" src="http://' + webappRoot + '/static/img/ajax-loader.gif" alt="loading..." />';
 
         if (!window.console) {
             console = {log: function() {}};
         }
 
-        requestStylesheet(webappRoot + "/static/css/embed.css");
-        requestScript(webappRoot + "/static/js/icanhaz.min.js");
-        requestScript(webappRoot + "/static/js/ti-item.js");
+        requestStylesheet("http://" + webappRoot + "/static/css/embed.css");
+        requestScript("http://" + webappRoot + "/static/js/icanhaz.min.js");
+        requestScript("http://" + webappRoot + "/static/js/ti-item.js");
 
         jQuery(document).ready(function ($) {
 
