@@ -427,6 +427,8 @@ $(document).ready(function(){
         $('#context').modal('show');
     }
 
+    prettyPrint()
+
 
 
 });
