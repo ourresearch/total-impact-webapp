@@ -1,7 +1,9 @@
 (function () {
-//    var webappRoot = "http://impactstory.org"
-    var webappRoot = "http://localhost:5000"; // for testing
-    var apiRoot = "localhost:5001"
+    // TODO keep/ditch http at front of *both* webaapp and api roots...
+//    var webappRoot = "http://localhost:5000"; // for testing
+//    var apiRoot = "localhost:5001"
+    var webappRoot = "http://impactstory.org"
+    var apiRoot = "api.impactstory.org"
 
 
     /******** Load jQuery if not present *********/
