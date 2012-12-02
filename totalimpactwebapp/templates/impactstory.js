@@ -1,8 +1,8 @@
 (function () {
-    var webappRoot = "{{ webapp_root }}"; // for testing
+    var webappRoot = "{{ webapp_root }}"; 
     var apiRoot = "{{ api_root }}"
 
-    var webappRoot = "impactstory.org"
+//    var webappRoot = "impactstory.org"
 
 
     /******** Load jQuery if not present *********/
