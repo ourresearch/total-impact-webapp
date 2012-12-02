@@ -671,6 +671,10 @@ div#docs li {
   margin-left: 1em;
   list-style-type: disc;
 }
+div#docs div.impactstory-embed {
+  float: left;
+  margin: 15px;
+}
 .description {
   /*    margin-left: 50px;*/
 

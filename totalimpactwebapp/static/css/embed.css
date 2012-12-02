@@ -2,9 +2,9 @@ div.impactstory-embed {
   font-family: Helvetica, arial, sans-serif;
 }
 div.impactstory-embed li {
-  list-style-type: none;
+  list-style-type: none !important;
   float: left;
-  margin: 0 3px 5px 0;
+  margin: 0 3px 5px 0 !important;
 }
 div.impactstory-embed li a {
   text-decoration: none;
