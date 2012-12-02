@@ -600,12 +600,6 @@ th {
   color: #fff;
   border: none;
 }
-h2#api {
-  clear: both;
-  /* clears the floated ti-data embedded stuff */
-
-  padding-top: 70px;
-}
 h3.apicall:first-of-type {
   margin-top: 50px;
 }
@@ -670,8 +664,12 @@ div#docs h4 {
   font-size: 22px;
   margin-bottom: 5px;
 }
-div#docs ul.metrics {
-  margin-left: 0;
+div#docs h2 {
+  margin-top: 50px;
+}
+div#docs li {
+  margin-left: 1em;
+  list-style-type: disc;
 }
 .description {
   /*    margin-left: 50px;*/
