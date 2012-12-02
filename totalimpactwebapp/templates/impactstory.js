@@ -63,11 +63,6 @@
 
 
     /******** ImpactStory functions ******/
-    function getItemId() {
-        var namespace = jQuery(".impactstory-embed").attr("data-id-type")
-        var id = jQuery(".impactstory-embed").attr("data-id")
-        return [namespace, id]
-    }
 
     function loadBadgesTemplate(webAppRoot, callback) {
         jQuery.get(
@@ -79,14 +74,7 @@
         )
     }
 
-    function insertBadges(dict, id) {
-        var itemView = new ItemView(jQuery)
-        badges$ = itemView.renderBadges(dict.awards)
-        badges$.find("span.label")
-            .wrap("<a href='http://" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' />")
-        badges$.appendTo(".impactstory-embed")
 
-    }
 
 
     /******** Our main function ********/
@@ -136,14 +124,33 @@
         jQuery(document).ready(function ($) {
 
             loadBadgesTemplate(webappRoot)
+            $("div.impactstory-embed").each(function(index){
+                var thisDiv$ = $(this)
+                console.log("here's the id we're on now:" + thisDiv$.attr("data-id"))
 
-            var itemId = getItemId()
-            var item = new Item(itemId, new ItemView($), $)
-            item.get(
-                apiRoot,
-                insertBadges,
-                function(){console.log("fail!")}
-            )
+                // define the success callback here to use the context of the
+                // *correct* impactstory-embed div; there may be several on teh
+                // page.
+                var insertBadges = function (dict, id) {
+                    var itemView = new ItemView(jQuery)
+                    badges$ = itemView.renderBadges(dict.awards)
+                    badges$.find("span.label")
+                        .wrap("<a href='http://" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' />")
+                    badges$.appendTo(thisDiv$)
+
+                }
+
+                var itemNamespace = thisDiv$.attr("data-id-type")
+                var itemId = thisDiv$.attr("data-id")
+                var item = new Item([itemNamespace, itemId], new ItemView($), $)
+                item.get(
+                    apiRoot,
+                    insertBadges,
+                    function(){console.log("fail!")}
+                )
+            })
+
+
 
 
         });
