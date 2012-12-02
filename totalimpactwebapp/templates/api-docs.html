@@ -7,21 +7,23 @@
 
         <div id="toc"></div>
 
-        <h2 id="embed">recommended approach: embed code</h2>
+        <h2 id="embed">Recommended approach: embed code</h2>
 
-            <p>The easiest way to include ImpactStory metrics on a webpage is via our  embed code. There's just two steps:</p>
+            <p>The easiest way to include ImpactStory metrics on a webpage is via our embed code, shown below. There's just two steps:</p>
             <ol>
                <li>Paste paste javascript line at the top of your page.</li>
                <li>
-                  Paste the <code>impactstory-embed</code> div where you want the badges to show
+                  Paste the <code>impactstory-embed</code> div where you want the badges to show.
                   Of course you'll need to replace our example <code>data-id</code>
                   with your own for each item, and declare the appropriate ID type in the <code>data-id-type</code>
                   field (see the FAQ for a list of <a href="/faq#toc_3_6">supported ID type prefixes</a>).
-                  That's it, you're done!
                </li>
             </ol>
 
-            <p>We plan to refine and simplify this embed code in response to feedback: please let us know what you think, and join the <a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">total-impact newsgroup</a> if you'd like to be informed of changes (we're in the process of renaming this).</p>
+            <p>
+
+            </p>
+
 
 
             <div class="rawembedcode"><pre>
@@ -29,13 +31,31 @@
 <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" ></div>'|escape()}}
             </pre></div>
             
-            <p>Here's the code above, embedded live on this page:</p>
-
            <script type="text/javascript" src="http://localhost:5000/embed/impactstory.js"></script>
            <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" ></div>
 
+            <p>To the left, you can see the result, embedded live on this page: metrics for a sample article,
+               "Mega-phylogeny approach for comparative biology: an alternative to supertree and supermatrix approaches."
+               Hover over each badge to see a brief description; to dive in deeper, click and you'll reach the
+               item page, which has more details, explanation, and context.
+            </p>
+
+        <p>
+               If you've got any feedback, ideas, or questions,
+               <a href="javascript:UserVoice.showPopupWidget();"
+                  title="Open feedback & support dialog (powered by UserVoice)">let us know!</a>
+               We're planning to roll out alternative sizes and styles of badges in the near future,
+               and we'd love any comments.
+            </p>
+
         <br>
-        <h2 id="api">more versatile approach: REST api.</h2>
+        <h2 id="api">More versatile approach: REST api.</h2>
+        <div class="alert">
+           <button type="button" class="close" data-dismiss="alert">×</button>
+           <strong>Deprecated:</strong> This alpha version of the API is being replaced by /v1, documented <a href="http://impactstory.apiary.com">here.</a>
+        </div>
+
+
 
             <p>If the embed code described above doesn't meet your needs, you can use our api directly.  The ImpactStory webapp itself is built directly on top of this api. </p>
 
