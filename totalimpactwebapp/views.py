@@ -38,6 +38,14 @@ def impactstory_dot_js():
 
     )
 
+@app.route("/embed/test")
+def embed_test():
+    return render_template(
+        "sample-embed.html",
+        webapp_root = os.environ["WEBAPP_ROOT"]
+
+    )
+
 
 @app.route('/about')
 def about(): 
