@@ -85,6 +85,7 @@ def apidocs():
     return render_template(
         'api-docs.html',
         api_root=os.environ["API_ROOT"],
+        webapp_root=os.environ["WEBAPP_ROOT"],
         page_title="api & embed code"
         )
 
