@@ -28,6 +28,8 @@ def home():
 @app.route('/embed/templates/badges.html')
 def badges_templates():
     resp = make_response(render_template("js-template-badges.html"))
+
+    # let js clients get this from the browser, regardless of their domain origin.
     resp.headers['Access-Control-Allow-Origin'] = "*"
     resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
     resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
