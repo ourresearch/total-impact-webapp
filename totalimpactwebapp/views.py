@@ -27,7 +27,11 @@ def home():
 
 @app.route('/embed/templates/badges.html')
 def badges_templates():
-    return render_template("js-template-badges.html")
+    resp = render_template("js-template-badges.html")
+    resp.headers['Access-Control-Allow-Origin'] = "*"
+    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
+    return resp
 
 @app.route("/embed/impactstory.js")
 def impactstory_dot_js():
@@ -85,7 +89,7 @@ def apidocs():
     return render_template(
         'api-docs.html',
         api_root=os.environ["API_ROOT"],
-        webapp_root=os.environ["WEBAPP_ROOT"],
+        webapp_root = os.environ["WEBAPP_ROOT"],
         page_title="api & embed code"
         )
 

@@ -2,6 +2,8 @@
     var webappRoot = "{{ webapp_root }}"; // for testing
     var apiRoot = "{{ api_root }}"
 
+    var webappRoot = "impactstory.org"
+
 
     /******** Load jQuery if not present *********/
     var jQuery;
@@ -65,13 +67,14 @@
     /******** ImpactStory functions ******/
 
     function loadBadgesTemplate(webAppRoot, callback) {
-        jQuery.get(
-            "http://" + webAppRoot + "/embed/templates/badges.html",
-            function(data){
+        jQuery.ajax({
+            url:"http://" + webAppRoot + "/embed/templates/badges.html",
+            type:"GET",
+            success: function(data){
                 ich.addTemplate("badges", data)
                 // do callback stuff...not messing with it for now.
             }
-        )
+        })
     }
 
 
