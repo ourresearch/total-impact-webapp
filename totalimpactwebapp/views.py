@@ -138,7 +138,7 @@ def item_report(ns, id):
     )
 
     r = requests.get(url)
-    if r.status_code == 200:
+    if r.status_code <= 210: # allow unfinished items
         item = json.loads(r.text)
         return render_template(
             'report.html',

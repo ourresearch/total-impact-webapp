@@ -603,6 +603,10 @@ th {
 h3.apicall:first-of-type {
   margin-top: 50px;
 }
+div.example {
+  clear: both;
+  margin-top: 50px;
+}
 div#api {
   margin-top: 120px;
 }

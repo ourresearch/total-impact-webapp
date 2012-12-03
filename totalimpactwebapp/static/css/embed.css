@@ -23,6 +23,10 @@ div.impactstory-embed li .label {
   border-radius: 3px;
   text-shadow: none;
 }
+div.impactstory-embed li .label.small {
+  font-size: 10px;
+  padding: 1px 3px;
+}
 div.impactstory-embed li .label.scholars {
   border: 1px solid #377EB8;
   background: #377EB8;

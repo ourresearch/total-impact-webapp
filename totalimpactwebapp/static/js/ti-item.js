@@ -324,7 +324,7 @@ function Item(itemData, itemView, $) {
      * @errorCallback      function run on error
      */
     this.get = function(apiRoot, successCallback, errorCallback) {
-        var apiKey = "embed" // no point in having "secret" key in javascript
+        var apiKey = "embed" // should be a param
         var thisThing = this
         var id = this.itemId
         $.ajax({
@@ -341,6 +341,12 @@ function Item(itemData, itemView, $) {
                 console.log("fail!")
             }
         });
+    }
+
+    this.create = function(apiRoot, successCallback, errorCallback){
+        var apiKey = "embed" // should be a param
+        var thisThing = this
+        var id = this.itemId
     }
 
     this.processDict = function(dict) {
@@ -473,12 +479,12 @@ function ItemView($) {
         return zoom$
     }
 
-    this.renderBadges = function(awards) {
+    this.renderBadges = function(awards, extraClasses) {
         var badges$ = $(ich.badges({
                big: awards.big,
                any:awards.any
             }), true)
-        badges$.find(".ti-badge").tooltip()
+        badges$.find(".ti-badge").addClass(extraClasses).tooltip()
         return badges$
     }
 

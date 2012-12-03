@@ -26,18 +26,36 @@
 
             <div class="rawembedcode"><pre class="prettyprint">
 {{'<script type="text/javascript" src="http://impactstory.org/embed/impactstory.js"></script>
-<div class="impactstory-embed" data-id="19210768" data-id-type="pmid" ></div>'|escape()}}
+<div class="impactstory-embed" data-id="19210768" data-id-type="pmid"></div>'|escape()}}
             </pre></div>
-            
            <script type="text/javascript" src="http://{{ webapp_root }}/embed/impactstory.js"></script>
-           <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" ></div>
 
+            <div class="example">
+           <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" ></div>
             <p>To the left, you can see the result, embedded live on this page: metrics for a sample article,
                <a href="http://impactstory.org/item/pmid/19210768">"Mega-phylogeny approach for comparative
                   biology: an alternative to supertree and supermatrix approaches."</a>
                Hover over each badge to see a brief description; to dive in deeper, click and you'll reach the
                item page, which has more details, explanation, and context.
             </p>
+            </div>
+
+            <div class="example">
+            <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-badge-size="small"></div>
+            <p>If you want smaller badges, you can just include the <code>data-badge-size="small"</code>
+            attribute, as shown to the left here.</p>
+            </div>
+
+            <!-- still working on this one...
+            <div class="example">
+            <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small"></div>
+            <p>You can also embed multiple widgets for multiple items on the same page, like a CV
+               or table of contents; to the left you can see the metrics for
+               Multistep correlations via covariance processing of COSY/GCOSY spectra: opportunities and artifacts.</p>
+            </div>
+            -->
+
+        <div class="example"> <!--it's not an example, but sort of follows the same flow... -->
 
         <p>
                If you've got any feedback, ideas, or questions,
@@ -46,8 +64,8 @@
                We're planning to roll out alternative sizes and styles of badges in the near future,
                and we'd love any comments.
             </p>
+        </div>
 
-        <br>
         <h2 id="api">More versatile approach: REST api.</h2>
         <div class="alert">
            <button type="button" class="close" data-dismiss="alert">×</button>

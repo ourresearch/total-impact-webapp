@@ -136,7 +136,8 @@
                 // page.
                 var insertBadges = function (dict, id) {
                     var itemView = new ItemView(jQuery)
-                    badges$ = itemView.renderBadges(dict.awards)
+                    var badgeSize = thisDiv$.attr("data-badge-size") == "small" ? "small" : ""
+                    badges$ = itemView.renderBadges(dict.awards, badgeSize)
                     badges$.find("span.label")
                         .wrap("<a href='http://" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' />")
                     badges$.appendTo(thisDiv$)
