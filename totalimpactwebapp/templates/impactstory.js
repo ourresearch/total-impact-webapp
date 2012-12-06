@@ -123,11 +123,14 @@
         requestStylesheet("http://" + webappRoot + "/static/css/embed.css");
         requestScript("http://" + webappRoot + "/static/js/icanhaz.min.js");
         requestScript("http://" + webappRoot + "/static/js/ti-item.js");
+        requestScript("http://" + webappRoot + "/static/js/mixpanel.js");
 
         jQuery(document).ready(function ($) {
 
             loadBadgesTemplate(webappRoot)
             $("div.impactstory-embed").each(function(index){
+                mixpanel.track("Rendering one embed item");
+
                 var thisDiv$ = $(this)
                 console.log("here's the id we're on now:" + thisDiv$.attr("data-id"))
 
