@@ -164,3 +164,4 @@ def wospicker():
     resp = make_response(json.dumps(pages_and_ids, indent=4), 200)
     resp.mimetype = "application/json"
     return resp
+
