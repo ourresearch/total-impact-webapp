@@ -704,6 +704,9 @@ div#docs div.impactstory-embed {
   float: left;
   margin: 15px;
 }
+div#docs ul#required-attributes li {
+  margin-bottom: 15px;
+}
 .description {
   /*    margin-left: 50px;*/
 

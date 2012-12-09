@@ -35,8 +35,21 @@
        </div>
 
        <h3>Required attributes</h3>
-       <p>As you can see from the sample, the div has three required attributes:</p>
-
+       <p>The embedding script requires three parameters, which are fed in via <code>data-</code> attributes in the embedded div</code>:</p>
+         <ul id="required-attributes">
+            <li><code>data-id</code> uniquely identifies the items you want metrics form. We accept several types of ID,
+               including <a href="http://en.wikipedia.org/wiki/PubMed#PubMed_identifier">PubMed ID</a>,
+                <a href="http://en.wikipedia.org/wiki/Digital_object_identifier">DOI</a>,
+               and GitHub repo (expressed as "username,reponame"). If there's another type of identifier you'd like
+               to see supported, let us know; we'll be adding more. </li>
+            <li><code>data-id-type</code> is the type of identifier you've used; it must be one of
+               <code>doi</code>, <code>pmid</code>, or <code>github</code>.</li>
+            <li><code>data-api-key</code> is the unique key we've assigned your organization. It's easy and free to get
+            one; just <a href="javascript:UserVoice.showPopupWidget();">submit a ticket</a> or
+               <a href="mailto:team@impactstory.org">drop us an email</a>. Of course, since the key
+               will be served along with your page, it's not really secret, but it's helpful for us
+               in debugging and tracking usage.</code></li>
+         </ul>
 
 
 
