@@ -47,7 +47,7 @@ def impactstory_dot_js():
 @app.route("/embed/test")
 def embed_test():
     return render_template(
-        "sample-embed.html",
+        "sample-embed-internal-test.html",
         webapp_root = os.environ["WEBAPP_ROOT"]
 
     )
@@ -164,3 +164,4 @@ def wospicker():
     resp = make_response(json.dumps(pages_and_ids, indent=4), 200)
     resp.mimetype = "application/json"
     return resp
+
