@@ -38,13 +38,56 @@
                Hover over each badge to see a brief description; to dive in deeper, click and you'll reach the
                item page, which has more details, explanation, and context.
             </p>
+               <p>There are also a number of optional <code>data-</code> attributes you can add to the embedded div
+               to customize behavior:</p>
             </div>
 
-            <div class="example">
-            <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-badge-size="small"></div>
-            <p>If you want smaller badges as shown to the left here, just include the <code>data-badge-size="small"</code>
-            attribute.</p>
-            </div>
+
+            <table>
+               <tr><th>Attribute</th><th>Does</th><th>Looks like</th></tr>
+               <tr>
+                  <td>
+                     <code class="attr">data-badge-size</code>
+                  </td>
+                  <td>
+                     <p>Set to <code>"small:"</code> for small badges.</p>
+                  </td>
+                  <td>
+                     <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-badge-size="small"></div>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <code class="attr">data-on-finish</code>
+                  </td>
+                  <script type="text/javascript">
+                     countHighlys = function(dict, div$) {
+                        div$.append(
+                           "<div>"
+                                   + dict.awards.big.length
+                                   + "&nbsp;highlys!</div>"
+                        )
+                     }
+                  </script>
+                  <td>
+                     <p>The name of a javascript callback to run, defined in the global (window) namespace.
+                        The function will be fed two arguments: a <code>dict</code> object that includes all underlaying data used
+                        in assigning the badges, and a <code>div$</code> jQuery object representing this div.
+                        For instance, if you define this script
+                        <pre class="prettyprint">
+countHighlys = function(dict, div$) {
+   div$.append(
+      "&lt;div&gt;" +dict.awards.big.length+ "&nbsp;highlys!&lt;/div&gt;"
+   )
+}
+                        </pre> and then include <code>data-on-finish="countHighlys"</code> in your ImpactStory div,
+                        the <code>countHighlys</code> function will run in the window context when the badges are done loading.</p>
+                  </td>
+                  <td>
+                     <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-badge-size="small" data-on-finish="countHighlys"></div>
+                  </td>
+               </tr>
+            </table>
 
             <!-- still working on this one...
             <div class="example">

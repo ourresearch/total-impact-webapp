@@ -4,10 +4,8 @@ div.impactstory-embed {
 div.impactstory-embed li {
   list-style-type: none !important;
   float: left;
-  margin: 0 3px 5px 0 !important;
-}
-div.impactstory-embed li a {
-  text-decoration: none;
+  margin: 3px 3px 0px 0 !important;
+  line-height: 1;
 }
 div.impactstory-embed li .label {
   font-size: 12px;

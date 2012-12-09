@@ -77,6 +77,21 @@
         })
     }
 
+    function getWindowCallback(div$, dict){
+        console.log("getWindowCallback called")
+        callbackName = div$.attr("data-on-finish")
+        if (callbackName) {
+            console.log("found callback name")
+            console.log("running callback")
+            window[callbackName].call(window, dict, div$)
+        }
+        else {
+            // just a stub, doesn't do anything.
+            return true
+        }
+
+    }
+
 
 
 
@@ -149,7 +164,11 @@
                 var item = new Item([itemNamespace, itemId], new ItemView($), $)
                 item.get(
                     apiRoot,
-                    insertBadges,
+                    function(dict, id) { // run insertBadges, then a user-defined callback
+                        insertBadges(dict, id)
+                        console.log("ran insertBadges")
+                        getWindowCallback(thisDiv$, dict)
+                    },
                     function(){console.log("fail!")}
                 )
             })
