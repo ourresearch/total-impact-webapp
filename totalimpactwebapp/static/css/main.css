@@ -623,7 +623,9 @@ h3.apicall:first-of-type {
 }
 div.example {
   clear: both;
-  margin-top: 50px;
+}
+div.example div.impactstory-embed {
+  width: 225px;
 }
 div#api {
   margin-top: 120px;
@@ -686,11 +688,16 @@ div#docs h4 {
   font-size: 22px;
   margin-bottom: 5px;
 }
+div#docs h3 {
+  margin-top: 90px;
+}
 div#docs h2 {
   margin-top: 50px;
 }
 div#docs li {
   margin-left: 1em;
+}
+div#docs ul li {
   list-style-type: disc;
 }
 div#docs div.impactstory-embed {

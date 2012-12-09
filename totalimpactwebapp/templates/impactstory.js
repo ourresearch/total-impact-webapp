@@ -152,7 +152,7 @@
                 var insertBadges = function (dict, id) {
                     var itemView = new ItemView(jQuery)
                     var badgeSize = thisDiv$.attr("data-badge-size") == "small" ? "small" : ""
-                    badges$ = itemView.renderBadges(dict.awards, badgeSize)
+                    var badges$ = itemView.renderBadges(dict.awards, badgeSize)
                     badges$.find("span.label")
                         .wrap("<a href='http://" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' target='_blank' />")
                     badges$.appendTo(thisDiv$)
@@ -162,8 +162,11 @@
                 var itemNamespace = thisDiv$.attr("data-id-type")
                 var itemId = thisDiv$.attr("data-id")
                 var item = new Item([itemNamespace, itemId], new ItemView($), $)
+                var apiKey = thisDiv$.attr("data-api-key")
+                if (apiKey === undefined) return false // remember to set this
                 item.get(
                     apiRoot,
+                    apiKey,
                     function(dict, id) { // run insertBadges, then a user-defined callback
                         insertBadges(dict, id)
                         console.log("ran insertBadges")

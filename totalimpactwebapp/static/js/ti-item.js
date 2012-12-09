@@ -323,8 +323,7 @@ function Item(itemData, itemView, $) {
      * @successCallback    function run on success
      * @errorCallback      function run on error
      */
-    this.get = function(apiRoot, successCallback, errorCallback) {
-        var apiKey = "embed" // should be a param
+    this.get = function(apiRoot, apiKey, successCallback, errorCallback) {
         var thisThing = this
         var id = this.itemId
         $.ajax({
@@ -520,7 +519,7 @@ function ItemController($){
         var idArr = reportId.split(/\/(.+)/, 2) // split on first slash
 
         var myItem = new Item(idArr, myView, $)
-        myItem.get(api_root, this.insertRenderedItemIntoPage)
+        myItem.get(api_root, "item-report-page", this.insertRenderedItemIntoPage)
 
 
     }

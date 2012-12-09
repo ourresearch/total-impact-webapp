@@ -9,40 +9,41 @@
 
             <p>The easiest way to include ImpactStory metrics on a webpage is via our embed code, shown below. There's just two steps:</p>
             <ol>
-               <li>Paste paste javascript line at the top of your page.</li>
+               <li>Paste this script at the top of your page:
+               <div class="rawembedcode"><pre class="prettyprint">
+{{'<script type="text/javascript" src="http://impactstory.org/embed/impactstory.js"></script>'|escape()}}
+            </pre></div>
+                  </li>
                <li>
-                  Paste the <code>impactstory-embed</code> div where you want the badges to show.
-                  Of course you'll need to replace our example <code>data-id</code>
-                  with your own for each item, and declare the appropriate ID type in the <code>data-id-type</code>
-                  field (see the FAQ for a list of <a href="/faq#toc_3_6">supported ID type prefixes</a>).
+                  Paste this div where you want the badges to show.
+                  <div class="rawembedcode"><pre class="prettyprint">
+{{'<div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS"></div>'|escape()}}
+            </pre></div>
                </li>
             </ol>
 
-            <p>
+       <h3>Example</h3>
+       <script type="text/javascript" src="http://{{ webapp_root }}/embed/impactstory.js"></script>
+       <div class="example">
+          <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS" ></div>
+          <p>To the left, you can see the result, embedded live on this page: metrics for a sample article,
+             <a href="http://impactstory.org/item/pmid/19210768">"Mega-phylogeny approach for comparative
+                biology: an alternative to supertree and supermatrix approaches."</a>
+             Hover over each badge to see a brief description; to dive in deeper, click and you'll reach the
+             item page, which has more details, explanation, and context.
+          </p>
+       </div>
 
-            </p>
+       <h3>Required attributes</h3>
+       <p>As you can see from the sample, the div has three required attributes:</p>
 
 
 
-            <div class="rawembedcode"><pre class="prettyprint">
-{{'<script type="text/javascript" src="http://impactstory.org/embed/impactstory.js"></script>
-<div class="impactstory-embed" data-id="19210768" data-id-type="pmid"></div>'|escape()}}
-            </pre></div>
-           <script type="text/javascript" src="http://{{ webapp_root }}/embed/impactstory.js"></script>
 
-            <div class="example">
-           <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" ></div>
-            <p>To the left, you can see the result, embedded live on this page: metrics for a sample article,
-               <a href="http://impactstory.org/item/pmid/19210768">"Mega-phylogeny approach for comparative
-                  biology: an alternative to supertree and supermatrix approaches."</a>
-               Hover over each badge to see a brief description; to dive in deeper, click and you'll reach the
-               item page, which has more details, explanation, and context.
-            </p>
-            </div>
 
-       <h3>Customizing the embedded badges</h3>
-       <p>There are also a number of optional <code>data-</code> attributes you can add to the embedded div
-          to customize behavior:</p>
+
+       <h3>Optional attributes</h3>
+       <p>You can also customize the display of badges using one of several of optional <code>data-</code> attributes:</p>
 
             <table>
                <tr><th>Attribute</th><th>Does</th><th>Looks like</th></tr>
@@ -54,7 +55,7 @@
                      <p>Set to <code>"small"</code> to display smaller badges.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-badge-size="small"></div>
+                     <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-badge-size="small" data-api-key="API-DOCS"></div>
                   </td>
                </tr>
                <tr>
@@ -85,14 +86,14 @@ countHighlys = function(dict, div$) {
                         the <code>countHighlys</code> function runs when the badges are done loading.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-badge-size="small" data-on-finish="countHighlys"></div>
+                     <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS" data-badge-size="small" data-on-finish="countHighlys"></div>
                   </td>
                </tr>
             </table>
 
             <!-- still working on this one...
             <div class="example">
-            <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small"></div>
+            <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small"></div>
             <p>You can also embed multiple widgets for multiple items on the same page, like a CV
                or table of contents; to the left you can see the metrics for
                Multistep correlations via covariance processing of COSY/GCOSY spectra: opportunities and artifacts.</p>
