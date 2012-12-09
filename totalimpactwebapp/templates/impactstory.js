@@ -139,7 +139,7 @@
                     var badgeSize = thisDiv$.attr("data-badge-size") == "small" ? "small" : ""
                     badges$ = itemView.renderBadges(dict.awards, badgeSize)
                     badges$.find("span.label")
-                        .wrap("<a href='http://" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' />")
+                        .wrap("<a href='http://" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' target='_blank' />")
                     badges$.appendTo(thisDiv$)
 
                 }
