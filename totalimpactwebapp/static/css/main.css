@@ -587,18 +587,36 @@ table {
   border-collapse: collapse;
   padding: 2px;
   border-color: #ccc;
-  width: 700px;
+  width: 100%;
+  margin: 50px 0;
 }
 td {
-  padding: 3px 8px;
+  padding: 15px 8px;
   border: 1px solid #ccc;
   border-left: none;
   border-right: none;
 }
+td pre.prettyprint {
+  padding-bottom: 0;
+}
+td.attr {
+  min-width: 150px;
+}
+td.example {
+  width: 100px;
+}
+td.example div.impactstory-embed div {
+  font-size: 12px;
+  color: red;
+  font-weight: bold;
+  margin: 5px 0;
+}
 th {
-  background: #FF4E00;
-  color: #fff;
   border: none;
+  background: #fff;
+  color: #555;
+  text-align: left;
+  padding-left: 5px;
 }
 h3.apicall:first-of-type {
   margin-top: 50px;
