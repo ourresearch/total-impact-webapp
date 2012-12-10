@@ -337,6 +337,7 @@ function Item(itemData, itemView, $) {
         var createParam = (noItemCallback) ? "" : "&create=true" // defaults to true
         var url = "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+createParam
 
+        console.log("in item.get(), about to query "+url)
         $.ajax({
             url: url,
             type: "GET",
@@ -357,8 +358,6 @@ function Item(itemData, itemView, $) {
             }
         });
     }
-    console.log("just defined item.get. here is it: ")
-    console.log(this.get)
 
     this.create = function(apiRoot, successCallback, errorCallback){
         var apiKey = "embed" // should be a param
