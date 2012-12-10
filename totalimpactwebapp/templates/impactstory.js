@@ -54,13 +54,12 @@
     }
 
 
-    // Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
+    // Based on the Load jQuery function above.
     function requestScript(script_url) {
         var script = document.createElement('script');
-        script.src = script_url;
-        // IE7 doesn't like this: document.body.appendChild(script);
-        // Instead use:
-        document.getElementsByTagName('head')[0].appendChild(script);
+        script_tag.setAttribute("type", "text/javascript")
+        script_tag.setAttribute("src", script_url)
+        (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script)
     }
 
 
