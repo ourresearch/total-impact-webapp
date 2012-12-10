@@ -332,9 +332,11 @@ function Item(itemData, itemView, $) {
         var thisThing = this
         var id = this.itemId
         var createParam = (noItemCallback) ? "" : "&create=true" // defaults to true
+        var url = "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+createParam
 
+        console.log("in item.get(), about to query "+url)
         $.ajax({
-            url: "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+createParam,
+            url: url,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -352,6 +354,7 @@ function Item(itemData, itemView, $) {
                 }
             }
         });
+        console.log("in item.get(), past $.ajax() call...")
     }
 
     this.create = function(apiRoot, successCallback, errorCallback){
