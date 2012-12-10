@@ -1,6 +1,7 @@
 $.ajaxSetup ({
     cache: false
 });
+$.support.cors = true;
 if (!window.console) {
     console = {log: function() {}};
 }
