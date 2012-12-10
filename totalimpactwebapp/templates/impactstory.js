@@ -161,7 +161,8 @@
                 var item = new Item([itemNamespace, itemId], new ItemView($), $)
                 var apiKey = thisDiv$.attr("data-api-key")
                 if (apiKey === undefined) return false // remember to set this
-                console.log("running item.get() now")
+                console.log("running item.get() now; here's the item:")
+                console.log(item)
                 item.get(
                     apiRoot,
                     apiKey,
