@@ -329,6 +329,9 @@ function Item(itemData, itemView, $) {
      *                     be created.
      */
     this.get = function(apiRoot, apiKey, successCallback, updatingCallback, noItemCallback) {
+
+        console.log("at the top of item.get()")
+
         var thisThing = this
         var id = this.itemId
         var createParam = (noItemCallback) ? "" : "&create=true" // defaults to true
