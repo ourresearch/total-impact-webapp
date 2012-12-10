@@ -56,10 +56,10 @@
 
     // Based on the Load jQuery function above.
     function requestScript(script_url) {
-        var script = document.createElement('script');
+        var script_tag = document.createElement('script');
         script_tag.setAttribute("type", "text/javascript")
         script_tag.setAttribute("src", script_url)
-        (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script)
+        (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag)
     }
 
 
