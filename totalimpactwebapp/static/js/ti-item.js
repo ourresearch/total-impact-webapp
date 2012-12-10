@@ -322,12 +322,16 @@ function Item(itemData, itemView, $) {
      * @apiRoot            the api endpoint base to call
      * @successCallback    function run on success
      * @errorCallback      function run on error
+     * @createIfMissing    if false, fails if item doesn't exist in db; if true
+     *                     (default), creates a new item in the db and returns it.
      */
-    this.get = function(apiRoot, apiKey, successCallback, errorCallback) {
+    this.get = function(apiRoot, apiKey, successCallback, errorCallback, createIfMissing) {
         var thisThing = this
         var id = this.itemId
+        var createParam = (createIfMissing) ? "" : "&create=true" // defaults to true
+        console.log("creatParam=" + createParam)
         $.ajax({
-            url: "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey,
+            url: "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+createParam,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",

@@ -78,11 +78,8 @@
     }
 
     function getWindowCallback(div$, dict){
-        console.log("getWindowCallback called")
         callbackName = div$.attr("data-on-finish")
         if (callbackName) {
-            console.log("found callback name")
-            console.log("running callback")
             window[callbackName].call(window, dict, div$)
         }
         else {
@@ -144,7 +141,6 @@
             loadBadgesTemplate(webappRoot)
             $("div.impactstory-embed").each(function(index){
                 var thisDiv$ = $(this)
-                console.log("here's the id we're on now:" + thisDiv$.attr("data-id"))
 
                 // define the success callback here to use the context of the
                 // *correct* impactstory-embed div; there may be several on teh
@@ -169,7 +165,6 @@
                     apiKey,
                     function(dict, id) { // run insertBadges, then a user-defined callback
                         insertBadges(dict, id)
-                        console.log("ran insertBadges")
                         getWindowCallback(thisDiv$, dict)
                     },
                     function(){console.log("fail!")}
