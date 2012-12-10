@@ -139,7 +139,7 @@
         jQuery(document).ready(function ($) {
 
             loadBadgesTemplate(webappRoot)
-            $("div.impactstory-embed").each(function(index){
+            $(".impactstory-embed").each(function(index){
                 var thisDiv$ = $(this)
 
                 // define the success callback here to use the context of the

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="main" id="docs">
+<div class="main" id="docs" xmlns="http://www.w3.org/1999/html">
     <div class="wrapper">
 
         <h2 id="embed">Recommended approach: embed code</h2>
@@ -31,6 +31,11 @@
                 biology: an alternative to supertree and supermatrix approaches."</a>
              Hover over each badge to see a brief description; to dive in deeper, click and you'll reach the
              item page, which has more details, explanation, and context.
+          </p>
+             <p>You can embed badges next to multiple items on the
+             same page, which is handy for CVs or tables of contents; for example, here are badges for another article,
+             <a href="http://impactstory.org/item/doi/10.1002/mrc.2260?codekitCB=376812471.828548">Multistep correlations via covariance processing of COSY/GCOSY spectra: opportunities and artifacts</a> <span class="impactstory-embed inline" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small"></span>.
+            You can display badges inline like this by embedding them as a span instead of a div (keeping everything else the same).
           </p>
        </div>
 
@@ -104,14 +109,7 @@ countHighlys = function(dict, div$) {
                </tr>
             </table>
 
-            <!-- still working on this one...
-            <div class="example">
-            <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small"></div>
-            <p>You can also embed multiple widgets for multiple items on the same page, like a CV
-               or table of contents; to the left you can see the metrics for
-               Multistep correlations via covariance processing of COSY/GCOSY spectra: opportunities and artifacts.</p>
-            </div>
-            -->
+
 
         <div class="example"> <!--it's not an example, but sort of follows the same flow... -->
 

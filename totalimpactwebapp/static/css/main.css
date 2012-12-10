@@ -697,6 +697,10 @@ div#docs h2 {
 div#docs li {
   margin-left: 1em;
 }
+div#docs ol {
+  padding-left: 0;
+  margin-left: 0;
+}
 div#docs ul li {
   list-style-type: disc;
 }
