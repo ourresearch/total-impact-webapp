@@ -161,10 +161,12 @@
                 var item = new Item([itemNamespace, itemId], new ItemView($), $)
                 var apiKey = thisDiv$.attr("data-api-key")
                 if (apiKey === undefined) return false // remember to set this
+                console.log("running item.get() now")
                 item.get(
                     apiRoot,
                     apiKey,
                     function(dict, id) { // run insertBadges, then a user-defined callback
+                        console.log("item.get() finished.")
                         insertBadges(dict, id)
                         getWindowCallback(thisDiv$, dict)
                     },
