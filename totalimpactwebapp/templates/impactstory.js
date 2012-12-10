@@ -151,6 +151,7 @@
                     var badges$ = itemView.renderBadges(dict.awards, badgeSize)
                     badges$.find("span.label")
                         .wrap("<a href='http://" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' target='_blank' />")
+                    thisDiv$.empty()
                     badges$.appendTo(thisDiv$)
 
                 }
@@ -167,7 +168,9 @@
                         insertBadges(dict, id)
                         getWindowCallback(thisDiv$, dict)
                     },
-                    function(){console.log("fail!")}
+                    function(data){
+                        thisDiv$.append("<span class='loading'>Gathering metrics now...</span>")
+                    }
                 )
             })
 

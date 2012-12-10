@@ -1,6 +1,10 @@
 div.impactstory-embed {
   font-family: Helvetica, arial, sans-serif;
 }
+div.impactstory-embed span.loading {
+  font-size: 12px;
+  font-style: italic;
+}
 div.impactstory-embed li {
   list-style-type: none !important;
   float: none;

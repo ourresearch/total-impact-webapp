@@ -318,30 +318,38 @@ function Item(itemData, itemView, $) {
     /**
      * Get item data and feed it to a callback.
      *
+     * Creates items if they don't already exist, *unless* the noItemCallback arg is present.
+     *
      * @id:                as [namespace, id] array.
      * @apiRoot            the api endpoint base to call
      * @successCallback    function run on success
-     * @errorCallback      function run on error
-     * @createIfMissing    if false, fails if item doesn't exist in db; if true
-     *                     (default), creates a new item in the db and returns it.
+     * @updatingCallback   function run if item is still updating its metrics (210)
+     * @noItemCallback     function runs if the item doesn't exist and won't be created.
+     *                     passing this function in means that missing items will *not*
+     *                     be created.
      */
-    this.get = function(apiRoot, apiKey, successCallback, errorCallback, createIfMissing) {
+    this.get = function(apiRoot, apiKey, successCallback, updatingCallback, noItemCallback) {
         var thisThing = this
         var id = this.itemId
-        var createParam = (createIfMissing) ? "" : "&create=true" // defaults to true
-        console.log("creatParam=" + createParam)
+        var createParam = (noItemCallback) ? "" : "&create=true" // defaults to true
+
         $.ajax({
             url: "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+createParam,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            success: function(data) {
-                dict = thisThing.processDict(data)
-                thisThing.dict = dict
-                successCallback(dict, id)
-            },
-            error: function(data) {
-                console.log("fail!")
+            statusCode: {
+                200: function(data) {
+                    dict = thisThing.processDict(data)
+                    thisThing.dict = dict
+                    successCallback(dict, id)
+                },
+                210: function(data){
+                    updatingCallback(data)
+                },
+                404: function(data) {
+                    noItemCallback(data)
+                }
             }
         });
     }
@@ -523,7 +531,13 @@ function ItemController($){
         var idArr = reportId.split(/\/(.+)/, 2) // split on first slash
 
         var myItem = new Item(idArr, myView, $)
-        myItem.get(api_root, "item-report-page", this.insertRenderedItemIntoPage)
+        myItem.get(
+            api_root,
+            "item-report-page",
+            this.insertRenderedItemIntoPage,
+            function(data){console.log("still updating item report page")},
+            function(data){alert("Sorry, this item isn't in our database.")}
+        )
 
 
     }
