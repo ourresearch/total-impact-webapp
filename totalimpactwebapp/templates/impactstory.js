@@ -144,7 +144,7 @@
         }
 
         requestStylesheet("http://" + webappRoot + "/static/css/embed.css");
-//        requestScript("http://" + webappRoot + "/static/js/icanhaz.js");
+        requestScript("http://" + webappRoot + "/static/js/icanhaz.min.js");
         requestScript("http://" + webappRoot + "/static/js/ti-item.js");
 
         jQuery(document).ready(function ($) {
