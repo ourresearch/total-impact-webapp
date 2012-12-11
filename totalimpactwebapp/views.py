@@ -25,6 +25,7 @@ def home():
     'index.html', 
     page_title="tell the full story of your research impact",
     body_class="homepage",
+    mixpanel_token=os.environ["MIXPANEL_TOKEN"],
     api_root=os.environ["API_ROOT"]
     )
 
@@ -44,6 +45,7 @@ def impactstory_dot_js():
         "impactstory.js",
         ich=ich_def,
         ti_item=ti_item_def,
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
         api_root=os.environ["API_ROOT"],
         webapp_root=os.environ["WEBAPP_ROOT"]
     )
@@ -52,8 +54,8 @@ def impactstory_dot_js():
 def embed_test():
     return render_template(
         "sample-embed-internal-test.html",
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
         webapp_root = os.environ["WEBAPP_ROOT"]
-
     )
 
 
@@ -62,6 +64,7 @@ def about():
     return render_template(
         'about.html',
         page_title="about",
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
         api_root=os.environ["API_ROOT"]
         )
 
@@ -87,6 +90,7 @@ def faq():
         page_title="faq",
         which_artifacts=which_item_types,
         provider_metadata=metadata,
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
         api_root=os.environ["API_ROOT"]
         )
 
@@ -94,6 +98,7 @@ def faq():
 def apidocs(): 
     return render_template(
         'api-docs.html',
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
         api_root=os.environ["API_ROOT"],
         webapp_root = os.environ["WEBAPP_ROOT"],
         page_title="api & embed code"
@@ -103,6 +108,7 @@ def apidocs():
 def collection_create():
     return render_template(
         'create-collection.html', 
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
         api_root=os.environ["API_ROOT"],
         page_title="create collection",
         body_class="create-collection"
@@ -120,6 +126,7 @@ def collection_report(collection_id):
         collection = json.loads(r.text)
         return render_template(
             'report.html',
+            mixpanel_token=os.environ["MIXPANEL_TOKEN"],                    
             api_root=os.environ["API_ROOT"],
             api_key=os.environ["API_KEY"],
             request_url=request.url,
@@ -146,6 +153,7 @@ def item_report(ns, id):
         item = json.loads(r.text)
         return render_template(
             'report.html',
+            mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
             api_root=os.environ["API_ROOT"],
             api_key=os.environ["API_KEY"],
             request_url=request.url,
