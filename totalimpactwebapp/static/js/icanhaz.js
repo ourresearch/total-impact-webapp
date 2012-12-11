@@ -533,9 +533,15 @@
                     ich.grabTemplates();
                 });
             } else {
-                document.addEventListener('DOMContentLoaded', function () {
+                var grabTemplateWrapper = function () {
                     ich.grabTemplates();
-                }, true);
+                }
+
+                if (document.addEventListener){
+                    document.addEventListener('DOMContentLoaded', grabTemplateWrapper, true);
+                } else if (document.attachEvent){
+                    document.attachEvent('DOMContentLoaded', grabTemplateWrapper);
+                }
             }
         }
 
