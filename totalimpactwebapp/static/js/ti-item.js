@@ -1,3 +1,5 @@
+console.log("ti-item.js loading")
+
 // patch Array.filter() for IE8
 // from https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/filter#Compatibility
 
@@ -695,3 +697,4 @@ function ItemController($){
 
 
 }
+console.log("ti-item.js done loading")
