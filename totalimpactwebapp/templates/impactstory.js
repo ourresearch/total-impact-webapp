@@ -155,6 +155,10 @@
 
         requestStylesheet("http://" + webappRoot + "/static/css/embed.css");
         requestScript("http://" + webappRoot + "/static/js/ti-item.js");
+        requestScript("http://" + webappRoot + "/static/js/mixpanel.js");
+        
+        // change to a config param so is different on production than elsewhere
+        mixpanel.init("93dca9e3be986909fbbf76c7e0fcc449");
 
         jQuery(document).ready(function ($) {
 
@@ -181,6 +185,14 @@
                 var item = new Item([itemNamespace, itemId], new ItemView($), $)
                 var apiKey = thisDiv$.attr("data-api-key")
                 if (apiKey === undefined) return false // remember to set this
+
+                // track in mixpanel
+                mixpanel.track("Impression:embed", 
+                    {"API Key": apiKey, 
+                     "Item Namespace": itemNamespace 
+                    });
+
+                console.log("running item.get() now")
                 item.get(
                     apiRoot,
                     apiKey,

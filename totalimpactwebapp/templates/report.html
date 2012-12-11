@@ -3,8 +3,16 @@
 {% block content %}
 
 <script type="text/javascript">
-   mixpanel.track("View report");
-</script>
+   var report_source = "user";
+   if ("{{ report_id }}" == "kn5auf") {
+      report_source = "sample";
+   }
+   mixpanel.track("Impression:report", 
+      {"Report Type": "{{ report_type }}", 
+       "Report ID": "{{ report_id }}",
+       "Report Source": report_source
+      });
+   </script>
 
 <div class="main" id="report" xmlns="http://www.w3.org/1999/html"
      xmlns="http://www.w3.org/1999/html">
