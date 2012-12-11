@@ -1,25 +1,17 @@
-// {% raw %} this tag is needed or else the Jinja2 templating engine being used
-// to serve this page will freak out over the similar-looking mustache strings
-// used as part of the ICanHaz mustache implementation....
-/*!
- ICanHaz.js version 0.10.1 -- by @HenrikJoreteg
- More info at: http://icanhazjs.com
- */
-(function(){var a=function(){var b=Object.prototype.toString;Array.isArray=Array.isArray||function(k){return b.call(k)=="[object Array]"};var j=String.prototype.trim,c;if(j){c=function(k){return k==null?"":j.call(k)}}else{var d,h;if((/\S/).test("\xA0")){d=/^[\s\xA0]+/;h=/[\s\xA0]+$/}else{d=/^\s+/;h=/\s+$/}c=function(k){return k==null?"":k.toString().replace(d,"").replace(h,"")}}var g={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"};function i(k){return String(k).replace(/&(?!\w+;)|[<>"']/g,function(l){return g[l]||l})}var f={};var e=function(){};e.prototype={otag:"{{",ctag:"}}",pragmas:{},buffer:[],pragmas_implemented:{"IMPLICIT-ITERATOR":true},context:{},render:function(n,m,l,o){if(!o){this.context=m;this.buffer=[]}if(!this.includes("",n)){if(o){return n}else{this.send(n);return}}n=this.render_pragmas(n);var k=this.render_section(n,m,l);if(k===false){k=this.render_tags(n,m,l,o)}if(o){return k}else{this.sendLines(k)}},send:function(k){if(k!==""){this.buffer.push(k)}},sendLines:function(m){if(m){var k=m.split("\n");for(var l=0;l<k.length;l++){this.send(k[l])}}},render_pragmas:function(k){if(!this.includes("%",k)){return k}var m=this;var l=this.getCachedRegex("render_pragmas",function(o,n){return new RegExp(o+"%([\\w-]+) ?([\\w]+=[\\w]+)?"+n,"g")});return k.replace(l,function(p,n,o){if(!m.pragmas_implemented[n]){throw ({message:"This implementation of mustache doesn't understand the '"+n+"' pragma"})}m.pragmas[n]={};if(o){var q=o.split("=");m.pragmas[n][q[0]]=q[1]}return""})},render_partial:function(k,m,l){k=c(k);if(!l||l[k]===undefined){throw ({message:"unknown_partial '"+k+"'"})}if(!m||typeof m[k]!="object"){return this.render(l[k],m,l,true)}return this.render(l[k],m[k],l,true)},render_section:function(m,l,k){if(!this.includes("#",m)&&!this.includes("^",m)){return false}var o=this;var n=this.getCachedRegex("render_section",function(q,p){return new RegExp("^([\\s\\S]*?)"+q+"(\\^|\\#)\\s*(.+)\\s*"+p+"\n*([\\s\\S]*?)"+q+"\\/\\s*\\3\\s*"+p+"\\s*([\\s\\S]*)$","g")});return m.replace(n,function(s,w,v,r,t,q){var y=w?o.render_tags(w,l,k,true):"",u=q?o.render(q,l,k,true):"",p,x=o.find(r,l);if(v==="^"){if(!x||Array.isArray(x)&&x.length===0){p=o.render(t,l,k,true)}else{p=""}}else{if(v==="#"){if(Array.isArray(x)){p=o.map(x,function(z){return o.render(t,o.create_context(z),k,true)}).join("")}else{if(o.is_object(x)){p=o.render(t,o.create_context(x),k,true)}else{if(typeof x=="function"){p=x.call(l,t,function(z){return o.render(z,l,k,true)})}else{if(x){p=o.render(t,l,k,true)}else{p=""}}}}}}return y+p+u})},render_tags:function(s,k,m,o){var n=this;var r=function(){return n.getCachedRegex("render_tags",function(v,u){return new RegExp(v+"(=|!|>|&|\\{|%)?([^#\\^]+?)\\1?"+u+"+","g")})};var p=r();var q=function(w,u,v){switch(u){case"!":return"";case"=":n.set_delimiters(v);p=r();return"";case">":return n.render_partial(v,k,m);case"{":case"&":return n.find(v,k);default:return i(n.find(v,k))}};var t=s.split("\n");for(var l=0;l<t.length;l++){t[l]=t[l].replace(p,q,this);if(!o){this.send(t[l])}}if(o){return t.join("\n")}},set_delimiters:function(l){var k=l.split(" ");this.otag=this.escape_regex(k[0]);this.ctag=this.escape_regex(k[1])},escape_regex:function(l){if(!arguments.callee.sRE){var k=["/",".","*","+","?","|","(",")","[","]","{","}","\\"];arguments.callee.sRE=new RegExp("(\\"+k.join("|\\")+")","g")}return l.replace(arguments.callee.sRE,"\\$1")},find:function(m,n){m=c(m);function l(p){return p===false||p===0||p}var o;if(m.match(/([a-z_]+)\./ig)){var k=this.walk_context(m,n);if(l(k)){o=k}}else{if(l(n[m])){o=n[m]}else{if(l(this.context[m])){o=this.context[m]}}}if(typeof o=="function"){return o.apply(n)}if(o!==undefined){return o}return""},walk_context:function(k,l){var o=k.split(".");var n=(l[o[0]]!=undefined)?l:this.context;var m=n[o.shift()];while(m!=undefined&&o.length>0){n=m;m=m[o.shift()]}if(typeof m=="function"){return m.apply(n)}return m},includes:function(l,k){return k.indexOf(this.otag+l)!=-1},create_context:function(l){if(this.is_object(l)){return l}else{var m=".";if(this.pragmas["IMPLICIT-ITERATOR"]){m=this.pragmas["IMPLICIT-ITERATOR"].iterator}var k={};k[m]=l;return k}},is_object:function(k){return k&&typeof k=="object"},map:function(p,n){if(typeof p.map=="function"){return p.map(n)}else{var o=[];var k=p.length;for(var m=0;m<k;m++){o.push(n(p[m]))}return o}},getCachedRegex:function(l,o){var n=f[this.otag];if(!n){n=f[this.otag]={}}var k=n[this.ctag];if(!k){k=n[this.ctag]={}}var m=k[l];if(!m){m=k[l]=o(this.otag,this.ctag)}return m}};return({name:"mustache.js",version:"0.4.0",to_html:function(m,k,l,o){var n=new e();if(o){n.send=o}n.render(m,k||{},l);if(!o){return n.buffer.join("\n")}}})}();
-    /*!
-     ICanHaz.js -- by @HenrikJoreteg
-     */
-    (function(){function b(e){if("".trim){return e.trim()}else{return e.replace(/^\s+/,"").replace(/\s+$/,"")}}var c={VERSION:"0.10.1",templates:{},$:(typeof window!=="undefined")?window.jQuery||window.Zepto||null:null,addTemplate:function(e,g){if(typeof e==="object"){for(var f in e){this.addTemplate(f,e[f])}return}if(c[e]){console.error("Invalid name: "+e+".")}else{if(c.templates[e]){console.error('Template "'+e+'  " exists')}else{c.templates[e]=g;c[e]=function(j,i){j=j||{};var h=a.to_html(c.templates[e],j,c.templates);return(c.$&&!i)?c.$(h):h}}}},clearAll:function(){for(var e in c.templates){delete c[e]}c.templates={}},refresh:function(){c.clearAll();c.grabTemplates()},grabTemplates:function(){var j,f,e=document.getElementsByTagName("script"),g,h=[];for(j=0,f=e.length;j<f;j++){g=e[j];if(g&&g.innerHTML&&g.id&&(g.type==="text/html"||g.type==="text/x-icanhaz")){c.addTemplate(g.id,b(g.innerHTML));h.unshift(g)}}for(j=0,f=h.length;j<f;j++){h[j].parentNode.removeChild(h[j])}}};if(typeof require!=="undefined"){module.exports=c}else{window.ich=c}if(typeof document!=="undefined"){if(c.$){c.$(function(){c.grabTemplates()})}else{var d=function(){c.grabTemplates()};if(document.addEventListener){document.addEventListener("DOMContentLoaded",d,true)}else{if(document.attachEvent){document.attachEvent("DOMContentLoaded",d)}}}}})()})();
-// {% endraw %}
+// load mixpanel for metrics
+(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==
+    typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.increment".split(" ");for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
 
 
+// icanhaz.js is inserted by server when this file is requested.
+{{ ich }}
 
-
-
-
+// ti-item.js is inserted by server when this file is requested.
+{{ ti_item }}
 
 (function () {
     var webappRoot = "{{ webapp_root }}";
+
     var apiRoot = "{{ api_root }}"
 
 //    var webappRoot = "impactstory.org" // for testing cross-domain stuff
@@ -72,17 +64,6 @@
         stylesheet.media = "all";
         document.lastChild.firstChild.appendChild(stylesheet);
     }
-
-
-    // Based on the Load jQuery function above.
-    function requestScript(script_url) {
-        var script_tag = document.createElement('script');
-        script_tag.setAttribute("type", "text/javascript");
-
-        script_tag.setAttribute("src", script_url);
-        (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag)
-    }
-
 
     /******** ImpactStory functions ******/
 
@@ -154,9 +135,7 @@
         }
 
         requestStylesheet("http://" + webappRoot + "/static/css/embed.css");
-        requestScript("http://" + webappRoot + "/static/js/ti-item.js");
-        requestScript("http://" + webappRoot + "/static/js/mixpanel.js");
-        
+
         // change to a config param so is different on production than elsewhere
         mixpanel.init("93dca9e3be986909fbbf76c7e0fcc449");
 
