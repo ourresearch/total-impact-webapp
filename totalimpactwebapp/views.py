@@ -10,7 +10,7 @@ from totalimpactwebapp import pretty_date
 logger = logging.getLogger("tiwebapp.views")
 ich_def = open(os.path.dirname(__file__) + "/static/js/icanhaz.min.js", "r").read()
 ti_item_def = open(os.path.dirname(__file__) + "/static/js/ti-item.js", "r").read()
-print ti_item_def[]
+print ti_item_def[7570:7599]
 
 @app.before_request
 def log_ip_address():
@@ -43,7 +43,7 @@ def impactstory_dot_js():
     return render_template(
         "impactstory.js",
         ich=ich_def,
-        ti_item=unicode(ti_item_def),
+        ti_item=ti_item_def,
         api_root=os.environ["API_ROOT"],
         webapp_root=os.environ["WEBAPP_ROOT"]
     )
