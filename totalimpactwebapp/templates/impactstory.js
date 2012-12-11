@@ -1,3 +1,6 @@
+// {% raw %} this tag is needed or else the Jinja2 templating engine being used
+// to serve this page will freak out over the similar-looking mustache strings
+// used as part of the ICanHaz mustache implementation....
 /*!
  ICanHaz.js version 0.10.1 -- by @HenrikJoreteg
  More info at: http://icanhazjs.com
@@ -7,6 +10,13 @@
      ICanHaz.js -- by @HenrikJoreteg
      */
     (function(){function b(e){if("".trim){return e.trim()}else{return e.replace(/^\s+/,"").replace(/\s+$/,"")}}var c={VERSION:"0.10.1",templates:{},$:(typeof window!=="undefined")?window.jQuery||window.Zepto||null:null,addTemplate:function(e,g){if(typeof e==="object"){for(var f in e){this.addTemplate(f,e[f])}return}if(c[e]){console.error("Invalid name: "+e+".")}else{if(c.templates[e]){console.error('Template "'+e+'  " exists')}else{c.templates[e]=g;c[e]=function(j,i){j=j||{};var h=a.to_html(c.templates[e],j,c.templates);return(c.$&&!i)?c.$(h):h}}}},clearAll:function(){for(var e in c.templates){delete c[e]}c.templates={}},refresh:function(){c.clearAll();c.grabTemplates()},grabTemplates:function(){var j,f,e=document.getElementsByTagName("script"),g,h=[];for(j=0,f=e.length;j<f;j++){g=e[j];if(g&&g.innerHTML&&g.id&&(g.type==="text/html"||g.type==="text/x-icanhaz")){c.addTemplate(g.id,b(g.innerHTML));h.unshift(g)}}for(j=0,f=h.length;j<f;j++){h[j].parentNode.removeChild(h[j])}}};if(typeof require!=="undefined"){module.exports=c}else{window.ich=c}if(typeof document!=="undefined"){if(c.$){c.$(function(){c.grabTemplates()})}else{var d=function(){c.grabTemplates()};if(document.addEventListener){document.addEventListener("DOMContentLoaded",d,true)}else{if(document.attachEvent){document.attachEvent("DOMContentLoaded",d)}}}}})()})();
+// {% endraw %}
+
+
+
+
+
+
 
 (function () {
     var webappRoot = "{{ webapp_root }}";
@@ -140,11 +150,10 @@
         var ajax_load = '<img id="ti-loading" src="http://' + webappRoot + '/static/img/ajax-loader.gif" alt="loading..." />';
 
         if (!window.console) {
-            console = {log: function() {}};
+            window.console = {log: function() {}};
         }
 
         requestStylesheet("http://" + webappRoot + "/static/css/embed.css");
-        requestScript("http://" + webappRoot + "/static/js/icanhaz.min.js");
         requestScript("http://" + webappRoot + "/static/js/ti-item.js");
 
         jQuery(document).ready(function ($) {

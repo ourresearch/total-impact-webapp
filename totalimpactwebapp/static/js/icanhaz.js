@@ -537,6 +537,8 @@
                     ich.grabTemplates();
                 }
 
+                // added as per http://stackoverflow.com/questions/1695376/msie-and-addeventlistener-problem-in-javascript
+                // to fix IE8 breakage.
                 if (document.addEventListener){
                     document.addEventListener('DOMContentLoaded', grabTemplateWrapper, true);
                 } else if (document.attachEvent){
