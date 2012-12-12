@@ -90,7 +90,7 @@
 
     }
     function addLogo(div$){
-        var impactstoryLogo = '<img src="http://' + webappRoot + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" />';
+        var impactstoryLogo = '<a href="http://impactstory.org"><img src="http://' + webappRoot + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" /></a>';
         if (div$.attr("data-show-logo") == "false") {
             // do nothing.
         }
