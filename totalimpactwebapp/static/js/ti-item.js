@@ -643,9 +643,8 @@ function ItemController($){
         $("#num-items").remove()
 
         var myView = new ItemView($)
-        var idArr = reportId.split(/\/(.+)/, 2) // split on first slash
 
-        var myItem = new Item(idArr, myView, $)
+        var myItem = new Item([reportIdNamespace, reportId], myView, $)
         myItem.get(
             api_root,
             "item-report-page",

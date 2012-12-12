@@ -401,15 +401,15 @@ $(document).ready(function(){
     itemController = new ItemController($)
 
     // report pages
-    if (typeof reportType == "undefined"){
+    if (typeof reportIdNamespace == "undefined"){
+        console.log("this isn't a report page")
         // nothing
     }
-    else if (reportType == "item") {
-        itemController.itemReportPageInit()
-    }
-    else if (reportType = "collection") {
-        console.log("coll report")
+    else if (reportIdNamespace = "impactstory_collection_id") {
         collController.collReportPageInit()
+    }
+    else { // must be an item report page
+        itemController.itemReportPageInit()
     }
 
 
