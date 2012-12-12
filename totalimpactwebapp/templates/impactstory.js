@@ -89,15 +89,27 @@
         }
 
     }
-    function addLogo(div$){
-        var impactstoryLogo = '<a href="http://impactstory.org"><img src="http://' + webappRoot + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" /></a>';
+    function addLogo(div$, namespace, id){
+
+        // I can't figure out how to get the wrapInLink function to work for a
+        // single item like this, so here's this repulsive hack in the meantime:
+        var logoLink$ = jQuery('<a href="http://' + webappRoot + '/item/'
+                                          + namespace + "/" + id + '" target="_blank">'
+                                          + '<img src="http://' + webappRoot
+                                          + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" />'
+                                          + "</a>");
         if (div$.attr("data-show-logo") == "false") {
             // do nothing.
         }
         else {
-            div$.prepend(impactstoryLogo)
+            div$.prepend(logoLink$)
         }
         return div$
+    }
+
+    function wrapInLink(el$, namespace, id){
+        return el$.wrapAll("<a href='http://" + webappRoot + "/item/"+
+                            namespace + "/" + id +  "' target='_blank' />")
     }
 
 
@@ -154,20 +166,22 @@
                 var thisDiv$ = $(this)
 
                 // define the success callback here to use the context of the
-                // *correct* impactstory-embed div; there may be several on teh
+                // *correct* impactstory-embed div; there may be several on the
                 // page.
                 var insertBadges = function (dict, id) {
                     var itemView = new ItemView(jQuery)
-                    var badgeSize = thisDiv$.attr("data-badge-size") == "small" ? "small" : ""
                     var badges$ = itemView.renderBadges(dict.awards)
-                    badges$.find("span.label")
-                        .wrap("<a href='http://" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' target='_blank' />")
+                    wrapInLink(badges$.find("span.label"), id[0], id[1])
 
+
+                    var badgeSize = thisDiv$.attr("data-badge-size") == "small" ? "small" : ""
                     thisDiv$.empty().addClass(badgeSize)
-                    thisDiv$ = addLogo(thisDiv$)
+
+                    thisDiv$ = addLogo(thisDiv$, id[0], id[1])
                     thisDiv$.append(badges$)
 
                 }
+
 
                 var itemNamespace = thisDiv$.attr("data-id-type")
                 var itemId = thisDiv$.attr("data-id")
