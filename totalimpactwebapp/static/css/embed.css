@@ -10,21 +10,29 @@ span.impactstory-embed ul li .label {
 }
 .impactstory-embed {
   font-family: Helvetica, arial, sans-serif;
+  width: 200px;
 }
 .impactstory-embed span.loading {
   font-size: 12px;
   font-style: italic;
 }
-.impactstory-embed li {
+.impactstory-embed img {
+  height: 25px;
+}
+.impactstory-embed ul {
+  margin: 0;
+  padding-left: 0;
+}
+.impactstory-embed ul li {
   list-style-type: none !important;
   float: none;
   margin: 0 !important;
   line-height: 1;
 }
-.impactstory-embed li a:hover {
+.impactstory-embed ul li a:hover {
   text-decoration: none;
 }
-.impactstory-embed li .label {
+.impactstory-embed ul li .label {
   float: left;
   font-size: 12px;
   margin: 1px 2px;
@@ -39,27 +47,27 @@ span.impactstory-embed ul li .label {
   border-radius: 3px;
   text-shadow: none;
 }
-.impactstory-embed li .label.small {
+.impactstory-embed ul li .label.small {
   font-size: 10px;
   padding: 1px 3px;
 }
-.impactstory-embed li .label.scholars {
+.impactstory-embed ul li .label.scholars {
   border: 1px solid #377EB8;
   background: #377EB8;
 }
-.impactstory-embed li .label.scholars.lil-badge {
+.impactstory-embed ul li .label.scholars.lil-badge {
   background: #fff;
   color: #377EB8;
 }
-.impactstory-embed li .label.public {
+.impactstory-embed ul li .label.public {
   border: 1px solid #4DAF4A;
   background: #4DAF4A;
 }
-.impactstory-embed li .label.public.lil-badge {
+.impactstory-embed ul li .label.public.lil-badge {
   background: #fff;
   color: #4DAF4A;
 }
-.impactstory-embed li .label:hover {
+.impactstory-embed ul li .label:hover {
   color: #ffffff;
   text-decoration: none;
   cursor: pointer;

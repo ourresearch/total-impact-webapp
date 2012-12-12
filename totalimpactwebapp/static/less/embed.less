@@ -14,54 +14,62 @@ span.impactstory-embed{
 .impactstory-embed {
    font-family: Helvetica, arial, sans-serif;
    span.loading{font-size:12px; font-style: italic;}
-   li {
-      list-style-type: none !important;
-      float: none;
-      margin: 0 !important;
-      line-height: 1;
-      a:hover {text-decoration: none; }
+   width:200px;
+   img {
+      height: 25px;
+   }
+   ul {
+      margin:0;
+      padding-left:0;
+      li {
+         list-style-type: none !important;
+         float: none;
+         margin: 0 !important;
+         line-height: 1;
+         a:hover {text-decoration: none; }
 
-      .label {
-         float:left;
-         font-size: 12px;
-         margin: 1px 2px;
-         font-weight: normal;
-         padding: 3px 6px;
-         color: #ffffff;
-         vertical-align: baseline;
-         white-space: nowrap;
-         background-color: #999999;
-         -webkit-border-radius: 3px;
-         -moz-border-radius: 3px;
-         border-radius: 3px;
-         text-shadow:none;
-
-         &.small {
-            font-size:10px;
-            padding:1px 3px;
-         }
-
-         &.scholars {
-            border: 1px solid #377EB8;
-            background: #377EB8;
-            &.lil-badge {
-               background:#fff;
-               color: #377EB8;
-            }
-         }
-         &.public {
-            border: 1px solid #4DAF4A;
-            background: #4DAF4A;
-            &.lil-badge {
-               background:#fff;
-               color: #4DAF4A;
-            }
-         }
-
-         &:hover {
+         .label {
+            float:left;
+            font-size: 12px;
+            margin: 1px 2px;
+            font-weight: normal;
+            padding: 3px 6px;
             color: #ffffff;
-            text-decoration: none;
-            cursor: pointer;
+            vertical-align: baseline;
+            white-space: nowrap;
+            background-color: #999999;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            text-shadow:none;
+
+            &.small {
+               font-size:10px;
+               padding:1px 3px;
+            }
+
+            &.scholars {
+               border: 1px solid #377EB8;
+               background: #377EB8;
+               &.lil-badge {
+                  background:#fff;
+                  color: #377EB8;
+               }
+            }
+            &.public {
+               border: 1px solid #4DAF4A;
+               background: #4DAF4A;
+               &.lil-badge {
+                  background:#fff;
+                  color: #4DAF4A;
+               }
+            }
+
+            &:hover {
+               color: #ffffff;
+               text-decoration: none;
+               cursor: pointer;
+            }
          }
       }
    }
