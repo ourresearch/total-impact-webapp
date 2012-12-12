@@ -134,7 +134,7 @@ def collection_report(collection_id):
             body_class="report",
             report_id=collection["_id"],
             report_id_namespace="impactstory_collection_id",
-            report_type="collection"
+            api_query="collection/"+collection["_id"]
         )
     else:
         abort(404, "This collection doesn't seem to exist yet. "+url)
@@ -162,7 +162,7 @@ def item_report(ns, id):
             body_class="report",
             report_id=id,
             report_id_namespace=ns,
-            report_type="item"
+            api_query="item/{ns}/{id}".format(ns=ns, id=id)
         )
     else:
         abort(404, "This item doesn't seem to exist yet. "+url)
