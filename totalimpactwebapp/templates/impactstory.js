@@ -128,7 +128,7 @@
 
 
         jQuery.ajaxSetup({ cache:false });
-        var ajax_load = '<img id="ti-loading" src="http://' + webappRoot + '/static/img/ajax-loader.gif" alt="loading..." />';
+        var impactstoryLogo = '<img src="http://' + webappRoot + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" />';
 
         if (!window.console) {
             window.console = {log: function() {}};
@@ -153,8 +153,7 @@
                     var badges$ = itemView.renderBadges(dict.awards, badgeSize)
                     badges$.find("span.label")
                         .wrap("<a href='http://" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' target='_blank' />")
-                    thisDiv$.empty()
-                    badges$.appendTo(thisDiv$)
+                    thisDiv$.empty().append(impactstoryLogo).append(badges$)
 
                 }
 

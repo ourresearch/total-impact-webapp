@@ -133,7 +133,8 @@ def collection_report(collection_id):
             page_title=collection["title"],
             body_class="report",
             report_id=collection["_id"],
-            report_id_namespace="impactstory_collection_id"
+            report_id_namespace="impactstory_collection_id",
+            report_type="collection"
         )
     else:
         abort(404, "This collection doesn't seem to exist yet. "+url)
@@ -160,7 +161,8 @@ def item_report(ns, id):
             page_title="",
             body_class="report",
             report_id=id,
-            report_id_namespace=ns
+            report_id_namespace=ns,
+            report_type="item"
         )
     else:
         abort(404, "This item doesn't seem to exist yet. "+url)
