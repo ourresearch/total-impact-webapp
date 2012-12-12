@@ -41,7 +41,7 @@ def badges_templates():
 
 @app.route("/embed/impactstory.js")
 def impactstory_dot_js():
-    return render_template(
+    rendered = render_template(
         "impactstory.js",
         ich=ich_def,
         ti_item=ti_item_def,
@@ -49,6 +49,15 @@ def impactstory_dot_js():
         api_root=os.environ["API_ROOT"],
         webapp_root=os.environ["WEBAPP_ROOT"]
     )
+    resp = make_response(rendered)
+    """
+    There is no standard way to indicate you're sending back javascript;
+    This seems the most recommended one, though. See
+    http://stackoverflow.com/questions/2706290/why-write-script-type-text-javascript-when-the-mime-type-is-set-by-the-serve
+    and http://www.ietf.org/rfc/rfc4329.txt
+     """
+    resp.headers["Content-Type"] = "application/javascript; charset=utf-8"
+    return resp
 
 @app.route("/embed/test")
 def embed_test():

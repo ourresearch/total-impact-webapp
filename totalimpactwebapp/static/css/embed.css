@@ -16,7 +16,12 @@ span.impactstory-embed ul li .label {
   font-size: 12px;
   font-style: italic;
 }
-.impactstory-embed img {
+.impactstory-embed a {
+  border: none;
+  text-decoration: none;
+}
+.impactstory-embed a img {
+  border: none;
   height: 25px;
   margin-left: 3px;
 }
