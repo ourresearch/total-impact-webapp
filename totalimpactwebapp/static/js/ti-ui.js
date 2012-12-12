@@ -405,7 +405,7 @@ $(document).ready(function(){
         console.log("this isn't a report page")
         // nothing
     }
-    else if (reportIdNamespace = "impactstory_collection_id") {
+    else if (reportIdNamespace == "impactstory_collection_id") {
         collController.collReportPageInit()
     }
     else { // must be an item report page
