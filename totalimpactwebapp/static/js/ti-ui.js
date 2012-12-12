@@ -1,7 +1,7 @@
 $.ajaxSetup ({
     cache: false
 });
-$.support.cors = true;
+$.support.cors = true; // makes IE8 and IE9 support CORS
 if (!window.console) {
     console = {log: function() {}};
 }
