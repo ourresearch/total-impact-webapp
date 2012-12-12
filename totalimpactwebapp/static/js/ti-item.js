@@ -446,7 +446,6 @@ function Item(itemData, itemView, $) {
         var id = this.itemId
         var createParam = (noItemCallback) ? "" : "&create=true" // defaults to true
         var url = "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+createParam
-        console.log(url)
 
         $.ajax({
             url: url,
@@ -477,7 +476,6 @@ function Item(itemData, itemView, $) {
 
     this.processDict = function(dict) {
         dict.metrics = this.getMetricPercentiles(dict.metrics)
-        console.log(dict.biblio.title)
 
         dict.metrics = this.add_derived_metrics(dict.metrics)
         dict.engagementTable = this.makeEngagementTable(dict, metricInfo)
@@ -497,7 +495,6 @@ function Item(itemData, itemView, $) {
     }
     // we've created this item with an id instead of a data object;
     else {
-        console.log("building an Item object with this id: " + itemData[0] + "/" + itemData[1])
         this.dict = false
         this.itemId = itemData
     }

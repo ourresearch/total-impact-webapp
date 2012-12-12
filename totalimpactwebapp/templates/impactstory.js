@@ -181,12 +181,10 @@
                      "Item Namespace": itemNamespace 
                     });
 
-                console.log("running item.get() now")
                 item.get(
                     apiRoot,
                     apiKey,
                     function(dict, id) { // run insertBadges, then a user-defined callback
-                        console.log("item.get() finished.")
                         insertBadges(dict, id)
                         getWindowCallback(thisDiv$, dict)
                     },
