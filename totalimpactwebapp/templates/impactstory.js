@@ -89,6 +89,16 @@
         }
 
     }
+    function addLogo(div$){
+        var impactstoryLogo = '<img src="http://' + webappRoot + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" />';
+        if (div$.attr("data-show-logo") == "false") {
+            // do nothing.
+        }
+        else {
+            div$.prepend(impactstoryLogo)
+        }
+        return div$
+    }
 
 
 
@@ -128,7 +138,6 @@
 
 
         jQuery.ajaxSetup({ cache:false });
-        var impactstoryLogo = '<img src="http://' + webappRoot + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" />';
 
         if (!window.console) {
             window.console = {log: function() {}};
@@ -150,10 +159,13 @@
                 var insertBadges = function (dict, id) {
                     var itemView = new ItemView(jQuery)
                     var badgeSize = thisDiv$.attr("data-badge-size") == "small" ? "small" : ""
-                    var badges$ = itemView.renderBadges(dict.awards, badgeSize)
+                    var badges$ = itemView.renderBadges(dict.awards)
                     badges$.find("span.label")
                         .wrap("<a href='http://" + webappRoot + "/item/"+ id[0] + "/" + id[1] +  "' target='_blank' />")
-                    thisDiv$.empty().append(impactstoryLogo).append(badges$)
+
+                    thisDiv$.empty().addClass(badgeSize)
+                    thisDiv$ = addLogo(thisDiv$)
+                    thisDiv$.append(badges$)
 
                 }
 

@@ -38,7 +38,8 @@
           </p>
              <p>You can embed badges next to multiple items on the
              same page, which is handy for CVs or tables of contents; for example, here are badges for another article,
-             <a href="http://impactstory.org/item/doi/10.1002/mrc.2260">Multistep correlations via covariance processing of COSY/GCOSY spectra: opportunities and artifacts</a> <span class="impactstory-embed inline" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small"></span>.
+             <a href="http://impactstory.org/item/doi/10.1002/mrc.2260">Multistep correlations via covariance processing of COSY/GCOSY spectra: opportunities and artifacts</a>
+                <span class="impactstory-embed inline" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small" data-show-logo="false"></span>.
             You can display badges inline like this by embedding them as a span instead of a div (keeping everything else the same).
           </p>
        </div>
@@ -77,7 +78,7 @@
                      <p>Set to <code>"small"</code> to display smaller badges.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-badge-size="small" data-api-key="API-DOCS"></div>
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS"></div>
                   </td>
                </tr>
                <tr>
@@ -108,7 +109,18 @@ countHighlys = function(dict, div$) {
                         the <code>countHighlys</code> function runs when the badges are done loading.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS" data-badge-size="small" data-on-finish="countHighlys"></div>
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small" data-on-finish="countHighlys"></div>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="attr">
+                     <code>data-show-logo</code>
+                  </td>
+                  <td>
+                     <p>Set to <code>false</code> to hide the ImpactStory logo.</p>
+                  </td>
+                  <td class="example">
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-show-logo="false"></div>
                   </td>
                </tr>
             </table>

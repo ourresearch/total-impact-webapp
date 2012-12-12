@@ -10,7 +10,7 @@ span.impactstory-embed ul li .label {
 }
 .impactstory-embed {
   font-family: Helvetica, arial, sans-serif;
-  width: 200px;
+  width: 151px;
 }
 .impactstory-embed span.loading {
   font-size: 12px;
@@ -18,6 +18,17 @@ span.impactstory-embed ul li .label {
 }
 .impactstory-embed img {
   height: 25px;
+  margin-left: 3px;
+}
+.impactstory-embed.small {
+  width: 120px;
+}
+.impactstory-embed.small img {
+  height: 20px;
+}
+.impactstory-embed.small ul li .label {
+  font-size: 10px;
+  padding: 1px 3px;
 }
 .impactstory-embed ul {
   margin: 0;
@@ -46,10 +57,6 @@ span.impactstory-embed ul li .label {
   -moz-border-radius: 3px;
   border-radius: 3px;
   text-shadow: none;
-}
-.impactstory-embed ul li .label.small {
-  font-size: 10px;
-  padding: 1px 3px;
 }
 .impactstory-embed ul li .label.scholars {
   border: 1px solid #377EB8;

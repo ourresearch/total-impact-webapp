@@ -14,9 +14,22 @@ span.impactstory-embed{
 .impactstory-embed {
    font-family: Helvetica, arial, sans-serif;
    span.loading{font-size:12px; font-style: italic;}
-   width:200px;
+   width:151px;
    img {
       height: 25px;
+      margin-left:3px;
+   }
+   &.small {
+      width:120px;
+      img{ height:20px; }
+      ul {
+         li {
+            .label {
+               font-size:10px;
+               padding:1px 3px;
+            }
+         }
+      }
    }
    ul {
       margin:0;
@@ -42,11 +55,6 @@ span.impactstory-embed{
             -moz-border-radius: 3px;
             border-radius: 3px;
             text-shadow:none;
-
-            &.small {
-               font-size:10px;
-               padding:1px 3px;
-            }
 
             &.scholars {
                border: 1px solid #377EB8;

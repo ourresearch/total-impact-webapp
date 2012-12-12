@@ -610,6 +610,7 @@ td.example div.impactstory-embed div {
   color: red;
   font-weight: bold;
   margin: 5px 0;
+  clear: both;
 }
 th {
   border: none;
@@ -623,9 +624,6 @@ h3.apicall:first-of-type {
 }
 div.example {
   clear: both;
-}
-div.example div.impactstory-embed {
-  width: 225px;
 }
 div#api {
   margin-top: 120px;
@@ -706,7 +704,7 @@ div#docs ul li {
 }
 div#docs div.impactstory-embed {
   float: left;
-  margin: 15px;
+  margin: 22px 15px 17px 5px;
 }
 div#docs ul#required-attributes li {
   margin-bottom: 15px;
