@@ -136,7 +136,6 @@
 
         requestStylesheet("http://" + webappRoot + "/static/css/embed.css");
 
-        // change to a config param so is different on production than elsewhere
         mixpanel.init("{{ mixpanel_token }}");
 
         jQuery(document).ready(function ($) {
