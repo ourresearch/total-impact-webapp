@@ -112,13 +112,6 @@
                             namespace + "/" + id +  "' target='_blank' />")
     }
 
-    function showBadges(div$) {
-        if (div$.attr("data-show-badges") && div$.attr("data-show-badges").toLowerCase() == "false"){
-            div$.find("ul.ti-badges").hide();
-        }
-        return div$
-    }
-
 
 
 
@@ -179,15 +172,10 @@
                     var itemView = new ItemView(jQuery)
                     var badges$ = itemView.renderBadges(dict.awards)
                     wrapInLink(badges$.find("span.label"), id[0], id[1])
-
-
-                    var badgeSize = thisDiv$.attr("data-badge-size") == "small" ? "small" : ""
-                    thisDiv$.empty().addClass(badgeSize)
+                    
 
                     thisDiv$ = addLogo(thisDiv$, id[0], id[1])
                     thisDiv$.append(badges$)
-
-                    thisDiv$ = showBadges(thisDiv$)
 
                 }
 
@@ -204,18 +192,31 @@
                      "Item Namespace": itemNamespace 
                     });
 
-                item.get(
-                    apiRoot,
-                    apiKey,
-                    function(dict, id) { // run insertBadges, then a user-defined callback
-                        insertBadges(dict, id)
-                        getWindowCallback(thisDiv$, dict)
-                    },
-                    function(data){
-                        thisDiv$.append("<span class='loading'>Gathering metrics now...</span>")
-                    },
-                    false
-                )
+                var badgeSize = thisDiv$.attr("data-badge-size") == "small" ? "small" : ""
+                thisDiv$.addClass(badgeSize)
+
+                // if the user doesn't want badges, no need to make the get() call.
+                if (thisDiv$.attr("data-show-badges") && thisDiv$.attr("data-show-badges").toLowerCase() == "false"){
+                    addLogo(thisDiv$, itemNamespace, itemId)
+                    return true
+                }
+                else {
+                    item.get(
+                        apiRoot,
+                        apiKey,
+                        function(dict, id) { // run insertBadges, then a user-defined callback
+                            insertBadges(dict, id)
+                            getWindowCallback(thisDiv$, dict)
+                        },
+                        function(data){
+                            thisDiv$.append("<span class='loading'>Gathering metrics now...</span>")
+                        },
+                        false
+                    )
+                    return true
+                }
+
+
             })
 
 
