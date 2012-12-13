@@ -67,16 +67,6 @@
 
     /******** ImpactStory functions ******/
 
-    function loadBadgesTemplate(webAppRoot, callback) {
-        jQuery.ajax({
-            url:"http://" + webAppRoot + "/embed/templates/badges.html",
-            type:"GET",
-            success: function(data){
-                ich.addTemplate("badges", data)
-                // do callback stuff...not messing with it for now.
-            }
-        })
-    }
 
     function getWindowCallback(div$, dict){
         callbackName = div$.attr("data-on-finish")
@@ -161,7 +151,7 @@
 
         jQuery(document).ready(function ($) {
 
-            loadBadgesTemplate(webappRoot)
+            ich.addTemplate("badges", '{{ badges_template }}')
             $(".impactstory-embed").each(function(index){
                 var thisDiv$ = $(this)
 
@@ -172,7 +162,7 @@
                     var itemView = new ItemView(jQuery)
                     var badges$ = itemView.renderBadges(dict.awards)
                     wrapInLink(badges$.find("span.label"), id[0], id[1])
-                    
+
 
                     thisDiv$ = addLogo(thisDiv$, id[0], id[1])
                     thisDiv$.append(badges$)

@@ -402,7 +402,6 @@ $(document).ready(function(){
 
     // report pages
     if (typeof reportIdNamespace == "undefined"){
-        console.log("this isn't a report page")
         // nothing
     }
     else if (reportIdNamespace == "impactstory_collection_id") {
