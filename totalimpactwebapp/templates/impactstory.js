@@ -91,14 +91,14 @@
     }
     function addLogo(div$, namespace, id){
 
-        // I can't figure out how to get the wrapInLink function to work for a
+        // I can't figure out how to get the wrapInLink() function to work for a
         // single item like this, so here's this repulsive hack in the meantime:
         var logoLink$ = jQuery('<a href="http://' + webappRoot + '/item/'
                                           + namespace + "/" + id + '" target="_blank">'
                                           + '<img src="http://' + webappRoot
                                           + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" />'
                                           + "</a>");
-        if (div$.attr("data-show-logo") == "false") {
+        if (div$.attr("data-show-logo") && div$.attr("data-show-logo").toLowerCase() == "false") {
             // do nothing.
         }
         else {
@@ -110,6 +110,13 @@
     function wrapInLink(el$, namespace, id){
         return el$.wrapAll("<a href='http://" + webappRoot + "/item/"+
                             namespace + "/" + id +  "' target='_blank' />")
+    }
+
+    function showBadges(div$) {
+        if (div$.attr("data-show-badges") && div$.attr("data-show-badges").toLowerCase() == "false"){
+            div$.find("ul.ti-badges").hide();
+        }
+        return div$
     }
 
 
@@ -179,6 +186,8 @@
 
                     thisDiv$ = addLogo(thisDiv$, id[0], id[1])
                     thisDiv$.append(badges$)
+
+                    thisDiv$ = showBadges(thisDiv$)
 
                 }
 
