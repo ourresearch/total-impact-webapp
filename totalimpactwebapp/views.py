@@ -29,6 +29,7 @@ def home():
 
 
 @app.route("/embed/impactstory.js")
+@app.route("/embed/v1/impactstory.js")
 def impactstory_dot_js():
 
     badges_template = render_template("js-template-badges.html").replace("\n", "")
