@@ -8,8 +8,7 @@ from totalimpactwebapp.models import Github
 from totalimpactwebapp import pretty_date
 
 logger = logging.getLogger("tiwebapp.views")
-ich_def = open(os.path.dirname(__file__) + "/static/js/icanhaz.min.js", "r").read()
-ti_item_def = open(os.path.dirname(__file__) + "/static/js/ti-item.js", "r").read()
+
 
 @app.before_request
 def log_ip_address():
@@ -33,6 +32,8 @@ def home():
 def impactstory_dot_js():
 
     badges_template = render_template("js-template-badges.html").replace("\n", "")
+    ich_def = open(os.path.dirname(__file__) + "/static/js/icanhaz.min.js", "r").read()
+    ti_item_def = open(os.path.dirname(__file__) + "/static/js/ti-item.js", "r").read()
 
     rendered = render_template(
         "impactstory.js",

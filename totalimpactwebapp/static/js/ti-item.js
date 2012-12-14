@@ -602,12 +602,13 @@ function ItemView($) {
         return zoom$
     }
 
-    this.renderBadges = function(awards, extraClasses) {
+    this.renderBadges = function(awards) {
+
         var badges$ = $(ich.badges({
                big: awards.big,
                any:awards.any
             }), true)
-        badges$.find(".ti-badge").addClass(extraClasses).tooltip()
+        badges$.find(".ti-badge").tooltip()
         return badges$
     }
 

@@ -98,13 +98,14 @@
 
 
 
-        function applyUserParams(div$) {
+        function makeParams(div$) {
             var el = div$[0]
             var params = {
-                "badge-size":"large",
+                "badge-size": "large",
                 "on-finish": false,
                 "show-logo": true,
-                "show-badges":true
+                "show-badges": true,
+                "verbose-badges": true
             }
 
             var convertAttrs = function(str, lowercase) {
@@ -179,22 +180,22 @@
             // this runs for each instance of the widget on the page
             $(".impactstory-embed").each(function(index){
                 var thisDiv$ = $(this)
-                var params = applyUserParams(thisDiv$)
+                var params = makeParams(thisDiv$)
                 if (!(params["api-key"] && params["id"] && params["id-type"])) {
                     console.error("you're missing required parameters.")
                     return false
                 }
 
 
-                /*
+                /***************************************************************
                  * Define callbacks to use. It's really ugly define them here,
                  * but this way they get called with the correct div all set inside 'em.
                  * No sure how else to do that right now.
-                 */
+                 **************************************************************/
 
                 var insertBadges = function (dict, id) {
                     var itemView = new ItemView(jQuery)
-                    var badges$ = itemView.renderBadges(dict.awards)
+                    var badges$ = itemView.renderBadges(dict.awards, params["verbose-badges"])
                     wrapInLink(badges$.find("span.label"), params["id"], params["id-type"])
 
 
@@ -208,6 +209,9 @@
                         window[params["on-finish"]].call(window, dict, div$)
                     }
                 }
+
+
+
 
                 /**************************************************************
                  *
