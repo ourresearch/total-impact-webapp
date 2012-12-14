@@ -30,6 +30,15 @@ def home():
     api_root=os.environ["API_ROOT"]
     )
 
+@app.route('/embed/templates/badges.html')
+def badges_templates():
+    resp = make_response(render_template("js-template-badges.html"))
+
+    # let js clients get this from the browser, regardless of their domain origin.
+    resp.headers['Access-Control-Allow-Origin'] = "*"
+    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
+    return resp
 
 @app.route("/embed/impactstory.js")
 @app.route("/embed/v1/impactstory.js")
