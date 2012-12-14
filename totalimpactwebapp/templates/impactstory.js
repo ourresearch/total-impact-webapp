@@ -270,7 +270,8 @@
             }) // done with code that runs for each widget
 
             // report vital signs
-            reportVitals(allParams)
+            // DISABLE FOR NOW, error on pensoft site
+            // reportVitals(allParams)
 
         });
     }
