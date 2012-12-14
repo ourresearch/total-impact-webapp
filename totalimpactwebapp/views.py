@@ -10,13 +10,25 @@ from totalimpactwebapp import pretty_date
 
 logger = logging.getLogger("tiwebapp.views")
 mymixpanel = mixpanel.Mixpanel(token=os.getenv("MIXPANEL_TOKEN"))
+global send_cors
 
+@app.before_request
+def set_cors_false():
+    send_cors = False
 
 @app.before_request
 def log_ip_address():
     if request.endpoint != "static":
         ip_address = request.remote_addr
         logger.info("%30s IP address calling %s %s" % (ip_address, request.method, request.url))
+
+@app.after_request
+def add_crossdomain_header(resp):
+    if (send_cors):
+        resp.headers['Access-Control-Allow-Origin'] = "*"
+        resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+        resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
+        return resp
 
 
 # static pages
@@ -180,34 +192,6 @@ def item_report(ns, id):
 
 
 
-@app.after_request
-def add_crossdomain_header(resp):
-    resp.headers['Access-Control-Allow-Origin'] = "*"
-    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
-    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
-    return resp
-
-
-@app.route('/hello')
-def hello():
-    msg = {
-        "hello": "world",
-        "message": "Congratulations! You have found the ImpactStory API.",
-        "more-info": "http://impactstory.org/api-docs",
-        "contact": "team@impactstory.org",
-        "version": "foo"
-    }
-    resp = make_response(json.dumps(msg, sort_keys=True, indent=4), 200)
-    resp.mimetype = "application/json"
-
-    return resp
-
-
-
-
-
-
-
 @app.route('/vitals', methods=["POST"])
 def vitals():
     """
@@ -223,7 +207,7 @@ def vitals():
     params listed at the head of impactstory.js's main() function, and also the
     api-docs page.
     """
-    logger.debug("in /vitals.")
+    send_cors = True
 #    vitals = request.json
 #
 #    embeds_per_page = len(vitals["allParams"])
@@ -239,10 +223,6 @@ def vitals():
 #        "Embeds per page": embeds_per_page}, ip=False)
 
     resp = make_response("duly noted. carry on.", 200)
-    # let js clients get this from the browser, regardless of their domain origin.
-#    resp.headers['Access-Control-Allow-Origin'] = "*"
-#    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
-#    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
     return resp
 
 
