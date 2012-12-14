@@ -218,7 +218,7 @@
                 var insertBadges = function (dict, id) {
                     var itemView = new ItemView(jQuery)
                     var badges$ = itemView.renderBadges(dict.awards)
-                    wrapInLink(badges$.find("span.label"), params["id"], params["id-type"])
+                    wrapInLink(badges$.find("span.label"), params["id-type"], params["id"])
 
 
                     thisDiv$ = addLogo(thisDiv$, params)
