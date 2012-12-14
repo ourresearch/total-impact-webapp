@@ -177,7 +177,6 @@
                 allParams: allParams,
                 url: location.href
             }
-            console.log(vitals)
             $.ajax({
                 url: "http://" + webappRoot + "/vitals",
                 type: "POST",
