@@ -180,6 +180,12 @@ def item_report(ns, id):
 
 
 
+@app.after_request
+def add_crossdomain_header(resp):
+    resp.headers['Access-Control-Allow-Origin'] = "*"
+    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
+    return resp
 
 
 @app.route('/hello')
@@ -194,9 +200,6 @@ def hello():
     resp = make_response(json.dumps(msg, sort_keys=True, indent=4), 200)
     resp.mimetype = "application/json"
 
-    resp.headers['Access-Control-Allow-Origin'] = "*"
-    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
-    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
     return resp
 
 
