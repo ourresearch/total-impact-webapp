@@ -2,12 +2,14 @@ import requests, iso8601, os, json, logging
 
 from flask import Flask, jsonify, json, request, redirect, abort, make_response
 from flask import render_template, flash
+from libsaas.services import mixpanel
 
 from totalimpactwebapp import app, util
 from totalimpactwebapp.models import Github
 from totalimpactwebapp import pretty_date
 
 logger = logging.getLogger("tiwebapp.views")
+mymixpanel = mixpanel.Mixpanel(token=os.getenv("MIXPANEL_TOKEN"))
 
 
 @app.before_request
@@ -188,10 +190,20 @@ def vitals():
     api-docs page.
     """
     vitals = request.json
-    resp = make_response("duly noted. carry on.", 200)
 
+    embeds_per_page = len(vitals["allParams"])
     # heather does awesome things with the vitals and mixpanel here.
+    logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
+        embeds_per_page=embeds_per_page))
+    logger.debug("Vitals = {vitals}".format(
+        vitals=vitals))
 
+    mymixpanel.track("Impression:embed", properties={
+        "Host page": vitals["url"], 
+        "API KEY": vitals["allParams"][0]["api-key"],
+        "Embeds per page": embeds_per_page}, ip=False)
+
+    resp = make_response("duly noted. carry on.", 200)
     # let js clients get this from the browser, regardless of their domain origin.
     resp.headers['Access-Control-Allow-Origin'] = "*"
     resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
