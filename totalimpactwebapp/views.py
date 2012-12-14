@@ -189,6 +189,7 @@ def vitals():
     params listed at the head of impactstory.js's main() function, and also the
     api-docs page.
     """
+    logger.debug("in /vitals.")
     vitals = request.json
 
     logger.debug("here are the vitals: " + json.dumps(vitals))
