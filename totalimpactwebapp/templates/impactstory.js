@@ -1,7 +1,3 @@
-// load mixpanel for metrics
-var ImpactStory = (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==
-    typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.increment".split(" ");for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
-
 
 // icanhaz.js is inserted by server when this file is requested.
 {{ ich }}
@@ -10,9 +6,6 @@ var ImpactStory = (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.c
 {{ ti_item }}
 
 (function () {
-    var webappRoot = "{{ webapp_root }}";
-    var apiRoot = "{{ api_root }}"
-
 
     /******** Load jQuery if not present *********/
     var jQuery;
@@ -20,8 +13,7 @@ var ImpactStory = (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.c
     if (window.jQuery === undefined || window.jQuery.fn.jquery !== '1.4.2') {
         var script_tag = document.createElement('script');
         script_tag.setAttribute("type", "text/javascript");
-        script_tag.setAttribute("src",
-                                "https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js");
+        script_tag.setAttribute("src", "https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js");
         if (script_tag.readyState) {
             script_tag.onreadystatechange = function () { // For old versions of IE
                 if (this.readyState == 'complete' || this.readyState == 'loaded') {
@@ -50,75 +42,22 @@ var ImpactStory = (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.c
     }
 
 
-    /******** ImpactStory functions ******/
-
-     // Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
-    function requestStylesheet(stylesheet_url) {
-        var stylesheet = document.createElement("link");
-        stylesheet.rel = "stylesheet";
-        stylesheet.type = "text/css";
-        stylesheet.href = stylesheet_url;
-        stylesheet.media = "all";
-        document.lastChild.firstChild.appendChild(stylesheet);
-    }
 
 
-    function getWindowCallback(div$, dict){
-        callbackName = div$.attr("data-on-finish")
-        if (callbackName) {
-            window[callbackName].call(window, dict, div$)
-        }
-        else {
-            // just a stub, doesn't do anything.
-            return true
-        }
-
-    }
-
-    function createParamsObject(div$) {
-        var el = div$[0]
-        var ret = {}
-        for (i=0;i<el.attributes.length;i++){
-            var val = jQuery.trim(el.attributes[i].nodeValue.toLowerCase())
-            var key = jQuery.trim(el.attributes[i].nodeName.toLowerCase())
-            var key = key.replace("data-", "")
-            ret[key] = val
-        }
-
-        return ret
-    }
-
-
-    function addLogo(div$, params){
-
-        if (params["show-logo"] && params["show-logo"] =="false") {
-            return div$
-        }
-
-        // I can't figure out how to get the wrapInLink() function to work for a
-        // single item like this, so here's this repulsive hack in the meantime:
-        var logoLink$ = jQuery('<a href="http://' + webappRoot + '/item/'
-                                          + params["id-type"] + "/" + params["id"] + '" target="_blank">'
-                                          + '<img src="http://' + webappRoot
-                                          + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" />'
-                                          + "</a>");
-        div$.prepend(logoLink$)
-        return div$
-    }
-
-    function wrapInLink(el$, namespace, id){
-        return el$.wrapAll("<a href='http://" + webappRoot + "/item/"+
-                            namespace + "/" + id +  "' target='_blank' />")
-    }
-
-
-
-
-    /******** Our main function ********/
+    /***************************************************************************
+     *
+     * Our main function. This is where all the ImpactStory stuff lives.
+     *
+     * ************************************************************************/
 
     function main() {
         var $ = jQuery
         $.support.cors = true; // makes IE8 and IE9 support CORS somehow...
+        $.ajaxSetup({ cache:false });
+        if (!window.console) { window.console = {log: function() {}}; }
+
+        var webappRoot = "{{ webapp_root }}";
+        var apiRoot = "{{ api_root }}"
 
 
 
@@ -147,29 +86,112 @@ var ImpactStory = (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.c
 
 
 
-
-        jQuery.ajaxSetup({ cache:false });
-
-        if (!window.console) {
-            window.console = {log: function() {}};
+        // Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
+        function requestStylesheet(stylesheet_url) {
+            var stylesheet = document.createElement("link");
+            stylesheet.rel = "stylesheet";
+            stylesheet.type = "text/css";
+            stylesheet.href = stylesheet_url;
+            stylesheet.media = "all";
+            document.lastChild.firstChild.appendChild(stylesheet);
         }
 
+
+
+        function applyUserParams(div$) {
+            var el = div$[0]
+            var params = {
+                "badge-size":"large",
+                "on-finish": false,
+                "show-logo": true,
+                "show-badges":true
+            }
+
+            var convertAttrs = function(str, lowercase) {
+                var out
+                str = jQuery.trim(str)
+                if (lowercase == false) {
+                    out = str
+                }
+                else if (str.toLowerCase() === "false") {
+                    out = false
+                }
+                else if (str.toLowerCase() === "true") {
+                    out = true
+                }
+                else {
+                    out = str.toLowerCase()
+                }
+                return out
+            }
+
+            for (var i=0;i<el.attributes.length;i++){
+                var key = convertAttrs(el.attributes[i].nodeName, true)
+                var key = key.replace("data-", "")
+                var val
+                if (key == "on-finish") {
+                    val = convertAttrs(el.attributes[i].nodeValue, false)
+                }
+                else {
+                    val = convertAttrs(el.attributes[i].nodeValue, true)
+                }
+
+                params[key] = val
+            }
+
+            return params
+        }
+
+
+        function addLogo(div$, params){
+
+            if (!params["show-logo"]) {
+                return div$
+            }
+
+            // I can't figure out how to get the wrapInLink() function to work for a
+            // single item like this, so here's this repulsive hack in the meantime:
+            var logoLink$ = jQuery('<a href="http://' + webappRoot + '/item/'
+                                       + params["id-type"] + "/" + params["id"] + '" target="_blank">'
+                                       + '<img src="http://' + webappRoot
+                                       + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" />'
+                                       + "</a>");
+            div$.prepend(logoLink$)
+            return div$
+        }
+
+        function wrapInLink(el$, namespace, id){
+            return el$.wrapAll("<a href='http://" + webappRoot + "/item/"+
+                                   namespace + "/" + id +  "' target='_blank' />")
+        }
+
+
+
+
+
         requestStylesheet("http://" + webappRoot + "/static/css/embed.css");
-
-        mixpanel.init("{{ mixpanel_token }}");
-
         jQuery(document).ready(function ($) {
 
             // set the template used to render the badges
             ich.addTemplate("badges", '{{ badges_template }}')
 
 
+            // this runs for each instance of the widget on the page
             $(".impactstory-embed").each(function(index){
                 var thisDiv$ = $(this)
-                var params = createParamsObject(thisDiv$)
+                var params = applyUserParams(thisDiv$)
+                if (!(params["api-key"] && params["id"] && params["id-type"])) {
+                    console.error("you're missing required parameters.")
+                    return false
+                }
 
-                // define the success callback here to use the context of the
-                // *correct* impactstory-embed div; there may be several on the page
+
+                /*
+                 * Define callbacks to use. It's really ugly define them here,
+                 * but this way they get called with the correct div all set inside 'em.
+                 * No sure how else to do that right now.
+                 */
+
                 var insertBadges = function (dict, id) {
                     var itemView = new ItemView(jQuery)
                     var badges$ = itemView.renderBadges(dict.awards)
@@ -181,34 +203,34 @@ var ImpactStory = (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.c
 
                 }
 
+                var getWindowCallback = function(div$, dict){
+                    if (params["on-finish"]) {
+                        window[params["on-finish"]].call(window, dict, div$)
+                    }
+                }
 
-                var itemNamespace = thisDiv$.attr("data-id-type")
-                var itemId = thisDiv$.attr("data-id")
-                var item = new Item([itemNamespace, itemId], new ItemView($), $)
-                var apiKey = thisDiv$.attr("data-api-key")
-                if (apiKey === undefined) return false
+                /**************************************************************
+                 *
+                 * Start procedural code, done with definitions.
+                 *
+                 **************************************************************/
 
-                // track in mixpanel
-                mixpanel.track("Impression:embed", 
-                    {"API Key": apiKey, 
-                     "Item Namespace": itemNamespace 
-                    });
-
-                var badgeSize = thisDiv$.attr("data-badge-size") == "small" ? "small" : ""
-                thisDiv$.addClass(badgeSize)
+                // apply those user-defined params that apply to the whole div:
+                thisDiv$.addClass(params["badge-size"])
 
                 // if the user doesn't want badges, no need to make the get() call.
-                if (thisDiv$.attr("data-show-badges") && thisDiv$.attr("data-show-badges").toLowerCase() == "false"){
-                    addLogo(thisDiv$, itemNamespace, itemId)
+                if (!params["show-badges"]){
+                    addLogo(thisDiv$, params)
                     return true
                 }
                 else {
+                    var item = new Item([params["id-type"], params["id"]], new ItemView($), $)
                     item.get(
                         apiRoot,
-                        apiKey,
+                        params["api-key"],
                         function(dict, id) { // run insertBadges, then a user-defined callback
                             insertBadges(dict, id)
-                            getWindowCallback(thisDiv$, dict)
+                            getWindowCallback(thisDiv$, dict) // we generate the callback here
                         },
                         function(data){
                             thisDiv$.append("<span class='loading'>Gathering metrics now...</span>")
@@ -217,13 +239,7 @@ var ImpactStory = (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.c
                     )
                     return true
                 }
-
-
             })
-
-
-
-
         });
     }
 })()
