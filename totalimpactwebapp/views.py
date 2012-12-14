@@ -23,10 +23,9 @@ def log_ip_address():
 
 @app.after_request
 def add_crossdomain_header(resp):
-    if g.send_cors:
-        resp.headers['Access-Control-Allow-Origin'] = "*"
-        resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
-        resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
+    resp.headers['Access-Control-Allow-Origin'] = "*"
+    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
 
     return resp
 
