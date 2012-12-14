@@ -25,6 +25,12 @@ span.impactstory-embed ul li .label {
   height: 25px;
   margin-left: 3px;
 }
+.impactstory-embed span.audience {
+  display: none;
+}
+.impactstory-embed.verbose span.audience {
+  display: inline;
+}
 .impactstory-embed.small {
   width: 120px;
 }

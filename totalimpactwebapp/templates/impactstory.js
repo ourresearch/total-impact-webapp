@@ -105,7 +105,7 @@
                 "on-finish": false,
                 "show-logo": true,
                 "show-badges": true,
-                "verbose-badges": true
+                "verbose-badges": false
             }
 
             var convertAttrs = function(str, lowercase) {
@@ -195,11 +195,12 @@
 
                 var insertBadges = function (dict, id) {
                     var itemView = new ItemView(jQuery)
-                    var badges$ = itemView.renderBadges(dict.awards, params["verbose-badges"])
+                    var badges$ = itemView.renderBadges(dict.awards)
                     wrapInLink(badges$.find("span.label"), params["id"], params["id-type"])
 
 
                     thisDiv$ = addLogo(thisDiv$, params)
+                    if (params["verbose-badges"]) thisDiv$.addClass("verbose")
                     thisDiv$.append(badges$)
 
                 }
