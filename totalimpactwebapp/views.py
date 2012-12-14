@@ -203,20 +203,19 @@ def vitals():
     params listed at the head of impactstory.js's main() function, and also the
     api-docs page.
     """
-    g.send_cors = True
-#    vitals = request.json
-#
-#    embeds_per_page = len(vitals["allParams"])
-#    # heather does awesome things with the vitals and mixpanel here.
-#    logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
-#        embeds_per_page=embeds_per_page))
-#    logger.debug("Vitals = {vitals}".format(
-#        vitals=vitals))
-#
-#    mymixpanel.track("Impression:embed", properties={
-#        "Host page": vitals["url"],
-#        "API Key": vitals["allParams"][0]["api-key"],
-#        "Embeds per page": embeds_per_page}, ip=False)
+    vitals = request.json
+
+    embeds_per_page = len(vitals["allParams"])
+    # heather does awesome things with the vitals and mixpanel here.
+    logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
+        embeds_per_page=embeds_per_page))
+    logger.debug("Vitals = {vitals}".format(
+        vitals=vitals))
+
+    mymixpanel.track("Impression:embed", properties={
+        "Host page": vitals["url"],
+        "API Key": vitals["allParams"][0]["api-key"],
+        "Embeds per page": embeds_per_page}, ip=False)
 
     resp = make_response("duly noted. carry on.", 200)
     return resp
