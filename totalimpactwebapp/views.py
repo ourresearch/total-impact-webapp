@@ -176,13 +176,10 @@ def item_report(ns, id):
         abort(404, "This item doesn't seem to exist yet. "+url)
 
 @app.route("/vitals", methods=['POST'])
-def vitals():
-    logger.debug("in /vitals.")
-    resp = make_response("i am in the new vitals", 200)
-    return resp
 
-@app.route('/myvitals', methods=["POST"])
-def myvitals():
+
+@app.route('/vitals', methods=["POST"])
+def vitals():
     """
     Logs reporting stats from the embed code to mixpanel
 
@@ -197,25 +194,25 @@ def myvitals():
     api-docs page.
     """
     logger.debug("in /myvitals.")
-#    vitals = request.json
+    vitals = request.json
 
-#    embeds_per_page = len(vitals["allParams"])
-#    # heather does awesome things with the vitals and mixpanel here.
-#    logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
-#        embeds_per_page=embeds_per_page))
-#    logger.debug("Vitals = {vitals}".format(
-#        vitals=vitals))
-#
-#    mymixpanel.track("Impression:embed", properties={
-#        "Host page": vitals["url"],
-#        "API Key": vitals["allParams"][0]["api-key"],
-#        "Embeds per page": embeds_per_page}, ip=False)
+    embeds_per_page = len(vitals["allParams"])
+    # heather does awesome things with the vitals and mixpanel here.
+    logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
+        embeds_per_page=embeds_per_page))
+    logger.debug("Vitals = {vitals}".format(
+        vitals=vitals))
+
+    mymixpanel.track("Impression:embed", properties={
+        "Host page": vitals["url"],
+        "API Key": vitals["allParams"][0]["api-key"],
+        "Embeds per page": embeds_per_page}, ip=False)
 
     resp = make_response("duly noted. carry on.", 200)
     # let js clients get this from the browser, regardless of their domain origin.
-#    resp.headers['Access-Control-Allow-Origin'] = "*"
-#    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
-#    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
+    resp.headers['Access-Control-Allow-Origin'] = "*"
+    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
     return resp
 
 
