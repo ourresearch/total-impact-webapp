@@ -191,7 +191,7 @@ def vitals():
     """
     vitals = request.json
 
-    logger.debug(json.dumps("here are the vitals: " + vitals))
+    logger.debug("here are the vitals: " + json.dumps(vitals))
 #    embeds_per_page = len(vitals["allParams"])
 #    # heather does awesome things with the vitals and mixpanel here.
 #    logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
