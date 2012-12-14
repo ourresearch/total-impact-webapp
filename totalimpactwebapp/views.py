@@ -1,7 +1,7 @@
 import requests, iso8601, os, json, logging
 
 from flask import Flask, jsonify, json, request, redirect, abort, make_response
-from flask import render_template, flash
+from flask import render_template, g
 from libsaas.services import mixpanel
 
 from totalimpactwebapp import app, util
@@ -10,11 +10,10 @@ from totalimpactwebapp import pretty_date
 
 logger = logging.getLogger("tiwebapp.views")
 mymixpanel = mixpanel.Mixpanel(token=os.getenv("MIXPANEL_TOKEN"))
-global send_cors
 
 @app.before_request
 def set_cors_false():
-    send_cors = False
+    g.send_cors = False
 
 @app.before_request
 def log_ip_address():
@@ -24,11 +23,12 @@ def log_ip_address():
 
 @app.after_request
 def add_crossdomain_header(resp):
-    if (send_cors):
+    if g.send_cors:
         resp.headers['Access-Control-Allow-Origin'] = "*"
         resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
         resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
-        return resp
+
+    return resp
 
 
 # static pages
@@ -207,7 +207,7 @@ def vitals():
     params listed at the head of impactstory.js's main() function, and also the
     api-docs page.
     """
-    send_cors = True
+    g.send_cors = True
 #    vitals = request.json
 #
 #    embeds_per_page = len(vitals["allParams"])
