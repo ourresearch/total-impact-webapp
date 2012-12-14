@@ -1,5 +1,5 @@
 // load mixpanel for metrics
-(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==
+var ImpactStory = (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==
     typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.increment".split(" ");for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
 
 
@@ -11,10 +11,7 @@
 
 (function () {
     var webappRoot = "{{ webapp_root }}";
-
     var apiRoot = "{{ api_root }}"
-
-//    var webappRoot = "impactstory.org" // for testing cross-domain stuff
 
 
     /******** Load jQuery if not present *********/
@@ -53,9 +50,9 @@
     }
 
 
-    /******** utility functions ******/
+    /******** ImpactStory functions ******/
 
-        // Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
+     // Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
     function requestStylesheet(stylesheet_url) {
         var stylesheet = document.createElement("link");
         stylesheet.rel = "stylesheet";
@@ -64,8 +61,6 @@
         stylesheet.media = "all";
         document.lastChild.firstChild.appendChild(stylesheet);
     }
-
-    /******** ImpactStory functions ******/
 
 
     function getWindowCallback(div$, dict){
@@ -79,21 +74,35 @@
         }
 
     }
-    function addLogo(div$, namespace, id){
+
+    function createParamsObject(div$) {
+        var el = div$[0]
+        var ret = {}
+        for (i=0;i<el.attributes.length;i++){
+            var val = jQuery.trim(el.attributes[i].nodeValue.toLowerCase())
+            var key = jQuery.trim(el.attributes[i].nodeName.toLowerCase())
+            var key = key.replace("data-", "")
+            ret[key] = val
+        }
+
+        return ret
+    }
+
+
+    function addLogo(div$, params){
+
+        if (params["show-logo"] && params["show-logo"] =="false") {
+            return div$
+        }
 
         // I can't figure out how to get the wrapInLink() function to work for a
         // single item like this, so here's this repulsive hack in the meantime:
         var logoLink$ = jQuery('<a href="http://' + webappRoot + '/item/'
-                                          + namespace + "/" + id + '" target="_blank">'
+                                          + params["id-type"] + "/" + params["id"] + '" target="_blank">'
                                           + '<img src="http://' + webappRoot
                                           + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" />'
                                           + "</a>");
-        if (div$.attr("data-show-logo") && div$.attr("data-show-logo").toLowerCase() == "false") {
-            // do nothing.
-        }
-        else {
-            div$.prepend(logoLink$)
-        }
+        div$.prepend(logoLink$)
         return div$
     }
 
@@ -151,20 +160,23 @@
 
         jQuery(document).ready(function ($) {
 
+            // set the template used to render the badges
             ich.addTemplate("badges", '{{ badges_template }}')
+
+
             $(".impactstory-embed").each(function(index){
                 var thisDiv$ = $(this)
+                var params = createParamsObject(thisDiv$)
 
                 // define the success callback here to use the context of the
-                // *correct* impactstory-embed div; there may be several on the
-                // page.
+                // *correct* impactstory-embed div; there may be several on the page
                 var insertBadges = function (dict, id) {
                     var itemView = new ItemView(jQuery)
                     var badges$ = itemView.renderBadges(dict.awards)
-                    wrapInLink(badges$.find("span.label"), id[0], id[1])
+                    wrapInLink(badges$.find("span.label"), params["id"], params["id-type"])
 
 
-                    thisDiv$ = addLogo(thisDiv$, id[0], id[1])
+                    thisDiv$ = addLogo(thisDiv$, params)
                     thisDiv$.append(badges$)
 
                 }
@@ -174,7 +186,7 @@
                 var itemId = thisDiv$.attr("data-id")
                 var item = new Item([itemNamespace, itemId], new ItemView($), $)
                 var apiKey = thisDiv$.attr("data-api-key")
-                if (apiKey === undefined) return false // remember to set this
+                if (apiKey === undefined) return false
 
                 // track in mixpanel
                 mixpanel.track("Impression:embed", 
