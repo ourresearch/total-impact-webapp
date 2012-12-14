@@ -271,7 +271,7 @@
 
             // report vital signs
             // DISABLE FOR NOW, error on pensoft site
-            // reportVitals(allParams)
+            reportVitals(allParams)
 
         });
     }
