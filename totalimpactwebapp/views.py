@@ -192,7 +192,7 @@ def vitals():
     api-docs page.
     """
     logger.debug("in /vitals.")
-    vitals = request.json
+#    vitals = request.json
 
     logger.debug("here are the vitals: " + json.dumps(vitals))
 #    embeds_per_page = len(vitals["allParams"])
@@ -209,9 +209,9 @@ def vitals():
 
     resp = make_response("duly noted. carry on.", 200)
     # let js clients get this from the browser, regardless of their domain origin.
-    resp.headers['Access-Control-Allow-Origin'] = "*"
-    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
-    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
+#    resp.headers['Access-Control-Allow-Origin'] = "*"
+#    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+#    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
     return resp
 
 
