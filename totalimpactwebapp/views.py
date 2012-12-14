@@ -121,7 +121,7 @@ def apidocs():
         )
 
 @app.route('/pricing')
-def apidocs():
+def pricing():
     return render_template(
         'pricing.html',
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],
