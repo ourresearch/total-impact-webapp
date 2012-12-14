@@ -172,6 +172,33 @@ def item_report(ns, id):
     else:
         abort(404, "This item doesn't seem to exist yet. "+url)
 
+@app.route('/vitals', methods=["POST"])
+def vitals():
+    """
+    Logs reporting stats from the embed code to mixpanel
+
+    Gets a "vitals" object that has a url and a list of "params" objects.
+    Each widget on a page sends its own params object; in practice, these will
+    almost certainly be identical since users aren't likely to set different
+    options for widgets on the same page. It's a good way to count widgets on
+    that page, though.
+
+    For documentation on the keys in the the params object, see the default
+    params listed at the head of impactstory.js's main() function, and also the
+    api-docs page.
+    """
+    vitals = request.json
+    resp = make_response("duly noted. carry on.", 200)
+
+    # heather does awesome things with the vitals and mixpanel here.
+
+    # let js clients get this from the browser, regardless of their domain origin.
+    resp.headers['Access-Control-Allow-Origin'] = "*"
+    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
+    return resp
+
+
 
 @app.route('/wospicker', methods=["GET"])
 def wospicker():
