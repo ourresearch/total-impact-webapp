@@ -175,8 +175,6 @@ def item_report(ns, id):
     else:
         abort(404, "This item doesn't seem to exist yet. "+url)
 
-@app.route("/vitals", methods=['POST'])
-
 
 @app.route('/vitals', methods=["POST"])
 def vitals():
@@ -193,26 +191,26 @@ def vitals():
     params listed at the head of impactstory.js's main() function, and also the
     api-docs page.
     """
-    logger.debug("in /myvitals.")
-    vitals = request.json
-
-    embeds_per_page = len(vitals["allParams"])
-    # heather does awesome things with the vitals and mixpanel here.
-    logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
-        embeds_per_page=embeds_per_page))
-    logger.debug("Vitals = {vitals}".format(
-        vitals=vitals))
-
-    mymixpanel.track("Impression:embed", properties={
-        "Host page": vitals["url"],
-        "API Key": vitals["allParams"][0]["api-key"],
-        "Embeds per page": embeds_per_page}, ip=False)
+    logger.debug("in /vitals.")
+#    vitals = request.json
+#
+#    embeds_per_page = len(vitals["allParams"])
+#    # heather does awesome things with the vitals and mixpanel here.
+#    logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
+#        embeds_per_page=embeds_per_page))
+#    logger.debug("Vitals = {vitals}".format(
+#        vitals=vitals))
+#
+#    mymixpanel.track("Impression:embed", properties={
+#        "Host page": vitals["url"],
+#        "API Key": vitals["allParams"][0]["api-key"],
+#        "Embeds per page": embeds_per_page}, ip=False)
 
     resp = make_response("duly noted. carry on.", 200)
     # let js clients get this from the browser, regardless of their domain origin.
-    resp.headers['Access-Control-Allow-Origin'] = "*"
-    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
-    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
+#    resp.headers['Access-Control-Allow-Origin'] = "*"
+#    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+#    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
     return resp
 
 
