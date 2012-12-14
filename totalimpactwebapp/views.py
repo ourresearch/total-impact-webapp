@@ -10,6 +10,7 @@ from totalimpactwebapp import pretty_date
 
 logger = logging.getLogger("tiwebapp.views")
 mymixpanel = mixpanel.Mixpanel(token=os.getenv("MIXPANEL_TOKEN"))
+logger.debug("ok, just checking that this refreshed.")
 
 
 @app.before_request
@@ -173,6 +174,7 @@ def item_report(ns, id):
         )
     else:
         abort(404, "This item doesn't seem to exist yet. "+url)
+
 
 @app.route('/vitals', methods=["POST, GET"])
 def vitals():
