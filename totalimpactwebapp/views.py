@@ -200,7 +200,7 @@ def vitals():
 
     mymixpanel.track("Impression:embed", properties={
         "Host page": vitals["url"], 
-        "API KEY": vitals["allParams"][0]["api-key"],
+        "API Key": vitals["allParams"][0]["api-key"],
         "Embeds per page": embeds_per_page}, ip=False)
 
     resp = make_response("duly noted. carry on.", 200)
