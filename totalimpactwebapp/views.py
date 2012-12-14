@@ -175,7 +175,7 @@ def item_report(ns, id):
     else:
         abort(404, "This item doesn't seem to exist yet. "+url)
 
-@app.route("/vitals")
+@app.route("/vitals", methods=['POST'])
 def vitals():
     logger.debug("in /vitals.")
     resp = make_response("i am in the new vitals", 200)
