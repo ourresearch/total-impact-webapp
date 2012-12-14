@@ -175,9 +175,14 @@ def item_report(ns, id):
     else:
         abort(404, "This item doesn't seem to exist yet. "+url)
 
-
-@app.route('/vitals', methods=["POST, GET"])
+@app.route("/vitals")
 def vitals():
+    logger.debug("in /vitals.")
+    resp = make_response("i am in the new vitals", 200)
+    return resp
+
+@app.route('/myvitals', methods=["POST, GET"])
+def myvitals():
     """
     Logs reporting stats from the embed code to mixpanel
 
@@ -191,10 +196,9 @@ def vitals():
     params listed at the head of impactstory.js's main() function, and also the
     api-docs page.
     """
-    logger.debug("in /vitals.")
+    logger.debug("in /myvitals.")
 #    vitals = request.json
 
-    logger.debug("here are the vitals: " + json.dumps(vitals))
 #    embeds_per_page = len(vitals["allParams"])
 #    # heather does awesome things with the vitals and mixpanel here.
 #    logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
