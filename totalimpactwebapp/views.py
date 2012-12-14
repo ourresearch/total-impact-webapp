@@ -174,7 +174,7 @@ def item_report(ns, id):
     else:
         abort(404, "This item doesn't seem to exist yet. "+url)
 
-@app.route('/vitals', methods=["POST"])
+@app.route('/vitals', methods=["POST, GET"])
 def vitals():
     """
     Logs reporting stats from the embed code to mixpanel
