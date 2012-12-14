@@ -120,6 +120,18 @@ def apidocs():
         page_title="api & embed code"
         )
 
+@app.route('/pricing')
+def apidocs():
+    return render_template(
+        'pricing.html',
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+        api_root=os.environ["API_ROOT"],
+        webapp_root = os.environ["WEBAPP_ROOT"],
+        page_title="pricing"
+        )
+
+
+
 @app.route('/create')
 def collection_create():
     return render_template(
