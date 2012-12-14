@@ -11,9 +11,6 @@ from totalimpactwebapp import pretty_date
 logger = logging.getLogger("tiwebapp.views")
 mymixpanel = mixpanel.Mixpanel(token=os.getenv("MIXPANEL_TOKEN"))
 
-@app.before_request
-def set_cors_false():
-    g.send_cors = False
 
 @app.before_request
 def log_ip_address():
@@ -23,9 +20,11 @@ def log_ip_address():
 
 @app.after_request
 def add_crossdomain_header(resp):
-    resp.headers['Access-Control-Allow-Origin'] = "*"
-    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
-    resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
+    if hasattr(g, "send_cors") and g.send_cors:
+        resp.headers['Access-Control-Allow-Origin'] = "*"
+        resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+        resp.headers['Access-Control-Allow-Headers'] = "Content-Type"
+        g.send_cors = False
 
     return resp
 
