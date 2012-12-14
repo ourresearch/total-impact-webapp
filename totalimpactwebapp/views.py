@@ -10,7 +10,6 @@ from totalimpactwebapp import pretty_date
 
 logger = logging.getLogger("tiwebapp.views")
 mymixpanel = mixpanel.Mixpanel(token=os.getenv("MIXPANEL_TOKEN"))
-logger.debug("ok, just checking that this refreshed.")
 
 
 @app.before_request
@@ -18,6 +17,7 @@ def log_ip_address():
     if request.endpoint != "static":
         ip_address = request.remote_addr
         logger.info("%30s IP address calling %s %s" % (ip_address, request.method, request.url))
+
 
 # static pages
 @app.route('/')
@@ -181,6 +181,7 @@ def item_report(ns, id):
 
 
 
+
 @app.route('/hello')
 def hello():
     msg = {
@@ -188,7 +189,7 @@ def hello():
         "message": "Congratulations! You have found the ImpactStory API.",
         "more-info": "http://impactstory.org/api-docs",
         "contact": "team@impactstory.org",
-        "version": app.config["VERSION"]
+        "version": "foo"
     }
     resp = make_response(json.dumps(msg, sort_keys=True, indent=4), 200)
     resp.mimetype = "application/json"
