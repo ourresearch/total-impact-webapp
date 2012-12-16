@@ -9,9 +9,9 @@
 <div class="main" id="docs" xmlns="http://www.w3.org/1999/html">
     <div class="wrapper">
 
-        <h2 id="embed">Recommended approach: embed code</h2>
+        <h2 id="embed">Recommended approach: JavaScript widget</h2>
 
-            <p>The easiest way to include ImpactStory metrics on a webpage is via our embed code, shown below. There's just two steps:</p>
+            <p>The easiest way to include ImpactStory metrics on a webpage is via our JavaScript widget, shown below. There are two steps:</p>
             <ol>
                <li>Paste this script at the top of your page:
                <div class="rawembedcode"><pre class="prettyprint">
@@ -27,9 +27,9 @@
             </ol>
 
 
-       <p>To use the widget, just <a href="mailto:team@impactstory.org?subject=API key request">get your free API key</a>
-          and embed the widget on your page. This free API key works for 1000 unique items;
-          for more than that, you can pay a <a href="/pricing">cost-recovery fee</a> and
+       <p>To use the widget, <a href="mailto:team@impactstory.org?subject=API key request">get your free API key</a>
+          and embed the widget on your page. Your free API key works for 1000 unique items;
+          for more than that, you can pay a <a href="/pricing">cost-recovery fee</a>
           and <em>register</em> the additional items.</p>
 
        <p>There are two ways to register additional items:</p>
@@ -58,7 +58,7 @@
        </div>
 
        <h3>Required attributes</h3>
-       <p>The embedding script requires three parameters, which are fed in via <code>data-</code> attributes in the embedded div</code>:</p>
+       <p>The JavaScript widget requires three parameters, which are fed in via <code>data-</code> attributes in the embedded div</code>:</p>
          <ul id="required-attributes">
             <li><code>data-id</code> uniquely identifies the items you want metrics form. We accept several types of ID,
                including <a href="http://en.wikipedia.org/wiki/PubMed#PubMed_identifier">PubMed ID</a>,
@@ -166,6 +166,8 @@ countHighlys = function(dict, div$) {
 
         <div class="example"> <!--it's not an example, but sort of follows the same flow... -->
 
+            <p>Scopus and CiteULike metrics are not available in the widget.  
+            </p>
             <p>
                If you've got any feedback, ideas, or questions,
                <a href="javascript:UserVoice.showPopupWidget();"
@@ -178,7 +180,7 @@ countHighlys = function(dict, div$) {
         <h2 id="api">More versatile approach: REST api.</h2>
 
         <p>
-            If the embed code described above doesn't meet your needs, you can use our API directly.  The ImpactStory webapp itself is built directly on top of this API. 
+            If the JavaScript widget described above doesn't meet your needs, you can use our API directly.  The ImpactStory webapp itself is built directly on top of this API. 
         </p><p>
             <a target="_blank" href="http://docs.impactstory.apiary.io/">Documentation</a> for current version of the REST API (/v1).
         </p>
