@@ -239,7 +239,7 @@ def vitals():
     #logger.debug("properties are {properties}".format(
     #    properties=properties))
     
-    mixpanel_params = {"event": "Impression:embedpage", "properties": properties}
+    mixpanel_params = {"event": "Impression:embed", "properties": properties}
     mixpanel_data = base64.b64encode(json.dumps(mixpanel_params))
     mixpanel_resp = urllib2.urlopen("http://api.mixpanel.com/track/?data=%s" % mixpanel_data)
     mixpanel_response_read = mixpanel_resp.read()
