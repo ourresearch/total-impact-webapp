@@ -10,7 +10,7 @@ from totalimpactwebapp import pretty_date
 
 logger = logging.getLogger("tiwebapp.views")
 mymixpanel = mixpanel.Mixpanel(token=os.getenv("MIXPANEL_TOKEN"))
-
+mixpanel_token = os.getenv("MIXPANEL_TOKEN")
 
 @app.before_request
 def log_ip_address():
@@ -221,18 +221,38 @@ def vitals():
     # heather does awesome things with the vitals and mixpanel here.
     logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
         embeds_per_page=embeds_per_page))
-    logger.debug("Vitals = {vitals}".format(
-        vitals=vitals))
+    #logger.debug("Vitals = {vitals}".format(
+    #    vitals=vitals))
 
-    mymixpanel.track("Impression:embed", properties={
-        "Host page": vitals["url"],
-        "API Key": vitals["allParams"][0]["api-key"],
-        "Embeds per page": embeds_per_page}, ip=False)
+    import urllib2
+    import base64
+    import time
+    import urlparse
+
+    properties = {}
+    properties = {  'token': mixpanel_token, 
+                    'time': int(time.time()),
+                    'ip': request.remote_addr,
+                    "$referring_domain": urlparse.urlsplit(request.referrer).netloc,
+                    "$referrer" : request.referrer,
+                    "$os": request.user_agent.platform,
+                    "$browser": request.user_agent.browser,
+                    "Host page": vitals["url"],
+                    "API Key": vitals["allParams"][0]["api-key"],
+                    "Embeds per page": embeds_per_page
+                    }
+    for embed_param in vitals["allParams"][0]:
+        properties["Embed:"+embed_param] = vitals["allParams"][0][embed_param]                   
+    mixpanel_params = {"event": "Impression:embedpage", "properties": properties}
+
+    data = base64.b64encode(json.dumps(mixpanel_params))
+    mixpanel_resp = urllib2.urlopen("http://api.mixpanel.com/track/?data=%s" % data)
+    mixpanel_response_read = mixpanel_resp.read()
+    logger.info("mixpanel response:{response}".format(
+        response = mixpanel_response_read))
 
     resp = make_response("duly noted. carry on.", 200)
     return resp
-
-
 
 @app.route('/wospicker', methods=["GET"])
 def wospicker():
