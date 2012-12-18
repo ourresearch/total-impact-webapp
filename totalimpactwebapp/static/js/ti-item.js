@@ -444,8 +444,8 @@ function Item(itemData, itemView, $) {
 
         var thisThing = this
         var id = this.itemId
-        var createParam = (noItemCallback) ? "" : "&create=true" // defaults to true
-        var url = "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+createParam
+        var registerParam = (noItemCallback) ? "" : "&register=true" // defaults to true
+        var url = "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
 
         $.ajax({
             url: url,

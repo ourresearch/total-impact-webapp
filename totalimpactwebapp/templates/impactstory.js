@@ -123,16 +123,18 @@
 
             for (var i=0;i<el.attributes.length;i++){
                 var key = convertAttrs(el.attributes[i].nodeName, true)
-                var key = key.replace("data-", "")
-                var val
-                if (key == "on-finish") {
-                    val = convertAttrs(el.attributes[i].nodeValue, false)
-                }
-                else {
-                    val = convertAttrs(el.attributes[i].nodeValue, true)
-                }
+                if (key.indexOf("data-") === 0) {
+                    var key = key.replace("data-", "")
+                    var val
+                    if (key == "on-finish") {
+                        val = convertAttrs(el.attributes[i].nodeValue, false)
+                    }
+                    else {
+                        val = convertAttrs(el.attributes[i].nodeValue, true)
+                    }
 
-                params[key] = val
+                    params[key] = val
+                }
             }
 
             return params
