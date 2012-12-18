@@ -229,9 +229,12 @@ def vitals():
     import time
     import urlparse
 
+    now = int(time.time())
+    logger.debug("IP address is {ip}".format(
+        ip=request.remote_addr))
     properties = {}
     properties = {  'token': mixpanel_token, 
-                    'time': int(time.time()),
+                    'time': now,
                     'ip': request.remote_addr,
                     "$referring_domain": urlparse.urlsplit(request.referrer).netloc,
                     "$referrer" : request.referrer,
@@ -243,6 +246,8 @@ def vitals():
                     }
     for embed_param in vitals["allParams"][0]:
         properties["Embed:"+embed_param] = vitals["allParams"][0][embed_param]                   
+    logger.debug("properties are {properties}".format(
+        properties=properties))
     mixpanel_params = {"event": "Impression:embedpage", "properties": properties}
 
     data = base64.b64encode(json.dumps(mixpanel_params))
