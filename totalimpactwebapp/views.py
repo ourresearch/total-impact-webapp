@@ -1,16 +1,17 @@
 import requests, iso8601, os, json, logging
+import urllib2
+import base64
+import time
+import urlparse
 
 from flask import Flask, jsonify, json, request, redirect, abort, make_response
 from flask import render_template
-from libsaas.services import mixpanel
 
 from totalimpactwebapp import app, util
 from totalimpactwebapp.models import Github
 from totalimpactwebapp import pretty_date
 
 logger = logging.getLogger("tiwebapp.views")
-mymixpanel = mixpanel.Mixpanel(token=os.getenv("MIXPANEL_TOKEN"))
-
 
 @app.before_request
 def log_ip_address():
@@ -215,24 +216,33 @@ def vitals():
     params listed at the head of impactstory.js's main() function, and also the
     api-docs page.
     """
+
     vitals = request.json
+    properties = {  
+                    'token': os.getenv("MIXPANEL_TOKEN"), 
+                    'time': int(time.time()),
+                    'ip': request.remote_addr,
+                    "$referring_domain": urlparse.urlsplit(request.referrer).netloc,
+                    "$referrer" : request.referrer,
+                    "$os": request.user_agent.platform,
+                    "$browser": request.user_agent.browser,
+                    "Embeds per page": len(vitals["allParams"]),
+                    "Host page": vitals["url"],
+                    "API Key": vitals["allParams"][0]["api-key"],
+                }
 
-    embeds_per_page = len(vitals["allParams"])
-    # heather does awesome things with the vitals and mixpanel here.
-    logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
-        embeds_per_page=embeds_per_page))
-    logger.debug("Vitals = {vitals}".format(
-        vitals=vitals))
+    for embed_param in vitals["allParams"][0]:
+        properties["Embed:"+embed_param] = vitals["allParams"][0][embed_param]                   
 
-    mymixpanel.track("Impression:embed", properties={
-        "Host page": vitals["url"],
-        "API Key": vitals["allParams"][0]["api-key"],
-        "Embeds per page": embeds_per_page}, ip=False)
+    #logger.debug("properties are {properties}".format(
+    #    properties=properties))
+    
+    mixpanel_params = {"event": "Impression:embed", "properties": properties}
+    mixpanel_data = base64.b64encode(json.dumps(mixpanel_params))
+    mixpanel_resp = urllib2.urlopen("http://api.mixpanel.com/track/?data=%s" % mixpanel_data)
 
     resp = make_response("duly noted. carry on.", 200)
     return resp
-
-
 
 @app.route('/wospicker', methods=["GET"])
 def wospicker():
