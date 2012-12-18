@@ -2,7 +2,10 @@ import requests, iso8601, os, json, logging
 
 from flask import Flask, jsonify, json, request, redirect, abort, make_response
 from flask import render_template
-from libsaas.services import mixpanel
+import urllib2
+import base64
+import time
+import urlparse
 
 from totalimpactwebapp import app, util
 from totalimpactwebapp.models import Github
@@ -215,43 +218,30 @@ def vitals():
     params listed at the head of impactstory.js's main() function, and also the
     api-docs page.
     """
+
     vitals = request.json
-
-    embeds_per_page = len(vitals["allParams"])
-    # heather does awesome things with the vitals and mixpanel here.
-    logger.info("Got vitals message with embeds_per_page={embeds_per_page}".format(
-        embeds_per_page=embeds_per_page))
-    #logger.debug("Vitals = {vitals}".format(
-    #    vitals=vitals))
-
-    import urllib2
-    import base64
-    import time
-    import urlparse
-
-    now = int(time.time())
-    logger.debug("IP address is {ip}".format(
-        ip=request.remote_addr))
-    properties = {}
-    properties = {  'token': mixpanel_token, 
-                    'time': now,
+    properties = {  
+                    'token': mixpanel_token, 
+                    'time': int(time.time()),
                     'ip': request.remote_addr,
                     "$referring_domain": urlparse.urlsplit(request.referrer).netloc,
                     "$referrer" : request.referrer,
                     "$os": request.user_agent.platform,
                     "$browser": request.user_agent.browser,
+                    "Embeds per page": len(vitals["allParams"])
                     "Host page": vitals["url"],
                     "API Key": vitals["allParams"][0]["api-key"],
-                    "Embeds per page": embeds_per_page
-                    }
+                }
+
     for embed_param in vitals["allParams"][0]:
         properties["Embed:"+embed_param] = vitals["allParams"][0][embed_param]                   
-    logger.debug("properties are {properties}".format(
-        properties=properties))
-    mixpanel_params = {"event": "Impression:embedpage", "properties": properties}
 
-    data = base64.b64encode(json.dumps(mixpanel_params))
-    mixpanel_resp = urllib2.urlopen("http://api.mixpanel.com/track/?data=%s" % data)
+    #logger.debug("properties are {properties}".format(
+    #    properties=properties))
+    
+    mixpanel_params = {"event": "Impression:embedpage", "properties": properties}
+    mixpanel_data = base64.b64encode(json.dumps(mixpanel_params))
+    mixpanel_resp = urllib2.urlopen("http://api.mixpanel.com/track/?data=%s" % mixpanel_data)
     mixpanel_response_read = mixpanel_resp.read()
     logger.info("mixpanel response:{response}".format(
         response = mixpanel_response_read))
