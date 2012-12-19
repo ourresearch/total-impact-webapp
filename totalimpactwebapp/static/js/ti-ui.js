@@ -363,6 +363,14 @@ function homePageInit() {
     $('.carousel').carousel("cycle")
 }
 
+function aboutPageInit() {
+    if (location.href.indexOf("#contact") > 0) {
+        $("#contact h3").css("color", tiLinkColor)
+            .siblings("p").css({backgroundColor: "#ff834c"})
+            .animate({backgroundColor: "#ffffff"}, 1000)
+    }
+}
+
 
 
 
@@ -403,11 +411,13 @@ $(document).ready(function(){
 
     createCollectionInit();
     homePageInit()
+    aboutPageInit()
 
     // let people link straight to the item-help modal
     if(window.location.href.indexOf('#context') != -1) {
         $('#context').modal('show');
     }
+
 
     prettyPrint()
 
