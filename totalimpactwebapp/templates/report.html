@@ -36,8 +36,8 @@
             <!-- TODO make work for item reports; currently only works with collections.-->
             <button class="btn btn-small" id="update-report-button" name="{{ report_id }}" href="#">update</button>
             <div class="btn-group download">
-               <a class="btn btn-small" href="http://{{ api_root }}/v1/{{ api_query }}?key=example">json</a>
-               <a class="btn btn-small" href="http://{{ api_root }}/v1/{{ api_query }}/{{ report_id }}.csv?key=example">csv</a>
+               <a class="btn btn-small" id="json-report-button" href="http://{{ api_root }}/v1/{{ api_query }}?key=example">json</a>
+               <a class="btn btn-small" id="csv-report-button" href="http://{{ api_root }}/v1/{{ api_query }}.csv?key=example">csv</a>
             </div>
          </div>
          <div id="num-items"><span class="value"></span> items <a href="#">(expand all)</a></div>

@@ -638,6 +638,7 @@ function ItemController($){
     this.itemReportPageInit = function() {
         // hack: clear out controls that don't work or apply
         $("#update-report-button").remove()
+        $("#csv-report-button").remove()
         $("#num-items").remove()
 
         var myView = new ItemView($)

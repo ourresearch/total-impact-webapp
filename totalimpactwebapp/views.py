@@ -225,21 +225,24 @@ def vitals():
                     "$referring_domain": urlparse.urlsplit(request.referrer).netloc,
                     "$referrer" : request.referrer,
                     "$os": request.user_agent.platform,
-                    "$browser": request.user_agent.browser,
-                    "Embeds per page": len(vitals["allParams"]),
-                    "Host page": vitals["url"],
-                    "API Key": vitals["allParams"][0]["api-key"],
+                    "$browser": request.user_agent.browser
                 }
 
-    for embed_param in vitals["allParams"][0]:
-        properties["Embed:"+embed_param] = vitals["allParams"][0][embed_param]                   
-
-    #logger.debug("properties are {properties}".format(
-    #    properties=properties))
+    try:
+        properties["Embeds per page"] = len(vitals["allParams"])
+        properties["Host page"] = vitals["url"]
+        properties["API Key"] = vitals["allParams"][0]["api-key"]
+        for embed_param in vitals["allParams"][0]:
+            properties["Embed:"+embed_param] = vitals["allParams"][0][embed_param]                   
+    except IndexError, KeyError:
+        logger.info("Errors enumerating vitals params for {vitals}".format(
+            vitals=vitals))
     
     mixpanel_params = {"event": "Impression:embed", "properties": properties}
     mixpanel_data = base64.b64encode(json.dumps(mixpanel_params))
     mixpanel_resp = urllib2.urlopen("http://api.mixpanel.com/track/?data=%s" % mixpanel_data)
+
+    logger.debug("Successful vitals mixpanel report")
 
     resp = make_response("duly noted. carry on.", 200)
     return resp
