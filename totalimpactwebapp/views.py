@@ -218,11 +218,16 @@ def vitals():
     """
 
     vitals = request.json
+    try:
+        referring_domain = urlparse.urlsplit(request.referrer).netloc
+    except AttributeError:
+        referring_domain = "";
+
     properties = {  
                     'token': os.getenv("MIXPANEL_TOKEN"), 
                     'time': int(time.time()),
                     'ip': request.remote_addr,
-                    "$referring_domain": urlparse.urlsplit(request.referrer).netloc,
+                    "$referring_domain": referring_domain,
                     "$referrer" : request.referrer,
                     "$os": request.user_agent.platform,
                     "$browser": request.user_agent.browser
