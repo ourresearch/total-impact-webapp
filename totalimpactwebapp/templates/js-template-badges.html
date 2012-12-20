@@ -1,7 +1,7 @@
 <ul class="ti-badges">
 {% raw %}
    {{#big}}
-   <li><span href="#" class="label ti-badge big-badge {{audience}}" rel="tooltip" title="75th percentile (n&ge;{{minForAward}}) in {{engagementTypeNoun}} by {{audience}}">
+   <li><span href="#" class="label ti-badge big-badge {{audience}} {{engagementType}}" rel="tooltip" title="75th percentile (n&ge;{{minForAward}}) in {{engagementTypeNoun}} by {{audience}}">
          <span class="modifier">highly</span>
          <span class="engagement-type">{{engagementType}}</span>
          <span class="audience">by {{audience}}</span>
@@ -9,7 +9,7 @@
    {{/big}}
 
    {{#any}}
-   <li><span href="#" class="label ti-badge lil-badge {{audience}}" rel="tooltip"  title="Has been {{engagementType}} by {{audience}}">
+   <li><span href="#" class="label ti-badge lil-badge {{audience}} {{engagementType}}" rel="tooltip"  title="Has been {{engagementType}} by {{audience}}">
          <span class="engagement-type">{{engagementType}}</span>
          <span class="audience">by {{audience}}</span>
       </span></li>

@@ -68,6 +68,7 @@
 
                 // optional
                 "badge-size": "large",
+                "badge-type": "tag",
                 "on-finish": false,
                 "show-logo": true,
                 "show-badges": true,
@@ -246,6 +247,7 @@
 
                 // apply those user-defined params that apply to the whole div:
                 thisDiv$.addClass(params["badge-size"])
+                thisDiv$.addClass(params["badge-type"])
 
                 // if the user doesn't want badges, no need to make the get() call.
                 if (!params["show-badges"]){

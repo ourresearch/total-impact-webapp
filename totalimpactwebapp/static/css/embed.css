@@ -41,11 +41,81 @@ span.impactstory-embed ul li .label {
   font-size: 10px;
   padding: 1px 3px;
 }
-.impactstory-embed.minibadges ul li .label {
+.impactstory-embed.icon ul li .label {
   text-indent: -9999px;
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
+  margin: 1px 2px 0 0;
+  padding: 0;
+  border: none !important;
+}
+.impactstory-embed.icon ul li .label.scholars {
   background: url(http://impactstory.org/static/img/minibadges.png);
+  background-position: 0 0;
+}
+.impactstory-embed.icon ul li .label.scholars.lil-badge {
+  background: url(http://impactstory.org/static/img/minibadges.png);
+}
+.impactstory-embed.icon ul li .label.scholars.discussed.big-badge {
+  background-position: 21px 0;
+}
+.impactstory-embed.icon ul li .label.scholars.saved.big-badge {
+  background-position: 175px 0;
+}
+.impactstory-embed.icon ul li .label.scholars.cited.big-badge {
+  background-position: 153px 0;
+}
+.impactstory-embed.icon ul li .label.scholars.recommended.big-badge {
+  background-position: 131px 0;
+}
+.impactstory-embed.icon ul li .label.scholars.viewed.lil-badge {
+  background-position: 109px 0;
+}
+.impactstory-embed.icon ul li .label.scholars.discussed.lil-badge {
+  background-position: 88px 0;
+}
+.impactstory-embed.icon ul li .label.scholars.saved.lil-badge {
+  background-position: 65px 0;
+}
+.impactstory-embed.icon ul li .label.scholars.cited.lil-badge {
+  background-position: 45px 0;
+}
+.impactstory-embed.icon ul li .label.scholars.recommended.lil-badge {
+  background-position: 21px 0;
+}
+.impactstory-embed.icon ul li .label.public {
+  background: url(http://impactstory.org/static/img/minibadges.png);
+  background-position: 0 21px;
+}
+.impactstory-embed.icon ul li .label.public.lil-badge {
+  background: url(http://impactstory.org/static/img/minibadges.png);
+}
+.impactstory-embed.icon ul li .label.public.discussed.big-badge {
+  background-position: 21px 21px;
+}
+.impactstory-embed.icon ul li .label.public.saved.big-badge {
+  background-position: 175px 21px;
+}
+.impactstory-embed.icon ul li .label.public.cited.big-badge {
+  background-position: 153px 21px;
+}
+.impactstory-embed.icon ul li .label.public.recommended.big-badge {
+  background-position: 131px 21px;
+}
+.impactstory-embed.icon ul li .label.public.viewed.lil-badge {
+  background-position: 109px 21px;
+}
+.impactstory-embed.icon ul li .label.public.discussed.lil-badge {
+  background-position: 88px 21px;
+}
+.impactstory-embed.icon ul li .label.public.saved.lil-badge {
+  background-position: 65px 21px;
+}
+.impactstory-embed.icon ul li .label.public.cited.lil-badge {
+  background-position: 45px 21px;
+}
+.impactstory-embed.icon ul li .label.public.recommended.lil-badge {
+  background-position: 21px 21px;
 }
 .impactstory-embed ul {
   margin: 0;

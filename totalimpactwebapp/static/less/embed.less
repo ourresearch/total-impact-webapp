@@ -40,14 +40,49 @@ span.impactstory-embed{
          }
       }
    }
-   &.minibadges {
+   &.icon {
       ul {
          li {
             .label {
                text-indent:-9999px;
-               width: 20px;
-               height:20px;
-               background: url(http://impactstory.org/static/img/minibadges.png)
+               width: 21px;
+               height:21px;
+               margin: 1px 2px 0 0;
+               padding:0;
+               border:none !important;
+
+               &.scholars {
+                  background: url(http://impactstory.org/static/img/minibadges.png);
+                  &.lil-badge {background: url(http://impactstory.org/static/img/minibadges.png);}
+                  background-position: 0 0;
+
+                  &.discussed.big-badge { background-position: 21px 0; }
+                  &.saved.big-badge { background-position: 175px 0;}
+                  &.cited.big-badge { background-position: 153px 0; }
+                  &.recommended.big-badge {  background-position: 131px 0; }
+
+                  &.viewed.lil-badge { background-position: 109px 0; }
+                  &.discussed.lil-badge { background-position: 88px 0; }
+                  &.saved.lil-badge {  background-position: 65px 0; }
+                  &.cited.lil-badge { background-position: 45px 0; }
+                  &.recommended.lil-badge { background-position: 21px 0;}
+               }
+               &.public {
+                  background: url(http://impactstory.org/static/img/minibadges.png);
+                  &.lil-badge {background: url(http://impactstory.org/static/img/minibadges.png);}
+                  background-position: 0 21px;
+
+                  &.discussed.big-badge { background-position: 21px 21px;  }
+                  &.saved.big-badge { background-position: 175px 21px; }
+                  &.cited.big-badge { background-position: 153px 21px; }
+                  &.recommended.big-badge { background-position: 131px 21px; }
+
+                  &.viewed.lil-badge { background-position: 109px 21px; }
+                  &.discussed.lil-badge { background-position: 88px 21px; }
+                  &.saved.lil-badge { background-position: 65px 21px; }
+                  &.cited.lil-badge {  background-position: 45px 21px; }
+                  &.recommended.lil-badge { background-position: 21px 21px;  }
+               }
             }
          }
       }
