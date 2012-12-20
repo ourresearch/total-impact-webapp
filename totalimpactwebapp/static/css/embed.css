@@ -41,6 +41,12 @@ span.impactstory-embed ul li .label {
   font-size: 10px;
   padding: 1px 3px;
 }
+.impactstory-embed.minibadges ul li .label {
+  text-indent: -9999px;
+  width: 20px;
+  height: 20px;
+  background: url(http://impactstory.org/static/img/minibadges.png);
+}
 .impactstory-embed ul {
   margin: 0;
   padding-left: 0;
