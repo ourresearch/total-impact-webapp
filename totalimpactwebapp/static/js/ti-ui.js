@@ -292,7 +292,7 @@ createCollectionInit = function(){
                 $this.siblings("span.added").remove()
                 var explainString;
                 if (XMLHttpRequest.status == 404) {
-                    explainString = "sorry, not found."
+                    explainString = "sorry, not found. (ORCID imports are failing for new records, we're working to fix)"
                 } else {
                     explainString = "sorry, there was an error."
                 }
