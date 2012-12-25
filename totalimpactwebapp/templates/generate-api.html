@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script type="text/javascript" src="/static/js/ti-generate-api.js"></script>
+
+<!-- START input -->
+<div class="main" id="input">
+   <div class="wrapper">
+         <form name="api_form" id="api-form" class="form-horizontal">
+            <div class="control-group">
+               <legend for="password" class="control-label">password:</legend>
+               <div class="controls">
+                  <input name="password" id="password" type="password"/>
+               </div>
+            </div>
+
+            <div class="control-group">
+               <legend for="api-owner" class="control-label">name:</legend>
+               <div class="controls">
+                  <input name="api-owner" id="api-owner" type="text"/>
+               </div>
+            </div>
+
+            <div class="control-group">
+               <legend for="email" class="control-label">email:</legend>
+               <div class="controls">
+                  <input name="email" id="email" type="email"/>
+               </div>
+            </div>
+
+            <div class="control-group">
+               <legend for="api-limit" class="control-label">api limit:</legend>
+               <div class="controls">
+                  <input name="api-limit" id="api-limit" type="text"/>
+               </div>
+            </div>
+
+            <div class="control-group">
+               <legend for="example-page" class="control-label">webpage:</legend>
+               <div class="controls">
+                  <input name="example-page" id="example-page"/>
+               </div>
+            </div>
+
+            <div class="control-group">
+               <div class="controls">
+                  <button name="run" type="submit" id="get-api-button" class="btn btn-large btn-primary">get an api key!</button>
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
+
+</div><!-- END input -->
+
+
+{% endblock %}

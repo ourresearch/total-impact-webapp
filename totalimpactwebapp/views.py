@@ -252,6 +252,16 @@ def vitals():
     resp = make_response("duly noted. carry on.", 200)
     return resp
 
+@app.route('/generate-api')
+def generate_api_key():
+    return render_template(
+        'generate-api.html', 
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
+        api_root=os.environ["API_ROOT"],
+        page_title="generate api key",
+        body_class="create-collection"
+        )
+
 @app.route('/wospicker', methods=["GET"])
 def wospicker():
     num_total = int(request.args.get("total"))
