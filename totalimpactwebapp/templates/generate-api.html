@@ -9,23 +9,30 @@
    <div class="wrapper">
          <form name="api_form" id="api-form" class="form-horizontal">
             <div class="control-group">
-               <legend for="password" class="control-label">password:</legend>
+               <legend for="password" class="control-label">admin password:</legend>
                <div class="controls">
                   <input name="password" id="password" type="password"/>
                </div>
             </div>
 
             <div class="control-group">
-               <legend for="api-owner" class="control-label">name:</legend>
+               <legend for="api-key-owner" class="control-label">api key owner name:</legend>
                <div class="controls">
-                  <input name="api-owner" id="api-owner" type="text"/>
+                  <input name="api-key-owner" id="api-key-owner" type="text"/>
                </div>
             </div>
 
             <div class="control-group">
                <legend for="email" class="control-label">email:</legend>
                <div class="controls">
-                  <input name="email" id="email" type="email"/>
+                  <input name="email" id="email" type="text"/>
+               </div>
+            </div>
+
+            <div class="control-group">
+               <legend for="prefix" class="control-label">api key prefix:</legend>
+               <div class="controls">
+                  <input name="prefix" id="prefix" type="text"/>
                </div>
             </div>
 
@@ -37,9 +44,31 @@
             </div>
 
             <div class="control-group">
-               <legend for="example-page" class="control-label">webpage:</legend>
+               <legend for="usage" class="control-label">planned usage</legend>
+               <div class="controls">
+                  <select name="usage" id="usage"/>
+                     <option>individual CV</option>
+                     <option>lab or department website</option>
+                     <option>journal</option>
+                     <option>IR</option>
+                     <option>data repository</option>
+                     <option>other</option>
+                     <option>unknown</option>
+                  </select>
+               </div>
+            </div>
+
+            <div class="control-group">
+               <legend for="example-page" class="control-label">example usage url</legend>
                <div class="controls">
                   <input name="example-page" id="example-page"/>
+               </div>
+            </div>
+
+            <div class="control-group">
+               <legend for="notes" class="control-label">notes</legend>
+               <div class="controls">
+                  <textarea name="notes" id="notes" rows="3"></textarea>
                </div>
             </div>
 

@@ -13,57 +13,48 @@ console.log("loading")
  ****************************************************************************/
 
 
-generateApiInit = function(){
+generateApiKeyInit = function(){
 
     // creating a collection by submitting the object IDs from the homepage
     $("#api-form").submit(function(){
         console.log("in submit form")
 
         // make sure the user input something at all
-        if (collectionAliases.length == 0) {
-            alert("Looks like you haven't added any research objects to the collection yet.")
+        if ($('#prefix').val().length == 0) {
+            alert("Looks like you haven't added a prefix yet.")
             return false;
 
-        // create a collection with these aliases
         } else {
-            console.log("adding collection with new items.")
+            console.log("going to get api key")
 
-            $("#go-button").replaceWith("<span class='loading'>"+ajaxLoadImg+"<span>")
+            $("#get-api-button").replaceWith("<span class='loading'>"+ajaxLoadImg+"<span>")
 
             var requestObj = {
-                title: $('#name').val(),
-                aliases: collectionAliases
+                password: $('#password').val(),
+                api_key_owner: $('#api-key-owner').val(),
+                email: $('#email').val(),
+                prefix: $('#prefix').val(),
+                api_limit: $('#api-limit').val(),
+                usage: $('#usage').val(),
+                example_page: $('#example_page').val(),
+                notes: $('#notes').val()
             }
 
             $.ajax({
-                url: "http://"+api_root+'/collection',
+                url: "http://" + api_root + "/v1/key?key=WEBAPP",
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 data:  JSON.stringify(requestObj),
                 success: function(ret){
-                    returnedCollection=ret.collection
-
-                    // add the id of the newly-created coll to the user's coll list
-                    user.addColl(returnedCollection._id, ret.key)
-
-                    var email = $("#inline-register-email").val()
-                    var pw = $("#inline-register-pw").val()
-                    if (email && pw){
-                        user.setCreds(email, pw)
-                    }
-
-                    var success = function(){
-                        _gaq.push(['_trackPageview', '/user/created']);
-                        location.href = "/collection/" +returnedCollection._id
-                    }
-
-                    if (user.hasCreds()){
-                        user.syncWithServer("push", {on200: success})
-                    }
-                    else {
-                        success()
-                    }
+                    console.log("in success")
+                    var api_key = ret.api_key
+                    console.log(api_key)
+                    $("#api-form").replaceWith("<span>api key is " +api_key+ "</span")
+                },
+                error: function(ret){
+                    console.log("error")
+                    $("#api-form").replaceWith("<span>api key not returned, status code " +ret.status+ " " +ret.statusText+ "</span>")
                 }
             });
             return false;
@@ -74,6 +65,6 @@ generateApiInit = function(){
 
 
 $(document).ready(function(){
-    generateApiInit();
+    generateApiKeyInit();
     prettyPrint()
 });
