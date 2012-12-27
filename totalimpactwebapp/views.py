@@ -252,7 +252,7 @@ def vitals():
     resp = make_response("duly noted. carry on.", 200)
     return resp
 
-@app.route('/generate-api')
+@app.route('/admin/key')
 def generate_api_key():
     return render_template(
         'generate-api.html', 
