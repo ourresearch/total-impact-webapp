@@ -50,7 +50,7 @@ generateApiKeyInit = function(){
                     console.log("in success")
                     var api_key = ret.api_key
                     console.log(api_key)
-                    $("#api-form").replaceWith("<span>api key is " +api_key+ "</span")
+                    $("#api-form").replaceWith("<span>api key is " +api_key+ ". Have fun!</span>")
                 },
                 error: function(ret){
                     console.log("error")

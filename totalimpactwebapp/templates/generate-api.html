@@ -11,12 +11,19 @@
             <div class="control-group">
                <legend for="password" class="control-label">admin password:</legend>
                <div class="controls">
-                  <input name="password" id="password" type="password"/>
+                  <input name="password" id="password" type="password" placeholder="G_Y"/>
                </div>
             </div>
 
             <div class="control-group">
-               <legend for="api-key-owner" class="control-label">api key owner name:</legend>
+               <legend for="prefix" class="control-label">api key PREFIX:</legend>
+               <div class="controls">
+                  <input name="prefix" id="prefix" type="text"/>
+               </div>
+            </div>
+
+            <div class="control-group">
+               <legend for="api-key-owner" class="control-label">api owner's name:</legend>
                <div class="controls">
                   <input name="api-key-owner" id="api-key-owner" type="text"/>
                </div>
@@ -25,21 +32,14 @@
             <div class="control-group">
                <legend for="email" class="control-label">email:</legend>
                <div class="controls">
-                  <input name="email" id="email" type="text"/>
+                  <input name="email" id="email" type="email"/>
                </div>
             </div>
 
             <div class="control-group">
-               <legend for="prefix" class="control-label">api key prefix:</legend>
+               <legend for="api-limit" class="control-label">max registrations:</legend>
                <div class="controls">
-                  <input name="prefix" id="prefix" type="text"/>
-               </div>
-            </div>
-
-            <div class="control-group">
-               <legend for="api-limit" class="control-label">api limit:</legend>
-               <div class="controls">
-                  <input name="api-limit" id="api-limit" type="text"/>
+                  <input name="api-limit" id="api-limit" type="number" placeholder=1000 />
                </div>
             </div>
 
