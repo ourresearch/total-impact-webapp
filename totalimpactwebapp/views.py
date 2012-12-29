@@ -177,28 +177,19 @@ def item_report(ns, id):
         id=id,
         api_key=os.environ["API_KEY"]
     )
-
     r = requests.get(url)
-    if r.status_code <= 210: # allow unfinished items
-        item = json.loads(r.text)
-        return render_template(
-            'report.html',
-            mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
-            api_root=os.environ["API_ROOT"],
-            api_key=os.environ["API_KEY"],
-            request_url=request.url,
-            page_title="",
-            body_class="report",
-            report_id=id,
-            report_id_namespace=ns,
-            api_query="item/{ns}/{id}".format(ns=ns, id=id)
-        )
-    else:
-        abort(404, "This item doesn't seem to exist yet. "+url)
-
-
-
-
+    return render_template(
+        'report.html',
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
+        api_root=os.environ["API_ROOT"],
+        api_key=os.environ["API_KEY"],
+        request_url=request.url,
+        page_title="",
+        body_class="report",
+        report_id=id,
+        report_id_namespace=ns,
+        api_query="item/{ns}/{id}".format(ns=ns, id=id)
+    )
 
 
 @app.route('/vitals', methods=["POST"])

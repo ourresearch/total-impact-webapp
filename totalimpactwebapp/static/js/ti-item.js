@@ -649,7 +649,7 @@ function ItemController($){
             "item-report-page",
             this.insertRenderedItemIntoPage,
             function(data){console.log("still updating item report page")},
-            function(data){alert("Sorry, this item isn't in our database.")}
+            function(data){alert("Sorry, this item isn't in our database yet.")}
         )
 
 
