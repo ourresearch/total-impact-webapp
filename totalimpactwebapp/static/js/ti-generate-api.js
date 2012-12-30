@@ -32,11 +32,12 @@ generateApiKeyInit = function(){
             var requestObj = {
                 password: $('#password').val(),
                 api_key_owner: $('#api-key-owner').val(),
+                organization: $('#organization').val(),
                 email: $('#email').val(),
                 prefix: $('#prefix').val(),
-                api_limit: $('#api-limit').val(),
-                usage: $('#usage').val(),
-                example_page: $('#example_page').val(),
+                max_registered_items: $('#max-registered-items').val(),
+                planned_use: $('#planned-use').val(),
+                example_url: $('#example-url').val(),
                 notes: $('#notes').val()
             }
 
