@@ -461,8 +461,12 @@ function Item(itemData, itemView, $) {
                 210: function(data){
                     updatingCallback(data)
                 },
+                403: function(data) {
+                    console.log("IMPACTSTORY ERROR: " +apiKey+ " is not a valid data-api-key, or you are over your registration limit. Contact team@impactstory.org and we'll get you running again.")
+                    noItemCallback ? noItemCallback(data) : false
+                },
                 404: function(data) {
-                    noItemCallback(data)
+                    noItemCallback ? noItemCallback(data) : false
                 }
             }
         });
