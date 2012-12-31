@@ -1,8 +1,7 @@
 
-// icanhaz.js is inserted by server when this file is requested.
+// the server inserts key libraries:
+{{ underscore }}
 {{ ich }}
-
-// ti-item.js is inserted by server when this file is requested.
 {{ ti_item }}
 
 (function () {
