@@ -290,12 +290,22 @@ function Item(itemData, itemView, $) {
                         if (metric.percentiles !== undefined) {
                             var lowerBound = metric.percentiles.CI95_lower
                             if (this.getsBigAward(raw, minForAward, lowerBound) ) {
-                                big[cellName] = {
-                                    audience: cell.audience,
-                                    engagementType: cell.engagementType,
-                                    minForAward: metric.minNumForAward,
-                                    engagementTypeNoun: cell.engagementTypeNoun,
-                                    metric: metric
+                                // has this cell already been given a big badge?
+                                if (big[cellName] !== undefined) {
+                                    // add this metric to the badge
+                                    big[cellName].metrics.push(metric)
+
+                                    // sort the metrics and mark the highest one
+                                }
+                                else { // it's a new badge, create and add it
+                                    badge = {
+                                        audience: cell.audience,
+                                        engagementType: cell.engagementType,
+                                        minForAward: metric.minNumForAward,
+                                        engagementTypeNoun: cell.engagementTypeNoun,
+                                        metrics: [metric]
+                                    }
+                                    big[cellName] = badge
                                 }
                             }
                         }
@@ -603,7 +613,7 @@ function ItemView($) {
     }
 
     this.renderBadges = function(awards) {
-
+        console.log(awards)
         var badges$ = $(ich.badges({
                big: awards.big,
                any:awards.any
