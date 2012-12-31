@@ -469,6 +469,12 @@ function Item(itemData, itemView, $) {
                     updatingCallback(data)
                     logIfFailedRegistration(data)
                 },
+                403: function(data) {
+                    console.log("Invalid api key '" +apiKey+ "'. Contact team@impactstory.org to remedy.")                    
+                    if (noItemCallback) {
+                        noItemCallback(data)
+                    }
+                },
                 404: function(data) {
                     if (noItemCallback) {
                         noItemCallback(data)
