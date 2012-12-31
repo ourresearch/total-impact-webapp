@@ -447,9 +447,9 @@ function Item(itemData, itemView, $) {
         var registerParam = (noItemCallback) ? "" : "&register=true" // defaults to true
         var url = "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
         var logIfFailedRegistration = function(data) {
-            if registerParam {
-                if data["is_registered"] == False {
-                    console.log("Registration failed on item "+id[0]+'/'+ id[1])
+            if (registerParam) {
+                if (data.is_registered == false) {
+                    console.log("Automatic registration failed for "+id[0]+':'+ id[1]+ ": quota reached for api key '" +apiKey+ "'. Contact team@impactstory.org to remedy.")
                 }
             }}
 
@@ -470,7 +470,7 @@ function Item(itemData, itemView, $) {
                     logIfFailedRegistration(data)
                 },
                 404: function(data) {
-                    if noItemCallback {
+                    if (noItemCallback) {
                         noItemCallback(data)
                     }
                 }
