@@ -323,7 +323,7 @@ createCollectionInit = function(){
             }
 
             $.ajax({
-                url: "http://"+api_root+'/collection',
+                url: "http://"+api_root+'/v1/collection?key='+api_key,
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
