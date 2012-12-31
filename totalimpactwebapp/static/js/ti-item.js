@@ -446,6 +446,12 @@ function Item(itemData, itemView, $) {
         var id = this.itemId
         var registerParam = (noItemCallback) ? "" : "&register=true" // defaults to true
         var url = "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
+        var logIfFailedRegistration = function(data) {
+            if registerParam {
+                if data["is_registered"] == False {
+                    console.log("Registration failed on item "+id[0]+'/'+ id[1])
+                }
+            }}
 
         $.ajax({
             url: url,
@@ -457,16 +463,16 @@ function Item(itemData, itemView, $) {
                     dict = thisThing.processDict(data)
                     thisThing.dict = dict
                     successCallback(dict, id)
+                    logIfFailedRegistration(data)
                 },
                 210: function(data){
                     updatingCallback(data)
-                },
-                403: function(data) {
-                    console.log("IMPACTSTORY ERROR: " +apiKey+ " is not a valid data-api-key, or you are over your registration limit. Contact team@impactstory.org and we'll get you running again.")
-                    noItemCallback ? noItemCallback(data) : false
+                    logIfFailedRegistration(data)
                 },
                 404: function(data) {
-                    noItemCallback ? noItemCallback(data) : false
+                    if noItemCallback {
+                        noItemCallback(data)
+                    }
                 }
             }
         });
