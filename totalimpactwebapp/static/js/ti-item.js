@@ -109,7 +109,34 @@ if (!Array.prototype.map) {
     };
 }
 
+var Awards = function() {
+    this.init()
+}
+Awards.prototype = {
+    any: [],
+    big: [],
+    init: function() {
+        // do something
+    },
 
+    addFromMetric: function(metric) {
+        // do stuff
+    },
+
+    getsBigAward: function(raw, minForAward, lowerBound) {
+
+    if (lowerBound >= 75 && raw >= minForAward) {
+        return true
+    }
+    else if (raw === "Yes") { // hack for F1000
+        return true
+    }
+    else {
+        return false
+    }
+}
+
+}
 
 
 function Item(itemData, itemView, $) {
@@ -215,7 +242,7 @@ function Item(itemData, itemView, $) {
 
         // convert the engagement table from a nested hashes to nested arrays
         // mostly because mustache.js needs it this way. should probably break this
-        // but out as a method.
+        // bit out as a method.
         ret = []
         for (var rowName in engagementTable) {
             var row = {audience: rowName, cells: [] }
@@ -245,93 +272,32 @@ function Item(itemData, itemView, $) {
         return arr
     }
 
-    // returns a copy of obj1, minus the keys it shares with obj2
-    this.subractKeys = function(obj1, obj2) {
-        var newObj1 = {}
-        for (k in obj1) {
-            if (!(k in obj2)) {
-                newObj1[k] = obj1[k]
-            }
-        }
-        return newObj1
+
+
+    this.topMetric = function(metricsList){
+        console.log(metricsList)
+        return _.max(
+            metricsList,
+            function(metric) { return metric.percentiles.CI95_lower }
+        )
     }
 
-    this.getsBigAward = function(raw, minForAward, lowerBound) {
-
-        if (lowerBound >= 75 && raw >= minForAward) {
-                return true
-        }
-        else if (raw === "Yes") { // hack for F1000
-            return true
-        }
-        else {
-            return false
-        }
-    }
 
     this.makeAwards = function(engagementTable) {
-        var any = {}
-        var big = {}
-        for (var i=0; i < engagementTable.audiences.length; i++) {
-            var row = engagementTable.audiences[i]
+        awards = new Awards()
 
-            for (var j=0; j < row.cells.length; j++) {
-                var cell = row.cells[j]
+        _.each(engagementTable.audiences, function(audience, audienceName) {
 
-                for (var k=0; k < cell.metrics.length; k++) {
-                    var metric = cell.metrics[k]
-                    var cellName = row.audience+"."+cell.engagementType
-                    var raw = metric.values.raw
-                    var minForAward = metric.minNumForAward
+            _.each(audience, function(engagementType, engagementTypeName) {
 
-                    if (metric.values.raw && metric.display=="badge") {
+                _.each(engagementType.metrics, function(metric){
 
-                        // add a big badge if we can
-                        if (metric.percentiles !== undefined) {
-                            var lowerBound = metric.percentiles.CI95_lower
-                            if (this.getsBigAward(raw, minForAward, lowerBound) ) {
-                                // has this cell already been given a big badge?
-                                if (big[cellName] !== undefined) {
-                                    // add this metric to the badge
-                                    big[cellName].metrics.push(metric)
+                    awards.addFromMetric(metric, audienceName, engagementTypeName)
 
-                                    // sort the metrics and mark the highest one
-                                }
-                                else { // it's a new badge, create and add it
-                                    badge = {
-                                        audience: cell.audience,
-                                        engagementType: cell.engagementType,
-                                        minForAward: metric.minNumForAward,
-                                        engagementTypeNoun: cell.engagementTypeNoun,
-                                        metrics: [metric]
-                                    }
-                                    big[cellName] = badge
-                                }
-                            }
-                        }
-
-                        // quit if there's a big badge; can't improve on that.
-                        if (cellName in big) {
-                            continue
-                        }
-
-                        // finally, assign a lil badge
-                        any[cellName] = {
-                            audience: row.audience,
-                            engagementType:cell.engagementType,
-                            metric: metric
-                        }
-                    }
-                }
-            }
-        }
-
-        any = this.subractKeys(any, big)
-
-        return {
-            any: this.objToArr(any),
-            big: this.objToArr(big)
-        }
+                })
+            })
+        })
+        return awards
     }
 
     this.hasAwards = function() {
