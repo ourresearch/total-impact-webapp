@@ -155,6 +155,7 @@ function Item(itemData, itemView, $) {
         "plosalm:pmc_unique-ip": ["", "", 0],
         "plosalm:pubmed_central": ["", "", 0],
         "plosalm:scopus": [],                      // figure it out
+        "plossearch:mentions": ["scholars", "cited", "badge", 3],
         "pubmed:f1000": ["scholars", "recommended", "badge", 1],
         "pubmed:pmc_citations": ["scholars", "cited", 0, 0],
         "pubmed:pmc_citations_editorials": ["scholars", "recommended", 0, 0],
