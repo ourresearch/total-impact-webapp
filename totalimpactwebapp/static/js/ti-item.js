@@ -143,7 +143,7 @@ function Item(itemData, itemView, $) {
 
     // [<audience>, <engagement type>, <display level>]
     // display levels: 0 (like it says), "zoom" (only in zoom), "badge" (zoom, + gets badges)
-    var metricInfo = {
+    this.metricInfo = {
         "citeulike:bookmarks": ["scholars", "saved", "badge", 3],
         "delicious:bookmarks": ["public", "saved", "badge", 3],
         "dryad:most_downloaded_file": ["", "", 0],
@@ -207,9 +207,20 @@ function Item(itemData, itemView, $) {
         return this.itemView.render(this.dict)
     }
 
+    this.addEngagementTableDataToMetrics = function(dict) {
+        var metricInfo = this.metricInfo
+        _.map(dict.metrics, function(metric, metricName){
+            _.extend(metric, metricInfo[metricName])
+        })
+        return dict.metrics
+    }
 
 
-    this.makeEngagementTable = function(dict, metricInfo){
+
+    this.makeEngagementTable = function(dict){
+
+        dict.metrics = this.addEngagementTableDataToMetrics(dict)
+        console.log(dict.metrics)
 
         var engagementTable = {
             "scholars": {"viewed": [], "discussed": [], "saved": [], "cited": [], "recommended": []},
@@ -226,16 +237,16 @@ function Item(itemData, itemView, $) {
 
         // make the table
         for (var metricName in dict.metrics) {
-            var display = metricInfo[metricName][2]
+            var display = this.metricInfo[metricName][2]
             if (!display) {
                 continue // don't bother putting in table, we don't show it anyway
             }
-            var audience = metricInfo[metricName][0]
-            var engagementType = metricInfo[metricName][1]
+            var audience = this.metricInfo[metricName][0]
+            var engagementType = this.metricInfo[metricName][1]
 
             var metric = dict.metrics[metricName]
             metric.display = display
-            metric.minNumForAward = metricInfo[metricName][3]
+            metric.minNumForAward = this.metricInfo[metricName][3]
 
             engagementTable[audience][engagementType].push(metric)
         }
@@ -454,7 +465,7 @@ function Item(itemData, itemView, $) {
         dict.metrics = this.getMetricPercentiles(dict.metrics)
 
         dict.metrics = this.add_derived_metrics(dict.metrics)
-        dict.engagementTable = this.makeEngagementTable(dict, metricInfo)
+        dict.engagementTable = this.makeEngagementTable(dict)
 
         dict.awards = this.makeAwards(dict.engagementTable)
 
