@@ -155,6 +155,7 @@ function Item(itemData, itemView, $) {
         "plosalm:pmc_unique-ip": ["", "", 0],
         "plosalm:pubmed_central": ["", "", 0],
         "plosalm:scopus": [],                      // figure it out
+        "plossearch:mentions": ["scholars", "cited", "badge", 3],
         "pubmed:f1000": ["scholars", "recommended", "badge", 1],
         "pubmed:pmc_citations": ["scholars", "cited", 0, 0],
         "pubmed:pmc_citations_editorials": ["scholars", "recommended", 0, 0],
@@ -456,6 +457,12 @@ function Item(itemData, itemView, $) {
         var id = this.itemId
         var registerParam = (noItemCallback) ? "" : "&register=true" // defaults to true
         var url = "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
+        var logIfFailedRegistration = function(data) {
+            if (registerParam) {
+                if (data.is_registered == false) {
+                    console.log("Automatic registration failed for "+id[0]+':'+ id[1]+ ": quota reached for api key '" +apiKey+ "'. Contact team@impactstory.org to remedy.")
+                }
+            }}
 
         $.ajax({
             url: url,
@@ -467,12 +474,22 @@ function Item(itemData, itemView, $) {
                     dict = thisThing.processDict(data)
                     thisThing.dict = dict
                     successCallback(dict, id)
+                    logIfFailedRegistration(data)
                 },
                 210: function(data){
                     updatingCallback(data)
+                    logIfFailedRegistration(data)
+                },
+                403: function(data) {
+                    console.log("Invalid api key '" +apiKey+ "'. Contact team@impactstory.org to remedy.")                    
+                    if (noItemCallback) {
+                        noItemCallback(data)
+                    }
                 },
                 404: function(data) {
-                    noItemCallback(data)
+                    if (noItemCallback) {
+                        noItemCallback(data)
+                    }
                 }
             }
         });
@@ -659,7 +676,7 @@ function ItemController($){
             "item-report-page",
             this.insertRenderedItemIntoPage,
             function(data){console.log("still updating item report page")},
-            function(data){alert("Sorry, this item isn't in our database.")}
+            function(data){alert("Sorry, this item isn't in our database yet.")}
         )
 
 

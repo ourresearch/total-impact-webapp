@@ -88,7 +88,7 @@ function Coll(collViews, user){
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
-            url: "http://"+api_root+'/collection/'+this.id,
+            url: "http://"+api_root+'/v1/collection/'+this.id+'?key='+api_key,
             type: "POST",
             success: function(data){
                console.log("updating.")
@@ -104,7 +104,7 @@ function Coll(collViews, user){
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
-            url: "http://"+api_root+'/collection/'+thisThing.id+'?api_key='+api_key,
+            url: "http://"+api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",

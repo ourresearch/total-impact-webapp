@@ -36,7 +36,8 @@ def home():
     page_title="tell the full story of your research impact",
     body_class="homepage",
     mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-    api_root=os.environ["API_ROOT"]
+    api_root=os.environ["API_ROOT"],
+    api_key=os.environ["API_KEY"]        
     )
 
 
@@ -57,6 +58,7 @@ def impactstory_dot_js():
         badges_template=badges_template,
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
         api_root=os.environ["API_ROOT"],
+        api_key=os.environ["API_KEY"],                
         webapp_root=os.environ["WEBAPP_ROOT"]
     )
     resp = make_response(rendered)
@@ -74,7 +76,9 @@ def embed_test():
     return render_template(
         "sample-embed-internal-test.html",
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
-        webapp_root = os.environ["WEBAPP_ROOT"]
+        webapp_root = os.environ["WEBAPP_ROOT"],
+        api_root=os.environ["API_ROOT"],
+        api_key=os.environ["API_KEY"]        
     )
 
 
@@ -84,7 +88,8 @@ def about():
         'about.html',
         page_title="about",
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        api_root=os.environ["API_ROOT"]
+        api_root=os.environ["API_ROOT"],
+        api_key=os.environ["API_KEY"]        
         )
 
 @app.route('/faq')
@@ -110,7 +115,8 @@ def faq():
         which_artifacts=which_item_types,
         provider_metadata=metadata,
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        api_root=os.environ["API_ROOT"]
+        api_root=os.environ["API_ROOT"],
+        api_key=os.environ["API_KEY"]        
         )
 
 @app.route('/api-docs')
@@ -119,6 +125,7 @@ def apidocs():
         'api-docs.html',
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
         api_root=os.environ["API_ROOT"],
+        api_key=os.environ["API_KEY"],        
         webapp_root = os.environ["WEBAPP_ROOT"],
         page_title="api & widget"
         )
@@ -129,6 +136,7 @@ def pricing():
         'pricing.html',
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],
         api_root=os.environ["API_ROOT"],
+        api_key=os.environ["API_KEY"],        
         webapp_root = os.environ["WEBAPP_ROOT"],
         page_title="pricing"
         )
@@ -141,14 +149,16 @@ def collection_create():
         'create-collection.html', 
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
         api_root=os.environ["API_ROOT"],
+        api_key=os.environ["API_KEY"],        
         page_title="create collection",
         body_class="create-collection"
         )
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
-    url = "http://{api_root}/collection/{collection_id}?include_items=0".format(
+    url = "http://{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
         api_root=os.getenv("API_ROOT"),
+        api_key=os.environ["API_KEY"],        
         collection_id=collection_id
     )
     
@@ -179,28 +189,19 @@ def item_report(ns, id):
         id=id,
         api_key=os.environ["API_KEY"]
     )
-
     r = requests.get(url)
-    if r.status_code <= 210: # allow unfinished items
-        item = json.loads(r.text)
-        return render_template(
-            'report.html',
-            mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
-            api_root=os.environ["API_ROOT"],
-            api_key=os.environ["API_KEY"],
-            request_url=request.url,
-            page_title="",
-            body_class="report",
-            report_id=id,
-            report_id_namespace=ns,
-            api_query="item/{ns}/{id}".format(ns=ns, id=id)
-        )
-    else:
-        abort(404, "This item doesn't seem to exist yet. "+url)
-
-
-
-
+    return render_template(
+        'report.html',
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
+        api_root=os.environ["API_ROOT"],
+        api_key=os.environ["API_KEY"],
+        request_url=request.url,
+        page_title="",
+        body_class="report",
+        report_id=id,
+        report_id_namespace=ns,
+        api_query="item/{ns}/{id}".format(ns=ns, id=id)
+    )
 
 
 @app.route('/vitals', methods=["POST"])
@@ -253,6 +254,17 @@ def vitals():
 
     resp = make_response("duly noted. carry on.", 200)
     return resp
+
+@app.route('/admin/key')
+def generate_api_key():
+    return render_template(
+        'generate-api.html', 
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
+        api_root=os.environ["API_ROOT"],
+        api_key=os.environ["API_KEY"],
+        page_title="generate api key",
+        body_class="create-collection"
+        )
 
 @app.route('/wospicker', methods=["GET"])
 def wospicker():
