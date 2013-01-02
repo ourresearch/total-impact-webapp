@@ -142,14 +142,13 @@
 
 
 
-        // Based on http://drnicwilliams.com/2006/11/21/diy-widgets/
         function requestStylesheet(stylesheet_url) {
             var stylesheet = document.createElement("link");
             stylesheet.rel = "stylesheet";
             stylesheet.type = "text/css";
             stylesheet.href = stylesheet_url;
             stylesheet.media = "all";
-            document.lastChild.firstChild.appendChild(stylesheet);
+            document.getElementsByTagName("head")[0].appendChild(stylesheet);
         }
 
         function addLogo(div$, params){
