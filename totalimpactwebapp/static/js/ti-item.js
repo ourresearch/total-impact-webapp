@@ -141,62 +141,92 @@ Awards.prototype = {
 
 function Item(itemData, itemView, $) {
 
-    // [<audience>, <engagement type>, <display level>]
-    // display levels: 0 (like it says), "zoom" (only in zoom), "badge" (zoom, + gets badges)
-    this.metricInfo = {
-        "citeulike:bookmarks": ["scholars", "saved", "badge", 3],
-        "delicious:bookmarks": ["public", "saved", "badge", 3],
-        "dryad:most_downloaded_file": ["", "", 0],
-        "dryad:package_views": ["scholars", "viewed", "badge", 3],
-        "dryad:total_downloads": ["scholars", "viewed", "badge", 3],
-        "figshare:views": ["scholars", "viewed", "badge", 3],
-        "figshare:downloads": ["scholars", "viewed", "badge", 3],
-        "figshare:shares": ["scholars", "discussed", "badge", 3],
-        "facebook:shares":["public", "discussed", "badge", 3],
-        "facebook:comments":["public", "discussed", "badge", 3],
-        "facebook:likes":["public", "discussed", "badge", 3],
-        "facebook:clicks":["public", "discussed", "badge", 3],
-        "github:forks":["public", "cited", "badge", 3],
-        "github:watchers":["public", "saved", "badge", 3],
-        "mendeley:career_stage":["", "", 0, 0],
-        "mendeley:country":["", "", 0, 0],
-        "mendeley:discipline":["", "", 0, 0],
-        "mendeley:student_readers":["scholars", "saved", 0, 0],
-        "mendeley:developing_countries":["scholars", "saved", 0, 0],
-        "mendeley:groups":["", "", 0, 0],
-        "mendeley:readers":["scholars", "saved", "badge", 3],
-        "pmc:pdf_downloads":["", "", 0, 0],
-        "pmc:abstract_views":["", "", 0, 0],
-        "pmc:fulltext_views":["", "", 0, 0],
-        "pmc:unique_ip_views":["", "", 0, 0],
-        "pmc:figure_views":["", "", 0, 0],
-        "pmc:suppdata_views":["", "", 0, 0],
-        "plosalm:crossref": [],                    // figure it out
-        "plosalm:html_views": ["public", "viewed", "badge", 3],
-        "plosalm:pdf_views": ["scholars", "viewed", "badge", 3],
-        "plosalm:pmc_abstract": ["", "", 0],
-        "plosalm:pmc_figure": ["", "", 0],
-        "plosalm:pmc_full-text": ["", "", 0],
-        "plosalm:pmc_pdf": ["", "", 0],
-        "plosalm:pmc_supp-data": ["", "", 0],
-        "plosalm:pmc_unique-ip": ["", "", 0],
-        "plosalm:pubmed_central": ["", "", 0],
-        "plosalm:scopus": [],                      // figure it out
-        "pubmed:f1000": ["scholars", "recommended", "badge", 1],
-        "pubmed:pmc_citations": ["scholars", "cited", 0, 0],
-        "pubmed:pmc_citations_editorials": ["scholars", "recommended", 0, 0],
-        "pubmed:pmc_citations_reviews": ["scholars", "cited", 0, 0],
-        "scienceseeker:blog_posts": ["scholars", "discussed", "badge", 0],
-        "scopus:citations": ["scholars", "cited", "badge", 3],
-        "researchblogging:blogs": ["scholars", "discussed", 0, 0],
-        "slideshare:comments": ["public", "discussed", "badge", 3],
-        "slideshare:downloads": ["public", "viewed", "badge", 3],
-        "slideshare:favorites": ["public", "recommended", "badge", 3],
-        "slideshare:views": ["public", "viewed", "badge", 3],
-        "topsy:influential_tweets": ["public", "discussed", "zoom", 0],
-        "topsy:tweets": ["public", "discussed", "badge", 3],
-        "wikipedia:mentions": ["public", "cited", "badge", 1]
+    this.init = function(itemData, itemView){
+
+        /* the metricInfo keys are mapped to the metricInfo array to save space;
+        *  the finished dict looks like this:
+        *  {
+        *      "topsy:tweets": {name: "topsy:tweets", audience: "public", ... },
+        *      "mendeley:groups": {name: "mendeley:groups", audience: "scholars",...},
+        *      ...
+        *  }
+        */
+        var metricInfoKeys = ["name", "audience", "engagementType", "display", "minForAward"]
+        var metricInfo = _.object(
+            _.map([
+                ["citeulike:bookmarks", "scholars", "saved", "badge", 3],
+                ["delicious:bookmarks", "public", "saved", "badge", 3],
+                ["dryad:most_downloaded_file"],
+                ["dryad:package_views", "scholars", "viewed", "badge", 3],
+                ["dryad:total_downloads", "scholars", "viewed", "badge", 3],
+                ["figshare:views", "scholars", "viewed", "badge", 3],
+                ["figshare:downloads", "scholars", "viewed", "badge", 3],
+                ["figshare:shares", "scholars", "discussed", "badge", 3],
+                ["facebook:shares", "public", "discussed", "badge", 3],
+                ["facebook:comments", "public", "discussed", "badge", 3],
+                ["facebook:likes", "public", "discussed", "badge", 3],
+                ["facebook:clicks", "public", "discussed", "badge", 3],
+                ["github:forks", "public", "cited", "badge", 3],
+                ["github:watchers", "public", "saved", "badge", 3],
+                ["mendeley:career_stage"],
+                ["mendeley:country"],
+                ["mendeley:discipline"],
+                ["mendeley:student_readers", "scholars", "saved", 0, 0],
+                ["mendeley:developing_countries", "scholars", "saved", 0, 0],
+                ["mendeley:groups"],
+                ["mendeley:readers", "scholars", "saved", "badge", 3],
+                ["pmc:pdf_downloads"],
+                ["pmc:abstract_views"],
+                ["pmc:fulltext_views"],
+                ["pmc:unique_ip_views"],
+                ["pmc:figure_views"],
+                ["pmc:suppdata_views"],
+                ["plosalm:crossref" ],                    // figure it out
+                ["plosalm:html_views", "public", "viewed", "badge", 3],
+                ["plosalm:pdf_views", "scholars", "viewed", "badge", 3],
+                ["plosalm:pmc_abstract"],
+                ["plosalm:pmc_figure"],
+                ["plosalm:pmc_full-text"],
+                ["plosalm:pmc_pdf"],
+                ["plosalm:pmc_supp-data"],
+                ["plosalm:pmc_unique-ip"],
+                ["plosalm:pubmed_central"],
+                ["plosalm:scopus"],                      // figure it out
+                ["pubmed:f1000", "scholars", "recommended", "badge", 1],
+                ["pubmed:pmc_citations", "scholars", "cited", 0, 0],
+                ["pubmed:pmc_citations_editorials", "scholars", "recommended", 0, 0],
+                ["pubmed:pmc_citations_reviews", "scholars", "cited", 0, 0],
+                ["scienceseeker:blog_posts", "scholars", "discussed", "badge", 0],
+                ["scopus:citations", "scholars", "cited", "badge", 3],
+                ["researchblogging:blogs", "scholars", "discussed", 0, 0],
+                ["slideshare:comments", "public", "discussed", "badge", 3],
+                ["slideshare:downloads", "public", "viewed", "badge", 3],
+                ["slideshare:favorites", "public", "recommended", "badge", 3],
+                ["slideshare:views", "public", "viewed", "badge", 3],
+                ["topsy:influential_tweets", "public", "discussed", "zoom", 0],
+                ["topsy:tweets", "public", "discussed", "badge", 3],
+                ["wikipedia:mentions", "public", "cited", "badge", 1]
+            ],
+            function(metric){ // second arg in map() call
+                return[ metric[0], _.object(metricInfoKeys, metric )]
+            })
+        )
+
+        this.metricInfo = metricInfo
+
+        this.itemView = itemView
+
+        if (itemData.hasOwnProperty("_id")) {
+            this.dict = this.processDict(itemData)
+        }
+        // we've created this item with an id instead of a data object;
+        else {
+            this.dict = false
+            this.itemId = itemData
+        }
     }
+
+
 
 
     // developing countries as per IMF 2012, plus Cuba and North Korea (not IMF members)
@@ -207,25 +237,17 @@ function Item(itemData, itemView, $) {
         return this.itemView.render(this.dict)
     }
 
-    this.addEngagementTableDataToMetrics = function(dict) {
+    this.addMetricsInfoDataToMetrics = function(metrics) {
         var metricInfo = this.metricInfo
-        _.map(dict.metrics, function(metric, metricName){
+        _.map(metrics, function(metric, metricName){
             _.extend(metric, metricInfo[metricName])
         })
-        return dict.metrics
+        return metrics
     }
 
 
 
     this.makeEngagementTable = function(dict){
-
-        dict.metrics = this.addEngagementTableDataToMetrics(dict)
-        console.log(dict.metrics)
-
-        var engagementTable = {
-            "scholars": {"viewed": [], "discussed": [], "saved": [], "cited": [], "recommended": []},
-            "public": {"viewed": [], "discussed": [], "saved": [], "cited": [], "recommended": []}
-        }
 
         var engagementTypeNouns = {
             "viewed":"views",
@@ -235,58 +257,32 @@ function Item(itemData, itemView, $) {
             "recommended": "recommendation"
         }
 
-        // make the table
-        for (var metricName in dict.metrics) {
-            var display = this.metricInfo[metricName][2]
-            if (!display) {
-                continue // don't bother putting in table, we don't show it anyway
-            }
-            var audience = this.metricInfo[metricName][0]
-            var engagementType = this.metricInfo[metricName][1]
+        var omitUndefined = function(obj) { return _.omit(obj, "undefined")}
 
-            var metric = dict.metrics[metricName]
-            metric.display = display
-            metric.minNumForAward = this.metricInfo[metricName][3]
-
-            engagementTable[audience][engagementType].push(metric)
-        }
-
-        // convert the engagement table from a nested hashes to nested arrays
-        // mostly because mustache.js needs it this way. should probably break this
-        // bit out as a method.
-        ret = []
-        for (var rowName in engagementTable) {
-            var row = {audience: rowName, cells: [] }
-            for (colName in engagementTable[rowName]) {
-                var cell = engagementTable[rowName][colName]
-
-                if (!cell.length) continue // we don't do anything with empty cells
-
-                cellContents = {
-                    metrics: cell,
-                    engagementType: colName,
-                    engagementTypeNoun: engagementTypeNouns[colName],
-                    audience: rowName // because mustache can't access parent context
+        var audiencesObj = omitUndefined(_.groupBy(dict.metrics, "audience"))
+        var table = _.map(audiencesObj, function(audience, audienceName) {
+            var engagementTypesObj = omitUndefined(_.groupBy(dict.metrics, "engagementType"))
+            var engagementTypesArr = _.map(engagementTypesObj, function(engagementType, engagementTypeName) {
+                return {
+                    engagementType: engagementTypeName,
+                    metrics: engagementType,
+                    engagementTypeNoun: engagementTypeNouns[engagementTypeName],
+                    audience: audienceName // because mustache.js can't access parent context
                 }
-                row.cells.push(cellContents)
-            }
-            ret.push(row)
-        }
-        return {"audiences": ret}
-    }
+            })
 
-    this.objToArr = function(obj){
-        var arr = []
-        for (k in obj) {
-            arr.push(obj[k])
-        }
-        return arr
+            return {
+                audience: audienceName,
+                cells: engagementTypesArr
+            }
+        })
+
+        return table
     }
 
 
 
     this.topMetric = function(metricsList){
-        console.log(metricsList)
         return _.max(
             metricsList,
             function(metric) { return metric.percentiles.CI95_lower }
@@ -465,27 +461,17 @@ function Item(itemData, itemView, $) {
         dict.metrics = this.getMetricPercentiles(dict.metrics)
 
         dict.metrics = this.add_derived_metrics(dict.metrics)
+        dict.metrics = this.addMetricsInfoDataToMetrics(dict.metrics)
         dict.engagementTable = this.makeEngagementTable(dict)
+
+        console.log(dict.engagementTable)
 
         dict.awards = this.makeAwards(dict.engagementTable)
 
         return dict
     }
 
-
-
-    // constructor
-    this.itemView = itemView
-
-    if (itemData.hasOwnProperty("_id")) {
-        this.dict = this.processDict(itemData)
-    }
-    // we've created this item with an id instead of a data object;
-    else {
-        this.dict = false
-        this.itemId = itemData
-    }
-
+    this.init(itemData, itemView)
     return true
 }
 
