@@ -246,6 +246,33 @@ function Item(itemData, itemView, $) {
     }
 
 
+    this.makeAwards2 = function(dict) {
+        var engagementTypeNouns = {
+            "viewed":"views",
+            "discussed": "discussion",
+            "saved": "saves",
+            "cited": "citation",
+            "recommended": "recommendation"
+        }
+
+        var omitUndefined = function(obj) { return _.omit(obj, "undefined")}
+        var awards = []
+
+        var audiencesObj = omitUndefined(_.groupBy(dict.metrics, "audience"))
+        _.each(audiencesObj, function(audience, audienceName) {
+            var engagementTypesObj = omitUndefined(_.groupBy(dict.metrics, "engagementType"))
+            _.each(engagementTypesObj, function(engagementType, engagementTypeName) {
+                awards.push({
+                    engagementType: engagementTypeName,
+                    metrics: engagementType,
+                    engagementTypeNoun: engagementTypeNouns[engagementTypeName],
+                    audience: audienceName
+                })
+            })
+        })
+        return awards
+    }
+
 
     this.makeEngagementTable = function(dict){
 
@@ -464,7 +491,7 @@ function Item(itemData, itemView, $) {
         dict.metrics = this.addMetricsInfoDataToMetrics(dict.metrics)
         dict.engagementTable = this.makeEngagementTable(dict)
 
-        console.log(dict.engagementTable)
+        console.log(this.makeAwards2(dict))
 
         dict.awards = this.makeAwards(dict.engagementTable)
 
@@ -576,7 +603,7 @@ function ItemView($) {
     }
 
     this.renderBadges = function(awards) {
-        console.log(awards)
+//        console.log(awards)
         var badges$ = $(ich.badges({
                big: awards.big,
                any:awards.any
