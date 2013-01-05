@@ -1,3 +1,6 @@
+var omitUndefined = function(obj) { return _.omit(obj, "undefined")}
+
+
 // patch Array.filter() for IE8
 // from https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/filter#Compatibility
 
@@ -177,12 +180,11 @@ Award.prototype = {
 function Item(itemData, itemView, $) {
 
     this.makeAwardsList = function(metrics) {
-        var omitUndefined = function(obj) { return _.omit(obj, "undefined")}
         var awards = []
         var audiencesObj = omitUndefined(_.groupBy(metrics, "audience"))
-        _.each(audiencesObj, function(audience, audienceName) {
+        _.each(audiencesObj, function(audienceMetrics, audienceName) {
 
-            var engagementTypesObj = omitUndefined(_.groupBy(metrics, "engagementType"))
+            var engagementTypesObj = omitUndefined(_.groupBy(audienceMetrics, "engagementType"))
             _.each(engagementTypesObj, function(engagementType, engagementTypeName) {
 
                 awards.push(new Award(audienceName, engagementTypeName, engagementType))
@@ -221,8 +223,8 @@ function Item(itemData, itemView, $) {
                 ["mendeley:career_stage"],
                 ["mendeley:country"],
                 ["mendeley:discipline"],
-                ["mendeley:student_readers", "scholars", "saved", 0, 0],
-                ["mendeley:developing_countries", "scholars", "saved", 0, 0],
+                ["mendeley:student_readers"], // display later
+                ["mendeley:developing_countries"], // display later
                 ["mendeley:groups"],
                 ["mendeley:readers", "scholars", "saved", "badge", 3],
                 ["pmc:pdf_downloads"],
@@ -539,11 +541,21 @@ function ItemView($) {
     }
 
 
-    this.renderZoom = function(engagementTable) {
+    this.renderZoom = function(awards) {
 
-        
-
-
+        // first make this into a 2-D array
+        var engagementTable = {}
+        engagementTable.audiences = _.chain(awards)
+            .groupBy("audience")
+            .map(function(awards, audienceName) {
+                return {
+                    audience: audienceName,
+                    cells: awards
+                }
+            })
+            .sortBy(function(x){ return x.audience})
+            .reverse()
+            .value()
 
         var zoom$ = $(ich.zoomTable(engagementTable, true))
         var thisThing = this
@@ -572,10 +584,10 @@ function ItemView($) {
     }
 
     this.renderBadges = function(awards) {
-//        console.log(awards)
+        var awardsForRendering = _(awards).groupBy("isHighly")
         var badges$ = $(ich.badges({
-               big: awards.big,
-               any:awards.any
+               big: awardsForRendering.true,
+               any:awardsForRendering.false
             }), true)
         badges$.find(".ti-badge").tooltip()
         return badges$
