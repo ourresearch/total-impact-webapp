@@ -109,37 +109,87 @@ if (!Array.prototype.map) {
     };
 }
 
-var Awards = function() {
+
+
+
+var Award = function(audience, engagementType, metrics) {
+    this.audience = audience
+    this.engagementType = engagementType
+    this.metrics = metrics
     this.init()
 }
-Awards.prototype = {
-    any: [],
-    big: [],
+Award.prototype = {
+    engagementTypeNounsList: {
+        "viewed":"views",
+        "discussed": "discussion",
+        "saved": "saves",
+        "cited": "citation",
+        "recommended": "recommendation"
+    },
+
     init: function() {
-        // do something
+        this.engagementTypeNoun = this.engagementTypeNounsList[this.engagementType]
+        this.topMetric = this.getTopMetric(this.metrics)
+        this.isHighly = this.isHighly(this.metrics)
     },
 
-    addFromMetric: function(metric) {
-        // do stuff
+    isHighly: function(metrics){
+
+        return _.some(metrics, function(metric){
+            if (typeof metric.percentiles === "undefined") {
+                return false
+            }
+            else if (metric.percentiles.CI95_lower >= 75
+                && metric.actualCount >= metric.minForAward) {
+                return true
+            }
+            else {
+                return false
+            }
+        })
     },
 
-    getsBigAward: function(raw, minForAward, lowerBound) {
+    getTopMetric: function(metrics) {
+        // sort by CI95, then by the raw count if CI95 is tied
 
-    if (lowerBound >= 75 && raw >= minForAward) {
-        return true
-    }
-    else if (raw === "Yes") { // hack for F1000
-        return true
-    }
-    else {
-        return false
+        var maxCount = _.max(metrics, function(x) {
+            return x.actualCount;
+        }).actualCount;
+
+        var topMetric = _.max(metrics, function(x){
+
+            var rawCountContribution =  (x.actualCount / maxCount - .0001) // always < 1
+            if (typeof x.percentiles == "undefined") {
+                return rawCountContribution;
+            }
+            else {
+                return x.percentiles.CI95_lower + rawCountContribution;
+            }
+        });
+
+        return topMetric
     }
 }
 
-}
+
 
 
 function Item(itemData, itemView, $) {
+
+    this.makeAwardsList = function(metrics) {
+        var omitUndefined = function(obj) { return _.omit(obj, "undefined")}
+        var awards = []
+        var audiencesObj = omitUndefined(_.groupBy(metrics, "audience"))
+        _.each(audiencesObj, function(audience, audienceName) {
+
+            var engagementTypesObj = omitUndefined(_.groupBy(metrics, "engagementType"))
+            _.each(engagementTypesObj, function(engagementType, engagementTypeName) {
+
+                awards.push(new Award(audienceName, engagementTypeName, engagementType))
+            })
+        })
+        return awards
+    }
 
     this.init = function(itemData, itemView){
 
@@ -246,99 +296,6 @@ function Item(itemData, itemView, $) {
     }
 
 
-    this.makeAwards2 = function(dict) {
-        var engagementTypeNouns = {
-            "viewed":"views",
-            "discussed": "discussion",
-            "saved": "saves",
-            "cited": "citation",
-            "recommended": "recommendation"
-        }
-
-        var omitUndefined = function(obj) { return _.omit(obj, "undefined")}
-        var awards = []
-
-        var audiencesObj = omitUndefined(_.groupBy(dict.metrics, "audience"))
-        _.each(audiencesObj, function(audience, audienceName) {
-            var engagementTypesObj = omitUndefined(_.groupBy(dict.metrics, "engagementType"))
-            _.each(engagementTypesObj, function(engagementType, engagementTypeName) {
-                awards.push({
-                    engagementType: engagementTypeName,
-                    metrics: engagementType,
-                    engagementTypeNoun: engagementTypeNouns[engagementTypeName],
-                    audience: audienceName
-                })
-            })
-        })
-        return awards
-    }
-
-
-    this.makeEngagementTable = function(dict){
-
-        var engagementTypeNouns = {
-            "viewed":"views",
-            "discussed": "discussion",
-            "saved": "saves",
-            "cited": "citation",
-            "recommended": "recommendation"
-        }
-
-        var omitUndefined = function(obj) { return _.omit(obj, "undefined")}
-
-        var audiencesObj = omitUndefined(_.groupBy(dict.metrics, "audience"))
-        var table = _.map(audiencesObj, function(audience, audienceName) {
-            var engagementTypesObj = omitUndefined(_.groupBy(dict.metrics, "engagementType"))
-            var engagementTypesArr = _.map(engagementTypesObj, function(engagementType, engagementTypeName) {
-                return {
-                    engagementType: engagementTypeName,
-                    metrics: engagementType,
-                    engagementTypeNoun: engagementTypeNouns[engagementTypeName],
-                    audience: audienceName // because mustache.js can't access parent context
-                }
-            })
-
-            return {
-                audience: audienceName,
-                cells: engagementTypesArr
-            }
-        })
-
-        return table
-    }
-
-
-
-    this.topMetric = function(metricsList){
-        return _.max(
-            metricsList,
-            function(metric) { return metric.percentiles.CI95_lower }
-        )
-    }
-
-
-    this.makeAwards = function(engagementTable) {
-        awards = new Awards()
-
-        _.each(engagementTable.audiences, function(audience, audienceName) {
-
-            _.each(audience, function(engagementType, engagementTypeName) {
-
-                _.each(engagementType.metrics, function(metric){
-
-                    awards.addFromMetric(metric, audienceName, engagementTypeName)
-
-                })
-            })
-        })
-        return awards
-    }
-
-    this.hasAwards = function() {
-        return this.dict.awards.any.length || this.dict.awards.big.length
-    }
-
-
     this.get_mendeley_percent = function(metricDict, key_substring) {
 
         if (metricDict == undefined) {
@@ -437,6 +394,17 @@ function Item(itemData, itemView, $) {
         return metricsDict
     }
 
+    this.formatMetricCounts = function(metrics) {
+        _.map(metrics, function(metric) {
+            metric.displayCount = metric.values.raw
+
+            // deal with F1000's troublesome "count." Can add others later.
+            metric.actualCount = (metric.values.raw == "Yes") ? 1 : metric.values.raw
+        })
+
+        return metrics
+    }
+
     /**
      * Get item data and feed it to a callback.
      *
@@ -485,16 +453,12 @@ function Item(itemData, itemView, $) {
     }
 
     this.processDict = function(dict) {
+        dict.metrics = this.formatMetricCounts(dict.metrics)
         dict.metrics = this.getMetricPercentiles(dict.metrics)
-
         dict.metrics = this.add_derived_metrics(dict.metrics)
         dict.metrics = this.addMetricsInfoDataToMetrics(dict.metrics)
-        dict.engagementTable = this.makeEngagementTable(dict)
 
-        console.log(this.makeAwards2(dict))
-
-        dict.awards = this.makeAwards(dict.engagementTable)
-
+        dict.awards = new this.makeAwardsList(dict.metrics)
         return dict
     }
 
@@ -576,6 +540,11 @@ function ItemView($) {
 
 
     this.renderZoom = function(engagementTable) {
+
+        
+
+
+
         var zoom$ = $(ich.zoomTable(engagementTable, true))
         var thisThing = this
         zoom$.find("div.metric-perc-range.ci").each(function(){
@@ -619,7 +588,7 @@ function ItemView($) {
         var biblio$ = this.renderBiblio(item.biblio, url)
         item$.find("div.biblio").append(biblio$)
 
-        var zoom$ = this.renderZoom(item.engagementTable, true)
+        var zoom$ = this.renderZoom(item.awards, true)
         item$.find("div.zoom").append(zoom$)
 
         var badges$ = this.renderBadges(item.awards)
