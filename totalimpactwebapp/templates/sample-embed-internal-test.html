@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <title>ImpactStory embed snippet test</title>
+   <title>ImpactStory embed snippet {{api_key}}</title>
    <style type="text/css">
       div.impactstory-embed {margin:100px 0 0 100px; float:left; clear:both;}
    </style>
@@ -11,10 +11,10 @@
 <body>
 <h1>Testing the ImpactStory embed code</h1>
 <p>Webapp root is <span class="val">{{ webapp_root }}</span>.</p>
-<div class="impactstory-embed" data-id="12356900" data-id-type="pmid" data-api-key="test"></div>
-<div class="impactstory-embed minibadges" data-id="19210768" data-id-type="pmid" data-api-key="test"></div>
-<div class="impactstory-embed" data-id="10.1371/journal.pbio.1000056" data-id-type="doi" data-api-key="test"></div>
-<div class="impactstory-embed" data-id="http://digitalhumanities.org/dhq/vol/3/3/000065/000065.html" data-id-type="url" data-api-key="test"></div>
+<div class="impactstory-embed" data-id="12356900" data-id-type="pmid" data-api-key="{{api_key}}"></div>
+<div class="impactstory-embed minibadges" data-id="19210768" data-id-type="pmid" data-api-key="{{api_key}}"></div>
+<div class="impactstory-embed" data-id="10.1371/journal.pbio.1000056" data-id-type="doi" data-api-key="{{api_key}}"></div>
+<div class="impactstory-embed" data-id="http://digitalhumanities.org/dhq/vol/3/3/000065/000065.html" data-id-type="url" data-api-key="{{api_key}}"></div>
 </body>
 </html>
 

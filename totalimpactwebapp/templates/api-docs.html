@@ -110,11 +110,11 @@
                      <code>data-on-finish</code>
                   </td>
                   <script type="text/javascript">
-                     countHighlys = function(dict, div$) {
+                     countBadges = function(dict, div$) {
                         div$.append(
                            "<div>"
-                                   + dict.awards.big.length
-                                   + "&nbsp;highlys!</div>"
+                                   + dict.awards.length
+                                   + "&nbsp;badges!</div>"
                         )
                      }
                   </script>
@@ -124,16 +124,16 @@
                         in assigning the badges, and a <code>div$</code> jQuery object representing this div.
                         For instance, if you define this script:
                         <pre class="prettyprint">
-countHighlys = function(dict, div$) {
+countBadges = function(dict, div$) {
    div$.append(
-      "&lt;div&gt;" +dict.awards.big.length+ "&nbsp;highlys!&lt;/div&gt;"
+      "&lt;div&gt;" +dict.awards.length+ "&nbsp;badges!&lt;/div&gt;"
    )
 }
-                        </pre> and then include <code>data-on-finish="countHighlys"</code> in your ImpactStory div,
-                        the <code>countHighlys</code> function runs when the badges are done loading.</p>
+                        </pre> and then include <code>data-on-finish="countBadges"</code> in your ImpactStory div,
+                        the <code>countBadges</code> function runs when the badges are done loading.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small" data-on-finish="countHighlys"></div>
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small" data-on-finish="countBadges"></div>
                   </td>
                </tr>
                <tr>

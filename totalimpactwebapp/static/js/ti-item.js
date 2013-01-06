@@ -191,6 +191,13 @@ function Item(itemData, itemView, $) {
                 awards.push(new Award(audienceName, engagementTypeName, engagementType))
             })
         })
+
+        // hack for backwards compatibility with Pensoft embed:
+        if (awards.length) {
+            awards.big = ["here is an item"]
+            awards.any = ["here is an item"]
+        }
+
         return awards
     }
 
@@ -402,18 +409,20 @@ function Item(itemData, itemView, $) {
     this.expandMetricMetadta = function(metrics, year) {
         var interactionDisplayNames = {
             "f1000": "recommendations",
-            "pmc_citations": "citations"
+            "pmc_citations": "citations",
+            "html_views": "html views",
+            "pdf_views": "pdf views"
         }
 
         _.map(metrics, function(metric) {
             metric.displayCount = metric.values.raw
 
-            // deal with F1000's troublesome "count." Can add others later.
+            // deal with F1000's troublesome "count" of "Yes." Can add others later.
             metric.actualCount = (metric.values.raw == "Yes") ? 1 : metric.values.raw
 
             var plural = metric.actualCount > 1
 
-            // add source and activity...
+            // add the environment and what's the user did:
             metric.environment = metric.static_meta.provider
             var interaction = metric.name.split(":")[1]
             if (interactionDisplayNames[interaction]){
@@ -423,8 +432,7 @@ function Item(itemData, itemView, $) {
             metric.displayInteraction = (plural) ? interaction : interaction.slice(0, -1)
 
 
-
-                // other things
+            // other things
             metric.referenceSetYear = year
         })
 
