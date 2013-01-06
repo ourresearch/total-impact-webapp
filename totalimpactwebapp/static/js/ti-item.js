@@ -400,17 +400,31 @@ function Item(itemData, itemView, $) {
     }
 
     this.expandMetricMetadta = function(metrics, year) {
+        var interactionDisplayNames = {
+            "f1000": "recommendations",
+            "pmc_citations": "citations"
+        }
+
         _.map(metrics, function(metric) {
             metric.displayCount = metric.values.raw
 
             // deal with F1000's troublesome "count." Can add others later.
             metric.actualCount = (metric.values.raw == "Yes") ? 1 : metric.values.raw
 
+            var plural = metric.actualCount > 1
+
             // add source and activity...
             metric.environment = metric.static_meta.provider
-            metric.interaction = metric.name.split(":")[1]
+            var interaction = metric.name.split(":")[1]
+            if (interactionDisplayNames[interaction]){
+                interaction = interactionDisplayNames[interaction]
+            }
 
-            // other things
+            metric.displayInteraction = (plural) ? interaction : interaction.slice(0, -1)
+
+
+
+                // other things
             metric.referenceSetYear = year
         })
 
