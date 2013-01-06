@@ -12,7 +12,7 @@ function Genre(name) {
         var itemsWithoutActivity = []
         for (var i=0;i<this.items.length;i++){
             var thisItem = this.items[i]
-            if (thisItem.hasAwards()) {
+            if (thisItem.dict.awards.length) {
                 renderedItems.push(thisItem.render())
             }
             else {
@@ -144,10 +144,9 @@ function CollViews() {
     }
 
     this.badgesWeight = function(dict) {
-        var weight = 0
-        weight += dict.awards.big.length * 10
-        weight += dict.awards.any.length * 1
-        return weight
+        return _.reduce(dict.awards, function(memo, metric){
+            return memo + (metric.isHighly) ? 10 : 1
+        }, 0)
     }
 
     this.finishUpdating = function(items){
