@@ -645,8 +645,8 @@ function ItemView($) {
 
         var awardsForRendering = _(awards).groupBy("isHighly")
         var badges$ = $(ich.badges({
-               big: awardsForRendering.true,
-               any:awardsForRendering.false
+               big: awardsForRendering["true"],
+               any:awardsForRendering["false"]
             }), true)
         badges$.find(".ti-badge").tooltip()
         return badges$
