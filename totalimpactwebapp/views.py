@@ -4,14 +4,48 @@ import base64
 import time
 import urlparse
 
-from flask import Flask, jsonify, json, request, redirect, abort, make_response
+from flask import request, redirect, abort, make_response
 from flask import render_template
+from flask.ext.assets import Environment, Bundle
 
 from totalimpactwebapp import app, util
-from totalimpactwebapp.models import Github
-from totalimpactwebapp import pretty_date
 
 logger = logging.getLogger("tiwebapp.views")
+
+assets = Environment(app)
+js = Bundle('js/bootstrap.js',
+            'js/bootstrapx-clickover.js',
+            'js/prettify.js',
+            'js/underscore.js',
+            'js/hmac-sha1.js',
+            'js/jquery.headerlinks.js',
+            'js/jquery.color.js',
+            'js/jquery.cookie.js',
+            'js/icanhaz.js',
+            'js/browser-fixes.js', # don't need any more, use underscore.js
+            'js/ti-item.js',
+            'js/ti-user.js',
+            'js/ti-coll.js',
+            'js/ti-ui.js',
+            'js/google-analytics.js',
+            'js/mixpanel.js',
+            filters="yui_js",
+            output='js/packed.js'
+)
+css = Bundle('css/bootstrap.css',
+            'css/prettify.css',
+            'css/jasny-bootstrap.css',
+            'css/main.css',
+            'css/create-collection.css',
+            'css/report.css',
+            filters="yui_css",
+            output="css/packed.css"
+)
+assets.register('js_all', js)
+assets.register('css_all', css)
+
+
+
 
 @app.before_request
 def log_ip_address():

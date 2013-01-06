@@ -15,39 +15,22 @@
    <![endif]-->
 
    <link href='http://fonts.googleapis.com/css?family=Rokkitt:400,700' rel='stylesheet' type='text/css' />
-   <!--<link href='http://fonts.googleapis.com/css?family=Podkova:400,700' rel='stylesheet' type='text/css'>-->
-   <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
-   <link rel="stylesheet" type="text/css" href="/static/css/prettify.css" />
-   <link rel="stylesheet" type="text/css" href="/static/css/jasny-bootstrap.css" />
-   <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
-   <link rel="stylesheet" type="text/css" href="/static/css/create-collection.css" />
-   <link rel="stylesheet" type="text/css" href="/static/css/report.css" />
    <link rel="icon" type="image/ico" href="/static/img/favicon.ico" />
+   {% assets "css_all" %}
+   <link type="text/css" rel="stylesheet" href="{{ ASSET_URL }}" />
+   {% endassets %}
 
-   <script type="text/javascript">var api_root='{{ api_root }}'</script>
-   <script type="text/javascript">var api_key='{{ api_key }}'</script>   
-   <script type="text/javascript">var request_url='{{ request_url }}'</script>   
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-   <script type="text/javascript" src="/static/js/bootstrap.js"></script>
-   <script type="text/javascript" src="/static/js/bootstrapx-clickover.js"></script>
-   <script type="text/javascript" src="/static/js/prettify.js"></script>
+   <script type="text/javascript">
+      var api_root='{{ api_root }}'
+      var api_key='{{ api_key }}'
+      var request_url='{{ request_url }}'
+   </script>
 
+   {% assets "js_all" %}
+      <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+   {% endassets %}
 
-   <script type="text/javascript" src="/static/js/underscore_1.4.3.min.js"></script>
-   <script type="text/javascript" src="/static/js/json2.min.js"></script>
-   <script type="text/javascript" src="/static/js/hmac-sha1.js"></script>
-   <script type="text/javascript" src="/static/js/jquery.headerlinks.js"></script>
-   <script type="text/javascript" src="/static/js/jquery.color.js"></script>
-   <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
-   <script type="text/javascript" src="/static/js/icanhaz.min.js"></script>
-   <script type="text/javascript" src="/static/js/browser-fixes.js"></script>
-   <script type="text/javascript" src="/static/js/ti-item.js"></script>
-   <script type="text/javascript" src="/static/js/ti-user.js"></script>
-   <script type="text/javascript" src="/static/js/ti-coll.js"></script>
-   <script type="text/javascript" src="/static/js/ti-ui.js"></script>
-
-   <script type="text/javascript" src="/static/js/google-analytics.js"></script>
-   <script type="text/javascript" src="/static/js/mixpanel.js"></script>
    <script>
       mixpanel.init("{{ mixpanel_token }}");
    </script>
@@ -131,7 +114,7 @@
       <div class="wrapper">
          <div id="footer-funders">
             <a href="http://sloan.org/">
-               <img src="{{ url_for('static', filename='img/sloan-logo.jpg') }}"  width="200"/>
+               <img src="{{ url_for('static', filename='img/sloan-logo.png') }}"  width="200"/>
             </a>
          </div>
          <div id="footer-text">
