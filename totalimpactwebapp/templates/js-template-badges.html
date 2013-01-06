@@ -4,7 +4,10 @@
    <li><span href="#"
              class="label ti-badge big-badge {{audience}} {{engagementType}}"
              rel="tooltip"
-             title="75th percentile (n&ge;{{minForAward}}) in {{engagementTypeNoun}} by {{audience}}"
+             title="{{topMetric.actualCount}} {{topMetric.environment}}
+             {{topMetric.interaction}} puts this item in the top {{topMetric.topPercent}}%
+              of articles the Web of Science indexed in {{topMetric.referenceSetYear}},
+              suggesting it&apos;s highly {{engagementType}} by {{displayAudience}}"
            >
          <span class="modifier">highly</span>
          <span class="engagement-type">{{engagementType}}</span>

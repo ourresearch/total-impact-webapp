@@ -134,6 +134,7 @@ Award.prototype = {
         this.engagementTypeNoun = this.engagementTypeNounsList[this.engagementType]
         this.topMetric = this.getTopMetric(this.metrics)
         this.isHighly = this.isHighly(this.metrics)
+        this.displayAudience = this.audience.replace("public", "the public")
     },
 
     isHighly: function(metrics){
@@ -390,22 +391,51 @@ function Item(itemData, itemView, $) {
             for (var normRefSetName in metricsDict[metricName].values) {
                 if (normRefSetName.indexOf("raw") == -1) {
                     metricsDict[metricName].percentiles = metricsDict[metricName].values[normRefSetName]
+                    metricsDict[metricName].topPercent =
+                        100 - metricsDict[metricName].percentiles.CI95_lower
                 }
             }
         }
         return metricsDict
     }
 
-    this.formatMetricCounts = function(metrics) {
+    this.expandMetricMetadta = function(metrics, year) {
         _.map(metrics, function(metric) {
             metric.displayCount = metric.values.raw
 
             // deal with F1000's troublesome "count." Can add others later.
             metric.actualCount = (metric.values.raw == "Yes") ? 1 : metric.values.raw
+
+            // add source and activity...
+            metric.environment = metric.static_meta.provider
+            metric.interaction = metric.name.split(":")[1]
+
+            // other things
+            metric.referenceSetYear = year
         })
+
 
         return metrics
     }
+
+
+
+
+    this.processDict = function(dict) {
+        console.log(dict)
+        dict.metrics = this.addMetricsInfoDataToMetrics(dict.metrics)
+        dict.metrics = this.expandMetricMetadta(dict.metrics, dict.biblio.year)
+        dict.metrics = this.getMetricPercentiles(dict.metrics)
+
+        // we're not using this now, and it breaks stuff, so commenting it out...
+//        dict.metrics = this.add_derived_metrics(dict.metrics)
+
+        dict.awards = new this.makeAwardsList(dict.metrics)
+        return dict
+    }
+
+
+
 
     /**
      * Get item data and feed it to a callback.
@@ -454,15 +484,6 @@ function Item(itemData, itemView, $) {
         var id = this.itemId
     }
 
-    this.processDict = function(dict) {
-        dict.metrics = this.formatMetricCounts(dict.metrics)
-        dict.metrics = this.getMetricPercentiles(dict.metrics)
-        dict.metrics = this.add_derived_metrics(dict.metrics)
-        dict.metrics = this.addMetricsInfoDataToMetrics(dict.metrics)
-
-        dict.awards = new this.makeAwardsList(dict.metrics)
-        return dict
-    }
 
     this.init(itemData, itemView)
     return true
@@ -542,7 +563,6 @@ function ItemView($) {
 
 
     this.renderZoom = function(awards) {
-
         // first make this into a 2-D array
         var engagementTable = {}
         engagementTable.audiences = _.chain(awards)
@@ -584,6 +604,7 @@ function ItemView($) {
     }
 
     this.renderBadges = function(awards) {
+
         var awardsForRendering = _(awards).groupBy("isHighly")
         var badges$ = $(ich.badges({
                big: awardsForRendering.true,
