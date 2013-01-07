@@ -228,7 +228,7 @@ function Item(itemData, itemView, $) {
                 ["facebook:clicks", "public", "discussed", "badge", 3],
                 ["github:forks", "public", "cited", "badge", 3],
                 ["github:stars", "public", "saved", "badge", 3],
-                ["github:watchers", "public", "saved", "badge", 3], // temp fix to make old db copies work
+                ["github:watchers", "public", "saved", "badge", 3],  // depricate this later
                 ["mendeley:career_stage"],
                 ["mendeley:country"],
                 ["mendeley:discipline"],
@@ -253,6 +253,7 @@ function Item(itemData, itemView, $) {
                 ["plosalm:pmc_unique-ip"],
                 ["plosalm:pubmed_central"],
                 ["plosalm:scopus"],                      // figure it out
+                ["plossearch:mentions", "scholars", "cited", "badge", 3],
                 ["pubmed:f1000", "scholars", "recommended", "badge", 1],
                 ["pubmed:pmc_citations", "scholars", "cited", 0, 0],
                 ["pubmed:pmc_citations_editorials", "scholars", "recommended", 0, 0],
