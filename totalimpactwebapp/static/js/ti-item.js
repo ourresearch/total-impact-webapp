@@ -228,6 +228,7 @@ function Item(itemData, itemView, $) {
                 ["facebook:clicks", "public", "discussed", "badge", 3],
                 ["github:forks", "public", "cited", "badge", 3],
                 ["github:stars", "public", "saved", "badge", 3],
+                ["github:watchers", "public", "saved", "badge", 3], // temp fix to make old db copies work
                 ["mendeley:career_stage"],
                 ["mendeley:country"],
                 ["mendeley:discipline"],
@@ -444,7 +445,6 @@ function Item(itemData, itemView, $) {
 
 
     this.processDict = function(dict) {
-        console.log(dict)
         dict.metrics = this.addMetricsInfoDataToMetrics(dict.metrics)
         dict.metrics = this.expandMetricMetadta(dict.metrics, dict.biblio.year)
         dict.metrics = this.getMetricPercentiles(dict.metrics)
