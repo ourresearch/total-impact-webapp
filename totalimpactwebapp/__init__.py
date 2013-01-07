@@ -1,4 +1,3 @@
-from totalimpactwebapp import default_settings
 import os, logging, sys
 from flask import Flask
 
@@ -13,5 +12,6 @@ logger = logging.getLogger("tiwebapp")
 
 
 app = Flask(__name__)
+app.config["ASSETS_DEBUG"] = os.getenv("ASSETS_DEBUG", "True") == "True"
 
 from totalimpactwebapp import views
