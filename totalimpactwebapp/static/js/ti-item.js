@@ -272,6 +272,7 @@ function Item(itemData, itemView, $) {
             })
         )
 
+
         this.metricInfo = metricInfo
 
         this.itemView = itemView

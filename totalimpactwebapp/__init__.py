@@ -13,6 +13,6 @@ logger = logging.getLogger("tiwebapp")
 
 
 app = Flask(__name__)
-app.config.from_object(default_settings)
+app.config["ASSETS_DEBUG"] = os.getenv("ASSETS_DEBUG", "True") == "True"
 
 from totalimpactwebapp import views
