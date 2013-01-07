@@ -23,7 +23,7 @@ var currentlyUpdating = false
 
 exampleStrings = {
     paste_input:"10.1038/171737a0\n13054692",
-    paste_webpages: "http://www.example.com\nhttp://www.zombo.com",
+    paste_webpages: "https://github.com/egonw/cdk\nhttp://www.slideshare.net/cavlec/open-content",
     crossref_input: "Watson : A Structure for Deoxyribose Nucleic Acid",
     name: "My Collection"
 }
