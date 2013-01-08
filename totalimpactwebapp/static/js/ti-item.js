@@ -227,7 +227,7 @@ function Item(itemData, itemView, $) {
                 ["facebook:likes", "public", "discussed", "badge", 3],
                 ["facebook:clicks", "public", "discussed", "badge", 3],
                 ["github:forks", "public", "cited", "badge", 3],
-                ["github:stars", "public", "saved", "badge", 3],
+                ["github:stars", "public", "recommended", "badge", 3],
                 ["github:watchers", "public", "saved", "badge", 3],  // depricate this later
                 ["mendeley:career_stage"],
                 ["mendeley:country"],
