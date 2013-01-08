@@ -669,7 +669,8 @@ function ItemView($) {
             }), true)
         badges$.find(".ti-badge").popover({
             trigger:"hover",
-            placement:"bottom"
+            placement:"bottom",
+            html:"true"
         })
         return badges$
     }
