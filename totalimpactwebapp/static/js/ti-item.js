@@ -411,17 +411,22 @@ function Item(itemData, itemView, $) {
                     var refSet
                     if (normRefSetName == "WoS") {
                         refSet = "Web of Science"
+                        storageVerb = "indexed by"
                     }
                     else if (normRefSetName == "dryad"){
                         refSet = "Dryad"
+                        storageVerb = "added to"
                     }
                     else if (normRefSetName == "figshare"){
                         refSet = "figshare"
+                        storageVerb = "added to"
                     }
                     else if (normRefSetName == "github"){
                         refSet = "GitHub"
+                        storageVerb = "added to"
                     }
                     metricsDict[metricName].refSet = refSet
+                    metricsDict[metricName].referenceSetStorageVerb = storageVerb
                 }
             }
         }
