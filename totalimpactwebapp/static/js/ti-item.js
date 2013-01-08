@@ -122,16 +122,19 @@ var Award = function(audience, engagementType, metrics) {
     this.init()
 }
 Award.prototype = {
-    engagementTypeNounsList: {
-        "viewed":"views",
-        "discussed": "discussion",
-        "saved": "saves",
-        "cited": "citation",
-        "recommended": "recommendation"
+
+    // [noun_form, display_order]
+    config: {
+        "viewed":["views", 1],
+        "discussed": ["discussion", 2],
+        "saved": ["saves", 3],
+        "cited": ["citation", 4],
+        "recommended": ["recommendation", 5]
     },
 
     init: function() {
-        this.engagementTypeNoun = this.engagementTypeNounsList[this.engagementType]
+        this.engagementTypeNoun = this.config[this.engagementType][0]
+        this.displayOrder = this.config[this.engagementType][1]
         this.topMetric = this.getTopMetric(this.metrics)
         this.isHighly = this.isHighly(this.metrics)
         this.displayAudience = this.audience.replace("public", "the public")
@@ -618,7 +621,7 @@ function ItemView($) {
             .map(function(awards, audienceName) {
                 return {
                     audience: audienceName,
-                    cells: awards
+                    cells:_.sortBy(awards, function(x){ return x.displayOrder})
                 }
             })
             .sortBy(function(x){ return x.audience})
