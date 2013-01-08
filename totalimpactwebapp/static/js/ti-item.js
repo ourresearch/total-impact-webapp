@@ -411,11 +411,22 @@ function Item(itemData, itemView, $) {
                     var refSet
                     if (normRefSetName == "WoS") {
                         refSet = "Web of Science"
+                        storageVerb = "indexed by"
                     }
                     else if (normRefSetName == "dryad"){
                         refSet = "Dryad"
+                        storageVerb = "added to"
+                    }
+                    else if (normRefSetName == "figshare"){
+                        refSet = "figshare"
+                        storageVerb = "added to"
+                    }
+                    else if (normRefSetName == "github"){
+                        refSet = "GitHub"
+                        storageVerb = "added to"
                     }
                     metricsDict[metricName].refSet = refSet
+                    metricsDict[metricName].referenceSetStorageVerb = storageVerb
                 }
             }
         }
@@ -564,9 +575,6 @@ function ItemView($) {
 
         biblio.url = url
         biblio.title = biblio.title || "no title"
-        if (biblio.create_date) {
-            biblio.year = biblio.create_date.slice(0,4)
-        }
         if (biblio.authors) {
             // screws up names w/ commas in them
             var auths = biblio.authors.split(",", 3).join(",") // first 3 authors
