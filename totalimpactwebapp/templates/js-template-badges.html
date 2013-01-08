@@ -4,12 +4,13 @@
    <li><span href="#"
              class="label ti-badge big-badge {{audience}} {{engagementType}}"
              rel="tooltip"
-             title="{{topMetric.actualCount}} {{topMetric.environment}}
-             {{topMetric.displayInteraction}} puts this in the top
-             {{topMetric.topPercent}}% of articles
-             indexed by Web of Science in {{topMetric.referenceSetYear}},
-             indicating it&apos;s highly
-             {{engagementType}} by {{displayAudience}}. Click to learn more."
+             title="Highly {{engagementType}} by {{displayAudience}}"
+             data-content="This item has {{topMetric.actualCount}} {{topMetric.environment}}
+             {{topMetric.displayInteraction}}. That&apos;s better than
+             {{topMetric.percentiles.CI95_lower}}% of articles
+             indexed by {{topMetric.refSet}} in {{topMetric.referenceSetYear}},
+             suggesting it&apos;s highly {{engagementType}} by {{displayAudience}}.
+             Click to learn more."
            >
          <span class="modifier">highly</span>
          <span class="engagement-type">{{engagementType}}</span>
@@ -21,9 +22,10 @@
    <li><span href="#"
              class="label ti-badge lil-badge {{audience}} {{engagementType}}"
              rel="tooltip"
-             title="{{topMetric.actualCount}} {{topMetric.environment}}
-             {{topMetric.displayInteraction}} indicates
-             this item is {{engagementType}} by {{displayAudience}}.
+             title="{{engagementType}} by {{displayAudience}}"
+             data-content="This item has {{topMetric.actualCount}} {{topMetric.environment}}
+             {{topMetric.displayInteraction}}, suggesting it&apos;s been
+             {{engagementType}} by {{displayAudience}}.
              Click to learn more."
            >
          <span class="engagement-type">{{engagementType}}</span>
