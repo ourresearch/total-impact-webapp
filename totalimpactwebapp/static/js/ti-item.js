@@ -570,9 +570,6 @@ function ItemView($) {
 
         biblio.url = url
         biblio.title = biblio.title || "no title"
-        if (biblio.create_date) {
-            biblio.year = biblio.create_date.slice(0,4)
-        }
         if (biblio.authors) {
             // screws up names w/ commas in them
             var auths = biblio.authors.split(",", 3).join(",") // first 3 authors
