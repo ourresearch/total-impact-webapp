@@ -32,6 +32,7 @@ js = Bundle('js/bootstrap.js',
             filters="yui_js",
             output='js/packed.js'
 )
+
 css = Bundle('css/bootstrap.css',
             'css/prettify.css',
             'css/jasny-bootstrap.css',
@@ -41,8 +42,18 @@ css = Bundle('css/bootstrap.css',
             filters="yui_css",
             output="css/packed.css"
 )
+
+js_widget = Bundle('js/icanhaz.js',
+                   'js/bootstrap-tooltip-and-popover.js',
+                   'js/underscore.js',
+                   'js/ti-item.js',
+                   filters="yui_js",
+                   output="js/widget.js",
+)
+assets.register('js_widget', js_widget)
 assets.register('js_all', js)
 assets.register('css_all', css)
+
 
 
 
@@ -80,19 +91,20 @@ def home():
 def impactstory_dot_js():
 
     badges_template = render_template("js-template-badges.html").replace("\n", "")
-    ich_def = open(os.path.dirname(__file__) + "/static/js/icanhaz.min.js", "r").read()
-    ti_item_def = open(os.path.dirname(__file__) + "/static/js/ti-item.js", "r").read()
-    underscore_def = open(os.path.dirname(__file__) + "/static/js/underscore_1.4.3.min.js", "r").read()
+
+    # First build the concatenated js file for the widget. Building makes a file.
+    # Then open the file and put it in the template to return.
+
+    js_widget.build() # always build this, whether dev in dev env or not
+    libs = open(os.path.dirname(__file__) + "/static/js/widget.js", "r").read()
 
     rendered = render_template(
         "impactstory.js",
-        ich=ich_def,
-        ti_item=ti_item_def,
-        underscore=underscore_def,
         badges_template=badges_template,
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
+        libs=unicode(libs, "utf-8"),
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
         api_root=os.environ["API_ROOT"],
-        api_key=os.environ["API_KEY"],                
+        api_key=os.environ["API_KEY"],
         webapp_root=os.environ["WEBAPP_ROOT"]
     )
     resp = make_response(rendered)

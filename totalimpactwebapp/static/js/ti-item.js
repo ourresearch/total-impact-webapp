@@ -122,16 +122,19 @@ var Award = function(audience, engagementType, metrics) {
     this.init()
 }
 Award.prototype = {
-    engagementTypeNounsList: {
-        "viewed":"views",
-        "discussed": "discussion",
-        "saved": "saves",
-        "cited": "citation",
-        "recommended": "recommendation"
+
+    // [noun_form, display_order]
+    config: {
+        "viewed":["views", 1],
+        "discussed": ["discussion", 2],
+        "saved": ["saves", 3],
+        "cited": ["citation", 4],
+        "recommended": ["recommendation", 5]
     },
 
     init: function() {
-        this.engagementTypeNoun = this.engagementTypeNounsList[this.engagementType]
+        this.engagementTypeNoun = this.config[this.engagementType][0]
+        this.displayOrder = this.config[this.engagementType][1]
         this.topMetric = this.getTopMetric(this.metrics)
         this.isHighly = this.isHighly(this.metrics)
         this.displayAudience = this.audience.replace("public", "the public")
@@ -403,6 +406,16 @@ function Item(itemData, itemView, $) {
                     metricsDict[metricName].percentiles = metricsDict[metricName].values[normRefSetName]
                     metricsDict[metricName].topPercent =
                         100 - metricsDict[metricName].percentiles.CI95_lower
+
+                    // hacky short-term way to determine which reference set was used
+                    var refSet
+                    if (normRefSetName == "WoS") {
+                        refSet = "Web of Science"
+                    }
+                    else if (normRefSetName == "dryad"){
+                        refSet = "Dryad"
+                    }
+                    metricsDict[metricName].refSet = refSet
                 }
             }
         }
@@ -412,9 +425,7 @@ function Item(itemData, itemView, $) {
     this.expandMetricMetadta = function(metrics, year) {
         var interactionDisplayNames = {
             "f1000": "recommendations",
-            "pmc_citations": "citations",
-            "html_views": "html views",
-            "pdf_views": "pdf views"
+            "pmc_citations": "citations"
         }
 
         _.map(metrics, function(metric) {
@@ -427,7 +438,7 @@ function Item(itemData, itemView, $) {
 
             // add the environment and what's the user did:
             metric.environment = metric.static_meta.provider
-            var interaction = metric.name.split(":")[1]
+            var interaction = metric.name.split(":")[1].replace("_", " ")
             if (interactionDisplayNames[interaction]){
                 interaction = interactionDisplayNames[interaction]
             }
@@ -610,7 +621,7 @@ function ItemView($) {
             .map(function(awards, audienceName) {
                 return {
                     audience: audienceName,
-                    cells: awards
+                    cells:_.sortBy(awards, function(x){ return x.displayOrder})
                 }
             })
             .sortBy(function(x){ return x.audience})
@@ -650,7 +661,10 @@ function ItemView($) {
                big: awardsForRendering["true"],
                any:awardsForRendering["false"]
             }), true)
-        badges$.find(".ti-badge").tooltip()
+        badges$.find(".ti-badge").popover({
+            trigger:"hover",
+            placement:"bottom"
+        })
         return badges$
     }
 

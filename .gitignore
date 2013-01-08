@@ -6,6 +6,7 @@ src*
 .Python
 doc/_build/*
 /nbproject
+.webassets-cache
 build
 dist
 venv
