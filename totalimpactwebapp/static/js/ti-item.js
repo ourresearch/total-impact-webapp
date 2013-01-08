@@ -415,6 +415,12 @@ function Item(itemData, itemView, $) {
                     else if (normRefSetName == "dryad"){
                         refSet = "Dryad"
                     }
+                    else if (normRefSetName == "figshare"){
+                        refSet = "figshare"
+                    }
+                    else if (normRefSetName == "github"){
+                        refSet = "GitHub"
+                    }
                     metricsDict[metricName].refSet = refSet
                 }
             }
