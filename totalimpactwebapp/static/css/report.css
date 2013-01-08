@@ -255,6 +255,9 @@ li.item div.item-header div.badges ul.ti-badges li span.ti-badge {
   font-weight: normal;
   padding: 3px 6px;
 }
+li.item div.item-header div.badges ul.ti-badges li span.ti-badge span.audience {
+  display: none;
+}
 li.item div.item-header div.badges ul.ti-badges li span.ti-badge.scholars {
   background: #377eb8;
   border: 1px solid #377eb8;
