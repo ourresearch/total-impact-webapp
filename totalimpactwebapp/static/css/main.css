@@ -516,6 +516,9 @@ th {
   color: #fff;
   border: none;
 }
+#faq li {
+  list-style-type: circle;
+}
 #faq {
   background: #fff;
   padding-bottom: 50px;
