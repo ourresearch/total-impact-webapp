@@ -90,11 +90,12 @@ def home():
 @app.route("/embed/v1/impactstory.js")
 def impactstory_dot_js():
 
-    badges_template = render_template("js-template-badges.html").replace("\n", "")
+    badges_template = render_template("js-template-badges.html")\
+        .replace("\n", "")\
+        .replace("'", "&apos;")
 
     # First build the concatenated js file for the widget. Building makes a file.
     # Then open the file and put it in the template to return.
-
     js_widget.build() # always build this, whether dev in dev env or not
     libs = open(os.path.dirname(__file__) + "/static/js/widget.js", "r").read()
 
