@@ -200,8 +200,10 @@
 
         requestStylesheet("http://" + webappRoot + "/static/css/embed.css");
         jQuery(document).ready(function ($) {
+            var badgesTemplateStr = '{{ badges_template }}'
+            badgesTemplateStr = badgesTemplateStr.replace("&apos;", "'")
 
-            ich.addTemplate("badges", '{{ badges_template }}')
+            ich.addTemplate("badges", badgesTemplateStr)
             var allParams = [] // holds every param obj created; there's one per widget.
 
 
