@@ -136,11 +136,11 @@ Award.prototype = {
         this.engagementTypeNoun = this.config[this.engagementType][0]
         this.displayOrder = this.config[this.engagementType][1]
         this.topMetric = this.getTopMetric(this.metrics)
-        this.isHighly = this.isHighly(this.metrics)
+        this.isHighly = this.calculateIsHighly(this.metrics)
         this.displayAudience = this.audience.replace("public", "the public")
     },
 
-    isHighly: function(metrics){
+    calculateIsHighly: function(metrics){
 
         return _.some(metrics, function(metric){
             if (typeof metric.percentiles === "undefined") {

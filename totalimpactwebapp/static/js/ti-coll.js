@@ -3,8 +3,17 @@ function Genre(name) {
     this.name = name
     this.items = []
 
-    this.render = function(){
+    this.sortItems = function(items) {
+        return _.sortBy(items, function(item){
+            var badgesSortFactor = _.reduce(item.dict.awards, function(memo, award){
+                return memo + ((award.isHighly) ? 10 : 1)
+            }, 0)
+            return badgesSortFactor
+        }).reverse()
+    }
 
+    this.render = function(){
+        this.items = this.sortItems(this.items)
 
         var genre$ = $(ich.genreTemplate({name:this.name}, true))
 
@@ -165,18 +174,8 @@ function CollViews() {
     }
 
     this.render = function(itemObjsDict) {
-        var thisNow = this
 
-        // convert items dict into array and sort it
-        var itemObjs = []
-        for (tiid in itemObjsDict) {
-            itemObjs.push(itemObjsDict[tiid])
-        }
-
-        itemObjs.sort(function(a,b) {
-            return thisNow.badgesWeight(b.dict) -  thisNow.badgesWeight(a.dict)
-        })
-
+        var itemObjs = _.values(itemObjsDict)
         var genreList = new GenreList(itemObjs)
         genreList.render()
 
