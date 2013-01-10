@@ -637,6 +637,7 @@ function ItemView($) {
             .value()
 
         var zoom$ = $(ich.zoomTable(engagementTable, true))
+
         var thisThing = this
         zoom$.find("div.metric-perc-range.ci").each(function(){
 
@@ -684,11 +685,19 @@ function ItemView($) {
         var biblio$ = this.renderBiblio(item.biblio, url)
         item$.find("div.biblio").append(biblio$)
 
-        var zoom$ = this.renderZoom(item.awards, true)
-        item$.find("div.zoom").append(zoom$)
+        if (item.awards.length > 0) {
+            var zoom$ = this.renderZoom(item.awards, true)
+            item$.find("div.zoom").append(zoom$)
 
-        var badges$ = this.renderBadges(item.awards)
-        item$.find("div.badges").append(badges$)
+            var badges$ = this.renderBadges(item.awards)
+            item$.find("div.badges").append(badges$)
+        }
+        else {
+            item$.find("div.zoom").append(
+                "<span>We weren't able to find any impact data for this item</span>")
+            item$.addClass("no-data")
+
+        }
 
         return item$
     }
