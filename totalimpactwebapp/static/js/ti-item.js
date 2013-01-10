@@ -665,6 +665,7 @@ function ItemView($) {
 
     this.renderBadges = function(awards) {
 
+        awards = _.sortBy(awards, "audience").reverse()
         var awardsForRendering = _(awards).groupBy("isHighly")
         var badges$ = $(ich.badges({
                big: awardsForRendering["true"],
