@@ -55,28 +55,27 @@ function Genre(name) {
 }
 
 function GenreList(items) {
-    this.genres = {}
-
-    // put the items in the correct genre objects
-    for (var i=0; i<items.length; i++){
-        var genreName = items[i].dict.biblio.genre
-        if (!this.genres[genreName]) {
-            this.genres[genreName] = new Genre(genreName)
-        }
-        this.genres[genreName].items.push(items[i])
-
-
-    }
+    var itemGroupsByGenre = _.groupBy(items, function(item) {
+        return item.dict.biblio.genre
+    })
+    this.genres = _.map(itemGroupsByGenre, function(items, genreName){
+        var genre = new Genre(genreName)
+        genre.items = items
+        return genre
+    })
 
     this.render = function(){
-        var genres = []
-        for (var thisGenreName in this.genres){
-            var renderedGenre = this.genres[thisGenreName].render()
-            genres.push(renderedGenre)
-        }
+
+        var renderedGenres = _.chain(this.genres)
+            .sortBy("name")
+            .map(function(genre){
+                return genre.render()
+            })
+            .value()
+
         $("div.genre").remove()
         $("div.tooltip").remove() // otherwise tooltips from removed badges stick around
-        $("#metrics div.wrapper").append(genres)
+        $("#metrics div.wrapper").append(renderedGenres)
     }
 }
 
