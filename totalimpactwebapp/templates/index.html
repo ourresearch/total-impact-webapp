@@ -2,20 +2,17 @@
 
 {% block content %}
 
+<script type="text/javascript">
+   mixpanel.track("View:docs", {"Doc Type": "home page"});
+</script>
+
 <div id="tagline">
     <div id="img-bar">
         <div class="wrapper">
            <div id="myCarousel" class="carousel slide">
               <!-- Carousel items -->
               <div class="carousel-inner">
-                 <div class="active item">
-                    <img src="{{ url_for('static', filename='img/carousel-new.png') }}">
-                    <div class="carousel-caption">
-                       <h4>Now with ORCID support</h4>
-                       <p>Easily import articles from your ORCID profile.</p>
-                    </div>
-                 </div>
-                 <div class="item">
+                 <div class="item active">
                     <img src="{{ url_for('static', filename='img/carousel-badges.png') }}">
                     <div class="carousel-caption">
                        <h4>See your impact at a glance</h4>
@@ -73,6 +70,7 @@
          <li><img src="{{ url_for('static', filename='img/logos/dryad.png') }}" /></li>
          <li><img src="{{ url_for('static', filename='img/logos/f1000.png') }}" /></li>
          <li><img src="{{ url_for('static', filename='img/logos/facebook.png') }}" /></li>
+         <li><img src="{{ url_for('static', filename='img/logos/figshare.png') }}" /></li>
          <li><img src="{{ url_for('static', filename='img/logos/github.png') }}" /></li>
          <li><img src="{{ url_for('static', filename='img/logos/mendeley.png') }}" /></li>
          <li><img src="{{ url_for('static', filename='img/logos/orcid.png') }}" /></li>
@@ -99,8 +97,8 @@
             <p>Use ImpactStory's full-featured API to add metrics to your own projects. Or drop our embeddable Javascript widget into your publishing platform's HTML. </p>
         </li>
         <li>
-            <h3 id="its-on-us">it's on us.</h3>
-            <p>Our metrics data (like our source code) is completely open and free of charge. <p>As a philanthropically-funded not-for-profit, we're in this because we believe open altmetrics are key for building the coming era of Web-native science.</p>
+            <h3 id="its-open">Open data, open source.</h3>
+            <p>Our data (like our source code) is wide open.  As a non-profit organization, we are in this because we believe open altmetrics are key for building the coming era of Web-native science.</p>
         </li>
     </ul>
 </div>

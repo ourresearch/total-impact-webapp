@@ -23,10 +23,14 @@ body {
   height: 100%;
   padding-bottom: 0;
 }
+body div#container {
+  min-width: 1100px;
+}
 body div#namechange {
   font-size: 16px;
   background: #444;
   color: #fff;
+  min-width: 1100px;
   text-align: center;
   padding: 10px 0;
 }
@@ -57,11 +61,6 @@ ol {
 ol li {
   list-style-type: decimal;
   margin-bottom: .5em;
-}
-pre {
-  margin-left: 0;
-  padding-left: 0;
-  margin-top: 0;
 }
 legend {
   border-bottom: none;
@@ -94,9 +93,15 @@ a {
   cursor: pointer;
 }
 p,
-ul {
+ul,
+ol {
   line-height: 1.5;
   font-size: 16px;
+}
+p li,
+ul li,
+ol li {
+  line-height: 1.5;
 }
 span.icon.help {
   padding: 0 9px;
@@ -410,7 +415,7 @@ div#tagline #button-bar p#example-collection a:hover {
   color: #ff4e00;
 }
 div#sources {
-  padding: 20px 0 0 0 ;
+  padding: 30px 0 0 0 ;
   background: #fff;
   height: 127px;
   width: 100%;
@@ -511,6 +516,9 @@ th {
   color: #fff;
   border: none;
 }
+#faq li {
+  list-style-type: circle;
+}
 #faq {
   background: #fff;
   padding-bottom: 50px;
@@ -524,6 +532,11 @@ ul#providers-metadata li ul li {
 }
 ul#providers-metadata li img {
   margin-bottom: -0.2em;
+}
+ul#providers-metadata span.csv-name {
+  font-family: monaco, consolas, monospace;
+  color: #777;
+  font-size: 10px;
 }
 #toc {
   border: 1px solid #333333;
@@ -569,6 +582,10 @@ div#about ul {
 div#about ul li {
   list-style-type: circle;
 }
+div#about div#contact p {
+  padding: 15px;
+  margin: -15px 0 0 -15px;
+}
 /* "api" page
 *****************************************************************************
 *****************************************************************************
@@ -577,27 +594,43 @@ table {
   border-collapse: collapse;
   padding: 2px;
   border-color: #ccc;
-  width: 700px;
+  width: 100%;
+  margin: 50px 0;
 }
 td {
-  padding: 3px 8px;
+  padding: 15px 8px;
   border: 1px solid #ccc;
   border-left: none;
   border-right: none;
 }
-th {
-  background: #FF4E00;
-  color: #fff;
-  border: none;
+td pre.prettyprint {
+  padding-bottom: 0;
 }
-h2#api {
+td.attr {
+  min-width: 150px;
+}
+td.example {
+  width: 100px;
+}
+td.example div.impactstory-embed div {
+  font-size: 12px;
+  color: red;
+  font-weight: bold;
+  margin: 5px 0;
   clear: both;
-  /* clears the floated ti-data embedded stuff */
-
-  padding-top: 70px;
+}
+th {
+  border: none;
+  background: #fff;
+  color: #555;
+  text-align: left;
+  padding-left: 5px;
 }
 h3.apicall:first-of-type {
   margin-top: 50px;
+}
+div.example {
+  clear: both;
 }
 div#api {
   margin-top: 120px;
@@ -623,11 +656,30 @@ a.tocBackLink {
 }
 pre {
   font-family: consolas, monospace;
-  background: #333;
-  color: #eee;
-  padding: 1em;
-  width: 965px;
-  overflow-x: scroll;
+  display: block;
+  padding: 10px;
+  margin: 0 0 9px;
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-all;
+  word-wrap: break-word;
+  white-space: pre;
+  white-space: pre-wrap;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+pre.prettyprint {
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+.pre-scrollable {
+  max-height: 340px;
+  overflow-y: scroll;
 }
 h3.apicall {
   white-space: normal !important;
@@ -641,8 +693,28 @@ div#docs h4 {
   font-size: 22px;
   margin-bottom: 5px;
 }
-div#docs ul.metrics {
+div#docs h3 {
+  margin-top: 90px;
+}
+div#docs h2 {
+  margin-top: 50px;
+}
+div#docs li {
+  margin-left: 1em;
+}
+div#docs ol {
+  padding-left: 0;
   margin-left: 0;
+}
+div#docs ul li {
+  list-style-type: disc;
+}
+div#docs div.impactstory-embed {
+  float: left;
+  margin: 22px 15px 17px 5px;
+}
+div#docs ul#required-attributes li {
+  margin-bottom: 15px;
 }
 .description {
   /*    margin-left: 50px;*/
@@ -670,7 +742,6 @@ div#footer div.wrapper {
   border: 1px solid #aaa;
   border-bottom: none;
   height: 50px;
-  width: 1100px;
   -moz-border-radius-topleft: 10px;
   -webkit-border-top-left-radius: 10px;
   -moz-border-radius-topright: 10px;
@@ -684,13 +755,19 @@ div#footer p {
   font-size: 14px;
   line-height: 1.3;
 }
-div#footer img {
+div#footer-funders img {
   float: left;
   padding-right: 20px;
   padding-left: 10px;
 }
 div#footer-text {
+  float: left;
+  padding-right: 20px;
   padding-top: 12px;
+}
+div#footer-powered-by {
+  padding-top: 12px;
+  float: right;
 }
 div.tooltip {
   font-size: 12px;
@@ -703,4 +780,7 @@ div.tooltip.in {
 div.tooltip div.tooltip-inner {
   padding-top: 8px;
   padding-bottom: 8px;
+}
+code {
+  color: #000;
 }

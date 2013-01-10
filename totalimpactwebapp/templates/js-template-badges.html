@@ -1,0 +1,36 @@
+<ul class="ti-badges">
+{% raw %}
+   {{#big}}
+   <li><span href="#"
+             class="label ti-badge big-badge {{audience}} {{engagementType}}"
+             rel="tooltip"
+             title="Highly {{engagementType}} by {{displayAudience}}"
+             data-content="This item has {{topMetric.actualCount}} {{topMetric.environment}}
+             {{topMetric.displayInteraction}}. That's better than
+             {{topMetric.percentiles.CI95_lower}}% of items
+             {{topMetric.referenceSetStorageVerb}} {{topMetric.refSet}} in {{topMetric.referenceSetYear}},
+             suggesting it's highly {{engagementType}} by {{displayAudience}}.
+             Click to learn more."
+           >
+         <span class="modifier">highly</span>
+         <span class="engagement-type">{{engagementType}}</span>
+         <span class="audience">by {{audience}}</span>
+      </span></li>
+   {{/big}}
+
+   {{#any}}
+   <li><span href="#"
+             class="label ti-badge lil-badge {{audience}} {{engagementType}}"
+             rel="tooltip"
+             title="{{engagementType}} by {{displayAudience}}"
+             data-content="This item has {{topMetric.actualCount}} {{topMetric.environment}}
+             {{topMetric.displayInteraction}}, suggesting it's been
+             {{engagementType}} by {{displayAudience}}.
+             Click to learn more."
+           >
+         <span class="engagement-type">{{engagementType}}</span>
+         <span class="audience">by {{audience}}</span>
+      </span></li>
+   {{/any}}
+{% endraw %}
+</ul>

@@ -2,419 +2,198 @@
 
 {% block content %}
 
-<div class="main" id="docs">
+<script type="text/javascript">
+   mixpanel.track("View:docs", {"Doc Type": "api docs"});
+</script>
+
+<div class="main" id="docs" xmlns="http://www.w3.org/1999/html">
     <div class="wrapper">
 
-        <div id="toc"></div>
+        <h2 id="embed">Recommended approach: JavaScript widget</h2>
 
-        <h2 id="embed">recommended approach: embed code</h2>
-
-            <p>The easiest way to include ImpactStory metrics in a webpage is through  embed code.  To use the ImpactStory embed code in your webapge, simply include the code below in a webpage, exactly as given, subtituting the placeholder "doi:10.1371/journal.pcbi.1000355" string with your doi or other valid "namespace:id" string. </p>
-
-            <p>We plan to refine and simplify this embed code in response to feedback: please let us know what you think, and join the <a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">total-impact newsgroup</a> if you'd like to be informed of changes (we're in the process of renaming this).</p>
-
-            <p>To use, embed this code on the page that has the item you want to track (currently only works for one item per page). The item's id (url, doi, etc.) goes in the <code>#ti-id</code> span; results will be put in the <code>#ti-data</code> div.</p>
-
-            <div class="rawembedcode"><pre>
-{{
-'<script type="text/javascript" src="http://impactstory.org/static/js/total-impact-item.js"></script>
-<span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
-<div id="ti-data"><!--ImpactStory puts data here--></div>'|escape()
-}}
+            <p>The easiest way to include ImpactStory metrics on a webpage is via our JavaScript widget, shown below. There are two steps:</p>
+            <ol>
+               <li>Paste this script at the top of your page:
+               <div class="rawembedcode"><pre class="prettyprint">
+{{'<script type="text/javascript" src="http://impactstory.org/embed/v1/impactstory.js"></script>'|escape()}}
             </pre></div>
-            
-            <p>Here's the code above, embedded live on this page:</p>
-
-            <script type="text/javascript" src="http://impactstory.org/static/js/total-impact-item.js"></script>
-            <span id="ti-id">doi:10.1371/journal.pcbi.1000355</span>
-            <div id="ti-data"></div>
-
-        <br>
-        <h2 id="api">more versatile approach: REST api.</h2>
-
-            <p>If the embed code described above doesn't meet your needs, you can use our api directly.  The ImpactStory webapp itself is built directly on top of this api. </p>
-
-            <ul>
-                <!--li>api root is at http://api.impactstory.org</li-->
-                <li>api calls return JSON</li>
-                <li>api calls return return 500 in case of internal error</li>
-                <li>Cross-Origin Resource Sharing (CORS) is enabled</li>    
-                <!--li>please pass in email=YOUREMAIL to all requests</li-->
-                <li>after an item has been assigned a ImpactStory id (tiid), ImpactStory will periodically update its metric values.</li>
-            </ul>
-
-            <p>Here are the API methods:</p>
+                  </li>
+               <li>
+                  Paste this div where you want the badges to show.
+                  <div class="rawembedcode"><pre class="prettyprint">
+{{'<div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS"></div>'|escape()}}
+            </pre></div>
+               </li>
+            </ol>
 
 
-        <h3 class="apicall">GET /</h3>
-        <div class="description">
-            Welcome to the API.
+       <p>To use the widget, <a href="mailto:team@impactstory.org?subject=API key request">get your free API key</a>
+          and embed the widget on your page. Your free API key works for 1000 unique items;
+          for more than that, you can pay a <a href="/pricing">cost-recovery fee</a>
+          and <em>register</em> the additional items.</p>
 
-            <h4>returns</h4>
-            A welcome message.
+       <p>There are two ways to register additional items:</p>
+       <ul>
+          <li>register a DOI range (like “10.myjournal.*) with us directly (<a href="mailto:team@impactstory.org">contact us</a> for details), or</li>
+          <li>register items individually using our <a href="http://docs.impactstory.apiary.io">REST API</a>.</li>
+       </ul>
 
-            <h4>example</h4> 
-            <div class="apicall"><pre>
-curl -i -X GET http://api.impactstory.org
+
+       <h3>Example</h3>
+       <script type="text/javascript" src="http://{{ webapp_root }}/embed/v1/impactstory.js"></script>
+       <div class="example">
+          <div class="impactstory-embed" id="impactstory" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS" ></div>
+          <p>To the left, you can see the result, embedded live on this page: metrics for a sample article,
+             <a href="http://impactstory.org/item/pmid/19210768">"Mega-phylogeny approach for comparative
+                biology: an alternative to supertree and supermatrix approaches."</a>
+             Hover over each badge to see a brief description; to dive in deeper, click and you'll reach the
+             item page, which has more details, explanation, and context.
+          </p>
+             <p>You can embed badges next to multiple items on the
+             same page, which is handy for CVs or tables of contents; for example, here are badges for another article,
+             <a href="http://impactstory.org/item/doi/10.1002/mrc.2260">Multistep correlations via covariance processing of COSY/GCOSY spectra: opportunities and artifacts</a>
+                <span class="impactstory-embed inline" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small" data-show-logo="false"></span>.
+            You can display badges inline like this by embedding them as a span instead of a div (keeping everything else the same).
+          </p>
+       </div>
+
+       <h3>Required attributes</h3>
+       <p>The JavaScript widget requires three parameters, which are fed in via <code>data-</code> attributes in the embedded div</code>:</p>
+         <ul id="required-attributes">
+            <li><code>data-id</code> uniquely identifies the items you want metrics form. We accept several types of ID,
+               including <a href="http://en.wikipedia.org/wiki/PubMed#PubMed_identifier">PubMed ID</a>and 
+                <a href="http://en.wikipedia.org/wiki/Digital_object_identifier">DOI</a>. You can also use a url (expressed with http:// prefix) if the only identifier for a research object is its webpage url (SlideShare slides, GitHub software repository, articles without DOIs).  If there's another type of identifier you'd like
+               to see supported, let us know; we'll be adding more. </li>
+            <li><code>data-id-type</code> is the type of identifier you've used; it must be one of
+               <code>doi</code>, <code>pmid</code>, or <code>url</code>.</li>
+            <li><code>data-api-key</code> is the unique key we've assigned your organization. It's easy and free to get
+            one; just <a href="javascript:UserVoice.showPopupWidget();">submit a ticket</a> or
+               <a href="mailto:team@impactstory.org">drop us an email</a>. Of course, since the key
+               will be served along with your page, it's not really secret, but it's helpful for us
+               in debugging and tracking usage.</code></li>
+         </ul>
 
 
-{
-    "contact": "team@impactstory.org",
-    "hello": "world", 
-    "message": "Congratulations! You have found the ImpactStory API.",
-    "moreinfo": "http://total-impact.tumblr.com/",
-    "version": "jean-claude"
+
+
+
+       <h3 id="optional-attributes">Optional attributes</h3>
+       <p>You can also customize the display of badges using one of several of optional <code>data-</code> attributes:</p>
+
+            <table>
+               <tr><th>Attribute</th><th>Does</th><th>Looks like</th></tr>
+               <tr>
+                  <td class="attr">
+                     <code>data-badge-size</code>
+                  </td>
+                  <td>
+                     <p>Set to <code>"small"</code> to display smaller badges.</p>
+                  </td>
+                  <td class="example">
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS"></div>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="attr">
+                     <code>data-badge-type</code>
+                  </td>
+                  <td>
+                     <p>Set to <code>"icon"</code> to display icons showing engagement type, rather than the word; useful for if you don't have a lot of space. Solid-colored badges still denote 75th percentile.</p>
+                  </td>
+                  <td class="example">
+                     <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-badge-size="small" data-api-key="API-DOCS" data-badge-type="icon"></div>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="attr">
+                     <code>data-on-finish</code>
+                  </td>
+                  <script type="text/javascript">
+                     countBadges = function(dict, div$) {
+                        div$.append(
+                           "<div>"
+                                   + dict.awards.length
+                                   + "&nbsp;badges!</div>"
+                        )
+                     }
+                  </script>
+                  <td>
+                     <p>The name of a javascript callback to run, defined in the global (window) namespace.
+                        The function will be fed two arguments: a <code>dict</code> object that includes all underlaying data used
+                        in assigning the badges, and a <code>div$</code> jQuery object representing this div.
+                        For instance, if you define this script:
+                        <pre class="prettyprint">
+countBadges = function(dict, div$) {
+   div$.append(
+      "&lt;div&gt;" +dict.awards.length+ "&nbsp;badges!&lt;/div&gt;"
+   )
 }
-                </pre></div>
+                        </pre> and then include <code>data-on-finish="countBadges"</code> in your ImpactStory div,
+                        the <code>countBadges</code> function runs when the badges are done loading.</p>
+                  </td>
+                  <td class="example">
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small" data-on-finish="countBadges"></div>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="attr">
+                     <code>data-verbose-badges</code>
+                  </td>
+                  <td>
+                     <p>Set to <code>true</code> to make badges explicitly report the <em>audience</em> they apply to, instead
+                     of just relying on color-coding and tooltips.</p>
+                  </td>
+                  <td class="example">
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-verbose-badges="true"></div>
+                  </td>
+               <tr>
+                  <td class="attr">
+                     <code>data-show-logo</code>
+                  </td>
+                  <td>
+                     <p>Set to <code>false</code> to hide the ImpactStory logo.</p>
+                  </td>
+                  <td class="example">
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-show-logo="false"></div>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="attr">
+                     <code>data-show-badges</code>
+                  </td>
+                  <td>
+                     <p>Set to <code>false</code> to hide the ImpactStory badges. Clicking the logo will
+                        still open a new tab showing this item's report page on impactstory.org.</p>
+                  </td>
+                  <td class="example">
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-show-badges="FALSE"></div>
+                  </td>
+               </tr>
+               </tr>
+            </table>
 
+
+
+        <div class="example"> <!--it's not an example, but sort of follows the same flow... -->
+
+            <p>Scopus and CiteULike metrics are not available in the widget.  
+            </p>
+            <p>
+               If you've got any feedback, ideas, or questions,
+               <a href="javascript:UserVoice.showPopupWidget();"
+                  title="Open feedback & support dialog (powered by UserVoice)">let us know!</a>
+               We're planning to roll out alternative sizes and styles of badges in the near future,
+               and we'd love any comments.
+            </p>
         </div>
 
-        <h3 class="apicall">POST /item/:namespace/:namespaceid</h3>
-        <div class="description">
-            Assign a ImpactStory ID (tiid) to an item if it doesn't have one yet.  Returns the assigned tiid.
+        <h2 id="api">More versatile approach: REST api.</h2>
 
-            <h4>returns</h4>
-            Return the tiid for the item (return code 201).
-
-            <h4>example</h4> 
-
-            <div class="apicall"><pre>
-curl -i -X POST -H "Content-Type: application/json" -d '{}' http://api.total-impact.org/item/doi/10.1371/journal.pcbi.1000361
-
-
-"1b2f4fc2bea711e1bdf912313d1a5e63"
-                </pre></div>
-        </div>
-
-        <h3 class="apicall">GET /tiid/:namespace/:namespaceid</h3>
-        <div class="description">
-            Get the ImpactStory ID (tiid) of an item.
-
-            <h4>returns</h4>
-            The tiid for an item if one has been previously assigned (return code 303), otherwise an error.
-
-            <h4>errors</h4>
-            <ul>
-                <li>404 if no tiid found for that item</li>
-            </ul>
-
-            <h4>example</h4> 
-
-            <div class="apicall"><pre>
-curl -i -X GET http://api.impactstory.org/tiid/doi/10.1371/journal.pcbi.1000361
-
-
-"1b2f4fc2bea711e1bdf912313d1a5e63"
-                </pre></div>
-        </div>
-
-
-        <h3 class="apicall">GET /item/:tiid</h3>
-        <div class="description">
-            Get the metrics for items, given its ImpactStory ID (tiid).
-
-            <h4>returns</h4>
-            An item object. Response code 210 if it is currently being updated, 200 otherwise.
-
-            <h4>errors</h4>
-            <ul>
-                <li>404 if no tiid found for an item</li>
-            </ul>
-
-            <h4>example</h4> 
-
-            <div class="apicall"><pre>
-curl -i -X GET http://api.total-impact.org/item/0df8aa0eb2c911e19e181231381b0f5a
-
-
-{
-    "_id": "1b2f4fc2bea711e1bdf912313d1a5e63",
-    "_rev": "251-ddcc8266fa0c9a61035a270ce0c67c84",
-    "aliases": {
-        "created": "2012-06-25T09:21:12.272747",
-        "doi": [
-            "10.1371/journal.pcbi.1000361"
-        ],
-        "last_modified": "2012-07-29T02:00:34.889973",
-        "title": [
-            "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article"
-        ],
-        "url": [
-            "http://www.ncbi.nlm.nih.gov/pubmed/19381256",
-            "http://dx.plos.org/10.1371/journal.pcbi.1000361",
-            "http://dx.doi.org/10.1371/journal.pcbi.1000361"
-        ]
-    },
-    "biblio": {
-        "authors": "Shotton, Portwin, Klyne, Miles",
-        "genre": "article",
-        "h1": "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article",
-        "journal": "PLoS Comput Biol",
-        "title": "Adventures in Semantic Publishing: Exemplar Semantic Enhancements of a Research Article",
-        "year": 2009
-    },
-    "created": "2012-06-25T09:21:12.272733",
-    "currently_updating": false,
-    "last_modified": "2012-06-25T09:21:12.272733",
-    "metrics": {
-        "citeulike:bookmarks": {
-            "provenance_url": "http://www.citeulike.org/doi/10.1371/journal.pcbi.1000361",
-            "static_meta": {
-                "description": "Number of users who have bookmarked this item.",
-                "display_name": "bookmarks",
-                "icon": "http://citeulike.org/favicon.ico",
-                "provider": "CiteULike",
-                "provider_url": "http://www.citeulike.org/"
-            },
-            "values": {
-                "nih": [
-                    91,
-                    99
-                ],
-                "raw": 59
-            }
-        },
-        "delicious:bookmarks": {
-            "provenance_url": "http://www.delicious.com/url/5c760b706cde2538e558e8643da51ac4",
-            "static_meta": {
-                "description": "The number of bookmarks to this artifact (maximum=100).",
-                "display_name": "bookmarks",
-                "icon": "http://www.delicious.com/favicon.ico",
-                "provider": "Delicious",
-                "provider_url": "http://www.delicious.com/"
-            },
-            "values": {
-                "raw": 1
-            }
-        },
-...
-}
-                </pre></div>
-        </div>
-
-
-
-
-        <h3 class="apicall">POST /collection</h3>
-        <div class="description">
-            Create a collection given a list of ImpactStory IDs.
-
-            <h4>input data</h4>
-            {
-            aliases:[ ["namespace1", "id1"], ["namespace1", "id2"], ...]
-            title: "My Collection",
-            owner:{}
-            }
-
-            <h4>returns</h4>
-            The collection header information
-
-            <h4>errors</h4>
-            <ul>
-                <li>404 if not found</li>
-            </ul>
-
-            <h4>example</h4> 
-
-            <div class="apicall"><pre>
-curl -i -X POST -H "Content-Type: application/json;charset=utf-8" -d '{"items":["ec698118b33311e1bfcd12313d2a0ee9","0df8aa0eb2c911e19e181231381b0f5a"],"title":"My Collection"}' http://api.total-impact.org/collection
-
-{
-    "collection": {
-        "_id": "yebmnf",
-        "_rev": "1-3c06eefb6ede0fe29129307fd227bca9",
-        "alias_tiids": {
-            "doi:10.1371/journal.pcbi.1000361": "1b2f4fc2bea711e1bdf912313d1a5e63",
-            "url:http://total-impact.org": "891z0a8meckia5v42ggzm8fy"
-        },
-        "created": "2012-09-06T13:09:05.714115",
-        "ip_address": "96.49.208.194",
-        "key_hash": "sha1$u2xjszDU$95cb28b326afe47726d51d3c59bc7469e0e4c814",
-        "last_modified": "2012-09-06T13:09:05.714115",
-        "owner": {},
-        "title": "My Collection",
-        "type": "collection"
-    },
-    "key": "ekjpt55agtzy10441yv7nh302"
-}
-
-                </pre></div>
-        </div>
-
-        <h3 class="apicall">GET /collection/:collectionId [?include_items=false] [.csv]</h3>
-        <div class="description">
-            Get the items and metadata associated with a given collection
-
-            <h4>returns</h4>
-            A collection object, which includes both collection metadata and the items in the collection
-           (pass <code>include_items=false</code> to leave the items out).
-            Format is json by default, but appending <code>.csv</code> returns a csv file, with one row per item.
-
-            <h4>return codes</h4>
-            <ul>
-                <li>404 if not found</li>
-               <li>200 if all the collections objects are found and are done updating.</li>
-               <li>210 if all the collection's objects are found, but some are still updating.</li>
-               <li>(not sure of code yet) if one of the items is not found.</li>
-            </ul>
-
-            <h4>example</h4> 
-
-            <div class="apicall"><pre>
-curl -i -X GET http://api.total-impact.org/collection/8iwgwi
-
-
-{
-    "_id": "kn5auf",
-    "_rev": "8-69fdd2a34464f0ca9d02748ef057b1e8",
-    "created": "2012-06-25T09:21:12.673503",
-    "items": [
-        {
-            "_id": "dr3nrhlex36g9xy4idyn7v3f",
-            "_rev": "164-9631084108ed21dc56fa0e26b6a91fe6",
-            "aliases": {
-                "doi": [
-                    "10.1371/journal.pbio.1000056"
-                ],
-                "pmid": [
-                    "19278298"
-                ],
-                "title": [
-                    "Amazonian Amphibian Diversity Is Primarily Derived from Late Miocene Andean Lineages"
-                ],
-                "url": [
-                    "http://biology.plosjournals.org/perlserv/?request=get-document&doi=10.1371%2Fjournal.pbio.1000056",
-                    "http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2653552&tool=pmcentrez&rendertype=abstract",
-                    "http://www.ncbi.nlm.nih.gov/pubmed/19278298"
-                ]
-            },
-            "biblio": {
-                "authors": "Santos, Coloma, Summers, Caldwell, Ree, Cannatella",
-                "genre": "article",
-                "journal": "Plos Biol",
-                "title": "Amazonian Amphibian Diversity Is Primarily Derived from Late Miocene Andean Lineages",
-                "year": 2009
-            },
-            "created": "2012-08-02T14:56:14.151655",
-            "currently_updating": false,
-            "last_modified": "2012-08-02T14:56:14.151655",
-            "metrics": {
-                "mendeley:career_stage": {
-...
-
-                </pre></div>
-        </div>
-
-
-
-        <h3 class="apicall">GET /provider</h3>
-        Get all metadata for the providers.
-        <div class="description">
-
-            <h4>returns</h4>
-            A dictionary of providers and their metadata.
-
-            <h4>errors</h4>
-            <ul>
-                <li>404 if not found</li>
-            </ul>
-
-            <h4>example</h4> 
-
-            <div class="apicall"><pre>
-curl -i -X GET http://api.impactstory.org/provider
-
-{
-    "bibtex": {
-        "descr": "", 
-        "provides_aliases": false, 
-        "provides_metrics": false, 
-        "url": ""
-    }, 
-    "citeulike": {
-        "descr": "CiteULike is a free service to help you to store, organise and share the scholarly papers you are reading.", 
-        "metrics": {
-            "bookmarks": {
-                "description": "Number of users who have bookmarked this item.", 
-                "display_name": "bookmarks", 
-                "icon": "http://citeulike.org/favicon.ico", 
-                "provider": "CiteULike", 
-                "provider_url": "http://www.citeulike.org/"
-            }
-        }, 
-        "provides_aliases": false, 
-        "provides_metrics": true, 
-        "url": "http://www.citeulike.org/"
-    }, 
-    "crossref": {
-        "descr": "An official Digital Object Identifier (DOI) Registration Agency of the International DOI Foundation.", 
-        "provides_aliases": true, 
-        "provides_metrics": false, 
-        "url": "http://www.crossref.org/"
-    }, 
-    "delicious": {
-        "descr": "Online social bookmarking service", 
-        "metrics": {
-            "bookmarks": {
-                "description": "The number of bookmarks to this artifact (maximum=100).", 
-                "display_name": "bookmarks", 
-                "icon": "http://www.delicious.com/favicon.ico", 
-                "provider": "Delicious", 
-                "provider_url": "http://www.delicious.com/"
-            }
-        }, 
-        "provides_aliases": false, 
-        "provides_metrics": true, 
-        "url": "http://www.delicious.com"
-    }, 
-    "dryad": {
-        "descr": "An international repository of data underlying peer-reviewed articles in the basic and applied biology.", 
-        "metrics": {
-            "most_downloaded_file": {
-                "description": "Dryad most downloaded file: number of downloads of the most commonly downloaded data package component", 
-                "display_name": "most downloaded file", 
-                "icon": "http:\\/\\/datadryad.org\\/favicon.ico", 
-                "provider": "Dryad", 
-                "provider_url": "http:\\/\\/www.datadryad.org\\/"
-            }, 
-            "package_views": {
-                "description": "Dryad package views: number of views of the main package page", 
-                "display_name": "package views", 
-                "icon": "http:\\/\\/datadryad.org\\/favicon.ico", 
-                "provider": "Dryad", 
-                "provider_url": "http:\\/\\/www.datadryad.org\\/"
-            }, 
-            "total_downloads": {
-                "description": "Dryad total downloads: combined number of downloads of the data package and data files", 
-                "display_name": "total downloads", 
-                "icon": "http:\\/\\/datadryad.org\\/favicon.ico", 
-                "provider": "Dryad", 
-                "provider_url": "http:\\/\\/www.datadryad.org\\/"
-            }
-        }, 
-        "provides_aliases": true, 
-        "provides_metrics": true, 
-        "url": "http://www.datadryad.org"
-    }, 
-    ... 
-    "wikipedia": {
-        "descr": "The free encyclopedia that anyone can edit.", 
-        "metrics": {
-            "mentions": {
-                "description": "The number of Wikipedia articles that mentioned this object.", 
-                "display_name": "mentions", 
-                "icon": "http://wikipedia.org/favicon.ico", 
-                "provider": "Wikipedia", 
-                "provider_url": "http://www.wikipedia.org/"
-            }
-        }, 
-        "provides_aliases": false, 
-        "provides_metrics": true, 
-        "url": "http://www.wikipedia.org/"
-    }
-}
-                </pre></div>
-        </div>
+        <p>
+            If the JavaScript widget described above doesn't meet your needs, you can use our API directly.  The ImpactStory webapp itself is built directly on top of this API. 
+        </p><p>
+            <a target="_blank" href="http://docs.impactstory.apiary.io/">Documentation</a> for current version of the REST API (/v1).
+        </p>
     </div>
 </div>
 

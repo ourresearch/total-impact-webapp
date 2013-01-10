@@ -2,12 +2,23 @@
 
 {% block content %}
 
+<script type="text/javascript">
+   mixpanel.track("View:docs", {"Doc Type": "faq"});
+</script>
+
 <div class="main" id="faq"><div class="wrapper">
         <div id="toc"></div>
 
         <h3 id="what">what is ImpactStory?</h3>
 
-        <p>ImpactStory is a website that makes it quick and easy to view the impact of a wide range of research output. It goes beyond traditional measurements of research output -- citations to papers -- to embrace a much broader evidence of use across a wide range of scholarly output types. The system aggregates impact data from many sources and displays it in a single report, which is given a permaurl for dissemination and can be updated any time.
+        <p>ImpactStory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products--traditional ones like journal articles, but also alternative products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we aim to help build a reward system that values and encourages new forms of web-native scholarship. We’re funded by the Alfred P. Sloan Foundation, and we're in the process of incorporating as a nonprofit corporation.
+
+        <p>ImpactStory aims to provide open metrics, with context, for diverse products:
+            <ul>
+                <li><b>Open metrics</b>: Our <a href="http://impactstory.org/api-docs">data</a> (to the extent allowed by providers’ terms of service), <a href="https://github.com/total-impact">code</a>, and <a href="http://blog.impactstory.org/2012/03/01/18535014681/">governance</a> are all open.</li>
+                <li><b>With context</b>: To help researcher move from raw <a href="http://altmetrics.org/manifesto/">altmetrics</a> data to <a href="http://blog.impactstory.org/2012/09/14/31524247207/">data-driven stories</a>, we sort metrics by engagement type and audience. We also normalize based on comparison to a reference set. An evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>
+                <li><b>Diverse products</b>: Datasets, software, slides, and other research products are presented as an integrated section of a comprehensive impact report, alongside articles--each genre a first-class citizen, each making its own kind of impact.</li>
+            </ul>
 
         <h3 id="audience">who is it for?</h3>
 
@@ -32,7 +43,7 @@
 
         <h3 id="pooruses">how <em>shouldn’t</em> it be used?</h3>
 
-        <p>Some of these issues relate to the early-development phase of ImpactStory, some reflect our early-understanding of altmetrics, and some are just common sense. ImpactStory reports shouldn't be used:
+        <p>Some of these issues relate to the early-development phase of ImpactStory, some reflect our <a href="http://www.mendeley.com/groups/586171/altmetrics/papers/">early-understanding of altmetrics</a>, and some are just common sense.  ImpactStory reports shouldn't be used:
 
         <ul>
             <li><b>as indication of comprehensive impact</b>
@@ -53,13 +64,13 @@
 
         <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sited: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like ImpactStory, can be found in the nascent scholarly literature on “altmetrics.”
 
-        <p><a href="http://altmetrics.org/manifesto/">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature, while the proceedings of the recent <a href="http://altmetrics.org/workshop2011/">altmetrics11</a> and <a href="http://altmetrics.org/altmetrics12/">altmetrics12</a> workshops go into more detail. You can check out the shared <a href="http://www.mendeley.com/groups/586171/alt-metrics/papers/">altmetrics library</a> on Mendeley for more even relevant research. Finally, the poster <a href="http://jasonpriem.com/self-archived/two-altmetrics-tools.pdf">Uncovering impacts: CitedIn and total-impact, two new tools for gathering altmetrics</a>, recently submitted to the 2012 iConference, describes a case study using ImpactStory (then called total-impact) to evaluate a set of research papers funded by NESCent; it has some brief statistical analysis and some visualisations of the results.
+        <p><a href="http://altmetrics.org/manifesto/">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href="http://www.mendeley.com/groups/586171/altmetrics/papers/">altmetrics library</a> on Mendeley for a growing list of relevant research. 
 
             {{ which_artifacts|safe() }}
 
         <h3 id="whichmetrics">which metrics are measured?</h3>
 
-        <p>Metrics are computed based on the following data sources:</p>
+        <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>
 
         <ul id="providers-metadata"> <!-- list of providers -->
             {% for provider_name, provider in provider_metadata.iteritems() %}
@@ -72,6 +83,7 @@
                         <img src="{{ metric.icon }}" width="16" height="16" />
                         <strong>{{ metric.display_name }}</strong>
                         <span class="metric-descr">{{ metric.description }}</span>
+                       <span class="csv-name">({{ provider_name }}:{{ metric_name }})</span>
                     </li>
                     {% endfor %}
                 </ul>
@@ -91,7 +103,7 @@
         <p>Not sure ImpactStory is your cup of tea?  Check out these similar tools:
         <ul>
             <li><a href="http://altmetric.com">altmetric.com</a>
-            <li><a href="http://http://www.plumanalytics.com/">Plum Analytics</a>
+            <li><a href="http://www.plumanalytics.com/">Plum Analytics</a>
             <li><a href="http://code.google.com/p/alt-metrics/">PLoS Article-Level Metrics application</a>
             <li><a href="http://sciencecard.org/">Science Card</a>
             <li><a href="http://citedin.org/">CitedIn</a>
@@ -123,7 +135,7 @@
             <li>the number of items on a report is currently limited.
         </ul>
 
-        Tell us about bugs! <a href="http://twitter.com/#!/ImpactStory">@ImpactStory</a> (or via email to team@total-impact.org)
+        Tell us about bugs! <a href="http://twitter.com/#!/ImpactStory">@ImpactStory</a> (or via email to team@impactstory.org)
 
         <h3 id="isitopen">is this data Open?</h3>
 
@@ -139,7 +151,7 @@
 
         <h3 id="who">who developed ImpactStory?</h3>
 
-        <p>Concept originally hacked at the <a href="http://www.beyond-impact.org/">Beyond Impact Workshop</a>, part of the Beyond Impact project funded by the Open Society Foundations <a href="https://github.com/mhahnel/ImpactStory/contributors">(initial contributors)</a>.
+        <p>Concept originally hacked at the <a href="http://www.beyond-impact.org/">Beyond Impact Workshop</a>, part of the Beyond Impact project funded by the Open Society Foundations <a href="https://github.com/mhahnel/ImpactStory/contributors">(initial contributors)</a>.  Here's the <a href="/about">current team</a>.
 
         <h3 id="funding">who funds ImpactStory?</h3>
 
@@ -173,11 +185,16 @@
         <p>Thanks! We agree :)
         <p>You can help us.  Demonstrating the value of ImpactStory is key to recieving future funding.
         <p>Buzz and testimonials will help. Tweet your reports. Blog, send email, and show off ImpactStory at your next group meeting to help spread the word.
-        <p>Tell us how cool it is at <a href="http://twitter.com/#!/ImpactStory">@ImpactStory</a> (or via email to team@total-impact.org) so we can consolidate the feedback.
+        <p>Tell us how cool it is at <a href="http://twitter.com/#!/ImpactStory">@ImpactStory</a> (or via email to team@impactstory.org) so we can consolidate the feedback.
 
         <h3 id="suggestion">I have a suggestion!</h3>
 
-        <p><b>We want to hear it.</b> Send it to us at <a href="http://twitter.com/#!/ImpactStory">@ImpactStory</a> (or via email to team@total-impact.org).
+        <p><b>We want to hear it.</b> Send it to us at <a href="http://twitter.com/#!/ImpactStory">@ImpactStory</a> (or via email to team@impactstory.org).
+
+        <h3 id="tos">terms of use</h3>
+        <p>Due to agreements we have made with data providers, you may not scrape this website.  Use our <a href="/api-docs">JavaScript widget or API</a> instead. </a>
+
+
     </div><!-- end wrapper -->
 </div><!-- end faq -->
 </div>

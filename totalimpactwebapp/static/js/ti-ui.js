@@ -1,30 +1,26 @@
 $.ajaxSetup ({
     cache: false
 });
+$.support.cors = true; // makes IE8 and IE9 support CORS
 if (!window.console) {
     console = {log: function() {}};
 }
 
 
-function showNameChangeBanner(){
-    if ($.cookie("hasDismissedNamechange")){
-        return false
-    }
-    else {
-        $("<div id='namechange'>We've got a new focus and a new name: total-impact is now <strong>ImpactStory!</strong><a class='dismiss'>dismiss &times;</a></div>")
-            .prependTo("body")
-            .find("a.dismiss")
-            .click(function(){
-                           $(this).parent().slideUp()
-                           $.cookie("hasDismissedNamechange", true)
-                       })
-    }
-
-}
-
 function homePageInit() {
     $('.carousel').carousel()
     $('.carousel').carousel("cycle")
+}
+
+function aboutPageInit() {
+    if (location.href.indexOf("#contact") > 0) {
+        $("#contact h3").css("color", tiLinkColor)
+            .siblings("p").css({backgroundColor: "#ff834c"})
+            .animate({backgroundColor: "#ffffff"}, 1000)
+    }
+}
+function createPageInit() {
+    // do create page stuff
 }
 
 
@@ -35,8 +31,6 @@ function homePageInit() {
 $(document).ready(function(){
     $.cookie.defaults = {path: "/", raw: 1}
 
-    showNameChangeBanner()
-
     userViews = new UserViews()
     user = new User(userViews)
     userController = new UserController(user, userViews);
@@ -46,7 +40,22 @@ $(document).ready(function(){
     coll = new Coll(collViews)
     collController = new CollController(coll, collViews);
 
-    itemController = new ItemController()
+    itemController = new ItemController($)
+
+    // report pages
+    if (typeof reportIdNamespace == "undefined"){
+        // nothing
+    }
+    else if (reportIdNamespace == "impactstory_collection_id") {
+        collController.collReportPageInit()
+    }
+    else { // must be an item report page
+        itemController.itemReportPageInit()
+    }
+
+    var aliasListController = new AliasListController()
+    aliasListController.init()
+
 
 
     // table of contents
@@ -57,6 +66,15 @@ $(document).ready(function(){
 
     createCollectionInit();
     homePageInit()
+    aboutPageInit()
+
+    // let people link straight to the item-help modal
+    if(window.location.href.indexOf('#context') != -1) {
+        $('#context').modal('show');
+    }
+
+
+    prettyPrint()
 
 
 

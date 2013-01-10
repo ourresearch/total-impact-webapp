@@ -2,9 +2,6 @@
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-body.report #main {
-  min-height: 500px;
-}
 body.report #page-header {
   padding-top: 40px;
 }
@@ -21,6 +18,8 @@ body.report #page-header {
   padding-top: 7px;
 }
 #report {
+  min-height: 500px;
+  min-width: 1212px;
   padding-bottom: 20px;
 }
 #report-meta {
@@ -93,10 +92,10 @@ input.report {
 /** report printout ******************************************************/
 div#metrics {
   min-height: 500px;
+  min-width: 1212px;
   background: none repeat scroll 0 0 #FFFFFF;
   float: left;
   width: 100%;
-  margin-top: 25px;
 }
 div#metrics div.wrapper {
   width: 1100px;
@@ -109,9 +108,17 @@ div#metrics h3 {
   font-weight: bold;
 }
 div#metrics div.genre {
-  margin-bottom: 50px;
+  margin-top: 50px;
   float: left;
   clear: both;
+}
+div#metrics div.genre.article {
+  margin-top: 0;
+}
+div#metrics div.genre ol,
+div#metrics div.genre ul,
+div#metrics div.genre ul li {
+  line-height: 1.2;
 }
 div#metrics div.genre h4.plus-more {
   float: left;
@@ -155,6 +162,18 @@ li.item.zoomed div.biblio h5 span.title {
   color: #ff4e00;
 }
 li.item.zoomed div.item-header:hover div.item-controls span.item-expand-button {
+  display: none;
+}
+li.item.no-data div.zoom span {
+  margin: 50px 0;
+  font-style: italic;
+  font-size: 20px;
+  color: #999;
+  width: 700px;
+  text-align: center;
+  float: left;
+}
+li.item.no-data div.zoom a.item-help {
   display: none;
 }
 li.item div.item-header {
@@ -247,6 +266,9 @@ li.item div.item-header div.badges ul.ti-badges li span.ti-badge {
   font-size: 12px;
   font-weight: normal;
   padding: 3px 6px;
+}
+li.item div.item-header div.badges ul.ti-badges li span.ti-badge span.audience {
+  display: none;
 }
 li.item div.item-header div.badges ul.ti-badges li span.ti-badge.scholars {
   background: #377eb8;
@@ -374,6 +396,9 @@ li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics 
 li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
   left: 0;
 }
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
+  left: 0;
+}
 li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.end {
   right: 0;
 }
@@ -400,18 +425,18 @@ li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics 
 li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta img {
   float: right;
 }
-div#item-help-info p {
+div#context p {
   font-size: 15px;
 }
-div#item-help-info ul {
+div#context ul {
   padding-left: 20px;
 }
-div#item-help-info ul li {
+div#context ul li {
   list-style-type: circle;
 }
-div#item-help-info .modal-body {
+div#context .modal-body {
   padding: 30px;
 }
-div#item-help-info .modal-header {
+div#context .modal-header {
   padding: 12px 30px;
 }

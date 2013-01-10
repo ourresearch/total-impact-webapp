@@ -3,8 +3,17 @@ function Genre(name) {
     this.name = name
     this.items = []
 
-    this.render = function(){
+    this.sortItems = function(items) {
+        return _.sortBy(items, function(item){
+            var badgesSortFactor = _.reduce(item.dict.awards, function(memo, award){
+                return memo + ((award.isHighly) ? 10 : 1)
+            }, 0)
+            return badgesSortFactor
+        }).reverse()
+    }
 
+    this.render = function(){
+        this.items = this.sortItems(this.items)
 
         var genre$ = $(ich.genreTemplate({name:this.name}, true))
 
@@ -12,7 +21,7 @@ function Genre(name) {
         var itemsWithoutActivity = []
         for (var i=0;i<this.items.length;i++){
             var thisItem = this.items[i]
-            if (thisItem.hasAwards()) {
+            if (thisItem.dict.awards.length) {
                 renderedItems.push(thisItem.render())
             }
             else {
@@ -46,28 +55,27 @@ function Genre(name) {
 }
 
 function GenreList(items) {
-    this.genres = {}
-
-    // put the items in the correct genre objects
-    for (var i=0; i<items.length; i++){
-        var genreName = items[i].dict.biblio.genre
-        if (!this.genres[genreName]) {
-            this.genres[genreName] = new Genre(genreName)
-        }
-        this.genres[genreName].items.push(items[i])
-
-
-    }
+    var itemGroupsByGenre = _.groupBy(items, function(item) {
+        return item.dict.biblio.genre
+    })
+    this.genres = _.map(itemGroupsByGenre, function(items, genreName){
+        var genre = new Genre(genreName)
+        genre.items = items
+        return genre
+    })
 
     this.render = function(){
-        var genres = []
-        for (var thisGenreName in this.genres){
-            var renderedGenre = this.genres[thisGenreName].render()
-            genres.push(renderedGenre)
-        }
+
+        var renderedGenres = _.chain(this.genres)
+            .sortBy("name")
+            .map(function(genre){
+                return genre.render()
+            })
+            .value()
+
         $("div.genre").remove()
         $("div.tooltip").remove() // otherwise tooltips from removed badges stick around
-        $("#metrics div.wrapper").append(genres)
+        $("#metrics div.wrapper").append(renderedGenres)
     }
 }
 
@@ -80,7 +88,7 @@ function Coll(collViews, user){
     this.addItems = function(newItemDicts) {
         for (var i=0; i<newItemDicts.length; i++) {
             tiid = newItemDicts[i]["_id"]
-            this.items[tiid] = new Item(newItemDicts[i], new ItemView())
+            this.items[tiid] = new Item(newItemDicts[i], new ItemView($), $)
         }
     }
 
@@ -88,7 +96,7 @@ function Coll(collViews, user){
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
-            url: "http://"+api_root+'/collection/'+this.id,
+            url: "http://"+api_root+'/v1/collection/'+this.id+'?key='+api_key,
             type: "POST",
             success: function(data){
                console.log("updating.")
@@ -104,7 +112,7 @@ function Coll(collViews, user){
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
-            url: "http://"+api_root+'/collection/'+thisThing.id+'?api_key='+api_key,
+            url: "http://"+api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -144,10 +152,9 @@ function CollViews() {
     }
 
     this.badgesWeight = function(dict) {
-        var weight = 0
-        weight += dict.awards.big.length * 10
-        weight += dict.awards.any.length * 1
-        return weight
+        return _.reduce(dict.awards, function(memo, metric){
+            return memo + (metric.isHighly) ? 10 : 1
+        }, 0)
     }
 
     this.finishUpdating = function(items){
@@ -166,18 +173,8 @@ function CollViews() {
     }
 
     this.render = function(itemObjsDict) {
-        var thisNow = this
 
-        // convert items dict into array and sort it
-        var itemObjs = []
-        for (tiid in itemObjsDict) {
-            itemObjs.push(itemObjsDict[tiid])
-        }
-
-        itemObjs.sort(function(a,b) {
-            return thisNow.badgesWeight(b.dict) -  thisNow.badgesWeight(a.dict)
-        })
-
+        var itemObjs = _.values(itemObjsDict)
         var genreList = new GenreList(itemObjs)
         genreList.render()
 
@@ -186,8 +183,9 @@ function CollViews() {
 
 
 function CollController(coll, collViews) {
-    if (typeof collectionId != 'undefined') {
-        coll.id = collectionId
+
+    this.collReportPageInit = function() {
+        coll.id = reportId
         coll.get(1000)
     }
 

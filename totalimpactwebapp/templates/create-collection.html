@@ -2,6 +2,9 @@
 
 {% block content %}
 
+<script type="text/javascript">
+   mixpanel.track("View:create collection");
+</script>
 
 <!-- START input -->
 <div class="main" id="input">
@@ -19,7 +22,7 @@
             <label class="control-label" for="input_bibtex" class="prompt" title="Import a BibTeX file">Articles from Google Scholar Profile<span class="limit"><a id="google-scholar-help-link" href="#">(Click here for help)</a></span></label>
              <div class="controls">
                <span class="btn btn-large btn-file">
-                  <span class="fileupload-new">Select file</span>
+                  <span class="fileupload-new">Select BibTeX file</span>
                   <input type="file" id="input_bibtex" onchange="upload_bibtex(this.files)" />
                </span>
                <div class="progressbar"></div>
@@ -118,8 +121,8 @@
       <ol>
          <li>Visit your Google Scholar Citations <a href="http://scholar.google.com/citations?hl=en">author profile</a>.  If you don't have one yet, <a href="http://scholar.google.com/intl/en/scholar/citations.html">make one</a>.</li>
          <li>In the green header above your articles you will see a white drop down box that says <strong>Actions</strong>.  Change this to <strong>Export</strong>. </li>
-         <li>You will be redirected to the Export Articles page. Click <strong>Export all my articles</strong> (leave the file format as "BibTex"). Save the file.</li>
-         <li>Return to ImpactStory.  On the create collections page, click <strong>Select File</strong> and upload the previously saved file.  Once the file is 100% loaded, name your collection and click the <strong>go!</strong> button.</li>
+         <li>You will be redirected to the Export Articles page. Click <strong>Export all my articles</strong> (leave the file format as "BibTeX"). Save the file.</li>
+         <li>Return to ImpactStory.  On the create collections page, click <strong>Select BibTeX file</strong> and upload the previously saved file.  Once the file is 100% loaded, name your collection and click the <strong>go!</strong> button.</li>
       </ol>
 
    </div>
