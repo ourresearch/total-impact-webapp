@@ -1,38 +1,35 @@
 var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
 
 
-
-
-
-/*
-* Manage list of aliases we can use to create and update collections.
-*
-*/
 var AliasList = function(){}
 AliasList.prototype = {
     aliases : [],
     importers: [],
-    init: function() {
-        var that = this
-
-        $("form.importers textarea").each(function(){
-            var importer = new TextareaAliasImporter()
-            importer.init(this, that.aliases)
-        })
-
-        $("h3").click(function(){
-            console.log("aliases:", that.aliases)
-        })
+    add: function(aliases) {
+        var oldLen = this.aliases.length
+        this.aliases = _.union(aliases, this.aliases)
+        return this.aliases.length - oldLen
     }
 }
 
 
+var AliasListInputs = function() {}
+AliasListInputs.prototype.aliases = new AliasList()
+AliasListInputs.prototype.init = function() {
+    var that = this
 
-/*
- * Base class for importing aliases from external providers
- * We'll subclass this for different kinds of member_items providers
- *
- */
+    $("form.importers textarea").each(function(){
+        var importer = new TextareaAliasImporter()
+        importer.init(this, that.aliases)
+    })
+
+    $("h3").click(function(){
+        console.log("aliases:", that.aliases)
+    })
+}
+
+
+
 var AliasCallbacks = function() {}
 AliasCallbacks.prototype = {
     doneImporting: function(elem, aliases, newAliases) {
@@ -41,15 +38,14 @@ AliasCallbacks.prototype = {
         console.log("done importing; got " + numNewAliases + " new aliases.")
     },
     updateAliases: function(aliases, newAliases){
-        aliases.push(newAliases)
-        return 2
+        return aliases.add(newAliases)
     }
 }
 
 
 
 /*
- * Subclasses of AliasImporter; each imports from a different kind of source
+ * Importers for different types of sources
  *
  */
 
@@ -58,11 +54,10 @@ var TextareaAliasImporter = function() {}
 TextareaAliasImporter.prototype = {
     init: function(elem, aliases) {
         var callbacks = new AliasCallbacks()
-        var that = this
         $(elem).focus(function(){})
         $(elem).blur(function(){
-            console.log("blur", this.id, aliases)
-            callbacks.doneImporting(this, aliases, "foo")
+            var newAliases = $(this).val().split("\n")
+            callbacks.doneImporting(this, aliases, newAliases)
         })
     }
 }

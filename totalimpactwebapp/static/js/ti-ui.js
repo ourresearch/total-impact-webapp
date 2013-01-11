@@ -65,8 +65,8 @@ $(document).ready(function(){
         itemController.itemReportPageInit()
     }
 
-    var aliasList = new AliasList()
-    aliasList.init()
+    var aliasListInputs = new AliasListInputs()
+    aliasListInputs.init()
 
 
 
