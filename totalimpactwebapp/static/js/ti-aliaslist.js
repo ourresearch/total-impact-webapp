@@ -13,12 +13,15 @@ AliasList.prototype = {
     aliases : [],
     importers: [],
     init: function() {
-        var thisObj = this
+        var that = this
 
         $("form.importers textarea").each(function(){
-            var importer = new TextareaAliasImporter(this, thisObj.aliases)
-            importer.init()
-            thisObj.importers.push(importer)
+            var importer = new TextareaAliasImporter()
+            importer.init(this, that.aliases)
+        })
+
+        $("h3").click(function(){
+            console.log("aliases:", that.aliases)
         })
     }
 }
@@ -30,24 +33,16 @@ AliasList.prototype = {
  * We'll subclass this for different kinds of member_items providers
  *
  */
-var AliasImporter = function(inputElem, aliasList) {
-    this.inputElem = inputElem
-    this.aliasList = aliasList
-}
+var AliasImporter = function() {}
 AliasImporter.prototype = {
-    init: function(){
-        thisObj = this
-        console.log(this.inputElem)
-
-        $(this.inputElem).focus(function(){
-            thisObj.focusHandler(this)
-        })
-        $(this.inputElem).blur(function(){
-            thisObj.blurHandler(this)
-        })
+    doneImporting: function(elem, aliases, newAliases) {
+        var numNewAliases = this.updateAliases(aliases, newAliases)
+        $(elem).css("background", "red")
+        console.log("done importing; got " + numNewAliases + " new aliases.")
     },
-    focusHandler: function(elem){}, // override this in subclasses
-    blurHandler: function(elem) {}  // override this in subclasses
+    updateAliases: function(aliases, newAliases){
+        return 2
+    }
 }
 
 
@@ -58,16 +53,20 @@ AliasImporter.prototype = {
  */
 
 // Import aliases that have been directly entered in textareas:
-var TextareaAliasImporter = function(inputElem, aliasList) {
-    AliasImporter.call(this, inputElem, aliasList) // call parent constructor
-}
-TextareaAliasImporter.prototype = Object.create(AliasImporter.prototype)
-TextareaAliasImporter.prototype.focusHandler = function(elem) {
-        console.log("focus, daniel-san!")
-}
-TextareaAliasImporter.prototype.blurHandler = function(elem) {
-        console.log("blur, daniel-san!")
-}
+var TextareaAliasImporter = function() {}
+TextareaAliasImporter.prototype = _.extend(
+    Object.create(AliasImporter.prototype),
+    {
+        init: function(elem, aliases) {
+            that = this
+            $(elem).focus(function(){})
+            $(elem).blur(function(){
+                console.log("blur", this.id, aliases)
+                that.doneImporting(this, aliases, ["foo"])
+            })
+        }
+    }
+)
 
 
 
