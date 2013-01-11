@@ -3,146 +3,151 @@
 {% block content %}
 
 <script type="text/javascript">
-   mixpanel.track("View:create collection");
+    mixpanel.track("View:create collection");
 </script>
 
 <!-- START input -->
 <div class="main" id="input">
-   <div class="wrapper">
-      <form class="importers">
-         <h3><span class="step-number">1:</span> Add articles</h3>
-         <div class="toggler_contents control-group" id="orcid_toggler_contents">
-            <label class="control-label" for="orcid_profile_input" class="prompt">Import from ORCID<span class="limit"><a id="orcid-help-link" href="#">(Click here for help)</a></span></label>
-            <div class="controls">
-               <input id="orcid_profile_input" name="orcid_profile" type="text" size="20" />
+    <div class="wrapper">
+        <form class="importers">
+            <h3><span class="step-number">1:</span> Add articles</h3>
+            <div class="toggler_contents control-group" id="orcid_toggler_contents">
+                <label class="control-label" for="orcid_profile_input" class="prompt">Import from ORCID<span class="limit"><a id="orcid-help-link" href="#">(Click here for help)</a></span></label>
+                <div class="controls">
+                    <input id="orcid_profile_input" name="orcid_profile" type="text" size="20" />
+                </div>
             </div>
-         </div>
 
-         <div class="control-group toggler_contents fileupload fileupload-new" data-provides="fileupload" id="bibtex_toggler_contents">
-            <label class="control-label" for="input_bibtex" class="prompt" title="Import a BibTeX file">Articles from Google Scholar Profile<span class="limit"><a id="google-scholar-help-link" href="#">(Click here for help)</a></span></label>
-             <div class="controls">
-               <span class="btn btn-large btn-file">
-                  <span class="fileupload-new">Select BibTeX file</span>
-                  <input type="file" id="input_bibtex" onchange="upload_bibtex(this.files)" />
-               </span>
-               <div class="progressbar"></div>
+            <div class="fileupload fileupload-new toggler_contents control-group" data-provides="fileupload"  id="bibtex_toggler_contents">
+                <label class="control-label" for="input_bibtex" class="prompt">Import from Google Scholar<span class="limit"><a id="google-scholar-help-link" href="#">(Click here for help)</a></span></label>
+                <div class="input-append">
+                    <div class="uneditable-input span3">
+                        <i class="icon-file fileupload-exists"></i>
+                        <span class="fileupload-preview"></span>
+                    </div>
+                  <span class="btn btn-file">
+                      <span class="fileupload-new">Select BibTeX file</span>
+                      <span class="fileupload-exists">Change</span>
+                      <input type="file"id="input_bibtex" onchange="upload_bibtex(this.files)" />
+                  </span>
+                </div>
             </div>
-         </div>
 
-         <div class="control-group">
-            <label for="paste_input" class="control-label" title="Paste DOIs or URLS for items you want to look up." >Article IDs<span class="limit">Paste DOIs or PubMed IDs (limit 100)</label>
-            <div class="controls">
-               <textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>
+
+            <div class="control-group">
+                <label for="paste_input" class="control-label">Article IDs<span class="limit">Paste DOIs or PubMed IDs (limit 100)</span></label>
+                <div class="controls">
+                    <textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>
+                </div>
             </div>
-         </div>
 
-      </form>
-      <form class="importers">
-         <h3><span class="step-number">2:</span> Add other products</h3>
+        </form>
+        <form class="importers other-products">
+            <h3><span class="step-number">2:</span> Add other products</h3>
 
-         <div class="control-group">
-            <label for="paste_dataset_dois" class="control-label">Dataset DOIs</label>
-            <div class="controls">
-               <textarea rows="4" cols="40" id="paste_dataset_dois" class="artifactList no-input-yet"></textarea>
+            <div class="control-group github">
+                <label class="control-label" for="input_github">Import from GitHub</label>
+                <div class="controls">
+                    <input type="text" id="input_github" placeholder="username">
+                </div>
             </div>
-         </div>
-         <div class="control-group">
-            <label class="control-label" for="input_github">GitHub</label>
-            <div class="controls">
-               <input type="text" id="input_github" placeholder="username">
+            <div class="control-group slideshare">
+                <label class="control-label" for="input_slideshare">Import from Slideshare</label>
+                <div class="controls">
+                    <input type="text" id="input_slideshare" placeholder="username">
+                </div>
             </div>
-         </div>
-         <div class="control-group">
-            <label class="control-label" for="input_slideshare">Slideshare</label>
-            <div class="controls">
-               <input type="text" id="input_slideshare" placeholder="username">
+
+            <div class="control-group product-ids">
+                <label for="paste_dataset_dois" class="control-label">Other product IDs<span class="limit">Paste DOIs or URLs (limit 100)</span></label>
+                <div class="controls">
+                    <textarea rows="4" cols="40"
+                              id="paste_dataset_dois"
+                              class="artifactList no-input-yet"
+                              data-placeholder="a doi
+a github url
+a slideshare url."></textarea>
+                </div>
             </div>
-         </div>
-         <div class="control-group">
-            <label class="control-label" for="input_webpage">Homepage</label>
-            <div class="controls">
-               <input type="text" id="input_webpage" placeholder="homepage url">
+        </form>
+
+
+        <form class="importers" id="make-collection">
+            <h3><span class="step-number">3:</span> Make report</h3>
+            <h4 class="prompt" >Register<span class="limit"> (optional; lets you save and find your collection later.)</span></h4>
+            <div class="form-item control-group email">
+                <input id="inline-register-email" class="username register" type="text" placeholder="email" />
             </div>
-         </div>
-      </form>
 
-
-      <form id="make-collection">
-         <h3><span class="step-number">3:</span> Make report</h3>
-         <h4 class="prompt" >Register<span class="limit"> (optional; lets you save and find your collection later.)</span></h4>
-         <div class="form-item control-group email">
-            <input id="inline-register-email" class="username register" type="text" placeholder="email" />
-         </div>
-
-         <div class="form-item control-group">
-            <input id="inline-register-pw" type="password" placeholder="password"/>
-         </div>
-
-         <div class="control-group" id="collection-name">
-            <label class="control-label" for="name">Collection name:</label>
-            <div class="controls">
-               <input type="text" name="name" class="no-input-yet" id="name" />
+            <div class="form-item control-group">
+                <input id="inline-register-pw" type="password" placeholder="password"/>
             </div>
-         </div>
 
-         <div class="control-group create-button">
-            <div class="controls">
-               <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
-               <button name="run" type="submit" id="go-button" class="btn btn-large btn-primary">go!</button>
+            <div class="control-group" id="collection-name">
+                <label class="control-label" for="name">Collection name:</label>
+                <div class="controls">
+                    <input type="text" name="name" class="no-input-yet" id="name" />
+                </div>
             </div>
-         </div>
 
-      </form>
+            <div class="control-group create-button">
+                <div class="controls">
+                    <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
+                    <button name="run" type="submit" id="go-button" class="btn btn-large btn-primary">go!</button>
+                </div>
+            </div>
 
-      <div class="clearfix">&nbsp;</div>
-   </div>
+        </form>
+
+        <div class="clearfix">&nbsp;</div>
+    </div>
 
 </div><!-- END input -->
 
 <div id="orcid-help" class="modal hide fade">
-   <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h3>Import Articles from ORCID</h3>
-   </div>
-   <div class="modal-body">
-      <p>Just enter your <a href="http://about.orcid.org/">ORCID ID</a> (for example, <em>0000-0001-5109-3700</em>).  We'll import the public <a href="http://support.orcid.org/knowledgebase/articles/118795">publication Works</a> associated with your ORCID record.</p>
-      <p>If you don't have an ORCID ID yet, it only takes a few minutes to <a href="http://orcid.org/register">register for one</a> and automatically add your publications to it.</p>
-      <p>ImpactStory only imports <strong>public</strong> publications.  If your Works are currently listed in your ORCID profile as "limited" or "private", you can change them to "public" on your <a href="http://orcid.org/works-update">ORCID Works update</a> page.</p>
-      <p>We currently only import Works with dois — stay tuned, we'll support more work types soon!</p>
-   </div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Import Articles from ORCID</h3>
+    </div>
+    <div class="modal-body">
+        <p>Just enter your <a href="http://about.orcid.org/">ORCID ID</a> (for example, <em>0000-0001-5109-3700</em>).  We'll import the public <a href="http://support.orcid.org/knowledgebase/articles/118795">publication Works</a> associated with your ORCID record.</p>
+        <p>If you don't have an ORCID ID yet, it only takes a few minutes to <a href="http://orcid.org/register">register for one</a> and automatically add your publications to it.</p>
+        <p>ImpactStory only imports <strong>public</strong> publications.  If your Works are currently listed in your ORCID profile as "limited" or "private", you can change them to "public" on your <a href="http://orcid.org/works-update">ORCID Works update</a> page.</p>
+        <p>We currently only import Works with dois — stay tuned, we'll support more work types soon!</p>
+    </div>
 </div>
 
 <div id="google-scholar-help" class="modal hide fade">
-   <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h3>Import Articles from Google Scholar Profile</h3>
-   </div>
-   <div class="modal-body">
-      <ol>
-         <li>Visit your Google Scholar Citations <a href="http://scholar.google.com/citations?hl=en">author profile</a>.  If you don't have one yet, <a href="http://scholar.google.com/intl/en/scholar/citations.html">make one</a>.</li>
-         <li>In the green header above your articles you will see a white drop down box that says <strong>Actions</strong>.  Change this to <strong>Export</strong>. </li>
-         <li>You will be redirected to the Export Articles page. Click <strong>Export all my articles</strong> (leave the file format as "BibTeX"). Save the file.</li>
-         <li>Return to ImpactStory.  On the create collections page, click <strong>Select BibTeX file</strong> and upload the previously saved file.  Once the file is 100% loaded, name your collection and click the <strong>go!</strong> button.</li>
-      </ol>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Import Articles from Google Scholar Profile</h3>
+    </div>
+    <div class="modal-body">
+        <ol>
+            <li>Visit your Google Scholar Citations <a href="http://scholar.google.com/citations?hl=en">author profile</a>.  If you don't have one yet, <a href="http://scholar.google.com/intl/en/scholar/citations.html">make one</a>.</li>
+            <li>In the green header above your articles you will see a white drop down box that says <strong>Actions</strong>.  Change this to <strong>Export</strong>. </li>
+            <li>You will be redirected to the Export Articles page. Click <strong>Export all my articles</strong> (leave the file format as "BibTeX"). Save the file.</li>
+            <li>Return to ImpactStory.  On the create collections page, click <strong>Select BibTeX file</strong> and upload the previously saved file.  Once the file is 100% loaded, name your collection and click the <strong>go!</strong> button.</li>
+        </ol>
 
-   </div>
+    </div>
 </div>
 
 <div id="bibtex-fail-help" class="modal hide fade error">
-   <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h3>Well, this is embarrassing.</h3>
-   </div>
-   <div class="modal-body">
-      <p>Looks like we couldn't correctly process your file. This probably means it has characters or formatting we've never seen before; we've logged the error and will start fixing it right away.</p>
-      <p>If you take a second to fill out a support ticket, we'll email you a link to your finished report just as soon as we fix the bug.</p>
-      <p>Thanks for your patience; as an early user of our beta release, you're helping us make ImpactStory better!</p>
-   </div>
-   <div class="modal-footer">
-      <a class="btn">Dismiss</a>
-      <a class="btn btn-danger uservoice">Submit a support ticket</a>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Well, this is embarrassing.</h3>
+    </div>
+    <div class="modal-body">
+        <p>Looks like we couldn't correctly process your file. This probably means it has characters or formatting we've never seen before; we've logged the error and will start fixing it right away.</p>
+        <p>If you take a second to fill out a support ticket, we'll email you a link to your finished report just as soon as we fix the bug.</p>
+        <p>Thanks for your patience; as an early user of our beta release, you're helping us make ImpactStory better!</p>
+    </div>
+    <div class="modal-footer">
+        <a class="btn">Dismiss</a>
+        <a class="btn btn-danger uservoice">Submit a support ticket</a>
 
-   </div>
+    </div>
 </div>
 
 

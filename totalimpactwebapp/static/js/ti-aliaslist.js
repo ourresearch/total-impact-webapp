@@ -4,48 +4,74 @@ var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt=
 
 
 
+/*
+* Manage list of aliases we can use to create and update collections.
+*
+*/
+var AliasList = function(){}
+AliasList.prototype = {
+    aliases : [],
+    importers: [],
+    init: function() {
+        var thisObj = this
 
-
-
-function AliasList() {
-
-    this.aliases = []
-
-    this.flatten = function(idsArr) {
-        // flattens id values that are themselves arrays (like github)
-        var aliases = [];
-        numIds = idsArr.length;
-        for (var i=0; i<numIds; i++ ) {
-            var id = idsArr[i][1]
-            var namespace = idsArr[i][0]
-            if( Object.prototype.toString.call( id ) === '[object Array]' ) {
-                var strVal = id.join(",")
-            }
-            else {
-                var strVal = id
-            }
-            aliases.push([namespace, strVal])
-        }
-        return(aliases)
+        $("form.importers textarea").each(function(){
+            var importer = new TextareaAliasImporter(this, thisObj.aliases)
+            importer.init()
+            thisObj.importers.push(importer)
+        })
     }
-
-    this.addAliases = function(aliases) {
-        aliases = this.flatten(idsArr)
-
-    }
-
-
-
 }
 
-var AliasListController = function() {
-    this.init()
+
+
+/*
+ * Base class for importing aliases from external providers
+ * We'll subclass this for different kinds of member_items providers
+ *
+ */
+var AliasImporter = function(inputElem, aliasList) {
+    this.inputElem = inputElem
+    this.aliasList = aliasList
 }
-AliasListController.prototype = {
+AliasImporter.prototype = {
     init: function(){
-        // do init stuff
-    }
+        thisObj = this
+        console.log(this.inputElem)
+
+        $(this.inputElem).focus(function(){
+            thisObj.focusHandler(this)
+        })
+        $(this.inputElem).blur(function(){
+            thisObj.blurHandler(this)
+        })
+    },
+    focusHandler: function(elem){}, // override this in subclasses
+    blurHandler: function(elem) {}  // override this in subclasses
 }
+
+
+
+/*
+ * Subclasses of AliasImporter; each imports from a different kind of source
+ *
+ */
+
+// Import aliases that have been directly entered in textareas:
+var TextareaAliasImporter = function(inputElem, aliasList) {
+    AliasImporter.call(this, inputElem, aliasList) // call parent constructor
+}
+TextareaAliasImporter.prototype = Object.create(AliasImporter.prototype)
+TextareaAliasImporter.prototype.focusHandler = function(elem) {
+        console.log("focus, daniel-san!")
+}
+TextareaAliasImporter.prototype.blurHandler = function(elem) {
+        console.log("blur, daniel-san!")
+}
+
+
+
+
 
 
 

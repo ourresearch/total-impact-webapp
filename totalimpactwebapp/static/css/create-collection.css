@@ -20,37 +20,38 @@ div#input span.limit {
   font-weight: normal;
   font-size: 15px;
 }
-div#input form {
+div#input form.importers {
   width: 330px;
   float: left;
 }
-div#input form div.control-group.fileupload {
-  margin-top: 15px;
+div#input form.importers div.control-group.fileupload div.uneditable-input {
+  width: 100px;
 }
-div#input form div.control-group.fileupload label.control-label {
-  width: 150px;
-  float: left;
-  margin-bottom: 30px;
+div#input form.importers div.control-group.github {
+  margin-top: 1em;
 }
-div#input form div.control-group label.control-label {
+div#input form.importers div.control-group.slideshare {
+  margin-top: 1.2em;
+}
+div#input form.importers div.control-group label.control-label {
   clear: both;
   color: #555;
   font-weight: bold;
 }
-div#input form div.control-group label.control-label a {
+div#input form.importers div.control-group label.control-label a {
   text-decoration: none;
   color: #888;
   border-bottom: 2px dotted #888;
 }
-div#input form div.control-group label.control-label a:hover {
+div#input form.importers div.control-group label.control-label a:hover {
   border-bottom: 2px solid #ff4e00;
   color: #ff4e00;
 }
-div#input form div.control-group div.controls input {
+div#input form.importers div.control-group div.controls input {
   font-size: 16px;
   width: 240px;
 }
-div#input form div.control-group div.controls textarea {
+div#input form.importers div.control-group div.controls textarea {
   width: 240px;
 }
 img.loading {

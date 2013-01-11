@@ -17,21 +17,28 @@ div#input {
       font-weight: normal;
       font-size: 15px;
    }
-   form {
+   form.importers {
       width: 330px;
       float:left;
       div.controls {
       }
+
       div.control-group {
 
+        // fiddly positioning stuff for inputs...brittle
          &.fileupload {
-            margin-top:15px;
-            label.control-label {
-               width:150px;
-               float:left;
-               margin-bottom:30px;
+            div.uneditable-input {
+               width: 100px;
             }
          }
+
+        &.github {
+          margin-top: 1em;
+        }
+        &.slideshare {
+          margin-top: 1.2em;
+        }
+        // end fiddly positioning stuff
 
          label.control-label {
             clear:both;
