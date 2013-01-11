@@ -54,10 +54,24 @@ var TextareaAliasImporter = function() {}
 TextareaAliasImporter.prototype = {
     init: function(elem, aliases) {
         var callbacks = new AliasCallbacks()
-        $(elem).focus(function(){})
+        var placeholderText = $(elem).attr("data-placeholder")
+        $(elem).val(placeholderText)
+
+        $(elem).focus(function(){
+            if ($(this).val() == placeholderText){
+                $(this).val("")
+            }
+        })
         $(elem).blur(function(){
-            var newAliases = $(this).val().split("\n")
-            callbacks.doneImporting(this, aliases, newAliases)
+            var this$ = $(this)
+            if (!this$.val()) {
+                this$.val(placeholderText)
+                return false
+            }
+            else {
+                var newAliases = $(this).val().split("\n")
+                callbacks.doneImporting(this, aliases, newAliases)
+            }
         })
     }
 }
