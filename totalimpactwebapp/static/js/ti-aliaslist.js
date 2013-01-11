@@ -33,14 +33,15 @@ AliasList.prototype = {
  * We'll subclass this for different kinds of member_items providers
  *
  */
-var AliasImporter = function() {}
-AliasImporter.prototype = {
+var AliasCallbacks = function() {}
+AliasCallbacks.prototype = {
     doneImporting: function(elem, aliases, newAliases) {
         var numNewAliases = this.updateAliases(aliases, newAliases)
         $(elem).css("background", "red")
         console.log("done importing; got " + numNewAliases + " new aliases.")
     },
     updateAliases: function(aliases, newAliases){
+        aliases.push(newAliases)
         return 2
     }
 }
@@ -54,19 +55,17 @@ AliasImporter.prototype = {
 
 // Import aliases that have been directly entered in textareas:
 var TextareaAliasImporter = function() {}
-TextareaAliasImporter.prototype = _.extend(
-    Object.create(AliasImporter.prototype),
-    {
-        init: function(elem, aliases) {
-            that = this
-            $(elem).focus(function(){})
-            $(elem).blur(function(){
-                console.log("blur", this.id, aliases)
-                that.doneImporting(this, aliases, ["foo"])
-            })
-        }
+TextareaAliasImporter.prototype = {
+    init: function(elem, aliases) {
+        var callbacks = new AliasCallbacks()
+        var that = this
+        $(elem).focus(function(){})
+        $(elem).blur(function(){
+            console.log("blur", this.id, aliases)
+            callbacks.doneImporting(this, aliases, "foo")
+        })
     }
-)
+}
 
 
 
