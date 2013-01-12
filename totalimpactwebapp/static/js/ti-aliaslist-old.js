@@ -161,7 +161,8 @@ update_bibtex_progress = function(query_hash) {
                    $("div.fileupload span.added").remove()
                    $("div.fileupload").append("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
                }
-           });  }
+           });
+}
 
 upload_bibtex = function(files) {
     var fileInput = $("li #input_bibtex")[0];

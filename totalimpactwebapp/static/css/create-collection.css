@@ -22,8 +22,17 @@ div#input form.importers {
 div#input form.importers h3 {
   margin-bottom: 20px;
 }
+div#input form.importers span.limit {
+  display: block;
+  color: #888;
+  font-weight: normal;
+  font-size: 12px;
+}
 div#input form.importers div.control-group {
   margin-bottom: 30px;
+}
+div#input form.importers div.control-group.email {
+  margin-bottom: 0;
 }
 div#input form.importers div.control-group.fileupload div.uneditable-input {
   width: 100px;
@@ -90,12 +99,6 @@ div#input form.importers div.control-group label.control-label a.help {
 div#input form.importers div.control-group label.control-label a.help:hover {
   text-decoration: underline;
   color: #ff4e00;
-}
-div#input form.importers div.control-group label.control-label.ids span.limit {
-  display: block;
-  color: #888;
-  font-weight: normal;
-  font-size: 12px;
 }
 div#input form.importers div.control-group label.control-label.ids span.success {
   float: right;

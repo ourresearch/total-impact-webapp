@@ -11,6 +11,9 @@ AliasList.prototype = {
     },
     count: function() {
         return this.aliases.length
+    },
+    forApi: function() {
+        return this.aliases
     }
 }
 
@@ -41,6 +44,12 @@ AliasListInputs.prototype = {
         $("input#input_bibtex").change(function(){
             var importer = new BibtexImporter(that.aliases, this)
             importer.import()
+        })
+
+        // set up the submit button
+        $("#go-button").click(function(){
+            var button = new SubmitButton(that.aliases, this)
+            return button.submit(user)
         })
 
     },
@@ -82,7 +91,54 @@ AliasListInputs.prototype = {
     }
 }
 
+var SubmitButton = function(aliases, elem){
+    this.aliases = aliases
+    this.elem$ = $(elem)
+    this.inputClasses = ["ready", "working", "success", "failure"]
+}
+SubmitButton.prototype = {
+    submit: function(user){
+        this.start()
+        var that = this;
+        var email = $("#make-collection div.email input").val()
+        var pw = $("#make-collection div.password ").val()
+        var title = title$('#name').val() || "My Collection"
 
+        if (email && pw){
+            user.setCreds(email, pw)
+            _gaq.push(['_trackPageview', '/user/created']);
+        }
+        this.createCollection( this.aliases.forApi(), title, user )
+
+    },
+    start:function(){
+    },
+    update: function(){
+    },
+    done: function(data, user) {
+        var redirect = function(){location.href = "/collection/" + cid}
+        var cid=data.collection._id
+
+        // add the id of the newly-created coll to the user's coll list
+        user.addColl(cid, data.key)
+        user.syncWithServer("push", {on200: redirect}) || redirect()
+
+    },
+    failure: function() {
+
+    },
+    createCollection: function(requestObj, user){
+        that = this
+        $.ajax({
+                   url: "http://"+api_root+'/collection',
+                   type: "POST",
+                   dataType: "json",
+                   contentType: "application/json; charset=utf-8",
+                   data:  JSON.stringify(requestObj),
+                   success: that.done.call(that, data, user)
+               })
+    }
+}
 
 
 
@@ -165,18 +221,11 @@ BibtexImporter.prototype = {
                    timeout: 120*1000,  // 120 seconds, because bibtex is very slow
                    data: formData,
                    dataType: "json",
-                   success:  function(response,status,xhr){
-                       query_hash = response.query_hash
-                       console.log("started update request; got this query_hash back: " + query_hash)
-//                       update_bibtex_progress(query_hash)
+                   success:  function(data){
+                       that.bibtexItems = data.items
+                       that.update.call(that, data)
                    },
-                   error: function(XMLHttpRequest, textStatus, errorThrown) {
-                       console.log("error")
-                       return true
-                       $("span.loading").remove()
-                       $("div.fileupload span.added").remove()
-                       $("div.fileupload").append("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
-                   }
+                   error: function(request) {that.failure.call(that, request)}
                });
 
     },
@@ -190,7 +239,38 @@ BibtexImporter.prototype = {
     start:function() {
         this.changeControlGroupState("working")
     },
-    update: function(){},
+    update: function(data){
+        var query_hash = data.query_hash
+        var that = this
+        console.log("updating using query hash", query_hash)
+        $.ajax({
+                   url: "http://"+api_root+"/provider/bibtex/memberitems/"+query_hash+"?method=async",
+                   type: "GET",
+                   dataType: "json",
+                   success: function(response,status,xhr){
+                       console.log(response)
+                       if (response.pages == response.complete) {
+                           that.aliases.add("done!", response.memberitems)
+//                           aliases = []
+//                           for (i=0; i<response.memberitems.length; i++) {
+//                               var aliases = aliases.concat(response.memberitems[i])
+//                           }
+//                           bibtexUploadDone(response.number_entries, aliases)
+                       }
+                       else {
+                           that.updateProgressbar.call(that, response.pages, response.complete)
+                           console.log()
+//                           setTimeout(function () {
+//                               update_bibtex_progress(query_hash)
+//                           }, 500)
+                       }
+                   },
+                   error: function(XMLHttpRequest, textStatus, errorThrown) {
+                       console.log("error!", XMLHttpRequest)
+                       that.failure.call(that, XMLHttpRequest)
+                   }
+               });
+    },
     done: function(data){
         this.changeControlGroupState("success")
         this.aliases.add(data.memberitems)
@@ -202,5 +282,12 @@ BibtexImporter.prototype = {
     },
     failure: function(request) {
         this.changeControlGroupState("failure")
+    },
+    updateProgressbar: function(total, done) {
+        percentDone = Math.round(done / total * 100)
+        this.elem$
+            .parents(".control-group")
+            .find("span.working span.value")
+            .html(percentDone)
     }
 }

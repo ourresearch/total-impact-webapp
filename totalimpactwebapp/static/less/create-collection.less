@@ -20,10 +20,16 @@ div#input {
     h3 {
       margin-bottom: 20px;
     }
+    span.limit {
+      display:block;
+      color: #888;
+      font-weight: normal;
+      font-size: 12px;
+    }
 
     div.control-group {
       margin-bottom: 30px;
-    // fiddly positioning stuff for inputs...brittle
+      &.email {margin-bottom: 0;}
       &.fileupload {
         div.uneditable-input {
           width: 100px;
@@ -74,12 +80,6 @@ div#input {
           }
         }
         &.ids {
-          span.limit {
-            display:block;
-            color: #888;
-            font-weight: normal;
-            font-size: 12px;
-          }
           span.success {
             float:right;
           }

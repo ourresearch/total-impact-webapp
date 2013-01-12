@@ -29,11 +29,12 @@
             <div class="fileupload fileupload-new ready control-group" data-provides="fileupload"  id="bibtex_toggler_contents">
                 <label class="control-label" for="input_bibtex" class="prompt">
                     <span class="import ready">Import from</span>
-                    <span class="import working">Importing from</span>
+                    <span class="import working">Processing</span>
                     <span class="import success">Imported<span class="value"></span></span>
                     <span class="provider-name">Google Scholar</span>
-                    <span class="working">: <span class="value"></span><span class="percent">%</span></span>
+                    <span class="working">data: <span class="value">0</span><span class="percent">%</span></span>
                     <span class="success">articles.</span>
+                    <span class="failure"> error: couldn't read file.</span>
                     <a class="help ready" id="google-scholar-help-link" href="#">(help)</a>
                 </label>
 
@@ -109,24 +110,36 @@ a slideshare url."></textarea>
         <form class="importers" id="make-collection">
             <h3><span class="step-number">3:</span> Make report</h3>
             <h4 class="prompt" >Register (optional)<span class="limit">lets you save and find your collection later.</span></h4>
-            <div class="form-item control-group email ready">
-                <input id="inline-register-email" class="username register" type="text" placeholder="email" />
+            <div class="form-item control-group email register ready">
+                <label class="control-label">
+                    <span class="main">Email</span>
+                    <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Importing from</span>
+                    <span class="failure">already taken...</span>
+                </label>
+                <div class="controls">
+                    <input class="username register email" type="text" placeholder="email" />
+                </div>
             </div>
 
-            <div class="form-item control-group ready">
-                <input id="inline-register-pw" type="password" placeholder="password"/>
+            <div class="form-item control-group register password ready">
+                <label class="control-label">
+                    <span class="main">Password</span>
+                </label>
+                <div class="controls">
+                    <input type="password" placeholder="password"/>
+                </div>
             </div>
 
             <div class="control-group ready" id="collection-name">
                 <label class="control-label" for="name"><span class="main">Collection name:</span></label>
                 <div class="controls">
-                    <input type="text" name="name" class="no-input-yet" id="name" />
+                    <input type="text" name="name" class="no-input-yet" id="name" placeholder="My Collection"/>
                 </div>
             </div>
 
             <div class="control-group create-button ready">
+                <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
                 <div class="controls">
-                    <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
                     <button name="run" type="submit" id="go-button" class="btn btn-large btn-primary">go!</button>
                 </div>
             </div>
