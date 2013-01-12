@@ -14,12 +14,6 @@ div#input {
   color: #333;
   font-weight: bold;
 }
-div#input span.limit {
-  display: block;
-  color: #888;
-  font-weight: normal;
-  font-size: 12px;
-}
 div#input form.importers {
   width: 270px;
   margin-right: 60px;
@@ -34,7 +28,7 @@ div#input form.importers div.control-group {
 div#input form.importers div.control-group.fileupload div.uneditable-input {
   width: 100px;
 }
-div#input form.importers div.control-group.ready .waiting {
+div#input form.importers div.control-group.ready .working {
   display: none;
 }
 div#input form.importers div.control-group.ready .success {
@@ -42,6 +36,9 @@ div#input form.importers div.control-group.ready .success {
 }
 div#input form.importers div.control-group.ready .failure {
   display: none;
+}
+div#input form.importers div.control-group.ready label {
+  color: #555;
 }
 div#input form.importers div.control-group.working .ready {
   display: none;
@@ -52,6 +49,9 @@ div#input form.importers div.control-group.working .success {
 div#input form.importers div.control-group.working .failure {
   display: none;
 }
+div#input form.importers div.control-group.working label {
+  color: #ff4e00;
+}
 div#input form.importers div.control-group.success .ready {
   display: none;
 }
@@ -60,6 +60,9 @@ div#input form.importers div.control-group.success .working {
 }
 div#input form.importers div.control-group.success .failure {
   display: none;
+}
+div#input form.importers div.control-group.success label {
+  color: #468847;
 }
 div#input form.importers div.control-group.failure .ready {
   display: none;
@@ -70,9 +73,11 @@ div#input form.importers div.control-group.failure .working {
 div#input form.importers div.control-group.failure .success {
   display: none;
 }
+div#input form.importers div.control-group.failure label {
+  color: #b94a48;
+}
 div#input form.importers div.control-group label.control-label {
   clear: both;
-  color: #555;
   width: 250px;
   font-weight: bold;
 }
@@ -86,8 +91,18 @@ div#input form.importers div.control-group label.control-label a.help:hover {
   text-decoration: underline;
   color: #ff4e00;
 }
-div#input form.importers div.control-group label.control-label span.items-added {
+div#input form.importers div.control-group label.control-label.ids span.limit {
+  display: block;
+  color: #888;
+  font-weight: normal;
+  font-size: 12px;
+}
+div#input form.importers div.control-group label.control-label.ids span.success {
   float: right;
+}
+div#input form.importers div.control-group label.control-label img {
+  height: 20px;
+  margin: -3px 5px 0 0;
 }
 div#input form.importers div.control-group div.controls input {
   font-size: 16px;

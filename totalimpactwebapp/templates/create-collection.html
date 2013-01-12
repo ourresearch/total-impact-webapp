@@ -11,10 +11,17 @@
     <div class="wrapper">
         <form class="importers">
             <h3><span class="step-number">1:</span> Add articles</h3>
-            <div class="control-group ready" id="orcid_toggler_contents">
-                <label class="control-label" for="orcid_profile_input" class="prompt"><span class="main">Import from ORCID</span><a class="help" id="orcid-help-link" href="#">(help)</a></label>
+            <div class="control-group orcid ready username" id="orcid_toggler_contents">
+                <label class="control-label" for="input_github">
+                    <span class="ready import">Import from</span>
+                    <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Importing from</span>
+                    <span class="success">Added <span class="value">0</span></span>
+                    <span class="provider-name">ORCID</span>
+                    <span class="failure">failure: ID not found.</span>
+                    <span class="success item-type">articles.</span>
+                </label>
                 <div class="controls">
-                    <input id="orcid_profile_input" name="orcid_profile" type="text" size="20" />
+                    <input id="input_orcid" name="orcid_profile" type="text" size="20" />
                 </div>
             </div>
 
@@ -35,7 +42,10 @@
 
 
             <div class="control-group ready">
-                <label for="paste_input" class="control-label"><span class="main ready">Article IDs</span><span class="limit">Paste DOIs or PubMed IDs (limit 100)</span></label>
+                <label for="paste_input" class="control-label ids">
+                    <span class="desc">Other product IDs</span>
+                    <span class="limit">Paste DOIs or PubMed IDs (limit 100)</span>
+                </label>
                 <div class="controls">
                     <textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>
                 </div>
@@ -45,25 +55,38 @@
         <form class="importers other-products">
             <h3><span class="step-number">2:</span> Add other products</h3>
 
-            <div class="control-group github ready">
+            <div class="control-group github username ready">
                 <label class="control-label" for="input_github">
-                    <span class="ready"><img src="" />Import from</span>
-                    <span class="working">Importing from</span>
+                    <span class="ready">Import from</span>
+                    <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Importing from</span>
+                    <span class="success">Added <span class="value">0</span></span>
                     <span class="provider-name">GitHub</span>
+                    <span class="failure">failure: username not found.</span>
+                    <span class="success item-type">repos.</span>
                 </label>
                 <div class="controls">
                     <input type="text" data-provider="github" id="input_github" placeholder="username">
                 </div>
             </div>
-            <div class="control-group slideshare ready">
-                <label class="control-label" for="input_slideshare"><span class="main ready">Import from Slideshare</span></label>
+            <div class="control-group slideshare username ready">
+                <label class="control-label" for="input_github">
+                    <span class="ready import">Import from</span>
+                    <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Importing from</span>
+                    <span class="success">Added <span class="value">0</span></span>
+                    <span class="provider-name">Slideshare</span>
+                    <span class="failure">failure: username not found.</span>
+                    <span class="success item-type">decks.</span>
+                </label>
                 <div class="controls">
                     <input type="text" id="input_slideshare" placeholder="username">
                 </div>
             </div>
 
             <div class="control-group product-ids ready">
-                <label for="paste_dataset_dois" class="control-label"><span class="main ready">Other product IDs</span><span class="limit">Paste DOIs or URLs (limit 100)</span></label>
+                <label for="paste_dataset_dois" class="control-label ids">
+                    <span class="desc">Other product IDs</span>
+                    <span class="limit">Paste DOIs or URLs (limit 100)</span>
+                </label>
                 <div class="controls">
                     <textarea rows="4" cols="40"
                               id="paste_dataset_dois"

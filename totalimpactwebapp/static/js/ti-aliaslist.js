@@ -42,18 +42,9 @@ AliasListInputs.prototype = {
         })
 
 
-        // import articles and products from IDs
-        $("form.importers textarea").each(function(){
-            $(this).blur(function(){
-                if ($(this).hasClass("default")) return false
-                var importer = new TextAreaImporter(that.aliases, this)
-                importer.import()
-            })
-        })
 
-
-        // import github and slideshare from usernames
-        $("form div.control-group.slideshare input, form div.control-group.github input")
+        // import orcid, github, and slideshare from usernames
+        $(".control-group.username input")
             .each(function(){
                 $(this).not("default").blur(function(){
                     var importer = new UsernameImporter(that.aliases, this)
@@ -107,6 +98,7 @@ TextAreaImporter.prototype = {
 var UsernameImporter = function(aliases, elem) {
     this.aliases = aliases
     this.elem$ = $(elem)
+    this.inputClasses = ["ready", "working", "success", "failure"]
 }
 UsernameImporter.prototype = {
 
@@ -115,41 +107,38 @@ UsernameImporter.prototype = {
         this.start()
         var providerName = this.elem$.attr("id").replace("input_", "")
         var queryStr = this.elem$.val()
-        console.log(providerName)
 
         $.ajax({
             url: "http://"+api_root+"/provider/"+providerName+"/memberitems/"+queryStr+"?method=sync",
             type: "GET",
             dataType: "json",
-            success: that.done,
-            error: that.done
+            success: function(data){that.done.call(that, data)},
+            error: function(request){that.failure.call(that, request)}
         });
 
-
-        var inputStr = this.elem$.val()
-        newAliasesCount = this.aliases.add(inputStr.split("\n"))
+    },
+    changeControlGroupState: function(newClassName){
+        var classesToRemove = _.without(this.inputClasses, "ready").join(" ")
+        this.elem$
+            .parents(".control-group")
+            .removeClass(this.inputClasses.join(" "))
+            .addClass(newClassName)
     },
     start:function() {
-        this.elem$.parents(".control-group").addClass("waiting").find("label").empty().append(
-            ajaxLoadImg + "Importing..."
-        ).addClass("waiting")
-
+        this.changeControlGroupState("working")
     },
     update: function(){},
     done: function(data){
-        console.log("ajax gave us data back!", data)
+        this.changeControlGroupState("success")
+        this.aliases.add(data.memberitems)
+        this.elem$
+            .parents(".control-group")
+            .find("span.success span.value")
+            .html(this.aliases.numAddedLast)
         $("p#artcounter span").html(this.aliases.count())
     },
     failure: function(request) {
-        $("span.loading").remove()
-        $this.siblings("span.added").remove()
-        var explainString;
-        if (XMLHttpRequest.status == 404) {
-            explainString = "sorry, not found."
-        } else {
-            explainString = "sorry, there was an error."
-        }
-        $this.after("<span class='added'><span class='sorry'>" + explainString + "</span></span>")
+        this.changeControlGroupState("failure")
     }
 }
 

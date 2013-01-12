@@ -1,5 +1,6 @@
 // useful mixins, from https://github.com/dmitryf/elements
 @import "elements.less";
+@import "bootstrap/variables.less";
 @linkColor: #FF4E00;
 @accentColor: #0053b0;
 @inputWidth: 300px;
@@ -11,12 +12,7 @@ body.create-collection #header {
 div#input {
   color: #333;
   font-weight: bold;
-  span.limit {
-    display:block;
-    color: #888;
-    font-weight: normal;
-    font-size: 12px;
-  }
+
   form.importers {
     width: 270px;
     margin-right: 60px;
@@ -36,31 +32,35 @@ div#input {
 
       // there are four states a control group can have:
       &.ready {
-        .waiting {display:none;}
+        .working {display:none;}
         .success {display:none;}
         .failure {display:none;}
+        label { color: #555;}
+
       }
       &.working {
         .ready {display:none;}
         .success {display:none;}
         .failure {display:none;}
+        label { color: @linkColor;}
       }
       &.success {
         .ready {display:none;}
         .working {display:none;}
         .failure {display:none;}
+        label { color: @successText;}
       }
       &.failure {
         .ready {display:none;}
         .working {display:none;}
         .success {display:none;}
+        label { color: @errorText;}
       }
 
 
 
       label.control-label {
         clear:both;
-        color: #555;
         width: 250px;
         font-weight: bold;
         a.help {
@@ -73,10 +73,22 @@ div#input {
             color:@linkColor;
           }
         }
-
-        span.items-added {
-          float:right;
+        &.ids {
+          span.limit {
+            display:block;
+            color: #888;
+            font-weight: normal;
+            font-size: 12px;
+          }
+          span.success {
+            float:right;
+          }
         }
+        img{
+          height: 20px;
+          margin: -3px 5px 0 0;
+        }
+
       }
 
       div.controls {
