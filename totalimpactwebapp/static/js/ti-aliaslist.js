@@ -1,5 +1,3 @@
-var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
-
 
 var AliasList = function(){}
 AliasList.prototype = {
@@ -15,6 +13,9 @@ AliasList.prototype = {
         return this.aliases.length
     }
 }
+
+
+
 
 
 var AliasListInputs = function() {}
@@ -34,6 +35,12 @@ AliasListInputs.prototype = {
                     var importer = new UsernameImporter(that.aliases, this)
                     importer.import()
             })
+        })
+
+        // import from bibtex
+        $("input#input_bibtex").change(function(){
+            var importer = new BibtexImporter(that.aliases, this)
+            importer.import()
         })
 
     },
@@ -76,36 +83,6 @@ AliasListInputs.prototype = {
 }
 
 
-// Import aliases that have been directly entered in textareas:
-var TextAreaImporter = function(aliases, elem) {
-    this.aliases = aliases
-    this.elem = elem
-}
-TextAreaImporter.prototype = {
-
-    import: function() {
-        this.start()
-        var inputStr = $(this.elem).val()
-        newAliasesCount = this.aliases.add(inputStr.split("\n"))
-        this.update()
-        this.done()
-    },
-    start:function() {
-        console.log("start ", this.elem)
-        $(this.elem)
-            .parents("div.control-group")
-            .find("label.control-label span.items-added").
-            remove()
-    },
-    update: function(){},
-    done: function(aliases){
-        $("p#artcounter span").html(this.aliases.count())
-        $(this.elem)
-            .parents("div.control-group")
-            .find("label.control-label span.main")
-            .after("<span class='items-added'>Added <span class='value'>"+this.aliases.numAddedLast+"</span> items</span>")
-    }
-}
 
 
 
@@ -158,3 +135,72 @@ UsernameImporter.prototype = {
     }
 }
 
+
+
+
+
+
+
+// upload bibtex from google scholar
+var BibtexImporter = function(aliases, elem) {
+    this.aliases = aliases
+    this.elem$ = $(elem)
+    this.inputClasses = ["ready", "working", "success", "failure"]
+}
+BibtexImporter.prototype = {
+
+    import: function() {
+        var that = this
+        this.start()
+        var providerName = this.elem$.attr("id").replace("input_", "")
+
+        var formData = new FormData();
+        formData.append('file', this.elem$[0].files[0]);
+
+        $.ajax({
+                   url: "http://"+api_root+'/provider/bibtex/memberitems',
+                   type: "POST",
+                   processData: false,
+                   contentType: false,
+                   timeout: 120*1000,  // 120 seconds, because bibtex is very slow
+                   data: formData,
+                   dataType: "json",
+                   success:  function(response,status,xhr){
+                       query_hash = response.query_hash
+                       console.log("started update request; got this query_hash back: " + query_hash)
+//                       update_bibtex_progress(query_hash)
+                   },
+                   error: function(XMLHttpRequest, textStatus, errorThrown) {
+                       console.log("error")
+                       return true
+                       $("span.loading").remove()
+                       $("div.fileupload span.added").remove()
+                       $("div.fileupload").append("<span class='added'><span class='sorry'>sorry, there was an error.</span></span>")
+                   }
+               });
+
+    },
+    changeControlGroupState: function(newClassName){
+        var classesToRemove = _.without(this.inputClasses, "ready").join(" ")
+        this.elem$
+            .parents(".control-group")
+            .removeClass(this.inputClasses.join(" "))
+            .addClass(newClassName)
+    },
+    start:function() {
+        this.changeControlGroupState("working")
+    },
+    update: function(){},
+    done: function(data){
+        this.changeControlGroupState("success")
+        this.aliases.add(data.memberitems)
+        this.elem$
+            .parents(".control-group")
+            .find("span.success span.value")
+            .html(this.aliases.numAddedLast)
+        $("p#artcounter span").html(this.aliases.count())
+    },
+    failure: function(request) {
+        this.changeControlGroupState("failure")
+    }
+}
