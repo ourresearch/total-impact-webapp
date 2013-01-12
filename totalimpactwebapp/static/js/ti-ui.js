@@ -65,8 +65,7 @@ $(document).ready(function(){
         itemController.itemReportPageInit()
     }
 
-    var aliasListInputs = new AliasListInputs()
-    aliasListInputs.init()
+
 
 
 
@@ -76,7 +75,8 @@ $(document).ready(function(){
 
     }
 
-    createCollectionInit();
+    var aliasListInputs = new AliasListInputs()
+    aliasListInputs.init()
     homePageInit()
     aboutPageInit()
 
