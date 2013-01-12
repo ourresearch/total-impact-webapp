@@ -11,15 +11,15 @@
     <div class="wrapper">
         <form class="importers">
             <h3><span class="step-number">1:</span> Add articles</h3>
-            <div class="toggler_contents control-group" id="orcid_toggler_contents">
-                <label class="control-label" for="orcid_profile_input" class="prompt">Import from ORCID<span class="limit"><a id="orcid-help-link" href="#">(Click here for help)</a></span></label>
+            <div class="control-group ready" id="orcid_toggler_contents">
+                <label class="control-label" for="orcid_profile_input" class="prompt"><span class="main">Import from ORCID</span><a class="help" id="orcid-help-link" href="#">(help)</a></label>
                 <div class="controls">
                     <input id="orcid_profile_input" name="orcid_profile" type="text" size="20" />
                 </div>
             </div>
 
             <div class="fileupload fileupload-new toggler_contents control-group" data-provides="fileupload"  id="bibtex_toggler_contents">
-                <label class="control-label" for="input_bibtex" class="prompt">Import from Google Scholar<span class="limit"><a id="google-scholar-help-link" href="#">(Click here for help)</a></span></label>
+                <label class="control-label" for="input_bibtex" class="prompt"><span class="main">Import from Google Scholar</span><a class="help" id="google-scholar-help-link" href="#">(help)</a></label>
                 <div class="input-append">
                     <div class="uneditable-input span3">
                         <i class="icon-file fileupload-exists"></i>
@@ -28,14 +28,14 @@
                   <span class="btn btn-file">
                       <span class="fileupload-new">Select BibTeX file</span>
                       <span class="fileupload-exists">Change</span>
-                      <input type="file"id="input_bibtex" onchange="upload_bibtex(this.files)" />
+                      <input data-provider="bibtex" type="file"id="input_bibtex" onchange="upload_bibtex(this.files)" />
                   </span>
                 </div>
             </div>
 
 
-            <div class="control-group">
-                <label for="paste_input" class="control-label">Article IDs<span class="limit">Paste DOIs or PubMed IDs (limit 100)</span></label>
+            <div class="control-group ready">
+                <label for="paste_input" class="control-label"><span class="main ready">Article IDs</span><span class="limit">Paste DOIs or PubMed IDs (limit 100)</span></label>
                 <div class="controls">
                     <textarea rows="4" cols="40" id="paste_input" class="artifactList no-input-yet" ></textarea>
                 </div>
@@ -45,21 +45,25 @@
         <form class="importers other-products">
             <h3><span class="step-number">2:</span> Add other products</h3>
 
-            <div class="control-group github">
-                <label class="control-label" for="input_github">Import from GitHub</label>
+            <div class="control-group github ready">
+                <label class="control-label" for="input_github">
+                    <span class="ready"><img src="" />Import from</span>
+                    <span class="working">Importing from</span>
+                    <span class="provider-name">GitHub</span>
+                </label>
                 <div class="controls">
-                    <input type="text" id="input_github" placeholder="username">
+                    <input type="text" data-provider="github" id="input_github" placeholder="username">
                 </div>
             </div>
-            <div class="control-group slideshare">
-                <label class="control-label" for="input_slideshare">Import from Slideshare</label>
+            <div class="control-group slideshare ready">
+                <label class="control-label" for="input_slideshare"><span class="main ready">Import from Slideshare</span></label>
                 <div class="controls">
                     <input type="text" id="input_slideshare" placeholder="username">
                 </div>
             </div>
 
-            <div class="control-group product-ids">
-                <label for="paste_dataset_dois" class="control-label">Other product IDs<span class="limit">Paste DOIs or URLs (limit 100)</span></label>
+            <div class="control-group product-ids ready">
+                <label for="paste_dataset_dois" class="control-label"><span class="main ready">Other product IDs</span><span class="limit">Paste DOIs or URLs (limit 100)</span></label>
                 <div class="controls">
                     <textarea rows="4" cols="40"
                               id="paste_dataset_dois"
@@ -74,23 +78,23 @@ a slideshare url."></textarea>
 
         <form class="importers" id="make-collection">
             <h3><span class="step-number">3:</span> Make report</h3>
-            <h4 class="prompt" >Register<span class="limit"> (optional; lets you save and find your collection later.)</span></h4>
-            <div class="form-item control-group email">
+            <h4 class="prompt" >Register (optional)<span class="limit">lets you save and find your collection later.</span></h4>
+            <div class="form-item control-group email ready">
                 <input id="inline-register-email" class="username register" type="text" placeholder="email" />
             </div>
 
-            <div class="form-item control-group">
+            <div class="form-item control-group ready">
                 <input id="inline-register-pw" type="password" placeholder="password"/>
             </div>
 
-            <div class="control-group" id="collection-name">
-                <label class="control-label" for="name">Collection name:</label>
+            <div class="control-group ready" id="collection-name">
+                <label class="control-label" for="name"><span class="main">Collection name:</span></label>
                 <div class="controls">
                     <input type="text" name="name" class="no-input-yet" id="name" />
                 </div>
             </div>
 
-            <div class="control-group create-button">
+            <div class="control-group create-button ready">
                 <div class="controls">
                     <p id="artcounter">You've got <span class="count">0</span> items in your collection.</p>
                     <button name="run" type="submit" id="go-button" class="btn btn-large btn-primary">go!</button>

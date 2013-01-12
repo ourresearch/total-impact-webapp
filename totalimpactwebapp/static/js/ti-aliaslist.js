@@ -4,75 +4,152 @@ var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt=
 var AliasList = function(){}
 AliasList.prototype = {
     aliases : [],
-    importers: [],
+    numAddedLast: 0,
     add: function(aliases) {
         var oldLen = this.aliases.length
         this.aliases = _.union(aliases, this.aliases)
-        return this.aliases.length - oldLen
+        this.numAddedLast = this.aliases.length - oldLen
+        return this.numAddedLast
+    },
+    count: function() {
+        return this.aliases.length
     }
 }
 
 
 var AliasListInputs = function() {}
-AliasListInputs.prototype.aliases = new AliasList()
-AliasListInputs.prototype.init = function() {
-    var that = this
+AliasListInputs.prototype = {
+    aliases: new AliasList(),
+    init: function() {
+        var that = this
 
-    $("form.importers textarea").each(function(){
-        var importer = new TextareaAliasImporter()
-        importer.init(this, that.aliases)
-    })
+        // placeholder replacement
+        $("textarea").each(function(){
+            var this$ = $(this)
+            var placeholderText = this$.attr("data-placeholder")
+            this$.val(placeholderText).addClass("default")
+            this$.blur(function(){
+                if (!this$.val()) {
+                    this$.val(placeholderText).addClass("default")
+                    return false
+                }
+            })
+            this$.focus(function(){
+                if (this$.val() == placeholderText){
+                    this$.val("").removeClass("default")
+                }
+            })
+        })
 
-    $("h3").click(function(){
-        console.log("aliases:", that.aliases)
-    })
-}
+
+        // import articles and products from IDs
+        $("form.importers textarea").each(function(){
+            $(this).blur(function(){
+                if ($(this).hasClass("default")) return false
+                var importer = new TextAreaImporter(that.aliases, this)
+                importer.import()
+            })
+        })
 
 
+        // import github and slideshare from usernames
+        $("form div.control-group.slideshare input, form div.control-group.github input")
+            .each(function(){
+                $(this).not("default").blur(function(){
+                    var importer = new UsernameImporter(that.aliases, this)
+                    importer.import()
+            })
+        })
 
-var AliasCallbacks = function() {}
-AliasCallbacks.prototype = {
-    doneImporting: function(elem, aliases, newAliases) {
-        var numNewAliases = this.updateAliases(aliases, newAliases)
-        $(elem).css("background", "red")
-        console.log("done importing; got " + numNewAliases + " new aliases.")
-    },
-    updateAliases: function(aliases, newAliases){
-        return aliases.add(newAliases)
+
+        $("h3").click(function(){
+            console.log("aliases:", that.aliases)
+        })
     }
 }
 
-
-
-/*
- * Importers for different types of sources
- *
- */
 
 // Import aliases that have been directly entered in textareas:
-var TextareaAliasImporter = function() {}
-TextareaAliasImporter.prototype = {
-    init: function(elem, aliases) {
-        var callbacks = new AliasCallbacks()
-        var placeholderText = $(elem).attr("data-placeholder")
-        $(elem).val(placeholderText)
+var TextAreaImporter = function(aliases, elem) {
+    this.aliases = aliases
+    this.elem = elem
+}
+TextAreaImporter.prototype = {
 
-        $(elem).focus(function(){
-            if ($(this).val() == placeholderText){
-                $(this).val("")
-            }
-        })
-        $(elem).blur(function(){
-            var this$ = $(this)
-            if (!this$.val()) {
-                this$.val(placeholderText)
-                return false
-            }
-            else {
-                var newAliases = $(this).val().split("\n")
-                callbacks.doneImporting(this, aliases, newAliases)
-            }
-        })
+    import: function() {
+        this.start()
+        var inputStr = $(this.elem).val()
+        newAliasesCount = this.aliases.add(inputStr.split("\n"))
+        this.update()
+        this.done()
+    },
+    start:function() {
+        console.log("start ", this.elem)
+        $(this.elem)
+            .parents("div.control-group")
+            .find("label.control-label span.items-added").
+            remove()
+    },
+    update: function(){},
+    done: function(aliases){
+        $("p#artcounter span").html(this.aliases.count())
+        $(this.elem)
+            .parents("div.control-group")
+            .find("label.control-label span.main")
+            .after("<span class='items-added'>Added <span class='value'>"+this.aliases.numAddedLast+"</span> items</span>")
+    }
+}
+
+
+
+
+// Import aliases from external services that want a username
+var UsernameImporter = function(aliases, elem) {
+    this.aliases = aliases
+    this.elem$ = $(elem)
+}
+UsernameImporter.prototype = {
+
+    import: function() {
+        var that = this
+        this.start()
+        var providerName = this.elem$.attr("id").replace("input_", "")
+        var queryStr = this.elem$.val()
+        console.log(providerName)
+
+        $.ajax({
+            url: "http://"+api_root+"/provider/"+providerName+"/memberitems/"+queryStr+"?method=sync",
+            type: "GET",
+            dataType: "json",
+            success: that.done,
+            error: that.done
+        });
+
+
+        var inputStr = this.elem$.val()
+        newAliasesCount = this.aliases.add(inputStr.split("\n"))
+    },
+    start:function() {
+        this.elem$.parents(".control-group").addClass("waiting").find("label").empty().append(
+            ajaxLoadImg + "Importing..."
+        ).addClass("waiting")
+
+    },
+    update: function(){},
+    done: function(data){
+        console.log("ajax gave us data back!", data)
+        $("p#artcounter span").html(this.aliases.count())
+    },
+    failure: function(request) {
+        $("span.loading").remove()
+        $this.siblings("span.added").remove()
+        var explainString;
+        if (XMLHttpRequest.status == 404) {
+            explainString = "sorry, not found."
+        } else {
+            explainString = "sorry, there was an error."
+        }
+        $this.after("<span class='added'><span class='sorry'>" + explainString + "</span></span>")
     }
 }
 
@@ -87,12 +164,26 @@ TextareaAliasImporter.prototype = {
 
 
 
-exampleStrings = {
-    paste_input:"10.1038/171737a0\n13054692",
-    paste_webpages: "http://www.example.com\nhttp://www.zombo.com",
-    crossref_input: "Watson : A Structure for Deoxyribose Nucleic Acid",
-    name: "My Collection"
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 inputExamplesIClickHandler = function(thisInput) {
 
@@ -279,7 +370,6 @@ createCollectionInit = function(){
     })
 
     $("li textarea, input#name").each(function(){
-        $(this).val(exampleStrings[this.id])
     })
     $("div.toggler_contents input, ul#manual-add textarea, input#name")
         .focus(function(){
@@ -287,15 +377,11 @@ createCollectionInit = function(){
                    $(this).removeClass("no-input-yet")
 
                    // hid the example strings if they're still up.
-                   if (currentUserInputValue == exampleStrings[this.id]) {
-                       $(this).val("")
-                   }
                })
         .blur(function(){
                   $this = $(this)
                   if ($this.val() == "") {
                       $this.addClass("no-input-yet")
-                      $this.val(exampleStrings[this.id])
                       return false;
                   }
                   else if ($this.val() == currentUserInputValue) {
