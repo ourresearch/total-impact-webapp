@@ -26,19 +26,23 @@
                 </div>
             </div>
 
-            <div class="fileupload fileupload-new toggler_contents control-group" data-provides="fileupload"  id="bibtex_toggler_contents">
+            <div class="fileupload fileupload-new ready control-group" data-provides="fileupload"  id="bibtex_toggler_contents">
                 <label class="control-label" for="input_bibtex" class="prompt">
-                    <span class="main">Import from Google Scholar</span>
-                    <a class="help ready" id="google-scholar-help-link" href="#">(help)</a></label>
+                    <span class="import ready">Import from</span>
+                    <span class="import working">Importing from</span>
+                    <span class="import success">Imported<span class="value"></span></span>
+                    <span class="provider-name">Google Scholar</span>
+                    <span class="working">: <span class="value"></span><span class="percent">%</span></span>
+                    <span class="success">articles.</span>
+                    <a class="help ready" id="google-scholar-help-link" href="#">(help)</a>
+                </label>
+
                 <div class="input-append">
-                    <div class="uneditable-input span3">
-                        <i class="icon-file fileupload-exists"></i>
-                        <span class="fileupload-preview"></span>
-                    </div>
+                    <div class="uneditable-input span3"></div>
                   <span class="btn btn-file">
                       <span class="fileupload-new">Select BibTeX file</span>
                       <span class="fileupload-exists">Change</span>
-                      <input data-provider="bibtex" type="file"id="input_bibtex" onchange="upload_bibtex(this.files)" />
+                      <input type="file"id="input_bibtex"  />
                   </span>
                 </div>
             </div>
