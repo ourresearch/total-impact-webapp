@@ -95,6 +95,7 @@ function User(userViews) {
      ************************/
     this.syncWithServer = function(method, callbacks) {
         if (!this.hasCreds()) {
+            if (typeof callbacks.onNoUserId() !== "undefined") callbacks.onNoUserId()
             return false;
         }
         if (typeof callbacks == "undefined") callbacks = {}
@@ -191,9 +192,10 @@ function User(userViews) {
 
     // constructor here, because has to read the rest of function first it seems.
     if (this.hasCreds()) {
+        console.log("the user has creds; here they are:", $.cookie("userdata"))
         this.userViews.login(this.userdata()._id)
         this.syncWithServer("pull")
-        this.create()
+//        this.create()
     }
     else if (this.userdata()) {
         // nothing, we'll keep storing events and wait for the user to login

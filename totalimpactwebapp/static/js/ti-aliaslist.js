@@ -131,7 +131,8 @@ SubmitButton.prototype = {
 
         // add the id of the newly-created coll to the user's coll list
         user.addColl(cid, data.key)
-        user.syncWithServer("push", {on200: redirect}) || redirect()
+        console.log("we're syncing this to the server")
+        user.syncWithServer("push", {on200: redirect, onNoUserId: redirect})
 
     },
     failure: function() {
@@ -184,11 +185,11 @@ UsernameImporter.prototype = {
 
     },
     start:function() {
-        changeControlGroupState("working")
+        changeControlGroupState(this.elem$, "working")
     },
     update: function(){},
     done: function(data){
-        changeControlGroupState("success")
+        changeControlGroupState(this.elem$, "success")
         this.aliases.add(data.memberitems)
         this.elem$
             .parents(".control-group")
@@ -197,7 +198,7 @@ UsernameImporter.prototype = {
         $("p#artcounter span").html(this.aliases.count())
     },
     failure: function(request) {
-        changeControlGroupState("failure")
+        changeControlGroupState(this.elem$, "failure")
     }
 }
 
@@ -302,7 +303,7 @@ BibtexImporter.prototype = {
 
     },
     start:function() {
-        changeControlGroupState("working")
+        changeControlGroupState(this.elem$, "working")
     },
     update: function(data){
         var query_hash = data.query_hash
@@ -337,7 +338,7 @@ BibtexImporter.prototype = {
                });
     },
     done: function(data){
-        changeControlGroupState("success")
+        changeControlGroupState(this.elem$, "success")
         this.aliases.add(data.memberitems)
         this.elem$
             .parents(".control-group")
@@ -346,7 +347,7 @@ BibtexImporter.prototype = {
         $("p#artcounter span").html(this.aliases.count())
     },
     failure: function(request) {
-        changeControlGroupState("failure")
+        changeControlGroupState(this.elem$, "failure")
     },
     updateProgressbar: function(total, done) {
         percentDone = Math.round(done / total * 100)
