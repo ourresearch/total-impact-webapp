@@ -112,7 +112,11 @@ div#input form.importers div.control-group div.controls input {
   width: 240px;
 }
 div#input form.importers div.control-group div.controls textarea {
+  line-height: 1.6;
   width: 240px;
+}
+div#input form.importers div.control-group div.controls textarea.default {
+  color: #999;
 }
 img.loading {
   height: 30px;

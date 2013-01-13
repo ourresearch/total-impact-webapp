@@ -5,6 +5,16 @@ $.support.cors = true; // makes IE8 and IE9 support CORS
 if (!window.console) {
     console = {log: function() {}};
 }
+var tiLinkColor = "#FF4E00"
+
+changeControlGroupState = function(elem, newClassName){
+    var states = ["ready", "working", "success", "failure"]
+    $(elem)
+        .parents(".control-group")
+        .removeClass(states.join(" "))
+        .addClass(newClassName)
+}
+
 // shim Object.create for inheritance.
 // from https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/create#Polyfill
 if (!Object.create) {

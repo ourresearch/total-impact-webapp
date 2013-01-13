@@ -48,6 +48,13 @@ AliasListInputs.prototype = {
 
         // set up the submit button
         $("#go-button").click(function(){
+
+            // fetch ids from the textareas first
+            $("textarea.ids").not(".default").each(function(){
+                var importer = new TextareaImporter(that.aliases, this)
+                importer.import()
+            })
+
             var button = new SubmitButton(that.aliases, this)
             return button.submit(user)
         })
@@ -101,14 +108,16 @@ SubmitButton.prototype = {
         this.start()
         var that = this;
         var email = $("#make-collection div.email input").val()
-        var pw = $("#make-collection div.password ").val()
-        var title = title$('#name').val() || "My Collection"
+        var pw = $("#make-collection div.password input").val()
+        var title = $('#name').val() || "My Collection"
 
         if (email && pw){
             user.setCreds(email, pw)
             _gaq.push(['_trackPageview', '/user/created']);
         }
+
         this.createCollection( this.aliases.forApi(), title, user )
+        return false
 
     },
     start:function(){
@@ -116,6 +125,7 @@ SubmitButton.prototype = {
     update: function(){
     },
     done: function(data, user) {
+        console.log("finished making the collection!")
         var redirect = function(){location.href = "/collection/" + cid}
         var cid=data.collection._id
 
@@ -127,15 +137,22 @@ SubmitButton.prototype = {
     failure: function() {
 
     },
-    createCollection: function(requestObj, user){
-        that = this
+    createCollection: function(aliases, title, user){
+        var that = this
+        var requestObj = {
+            aliases: aliases,
+            title:title
+        }
+        console.log("making the collection now.")
         $.ajax({
                    url: "http://"+api_root+'/collection',
                    type: "POST",
                    dataType: "json",
                    contentType: "application/json; charset=utf-8",
                    data:  JSON.stringify(requestObj),
-                   success: that.done.call(that, data, user)
+                   success: function(data){
+                       that.done.call(that, data, user)
+                   }
                })
     }
 }
@@ -166,19 +183,12 @@ UsernameImporter.prototype = {
         });
 
     },
-    changeControlGroupState: function(newClassName){
-        var classesToRemove = _.without(this.inputClasses, "ready").join(" ")
-        this.elem$
-            .parents(".control-group")
-            .removeClass(this.inputClasses.join(" "))
-            .addClass(newClassName)
-    },
     start:function() {
-        this.changeControlGroupState("working")
+        changeControlGroupState("working")
     },
     update: function(){},
     done: function(data){
-        this.changeControlGroupState("success")
+        changeControlGroupState("success")
         this.aliases.add(data.memberitems)
         this.elem$
             .parents(".control-group")
@@ -187,9 +197,71 @@ UsernameImporter.prototype = {
         $("p#artcounter span").html(this.aliases.count())
     },
     failure: function(request) {
-        this.changeControlGroupState("failure")
+        changeControlGroupState("failure")
     }
 }
+
+
+
+
+
+// Import aliases from external services that want a username
+var TextareaImporter = function(aliases, elem) {
+    this.aliases = aliases
+    this.elem$ = $(elem)
+    this.inputClasses = ["ready", "working", "success", "failure"]
+}
+TextareaImporter.prototype = {
+    import: function(){
+        var newAliases = this.parseTextareaArtifacts(this.elem$.val())
+        this.aliases.add(newAliases)
+    },
+    parseTextareaArtifacts: function(str) {
+        var ids = str.split("\n");
+        var ret = [];
+        for (i=0; i<ids.length; i++){
+            var artifact = [];
+            var thisId = ids[i];
+            if (thisId.indexOf(":") > 0) {
+                artifact[0] = thisId.split(':')[0]; // namespace
+                artifact[1] = thisId.substr(artifact[0].length + 1) // id
+
+                // handle urls:
+                if (artifact[0] == "http" || artifact[0] == "https"){
+                    artifact[0] = "url";
+                    artifact[1] = thisId
+                }
+            }
+            else {
+                if (thisId.length > 0) {
+                    var isnum_with_possible_period = /^[\d\.]+$/.test(thisId)
+                    // handle dois entered without the doi prefix
+                    if (thisId.substring(0,3) == "10.") {
+                        artifact[0] = "doi"
+                    } else if (isnum_with_possible_period && (thisId.length > 5) && (thisId.length <= 8)) {
+                        // definition of pmid from http://www.nlm.nih.gov/bsd/mms/medlineelements.html#pmid
+                        // this doesn't catch short PMIDs, but that's ok
+                        artifact[0] = "pmid"
+                    }
+                    else {
+                        artifact[0] = "unknown"
+                    }
+                    artifact[1] = thisId
+                }
+            }
+            if (typeof artifact[1] != "undefined") {
+                ret.push(artifact);
+            }
+        }
+        return ret;
+    },
+    start:function(){},
+    update:function(){},
+    done:function(){},
+    failure:function(){}
+
+}
+
 
 
 
@@ -229,15 +301,8 @@ BibtexImporter.prototype = {
                });
 
     },
-    changeControlGroupState: function(newClassName){
-        var classesToRemove = _.without(this.inputClasses, "ready").join(" ")
-        this.elem$
-            .parents(".control-group")
-            .removeClass(this.inputClasses.join(" "))
-            .addClass(newClassName)
-    },
     start:function() {
-        this.changeControlGroupState("working")
+        changeControlGroupState("working")
     },
     update: function(data){
         var query_hash = data.query_hash
@@ -272,7 +337,7 @@ BibtexImporter.prototype = {
                });
     },
     done: function(data){
-        this.changeControlGroupState("success")
+        changeControlGroupState("success")
         this.aliases.add(data.memberitems)
         this.elem$
             .parents(".control-group")
@@ -281,7 +346,7 @@ BibtexImporter.prototype = {
         $("p#artcounter span").html(this.aliases.count())
     },
     failure: function(request) {
-        this.changeControlGroupState("failure")
+        changeControlGroupState("failure")
     },
     updateProgressbar: function(total, done) {
         percentDone = Math.round(done / total * 100)

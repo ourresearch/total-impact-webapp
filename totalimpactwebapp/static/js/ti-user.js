@@ -179,10 +179,10 @@ function User(userViews) {
             url:"http://"+api_root+"/user/"+username,
             type:"GET",
             statusCode: {
-               403: function(data){ // forbidden, cause no pw. but the name is right!
+               403: function(data){ // forbidden, cause no pw. that name is taken!
                    failCallback()
                },
-               404: function(data) { // doesn't exist.
+               404: function(data) { // doesn't exist; name is available, yay.
                    successCallback()
                }
             }
@@ -329,7 +329,9 @@ function UserController(user, userViews) {
             $("#logged-in div.dropdown-menu a#logged-in").attr("data-toggle", "dropdown").click();
         })
 
-        $("input.username.register").blur(function(){
+        // used for the header login thingy.
+        // TODO: get rid of this, use the one below for both header and create panel
+        $("div.navbar input.username.register").blur(function(){
             if (!$(this).val()) return true
             $(this).siblings("span.help-inline").empty().append(ajaxLoadImg)
             user.checkUsername(
@@ -338,6 +340,24 @@ function UserController(user, userViews) {
                 userViews.userNameExists
             )
         })
+
+        // used for the create panel
+        // TODO make this work for the header login widget, too
+        $("input.register.username").blur(function(){
+            var that$ = $(this)
+            if (!that$.val()) return true
+            if (that$.parents(".control-group").hasClass("success")) return true
+
+            changeControlGroupState(that$, "working")
+            user.checkUsername(
+                that$.val(),
+                function(){changeControlGroupState(that$, "success")},
+                function(){changeControlGroupState(that$, "failure")}
+            )
+
+        })
+
+
 
 
     }
