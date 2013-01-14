@@ -313,17 +313,13 @@ function UserController(user, userViews) {
          ******************************************/
 
         // works for both the registration and login forms.
-        $(".acct-mgt form").submit(function(){
-
-            userViews.startRegistration()
+        $(".acct-mgt form.login").submit(function(){
 
             var email = $(this).find("input.username").val()
             var pw = $(this).find("input.pw").val()
             user.setCreds(email, pw)
-            var method = $(this).hasClass("register") ? "push" : "pull"
-            user.syncWithServer(method)
+            user.syncWithServer("pull")
 
-            userViews.finishRegistration(); // this should be handed as a callback to syncWithServer()
 
 
             return false;
@@ -339,19 +335,7 @@ function UserController(user, userViews) {
             $("#logged-in div.dropdown-menu a#logged-in").attr("data-toggle", "dropdown").click();
         })
 
-        // used for the header login thingy.
-        // TODO: get rid of this, use the one below for both header and create panel
-        $("div.navbar input.username.register").blur(function(){
-            if (!$(this).val()) return true
-            $(this).siblings("span.help-inline").empty().append(ajaxLoadImg)
-            user.checkUsername(
-                $(this).val(),
-                userViews.userNameValid,
-                userViews.userNameExists
-            )
-        })
-
-        // used for the create panel
+        // used for the ti-aliaslist panel
         // TODO make this work for the header login widget, too
         $("input.register.username").blur(function(){
             var that$ = $(this)

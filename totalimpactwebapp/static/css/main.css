@@ -218,6 +218,15 @@ div.navbar ul.nav.pull-right > li div.dropdown-menu .btn-primary {
   float: right;
   font-size: 20px;
 }
+div.navbar ul.nav.pull-right > li div.dropdown-menu span.register {
+  display: none;
+  float: right;
+  font-size: 18px;
+}
+div.navbar ul.nav.pull-right > li div.dropdown-menu span.register a {
+  padding: 6px 15px;
+  color: #0064cd;
+}
 div.navbar ul.nav.pull-right > li div.dropdown-menu span.help-inline {
   height: 22px;
   min-width: 40px;

@@ -59,7 +59,7 @@ $(document).ready(function(){
     userController.init()
 
     collViews = new CollViews()
-    coll = new Coll(collViews)
+    coll = new Coll(collViews, user)
     collController = new CollController(coll, collViews);
 
     itemController = new ItemController($)

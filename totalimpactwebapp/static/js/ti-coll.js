@@ -171,14 +171,6 @@ function Coll(collViews, user){
                });
     }
 
-    this.render = function(){
-//        this.views.renderOwnership()
-//        this.views.renderTitle(this.title)
-
-        this.views.renderItems(this.items)
-        this.views.finishUpdating(this.items)
-
-    }
 
     this.updateTitle = function(newTitle){
         // implement later.
@@ -193,8 +185,8 @@ function Coll(collViews, user){
     }
 
     this.update = function(itemIds, title, onSuccess){
-        var edit_key = user.getKeyForColl(this.id)
-        if (!edit_key) return false
+        if (!this.isEditable()) return false
+
         this.itemIds = itemIds
         this.title = title
 
@@ -231,6 +223,22 @@ function Coll(collViews, user){
             }});
         }
 
+
+
+    this.render = function(){
+
+        this.views.renderIsEditable(this.isEditable())
+        this.views.renderItems(this.items)
+        this.views.finishUpdating(this.items)
+//        this.views.renderTitle(this.title)
+
+    }
+
+    this.isEditable = function() {
+        return !!this.user.getKeyForColl(this.id)
+    }
+
+
 }
 
 function CollViews() {
@@ -266,6 +274,12 @@ function CollViews() {
         var genreList = new GenreList(itemObjs)
         genreList.render()
 
+    }
+
+    this.renderIsEditable = function(isEditable) {
+        if (isEditable){
+            $("div#report").addClass("editable")
+        }
     }
 }
 

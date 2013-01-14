@@ -1,6 +1,7 @@
 
 // useful mixins, from https://github.com/dmitryf/elements
 @import "elements.less";
+@import "bootstrap/variables.less";
 @linkColor: #FF4E00;
 @accentColor: #0053b0;
 
@@ -206,6 +207,15 @@ div.navbar {
                margin-top:0;
                float:right;
                font-size:20px;
+            }
+            span.register {
+              display:none; // disable for now...
+              float:right;
+              font-size: 18px;
+              a {
+                padding: 6px 15px;
+                color: @blueDark;
+              }
             }
             span.help-inline {
                height:22px;
