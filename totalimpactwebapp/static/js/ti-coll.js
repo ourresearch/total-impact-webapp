@@ -85,7 +85,7 @@ function Coll(collViews, user){
     this.id = null
     this.items = {}
 
-    this.addItems = function(newItemDicts) {
+    this.addItemsFromDicts = function(newItemDicts, alias_tiids) {
         for (var i=0; i<newItemDicts.length; i++) {
             tiid = newItemDicts[i]["_id"]
             this.items[tiid] = new Item(newItemDicts[i], new ItemView($), $)
@@ -144,11 +144,11 @@ function Coll(collViews, user){
                            console.log("still updating")
                            thisThing.title = data.title
                            thisThing.itemIds = data.alias_tiids
-                           thisThing.addItems(data.items)
-                           thisThing.views.render(thisThing.items)
+                           thisThing.addItemsFromDicts(data.items)
+
+                           thisThing.render.call(thisThing)
 
                            if (tries > 120) { // give up after 1 minute...
-                               thisThing.render(data.items)
                                console.log("failed to finish update; giving up after 1min.")
                            }
                            else {
@@ -161,9 +161,9 @@ function Coll(collViews, user){
                            console.log("done with updating")
                            thisThing.itemIds = data.alias_tiids
                            thisThing.title = data.title
-                           thisThing.addItems(data.items)
-                           thisThing.views.render(thisThing.items)
-                           thisThing.views.finishUpdating(data.items)
+                           thisThing.addItemsFromDicts(data.items)
+
+                           thisThing.render.call(thisThing)
 
                            return false;
                        }
@@ -171,16 +171,52 @@ function Coll(collViews, user){
                });
     }
 
-    this.update = function(){
+    this.render = function(){
+//        this.views.renderOwnership()
+//        this.views.renderTitle(this.title)
+
+        this.views.renderItems(this.items)
+        this.views.finishUpdating(this.items)
+
+    }
+
+    this.updateTitle = function(newTitle){
+        // implement later.
+    }
+
+    this.addItems = function(newItems){
+
+    }
+
+    this.deleteItem = function(tiidToDelete) {
+
+    }
+
+    this.update = function(itemIds, title, onSuccess){
         var edit_key = user.getKeyForColl(this.id)
         if (!edit_key) return false
+        this.itemIds = itemIds
+        this.title = title
 
         var submitObj = {
-            title: this.title,
-            alias_tiids: this.itemIds
+            title: title,
+            alias_tiids: itemIds
         }
         var url = "http://"+api_root+'/v1/collection/'+this.id+'?key='+
             api_key+'&edit_key='+edit_key
+
+        var that = this
+        $.ajax({
+                   url: url,
+                   type: "POST",
+                   dataType: "json",
+                   contentType: "application/json; charset=utf-8",
+                   data:  JSON.stringify(requestObj),
+                   success: function(data){
+                       console.log("finished updating the collection!")
+                       onSuccess()
+                   }
+               })
     }
 
     this.refreshItemData = function() {
@@ -200,6 +236,7 @@ function Coll(collViews, user){
 function CollViews() {
     this.startUpdating = function(){
         $("img.loading").remove()
+
         $("h2").before(ajaxLoadImg)
     }
 
@@ -224,8 +261,7 @@ function CollViews() {
             })
     }
 
-    this.render = function(itemObjsDict) {
-
+    this.renderItems = function(itemObjsDict) {
         var itemObjs = _.values(itemObjsDict)
         var genreList = new GenreList(itemObjs)
         genreList.render()
@@ -238,6 +274,7 @@ function CollController(coll, collViews) {
 
     this.collReportPageInit = function() {
         coll.id = reportId
+        coll.render()
         coll.read(1000)
     }
 
