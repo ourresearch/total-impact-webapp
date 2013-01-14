@@ -93,7 +93,22 @@ function Coll(collViews, user){
         }
     }
 
-    this.update = function() {
+
+    this.update = function(){
+        var edit_key = user.getKeyForColl(this.id)
+        if (!edit_key) return false
+
+        var submitObj = {
+            title: this.title,
+            alias_tiids: this.itemIds
+        }
+        var url = "http://"+api_root+'/v1/collection/'+this.id+'?key='+
+            api_key+'&edit_key='+edit_key
+
+        
+    }
+
+    this.refreshItemData = function() {
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
@@ -120,6 +135,8 @@ function Coll(collViews, user){
             statusCode: {
                210: function(data){
                    console.log("still updating")
+                   thisThing.title = data.title
+                   thisThing.itemIds = data.alias_tiids
                    thisThing.addItems(data.items)
                    thisThing.views.render(thisThing.items)
 
@@ -135,6 +152,8 @@ function Coll(collViews, user){
                },
                200: function(data) {
                    console.log("done with updating")
+                   thisThing.itemIds = data.alias_tiids
+                   thisThing.title = data.title
                    thisThing.addItems(data.items)
                    thisThing.views.render(thisThing.items)
                    thisThing.views.finishUpdating(data.items)
@@ -193,7 +212,7 @@ function CollController(coll, collViews) {
 
     // the report controls
     $("#update-report-button").click(function(){
-        coll.update();
+        coll.refreshItemData();
         return false;
     })
 

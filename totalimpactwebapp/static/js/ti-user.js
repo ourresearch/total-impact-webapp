@@ -46,6 +46,14 @@ function User(userViews) {
         }
         return false
     }
+    this.getKeyForColl = function(collId) {
+        try {
+            return this.userdata()["colls"][collId]
+        }
+        catch(e) {
+            return false
+        }
+    }
 
 
     // Update
