@@ -1,3 +1,4 @@
+CouchDB==0.8
 Flask==0.9
 Flask-Assets==0.8
 Flask-Jasmine==1.3a
@@ -13,11 +14,11 @@ gunicorn==0.14.3
 iso8601==0.1.4
 libsaas==0.2
 oauthlib==0.1.3
-newrelic==1.9.0.21
 pyasn1==0.1.3
 pytz==2012c
 requests==0.13.0
 rsa==3.0.1
+simplejson==2.5.2
 webassets==0.8
 wsgiref==0.1.2
 yuicompressor==2.4.7
