@@ -124,37 +124,11 @@ SubmitButton.prototype = {
     },
     update: function(){
     },
-    done: function(data, user) {
-        console.log("finished making the collection!")
-        var redirect = function(){location.href = "/collection/" + cid}
-        var cid=data.collection._id
-
-        // add the id of the newly-created coll to the user's coll list
-        user.addColl(cid, data.key)
-        console.log("we're syncing this to the server")
-        user.syncWithServer("push", {on200: redirect, onNoUserId: redirect})
-
-    },
     failure: function() {
-
     },
     createCollection: function(aliases, title, user){
-        var that = this
-        var requestObj = {
-            aliases: aliases,
-            title:title
-        }
-        console.log("making the collection now.")
-        $.ajax({
-                   url: "http://"+api_root+'/collection',
-                   type: "POST",
-                   dataType: "json",
-                   contentType: "application/json; charset=utf-8",
-                   data:  JSON.stringify(requestObj),
-                   success: function(data){
-                       that.done.call(that, data, user)
-                   }
-               })
+        var coll = new Coll(new CollViews(), user)
+        coll.create(aliases, title)
     }
 }
 

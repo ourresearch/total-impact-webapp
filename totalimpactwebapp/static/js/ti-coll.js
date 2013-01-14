@@ -93,6 +93,83 @@ function Coll(collViews, user){
         }
     }
 
+    this.create = function(aliases, title) {
+        /*
+        *   Make a new collection. On success, add it to the user's list of colls,
+        *   and redirect to the webapp's /collection/<cid> report page.
+         */
+
+        var that = this
+        var requestObj = {
+            aliases: aliases,
+            title:title
+        }
+
+        console.log("making the collection now.")
+        $.ajax({
+                   url: "http://"+api_root+'/collection',
+                   type: "POST",
+                   dataType: "json",
+                   contentType: "application/json; charset=utf-8",
+                   data:  JSON.stringify(requestObj),
+                   success: function(data){
+                       console.log("finished making the collection!")
+                       var cid=data.collection._id
+
+                       // you could pass this in, but you pretty much only want it to redirect:
+                       var redirect = function(){location.href = "/collection/" + cid}
+
+                       // add the id of the newly-created coll to the user's coll list
+                       that.user.addColl(cid, data.key)
+                       that.user.syncWithServer("push", {on200: redirect, onNoUserId: redirect})
+                   }
+               })
+    }
+
+
+    this.read = function(interval, tries) {
+        if (tries === undefined) {
+            var tries = 0
+        }
+
+        var thisThing = this
+        this.views.startUpdating()
+        $.ajax({
+                   url: "http://"+api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
+                   type: "GET",
+                   dataType: "json",
+                   contentType: "application/json; charset=utf-8",
+                   statusCode: {
+                       210: function(data){
+                           console.log("still updating")
+                           thisThing.title = data.title
+                           thisThing.itemIds = data.alias_tiids
+                           thisThing.addItems(data.items)
+                           thisThing.views.render(thisThing.items)
+
+                           if (tries > 120) { // give up after 1 minute...
+                               thisThing.render(data.items)
+                               console.log("failed to finish update; giving up after 1min.")
+                           }
+                           else {
+                               setTimeout(function(){
+                                   thisThing.read(interval, tries+1)
+                               }, 500)
+                           }
+                       },
+                       200: function(data) {
+                           console.log("done with updating")
+                           thisThing.itemIds = data.alias_tiids
+                           thisThing.title = data.title
+                           thisThing.addItems(data.items)
+                           thisThing.views.render(thisThing.items)
+                           thisThing.views.finishUpdating(data.items)
+
+                           return false;
+                       }
+                   }
+               });
+    }
 
     this.update = function(){
         var edit_key = user.getKeyForColl(this.id)
@@ -104,8 +181,6 @@ function Coll(collViews, user){
         }
         var url = "http://"+api_root+'/v1/collection/'+this.id+'?key='+
             api_key+'&edit_key='+edit_key
-
-        
     }
 
     this.refreshItemData = function() {
@@ -116,53 +191,10 @@ function Coll(collViews, user){
             type: "POST",
             success: function(data){
                console.log("updating.")
-               thisThing.get(1000);
+               thisThing.read(1000);
             }});
         }
 
-    this.get = function(interval, tries) {
-        if (tries === undefined) {
-            var tries = 0
-        }
-
-        var thisThing = this
-        this.views.startUpdating()
-        $.ajax({
-            url: "http://"+api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
-            type: "GET",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            statusCode: {
-               210: function(data){
-                   console.log("still updating")
-                   thisThing.title = data.title
-                   thisThing.itemIds = data.alias_tiids
-                   thisThing.addItems(data.items)
-                   thisThing.views.render(thisThing.items)
-
-                   if (tries > 120) { // give up after 1 minute...
-                       thisThing.render(data.items)
-                       console.log("failed to finish update; giving up after 1min.")
-                   }
-                   else {
-                       setTimeout(function(){
-                           thisThing.get(interval, tries+1)
-                       }, 500)
-                   }
-               },
-               200: function(data) {
-                   console.log("done with updating")
-                   thisThing.itemIds = data.alias_tiids
-                   thisThing.title = data.title
-                   thisThing.addItems(data.items)
-                   thisThing.views.render(thisThing.items)
-                   thisThing.views.finishUpdating(data.items)
-
-                   return false;
-               }
-            }
-        });
-    }
 }
 
 function CollViews() {
@@ -206,7 +238,7 @@ function CollController(coll, collViews) {
 
     this.collReportPageInit = function() {
         coll.id = reportId
-        coll.get(1000)
+        coll.read(1000)
     }
 
 
