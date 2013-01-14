@@ -258,19 +258,19 @@ function Item(itemData, itemView, $) {
                 ["plosalm:scopus"],                      // figure it out
                 ["plossearch:mentions", "scholars", "cited", "badge", 3],
                 ["pubmed:f1000", "scholars", "recommended", "badge", 1],
-                ["pubmed:pmc_citations", "scholars", "cited", 0, 0],
-                ["pubmed:pmc_citations_editorials", "scholars", "recommended", 0, 0],
-                ["pubmed:pmc_citations_reviews", "scholars", "cited", 0, 0],
-                ["scienceseeker:blog_posts", "scholars", "discussed", "badge", 0],
+                ["pubmed:pmc_citations", "scholars", "cited", "badge", 3],
+                ["pubmed:pmc_citations_editorials"],
+                ["pubmed:pmc_citations_reviews"],
+                ["scienceseeker:blog_posts", "scholars", "discussed", "badge", 3],
                 ["scopus:citations", "scholars", "cited", "badge", 3],
-                ["researchblogging:blogs", "scholars", "discussed", 0, 0],
+                ["researchblogging:blogs", "scholars", "discussed"],
                 ["slideshare:comments", "public", "discussed", "badge", 3],
                 ["slideshare:downloads", "public", "viewed", "badge", 3],
                 ["slideshare:favorites", "public", "recommended", "badge", 3],
                 ["slideshare:views", "public", "viewed", "badge", 3],
                 ["topsy:influential_tweets", "public", "discussed", "zoom", 0],
                 ["topsy:tweets", "public", "discussed", "badge", 3],
-                ["wikipedia:mentions", "public", "cited", "badge", 1]
+                ["wikipedia:mentions", "public", "cited", "badge", 3]
             ],
             function(metric){ // second arg in map() call
                 return[ metric[0], _.object(metricInfoKeys, metric )]
