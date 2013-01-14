@@ -274,7 +274,7 @@ TextareaImporter.prototype = {
 var BibtexImporter = function(aliases, elem) {
     this.aliases = aliases
     this.elem$ = $(elem)
-    this.inputClasses = ["ready", "working", "success", "failure"]
+    this.bibtexEntriesParsedFromFile = []
 }
 BibtexImporter.prototype = {
 
@@ -291,12 +291,17 @@ BibtexImporter.prototype = {
                    type: "POST",
                    processData: false,
                    contentType: false,
-                   timeout: 120*1000,  // 120 seconds, because bibtex is very slow
+                   timeout: 5*1000,  // 5 seconds
                    data: formData,
                    dataType: "json",
                    success:  function(data){
-                       that.bibtexItems = data.items
-                       that.update.call(that, data)
+                       entries = {
+                           biblio: data,
+                           total: data.length,
+                           aliases: []
+                       }
+                       console.log("got some items back:", data)
+                       that.update.call(that, entries)
                    },
                    error: function(request) {that.failure.call(that, request)}
                });
@@ -305,51 +310,61 @@ BibtexImporter.prototype = {
     start:function() {
         changeControlGroupState(this.elem$, "working")
     },
-    update: function(data){
-        var query_hash = data.query_hash
+    update: function(entries, errors){
+        errors = errors || 0
         var that = this
-        console.log("updating using query hash", query_hash)
+
+        // end conditions
+        if (!entries.biblio.length) return this.done(entries)
+        if (errors > 3) return this.failure()
+
+        // set up request
+        var cleanEntries = _.map(entries.biblio.slice(0, 5), function(entry){
+            for (k in entry){
+                entry[k] = entry[k].replace(new RegExp('{\\\\[^}]+}', "g"), "")
+            }
+            return entry
+        })
+        var queryStr = JSON.stringify(cleanEntries)
+        console.log(cleanEntries)
+        console.log(queryStr)
+        entries.biblio = entries.biblio.slice(5)
+
+        // make request
         $.ajax({
-                   url: "http://"+api_root+"/provider/bibtex/memberitems/"+query_hash+"?method=async",
+                   url: "http://"+api_root+"/provider/bibtex/memberitems/"+queryStr,
                    type: "GET",
                    dataType: "json",
                    success: function(response,status,xhr){
-                       console.log(response)
-                       if (response.pages == response.complete) {
-                           that.aliases.add("done!", response.memberitems)
-//                           aliases = []
-//                           for (i=0; i<response.memberitems.length; i++) {
-//                               var aliases = aliases.concat(response.memberitems[i])
-//                           }
-//                           bibtexUploadDone(response.number_entries, aliases)
-                       }
-                       else {
-                           that.updateProgressbar.call(that, response.pages, response.complete)
-                           console.log()
-//                           setTimeout(function () {
-//                               update_bibtex_progress(query_hash)
-//                           }, 500)
-                       }
+                       console.log("response from memberitems query:", response)
+                       entries.aliases = entries.aliases.concat(response.memberitems)
+                       that.updateProgressbar.call(
+                           that,
+                           entries.total,
+                           entries.biblio.length
+                       )
+                       that.update.call(that, entries, 0) // reset errors to 0
                    },
-                   error: function(XMLHttpRequest, textStatus, errorThrown) {
-                       console.log("error!", XMLHttpRequest)
-                       that.failure.call(that, XMLHttpRequest)
+                   error: function(XMLHttpRequest) {
+                       that.update.call(that, entries, errors+1)
                    }
                });
     },
-    done: function(data){
+    done: function(entries){
+        console.log("we're done!")
         changeControlGroupState(this.elem$, "success")
-        this.aliases.add(data.memberitems)
+        this.aliases.add(entries.aliases)
         this.elem$
             .parents(".control-group")
             .find("span.success span.value")
             .html(this.aliases.numAddedLast)
         $("p#artcounter span").html(this.aliases.count())
     },
-    failure: function(request) {
+    failure: function() {
         changeControlGroupState(this.elem$, "failure")
     },
-    updateProgressbar: function(total, done) {
+    updateProgressbar: function(total, remaining) {
+        var done = total - remaining
         percentDone = Math.round(done / total * 100)
         this.elem$
             .parents(".control-group")
