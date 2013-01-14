@@ -202,7 +202,6 @@
         jQuery(document).ready(function ($) {
             var badgesTemplateStr = '{{ badges_template }}'
             badgesTemplateStr = badgesTemplateStr.replace(new RegExp("&apos;", "g"), "'")
-            console.log(badgesTemplateStr)
 
             ich.addTemplate("badges", badgesTemplateStr)
             var allParams = [] // holds every param obj created; there's one per widget.
