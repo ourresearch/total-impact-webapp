@@ -36,14 +36,14 @@ AliasListInputs.prototype = {
                 $(this).blur(function(){
                     if (!$(this).val()) return false
                     var importer = new UsernameImporter(that.aliases, this)
-                    importer.import()
+                    importer.pull()
             })
         })
 
         // import from bibtex
         $("input#input_bibtex").change(function(){
             var importer = new BibtexImporter(that.aliases, this)
-            importer.import()
+            importer.pull()
         })
 
         // set up the submit button
@@ -52,7 +52,7 @@ AliasListInputs.prototype = {
             // fetch ids from the textareas first
             $("textarea.ids").not(".default").each(function(){
                 var importer = new TextareaImporter(that.aliases, this)
-                importer.import()
+                importer.pull()
             })
 
             var button = new SubmitButton(that.aliases, this)
@@ -169,7 +169,7 @@ var UsernameImporter = function(aliases, elem) {
 }
 UsernameImporter.prototype = {
 
-    import: function() {
+    pull: function() {
         var that = this
         this.start()
         var providerName = this.elem$.attr("id").replace("input_", "")
@@ -213,7 +213,7 @@ var TextareaImporter = function(aliases, elem) {
     this.inputClasses = ["ready", "working", "success", "failure"]
 }
 TextareaImporter.prototype = {
-    import: function(){
+    pull: function(){
         var newAliases = this.parseTextareaArtifacts(this.elem$.val())
         this.aliases.add(newAliases)
     },
@@ -278,7 +278,7 @@ var BibtexImporter = function(aliases, elem) {
 }
 BibtexImporter.prototype = {
 
-    import: function() {
+    pull: function() {
         var that = this
         this.start()
         var providerName = this.elem$.attr("id").replace("input_", "")

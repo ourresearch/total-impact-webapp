@@ -31,6 +31,7 @@ js = Bundle('js/bootstrap.js',
             'js/ti-ui.js',
             'js/google-analytics.js',
             'js/mixpanel.js',
+            filters="yui_js",
             output='js/packed.js'
 )
 
