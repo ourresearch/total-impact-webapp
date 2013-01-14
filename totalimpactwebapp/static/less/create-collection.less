@@ -26,6 +26,9 @@ div#input {
       font-weight: normal;
       font-size: 12px;
     }
+    p#artcounter {
+      margin-top: 20px;
+    }
 
     div.control-group {
       margin-bottom: 30px;
@@ -61,6 +64,15 @@ div#input {
         .working {display:none;}
         .success {display:none;}
         label { color: @errorText;}
+      }
+
+      &.collection-name {
+        margin-bottom: 0;
+        div.controls input {
+          width: 200px;
+          height: 27px;
+          font-size: 17px;
+        }
       }
 
 

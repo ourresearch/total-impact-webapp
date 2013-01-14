@@ -28,6 +28,9 @@ div#input form.importers span.limit {
   font-weight: normal;
   font-size: 12px;
 }
+div#input form.importers p#artcounter {
+  margin-top: 20px;
+}
 div#input form.importers div.control-group {
   margin-bottom: 30px;
 }
@@ -84,6 +87,14 @@ div#input form.importers div.control-group.failure .success {
 }
 div#input form.importers div.control-group.failure label {
   color: #b94a48;
+}
+div#input form.importers div.control-group.collection-name {
+  margin-bottom: 0;
+}
+div#input form.importers div.control-group.collection-name div.controls input {
+  width: 200px;
+  height: 27px;
+  font-size: 17px;
 }
 div#input form.importers div.control-group label.control-label {
   clear: both;
