@@ -189,7 +189,7 @@ li.item div.item-controls {
 }
 li.item div.item-controls:hover a.item-delete-button {
   display: block;
-  text-decoration: underline;
+  text-decoration: none;
   color: #ff4e00;
 }
 li.item div.item-controls:hover a.item-delete-button span.help-text {

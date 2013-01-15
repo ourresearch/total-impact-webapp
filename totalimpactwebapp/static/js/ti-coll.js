@@ -89,7 +89,6 @@ function Coll(collViews, user){
         for (var i=0; i<newItemDicts.length; i++) {
             tiid = newItemDicts[i]["_id"]
             this.items[tiid] = new Item(newItemDicts[i], new ItemView($), $)
-            console.log(newItemDicts[i])
         }
     }
 
@@ -128,6 +127,7 @@ function Coll(collViews, user){
 
 
     this.read = function(interval, tries) {
+        console.log("read")
         if (tries === undefined) {
             var tries = 0
         }
@@ -143,7 +143,7 @@ function Coll(collViews, user){
                        210: function(data){
                            console.log("still updating")
                            thisThing.title = data.title
-                           thisThing.itemIds = data.alias_tiids
+                           thisThing.alias_tiids = data.alias_tiids
                            thisThing.addItemsFromDicts(data.items)
 
                            thisThing.render.call(thisThing)
@@ -159,7 +159,7 @@ function Coll(collViews, user){
                        },
                        200: function(data) {
                            console.log("done with updating")
-                           thisThing.itemIds = data.alias_tiids
+                           thisThing.alias_tiids = data.alias_tiids
                            thisThing.title = data.title
                            thisThing.addItemsFromDicts(data.items)
 
@@ -180,30 +180,44 @@ function Coll(collViews, user){
 
     }
 
-    this.deleteItem = function(tiidToDelete) {
+    this.deleteItem = function(tiidToDelete, callbacks) {
 
+        callbacks.start()
+        try{
+            this.update({"tiids": [tiidToDelete]},"DELETE", callbacks.success)
+        }
+        catch (e) {
+            if (e.name == "NotLoggedIn") {
+                callbacks.onNotLoggedIn()
+            }
+            else if (e.name == "NotOwner") {
+                callbacks.onNotOwner()
+            }
+            else {
+                throw e
+            }
+        }
     }
 
-    this.update = function(itemIds, title, onSuccess){
-        if (!this.isEditable()) return false
-
-        this.itemIds = itemIds
-        this.title = title
-
-        var submitObj = {
-            title: title,
-            alias_tiids: itemIds
+    this.update = function(payload, httpType, onSuccess){
+        if (!this.user.hasCreds()) {
+            throw { name: "NotLoggedIn", message: "User is not logged in." }
         }
-        var url = "http://"+api_root+'/v1/collection/'+this.id+'?key='+
-            api_key+'&edit_key='+edit_key
+        if (!this.user.getKeyForColl(this.id)) {
+            console.log("no key for this coll....throw an error")
+            throw {name: "NotOwner", message: "User doesn't own this collection."}
+        }
+
+        var url = "http://"+api_root+'/v1/collection/'+this.id+'/items?key='+
+            api_key+'&edit_key='+this.user.getKeyForColl(this.id)
 
         var that = this
         $.ajax({
                    url: url,
-                   type: "POST",
+                   type: httpType,
                    dataType: "json",
                    contentType: "application/json; charset=utf-8",
-                   data:  JSON.stringify(requestObj),
+                   data:  JSON.stringify(payload),
                    success: function(data){
                        console.log("finished updating the collection!")
                        onSuccess()
@@ -226,16 +240,10 @@ function Coll(collViews, user){
 
 
     this.render = function(){
-
-        this.views.renderIsEditable(this.isEditable())
         this.views.renderItems(this.items)
         this.views.finishUpdating(this.items)
 //        this.views.renderTitle(this.title)
 
-    }
-
-    this.isEditable = function() {
-        return !!this.user.getKeyForColl(this.id)
     }
 
 
@@ -281,39 +289,61 @@ function CollViews() {
             $("div#report").addClass("editable")
         }
     }
+
+    this.editFailNotOwner = function(){
+        console.log("You can only edit collections you've created.")
+    }
+
+    this.editFailNotLoggedIn = function() {
+        console.log("You have to be logged in to edit your collections.")
+    }
 }
 
 
 function CollController(coll, collViews) {
+    this.coll = coll
+    this.collViews = collViews
 
     this.collReportPageInit = function() {
-        coll.id = reportId
-        coll.render()
-        coll.read(1000)
+        this.coll.id = reportId // global loaded by the server
+        this.coll.render()
+        this.coll.read(1000)
+        var that = this
+
+
+        // refresh all the items
+        $("#update-report-button").click(function(){
+            coll.refreshItemData();
+            return false;
+        })
+
+        // show/hide all zoom divs
+        $("div#num-items a").toggle(
+            function(){
+                $(this).html("(collapse all)")
+                $("li.item").addClass("zoomed").find("div.zoom").show()
+            },
+            function(){
+                $(this).html("(expand all)")
+                $("li.item").removeClass("zoomed").find("div.zoom").hide()
+            }
+        )
+
+        // delete items
+        $("a.item-delete-button").live("click", function(){
+            var item$ = $(this).parents("li.item")
+            console.log("pressed the delete button!", item$.attr("id"))
+
+            var callbacks = {
+                start: function() {item$.slideUp();},
+                success: function(){console.log("deleted, done. blam.")},
+                notLoggedIn: that.collViews.editFailNotLoggedIn,
+                notOwner: that.collViews.editFailNotOwner
+            }
+
+            that.coll.deleteItem( item$.attr("id"), callbacks)
+            return false;
+        })
     }
-
-
-    // the report controls
-    $("#update-report-button").click(function(){
-        coll.refreshItemData();
-        return false;
-    })
-
-    $("div#num-items a").toggle(
-        function(){
-            $(this).html("(collapse all)")
-            $("li.item").addClass("zoomed").find("div.zoom").show()
-        },
-        function(){
-            $(this).html("(expand all)")
-            $("li.item").removeClass("zoomed").find("div.zoom").hide()
-        }
-    )
-
-    $("span.item-delete-button").live("click", function(){
-        console.log("delete!")
-        return false;
-    })
-
 
 }
