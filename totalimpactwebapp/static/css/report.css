@@ -157,6 +157,7 @@ div#metrics div.genre ul.items.inactive li.item div.biblio h5 {
 li.item {
   float: left;
   clear: both;
+  position: relative;
 }
 li.item.zoomed div.biblio h5 span.title {
   color: #ff4e00;
@@ -173,6 +174,48 @@ li.item.no-data div.zoom span {
 li.item.no-data div.zoom a.item-help {
   display: none;
 }
+li.item:hover div.item-controls a.item-delete-button {
+  display: block;
+}
+li.item div.item-controls {
+  position: absolute;
+  left: -100px;
+  width: 100px;
+  height: 40px;
+  top: 7px;
+  text-align: right;
+  line-height: 1;
+  font-size: 14px;
+}
+li.item div.item-controls:hover a.item-delete-button {
+  display: block;
+  text-decoration: underline;
+  color: #ff4e00;
+}
+li.item div.item-controls:hover a.item-delete-button span.help-text {
+  display: inline;
+}
+li.item div.item-controls a.item-delete-button {
+  display: none;
+  height: 40px;
+  padding: 0 7px 10px 0;
+  color: #aaa;
+}
+li.item div.item-controls a.item-delete-button span.x {
+  font-size: 22px;
+}
+li.item div.item-controls a.item-delete-button span.help-text {
+  display: none;
+}
+li.item div.item-controls a.item-expand-button {
+  display: none;
+  width: 100px;
+  padding: 5px 15px 10px 0;
+  color: #ff4e00;
+}
+li.item div.item-controls a.item-expand-button:hover {
+  text-decoration: none;
+}
 li.item div.item-header {
   clear: both;
   padding-top: 10px;
@@ -180,42 +223,6 @@ li.item div.item-header {
 }
 li.item div.item-header.zoomable:hover {
   cursor: pointer;
-}
-li.item div.item-header.zoomable:hover div.item-controls span.item-delete-button {
-  display: block;
-}
-li.item div.item-header div.item-controls span.item-delete-button {
-  display: block;
-  display: none;
-  margin: 4px 0 0 -58px;
-  text-align: right;
-  line-height: 1;
-  width: 50px;
-  padding-right: 8px;
-  height: 30px;
-  color: #ccc;
-  font-size: 14px;
-  float: left;
-}
-li.item div.item-header div.item-controls span.item-delete-button:hover {
-  text-decoration: underline;
-  color: #ff4e00;
-}
-li.item div.item-header div.item-controls span.item-expand-button {
-  margin: 4px 0 0 -58px;
-  text-align: right;
-  line-height: 1;
-  width: 50px;
-  padding-right: 8px;
-  height: 30px;
-  color: #ff4e00;
-  font-size: 12px;
-  float: left;
-  display: block;
-  display: none;
-}
-li.item div.item-header div.item-controls span.item-expand-button:hover {
-  text-decoration: none;
 }
 li.item div.item-header div.biblio {
   float: left;

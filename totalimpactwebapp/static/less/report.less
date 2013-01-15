@@ -181,6 +181,7 @@ div#metrics {
 li.item {
    float:left;
    clear:both;
+   position:relative; // for positioning the item-controls
    &.zoomed {
       div.biblio h5 span.title {color: @linkColor;}
    }
@@ -202,6 +203,48 @@ li.item {
       }
    }
 
+   &:hover {
+      div.item-controls{
+         a.item-delete-button { display: block;}
+      }
+   }
+   div.item-controls {
+      position: absolute;
+      left: -100px;
+      width: 100px;
+      height: 40px;
+      top: 7px;
+      text-align:right;
+      line-height: 1;
+      font-size:14px;
+      &:hover{
+         a.item-delete-button {
+            display:block;
+            text-decoration: underline;
+            color: @linkColor;
+            span.help-text {
+               display: inline;
+            }
+         }
+      }
+      a.item-delete-button {
+         display: none;
+         height: 40px;
+         padding: 0 7px 10px 0;
+         color: #aaa;
+         span.x {font-size: 22px;}
+         span.help-text { display: none;}
+      }
+      a.item-expand-button{ // just for flashing on collection load
+         display: none;
+         width: 100px;
+         padding: 5px 15px 10px 0;
+         color: @linkColor;
+         &:hover{text-decoration: none;}
+      }
+
+   }
+
 
    div.item-header {
       clear:both;
@@ -210,48 +253,7 @@ li.item {
       &.zoomable {
          &:hover {
             cursor:pointer;
-            div.item-controls span.item-expand-button {
-//               display: block;
-            }
-            div.item-controls span.item-delete-button {
-               display:block;
-            }
          }
-      }
-
-      div.item-controls {
-         span.item-delete-button {
-            display:block;
-            display: none;
-            margin: 4px 0 0 -58px;
-            text-align:right;
-            line-height: 1;
-            width: 50px;
-            padding-right:8px;
-            height: 30px;
-            color: #ccc;
-            font-size:14px;
-            float:left;
-            &:hover{
-               text-decoration: underline;
-               color: @linkColor;
-            }
-         }
-         span.item-expand-button{
-            margin: 4px 0 0 -58px;
-            text-align:right;
-            line-height: 1;
-            width: 50px;
-            padding-right:8px;
-            height: 30px;
-            color: @linkColor;
-            font-size:12px;
-            float:left;
-            &:hover{text-decoration: none;}
-            display:block;
-            display:none;
-         }
-
       }
 
       div.biblio{

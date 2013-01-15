@@ -261,7 +261,7 @@ function CollViews() {
 
         // setup item-level zooming
         $("ul.active li.item div.item-header").addClass("zoomable")
-        $("span.item-expand-button")
+        $("a.item-expand-button")
             .show()
             .css({color: tiLinkColor})
             .fadeOut(1500, function(){
@@ -310,8 +310,9 @@ function CollController(coll, collViews) {
         }
     )
 
-    $("a.delete-item").live("click", function(){
+    $("span.item-delete-button").live("click", function(){
         console.log("delete!")
+        return false;
     })
 
 

@@ -5,9 +5,9 @@
    <title>ImpactStory: {{ page_title }}</title>
    <meta name="description" content="ImpactStory">
    <meta name="author" content="ImpactStory">
-   
-   <meta name="google-site-verification" content="JWD8WcfINuKxjh31KejAnijd9Cx34IYEH1-bDMXVzjE" />   
-   <meta name="google-site-verification" content="ItyBFNIMWtJdRaONjqSQHM8ro_fRjTl9HO3Fq9IsZpM" />   
+
+   <meta name="google-site-verification" content="JWD8WcfINuKxjh31KejAnijd9Cx34IYEH1-bDMXVzjE" />
+   <meta name="google-site-verification" content="ItyBFNIMWtJdRaONjqSQHM8ro_fRjTl9HO3Fq9IsZpM" />
 
    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
    <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
    </script>
 
    {% assets "js_all" %}
-      <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+   <script type="text/javascript" src="{{ ASSET_URL }}"></script>
    {% endassets %}
 
    <script>
@@ -71,7 +71,7 @@
                   <form class="login">
                      <input type="text" name="email" class="username login" id="login-email" placeholder="email" />
                      <input type="password" class="pw" name="pw" id="login-pw" placeholder="password"/>
-                      <input type="submit" name="submit" class="btn btn-primary" id="login-submit" value="log in"/>
+                     <input type="submit" name="submit" class="btn btn-primary" id="login-submit" value="log in"/>
                      <span class="register"><a href="#">register</a></span>
                   </form>
                </div>
@@ -110,12 +110,12 @@
             <p>ImpactStory is supported by the <a href="http://sloan.org/">Alfred P. Sloan Foundation</a> and <a href="about#history">others. </a></p>
             <p>Follow our <a href="http://blog.impactstory.org">blog</a>, <a href="https://twitter.com/#!/ImpactStory">tweets</a>, and <a href="https://github.com/total-impact">source code</a>.
          </div>
-         <div id="footer-powered-by">         
+         <div id="footer-powered-by">
             <p><a href="https://mixpanel.com/f/partner">
                <img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></p>
             </a>
          </div>
-      </div>      
+      </div>
    </div> <!-- end footer -->
 </div>
 
@@ -171,11 +171,11 @@
 
    <script id="displayItem" type="text/html">
       <li class="item" id="{{ _id }}">
+         <div class="item-controls">
+            <a href="#" class="item-delete-button"><span class="help-text">remove</span> <span class="x">&times;</span></a>
+            <a href="#" class="item-expand-button">click to expand</a>
+         </div>
          <div class="item-header">
-            <div class="item-controls">
-               <span href="#" class="item-delete-button">remove</span>
-               <span href="#" class="item-expand-button">click to expand</span>
-            </div>
             <div class="biblio"></div>
             <div class="badges"></div>
          </div>
@@ -235,14 +235,14 @@
                         <!-- if no ranges, show an NA -->
                         {{^percentiles}}
                         <div class="percentile-fail">
-                              <span class="no-perc">no percentile data.</span>
+                           <span class="no-perc">no percentile data.</span>
                         </div>
                         {{/percentiles}}
                      </div>
                   </li>
                   {{/metrics}}</ul>
-               </li>
-         {{/cells}}</ul>
+            </li>
+            {{/cells}}</ul>
       </div>
       {{/audiences}}
    </script>
