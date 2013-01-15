@@ -57,7 +57,6 @@
 
         var apiRoot = "{{ api_root }}"
         var webappRoot = "{{ webapp_root }}"
-        mixpanel.init("{{ mixpanel_token }}");
 
         var $ = jQuery
         $.support.cors = true; // makes IE8 and IE9 support CORS somehow...
@@ -93,6 +92,9 @@
          */
         ;{{ libs }}
 
+
+        /* initialize mixpanel analytics */
+        mixpanel.init("{{ mixpanel_token }}");
 
         /****************************************
          *
