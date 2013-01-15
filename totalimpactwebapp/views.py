@@ -253,57 +253,6 @@ def item_report(ns, id):
     )
 
 
-@app.route('/vitals', methods=["POST"])
-def vitals():
-    """
-    Logs reporting stats from the embed code to mixpanel
-
-    Gets a "vitals" object that has a url and a list of "params" objects.
-    Each widget on a page sends its own params object; in practice, these will
-    almost certainly be identical since users aren't likely to set different
-    options for widgets on the same page. It's a good way to count widgets on
-    that page, though.
-
-    For documentation on the keys in the the params object, see the default
-    params listed at the head of impactstory.js's main() function, and also the
-    api-docs page.
-    """
-
-    vitals = request.json
-    try:
-        referring_domain = urlparse.urlsplit(request.referrer).netloc
-    except AttributeError:
-        referring_domain = "";
-
-    properties = {  
-                    'token': os.getenv("MIXPANEL_TOKEN"), 
-                    'time': int(time.time()),
-                    'ip': request.remote_addr,
-                    "$referring_domain": referring_domain,
-                    "$referrer" : request.referrer,
-                    "$os": request.user_agent.platform,
-                    "$browser": request.user_agent.browser
-                }
-
-    try:
-        properties["Embeds per page"] = len(vitals["allParams"])
-        properties["Host page"] = vitals["url"]
-        properties["API Key"] = vitals["allParams"][0]["api-key"]
-        for embed_param in vitals["allParams"][0]:
-            properties["Embed:"+embed_param] = vitals["allParams"][0][embed_param]                   
-    except IndexError, KeyError:
-        logger.info("Errors enumerating vitals params for {vitals}".format(
-            vitals=vitals))
-    
-    mixpanel_params = {"event": "Impression:embed", "properties": properties}
-    mixpanel_data = base64.b64encode(json.dumps(mixpanel_params))
-    mixpanel_resp = urllib2.urlopen("http://api.mixpanel.com/track/?data=%s" % mixpanel_data)
-
-    logger.debug("Successful vitals mixpanel report")
-
-    resp = make_response("duly noted. carry on.", 200)
-    return resp
-
 @app.route('/admin/key')
 def generate_api_key():
     return render_template(
