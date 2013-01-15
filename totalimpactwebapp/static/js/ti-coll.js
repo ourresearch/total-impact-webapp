@@ -310,5 +310,9 @@ function CollController(coll, collViews) {
         }
     )
 
+    $("a.delete-item").live("click", function(){
+        console.log("delete!")
+    })
+
 
 }

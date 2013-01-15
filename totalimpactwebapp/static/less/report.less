@@ -183,7 +183,6 @@ li.item {
    clear:both;
    &.zoomed {
       div.biblio h5 span.title {color: @linkColor;}
-      div.item-header:hover div.item-controls span.item-expand-button {display:none;}
    }
 
    &.no-data {
@@ -212,15 +211,31 @@ li.item {
          &:hover {
             cursor:pointer;
             div.item-controls span.item-expand-button {
-               display: block;
+//               display: block;
             }
-   //         div.biblio h5 {color: @linkColor;}
+            div.item-controls span.item-delete-button {
+               display:block;
+            }
          }
       }
 
       div.item-controls {
          span.item-delete-button {
+            display:block;
             display: none;
+            margin: 4px 0 0 -58px;
+            text-align:right;
+            line-height: 1;
+            width: 50px;
+            padding-right:8px;
+            height: 30px;
+            color: #ccc;
+            font-size:14px;
+            float:left;
+            &:hover{
+               text-decoration: underline;
+               color: @linkColor;
+            }
          }
          span.item-expand-button{
             margin: 4px 0 0 -58px;
@@ -230,10 +245,10 @@ li.item {
             padding-right:8px;
             height: 30px;
             color: @linkColor;
-            display:block;
             font-size:12px;
             float:left;
             &:hover{text-decoration: none;}
+            display:block;
             display:none;
          }
 
