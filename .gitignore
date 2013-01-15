@@ -11,4 +11,6 @@ build
 dist
 venv
 .idea
-
+packed.css
+packed.js
+widget.js
