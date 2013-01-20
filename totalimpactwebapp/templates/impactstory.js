@@ -226,8 +226,9 @@
                 }
 
                 var getWindowCallback = function(div$, dict){
+                    var awards = dict.awards
                     if (params["on-finish"]) {
-                        window[params["on-finish"]].call(window, dict, div$)
+                        window[params["on-finish"]].call(window, awards, div$)
                     }
                 }
 
@@ -256,7 +257,7 @@
                         params["api-key"],
                         function(dict, id) { // run insertBadges, then a user-defined callback
                             insertBadges(dict, id)
-                            getWindowCallback(thisDiv$, dict) // we generate the callback here
+                            getWindowCallback(thisDiv$, dict) // we find the user callback here
                         },
                         function(data){
                             thisDiv$.append("<span class='loading'>Gathering metrics now...</span>")

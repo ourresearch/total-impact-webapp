@@ -197,8 +197,10 @@ function Item(itemData, itemView, $) {
 
         // hack for backwards compatibility with Pensoft embed:
         if (awards.length) {
-            awards.big = ["here is an item"]
-            awards.any = ["here is an item"]
+            awards.awards = {
+                big: ["here is an item"],
+                any: ["here is an item"]
+            }
         }
 
         return awards

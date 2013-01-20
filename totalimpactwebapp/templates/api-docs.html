@@ -109,10 +109,10 @@
                      <code>data-on-finish</code>
                   </td>
                   <script type="text/javascript">
-                     countBadges = function(dict, div$) {
+                     countBadges = function(awards, div$) {
                         div$.append(
                            "<div>"
-                                   + dict.awards.length
+                                   + awards.length
                                    + "&nbsp;badges!</div>"
                         )
                      }
@@ -123,9 +123,9 @@
                         in assigning the badges, and a <code>div$</code> jQuery object representing this div.
                         For instance, if you define this script:
                         <pre class="prettyprint">
-countBadges = function(dict, div$) {
+countBadges = function(awards, div$) {
    div$.append(
-      "&lt;div&gt;" +dict.awards.length+ "&nbsp;badges!&lt;/div&gt;"
+      "&lt;div&gt;" +awards.length+ "&nbsp;badges!&lt;/div&gt;"
    )
 }
                         </pre> and then include <code>data-on-finish="countBadges"</code> in your ImpactStory div,
