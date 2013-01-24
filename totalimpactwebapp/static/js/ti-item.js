@@ -723,7 +723,7 @@ function ItemController($){
         var myItem = new Item([reportIdNamespace, reportId], myView, $)
         myItem.get(
             api_root,
-            "item-report-page",
+            api_key,
             this.insertRenderedItemIntoPage,
             function(data){console.log("still updating item report page")},
             function(data){alert("Sorry, this item isn't in our database yet.")}

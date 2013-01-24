@@ -71,7 +71,7 @@ $(document).ready(function(){
     else if (reportIdNamespace == "impactstory_collection_id") {
         collController.collReportPageInit()
     }
-    else { // must be an item report page
+    else { // looks to be an item report page
         itemController.itemReportPageInit()
     }
 
