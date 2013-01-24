@@ -73,6 +73,7 @@
                 "api-key": false,
 
                 // optional
+                "badge-palette": "color",
                 "badge-size": "large",
                 "badge-type": "tag",
                 "on-finish": false,
@@ -161,14 +162,18 @@
             if (!params["show-logo"]) {
                 return div$
             }
+            var imgSrc = webappRoot + "/static/img/impactstory-logo-small.png"
+            if (params['badge-palette'] == "grayscale") {
+                console.log("grayscale it is, boss.")
+                imgSrc = imgSrc.replace(".png", "-grayscale.png")
+            }
+            var img = '<img src="http://' + imgSrc +'" alt="ImpactStory logo" />'
 
             // I can't figure out how to get the wrapInLink() function to work for a
             // single item like this, so here's this repulsive hack in the meantime:
             var logoLink$ = jQuery('<a href="http://' + webappRoot + '/item/'
                                        + params["id-type"] + "/" + params["id"] + '" target="_blank">'
-                                       + '<img src="http://' + webappRoot
-                                       + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" />'
-                                       + "</a>");
+                                       + img + "</a>");
             div$.prepend(logoLink$)
             return div$
         }
@@ -244,6 +249,7 @@
                 // apply those user-defined params that apply to the whole div:
                 thisDiv$.addClass(params["badge-size"])
                 thisDiv$.addClass(params["badge-type"])
+                thisDiv$.addClass(params["badge-palette"])
 
                 // if the user doesn't want badges, no need to make the get() call.
                 if (!params["show-badges"]){
