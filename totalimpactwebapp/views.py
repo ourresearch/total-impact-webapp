@@ -1,10 +1,6 @@
-import requests, iso8601, os, json, logging
-import urllib2
-import base64
-import time
-import urlparse
+import requests, os, json, logging
 
-from flask import request, redirect, abort, make_response
+from flask import request, send_file, abort, make_response
 from flask import render_template
 from flask.ext.assets import Environment, Bundle
 
@@ -319,3 +315,8 @@ try:
 except KeyError:
     logger.error("HIREFIREAPP_TOKEN environment variable not defined, not setting up validation api endpoint")
 
+
+@app.route('/logo')
+def logo():
+    filename = "static/img/logos/impactstory-logo-big.png"
+    return send_file(filename, mimetype='image/png')
