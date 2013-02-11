@@ -89,6 +89,13 @@ def home():
 @app.route("/embed/v1/impactstory.js")
 def impactstory_dot_js():
 
+    if request.headers.get("HTTP_X_FORWARDED_PROTO", "") == 'https':
+        webapp_root = os.environ["WEBAPP_ROOT_SECURE"]
+    else:
+        webapp_root=os.environ["WEBAPP_ROOT"]
+
+    webapp_root = os.environ["WEBAPP_ROOT_SECURE"]
+
     badges_template = render_template("js-template-badges.html")\
         .replace("\n", "")\
         .replace("'", "&apos;")
@@ -105,7 +112,7 @@ def impactstory_dot_js():
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],
         api_root=os.environ["API_ROOT"],
         api_key=os.environ["API_KEY"],
-        webapp_root=os.environ["WEBAPP_ROOT"]
+        webapp_root=webapp_root
     )
     resp = make_response(rendered)
     """
@@ -119,6 +126,7 @@ def impactstory_dot_js():
 
 @app.route("/embed/test")
 def embed_test():
+
     return render_template(
         "sample-embed-internal-test.html",
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],        

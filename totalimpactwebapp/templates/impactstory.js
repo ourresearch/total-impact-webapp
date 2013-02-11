@@ -169,11 +169,11 @@
                 console.log("grayscale it is, boss.")
                 imgSrc = imgSrc.replace(".png", "-grayscale.png")
             }
-            var img = '<img src="http://' + imgSrc +'" alt="ImpactStory logo" />'
+            var img = '<img src="' + imgSrc +'" alt="ImpactStory logo" />'
 
             // I can't figure out how to get the wrapInLink() function to work for a
             // single item like this, so here's this repulsive hack in the meantime:
-            var logoLink$ = jQuery('<a href="http://' + webappRoot + '/item/'
+            var logoLink$ = jQuery('<a href="' + webappRoot + '/item/'
                                        + params["id-type"] + "/" + params["id"] + '" target="_blank">'
                                        + img + "</a>");
             div$.prepend(logoLink$)
@@ -181,7 +181,7 @@
         }
 
         function wrapInLink(el$, namespace, id){
-            return el$.wrapAll("<a href='http://" + webappRoot + "/item/"+
+            return el$.wrapAll("<a href='" + webappRoot + "/item/"+
                                    namespace + "/" + id +  "' target='_blank' />")
         }
 
@@ -194,7 +194,7 @@
          * ***************************************
          */
 
-        requestStylesheet("http://" + webappRoot + "/static/css/embed.css");
+        requestStylesheet(webappRoot + "/static/css/embed.css");
         jQuery(document).ready(function ($) {
             var badgesTemplateStr = '{{ badges_template }}'
             badgesTemplateStr = badgesTemplateStr.replace(new RegExp("&apos;", "g"), "'")
