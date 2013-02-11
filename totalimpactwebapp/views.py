@@ -41,10 +41,11 @@ css = Bundle('css/bootstrap.css',
             output="css/packed.css"
 )
 
-js_widget = Bundle('js/icanhaz.js',
+js_widget = Bundle(
+                   'js/icanhaz.js',
                    'js/bootstrap-tooltip-and-popover.js',
                    'js/underscore.js',
-                   'js/mixpanel.js',
+#                   'js/mixpanel.js',
                    'js/ti-item.js',
                    filters="yui_js",
                    output="js/widget.js",
