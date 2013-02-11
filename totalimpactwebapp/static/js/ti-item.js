@@ -513,6 +513,7 @@ function Item(itemData, itemView, $) {
 
         $.ajax({
             url: url,
+            cache: false,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
