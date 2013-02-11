@@ -159,7 +159,7 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        r = requests.get("http://" + os.environ["API_ROOT"] +'/provider')
+        r = requests.get(os.environ["API_ROOT"] +'/provider')
         metadata = json.loads(r.text)
     except requests.ConnectionError:
         metadata = {}
@@ -211,7 +211,7 @@ def collection_create():
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
-    url = "http://{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
+    url = "{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
         api_root=os.getenv("API_ROOT"),
         api_key=os.environ["API_KEY"],        
         collection_id=collection_id
@@ -238,7 +238,7 @@ def collection_report(collection_id):
 
 @app.route('/item/<ns>/<path:id>')
 def item_report(ns, id):
-    url = "http://{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
+    url = "{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
         api_root=os.getenv("API_ROOT"),
         ns=ns,
         id=id,

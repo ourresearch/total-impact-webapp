@@ -101,7 +101,7 @@ function User(userViews) {
         if (typeof callbacks == "undefined") callbacks = {}
         if (method == "push"){
             var httpMethod =  "PUT"
-            var url = "http://"+api_root+"/user"
+            var url = api_root+"/user"
             u = this.userdata()
             u.key = this.userkey()
             var bodyString = JSON.stringify(u)
@@ -109,7 +109,7 @@ function User(userViews) {
         else if (method == "pull"){
             var bodyString = "key="+this.userkey()
             var httpMethod = "GET"
-            var url = "http://"+api_root+"/user/"+this.userdata()._id
+            var url = api_root+"/user/"+this.userdata()._id
 
         }
 
@@ -159,7 +159,7 @@ function User(userViews) {
         var cidsString = cids.join(",")
         var thisThing = this
         $.ajax({
-                   url: "http://"+api_root+"/collections/"+cidsString,
+                   url: api_root+"/collections/"+cidsString,
                    type: "GET",
                    dataType:"json",
                    contentType: "application/json; charset=utf-8",
@@ -177,7 +177,7 @@ function User(userViews) {
 
     this.checkUsername = function(username, successCallback, failCallback){
         $.ajax({
-            url:"http://"+api_root+"/user/"+username,
+            url:api_root+"/user/"+username,
             type:"GET",
             statusCode: {
                403: function(data){ // forbidden, cause no pw. that name is taken!

@@ -147,7 +147,7 @@ SubmitButton.prototype = {
         }
         console.log("making the collection now.")
         $.ajax({
-                   url: "http://"+api_root+'/collection',
+                   url: api_root+'/collection',
                    type: "POST",
                    dataType: "json",
                    contentType: "application/json; charset=utf-8",
@@ -177,7 +177,7 @@ UsernameImporter.prototype = {
         var queryStr = this.elem$.val()
 
         $.ajax({
-            url: "http://"+api_root+"/provider/"+providerName+"/memberitems/"+queryStr+"?method=sync",
+            url: api_root+"/provider/"+providerName+"/memberitems/"+queryStr+"?method=sync",
             type: "GET",
             dataType: "json",
             success: function(data){that.done.call(that, data)},
@@ -288,7 +288,7 @@ BibtexImporter.prototype = {
         formData.append('file', this.elem$[0].files[0]);
 
         $.ajax({
-                   url: "http://"+api_root+'/provider/bibtex/memberitems',
+                   url: api_root+'/provider/bibtex/memberitems',
                    type: "POST",
                    processData: false,
                    contentType: false,
@@ -333,7 +333,7 @@ BibtexImporter.prototype = {
 
         // make request
         $.ajax({
-                   url: "http://"+api_root+"/provider/bibtex/memberitems/"+queryStr,
+                   url: api_root+"/provider/bibtex/memberitems/"+queryStr,
                    type: "GET",
                    dataType: "json",
                    success: function(response,status,xhr){

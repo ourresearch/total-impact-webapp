@@ -42,7 +42,7 @@ generateApiKeyInit = function(){
             }
 
             $.ajax({
-                url: "http://" +api_root+ "/v1/key?key=" + api_key,
+                url: api_root+ "/v1/key?key=" + api_key,
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",

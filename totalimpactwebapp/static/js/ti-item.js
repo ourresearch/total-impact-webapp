@@ -503,7 +503,7 @@ function Item(itemData, itemView, $) {
         var thisThing = this
         var id = this.itemId
         var registerParam = (noItemCallback) ? "" : "&register=true" // defaults to true
-        var url = "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
+        var url = apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
         var logIfFailedRegistration = function(data) {
             if (registerParam) {
                 if (data.is_registered == false) {
