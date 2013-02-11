@@ -42,13 +42,13 @@ css = Bundle('css/bootstrap.css',
 )
 
 js_widget = Bundle(
-                   'js/icanhaz.js',
-                   'js/bootstrap-tooltip-and-popover.js',
-                   'js/underscore.js',
-#                   'js/mixpanel.js',
-                   'js/ti-item.js',
-                   filters="yui_js",
-                   output="js/widget.js",
+            'js/icanhaz.js',
+            'js/bootstrap-tooltip-and-popover.js',
+            'js/underscore.js',
+            # 'js/mixpanel.js',
+            'js/ti-item.js',
+#            filters="yui_js",
+            output="js/widget.js",
 )
 assets.register('js_widget', js_widget)
 assets.register('js_all', js)
