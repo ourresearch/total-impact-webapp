@@ -58,6 +58,7 @@ assets.register('css_all', css)
 
 
 
+
 @app.before_request
 def log_ip_address():
     if request.endpoint != "static":
@@ -90,12 +91,6 @@ def home():
 @app.route("/embed/v1/impactstory.js")
 def impactstory_dot_js():
 
-    if request.headers.get("HTTP_X_FORWARDED_PROTO", "") == 'https':
-        webapp_root = os.environ["WEBAPP_ROOT_SECURE"]
-    else:
-        webapp_root=os.environ["WEBAPP_ROOT"]
-
-    webapp_root = os.environ["WEBAPP_ROOT_SECURE"]
 
     badges_template = render_template("js-template-badges.html")\
         .replace("\n", "")\
@@ -113,7 +108,7 @@ def impactstory_dot_js():
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],
         api_root=os.environ["API_ROOT"],
         api_key=os.environ["API_KEY"],
-        webapp_root=webapp_root
+        webapp_root=os.environ["WEBAPP_ROOT"]
     )
     resp = make_response(rendered)
     """
@@ -211,7 +206,7 @@ def collection_create():
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
-    url = "{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
+    url = "http://{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
         api_root=os.getenv("API_ROOT"),
         api_key=os.environ["API_KEY"],        
         collection_id=collection_id
@@ -238,7 +233,7 @@ def collection_report(collection_id):
 
 @app.route('/item/<ns>/<path:id>')
 def item_report(ns, id):
-    url = "{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
+    url = "http://{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
         api_root=os.getenv("API_ROOT"),
         ns=ns,
         id=id,

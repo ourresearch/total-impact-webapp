@@ -55,8 +55,8 @@
          *
          *********************************/
 
-        var apiRoot = "{{ api_root }}"
-        var webappRoot = "{{ webapp_root }}"
+        var apiRoot = window.location.protocol + "//{{ api_root }}"
+        var webappRoot = window.location.protocol + "//{{ webapp_root }}"
 
         var $ = jQuery
         $.support.cors = true; // makes IE8 and IE9 support CORS somehow...
