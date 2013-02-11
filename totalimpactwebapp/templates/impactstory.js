@@ -270,7 +270,10 @@
                         function(data){
                             thisDiv$.append("<span class='loading'>Gathering metrics now...</span>")
                         },
-                        false
+                        function(data){
+                            console.log("something went wrong: ")
+                            console.log(data)
+                        }
                     )
                     return true
                 }
