@@ -106,6 +106,8 @@ var SubmitButton = function(aliases, elem){
 SubmitButton.prototype = {
     submit: function(user){
         this.start()
+        return false
+
         var that = this;
         var email = $("#make-collection div.email input").val()
         var pw = $("#make-collection div.password input").val()
@@ -121,6 +123,7 @@ SubmitButton.prototype = {
 
     },
     start:function(){
+        console.log(this.elem$)
     },
     update: function(){
     },

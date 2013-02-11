@@ -131,6 +131,9 @@
                 var key = convertAttrs(el.attributes[i].nodeName, true)
                 if (key.indexOf("data-") === 0) {
                     var key = key.replace("data-", "")
+
+                    var defaultVal = params[key]
+
                     var val
                     if (key == "on-finish") {
                         val = convertAttrs(el.attributes[i].nodeValue, false)
@@ -138,7 +141,6 @@
                     else {
                         val = convertAttrs(el.attributes[i].nodeValue, true)
                     }
-
                     params[key] = val
                 }
             }
@@ -246,10 +248,10 @@
                  *
                  **************************************************************/
 
-                // apply those user-defined params that apply to the whole div:
-                thisDiv$.addClass(params["badge-size"])
-                thisDiv$.addClass(params["badge-type"])
-                thisDiv$.addClass(params["badge-palette"])
+                // apply those user-defined params that apply a class to the whole div:
+                thisDiv$.addClass("impactstory-" + params["badge-size"])
+                thisDiv$.addClass("impactstory-" + params["badge-type"])
+                thisDiv$.addClass("impactstory-" + params["badge-palette"])
 
                 // if the user doesn't want badges, no need to make the get() call.
                 if (!params["show-badges"]){
