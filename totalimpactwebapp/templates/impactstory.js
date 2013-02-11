@@ -95,7 +95,7 @@
 
 
         /* initialize mixpanel analytics */
-        mixpanel.init("{{ mixpanel_token }}");
+//        mixpanel.init("{{ mixpanel_token }}");
 
         /****************************************
          *
@@ -278,7 +278,7 @@
 
             // report vital signs
             var apikey = "{{ api_key }}"
-            mixpanel.track("Impression:embed", {"API Key":apikey.toLowerCase()}); 
+//            mixpanel.track("Impression:embed", {"API Key":apikey.toLowerCase()});
 
         });
     }
