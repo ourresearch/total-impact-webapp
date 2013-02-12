@@ -154,7 +154,7 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        r = requests.get(os.environ["API_ROOT"] +'/provider')
+        r = requests.get('http://' + os.environ["API_ROOT"] +'/provider')
         metadata = json.loads(r.text)
     except requests.ConnectionError:
         metadata = {}
