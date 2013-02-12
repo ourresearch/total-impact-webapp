@@ -56,7 +56,12 @@ assets.register('css_all', css)
 
 
 
-
+roots = {
+    "api":os.getenv("API_ROOT"),
+    "api_pretty":os.getenv("API_ROOT_PRETTY", os.getenv("API_ROOT")),
+    "webapp":os.getenv("WEBAPP_ROOT"),
+    "webapp_pretty":os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
+}
 
 
 @app.before_request
@@ -82,7 +87,7 @@ def home():
     page_title="tell the full story of your research impact",
     body_class="homepage",
     mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-    api_root=os.environ["API_ROOT"],
+    roots=roots,
     api_key=os.environ["API_KEY"]        
     )
 
@@ -126,9 +131,8 @@ def embed_test():
     return render_template(
         "sample-embed-internal-test.html",
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
-        webapp_root = os.environ["WEBAPP_ROOT"],
-        api_root=os.environ["API_ROOT"],
-        api_key=os.environ["API_KEY"]        
+        roots=roots,
+        api_key=os.environ["API_KEY"]
     )
 
 
@@ -138,7 +142,7 @@ def about():
         'about.html',
         page_title="about",
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        api_root=os.environ["API_ROOT"],
+        roots=roots,
         api_key=os.environ["API_KEY"]        
         )
 
@@ -154,7 +158,7 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        r = requests.get('http://' + os.environ["API_ROOT"] +'/provider')
+        r = requests.get('http://' + roots["api"] +'/provider')
         metadata = json.loads(r.text)
     except requests.ConnectionError:
         metadata = {}
@@ -164,9 +168,8 @@ def faq():
         page_title="faq",
         which_artifacts=which_item_types,
         provider_metadata=metadata,
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        api_root=os.environ["API_ROOT"],
-        api_key=os.environ["API_KEY"]        
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+        roots=roots
         )
 
 @app.route('/api-docs')
@@ -176,7 +179,7 @@ def apidocs():
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
         api_root=os.environ["API_ROOT"],
         api_key=os.environ["API_KEY"],        
-        webapp_root = os.environ["WEBAPP_ROOT"],
+        roots=roots,
         page_title="api & widget"
         )
 
@@ -185,9 +188,8 @@ def pricing():
     return render_template(
         'pricing.html',
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-        api_root=os.environ["API_ROOT"],
+        roots=roots,
         api_key=os.environ["API_KEY"],        
-        webapp_root = os.environ["WEBAPP_ROOT"],
         page_title="pricing"
         )
 
@@ -197,8 +199,8 @@ def pricing():
 def collection_create():
     return render_template(
         'create-collection.html', 
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        api_root=os.environ["API_ROOT"],
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+        roots=roots,
         api_key=os.environ["API_KEY"],        
         page_title="create collection",
         body_class="create-collection"
@@ -207,7 +209,7 @@ def collection_create():
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
     url = "http://{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
-        api_root=os.getenv("API_ROOT"),
+        api_root=roots["api"],
         api_key=os.environ["API_KEY"],        
         collection_id=collection_id
     )
@@ -217,8 +219,8 @@ def collection_report(collection_id):
         collection = json.loads(r.text)
         return render_template(
             'report.html',
-            mixpanel_token=os.environ["MIXPANEL_TOKEN"],                    
-            api_root=os.environ["API_ROOT"],
+            mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+            roots=roots,
             api_key=os.environ["API_KEY"],
             request_url=request.url,
             page_title=collection["title"],
@@ -234,7 +236,7 @@ def collection_report(collection_id):
 @app.route('/item/<ns>/<path:id>')
 def item_report(ns, id):
     url = "http://{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
-        api_root=os.getenv("API_ROOT"),
+        api_root=roots["api"],
         ns=ns,
         id=id,
         api_key=os.environ["API_KEY"]
@@ -242,8 +244,8 @@ def item_report(ns, id):
     r = requests.get(url)
     return render_template(
         'report.html',
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
-        api_root=os.environ["API_ROOT"],
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+        roots=roots,
         api_key=os.environ["API_KEY"],
         request_url=request.url,
         page_title="",
@@ -259,7 +261,7 @@ def generate_api_key():
     return render_template(
         'generate-api.html', 
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        api_root=os.environ["API_ROOT"],
+        roots=roots,
         api_key=os.environ["API_KEY"],
         page_title="generate api key",
         body_class="create-collection"

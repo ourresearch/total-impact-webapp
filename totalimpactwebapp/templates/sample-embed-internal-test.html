@@ -5,7 +5,7 @@
    <style type="text/css">
       div.impactstory-embed {margin:100px 30px; float:right; clear:both;}
    </style>
-   <script type="text/javascript" src="http://{{ webapp_root }}/embed/impactstory.js"></script>
+   <script type="text/javascript" src="http://{{ roots.webapp }}/embed/impactstory.js"></script>
    <script type="text/javascript">
       function halp(dict, div$) {
          // this is useful for getting stuff to display or stay displayed.
@@ -18,8 +18,8 @@
 <h1>Testing the ImpactStory embed code</h1>
 <a href="javascript:if(!window.jQuery||confirm('Overwrite\x20current\x20version?\x20v'+jQuery.fn.jquery))(function(d,s){s=d.createElement('script');s.src='http://code.jquery.com/jquery.js';(d.head||d.documentElement).appendChild(s)})(document);
 ">jqueryify</a>
-<p>Webapp root is <span class="val">{{ webapp_root }}</span>.</p>
-<p>API root is <span class="val">{{ api_root }}</span>.</p>
+<p>Webapp root is <span class="val">{{ roots.webapp }}</span>.</p>
+<p>API root is <span class="val">{{ roots.api }}</span>.</p>
 <div class="impactstory-embed" data-on-finish="halp" data-id="12356900" data-id-type="pmid" data-api-key="{{api_key}}"></div>
 <div class="impactstory-embed" data-id="10.5061/dryad.j1fd7" data-id-type="doi" data-api-key="{{api_key}}"></div>
 <div class="impactstory-embed" data-id="10.1371/journal.pbio.1000056" data-id-type="doi" data-api-key="{{api_key}}"></div>
