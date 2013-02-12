@@ -5,6 +5,8 @@
 <script type="text/javascript">
    mixpanel.track("View:docs", {"Doc Type": "api docs"});
 </script>
+<script type="text/javascript" src="http://{{ webapp_root }}/embed/v1/impactstory.js"></script>
+
 
 <div class="main" id="docs" xmlns="http://www.w3.org/1999/html">
     <div class="wrapper">
@@ -40,7 +42,6 @@
 
 
        <h3>Example</h3>
-       <script type="text/javascript" src="{{ webapp_root }}/embed/v1/impactstory.js"></script>
        <div class="example">
           <div class="impactstory-embed" id="impactstory" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS" ></div>
           <p>To the left, you can see the result, embedded live on this page: metrics for a sample article,
