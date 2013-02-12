@@ -96,7 +96,6 @@ def home():
 @app.route("/embed/v1/impactstory.js")
 def impactstory_dot_js():
 
-
     badges_template = render_template("js-template-badges.html")\
         .replace("\n", "")\
         .replace("'", "&apos;")
@@ -113,7 +112,8 @@ def impactstory_dot_js():
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],
         api_root=os.environ["API_ROOT"],
         api_key=os.environ["API_KEY"],
-        webapp_root=os.environ["WEBAPP_ROOT"]
+        webapp_root=os.environ["WEBAPP_ROOT"],
+        roots=roots
     )
     resp = make_response(rendered)
     """

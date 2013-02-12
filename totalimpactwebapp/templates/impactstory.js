@@ -55,8 +55,9 @@
          *
          *********************************/
 
-        var apiRoot = window.location.protocol + "//{{ api_root }}"
-        var webappRoot = window.location.protocol + "//{{ webapp_root }}"
+        var apiRoot = window.location.protocol + "//{{ roots.api }}"
+        var webappRoot = window.location.protocol + "//{{ roots.webapp }}"
+        var webappRootPretty = "http://{{ roots.webapp_pretty }}"
 
         var $ = jQuery
         $.support.cors = true; // makes IE8 and IE9 support CORS somehow...
@@ -173,7 +174,7 @@
 
             // I can't figure out how to get the wrapInLink() function to work for a
             // single item like this, so here's this repulsive hack in the meantime:
-            var logoLink$ = jQuery('<a href="' + webappRoot + '/item/'
+            var logoLink$ = jQuery('<a href="' + webappRootPretty + '/item/'
                                        + params["id-type"] + "/" + params["id"] + '" target="_blank">'
                                        + img + "</a>");
             div$.prepend(logoLink$)
@@ -181,7 +182,7 @@
         }
 
         function wrapInLink(el$, namespace, id){
-            return el$.wrapAll("<a href='" + webappRoot + "/item/"+
+            return el$.wrapAll("<a href='" + webappRootPretty + "/item/"+
                                    namespace + "/" + id +  "' target='_blank' />")
         }
 
