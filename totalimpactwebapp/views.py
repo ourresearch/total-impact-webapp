@@ -47,7 +47,7 @@ js_widget = Bundle(
             'js/underscore.js',
             # 'js/mixpanel.js',
             'js/ti-item.js',
-#            filters="yui_js",
+            filters="yui_js",
             output="js/widget.js",
 )
 assets.register('js_widget', js_widget)
