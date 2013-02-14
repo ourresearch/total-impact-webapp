@@ -231,7 +231,7 @@ span.impactstory-embed ul li .label {
   font-family: Helvitica, Arial, sans-serif;
   top: 0;
   left: 0;
-  z-index: 1010;
+  z-index: 9999;
   display: none;
   width: 236px;
   padding: 1px;
