@@ -101,14 +101,16 @@ AliasListInputs.prototype = {
 var SubmitButton = function(aliases, elem){
     this.aliases = aliases
     this.elem$ = $(elem)
-    this.inputClasses = ["ready", "working", "success", "failure"]
 }
 SubmitButton.prototype = {
     submit: function(user){
-        this.start()
 
-        // for testing
-        return false
+        if (!this.aliases.forApi().length) {
+            alert("You have to add some products before you create a collection.")
+            return false
+        }
+
+        this.start()
 
         var that = this;
         var email = $("#make-collection div.email input").val()
@@ -171,7 +173,6 @@ SubmitButton.prototype = {
 var UsernameImporter = function(aliases, elem) {
     this.aliases = aliases
     this.elem$ = $(elem)
-    this.inputClasses = ["ready", "working", "success", "failure"]
 }
 UsernameImporter.prototype = {
 
@@ -216,7 +217,6 @@ UsernameImporter.prototype = {
 var TextareaImporter = function(aliases, elem) {
     this.aliases = aliases
     this.elem$ = $(elem)
-    this.inputClasses = ["ready", "working", "success", "failure"]
 }
 TextareaImporter.prototype = {
     pull: function(){

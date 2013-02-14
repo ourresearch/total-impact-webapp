@@ -39,15 +39,22 @@ div#input {
             }
          }
 
-      // there are four states a control group can have:
+      // there are five states a control group can have:
+         &.inactive {
+            .ready {display:none;}
+            .working {display:none;}
+            .success {display:none;}
+            .failure {display:none;}
+         }
          &.ready {
+            .inactive {display:none;}
             .working {display:none;}
             .success {display:none;}
             .failure {display:none;}
             label { color: #555;}
-
          }
          &.working {
+            .inactive {display:none;}
             .ready {display:none;}
             .success {display:none;}
             .failure {display:none;}
@@ -55,12 +62,14 @@ div#input {
             button {display: none;}
          }
          &.success {
+            .inactive {display:none;}
             .ready {display:none;}
             .working {display:none;}
             .failure {display:none;}
             label { color: @successText;}
          }
          &.failure {
+            .inactive {display:none;}
             .ready {display:none;}
             .working {display:none;}
             .success {display:none;}

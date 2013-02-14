@@ -40,6 +40,21 @@ div#input form.importers div.control-group.email {
 div#input form.importers div.control-group.fileupload div.uneditable-input {
   width: 100px;
 }
+div#input form.importers div.control-group.inactive .ready {
+  display: none;
+}
+div#input form.importers div.control-group.inactive .working {
+  display: none;
+}
+div#input form.importers div.control-group.inactive .success {
+  display: none;
+}
+div#input form.importers div.control-group.inactive .failure {
+  display: none;
+}
+div#input form.importers div.control-group.ready .inactive {
+  display: none;
+}
 div#input form.importers div.control-group.ready .working {
   display: none;
 }
@@ -51,6 +66,9 @@ div#input form.importers div.control-group.ready .failure {
 }
 div#input form.importers div.control-group.ready label {
   color: #555;
+}
+div#input form.importers div.control-group.working .inactive {
+  display: none;
 }
 div#input form.importers div.control-group.working .ready {
   display: none;
@@ -67,6 +85,9 @@ div#input form.importers div.control-group.working label {
 div#input form.importers div.control-group.working button {
   display: none;
 }
+div#input form.importers div.control-group.success .inactive {
+  display: none;
+}
 div#input form.importers div.control-group.success .ready {
   display: none;
 }
@@ -78,6 +99,9 @@ div#input form.importers div.control-group.success .failure {
 }
 div#input form.importers div.control-group.success label {
   color: #468847;
+}
+div#input form.importers div.control-group.failure .inactive {
+  display: none;
 }
 div#input form.importers div.control-group.failure .ready {
   display: none;
