@@ -10,118 +10,124 @@ body.create-collection {
 body.create-collection #header {
 }
 div#input {
-  color: #333;
-  font-weight: bold;
+   color: #333;
+   font-weight: bold;
 
-  form.importers {
-    width: 270px;
-    margin-right: 60px;
-    float:left;
-    h3 {
-      margin-bottom: 20px;
-    }
-    span.limit {
-      display:block;
-      color: #888;
-      font-weight: normal;
-      font-size: 12px;
-    }
-    p#artcounter {
-      margin-top: 20px;
-    }
-
-    div.control-group {
-      margin-bottom: 30px;
-      &.email {margin-bottom: 0;}
-      &.fileupload {
-        div.uneditable-input {
-          width: 100px;
-        }
+   form.importers {
+      width: 270px;
+      margin-right: 60px;
+      float:left;
+      h3 {
+         margin-bottom: 20px;
       }
+      span.limit {
+         display:block;
+         color: #888;
+         font-weight: normal;
+         font-size: 12px;
+      }
+      p#artcounter {
+         margin-top: 20px;
+      }
+
+      div.control-group {
+         margin-bottom: 30px;
+         &.email {margin-bottom: 0;}
+         &.fileupload {
+            div.uneditable-input {
+               width: 100px;
+            }
+         }
 
       // there are four states a control group can have:
-      &.ready {
-        .working {display:none;}
-        .success {display:none;}
-        .failure {display:none;}
-        label { color: #555;}
+         &.ready {
+            .working {display:none;}
+            .success {display:none;}
+            .failure {display:none;}
+            label { color: #555;}
 
+         }
+         &.working {
+            .ready {display:none;}
+            .success {display:none;}
+            .failure {display:none;}
+            label { color: @linkColor;}
+            button {display: none;}
+         }
+         &.success {
+            .ready {display:none;}
+            .working {display:none;}
+            .failure {display:none;}
+            label { color: @successText;}
+         }
+         &.failure {
+            .ready {display:none;}
+            .working {display:none;}
+            .success {display:none;}
+            label { color: @errorText;}
+         }
+
+         &.collection-name {
+            margin-bottom: 0;
+            div.controls input {
+               width: 200px;
+               height: 27px;
+               font-size: 17px;
+            }
+            label { color: #555;}
+            img{
+               height:37px;
+               padding-left: 5px;
+            }
+         }
+
+
+
+         label.control-label {
+            clear:both;
+            width: 250px;
+            font-weight: bold;
+            a.help {
+               text-decoration: none;
+               font-weight: normal;
+               float:right;
+               color: #888;
+               &:hover {
+                  text-decoration: underline;
+                  color:@linkColor;
+               }
+            }
+            &.ids {
+               span.success {
+                  float:right;
+               }
+            }
+            img{
+               height: 20px;
+               margin: -3px 5px 0 0;
+            }
+
+         }
+
+         div.controls {
+            input{
+               font-size:16px;
+               width:240px;
+            }
+            textarea {
+               line-height: 1.6;
+               &.default{
+                  color: #999;
+               }
+               width: 240px;
+            }
+         }
       }
-      &.working {
-        .ready {display:none;}
-        .success {display:none;}
-        .failure {display:none;}
-        label { color: @linkColor;}
-      }
-      &.success {
-        .ready {display:none;}
-        .working {display:none;}
-        .failure {display:none;}
-        label { color: @successText;}
-      }
-      &.failure {
-        .ready {display:none;}
-        .working {display:none;}
-        .success {display:none;}
-        label { color: @errorText;}
-      }
+   }
 
-      &.collection-name {
-        margin-bottom: 0;
-        div.controls input {
-          width: 200px;
-          height: 27px;
-          font-size: 17px;
-        }
-      }
+   form#make-collection {
 
-
-
-      label.control-label {
-        clear:both;
-        width: 250px;
-        font-weight: bold;
-        a.help {
-          text-decoration: none;
-          font-weight: normal;
-          float:right;
-          color: #888;
-          &:hover {
-            text-decoration: underline;
-            color:@linkColor;
-          }
-        }
-        &.ids {
-          span.success {
-            float:right;
-          }
-        }
-        img{
-          height: 20px;
-          margin: -3px 5px 0 0;
-        }
-
-      }
-
-      div.controls {
-        input{
-          font-size:16px;
-          width:240px;
-        }
-        textarea {
-          line-height: 1.6;
-          &.default{
-            color: #999;
-          }
-          width: 240px;
-        }
-      }
-    }
-  }
-
-  form#make-collection {
-
-  }
+   }
 
 
 
@@ -129,14 +135,14 @@ div#input {
 
 
 img.loading {
-  height: 30px;
-  float:left;
+   height: 30px;
+   float:left;
 }
 
 div.progressbar {
-  margin: 3px 0 0 5px;
-  color: #ff4e00;
-  float:left;
+   margin: 3px 0 0 5px;
+   color: #ff4e00;
+   float:left;
 }
 
 
@@ -144,48 +150,48 @@ div.progressbar {
 
 
 li#bibtex-import {
-  span.added {
-    padding-top:8px;
-    font-size:24px;
-    span.items-added-msg {
-      span.from {
-        font-size: 16px;
-        display:block;
-        margin-top:5px;
-        color:#888;
-        a.help-text {
-          font-size: 14px;
-          border-bottom:1px dotted #888;
-          color: #888;
-          &:hover{
-            color: @linkColor;
-            text-decoration:  none;
-            border-bottom: 1px solid @linkColor;
-          }
-        }
+   span.added {
+      padding-top:8px;
+      font-size:24px;
+      span.items-added-msg {
+         span.from {
+            font-size: 16px;
+            display:block;
+            margin-top:5px;
+            color:#888;
+            a.help-text {
+               font-size: 14px;
+               border-bottom:1px dotted #888;
+               color: #888;
+               &:hover{
+                  color: @linkColor;
+                  text-decoration:  none;
+                  border-bottom: 1px solid @linkColor;
+               }
+            }
+         }
       }
-    }
-  }
-  div.toggler_contents {
+   }
+   div.toggler_contents {
 
-    span.btn {
-      margin-top: 10px;
-    }
-    div.uneditable-input {
-      float:left;
-      width: 450px;
-    }
-    span.btn-file{
-      float:left;
-    }
-    img.loading {
-      height:35px;
-      margin-top: 5px;
-    }
-    div.progressbar {
-      font-size: 20px;
-      margin-top:15px
-    }
-  }
+      span.btn {
+         margin-top: 10px;
+      }
+      div.uneditable-input {
+         float:left;
+         width: 450px;
+      }
+      span.btn-file{
+         float:left;
+      }
+      img.loading {
+         height:35px;
+         margin-top: 5px;
+      }
+      div.progressbar {
+         font-size: 20px;
+         margin-top:15px
+      }
+   }
 }
 
