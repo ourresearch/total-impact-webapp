@@ -295,7 +295,7 @@ function CollViews() {
     }
 
     this.onDeleteNotLoggedIn = function() {
-        alert("You have to be logged in to edit your collections.")
+        $("delete-not-logged-in").modal("show")
     }
 }
 

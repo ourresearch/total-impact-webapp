@@ -230,7 +230,7 @@ function UserViews() {
             .siblings("li#logged-in").show()
             .find("span.username").html(username+"!")
         $("li.loading").remove()
-        $("#inline-register").remove()
+        $("div.inline-register").hide()
 
         console.log("logged in!")
     }
@@ -338,6 +338,11 @@ function UserController(user, userViews) {
         $("#logout-link").click(function(){
             user.deleteLocal();
             return false;
+        })
+
+        // register/login
+        $("a.login-register-link").click(function(){
+            $("#login-register").modal("show")
         })
 
         $("li#logged-in span.username").on("click", function(){

@@ -59,6 +59,11 @@ AliasListInputs.prototype = {
             return button.submit(user)
         })
 
+        // hide the registration stuff if the user's logged in
+        if (user.hasCreds()) {
+            $("div.inline-register").hide()
+        }
+
     },
     textareaPlaceholders: function() {
         // placeholder replacement
