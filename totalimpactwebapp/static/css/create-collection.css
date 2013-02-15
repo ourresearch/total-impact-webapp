@@ -40,81 +40,6 @@ div#input form.importers div.control-group.email {
 div#input form.importers div.control-group.fileupload div.uneditable-input {
   width: 100px;
 }
-div#input form.importers div.control-group.inactive .ready {
-  display: none;
-}
-div#input form.importers div.control-group.inactive .working {
-  display: none;
-}
-div#input form.importers div.control-group.inactive .success {
-  display: none;
-}
-div#input form.importers div.control-group.inactive .failure {
-  display: none;
-}
-div#input form.importers div.control-group.ready .inactive {
-  display: none;
-}
-div#input form.importers div.control-group.ready .working {
-  display: none;
-}
-div#input form.importers div.control-group.ready .success {
-  display: none;
-}
-div#input form.importers div.control-group.ready .failure {
-  display: none;
-}
-div#input form.importers div.control-group.ready label {
-  color: #555;
-}
-div#input form.importers div.control-group.working .inactive {
-  display: none;
-}
-div#input form.importers div.control-group.working .ready {
-  display: none;
-}
-div#input form.importers div.control-group.working .success {
-  display: none;
-}
-div#input form.importers div.control-group.working .failure {
-  display: none;
-}
-div#input form.importers div.control-group.working label {
-  color: #ff4e00;
-}
-div#input form.importers div.control-group.working button {
-  display: none;
-}
-div#input form.importers div.control-group.success .inactive {
-  display: none;
-}
-div#input form.importers div.control-group.success .ready {
-  display: none;
-}
-div#input form.importers div.control-group.success .working {
-  display: none;
-}
-div#input form.importers div.control-group.success .failure {
-  display: none;
-}
-div#input form.importers div.control-group.success label {
-  color: #468847;
-}
-div#input form.importers div.control-group.failure .inactive {
-  display: none;
-}
-div#input form.importers div.control-group.failure .ready {
-  display: none;
-}
-div#input form.importers div.control-group.failure .working {
-  display: none;
-}
-div#input form.importers div.control-group.failure .success {
-  display: none;
-}
-div#input form.importers div.control-group.failure label {
-  color: #b94a48;
-}
 div#input form.importers div.control-group.collection-name {
   margin-bottom: 0;
 }
@@ -130,11 +55,6 @@ div#input form.importers div.control-group.collection-name img {
   height: 37px;
   padding-left: 5px;
 }
-div#input form.importers div.control-group label.control-label {
-  clear: both;
-  width: 250px;
-  font-weight: bold;
-}
 div#input form.importers div.control-group label.control-label a.help {
   text-decoration: none;
   font-weight: normal;
@@ -147,10 +67,6 @@ div#input form.importers div.control-group label.control-label a.help:hover {
 }
 div#input form.importers div.control-group label.control-label.ids span.success {
   float: right;
-}
-div#input form.importers div.control-group label.control-label img {
-  height: 20px;
-  margin: -3px 5px 0 0;
 }
 div#input form.importers div.control-group div.controls input {
   font-size: 16px;

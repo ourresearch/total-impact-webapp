@@ -209,7 +209,6 @@ div.navbar {
                font-size:20px;
             }
             span.register {
-              display:none; // disable for now...
               float:right;
               font-size: 18px;
               a {
@@ -262,6 +261,99 @@ div.navbar {
          padding-right:0;
 
    //      &:hover {margin-top: -25px;}
+      }
+   }
+}
+
+
+
+/* login stuff
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div.control-group {
+
+   // there are five states a control group can have:
+   &.inactive {
+      .ready {display:none;}
+      .working {display:none;}
+      .success {display:none;}
+      .failure {display:none;}
+   }
+   &.ready {
+      .inactive {display:none;}
+      .working {display:none;}
+      .success {display:none;}
+      .failure {display:none;}
+      label { color: #555;}
+   }
+   &.working {
+      .inactive {display:none;}
+      .ready {display:none;}
+      .success {display:none;}
+      .failure {display:none;}
+      label { color: @linkColor;}
+      button {display: none;}
+   }
+   &.success {
+      .inactive {display:none;}
+      .ready {display:none;}
+      .working {display:none;}
+      .failure {display:none;}
+      label { color: @successText;}
+   }
+   &.failure {
+      .inactive {display:none;}
+      .ready {display:none;}
+      .working {display:none;}
+      .success {display:none;}
+      label { color: @errorText;}
+   }
+
+   label {
+      clear:both;
+      width: 250px;
+      font-weight: bold;
+   }
+   img{
+      height: 20px;
+      margin: -3px 5px 0 0;
+   }
+}
+
+div#login-register {
+   background: #fcfcfc;
+   border: 3px solid @linkColor;
+   width: 580px;
+   h3 {
+      font-family: rokkitt, helvetica, sans-serif;
+      color:@linkColor;
+      margin:0 0 20px;
+      span.or { // quick hack
+         float:right;
+         font-family: helvetica, arial, sans-serif;
+         font-size: 12px;
+         color: #555;
+         margin-right:-26px;
+         font-style: italic;
+         font-weight: normal;
+         background: #fcfcfc;
+         padding:5px;
+         margin-top: -6px;
+      }
+   }
+   form {
+      width: 250px;
+      float:left;
+      input{width:220px;}
+      button{
+         float:right;
+         margin:5px 15px 15px 0;
+      }
+      &:first-child {
+         margin-right:30px;
+         padding-right: 15px;
+         border-right: 1px solid #ddd;
       }
    }
 }

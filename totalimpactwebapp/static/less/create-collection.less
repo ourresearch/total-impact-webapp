@@ -39,42 +39,6 @@ div#input {
             }
          }
 
-      // there are five states a control group can have:
-         &.inactive {
-            .ready {display:none;}
-            .working {display:none;}
-            .success {display:none;}
-            .failure {display:none;}
-         }
-         &.ready {
-            .inactive {display:none;}
-            .working {display:none;}
-            .success {display:none;}
-            .failure {display:none;}
-            label { color: #555;}
-         }
-         &.working {
-            .inactive {display:none;}
-            .ready {display:none;}
-            .success {display:none;}
-            .failure {display:none;}
-            label { color: @linkColor;}
-            button {display: none;}
-         }
-         &.success {
-            .inactive {display:none;}
-            .ready {display:none;}
-            .working {display:none;}
-            .failure {display:none;}
-            label { color: @successText;}
-         }
-         &.failure {
-            .inactive {display:none;}
-            .ready {display:none;}
-            .working {display:none;}
-            .success {display:none;}
-            label { color: @errorText;}
-         }
 
          &.collection-name {
             margin-bottom: 0;
@@ -93,9 +57,6 @@ div#input {
 
 
          label.control-label {
-            clear:both;
-            width: 250px;
-            font-weight: bold;
             a.help {
                text-decoration: none;
                font-weight: normal;
@@ -110,10 +71,6 @@ div#input {
                span.success {
                   float:right;
                }
-            }
-            img{
-               height: 20px;
-               margin: -3px 5px 0 0;
             }
 
          }

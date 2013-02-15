@@ -82,8 +82,12 @@ $(document).ready(function(){
     // table of contents
     if ($("#toc")[0]) {
         $('#toc').tocBuilder({type: 'headings', startLevel: 3, endLevel: 3, insertBackLinks: 0});
-
     }
+
+    // register/login
+    $("li#login-link a").click(function(){
+        $("#login-register").modal("show")
+    })
 
     var aliasListInputs = new AliasListInputs()
     aliasListInputs.init()

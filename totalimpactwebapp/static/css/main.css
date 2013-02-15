@@ -219,7 +219,6 @@ div.navbar ul.nav.pull-right > li div.dropdown-menu .btn-primary {
   font-size: 20px;
 }
 div.navbar ul.nav.pull-right > li div.dropdown-menu span.register {
-  display: none;
   float: right;
   font-size: 18px;
 }
@@ -270,6 +269,132 @@ div.navbar ul.nav.pull-right a#uservoice {
   margin-top: -26px;
   z-index: 3;
   padding-right: 0;
+}
+/* login stuff
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div.control-group.inactive .ready {
+  display: none;
+}
+div.control-group.inactive .working {
+  display: none;
+}
+div.control-group.inactive .success {
+  display: none;
+}
+div.control-group.inactive .failure {
+  display: none;
+}
+div.control-group.ready .inactive {
+  display: none;
+}
+div.control-group.ready .working {
+  display: none;
+}
+div.control-group.ready .success {
+  display: none;
+}
+div.control-group.ready .failure {
+  display: none;
+}
+div.control-group.ready label {
+  color: #555;
+}
+div.control-group.working .inactive {
+  display: none;
+}
+div.control-group.working .ready {
+  display: none;
+}
+div.control-group.working .success {
+  display: none;
+}
+div.control-group.working .failure {
+  display: none;
+}
+div.control-group.working label {
+  color: #ff4e00;
+}
+div.control-group.working button {
+  display: none;
+}
+div.control-group.success .inactive {
+  display: none;
+}
+div.control-group.success .ready {
+  display: none;
+}
+div.control-group.success .working {
+  display: none;
+}
+div.control-group.success .failure {
+  display: none;
+}
+div.control-group.success label {
+  color: #468847;
+}
+div.control-group.failure .inactive {
+  display: none;
+}
+div.control-group.failure .ready {
+  display: none;
+}
+div.control-group.failure .working {
+  display: none;
+}
+div.control-group.failure .success {
+  display: none;
+}
+div.control-group.failure label {
+  color: #b94a48;
+}
+div.control-group label {
+  clear: both;
+  width: 250px;
+  font-weight: bold;
+}
+div.control-group img {
+  height: 20px;
+  margin: -3px 5px 0 0;
+}
+div#login-register {
+  background: #fcfcfc;
+  border: 3px solid #ff4e00;
+  width: 580px;
+}
+div#login-register h3 {
+  font-family: rokkitt, helvetica, sans-serif;
+  color: #ff4e00;
+  margin: 0 0 20px;
+}
+div#login-register h3 span.or {
+  float: right;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 12px;
+  color: #555;
+  margin-right: -26px;
+  font-style: italic;
+  font-weight: normal;
+  background: #fcfcfc;
+  padding: 5px;
+  margin-top: -6px;
+}
+div#login-register form {
+  width: 250px;
+  float: left;
+}
+div#login-register form input {
+  width: 220px;
+}
+div#login-register form button {
+  float: right;
+  margin: 5px 15px 15px 0;
+}
+div#login-register form:first-child {
+  margin-right: 30px;
+  padding-right: 15px;
+  border-right: 1px solid #ddd;
 }
 /* page header
 *****************************************************************************
