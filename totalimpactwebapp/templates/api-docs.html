@@ -5,6 +5,8 @@
 <script type="text/javascript">
    mixpanel.track("View:docs", {"Doc Type": "api docs"});
 </script>
+<script type="text/javascript" src="http://{{ roots.webapp }}/embed/v1/impactstory.js"></script>
+
 
 <div class="main" id="docs" xmlns="http://www.w3.org/1999/html">
     <div class="wrapper">
@@ -40,7 +42,6 @@
 
 
        <h3>Example</h3>
-       <script type="text/javascript" src="http://{{ webapp_root }}/embed/v1/impactstory.js"></script>
        <div class="example">
           <div class="impactstory-embed" id="impactstory" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS" ></div>
           <p>To the left, you can see the result, embedded live on this page: metrics for a sample article,
@@ -109,10 +110,10 @@
                      <code>data-on-finish</code>
                   </td>
                   <script type="text/javascript">
-                     countBadges = function(dict, div$) {
+                     countBadges = function(awards, div$) {
                         div$.append(
                            "<div>"
-                                   + dict.awards.length
+                                   + awards.length
                                    + "&nbsp;badges!</div>"
                         )
                      }
@@ -123,9 +124,9 @@
                         in assigning the badges, and a <code>div$</code> jQuery object representing this div.
                         For instance, if you define this script:
                         <pre class="prettyprint">
-countBadges = function(dict, div$) {
+countBadges = function(awards, div$) {
    div$.append(
-      "&lt;div&gt;" +dict.awards.length+ "&nbsp;badges!&lt;/div&gt;"
+      "&lt;div&gt;" +awards.length+ "&nbsp;badges!&lt;/div&gt;"
    )
 }
                         </pre> and then include <code>data-on-finish="countBadges"</code> in your ImpactStory div,
@@ -159,6 +160,17 @@ countBadges = function(dict, div$) {
                </tr>
                <tr>
                   <td class="attr">
+                     <code>data-badge-palette</code>
+                  </td>
+                  <td>
+                     <p>Set to <code>grayscale</code> for grayscale badges. This makes it impossible to distinguish between scholarly and public badges, so <code>verbose-badges</code> is automatically set to <code>true</code>.</p>
+                  </td>
+                  <td class="example">
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-badge-palette="grayscale"></div>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="attr">
                      <code>data-show-badges</code>
                   </td>
                   <td>
@@ -178,12 +190,12 @@ countBadges = function(dict, div$) {
 
             <p>Scopus and CiteULike metrics are not available in the widget.  
             </p>
+            <p>The embed code loads our <a href="https://github.com/total-impact/total-impact-webapp/blob/master/totalimpactwebapp/templates/impactstory.js">javascript widget source</a>, css, images, and makes an analytics logging call.
+            </p>
             <p>
                If you've got any feedback, ideas, or questions,
                <a href="javascript:UserVoice.showPopupWidget();"
                   title="Open feedback & support dialog (powered by UserVoice)">let us know!</a>
-               We're planning to roll out alternative sizes and styles of badges in the near future,
-               and we'd love any comments.
             </p>
         </div>
 

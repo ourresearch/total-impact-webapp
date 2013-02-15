@@ -58,17 +58,50 @@ span.impactstory-embed ul li .label {
 .impactstory-embed.verbose span.audience {
   display: inline;
 }
-.impactstory-embed.small {
+.impactstory-embed.impactstory-grayscale span.audience {
+  display: inline;
+}
+.impactstory-embed.impactstory-grayscale ul li .label.scholars {
+  background: #777777;
+  border-color: #777777;
+}
+.impactstory-embed.impactstory-grayscale ul li .label.scholars:hover {
+  border-color: #377eb8;
+  background: #377eb8;
+}
+.impactstory-embed.impactstory-grayscale ul li .label.scholars.lil-badge {
+  color: #777777;
+}
+.impactstory-embed.impactstory-grayscale ul li .label.scholars.lil-badge:hover {
+  color: #377eb8;
+  background: #fff;
+}
+.impactstory-embed.impactstory-grayscale ul li .label.public {
+  background: #777777;
+  border-color: #777777;
+}
+.impactstory-embed.impactstory-grayscale ul li .label.public:hover {
+  border-color: #4daf4a;
+  background: #4daf4a;
+}
+.impactstory-embed.impactstory-grayscale ul li .label.public.lil-badge {
+  color: #777777;
+}
+.impactstory-embed.impactstory-grayscale ul li .label.public.lil-badge:hover {
+  color: #4daf4a;
+  background: #fff;
+}
+.impactstory-embed.impactstory-small {
   width: 120px;
 }
-.impactstory-embed.small img {
+.impactstory-embed.impactstory-small img {
   height: 20px;
 }
-.impactstory-embed.small ul li .label {
+.impactstory-embed.impactstory-small ul li .label {
   font-size: 10px;
-  padding: 1px 3px;
+  padding: 1px 5px;
 }
-.impactstory-embed.icon ul li .label {
+.impactstory-embed.impactstory-icon ul li .label {
   text-indent: -9999px;
   width: 21px;
   height: 21px;
@@ -76,72 +109,72 @@ span.impactstory-embed ul li .label {
   padding: 0;
   border: none !important;
 }
-.impactstory-embed.icon ul li .label.scholars {
+.impactstory-embed.impactstory-icon ul li .label.scholars {
   background: url(http://impactstory.org/static/img/minibadges.png);
   background-position: 0 0;
 }
-.impactstory-embed.icon ul li .label.scholars.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.scholars.lil-badge {
   background: url(http://impactstory.org/static/img/minibadges.png);
 }
-.impactstory-embed.icon ul li .label.scholars.discussed.big-badge {
+.impactstory-embed.impactstory-icon ul li .label.scholars.discussed.big-badge {
   background-position: 21px 0;
 }
-.impactstory-embed.icon ul li .label.scholars.saved.big-badge {
+.impactstory-embed.impactstory-icon ul li .label.scholars.saved.big-badge {
   background-position: 175px 0;
 }
-.impactstory-embed.icon ul li .label.scholars.cited.big-badge {
+.impactstory-embed.impactstory-icon ul li .label.scholars.cited.big-badge {
   background-position: 153px 0;
 }
-.impactstory-embed.icon ul li .label.scholars.recommended.big-badge {
+.impactstory-embed.impactstory-icon ul li .label.scholars.recommended.big-badge {
   background-position: 131px 0;
 }
-.impactstory-embed.icon ul li .label.scholars.viewed.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.scholars.viewed.lil-badge {
   background-position: 109px 0;
 }
-.impactstory-embed.icon ul li .label.scholars.discussed.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.scholars.discussed.lil-badge {
   background-position: 87px 0;
 }
-.impactstory-embed.icon ul li .label.scholars.saved.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.scholars.saved.lil-badge {
   background-position: 65px 0;
 }
-.impactstory-embed.icon ul li .label.scholars.cited.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.scholars.cited.lil-badge {
   background-position: 43px 0;
 }
-.impactstory-embed.icon ul li .label.scholars.recommended.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.scholars.recommended.lil-badge {
   background-position: 21px 0;
 }
-.impactstory-embed.icon ul li .label.public {
+.impactstory-embed.impactstory-icon ul li .label.public {
   background: url(http://impactstory.org/static/img/minibadges.png);
   background-position: 0 21px;
 }
-.impactstory-embed.icon ul li .label.public.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.public.lil-badge {
   background: url(http://impactstory.org/static/img/minibadges.png);
 }
-.impactstory-embed.icon ul li .label.public.discussed.big-badge {
+.impactstory-embed.impactstory-icon ul li .label.public.discussed.big-badge {
   background-position: 21px 21px;
 }
-.impactstory-embed.icon ul li .label.public.saved.big-badge {
+.impactstory-embed.impactstory-icon ul li .label.public.saved.big-badge {
   background-position: 175px 21px;
 }
-.impactstory-embed.icon ul li .label.public.cited.big-badge {
+.impactstory-embed.impactstory-icon ul li .label.public.cited.big-badge {
   background-position: 153px 21px;
 }
-.impactstory-embed.icon ul li .label.public.recommended.big-badge {
+.impactstory-embed.impactstory-icon ul li .label.public.recommended.big-badge {
   background-position: 131px 21px;
 }
-.impactstory-embed.icon ul li .label.public.viewed.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.public.viewed.lil-badge {
   background-position: 109px 21px;
 }
-.impactstory-embed.icon ul li .label.public.discussed.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.public.discussed.lil-badge {
   background-position: 87px 21px;
 }
-.impactstory-embed.icon ul li .label.public.saved.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.public.saved.lil-badge {
   background-position: 65px 21px;
 }
-.impactstory-embed.icon ul li .label.public.cited.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.public.cited.lil-badge {
   background-position: 43px 21px;
 }
-.impactstory-embed.icon ul li .label.public.recommended.lil-badge {
+.impactstory-embed.impactstory-icon ul li .label.public.recommended.lil-badge {
   background-position: 21px 21px;
 }
 .impactstory-embed ul {
@@ -173,20 +206,20 @@ span.impactstory-embed ul li .label {
   text-shadow: none;
 }
 .impactstory-embed ul li .label.scholars {
-  border: 1px solid #377EB8;
-  background: #377EB8;
+  border: 1px solid #377eb8;
+  background: #377eb8;
 }
 .impactstory-embed ul li .label.scholars.lil-badge {
   background: #fff;
-  color: #377EB8;
+  color: #377eb8;
 }
 .impactstory-embed ul li .label.public {
-  border: 1px solid #4DAF4A;
-  background: #4DAF4A;
+  border: 1px solid #4daf4a;
+  background: #4daf4a;
 }
 .impactstory-embed ul li .label.public.lil-badge {
   background: #fff;
-  color: #4DAF4A;
+  color: #4daf4a;
 }
 .impactstory-embed ul li .label:hover {
   color: #ffffff;
@@ -198,7 +231,7 @@ span.impactstory-embed ul li .label {
   font-family: Helvitica, Arial, sans-serif;
   top: 0;
   left: 0;
-  z-index: 1010;
+  z-index: 9999;
   display: none;
   width: 236px;
   padding: 1px;

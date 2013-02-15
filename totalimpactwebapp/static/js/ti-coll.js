@@ -106,7 +106,7 @@ function Coll(collViews, user){
 
         console.log("making the collection now.")
         $.ajax({
-                   url: "http://"+api_root+'/collection',
+                   url: api_root+'/collection',
                    type: "POST",
                    dataType: "json",
                    contentType: "application/json; charset=utf-8",
@@ -135,7 +135,7 @@ function Coll(collViews, user){
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
-                   url: "http://"+api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
+                   url: api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
                    type: "GET",
                    dataType: "json",
                    contentType: "application/json; charset=utf-8",
@@ -182,21 +182,21 @@ function Coll(collViews, user){
 
     this.deleteItem = function(tiidToDelete, callbacks) {
 
+        // would prefer to just catch error from this.update(), but we have to
+        // call the error callbacks *before* we call start(), which hides the
+        // item clicked on.
+        if (!this.user.hasCreds()) {
+            callbacks.onNotLoggedIn()
+            return false
+        }
+        if (!this.user.getKeyForColl(this.id)) {
+            callbacks.onNotOwner()
+            return false
+        }
+
         callbacks.start()
-        try{
-            this.update({"tiids": [tiidToDelete]},"DELETE", callbacks.success)
-        }
-        catch (e) {
-            if (e.name == "NotLoggedIn") {
-                callbacks.onNotLoggedIn()
-            }
-            else if (e.name == "NotOwner") {
-                callbacks.onNotOwner()
-            }
-            else {
-                throw e
-            }
-        }
+        this.update({"tiids": [tiidToDelete]},"DELETE", callbacks.success)
+        return false
     }
 
     this.update = function(payload, httpType, onSuccess){
@@ -208,7 +208,7 @@ function Coll(collViews, user){
             throw {name: "NotOwner", message: "User doesn't own this collection."}
         }
 
-        var url = "http://"+api_root+'/v1/collection/'+this.id+'/items?key='+
+        var url = api_root+'/v1/collection/'+this.id+'/items?key='+
             api_key+'&edit_key='+this.user.getKeyForColl(this.id)
 
         var that = this
@@ -290,12 +290,12 @@ function CollViews() {
         }
     }
 
-    this.editFailNotOwner = function(){
+    this.onDeleteNotOwner = function(){
         console.log("You can only edit collections you've created.")
     }
 
-    this.editFailNotLoggedIn = function() {
-        console.log("You have to be logged in to edit your collections.")
+    this.onDeleteNotLoggedIn = function() {
+        alert("You have to be logged in to edit your collections.")
     }
 }
 
@@ -337,8 +337,8 @@ function CollController(coll, collViews) {
             var callbacks = {
                 start: function() {item$.slideUp();},
                 success: function(){console.log("deleted, done. blam.")},
-                notLoggedIn: that.collViews.editFailNotLoggedIn,
-                notOwner: that.collViews.editFailNotOwner
+                onNotLoggedIn: that.collViews.onDeleteNotLoggedIn,
+                onNotOwner: that.collViews.onDeleteNotOwner
             }
 
             that.coll.deleteItem( item$.attr("id"), callbacks)

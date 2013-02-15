@@ -197,8 +197,10 @@ function Item(itemData, itemView, $) {
 
         // hack for backwards compatibility with Pensoft embed:
         if (awards.length) {
-            awards.big = ["here is an item"]
-            awards.any = ["here is an item"]
+            awards.awards = {
+                big: ["here is an item"],
+                any: ["here is an item"]
+            }
         }
 
         return awards
@@ -501,7 +503,7 @@ function Item(itemData, itemView, $) {
         var thisThing = this
         var id = this.itemId
         var registerParam = (noItemCallback) ? "" : "&register=true" // defaults to true
-        var url = "http://" +apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
+        var url = apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
         var logIfFailedRegistration = function(data) {
             if (registerParam) {
                 if (data.is_registered == false) {
@@ -511,6 +513,7 @@ function Item(itemData, itemView, $) {
 
         $.ajax({
             url: url,
+            cache: false,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -721,7 +724,7 @@ function ItemController($){
         var myItem = new Item([reportIdNamespace, reportId], myView, $)
         myItem.get(
             api_root,
-            "item-report-page",
+            api_key,
             this.insertRenderedItemIntoPage,
             function(data){console.log("still updating item report page")},
             function(data){alert("Sorry, this item isn't in our database yet.")}

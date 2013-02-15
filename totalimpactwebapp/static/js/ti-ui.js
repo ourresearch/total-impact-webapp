@@ -8,7 +8,7 @@ if (!window.console) {
 var tiLinkColor = "#FF4E00"
 
 changeControlGroupState = function(elem, newClassName){
-    var states = ["ready", "working", "success", "failure"]
+    var states = ["inactive", "ready", "working", "success", "failure"]
     $(elem)
         .parents(".control-group")
         .removeClass(states.join(" "))
@@ -71,7 +71,7 @@ $(document).ready(function(){
     else if (reportIdNamespace == "impactstory_collection_id") {
         collController.collReportPageInit()
     }
-    else { // must be an item report page
+    else { // looks to be an item report page
         itemController.itemReportPageInit()
     }
 

@@ -1,5 +1,6 @@
 @import "bootstrap/variables.less";
 @import "bootstrap/mixins.less";
+@import "variables.less";
 
 span.impactstory-embed{
    ul {
@@ -30,19 +31,45 @@ span.impactstory-embed{
    &.verbose {
       span.audience {display:inline;}
    }
-   &.small {
+   &.impactstory-grayscale {
+      // without color to indicate audience, so we have to explicitly label it:
+      span.audience{display: inline;}
+      ul li .label {
+         &.scholars {
+            background: @badgesGrayscaleColor;
+            border-color: @badgesGrayscaleColor;
+            &:hover {border-color: @scholarsColor; background: @scholarsColor;}
+            &.lil-badge {
+               color: @badgesGrayscaleColor;
+               &:hover{color: @scholarsColor; background: #fff;}
+            }
+         }
+         &.public {
+            background: @badgesGrayscaleColor;
+            border-color: @badgesGrayscaleColor;
+            &:hover {border-color: @publicColor; background: @publicColor;}
+            &.lil-badge {
+               color: @badgesGrayscaleColor;
+               &:hover {color: @publicColor; background: #fff;}
+            }
+         }
+      }
+
+
+   }
+   &.impactstory-small {
       width:120px;
       img{ height:20px; }
       ul {
          li {
             .label {
                font-size:10px;
-               padding:1px 3px;
+               padding:1px 5px;
             }
          }
       }
    }
-   &.icon {
+   &.impactstory-icon {
       ul {
          li {
             .label {
@@ -115,19 +142,19 @@ span.impactstory-embed{
             text-shadow:none;
 
             &.scholars {
-               border: 1px solid #377EB8;
-               background: #377EB8;
+               border: 1px solid @scholarsColor;
+               background: @scholarsColor;
                &.lil-badge {
                   background:#fff;
-                  color: #377EB8;
+                  color: @scholarsColor;
                }
             }
             &.public {
-               border: 1px solid #4DAF4A;
-               background: #4DAF4A;
+               border: 1px solid @publicColor;
+               background: @publicColor;
                &.lil-badge {
                   background:#fff;
-                  color: #4DAF4A;
+                  color: @publicColor;
                }
             }
 
@@ -151,7 +178,7 @@ span.impactstory-embed{
    font-family: Helvitica, Arial, sans-serif;
    top: 0;
    left: 0;
-   z-index: @zindexPopover;
+   z-index: 9999; // popover conquers all!
    display: none;
    width: 236px;
    padding: 1px;

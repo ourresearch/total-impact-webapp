@@ -101,11 +101,17 @@ AliasListInputs.prototype = {
 var SubmitButton = function(aliases, elem){
     this.aliases = aliases
     this.elem$ = $(elem)
-    this.inputClasses = ["ready", "working", "success", "failure"]
 }
 SubmitButton.prototype = {
     submit: function(user){
+
+        if (!this.aliases.forApi().length) {
+            alert("You have to add some products before you create a collection.")
+            return false
+        }
+
         this.start()
+
         var that = this;
         var email = $("#make-collection div.email input").val()
         var pw = $("#make-collection div.password input").val()
@@ -121,6 +127,8 @@ SubmitButton.prototype = {
 
     },
     start:function(){
+        changeControlGroupState(this.elem$, "working")
+        console.log(this.elem$)
     },
     update: function(){
     },
@@ -139,7 +147,6 @@ SubmitButton.prototype = {
 var UsernameImporter = function(aliases, elem) {
     this.aliases = aliases
     this.elem$ = $(elem)
-    this.inputClasses = ["ready", "working", "success", "failure"]
 }
 UsernameImporter.prototype = {
 
@@ -150,7 +157,7 @@ UsernameImporter.prototype = {
         var queryStr = this.elem$.val()
 
         $.ajax({
-            url: "http://"+api_root+"/provider/"+providerName+"/memberitems/"+queryStr+"?method=sync",
+            url: api_root+"/provider/"+providerName+"/memberitems/"+queryStr+"?method=sync",
             type: "GET",
             dataType: "json",
             success: function(data){that.done.call(that, data)},
@@ -184,7 +191,6 @@ UsernameImporter.prototype = {
 var TextareaImporter = function(aliases, elem) {
     this.aliases = aliases
     this.elem$ = $(elem)
-    this.inputClasses = ["ready", "working", "success", "failure"]
 }
 TextareaImporter.prototype = {
     pull: function(){
@@ -261,7 +267,7 @@ BibtexImporter.prototype = {
         formData.append('file', this.elem$[0].files[0]);
 
         $.ajax({
-                   url: "http://"+api_root+'/provider/bibtex/memberitems',
+                   url: api_root+'/provider/bibtex/memberitems',
                    type: "POST",
                    processData: false,
                    contentType: false,
@@ -306,7 +312,7 @@ BibtexImporter.prototype = {
 
         // make request
         $.ajax({
-                   url: "http://"+api_root+"/provider/bibtex/memberitems/"+queryStr,
+                   url: api_root+"/provider/bibtex/memberitems/"+queryStr,
                    type: "GET",
                    dataType: "json",
                    success: function(response,status,xhr){

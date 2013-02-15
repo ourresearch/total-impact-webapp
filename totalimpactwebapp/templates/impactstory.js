@@ -1,5 +1,7 @@
 
+
 (function () {
+
 
     /******** Load jQuery if not present *********/
     var jQuery;
@@ -53,8 +55,9 @@
          *
          *********************************/
 
-        var apiRoot = "{{ api_root }}"
-        var webappRoot = "{{ webapp_root }}"
+        var apiRoot = window.location.protocol + "//{{ roots.api }}"
+        var webappRoot = window.location.protocol + "//{{ roots.webapp }}"
+        var webappRootPretty = "http://{{ roots.webapp_pretty }}"
 
         var $ = jQuery
         $.support.cors = true; // makes IE8 and IE9 support CORS somehow...
@@ -71,6 +74,7 @@
                 "api-key": false,
 
                 // optional
+                "badge-palette": "color",
                 "badge-size": "large",
                 "badge-type": "tag",
                 "on-finish": false,
@@ -90,6 +94,9 @@
          */
         ;{{ libs }}
 
+
+        /* initialize mixpanel analytics */
+//        mixpanel.init("{{ mixpanel_token }}");
 
         /****************************************
          *
@@ -125,6 +132,9 @@
                 var key = convertAttrs(el.attributes[i].nodeName, true)
                 if (key.indexOf("data-") === 0) {
                     var key = key.replace("data-", "")
+
+                    var defaultVal = params[key]
+
                     var val
                     if (key == "on-finish") {
                         val = convertAttrs(el.attributes[i].nodeValue, false)
@@ -132,7 +142,6 @@
                     else {
                         val = convertAttrs(el.attributes[i].nodeValue, true)
                     }
-
                     params[key] = val
                 }
             }
@@ -156,38 +165,26 @@
             if (!params["show-logo"]) {
                 return div$
             }
+            var imgSrc = webappRoot + "/static/img/impactstory-logo-small.png"
+            if (params['badge-palette'] == "grayscale") {
+                console.log("grayscale it is, boss.")
+                imgSrc = imgSrc.replace(".png", "-grayscale.png")
+            }
+            var img = '<img src="' + imgSrc +'" alt="ImpactStory logo" />'
 
             // I can't figure out how to get the wrapInLink() function to work for a
             // single item like this, so here's this repulsive hack in the meantime:
-            var logoLink$ = jQuery('<a href="http://' + webappRoot + '/item/'
+            var logoLink$ = jQuery('<a href="' + webappRootPretty + '/item/'
                                        + params["id-type"] + "/" + params["id"] + '" target="_blank">'
-                                       + '<img src="http://' + webappRoot
-                                       + '/static/img/impactstory-logo-small.png" alt="ImpactStory logo" />'
-                                       + "</a>");
+                                       + img + "</a>");
             div$.prepend(logoLink$)
             return div$
         }
 
         function wrapInLink(el$, namespace, id){
-            return el$.wrapAll("<a href='http://" + webappRoot + "/item/"+
+            return el$.wrapAll("<a href='" + webappRootPretty + "/item/"+
                                    namespace + "/" + id +  "' target='_blank' />")
         }
-
-        function reportVitals(allParams){
-            var vitals = {
-                allParams: allParams,
-                url: location.href
-            }
-            $.ajax({
-                url: "http://" + webappRoot + "/vitals",
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(vitals),
-                success: function(data) { }
-                })
-        }
-
 
 
         /****************************************
@@ -198,7 +195,7 @@
          * ***************************************
          */
 
-        requestStylesheet("http://" + webappRoot + "/static/css/embed.css");
+        requestStylesheet(webappRoot + "/static/css/embed.css");
         jQuery(document).ready(function ($) {
             var badgesTemplateStr = '{{ badges_template }}'
             badgesTemplateStr = badgesTemplateStr.replace(new RegExp("&apos;", "g"), "'")
@@ -237,8 +234,9 @@
                 }
 
                 var getWindowCallback = function(div$, dict){
+                    var awards = dict.awards
                     if (params["on-finish"]) {
-                        window[params["on-finish"]].call(window, dict, div$)
+                        window[params["on-finish"]].call(window, awards, div$)
                     }
                 }
 
@@ -251,9 +249,10 @@
                  *
                  **************************************************************/
 
-                // apply those user-defined params that apply to the whole div:
-                thisDiv$.addClass(params["badge-size"])
-                thisDiv$.addClass(params["badge-type"])
+                // apply those user-defined params that apply a class to the whole div:
+                thisDiv$.addClass("impactstory-" + params["badge-size"])
+                thisDiv$.addClass("impactstory-" + params["badge-type"])
+                thisDiv$.addClass("impactstory-" + params["badge-palette"])
 
                 // if the user doesn't want badges, no need to make the get() call.
                 if (!params["show-badges"]){
@@ -267,20 +266,19 @@
                         params["api-key"],
                         function(dict, id) { // run insertBadges, then a user-defined callback
                             insertBadges(dict, id)
-                            getWindowCallback(thisDiv$, dict) // we generate the callback here
+                            getWindowCallback(thisDiv$, dict) // we find the user callback here
                         },
                         function(data){
                             thisDiv$.append("<span class='loading'>Gathering metrics now...</span>")
-                        },
-                        false
+                        }
                     )
                     return true
                 }
             }) // done with code that runs for each widget
 
             // report vital signs
-            // DISABLE FOR NOW, error on pensoft site
-            reportVitals(allParams)
+            var apikey = "{{ api_key }}"
+//            mixpanel.track("Impression:embed", {"API Key":apikey.toLowerCase()});
 
         });
     }

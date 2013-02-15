@@ -1,10 +1,6 @@
-import requests, iso8601, os, json, logging
-import urllib2
-import base64
-import time
-import urlparse
+import requests, os, json, logging
 
-from flask import request, redirect, abort, make_response
+from flask import request, send_file, abort, make_response
 from flask import render_template
 from flask.ext.assets import Environment, Bundle
 
@@ -45,12 +41,14 @@ css = Bundle('css/bootstrap.css',
             output="css/packed.css"
 )
 
-js_widget = Bundle('js/icanhaz.js',
-                   'js/bootstrap-tooltip-and-popover.js',
-                   'js/underscore.js',
-                   'js/ti-item.js',
-                   filters="yui_js",
-                   output="js/widget.js",
+js_widget = Bundle(
+            'js/icanhaz.js',
+            'js/bootstrap-tooltip-and-popover.js',
+            'js/underscore.js',
+            # 'js/mixpanel.js',
+            'js/ti-item.js',
+            filters="yui_js",
+            output="js/widget.js",
 )
 assets.register('js_widget', js_widget)
 assets.register('js_all', js)
@@ -58,6 +56,12 @@ assets.register('css_all', css)
 
 
 
+roots = {
+    "api":os.getenv("API_ROOT"),
+    "api_pretty":os.getenv("API_ROOT_PRETTY", os.getenv("API_ROOT")),
+    "webapp":os.getenv("WEBAPP_ROOT"),
+    "webapp_pretty":os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
+}
 
 
 @app.before_request
@@ -83,7 +87,7 @@ def home():
     page_title="tell the full story of your research impact",
     body_class="homepage",
     mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-    api_root=os.environ["API_ROOT"],
+    roots=roots,
     api_key=os.environ["API_KEY"]        
     )
 
@@ -108,7 +112,8 @@ def impactstory_dot_js():
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],
         api_root=os.environ["API_ROOT"],
         api_key=os.environ["API_KEY"],
-        webapp_root=os.environ["WEBAPP_ROOT"]
+        webapp_root=os.environ["WEBAPP_ROOT"],
+        roots=roots
     )
     resp = make_response(rendered)
     """
@@ -122,12 +127,12 @@ def impactstory_dot_js():
 
 @app.route("/embed/test")
 def embed_test():
+
     return render_template(
         "sample-embed-internal-test.html",
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
-        webapp_root = os.environ["WEBAPP_ROOT"],
-        api_root=os.environ["API_ROOT"],
-        api_key=os.environ["API_KEY"]        
+        roots=roots,
+        api_key=os.environ["API_KEY"]
     )
 
 
@@ -137,7 +142,7 @@ def about():
         'about.html',
         page_title="about",
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        api_root=os.environ["API_ROOT"],
+        roots=roots,
         api_key=os.environ["API_KEY"]        
         )
 
@@ -153,7 +158,7 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        r = requests.get("http://" + os.environ["API_ROOT"] +'/provider')
+        r = requests.get('http://' + roots["api"] +'/provider')
         metadata = json.loads(r.text)
     except requests.ConnectionError:
         metadata = {}
@@ -163,9 +168,8 @@ def faq():
         page_title="faq",
         which_artifacts=which_item_types,
         provider_metadata=metadata,
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        api_root=os.environ["API_ROOT"],
-        api_key=os.environ["API_KEY"]        
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+        roots=roots
         )
 
 @app.route('/api-docs')
@@ -175,7 +179,7 @@ def apidocs():
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
         api_root=os.environ["API_ROOT"],
         api_key=os.environ["API_KEY"],        
-        webapp_root = os.environ["WEBAPP_ROOT"],
+        roots=roots,
         page_title="api & widget"
         )
 
@@ -184,9 +188,8 @@ def pricing():
     return render_template(
         'pricing.html',
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-        api_root=os.environ["API_ROOT"],
+        roots=roots,
         api_key=os.environ["API_KEY"],        
-        webapp_root = os.environ["WEBAPP_ROOT"],
         page_title="pricing"
         )
 
@@ -196,8 +199,8 @@ def pricing():
 def collection_create():
     return render_template(
         'create-collection.html', 
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        api_root=os.environ["API_ROOT"],
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+        roots=roots,
         api_key=os.environ["API_KEY"],        
         page_title="create collection",
         body_class="create-collection"
@@ -206,7 +209,7 @@ def collection_create():
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
     url = "http://{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
-        api_root=os.getenv("API_ROOT"),
+        api_root=roots["api"],
         api_key=os.environ["API_KEY"],        
         collection_id=collection_id
     )
@@ -216,8 +219,8 @@ def collection_report(collection_id):
         collection = json.loads(r.text)
         return render_template(
             'report.html',
-            mixpanel_token=os.environ["MIXPANEL_TOKEN"],                    
-            api_root=os.environ["API_ROOT"],
+            mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+            roots=roots,
             api_key=os.environ["API_KEY"],
             request_url=request.url,
             page_title=collection["title"],
@@ -233,7 +236,7 @@ def collection_report(collection_id):
 @app.route('/item/<ns>/<path:id>')
 def item_report(ns, id):
     url = "http://{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
-        api_root=os.getenv("API_ROOT"),
+        api_root=roots["api"],
         ns=ns,
         id=id,
         api_key=os.environ["API_KEY"]
@@ -241,8 +244,8 @@ def item_report(ns, id):
     r = requests.get(url)
     return render_template(
         'report.html',
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
-        api_root=os.environ["API_ROOT"],
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+        roots=roots,
         api_key=os.environ["API_KEY"],
         request_url=request.url,
         page_title="",
@@ -253,63 +256,12 @@ def item_report(ns, id):
     )
 
 
-@app.route('/vitals', methods=["POST"])
-def vitals():
-    """
-    Logs reporting stats from the embed code to mixpanel
-
-    Gets a "vitals" object that has a url and a list of "params" objects.
-    Each widget on a page sends its own params object; in practice, these will
-    almost certainly be identical since users aren't likely to set different
-    options for widgets on the same page. It's a good way to count widgets on
-    that page, though.
-
-    For documentation on the keys in the the params object, see the default
-    params listed at the head of impactstory.js's main() function, and also the
-    api-docs page.
-    """
-
-    vitals = request.json
-    try:
-        referring_domain = urlparse.urlsplit(request.referrer).netloc
-    except AttributeError:
-        referring_domain = "";
-
-    properties = {  
-                    'token': os.getenv("MIXPANEL_TOKEN"), 
-                    'time': int(time.time()),
-                    'ip': request.remote_addr,
-                    "$referring_domain": referring_domain,
-                    "$referrer" : request.referrer,
-                    "$os": request.user_agent.platform,
-                    "$browser": request.user_agent.browser
-                }
-
-    try:
-        properties["Embeds per page"] = len(vitals["allParams"])
-        properties["Host page"] = vitals["url"]
-        properties["API Key"] = vitals["allParams"][0]["api-key"]
-        for embed_param in vitals["allParams"][0]:
-            properties["Embed:"+embed_param] = vitals["allParams"][0][embed_param]                   
-    except IndexError, KeyError:
-        logger.info("Errors enumerating vitals params for {vitals}".format(
-            vitals=vitals))
-    
-    mixpanel_params = {"event": "Impression:embed", "properties": properties}
-    mixpanel_data = base64.b64encode(json.dumps(mixpanel_params))
-    mixpanel_resp = urllib2.urlopen("http://api.mixpanel.com/track/?data=%s" % mixpanel_data)
-
-    logger.debug("Successful vitals mixpanel report")
-
-    resp = make_response("duly noted. carry on.", 200)
-    return resp
-
 @app.route('/admin/key')
 def generate_api_key():
     return render_template(
         'generate-api.html', 
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        api_root=os.environ["API_ROOT"],
+        roots=roots,
         api_key=os.environ["API_KEY"],
         page_title="generate api key",
         body_class="create-collection"
@@ -369,3 +321,8 @@ try:
 except KeyError:
     logger.error("HIREFIREAPP_TOKEN environment variable not defined, not setting up validation api endpoint")
 
+
+@app.route('/logo')
+def logo():
+    filename = "static/img/logos/impactstory-logo-big.png"
+    return send_file(filename, mimetype='image/png')
