@@ -114,11 +114,29 @@ div.popover {
 }
 
 div.modal {
+   h3 {
+      font-family: rokkitt, helvetica, arial, sans-serif;
+   }
+   .btn-primary {font-family: helvetica, arial, sans-serif;}
 
    &.error {
       div.modal-header {
          background: #BD362F;
          color: #fff;
+      }
+      border: 2px solid #BD362F;
+   }
+
+   &#edit-not-logged-in {
+      div.modal-body {
+         span.desc{
+            width: 24%;
+            float:left;
+         }
+         span.news {
+            float:left;
+            width:76%;
+         }
       }
    }
 

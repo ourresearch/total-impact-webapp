@@ -87,7 +87,7 @@ function Coll(collViews, user){
 
     this.addItemsFromDicts = function(newItemDicts, alias_tiids) {
         for (var i=0; i<newItemDicts.length; i++) {
-            tiid = newItemDicts[i]["_id"]
+            var tiid = newItemDicts[i]["_id"]
             this.items[tiid] = new Item(newItemDicts[i], new ItemView($), $)
         }
     }
@@ -135,40 +135,40 @@ function Coll(collViews, user){
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
-                   url: api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
-                   type: "GET",
-                   dataType: "json",
-                   contentType: "application/json; charset=utf-8",
-                   statusCode: {
-                       210: function(data){
-                           console.log("still updating")
-                           thisThing.title = data.title
-                           thisThing.alias_tiids = data.alias_tiids
-                           thisThing.addItemsFromDicts(data.items)
+            url: api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
+            type: "GET",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            statusCode: {
+               210: function(data){
+                   console.log("still updating")
+                   thisThing.title = data.title
+                   thisThing.alias_tiids = data.alias_tiids
+                   thisThing.addItemsFromDicts(data.items)
 
-                           thisThing.render.call(thisThing)
+                   thisThing.render.call(thisThing)
 
-                           if (tries > 120) { // give up after 1 minute...
-                               console.log("failed to finish update; giving up after 1min.")
-                           }
-                           else {
-                               setTimeout(function(){
-                                   thisThing.read(interval, tries+1)
-                               }, 500)
-                           }
-                       },
-                       200: function(data) {
-                           console.log("done with updating")
-                           thisThing.alias_tiids = data.alias_tiids
-                           thisThing.title = data.title
-                           thisThing.addItemsFromDicts(data.items)
-
-                           thisThing.render.call(thisThing)
-
-                           return false;
-                       }
+                   if (tries > 120) { // give up after 1 minute...
+                       console.log("failed to finish update; giving up after 1min.")
                    }
-               });
+                   else {
+                       setTimeout(function(){
+                           thisThing.read(interval, tries+1)
+                       }, 500)
+                   }
+               },
+               200: function(data) {
+                   console.log("done with updating")
+                   thisThing.alias_tiids = data.alias_tiids
+                   thisThing.title = data.title
+                   thisThing.addItemsFromDicts(data.items)
+
+                   thisThing.render.call(thisThing)
+
+                   return false;
+               }
+            }
+            });
     }
 
 
@@ -211,7 +211,6 @@ function Coll(collViews, user){
         var url = api_root+'/v1/collection/'+this.id+'/items?key='+
             api_key+'&edit_key='+this.user.getKeyForColl(this.id)
 
-        var that = this
         $.ajax({
                    url: url,
                    type: httpType,
@@ -220,7 +219,7 @@ function Coll(collViews, user){
                    data:  JSON.stringify(payload),
                    success: function(data){
                        console.log("finished updating the collection!")
-                       onSuccess()
+                       onSuccess(data)
                    }
                })
     }
@@ -265,7 +264,8 @@ function CollViews() {
     this.finishUpdating = function(items){
         // setup page header
         $("#page-header img").remove()
-        $("#num-items span.value").text(items.length)
+        console.log("num items:", _.size(items))
+        $("#num-items span.value").text(_.size(items))
 
         // setup item-level zooming
         $("ul.active li.item div.item-header").addClass("zoomable")
@@ -291,11 +291,11 @@ function CollViews() {
     }
 
     this.onDeleteNotOwner = function(){
-        console.log("You can only edit collections you've created.")
+        $("#edit-not-owner").modal("show")
     }
 
     this.onDeleteNotLoggedIn = function() {
-        $("delete-not-logged-in").modal("show")
+        $("#edit-not-logged-in").modal("show")
     }
 }
 
@@ -336,7 +336,10 @@ function CollController(coll, collViews) {
 
             var callbacks = {
                 start: function() {item$.slideUp();},
-                success: function(){console.log("deleted, done. blam.")},
+                success: function(data){
+                    console.log("deleted, done. blam.", data)
+                    $("#num-items span.value").text(_.size(data.alias_tiids))
+                },
                 onNotLoggedIn: that.collViews.onDeleteNotLoggedIn,
                 onNotOwner: that.collViews.onDeleteNotOwner
             }

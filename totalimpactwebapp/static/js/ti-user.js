@@ -102,6 +102,7 @@ function User(userViews) {
     /*  Persisting state with the server.
      ************************/
     this.syncWithServer = function(method, callbacks) {
+
         if (!this.hasCreds()) {
             if (typeof callbacks.onNoUserId() !== "undefined") callbacks.onNoUserId()
             return false;
@@ -342,7 +343,18 @@ function UserController(user, userViews) {
 
         // register/login
         $("a.login-register-link").click(function(){
-            $("#login-register").modal("show")
+
+            // hide any modals out now, then show the register/login modal
+            if ($(".modal.in")[0]) {
+                $(".modal.in")
+                    .one("hidden", function(){
+                        $("#login-register").modal("show")
+                    })
+                    .modal("hide")
+            }
+            else {
+                $("#login-register").modal("show")
+            }
         })
 
         $("li#logged-in span.username").on("click", function(){

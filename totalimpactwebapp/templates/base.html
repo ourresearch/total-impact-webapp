@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
    <meta charset="utf-8">
    <title>ImpactStory: {{ page_title }}</title>
@@ -46,8 +46,8 @@
       <div class="navbar-inner">
          <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a>
          <ul class="nav pull-right">
-            <li><a href="/api-docs">embed</a></li>
             <li><a href="/create">create</a></li>
+            <li><a href="/api-docs">embed</a></li>
 
             <li class="dropdown">
                <a href="#"  class="dropdown-toggle" data-toggle="dropdown">follow</a>
@@ -107,8 +107,8 @@
          </div>
          <div id="footer-powered-by">
             <p><a href="https://mixpanel.com/f/partner">
-               <img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></p>
-            </a>
+               <img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" />
+            </a></p>
          </div>
       </div>
    </div> <!-- end footer -->
@@ -119,6 +119,8 @@
 Modals
 HTML for modal windows that bootstrap will pop up
 ------------------------------------------------------------------------------->
+
+<!--login and register -->
 <div id="login-register" class="modal hide fade">
    <div class="modal-body">
 
@@ -187,8 +189,34 @@ HTML for modal windows that bootstrap will pop up
 </div> <!-- end of login/registration modal -->
 
 
+<!-- you have to be registered to edit collections -->
+<div id="edit-not-owner" class="modal hide fade error">
+   <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Whoops!</h3>
+   </div>
+   <div class="modal-body">
+      <p>Sorry, you can only make changes to your own collections.</p>
+   </div>
+</div>
 
 
+<!-- you have to be registered to edit collections -->
+<div id="edit-not-logged-in" class="modal hide fade error">
+   <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Whoops!</h3>
+   </div>
+   <div class="modal-body">
+      <p><span class="desc">The bad news:</span> <span class="news">You can only make changes to your collection if you're registered and logged in.</span></p>
+      <p><span class="desc">The good news:</span> <span class="news">It takes less than 10 seconds to register!</span></p>
+   </div>
+   <div class="modal-footer">
+      <a class="btn login-register-link">Log in</a>
+      <a class="btn btn-primary login-register-link">Register</a>
+
+   </div>
+</div>
 
 
 
