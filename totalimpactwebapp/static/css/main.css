@@ -119,9 +119,26 @@ div.popover a:hover {
   border-bottom: 1px solid #555;
   text-decoration: none;
 }
+div.modal h3 {
+  font-family: rokkitt, helvetica, arial, sans-serif;
+}
+div.modal .btn-primary {
+  font-family: helvetica, arial, sans-serif;
+}
+div.modal.error {
+  border: 2px solid #BD362F;
+}
 div.modal.error div.modal-header {
   background: #BD362F;
   color: #fff;
+}
+div.modal#edit-not-logged-in div.modal-body span.desc {
+  width: 24%;
+  float: left;
+}
+div.modal#edit-not-logged-in div.modal-body span.news {
+  float: left;
+  width: 76%;
 }
 /* navbar
 *****************************************************************************

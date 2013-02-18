@@ -208,12 +208,14 @@ function Coll(collViews, user){
             throw {name: "NotOwner", message: "User doesn't own this collection."}
         }
 
-        var url = api_root+'/v1/collection/'+this.id+'/items?key='+
-            api_key+'&edit_key='+this.user.getKeyForColl(this.id)
+        var url = api_root+'/v1/collection/'+this.id+'/items?'
+            + "http_method="+httpType
+            + '&key='+api_key
+            + '&edit_key='+this.user.getKeyForColl(this.id)
 
         $.ajax({
                    url: url,
-                   type: httpType,
+                   type: "POST",
                    dataType: "json",
                    contentType: "application/json; charset=utf-8",
                    data:  JSON.stringify(payload),
