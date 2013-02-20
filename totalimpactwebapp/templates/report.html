@@ -33,14 +33,14 @@
                     </span>
          </div>
          <div id="report-button">
-            <!-- TODO make work for item reports; currently only works with collections.-->
-            <button class="btn btn-small" id="update-report-button" name="{{ report_id }}" href="#">update</button>
+            <button class="btn btn-small" id="add-products-button" name="{{ report_id }}" href="#">add products</button>
+            <button class="btn btn-small" id="update-report-button" name="{{ report_id }}" href="#">refresh metrics</button>
             <div class="btn-group download">
                <a class="btn btn-small" id="json-report-button" href="http://{{ roots.api_pretty }}/v1/{{ api_query }}?key=samplekey">json</a>
                <a class="btn btn-small" id="csv-report-button" href="http://{{ roots.api_pretty }}/v1/{{ api_query }}.csv?key=samplekey">csv</a>
             </div>
          </div>
-         <div id="num-items"><span class="value"></span> items <a href="#">(expand all)</a></div>
+         <div id="num-items"><span class="value"></span> products <a href="#">(expand all)</a></div>
 
       </div>
    </div>
