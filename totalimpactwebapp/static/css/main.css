@@ -73,9 +73,6 @@ body a:hover {
   text-decoration: underline;
   color: #ff4e00;
 }
-.btn-primary {
-  font-family: rokkitt, cambria, serif;
-}
 .wrapper {
   margin: 0 auto;
   display: block;
@@ -119,9 +116,23 @@ div.popover a:hover {
   border-bottom: 1px solid #555;
   text-decoration: none;
 }
+div.modal h3 {
+  font-family: rokkitt, helvetica, arial, sans-serif;
+}
+div.modal.error {
+  border: 2px solid #BD362F;
+}
 div.modal.error div.modal-header {
   background: #BD362F;
   color: #fff;
+}
+div.modal#edit-not-logged-in div.modal-body span.desc {
+  width: 24%;
+  float: left;
+}
+div.modal#edit-not-logged-in div.modal-body span.news {
+  float: left;
+  width: 76%;
 }
 /* navbar
 *****************************************************************************
@@ -212,11 +223,6 @@ div.navbar ul.nav.pull-right > li div.dropdown-menu li {
 }
 div.navbar ul.nav.pull-right > li div.dropdown-menu::after {
   border-bottom: 6px solid #f5f5f5;
-}
-div.navbar ul.nav.pull-right > li div.dropdown-menu .btn-primary {
-  margin-top: 0;
-  float: right;
-  font-size: 20px;
 }
 div.navbar ul.nav.pull-right > li div.dropdown-menu span.register {
   float: right;
@@ -526,6 +532,7 @@ div#tagline #button-bar #call-to-action span.container {
 div#tagline #button-bar a#create-collection {
   margin: 3px 0 0 20px;
   font-size: 2.1em;
+  font-family: rokkitt, Helvetica, Arial, sans-serif;
 }
 div#tagline #button-bar p#example-collection {
   font-size: 14px;

@@ -23,7 +23,7 @@ body.report #page-header {
   padding-bottom: 20px;
 }
 #report-meta {
-  margin: -98px 90px 0 0;
+  margin: -98px 0 0 0;
   float: right;
 }
 #report-meta div#num-items {
@@ -45,16 +45,15 @@ body.report #page-header {
   color: #ff4e00;
 }
 #report-meta div#report-button {
-  width: 155px;
+  width: 300px;
   float: right;
   margin-top: 37px;
 }
 #report-meta div#report-button div.download {
-  margin-left: 10px;
   float: left;
 }
 #report-meta div#report-button button {
-  margin-bottom: 5px;
+  margin: 0 10px 5px 0;
   display: block;
   float: left;
 }
