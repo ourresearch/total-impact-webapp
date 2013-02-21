@@ -15,6 +15,6 @@ app = Flask(__name__)
 app.config["ASSETS_DEBUG"] = os.getenv("ASSETS_DEBUG", "True") == "True"
 
 # for testing; make sure yui compressor isn't going to explode when it processes this.
-#app.config["ASSETS_DEBUG"] = False
+app.config["ASSETS_DEBUG"] = False
 
 from totalimpactwebapp import views
