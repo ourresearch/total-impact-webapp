@@ -135,7 +135,7 @@ function Coll(collViews, user){
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
-            url: api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
+            url: 'http://'+api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
