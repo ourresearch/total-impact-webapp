@@ -231,6 +231,7 @@ span.impactstory-embed ul li .label {
   font-family: Helvitica, Arial, sans-serif;
   top: 0;
   left: 0;
+  bottom: inherit;
   z-index: 9999;
   display: none;
   width: 236px;
@@ -281,6 +282,7 @@ span.impactstory-embed ul li .label {
 .popover.impactstory .popover-content ul,
 .popover.impactstory .popover-content ol {
   margin-bottom: 0;
+  color: #333 !important;
 }
 .popover.impactstory .arrow,
 .popover.impactstory .arrow:after {

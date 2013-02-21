@@ -178,6 +178,7 @@ span.impactstory-embed{
    font-family: Helvitica, Arial, sans-serif;
    top: 0;
    left: 0;
+   bottom: inherit; // fix bug in http://www.ucl.ac.uk/ukpdc/publications embed
    z-index: 9999; // popover conquers all!
    display: none;
    width: 236px;
@@ -215,6 +216,7 @@ span.impactstory-embed{
       line-height: 1.3;
       p, ul, ol {
          margin-bottom: 0;
+         color: #333 !important; // fix for http://www.ucl.ac.uk/ukpdc/publications
       }
    }
    // Arrows
