@@ -57,15 +57,17 @@ AliasListInputs.prototype = {
 
         // set up the submit button
         $("#go-button").click(function(){
+            var action = "create"
 
             // fetch ids from the textareas first
             $("textarea.ids").not(".default").each(function(){
                 var importer = new TextareaImporter(that.aliases, this)
                 importer.pull()
             })
+            if ($(this).hasClass(("update"))) action = "update"
 
             var button = new SubmitButton(that.aliases, this)
-            return button.submit(user)
+            return button.submit(user, action)
         })
 
         // hide the registration stuff if the user's logged in
@@ -132,7 +134,8 @@ var SubmitButton = function(aliases, elem){
     this.elem$ = $(elem)
 }
 SubmitButton.prototype = {
-    submit: function(user){
+    submit: function(user, action){
+        var action = action || "create"
 
         if (!this.aliases.forApi().length) {
             alert("You have to add some products before you create a collection.")
@@ -151,7 +154,12 @@ SubmitButton.prototype = {
             _gaq.push(['_trackPageview', '/user/created']);
         }
 
-//        this.createCollection( this.aliases.forApi(), title, user )
+        if (action == "create") {
+            this.createCollection( this.aliases.forApi(), title, user )
+        }
+        else if (action == "update") {
+            console.log("time to update, y'all!")
+        }
         return false
 
     },
