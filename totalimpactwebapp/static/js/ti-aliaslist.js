@@ -179,7 +179,7 @@ SubmitButton.prototype = {
     },
     addItemsToCollection: function(coll, aliases) {
         var callbacks = {
-            onSuccess: function(){console.log("it was done!")}
+            onSuccess: function(){location.reload()}
         }
         coll.addItems(aliases, callbacks)
 

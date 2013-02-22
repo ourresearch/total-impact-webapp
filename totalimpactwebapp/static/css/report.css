@@ -12,6 +12,9 @@ body.report .modal {
 body.report .modal#import-products-modal {
   border: 3px solid #ff4e00;
 }
+body.report .modal#import-products-modal .modal-body {
+  float: right;
+}
 body.report .modal .modal-header {
   background: #ff4e00;
   border-bottom: 1px solid #555;
@@ -44,7 +47,6 @@ body.report .modal .modal-header div.control-group div.working img {
 }
 body.report .modal .modal-body {
   max-height: inherit;
-  float: right;
 }
 body.report .modal .modal-body form h3 span.step-number {
   display: none;
@@ -96,11 +98,17 @@ body.report .modal .modal-body form.other-products {
   float: right;
   margin-top: 37px;
 }
-#report-meta div#report-button div.download {
-  float: left;
+#report-meta div#report-button div.update {
+  float: right;
+  margin: 0 5px 0 0;
+}
+#report-meta div#report-button div.update .dropdown-menu {
+  left: inherit;
+  right: 0;
+  min-width: inherit;
+  width: 80px;
 }
 #report-meta div#report-button button {
-  margin: 0 10px 5px 0;
   display: block;
   float: left;
 }

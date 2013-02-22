@@ -33,11 +33,17 @@
                     </span>
          </div>
          <div id="report-button">
-            <button class="btn btn-small" id="import-products-button" name="{{ report_id }}" href="#">add products</button>
-            <button class="btn btn-small" id="update-report-button" name="{{ report_id }}" href="#">refresh metrics</button>
-            <div class="btn-group download">
-               <a class="btn btn-small" id="json-report-button" href="http://{{ roots.api_pretty }}/v1/{{ api_query }}?key=samplekey">json</a>
-               <a class="btn btn-small" id="csv-report-button" href="http://{{ roots.api_pretty }}/v1/{{ api_query }}.csv?key=samplekey">csv</a>
+            <div class="btn-group update">
+               <button class="btn btn-small btn-primary" id="import-products-button" name="{{ report_id }}" href="#">add products</button>
+               <button class="btn btn-small" id="update-report-button" name="{{ report_id }}" href="#">refresh metrics</button>
+               <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+                  download
+                  <span class="caret"></span>
+               </a>
+               <ul class="dropdown-menu">
+                  <li><a class="" id="json-report-button" href="http://{{ roots.api_pretty }}/v1/{{ api_query }}?key=samplekey">json</a></li>
+                  <li><a class="" id="csv-report-button" href="http://{{ roots.api_pretty }}/v1/{{ api_query }}.csv?key=samplekey">csv</a></li>
+               </ul>
             </div>
          </div>
          <div id="num-items"><span class="value"></span> products <a href="#">(expand all)</a></div>
@@ -93,7 +99,7 @@ Modals
 HTML for modal windows that bootstrap will pop up
 ------------------------------------------------------------------------------->
 
-<!-- you have to be registered to edit collections -->
+<!-- you have to own collections to edit them -->
 <div id="edit-not-owner" class="modal hide fade error">
    <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

@@ -176,28 +176,15 @@ function Coll(collViews, user){
         // implement later.
     }
 
-    this.addItems = function(newItems){
-
-    }
-
     this.deleteItem = function(tiidToDelete, callbacks) {
-
-
-        if (!this.user.hasCreds()) {
-            callbacks.onNotLoggedIn()
-            return false
-        }
-        if (!this.user.getKeyForColl(this.id)) {
-            callbacks.onNotOwner()
-            return false
-        }
-
+        if (!this.userCanEdit(callbacks)) return false
         callbacks.start()
         this.update({"tiids": [tiidToDelete]},"DELETE", callbacks.success)
         return false
     }
 
     this.addItems = function(itemsToAdd, callbacks) {
+        if (!this.userCanEdit(callbacks)) return false
         this.update({aliases: itemsToAdd}, "PUT", callbacks.onSuccess)
     }
 
@@ -233,6 +220,18 @@ function Coll(collViews, user){
             }});
         }
 
+    this.userCanEdit = function(callbacks){
+        if (!this.user.hasCreds()) {
+            callbacks.onNotLoggedIn()
+            return false
+        }
+        if (!this.user.getKeyForColl(this.id)) {
+            callbacks.onNotOwner()
+            return false
+        }
+        return true
+    }
+
 
 
     this.render = function(){
@@ -241,8 +240,6 @@ function Coll(collViews, user){
 //        this.views.renderTitle(this.title)
 
     }
-
-
 }
 
 function CollViews() {
@@ -287,11 +284,11 @@ function CollViews() {
         }
     }
 
-    this.onDeleteNotOwner = function(){
+    this.onEditNotOwner = function(){
         $("#edit-not-owner").modal("show")
     }
 
-    this.onDeleteNotLoggedIn = function() {
+    this.onEditNotLoggedIn = function() {
         $("#edit-not-logged-in").modal("show")
     }
 }
@@ -314,11 +311,6 @@ function CollController(coll, collViews) {
             return false;
         })
 
-        // show the import-products dialog when you ask for it
-        $("#import-products-button").click(function(){
-            $("#import-products-modal").modal("show")
-            return false
-        })
 
         // show/hide all zoom divs
         $("div#num-items a").toggle(
@@ -332,10 +324,22 @@ function CollController(coll, collViews) {
             }
         )
 
+        // show the import-products dialog when you ask for it
+        $("#import-products-button").click(function(){
+            var callbacks = {
+                onNotLoggedIn: that.collViews.onEditNotLoggedIn,
+                onNotOwner: that.collViews.onEditNotOwner
+            }
+
+            if (!that.coll.userCanEdit(callbacks)) return false
+            $("#import-products-modal").modal("show")
+            return false
+        })
+
+
         // delete items
         $("a.item-delete-button").live("click", function(){
             var item$ = $(this).parents("li.item")
-            console.log("pressed the delete button!", item$.attr("id"))
 
             var callbacks = {
                 start: function() {item$.slideUp();},
@@ -343,8 +347,8 @@ function CollController(coll, collViews) {
                     console.log("deleted, done. blam.", data)
                     $("#num-items span.value").text(_.size(data.alias_tiids))
                 },
-                onNotLoggedIn: that.collViews.onDeleteNotLoggedIn,
-                onNotOwner: that.collViews.onDeleteNotOwner
+                onNotLoggedIn: that.collViews.onEditNotLoggedIn,
+                onNotOwner: that.collViews.onEditNotOwner
             }
 
             that.coll.deleteItem( item$.attr("id"), callbacks)

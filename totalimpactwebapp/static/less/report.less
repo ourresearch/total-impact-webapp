@@ -23,6 +23,9 @@ body.report {
       margin:  -250px 0 0 -(@modalWidth / 2);
       &#import-products-modal {
          border: 3px solid @linkColor;
+         .modal-body {
+            float:right; // otherwise the floated stuff in the .modal-header breaks it.
+         }
       }
 
       .modal-header {
@@ -52,7 +55,6 @@ body.report {
 
       .modal-body {
          max-height: inherit;
-         float:right; // otherwise the floated stuff in the .modal-header breaks it.
          form {
             h3 span.step-number {display:none;}
             &.other-products { margin-right:20px;}
@@ -102,11 +104,18 @@ body.report {
       width: 300px;
       float:right;
       margin-top: 37px;
-      div.download {
-         float:left;
+      div.update {
+         float:right;
+         margin:0 5px 0 0;
+         .dropdown-menu {
+            left: inherit;
+            right:  0;
+            min-width: inherit;
+            width: 80px;
+         }
+
       }
       button  {
-         margin: 0 10px 5px 0;
          display: block;
          float:left;
       }
