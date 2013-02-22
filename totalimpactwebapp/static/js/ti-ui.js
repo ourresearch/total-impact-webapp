@@ -9,8 +9,14 @@ var tiLinkColor = "#FF4E00"
 
 changeControlGroupState = function(elem, newClassName){
     var states = ["inactive", "ready", "working", "success", "failure"]
-    $(elem)
-        .parents(".control-group")
+    var controlGroup$
+    if ($(elem).hasClass("control-group")) {
+        controlGroup$ = $(elem)
+    }
+    else {
+        controlGroup$ = $(elem).parents(".control-group")
+    }
+    controlGroup$
         .removeClass(states.join(" "))
         .addClass(newClassName)
 }

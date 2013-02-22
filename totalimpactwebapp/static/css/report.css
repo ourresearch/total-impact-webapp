@@ -9,11 +9,12 @@ body.report .modal {
   width: 675px;
   margin: -250px 0 0 -337.5px;
 }
-body.report .modal#import-products {
+body.report .modal#import-products-modal {
   border: 3px solid #ff4e00;
 }
 body.report .modal .modal-header {
   background: #ff4e00;
+  border-bottom: 1px solid #555;
 }
 body.report .modal .modal-header h3 {
   color: #fff;

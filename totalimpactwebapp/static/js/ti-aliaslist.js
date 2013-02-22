@@ -1,19 +1,28 @@
 
 var AliasList = function(){}
 AliasList.prototype = {
-    aliases : [],
+    aliasesArr : [],
     numAddedLast: 0,
     add: function(aliases) {
-        var oldLen = this.aliases.length
-        this.aliases = _.union(aliases, this.aliases)
-        this.numAddedLast = this.aliases.length - oldLen
+        var oldLen = this.aliasesArr.length
+        this.aliasesArr = _.union(aliases, this.aliasesArr)
+        this.numAddedLast = this.aliasesArr.length - oldLen
+        this.onChange()
         return this.numAddedLast
     },
     count: function() {
-        return this.aliases.length
+        return this.aliasesArr.length
     },
     forApi: function() {
-        return this.aliases
+        return this.aliasesArr
+    },
+    clear: function() {
+        this.aliasesArr = []
+        this.onChange()
+        return true
+    },
+    onChange: function() {
+        $("p#artcounter span").html(this.count())
     }
 }
 
@@ -64,6 +73,11 @@ AliasListInputs.prototype = {
             $("div.inline-register").hide()
         }
 
+        // clear the aliases when input modals are dismissed
+        $("#import-products-modal").on("hide", function(){
+            that.resetList.call(that)
+        })
+
     },
     textareaPlaceholders: function() {
         // placeholder replacement
@@ -100,6 +114,16 @@ AliasListInputs.prototype = {
                 UserVoice.showPopupWidget()
             }
         })
+    },
+    resetList: function() {
+        console.log("REEEEEEEEEEE SEEEETTTT!")
+        this.aliases.clear()
+        $(".import-products .control-group").each(function(){
+            changeControlGroupState(this, "ready")
+        })
+        $(".import-products input").val("")
+        $(".import-products textarea").val("")
+        this.textareaPlaceholders()
     }
 }
 
@@ -181,7 +205,6 @@ UsernameImporter.prototype = {
             .parents(".control-group")
             .find("span.success span.value")
             .html(this.aliases.numAddedLast)
-        $("p#artcounter span").html(this.aliases.count())
     },
     failure: function(request) {
         changeControlGroupState(this.elem$, "failure")
@@ -343,7 +366,6 @@ BibtexImporter.prototype = {
             .parents(".control-group")
             .find("span.success span.value")
             .html(this.aliases.numAddedLast)
-        $("p#artcounter span").html(this.aliases.count())
     },
     failure: function() {
         changeControlGroupState(this.elem$, "failure")

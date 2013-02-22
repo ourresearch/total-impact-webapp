@@ -321,7 +321,7 @@ function CollController(coll, collViews) {
 
         // show the import-products dialog when you ask for it
         $("#import-products-button").click(function(){
-            $("#import-products").modal("show")
+            $("#import-products-modal").modal("show")
             return false
         })
 
