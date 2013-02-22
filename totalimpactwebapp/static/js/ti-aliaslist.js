@@ -67,7 +67,7 @@ AliasListInputs.prototype = {
             if ($(this).hasClass(("update"))) action = "update"
 
             var button = new SubmitButton(that.aliases, this)
-            return button.submit(user, action)
+            return button.submit(coll, user, action)
         })
 
         // hide the registration stuff if the user's logged in
@@ -134,7 +134,7 @@ var SubmitButton = function(aliases, elem){
     this.elem$ = $(elem)
 }
 SubmitButton.prototype = {
-    submit: function(user, action){
+    submit: function(coll, user, action){
         var action = action || "create"
 
         if (!this.aliases.forApi().length) {
@@ -155,10 +155,12 @@ SubmitButton.prototype = {
         }
 
         if (action == "create") {
+            // we're not going to use the old coll. it's boring and we're making a new one.
             this.createCollection( this.aliases.forApi(), title, user )
         }
         else if (action == "update") {
-            console.log("time to update, y'all!")
+            // we need to use the old coll, otherwise who do we update?
+            this.addItemsToCollection(coll, this.aliases.forApi())
         }
         return false
 
@@ -174,6 +176,13 @@ SubmitButton.prototype = {
     createCollection: function(aliases, title, user){
         var coll = new Coll(new CollViews(), user)
         coll.create(aliases, title)
+    },
+    addItemsToCollection: function(coll, aliases) {
+        var callbacks = {
+            onSuccess: function(){console.log("it was done!")}
+        }
+        coll.addItems(aliases, callbacks)
+
     }
 }
 

@@ -182,9 +182,7 @@ function Coll(collViews, user){
 
     this.deleteItem = function(tiidToDelete, callbacks) {
 
-        // would prefer to just catch error from this.update(), but we have to
-        // call the error callbacks *before* we call start(), which hides the
-        // item clicked on.
+
         if (!this.user.hasCreds()) {
             callbacks.onNotLoggedIn()
             return false
@@ -199,14 +197,11 @@ function Coll(collViews, user){
         return false
     }
 
+    this.addItems = function(itemsToAdd, callbacks) {
+        this.update({aliases: itemsToAdd}, "PUT", callbacks.onSuccess)
+    }
+
     this.update = function(payload, httpType, onSuccess){
-        if (!this.user.hasCreds()) {
-            throw { name: "NotLoggedIn", message: "User is not logged in." }
-        }
-        if (!this.user.getKeyForColl(this.id)) {
-            console.log("no key for this coll....throw an error")
-            throw {name: "NotOwner", message: "User doesn't own this collection."}
-        }
 
         var url = api_root+'/v1/collection/'+this.id+'/items?'
             + "http_method="+httpType
