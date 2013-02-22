@@ -12,9 +12,11 @@ logger = logging.getLogger("tiwebapp")
 
 
 app = Flask(__name__)
-app.config["ASSETS_DEBUG"] = os.getenv("ASSETS_DEBUG", "True") == "True"
 
-# for testing; make sure yui compressor isn't going to explode when it processes this.
-#app.config["ASSETS_DEBUG"] = False
+# Setting ASSETS_DEBUG=True makes debugging easier by NOT minimizing the assets.
+# Production should have ASSETS_DEBUG=False
+# ASSETS_DEBUG=True is the default
+
+app.config["ASSETS_DEBUG"] = (os.getenv("ASSETS_DEBUG", "True") == "True")
 
 from totalimpactwebapp import views
