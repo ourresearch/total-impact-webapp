@@ -151,7 +151,7 @@ SubmitButton.prototype = {
             _gaq.push(['_trackPageview', '/user/created']);
         }
 
-        this.createCollection( this.aliases.forApi(), title, user )
+//        this.createCollection( this.aliases.forApi(), title, user )
         return false
 
     },

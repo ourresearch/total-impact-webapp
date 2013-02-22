@@ -32,6 +32,13 @@ body.report .modal .modal-header div.control-group {
   float: right;
   margin-right: 13px;
 }
+body.report .modal .modal-header div.control-group button {
+  width: 90px;
+}
+body.report .modal .modal-header div.control-group div.working {
+  width: 90px;
+  text-align: center;
+}
 body.report .modal .modal-body {
   max-height: inherit;
   float: right;

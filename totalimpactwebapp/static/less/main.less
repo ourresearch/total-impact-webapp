@@ -428,6 +428,13 @@ div.import-products {
    color: #333;
    font-weight: bold;
 
+   div.control-group.submit img {
+      // this is separate because sometimes (in the report add-products
+      // modal), the control-group isn't in a form.
+      height:37px;
+      padding-left: 5px;
+   }
+
    form.importers {
       width: 270px;
       margin-right: 60px;
@@ -455,7 +462,7 @@ div.import-products {
          }
 
 
-         &.collection-name {
+         &.submit {
             margin-bottom: 0;
             div.controls input {
                width: 200px;
@@ -463,10 +470,6 @@ div.import-products {
                font-size: 17px;
             }
             label { color: #555;}
-            img{
-               height:37px;
-               padding-left: 5px;
-            }
          }
 
 

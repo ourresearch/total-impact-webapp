@@ -442,6 +442,10 @@ div.import-products {
   color: #333;
   font-weight: bold;
 }
+div.import-products div.control-group.submit img {
+  height: 37px;
+  padding-left: 5px;
+}
 div.import-products form.importers {
   width: 270px;
   margin-right: 60px;
@@ -468,20 +472,16 @@ div.import-products form.importers div.control-group.email {
 div.import-products form.importers div.control-group.fileupload div.uneditable-input {
   width: 100px;
 }
-div.import-products form.importers div.control-group.collection-name {
+div.import-products form.importers div.control-group.submit {
   margin-bottom: 0;
 }
-div.import-products form.importers div.control-group.collection-name div.controls input {
+div.import-products form.importers div.control-group.submit div.controls input {
   width: 200px;
   height: 27px;
   font-size: 17px;
 }
-div.import-products form.importers div.control-group.collection-name label {
+div.import-products form.importers div.control-group.submit label {
   color: #555;
-}
-div.import-products form.importers div.control-group.collection-name img {
-  height: 37px;
-  padding-left: 5px;
 }
 div.import-products form.importers div.control-group label.control-label a.help {
   text-decoration: none;
