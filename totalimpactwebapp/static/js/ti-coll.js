@@ -319,6 +319,12 @@ function CollController(coll, collViews) {
             return false;
         })
 
+        // show the import-products dialog when you ask for it
+        $("#import-products-button").click(function(){
+            $("#import-products").modal("show")
+            return false
+        })
+
         // show/hide all zoom divs
         $("div#num-items a").toggle(
             function(){

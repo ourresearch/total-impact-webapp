@@ -434,6 +434,79 @@ div.main {
 div.main h3:first {
   margin-top: 0;
 }
+/* import products
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div.import-products {
+  color: #333;
+  font-weight: bold;
+}
+div.import-products form.importers {
+  width: 270px;
+  margin-right: 60px;
+  float: left;
+}
+div.import-products form.importers h3 {
+  margin-bottom: 20px;
+}
+div.import-products form.importers span.limit {
+  display: block;
+  color: #888;
+  font-weight: normal;
+  font-size: 12px;
+}
+div.import-products form.importers p#artcounter {
+  margin-top: 20px;
+}
+div.import-products form.importers div.control-group {
+  margin-bottom: 30px;
+}
+div.import-products form.importers div.control-group.email {
+  margin-bottom: 0;
+}
+div.import-products form.importers div.control-group.fileupload div.uneditable-input {
+  width: 100px;
+}
+div.import-products form.importers div.control-group.collection-name {
+  margin-bottom: 0;
+}
+div.import-products form.importers div.control-group.collection-name div.controls input {
+  width: 200px;
+  height: 27px;
+  font-size: 17px;
+}
+div.import-products form.importers div.control-group.collection-name label {
+  color: #555;
+}
+div.import-products form.importers div.control-group.collection-name img {
+  height: 37px;
+  padding-left: 5px;
+}
+div.import-products form.importers div.control-group label.control-label a.help {
+  text-decoration: none;
+  font-weight: normal;
+  float: right;
+  color: #888;
+}
+div.import-products form.importers div.control-group label.control-label a.help:hover {
+  text-decoration: underline;
+  color: #ff4e00;
+}
+div.import-products form.importers div.control-group label.control-label.ids span.success {
+  float: right;
+}
+div.import-products form.importers div.control-group div.controls input {
+  font-size: 16px;
+  width: 240px;
+}
+div.import-products form.importers div.control-group div.controls textarea {
+  line-height: 1.6;
+  width: 240px;
+}
+div.import-products form.importers div.control-group div.controls textarea.default {
+  color: #999;
+}
 /* homepage
 *****************************************************************************
 *****************************************************************************

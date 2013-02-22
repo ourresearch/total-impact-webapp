@@ -12,11 +12,47 @@
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+@modalWidth: 675px;
 body.report {
    div#main{
    }
 
    #page-header { padding-top:40px;}
+   .modal {
+      width:  @modalWidth;
+      margin:  -250px 0 0 -(@modalWidth / 2);
+      &#import-products {
+         border: 3px solid @linkColor;
+      }
+
+      .modal-header {
+         background: @linkColor;
+         h3 {
+            color:  #fff;
+         }
+         div.indicator {
+            float:right;
+            margin: 4px 10px 0 0;
+            color: #fff;
+            font-weight: normal;
+            span.count { font-weight: bold;}
+         }
+         div.control-group {
+            float:right;
+            margin-right: 13px;
+         }
+      }
+
+      .modal-body {
+         max-height: inherit;
+         float:right; // otherwise the floated stuff in the .modal-header breaks it.
+         form {
+            h3 span.step-number {display:none;}
+            &.register { display:none;}
+            &.other-products { margin-right:20px;}
+         }
+      }
+   }
 
 
 }

@@ -33,7 +33,7 @@
                     </span>
          </div>
          <div id="report-button">
-            <button class="btn btn-small" id="add-products-button" name="{{ report_id }}" href="#">add products</button>
+            <button class="btn btn-small" id="import-products-button" name="{{ report_id }}" href="#">add products</button>
             <button class="btn btn-small" id="update-report-button" name="{{ report_id }}" href="#">refresh metrics</button>
             <div class="btn-group download">
                <a class="btn btn-small" id="json-report-button" href="http://{{ roots.api_pretty }}/v1/{{ api_query }}?key=samplekey">json</a>
@@ -82,6 +82,12 @@
 </div>
 
 
+
+
+
+
+
+
 <!------------------------------------------------------------------------------
 Modals
 HTML for modal windows that bootstrap will pop up
@@ -119,10 +125,19 @@ HTML for modal windows that bootstrap will pop up
 <div id="import-products" class="modal hide fade">
    <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <div class="control-group collection-name ready" id="collection-name">
+         <div class="controls">
+            <button name="run" type="submit" id="go-button" class="ready btn btn-primary">add 'em</button>
+            <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" /></span>
+         </div>
+      </div>
+      <div class="indicator">
+         <p id="artcounter"><span class="count">0</span> new products</p>
+      </div>
       <h3>Import products</h3>
    </div>
    <div class="modal-body">
-      {% include 'import-products.html' %}
+         {% include 'import-products.html' %}
    </div>
 </div>
 

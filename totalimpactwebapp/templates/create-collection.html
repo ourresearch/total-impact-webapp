@@ -8,51 +8,9 @@
 
 <!-- START input -->
 <div class="main" id="input">
-    <div class="wrapper">
+    <div class="wrapper import-products">
 
        {% include 'import-products.html' %}
-
-        <form class="importers register" id="make-collection">
-            <h3><span class="step-number">3:</span> Make report</h3>
-           <div class="inline-register">
-            <h4 class="prompt" >Register (optional)<span class="limit">lets you save and find your collection later.</span></h4>
-            <div class="form-item control-group email register ready">
-                <label class="control-label">
-                    <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Checking</span>
-                    <span class="main">Email</span>
-                    <span class="working">availability...</span>
-                    <span class="success">available.</span>
-                    <span class="failure">already taken...</span>
-                </label>
-                <div class="controls">
-                    <input class="username register email" type="text" placeholder="email" />
-                </div>
-            </div>
-
-            <div class="form-item control-group register password ready">
-                <label class="control-label">
-                    <span class="main">Password</span>
-                </label>
-                <div class="controls">
-                    <input type="password" placeholder="password"/>
-                </div>
-            </div>
-           </div>
-
-            <div class="control-group collection-name ready" id="collection-name">
-                <label class="control-label" for="name"><span class="main">Collection name:</span></label>
-                <div class="controls input-append">
-                    <input type="text" name="name" class="no-input-yet input-large" id="name" placeholder="My Collection"/>
-                    <button name="run" type="submit" id="go-button" class="ready btn btn-large btn-primary">go!</button>
-                   <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" /></span>
-                </div>
-            </div>
-
-            <div class="indicator">
-                <p id="artcounter">You've imported <span class="count">0</span> products.</p>
-            </div>
-
-        </form>
 
         <div class="clearfix">&nbsp;</div>
     </div>

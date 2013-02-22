@@ -5,6 +5,45 @@
 body.report #page-header {
   padding-top: 40px;
 }
+body.report .modal {
+  width: 675px;
+  margin: -250px 0 0 -337.5px;
+}
+body.report .modal#import-products {
+  border: 3px solid #ff4e00;
+}
+body.report .modal .modal-header {
+  background: #ff4e00;
+}
+body.report .modal .modal-header h3 {
+  color: #fff;
+}
+body.report .modal .modal-header div.indicator {
+  float: right;
+  margin: 4px 10px 0 0;
+  color: #fff;
+  font-weight: normal;
+}
+body.report .modal .modal-header div.indicator span.count {
+  font-weight: bold;
+}
+body.report .modal .modal-header div.control-group {
+  float: right;
+  margin-right: 13px;
+}
+body.report .modal .modal-body {
+  max-height: inherit;
+  float: right;
+}
+body.report .modal .modal-body form h3 span.step-number {
+  display: none;
+}
+body.report .modal .modal-body form.register {
+  display: none;
+}
+body.report .modal .modal-body form.other-products {
+  margin-right: 20px;
+}
 #page-header h2 span {
   font-size: 16px;
   margin-left: 10px;
