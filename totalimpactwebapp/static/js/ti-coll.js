@@ -164,6 +164,8 @@ function Coll(collViews, user){
                    thisThing.addItemsFromDicts(data.items)
 
                    thisThing.render.call(thisThing)
+                   thisThing.views.finishUpdating(thisThing.items)
+
 
                    return false;
                }
@@ -236,7 +238,6 @@ function Coll(collViews, user){
 
     this.render = function(){
         this.views.renderItems(this.items)
-        this.views.finishUpdating(this.items)
 //        this.views.renderTitle(this.title)
 
     }
