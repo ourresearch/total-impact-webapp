@@ -125,12 +125,22 @@ def impactstory_dot_js():
     resp.headers["Content-Type"] = "application/javascript; charset=utf-8"
     return resp
 
-@app.route("/embed/test")
-def embed_test():
+@app.route("/embed/test/widget")
+def embed_test_widget():
 
     return render_template(
-        "sample-embed-internal-test.html",
+        "test-pages/sample-embed-internal-test.html",
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
+        roots=roots,
+        api_key=os.environ["API_KEY"]
+    )
+
+@app.route("/embed/test/coll")
+def embed_test_coll():
+
+    return render_template(
+        "test-pages/sample-coll-embed.html",
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
         roots=roots,
         api_key=os.environ["API_KEY"]
     )
