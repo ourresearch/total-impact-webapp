@@ -134,6 +134,21 @@ function Coll(collViews, user){
 
         var thisThing = this
         this.views.startUpdating()
+
+        var url = api_root+'/v1/collection/'+thisThing.id+'?key='+api_key
+        console.log("GET collection from", url)
+
+        $.get(url, function(data){console.log("$.get() success:", data)})
+
+
+        $.ajax({
+           url:api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
+           type: "GET",
+           dataType: "json",
+           contentType: "application/json; charset=utf-8",
+           success: function(data){console.log("success!", data)}
+       })
+
         $.ajax({
             url: api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
             type: "GET",
