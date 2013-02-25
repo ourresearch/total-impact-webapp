@@ -106,7 +106,7 @@ def impactstory_dot_js():
     libs = open(os.path.dirname(__file__) + "/static/js/widget.js", "r").read()
 
     rendered = render_template(
-        "impactstory.js",
+        "embed/impactstory.js",
         badges_template=badges_template,
         libs=unicode(libs, "utf-8"),
         mixpanel_token=os.environ["MIXPANEL_TOKEN"],
