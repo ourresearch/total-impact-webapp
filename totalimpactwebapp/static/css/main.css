@@ -934,6 +934,33 @@ div#docs ul#required-attributes li {
   /*    margin-left: 50px;*/
 
 }
+/* misc snippets
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+.ie {
+  display: none;
+}
+#ie-fail-warning {
+  width: 800px;
+  margin-top: 50px;
+  margin-bottom: 200px;
+  border: 5px solid #ccc;
+  padding: 30px;
+}
+#ie-fail-warning img {
+  float: left;
+  margin: -10px 20px 0 0;
+  height: 80px;
+}
+#ie-fail-warning h2 {
+  font-family: rokkitt, serif;
+  font-size: 65px;
+  padding-bottom: 10px;
+}
+#ie-fail-warning p {
+  font-size: 18px;
+}
 /* footer
 *****************************************************************************
 *****************************************************************************
