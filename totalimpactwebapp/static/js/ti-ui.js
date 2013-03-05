@@ -47,8 +47,24 @@ function aboutPageInit() {
             .animate({backgroundColor: "#ffffff"}, 1000)
     }
 }
-function createPageInit() {
-    // do create page stuff
+function decorativeJavascriptInit() {
+    // js for docs etc, not running the actual webapp
+
+    // table of contents
+    if ($("#toc")[0]) {
+        $('#toc').tocBuilder({type: 'headings', startLevel: 3, endLevel: 3, insertBackLinks: 0});
+    }
+
+    homePageInit()
+    aboutPageInit()
+
+    // let people link straight to the item-help modal
+    if(window.location.href.indexOf('#context') != -1) {
+        $('#context').modal('show');
+    }
+
+
+    prettyPrint()
 }
 
 
@@ -57,6 +73,19 @@ function createPageInit() {
 
 
 $(document).ready(function(){
+
+    decorativeJavascriptInit()
+
+    // if the user's on IE, tell 'em we're broken for them
+    if ($.browser.msie) {
+        $(".ie").show()
+        $("#report-meta, #report-button, #metrics").hide()
+
+        if (location.href.indexOf("api-docs") < 0) { // api-docs may work fine on IE
+            return false
+        }
+    }
+
     $.cookie.defaults = {path: "/", raw: 1}
 
     userViews = new UserViews()
@@ -81,27 +110,9 @@ $(document).ready(function(){
         itemController.itemReportPageInit()
     }
 
-
-
-
-
-    // table of contents
-    if ($("#toc")[0]) {
-        $('#toc').tocBuilder({type: 'headings', startLevel: 3, endLevel: 3, insertBackLinks: 0});
-    }
-
     var aliasListInputs = new AliasListInputs()
     aliasListInputs.init()
-    homePageInit()
-    aboutPageInit()
 
-    // let people link straight to the item-help modal
-    if(window.location.href.indexOf('#context') != -1) {
-        $('#context').modal('show');
-    }
-
-
-    prettyPrint()
 
 
 
