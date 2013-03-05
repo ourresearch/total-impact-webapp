@@ -343,37 +343,16 @@ BibtexImporter.prototype = {
         if (!entries.biblio.length) return this.done(entries)
         if (errors > 3) return this.failure()
 
-        // set up request
-        var cleanEntries = _.map(entries.biblio.slice(0, 5), function(entry){
-            for (k in entry){
-                entry[k] = entry[k].replace(new RegExp('{\\\\[^}]+}', "g"), "")
-            }
-            return entry
-        })
-        var queryStr = JSON.stringify(cleanEntries)
-        console.log(cleanEntries)
-        console.log(queryStr)
-        entries.biblio = entries.biblio.slice(5)
+        for (k in entries.biblio){
+            entries.aliases[k] = ["biblio", entries.biblio[k]]
+        }
 
-        // make request
-        $.ajax({
-                   url: api_root+"/provider/bibtex/memberitems/"+queryStr,
-                   type: "GET",
-                   dataType: "json",
-                   success: function(response,status,xhr){
-                       console.log("response from memberitems query:", response)
-                       entries.aliases = entries.aliases.concat(response.memberitems)
-                       that.updateProgressbar.call(
-                           that,
-                           entries.total,
-                           entries.biblio.length
-                       )
-                       that.update.call(that, entries, 0) // reset errors to 0
-                   },
-                   error: function(XMLHttpRequest) {
-                       that.update.call(that, entries, errors+1)
-                   }
-               });
+        that.updateProgressbar.call(
+                            that,
+                            entries.total,
+                            entries.biblio.length
+                        )
+        this.done(entries)        
     },
     done: function(entries){
         console.log("we're done!")
