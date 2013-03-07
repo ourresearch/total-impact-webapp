@@ -973,22 +973,11 @@ div#footer {
   font-size: 100%;
   clear: both;
   color: #555;
-  padding-top: 50px;
+  padding-top: 30px;
   width: 100%;
   border-top: 1px solid #aaa;
-}
-div#footer div.wrapper {
-  padding: 20px 30px 50px;
-  margin-top: 50px;
-  border: 1px solid #aaa;
-  border-bottom: none;
-  height: 50px;
-  -moz-border-radius-topleft: 10px;
-  -webkit-border-top-left-radius: 10px;
-  -moz-border-radius-topright: 10px;
-  -webkit-border-top-right-radius: 10px;
   background: #fff;
-  margin: 0 auto;
+  float: left;
 }
 div#footer p {
   margin: 6px 0 0 0;
@@ -996,19 +985,24 @@ div#footer p {
   font-size: 14px;
   line-height: 1.3;
 }
-div#footer-funders img {
-  float: left;
-  padding-right: 20px;
-  padding-left: 10px;
+div#footer div.wrapper {
+  margin-top: 50px;
+  margin: 0 auto;
 }
-div#footer-text {
+div#footer div.wrapper div.footer-col {
   float: left;
-  padding-right: 20px;
-  padding-top: 12px;
+  width: 32%;
 }
-div#footer-powered-by {
-  padding-top: 12px;
-  float: right;
+div#footer div.wrapper div.footer-col#footer-funders p.introducing {
+  margin-left: 10px;
+}
+div#footer div.wrapper div.footer-col#footer-funders #footer-sloan-link img {
+  margin-bottom: 30px;
+  width: 275px;
+}
+div#footer div.wrapper div.footer-col#footer-funders #footer-powered-by img {
+  height: 30px;
+  margin-bottom: 30px;
 }
 div.tooltip {
   font-size: 12px;

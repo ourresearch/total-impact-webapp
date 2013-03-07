@@ -96,20 +96,27 @@
 
    <div id="footer">
       <div class="wrapper">
-         <div id="footer-funders">
-            <a href="http://sloan.org/">
+         <div id="footer-funders" class="footer-col">
+            <p class="introducting">ImpactStory is supported by the</p>
+
+            <a href="http://sloan.org/" id="footer-sloan-link">
                <img src="{{ url_for('static', filename='img/sloan-logo.png') }}"  width="200"/>
             </a>
+
          </div>
-         <div id="footer-text">
-            <p>ImpactStory is supported by the <a href="http://sloan.org/">Alfred P. Sloan Foundation</a> and <a href="http://{{ roots.webapp_pretty }}/about#history">others. </a></p>
-            <p>Follow our <a href="http://blog.impactstory.org">blog</a>, <a href="https://twitter.com/#!/ImpactStory">tweets</a>, and <a href="https://github.com/total-impact">source code</a>.
+         <div id="footer-about" class="footer-col">
+
          </div>
-         <div id="footer-powered-by">
-            <p><a href="https://mixpanel.com/f/partner">
-               <img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" />
-            </a></p>
+
+         <div id="footer-follow" class="footer-col">
+            <div id="footer-powered-by">
+               <p><a href="https://mixpanel.com/f/partner">
+                  <img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" />
+               </a></p>
+            </div>
+
          </div>
+
       </div>
    </div> <!-- end footer -->
 </div>
