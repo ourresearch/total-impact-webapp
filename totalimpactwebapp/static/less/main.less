@@ -1042,18 +1042,14 @@ div#docs {
 *****************************************************************************
 *****************************************************************************/
 
-body.homepage #footer {
-   background: #333;
-   border:none;
-}
 div#footer {
    font-size:100%;
    clear:both;
    color: #555;
-   padding-top: 30px;
+   padding-top: 20px;
    width: 100%;
    border-top: 1px solid #aaa;
-   background: #fff;
+   background: url(../img/footer-bg.png) top repeat-x;
    float:left;
 
    p {
@@ -1065,37 +1061,70 @@ div#footer {
 
 
    div.wrapper{
-      margin-top: 50px;
+      margin-top: 30px;
       margin:0 auto;
 
       div.footer-col {
          float:left;
          width: 32%;
+         margin-bottom:30px;
 
-         &#footer-funders {
-            p.introducing {margin-left:10px;}
-            #footer-sloan-link {
-               img {
-                  margin-bottom: 30px;
-                  width: 275px;
+         h3 {
+            font-size: 18px;
+            font-weight: bold;
+            font-family: rokkitt, helvetica, sans-serif;
+            color: #333;
+            width: 100px;
+            margin: 0 auto;
+         }
+
+         ul {
+            width: 100px;
+            margin: 0 auto;
+            li {
+               line-height: 1.25;
+            }
+            a {
+               color:  #777;
+               font-size: 13px;
+               &:hover {
+                  color:  @linkColor;
                }
             }
-            #footer-powered-by {
-               img {height: 30px; margin-bottom: 30px;}
+         }
+
+         &#footer-funders {
+            #footer-sloan-link {
+               img {
+                  margin: 20px 0 0 0;
+                  width: 275px;
+                  float:right;
+               }
             }
          }
 
-         &footer-about {
-
+         &#footer-about {
          }
 
-         &footer-follow {
+         &#footer-follow {
+            border-left: 1px dotted #bbb;
+            border-right: 1px dotted #bbb;
 
+            img {
+               float: right;
+               height: 28px;
+            }
          }
-
       }
    }
-
+}
+#footer-powered-by {
+   img {
+      height: 30px;
+      margin-bottom: 30px;
+      float:right;
+      margin-top: -30px;
+   }
 }
 
 
