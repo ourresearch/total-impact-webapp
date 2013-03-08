@@ -580,12 +580,12 @@ div#tagline #text-bar h2 {
   padding: 0;
 }
 div#tagline #text-bar p.subtagline {
-  font-size: 23px;
-  color: #444;
+  color: #666;
   line-height: 1.2;
-  width: 550px;
-  font-family: rokkitt, georgia, sans-serif;
+  width: 521px;
+  font-family: rokkitt;
   margin-top: 14px;
+  font-size: 20px;
 }
 div#tagline #text-bar p.subtagline a {
   text-decoration: underline;
@@ -594,7 +594,7 @@ div#tagline #text-bar p.subtagline a {
 div#tagline #button-bar {
   width: 100%;
   position: absolute;
-  top: 270px;
+  top: 290px;
 }
 div#tagline #button-bar #call-to-action span.container {
   height: 114px;
@@ -629,11 +629,17 @@ div#tagline #button-bar p#example-collection a:hover {
   color: #ff4e00;
 }
 div#sources {
-  padding: 30px 0 0 0 ;
   background: #fff;
-  height: 127px;
+  margin-top: 60px;
   width: 100%;
-  border-top: 1px solid #aaa;
+  border-top: 3px solid #ff4e00;
+}
+div#sources div.wrapper {
+  background: url(../img/sources-banner.png) no-repeat top left;
+  height: 135px;
+  margin-top: -63px;
+  padding-top: 15px;
+  width: 1200px;
 }
 div#sources div.wrapper h2 {
   float: left;
@@ -643,7 +649,8 @@ div#sources div.wrapper h2 {
   line-height: 1.1;
   width: 160px;
   border-right: 1px solid #ddd;
-  margin-right: 20px;
+  margin: 0 20px 0 70px;
+  padding: 10px;
 }
 div#sources div.wrapper ul#source-logos li {
   float: left;
@@ -656,58 +663,49 @@ div#sources div.wrapper ul#source-logos li img {
 /* the "selling points" section
 *************************************************/
 div#selling-points {
-  background-color: #333;
-  padding: 45px 0 0;
-  margin-top: -34px;
+  background-color: #fff;
   min-height: 300px;
+  border-bottom: 3px solid #ff4e00;
   background-position: bottom;
   background-repeat: repeat-x;
 }
-div#selling-points p {
-  margin-top: 0;
-  color: #ddd;
-  line-height: 1.4;
-}
-#selling-points ul li {
-  float: left;
-  width: 27%;
-  padding-right: 3%;
-  margin-right: 3%;
-  border-right: 1px solid #555;
-  list-style-type: none;
-  min-height: 270px;
-}
-#selling-points ul li:last-child {
-  border-right: none;
-}
-#selling-points h3 {
-  color: #fff;
+div#selling-points h3 {
+  color: #555;
   font-family: rokkitt, georgia, serif;
   font-weight: normal;
   font-size: 26px;
   height: 61px;
   padding-top: 8px;
-  padding-bottom: 0;
   line-height: 1;
   margin-top: 0px;
-  text-shadow: 3px 3px 7px #111;
   padding-bottom: 10px;
 }
-h3#metrics-in-seconds {
+div#selling-points h3#metrics-in-seconds {
   background: url(../img/stopwatch-icon.png) no-repeat top left;
   padding-left: 72px;
 }
-h3#embed-metrics-anywhere {
+div#selling-points h3#embed-metrics-anywhere {
   background: url(../img/suitcase-icon.png) no-repeat top left;
   padding-left: 79px;
 }
-h3#its-on-us {
-  background: url(../img/free-icon.png) no-repeat top left;
-  padding-left: 122px;
-  padding-top: 30px;
-  margin-left: -30px;
-  height: 47px;
-  padding-bottom: 0;
+div#selling-points h3#its-open {
+  background: url(../img/wrench-icon.png) no-repeat 0 10px;
+  padding-left: 85px;
+}
+div#selling-points p {
+  margin-top: 0;
+  color: #777;
+  line-height: 1.4;
+}
+div#selling-points ul li {
+  float: left;
+  width: 30%;
+  list-style-type: none;
+  min-height: 270px;
+}
+div#selling-points ul li.middle.middle {
+  padding-left: 5%;
+  padding-right: 5%;
 }
 /* "faq" page
 *****************************************************************************
