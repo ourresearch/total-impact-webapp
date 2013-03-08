@@ -530,7 +530,7 @@ div#tagline .carousel {
   width: 500px;
   position: absolute;
   right: 0;
-  top: 40px;
+  top: 60px;
   z-index: 2;
   border: none;
 }
@@ -565,7 +565,7 @@ div#tagline #text-bar {
   padding: 20px 0 0 0;
   position: absolute;
   width: 100%;
-  top: 50px;
+  top: 70px;
 }
 div#tagline #text-bar h2 {
   color: #444;
@@ -594,7 +594,7 @@ div#tagline #text-bar p.subtagline a {
 div#tagline #button-bar {
   width: 100%;
   position: absolute;
-  top: 290px;
+  top: 300px;
 }
 div#tagline #button-bar #call-to-action span.container {
   height: 114px;
@@ -630,7 +630,7 @@ div#tagline #button-bar p#example-collection a:hover {
 }
 div#sources {
   background: #fff;
-  margin-top: 60px;
+  margin-top: 80px;
   width: 100%;
   border-top: 3px solid #ff4e00;
 }
