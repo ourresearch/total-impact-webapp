@@ -70,9 +70,9 @@ AliasListInputs.prototype = {
             return button.submit(coll, user, action)
         })
 
-        // hide the registration stuff if the user's logged in
+        // don't show the /create page when the user is logged in
         if (user.hasCreds()) {
-            $("div.inline-register").hide()
+            $("ul.nav li.create-button").hide()
         }
 
         // clear the aliases when input modals are dismissed

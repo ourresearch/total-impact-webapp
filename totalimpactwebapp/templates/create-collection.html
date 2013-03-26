@@ -19,7 +19,6 @@
           <form class="importers register" id="make-collection">
              <h3><span class="step-number">3:</span> Make report</h3>
              <div class="inline-register">
-                <h4 class="prompt" >Register (optional)<span class="limit">lets you save and find your collection later.</span></h4>
                 <div class="form-item control-group email register ready">
                    <label class="control-label">
                       <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Checking</span>
@@ -41,16 +40,17 @@
                       <input type="password" placeholder="password"/>
                    </div>
                 </div>
-             </div>
 
-             <div class="control-group submit ready" id="collection-name">
-                <label class="control-label" for="name"><span class="main">Collection name:</span></label>
-                <div class="controls input-append">
-                   <input type="text" name="name" class="no-input-yet input-large" id="name" placeholder="My Collection"/>
-                   <button name="run" type="submit" id="go-button" class="ready btn btn-large btn-primary">go!</button>
-                   <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" /></span>
+                <div class="form-item control-group submit ready" id="collection-name">
+                   <label class="control-label" for="name"><span class="main">Your name:</span></label>
+                   <div class="controls input-append">
+                      <input type="text" name="name" class="no-input-yet input-large" id="name" placeholder="Firstname Lastname"/>
+                      <button name="run" type="submit" id="go-button" class="ready btn btn-primary">go!</button>
+                      <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" /></span>
+                   </div>
                 </div>
              </div>
+
 
              <div class="indicator">
                 <p id="artcounter">You've imported <span class="count">0</span> products.</p>

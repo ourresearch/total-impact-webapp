@@ -431,7 +431,7 @@ div.import-products {
    div.control-group.submit img {
       // this is separate because sometimes (in the report add-products
       // modal), the control-group isn't in a form.
-      height:37px;
+      height:32px;
       padding-left: 5px;
    }
 
@@ -452,9 +452,14 @@ div.import-products {
          margin-top: 20px;
       }
 
+      &.register {
+         div.control-group {
+            margin-bottom: 0;
+         }
+      }
+
       div.control-group {
          margin-bottom: 30px;
-         &.email {margin-bottom: 0;}
          &.fileupload {
             div.uneditable-input {
                width: 100px;
@@ -466,8 +471,6 @@ div.import-products {
             margin-bottom: 0;
             div.controls input {
                width: 200px;
-               height: 27px;
-               font-size: 17px;
             }
             label { color: #555;}
          }

@@ -443,7 +443,7 @@ div.import-products {
   font-weight: bold;
 }
 div.import-products div.control-group.submit img {
-  height: 37px;
+  height: 32px;
   padding-left: 5px;
 }
 div.import-products form.importers {
@@ -463,11 +463,11 @@ div.import-products form.importers span.limit {
 div.import-products form.importers p#artcounter {
   margin-top: 20px;
 }
+div.import-products form.importers.register div.control-group {
+  margin-bottom: 0;
+}
 div.import-products form.importers div.control-group {
   margin-bottom: 30px;
-}
-div.import-products form.importers div.control-group.email {
-  margin-bottom: 0;
 }
 div.import-products form.importers div.control-group.fileupload div.uneditable-input {
   width: 100px;
@@ -477,8 +477,6 @@ div.import-products form.importers div.control-group.submit {
 }
 div.import-products form.importers div.control-group.submit div.controls input {
   width: 200px;
-  height: 27px;
-  font-size: 17px;
 }
 div.import-products form.importers div.control-group.submit label {
   color: #555;
