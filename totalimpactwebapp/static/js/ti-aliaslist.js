@@ -73,6 +73,11 @@ AliasListInputs.prototype = {
         // don't show the /create page when the user is logged in
         if (user.hasCreds()) {
             $("ul.nav li.create-button").hide()
+
+            // if user types /create in address bar manually, redirect to index
+            if (window.location.pathname == "/create") {
+                window.location = "/";
+            }
         }
 
         // clear the aliases when input modals are dismissed
