@@ -125,6 +125,12 @@ def impactstory_dot_js():
     resp.headers["Content-Type"] = "application/javascript; charset=utf-8"
     return resp
 
+
+@app.route("/ajax/user", methods=["GET", "POST"])
+def user():
+    pass
+
+
 @app.route("/embed/test/widget")
 def embed_test_widget():
 
