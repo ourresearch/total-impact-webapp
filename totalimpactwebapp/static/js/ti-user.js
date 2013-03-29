@@ -240,7 +240,11 @@ function UserViews() {
             .siblings("li#logged-in").show()
             .find("span.username").html(username+"!")
         $("li.loading").remove()
-        $("div.inline-register").hide()
+        $("div.inline-register div.email")
+            .add("div.inline-register div.password")
+            .add("div.inline-register div.submit label")
+            .add("#name")
+            .hide()
         this.showHideCreate(true, collId)
 
         console.log("logged in!")
