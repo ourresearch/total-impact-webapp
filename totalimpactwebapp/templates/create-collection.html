@@ -43,10 +43,10 @@
 
                 <div class="form-item control-group submit ready" id="collection-name">
                    <label class="control-label" for="name"><span class="main">Your name:</span></label>
-                   <div class="controls input-append">
+                   <div class="controls">
                       <input type="text" name="name" class="no-input-yet input-large" id="name" placeholder="Firstname Lastname"/>
-                      <button name="run" type="submit" id="go-button" class="ready btn btn-primary">go!</button>
-                      <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" /></span>
+                      <button name="run" type="submit" id="go-button" class="ready btn btn-large btn-primary">Make my profile</button>
+                      <span class="working go"><img class="center" src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Creating...</span>
                    </div>
                 </div>
              </div>

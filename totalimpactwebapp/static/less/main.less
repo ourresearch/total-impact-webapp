@@ -433,6 +433,7 @@ div.import-products {
       // modal), the control-group isn't in a form.
       height:32px;
       padding-left: 5px;
+
    }
 
    form.importers {
@@ -450,6 +451,10 @@ div.import-products {
       }
       p#artcounter {
          margin-top: 20px;
+      }
+      #go-button {
+         width: 255px;
+         text-align: center;
       }
 
       &.register {
@@ -469,9 +474,7 @@ div.import-products {
 
          &.submit {
             margin-bottom: 0;
-            div.controls input {
-               width: 200px;
-            }
+
             label { color: #555;}
          }
 
@@ -507,6 +510,13 @@ div.import-products {
                   color: #999;
                }
                width: 240px;
+            }
+            span.go { // for the go-button "working" msg
+               color:  @linkColor;
+               font-size: 20px;
+               img {
+                  height: 40px;
+               }
             }
          }
       }
