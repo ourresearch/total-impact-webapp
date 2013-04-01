@@ -143,7 +143,10 @@ SubmitButton.prototype = {
         var that = this;
         var email = $("#make-collection div.email input").val()
         var pw = $("#make-collection div.password input").val()
-        var title = $('#name').val() || "My Collection"
+
+        var firstName = $(".name.first").val()
+        var lastName = $(".name.last").val()
+        var title = $.trim(firstName + " " + lastName) || "My Collection"
 
         if (email && pw){
             user.setCreds(email, pw)

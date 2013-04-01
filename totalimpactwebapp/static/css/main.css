@@ -499,6 +499,10 @@ div.import-products form.importers div.control-group div.controls input {
   font-size: 16px;
   width: 240px;
 }
+div.import-products form.importers div.control-group div.controls input.name {
+  width: 111px;
+  margin-bottom: 45px;
+}
 div.import-products form.importers div.control-group div.controls textarea {
   line-height: 1.6;
   width: 240px;
