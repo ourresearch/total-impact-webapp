@@ -70,15 +70,6 @@ AliasListInputs.prototype = {
             return button.submit(coll, user, action)
         })
 
-        // don't show the /create page when the user is logged in
-        if (user.hasCreds()) {
-            $("ul.nav li.create-button").hide()
-
-            // if user types /create in address bar manually, redirect to index
-            if (window.location.pathname == "/create") {
-                window.location = "/";
-            }
-        }
 
         // clear the aliases when input modals are dismissed
         $("#import-products-modal").on("hide", function(){
@@ -152,7 +143,10 @@ SubmitButton.prototype = {
         var that = this;
         var email = $("#make-collection div.email input").val()
         var pw = $("#make-collection div.password input").val()
-        var title = $('#name').val() || "My Collection"
+
+        var firstName = $(".name.first").val()
+        var lastName = $(".name.last").val()
+        var title = $.trim(firstName + " " + lastName) || "My Collection"
 
         if (email && pw){
             user.setCreds(email, pw)

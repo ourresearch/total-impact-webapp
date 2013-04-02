@@ -463,6 +463,10 @@ div.import-products form.importers span.limit {
 div.import-products form.importers p#artcounter {
   margin-top: 20px;
 }
+div.import-products form.importers #go-button {
+  width: 255px;
+  text-align: center;
+}
 div.import-products form.importers.register div.control-group {
   margin-bottom: 0;
 }
@@ -474,9 +478,6 @@ div.import-products form.importers div.control-group.fileupload div.uneditable-i
 }
 div.import-products form.importers div.control-group.submit {
   margin-bottom: 0;
-}
-div.import-products form.importers div.control-group.submit div.controls input {
-  width: 200px;
 }
 div.import-products form.importers div.control-group.submit label {
   color: #555;
@@ -498,12 +499,23 @@ div.import-products form.importers div.control-group div.controls input {
   font-size: 16px;
   width: 240px;
 }
+div.import-products form.importers div.control-group div.controls input.name {
+  width: 111px;
+  margin-bottom: 45px;
+}
 div.import-products form.importers div.control-group div.controls textarea {
   line-height: 1.6;
   width: 240px;
 }
 div.import-products form.importers div.control-group div.controls textarea.default {
   color: #999;
+}
+div.import-products form.importers div.control-group div.controls span.go {
+  color: #ff4e00;
+  font-size: 20px;
+}
+div.import-products form.importers div.control-group div.controls span.go img {
+  height: 40px;
 }
 /* homepage
 *****************************************************************************

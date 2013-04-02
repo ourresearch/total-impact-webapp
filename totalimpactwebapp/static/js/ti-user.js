@@ -54,6 +54,14 @@ function User(userViews) {
             return false
         }
     }
+    this.popCollId = function() {
+        try {
+            return _.keys( this.userdata()["colls"]).sort()[0]
+        }
+        catch(e) {
+            return false
+        }
+    }
 
 
     // Update
@@ -124,6 +132,7 @@ function User(userViews) {
 
         var userViews = this.userViews
         var thisThing = this
+        var collId = this.popCollId()
 
         $.ajax({
             url: url,
@@ -133,7 +142,7 @@ function User(userViews) {
             contentType: "application/json; charset=utf-8",
             statusCode: {
                 200: function(data) {
-                    userViews.login(data._id)
+                    userViews.login(data._id, collId)
                     thisThing.userdata(data)
                     if (typeof callbacks.on200 !== "undefined") callbacks.on200()
                 },
@@ -226,12 +235,17 @@ function UserViews() {
     this.loginFail = function(data) {
         console.log("login fail!")
     }
-    this.login = function(username) {
+    this.login = function(username, collId) {
         $("#register-link, #login-link").hide()
             .siblings("li#logged-in").show()
             .find("span.username").html(username+"!")
         $("li.loading").remove()
-        $("div.inline-register").hide()
+        $("div.inline-register div.email")
+            .add("div.inline-register div.password")
+            .add("div.inline-register div.submit label")
+            .add("#name")
+            .hide()
+        this.showHideCreate(true, collId)
 
         console.log("logged in!")
     }
@@ -250,6 +264,7 @@ function UserViews() {
     this.logout = function(){
         $("#register-link, #login-link").show()
             .siblings("li#logged-in").hide()
+        this.showHideCreate(false)
         console.log("logged out.")
     }
 
@@ -288,6 +303,30 @@ function UserViews() {
             .removeClass("error")
             .find("span.help-inline")
             .html("looks good!")
+    }
+    this.showHideCreate = function(hasCreds, collId) {
+        // don't let logged-in users create new collections
+        if (hasCreds) {
+            $("ul.nav li.create-button").hide()
+
+            if (collId){
+                // if user types /create in address bar manually, redirect to index
+                var pathname = window.location.pathname
+                if (pathname == "/create" || pathname == "/" ) {
+                    window.location = "/collection/" + collId;
+                }
+            }
+
+            // change frontpage "make profile" to "show profile"
+            $("#call-to-action span.logged-in").removeClass("inactive")
+            $("#call-to-action span.not-logged-in").addClass("inactive")
+        }
+        else { // not logged in
+            $("ul.nav li.create-button").show()
+            $("#call-to-action span.logged-in").addClass("inactive")
+            $("#call-to-action span.not-logged-in").removeClass("inactive")
+
+        }
     }
 
 
@@ -378,10 +417,8 @@ function UserController(user, userViews) {
 
         })
 
-
-
+        this.userViews.showHideCreate(user.hasCreds(), user.popCollId())
 
     }
 
-    return true
 }
