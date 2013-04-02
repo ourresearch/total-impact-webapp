@@ -3,8 +3,10 @@ import requests, os, json, logging
 from flask import request, send_file, abort, make_response
 from flask import render_template
 from flask.ext.assets import Environment, Bundle
+from flask.ext.login import LoginManager
 
-from totalimpactwebapp import app, util
+
+from totalimpactwebapp import app, util, models
 
 logger = logging.getLogger("tiwebapp.views")
 
