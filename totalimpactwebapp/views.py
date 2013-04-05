@@ -1,7 +1,7 @@
 import requests, os, json, logging
 
-from flask import request, send_file, abort, make_response
-from flask import render_template
+from flask import request, send_file, abort, make_response, redirect, url_for
+from flask import render_template, session
 from flask.ext.assets import Environment, Bundle
 from flask.ext.login import LoginManager
 
@@ -213,16 +213,39 @@ def pricing():
 
 
 
-@app.route('/create')
+@app.route('/create', methods=["GET", "POST"])
 def collection_create():
-    return render_template(
-        'create-collection.html', 
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-        roots=roots,
-        api_key=os.environ["API_KEY"],        
-        page_title="create collection",
-        body_class="create-collection"
+    if request.method == 'POST':
+        # make the collection by sending a POST to the core api
+
+        # make the user by making a database call
+
+        redirect(url_for('login'))
+    else:
+        return render_template(
+            'create-collection.html',
+            mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+            roots=roots,
+            api_key=os.environ["API_KEY"],
+            page_title="create collection",
+            body_class="create-collection"
         )
+
+
+@app.route("/<path:dummy>")  # from http://stackoverflow.com/a/14023930/226013
+def redirect_to_profile(dummy):
+    """
+    Route things that look like user profile urls.
+
+    *Everything* not explicitly routed to another function will end up here.
+    """
+
+    return user_profile(dummy)
+
+
+def user_profile(user_slug):
+    return "user profile for " + user_slug
+
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
