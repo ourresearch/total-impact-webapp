@@ -22,4 +22,10 @@ class User(db.Model):
         return unicode(self.id)
 
     def __repr__(self):
-        return '<User %r>' % (self.firstname + " " + self.lastname)
+
+        try:
+            name = (self.given_name + " " + self.surname)
+        except AttributeError:
+            name = "unknown"
+
+        return '<User {name}>'.format(name=name)

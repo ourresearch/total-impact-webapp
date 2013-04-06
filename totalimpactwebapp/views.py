@@ -6,7 +6,8 @@ from flask.ext.assets import Environment, Bundle
 from flask.ext.login import LoginManager
 
 
-from totalimpactwebapp import app, util, models
+from totalimpactwebapp import app, util
+from totalimpactwebapp.models import User
 
 logger = logging.getLogger("tiwebapp.views")
 
@@ -243,8 +244,13 @@ def redirect_to_profile(dummy):
     return user_profile(dummy)
 
 
-def user_profile(user_slug):
-    return "user profile for " + user_slug
+def user_profile(url_slug):
+
+    user = User.query.filter_by(url_slug=url_slug).first()
+    if user is None:
+        abort(404)
+    else:
+        return "user: " + str(user)
 
 
 @app.route('/collection/<collection_id>')
