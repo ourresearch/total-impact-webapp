@@ -22,6 +22,7 @@ pyasn1==0.1.3
 pytz==2012c
 requests==0.13.0
 rsa==3.0.1
+shortuuid==0.3
 simplejson==2.5.2
 webassets==0.8
 wsgiref==0.1.2

@@ -17,11 +17,12 @@ class User(db.Model):
         else:
             return "Anonymous"
 
-    def __init__(self, email, **kwargs):
+    def __init__(self, email, collection_id, **kwargs):
         self.email = email
+        self.collection_id = collection_id
+
         super(User, self).__init__(**kwargs)
         self.url_slug = self.make_url_slug(self.full_name)
-
 
     def make_url_slug(self, full_name):
         name_list = full_name.split(" ")

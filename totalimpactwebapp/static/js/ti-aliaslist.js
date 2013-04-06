@@ -72,7 +72,7 @@ AliasListInputs.prototype = {
             else if ($(this).hasClass(("create"))) {
                 console.log("create!")
                 var requestObj = {
-                    alias_tiids: that.aliases,
+                    alias_tiids: that.aliases.forApi(),
                     email: $("div.inline-register input.email").val(),
                     password: $("div.inline-register input.password").val(),
                     given_name: $("div.inline-register input.given").val(),
@@ -87,7 +87,7 @@ AliasListInputs.prototype = {
                    data:  JSON.stringify(requestObj),
                    success: function(data){
                        console.log("finished creating the user!")
-//                       location.href = "/" + data.user_slug
+                       location.href = "/" + data.url_slug
                    }
                })
 
@@ -178,10 +178,6 @@ SubmitButton.prototype = {
     update: function(){
     },
     failure: function() {
-    },
-    createCollection: function(aliases, title, user){
-        var coll = new Coll(new CollViews(), user)
-        coll.create(aliases, title)
     },
     addItemsToCollection: function(coll, aliases) {
         var callbacks = {

@@ -1,12 +1,13 @@
-import requests, os, json, logging
+import requests, os, json, logging, shortuuid
 
 from flask import request, send_file, abort, make_response, redirect, url_for
 from flask import render_template, session
 from flask.ext.assets import Environment, Bundle
 from flask.ext.login import LoginManager
+from sqlalchemy.exc import IntegrityError
 
 
-from totalimpactwebapp import app, util
+from totalimpactwebapp import app, util, db
 from totalimpactwebapp.models import User
 
 logger = logging.getLogger("tiwebapp.views")
@@ -60,10 +61,10 @@ assets.register('css_all', css)
 
 
 roots = {
-    "api":os.getenv("API_ROOT"),
-    "api_pretty":os.getenv("API_ROOT_PRETTY", os.getenv("API_ROOT")),
-    "webapp":os.getenv("WEBAPP_ROOT"),
-    "webapp_pretty":os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
+    "api": os.getenv("API_ROOT"),
+    "api_pretty": os.getenv("API_ROOT_PRETTY", os.getenv("API_ROOT")),
+    "webapp": os.getenv("WEBAPP_ROOT"),
+    "webapp_pretty": os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
 }
 
 
@@ -130,24 +131,45 @@ def impactstory_dot_js():
 
 
 @app.route("/user", methods=["GET", "POST"])
-def user():
+def user_view(append_to_slug=""):
     """
     Create and modify users
     """
 
     if request.method == "POST":
-        logger.info("someone posted some stuff to /user")
-
-        logger.info("got this request.json: " + str(request.json))
+        logger.debug("POST /user: Creating new user")
 
         alias_tiids = request.json["alias_tiids"]
+        url = "http://" + roots["api"] + "/collection"
+        data = {"aliases": alias_tiids, "title": request.json["email"]}
+        headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+        r = requests.post(url, data=json.dumps(data), headers=headers)
+        logger.debug("POST /user: created collection " + r.json["collection"]["_id"])
+
         user = User(
             email=request.json["email"],
+            collection_id=r.json["collection"]["_id"],
             given_name=request.json["given_name"],
             surname=request.json["surname"]
         )
+        user.url_slug += append_to_slug  # hack for when slugs collide
+        db.session.add(user)
+        try:
+            db.session.commit()
+        except IntegrityError as e:
+            logger.info(e)
+            logger.info("tried to mint a url slug ('{slug}') that already exists".format(
+                slug=user.url_slug
+            ))
+            db.session.rollback()
+            return user_view(append_to_slug="_"+shortuuid.uuid()[0:5])
 
-        return "url slug:" + user.url_slug
+        logger.debug("POST /user: Finished creating user {id}, {slug}".format(
+            id=user.id,
+            slug=user.url_slug
+        ))
+
+        return json.dumps({"url_slug": user.url_slug})
 
     elif request.method == "GET":
         pass
