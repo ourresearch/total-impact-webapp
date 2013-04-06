@@ -250,7 +250,20 @@ def user_profile(url_slug):
     if user is None:
         abort(404)
     else:
-        return "user: " + str(user)
+        # for now render something quite like the report template. change later.
+
+        return render_template(
+            'user-profile.html',
+            mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+            roots=roots,
+            api_key=os.environ["API_KEY"],
+            request_url=request.url,
+            page_title=user.full_name,
+            body_class="report",
+            report_id=user.collection_id,
+            report_id_namespace="impactstory_collection_id",
+            api_query=user.collection_id
+        )
 
 
 @app.route('/collection/<collection_id>')

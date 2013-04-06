@@ -9,6 +9,14 @@ class User(db.Model):
     url_slug = db.Column(db.String(100), unique=True)
     collection_id = db.Column(db.String(12))
 
+    @property
+    def full_name(self):
+        name = (self.given_name + " " + self.surname).strip()
+        if name:
+            return name
+        else:
+            return "Anonymous"
+
     def is_authenticated(self):
         return True
 
@@ -23,9 +31,4 @@ class User(db.Model):
 
     def __repr__(self):
 
-        try:
-            name = (self.given_name + " " + self.surname)
-        except AttributeError:
-            name = "unknown"
-
-        return '<User {name}>'.format(name=name)
+        return '<User {name}>'.format(name=self.full_name)

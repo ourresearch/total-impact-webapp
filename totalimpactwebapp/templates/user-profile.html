@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script type="text/javascript">
+   var report_source = "user";
+   if ("{{ report_id }}" == "kn5auf") {
+      report_source = "sample";
+   }
+   mixpanel.track("Impression:report",
+                  {"Report Type": "{{ report_type }}",
+                     "Report ID": "{{ report_id }}",
+                     "Report Source": report_source
+                  });
+</script>
+
+<div class="main" id="report" xmlns="http://www.w3.org/1999/html"
+     xmlns="http://www.w3.org/1999/html">
+
+   {% include 'snippets/ie-fail.html' %}
+
+   <!-- START report-meta -->
+   <div class="wrapper">
+      <div id="report-meta">
+         <div id="share">
+            <!-- from https://twitter.com/about/resources/buttons#tweet -->
+            <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
+            <!-- based on code here: https://dev.twitter.com/docs/tweet-button -->
+                    <span class="tweet-this">
+                        <a href="https://twitter.com/share" class="twitter-share-button"
+                           data-via="ImpactStory"
+                           data-url="{{request_url}}"
+                           url="{{request_url}}"
+                           data-text="Check out my impact story at {{ page_title }}: "
+                           data-count="horizontal">Tweet</a>
+                    </span>
+         </div>
+         <div id="report-button">
+            <div class="btn-group update">
+               <button class="btn btn-small btn-primary" id="import-products-button" name="{{ report_id }}" href="#">add products</button>
+               <button class="btn btn-small" id="update-report-button" name="{{ report_id }}" href="#">refresh metrics</button>
+               <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+                  download
+                  <span class="caret"></span>
+               </a>
+               <ul class="dropdown-menu">
+                  <li><a class="" id="json-report-button" href="http://{{ roots.api_pretty }}/v1/{{ api_query }}?key=samplekey">json</a></li>
+                  <li><a class="" id="csv-report-button" href="http://{{ roots.api_pretty }}/v1/{{ api_query }}.csv?key=samplekey">csv</a></li>
+               </ul>
+            </div>
+         </div>
+         <div id="num-items"><span class="value"></span> products <a href="#">(expand all)</a></div>
+
+      </div>
+   </div>
+
+   <div id="context" class="modal hide fade">
+      <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+         <h3>What do these numbers mean?</h3>
+      </div>
+      <div class="modal-body">
+         <p>ImpactStory classifies metrics along two dimensions: <strong>audience</strong> (<em>scholars</em> or the <em>public</em>) and <strong>type of engagement</strong> with research (<em>view</em>, <em>discuss</em>, <em>save</em>, <em>cite</em>, and <em>recommend</em>).</p>
+
+         <p>For each metric, the coloured bar shows its percentile relative to all articles indexed in the Web of Science that year.  The bars show a range, representing the 95% confidence interval around your percentile (and also accounting for ties).  Along with ranges, we show “Highly” badges for metrics above the 75th percentile that exceed a minimum frequency.</p>
+
+         <p>Each metric's raw count is shown to the left of its name.  Click the raw count to visit that metric source's external page for the item; there, you can explore the engagement in more detail.</p>
+
+         <p>For more information, see these blog posts:</p>
+
+         <ul>
+            <li><a href="http://total-impact.tumblr.com/post/31256247948/what-do-we-expect">What do we expect?</a></li>
+            <li><a href="http://total-impact.tumblr.com/post/31524247207/a-new-framework-for-altmetrics">Our framework for classifying altmetrics</a></li>
+            <li>Reference sets: <a href="http://total-impact.tumblr.com/post/31461657926/choosing-reference-sets-good-compared-to-what">Motivation</a>; Choosing Web of Science (TBA)</li>
+            <li>Percentiles: <a href="http://total-impact.tumblr.com/post/31342582590/percentiles">Part 1</a>, <a href="http://total-impact.tumblr.com/post/31408899657/percentiles-the-tricky-bits">Part 2</a>, and <a href="http://total-impact.tumblr.com/post/31411187588/pe">Part 3</a></li>
+            <li>Sampling and 95% confidence (TBA)</li>
+         </ul>
+      </div>
+
+   </div>
+
+   <div id="metrics">
+      <script type="text/javascript">
+         var reportId = "{{ report_id | safe }}";
+         var reportIdNamespace = "{{ report_id_namespace }}";
+      </script>
+      <div class="wrapper">
+      </div>
+      <p class="something-missing">More detail on <a href="http://{{ roots.webapp_pretty }}/faq#whichmetrics">available metrics</a>.  Missing some artifacts or metrics? See <a href="http://{{ roots.webapp_pretty }}/faq#limitations">current limitations.</a>  </p>
+   </div>
+</div>
+
+
+
+
+
+
+
+
+<!------------------------------------------------------------------------------
+Modals
+HTML for modal windows that bootstrap will pop up
+------------------------------------------------------------------------------->
+
+<!-- you have to own collections to edit them -->
+<div id="edit-not-owner" class="modal hide fade error">
+   <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Whoops!</h3>
+   </div>
+   <div class="modal-body">
+      <p>Sorry, you can only make changes to your own collections.</p>
+   </div>
+</div>
+
+
+<!-- you have to be registered to edit collections -->
+<div id="edit-not-logged-in" class="modal hide fade error">
+   <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Whoops!</h3>
+   </div>
+   <div class="modal-body">
+      <p><span class="desc">The bad news:</span> <span class="news">You can only make changes to your collection if you're registered and logged in.</span></p>
+      <p><span class="desc">The good news:</span> <span class="news">It takes less than 10 seconds to register!</span></p>
+   </div>
+   <div class="modal-footer">
+      <a class="btn login-register-link">Log in</a>
+      <a class="btn btn-primary login-register-link">Register</a>
+
+   </div>
+</div>
+
+<div id="import-products-modal" class="modal hide fade">
+   <div class="modal-header import-products">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <div class="control-group submit ready" id="collection-name">
+         <div class="controls">
+            <button name="run" type="submit" id="go-button" class="ready btn btn-primary update">Add Products</button>
+            <div class="working"><img src="{{ url_for('static', filename='img/ajax-loader-transparent.gif') }}" /></div>
+         </div>
+      </div>
+      <div class="indicator">
+         <p id="artcounter"><span class="count">0</span> new products</p>
+      </div>
+      <h3>Import products</h3>
+   </div>
+   <div class="modal-body">
+      {% include 'import-products.html' %}
+   </div>
+</div>
+
+
+
+
+{% endblock %}
+
