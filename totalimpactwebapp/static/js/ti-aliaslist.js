@@ -57,18 +57,45 @@ AliasListInputs.prototype = {
 
         // set up the submit button
         $("#go-button").click(function(){
-            var action = "create"
+            var action = "update"
 
             // fetch ids from the textareas first
             $("textarea.ids").not(".default").each(function(){
                 var importer = new TextareaImporter(that.aliases, this)
                 importer.pull()
             })
-            if ($(this).hasClass(("update"))) action = "update"
+            if ($(this).hasClass(("update"))) {
+                console.log("update!")
+                var button = new SubmitButton(that.aliases, this)
+                return button.submit(coll, user)
+            }
+            else if ($(this).hasClass(("create"))) {
+                console.log("create!")
+                var requestObj = {
+                    alias_tiids: that.aliases,
+                    email: $("div.inline-register input.email").val(),
+                    password: $("div.inline-register input.password").val(),
+                    given_name: $("div.inline-register input.given").val(),
+                    surname: $("div.inline-register input.surname").val()
+                }
 
-            var button = new SubmitButton(that.aliases, this)
-            return button.submit(coll, user, action)
+                $.ajax({
+                   url: webapp_root+'/user',
+                   type: "POST",
+                   dataType: "json",
+                   contentType: "application/json; charset=utf-8",
+                   data:  JSON.stringify(requestObj),
+                   success: function(data){
+                       console.log("finished creating the user!")
+//                       location.href = "/" + data.user_slug
+                   }
+               })
+
+                return false
+            }
+
         })
+
 
 
         // clear the aliases when input modals are dismissed
@@ -130,37 +157,17 @@ var SubmitButton = function(aliases, elem){
     this.elem$ = $(elem)
 }
 SubmitButton.prototype = {
-    submit: function(coll, user, action){
-        var action = action || "create"
+    submit: function(coll, user){
 
         if (!this.aliases.forApi().length) {
-            alert("You have to add some products before you create a collection.")
+            alert("You haven't added any products.")
             return false
         }
 
         this.start()
 
-        var that = this;
-        var email = $("#make-collection div.email input").val()
-        var pw = $("#make-collection div.password input").val()
-
-        var firstName = $(".name.first").val()
-        var lastName = $(".name.last").val()
-        var title = $.trim(firstName + " " + lastName) || "My Collection"
-
-        if (email && pw){
-            user.setCreds(email, pw)
-            _gaq.push(['_trackPageview', '/user/created']);
-        }
-
-        if (action == "create") {
-            // we're not going to use the old coll. it's boring and we're making a new one.
-            this.createCollection( this.aliases.forApi(), title, user )
-        }
-        else if (action == "update") {
-            // we need to use the old coll, otherwise who do we update?
-            this.addItemsToCollection(coll, this.aliases.forApi())
-        }
+        // we need to use the old coll, otherwise who do we update?
+        this.addItemsToCollection(coll, this.aliases.forApi())
         return false
 
     },

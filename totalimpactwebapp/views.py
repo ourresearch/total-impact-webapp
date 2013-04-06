@@ -129,9 +129,31 @@ def impactstory_dot_js():
     return resp
 
 
-@app.route("/ajax/user", methods=["GET", "POST"])
+@app.route("/user", methods=["GET", "POST"])
 def user():
-    pass
+    """
+    Create and modify users
+    """
+
+    if request.method == "POST":
+        logger.info("someone posted some stuff to /user")
+
+        logger.info("got this request.json: " + str(request.json))
+
+        alias_tiids = request.json["alias_tiids"]
+        user = User(
+            email=request.json["email"],
+            given_name=request.json["given_name"],
+            surname=request.json["surname"]
+        )
+
+        return "url slug:" + user.url_slug
+
+    elif request.method == "GET":
+        pass
+
+
+
 
 
 @app.route("/embed/test/widget")
@@ -214,23 +236,16 @@ def pricing():
 
 
 
-@app.route('/create', methods=["GET", "POST"])
+@app.route('/create', methods=["GET"])
 def collection_create():
-    if request.method == 'POST':
-        # make the collection by sending a POST to the core api
-
-        # make the user by making a database call
-
-        redirect(url_for('login'))
-    else:
-        return render_template(
-            'create-collection.html',
-            mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-            roots=roots,
-            api_key=os.environ["API_KEY"],
-            page_title="create collection",
-            body_class="create-collection"
-        )
+    return render_template(
+        'create-collection.html',
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+        roots=roots,
+        api_key=os.environ["API_KEY"],
+        page_title="create collection",
+        body_class="create-collection"
+    )
 
 
 @app.route("/<path:dummy>")  # from http://stackoverflow.com/a/14023930/226013

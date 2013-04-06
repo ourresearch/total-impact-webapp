@@ -351,17 +351,6 @@ function UserController(user, userViews) {
 
         /* registration and login
          ******************************************/
-        // registration
-        $("form.register").submit(function(){
-            var email = $(this).find("input.username").val()
-            var pw = $(this).find("input.pw").val()
-            var name = $(this).find("input.name").val() // doing nothing with this now...
-
-            user.setCreds(email, pw)
-            user.syncWithServer("push")
-            $("div#login-register").modal("hide")
-            return false;
-        })
 
         // login; v. similar to registration, can refactor later
         $("form.login").submit(function(){

@@ -17,6 +17,17 @@ class User(db.Model):
         else:
             return "Anonymous"
 
+    def __init__(self, email, **kwargs):
+        self.email = email
+        super(User, self).__init__(**kwargs)
+        self.url_slug = self.make_url_slug(self.full_name)
+
+
+    def make_url_slug(self, full_name):
+        name_list = full_name.split(" ")
+        return "".join([x.capitalize() for x in name_list])
+
+
     def is_authenticated(self):
         return True
 

@@ -37,20 +37,20 @@
                       <span class="main">Password</span>
                    </label>
                    <div class="controls">
-                      <input type="password" placeholder="password"/>
+                      <input type="password" placeholder="password" class="password"/>
                    </div>
                 </div>
 
                 <div class="form-item control-group submit ready" id="collection-name">
                    <label class="control-label" ><span class="main">Your name:</span></label>
                    <div class="controls form-inline names">
-                      <input type="text" class="name first no-input-yet input-large"  placeholder="First name"/>
-                      <input type="text" class="name last no-input-yet input-large"  placeholder="Last name"/>
+                      <input type="text" class="name given no-input-yet input-large"  placeholder="First name"/>
+                      <input type="text" class="name surname no-input-yet input-large"  placeholder="Last name"/>
                    </div>
                 </div>
                 <div class="form-item control-group submit ready">
                    <div class="controls">
-                      <button name="run" type="submit" id="go-button" class="ready btn btn-large btn-primary">Make my profile</button>
+                      <button name="run" type="submit" id="go-button" class="create ready btn btn-large btn-primary">Make my profile</button>
                       <span class="working go"><img class="center" src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Creating...</span>
                    </div>
 
