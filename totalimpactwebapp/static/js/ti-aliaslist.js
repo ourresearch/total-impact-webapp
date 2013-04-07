@@ -156,7 +156,7 @@ SubmitButton.prototype = {
            data:  JSON.stringify(requestObj),
            success: function(data){
                console.log("finished creating the user!")
-//               location.href = "/" + data.url_slug
+               location.href = "/" + data.url_slug
            }
         })
         return false

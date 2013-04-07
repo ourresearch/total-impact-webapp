@@ -189,20 +189,10 @@ div.navbar ul.nav.pull-right > li.dropdown.open a.dropdown-toggle {
   background: #fff !important;
   color: #ff4e00 !important;
 }
-div.navbar ul.nav.pull-right > li.acct-mgt#logged-in {
-  display: none;
-}
-div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.username {
+div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.given-name {
   font-weight: bold;
 }
-div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.username:hover {
-  color: #ff4e00;
-}
-div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span#logout-link {
-  font-size: 12px;
-  font-family: Helvetica, arial;
-}
-div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span#logout-link:hover {
+div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.given-name:hover {
   color: #ff4e00;
 }
 div.navbar ul.nav.pull-right > li .control-group {

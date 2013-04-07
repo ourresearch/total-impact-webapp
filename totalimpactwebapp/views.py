@@ -1,6 +1,6 @@
 import requests, os, json, jsonpickle, logging, shortuuid
 
-from flask import request, send_file, abort, make_response, redirect, url_for
+from flask import request, send_file, abort, make_response, g, redirect, url_for
 from flask import render_template, session
 from flask.ext.assets import Environment, Bundle
 from flask.ext.login import login_user, logout_user, current_user, login_required
@@ -103,6 +103,10 @@ def load_user(user_id):
 def setup_db_tables():
     logger.info("first request; setting up db tables.")
     db.create_all()
+
+@app.before_request
+def before_request():
+    g.user = current_user
 
 @app.before_request
 def log_ip_address():
