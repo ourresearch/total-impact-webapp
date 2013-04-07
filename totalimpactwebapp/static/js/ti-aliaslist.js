@@ -139,7 +139,7 @@ var SubmitButton = function(aliases, elem){
 }
 SubmitButton.prototype = {
     make: function() {
-        this.start()
+        if (!this.start()) return false
         var requestObj = {
             alias_tiids: this.aliases.forApi(),
             email: $("div.inline-register input.email").val(),
@@ -156,13 +156,13 @@ SubmitButton.prototype = {
            data:  JSON.stringify(requestObj),
            success: function(data){
                console.log("finished creating the user!")
-               location.href = "/" + data.url_slug
+//               location.href = "/" + data.url_slug
            }
         })
         return false
     },
     update: function(coll){
-        this.start()
+        if (!this.start()) return false
         this.addItemsToCollection(coll, this.aliases.forApi())
         return false
     },
@@ -171,8 +171,15 @@ SubmitButton.prototype = {
             alert("You haven't added any products.")
             return false
         }
-        changeControlGroupState(this.elem$, "working")
-        console.log(this.elem$)
+        else if ($("div.inline-register .email").hasClass("failure")) {
+            alert("please enter an email that's not already in use.")
+            return false
+        }
+        else {
+            changeControlGroupState(this.elem$, "working")
+            console.log(this.elem$)
+            return true
+        }
     },
     failure: function() {
     },

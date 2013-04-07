@@ -3,11 +3,12 @@ import requests, os, json, jsonpickle, logging, shortuuid
 from flask import request, send_file, abort, make_response, redirect, url_for
 from flask import render_template, session
 from flask.ext.assets import Environment, Bundle
-from flask.ext.login import LoginManager
+from flask.ext.login import login_user, logout_user, current_user, login_required
+
 from sqlalchemy.exc import IntegrityError
 
 
-from totalimpactwebapp import app, util, db
+from totalimpactwebapp import app, util, db, login_manager
 from totalimpactwebapp.models import User
 
 logger = logging.getLogger("tiwebapp.views")
@@ -92,6 +93,11 @@ def json_for_client(obj_or_dict):
     resp = make_response(json.dumps(obj_dict, sort_keys=True, indent=4), 200)
     resp.mimetype = "application/json"
     return resp
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 @app.before_request
@@ -195,6 +201,7 @@ def user_view(append_to_slug=""):
             slug=user.url_slug
         ))
 
+        login_user(user)
         return json_for_client({"url_slug": user.url_slug})
 
     elif request.method == "GET":

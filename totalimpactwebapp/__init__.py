@@ -1,7 +1,7 @@
 import os, logging, sys
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
-
+from flask.ext.login import LoginManager
 
 # set up logging
 # see http://wiki.pylonshq.com/display/pylonscookbook/Alternative+logging+configuration
@@ -17,6 +17,9 @@ logger = logging.getLogger("tiwebapp")
 app = Flask(__name__)
 db = SQLAlchemy(app)
 
+login_manager = LoginManager()
+login_manager.setup_app(app)
+
 
 # set up configs
 
@@ -26,6 +29,7 @@ db = SQLAlchemy(app)
 
 app.config["ASSETS_DEBUG"] = (os.getenv("ASSETS_DEBUG", "True") == "True")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 
 # set up views
