@@ -1,4 +1,5 @@
 from totalimpactwebapp import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(db.Model):
@@ -6,6 +7,7 @@ class User(db.Model):
     given_name = db.Column(db.String(64))
     surname = db.Column(db.String(64))
     email = db.Column(db.String(120), unique=True)
+    password_hash = db.Column(db.String(120))
     url_slug = db.Column(db.String(100), unique=True)
     collection_id = db.Column(db.String(12))
 
@@ -17,8 +19,9 @@ class User(db.Model):
         else:
             return "Anonymous"
 
-    def __init__(self, email, collection_id, **kwargs):
+    def __init__(self, email, password, collection_id, **kwargs):
         self.email = email
+        self.password = self.set_password(password)
         self.collection_id = collection_id
 
         super(User, self).__init__(**kwargs)
@@ -28,6 +31,11 @@ class User(db.Model):
         name_list = full_name.split(" ")
         return "".join([x.capitalize() for x in name_list])
 
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def is_authenticated(self):
         return True

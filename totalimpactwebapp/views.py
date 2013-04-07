@@ -99,6 +99,10 @@ def json_for_client(obj_or_dict):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+@app.before_first_request
+def setup_db_tables():
+    logger.info("first request; setting up db tables.")
+    db.create_all()
 
 @app.before_request
 def log_ip_address():
@@ -180,6 +184,7 @@ def user_view(append_to_slug=""):
 
         user = User(
             email=request.json["email"],
+            password=request.json["password"],
             collection_id=r.json["collection"]["_id"],
             given_name=request.json["given_name"],
             surname=request.json["surname"]
