@@ -64,34 +64,15 @@ AliasListInputs.prototype = {
                 var importer = new TextareaImporter(that.aliases, this)
                 importer.pull()
             })
+            var button = new SubmitButton(that.aliases, this)
+
             if ($(this).hasClass(("update"))) {
                 console.log("update!")
-                var button = new SubmitButton(that.aliases, this)
-                return button.submit(coll, user)
+                return button.update(coll)
             }
             else if ($(this).hasClass(("create"))) {
                 console.log("create!")
-                var requestObj = {
-                    alias_tiids: that.aliases.forApi(),
-                    email: $("div.inline-register input.email").val(),
-                    password: $("div.inline-register input.password").val(),
-                    given_name: $("div.inline-register input.given").val(),
-                    surname: $("div.inline-register input.surname").val()
-                }
-
-                $.ajax({
-                   url: webapp_root+'/user',
-                   type: "POST",
-                   dataType: "json",
-                   contentType: "application/json; charset=utf-8",
-                   data:  JSON.stringify(requestObj),
-                   success: function(data){
-                       console.log("finished creating the user!")
-                       location.href = "/" + data.url_slug
-                   }
-               })
-
-                return false
+                return button.make()
             }
 
         })
@@ -157,25 +138,41 @@ var SubmitButton = function(aliases, elem){
     this.elem$ = $(elem)
 }
 SubmitButton.prototype = {
-    submit: function(coll, user){
+    make: function() {
+        this.start()
+        var requestObj = {
+            alias_tiids: this.aliases.forApi(),
+            email: $("div.inline-register input.email").val(),
+            password: $("div.inline-register input.password").val(),
+            given_name: $("div.inline-register input.given").val(),
+            surname: $("div.inline-register input.surname").val()
+        }
 
+        $.ajax({
+           url: webapp_root+'/user',
+           type: "POST",
+           dataType: "json",
+           contentType: "application/json; charset=utf-8",
+           data:  JSON.stringify(requestObj),
+           success: function(data){
+               console.log("finished creating the user!")
+               location.href = "/" + data.url_slug
+           }
+        })
+        return false
+    },
+    update: function(coll){
+        this.start()
+        this.addItemsToCollection(coll, this.aliases.forApi())
+        return false
+    },
+    start:function(){
         if (!this.aliases.forApi().length) {
             alert("You haven't added any products.")
             return false
         }
-
-        this.start()
-
-        // we need to use the old coll, otherwise who do we update?
-        this.addItemsToCollection(coll, this.aliases.forApi())
-        return false
-
-    },
-    start:function(){
         changeControlGroupState(this.elem$, "working")
         console.log(this.elem$)
-    },
-    update: function(){
     },
     failure: function() {
     },
