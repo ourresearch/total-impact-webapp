@@ -193,12 +193,12 @@ function User(userViews) {
 
     }
 
-    this.checkUsername = function(username, successCallback, failCallback){
+    this.checkUsername = function(email, successCallback, failCallback){
         $.ajax({
-            url:api_root+"/user/"+username,
+            url:webapp_root+"/user?email="+email,
             type:"GET",
             statusCode: {
-               403: function(data){ // forbidden, cause no pw. that name is taken!
+               200: function(data){ // forbidden, cause no pw. that name is taken!
                    failCallback()
                },
                404: function(data) { // doesn't exist; name is available, yay.

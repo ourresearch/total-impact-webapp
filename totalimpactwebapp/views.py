@@ -1,4 +1,4 @@
-import requests, os, json, logging, shortuuid
+import requests, os, json, jsonpickle, logging, shortuuid
 
 from flask import request, send_file, abort, make_response, redirect, url_for
 from flask import render_template, session
@@ -66,6 +66,32 @@ roots = {
     "webapp": os.getenv("WEBAPP_ROOT"),
     "webapp_pretty": os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
 }
+
+
+def json_for_client(obj_or_dict):
+    """
+    JSON-serialize an obj or dict and put it in a Flask response.
+
+    :param obj: the obj you want to serialize to json and send back
+    :return: a flask json response, ready to send to client
+    """
+
+    # convert to a dict if it's not one already
+    try:
+        temp = obj_or_dict.__dict__
+    except AttributeError:
+        temp = obj_or_dict
+
+
+    # get rid of private attributes in the dict
+    obj_dict = {}
+    for k, v in temp.iteritems():
+        if k[0] != "_":
+            obj_dict[k] = v
+
+    resp = make_response(json.dumps(obj_dict, sort_keys=True, indent=4), 200)
+    resp.mimetype = "application/json"
+    return resp
 
 
 @app.before_request
@@ -162,17 +188,26 @@ def user_view(append_to_slug=""):
                 slug=user.url_slug
             ))
             db.session.rollback()
-            return user_view(append_to_slug="_"+shortuuid.uuid()[0:5])
+            return user_view(append_to_slug="-" + shortuuid.uuid()[0:5])
 
         logger.debug("POST /user: Finished creating user {id}, {slug}".format(
             id=user.id,
             slug=user.url_slug
         ))
 
-        return json.dumps({"url_slug": user.url_slug})
+        return json_for_client({"url_slug": user.url_slug})
 
     elif request.method == "GET":
-        pass
+        email = request.args["email"]
+        if email is not None:
+            # return a user slug based from an email query
+            user = User.query.filter_by(email=email).first()
+            if user is None:
+                abort(404, "There's no user with email " + email)
+            else:
+                return json_for_client(user)
+
+
 
 
 
