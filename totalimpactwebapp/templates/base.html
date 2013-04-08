@@ -76,15 +76,15 @@
                </a>
                <div  class="dropdown-menu">
                   <ul class='user-actions'>
-                     <li><a href="#" class="profile">My profile</a></li>
+                     <li><a href="/{{g.user.url_slug}}" class="profile">My profile</a></li>
                      <li><a href="#" class="prferences">Preferences</a></li>
-                     <li><a href="#" class="logout">Log out</a></li>
+                     <li><a href="{{ url_for('logout') }}" class="logout">Log out</a></li>
                   </ul>
                </div>
             </li>
             {% else %}
             <li class="acct-mgt dropdown" id="login-link">
-               <a href="#"  class="login-register-link">Log in</a>
+               <a href="/login"  class="login-register-link">Log in</a>
             </li>
             {% endif %}
 

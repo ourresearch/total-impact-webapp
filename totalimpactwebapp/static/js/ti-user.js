@@ -352,44 +352,6 @@ function UserController(user, userViews) {
         /* registration and login
          ******************************************/
 
-        // login; v. similar to registration, can refactor later
-        $("form.login").submit(function(){
-            var email = $(this).find("input.username").val()
-            var pw = $(this).find("input.pw").val()
-
-            user.setCreds(email, pw)
-            user.syncWithServer("pull")
-            $("div#login-register").modal("hide")
-            return false;
-        })
-
-
-        $("#logout-link").click(function(){
-            user.deleteLocal();
-            return false;
-        })
-
-        // register/login
-        $("a.login-register-link").click(function(){
-
-            // hide any modals out now, then show the register/login modal
-            if ($(".modal.in")[0]) {
-                $(".modal.in")
-                    .one("hidden", function(){
-                        $("#login-register").modal("show")
-                    })
-                    .modal("hide")
-            }
-            else {
-                $("#login-register").modal("show")
-            }
-        })
-
-        $("li#logged-in span.username").on("click", function(){
-            user.getCollInfo()
-            $("#logged-in div.dropdown-menu a#logged-in").attr("data-toggle", "dropdown").click();
-        })
-
         // used for the ti-aliaslist panel
         // TODO make this work for the header login widget, too
         $("input.register.username").blur(function(){

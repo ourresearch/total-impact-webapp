@@ -1,4 +1,4 @@
-import requests, os, json, jsonpickle, logging, shortuuid
+import requests, os, json, logging, shortuuid
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
 from flask import render_template, session
@@ -8,7 +8,7 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from sqlalchemy.exc import IntegrityError
 
 
-from totalimpactwebapp import app, util, db, login_manager
+from totalimpactwebapp import app, util, db, login_manager, forms
 from totalimpactwebapp.models import User
 
 logger = logging.getLogger("tiwebapp.views")
@@ -125,7 +125,7 @@ def add_crossdomain_header(resp):
 
 # static pages
 @app.route('/')
-def home():
+def index():
     return render_template(
     'index.html', 
     page_title="tell the full story of your research impact",
@@ -134,6 +134,48 @@ def home():
     roots=roots,
     api_key=os.environ["API_KEY"]        
     )
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    logger.debug("user trying to log in.")
+
+    if g.user is not None and g.user.is_authenticated():
+            return redirect("/" + g.user.url_slug)
+
+    errors = {"email": False, "password": False}
+    if request.method == 'POST':
+        email = request.form['email']
+        g.user = User.query.filter_by(email=email).first()
+
+        if g.user is None:
+            errors["email"] = True
+        elif not g.user.check_password(request.form["password"]):
+            errors["password"] = True
+        else:
+            # Yay, no errors! Log the user in and redirect.
+            login_user(g.user)
+            return redirect("/" + g.user.url_slug)
+
+
+    # the code below this is executed if the request method
+    # was GET or the credentials were invalid
+    return  render_template(
+        'login.html',
+        errors=errors,
+        page_title="Log in",
+        body_class="login",
+        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
+        roots=roots,
+        api_key=os.environ["API_KEY"]
+    )
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
 
 @app.route("/embed/impactstory.js")

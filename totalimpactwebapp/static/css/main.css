@@ -266,7 +266,7 @@ div.navbar ul.nav.pull-right a#uservoice {
   z-index: 3;
   padding-right: 0;
 }
-/* login stuff
+/* registration form stuff
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
@@ -506,6 +506,35 @@ div.import-products form.importers div.control-group div.controls span.go {
 }
 div.import-products form.importers div.control-group div.controls span.go img {
   height: 40px;
+}
+/* login page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div.wrapper.login {
+  width: 633px;
+  margin-top: 50px;
+}
+div.wrapper.login div.alert.False {
+  display: none;
+}
+div.wrapper.login div.alert a {
+  color: #b94a48;
+  font-weight: bold;
+  text-decoration: underline;
+}
+div.wrapper.login label {
+  font-size: 24px;
+  padding-top: 9px;
+}
+div.wrapper.login input {
+  font-size: 20px;
+  height: 24px;
+  padding: 6px 6px 2px;
+}
+div.wrapper.login div.not-registered {
+  margin: 50px 0 0 160px;
+  color: #777;
 }
 /* homepage
 *****************************************************************************

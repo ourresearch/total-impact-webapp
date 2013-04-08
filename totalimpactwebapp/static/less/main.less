@@ -270,7 +270,7 @@ div.navbar {
 
 
 
-/* login stuff
+/* registration form stuff
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
@@ -522,6 +522,40 @@ div.import-products {
 }
 
 
+
+
+
+/* login page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+
+div.wrapper.login {
+   width: 633px; // to center the narrow login form
+   margin-top: 50px;
+   div.alert {
+      &.False { display: none; }
+      a {
+         color: @errorText;
+         font-weight: bold;
+         text-decoration: underline;
+      }
+
+   }
+   label {
+      font-size: 24px;
+      padding-top: 9px;
+   }
+   input {
+      font-size: 20px;
+      height: 24px;
+      padding: 6px 6px 2px;
+   }
+   div.not-registered {
+      margin: 50px 0 0 160px;
+      color:  #777;
+   }
+}
 
 
 
