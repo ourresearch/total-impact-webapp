@@ -6,6 +6,8 @@ if (!window.console) {
     console = {log: function() {}};
 }
 var tiLinkColor = "#FF4E00"
+var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
+
 
 changeControlGroupState = function(elem, newClassName){
     var states = ["inactive", "ready", "working", "success", "failure"]
@@ -88,13 +90,11 @@ $(document).ready(function(){
 
     $.cookie.defaults = {path: "/", raw: 1}
 
-    userViews = new UserViews()
-    user = new User(userViews)
-    userController = new UserController(user, userViews);
+    var userController = new UserController();
     userController.init()
 
     collViews = new CollViews()
-    coll = new Coll(collViews, user)
+    coll = new Coll(collViews)
     collController = new CollController(coll, collViews);
 
     itemController = new ItemController($)

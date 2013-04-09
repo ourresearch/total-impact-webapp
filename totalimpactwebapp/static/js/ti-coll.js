@@ -79,9 +79,8 @@ function GenreList(items) {
     }
 }
 
-function Coll(collViews, user){
+function Coll(collViews){
     this.views = collViews;
-    this.user = user
     this.id = null
     this.items = {}
 
@@ -97,6 +96,9 @@ function Coll(collViews, user){
         *   Make a new collection. On success, add it to the user's list of colls,
         *   and redirect to the webapp's /collection/<cid> report page.
          */
+
+
+        // @todo: remove. this is no longer used, as coll being created on server.
 
         var that = this
         var requestObj = {
@@ -117,10 +119,6 @@ function Coll(collViews, user){
 
                        // you could pass this in, but you pretty much only want it to redirect:
                        var redirect = function(){location.href = "/collection/" + cid}
-
-                       // add the id of the newly-created coll to the user's coll list
-                       that.user.addColl(cid, data.key)
-                       that.user.syncWithServer("push", {on200: redirect, onNoUserId: redirect})
                    }
                })
     }
@@ -180,7 +178,6 @@ function Coll(collViews, user){
     }
 
     this.deleteItem = function(tiidToDelete, callbacks) {
-        if (!this.userCanEdit(callbacks)) return false
         callbacks.start()
         this.update({"tiids": [tiidToDelete]},"DELETE", callbacks.success)
         return false
@@ -196,7 +193,7 @@ function Coll(collViews, user){
         var url = api_root+'/v1/collection/'+this.id+'/items?'
             + "http_method="+httpType
             + '&key='+api_key
-            + '&edit_key='+this.user.getKeyForColl(this.id)
+            + '&edit_key='+"temp"
 
         $.ajax({
                    url: url,
@@ -224,11 +221,14 @@ function Coll(collViews, user){
         }
 
     this.userCanEdit = function(callbacks){
-        if (!this.user.hasCreds()) {
+        // @todo make it so this figures out  status based on vars loaded server-side
+
+        if (true) {
             callbacks.onNotLoggedIn()
             return false
         }
-        if (!this.user.getKeyForColl(this.id)) {
+
+        if (true) {
             callbacks.onNotOwner()
             return false
         }
@@ -344,6 +344,13 @@ function CollController(coll, collViews) {
             var item$ = $(this).parents("li.item")
 
             var callbacks = {
+                onNotLoggedIn: that.collViews.onEditNotLoggedIn,
+                onNotOwner: that.collViews.onEditNotOwner
+            }
+
+            if (!that.coll.userCanEdit(callbacks)) return false
+
+            var callbacks2 = {
                 start: function() {item$.slideUp();},
                 success: function(data){
                     console.log("deleted, done. blam.", data)
@@ -353,7 +360,7 @@ function CollController(coll, collViews) {
                 onNotOwner: that.collViews.onEditNotOwner
             }
 
-            that.coll.deleteItem( item$.attr("id"), callbacks)
+            that.coll.deleteItem( item$.attr("id"), callbacks2)
             return false;
         })
     }
