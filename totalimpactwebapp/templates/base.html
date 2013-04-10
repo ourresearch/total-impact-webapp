@@ -22,11 +22,11 @@
 
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
    <script type="text/javascript">
-      var api_root='http://' + '{{ roots.api }}'
-      var api_root_pretty='http://' + '{{ roots.api_pretty }}'
-      var webapp_root='http://' + '{{ roots.webapp }}'
-      var webapp_root_pretty='http://' + '{{ roots.webapp_pretty }}'
-      var api_key='{{ api_key }}'
+      var api_root='http://' + '{{ g.roots.api }}'
+      var api_root_pretty='http://' + '{{ g.roots.api_pretty }}'
+      var webapp_root='http://' + '{{ g.roots.webapp }}'
+      var webapp_root_pretty='http://' + '{{ g.roots.webapp_pretty }}'
+      var api_key='{{ g.api_key }}'
       var request_url='{{ request_url }}'
    </script>
 
@@ -35,12 +35,16 @@
    {% endassets %}
 
    <script>
-      mixpanel.init("{{ mixpanel_token }}");
+      mixpanel.init("{{ g.mixpanel_token }}");
    </script>
 
 </head>
+{% set login_status = "not-logged-in" %}
+{% if g.user.url_slug %}
+   {% set login_status = "logged-in" %}
+{% endif %}
 
-<body class="{{ body_class|default('default') }}">
+<body class="{{ self | extract_filename }} {{ login_status }}">
 <div id="container">
    <div class="navbar">
       <div class="navbar-inner">

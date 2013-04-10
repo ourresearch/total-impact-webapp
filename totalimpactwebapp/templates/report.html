@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+
 {% block content %}
 
 <script type="text/javascript">
@@ -13,6 +14,13 @@
        "Report Source": report_source
       });
    </script>
+
+<script type="text/javascript">
+   // crazy hack to fix header spacing when there's no H2 set
+   if (!$("h2").text()) {
+      $("h2").html("&nbsp;")
+   }
+</script>
 
 <div class="main" id="report" xmlns="http://www.w3.org/1999/html"
      xmlns="http://www.w3.org/1999/html">
@@ -44,8 +52,8 @@
                   <span class="caret"></span>
                </a>
                <ul class="dropdown-menu">
-                  <li><a class="" id="json-report-button" href="http://{{ roots.api_pretty }}/v1/{{ api_query }}?key=samplekey">json</a></li>
-                  <li><a class="" id="csv-report-button" href="http://{{ roots.api_pretty }}/v1/{{ api_query }}.csv?key=samplekey">csv</a></li>
+                  <li><a class="" id="json-report-button" href="http://{{ g.roots.api_pretty }}/v1/{{ api_query }}?key=samplekey">json</a></li>
+                  <li><a class="" id="csv-report-button" href="http://{{ g.roots.api_pretty }}/v1/{{ api_query }}.csv?key=samplekey">csv</a></li>
                </ul>
             </div>
          </div>
@@ -86,7 +94,7 @@
       </script>
       <div class="wrapper">
       </div>
-      <p class="something-missing">More detail on <a href="http://{{ roots.webapp_pretty }}/faq#whichmetrics">available metrics</a>.  Missing some artifacts or metrics? See <a href="http://{{ roots.webapp_pretty }}/faq#limitations">current limitations.</a>  </p>
+      <p class="something-missing">More detail on <a href="http://{{ g.roots.webapp_pretty }}/faq#whichmetrics">available metrics</a>.  Missing some artifacts or metrics? See <a href="http://{{ g.roots.webapp_pretty }}/faq#limitations">current limitations.</a>  </p>
    </div>
 </div>
 

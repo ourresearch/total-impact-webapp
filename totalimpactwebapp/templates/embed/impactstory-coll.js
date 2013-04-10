@@ -55,9 +55,9 @@
          *
          *********************************/
 
-        var apiRoot = window.location.protocol + "//{{ roots.api }}"
-        var webappRoot = window.location.protocol + "//{{ roots.webapp }}"
-        var webappRootPretty = "http://{{ roots.webapp_pretty }}"
+        var apiRoot = window.location.protocol + "//{{ g.roots.api }}"
+        var webappRoot = window.location.protocol + "//{{ g.roots.webapp }}"
+        var webappRootPretty = "http://{{ g.roots.webapp_pretty }}"
 
         var $ = jQuery
         $.support.cors = true; // makes IE8 and IE9 support CORS somehow...
@@ -88,7 +88,7 @@
 
 
         /* initialize mixpanel analytics */
-//        mixpanel.init("{{ mixpanel_token }}");
+//        mixpanel.init("{{ g.mixpanel_token }}");
 
         /****************************************
          *
@@ -271,7 +271,7 @@
 
 
             // report vital signs
-            var apikey = "{{ api_key }}"
+            var apikey = "{{ g.api_key }}"
 //            mixpanel.track("Impression:embed", {"API Key":apikey.toLowerCase()});
 
         });

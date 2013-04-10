@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% set page_title = "API documentation" %}
 
 {% block content %}
 
 <script type="text/javascript">
    mixpanel.track("View:docs", {"Doc Type": "api docs"});
 </script>
-<script type="text/javascript" src="http://{{ roots.webapp }}/embed/v1/impactstory.js"></script>
+<script type="text/javascript" src="http://{{ g.roots.webapp }}/embed/v1/impactstory.js"></script>
 
 
 <div class="main" id="docs" xmlns="http://www.w3.org/1999/html">

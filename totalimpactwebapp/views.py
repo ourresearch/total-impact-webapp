@@ -1,4 +1,4 @@
-import requests, os, json, logging, shortuuid
+import requests, os, json, logging, shortuuid, re
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
 from flask import render_template, session
@@ -61,14 +61,6 @@ assets.register('css_all', css)
 
 
 
-roots = {
-    "api": os.getenv("API_ROOT"),
-    "api_pretty": os.getenv("API_ROOT_PRETTY", os.getenv("API_ROOT")),
-    "webapp": os.getenv("WEBAPP_ROOT"),
-    "webapp_pretty": os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
-}
-
-
 def json_for_client(obj_or_dict):
     """
     JSON-serialize an obj or dict and put it in a Flask response.
@@ -83,7 +75,6 @@ def json_for_client(obj_or_dict):
     except AttributeError:
         temp = obj_or_dict
 
-
     # get rid of private attributes in the dict
     obj_dict = {}
     for k, v in temp.iteritems():
@@ -95,18 +86,30 @@ def json_for_client(obj_or_dict):
     return resp
 
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 @app.before_first_request
 def setup_db_tables():
     logger.info("first request; setting up db tables.")
     db.create_all()
 
+
 @app.before_request
-def before_request():
+def load_globals():
     g.user = current_user
+    g.roots = {
+        "api": os.getenv("API_ROOT"),
+        "api_pretty": os.getenv("API_ROOT_PRETTY", os.getenv("API_ROOT")),
+        "webapp": os.getenv("WEBAPP_ROOT"),
+        "webapp_pretty": os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
+    }
+    g.mixpanel_token = os.getenv("MIXPANEL_TOKEN")
+    g.api_key = os.getenv("API_KEY")
+
 
 @app.before_request
 def log_ip_address():
@@ -122,18 +125,51 @@ def add_crossdomain_header(resp):
 
     return resp
 
+@app.template_filter('extract_filename')
+def extract_filename(s):
+    res = re.findall('\'([^\']*)\'', str(s))
+    if res:
+        return res[0].split(".")[0]
+    return None
 
-# static pages
-@app.route('/')
-def index():
-    return render_template(
-    'index.html', 
-    page_title="tell the full story of your research impact",
-    body_class="homepage",
-    mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-    roots=roots,
-    api_key=os.environ["API_KEY"]        
-    )
+
+
+
+
+
+###############################################################################
+#
+#   USER-RELATED VIEWS
+#
+###############################################################################
+
+
+@app.route("/<path:dummy>")  # from http://stackoverflow.com/a/14023930/226013
+def redirect_to_profile(dummy):
+    """
+    Route things that look like user profile urls.
+
+    *Everything* not explicitly routed to another function will end up here.
+    """
+    return user_profile(dummy)
+
+
+def user_profile(url_slug):
+
+    user = User.query.filter_by(url_slug=url_slug).first()
+    if user is None:
+        abort(404)
+    else:
+        # for now render something quite like the report template. change later.
+
+        return render_template(
+            'user-profile.html',
+            request_url=request.url,
+            profile=user,
+            report_id=user.collection_id,
+            report_id_namespace="impactstory_collection_id",
+            api_query=user.collection_id
+        )
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -161,14 +197,9 @@ def login():
 
     # the code below this is executed if the request method
     # was GET or the credentials were invalid
-    return  render_template(
+    return render_template(
         'login.html',
-        errors=errors,
-        page_title="Log in",
-        body_class="login",
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-        roots=roots,
-        api_key=os.environ["API_KEY"]
+        errors=errors
     )
 
 
@@ -176,40 +207,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
-
-
-@app.route("/embed/impactstory.js")
-@app.route("/embed/v1/impactstory.js")
-def impactstory_dot_js():
-
-    badges_template = render_template("js-template-badges.html")\
-        .replace("\n", "")\
-        .replace("'", "&apos;")
-
-    # First build the concatenated js file for the widget. Building makes a file.
-    # Then open the file and put it in the template to return.
-    js_widget.build() # always build this, whether dev in dev env or not
-    libs = open(os.path.dirname(__file__) + "/static/js/widget.js", "r").read()
-
-    rendered = render_template(
-        "embed/impactstory.js",
-        badges_template=badges_template,
-        libs=unicode(libs, "utf-8"),
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-        api_root=os.environ["API_ROOT"],
-        api_key=os.environ["API_KEY"],
-        webapp_root=os.environ["WEBAPP_ROOT"],
-        roots=roots
-    )
-    resp = make_response(rendered)
-    """
-    There is no standard way to indicate you're sending back javascript;
-    This seems the most recommended one, though. See
-    http://stackoverflow.com/questions/2706290/why-write-script-type-text-javascript-when-the-mime-type-is-set-by-the-serve
-    and http://www.ietf.org/rfc/rfc4329.txt
-     """
-    resp.headers["Content-Type"] = "application/javascript; charset=utf-8"
-    return resp
 
 
 @app.route("/user", methods=["GET", "POST"])
@@ -222,7 +219,7 @@ def user_view(append_to_slug=""):
         logger.debug("POST /user: Creating new user")
 
         alias_tiids = request.json["alias_tiids"]
-        url = "http://" + roots["api"] + "/collection"
+        url = "http://" + g.roots["api"] + "/collection"
         data = {"aliases": alias_tiids, "title": request.json["email"]}
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
         r = requests.post(url, data=json.dumps(data), headers=headers)
@@ -266,41 +263,50 @@ def user_view(append_to_slug=""):
                 return json_for_client(user)
 
 
+@app.route("/user/:username")
+def user_page_from_user_endpoint(username):
+    return redirect("/username")
+
+@app.route("/user/:username/products", methods=["GET", "POST", "PUT", "DELETE"])
+def user_page_from_user_endpoint(username):
+    if request.method == "GET":
+        request.get(os.getenv("API_ROOT"))
+
+    elif request.method == "POST":
+        pass
+
+    elif request.method == "PUT":
+        pass
+
+    elif request.method == "DELETE":
+        pass
+
+
+@app.route('/create', methods=["GET"])
+def collection_create():
+    return render_template('create-collection.html')
 
 
 
 
 
-@app.route("/embed/test/widget")
-def embed_test_widget():
+###############################################################################
+#
+#   MOSTLY-STATIC PAGES
+#
+###############################################################################
 
-    return render_template(
-        "test-pages/sample-embed-internal-test.html",
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],        
-        roots=roots,
-        api_key=os.environ["API_KEY"]
-    )
 
-@app.route("/embed/test/coll")
-def embed_test_coll():
-
-    return render_template(
-        "test-pages/sample-coll-embed.html",
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-        roots=roots,
-        api_key=os.environ["API_KEY"]
-    )
+# static pages
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 @app.route('/about')
 def about(): 
-    return render_template(
-        'about.html',
-        page_title="about",
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        roots=roots,
-        api_key=os.environ["API_KEY"]        
-        )
+    return render_template('about.html')
+
 
 @app.route('/faq')
 def faq(): 
@@ -314,93 +320,73 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        r = requests.get('http://' + roots["api"] +'/provider')
+        r = requests.get('http://' + g.roots["api"] +'/provider')
         metadata = json.loads(r.text)
     except requests.ConnectionError:
         metadata = {}
     
     return render_template(
         'faq.html',
-        page_title="faq",
         which_artifacts=which_item_types,
-        provider_metadata=metadata,
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-        roots=roots
+        provider_metadata=metadata
         )
+
 
 @app.route('/api-docs')
 def apidocs(): 
-    return render_template(
-        'api-docs.html',
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        api_root=os.environ["API_ROOT"],
-        api_key=os.environ["API_KEY"],        
-        roots=roots,
-        page_title="api & widget"
-        )
-
-@app.route('/pricing')
-def pricing():
-    return render_template(
-        'pricing.html',
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-        roots=roots,
-        api_key=os.environ["API_KEY"],        
-        page_title="pricing"
-        )
+    return render_template('api-docs.html')
 
 
 
-@app.route('/create', methods=["GET"])
-def collection_create():
-    return render_template(
-        'create-collection.html',
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-        roots=roots,
-        api_key=os.environ["API_KEY"],
-        page_title="create collection",
-        body_class="create-collection"
+
+
+
+###############################################################################
+#
+#   ITEM- AND COLLECTION-LEVEL STUFF
+#
+###############################################################################
+
+
+@app.route("/embed/test/widget")
+def embed_test_widget():
+    return render_template("test-pages/sample-embed-internal-test.html")
+
+
+@app.route("/embed/impactstory.js")
+@app.route("/embed/v1/impactstory.js")
+def impactstory_dot_js():
+
+    badges_template = render_template("js-template-badges.html") \
+        .replace("\n", "") \
+        .replace("'", "&apos;")
+
+    # First build the concatenated js file for the widget. Building makes a file.
+    # Then open the file and put it in the template to return.
+    js_widget.build() # always build this, whether dev in dev env or not
+    libs = open(os.path.dirname(__file__) + "/static/js/widget.js", "r").read()
+
+    rendered = render_template(
+        "embed/impactstory.js",
+        badges_template=badges_template,
+        libs=unicode(libs, "utf-8")
     )
-
-
-@app.route("/<path:dummy>")  # from http://stackoverflow.com/a/14023930/226013
-def redirect_to_profile(dummy):
+    resp = make_response(rendered)
     """
-    Route things that look like user profile urls.
-
-    *Everything* not explicitly routed to another function will end up here.
-    """
-
-    return user_profile(dummy)
-
-
-def user_profile(url_slug):
-
-    user = User.query.filter_by(url_slug=url_slug).first()
-    if user is None:
-        abort(404)
-    else:
-        # for now render something quite like the report template. change later.
-
-        return render_template(
-            'user-profile.html',
-            mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-            roots=roots,
-            api_key=os.environ["API_KEY"],
-            request_url=request.url,
-            page_title=user.full_name,
-            body_class="report",
-            report_id=user.collection_id,
-            report_id_namespace="impactstory_collection_id",
-            api_query=user.collection_id
-        )
+    There is no standard way to indicate you're sending back javascript;
+    This seems the most recommended one, though. See
+    http://stackoverflow.com/questions/2706290/why-write-script-type-text-javascript-when-the-mime-type-is-set-by-the-serve
+    and http://www.ietf.org/rfc/rfc4329.txt
+     """
+    resp.headers["Content-Type"] = "application/javascript; charset=utf-8"
+    return resp
 
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
     url = "http://{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
-        api_root=roots["api"],
-        api_key=os.environ["API_KEY"],        
+        api_root=g.roots["api"],
+        api_key=g.api_key,
         collection_id=collection_id
     )
     
@@ -409,24 +395,20 @@ def collection_report(collection_id):
         collection = json.loads(r.text)
         return render_template(
             'report.html',
-            mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-            roots=roots,
-            api_key=os.environ["API_KEY"],
             request_url=request.url,
             page_title=collection["title"],
-            body_class="report",
             report_id=collection["_id"],
             report_id_namespace="impactstory_collection_id",
-            api_query="collection/"+collection["_id"]
+            api_query="collection/" + collection["_id"]
         )
     else:
-        abort(404, "This collection doesn't seem to exist yet. "+url)
+        abort(404, "This collection doesn't seem to exist yet. " + url)
 
 
 @app.route('/item/<ns>/<path:id>')
 def item_report(ns, id):
     url = "http://{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
-        api_root=roots["api"],
+        api_root=g.roots["api"],
         ns=ns,
         id=id,
         api_key=os.environ["API_KEY"]
@@ -434,28 +416,28 @@ def item_report(ns, id):
     r = requests.get(url)
     return render_template(
         'report.html',
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],
-        roots=roots,
-        api_key=os.environ["API_KEY"],
         request_url=request.url,
         page_title="",
-        body_class="report",
         report_id=id,
         report_id_namespace=ns,
         api_query="item/{ns}/{id}".format(ns=ns, id=id)
     )
 
 
+
+
+
+
+
+###############################################################################
+#
+#   ADMIN AND UTILITY FUNCTIONS
+#
+###############################################################################
+
 @app.route('/admin/key')
 def generate_api_key():
-    return render_template(
-        'generate-api.html', 
-        mixpanel_token=os.environ["MIXPANEL_TOKEN"],                
-        roots=roots,
-        api_key=os.environ["API_KEY"],
-        page_title="generate api key",
-        body_class="create-collection"
-        )
+    return render_template('generate-api.html')
 
 @app.route('/wospicker', methods=["GET"])
 def wospicker():
@@ -476,6 +458,7 @@ try:
         return resp
 except KeyError:
     logger.error("BLITZ_API_KEY environment variable not defined, not setting up validation api endpoint")
+
 
 @app.route('/hirefire/test', methods=["GET"])
 def hirefire_test():
