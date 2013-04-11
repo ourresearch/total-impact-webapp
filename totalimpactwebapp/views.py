@@ -162,13 +162,6 @@ def user_profile(url_slug):
     else:
         # for now render something quite like the report template. change later.
 
-
-        logger.debug("logged-in user user looks like this:")
-        logger.debug(g.user.__dict__)
-
-        logger.debug("profile looks like this")
-        logger.debug(profile.__dict__)
-
         return render_template(
             'user-profile.html',
             request_url=request.url,
