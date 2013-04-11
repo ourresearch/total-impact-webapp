@@ -223,12 +223,12 @@ function Coll(collViews){
     this.userCanEdit = function(callbacks){
         // @todo make it so this figures out  status based on vars loaded server-side
 
-        if (true) {
+        if (!$("body").hasClass("logged-in")) {
             callbacks.onNotLoggedIn()
             return false
         }
 
-        if (true) {
+        if (!$("body").hasClass("can-edit")) {
             callbacks.onNotOwner()
             return false
         }

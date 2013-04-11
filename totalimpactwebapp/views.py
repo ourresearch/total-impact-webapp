@@ -156,19 +156,26 @@ def redirect_to_profile(dummy):
 
 def user_profile(url_slug):
 
-    user = User.query.filter_by(url_slug=url_slug).first()
-    if user is None:
+    profile = User.query.filter_by(url_slug=url_slug).first()
+    if profile is None:
         abort(404)
     else:
         # for now render something quite like the report template. change later.
 
+
+        logger.debug("logged-in user user looks like this:")
+        logger.debug(g.user.__dict__)
+
+        logger.debug("profile looks like this")
+        logger.debug(profile.__dict__)
+
         return render_template(
             'user-profile.html',
             request_url=request.url,
-            profile=user,
-            report_id=user.collection_id,
+            profile=profile,
+            report_id=profile.collection_id,
             report_id_namespace="impactstory_collection_id",
-            api_query=user.collection_id
+            api_query=profile.collection_id
         )
 
 

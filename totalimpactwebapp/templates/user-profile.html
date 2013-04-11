@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% set page_title = profile.given_name ~ " " ~ profile.surname %}
 
+{% if g.user.id == profile.id %}
+   {% set edit_status = "can-edit" %}
+{% else %}
+   {% set edit_status = "can-not-edit" %}
+{% endif %}
+
+
+
 
 {% block content %}
 

@@ -39,12 +39,13 @@
    </script>
 
 </head>
-{% set login_status = "not-logged-in" %}
-{% if g.user.url_slug %}
+{% if g.user.id %}
    {% set login_status = "logged-in" %}
+{% else %}
+   {% set login_status = "not-logged-in" %}
 {% endif %}
 
-<body class="{{ self | extract_filename }} {{ login_status }}">
+<body class="{{ self | extract_filename }} {{ login_status }} {{ edit_status }}">
 <div id="container">
    <div class="navbar">
       <div class="navbar-inner">
