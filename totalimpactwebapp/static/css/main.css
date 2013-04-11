@@ -134,6 +134,13 @@ div.modal#edit-not-logged-in div.modal-body span.news {
   float: left;
   width: 76%;
 }
+/* managing login state */
+body.logged-in .not-logged-in {
+  display: none;
+}
+body.not-logged-in .logged-in {
+  display: none;
+}
 /* navbar
 *****************************************************************************
 *****************************************************************************
