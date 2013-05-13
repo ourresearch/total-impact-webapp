@@ -190,7 +190,7 @@ function Coll(collViews){
 
     this.update = function(payload, httpType, onSuccess){
 
-        var url = api_root+'/v1/collection/'+this.id+'/items?'
+        var url = webapp_root+'/user/'+this.id+'/items?'
             + "http_method="+httpType
             + '&key='+api_key
             + '&edit_key='+"temp"

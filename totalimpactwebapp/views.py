@@ -263,14 +263,30 @@ def user_view(append_to_slug=""):
                 return json_for_client(user)
 
 
-@app.route("/user/:username")
+@app.route("/user/<username>")
 def user_page_from_user_endpoint(username):
     return redirect("/username")
 
-@app.route("/user/:username/products", methods=["GET", "POST", "PUT", "DELETE"])
-def user_page_from_user_endpoint(username):
+@app.route("/user/<int:userId>/products", methods=["GET", "POST", "PUT", "DELETE"])
+def user_products(userId):
+
+    retrieved_user = User.query.get(userId)
+    if retrieved_user is None:
+        abort(404, "That user doesn't exist.")
+
+
     if request.method == "GET":
-        request.get(os.getenv("API_ROOT"))
+        query = "http://{api_root}/v1/collection/{collection_id}?api_admin_key={key}".format(
+            api_root=g.roots["api"],
+            key=os.getenv("API_ADMIN_KEY"),
+            collection_id=retrieved_user.collection_id
+        )
+
+        r = requests.get(query, params={"include_items": 0})
+
+        logger.debug("running a GET query agains the api")
+        logger.debug(query)
+        logger.debug(r.text)
 
     elif request.method == "POST":
         pass
@@ -280,6 +296,9 @@ def user_page_from_user_endpoint(username):
 
     elif request.method == "DELETE":
         pass
+
+    response_to_send = make_response(r.text, r.status_code, r.headers)
+    return response_to_send
 
 
 @app.route('/create', methods=["GET"])
