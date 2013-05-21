@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 
 
 from totalimpactwebapp import app, util, db, login_manager, forms
-from totalimpactwebapp.models import User
+from totalimpactwebapp.user import User
 
 logger = logging.getLogger("tiwebapp.views")
 
