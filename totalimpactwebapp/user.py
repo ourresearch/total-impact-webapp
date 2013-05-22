@@ -1,5 +1,11 @@
 from totalimpactwebapp import db
+from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
+
+import requests, json, os
+import logging
+
+logger = logging.getLogger("tiwebapp.user")
 
 
 class User(db.Model):
@@ -49,6 +55,60 @@ class User(db.Model):
     def get_id(self):
         return unicode(self.id)
 
-    def __repr__(self):
+    def get_products(self):
+        (collection, status_code) = get_collection_from_core(self.collection_id)
+        return (collection, status_code)
 
+    def add_products(self, aliases_to_add):
+        (collection, status_code) = add_products_to_core_collection(self.collection_id, aliases_to_add)
+        return (collection, status_code)
+
+    def delete_products(self, tiids_to_delete):
+        (collection, status_code) = delete_products_from_core_collection(self.collection_id, tiids_to_delete)
+        return (collection, status_code)
+
+    def __repr__(self):
         return '<User {name}>'.format(name=self.full_name)
+
+
+
+def get_collection_from_core(collection_id):
+    logger.debug("running a GET query for /collection/{collection_id} the api".format(
+        collection_id=collection_id))
+
+    query = "http://{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
+        core_api_root=g.roots["api"],
+        api_admin_key=os.getenv("API_KEY"),
+        collection_id=collection_id
+    )
+    r = requests.get(query, params={"include_items": 0})
+
+    return (r.text, r.status_code)
+
+
+def add_products_to_core_collection(collection_id, aliases_to_add):
+    query = "http://{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
+        core_api_root=g.roots["api"],
+        api_admin_key=os.getenv("API_KEY"),
+        collection_id=collection_id
+    )
+    r = requests.post(query, 
+            params={"http_method": "PUT"}, 
+            data=json.dumps({"aliases": aliases_to_add}), 
+            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+
+    return (r.text, r.status_code)
+
+def delete_products_from_core_collection(collection_id, tiids_to_delete):
+    query = "http://{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
+        core_api_root=g.roots["api"],
+        api_admin_key=os.getenv("API_KEY"),
+        collection_id=collection_id
+    )
+    r = requests.post(query, 
+            params={"http_method": "DELETE"}, 
+            data=json.dumps({"tiids": tiids_to_delete}), 
+            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+
+    return (r.text, r.status_code)
+

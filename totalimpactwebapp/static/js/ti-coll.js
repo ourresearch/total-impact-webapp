@@ -179,25 +179,23 @@ function Coll(collViews){
 
     this.deleteItem = function(tiidToDelete, callbacks) {
         callbacks.start()
-        this.update({"tiids": [tiidToDelete]},"DELETE", callbacks.success)
+        this.update({"tiids": [tiidToDelete]}, "DELETE", callbacks.success)
         return false
     }
 
     this.addItems = function(itemsToAdd, callbacks) {
         if (!this.userCanEdit(callbacks)) return false
-        this.update({aliases: itemsToAdd}, "PUT", callbacks.onSuccess)
+        this.update({"aliases": itemsToAdd}, "PUT", callbacks.onSuccess)
     }
 
     this.update = function(payload, httpType, onSuccess){
 
-        var url = webapp_root+'/user/'+this.id+'/items?'
-            + "http_method="+httpType
-            + '&key='+api_key
-            + '&edit_key='+"temp"
+        var url = webapp_root+'/user/'+impactstoryUserId+'/products?'
+            + 'api_admin_key='+api_key
 
         $.ajax({
                    url: url,
-                   type: "POST",
+                   type: httpType,
                    dataType: "json",
                    contentType: "application/json; charset=utf-8",
                    data:  JSON.stringify(payload),

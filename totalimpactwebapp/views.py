@@ -267,39 +267,25 @@ def user_view(append_to_slug=""):
 def user_page_from_user_endpoint(username):
     return redirect("/username")
 
-@app.route("/user/<int:userId>/products", methods=["GET", "POST", "PUT", "DELETE"])
-def user_products(userId):
-
+@app.route("/user/<int:userId>/products", methods=["GET", "PUT", "DELETE"])
+def user_products_get(userId):
     retrieved_user = User.query.get(userId)
     if retrieved_user is None:
         abort(404, "That user doesn't exist.")
 
-
     if request.method == "GET":
-        query = "http://{api_root}/v1/collection/{collection_id}?api_admin_key={key}".format(
-            api_root=g.roots["api"],
-            key=os.getenv("API_ADMIN_KEY"),
-            collection_id=retrieved_user.collection_id
-        )
-
-        r = requests.get(query, params={"include_items": 0})
-
-        logger.debug("running a GET query agains the api")
-        logger.debug(query)
-        logger.debug(r.text)
-
-    elif request.method == "POST":
-        pass
-
+        (profile_collection, status_code) = retrieved_user.get_products()
     elif request.method == "PUT":
-        pass
-
+        aliases_to_add = request.json.get("aliases")
+        (profile_collection, status_code) = retrieved_user.add_products(aliases_to_add)
     elif request.method == "DELETE":
-        pass
+        tiids_to_delete = request.json.get("tiids")
+        (profile_collection, status_code) = retrieved_user.delete_products(tiids_to_delete)
+    else:
+        abort(405)  #method not supported.  Won't get here.
 
-    response_to_send = make_response(r.text, r.status_code, r.headers)
+    response_to_send = make_response(profile_collection, status_code)
     return response_to_send
-
 
 @app.route('/create', methods=["GET"])
 def collection_create():
