@@ -284,6 +284,28 @@ def user_slug_view_and_modify(userId):
 
     return make_response(json.dumps(retrieved_user.url_slug), 200)
 
+
+@app.route("/user/<int:userId>/name", methods=["GET", "PUT"])
+def user_name_view_and_modify(userId):
+    retrieved_user = User.query.get(userId)
+    if retrieved_user is None:
+        abort(404, "That user doesn't exist.")
+
+    if request.method == "PUT":
+        # test from the command line like this 
+        # curl -i -H "Content-Type: application/json" -X PUT -d '{"given":"Clark", "surname":"Kent"}' http://localhost:5000/user/2/name
+        json_name = request.json
+        retrieved_user.given_name = json_name["given"]
+        retrieved_user.surname = json_name["surname"]
+        db.session.commit()
+    else:
+        # test like this
+        # curl -i http://localhost:5000/user/2/name
+        json_name = {"given": retrieved_user.given_name, "surname": retrieved_user.surname}
+
+    return make_response(json.dumps(json_name), 200)
+
+
 @app.route("/user/<int:userId>/password", methods=["PUT"])
 def user_password_modify(userId):
     retrieved_user = User.query.get(userId)
