@@ -5,7 +5,7 @@ from flask import render_template, session
 from flask.ext.assets import Environment, Bundle
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 
 
 from totalimpactwebapp import app, util, db, login_manager, forms
@@ -209,58 +209,80 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route("/user", methods=["GET", "POST"])
-def user_view(append_to_slug=""):
-    """
-    Create and modify users
-    """
+@app.route("/user", methods=["POST"])
+def user_create():
+    """create a user"""
+    logger.debug("POST /user: Creating new user")
 
-    if request.method == "POST":
-        logger.debug("POST /user: Creating new user")
+    alias_tiids = request.json["alias_tiids"]
+    url = "http://" + g.roots["api"] + "/collection"
+    data = {"aliases": alias_tiids, "title": request.json["email"]}
+    headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+    r = requests.post(url, data=json.dumps(data), headers=headers)
+    logger.debug("POST /user: created collection " + r.json["collection"]["_id"])
 
-        alias_tiids = request.json["alias_tiids"]
-        url = "http://" + g.roots["api"] + "/collection"
-        data = {"aliases": alias_tiids, "title": request.json["email"]}
-        headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-        r = requests.post(url, data=json.dumps(data), headers=headers)
-        logger.debug("POST /user: created collection " + r.json["collection"]["_id"])
-
-        user = User(
-            email=request.json["email"],
-            password=request.json["password"],
-            collection_id=r.json["collection"]["_id"],
-            given_name=request.json["given_name"],
-            surname=request.json["surname"]
-        )
-        user.url_slug += append_to_slug  # hack for when slugs collide
-        db.session.add(user)
-        try:
-            db.session.commit()
-        except IntegrityError as e:
-            logger.info(e)
-            logger.info("tried to mint a url slug ('{slug}') that already exists".format(
-                slug=user.url_slug
-            ))
-            db.session.rollback()
-            return user_view(append_to_slug="-" + shortuuid.uuid()[0:5])
-
-        logger.debug("POST /user: Finished creating user {id}, {slug}".format(
-            id=user.id,
+    user = User(
+        email=request.json["email"],
+        password=request.json["password"],
+        collection_id=r.json["collection"]["_id"],
+        given_name=request.json["given_name"],
+        surname=request.json["surname"]
+    )
+    db.session.add(user)
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        logger.info(e)
+        logger.info("tried to mint a url slug ('{slug}') that already exists".format(
             slug=user.url_slug
         ))
+        db.session.rollback()
+        abort(400, "Error: url slug already exists")
 
-        login_user(user)
-        return json_for_client({"url_slug": user.url_slug})
+    logger.debug("POST /user: Finished creating user {id}, {slug}".format(
+        id=user.id,
+        slug=user.url_slug
+    ))
 
-    elif request.method == "GET":
-        email = request.args["email"]
-        if email is not None:
-            # return a user slug based from an email query
-            user = User.query.filter_by(email=email).first()
-            if user is None:
-                abort(404, "There's no user with email " + email)
-            else:
-                return json_for_client(user)
+    login_user(user)
+    return json_for_client({"url_slug": user.url_slug})
+
+@app.route("/user", methods=["GET"])
+def user_view():
+    email = request.args["email"]
+    if email is None:
+        abort(400, "Bad request, please include email query")
+
+    # return a user slug based from an email query
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+        abort(404, "There's no user with email " + email)
+    return json_for_client(user)
+
+@app.route("/user/<int:userId>/slug", methods=["GET", "PUT"])
+def user_slug_view_and_modify(userId):
+    retrieved_user = User.query.get(userId)
+    if retrieved_user is None:
+        abort(404, "That user doesn't exist.")
+
+    if request.method == "PUT":
+        # test from the command line like this 
+        # curl -i -H "Content-Type: application/json" -X PUT -d '{"slug":"ClarkKent"}' http://localhost:5000/user/2/slug
+        retrieved_user.url_slug = request.json["slug"]
+        try:
+            db.session.commit()
+        except (IntegrityError, InvalidRequestError) as e:
+            db.session.rollback()
+            logger.info("tried to mint a url slug ('{slug}') that already exists".format(
+                slug=retrieved_user.url_slug
+            ))
+            abort(400, "Error: url slug already exists")
+    else:
+        # test like this
+        # curl -i http://localhost:5000/user/2/slug
+        slug = retrieved_user.url_slug
+
+    return make_response(json.dumps(retrieved_user.url_slug), 200)
 
 
 @app.route("/user/<username>")
@@ -268,7 +290,7 @@ def user_page_from_user_endpoint(username):
     return redirect("/username")
 
 @app.route("/user/<int:userId>/products", methods=["GET", "PUT", "DELETE"])
-def user_products_get(userId):
+def user_products_view_and_modify(userId):
     retrieved_user = User.query.get(userId)
     if retrieved_user is None:
         abort(404, "That user doesn't exist.")
