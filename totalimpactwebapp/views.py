@@ -284,6 +284,18 @@ def user_slug_view_and_modify(userId):
 
     return make_response(json.dumps(retrieved_user.url_slug), 200)
 
+@app.route("/user/<int:userId>/password", methods=["PUT"])
+def user_password_modify(userId):
+    retrieved_user = User.query.get(userId)
+    if retrieved_user is None:
+        abort(404, "That user doesn't exist.")
+
+    # test from the command line like this 
+    # curl -i -H "Content-Type: application/json" -X PUT -d '{"password":"opensesame"}' http://localhost:5000/user/2/password
+    retrieved_user.set_password(request.json["password"])
+    db.session.commit()
+    return make_response(json.dumps("ok"), 200)
+
 
 @app.route("/user/<username>")
 def user_page_from_user_endpoint(username):
