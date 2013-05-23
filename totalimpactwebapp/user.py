@@ -2,11 +2,13 @@ from totalimpactwebapp import db
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
 
-import requests, json, os
+import requests, json, os, datetime
 import logging
 
 logger = logging.getLogger("tiwebapp.user")
 
+def now():
+    return datetime.datetime.now()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -16,6 +18,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(120))
     url_slug = db.Column(db.String(100), unique=True)
     collection_id = db.Column(db.String(12))
+    created = db.Column(db.DateTime(), default=now)
 
     @property
     def full_name(self):
