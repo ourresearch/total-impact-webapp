@@ -1,4 +1,4 @@
-import requests, os, json, logging, shortuuid, re
+import requests, os, json, logging, shortuuid, re, random
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
 from flask import render_template, session
@@ -237,7 +237,10 @@ def user_create():
             slug=user.url_slug
         ))
         db.session.rollback()
-        abort(400, "Error: url slug already exists")
+        # to de-duplicate, mint a slug with a random number on it
+        user.url_slug = user.url_slug + str(random.randint(1000,9999))
+        db.session.add(user)
+        db.session.commit()
 
     logger.debug("POST /user: Finished creating user {id}, {slug}".format(
         id=user.id,
@@ -273,10 +276,12 @@ def user_slug_view_and_modify(userId):
             db.session.commit()
         except (IntegrityError, InvalidRequestError) as e:
             db.session.rollback()
-            logger.info("tried to mint a url slug ('{slug}') that already exists".format(
+            logger.info("tried to mint a url slug ('{slug}') that already exists, so appending number".format(
                 slug=retrieved_user.url_slug
             ))
-            abort(400, "Error: url slug already exists")
+            # to de-duplicate, mint a slug with a random number on it
+            retrieved_user.url_slug = request.json["slug"] + str(random.randint(1000,9999))
+            db.session.commit()
     else:
         # test like this
         # curl -i http://localhost:5000/user/2/slug
