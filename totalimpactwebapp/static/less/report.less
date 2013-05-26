@@ -225,6 +225,20 @@ div#metrics {
    }
 }
 
+
+// collections/reports are deprecated, so users can't edit them anymore.
+body.report {
+   li.item {
+      &:hover {
+         div.item-controls {
+            a.item-delete-button {display:none}
+         }
+      }
+   }
+}
+
+
+
 // li.item is in #metrics, but big enough it gets its own block.
 li.item {
    float:left;

@@ -206,6 +206,9 @@ div#metrics div.genre ul.items.inactive {
 div#metrics div.genre ul.items.inactive li.item div.biblio h5 {
   color: #666;
 }
+body.report li.item:hover div.item-controls a.item-delete-button {
+  display: none;
+}
 li.item {
   float: left;
   clear: both;
