@@ -171,6 +171,20 @@ def user_profile(url_slug):
             api_query=profile.collection_id
         )
 
+@app.route("/<url_slug>/preferences")
+def user_prefs(url_slug):
+
+    #@todo: check to see if user is logged in before serving this page
+
+    profile = User.query.filter_by(url_slug=url_slug).first()
+    if profile is None:
+        abort(404)
+    else:
+        return render_template(
+            'user-prefs.html',
+            profile=profile
+        )
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
