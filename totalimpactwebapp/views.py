@@ -174,7 +174,11 @@ def user_profile(url_slug):
 @app.route("/<url_slug>/preferences")
 def user_prefs(url_slug):
 
-    #@todo: check to see if user is logged in before serving this page
+    if not g.user.is_authenticated():
+        return redirect(url_for('login', next=request.url))
+
+    if g.user.url_slug != url_slug:
+        return redirect("/" + url_slug)
 
     profile = User.query.filter_by(url_slug=url_slug).first()
     if profile is None:
