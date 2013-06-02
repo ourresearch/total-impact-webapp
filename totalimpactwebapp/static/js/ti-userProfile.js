@@ -10,8 +10,8 @@ UserProfile.prototype = {
         this.clickNameToModify()
     }
     , clickNameToModify: function(){
-        $("h2.page-title span").each(function(){
-            var title = "Edit " + (this.className.replace("-", " "))
+        $("body.can-edit h2.page-title span").each(function(){
+            var title = "Edit " + ($(this).attr("data-name").replace("_", " "))
             $(this).editable({
                     type: "text",
                     pk: impactstoryUserId,

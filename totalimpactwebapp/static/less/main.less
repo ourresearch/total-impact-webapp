@@ -139,12 +139,23 @@ div.modal {
 }
 
 
-/* managing login state */
+/* managing login and edit states */
 body.logged-in {
    .not-logged-in {display:none;}
 }
 body.not-logged-in {
    .logged-in {display:none;}
+}
+body.can-edit {
+   h2.editable-heading {
+      padding-right:16px;
+      background: url(../img/edit.png) no-repeat center right;
+      cursor: pointer;
+      &:hover {color: #333;}
+      span.editable {
+         &:hover {color: @linkColor;}
+      }
+   }
 }
 
 .editable-click { // overwrite the x-editable plugin's defaults

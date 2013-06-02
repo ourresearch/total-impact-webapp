@@ -134,12 +134,23 @@ div.modal#edit-not-logged-in div.modal-body span.news {
   float: left;
   width: 76%;
 }
-/* managing login state */
+/* managing login and edit states */
 body.logged-in .not-logged-in {
   display: none;
 }
 body.not-logged-in .logged-in {
   display: none;
+}
+body.can-edit h2.editable-heading {
+  padding-right: 16px;
+  background: url(../img/edit.png) no-repeat center right;
+  cursor: pointer;
+}
+body.can-edit h2.editable-heading:hover {
+  color: #333;
+}
+body.can-edit h2.editable-heading span.editable:hover {
+  color: #ff4e00;
 }
 .editable-click {
   border: none;
