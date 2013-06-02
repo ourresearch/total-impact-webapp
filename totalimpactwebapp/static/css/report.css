@@ -5,6 +5,12 @@
 body.user-profile #page-header {
   padding-top: 40px;
 }
+body.user-profile #page-header h2.page-title {
+  cursor: pointer;
+}
+body.user-profile #page-header h2.page-title:hover {
+  color: #ff4e00;
+}
 body.user-profile .modal {
   width: 675px;
   margin: -250px 0 0 -337.5px;

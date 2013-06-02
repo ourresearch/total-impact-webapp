@@ -17,7 +17,13 @@ body.user-profile {
    div#main{
    }
 
-   #page-header { padding-top:40px;}
+   #page-header {
+      padding-top:40px;
+      h2.page-title {
+         cursor: pointer;
+         &:hover{color:  @linkColor;}
+      }
+   }
    .modal {
       width:  @modalWidth;
       margin:  -250px 0 0 -(@modalWidth / 2);

@@ -418,6 +418,7 @@ div#page-header h2 {
   margin-bottom: -5px;
   float: none;
   color: #555;
+  float: left;
 }
 div.main {
   background: #fff;
@@ -427,6 +428,7 @@ div.main {
   color: #333;
   border-top: 1px solid #aaa;
   min-height: 350px;
+  clear: both;
 }
 div.main h3:first {
   margin-top: 0;
