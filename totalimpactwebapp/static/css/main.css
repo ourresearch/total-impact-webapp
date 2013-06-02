@@ -141,6 +141,9 @@ body.logged-in .not-logged-in {
 body.not-logged-in .logged-in {
   display: none;
 }
+.editable-click {
+  border: none;
+}
 /* navbar
 *****************************************************************************
 *****************************************************************************
