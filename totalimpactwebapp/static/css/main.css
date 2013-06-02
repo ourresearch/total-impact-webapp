@@ -143,11 +143,14 @@ body.not-logged-in .logged-in {
 }
 body.can-edit h2.editable-heading {
   padding-right: 16px;
-  background: url(../img/edit.png) no-repeat center right;
-  cursor: pointer;
+  background: url(../img/edit.png) no-repeat;
+  background-position: right 14px;
 }
-body.can-edit h2.editable-heading:hover {
-  color: #333;
+body.can-edit h2.editable-heading.ready {
+  background-position: right -54px;
+}
+body.can-edit h2.editable-heading span.editable {
+  cursor: pointer;
 }
 body.can-edit h2.editable-heading span.editable:hover {
   color: #ff4e00;

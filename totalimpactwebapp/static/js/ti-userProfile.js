@@ -22,6 +22,10 @@ UserProfile.prototype = {
                 }
             })
         })
+            .hover(
+                function(){$(this).parents("h2").addClass("ready")},
+                function(){$(this).parents("h2").removeClass("ready")}
+            )
     }
 
 

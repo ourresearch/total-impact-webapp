@@ -149,10 +149,13 @@ body.not-logged-in {
 body.can-edit {
    h2.editable-heading {
       padding-right:16px;
-      background: url(../img/edit.png) no-repeat center right;
-      cursor: pointer;
-      &:hover {color: #333;}
+      background: url(../img/edit.png) no-repeat;
+      background-position: right 14px;
+      &.ready {
+         background-position: right -54px;
+      }
       span.editable {
+         cursor: pointer;
          &:hover {color: @linkColor;}
       }
    }
