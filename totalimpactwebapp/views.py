@@ -16,6 +16,7 @@ logger = logging.getLogger("tiwebapp.views")
 assets = Environment(app)
 js = Bundle('js/bootstrap.js',
             'js/bootstrapx-clickover.js',
+            'js/bootstrap-editable.js',
             'js/prettify.js',
             'js/underscore.js',
             'js/hmac-sha1.js',
@@ -39,6 +40,7 @@ js = Bundle('js/bootstrap.js',
 
 css = Bundle('css/bootstrap.css',
             'css/prettify.css',
+            'css/bootstrap-editable.css',
             'css/jasny-bootstrap.css',
             'css/main.css',
             'css/create-collection.css',
