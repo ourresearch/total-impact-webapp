@@ -402,6 +402,10 @@ div#login-register form:first-child {
   padding-right: 15px;
   border-right: 1px solid #ddd;
 }
+.editableform-loading {
+  background: url(../img/loading-bar.gif) no-repeat;
+  background-position: center center;
+}
 /* page header
 *****************************************************************************
 *****************************************************************************

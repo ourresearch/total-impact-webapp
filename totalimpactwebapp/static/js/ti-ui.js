@@ -35,7 +35,10 @@ if (!Object.create) {
         return new F();
     };
 }
-
+function toTitleCase(str) {
+    // from http://stackoverflow.com/a/4878800/226013
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
 
 function homePageInit() {
     $('.carousel').carousel()

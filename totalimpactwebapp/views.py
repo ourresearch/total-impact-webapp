@@ -298,28 +298,21 @@ def user_put(userId):
     return globals()[method_name](userId, request.form["value"])
 
 
-@app.route("/user/<int:userId>/given_name/<given_name>", methods=["PUT"])
-def user_given_name_modify(userId, given_name):
+def user_name_modify(userId, name, name_type):
     retrieved_user = get_user_from_id(userId)
-
-    # test from the command line like this
-    # curl -i -X PUT  http://localhost:5000/user/2/given_name/clark
-    retrieved_user.given_name = given_name
+    setattr(retrieved_user, name_type, name)
     db.session.commit()
+    return make_response(json.dumps(name), 200)
 
-    return make_response(json.dumps(json_name), 200)
+
+@app.route("/user/<int:userId>/surname/<name>", methods=["PUT"])
+def user_surname_modify(userId, name):
+    return user_name_modify(userId, name, "surname")
 
 
-@app.route("/user/<int:userId>/given_name/<given_name>", methods=["PUT"])
-def user_given_name_modify(userId, given_name):
-    retrieved_user = get_user_from_id(userId)
-
-    # to test: curl -i -X PUT  http://localhost:5000/user/2/given_name/clark
-    retrieved_user.given_name = given_name
-    db.session.commit()
-
-    return make_response(json.dumps(given_name), 200)
-
+@app.route("/user/<int:userId>/given_name/<name>", methods=["PUT"])
+def user_given_name_modify(userId, name):
+    return user_name_modify(userId, name, "given_name")
 
 
 
@@ -578,8 +571,6 @@ try:
     @app.route('/hirefire/' + os.environ["HIREFIRE_TOKEN"] + '/info', methods=["GET"])
     def hirefire_worker_count():
         import time
-        time.sleep(3)
-
         resp = make_response(json.dumps([{"worker":1}]), 200)
         resp.mimetype = "application:json"
         return resp
