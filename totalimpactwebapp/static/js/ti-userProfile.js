@@ -10,21 +10,18 @@ UserProfile.prototype = {
         this.clickNameToModify()
     }
     , clickNameToModify: function(){
-        var name = $("h2.page-title").text().split(" ")
-        var data = {
-            given: name[0],
-            surname: name[1]
+        var name = {
+            given: $("h2.page-title span.given-name").text(),
+            surname: $("h2.page-title span.surname").text()
         }
-        $("h2.page-title").editable({
+
+        $("h2.page-title span.given-name").editable({
             type: "text",
             pk: impactstoryUserId,
-            url: "/user/"+impactstoryUserId+"/name",
-            title: "first name, last name",
+            url: "/user/"+impactstoryUserId,
+            title: "Given name",
             ajaxOptions: {
-                type: 'PUT',
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                data:  JSON.stringify(data)
+                type: 'PUT'
             }
         })
     }

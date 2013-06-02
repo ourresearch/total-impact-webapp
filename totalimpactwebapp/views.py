@@ -89,6 +89,14 @@ def json_for_client(obj_or_dict):
     return resp
 
 
+def get_user_from_id(userId):
+    retrieved_user = User.query.get(userId)
+    if retrieved_user is None:
+        abort(404, "That user doesn't exist.")
+
+    return retrieved_user
+
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -283,9 +291,42 @@ def user_view():
         abort(404, "There's no user with email " + email)
     return json_for_client(user)
 
+
+@app.route("/user/<int:userId>", methods=["PUT"])
+def user_put(userId):
+    method_name = "user_" + request.form["name"] + "_modify"
+    return globals()[method_name](userId, request.form["value"])
+
+
+@app.route("/user/<int:userId>/given_name/<given_name>", methods=["PUT"])
+def user_given_name_modify(userId, given_name):
+    retrieved_user = get_user_from_id(userId)
+
+    # test from the command line like this
+    # curl -i -X PUT  http://localhost:5000/user/2/given_name/clark
+    retrieved_user.given_name = given_name
+    db.session.commit()
+
+    return make_response(json.dumps(json_name), 200)
+
+
+@app.route("/user/<int:userId>/given_name/<given_name>", methods=["PUT"])
+def user_given_name_modify(userId, given_name):
+    retrieved_user = get_user_from_id(userId)
+
+    # to test: curl -i -X PUT  http://localhost:5000/user/2/given_name/clark
+    retrieved_user.given_name = given_name
+    db.session.commit()
+
+    return make_response(json.dumps(given_name), 200)
+
+
+
+
 @app.route("/user/<int:userId>/slug", methods=["GET", "PUT"])
 def user_slug_view_and_modify(userId):
     retrieved_user = User.query.get(userId)
+    return "Jason!"
     if retrieved_user is None:
         abort(404, "That user doesn't exist.")
 
@@ -310,26 +351,6 @@ def user_slug_view_and_modify(userId):
 
     return make_response(json.dumps(retrieved_user.url_slug), 200)
 
-
-@app.route("/user/<int:userId>/name", methods=["GET", "PUT"])
-def user_name_view_and_modify(userId):
-    retrieved_user = User.query.get(userId)
-    if retrieved_user is None:
-        abort(404, "That user doesn't exist.")
-
-    if request.method == "PUT":
-        # test from the command line like this 
-        # curl -i -H "Content-Type: application/json" -X PUT -d '{"given":"Clark", "surname":"Kent"}' http://localhost:5000/user/2/name
-        json_name = request.json
-        retrieved_user.given_name = json_name["given"]
-        retrieved_user.surname = json_name["surname"]
-        db.session.commit()
-    else:
-        # test like this
-        # curl -i http://localhost:5000/user/2/name
-        json_name = {"given": retrieved_user.given_name, "surname": retrieved_user.surname}
-
-    return make_response(json.dumps(json_name), 200)
 
 
 @app.route("/user/<int:userId>/password", methods=["PUT"])

@@ -5,10 +5,10 @@
 body.user-profile #page-header {
   padding-top: 40px;
 }
-body.user-profile #page-header h2.page-title {
+body.user-profile #page-header h2.page-title span {
   cursor: pointer;
 }
-body.user-profile #page-header h2.page-title:hover {
+body.user-profile #page-header h2.page-title span:hover {
   color: #ff4e00;
 }
 body.user-profile .modal {
@@ -59,11 +59,6 @@ body.user-profile .modal .modal-body form h3 span.step-number {
 }
 body.user-profile .modal .modal-body form.other-products {
   margin-right: 20px;
-}
-#page-header h2 span {
-  font-size: 16px;
-  margin-left: 10px;
-  font-family: helvetica, arial, sans-serif;
 }
 #page-header img.loading {
   width: 32px;
