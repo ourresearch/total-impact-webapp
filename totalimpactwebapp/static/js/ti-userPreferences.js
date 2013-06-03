@@ -31,6 +31,9 @@ UserPreferences.prototype = {
             mode: "inline",
             ajaxOptions: {
                 type: 'PUT'
+            },
+            success: function(response, newValue){
+                window.location = webapp_root_pretty + "/" + newValue + "/preferences"
             }
         })
     }
