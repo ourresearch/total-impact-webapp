@@ -80,8 +80,8 @@
                </a>
                <div  class="dropdown-menu">
                   <ul class='user-actions'>
-                     <li><a href="/{{g.user.url_slug}}" class="profile">My profile</a></li>
-                     <li><a href="#" class="prferences">Preferences</a></li>
+                     <li><a href="/{{ g.user.url_slug }}" class="profile">My profile</a></li>
+                     <li><a href="/{{ g.user.url_slug }}/preferences" class="preferences">Preferences</a></li>
                      <li><a href="{{ url_for('logout') }}" class="logout">Log out</a></li>
                   </ul>
                </div>
