@@ -16,13 +16,26 @@
       <div class="pref-category profile-url">
          <h3>Profile URL</h3>
          <span class="url">
-            <span class="base">http://impactstory.org/</span>
-            <span class="slug editable">{{ profile.url_slug }}</span>
+            <span class="url-component base">http://impactstory.org/</span>
+            <span class="url-component slug editable">{{ profile.url_slug }}</span>
          </span>
       </div>
       <div class="pref-category">
-         <h3>Password</h3>
-         <div class="profile-item"></div>
+         <h3>Change password</h3>
+         <form class="form-horizontal">
+            <div class="control-group">
+               <label class="control-label" for="input-old-pw">Current password</label>
+               <div class="controls">
+                  <input type="password" name="current_pw" id="input-old-pw" placeholder="Current password">
+               </div>
+            </div>
+            <div class="control-group">
+               <label class="control-label" for="input-new-pw">New password</label>
+               <div class="controls">
+                  <input type="password" name="current_pw" id="input-new-pw" placeholder="New password">
+               </div>
+            </div>
+         </form>
       </div>
    </div>
 </div>

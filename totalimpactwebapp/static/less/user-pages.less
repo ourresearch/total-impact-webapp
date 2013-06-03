@@ -1,3 +1,6 @@
+@import "bootstrap/variables.less";
+@linkColor: #FF4E00;
+
 body.user-profile {
 
 }
@@ -21,7 +24,7 @@ body.user-preferences {
             }
             &.profile-url {
                span.url {
-                  span {
+                  span.url-component {
                      margin: 0;
                      padding: 0;
                      &.base {
@@ -29,22 +32,22 @@ body.user-preferences {
                         margin: 7px 0 12px 0;
                         display:inline-block;
                      }
-                     &.slug {
-                        margin-left:-2px;
-                     }
                   }
                }
             }
             form.editableform {
-               div.control-group.error {
-                  div {
-                     float:left;
-                     &.editable-error-block {
-                        margin: 0 0 0 10px;
-                        font-size: 15px;
-                        line-height: 1;
+               div.control-group {
+                  &.error {
+                     div {
+                        float:left;
+                        &.editable-error-block {
+                           margin: 0 0 0 10px;
+                           font-size: 15px;
+                           line-height: 1;
+                        }
                      }
                   }
+                  button.editable-cancel { display:none;}
                }
             }
          }

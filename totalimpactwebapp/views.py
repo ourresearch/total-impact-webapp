@@ -46,7 +46,6 @@ css = Bundle('css/bootstrap.css',
             'css/create-collection.css',
             'css/report.css',
             'css/user-pages.css',
-            'css/user-pages.css',
             filters="yui_css",
             output="css/packed.css"
 )
