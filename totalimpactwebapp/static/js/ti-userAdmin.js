@@ -5,12 +5,11 @@ var UserAdmin = function(options) {
 
 UserAdmin.prototype = {
     init: function(){
-        if (!$("body").hasClass("user-profile")) return false
-        console.log("userprofile is running!")
         this.clickNameToModify()
     }
     , clickNameToModify: function(){
         $("body.can-edit h2.page-title span.editable").each(function(){
+            console.log("click name to modify")
             var title = "Edit " + ($(this).attr("data-name").replace("_", " "))
             $(this).editable({
                                  type: "text",

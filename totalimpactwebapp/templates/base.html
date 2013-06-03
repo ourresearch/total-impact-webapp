@@ -97,13 +97,19 @@
    </div>
    <div id="page-header">
       <div class="wrapper">
-         {# unpleasant hack to let user-report page convey more info in page heading #}
+         {# unpleasant hacks to let user-report and admin pages' be editable... #}
          {% if profile %}
          <h2 class='page-title editable-heading'>
+            {% if (self | extract_filename) == "user-admin" %}
+            <span class="prefs">Preferences:</span>
+            {% endif %}
+
             <span class="given-name editable" data-name="given_name">{{ profile.given_name }}</span>
             <span class="surname editable" data-name="surname">{{ profile.surname }}</span>
             <span class="instr">&nbsp;<span>click name to edit</span></span>
          </h2>
+
+         {# it's easy if we don't have to edit the h2: #}
          {% else %}
          <h2 class='page-title'>{{ page_title }}</h2>
          {% endif %}
