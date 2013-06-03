@@ -148,15 +148,26 @@ body.not-logged-in {
 }
 body.can-edit {
    h2.editable-heading {
-      padding-right:16px;
-      background: url(../img/edit.png) no-repeat;
-      background-position: right 14px;
-      &.ready {
-         background-position: right -54px;
+      span.instr {
+         background: url(../img/edit.png) no-repeat;
+         padding-left: 10px;
+         background-position: left 12px;
+         cursor: default;
+         span {
+            display:none;
+            font-family: Helvetica, Arial, sans-serif;
+            color: #555;
+            font-size: 12px;
+            font-weight: normal;
+            line-height: 1;
+         }
       }
       span.editable {
          cursor: pointer;
          &:hover {color: @linkColor;}
+      }
+      &:hover {
+         span.instr span {display:inline;}
       }
    }
 }

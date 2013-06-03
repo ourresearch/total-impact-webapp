@@ -141,19 +141,28 @@ body.logged-in .not-logged-in {
 body.not-logged-in .logged-in {
   display: none;
 }
-body.can-edit h2.editable-heading {
-  padding-right: 16px;
+body.can-edit h2.editable-heading span.instr {
   background: url(../img/edit.png) no-repeat;
-  background-position: right 14px;
+  padding-left: 10px;
+  background-position: left 12px;
+  cursor: default;
 }
-body.can-edit h2.editable-heading.ready {
-  background-position: right -54px;
+body.can-edit h2.editable-heading span.instr span {
+  display: none;
+  font-family: Helvetica, Arial, sans-serif;
+  color: #555;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1;
 }
 body.can-edit h2.editable-heading span.editable {
   cursor: pointer;
 }
 body.can-edit h2.editable-heading span.editable:hover {
   color: #ff4e00;
+}
+body.can-edit h2.editable-heading:hover span.instr span {
+  display: inline;
 }
 .editable-click {
   border: none;

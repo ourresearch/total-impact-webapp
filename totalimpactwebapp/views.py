@@ -183,7 +183,7 @@ def user_profile(url_slug):
         )
 
 @app.route("/<url_slug>/preferences")
-def user_prefs(url_slug):
+def user_admin(url_slug):
 
     if not g.user.is_authenticated():
         return redirect(url_for('login', next=request.url))
@@ -196,7 +196,7 @@ def user_prefs(url_slug):
         abort(404)
     else:
         return render_template(
-            'user-prefs.html',
+            'user-admin.html',
             profile=profile
         )
 
