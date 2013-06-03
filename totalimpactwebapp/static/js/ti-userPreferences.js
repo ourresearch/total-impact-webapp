@@ -1,15 +1,14 @@
-var UserAdmin = function(options) {
+var UserPreferences = function(options) {
     this.options = options
     this.init()
 }
 
-UserAdmin.prototype = {
+UserPreferences.prototype = {
     init: function(){
         this.clickNameToModify()
     }
     , clickNameToModify: function(){
         $("body.can-edit h2.page-title span.editable").each(function(){
-            console.log("click name to modify")
             var title = "Edit " + ($(this).attr("data-name").replace("_", " "))
             $(this).editable({
                                  type: "text",

@@ -100,7 +100,7 @@
          {# unpleasant hacks to let user-report and admin pages' be editable... #}
          {% if profile %}
          <h2 class='page-title editable-heading'>
-            {% if (self | extract_filename) == "user-admin" %}
+            {% if (self | extract_filename) == "user-preferences" %}
             <span class="prefs">Preferences:</span>
             {% endif %}
 

@@ -116,7 +116,7 @@ $(document).ready(function(){
     var aliasListInputs = new AliasListInputs()
     aliasListInputs.init()
 
-    var userAdmin = new UserAdmin()
+    var userPreferences = new UserPreferences()
 
 
 

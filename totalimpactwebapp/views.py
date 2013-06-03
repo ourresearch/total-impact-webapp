@@ -30,7 +30,7 @@ js = Bundle('js/bootstrap.js',
             'js/ti-user.js',
             'js/ti-aliaslist.js',
             'js/ti-coll.js',
-            'js/ti-userAdmin.js',
+            'js/ti-userPreferences.js',
             'js/ti-ui.js',
             'js/google-analytics.js',
             'js/mixpanel.js',
@@ -45,7 +45,8 @@ css = Bundle('css/bootstrap.css',
             'css/main.css',
             'css/create-collection.css',
             'css/report.css',
-            'css/user-profile-and-admin.css',
+            'css/user-pages.css',
+            'css/user-pages.css',
             filters="yui_css",
             output="css/packed.css"
 )
@@ -184,7 +185,7 @@ def user_profile(url_slug):
         )
 
 @app.route("/<url_slug>/preferences")
-def user_admin(url_slug):
+def user_preferences(url_slug):
 
     if not g.user.is_authenticated():
         return redirect(url_for('login', next=request.url))
@@ -197,7 +198,7 @@ def user_admin(url_slug):
         abort(404)
     else:
         return render_template(
-            'user-admin.html',
+            'user-preferences.html',
             profile=profile
         )
 
