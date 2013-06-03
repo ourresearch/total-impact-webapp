@@ -32,6 +32,29 @@ body.user-preferences {
                         margin: 7px 0 12px 0;
                         display:inline-block;
                      }
+                     &.slug { // this mostly doesn't show, keeping it just in case...
+                        margin-left:-2px;
+                        cursor: pointer;
+                        padding-right:16px;
+                        background: url(../img/edit.png) no-repeat;
+                        background-position: right 5px;
+                        &:hover {
+                           color: @linkColor;
+                           background-position: right -63px;
+                        }
+                     }
+                  }
+               }
+            }
+            &.change-pw {
+               margin-top:100px;
+               form.form-horizontal {
+                  div.control-group {
+                     label {
+                        color:  #777;
+                        width:  80px;
+                     }
+                     div.controls{ margin-left: 100px; }
                   }
                }
             }

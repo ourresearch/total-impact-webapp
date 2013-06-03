@@ -29,7 +29,7 @@ UserPreferences.prototype = {
             pk: impactstoryUserId,
             url: "/user/"+impactstoryUserId+"?fail_on_duplicate=true",
             mode: "inline",
-            onblur:"ignore",
+//            onblur:"ignore",
             ajaxOptions: {
                 type: 'PUT'
             },
@@ -45,8 +45,8 @@ UserPreferences.prototype = {
                 }
             }
         })
-            .editable("show", false)
-        $("input").blur()
+//            .editable("show", false)
+//        $("input").blur()
     }
 }
 
