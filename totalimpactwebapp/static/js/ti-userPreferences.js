@@ -6,6 +6,7 @@ var UserPreferences = function(options) {
 UserPreferences.prototype = {
     init: function(){
         this.clickNameToModify()
+        this.clickUrlSlugToModify()
     }
     , clickNameToModify: function(){
         $("body.can-edit h2.page-title span.editable").each(function(){
@@ -19,6 +20,18 @@ UserPreferences.prototype = {
                                      type: 'PUT'
                                  }
                              })
+        })
+    }
+    , clickUrlSlugToModify: function() {
+        $("span.slug.editable").editable({
+            type: "text",
+            name: "slug",
+            pk: impactstoryUserId,
+            url: "/user/"+impactstoryUserId,
+            mode: "inline",
+            ajaxOptions: {
+                type: 'PUT'
+            }
         })
     }
 }
