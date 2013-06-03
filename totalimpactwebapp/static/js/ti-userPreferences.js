@@ -27,13 +27,21 @@ UserPreferences.prototype = {
             type: "text",
             name: "slug",
             pk: impactstoryUserId,
-            url: "/user/"+impactstoryUserId,
+            url: "/user/"+impactstoryUserId+"?fail_on_duplicate=true",
             mode: "inline",
             ajaxOptions: {
                 type: 'PUT'
             },
             success: function(response, newValue){
                 window.location = webapp_root_pretty + "/" + newValue + "/preferences"
+            },
+            error: function(response, newValue){
+                if (response.status === 409) {
+                    return "Whoops, looks like someone else is already using that URL..."
+                }
+                else {
+                    response.responseText
+                }
             }
         })
     }

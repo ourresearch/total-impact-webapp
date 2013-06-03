@@ -333,9 +333,13 @@ def user_slug_modify(userId, new_slug):
         logger.info("tried to mint a url slug ('{slug}') that already exists, so appending number".format(
             slug=retrieved_user.url_slug
         ))
-        # to de-duplicate, mint a slug with a random number on it
-        retrieved_user.url_slug = request.json["slug"] + str(random.randint(1000,9999))
-        db.session.commit()
+
+        if request.args.get("fail_on_duplicate") in ["true", "yes", 1]:
+            abort(409, "this url slug already exists") # see http://stackoverflow.com/a/3826024/226013
+        else:
+            # to de-duplicate, mint a slug with a random number on it
+            retrieved_user.url_slug = new_slug + str(random.randint(1000,9999))
+            db.session.commit()
 
     return make_response(json.dumps(retrieved_user.url_slug), 200)
 
