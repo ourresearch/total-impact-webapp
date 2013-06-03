@@ -7,6 +7,7 @@ UserPreferences.prototype = {
     init: function(){
         this.clickNameToModify()
         this.clickUrlSlugToModify()
+        this.changePassword()
     }
     , clickNameToModify: function(){
         $("body.can-edit h2.page-title span.editable").each(function(){
@@ -47,6 +48,24 @@ UserPreferences.prototype = {
         })
 //            .editable("show", false)
 //        $("input").blur()
+    }
+    , changePassword: function(){
+        $("#change-pw").submit(function(){
+            var this$ = $(this)
+            var old_pw = this$.find("#input-old-pw")
+            var new_pw = this$.find("#input-new-pw")
+
+            changeControlGroupState(
+                this$.find(".control-group"),
+                "working"
+            )
+
+
+
+
+
+            return false;
+        })
     }
 }
 

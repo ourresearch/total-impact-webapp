@@ -54,7 +54,19 @@ body.user-preferences {
                         color:  #777;
                         width:  80px;
                      }
-                     div.controls{ margin-left: 100px; }
+                     span.working img {
+                        height: 28px;
+                        margin: 2px 0 0 7px;
+                     }
+                     div.controls{
+                        margin-left: 100px;
+                        span.help-inline {
+                           font-size: 16px;
+                           &.failure {
+                              color: @errorText;
+                           }
+                        }
+                     }
                   }
                }
             }

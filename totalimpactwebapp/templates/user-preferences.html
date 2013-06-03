@@ -22,17 +22,22 @@
       </div>
       <div class="pref-category change-pw">
          <h3>Change password</h3>
-         <form class="form-horizontal">
-            <div class="control-group">
+         <form class="form-horizontal" id="change-pw">
+            <div class="control-group ready">
                <label class="control-label" for="input-old-pw">Current</label>
                <div class="controls">
                   <input type="password" name="current_pw" id="input-old-pw" placeholder="Current password">
+                  <span class="help-inline failure error">Sorry, that's not your current password.</span>
                </div>
             </div>
-            <div class="control-group">
+            <div class="control-group ready">
                <label class="control-label" for="input-new-pw">New</label>
                <div class="controls">
-                  <input type="password" name="current_pw" id="input-new-pw" placeholder="New password">
+                  <div class="input-append">
+                     <input type="password" name="current_pw" id="input-new-pw" placeholder="New password">
+                     <button class="btn submit ready" type="submit">Submit</button>
+                     <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Importing from</span>
+                  </div>
                </div>
             </div>
          </form>
