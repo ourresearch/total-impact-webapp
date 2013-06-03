@@ -300,6 +300,8 @@ def user_put(userId):
     return globals()[method_name](userId, request.form["value"])
 
 
+
+# user name stuff
 def user_name_modify(userId, name, name_type):
     retrieved_user = get_user_from_id(userId)
     setattr(retrieved_user, name_type, name)
@@ -318,31 +320,22 @@ def user_given_name_modify(userId, name):
 
 
 
-@app.route("/user/<int:userId>/slug", methods=["GET", "PUT"])
-def user_slug_view_and_modify(userId):
-    retrieved_user = User.query.get(userId)
-    return "Jason!"
-    if retrieved_user is None:
-        abort(404, "That user doesn't exist.")
+# user slug stuff
+@app.route("/user/<int:userId>/slug/new_slug", methods=["PUT"])
+def user_slug_modify(userId, new_slug):
+    retrieved_user = get_user_from_id(userId)
+    retrieved_user.url_slug = new_slug
 
-    if request.method == "PUT":
-        # test from the command line like this 
-        # curl -i -H "Content-Type: application/json" -X PUT -d '{"slug":"ClarkKent"}' http://localhost:5000/user/2/slug
-        retrieved_user.url_slug = request.json["slug"]
-        try:
-            db.session.commit()
-        except (IntegrityError, InvalidRequestError) as e:
-            db.session.rollback()
-            logger.info("tried to mint a url slug ('{slug}') that already exists, so appending number".format(
-                slug=retrieved_user.url_slug
-            ))
-            # to de-duplicate, mint a slug with a random number on it
-            retrieved_user.url_slug = request.json["slug"] + str(random.randint(1000,9999))
-            db.session.commit()
-    else:
-        # test like this
-        # curl -i http://localhost:5000/user/2/slug
-        slug = retrieved_user.url_slug
+    try:
+        db.session.commit()
+    except (IntegrityError, InvalidRequestError) as e:
+        db.session.rollback()
+        logger.info("tried to mint a url slug ('{slug}') that already exists, so appending number".format(
+            slug=retrieved_user.url_slug
+        ))
+        # to de-duplicate, mint a slug with a random number on it
+        retrieved_user.url_slug = request.json["slug"] + str(random.randint(1000,9999))
+        db.session.commit()
 
     return make_response(json.dumps(retrieved_user.url_slug), 200)
 
