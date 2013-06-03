@@ -236,7 +236,11 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    next = request.args.get("next", "")
+    if next == "login":
+        return redirect(url_for("login"))
+    else:
+        return redirect(url_for('index'))
 
 
 @app.route("/user", methods=["POST"])
@@ -346,15 +350,20 @@ def user_slug_modify(userId, new_slug):
 
 @app.route("/user/<int:userId>/password", methods=["PUT"])
 def user_password_modify(userId):
-    retrieved_user = User.query.get(userId)
-    if retrieved_user is None:
-        abort(404, "That user doesn't exist.")
+    retrieved_user = get_user_from_id(userId)
 
-    # test from the command line like this 
-    # curl -i -H "Content-Type: application/json" -X PUT -d '{"password":"opensesame"}' http://localhost:5000/user/2/password
-    retrieved_user.set_password(request.json["password"])
-    db.session.commit()
-    return make_response(json.dumps("ok"), 200)
+    if  retrieved_user.check_password(request.json["current_password"]):
+        retrieved_user.set_password(request.json["new_password"])
+        db.session.commit()
+        return make_response(json.dumps("ok"), 200)
+
+    else:
+        abort(403, "The current password is not correct.")
+
+
+
+
+
 
 
 @app.route("/user/<username>")

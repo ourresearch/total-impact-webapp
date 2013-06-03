@@ -52,13 +52,39 @@ UserPreferences.prototype = {
     , changePassword: function(){
         $("#change-pw").submit(function(){
             var this$ = $(this)
-            var old_pw = this$.find("#input-old-pw")
-            var new_pw = this$.find("#input-new-pw")
+            var requestObj = {
+                current_password: $("#current-pw").val(),
+                new_password: $("#new-pw").val()
+            }
 
             changeControlGroupState(
-                this$.find(".control-group"),
+                this$.find("div.control-group"),
                 "working"
             )
+
+            $.ajax({
+                url: webapp_root_pretty+'/user/' + impactstoryUserId + '/password',
+                type: "PUT",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data:  JSON.stringify(requestObj),
+                success: function(data){
+                    window.location = webapp_root_pretty + "/logout?next=login"
+                },
+                error: function(e, textStatus, errorThrown) {
+                    if (e.status === 403) {
+                        changeControlGroupState(
+                            $("div.control-group.enter-current-pw"),
+                            "failure"
+                        )
+                        changeControlGroupState(
+                            $("div.control-group.enter-new-pw"),
+                            "ready"
+                        )
+                    }
+                }
+
+            })
 
 
 
