@@ -69,7 +69,13 @@ UserPreferences.prototype = {
                 contentType: "application/json; charset=utf-8",
                 data:  JSON.stringify(requestObj),
                 success: function(data){
-                    window.location = webapp_root_pretty + "/logout?next=login"
+                    changeControlGroupState(
+                        $("div.control-group"),
+                        "ready"
+                    )
+                    $("span.pw-changed").show().fadeOut(2000)
+                    this$.find("input").val("").blur()
+
                 },
                 error: function(e, textStatus, errorThrown) {
                     if (e.status === 403) {
