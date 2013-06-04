@@ -330,6 +330,9 @@ def user_given_name_modify(userId, name):
 @app.route("/user/<int:userId>/slug/new_slug", methods=["PUT"])
 def user_slug_modify(userId, new_slug):
     retrieved_user = get_user_from_id(userId)
+    if g.user.get_id() != retrieved_user.get_id():
+        abort(403, "You must be logged in to change your URL.")
+
     retrieved_user.url_slug = new_slug
 
     try:
