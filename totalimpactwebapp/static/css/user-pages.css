@@ -1,0 +1,101 @@
+body.can-not-edit h2.editable-heading span.instr {
+  display: none;
+}
+body.can-edit h2.editable-heading span.instr {
+  background: url(../img/edit.png) no-repeat;
+  padding-left: 10px;
+  background-position: left 12px;
+  cursor: default;
+}
+body.can-edit h2.editable-heading span.instr span {
+  display: none;
+  font-family: Helvetica, Arial, sans-serif;
+  color: #555;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1;
+}
+body.can-edit h2.editable-heading span.editable {
+  cursor: pointer;
+}
+body.can-edit h2.editable-heading span.editable:hover {
+  color: #ff4e00;
+}
+body.can-edit h2.editable-heading:hover span.instr span {
+  display: inline;
+}
+.editable-click {
+  border: none;
+}
+body.user-preferences div#page-header h2.page-title span.editable {
+  font-weight: normal;
+}
+body.user-preferences div.main div.wrapper div.pref-category {
+  margin-top: 50px;
+}
+body.user-preferences div.main div.wrapper div.pref-category h3 {
+  font-size: 18px;
+  color: #555;
+}
+body.user-preferences div.main div.wrapper div.pref-category.profile-url span.url {
+  margin-left: 25px;
+  font-size: 20px;
+}
+body.user-preferences div.main div.wrapper div.pref-category.profile-url span.url span.url-component {
+  margin: 0;
+  padding: 0;
+}
+body.user-preferences div.main div.wrapper div.pref-category.profile-url span.url span.url-component.base {
+  color: #999;
+  margin: 7px 0 12px 0;
+  display: inline-block;
+}
+body.user-preferences div.main div.wrapper div.pref-category.profile-url span.url span.url-component.slug {
+  margin-left: -2px;
+  cursor: pointer;
+  padding-right: 16px;
+  background: url(../img/edit.png) no-repeat;
+  background-position: right 5px;
+}
+body.user-preferences div.main div.wrapper div.pref-category.profile-url span.url span.url-component.slug:hover {
+  color: #ff4e00;
+  background-position: right -63px;
+}
+body.user-preferences div.main div.wrapper div.pref-category.change-pw {
+  margin-top: 80px;
+}
+body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group.enter-new-pw span.pw-changed {
+  color: #468847;
+  display: none;
+  font-weight: bold;
+  margin-top: 5px;
+  font-size: 16px;
+}
+body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group label {
+  color: #777;
+  width: 80px;
+}
+body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group span.working img {
+  height: 28px;
+  margin: 2px 0 0 7px;
+}
+body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group div.controls {
+  margin-left: 100px;
+}
+body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group div.controls span.help-inline {
+  font-size: 16px;
+}
+body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group div.controls span.help-inline.failure {
+  color: #b94a48;
+}
+body.user-preferences div.main div.wrapper div.pref-category form.editableform div.control-group.error div {
+  float: left;
+}
+body.user-preferences div.main div.wrapper div.pref-category form.editableform div.control-group.error div.editable-error-block {
+  margin: 0 0 0 10px;
+  font-size: 15px;
+  line-height: 1;
+}
+body.user-preferences div.main div.wrapper div.pref-category form.editableform div.control-group button.editable-cancel {
+  display: none;
+}
