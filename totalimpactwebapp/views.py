@@ -307,6 +307,9 @@ def user_put(userId):
 # user name stuff
 def user_name_modify(userId, name, name_type):
     retrieved_user = get_user_from_id(userId)
+    if g.user.get_id() != retrieved_user.get_id():
+        abort(403, "You must be logged in to change your name.")
+
     setattr(retrieved_user, name_type, name)
     db.session.commit()
     return make_response(json.dumps(name), 200)

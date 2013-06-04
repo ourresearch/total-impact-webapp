@@ -1,6 +1,42 @@
 @import "bootstrap/variables.less";
 @linkColor: #FF4E00;
 
+body.can-not-edit h2.editable-heading {
+   span.instr {display:none;}
+}
+
+body.can-edit {
+   h2.editable-heading {
+      span.instr {
+         background: url(../img/edit.png) no-repeat;
+         padding-left: 10px;
+         background-position: left 12px;
+         cursor: default;
+         span {
+            display:none;
+            font-family: Helvetica, Arial, sans-serif;
+            color: #555;
+            font-size: 12px;
+            font-weight: normal;
+            line-height: 1;
+         }
+      }
+      span.editable {
+         cursor: pointer;
+         &:hover {color: @linkColor;}
+      }
+      &:hover {
+         span.instr span {display:inline;}
+      }
+   }
+}
+
+.editable-click { // overwrite the x-editable plugin's defaults
+   border: none;
+}
+
+
+
 body.user-profile {
 
 }
