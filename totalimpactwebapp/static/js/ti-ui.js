@@ -68,6 +68,11 @@ function decorativeJavascriptInit() {
         $('#context').modal('show');
     }
 
+    // show a warning if it's the staging website
+    if (location.hostname == "impactstory.it") {
+        $("body").addClass("staging")
+    }
+
 
     prettyPrint()
 }

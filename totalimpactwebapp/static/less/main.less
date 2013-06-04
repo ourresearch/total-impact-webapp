@@ -139,7 +139,7 @@ div.modal {
 }
 
 
-/* managing login and edit states */
+// managing login and edit states
 body.logged-in {
    .not-logged-in {display:none;}
 }
@@ -147,6 +147,32 @@ body.not-logged-in {
    .logged-in {display:none;}
 }
 
+// manage the staging warning
+div.staging-warning { display:none;}
+body.staging {
+   padding-top: 50px;
+   div.staging-warning {
+      position: fixed;
+      display: block;
+      padding: 5px 0 5px 50px;
+      z-index: 100000;
+      top: 0;
+      width:  100%;
+      background:  red;
+      color: #fff;
+      font-size: 16px;
+      h2 {
+         display: inline;
+         font-size:  20px;
+         margin-right: 10px;
+      }
+      a {
+         color:  #fff;
+         border-bottom: 1px dotted #fff;
+         &:hover { border-bottom:  1px solid #fff; text-decoration: none;}
+      }
+   }
+}
 
 
 

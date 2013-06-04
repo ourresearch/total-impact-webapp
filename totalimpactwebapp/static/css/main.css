@@ -134,12 +134,41 @@ div.modal#edit-not-logged-in div.modal-body span.news {
   float: left;
   width: 76%;
 }
-/* managing login and edit states */
 body.logged-in .not-logged-in {
   display: none;
 }
 body.not-logged-in .logged-in {
   display: none;
+}
+div.staging-warning {
+  display: none;
+}
+body.staging {
+  padding-top: 50px;
+}
+body.staging div.staging-warning {
+  position: fixed;
+  display: block;
+  padding: 5px 0 5px 50px;
+  z-index: 100000;
+  top: 0;
+  width: 100%;
+  background: red;
+  color: #fff;
+  font-size: 16px;
+}
+body.staging div.staging-warning h2 {
+  display: inline;
+  font-size: 20px;
+  margin-right: 10px;
+}
+body.staging div.staging-warning a {
+  color: #fff;
+  border-bottom: 1px dotted #fff;
+}
+body.staging div.staging-warning a:hover {
+  border-bottom: 1px solid #fff;
+  text-decoration: none;
 }
 /* navbar
 *****************************************************************************
