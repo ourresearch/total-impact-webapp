@@ -138,14 +138,19 @@ var SubmitButton = function(aliases, elem){
     this.elem$ = $(elem)
 }
 SubmitButton.prototype = {
+
     make: function() {
         if (!this.start()) return false
+
+        var givenName = $("div.inline-register input.given").val() || "Anonymous"
+        var surname = $("div.inline-register input.surname").val() || "User"
+
         var requestObj = {
             alias_tiids: this.aliases.forApi(),
             email: $("div.inline-register input.email").val(),
             password: $("div.inline-register input.password").val(),
-            given_name: $("div.inline-register input.given").val(),
-            surname: $("div.inline-register input.surname").val()
+            given_name: givenName,
+            surname: surname
         }
 
         $.ajax({
