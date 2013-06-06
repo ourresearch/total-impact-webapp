@@ -177,12 +177,12 @@ div.navbar {
   width: 100%;
   margin: 0 auto;
   font-family: rokkitt, cambria, serif;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #999;
   -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   background: #fff;
-  height: 40px;
+  height: 42px;
 }
 div.navbar .navbar-inner {
   width: 1100px;
@@ -194,7 +194,7 @@ div.navbar .navbar-inner {
   min-height: 0;
 }
 div.navbar .navbar-inner a.brand {
-  margin: 7px 0 0 -10px;
+  margin: 7px 0 0 0;
   padding-top: 0;
 }
 div.navbar .navbar-inner .nav {
@@ -222,7 +222,7 @@ div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.given-name:hover {
   color: #ff4e00;
 }
 div.navbar ul.nav.pull-right > li a {
-  padding: 8px 15px 7px;
+  padding: 12px 15px 5px;
 }
 div.navbar ul.nav.pull-right > li .control-group {
   margin: 0;
@@ -431,13 +431,12 @@ div#page-header {
 }
 div#page-header h2 {
   font-family: rokkitt, georgia, sans-serif;
-  color: #fff;
-  font-size: 30px;
-  margin: 0;
-  margin-bottom: -5px;
+  font-weight: bold;
+  font-size: 50px;
+  margin: 20px 0 -5px -4px;
   float: none;
+  border-bottom: 1px solid #ddd;
   color: #555;
-  float: left;
 }
 div.main {
   background: #fff;
@@ -967,8 +966,8 @@ div#docs h4 {
 div#docs h3 {
   margin-top: 90px;
 }
-div#docs h2 {
-  margin-top: 50px;
+div#docs h3.first {
+  margin-top: 30px;
 }
 div#docs li {
   margin-left: 1em;

@@ -26,13 +26,18 @@ AliasList.prototype = {
     }
 }
 
-
+var ExternalProfiles = {
+    github: null,
+    slideshare: null,
+    orcid: null
+}
 
 
 
 var AliasListInputs = function() {}
 AliasListInputs.prototype = {
     aliases: new AliasList(),
+    externalProfiles:  ExternalProfiles, // someday this'll probably be an obj
     init: function() {
         var that = this
 
@@ -44,7 +49,11 @@ AliasListInputs.prototype = {
             .each(function(){
                 $(this).blur(function(){
                     if (!$(this).val()) return false
-                    var importer = new UsernameImporter(that.aliases, this)
+                    var importer = new UsernameImporter(
+                        that.aliases,
+                        that.externalProfiles,
+                        this
+                    )
                     importer.pull()
             })
         })
@@ -64,7 +73,7 @@ AliasListInputs.prototype = {
                 var importer = new TextareaImporter(that.aliases, this)
                 importer.pull()
             })
-            var button = new SubmitButton(that.aliases, this)
+            var button = new SubmitButton(that.aliases, that.externalProfiles, this)
 
             if ($(this).hasClass(("update"))) {
                 console.log("update!")
@@ -133,8 +142,9 @@ AliasListInputs.prototype = {
     }
 }
 
-var SubmitButton = function(aliases, elem){
+var SubmitButton = function(aliases, externalProfiles,  elem){
     this.aliases = aliases
+    this.externalProfiles = externalProfiles
     this.elem$ = $(elem)
 }
 SubmitButton.prototype = {
@@ -147,6 +157,7 @@ SubmitButton.prototype = {
 
         var requestObj = {
             alias_tiids: this.aliases.forApi(),
+            externalProfiles: this.externalProfiles,
             email: $("div.inline-register input.email").val(),
             password: $("div.inline-register input.password").val(),
             given_name: givenName,
@@ -161,7 +172,7 @@ SubmitButton.prototype = {
            data:  JSON.stringify(requestObj),
            success: function(data){
                console.log("finished creating the user!")
-               location.href = "/" + data.url_slug
+//               location.href = "/" + data.url_slug
            }
         })
         return false
@@ -201,8 +212,9 @@ SubmitButton.prototype = {
 
 
 // Import aliases from external services that want a username
-var UsernameImporter = function(aliases, elem) {
+var UsernameImporter = function(aliases, externalProfiles, elem) {
     this.aliases = aliases
+    this.externalProfiles = externalProfiles
     this.elem$ = $(elem)
 }
 UsernameImporter.prototype = {
@@ -217,7 +229,7 @@ UsernameImporter.prototype = {
             url: api_root+"/provider/"+providerName+"/memberitems/"+queryStr+"?method=sync",
             type: "GET",
             dataType: "json",
-            success: function(data){that.done.call(that, data)},
+            success: function(data){that.done.call(that, data, providerName, queryStr)},
             error: function(request){that.failure.call(that, request)}
         });
 
@@ -226,8 +238,10 @@ UsernameImporter.prototype = {
         changeControlGroupState(this.elem$, "working")
     },
     update: function(){},
-    done: function(data){
+    done: function(data, providerName, queryStr){
         changeControlGroupState(this.elem$, "success")
+        this.externalProfiles[providerName] = queryStr
+
         this.aliases.add(data.memberitems)
         this.elem$
             .parents(".control-group")
