@@ -100,13 +100,9 @@
    </div>
    <div id="page-header">
       <div class="wrapper">
-         {# unpleasant hacks to let user-report and admin pages' be editable... #}
-         {% if profile %}
-         <h2 class='page-title editable-heading'>
-            {% if (self | extract_filename) == "user-preferences" %}
-            <span class="prefs">Preferences:</span>
-            {% endif %}
-
+         {# unpleasant hacks to let user-report page be editable... #}
+         {% if (self | extract_filename) == "user-profile" %}
+         <h2 class='page-title editable-name'>
             <span class="given-name editable" data-name="given_name">{{ profile.given_name }}</span>
             <span class="surname editable" data-name="surname">{{ profile.surname }}</span>
             <span class="instr">&nbsp;<span>click name to edit</span></span>

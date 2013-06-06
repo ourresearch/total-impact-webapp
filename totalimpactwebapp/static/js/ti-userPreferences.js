@@ -10,7 +10,7 @@ UserPreferences.prototype = {
         this.changePassword()
     }
     , clickNameToModify: function(){
-        $("body.can-edit h2.page-title span.editable").each(function(){
+        $("body.can-edit .editable-name span.editable").each(function(){
             var title = "Edit " + ($(this).attr("data-name").replace("_", " "))
             $(this).editable({
                                  type: "text",

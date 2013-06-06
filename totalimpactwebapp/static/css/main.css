@@ -445,7 +445,6 @@ div.main {
   font-size: 18px;
   padding-bottom: 100px;
   color: #333;
-  border-top: 1px solid #aaa;
   min-height: 350px;
   clear: both;
 }
@@ -568,6 +567,9 @@ div.wrapper.login div.not-registered {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+body.index {
+  background: url(../img/grey-noise.png);
+}
 body.index div#page-header {
   display: none;
 }

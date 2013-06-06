@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% set page_title = profile.given_name ~ "'s preferences" %}
+{% set page_title = "Preferences" %}
 
 {# we only serve this page to logged-in users #}
 {% set edit_status = "can-edit" %}
@@ -13,6 +13,14 @@
 </script>
 <div class="main" id="report">
    <div class="wrapper">
+      <div class="pref-category name">
+         <h3>Name</h3>
+         <div class='editable-name'>
+            <span class="given-name editable" data-name="given_name">{{ profile.given_name }}</span>
+            <span class="surname editable" data-name="surname">{{ profile.surname }}</span>
+            <span class="instr">&nbsp;<span>click name to edit</span></span>
+         </div>
+      </div>
       <div class="pref-category profile-url">
          <h3>Profile URL</h3>
          <span class="url">

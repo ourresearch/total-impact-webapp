@@ -1,13 +1,13 @@
-body.can-not-edit h2.editable-heading span.instr {
+body.can-not-edit .editable-name span.instr {
   display: none;
 }
-body.can-edit h2.editable-heading span.instr {
+body.can-edit .editable-name span.instr {
   background: url(../img/edit.png) no-repeat;
   padding-left: 10px;
   background-position: left 12px;
   cursor: default;
 }
-body.can-edit h2.editable-heading span.instr span {
+body.can-edit .editable-name span.instr span {
   display: none;
   font-family: Helvetica, Arial, sans-serif;
   color: #555;
@@ -15,13 +15,13 @@ body.can-edit h2.editable-heading span.instr span {
   font-weight: normal;
   line-height: 1;
 }
-body.can-edit h2.editable-heading span.editable {
+body.can-edit .editable-name span.editable {
   cursor: pointer;
 }
-body.can-edit h2.editable-heading span.editable:hover {
+body.can-edit .editable-name span.editable:hover {
   color: #ff4e00;
 }
-body.can-edit h2.editable-heading:hover span.instr span {
+body.can-edit .editable-name:hover span.instr span {
   display: inline;
 }
 .editable-click {
@@ -36,6 +36,13 @@ body.user-preferences div.main div.wrapper div.pref-category {
 body.user-preferences div.main div.wrapper div.pref-category h3 {
   font-size: 18px;
   color: #555;
+}
+body.user-preferences div.main div.wrapper div.pref-category.name div.editable-name {
+  margin-left: 25px;
+  font-size: 20px;
+}
+body.user-preferences div.main div.wrapper div.pref-category.name div.editable-name span.instr {
+  background-position: left 6px;
 }
 body.user-preferences div.main div.wrapper div.pref-category.profile-url span.url {
   margin-left: 25px;
