@@ -20,9 +20,9 @@ class User(db.Model):
     collection_id = db.Column(db.String(12))
     created = db.Column(db.DateTime(), default=now)
 
-    # orcid_id = db.Column(db.String(64))
-    # github_id = db.Column(db.String(64))
-    # slideshare_id = db.Column(db.String(64))
+    orcid_id = db.Column(db.String(64))
+    github_id = db.Column(db.String(64))
+    slideshare_id = db.Column(db.String(64))
 
     @property
     def full_name(self):

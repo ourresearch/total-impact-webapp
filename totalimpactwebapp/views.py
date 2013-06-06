@@ -260,7 +260,10 @@ def user_create():
         password=request.json["password"],
         collection_id=r.json["collection"]["_id"],
         given_name=request.json["given_name"],
-        surname=request.json["surname"]
+        surname=request.json["surname"],
+        orcid_id=request.json["external_profile_ids"]["orcid"],
+        github_id=request.json["external_profile_ids"]["github"],
+        slideshare_id=request.json["external_profile_ids"]["slideshare"]
     )
     db.session.add(user)
     try:
