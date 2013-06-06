@@ -95,7 +95,6 @@
             </li>
 
 
-            <li> <a id="uservoice" href="javascript:UserVoice.showPopupWidget();" title="Open feedback & support dialog (powered by UserVoice)"><img src="{{ url_for('static', filename='img/beta-ribbon.png') }}" /></a></li>
          </ul>
       </div>
    </div>
@@ -142,7 +141,6 @@
                <li><a href="http://blog.impactstory.org">Blog</a></li>
                <li><a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">Newsgroup</a></li>
                <li><a href="https://github.com/total-impact">GitHub</a></li>
-               <li><a href="javascript:UserVoice.showPopupWidget();">Support forum</a></li>
 
             </ul>
          </div>
@@ -400,13 +398,23 @@ These are for rendering items with javascript using Mustache
 
 </div>
 {% endraw %}
-<script type="text/javascript">
-   var uvOptions = {default_mode:'ideas'};
-   (function() {
-      var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
-      uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/NGq30CjdUftugLRbNlRNw.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
-   })();
+<!-- UserVoice JavaScript SDK (only needed once on a page) -->
+<script>(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/OQC1qQJBAPv28X1VBsYbw.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})()</script>
+
+<!-- A tab to launch the Classic Widget -->
+<script>
+   UserVoice = window.UserVoice || [];
+   UserVoice.push(['showTab', 'classic_widget', {
+      mode: 'full',
+      primary_color: '#cc6d00',
+      link_color: '#007dbf',
+      default_mode: 'support',
+      forum_id: 166950,
+      tab_label: 'Feedback & Support',
+      tab_color: '#ff4d00',
+      tab_position: 'middle-right',
+      tab_inverted: false
+   }]);
 </script>
 </body>
 </html>

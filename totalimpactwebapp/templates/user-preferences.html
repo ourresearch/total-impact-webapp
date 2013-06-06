@@ -31,10 +31,16 @@
                </div>
             </div>
             <div class="control-group ready enter-new-pw">
-               <label class="control-label" for="new-pw">New</label>
+               <label class="control-label" for="new-pw">Current</label>
+               <div class="controls ">
+                  <input type="password" name="confirm_new_pw" id="new-pw" placeholder="New password">
+               </div>
+            </div>
+            <div class="control-group ready confirm-new-pw">
+               <label class="control-label" for="confirm-new-pw">Confirm</label>
                <div class="controls">
                   <div class="input-append">
-                     <input type="password" name="current_pw" id="new-pw" placeholder="New password">
+                     <input type="password" name="current_pw" id="confirm-new-pw" placeholder="Confirm new password">
                      <button class="btn submit ready" type="submit">Submit</button>
                      <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" /></span>
                   </div>

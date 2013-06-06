@@ -17,7 +17,6 @@ body {
     font-family: "Helvetica", sans-serif;
     margin: 0;
 
-   background: url(../img/grey-noise.png);
     height: 100%;
     padding-bottom: 0;
 
@@ -190,42 +189,47 @@ body.staging {
 *****************************************************************************/
 
 div.navbar {
-   width:1100px;
+   width:100%;
    margin: 0 auto;
    font-family: rokkitt, cambria, serif;
+   border-bottom:1px solid #ccc;
+   .drop-shadow(0, 3px, 10px, 0.2);
+   background:#fff;
+   height: 40px;
 
    .navbar-inner{
-      .border-radius(0, 5px, 5px, 0);
-      .drop-shadow(0, 3px, 10px, 0.1);
+      width: 1100px;
       padding-right:0;
-      height: 65px;
-      background:#fff;
-      border:1px solid #aaa;
-      border-top:none;
+      margin: 0 auto;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      min-height: 0;
 
       a.brand {
-         margin: 2px 0 0 -10px;
+         margin: 7px 0 0 -10px;
+         padding-top: 0;
       }
 
       .nav { position: static;}
    }
 
    a.brand img{
-      height: 35px;
+      height: 30px;
       margin-top: 0;
    }
 
    ul.nav.pull-right {
 
       > li {
-         margin-top: 10px;
+         margin-top: 0;
          &.divider-vertical {
-            height: 35px;
-            margin-top: 15px;
+            height: 30px;
+            margin-top: 5px;
          }
          &.dropdown.open {
             a.dropdown-toggle {
-               background: #fff !important;
+               background: #eee !important;
                color: @linkColor !important;
             }
          }
@@ -239,6 +243,9 @@ div.navbar {
             }
          }
 
+         a {
+            padding: 8px 15px 7px;
+         }
          .control-group { margin: 0; }
 
          ul.dropdown-menu {
@@ -298,15 +305,6 @@ div.navbar {
          }
       }
 
-      a#uservoice {
-         position: relative;
-         display: block;
-         margin-top: -26px;
-         z-index: 3;
-         padding-right:0;
-
-   //      &:hover {margin-top: -25px;}
-      }
    }
 }
 

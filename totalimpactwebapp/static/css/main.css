@@ -19,7 +19,6 @@ html {
 body {
   font-family: "Helvetica", sans-serif;
   margin: 0;
-  background: url(../img/grey-noise.png);
   height: 100%;
   padding-bottom: 0;
 }
@@ -175,54 +174,45 @@ body.staging div.staging-warning a:hover {
 *****************************************************************************
 *****************************************************************************/
 div.navbar {
-  width: 1100px;
+  width: 100%;
   margin: 0 auto;
   font-family: rokkitt, cambria, serif;
+  border-bottom: 1px solid #ccc;
+  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  background: #fff;
+  height: 40px;
 }
 div.navbar .navbar-inner {
-  -webkit-border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -webkit-border-top-left-radius: 0;
-  -moz-border-radius-topright: 0;
-  -moz-border-radius-bottomright: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  -moz-border-radius-topleft: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-top-left-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  width: 1100px;
   padding-right: 0;
-  height: 65px;
-  background: #fff;
-  border: 1px solid #aaa;
-  border-top: none;
+  margin: 0 auto;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  min-height: 0;
 }
 div.navbar .navbar-inner a.brand {
-  margin: 2px 0 0 -10px;
+  margin: 7px 0 0 -10px;
+  padding-top: 0;
 }
 div.navbar .navbar-inner .nav {
   position: static;
 }
 div.navbar a.brand img {
-  height: 35px;
+  height: 30px;
   margin-top: 0;
 }
 div.navbar ul.nav.pull-right > li {
-  margin-top: 10px;
+  margin-top: 0;
 }
 div.navbar ul.nav.pull-right > li.divider-vertical {
-  height: 35px;
-  margin-top: 15px;
+  height: 30px;
+  margin-top: 5px;
 }
 div.navbar ul.nav.pull-right > li.dropdown.open a.dropdown-toggle {
-  background: #fff !important;
+  background: #eee !important;
   color: #ff4e00 !important;
 }
 div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.given-name {
@@ -230,6 +220,9 @@ div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.given-name {
 }
 div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.given-name:hover {
   color: #ff4e00;
+}
+div.navbar ul.nav.pull-right > li a {
+  padding: 8px 15px 7px;
 }
 div.navbar ul.nav.pull-right > li .control-group {
   margin: 0;
@@ -294,13 +287,6 @@ div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu img.loading {
   margin: 5px auto 0;
   float: none;
   display: block;
-}
-div.navbar ul.nav.pull-right a#uservoice {
-  position: relative;
-  display: block;
-  margin-top: -26px;
-  z-index: 3;
-  padding-right: 0;
 }
 /* registration form stuff
 *****************************************************************************
