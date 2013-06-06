@@ -52,6 +52,14 @@ UserPreferences.prototype = {
     , changePassword: function(){
         $("#change-pw").submit(function(){
             var this$ = $(this)
+
+            // make sure the new pw was entered correctly twice
+            if ($("#new-pw").val() != $("#confirm-new-pw").val()) {
+                $("div.control-group.confirm-new-pw").addClass("error")
+                return false
+            }
+
+
             var requestObj = {
                 current_password: $("#current-pw").val(),
                 new_password: $("#new-pw").val()

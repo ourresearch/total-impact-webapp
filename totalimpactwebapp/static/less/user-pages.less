@@ -98,7 +98,10 @@ body.user-preferences {
                margin-top:80px;
                form.form-horizontal {
                   div.control-group {
-                     &.enter-new-pw {
+                     &.confirm-new-pw {
+                        &.error {
+                           span.help-inline { display: inline;}
+                        }
                         span.pw-changed {
                            color: @successText;
                            display:none;

@@ -39,7 +39,7 @@
                </div>
             </div>
             <div class="control-group ready enter-new-pw">
-               <label class="control-label" for="new-pw">Current</label>
+               <label class="control-label" for="new-pw">New</label>
                <div class="controls ">
                   <input type="password" name="confirm_new_pw" id="new-pw" placeholder="New password">
                </div>
@@ -51,6 +51,7 @@
                      <input type="password" name="current_pw" id="confirm-new-pw" placeholder="Confirm new password">
                      <button class="btn submit ready" type="submit">Submit</button>
                      <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" /></span>
+                     <span class="help-inline failure error">Whoops, looks like you mistyped your new password...</span>
                   </div>
                   <span class="pw-changed help-block">Password changed.</span>
                </div>

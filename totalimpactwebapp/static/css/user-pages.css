@@ -71,7 +71,10 @@ body.user-preferences div.main div.wrapper div.pref-category.profile-url span.ur
 body.user-preferences div.main div.wrapper div.pref-category.change-pw {
   margin-top: 80px;
 }
-body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group.enter-new-pw span.pw-changed {
+body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group.confirm-new-pw.error span.help-inline {
+  display: inline;
+}
+body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group.confirm-new-pw span.pw-changed {
   color: #468847;
   display: none;
   font-weight: bold;
