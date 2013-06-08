@@ -81,8 +81,20 @@ body a:hover {
   clear: both;
 }
 h3 {
-  margin: 0px;
+  margin: 20px 0 0 0;
   margin-top: 20px;
+  font-family: rokkitt, georgia, serif;
+  font-size: 25px;
+  color: #555;
+  line-height: 1;
+  border-bottom: 1px solid #eee;
+}
+h3.first {
+  margin-top: 0;
+  padding-top: 0;
+}
+h4 {
+  color: #777;
 }
 a {
   color: #ff4e00;
@@ -201,8 +213,8 @@ div.navbar .navbar-inner .nav {
   position: static;
 }
 div.navbar a.brand img {
-  height: 30px;
-  margin-top: 0;
+  height: 35px;
+  margin-top: -2px;
 }
 div.navbar ul.nav.pull-right > li {
   margin-top: 0;
@@ -433,10 +445,11 @@ div#page-header h2 {
   font-family: rokkitt, georgia, sans-serif;
   font-weight: bold;
   font-size: 50px;
-  margin: 20px 0 -5px -4px;
+  text-align: center;
+  margin: 40px 0 0 0;
   float: none;
-  border-bottom: 1px solid #ddd;
-  color: #555;
+  color: #444;
+  background: url(../img/grad-border-bottom.png) no-repeat bottom;
 }
 div.main {
   background: #fff;
@@ -843,6 +856,13 @@ th {
   padding-bottom: 50px;
   padding-top: 40px;
 }
+#faq h3 {
+  margin-top: 70px;
+}
+#faq h3.first {
+  margin-top: 0;
+  padding-top: 0;
+}
 ul#providers-metadata > li {
   margin-bottom: 15px;
 }
@@ -887,7 +907,6 @@ div#about p {
 }
 div#about h3 {
   margin-top: 50px;
-  color: #777;
   margin-bottom: 10px;
 }
 div#about h3.first {

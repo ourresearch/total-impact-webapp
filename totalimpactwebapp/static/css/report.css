@@ -2,8 +2,18 @@
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+body.user-profile div.main {
+  margin-top: 0;
+  padding-top: 0;
+}
 body.user-profile #page-header {
   padding-top: 40px;
+}
+body.user-profile #page-header h2 {
+  font-size: 35px;
+  text-align: left;
+  background: transparent;
+  border-bottom: 1px solid #ddd;
 }
 body.user-profile .modal {
   width: 675px;
@@ -67,7 +77,7 @@ body.user-profile .modal .modal-body form.other-products {
   padding-bottom: 20px;
 }
 #report-meta {
-  margin: -98px 0 0 0;
+  margin: -69px 0 0 0;
   float: right;
 }
 #report-meta div#num-items {
@@ -145,7 +155,7 @@ div#metrics {
   width: 100%;
 }
 div#metrics div.wrapper {
-  width: 1100px;
+  width: 1030px;
 }
 div#metrics h3 {
   font-family: rokkitt, georgia, serif;
@@ -293,7 +303,7 @@ li.item div.item-header.zoomable:hover {
 }
 li.item div.item-header div.biblio {
   float: left;
-  width: 770px;
+  width: 728px;
 }
 li.item div.item-header div.biblio h5 {
   font-size: 16px;

@@ -30,12 +30,16 @@ body.can-edit .editable-name:hover span.instr span {
 body.user-preferences div#page-header h2.page-title span.editable {
   font-weight: normal;
 }
+body.user-preferences div.main div.wrapper {
+  width: 600px;
+}
 body.user-preferences div.main div.wrapper div.pref-category {
   margin-top: 50px;
 }
 body.user-preferences div.main div.wrapper div.pref-category h3 {
-  font-size: 18px;
+  font-size: 24px;
   color: #555;
+  margin-bottom: 15px;
 }
 body.user-preferences div.main div.wrapper div.pref-category.name div.editable-name {
   margin-left: 25px;
@@ -70,6 +74,9 @@ body.user-preferences div.main div.wrapper div.pref-category.profile-url span.ur
 }
 body.user-preferences div.main div.wrapper div.pref-category.change-pw {
   margin-top: 80px;
+}
+body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal {
+  margin-bottom: 90px;
 }
 body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group.confirm-new-pw.error span.help-inline {
   display: inline;

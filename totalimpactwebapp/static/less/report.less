@@ -4,7 +4,7 @@
 
 @publicColor: #4DAF4A;
 @scholarsColor: #377EB8;
-@metricsSectionWidth: 1100px;
+@metricsSectionWidth: 1030px;
 @zoomCellWidth: (@metricsSectionWidth / 6);
 
 
@@ -14,11 +14,19 @@
 *****************************************************************************/
 @modalWidth: 675px;
 body.user-profile {
-   div#main{
+   div.main{
+      margin-top:0;
+      padding-top:0;
    }
 
    #page-header {
       padding-top:40px;
+      h2 {
+         font-size: 35px;
+         text-align: left;
+         background: transparent;
+         border-bottom:  1px solid #ddd;
+      }
    }
    .modal {
       width:  @modalWidth;
@@ -79,7 +87,7 @@ body.user-profile {
    padding-bottom: 20px;
 }
 #report-meta {
-   margin: -98px 0 0 0;
+   margin: -69px 0 0 0;
    float:right;
    div#num-items {
       color:#777;
@@ -332,7 +340,7 @@ li.item {
 
       div.biblio{
          float:left;
-         width: 770px;
+         width: 728px;
          h5 {
             font-size:16px;
             margin: 0 0 -3px 0;

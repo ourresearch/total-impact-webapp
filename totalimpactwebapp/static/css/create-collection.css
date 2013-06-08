@@ -10,6 +10,9 @@
 
     More info at: http://lesselements.com
 -----------------------------------------------------*/
+body.create-collection div#page-header h2 {
+  margin-top: 60px;
+}
 body.create-collection div.main {
   margin-top: 30px;
 }
