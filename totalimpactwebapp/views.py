@@ -243,6 +243,11 @@ def logout():
         return redirect(url_for('index'))
 
 
+@app.route("/reset-password", methods=["POST"])
+def reset_pw():
+    pass
+
+
 @app.route("/user", methods=["POST"])
 def user_create():
     """create a user"""

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% set extra_body_classes = "login-base" %}
+
+
+{% block content %}
+
+<script type="text/javascript" xmlns="http://www.w3.org/1999/html">
+   mixpanel.track("View:create collection");
+</script>
+
+<!-- START input -->
+<div class="main" id="input">
+
+   {% include 'snippets/ie-fail.html' %}
+
+   <div class="wrapper login-base">
+
+      <h1><a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a></h1>
+
+      <!--The login form, inserted from template-->
+      {% block login %} {% endblock %}
+
+   </div>
+</div>
+
+
+
+{% endblock %}

@@ -1,67 +1,46 @@
-{% extends "base.html" %}
+{% extends "login-base.html" %}
 {% set page_title = "Log in" %}
 
+{% block login %}
+<h2>Log in to your ImpactStory profile:</h2>
 
-{% block content %}
-
-<script type="text/javascript" xmlns="http://www.w3.org/1999/html">
-   mixpanel.track("View:create collection");
-</script>
-
-<!-- START input -->
-<div class="main" id="input">
-
-   {% include 'snippets/ie-fail.html' %}
-
-   <div class="wrapper login">
-
-      <h1><a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a></h1>
-
-      <h2>Log in to your ImpactStory profile:</h2>
-
-      <form class="form-horizontal login" action='login' method="POST">
-         <div class="alert alert-error email {{ errors.email }}">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>Whoops!</strong> We don't have that email registered. Would you like to <a href="/create">create an account,</a> instead?
-         </div>
-         <div class="alert alert-error password {{ errors.password }}">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>Whoops!</strong> That's the wrong password.
-         </div>
-         <fieldset>
-            <div class="control-group">
-               <!-- email -->
-               <label class="control-label"  for="email">Email</label>
-               <div class="controls">
-                  <input type="text" id="email" name="email" placeholder="email" class="input-xlarge">
-               </div>
-            </div>
-
-            <div class="control-group">
-               <!-- Password-->
-               <label class="control-label" for="password">Password</label>
-               <div class="controls">
-                  <input type="password" id="password" name="password" placeholder="password" class="input-xlarge">
-               </div>
-            </div>
-
-
-            <div class="control-group">
-               <!-- Button -->
-               <div class="controls button">
-                  <button type="submit" class="btn btn-success btn-large">Log in</button>
-               </div>
-               <div class="not-registered submit-alternative"><a href="/create">Need an account?</a></div>
-               <div class="forgot-password submit-alternative"><a href="mailto:team@impactstory.org?subject=reset password">Forgot your password?</a></div>
-            </div>
-
-
-         </fieldset>
-      </form>
-
+<form class="form-horizontal login" action='login' method="POST">
+   <div class="alert alert-error email {{ errors.email }}">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Whoops!</strong> We don't have that email registered. Would you like to <a href="/create">create an account,</a> instead?
    </div>
-</div>
+   <div class="alert alert-error password {{ errors.password }}">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Whoops!</strong> That's the wrong password.
+   </div>
+   <fieldset>
+      <div class="control-group">
+         <!-- email -->
+         <label class="control-label"  for="email">Email</label>
+         <div class="controls">
+            <input type="text" id="email" name="email" placeholder="email" class="input-xlarge">
+         </div>
+      </div>
+
+      <div class="control-group">
+         <!-- Password-->
+         <label class="control-label" for="password">Password</label>
+         <div class="controls">
+            <input type="password" id="password" name="password" placeholder="password" class="input-xlarge">
+         </div>
+      </div>
 
 
+      <div class="control-group">
+         <!-- Button -->
+         <div class="controls button">
+            <button type="submit" class="btn btn-success btn-large">Log in</button>
+         </div>
+         <div class="not-registered submit-alternative"><a href="/create">Need an account?</a></div>
+         <div class="forgot-password submit-alternative"><a href="mailto:team@impactstory.org?subject=reset password">Forgot your password?</a></div>
+      </div>
 
+
+   </fieldset>
+</form>
 {% endblock %}

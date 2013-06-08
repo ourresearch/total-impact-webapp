@@ -43,6 +43,108 @@ body.user-profile {
 
 
 
+
+
+
+
+/* login and password-reset pages
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+
+body.login-base {
+   @loginBodyBackGroundColor: #ccc;
+   background-color: @loginBodyBackGroundColor;
+
+/* Safari 4-5, Chrome 1-9 */
+/* Can't specify a percentage size? Laaaaaame. */
+   background: -webkit-gradient(radial, center center, 0, center center, 460, from(#fff), to(@loginBodyBackGroundColor));
+
+/* Safari 5.1+, Chrome 10+ */
+   background: -webkit-radial-gradient(circle, #fff, @loginBodyBackGroundColor);
+
+/* Firefox 3.6+ */
+   background: -moz-radial-gradient(circle, #fff, @loginBodyBackGroundColor);
+
+/* IE 10 */
+   background: -ms-radial-gradient(circle, #fff, @loginBodyBackGroundColor);
+
+   div.navbar {display: none;}
+   div#page-header {display: none;}
+   div#footer {display: none;}
+   #footer-powered-by img { display: none; }
+   h1 {
+      margin: 25px auto;
+      width:  312px; // hack, shouldn't have to know the img width
+   }
+   h2 {
+      font-family: rokkitt, serif;
+      font-size: 26px;
+      text-align: center;
+      margin: 0;
+      color:  #888;
+   }
+   div.main {
+      background: transparent;
+      div.wrapper.login-base {
+         form {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin-top: 50px;
+            padding: 30px;
+            width:  600px;
+            margin: 0 auto;
+            box-shadow: 3px 3px 5px #e3e3e3;
+            div.alert {
+               &.False { display: none; }
+               a {
+                  color: @errorText;
+                  font-weight: bold;
+                  text-decoration: underline;
+               }
+
+            }
+            label {
+               font-size: 24px;
+               color:  #555;
+               padding-top: 9px;
+            }
+            input {
+               font-size: 20px;
+               height: 24px;
+               padding: 6px 6px 2px;
+            }
+            div.submit-alternative {
+               &.not-registered {margin-top: -2px;}
+               float: right;
+               margin: 0 155px 0 0;
+               font-size: 14px;
+            }
+            div.controls.button {
+               float:left;
+            }
+         }
+      }
+   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* user preferences page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+
 body.user-preferences {
    div#page-header {
       h2.page-title {

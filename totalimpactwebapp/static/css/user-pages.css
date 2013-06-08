@@ -27,6 +27,96 @@ body.can-edit .editable-name:hover span.instr span {
 .editable-click {
   border: none;
 }
+/* login and password-reset pages
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+body.login-base {
+  background-color: #cccccc;
+  /* Safari 4-5, Chrome 1-9 */
+
+  /* Can't specify a percentage size? Laaaaaame. */
+
+  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#ffffff), to(#cccccc));
+  /* Safari 5.1+, Chrome 10+ */
+
+  background: -webkit-radial-gradient(circle, #ffffff, #cccccc);
+  /* Firefox 3.6+ */
+
+  background: -moz-radial-gradient(circle, #ffffff, #cccccc);
+  /* IE 10 */
+
+  background: -ms-radial-gradient(circle, #ffffff, #cccccc);
+}
+body.login-base div.navbar {
+  display: none;
+}
+body.login-base div#page-header {
+  display: none;
+}
+body.login-base div#footer {
+  display: none;
+}
+body.login-base #footer-powered-by img {
+  display: none;
+}
+body.login-base h1 {
+  margin: 25px auto;
+  width: 312px;
+}
+body.login-base h2 {
+  font-family: rokkitt, serif;
+  font-size: 26px;
+  text-align: center;
+  margin: 0;
+  color: #888;
+}
+body.login-base div.main {
+  background: transparent;
+}
+body.login-base div.main div.wrapper.login-base form {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-top: 50px;
+  padding: 30px;
+  width: 600px;
+  margin: 0 auto;
+  box-shadow: 3px 3px 5px #e3e3e3;
+}
+body.login-base div.main div.wrapper.login-base form div.alert.False {
+  display: none;
+}
+body.login-base div.main div.wrapper.login-base form div.alert a {
+  color: #b94a48;
+  font-weight: bold;
+  text-decoration: underline;
+}
+body.login-base div.main div.wrapper.login-base form label {
+  font-size: 24px;
+  color: #555;
+  padding-top: 9px;
+}
+body.login-base div.main div.wrapper.login-base form input {
+  font-size: 20px;
+  height: 24px;
+  padding: 6px 6px 2px;
+}
+body.login-base div.main div.wrapper.login-base form div.submit-alternative {
+  float: right;
+  margin: 0 155px 0 0;
+  font-size: 14px;
+}
+body.login-base div.main div.wrapper.login-base form div.submit-alternative.not-registered {
+  margin-top: -2px;
+}
+body.login-base div.main div.wrapper.login-base form div.controls.button {
+  float: left;
+}
+/* user preferences page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
 body.user-preferences div#page-header h2.page-title span.editable {
   font-weight: normal;
 }

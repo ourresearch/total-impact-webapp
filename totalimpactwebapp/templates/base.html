@@ -45,7 +45,8 @@
    {% set login_status = "not-logged-in" %}
 {% endif %}
 
-<body class="{{ self | extract_filename }} {{ login_status }} {{ edit_status }}">
+<body class="{{ self | extract_filename }} {{ login_status }} {{ edit_status }}
+      {{ extra_body_classes }}">
 <div class="staging-warning"><h2>This isn't the page you're looking for:</h2>
    <span class="warning">impactstory.it is our staging server; you want
    <a href="http://impactstory.org">impactstory.org</a>.</span>
@@ -161,74 +162,6 @@
 Modals
 HTML for modal windows that bootstrap will pop up
 ------------------------------------------------------------------------------->
-
-<!--login and register -->
-<div id="login-register" class="modal hide fade">
-   <div class="modal-body">
-
-      <form class="register">
-         <h3>Create an account<span class="or">or</span></h3>
-         <div class="form-item control-group email register ready">
-            <label class="control-label">Name</label>
-            <input class="name register" type="text" placeholder="name" />
-
-         </div>
-         <div class="form-item control-group email register ready">
-            <label class="control-label">
-               <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Checking</span>
-               <span class="main">Email</span>
-               <span class="working">availability...</span>
-               <span class="success">available.</span>
-               <span class="failure">already taken...</span>
-            </label>
-            <div class="controls">
-               <input class="username register email" type="text" placeholder="email" />
-            </div>
-         </div>
-
-         <div class="form-item control-group register password ready">
-            <label class="control-label">
-               <span class="main">Password</span>
-            </label>
-            <div class="controls">
-               <input type="password" placeholder="password" class="pw"/>
-            </div>
-         </div>
-
-         <button type="submit" name="submit" class="btn btn-primary" id="login-submit">Create account</button>
-
-      </form>
-
-
-      <form class="login">
-         <h3>Log in</h3>
-         <div class="form-item control-group email register ready">
-            <label class="control-label">
-               <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Checking</span>
-               <span class="main">Email</span>
-               <span class="working">availability...</span>
-               <span class="success">available.</span>
-               <span class="failure">already taken...</span>
-            </label>
-            <div class="controls">
-               <input class="username login email ready" type="text" placeholder="email" />
-            </div>
-         </div>
-
-         <div class="form-item control-group login password ready">
-            <label class="control-label">
-               <span class="main">Password</span>
-            </label>
-            <div class="controls">
-               <input type="password" placeholder="password" class="pw"/>
-            </div>
-         </div>
-
-         <button type="submit" name="submit" class="btn btn-primary" >Log in</button>
-
-      </form>
-   </div>
-</div> <!-- end of login/registration modal -->
 
 
 
