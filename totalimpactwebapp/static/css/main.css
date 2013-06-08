@@ -172,6 +172,7 @@ body.staging div.staging-warning h2 {
   display: inline;
   font-size: 20px;
   margin-right: 10px;
+  color: #fff;
 }
 body.staging div.staging-warning a {
   color: #fff;
