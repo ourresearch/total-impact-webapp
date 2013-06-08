@@ -537,30 +537,79 @@ div.import-products form.importers div.control-group div.controls span.go img {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div.wrapper.login {
-  width: 633px;
-  margin-top: 50px;
+body.login {
+  background-color: #eee;
+  /* Safari 4-5, Chrome 1-9 */
+
+  /* Can't specify a percentage size? Laaaaaame. */
+
+  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#ffffff), to(#eeeeee));
+  /* Safari 5.1+, Chrome 10+ */
+
+  background: -webkit-radial-gradient(circle, #ffffff, #eeeeee);
+  /* Firefox 3.6+ */
+
+  background: -moz-radial-gradient(circle, #ffffff, #eeeeee);
+  /* IE 10 */
+
+  background: -ms-radial-gradient(circle, #ffffff, #eeeeee);
 }
-div.wrapper.login div.alert.False {
+body.login div.navbar {
   display: none;
 }
-div.wrapper.login div.alert a {
+body.login div#page-header {
+  display: none;
+}
+body.login div#footer {
+  display: none;
+}
+body.login #footer-powered-by img {
+  display: none;
+}
+body.login h1 {
+  margin: 25px auto;
+  width: 312px;
+}
+body.login div.main {
+  background: transparent;
+}
+body.login div.main div.wrapper.login form {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-top: 50px;
+  padding: 30px;
+  width: 600px;
+  margin: 0 auto;
+  box-shadow: 3px 3px 5px #e3e3e3;
+}
+body.login div.main div.wrapper.login form div.alert.False {
+  display: none;
+}
+body.login div.main div.wrapper.login form div.alert a {
   color: #b94a48;
   font-weight: bold;
   text-decoration: underline;
 }
-div.wrapper.login label {
+body.login div.main div.wrapper.login form label {
   font-size: 24px;
   padding-top: 9px;
 }
-div.wrapper.login input {
+body.login div.main div.wrapper.login form input {
   font-size: 20px;
   height: 24px;
   padding: 6px 6px 2px;
 }
-div.wrapper.login div.not-registered {
-  margin: 50px 0 0 160px;
-  color: #777;
+body.login div.main div.wrapper.login form div.submit-alternative {
+  float: right;
+  margin: 0 155px 0 0;
+  font-size: 14px;
+}
+body.login div.main div.wrapper.login form div.submit-alternative.not-registered {
+  margin-top: -2px;
+}
+body.login div.main div.wrapper.login form div.controls.button {
+  float: left;
 }
 /* homepage
 *****************************************************************************

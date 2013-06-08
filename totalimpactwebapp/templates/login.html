@@ -15,16 +15,18 @@
 
    <div class="wrapper login">
 
-      <div class="alert alert-error email {{ errors.email }}">
-         <button type="button" class="close" data-dismiss="alert">&times;</button>
-         <strong>Whoops!</strong> We don't have that email registered. Would you like to <a href="/create">create an account,</a> instead?
-      </div>
-      <div class="alert alert-error password {{ errors.password }}">
-         <button type="button" class="close" data-dismiss="alert">&times;</button>
-         <strong>Whoops!</strong> That's the wrong password.
-      </div>
+      <h1><a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a></h1>
+
 
       <form class="form-horizontal login" action='login' method="POST">
+         <div class="alert alert-error email {{ errors.email }}">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Whoops!</strong> We don't have that email registered. Would you like to <a href="/create">create an account,</a> instead?
+         </div>
+         <div class="alert alert-error password {{ errors.password }}">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Whoops!</strong> That's the wrong password.
+         </div>
          <fieldset>
             <div class="control-group">
                <!-- email -->
@@ -45,12 +47,13 @@
 
             <div class="control-group">
                <!-- Button -->
-               <div class="controls">
+               <div class="controls button">
                   <button type="submit" class="btn btn-success btn-large">Log in</button>
                </div>
+               <div class="not-registered submit-alternative"><a href="/create">Need an account?</a></div>
+               <div class="forgot-password submit-alternative"><a href="mailto:team@impactstory.org?subject=reset password">Forgot your password?</a></div>
             </div>
 
-            <div class="not-registered">Not registered yet? <a href="/create">Sign up!</a></div>
 
          </fieldset>
       </form>
