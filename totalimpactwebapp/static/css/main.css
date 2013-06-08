@@ -556,16 +556,16 @@ body.login {
 
   /* Can't specify a percentage size? Laaaaaame. */
 
-  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#ffffff), to(#eeeeee));
+  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#ffffff), to(#dddddd));
   /* Safari 5.1+, Chrome 10+ */
 
-  background: -webkit-radial-gradient(circle, #ffffff, #eeeeee);
+  background: -webkit-radial-gradient(circle, #ffffff, #dddddd);
   /* Firefox 3.6+ */
 
-  background: -moz-radial-gradient(circle, #ffffff, #eeeeee);
+  background: -moz-radial-gradient(circle, #ffffff, #dddddd);
   /* IE 10 */
 
-  background: -ms-radial-gradient(circle, #ffffff, #eeeeee);
+  background: -ms-radial-gradient(circle, #ffffff, #dddddd);
 }
 body.login div.navbar {
   display: none;
@@ -582,6 +582,12 @@ body.login #footer-powered-by img {
 body.login h1 {
   margin: 25px auto;
   width: 312px;
+}
+body.login h2 {
+  font-family: rokkitt, serif;
+  font-size: 30px;
+  text-align: center;
+  color: #888;
 }
 body.login div.main {
   background: transparent;
