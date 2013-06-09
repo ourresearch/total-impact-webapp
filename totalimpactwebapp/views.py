@@ -208,9 +208,9 @@ def user_preferences(url_slug):
         )
 
 
-@app.route("/user/<username>")
-def user_page_from_user_endpoint(username):
-    return redirect("/username")
+@app.route("/user/<url_slug>")
+def user_page_from_user_endpoint(url_slug):
+    return redirect("/" + url_slug)
 
 
 @app.route('/create', methods=["GET"])
@@ -283,18 +283,17 @@ def request_reset_token():
     return render_template('reset-password.html')
 
 
-@app.route("/cpw/<reset_token>", methods=["GET"])
-def reset_password_from_token_shortcut(reset_token):
-    """shortcut to make it easier for users to paste link into browswer"""
-    return change_password(reset_token)
 
-
-@app.route("/change-password/<reset_token>", methods=["GET"])
+@app.route("/cpw/<reset_token>", methods=["GET", "POST"])  # short URL easier for user to paste
 def change_password(reset_token):
+    """
+    Password change form; authenticates w/ token we've sent to user.
+    """
+
     s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
     error = ""
     try:
-        email = s.unsign(reset_token, max_age=10)
+        email = s.unsign(reset_token, max_age=60*1000) # 30min
 
     except SignatureExpired:
         error = "expired-token"
@@ -302,10 +301,25 @@ def change_password(reset_token):
     except BadTimeSignature:
         error = "invalid-token"
 
-    return render_template(
-        'change-password.html',
-        error=error
-    )
+    if error:
+        return render_template("change-password.html", error=error)
+
+    if request.method == "GET":
+        return render_template(
+            'change-password.html',
+            error=error
+        )
+
+    elif request.method == "POST":
+        # the token is one we made. Whoever has it pwns this account
+        retrieved_user = User.query.filter_by(email=email).first()
+        if retrieved_user is None:
+            abort(404, "Sorry, that user doesn't exist.")
+
+        retrieved_user.set_password(request.form["confirm_new_pw"])
+        login_user(retrieved_user)
+        db.session.commit()
+        return redirect("/" + retrieved_user.url_slug)
 
 
 
@@ -314,7 +328,10 @@ def change_password(reset_token):
 
 
 
-###############################################################################
+
+
+
+    ###############################################################################
 #
 #   JSON VIEWS (API)
 #
@@ -422,8 +439,8 @@ def get_password_reset_link(email):
     s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
     reset_token = s.sign(retrieved_user.email)
 
-    base_reset_url = "http://" + g.roots["webapp_pretty"] + "/reset-password"
-    full_reset_url = base_reset_url + "?reset-token=" + reset_token
+    base_reset_url = "http://" + g.roots["webapp_pretty"] + "/cpw"
+    full_reset_url = base_reset_url + "/" + reset_token
 
     # send the email here...
     mailer = mandrill.Mandrill(os.getenv("MANDRILL_APIKEY"))
@@ -467,6 +484,8 @@ def user_password_modify(userId):
 
     else:
         abort(403, "The current password is not correct.")
+
+
 
 
 
@@ -533,6 +552,9 @@ def user_surname_modify(userId, name):
 @app.route("/user/<int:userId>/given_name/<name>", methods=["PUT"])
 def user_given_name_modify(userId, name):
     return user_name_modify(userId, name, "given_name")
+
+
+
 
 
 
