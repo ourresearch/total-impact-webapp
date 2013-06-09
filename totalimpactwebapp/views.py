@@ -243,9 +243,32 @@ def logout():
         return redirect(url_for('index'))
 
 
-@app.route("/reset-password", methods=["POST"])
+@app.route("/reset-password", methods=["POST", "GET"])
 def reset_pw():
-    pass
+    logger.debug("user trying to reset password.")
+
+    if g.user is not None and g.user.is_authenticated():
+        return redirect("/" + g.user.url_slug + "/preferences")
+
+    errors = {"email": False}
+    if request.method == 'POST':
+        email = request.form['email']
+        g.user = User.query.filter_by(email=email).first()
+
+        if g.user is None:
+            errors["email"] = True
+        else:
+            pass
+            # make the reset email
+            # send the reset email
+
+
+    # the code below this is executed if the request method
+    # was GET or the credentials were invalid
+    return render_template(
+        'reset-password.html',
+        errors=errors
+    )
 
 
 @app.route("/user", methods=["POST"])

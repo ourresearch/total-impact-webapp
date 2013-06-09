@@ -9,16 +9,17 @@ var tiLinkColor = "#FF4E00"
 var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
 
 
-changeControlGroupState = function(elem, newClassName){
-    var states = ["inactive", "ready", "working", "success", "failure"]
-    var controlGroup$
-    if ($(elem).hasClass("control-group")) {
-        controlGroup$ = $(elem)
+changeElemState = function(elem, newClassName){
+    var states = ["inactive", "ready", "working", "success", "error"]
+    var stateClassesStr = "." + states.join(", .")
+    var elemToChange$
+    if ($(elem).is(stateClassesStr)) {
+        elemToChange$ = $(elem)
     }
     else {
-        controlGroup$ = $(elem).parents(".control-group")
+        elemToChange$ = $(elem).parents(stateClassesStr)
     }
-    controlGroup$
+    elemToChange$
         .removeClass(states.join(" "))
         .addClass(newClassName)
 }

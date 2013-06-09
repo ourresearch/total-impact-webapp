@@ -324,27 +324,27 @@ div.navbar {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div.control-group {
+div.control-group, fieldset {
 
    // there are five states a control group can have:
    &.inactive {
       .ready {display:none;}
       .working {display:none;}
       .success {display:none;}
-      .failure {display:none;}
+      .error {display:none;}
    }
    &.ready {
       .inactive {display:none;}
       .working {display:none;}
       .success {display:none;}
-      .failure {display:none;}
+      .error {display:none;}
       label { color: #555;}
    }
    &.working {
       .inactive {display:none;}
       .ready {display:none;}
       .success {display:none;}
-      .failure {display:none;}
+      .error {display:none;}
       label { color: @linkColor;}
       button {display: none;}
    }
@@ -352,10 +352,10 @@ div.control-group {
       .inactive {display:none;}
       .ready {display:none;}
       .working {display:none;}
-      .failure {display:none;}
+      .error {display:none;}
       label { color: @successText;}
    }
-   &.failure {
+   &.error {
       .inactive {display:none;}
       .ready {display:none;}
       .working {display:none;}

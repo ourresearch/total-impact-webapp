@@ -7,7 +7,7 @@
          <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Importing from</span>
          <span class="success">Added <span class="value">0</span></span>
          <span class="provider-name">ORCID</span>
-         <span class="failure">import failure: no DOIs.</span>
+         <span class="error">import failure: no DOIs.</span>
          <span class="success item-type">articles.</span>
          <a class="help ready" id="orcid-help-link" href="#">(help)</a>
       </label>
@@ -24,7 +24,7 @@
          <span class="provider-name">Google Scholar</span>
          <span class="working">data: <span class="value">0</span><span class="percent">%</span></span>
          <span class="success">articles.</span>
-         <span class="failure"> error: couldn't read file.</span>
+         <span class="error"> error: couldn't read file.</span>
          <a class="help ready" id="google-scholar-help-link" href="#">(help)</a>
       </label>
 
@@ -66,7 +66,7 @@
          <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Importing from</span>
          <span class="success">Added <span class="value">0</span></span>
          <span class="provider-name">GitHub</span>
-         <span class="failure">failure: username not found.</span>
+         <span class="error">failure: username not found.</span>
          <span class="success item-type">repos.</span>
       </label>
       <div class="controls">
@@ -79,7 +79,7 @@
          <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Importing from</span>
          <span class="success">Added <span class="value">0</span></span>
          <span class="provider-name">Slideshare</span>
-         <span class="failure">failure: username not found.</span>
+         <span class="error">failure: username not found.</span>
          <span class="success item-type">decks.</span>
       </label>
       <div class="controls">

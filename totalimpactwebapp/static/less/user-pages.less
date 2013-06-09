@@ -203,6 +203,8 @@ body.user-preferences {
                form.form-horizontal {
                   margin-bottom: 90px;
                   div.control-group {
+                     &.enter-current-pw {
+                     }
                      &.confirm-new-pw {
                         &.error {
                            span.help-inline { display: inline;}
@@ -226,8 +228,9 @@ body.user-preferences {
                      div.controls{
                         margin-left: 100px;
                         span.help-inline {
-                           font-size: 16px;
-                           &.failure {
+                           font-size: 14px;
+                           width:  250px;
+                           &.error {
                               color: @errorText;
                            }
                         }

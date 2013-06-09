@@ -50,11 +50,11 @@ function UserController() {
             if (!that$.val()) return true
             if (that$.parents(".control-group").hasClass("success")) return true
 
-            changeControlGroupState(that$, "working")
+            changeElemState(that$, "working")
             user.checkUsername(
                 that$.val(),
-                function(){changeControlGroupState(that$, "success")},
-                function(){changeControlGroupState(that$, "failure")}
+                function(){changeElemState(that$, "success")},
+                function(){changeElemState(that$, "error")}
             )
 
         })

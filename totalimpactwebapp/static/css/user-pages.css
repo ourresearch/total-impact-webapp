@@ -190,9 +190,10 @@ body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form
   margin-left: 100px;
 }
 body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group div.controls span.help-inline {
-  font-size: 16px;
+  font-size: 14px;
+  width: 250px;
 }
-body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group div.controls span.help-inline.failure {
+body.user-preferences div.main div.wrapper div.pref-category.change-pw form.form-horizontal div.control-group div.controls span.help-inline.error {
   color: #b94a48;
 }
 body.user-preferences div.main div.wrapper div.pref-category form.editableform div.control-group.error div {

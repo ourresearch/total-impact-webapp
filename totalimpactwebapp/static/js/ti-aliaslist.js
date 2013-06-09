@@ -134,7 +134,7 @@ AliasListInputs.prototype = {
         console.log("REEEEEEEEEEE SEEEETTTT!")
         this.aliases.clear()
         $(".import-products .control-group").each(function(){
-            changeControlGroupState(this, "ready")
+            changeElemState(this, "ready")
         })
         $(".import-products input").val("")
         $(".import-products textarea").val("")
@@ -187,12 +187,12 @@ SubmitButton.prototype = {
             alert("You haven't added any products.")
             return false
         }
-        else if ($("div.inline-register .email").hasClass("failure")) {
+        else if ($("div.inline-register .email").hasClass("error")) {
             alert("please enter an email that's not already in use.")
             return false
         }
         else {
-            changeControlGroupState(this.elem$, "working")
+            changeElemState(this.elem$, "working")
             console.log(this.elem$)
             return true
         }
@@ -235,11 +235,11 @@ UsernameImporter.prototype = {
 
     },
     start:function() {
-        changeControlGroupState(this.elem$, "working")
+        changeElemState(this.elem$, "working")
     },
     update: function(){},
     done: function(data, providerName, queryStr){
-        changeControlGroupState(this.elem$, "success")
+        changeElemState(this.elem$, "success")
         this.ExternalProfileIds[providerName] = queryStr
 
         this.aliases.add(data.memberitems)
@@ -249,7 +249,7 @@ UsernameImporter.prototype = {
             .html(this.aliases.numAddedLast)
     },
     failure: function(request) {
-        changeControlGroupState(this.elem$, "failure")
+        changeElemState(this.elem$, "error")
     }
 }
 
@@ -358,7 +358,7 @@ BibtexImporter.prototype = {
 
     },
     start:function() {
-        changeControlGroupState(this.elem$, "working")
+        changeElemState(this.elem$, "working")
     },
     update: function(entries, errors){
         errors = errors || 0
@@ -381,7 +381,7 @@ BibtexImporter.prototype = {
     },
     done: function(entries){
         console.log("we're done!")
-        changeControlGroupState(this.elem$, "success")
+        changeElemState(this.elem$, "success")
         this.aliases.add(entries.aliases)
         this.elem$
             .parents(".control-group")
@@ -389,7 +389,7 @@ BibtexImporter.prototype = {
             .html(this.aliases.numAddedLast)
     },
     failure: function() {
-        changeControlGroupState(this.elem$, "failure")
+        changeElemState(this.elem$, "error")
     },
     updateProgressbar: function(total, remaining) {
         var done = total - remaining

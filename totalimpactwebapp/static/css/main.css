@@ -305,87 +305,114 @@ div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu img.loading {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div.control-group.inactive .ready {
+div.control-group.inactive .ready,
+fieldset.inactive .ready {
   display: none;
 }
-div.control-group.inactive .working {
+div.control-group.inactive .working,
+fieldset.inactive .working {
   display: none;
 }
-div.control-group.inactive .success {
+div.control-group.inactive .success,
+fieldset.inactive .success {
   display: none;
 }
-div.control-group.inactive .failure {
+div.control-group.inactive .error,
+fieldset.inactive .error {
   display: none;
 }
-div.control-group.ready .inactive {
+div.control-group.ready .inactive,
+fieldset.ready .inactive {
   display: none;
 }
-div.control-group.ready .working {
+div.control-group.ready .working,
+fieldset.ready .working {
   display: none;
 }
-div.control-group.ready .success {
+div.control-group.ready .success,
+fieldset.ready .success {
   display: none;
 }
-div.control-group.ready .failure {
+div.control-group.ready .error,
+fieldset.ready .error {
   display: none;
 }
-div.control-group.ready label {
+div.control-group.ready label,
+fieldset.ready label {
   color: #555;
 }
-div.control-group.working .inactive {
+div.control-group.working .inactive,
+fieldset.working .inactive {
   display: none;
 }
-div.control-group.working .ready {
+div.control-group.working .ready,
+fieldset.working .ready {
   display: none;
 }
-div.control-group.working .success {
+div.control-group.working .success,
+fieldset.working .success {
   display: none;
 }
-div.control-group.working .failure {
+div.control-group.working .error,
+fieldset.working .error {
   display: none;
 }
-div.control-group.working label {
+div.control-group.working label,
+fieldset.working label {
   color: #ff4e00;
 }
-div.control-group.working button {
+div.control-group.working button,
+fieldset.working button {
   display: none;
 }
-div.control-group.success .inactive {
+div.control-group.success .inactive,
+fieldset.success .inactive {
   display: none;
 }
-div.control-group.success .ready {
+div.control-group.success .ready,
+fieldset.success .ready {
   display: none;
 }
-div.control-group.success .working {
+div.control-group.success .working,
+fieldset.success .working {
   display: none;
 }
-div.control-group.success .failure {
+div.control-group.success .error,
+fieldset.success .error {
   display: none;
 }
-div.control-group.success label {
+div.control-group.success label,
+fieldset.success label {
   color: #468847;
 }
-div.control-group.failure .inactive {
+div.control-group.error .inactive,
+fieldset.error .inactive {
   display: none;
 }
-div.control-group.failure .ready {
+div.control-group.error .ready,
+fieldset.error .ready {
   display: none;
 }
-div.control-group.failure .working {
+div.control-group.error .working,
+fieldset.error .working {
   display: none;
 }
-div.control-group.failure .success {
+div.control-group.error .success,
+fieldset.error .success {
   display: none;
 }
-div.control-group.failure label {
+div.control-group.error label,
+fieldset.error label {
   color: #b94a48;
 }
-div.control-group label {
+div.control-group label,
+fieldset label {
   clear: both;
   width: 250px;
   font-weight: bold;
 }
-div.control-group img {
+div.control-group img,
+fieldset img {
   height: 20px;
   margin: -3px 5px 0 0;
 }
