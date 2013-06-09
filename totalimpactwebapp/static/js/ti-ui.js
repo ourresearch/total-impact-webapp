@@ -10,7 +10,7 @@ var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt=
 
 
 changeElemState = function(elem, newClassName){
-    var states = ["inactive", "ready", "working", "success", "failure"]
+    var states = ["inactive", "ready", "working", "success", "error"]
     var controlGroup$
     if ($(elem).hasClass("control-group")) {
         controlGroup$ = $(elem)

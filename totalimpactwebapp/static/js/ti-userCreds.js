@@ -9,13 +9,10 @@ UserCreds.prototype = {
     init: function(){
         console.log("init!")
         var that = this
-        $("form.reset-password").submit(
-            that.onPasswordResetFormSubmit
-        )
-    },
-    requestResetPasswordEmail: function(){
-    },
-    onPasswordResetFormSubmit: function() {
+        $("form.reset-password").submit(that.onPasswordResetFormSubmit)
+        $("form.change-password").keyup(that.checkPasswordMatch)
+    }
+    ,onPasswordResetFormSubmit: function() {
         var this$ = $(this)
         var feedback$ = this$.find("div.control-group.feedback")
 
@@ -43,4 +40,37 @@ UserCreds.prototype = {
 
         return false;
     }
+    ,checkPasswordMatch: function() {
+        var this$ = $(this)
+        var feedback$ = this$.find("div.control-group.input")
+        var deactivate = function() {
+            this$.find("button.submit").attr("disabled", "disabled")
+        }
+        var activate = function() {
+            this$.find("button.submit").removeAttr("disabled")
+        }
+
+        var pw = this$.find("input#new-pw").val()
+        var pwConfirm = this$.find("input#confirm-new-pw").val()
+
+        if (!pw && !pwConfirm) {
+            changeElemState(feedback$, "ready")
+            activate()
+            return
+        }
+        else if (pw && !pwConfirm) {
+            changeElemState(feedback$, "ready")
+            deactivate()
+        }
+        else if (pwConfirm !== pw) {
+            changeElemState(feedback$,"error")
+            deactivate()
+        }
+        else {
+            changeElemState(feedback$, "success")
+            activate()
+        }
+        return false
+    }
+
 }

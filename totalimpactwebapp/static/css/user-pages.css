@@ -54,6 +54,12 @@ body.login-base.change-password div.main div.wrapper form label.control-label {
 body.login-base.change-password div.main div.wrapper form div.controls {
   margin-left: 210px;
 }
+body.login-base.change-password div.main div.wrapper form div.controls span.help-inline.error {
+  position: absolute;
+  width: 100px;
+  left: 470px;
+  top: 53px;
+}
 body.login-base div.navbar {
   display: none;
 }
@@ -89,6 +95,7 @@ body.login-base div.main div.wrapper form {
   width: 600px;
   margin: 0 auto;
   box-shadow: 3px 3px 5px #e3e3e3;
+  position: relative;
 }
 body.login-base div.main div.wrapper form div.alert.False {
   display: none;
