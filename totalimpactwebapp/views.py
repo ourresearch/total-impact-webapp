@@ -6,6 +6,7 @@ from flask.ext.assets import Environment, Bundle
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
+from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
 
 
 from totalimpactwebapp import app, util, db, login_manager, forms
@@ -31,6 +32,7 @@ js = Bundle('js/bootstrap.js',
             'js/ti-aliaslist.js',
             'js/ti-coll.js',
             'js/ti-userPreferences.js',
+            'js/ti-userCreds.js',
             'js/ti-ui.js',
             'js/google-analytics.js',
             'js/mixpanel.js',
@@ -246,34 +248,6 @@ def logout():
         return redirect(url_for('index'))
 
 
-@app.route("/reset-password", methods=["POST", "GET"])
-def reset_pw():
-    logger.debug("user trying to reset password.")
-
-    if g.user is not None and g.user.is_authenticated():
-        return redirect("/" + g.user.url_slug + "/preferences")
-
-    errors = {"email": False}
-    if request.method == 'POST':
-        email = request.form['email']
-        g.user = User.query.filter_by(email=email).first()
-
-        if g.user is None:
-            errors["email"] = True
-        else:
-            pass
-            # make the reset email
-            # send the reset email
-
-
-    # the code below this is executed if the request method
-    # was GET or the credentials were invalid
-    return render_template(
-        'reset-password.html',
-        errors=errors
-    )
-
-
 @app.route("/user", methods=["POST"])
 def user_create():
     """create a user"""
@@ -400,6 +374,52 @@ def user_password_modify(userId):
 
     else:
         abort(403, "The current password is not correct.")
+
+
+@app.route("/user/<email>/password", methods=["GET"])
+def get_password_reset_link(email):
+    retrieved_user = User.query.filter_by(email=email).first()
+    if retrieved_user is None:
+        abort(404, "That user doesn't exist.")
+
+    # make the signed reset token
+    s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
+    reset_token = s.sign(retrieved_user.email)
+
+    base_reset_url = "http://" + g.roots["webapp_pretty"] + "/reset-password"
+    full_reset_url = base_reset_url + "/" + reset_token
+
+    return json_for_client({"reset-url": full_reset_url})
+
+
+@app.route("/reset-password", methods=["GET"])
+def request_reset_token():
+    logger.debug("user trying to reset password.")
+
+    if g.user is not None and g.user.is_authenticated():
+        return redirect("/" + g.user.url_slug + "/preferences")
+
+    return render_template('reset-password.html')
+
+@app.route("/change-password/<reset_token>", methods=["GET"])
+def reset_password_from_token(reset_token):
+    s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
+    error = ""
+    try:
+        email = s.unsign(reset_token, max_age=10)
+
+    except SignatureExpired:
+        error = "expired-token"
+
+    except BadTimeSignature:
+        error = "invalid-token"
+
+    return render_template(
+        'change-password.html',
+        error=error
+    )
+
+
 
 
 

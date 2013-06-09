@@ -1,5 +1,6 @@
 var UserPreferences = function(options) {
     this.options = options
+    if (typeof impactStoryUserId == "undefined") return false
     this.init()
 }
 
@@ -7,7 +8,7 @@ UserPreferences.prototype = {
     init: function(){
         this.clickNameToModify()
         this.clickUrlSlugToModify()
-        this.changePassword()
+//        this.changePassword()
     }
     , clickNameToModify: function(){
         $("body.can-edit .editable-name span.editable").each(function(){
@@ -30,7 +31,6 @@ UserPreferences.prototype = {
             pk: impactstoryUserId,
             url: "/user/"+impactstoryUserId+"?fail_on_duplicate=true",
             mode: "inline",
-//            onblur:"ignore",
             ajaxOptions: {
                 type: 'PUT'
             },
@@ -46,8 +46,6 @@ UserPreferences.prototype = {
                 }
             }
         })
-//            .editable("show", false)
-//        $("input").blur()
     }
     , changePassword: function(){
         $("#change-pw").submit(function(){

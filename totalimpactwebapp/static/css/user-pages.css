@@ -48,6 +48,12 @@ body.login-base {
 
   background: -ms-radial-gradient(circle, #ffffff, #cccccc);
 }
+body.login-base.change-password div.main div.wrapper form label.control-label {
+  width: 200px;
+}
+body.login-base.change-password div.main div.wrapper form div.controls {
+  margin-left: 210px;
+}
 body.login-base div.navbar {
   display: none;
 }
@@ -74,7 +80,7 @@ body.login-base h2 {
 body.login-base div.main {
   background: transparent;
 }
-body.login-base div.main div.wrapper.login-base form {
+body.login-base div.main div.wrapper form {
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 3px;
@@ -84,46 +90,46 @@ body.login-base div.main div.wrapper.login-base form {
   margin: 0 auto;
   box-shadow: 3px 3px 5px #e3e3e3;
 }
-body.login-base div.main div.wrapper.login-base form div.alert.False {
+body.login-base div.main div.wrapper form div.alert.False {
   display: none;
 }
-body.login-base div.main div.wrapper.login-base form div.alert a {
+body.login-base div.main div.wrapper form div.alert a {
   color: #b94a48;
   font-weight: bold;
   text-decoration: underline;
 }
-body.login-base div.main div.wrapper.login-base form label {
+body.login-base div.main div.wrapper form label {
   font-size: 24px;
   color: #555;
   padding-top: 9px;
 }
-body.login-base div.main div.wrapper.login-base form input {
+body.login-base div.main div.wrapper form input {
   font-size: 20px;
   height: 24px;
   padding: 6px 6px 2px;
 }
-body.login-base div.main div.wrapper.login-base form div.submit-alternative {
+body.login-base div.main div.wrapper form div.submit-alternative {
   float: right;
   margin: 0 155px 0 0;
-  font-size: 1px;
+  font-size: 14px;
 }
-body.login-base div.main div.wrapper.login-base form div.submit-alternative.not-registered {
+body.login-base div.main div.wrapper form div.submit-alternative.not-registered {
   margin-top: -2px;
 }
-body.login-base div.main div.wrapper.login-base form div.controls.button {
+body.login-base div.main div.wrapper form div.controls.button {
   float: left;
 }
-body.login-base div.main div.wrapper.login-base form div.controls.button span.help-block {
+body.login-base div.main div.wrapper form div.controls.button span.help-block {
   font-size: 16px;
   margin-top: 10px;
 }
-body.login-base div.main div.wrapper.login-base form div.controls.button span.help-block.working {
+body.login-base div.main div.wrapper form div.controls.button span.help-block.working {
   color: #ff4e00;
 }
-body.login-base div.main div.wrapper.login-base form div.controls.button span.help-block.working img {
+body.login-base div.main div.wrapper form div.controls.button span.help-block.working img {
   height: 24px;
 }
-body.login-base div.main div.wrapper.login-base form div.controls.button span.help-block a {
+body.login-base div.main div.wrapper form div.controls.button span.help-block a {
   text-decoration: underline;
 }
 /* user preferences page
