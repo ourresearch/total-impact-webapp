@@ -157,7 +157,7 @@ def extract_filename(s):
 
 ###############################################################################
 #
-#   USER-RELATED VIEWS
+#   USER PAGES
 #
 ###############################################################################
 
@@ -208,13 +208,37 @@ def user_preferences(url_slug):
         )
 
 
+@app.route("/user/<username>")
+def user_page_from_user_endpoint(username):
+    return redirect("/username")
+
+
+@app.route('/create', methods=["GET"])
+def collection_create():
+    return render_template('create-collection.html')
+
+
+
+
+
+
+
+
+
+###############################################################################
+#
+#   USER LOGIN AND PASSWORD-MANAGEMENT PAGES
+#
+###############################################################################
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
     logger.debug("user trying to log in.")
 
     if g.user is not None and g.user.is_authenticated():
-            return redirect("/" + g.user.url_slug)
+        return redirect("/" + g.user.url_slug)
 
     errors = {"email": False, "password": False}
     if request.method == 'POST':
@@ -249,6 +273,57 @@ def logout():
         return redirect(url_for('index'))
 
 
+@app.route("/reset-password", methods=["GET"])
+def request_reset_token():
+    logger.debug("user trying to reset password.")
+
+    if g.user is not None and g.user.is_authenticated():
+        return redirect("/" + g.user.url_slug + "/preferences")
+
+    return render_template('reset-password.html')
+
+
+@app.route("/cpw/<reset_token>", methods=["GET"])
+def reset_password_from_token_shortcut(reset_token):
+    """shortcut to make it easier for users to paste link into browswer"""
+    return change_password(reset_token)
+
+
+@app.route("/change-password/<reset_token>", methods=["GET"])
+def change_password(reset_token):
+    s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
+    error = ""
+    try:
+        email = s.unsign(reset_token, max_age=10)
+
+    except SignatureExpired:
+        error = "expired-token"
+
+    except BadTimeSignature:
+        error = "invalid-token"
+
+    return render_template(
+        'change-password.html',
+        error=error
+    )
+
+
+
+
+
+
+
+
+###############################################################################
+#
+#   JSON VIEWS (API)
+#
+###############################################################################
+
+
+
+#------------------ /user -----------------
+
 @app.route("/user", methods=["POST"])
 def user_create():
     """create a user"""
@@ -260,14 +335,7 @@ def user_create():
     data = {"aliases": alias_tiids, "title": request.json["email"]}
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
-    logger.debug("sending POST to this URL: " + url)
-    logger.debug("sending this data to api/collection" + json.dumps(data))
-
     r = requests.post(url, data=json.dumps(data), headers=headers)
-    logger.debug("got this back from /collection call in webapp/user: " + r.text)
-
-
-    logger.debug("POST /user: created collection " + r.json()["collection"]["_id"])
 
     user = User(
         email=request.json["email"],
@@ -315,37 +383,106 @@ def user_view():
 
 
 
+#------------------ user/:userId/products -----------------
+
+
+@app.route("/user/<int:userId>/products", methods=["GET", "PUT", "DELETE"])
+def user_products_view_and_modify(userId):
+    retrieved_user = User.query.get(userId)
+    if retrieved_user is None:
+        abort(404, "That user doesn't exist.")
+
+    if request.method == "GET":
+        (profile_collection, status_code) = retrieved_user.get_products()
+    elif request.method == "PUT":
+        aliases_to_add = request.json.get("aliases")
+        (profile_collection, status_code) = retrieved_user.add_products(aliases_to_add)
+    elif request.method == "DELETE":
+        tiids_to_delete = request.json.get("tiids")
+        (profile_collection, status_code) = retrieved_user.delete_products(tiids_to_delete)
+    else:
+        abort(405)  #method not supported.  Won't get here.
+
+    response_to_send = make_response(profile_collection, status_code)
+    return response_to_send
+
+
+
+
+#------------------ user/:userId/password -----------------
+
+
+@app.route("/user/<email>/password", methods=["GET"])
+def get_password_reset_link(email):
+    retrieved_user = User.query.filter_by(email=email).first()
+    if retrieved_user is None:
+        abort(404, "That user doesn't exist.")
+
+    # make the signed reset token
+    s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
+    reset_token = s.sign(retrieved_user.email)
+
+    base_reset_url = "http://" + g.roots["webapp_pretty"] + "/reset-password"
+    full_reset_url = base_reset_url + "?reset-token=" + reset_token
+
+    # send the email here...
+    mailer = mandrill.Mandrill(os.getenv("MANDRILL_APIKEY"))
+
+    text = """Hi! You asked to reset your ImpactStory password. To do that, just
+copy and paste the URL below into your browser's address
+bar:\n\n{url}\n\n(If you didn't ask to reset your password, you can just ignore
+this message).\nBest,\nThe ImpactStory team""".format(url=full_reset_url)
+
+    html = """<p>Hi! You asked to reset your ImpactStory password. To do that, just
+<a href="{url}">click this reset link</a>, or copy and paste the URL below into your
+browser's address bar:</p><pre>{url}</pre><p>(If you didn't ask to reset your password,
+you can just ignore this message.)<br>Best,<br>The ImpactStory
+team</p>""".format(url=full_reset_url)
+
+    msg = {
+        "text": text,
+        "html": html,
+        "subject": "Password reset link",
+        "from_email": "team@impactstory.org",
+        "from_name": "ImpactStory support",
+        "to": [{"email":email, "name":"ImpactStory user"}],  # must be a list
+        "tags": ["password-resets"],
+        "track_opens": False,
+        "track_clicks": False
+    }
+    mailer.messages.send(msg)
+    logger.info("Sent a password reset email to " + email)
+
+    return json_for_client({"message": "link emailed."})
+
+
+@app.route("/user/<int:userId>/password", methods=["PUT"])
+def user_password_modify(userId):
+    retrieved_user = get_user_from_id(userId)
+
+    if  retrieved_user.check_password(request.json["current_password"]):
+        retrieved_user.set_password(request.json["new_password"])
+        db.session.commit()
+        return make_response(json.dumps("ok"), 200)
+
+    else:
+        abort(403, "The current password is not correct.")
+
+
+
+#------------------ user/:userId/... -----------------
+
+
 @app.route("/user/<int:userId>", methods=["PUT"])
 def user_put(userId):
+    """
+    Just a shortcut so the edit-in-place plugin can access JSON methods
+    """
     method_name = "user_" + request.form["name"] + "_modify"
     return globals()[method_name](userId, request.form["value"])
 
 
-
-# user name stuff
-def user_name_modify(userId, name, name_type):
-    retrieved_user = get_user_from_id(userId)
-    if g.user.get_id() != retrieved_user.get_id():
-        abort(403, "You must be logged in to change your name.")
-
-    setattr(retrieved_user, name_type, name)
-    db.session.commit()
-    return make_response(json.dumps(name), 200)
-
-
-@app.route("/user/<int:userId>/surname/<name>", methods=["PUT"])
-def user_surname_modify(userId, name):
-    return user_name_modify(userId, name, "surname")
-
-
-@app.route("/user/<int:userId>/given_name/<name>", methods=["PUT"])
-def user_given_name_modify(userId, name):
-    return user_name_modify(userId, name, "given_name")
-
-
-
-# user slug stuff
-@app.route("/user/<int:userId>/slug/new_slug", methods=["PUT"])
+@app.route("/user/<int:userId>/slug/<new_slug>", methods=["PUT"])
 def user_slug_modify(userId, new_slug):
     retrieved_user = get_user_from_id(userId)
     if g.user.get_id() != retrieved_user.get_id():
@@ -372,113 +509,30 @@ def user_slug_modify(userId, new_slug):
 
 
 
-@app.route("/user/<int:userId>/password", methods=["PUT"])
-def user_password_modify(userId):
+def user_name_modify(userId, name, name_type):
+    """
+    Refactored out stuff that both given and surname edits use.
+
+    :param name_type: surname or given_name
+    """
+
     retrieved_user = get_user_from_id(userId)
+    if g.user.get_id() != retrieved_user.get_id():
+        abort(403, "You must be logged in to change your name.")
 
-    if  retrieved_user.check_password(request.json["current_password"]):
-        retrieved_user.set_password(request.json["new_password"])
-        db.session.commit()
-        return make_response(json.dumps("ok"), 200)
-
-    else:
-        abort(403, "The current password is not correct.")
+    setattr(retrieved_user, name_type, name)
+    db.session.commit()
+    return make_response(json.dumps(name), 200)
 
 
-@app.route("/user/<email>/password", methods=["GET"])
-def get_password_reset_link(email):
-    retrieved_user = User.query.filter_by(email=email).first()
-    if retrieved_user is None:
-        abort(404, "That user doesn't exist.")
-
-    # make the signed reset token
-    s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
-    reset_token = s.sign(retrieved_user.email)
-
-    base_reset_url = "http://" + g.roots["webapp_pretty"] + "reset-password"
-    full_reset_url = base_reset_url + "?reset-token=" + reset_token
-
-    # send the email here...
-    mailer = mandrill.Mandrill(os.getenv("MANDRILL_APIKEY"))
-    msg = {
-        "text": "Hi! Here's the page where you can reset your ImpactStory "
-                "password. It'll work for the next hour.\n" + full_reset_url,
-        "subject": "Password reset link",
-        "from_email": "team@impactstory.org",
-        "from_name": "ImpactStory support",
-        "to": [{"email":email, "name":"ImpactStory user"}],  # must be a list
-        "tags": "password-resets"
-    }
-    mailer.messages.send(msg)
-    logger.info("Sent a password reset email to " + email)
-
-    return json_for_client({"message": "link emailed."})
+@app.route("/user/<int:userId>/surname/<name>", methods=["PUT"])
+def user_surname_modify(userId, name):
+    return user_name_modify(userId, name, "surname")
 
 
-@app.route("/reset-password", methods=["GET"])
-def request_reset_token():
-    logger.debug("user trying to reset password.")
-
-    if g.user is not None and g.user.is_authenticated():
-        return redirect("/" + g.user.url_slug + "/preferences")
-
-    return render_template('reset-password.html')
-
-@app.route("/change-password/<reset_token>", methods=["GET"])
-def reset_password_from_token(reset_token):
-    s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
-    error = ""
-    try:
-        email = s.unsign(reset_token, max_age=10)
-
-    except SignatureExpired:
-        error = "expired-token"
-
-    except BadTimeSignature:
-        error = "invalid-token"
-
-    return render_template(
-        'change-password.html',
-        error=error
-    )
-
-
-
-
-
-
-
-
-
-@app.route("/user/<username>")
-def user_page_from_user_endpoint(username):
-    return redirect("/username")
-
-@app.route("/user/<int:userId>/products", methods=["GET", "PUT", "DELETE"])
-def user_products_view_and_modify(userId):
-    retrieved_user = User.query.get(userId)
-    if retrieved_user is None:
-        abort(404, "That user doesn't exist.")
-
-    if request.method == "GET":
-        (profile_collection, status_code) = retrieved_user.get_products()
-    elif request.method == "PUT":
-        aliases_to_add = request.json.get("aliases")
-        (profile_collection, status_code) = retrieved_user.add_products(aliases_to_add)
-    elif request.method == "DELETE":
-        tiids_to_delete = request.json.get("tiids")
-        (profile_collection, status_code) = retrieved_user.delete_products(tiids_to_delete)
-    else:
-        abort(405)  #method not supported.  Won't get here.
-
-    response_to_send = make_response(profile_collection, status_code)
-    return response_to_send
-
-@app.route('/create', methods=["GET"])
-def collection_create():
-    return render_template('create-collection.html')
-
-
+@app.route("/user/<int:userId>/given_name/<name>", methods=["PUT"])
+def user_given_name_modify(userId, name):
+    return user_name_modify(userId, name, "given_name")
 
 
 
