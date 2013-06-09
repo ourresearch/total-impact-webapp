@@ -75,6 +75,18 @@ body.login-base {
       }
    }
 
+   &.reset-password {
+      div.main {
+         div.wrapper {
+            form {
+               div.alert.email{
+                  display:none;
+               }
+            }
+         }
+      }
+   }
+
 
 
 /* Safari 4-5, Chrome 1-9 */
@@ -148,8 +160,9 @@ body.login-base {
             div.controls.button {
                float:left;
                span.help-block {
-                  font-size: 16px;
-                  margin-top: 10px;
+                  font-size: 18px;
+                  width: 330px;
+                  margin: 0;
                   &.working {
                      color:  @linkColor;
                      img {height: 24px;}

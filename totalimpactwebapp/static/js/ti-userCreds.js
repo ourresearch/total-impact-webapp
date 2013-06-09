@@ -14,10 +14,9 @@ UserCreds.prototype = {
     }
     ,onPasswordResetFormSubmit: function() {
         var this$ = $(this)
-        var feedback$ = this$.find("div.control-group.feedback")
-
+        var feedback$ = this$.find("div.control-group")
+        var alertWarning$ = $("div.alert.email")
         var email = this$.find("input#email").val()
-
         if (!email) return false
 
         changeElemState(feedback$, "working")
@@ -27,11 +26,13 @@ UserCreds.prototype = {
             type: "GET",
             success: function(data){
                 changeElemState(feedback$, "success")
+                alertWarning$.slideUp()
                 return false
             },
             error: function(e, textStatus, errorThrown) {
                if (e.status === 404) {
-                   changeElemState(feedback$, "error")
+                   alertWarning$.slideDown()
+                   changeElemState(feedback$, "ready")
                    return false
                }
             }

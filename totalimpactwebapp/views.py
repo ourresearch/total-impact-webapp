@@ -1,4 +1,5 @@
 import requests, os, json, logging, shortuuid, re, random, datetime
+import mandrill
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
 from flask import render_template, session
@@ -255,15 +256,23 @@ def user_create():
 
     alias_tiids = request.json["alias_tiids"]
     url = "http://" + g.roots["api"] + "/collection"
+
     data = {"aliases": alias_tiids, "title": request.json["email"]}
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+
+    logger.debug("sending POST to this URL: " + url)
+    logger.debug("sending this data to api/collection" + json.dumps(data))
+
     r = requests.post(url, data=json.dumps(data), headers=headers)
-    logger.debug("POST /user: created collection " + r.json["collection"]["_id"])
+    logger.debug("got this back from /collection call in webapp/user: " + r.text)
+
+
+    logger.debug("POST /user: created collection " + r.json()["collection"]["_id"])
 
     user = User(
         email=request.json["email"],
         password=request.json["password"],
-        collection_id=r.json["collection"]["_id"],
+        collection_id=r.json()["collection"]["_id"],
         given_name=request.json["given_name"],
         surname=request.json["surname"],
         orcid_id=request.json["external_profile_ids"]["orcid"],
@@ -386,10 +395,24 @@ def get_password_reset_link(email):
     s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
     reset_token = s.sign(retrieved_user.email)
 
-    base_reset_url = "http://" + g.roots["webapp_pretty"] + "/reset-password"
-    full_reset_url = base_reset_url + "/" + reset_token
+    base_reset_url = "http://" + g.roots["webapp_pretty"] + "reset-password"
+    full_reset_url = base_reset_url + "?reset-token=" + reset_token
 
-    return json_for_client({"reset-url": full_reset_url})
+    # send the email here...
+    mailer = mandrill.Mandrill(os.getenv("MANDRILL_APIKEY"))
+    msg = {
+        "text": "Hi! Here's the page where you can reset your ImpactStory "
+                "password. It'll work for the next hour.\n" + full_reset_url,
+        "subject": "Password reset link",
+        "from_email": "team@impactstory.org",
+        "from_name": "ImpactStory support",
+        "to": [{"email":email, "name":"ImpactStory user"}],  # must be a list
+        "tags": "password-resets"
+    }
+    mailer.messages.send(msg)
+    logger.info("Sent a password reset email to " + email)
+
+    return json_for_client({"message": "link emailed."})
 
 
 @app.route("/reset-password", methods=["GET"])
