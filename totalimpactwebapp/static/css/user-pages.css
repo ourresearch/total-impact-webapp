@@ -105,13 +105,26 @@ body.login-base div.main div.wrapper.login-base form input {
 body.login-base div.main div.wrapper.login-base form div.submit-alternative {
   float: right;
   margin: 0 155px 0 0;
-  font-size: 14px;
+  font-size: 1px;
 }
 body.login-base div.main div.wrapper.login-base form div.submit-alternative.not-registered {
   margin-top: -2px;
 }
 body.login-base div.main div.wrapper.login-base form div.controls.button {
   float: left;
+}
+body.login-base div.main div.wrapper.login-base form div.controls.button span.help-block {
+  font-size: 16px;
+  margin-top: 10px;
+}
+body.login-base div.main div.wrapper.login-base form div.controls.button span.help-block.working {
+  color: #ff4e00;
+}
+body.login-base div.main div.wrapper.login-base form div.controls.button span.help-block.working img {
+  height: 24px;
+}
+body.login-base div.main div.wrapper.login-base form div.controls.button span.help-block a {
+  text-decoration: underline;
 }
 /* user preferences page
 *****************************************************************************

@@ -129,6 +129,7 @@ div.popover a:hover {
 }
 div.modal h3 {
   font-family: rokkitt, helvetica, arial, sans-serif;
+  border-bottom: none;
 }
 div.modal.error {
   border: 2px solid #BD362F;
@@ -305,114 +306,87 @@ div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu img.loading {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div.control-group.inactive .ready,
-fieldset.inactive .ready {
+div.control-group.inactive .ready {
   display: none;
 }
-div.control-group.inactive .working,
-fieldset.inactive .working {
+div.control-group.inactive .working {
   display: none;
 }
-div.control-group.inactive .success,
-fieldset.inactive .success {
+div.control-group.inactive .success {
   display: none;
 }
-div.control-group.inactive .error,
-fieldset.inactive .error {
+div.control-group.inactive .error {
   display: none;
 }
-div.control-group.ready .inactive,
-fieldset.ready .inactive {
+div.control-group.ready .inactive {
   display: none;
 }
-div.control-group.ready .working,
-fieldset.ready .working {
+div.control-group.ready .working {
   display: none;
 }
-div.control-group.ready .success,
-fieldset.ready .success {
+div.control-group.ready .success {
   display: none;
 }
-div.control-group.ready .error,
-fieldset.ready .error {
+div.control-group.ready .error {
   display: none;
 }
-div.control-group.ready label,
-fieldset.ready label {
+div.control-group.ready label {
   color: #555;
 }
-div.control-group.working .inactive,
-fieldset.working .inactive {
+div.control-group.working .inactive {
   display: none;
 }
-div.control-group.working .ready,
-fieldset.working .ready {
+div.control-group.working .ready {
   display: none;
 }
-div.control-group.working .success,
-fieldset.working .success {
+div.control-group.working .success {
   display: none;
 }
-div.control-group.working .error,
-fieldset.working .error {
+div.control-group.working .error {
   display: none;
 }
-div.control-group.working label,
-fieldset.working label {
+div.control-group.working label {
   color: #ff4e00;
 }
-div.control-group.working button,
-fieldset.working button {
+div.control-group.working button {
   display: none;
 }
-div.control-group.success .inactive,
-fieldset.success .inactive {
+div.control-group.success .inactive {
   display: none;
 }
-div.control-group.success .ready,
-fieldset.success .ready {
+div.control-group.success .ready {
   display: none;
 }
-div.control-group.success .working,
-fieldset.success .working {
+div.control-group.success .working {
   display: none;
 }
-div.control-group.success .error,
-fieldset.success .error {
+div.control-group.success .error {
   display: none;
 }
-div.control-group.success label,
-fieldset.success label {
+div.control-group.success label {
   color: #468847;
 }
-div.control-group.error .inactive,
-fieldset.error .inactive {
+div.control-group.error .inactive {
   display: none;
 }
-div.control-group.error .ready,
-fieldset.error .ready {
+div.control-group.error .ready {
   display: none;
 }
-div.control-group.error .working,
-fieldset.error .working {
+div.control-group.error .working {
   display: none;
 }
-div.control-group.error .success,
-fieldset.error .success {
+div.control-group.error .success {
   display: none;
 }
-div.control-group.error label,
-fieldset.error label {
+div.control-group.error label {
   color: #b94a48;
 }
-div.control-group label,
-fieldset label {
+div.control-group label {
   clear: both;
   width: 250px;
   font-weight: bold;
 }
-div.control-group img,
-fieldset img {
+div.control-group img {
   height: 20px;
   margin: -3px 5px 0 0;
 }

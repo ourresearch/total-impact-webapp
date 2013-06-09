@@ -73,6 +73,7 @@ body.login-base {
    div#page-header {display: none;}
    div#footer {display: none;}
    #footer-powered-by img { display: none; }
+
    h1 {
       margin: 25px auto;
       width:  312px; // hack, shouldn't have to know the img width
@@ -96,6 +97,7 @@ body.login-base {
             width:  600px;
             margin: 0 auto;
             box-shadow: 3px 3px 5px #e3e3e3;
+
             div.alert {
                &.False { display: none; }
                a {
@@ -119,10 +121,19 @@ body.login-base {
                &.not-registered {margin-top: -2px;}
                float: right;
                margin: 0 155px 0 0;
-               font-size: 14px;
+               font-size: 1px;
             }
             div.controls.button {
                float:left;
+               span.help-block {
+                  font-size: 16px;
+                  margin-top: 10px;
+                  &.working {
+                     color:  @linkColor;
+                     img {height: 24px;}
+                  }
+                  a {text-decoration: underline;}
+               }
             }
          }
       }
