@@ -1,4 +1,4 @@
-import requests, os, json, logging, shortuuid, re, random
+import requests, os, json, logging, shortuuid, re, random, datetime
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
 from flask import render_template, session
@@ -79,11 +79,14 @@ def json_for_client(obj_or_dict):
     except AttributeError:
         temp = obj_or_dict
 
-    # get rid of private attributes in the dict
     obj_dict = {}
     for k, v in temp.iteritems():
-        if k[0] != "_":
-            obj_dict[k] = v
+        if k[0] != "_":  # no private attributes
+
+            if type(v) is datetime.datetime: # convert datetimes to strings
+                obj_dict[k] = v.isoformat()
+            else:
+                obj_dict[k] = v
 
     resp = make_response(json.dumps(obj_dict, sort_keys=True, indent=4), 200)
     resp.mimetype = "application/json"
@@ -326,6 +329,7 @@ def user_view():
     if user is None:
         abort(404, "There's no user with email " + email)
     return json_for_client(user)
+
 
 
 @app.route("/user/<int:userId>", methods=["PUT"])
