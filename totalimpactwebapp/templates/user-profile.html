@@ -3,24 +3,21 @@
 
 {% if g.user.id == profile.id %}
    {% set edit_status = "can-edit" %}
+   {% set ownership_status = "viewed by owner" %}
 {% else %}
    {% set edit_status = "can-not-edit" %}
+   {% set ownership_status = "other" %}
 {% endif %}
-
-
 
 
 {% block content %}
 
 <script type="text/javascript">
-   var report_source = "user";
-   if ("{{ report_id }}" == "kn5auf") {
-      report_source = "sample";
-   }
-   mixpanel.track("Impression:report",
-                  {"Report Type": "{{ report_type }}",
-                     "Report ID": "{{ report_id }}",
-                     "Report Source": report_source
+   mixpanel.track("Impression:profile",
+                  {
+                     "Profile ID": "{{ profile.id }}",
+                     "Profile slug": "{{ profile.url_slug }}",
+                     "Profile ownership": "{{ ownership_status }}"
                   });
 </script>
 <script type="text/javascript">
