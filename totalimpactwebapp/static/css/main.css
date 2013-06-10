@@ -561,121 +561,81 @@ div.import-products form.importers div.control-group div.controls span.go img {
 *****************************************************************************/
 body.index {
   background: url(../img/grey-noise.png);
+  /* Safari 4-5, Chrome 1-9 */
+
+  /* Can't specify a percentage size? Laaaaaame. */
+
+  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#ffffff), to(#bbbbbb));
+  /* Safari 5.1+, Chrome 10+ */
+
+  background: -webkit-radial-gradient(circle, #ffffff, #bbbbbb);
+  /* Firefox 3.6+ */
+
+  background: -moz-radial-gradient(circle, #ffffff, #bbbbbb);
+  /* IE 10 */
+
+  background: -ms-radial-gradient(circle, #ffffff, #bbbbbb);
 }
 body.index div#page-header {
   display: none;
 }
-div#tagline {
-  color: #ff4e00;
-  height: 390px;
-  position: relative;
-}
 div#tagline div.wrapper {
-  position: relative;
+  width: 900px;
+  padding: 80px 0 40px;
+  text-align: center;
 }
-div#tagline #img-bar {
-  position: relative;
-}
-div#tagline .carousel {
-  height: 355px;
-  width: 500px;
-  position: absolute;
-  right: 0;
-  top: 60px;
-  z-index: 2;
-  border: none;
-}
-div#tagline .carousel img {
-  height: auto;
-  max-width: 100%;
-}
-div#tagline .carousel div.carousel-caption {
-  background: #fff;
-  color: #333;
-  display: none;
-}
-div#tagline .carousel a.carousel-control {
-  height: 30px;
-  width: 30px;
-  line-height: 20px;
-  top: 93%;
-  border: none;
+div#tagline div.wrapper h1 {
   color: #555;
-  background: transparent;
-}
-div#tagline .carousel a.carousel-control:hover {
-  color: #ff4e00;
-}
-div#tagline .carousel a.carousel-control.right {
-  right: -20px;
-}
-div#tagline .carousel a.carousel-control.left {
-  left: -20px;
-}
-div#tagline #text-bar {
-  padding: 20px 0 0 0;
-  position: absolute;
-  width: 100%;
-  top: 70px;
-}
-div#tagline #text-bar h2 {
-  color: #444;
-  font-family: 'rokkitt', 'georgia', serif;
-  font-size: 46px;
-  font-weight: bold;
-  margin-bottom: 0;
+  color: #006dcc;
+  font-size: 72px;
   line-height: .8;
-  background: transparent;
-  width: 576px;
-  margin: 0;
-  padding: 0;
+  text-shadow: 2px 2px 2px #ccc;
+  font-family: 'rokkitt', 'georgia', serif;
+  letter-spacing: -2px;
+  background: url(../img/grad-border-bottom.png) no-repeat bottom;
+  padding-bottom: 10px;
 }
-div#tagline #text-bar p.subtagline {
-  color: #666;
-  line-height: 1.2;
-  width: 521px;
-  font-family: rokkitt;
-  margin-top: 14px;
+div#tagline div.wrapper p.subtagline {
+  color: #555;
   font-size: 20px;
+  padding: 5px 0 10px;
 }
-div#tagline #text-bar p.subtagline a {
-  text-decoration: underline;
-  color: #ff4e00;
+div#tagline div.wrapper #call-to-action {
+  margin: 0 auto;
+  width: 455px;
+  margin-bottom: 50px;
 }
-div#tagline #button-bar {
-  width: 100%;
-  position: absolute;
-  top: 300px;
-}
-div#tagline #button-bar #call-to-action span.container {
+div#tagline div.wrapper #call-to-action span.container {
   height: 114px;
   display: block;
   float: left;
   width: 330px;
 }
-div#tagline #button-bar a#create-collection {
+div#tagline div.wrapper #call-to-action span.container a#create-collection {
   margin: 3px 0 0 20px;
   font-size: 2.1em;
   font-family: rokkitt, Helvetica, Arial, sans-serif;
 }
-div#tagline #button-bar p#example-collection {
+div#tagline div.wrapper #call-to-action p#example-collection {
   font-size: 14px;
   float: left;
   width: 100px;
   color: #777;
   margin: 2px 0 0 5px;
-  padding: 4px 0 0 15px;
+  padding: 4px 0 0 5px;
   border-left: 1px solid #aaa;
 }
-div#tagline #button-bar p#example-collection a {
+div#tagline div.wrapper #call-to-action p#example-collection a {
   font-size: 25px;
   margin-top: -5px;
-  color: #444;
+  margin-left: 5px;
+  color: #006dcc;
   font-family: 'rokkitt', 'georgia', serif;
   display: block;
   width: 175px;
+  text-align: left;
 }
-div#tagline #button-bar p#example-collection a:hover {
+div#tagline div.wrapper #call-to-action p#example-collection a:hover {
   text-decoration: underline;
   color: #ff4e00;
 }
