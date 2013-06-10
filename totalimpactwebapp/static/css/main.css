@@ -158,33 +158,21 @@ body.not-logged-in .logged-in {
 div.staging-warning {
   display: none;
 }
-body.staging {
-  padding-top: 50px;
-}
 body.staging div.staging-warning {
-  position: fixed;
   display: block;
-  padding: 5px 0 5px 50px;
-  z-index: 100000;
+  position: fixed;
   top: 0;
+  height: 25px;
   width: 100%;
-  background: red;
-  color: #fff;
-  font-size: 16px;
+  padding-right: 0;
+  padding-left: 0;
+  z-index: 100000;
 }
-body.staging div.staging-warning h2 {
-  display: inline;
-  font-size: 20px;
-  margin-right: 10px;
-  color: #fff;
+body.staging div.staging-warning button {
+  right: 17px;
 }
-body.staging div.staging-warning a {
-  color: #fff;
-  border-bottom: 1px dotted #fff;
-}
-body.staging div.staging-warning a:hover {
-  border-bottom: 1px solid #fff;
-  text-decoration: none;
+body.staging div.staging-warning strong {
+  margin-left: 17px;
 }
 ul.flashes {
   top: 45px;

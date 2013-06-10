@@ -53,10 +53,12 @@
 <body class="{{ self | extract_filename }} {{ login_status }} {{ edit_status }}
       {{ extra_body_classes }}">
 
-<div class="staging-warning"><h2>This isn't the page you're looking for:</h2>
-   <span class="warning">impactstory.it is our staging server; you want
-   <a href="http://impactstory.org">impactstory.org</a>.</span>
+<div class="staging-warning alert-error alert">
+   <strong>This isn't the page you're looking for:</strong>
+   impactstory.it is our staging server; you want
+   <a href="http://impactstory.org">impactstory.org</a>.<button type="button" class="close" data-dismiss="alert">&times;</button>
 </div>
+
 <div id="container">
    <div class="navbar">
       <div class="navbar-inner">
@@ -100,11 +102,10 @@
             <li class="acct-mgt dropdown not-logged-in" id="login-link">
                <a href="/login"  class="login-register-link">Log in</a>
             </li>
-
-
          </ul>
       </div>
    </div>
+
 
    {% with messages = get_flashed_messages(with_categories=true) %}
    {% if messages %}

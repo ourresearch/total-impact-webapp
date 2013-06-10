@@ -72,6 +72,7 @@ function decorativeJavascriptInit() {
     if (location.hostname == "impactstory.it") {
         $("body").addClass("staging")
     }
+    $("div.staging-warning").click(function(){$(this).hide(); return true})
 
 
     prettyPrint()
