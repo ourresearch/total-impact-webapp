@@ -88,18 +88,15 @@
             </li>
             <li class="divider-vertical"></li>
 
-            <li class="acct-mgt dropdown logged-in" id="logged-in" >
+            <li class="acct-mgt dropdown logged-in">
                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <span class="hi">hi, </span>
                   <span class="given-name">{{g.user.given_name}}!</span>
                </a>
-               <div  class="dropdown-menu">
-                  <ul class='user-actions'>
-                     <li><a href="/{{ g.user.url_slug }}" class="profile">My profile</a></li>
-                     <li><a href="/{{ g.user.url_slug }}/preferences" class="preferences">Preferences</a></li>
-                     <li><a href="{{ url_for('logout') }}" class="logout">Log out</a></li>
-                  </ul>
-               </div>
+               <ul class='user-actions dropdown-menu'>
+                  <li><a href="/{{ g.user.url_slug }}" class="profile">My profile</a></li>
+                  <li><a href="{{ url_for('logout') }}" class="logout">Log out</a></li>
+               </ul>
             </li>
             <li class="acct-mgt dropdown not-logged-in" id="login-link">
                <a href="/login"  class="login-register-link">Log in</a>
@@ -108,9 +105,8 @@
             <li class="divider-vertical logged-in"></li>
 
             <li class="logged-in preferences">
-               <a href="/{{ g.user.url_slug }}/preferences" class="preferences">
+               <a href="/{{ g.user.url_slug }}/preferences" class="preferences" data-toggle="tooltip" title="Change URL and other preferences">
                   <i class="icon-cog"></i>
-                  <span class="text">preferences</span>
                </a>
             </li>
          </ul>

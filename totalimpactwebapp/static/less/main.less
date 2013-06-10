@@ -269,7 +269,7 @@ div.navbar {
          }
 
          &.acct-mgt {
-            &#logged-in {
+            &.logged-in {
                span.given-name {
                   font-weight: bold;
                   color: @linkColor;
@@ -278,28 +278,22 @@ div.navbar {
                   font-family: "Helvetica", "Arial", sans-serif;
                   font-size: 12px;
                }
+               ul.dropdown-menu {
+                  min-width: 100px;
+                  width: 100px;
+                  padding:5px 0;
+               }
+               &:hover > ul.dropdown-menu{
+                  display: block;
+                  margin-top:0;
+               }
             }
          }
 
          &.preferences {
-            width:  18px;
-            overflow: hidden;
-            position: relative;
             a {
                padding-left:0;
                i {vertical-align: -2px; color: @linkColor;}
-               span.text {
-                  position:  absolute;
-                  display:block;
-                  left: 18px;
-                  bottom: 0;
-                  padding-bottom: 7px;
-                  color: @linkColor;
-                  font-weight: normal;
-                  font-family: "Helvetica", "Arial", sans-serif;
-                  font-size: 12px;
-
-               }
             }
          }
 
@@ -312,6 +306,11 @@ div.navbar {
             font-family: helvetica, arial, sans-serif;
             font-size:14px;
             min-width: 120px;
+            li {
+               a {
+                  padding: 5px 10px;
+               }
+            }
          }
          div.dropdown-menu {
             padding:15px 20px 20px;

@@ -101,10 +101,7 @@ var Navbar = function(){
 }
 Navbar.prototype = {
     init: function() {
-        $("div.navbar li.preferences").hover(
-            function(){$(this).animate({width:'100px'},200);},
-            function(){$(this).animate({width:'18px'},200);}
-        )
+        $("li.preferences a").tooltip({placement:"bottom"})
     }
 }
 

@@ -252,18 +252,22 @@ div.navbar ul.nav.pull-right > li.dropdown.open a.dropdown-toggle {
   background: #eee !important;
   color: #ff4e00 !important;
 }
-div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.given-name {
+div.navbar ul.nav.pull-right > li.acct-mgt.logged-in span.given-name {
   font-weight: bold;
   color: #ff4e00;
 }
-div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.hi {
+div.navbar ul.nav.pull-right > li.acct-mgt.logged-in span.hi {
   font-family: "Helvetica", "Arial", sans-serif;
   font-size: 12px;
 }
-div.navbar ul.nav.pull-right > li.preferences {
-  width: 18px;
-  overflow: hidden;
-  position: relative;
+div.navbar ul.nav.pull-right > li.acct-mgt.logged-in ul.dropdown-menu {
+  min-width: 100px;
+  width: 100px;
+  padding: 5px 0;
+}
+div.navbar ul.nav.pull-right > li.acct-mgt.logged-in:hover > ul.dropdown-menu {
+  display: block;
+  margin-top: 0;
 }
 div.navbar ul.nav.pull-right > li.preferences a {
   padding-left: 0;
@@ -271,17 +275,6 @@ div.navbar ul.nav.pull-right > li.preferences a {
 div.navbar ul.nav.pull-right > li.preferences a i {
   vertical-align: -2px;
   color: #ff4e00;
-}
-div.navbar ul.nav.pull-right > li.preferences a span.text {
-  position: absolute;
-  display: block;
-  left: 18px;
-  bottom: 0;
-  padding-bottom: 7px;
-  color: #ff4e00;
-  font-weight: normal;
-  font-family: "Helvetica", "Arial", sans-serif;
-  font-size: 12px;
 }
 div.navbar ul.nav.pull-right > li a {
   padding: 12px 15px 5px;
@@ -293,6 +286,9 @@ div.navbar ul.nav.pull-right > li ul.dropdown-menu {
   font-family: helvetica, arial, sans-serif;
   font-size: 14px;
   min-width: 120px;
+}
+div.navbar ul.nav.pull-right > li ul.dropdown-menu li a {
+  padding: 5px 10px;
 }
 div.navbar ul.nav.pull-right > li div.dropdown-menu {
   padding: 15px 20px 20px;
