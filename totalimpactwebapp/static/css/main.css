@@ -258,9 +258,10 @@ div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.given-name {
 }
 div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.hi {
   font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 12px;
 }
 div.navbar ul.nav.pull-right > li.preferences {
-  width: 20px;
+  width: 18px;
   overflow: hidden;
   position: relative;
 }
@@ -273,8 +274,14 @@ div.navbar ul.nav.pull-right > li.preferences a i {
 }
 div.navbar ul.nav.pull-right > li.preferences a span.text {
   position: absolute;
-  left: 20px;
+  display: block;
+  left: 18px;
+  bottom: 0;
+  padding-bottom: 7px;
   color: #ff4e00;
+  font-weight: normal;
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 12px;
 }
 div.navbar ul.nav.pull-right > li a {
   padding: 12px 15px 5px;

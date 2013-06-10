@@ -103,7 +103,7 @@ Navbar.prototype = {
     init: function() {
         $("div.navbar li.preferences").hover(
             function(){$(this).animate({width:'100px'},200);},
-            function(){$(this).animate({width:'20px'},200);}
+            function(){$(this).animate({width:'18px'},200);}
         )
     }
 }
