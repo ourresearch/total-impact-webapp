@@ -8,7 +8,7 @@ UserPreferences.prototype = {
     init: function(){
         this.clickNameToModify()
         this.clickUrlSlugToModify()
-//        this.changePassword()
+        this.changePassword()
     }
     , clickNameToModify: function(){
         $("body.can-edit .editable-name span.editable").each(function(){

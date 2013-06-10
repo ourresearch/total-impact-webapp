@@ -38,12 +38,17 @@
       mixpanel.init("{{ g.mixpanel_token }}");
    </script>
 
-</head>
-{% if g.user.id %}
+   {% if g.user.id %}
    {% set login_status = "logged-in" %}
-{% else %}
+   <script type="text/javascript">
+      var impactStoryUserId = '{{ g.user.id }}'
+   </script>
+   {% else %}
    {% set login_status = "not-logged-in" %}
-{% endif %}
+   {% endif %}
+
+</head>
+
 
 <body class="{{ self | extract_filename }} {{ login_status }} {{ edit_status }}
       {{ extra_body_classes }}">
@@ -105,7 +110,7 @@
    {% if messages %}
    <ul class="flashes">
       {% for category, message in messages %}
-      <li class="alert {{ category }} alert-success">
+      <li class="alert {{ category }} alert-success fade in">
          <button type="button" class="close" data-dismiss="alert">&times;</button>
          {{ message }}
       </li>

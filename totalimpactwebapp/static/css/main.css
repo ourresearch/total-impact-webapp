@@ -127,6 +127,9 @@ div.popover a:hover {
   border-bottom: 1px solid #555;
   text-decoration: none;
 }
+div.popover h3 {
+  font-family: helvetica, arial, sans-serif;
+}
 div.modal h3 {
   font-family: rokkitt, helvetica, arial, sans-serif;
   border-bottom: none;
@@ -184,7 +187,7 @@ body.staging div.staging-warning a:hover {
   text-decoration: none;
 }
 ul.flashes {
-  top: 43px;
+  top: 45px;
   position: absolute;
   width: 100%;
 }
@@ -210,7 +213,7 @@ div.navbar {
   -moz-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   background: #fff;
-  height: 42px;
+  height: 44px;
   position: fixed;
   z-index: 1000;
 }
