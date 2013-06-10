@@ -4,6 +4,7 @@
 @import "bootstrap/variables.less";
 @linkColor: #FF4E00;
 @accentColor: #0053b0;
+@navbarHeight: 43px;
 
 
 
@@ -184,6 +185,19 @@ body.staging {
    }
 }
 
+ul.flashes {
+   top: @navbarHeight;
+   position: absolute;
+   width: 100%;
+   li.alert {
+      border-radius: 0;
+      margin-bottom:0;
+      border-width: 2px;
+      border-left: none; border-right: none; border-top: none;
+      text-align: center;
+   }
+}
+
 
 
 
@@ -206,14 +220,15 @@ div.navbar {
    border-bottom:1px solid #999;
    .drop-shadow(0, 3px, 10px, 0.2);
    background:#fff;
-   height: 42px;
+   height: @navbarHeight - 1px;
+   position: fixed;
+   z-index: 1000;
 
    .navbar-inner{
       width: 1100px;
       padding-right:0;
       margin: 0 auto;
       border: none;
-      background: transparent;
       box-shadow: none;
       min-height: 0;
 
@@ -427,7 +442,7 @@ div#login-register {
 *****************************************************************************
 *****************************************************************************/
 div#page-header {
-    padding-top: 30px;
+    padding-top: 70px;
     /*    background-color: #ff4e00;*/
     /*    background: url(img/h2-bg.png) bottom  left repeat-x;*/
 }

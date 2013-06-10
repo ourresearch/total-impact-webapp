@@ -47,6 +47,7 @@
 
 <body class="{{ self | extract_filename }} {{ login_status }} {{ edit_status }}
       {{ extra_body_classes }}">
+
 <div class="staging-warning"><h2>This isn't the page you're looking for:</h2>
    <span class="warning">impactstory.it is our staging server; you want
    <a href="http://impactstory.org">impactstory.org</a>.</span>
@@ -99,6 +100,20 @@
          </ul>
       </div>
    </div>
+
+   {% with messages = get_flashed_messages(with_categories=true) %}
+   {% if messages %}
+   <ul class="flashes">
+      {% for category, message in messages %}
+      <li class="alert {{ category }} alert-success">
+         <button type="button" class="close" data-dismiss="alert">&times;</button>
+         {{ message }}
+      </li>
+      {% endfor %}
+   </ul>
+   {% endif %}
+   {% endwith %}
+
    <div id="page-header">
       <div class="wrapper">
          {# unpleasant hacks to let user-report page be editable... #}

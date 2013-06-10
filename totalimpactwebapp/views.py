@@ -1,8 +1,8 @@
-import requests, os, json, logging, shortuuid, re, random, datetime
+import requests, os, json, logging, re, random, datetime
 import mandrill
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
-from flask import render_template, session
+from flask import render_template, flash
 from flask.ext.assets import Environment, Bundle
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
@@ -319,6 +319,7 @@ def change_password(reset_token):
         retrieved_user.set_password(request.form["confirm_new_pw"])
         login_user(retrieved_user)
         db.session.commit()
+        flash("Password changed.", "success")
         return redirect("/" + retrieved_user.url_slug)
 
 

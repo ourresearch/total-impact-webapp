@@ -77,15 +77,7 @@ function decorativeJavascriptInit() {
     prettyPrint()
 }
 
-
-
-
-
-
-$(document).ready(function(){
-
-    decorativeJavascriptInit()
-
+function manageBanners() {
     // if the user's on IE, tell 'em we're broken for them
     if ($.browser.msie) {
         $(".ie").show()
@@ -95,6 +87,21 @@ $(document).ready(function(){
             return false
         }
     }
+
+    // pretty-close for flask's flashed messages
+    $("ul.flashed button.close").click(function(){
+        $(this).parents("li").slideUp()
+    })
+
+}
+
+
+
+$(document).ready(function(){
+
+    decorativeJavascriptInit()
+
+
 
     $.cookie.defaults = {path: "/", raw: 1}
 

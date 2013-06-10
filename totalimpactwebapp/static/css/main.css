@@ -183,6 +183,20 @@ body.staging div.staging-warning a:hover {
   border-bottom: 1px solid #fff;
   text-decoration: none;
 }
+ul.flashes {
+  top: 43px;
+  position: absolute;
+  width: 100%;
+}
+ul.flashes li.alert {
+  border-radius: 0;
+  margin-bottom: 0;
+  border-width: 2px;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  text-align: center;
+}
 /* navbar
 *****************************************************************************
 *****************************************************************************
@@ -197,13 +211,14 @@ div.navbar {
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   background: #fff;
   height: 42px;
+  position: fixed;
+  z-index: 1000;
 }
 div.navbar .navbar-inner {
   width: 1100px;
   padding-right: 0;
   margin: 0 auto;
   border: none;
-  background: transparent;
   box-shadow: none;
   min-height: 0;
 }
@@ -437,7 +452,7 @@ div#login-register form:first-child {
 *****************************************************************************
 *****************************************************************************/
 div#page-header {
-  padding-top: 30px;
+  padding-top: 70px;
   /*    background-color: #ff4e00;*/
 
   /*    background: url(img/h2-bg.png) bottom  left repeat-x;*/
