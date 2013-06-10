@@ -54,6 +54,7 @@ body.user-profile {
 
 body.login-base {
    @loginBodyBackGroundColor: #ccc;
+   @formWidth: 600px;
    background-color: @loginBodyBackGroundColor;
 
    &.change-password {
@@ -126,14 +127,21 @@ body.login-base {
             border: 1px solid #ccc;
             border-radius: 3px;
             margin-top: 50px;
-            padding: 30px;
-            width:  600px;
+            padding: 30px 0;
             margin: 0 auto;
             box-shadow: 3px 3px 5px #e3e3e3;
             position: relative;
+            width: @formWidth;
 
+            div.control-group {padding-left:30px;}
             div.alert {
                &.False { display: none; }
+               margin-top: -26px;
+               border-radius: 0;
+               background-repeat: repeat-x;
+               margin-left: 4px;
+               padding: 20px 30px;
+               width: @formWidth - 70px;
                a {
                   color: @errorText;
                   font-weight: bold;
