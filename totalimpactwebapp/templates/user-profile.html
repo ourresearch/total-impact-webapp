@@ -13,16 +13,28 @@
 {% block content %}
 
 <script type="text/javascript">
-   mixpanel.track("Impression:profile",
-                  {
-                     "Profile ID": "{{ profile.id }}",
-                     "Profile slug": "{{ profile.url_slug }}",
-                     "Profile ownership": "{{ ownership_status }}"
-                  });
-</script>
-<script type="text/javascript">
+   mixpanel.track("Impression:profile", {
+            "Profile ID": "{{ profile.id }}",
+            "Profile slug": "{{ profile.url_slug }}",
+            "Profile ownership": "{{ ownership_status }}"
+         });
    var impactstoryUserId = {{ profile.id }}
 </script>
+
+{% if g.user.id == profile.id %}
+   <script type="text/javascript">
+      mixpanel.people.set({
+         "name": "{{ profile.email }}",
+         "Profile ID": "{{ profile.id }}",
+         "$email": "{{ profile.email }}",
+         "$first_name": "{{ profile.given_name }}",
+         "$last_name": "{{ profile.surname }}",
+         "Profile slug": "{{ profile.url_slug }}"
+     });       
+      mixpanel.identify("{{ profile.email }}");
+   </script>
+{% endif %}
+
 
 <div class="main" id="report" xmlns="http://www.w3.org/1999/html"
      xmlns="http://www.w3.org/1999/html">
