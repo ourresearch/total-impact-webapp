@@ -24,6 +24,9 @@ body.can-edit .editable-name span.editable:hover {
 body.can-edit .editable-name:hover span.instr span {
   display: inline;
 }
+body.needs-to-reset-pw div.alert.needs-to-reset-pw {
+  display: block;
+}
 .editable-click {
   border: none;
 }

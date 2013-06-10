@@ -7,10 +7,18 @@ var UserCreds= function(options) {
 
 UserCreds.prototype = {
     init: function(){
-        console.log("init!")
         var that = this
         $("form.reset-password").submit(that.onPasswordResetFormSubmit)
-        $("form.change-password").keyup(that.checkPasswordMatch)
+        $("form.change-password")
+            .keyup(that.checkPasswordMatch)
+            .submit(that.onPasswordChangeFormSubmit)
+
+        if (that.userNeedsToResetPw()) {
+            $("body").addClass("needs-to-reset-pw")
+            if ($("body").hasClass("login")) {
+                window.location = "/reset-password"
+            }
+        }
     }
     ,onPasswordResetFormSubmit: function() {
         var this$ = $(this)
@@ -38,7 +46,6 @@ UserCreds.prototype = {
             }
 
         })
-
         return false;
     }
     ,checkPasswordMatch: function() {
@@ -72,6 +79,18 @@ UserCreds.prototype = {
             activate()
         }
         return false
+    }
+    ,userNeedsToResetPw: function() {
+        if ($.cookie("userdata")) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    ,onPasswordChangeFormSubmit: function() {
+        $.removeCookie("userdata")
+        return true
     }
 
 }
