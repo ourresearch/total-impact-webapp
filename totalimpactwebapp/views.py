@@ -284,7 +284,7 @@ def request_reset_token():
 
 
 
-@app.route("/cpw/<reset_token>", methods=["GET", "POST"])  # short URL easier for user to paste
+@app.route("/change-password/<reset_token>", methods=["GET", "POST"])
 def change_password(reset_token):
     """
     Password change form; authenticates w/ token we've sent to user.
@@ -440,7 +440,7 @@ def get_password_reset_link(email):
     s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
     reset_token = s.sign(retrieved_user.email)
 
-    base_reset_url = "http://" + g.roots["webapp_pretty"] + "/cpw"
+    base_reset_url = "http://" + g.roots["webapp_pretty"] + "/change-password"
     full_reset_url = base_reset_url + "/" + reset_token
 
     # send the email here...
