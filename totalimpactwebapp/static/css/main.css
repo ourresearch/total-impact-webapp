@@ -167,6 +167,7 @@ body.staging div.staging-warning {
   padding-right: 0;
   padding-left: 0;
   z-index: 100000;
+  text-align: center;
 }
 body.staging div.staging-warning button {
   right: 17px;
