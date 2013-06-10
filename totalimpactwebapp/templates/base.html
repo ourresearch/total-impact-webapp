@@ -34,18 +34,19 @@
    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
    {% endassets %}
 
-   <script>
+   <script type="text/javascript">
       mixpanel.init("{{ g.mixpanel_token }}");
+      mixpanel.people.set_once({"First Seen": new Date()});      
    </script>
 
    {% if g.user.id %}
-   {% set login_status = "logged-in" %}
-   <script type="text/javascript">
-      var impactStoryUserId = '{{ g.user.id }}'
-      mixpanel.name_tag('{{ g.user.email }}');
-   </script>
+      {% set login_status = "logged-in" %}
+      <script type="text/javascript">
+         var impactStoryUserId = '{{ g.user.id }}'
+         mixpanel.name_tag('{{ g.user.email }}');
+      </script>
    {% else %}
-   {% set login_status = "not-logged-in" %}
+      {% set login_status = "not-logged-in" %}
    {% endif %}
 
 </head>

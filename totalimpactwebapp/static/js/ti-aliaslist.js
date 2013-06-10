@@ -172,6 +172,8 @@ SubmitButton.prototype = {
            data:  JSON.stringify(requestObj),
            success: function(data){
                console.log("finished creating the user!")
+               mixpanel.people.set({"$created": new Date()})
+
                location.href = "/" + data.url_slug
            }
         })
