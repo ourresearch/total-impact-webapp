@@ -6,15 +6,6 @@ body.user-profile div.main {
   margin-top: 0;
   padding-top: 0;
 }
-body.user-profile #page-header {
-  padding-top: 80px;
-}
-body.user-profile #page-header h2 {
-  font-size: 35px;
-  text-align: left;
-  background: transparent;
-  border-bottom: 1px solid #ddd;
-}
 body.user-profile .modal {
   width: 675px;
   margin: -250px 0 0 -337.5px;
@@ -213,23 +204,6 @@ div#metrics div.genre ul.items.inactive li.item div.biblio h5 {
 }
 body.report li.item:hover div.item-controls a.item-delete-button {
   display: none;
-}
-body.report div#collection-deprecated-warning {
-  position: absolute;
-  width: 100%;
-  top: 0;
-  left: 0;
-  background: red;
-  border-bottom: 1px solid #000;
-  color: #fff;
-  border: #000;
-  height: 30px;
-}
-body.report div#collection-deprecated-warning p {
-  margin-top: 0;
-  text-align: center;
-  padding-top: 0;
-  font-size: 16px;
 }
 li.item {
   float: left;

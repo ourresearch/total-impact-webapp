@@ -189,6 +189,22 @@ ul.flashes li.alert {
   border-top: none;
   text-align: center;
 }
+body.report #page-header,
+body.user-profile #page-header {
+  padding-top: 80px;
+}
+body.report #page-header h2,
+body.user-profile #page-header h2 {
+  font-size: 35px;
+  text-align: left;
+  background: transparent;
+  border-bottom: 1px solid #ddd;
+}
+body.report div.main,
+body.user-profile div.main {
+  margin: 0;
+  padding: 0;
+}
 /* navbar
 *****************************************************************************
 *****************************************************************************

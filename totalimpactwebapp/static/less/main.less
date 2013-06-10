@@ -189,6 +189,23 @@ ul.flashes {
    }
 }
 
+// Hack so that we can modify legacy collections at the same time
+// as user profiles.
+body.report, body.user-profile {
+   #page-header {
+      padding-top:80px;
+      h2 {
+         font-size: 35px;
+         text-align: left;
+         background: transparent;
+         border-bottom:  1px solid #ddd;
+      }
+   }
+   div.main{
+      margin: 0;
+      padding: 0;
+   }
+}
 
 
 
