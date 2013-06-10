@@ -27,6 +27,6 @@ requests==1.2.3
 rsa==3.0.1
 shortuuid==0.3
 simplejson==2.5.2
-webassets==0a.8
+webassets==0.8
 wsgiref==0.1.2
 yuicompressor==2.4.7
