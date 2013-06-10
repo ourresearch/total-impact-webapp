@@ -272,7 +272,25 @@ div.navbar {
             &#logged-in {
                span.given-name {
                   font-weight: bold;
-                  &:hover {color: @linkColor;}
+                  color: @linkColor;
+               }
+               span.hi {
+                  font-family: "Helvetica", "Arial", sans-serif;
+               }
+            }
+         }
+
+         &.preferences {
+            width:  20px;
+            overflow: hidden;
+            position: relative;
+            a {
+               padding-left:0;
+               i {vertical-align: -2px; color: @linkColor;}
+               span.text {
+                  position:  absolute;
+                  left: 20px;
+                  color: @linkColor;
                }
             }
          }
@@ -318,24 +336,6 @@ div.navbar {
          div.dropdown-menu{
             min-width: 200px;
             padding:5px 0 10px 0;
-            h3{
-               margin-top: 0;
-               border-bottom: 1px solid #ccc;
-               text-align:center;
-
-            }
-            p {
-               &.none {
-                  text-align: left;
-                  font-family: Helvetica, Arial, sans-serif;
-                  font-size:14px;
-                  padding: 20px;
-                  margin-bottom:0;
-
-                  a {color: @linkColor; display:inline; padding:0;}
-               }
-            }
-            img.loading {margin:5px auto 0; float:none; display:block;}
          }
       }
 

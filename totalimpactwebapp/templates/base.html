@@ -67,10 +67,7 @@
          <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a>
          <ul class="nav pull-right">
 
-            {% if not g.user.id  %}
-            <li class="create-button"><a href="/create">create</a></li>
-            {% endif %}
-
+            <li class="create-button not-logged-in"><a href="/create">create</a></li>
             <li><a href="/api-docs">embed</a></li>
             <li class="dropdown">
                <a href="#"  class="dropdown-toggle" data-toggle="dropdown">follow</a>
@@ -93,8 +90,8 @@
 
             <li class="acct-mgt dropdown logged-in" id="logged-in" >
                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="hi">hi,</span>
-                  <span class="given-name">{{g.user.given_name}}</span>!
+                  <span class="hi">hi, </span>
+                  <span class="given-name">{{g.user.given_name}}!</span>
                </a>
                <div  class="dropdown-menu">
                   <ul class='user-actions'>
@@ -106,6 +103,15 @@
             </li>
             <li class="acct-mgt dropdown not-logged-in" id="login-link">
                <a href="/login"  class="login-register-link">Log in</a>
+            </li>
+
+            <li class="divider-vertical"></li>
+
+            <li class="logged-in preferences">
+               <a href="/{{ g.user.url_slug }}/preferences" class="preferences">
+                  <i class="icon-cog"></i>
+                  <span class="text">Preferences</span>
+               </a>
             </li>
          </ul>
       </div>

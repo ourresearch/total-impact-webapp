@@ -96,6 +96,18 @@ function manageBanners() {
 
 }
 
+var Navbar = function(){
+    this.init()
+}
+Navbar.prototype = {
+    init: function() {
+        $("div.navbar li.preferences").hover(
+            function(){$(this).animate({width:'100px'},200);},
+            function(){$(this).animate({width:'20px'},200);}
+        )
+    }
+}
+
 
 
 $(document).ready(function(){
@@ -132,6 +144,7 @@ $(document).ready(function(){
     new UserPreferences()
     new UserCreds()
 
+    new Navbar()
 
 
 

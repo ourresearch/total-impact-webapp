@@ -254,8 +254,26 @@ div.navbar ul.nav.pull-right > li.dropdown.open a.dropdown-toggle {
 }
 div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.given-name {
   font-weight: bold;
+  color: #ff4e00;
 }
-div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.given-name:hover {
+div.navbar ul.nav.pull-right > li.acct-mgt#logged-in span.hi {
+  font-family: "Helvetica", "Arial", sans-serif;
+}
+div.navbar ul.nav.pull-right > li.preferences {
+  width: 20px;
+  overflow: hidden;
+  position: relative;
+}
+div.navbar ul.nav.pull-right > li.preferences a {
+  padding-left: 0;
+}
+div.navbar ul.nav.pull-right > li.preferences a i {
+  vertical-align: -2px;
+  color: #ff4e00;
+}
+div.navbar ul.nav.pull-right > li.preferences a span.text {
+  position: absolute;
+  left: 20px;
   color: #ff4e00;
 }
 div.navbar ul.nav.pull-right > li a {
@@ -302,28 +320,6 @@ div.navbar ul.nav.pull-right > li div.dropdown-menu span.help-inline img {
 div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu {
   min-width: 200px;
   padding: 5px 0 10px 0;
-}
-div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu h3 {
-  margin-top: 0;
-  border-bottom: 1px solid #ccc;
-  text-align: center;
-}
-div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu p.none {
-  text-align: left;
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  padding: 20px;
-  margin-bottom: 0;
-}
-div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu p.none a {
-  color: #ff4e00;
-  display: inline;
-  padding: 0;
-}
-div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu img.loading {
-  margin: 5px auto 0;
-  float: none;
-  display: block;
 }
 /* registration form stuff
 *****************************************************************************
