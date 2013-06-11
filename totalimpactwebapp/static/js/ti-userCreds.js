@@ -89,6 +89,7 @@ UserCreds.prototype = {
         }
     }
     ,onPasswordChangeFormSubmit: function() {
+        console.log("removing cookie")
         $.removeCookie("userdata")
         return true
     }

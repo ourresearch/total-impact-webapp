@@ -51,6 +51,9 @@ body.login-base {
 
   background: -ms-radial-gradient(circle, #ffffff, #cccccc);
 }
+body.login-base div.alert {
+  display: none;
+}
 body.login-base.change-password div.main div.wrapper form label.control-label {
   width: 200px;
 }
@@ -62,9 +65,6 @@ body.login-base.change-password div.main div.wrapper form div.controls span.help
   width: 100px;
   left: 470px;
   top: 53px;
-}
-body.login-base.reset-password div.main div.wrapper form div.alert.email {
-  display: none;
 }
 body.login-base div.navbar {
   display: none;
