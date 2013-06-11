@@ -34,9 +34,14 @@ var ExternalProfileIds = {
 
 
 
-var AliasListInputs = function() {}
+var AliasListInputs = function(user) {
+    this.user = user
+    this.init()
+}
 AliasListInputs.prototype = {
     aliases: new AliasList(),
+    email: "",
+    emailIsValid: false,
     ExternalProfileIds:  ExternalProfileIds, // someday this'll probably be an obj
     init: function() {
         var that = this
@@ -92,24 +97,88 @@ AliasListInputs.prototype = {
         })
 
         // you can't submit the form until the required stuff all has a value.
-        $("form.register").keyup(that.validateRegistrationForm)
+        $("form.register").keyup( function(){
+            that.validateRegistrationForm.call(that, this)
+        })
+
+        $("form.register input.email").blur(function(){
+            that.validateEmail.call(that, this)
+        })
+
 
     },
-    validateRegistrationForm: function() {
-        // "this" is the form to validate
+    validateEmail: function(input) {
+
+        console.log("here's what's in the email box: ", $(input).val())
+
+//        if (this.email == $(input).val()) return true // no change
+        if (!$(input).val()) {
+            changeElemState($(input), "ready")
+            return true
+        }
+
+        var that = this
+        that.email = $(input).val()
+        changeElemState($(input), "working")
+        $("#go-button").attr("disabled", "true")
 
 
-        var requiredVals = _.map(
-            $(this).find("input.required"),
-            function(x) {return $(x).val()}
+        this.user.checkUsername(
+            that.email,
+            function(){
+                changeElemState($(input), "success")
+                that.emailIsValid = true
+                that.validateRegistrationForm()
+            },
+            function(){
+                changeElemState($(input), "error")
+                that.emailIsValid = false
+                that.validateRegistrationForm()
+            }
         )
-        if (_.contains(requiredVals, "") ) { // there's still a missing val
-            console.log("there's a missing val", requiredVals)
-            $(this).find("#go-button").attr("disabled", "disabled")
+    },
+    validateRegistrationForm: function() {
+        var valid = true
+
+        // email
+        email$ = $("input.register.email")
+        console.log("email is valid: ", this.emailIsValid)
+
+        if (this.email != email$.val()) {
+            valid = false
+            changeElemState(email$, "ready")
+        }
+        if (!this.emailIsValid) {
+            valid = false
+        }
+
+        // password
+        var pw$ = $("input.password")
+        if (pw$.val()) {
+            changeElemState(pw$,  "success" )
         }
         else {
-            console.log("all the required vals are here!", requiredVals)
-            $(this).find("#go-button").removeAttr("disabled")
+            valid = false
+            changeElemState(pw$, "ready" )
+        }
+
+        // names
+        given$ = $("input.name.given")
+        surname$ = $("input.name.surname")
+        if (given$.val() && surname$.val()){
+            changeElemState(given$, "success")
+        }
+        else {
+            valid = false
+            changeElemState(given$, "ready")
+        }
+
+
+        if (valid) { // there's still a missing val
+            $("#go-button").removeAttr("disabled")
+        }
+        else {
+            $("#go-button").attr("disabled", "disabled")
         }
     },
     textareaPlaceholders: function() {

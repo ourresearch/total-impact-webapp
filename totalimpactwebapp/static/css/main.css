@@ -537,6 +537,9 @@ div.import-products form.importers div.control-group {
 div.import-products form.importers div.control-group.fileupload div.uneditable-input {
   width: 100px;
 }
+div.import-products form.importers div.control-group.success i {
+  display: none;
+}
 div.import-products form.importers div.control-group.submit {
   margin-bottom: 0;
 }

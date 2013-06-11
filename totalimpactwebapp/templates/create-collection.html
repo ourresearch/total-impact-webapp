@@ -42,7 +42,7 @@
                    </div>
                 </div>
 
-                <div class="form-item control-group submit ready" id="collection-name">
+                <div class="form-item control-group ready" id="collection-name">
                    <label class="control-label" ><span class="main"><i class="icon-asterisk"></i>Your name:</span></label>
                    <div class="controls form-inline names">
                       <input type="text" class="name given no-input-yet input-large required"  placeholder="First name"/>
@@ -51,7 +51,7 @@
                 </div>
                 <div class="form-item control-group submit ready">
                    <div class="controls">
-                      <button name="run" type="submit" id="go-button" class="create ready btn btn-large btn-primary">Make my profile</button>
+                      <button name="run" type="submit" id="go-button" disabled="true" class="create ready btn btn-large btn-primary">Make my profile</button>
                       <span class="working go"><img class="center" src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Creating...</span>
                    </div>
 

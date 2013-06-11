@@ -115,9 +115,6 @@ $(document).ready(function(){
 
     $.cookie.defaults = {path: "/", raw: 1}
 
-    var userController = new UserController();
-    userController.init()
-
     collViews = new CollViews()
     coll = new Coll(collViews)
     collController = new CollController(coll, collViews);
@@ -135,8 +132,8 @@ $(document).ready(function(){
         itemController.itemReportPageInit()
     }
 
-    var aliasListInputs = new AliasListInputs()
-    aliasListInputs.init()
+    var user = new User()
+    new AliasListInputs(user)
 
     new UserPreferences()
     new UserCreds()
