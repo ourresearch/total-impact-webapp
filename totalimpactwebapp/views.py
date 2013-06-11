@@ -7,6 +7,7 @@ from flask.ext.assets import Environment, Bundle
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
+from sqlalchemy import func
 from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
 
 
@@ -506,32 +507,36 @@ def user_put(userId):
 @app.route("/user/<int:userId>/slug/<new_slug>", methods=["PUT"])
 def user_slug_modify(userId, new_slug):
 
+    # check for allowed characters
     has_non_word_chars = re.compile("[^\w'-]", re.U).search(new_slug)
     if has_non_word_chars is not None:
         abort(400, "Character not allowed.")
 
-
+    # check for user login
     retrieved_user = get_user_from_id(userId)
     if g.user.get_id() != retrieved_user.get_id():
         abort(403, "You must be logged in to change your URL.")
 
-    retrieved_user.url_slug = new_slug
+    # check for duplicates
+    user_with_same_slug = User.query.filter(
+        func.lower(User.url_slug) == func.lower(new_slug)
+    ).first()
 
-    try:
-        db.session.commit()
-    except (IntegrityError, InvalidRequestError) as e:
-        db.session.rollback()
-        logger.info("tried to mint a url slug ('{slug}') that already exists, so appending number".format(
-            slug=retrieved_user.url_slug
-        ))
+    if user_with_same_slug is None:
+        pass
+        retrieved_user.url_slug = new_slug
+    else:
 
         if request.args.get("fail_on_duplicate") in ["true", "yes", 1]:
             abort(409, "this url slug already exists") # see http://stackoverflow.com/a/3826024/226013
         else:
+            logger.info("tried to mint a url slug ('{slug}') that already exists, so appending number".format(
+                slug=retrieved_user.url_slug
+            ))
             # to de-duplicate, mint a slug with a random number on it
-            retrieved_user.url_slug = new_slug + str(random.randint(1000,9999))
-            db.session.commit()
+            retrieved_user.url_slug = new_slug + str(random.randint(1000, 9999))
 
+    db.session.commit()
     return make_response(json.dumps(retrieved_user.url_slug), 200)
 
 
