@@ -282,10 +282,17 @@ div.navbar {
                   min-width: 100px;
                   width: 100px;
                   padding:5px 0;
+                  right: -9px;
+                  &:after, &:before {
+                     display:none;
+                     border: none;
+                  }
                }
                &:hover > ul.dropdown-menu{
                   display: block;
-                  margin-top:0;
+                  margin-top: 0px;
+                  border-radius: 0 0 5px 5px;
+                  border: 1px solid #fff;
                }
             }
          }

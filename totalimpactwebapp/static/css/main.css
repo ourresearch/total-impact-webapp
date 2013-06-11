@@ -264,10 +264,18 @@ div.navbar ul.nav.pull-right > li.acct-mgt.logged-in ul.dropdown-menu {
   min-width: 100px;
   width: 100px;
   padding: 5px 0;
+  right: -9px;
+}
+div.navbar ul.nav.pull-right > li.acct-mgt.logged-in ul.dropdown-menu:after,
+div.navbar ul.nav.pull-right > li.acct-mgt.logged-in ul.dropdown-menu:before {
+  display: none;
+  border: none;
 }
 div.navbar ul.nav.pull-right > li.acct-mgt.logged-in:hover > ul.dropdown-menu {
   display: block;
-  margin-top: 0;
+  margin-top: 0px;
+  border-radius: 0 0 5px 5px;
+  border: 1px solid #fff;
 }
 div.navbar ul.nav.pull-right > li.preferences a {
   padding-left: 0;
