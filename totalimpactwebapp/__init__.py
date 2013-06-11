@@ -15,6 +15,11 @@ logger = logging.getLogger("tiwebapp")
 
 # set up application
 app = Flask(__name__)
+
+# allow slashes and end of URLs even when they're not part of views:
+# http://flask.pocoo.org/mailinglist/archive/2011/2/27/re-automatic-removal-of-trailing-slashes/#043b1a0b6e841ab8e7d38bd7374cbb58
+app.url_map.strict_slashes = False
+
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
