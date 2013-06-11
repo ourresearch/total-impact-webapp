@@ -23,30 +23,30 @@
                 <div class="form-item control-group email register ready">
                    <label class="control-label">
                       <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Checking</span>
-                      <span class="main">Email</span>
+                      <span class="main"><i class="icon-asterisk"></i>Email</span>
                       <span class="working">availability...</span>
                       <span class="success">available.</span>
                       <span class="error">already taken...</span>
                    </label>
                    <div class="controls">
-                      <input class="username register email" type="text" placeholder="email" />
+                      <input class="username register email required" type="text" placeholder="email" />
                    </div>
                 </div>
 
                 <div class="form-item control-group register password ready">
                    <label class="control-label">
-                      <span class="main">Password</span>
+                      <span class="main"><i class="icon-asterisk"></i>Password</span>
                    </label>
                    <div class="controls">
-                      <input type="password" placeholder="password" class="password"/>
+                      <input type="password" placeholder="password" class="password required"/>
                    </div>
                 </div>
 
                 <div class="form-item control-group submit ready" id="collection-name">
-                   <label class="control-label" ><span class="main">Your name:</span></label>
+                   <label class="control-label" ><span class="main"><i class="icon-asterisk"></i>Your name:</span></label>
                    <div class="controls form-inline names">
-                      <input type="text" class="name given no-input-yet input-large"  placeholder="First name"/>
-                      <input type="text" class="name surname no-input-yet input-large"  placeholder="Last name"/>
+                      <input type="text" class="name given no-input-yet input-large required"  placeholder="First name"/>
+                      <input type="text" class="name surname no-input-yet input-large required"  placeholder="Last name"/>
                    </div>
                 </div>
                 <div class="form-item control-group submit ready">

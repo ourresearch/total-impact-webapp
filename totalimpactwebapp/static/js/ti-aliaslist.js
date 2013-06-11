@@ -86,13 +86,31 @@ AliasListInputs.prototype = {
 
         })
 
-
-
         // clear the aliases when input modals are dismissed
         $("#import-products-modal").on("hide", function(){
             that.resetList.call(that)
         })
 
+        // you can't submit the form until the required stuff all has a value.
+        $("form.register").keyup(that.validateRegistrationForm)
+
+    },
+    validateRegistrationForm: function() {
+        // "this" is the form to validate
+
+
+        var requiredVals = _.map(
+            $(this).find("input.required"),
+            function(x) {return $(x).val()}
+        )
+        if (_.contains(requiredVals, "") ) { // there's still a missing val
+            console.log("there's a missing val", requiredVals)
+            $(this).find("#go-button").attr("disabled", "disabled")
+        }
+        else {
+            console.log("all the required vals are here!", requiredVals)
+            $(this).find("#go-button").removeAttr("disabled")
+        }
     },
     textareaPlaceholders: function() {
         // placeholder replacement

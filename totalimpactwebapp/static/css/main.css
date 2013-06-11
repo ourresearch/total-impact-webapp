@@ -556,6 +556,11 @@ div.import-products form.importers div.control-group label.control-label a.help:
 div.import-products form.importers div.control-group label.control-label.ids span.success {
   float: right;
 }
+div.import-products form.importers div.control-group label.control-label i {
+  margin-right: 3px;
+  margin-left: -15px;
+  color: #ff4e00;
+}
 div.import-products form.importers div.control-group div.controls input {
   font-size: 16px;
   width: 240px;
