@@ -28,8 +28,8 @@ UserPreferences.prototype = {
         $("span.slug.editable").editable({
             type: "text",
             name: "slug",
-            pk: impactstoryUserId,
-            url: "/user/"+impactstoryUserId+"?fail_on_duplicate=true",
+            pk: impactStoryUserId,
+            url: "/user/"+impactStoryUserId+"?fail_on_duplicate=true",
             mode: "inline",
             ajaxOptions: {
                 type: 'PUT'
