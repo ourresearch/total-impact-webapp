@@ -179,15 +179,17 @@ def user_profile(url_slug):
     retrieved_user = User.query.filter(
         func.lower(User.url_slug) == func.lower(url_slug) ).first()
 
+    # user don't exist
     if retrieved_user is None:
         abort(404)
 
+    # you used a non-standard capitalization of the url slug
     elif retrieved_user.url_slug != url_slug:
         # redirect user to a URL that uses correctly-capitalized slug.
         return redirect("/" + retrieved_user.url_slug)
 
+    # for now render something quite like the report template. change later.
     else:
-        # for now render something quite like the report template. change later.
         return render_template(
             'user-profile.html',
             request_url=request.url,
@@ -200,21 +202,31 @@ def user_profile(url_slug):
 @app.route("/<url_slug>/preferences")
 def user_preferences(url_slug):
 
-    if not g.user.is_authenticated():
+    retrieved_user = User.query.filter(
+        func.lower(User.url_slug) == func.lower(url_slug) ).first()
+
+    # user don't exist
+    if retrieved_user is None:
+        abort(404)
+
+    # you're not logged in
+    elif g.user is None:
         return redirect(url_for('login', next=request.url))
 
-    if g.user.url_slug != url_slug:
+    # you're logged in, asked to edit someone else's preferences
+    elif g.user.id != retrieved_user.id:
         return redirect("/" + url_slug)
 
-    profile = User.query.filter(
-        func.lower(User.url_slug) == func.lower(new_slug) ).first()
+    # you used a non-standard capitalization of the url slug
+    elif retrieved_user.url_slug != url_slug:
+        # redirect user to a URL that uses correctly-capitalized slug.
+        return redirect(url_for('user_preferences', url_slug=retrieved_user.url_slug))
 
-    if profile is None:
-        abort(404)
+    # yay, have some preferences page!
     else:
         return render_template(
             'user-preferences.html',
-            profile=profile
+            profile=retrieved_user
         )
 
 
