@@ -176,19 +176,25 @@ def redirect_to_profile(dummy):
 
 def user_profile(url_slug):
 
-    profile = User.query.filter_by(url_slug=url_slug).first()
-    if profile is None:
+    retrieved_user = User.query.filter(
+        func.lower(User.url_slug) == func.lower(url_slug) ).first()
+
+    if retrieved_user is None:
         abort(404)
+
+    elif retrieved_user.url_slug != url_slug:
+        # redirect user to a URL that uses correctly-capitalized slug.
+        return redirect("/" + retrieved_user.url_slug)
+
     else:
         # for now render something quite like the report template. change later.
-
         return render_template(
             'user-profile.html',
             request_url=request.url,
-            profile=profile,
-            report_id=profile.collection_id,
+            profile=retrieved_user,
+            report_id=retrieved_user.collection_id,
             report_id_namespace="impactstory_collection_id",
-            api_query=profile.collection_id
+            api_query=retrieved_user.collection_id
         )
 
 @app.route("/<url_slug>/preferences")
@@ -200,7 +206,9 @@ def user_preferences(url_slug):
     if g.user.url_slug != url_slug:
         return redirect("/" + url_slug)
 
-    profile = User.query.filter_by(url_slug=url_slug).first()
+    profile = User.query.filter(
+        func.lower(User.url_slug) == func.lower(new_slug) ).first()
+
     if profile is None:
         abort(404)
     else:
