@@ -505,6 +505,12 @@ def user_put(userId):
 
 @app.route("/user/<int:userId>/slug/<new_slug>", methods=["PUT"])
 def user_slug_modify(userId, new_slug):
+
+    has_non_word_chars = re.compile("[^\w'-]", re.U).search(new_slug)
+    if has_non_word_chars is not None:
+        abort(400, "Character not allowed.")
+
+
     retrieved_user = get_user_from_id(userId)
     if g.user.get_id() != retrieved_user.get_id():
         abort(403, "You must be logged in to change your URL.")

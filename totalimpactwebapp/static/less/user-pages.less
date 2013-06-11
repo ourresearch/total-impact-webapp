@@ -1,5 +1,7 @@
 @import "bootstrap/variables.less";
 @linkColor: #FF4E00;
+@formWidth: 600px;
+
 
 body.can-not-edit .editable-name {
    span.instr {display:none;}
@@ -60,7 +62,6 @@ body.user-profile {
 
 body.login-base {
    @loginBodyBackGroundColor: #ccc;
-   @formWidth: 600px;
    background-color: @loginBodyBackGroundColor;
 
    &.change-password {
@@ -215,8 +216,9 @@ body.user-preferences {
    }
    div.main {
       div.wrapper {
-         width:  700px;
+         width:  @formWidth;
          div.pref-category {
+            position: relative;
             margin-top:50px;
             h3 {
                font-size: 24px;
@@ -304,10 +306,12 @@ body.user-preferences {
                      div {
                         float:left;
                         &.editable-error-block {
-                           margin: 0 0 0 10px;
-                           font-size: 15px;
+                           font-size: 18px;
                            line-height: 1;
-                           max-width: 220px;
+                           position: absolute;
+                           top: 90px;
+                           left: 25px;
+                           max-width: @formWidth;
                         }
                      }
                   }

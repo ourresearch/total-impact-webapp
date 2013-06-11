@@ -165,9 +165,10 @@ body.user-preferences div#page-header h2.page-title span.editable {
   font-weight: normal;
 }
 body.user-preferences div.main div.wrapper {
-  width: 700px;
+  width: 600px;
 }
 body.user-preferences div.main div.wrapper div.pref-category {
+  position: relative;
   margin-top: 50px;
 }
 body.user-preferences div.main div.wrapper div.pref-category h3 {
@@ -244,10 +245,12 @@ body.user-preferences div.main div.wrapper div.pref-category form.editableform d
   float: left;
 }
 body.user-preferences div.main div.wrapper div.pref-category form.editableform div.control-group.error div.editable-error-block {
-  margin: 0 0 0 10px;
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1;
-  max-width: 220px;
+  position: absolute;
+  top: 90px;
+  left: 25px;
+  max-width: 600px;
 }
 body.user-preferences div.main div.wrapper div.pref-category form.editableform div.control-group button.editable-cancel {
   display: none;

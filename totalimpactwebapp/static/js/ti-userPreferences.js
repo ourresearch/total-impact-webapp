@@ -41,6 +41,9 @@ UserPreferences.prototype = {
                 if (response.status === 409) {
                     return "Whoops, looks like someone else is already using that URL..."
                 }
+                else if (response.status === 400) {
+                    return "Only letters, numbers, apostrophes, and dashes are allowed."
+                }
                 else {
                     response.responseText
                 }
