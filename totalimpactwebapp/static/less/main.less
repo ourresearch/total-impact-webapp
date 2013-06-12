@@ -1141,7 +1141,7 @@ div#footer {
    font-size:100%;
    clear:both;
    color: #555;
-   padding-top: 20px;
+   padding: 50px 0 70px;
    width: 100%;
    border-top: 1px solid #aaa;
    background: url(../img/footer-bg.png) top repeat-x;
@@ -1149,9 +1149,8 @@ div#footer {
 
    p {
       margin:6px 0 0 0;
-      line-height: 1;
-      font-size: 14px;
-      line-height: 1.3;
+      line-height: 1.4;
+      font-size: 16px;
    }
 
 
@@ -1159,51 +1158,77 @@ div#footer {
       margin-top: 30px;
       margin:0 auto;
 
+
       div.footer-col {
          float:left;
-         width: 32%;
-         margin-bottom:30px;
+         width: 125px;
+         padding-right: 20px;
+         margin-left: 20px;
+         border-right: 1px solid #ccc;
+         min-height: 150px;
+
 
          h3 {
             font-size: 18px;
             font-weight: bold;
             font-family: rokkitt, helvetica, sans-serif;
             color: #333;
-            width: 100px;
-            margin: 0 auto;
+            margin: 0 0 10px;
          }
 
          ul {
-            width: 100px;
-            margin: 0 auto;
             li {
-               line-height: 1.25;
+               line-height: 1.6;
             }
             a {
-               color:  #777;
-               font-size: 13px;
+               color:  #555;
+               font-size: 15px;
                &:hover {
                   color:  @linkColor;
                }
             }
          }
 
-         &#footer-funders {
-            #footer-sloan-link {
+         &#footer-branding {
+            width: 400px;
+            margin-left:0;
+            a.brand {
                img {
-                  margin: 20px 0 0 0;
-                  width: 275px;
-                  float:right;
+                  width:  170px; // smaller than header logo
                }
             }
+
+            p.license {
+               font-size: 13px;
+               color: #777;
+               line-height: 1.5;
+               width:  330px;
+
+               margin-top: 25px;
+
+               a {
+                  color:  #777;
+                  text-decoration: none;
+                  border-bottom: 1px dotted #777;
+                  &:hover {
+                     border: 1px solid @linkColor;
+                     color:  @linkColor;
+                  }
+               }
+            }
+
+         }
+
+         &#footer-funders {
+            width:  200px;
+            border-right: none;
+            padding-right: none;
          }
 
          &#footer-about {
          }
 
          &#footer-follow {
-            border-left: 1px dotted #bbb;
-            border-right: 1px dotted #bbb;
 
             img {
                float: right;
