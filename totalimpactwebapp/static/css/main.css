@@ -619,7 +619,7 @@ body.index {
   /* IE 10 */
 
   background: -ms-radial-gradient(circle, #ffffff, #cccccc);
-  background: #eee;
+  background: #ff4e00;
 }
 body.index div#page-header {
   display: none;
@@ -636,73 +636,76 @@ body.index.not-logged-in div.navbar-inner ul.nav.pull-right li span.hi {
 }
 div#tagline div.wrapper {
   width: 900px;
-  padding: 80px 0 40px;
+  padding: 100px 0 70px;
   text-align: center;
 }
 div#tagline div.wrapper h1 {
-  color: #555;
-  font-size: 72px;
+  color: #fff;
+  font-size: 80px;
   line-height: .8;
-  font-family: 'rokkitt', 'georgia', serif;
   letter-spacing: -2px;
-  background: url(../img/grad-border-bottom.png) no-repeat bottom;
   padding-bottom: 15px;
+  font-family: 'rokkitt', 'georgia', serif;
+  font-weight: lighter;
 }
 div#tagline div.wrapper p.subtagline {
-  color: #555;
+  color: #fff;
   font-size: 20px;
   padding: 5px 0 10px;
   margin-bottom: 40px;
 }
 div#tagline div.wrapper #call-to-action {
   margin: 0 auto;
-  width: 455px;
+  width: 525px;
   margin-bottom: 90px;
 }
 div#tagline div.wrapper #call-to-action span.container {
   height: 114px;
   display: block;
   float: left;
-  width: 330px;
+  width: 360px;
 }
 div#tagline div.wrapper #call-to-action span.container a#create-collection {
   margin: 3px 0 0 20px;
+  padding: 13px 29px;
   font-size: 2.1em;
-  font-family: rokkitt, Helvetica, Arial, sans-serif;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  -moz-border-radius-topright: 3px;
-  -moz-border-radius-bottomright: 3px;
-  -moz-border-radius-bottomleft: 3px;
-  -moz-border-radius-topleft: 3px;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
+  font-size: 30px;
+  -webkit-border-top-right-radius: 30px;
+  -webkit-border-bottom-right-radius: 30px;
+  -webkit-border-bottom-left-radius: 30px;
+  -webkit-border-top-left-radius: 30px;
+  -moz-border-radius-topright: 30px;
+  -moz-border-radius-bottomright: 30px;
+  -moz-border-radius-bottomleft: 30px;
+  -moz-border-radius-topleft: 30px;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  border-bottom-left-radius: 30px;
+  border-top-left-radius: 30px;
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background: #006dcc;
+  background: #0053b0;
+  background: #444;
+  font-family: 'rokkitt', 'georgia', serif;
 }
 div#tagline div.wrapper #call-to-action span.container a#create-collection:hover {
-  background: #0165bd;
+  background: #333;
 }
 div#tagline div.wrapper #call-to-action p#example-collection {
   font-size: 14px;
   float: left;
   width: 100px;
-  color: #777;
+  color: #333;
   margin: 2px 0 0 5px;
   padding: 4px 0 0 5px;
-  border-left: 1px solid #aaa;
+  border-left: 1px solid #444;
 }
 div#tagline div.wrapper #call-to-action p#example-collection a {
   font-size: 25px;
   margin-top: -5px;
   margin-left: 5px;
-  color: #006dcc;
+  color: #333;
   font-family: 'rokkitt', 'georgia', serif;
   display: block;
   width: 175px;
@@ -710,47 +713,14 @@ div#tagline div.wrapper #call-to-action p#example-collection a {
 }
 div#tagline div.wrapper #call-to-action p#example-collection a:hover {
   text-decoration: underline;
-  color: #ff4e00;
+  color: #333;
 }
-div#sources {
-  background: #fff;
-  margin-top: 80px;
-  width: 100%;
-  border-top: 3px solid #ff4e00;
-}
-div#sources div.wrapper {
-  background: url(../img/sources-banner.png) no-repeat top left;
-  height: 135px;
-  margin-top: -63px;
-  padding-top: 15px;
-  width: 1200px;
-}
-div#sources div.wrapper h2 {
-  float: left;
-  color: #999;
-  font-family: 'rokkitt', 'georgia', serif;
-  font-size: 20px;
-  line-height: 1.1;
-  width: 160px;
-  border-right: 1px solid #ddd;
-  margin: 0 20px 0 70px;
-  padding: 10px;
-}
-div#sources div.wrapper ul#source-logos li {
-  float: left;
-  margin: 0 20px 20px 0;
-}
-div#sources div.wrapper ul#source-logos li img {
-  height: 22px;
-}
-/* the call-to-action button and environs */
 /* the "selling points" section
 *************************************************/
 div#selling-points {
   background-color: #fff;
   min-height: 350px;
-  padding-top: 30px;
-  border-bottom: 3px solid #ff4e00;
+  padding-top: 50px;
   background-position: bottom;
   background-repeat: repeat-x;
 }
@@ -786,6 +756,48 @@ div#selling-points ul li {
 div#selling-points ul li.middle.middle {
   padding-left: 5%;
   padding-right: 5%;
+}
+div#sources {
+  background: #fff;
+  width: 100%;
+  float: left;
+  padding: 30px 0 40px;
+  border-top: 5px solid #eee;
+  text-align: center;
+}
+div#sources div.wrapper {
+  padding-top: 15px;
+  width: 1024px;
+  margin: 0 auto;
+  background: #fff;
+}
+div#sources div.wrapper h2 {
+  color: #bbb;
+  font-family: 'Sofia', cursive;
+  font-size: 19px;
+  font-weight: normal;
+  margin: -70px auto 30px;
+  background: #fff;
+  display: block;
+  width: 390px;
+}
+div#sources div.wrapper ul#source-logos li {
+  margin: 0 20px 20px 0;
+  display: inline;
+  line-height: 3.5;
+}
+div#sources div.wrapper ul#source-logos li img {
+  height: 22px;
+  opacity: .7;
+  filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
+  /* Firefox 10+, Firefox on Android */
+
+  filter: gray;
+  /* IE6-9 */
+
+  -webkit-filter: grayscale(100%);
+  /* Chrome 19+, Safari 6+, Safari 6+ iOS */
+
 }
 /* "faq" page
 *****************************************************************************
@@ -1053,8 +1065,8 @@ div#docs ul#required-attributes li {
 div#footer {
   font-size: 100%;
   clear: both;
-  color: #555;
-  padding: 50px 0 70px;
+  color: #777;
+  padding: 60px 0 80px;
   width: 100%;
   border-top: 1px solid #aaa;
   background: url(../img/footer-bg.png) top repeat-x;
@@ -1072,23 +1084,23 @@ div#footer div.wrapper {
 div#footer div.wrapper div.footer-col {
   float: left;
   width: 125px;
-  padding-right: 20px;
-  margin-left: 20px;
-  border-right: 1px solid #ccc;
+  padding-right: 0;
+  margin-left: 32px;
+  border-right: 1px solid #ddd;
   min-height: 150px;
 }
 div#footer div.wrapper div.footer-col h3 {
   font-size: 18px;
   font-weight: bold;
   font-family: rokkitt, helvetica, sans-serif;
-  color: #333;
-  margin: 0 0 10px;
+  color: #555;
+  margin: 0 0 12px;
 }
 div#footer div.wrapper div.footer-col ul li {
   line-height: 1.6;
 }
 div#footer div.wrapper div.footer-col ul a {
-  color: #555;
+  color: #777;
   font-size: 15px;
 }
 div#footer div.wrapper div.footer-col ul a:hover {
@@ -1097,6 +1109,7 @@ div#footer div.wrapper div.footer-col ul a:hover {
 div#footer div.wrapper div.footer-col#footer-branding {
   width: 400px;
   margin-left: 0;
+  padding-right: 22px;
 }
 div#footer div.wrapper div.footer-col#footer-branding a.brand img {
   width: 170px;

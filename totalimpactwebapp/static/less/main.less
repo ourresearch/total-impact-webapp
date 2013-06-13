@@ -82,6 +82,7 @@ h3 {
    margin: 20px 0 0 0;
    margin-top:20px;
    font-family: rokkitt, georgia, serif;
+
    font-size: 25px;
    color:  #555;
    line-height: 1;
@@ -129,6 +130,7 @@ div.popover {
 div.modal {
    h3 {
       font-family: rokkitt, helvetica, arial, sans-serif;
+
       border-bottom: none;
    }
 
@@ -231,6 +233,7 @@ div.navbar {
    width:100%;
    margin: 0 auto;
    font-family: rokkitt, cambria, serif;
+
    border-bottom:1px solid #999;
    .drop-shadow(0, 0, 10px, 0.3);
    background:#fff;
@@ -432,6 +435,7 @@ div#login-register {
    width: 580px;
    h3 {
       font-family: rokkitt, helvetica, sans-serif;
+
       color:@linkColor;
       margin:0 0 20px;
       span.or { // quick hack
@@ -484,6 +488,7 @@ div#page-header {
 }
 div#page-header h2 {
    font-family: rokkitt, georgia, sans-serif;
+
    font-weight: bold;
    font-size: 50px;
    text-align: center;
@@ -665,7 +670,7 @@ body.index  {
    background: -ms-radial-gradient(circle, #fff, @indexBodyBackGroundColor);
 
 
-   background:  #eee;
+   background:  @linkColor;
 
    div#page-header {
       display:none;
@@ -686,19 +691,20 @@ body.index  {
 div#tagline {
    div.wrapper {
       width: 900px;
-      padding: 80px 0 40px;
+      padding: 100px 0 70px;
       text-align: center;
       h1 {
-         color: #555;
-         font-size: 72px;
+         color: #fff;
+         font-size: 80px;
          line-height: .8;
-         font-family: 'rokkitt', 'georgia', serif;
          letter-spacing: -2px;
-         background: url(../img/grad-border-bottom.png) no-repeat bottom;
          padding-bottom: 15px;
+         font-family: 'rokkitt', 'georgia', serif;
+
+         font-weight: lighter;
       }
       p.subtagline {
-         color: #555;
+         color: #fff;
          font-size: 20px;
          padding: 5px 0 10px;
          margin-bottom: 40px;
@@ -706,22 +712,28 @@ div#tagline {
 
       #call-to-action {
          margin: 0 auto;
-         width: 455px;
+         width: 525px;
          margin-bottom: 90px;
          span.container {
             height: 114px;
             display: block;
             float: left;
-            width: 330px;
+            width: 360px;
 
             a#create-collection {
                margin: 3px 0 0 20px;
+               padding: 13px 29px;
+
                font-size: 2.1em;
-               font-family: rokkitt, Helvetica, Arial, sans-serif;
-               .border-radius(3px, 3px, 3px, 3px);
-               background: #006dcc;
+               font-size: 30px;
+               .border-radius(30px, 30px, 30px, 30px);
+               background: @accentColor;
+               background: #444;
+
+               font-family: 'rokkitt', 'georgia', serif;
+
                &:hover {
-                  background: #0165bd;
+                  background: #333;
                }
 
             }
@@ -731,69 +743,28 @@ div#tagline {
             font-size: 14px;
             float: left;
             width: 100px;
-            color: #777;
+            color: #333;
             margin: 2px 0 0 5px;
             padding: 4px 0 0 5px;
-            border-left: 1px solid #aaa;
+            border-left: 1px solid #444;
             a {
                font-size: 25px;
                margin-top: -5px;
                margin-left: 5px;
-               color: #006dcc;
+               color: #333;
                font-family: 'rokkitt', 'georgia', serif;
                display: block;
                width: 175px;
                text-align: left;
                &:hover {
                   text-decoration: underline;
-                  color: @linkColor;
+                  color: #333;
                }
             }
          }
       }
    }
 }
-
-div#sources {
-   width:100%;
-   background:#fff;
-   margin-top: 80px;
-   width: 100%;
-   border-top:3px solid @linkColor;
-   div.wrapper {
-      background: url(../img/sources-banner.png) no-repeat top left;
-      height: 135px;
-      margin-top:-63px;
-      padding-top: 15px;
-      width: 1200px;
-      h2 {
-         float:left;
-         color: #999;
-         font-family: 'rokkitt', 'georgia', serif;
-         font-size: 20px;
-         line-height: 1.1;
-         width: 160px;
-         border-right: 1px solid #ddd;
-         margin: 0 20px 0 70px;
-         padding: 10px;
-      }
-      ul#source-logos {
-         li {
-            float:left;
-            margin:0 20px 20px 0;
-            img {
-               height: 22px;
-            }
-         }
-      }
-   }
-}
-
-
-
-
-
-/* the call-to-action button and environs */
 
 
 
@@ -804,14 +775,14 @@ div#sources {
 div#selling-points{
     background-color:#fff;
     min-height: 350px;
-   padding-top: 30px;
-    border-bottom: 3px solid @linkColor;
+   padding-top: 50px;
     background-position: bottom;
     background-repeat: repeat-x;
 
    h3 {
       color:#666;
       font-family:rokkitt, georgia, serif;
+
       font-weight: normal;
       font-size: 26px;
       padding-bottom: 15px;
@@ -862,14 +833,51 @@ div#selling-points{
          }
       }
    }
+}
 
 
 
 
+div#sources {
+   width:100%;
+   background:#fff;
+   width: 100%;
+   float:left;
+   padding: 30px 0 40px;
+   border-top:  5px solid #eee;
+   text-align: center;
+   div.wrapper {
+      padding-top: 15px;
+      width: 1024px;
+      margin: 0 auto;
+      background:  #fff;
+      h2 {
+         color: #bbb;
+         font-family: 'Sofia', cursive;
+         font-size: 19px;
+         font-weight: normal;
+         margin: -70px auto 30px;
+         background: #fff;
+         display:block;
+         width:  390px;
+      }
+      ul#source-logos {
+         li {
+            margin:0 20px 20px 0;
+            display:inline;
+            line-height: 3.5;
+            img {
+               height: 22px;
+               opacity: .7;
 
+               filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
+               filter: gray; /* IE6-9 */
+               -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 
-
-
+            }
+         }
+      }
+   }
 }
 
 
@@ -1156,6 +1164,7 @@ div#docs {
    }
    h2 {
       font-family: rokkitt, serif;
+
       font-size: 65px;
       padding-bottom: 10px;
    }
@@ -1178,8 +1187,8 @@ div#docs {
 div#footer {
    font-size:100%;
    clear:both;
-   color: #555;
-   padding: 50px 0 70px;
+   color: #777;
+   padding: 60px 0 80px;
    width: 100%;
    border-top: 1px solid #aaa;
    background: url(../img/footer-bg.png) top repeat-x;
@@ -1200,9 +1209,9 @@ div#footer {
       div.footer-col {
          float:left;
          width: 125px;
-         padding-right: 20px;
-         margin-left: 20px;
-         border-right: 1px solid #ccc;
+         padding-right: 0;
+         margin-left: 32px;
+         border-right: 1px solid #ddd;
          min-height: 150px;
 
 
@@ -1210,8 +1219,9 @@ div#footer {
             font-size: 18px;
             font-weight: bold;
             font-family: rokkitt, helvetica, sans-serif;
-            color: #333;
-            margin: 0 0 10px;
+
+            color: #555;
+            margin: 0 0 12px;
          }
 
          ul {
@@ -1219,7 +1229,7 @@ div#footer {
                line-height: 1.6;
             }
             a {
-               color:  #555;
+               color:  #777;
                font-size: 15px;
                &:hover {
                   color:  @linkColor;
@@ -1230,6 +1240,7 @@ div#footer {
          &#footer-branding {
             width: 400px;
             margin-left:0;
+            padding-right: 22px;
             a.brand {
                img {
                   width:  170px; // smaller than header logo
