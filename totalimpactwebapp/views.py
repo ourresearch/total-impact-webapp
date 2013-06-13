@@ -241,6 +241,12 @@ def user_page_from_user_endpoint(url_slug):
 
 @app.route('/create', methods=["GET"])
 def collection_create():
+
+    # don't let logged-in users see the /create page.
+    if g.user:
+        return redirect("/" + g.user.url_slug)
+
+
     return render_template('create-collection.html')
 
 
