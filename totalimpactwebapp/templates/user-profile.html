@@ -36,6 +36,23 @@
 {% endif %}
 
 
+<div class="profile-header">
+   <div class="wrapper">
+      <div class="my-picture"></div>
+      <div class="my-vitals">
+         <h2 class='page-title editable-name'>
+            <span class="given-name editable" data-name="given_name">{{ profile.given_name }}</span>
+            <span class="surname editable" data-name="surname">{{ profile.surname }}</span>
+            <span class="instr">&nbsp;<span>click name to edit</span></span>
+         </h2>
+      </div>
+      <div class="my-metrics"></div>
+   </div>
+   <div class="clearfloat"></div>
+</div>
+
+
+
 <div class="main" id="report" xmlns="http://www.w3.org/1999/html"
      xmlns="http://www.w3.org/1999/html">
 
@@ -57,6 +74,7 @@
                            data-count="horizontal">Tweet</a>
                     </span>
          </div>
+
          <div id="report-button">
             <div class="btn-group update">
                <button class="btn btn-small btn-primary" id="import-products-button" name="{{ report_id }}" href="#">add products</button>
@@ -71,7 +89,10 @@
                </ul>
             </div>
          </div>
-         <div id="num-items"><span class="value"></span> products <a href="#">(expand all)</a></div>
+         <div id="num-items" class="control-group working">
+            <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" /><span class="text">Loading...</span></span>
+            <span class="ready"><span class="value"></span> products <a href="#">(expand all)</a></span>
+         </div>
 
       </div>
    </div>

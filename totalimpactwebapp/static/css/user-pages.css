@@ -30,6 +30,57 @@ body.needs-to-reset-pw div.alert.needs-to-reset-pw {
 .editable-click {
   border: none;
 }
+body.user-profile div#page-header {
+  display: none;
+}
+body.user-profile div.profile-header div.wrapper div.my-picture {
+  float: left;
+  height: 100px;
+  width: 100px;
+  background: #eee;
+  margin-top: 100px;
+}
+body.user-profile div.profile-header div.wrapper div.my-vitals {
+  margin: 100px 0 0 30px;
+  width: 600px;
+  float: left;
+}
+body.user-profile div.profile-header div.wrapper div.my-vitals h2 {
+  font-family: Rokkitt, georgia, sans-serif;
+  font-size: 40px;
+  margin: 0;
+}
+body.user-profile div.profile-header div.clearfloat {
+  clear: both;
+}
+body.user-profile #report-meta {
+  float: left;
+  border-bottom: 1px solid #ddd;
+  margin: -10px 0 0 0;
+  width: 100%;
+}
+body.user-profile #report-meta div#report-button {
+  float: left;
+}
+body.user-profile #report-meta div#report-button #import-products-button {
+  width: 102px;
+}
+body.user-profile #report-meta div#num-items {
+  float: right;
+  margin-right: 20px;
+  font-size: 20px;
+  margin-bottom: 0;
+}
+body.user-profile #report-meta div#num-items span.value {
+  font-size: 24px;
+}
+body.user-profile #report-meta div#num-items a {
+  font-size: 14px;
+}
+body.user-profile #report-meta div#num-items img {
+  height: 26px;
+  margin: -7px 5px 0 0;
+}
 /* login and password-reset pages
 *****************************************************************************
 *****************************************************************************

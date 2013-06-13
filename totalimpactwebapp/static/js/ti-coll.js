@@ -246,7 +246,11 @@ function CollViews() {
     this.startUpdating = function(){
         $("img.loading").remove()
 
-        $("h2").before(ajaxLoadImg)
+        $("body.report h2").before(ajaxLoadImg)
+        changeElemState(
+            $("body.user-profile #num-items"),
+            "working"
+        )
     }
 
     this.badgesWeight = function(dict) {
@@ -258,6 +262,13 @@ function CollViews() {
     this.finishUpdating = function(items){
         // setup page header
         $("#page-header img").remove()
+        changeElemState(
+            $("body.user-profile #num-items"),
+            "ready"
+        )
+
+
+
         console.log("num items:", _.size(items))
         $("#num-items span.value").text(_.size(items))
 
