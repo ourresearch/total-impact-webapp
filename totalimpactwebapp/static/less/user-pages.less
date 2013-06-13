@@ -57,17 +57,42 @@ body.user-profile {
             height: 100px;
             width: 100px;
             background: #eee;
-            margin-top: 100px;
+            margin-top: 150px;
          }
          div.my-vitals {
-            margin: 100px 0 0 30px;
+            margin: 150px 0 0 30px;
             width:  600px;
             float:left;
             h2 {
                font-family: Rokkitt, georgia, sans-serif;
                font-size:  40px;
                margin: 0;
+               padding-top: 60px;
+               padding-top: 0;
+               float:left;
             }
+
+            div#num-items {
+               float:left;
+               font-size: 20px;
+               margin-top: 20px;
+               margin-bottom:0;
+               clear:left;
+               span.value {
+                  font-size: 24px;
+               }
+               a {
+                  font-size: 14px;
+                  color:  #999;
+                  &:hover {color:  @linkColor;}
+               }
+               img {
+                  height: 26px;
+                  margin: -7px 5px 0 0;
+               }
+            }
+
+
          }
 
 
@@ -78,32 +103,22 @@ body.user-profile {
 
    #report-meta {
       float:left;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #eee;
+      background: url(../img/grad-border-bottom.png) no-repeat bottom;
+      padding-bottom: 15px;
+
       margin: -10px 0 0 0;
       width: 100%;
+      button#import-products-button {
+         float:left;
+         width:  101px;
+         margin-top: 37px;
+      }
       div#report-button {
          float:left;
-         #import-products-button {
-            width:  102px;
-         }
+         margin-left:30px;
+         margin-top: 36px;
       }
-      div#num-items {
-         float:right;
-         margin-right: 20px;
-         font-size: 20px;
-         margin-bottom:0;
-         span.value {
-            font-size: 24px;
-         }
-         a {
-            font-size: 14px;
-         }
-         img {
-            height: 26px;
-            margin: -7px 5px 0 0;
-         }
-      }
-
    }
 
 

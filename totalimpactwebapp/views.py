@@ -1,4 +1,4 @@
-import requests, os, json, logging, re, random, datetime
+import requests, os, json, logging, re, random, datetime, hashlib
 import mandrill
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
@@ -190,9 +190,12 @@ def user_profile(url_slug):
 
     # for now render something quite like the report template. change later.
     else:
+        email_hash = hashlib.md5(retrieved_user.email.lower()).hexdigest()
+
         return render_template(
             'user-profile.html',
             request_url=request.url,
+            email_hash=email_hash,
             profile=retrieved_user,
             report_id=retrieved_user.collection_id,
             report_id_namespace="impactstory_collection_id",

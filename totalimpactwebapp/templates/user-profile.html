@@ -38,13 +38,23 @@
 
 <div class="profile-header">
    <div class="wrapper">
-      <div class="my-picture"></div>
+      <div class="my-picture">
+         <img src="http://www.gravatar.com/avatar/{{ email_hash }}?s=100&d=mm" />
+      </div>
       <div class="my-vitals">
          <h2 class='page-title editable-name'>
             <span class="given-name editable" data-name="given_name">{{ profile.given_name }}</span>
             <span class="surname editable" data-name="surname">{{ profile.surname }}</span>
             <span class="instr">&nbsp;<span>click name to edit</span></span>
          </h2>
+
+         <div id="num-items" class="control-group working">
+            <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" /><span class="text">Loading...</span></span>
+            <span class="ready"><span class="value"></span> products <a href="#">(expand all)</a></span>
+         </div>
+
+
+
       </div>
       <div class="my-metrics"></div>
    </div>
@@ -75,9 +85,9 @@
                     </span>
          </div>
 
+         <button class="btn btn-small btn-primary" id="import-products-button" name="{{ report_id }}" href="#">add products</button>
          <div id="report-button">
             <div class="btn-group update">
-               <button class="btn btn-small btn-primary" id="import-products-button" name="{{ report_id }}" href="#">add products</button>
                <button class="btn btn-small" id="update-report-button" name="{{ report_id }}" href="#">refresh metrics</button>
                <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
                   download
@@ -89,10 +99,7 @@
                </ul>
             </div>
          </div>
-         <div id="num-items" class="control-group working">
-            <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" /><span class="text">Loading...</span></span>
-            <span class="ready"><span class="value"></span> products <a href="#">(expand all)</a></span>
-         </div>
+
 
       </div>
    </div>

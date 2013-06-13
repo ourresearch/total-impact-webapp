@@ -38,10 +38,10 @@ body.user-profile div.profile-header div.wrapper div.my-picture {
   height: 100px;
   width: 100px;
   background: #eee;
-  margin-top: 100px;
+  margin-top: 150px;
 }
 body.user-profile div.profile-header div.wrapper div.my-vitals {
-  margin: 100px 0 0 30px;
+  margin: 150px 0 0 30px;
   width: 600px;
   float: left;
 }
@@ -49,37 +49,51 @@ body.user-profile div.profile-header div.wrapper div.my-vitals h2 {
   font-family: Rokkitt, georgia, sans-serif;
   font-size: 40px;
   margin: 0;
+  padding-top: 60px;
+  padding-top: 0;
+  float: left;
+}
+body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items {
+  float: left;
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 0;
+  clear: left;
+}
+body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items span.value {
+  font-size: 24px;
+}
+body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items a {
+  font-size: 14px;
+  color: #999;
+}
+body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items a:hover {
+  color: #ff4e00;
+}
+body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items img {
+  height: 26px;
+  margin: -7px 5px 0 0;
 }
 body.user-profile div.profile-header div.clearfloat {
   clear: both;
 }
 body.user-profile #report-meta {
   float: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #eee;
+  background: url(../img/grad-border-bottom.png) no-repeat bottom;
+  padding-bottom: 15px;
   margin: -10px 0 0 0;
   width: 100%;
 }
+body.user-profile #report-meta button#import-products-button {
+  float: left;
+  width: 101px;
+  margin-top: 37px;
+}
 body.user-profile #report-meta div#report-button {
   float: left;
-}
-body.user-profile #report-meta div#report-button #import-products-button {
-  width: 102px;
-}
-body.user-profile #report-meta div#num-items {
-  float: right;
-  margin-right: 20px;
-  font-size: 20px;
-  margin-bottom: 0;
-}
-body.user-profile #report-meta div#num-items span.value {
-  font-size: 24px;
-}
-body.user-profile #report-meta div#num-items a {
-  font-size: 14px;
-}
-body.user-profile #report-meta div#num-items img {
-  height: 26px;
-  margin: -7px 5px 0 0;
+  margin-left: 30px;
+  margin-top: 36px;
 }
 /* login and password-reset pages
 *****************************************************************************
