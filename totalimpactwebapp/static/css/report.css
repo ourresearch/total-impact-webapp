@@ -10,23 +10,21 @@ body.user-profile .modal {
   width: 675px;
   margin: -250px 0 0 -337.5px;
 }
-body.user-profile .modal#import-products-modal {
-  border: 3px solid #ff4e00;
-}
 body.user-profile .modal#import-products-modal .modal-body {
   float: right;
 }
 body.user-profile .modal .modal-header {
-  background: #ff4e00;
   border-bottom: 1px solid #555;
+  background: #555;
 }
 body.user-profile .modal .modal-header h3 {
   color: #fff;
+  font-weight: normal;
 }
 body.user-profile .modal .modal-header div.indicator {
+  color: #fff;
   float: right;
   margin: 4px 10px 0 0;
-  color: #fff;
   font-weight: normal;
 }
 body.user-profile .modal .modal-header div.indicator span.count {
@@ -48,6 +46,9 @@ body.user-profile .modal .modal-header div.control-group div.working img {
 }
 body.user-profile .modal .modal-body {
   max-height: inherit;
+}
+body.user-profile .modal .modal-body form h3 {
+  color: #333;
 }
 body.user-profile .modal .modal-body form h3 span.step-number {
   display: none;
@@ -117,8 +118,17 @@ p.something-missing {
   font-size: 75%;
   color: #999;
   background: #fff;
-  text-align: right;
+  text-align: center;
   margin: 0;
+}
+p.something-missing a {
+  color: #999;
+  border-bottom: 1px dotted #999;
+}
+p.something-missing a:hover {
+  color: #ff4e00;
+  border-bottom: 1px solid #ff4e00;
+  text-decoration: none;
 }
 .tweet-this iframe {
   width: 97px;
@@ -160,13 +170,14 @@ div#metrics div.genre {
   float: left;
   clear: both;
 }
-div#metrics div.genre.article {
-  margin-top: 0;
-}
 div#metrics div.genre ol,
 div#metrics div.genre ul,
 div#metrics div.genre ul li {
   line-height: 1.2;
+}
+div#metrics div.genre h3 {
+  border-bottom: none;
+  font-size: 30px;
 }
 div#metrics div.genre h4.plus-more {
   float: left;
@@ -369,7 +380,6 @@ li.item div.zoom {
   margin: 5px 0 35px;
   padding-bottom: 15px;
   border-top: 1px solid #aaa;
-  background: url(../img/shadow-horiz-divider.png) bottom center no-repeat;
 }
 li.item div.zoom span.value {
   font-weight: bold;

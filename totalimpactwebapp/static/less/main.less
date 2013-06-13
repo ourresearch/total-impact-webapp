@@ -649,11 +649,13 @@ body.index  {
       display:none;
    }
 
-   div.navbar-inner ul.nav.pull-right {
-      li {
-         &.sign-up {display:none; } // it's got a huge button in middle of page...
-         &.divider-vertical {display:none;}
-         span.hi {display:inline-block; margin-right: 10px;}
+   &.not-logged-in {
+      div.navbar-inner ul.nav.pull-right {
+         li {
+            &.sign-up {display:none; } // it's got a huge button in middle of page...
+            &.divider-vertical {display:none;}
+            span.hi {display:inline-block; margin-right: 10px;}
+         }
       }
    }
 
@@ -775,7 +777,8 @@ div#sources {
 *************************************************/
 div#selling-points{
     background-color:#fff;
-    min-height: 300px;
+    min-height: 320px;
+   padding-top: 20px;
     border-bottom: 3px solid @linkColor;
     background-position: bottom;
     background-repeat: repeat-x;

@@ -606,13 +606,13 @@ body.index {
 body.index div#page-header {
   display: none;
 }
-body.index div.navbar-inner ul.nav.pull-right li.sign-up {
+body.index.not-logged-in div.navbar-inner ul.nav.pull-right li.sign-up {
   display: none;
 }
-body.index div.navbar-inner ul.nav.pull-right li.divider-vertical {
+body.index.not-logged-in div.navbar-inner ul.nav.pull-right li.divider-vertical {
   display: none;
 }
-body.index div.navbar-inner ul.nav.pull-right li span.hi {
+body.index.not-logged-in div.navbar-inner ul.nav.pull-right li span.hi {
   display: inline-block;
   margin-right: 10px;
 }
@@ -713,7 +713,8 @@ div#sources div.wrapper ul#source-logos li img {
 *************************************************/
 div#selling-points {
   background-color: #fff;
-  min-height: 300px;
+  min-height: 320px;
+  padding-top: 20px;
   border-bottom: 3px solid #ff4e00;
   background-position: bottom;
   background-repeat: repeat-x;

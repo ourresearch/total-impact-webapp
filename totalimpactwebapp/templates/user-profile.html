@@ -39,7 +39,9 @@
 <div class="profile-header">
    <div class="wrapper">
       <div class="my-picture">
-         <img src="http://www.gravatar.com/avatar/{{ email_hash }}?s=100&d=mm" />
+         <a href="http://www.gravatar.com" >
+            <img class="gravatar" src="http://www.gravatar.com/avatar/{{ email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
+         </a>
       </div>
       <div class="my-vitals">
          <h2 class='page-title editable-name'>
@@ -85,11 +87,12 @@
                     </span>
          </div>
 
-         <button class="btn btn-small btn-primary" id="import-products-button" name="{{ report_id }}" href="#">add products</button>
+         <button class="btn btn-small btn-primary" id="import-products-button" name="{{ report_id }}" href="#"><i class="icon-upload-alt"></i>add products</button>
          <div id="report-button">
             <div class="btn-group update">
-               <button class="btn btn-small" id="update-report-button" name="{{ report_id }}" href="#">refresh metrics</button>
+               <button class="btn btn-small" id="update-report-button" name="{{ report_id }}" href="#"><i class="icon-refresh"></i>refresh metrics</button>
                <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+                  <i class="icon-download-alt"></i>
                   download
                   <span class="caret"></span>
                </a>

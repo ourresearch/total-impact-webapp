@@ -35,23 +35,27 @@ body.user-profile div#page-header {
 }
 body.user-profile div.profile-header div.wrapper div.my-picture {
   float: left;
-  height: 100px;
-  width: 100px;
   background: #eee;
-  margin-top: 150px;
+  margin-top: 120px;
+  height: 110px;
+  width: 110px;
+  background: #ddd;
 }
 body.user-profile div.profile-header div.wrapper div.my-vitals {
-  margin: 150px 0 0 30px;
+  margin: 120px 0 0 30px;
   width: 600px;
   float: left;
 }
-body.user-profile div.profile-header div.wrapper div.my-vitals h2 {
+body.user-profile div.profile-header div.wrapper div.my-vitals h2.editable-name {
   font-family: Rokkitt, georgia, sans-serif;
-  font-size: 40px;
+  font-size: 45px;
   margin: 0;
   padding-top: 60px;
   padding-top: 0;
   float: left;
+}
+body.user-profile div.profile-header div.wrapper div.my-vitals h2.editable-name span.instr {
+  background-position: left 22px;
 }
 body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items {
   float: left;
@@ -70,7 +74,10 @@ body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items a {
 body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items a:hover {
   color: #ff4e00;
 }
-body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items img {
+body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items span.working {
+  color: #ff4e00;
+}
+body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items span.working img {
   height: 26px;
   margin: -7px 5px 0 0;
 }
@@ -79,21 +86,31 @@ body.user-profile div.profile-header div.clearfloat {
 }
 body.user-profile #report-meta {
   float: left;
-  border-bottom: 1px solid #eee;
-  background: url(../img/grad-border-bottom.png) no-repeat bottom;
   padding-bottom: 15px;
   margin: -10px 0 0 0;
   width: 100%;
 }
 body.user-profile #report-meta button#import-products-button {
   float: left;
-  width: 101px;
+  width: 110px;
   margin-top: 37px;
+}
+body.user-profile #report-meta button#import-products-button i {
+  padding-right: 4px;
 }
 body.user-profile #report-meta div#report-button {
   float: left;
   margin-left: 30px;
   margin-top: 36px;
+}
+body.user-profile #report-meta div#report-button i {
+  padding-right: 4px;
+}
+body.user-profile #report-meta div#share a#b {
+  opacity: .5 !important;
+}
+body.user-profile div#metrics {
+  border-top: 4px solid #f5f5f5;
 }
 /* login and password-reset pages
 *****************************************************************************

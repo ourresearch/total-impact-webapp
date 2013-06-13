@@ -23,22 +23,23 @@ body.user-profile {
       width:  @modalWidth;
       margin:  -250px 0 0 -(@modalWidth / 2);
       &#import-products-modal {
-         border: 3px solid @linkColor;
          .modal-body {
             float:right; // otherwise the floated stuff in the .modal-header breaks it.
          }
       }
 
+
       .modal-header {
-         background: @linkColor;
          border-bottom: 1px solid #555;
+         background: #555;
          h3 {
             color:  #fff;
+            font-weight: normal;
          }
          div.indicator {
+            color: #fff;
             float:right;
             margin: 4px 10px 0 0;
-            color: #fff;
             font-weight: normal;
             span.count { font-weight: bold;}
          }
@@ -57,7 +58,10 @@ body.user-profile {
       .modal-body {
          max-height: inherit;
          form {
-            h3 span.step-number {display:none;}
+            h3 {
+               span.step-number {display:none;}
+               color:  #333;
+            }
             &.other-products { margin-right:20px;}
          }
       }
@@ -130,8 +134,17 @@ p.something-missing {
     font-size: 75%;
     color: #999;
     background:#fff;
-    text-align: right;
+    text-align: center;
     margin:0;
+   a {
+      color:  #999;
+      border-bottom: 1px dotted #999;
+      &:hover {
+         color:  @linkColor;
+         border-bottom: 1px solid @linkColor;
+         text-decoration: none;
+      }
+   }
 }
 
 .tweet-this iframe {
@@ -178,11 +191,14 @@ div#metrics {
    }
    div.genre {
       margin-top:50px;
-      &.article {margin-top:0} // hack; *generally* Articles is first genre.
       float:left;
       clear:both;
       ol, ul, ul li {
          line-height: 1.2; // mostly for space beween rows of badges on same item
+      }
+      h3 {
+         border-bottom:  none;
+         font-size:  30px;
       }
       h4.plus-more {
          float:left;
@@ -391,7 +407,6 @@ li.item {
       margin: 5px 0 35px;
       padding-bottom: 15px;
       border-top: 1px solid #aaa;
-      background: url(../img/shadow-horiz-divider.png) bottom center no-repeat;
 
 
       span.value{ font-weight: bold;}

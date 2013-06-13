@@ -137,6 +137,7 @@ $(document).ready(function(){
 
     new UserPreferences()
     new UserCreds()
+    new UserProfile()
 
     new Navbar()
 
