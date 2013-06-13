@@ -609,16 +609,17 @@ body.index {
 
   /* Can't specify a percentage size? Laaaaaame. */
 
-  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#ffffff), to(#bbbbbb));
+  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#ffffff), to(#cccccc));
   /* Safari 5.1+, Chrome 10+ */
 
-  background: -webkit-radial-gradient(circle, #ffffff, #bbbbbb);
+  background: -webkit-radial-gradient(circle, #ffffff, #cccccc);
   /* Firefox 3.6+ */
 
-  background: -moz-radial-gradient(circle, #ffffff, #bbbbbb);
+  background: -moz-radial-gradient(circle, #ffffff, #cccccc);
   /* IE 10 */
 
-  background: -ms-radial-gradient(circle, #ffffff, #bbbbbb);
+  background: -ms-radial-gradient(circle, #ffffff, #cccccc);
+  background: #eee;
 }
 body.index div#page-header {
   display: none;
@@ -645,18 +646,18 @@ div#tagline div.wrapper h1 {
   font-family: 'rokkitt', 'georgia', serif;
   letter-spacing: -2px;
   background: url(../img/grad-border-bottom.png) no-repeat bottom;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
 }
 div#tagline div.wrapper p.subtagline {
   color: #555;
   font-size: 20px;
   padding: 5px 0 10px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 div#tagline div.wrapper #call-to-action {
   margin: 0 auto;
   width: 455px;
-  margin-bottom: 70px;
+  margin-bottom: 90px;
 }
 div#tagline div.wrapper #call-to-action span.container {
   height: 114px;
@@ -668,6 +669,25 @@ div#tagline div.wrapper #call-to-action span.container a#create-collection {
   margin: 3px 0 0 20px;
   font-size: 2.1em;
   font-family: rokkitt, Helvetica, Arial, sans-serif;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  background: #006dcc;
+}
+div#tagline div.wrapper #call-to-action span.container a#create-collection:hover {
+  background: #0165bd;
 }
 div#tagline div.wrapper #call-to-action p#example-collection {
   font-size: 14px;
@@ -682,7 +702,7 @@ div#tagline div.wrapper #call-to-action p#example-collection a {
   font-size: 25px;
   margin-top: -5px;
   margin-left: 5px;
-  color: #005fcc;
+  color: #006dcc;
   font-family: 'rokkitt', 'georgia', serif;
   display: block;
   width: 175px;
@@ -728,39 +748,34 @@ div#sources div.wrapper ul#source-logos li img {
 *************************************************/
 div#selling-points {
   background-color: #fff;
-  min-height: 320px;
-  padding-top: 20px;
+  min-height: 350px;
+  padding-top: 30px;
   border-bottom: 3px solid #ff4e00;
   background-position: bottom;
   background-repeat: repeat-x;
 }
 div#selling-points h3 {
-  color: #555;
+  color: #666;
   font-family: rokkitt, georgia, serif;
   font-weight: normal;
   font-size: 26px;
-  height: 61px;
-  padding-top: 8px;
+  padding-bottom: 15px;
   line-height: 1;
   margin-top: 0px;
-  padding-bottom: 10px;
+  border-bottom: none;
 }
-div#selling-points h3#metrics-in-seconds {
-  background: url(../img/stopwatch-icon.png) no-repeat top left;
-  padding-left: 72px;
+div#selling-points h3 i {
+  float: left;
 }
-div#selling-points h3#embed-metrics-anywhere {
-  background: url(../img/suitcase-icon.png) no-repeat top left;
-  padding-left: 79px;
-}
-div#selling-points h3#its-open {
-  background: url(../img/wrench-icon.png) no-repeat 0 10px;
-  padding-left: 85px;
+div#selling-points h3 span.text {
+  margin-left: 18px;
+  display: inline-block;
+  width: 165px;
 }
 div#selling-points p {
   margin-top: 0;
   color: #777;
-  line-height: 1.4;
+  line-height: 1.7;
 }
 div#selling-points ul li {
   float: left;

@@ -649,7 +649,7 @@ div.import-products {
 *****************************************************************************/
 body.index  {
    background: url(../img/grey-noise.png);
-   @indexBodyBackGroundColor: #bbb;
+   @indexBodyBackGroundColor: #ccc;
 
 /* Safari 4-5, Chrome 1-9 */
 /* Can't specify a percentage size? Laaaaaame. */
@@ -663,6 +663,9 @@ body.index  {
 
 /* IE 10 */
    background: -ms-radial-gradient(circle, #fff, @indexBodyBackGroundColor);
+
+
+   background:  #eee;
 
    div#page-header {
       display:none;
@@ -692,19 +695,19 @@ div#tagline {
          font-family: 'rokkitt', 'georgia', serif;
          letter-spacing: -2px;
          background: url(../img/grad-border-bottom.png) no-repeat bottom;
-         padding-bottom: 10px;
+         padding-bottom: 15px;
       }
       p.subtagline {
          color: #555;
          font-size: 20px;
          padding: 5px 0 10px;
-         margin-bottom: 20px;
+         margin-bottom: 40px;
       }
 
       #call-to-action {
          margin: 0 auto;
          width: 455px;
-         margin-bottom: 70px;
+         margin-bottom: 90px;
          span.container {
             height: 114px;
             display: block;
@@ -715,6 +718,12 @@ div#tagline {
                margin: 3px 0 0 20px;
                font-size: 2.1em;
                font-family: rokkitt, Helvetica, Arial, sans-serif;
+               .border-radius(3px, 3px, 3px, 3px);
+               background: #006dcc;
+               &:hover {
+                  background: #0165bd;
+               }
+
             }
          }
          p#example-collection {
@@ -730,7 +739,7 @@ div#tagline {
                font-size: 25px;
                margin-top: -5px;
                margin-left: 5px;
-               color: #005fcc;
+               color: #006dcc;
                font-family: 'rokkitt', 'georgia', serif;
                display: block;
                width: 175px;
@@ -794,42 +803,48 @@ div#sources {
 *************************************************/
 div#selling-points{
     background-color:#fff;
-    min-height: 320px;
-   padding-top: 20px;
+    min-height: 350px;
+   padding-top: 30px;
     border-bottom: 3px solid @linkColor;
     background-position: bottom;
     background-repeat: repeat-x;
 
    h3 {
-      color:#555;
+      color:#666;
       font-family:rokkitt, georgia, serif;
       font-weight: normal;
       font-size: 26px;
-      height: 61px;
-      padding-top: 8px;
-      padding-bottom:10px;
+      padding-bottom: 15px;
       line-height: 1;
       margin-top: 0px;
-      padding-bottom: 10px;
+      border-bottom: none;
+      i {
+         float:left;
+      }
+      span.text {
+         margin-left:18px;
+         display:inline-block;
+         width:  165px;
+
+      }
 
       &#metrics-in-seconds {
-         background:url(../img/stopwatch-icon.png) no-repeat top left;
-         padding-left: 72px;
+//         background:url(../img/stopwatch-icon.png) no-repeat top left;
+         span.text {
+         }
       }
       &#embed-metrics-anywhere {
-         background:url(../img/suitcase-icon.png) no-repeat top left;
-         padding-left: 79px;
+//         background:url(../img/suitcase-icon.png) no-repeat top left;
       }
       &#its-open {
-         background:url(../img/wrench-icon.png) no-repeat 0 10px;
-         padding-left: 85px;
+//         background:url(../img/wrench-icon.png) no-repeat 0 10px;
       }
    }
 
    p {
        margin-top:0;
        color: #777;
-       line-height: 1.4;
+       line-height: 1.7;
    }
 
    ul {
