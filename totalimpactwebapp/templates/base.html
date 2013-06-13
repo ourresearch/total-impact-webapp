@@ -67,47 +67,30 @@
          <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a>
          <ul class="nav pull-right">
 
-            <li class="create-button not-logged-in"><a href="/create">create</a></li>
-            <li><a href="/api-docs">embed</a></li>
-            <li class="dropdown">
-               <a href="#"  class="dropdown-toggle" data-toggle="dropdown">follow</a>
-               <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                  <li><a href="http://blog.impactstory.org">blog</a></li>
-                  <li><a href="http://twitter.com/#!/ImpactStory">twitter</a></li>
-               </ul>
-            </li>
+            <!--Not logged in-->
 
-            <li class="dropdown">
-               <a href="#"  class="dropdown-toggle" data-toggle="dropdown">about</a>
-               <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                  <li><a href="/about">team</a></li>
-                  <li><a href="/faq">faq</a></li>
-                  <li><a href="/about#contact">contact</a></li>
-                  <li><a href="/faq#tos">terms of use</a></li>
-               </ul>
-            </li>
-            <li class="divider-vertical"></li>
+            <li class="login not-logged-in"><a href="/login"><span class="hi">Already have a profile? </span>Log in</a></li>
+            <li class="divider-vertical not-logged-in"></li>
+            <li class="sign-up not-logged-in"><a href="/create">Sign up</a></li>
 
-            <li class="acct-mgt dropdown logged-in">
-               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <span class="hi">hi, </span>
-                  <span class="given-name">{{g.user.given_name}}!</span>
-               </a>
-               <ul class='user-actions dropdown-menu'>
-                  <li><a href="/{{ g.user.url_slug }}" class="profile">My profile</a></li>
-                  <li><a href="{{ url_for('logout') }}" class="logout">Log out</a></li>
-               </ul>
-            </li>
-            <li class="acct-mgt dropdown not-logged-in" id="login-link">
-               <a href="/login"  class="login-register-link">Log in</a>
-            </li>
 
+            <!--Logged in-->
+            <li class="welcome logged-in">
+               <span class="hi">Welcome back, </span>
+               <a href="/{{ g.user.url_slug }}" class="given-name" data-toggle="tooltip" title="View your profile">{{g.user.given_name}}!</a>
+            </li>
             <li class="divider-vertical logged-in"></li>
 
-            <li class="logged-in preferences">
-               <a href="/{{ g.user.url_slug }}/preferences" class="preferences" data-toggle="tooltip" title="Change URL and other preferences">
+            <li class="logged-in preferences dropdown">
+               <a href="#" class="preferences dropdown-toggle" data-toggle="dropdown" title="Change URL and other preferences">
                   <i class="icon-cog"></i>
                </a>
+               <ul class='preferences-actions dropdown-menu'>
+                  <li><a href="/{{ g.user.url_slug }}/preferences" class="profile"><i class="icon-cogs"></i>Preferences</a></li>
+                  <li><a href="/api-docs" class="profile"><i class="icon-suitcase"></i>Embed</a></li>
+                  <li class="divider"></li>
+                  <li><a href="{{ url_for('logout') }}" class="logout"><i class="icon-off"></i>Log out</a></li>
+               </ul>
             </li>
          </ul>
       </div>
@@ -167,6 +150,7 @@
             <h3>About</h3>
             <ul>
                <li><a href="/about">Our team</a></li>
+               <li><a href="/about">API/embed</a></li>
                <li><a href="/faq">FAQ</a></li>
                <li><a href="/about#contact">Contact us</a></li>
                <li><a href="/faq#tos">Terms of use</a></li>

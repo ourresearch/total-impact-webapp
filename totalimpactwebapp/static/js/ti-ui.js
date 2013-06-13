@@ -101,7 +101,7 @@ var Navbar = function(){
 }
 Navbar.prototype = {
     init: function() {
-        $("li.preferences a").tooltip({placement:"bottom"})
+        $("ul.nav a.given-name").tooltip({placement:"bottom"})
     }
 }
 

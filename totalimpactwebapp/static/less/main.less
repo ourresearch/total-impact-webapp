@@ -257,93 +257,84 @@ div.navbar {
 
       > li {
          margin-top: 0;
+         span.hi {
+            font-family: "Helvetica", "Arial", sans-serif;
+            font-size: 12px;
+            display:inline-block;
+            color:  #999;
+            margin-right: 5px;
+            display:none;
+         }
          &.divider-vertical {
             height: 30px;
-            margin-top: 5px;
+            margin: 7px -1px 0;
+            border-right: 1px solid #e6e6e6;
+            border-left: 1px solid #ffffff;
          }
-         &.dropdown.open {
-            a.dropdown-toggle {
-               background: #eee !important;
-               color: @linkColor !important;
+         &.sign-up {
+            a {
+               color: @linkColor;
             }
          }
-
-         &.acct-mgt {
-            &.logged-in {
-               span.given-name {
-                  font-weight: bold;
-                  color: @linkColor;
-               }
-               span.hi {
-                  font-family: "Helvetica", "Arial", sans-serif;
-                  font-size: 12px;
-               }
-               ul.dropdown-menu {
-                  min-width: 100px;
-                  width: 100px;
-                  padding:5px 0;
-                  margin-top:4px;
-                  right: -9px;
-                  &:after, &:before {
-                     display:none;
-                     border: none;
-                  }
-               }
-               &:hover > ul.dropdown-menu{
-                  display: block;
-                  margin-top: 0px;
-                  border-radius: 0 0 3px 3px;
-                  border: 1px solid #fff;
-               }
+         &.welcome {
+            span.hi {display:inline-block;}
+            a.given-name {
+               font-weight: bold;
+               color: @linkColor;
+               display:inline-block;
+               margin:  8px 18px 0 0;
+               padding: 2px;
             }
          }
 
          &.preferences {
-            a {
-               padding-left:5px;
-               padding-right: 5px;
-               i {vertical-align: -2px; color: @linkColor;}
-            }
-         }
-
-         a {
-            padding: 12px 15px 5px;
-         }
-         .control-group { margin: 0; }
-
-         ul.dropdown-menu {
-            font-family: helvetica, arial, sans-serif;
-            font-size:14px;
-            min-width: 120px;
-            li {
-               a {
-                  padding: 5px 10px;
+            &.open {
+               a.dropdown-toggle {
+                  background:  #777;
+                  background:  #f2f2f2;
+                  i {color: #333}
                }
             }
-         }
-         div.dropdown-menu {
-            padding:15px 20px 20px;
-            li{ margin: 0; padding: 0;}
-            background:#f5f5f5;
-            &::after {
-               border-bottom:6px solid #f5f5f5;
+            a.dropdown-toggle {
+               padding-left:17px;
+               padding-right: 17px;
+               i {vertical-align: -2px; color: @linkColor;}
             }
-            span.register {
-              float:right;
-              font-size: 18px;
-              a {
-                padding: 6px 15px;
-                color: @blueDark;
-              }
-            }
-            span.help-inline {
-               height:22px;
-               min-width: 40px;
-               float: right;
-               font-family: helvetica, aria, sans-serif;
-               font-size:12px;
-
-               img { height:22px; float:right; }
+            ul.dropdown-menu {
+               background: #777;
+               background: #f2f2f2;
+               top: @navbarHeight - 3px;
+               border: 1px solid #999;
+               border-top: none;
+               right: -2px;
+               -moz-border-radius-topleft: 0;
+               -moz-border-radius-topright: 0;
+               border-radius: 0 0 3px 3px;
+               min-width: 150px;
+               padding: 10px 0;
+               li{
+                  margin: 0;
+                  padding: 0;
+                  &.divider {
+                     border-bottom: 1px solid #fff;
+                     background-color:#eee;
+                     margin-bottom: 5px;
+                  }
+               }
+               &::after {
+                  border: none;
+               }
+               &::before {
+                  border: none;
+               }
+               a {
+                  font-family: "Helvetica", "Arial", sans-serif;
+                  font-size:  14px;
+                  i {
+                     margin-left: -5px;
+                     margin-right: 11px;
+                  }
+               }
             }
          }
       }
@@ -655,6 +646,15 @@ body.index  {
    div#page-header {
       display:none;
    }
+
+   div.navbar-inner ul.nav.pull-right {
+      li {
+         &.sign-up {display:none; } // it's got a huge button in middle of page...
+         &.divider-vertical {display:none;}
+         span.hi {display:inline-block; margin-right: 10px;}
+      }
+   }
+
 }
 
 div#tagline {
@@ -1211,7 +1211,7 @@ div#footer {
                   text-decoration: none;
                   border-bottom: 1px dotted #777;
                   &:hover {
-                     border: 1px solid @linkColor;
+                     border-bottom: 1px solid @linkColor;
                      color:  @linkColor;
                   }
                }
