@@ -28,7 +28,7 @@
             <li><b>researchers</b> who want to know how many times their work has been downloaded, bookmarked, and blogged
             <li><b>research groups</b> who want to look at the broad impact of their work and see what has demonstrated interest
             <li><b>funders</b> who want to see what sort of impact they may be missing when only considering citations to papers
-            <li><b>repositories</b> who want to report on how their research artifacts are being discussed
+            <li><b>repositories</b> who want to report on how their research products are being discussed
             <li><b>all of us</b> who believe that people should be rewarded when their work (no matter what the format) makes a positive impact (no matter what the venue). Aggregating evidence of impact will facilitate appropriate rewards, thereby encouraging additional openness of useful forms of research output.
         </ul>
 
@@ -36,7 +36,7 @@
 
         ImpactStory data can be:
         <ul>
-            <li>highlighted as indications of the <em>minimum</em> impact a research artifact has made on the community
+            <li>highlighted as indications of the <em>minimum</em> impact a research product has made on the community
             <li>explored more deeply to see who is citing, bookmarking, and otherwise using your work
             <li>run to collect usage information for mention in biosketches
             <li>included as a link in CVs
@@ -52,13 +52,13 @@
                 <p>ImpactStory is in early development. See <a href="#limitations">limitations</a> and take it all with a grain of salt.
 
             <li><b>for serious comparison</b>
-                <p>ImpactStory is currently better at collecting comprehensive metrics for some artifacts than others, in ways that are not clear in the report. Extreme care should be taken in comparisons. Numbers should be considered minimums. Even more care should be taken in comparing collections of artifacts, since some ImpactStory is currently better at identifying artifacts identified in some ways than others. Finally, some of these metrics can be easily gamed. This is one reason we believe having many metrics is valuable.
+                <p>ImpactStory is currently better at collecting comprehensive metrics for some products than others, in ways that are not clear in the report. Extreme care should be taken in comparisons. Numbers should be considered minimums. Even more care should be taken in comparing collections of products, since some ImpactStory is currently better at identifying products identified in some ways than others. Finally, some of these metrics can be easily gamed. This is one reason we believe having many metrics is valuable.
 
             <li><b>as if we knew exactly what it all means</b>
                 <p>The meaning of these metrics are not yet well understood; see <a href="#meaning">section</a> below.
 
             <li><b>as a substitute for personal judgement of quality</b>
-                <p>Metrics are only one part of the story. Look at the research artifact for yourself and talk about it with informed colleagues.
+                <p>Metrics are only one part of the story. Look at the research product for yourself and talk about it with informed colleagues.
 
         </ul>
 
@@ -96,7 +96,7 @@
 
         <h3 id="whereisif">where is the journal impact factor?</h3>
 
-        <p>We do not include the Journal Impact Factor (or any similar proxy) on purpose. As has been <a href="https://www.zotero.org/groups/impact_factor_problems/items">repeatedly shown</a>, the Impact Factor is not appropriate for judging the quality of individual research artifacts. Individual article citations reflect much more about how useful papers actually were. Better yet are article-level metrics, as initiated by PLoS, in which we examine traces of impact beyond citation. ImpactStory broadens this approach to reflect <b>artifact-level metrics</b>, by inclusion of preprints, datasets, presentation slides, and other research output formats.
+        <p>We do not include the Journal Impact Factor (or any similar proxy) on purpose. As has been <a href="https://www.zotero.org/groups/impact_factor_problems/items">repeatedly shown</a>, the Impact Factor is not appropriate for judging the quality of individual research products. Individual article citations reflect much more about how useful papers actually were. Better yet are article-level metrics, as initiated by PLoS, in which we examine traces of impact beyond citation. ImpactStory broadens this approach to reflect <b>product-level metrics</b>, by inclusion of preprints, datasets, presentation slides, and other research output formats.
 
         <h3 id="similar">where is my other favourite metric?</h3>
 
@@ -116,20 +116,20 @@
 
         <p>ImpactStory is in early development and has many limitations. Some of the ones we know about:
 
-        <h4>gathering IDs sometimes misses artifacts</h3>
+        <h4>gathering IDs sometimes misses products</h3>
         <ul>
-            <li>BibTex import sometimes can't parse or locate all objects
+            <li>ORCID and BibTex import sometimes can't parse or locate all objects.
         </ul>
 
-        <h4>artifacts are sometimes missing metrics</h3>
+        <h4>products are sometimes missing metrics</h3>
         <ul>
             <li>doesn’t display metrics with a zero value
-            <li>sometimes the artifacts were received without sufficient information to use all metrics. For example, the system sometimes can't figure out all URLs from a DOI.
+            <li>sometimes the products were received without sufficient information to use all metrics. For example, the system sometimes can't figure out all URLs from a DOI.
         </ul>
 
         <h4>metrics sometimes have values that are too low</h3>
         <ul>
-            <li>some sources have multiple records for a given artifact. ImpactStory only identifies one copy and so only reports the impact metrics for that record. It makes no current attempt to aggregate across duplications within a source.
+            <li>some sources have multiple records for a given product. ImpactStory only identifies one copy and so only reports the impact metrics for that record. It makes no current attempt to aggregate across duplications within a source.
         </ul>
 
         <h4>other</h3>
@@ -164,7 +164,7 @@
         <h3 id="learned">what have you learned?</h3>
 
         <ul>
-            <li>the multitude of IDs for a given artifact is a bigger problem than we guessed. Even articles that have DOIs often also have urls, PubMed IDs, PubMed Central IDs, Mendeley IDs, etc. There is no one place to find all synonyms, yet the various APIs often only work with a specific one or two ID types. This makes comprehensive impact-gathering time consuming and error-prone.
+            <li>the multitude of IDs for a given product is a bigger problem than we guessed. Even articles that have DOIs often also have urls, PubMed IDs, PubMed Central IDs, Mendeley IDs, etc. There is no one place to find all synonyms, yet the various APIs often only work with a specific one or two ID types. This makes comprehensive impact-gathering time consuming and error-prone.
             <li>some data is harder to get than we thought (wordpress stats without requesting consumer key information)
             <li>some data is easier to get than we thought (vendors willing to work out special agreements, permit web scraping for particular purposes, etc)
             <li>lack of an author-identifier makes us reliant on user-populated systems like Mendeley for tracking author-based work (we need ORCID and we need it now!)
