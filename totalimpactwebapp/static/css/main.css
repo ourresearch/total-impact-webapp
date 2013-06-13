@@ -111,6 +111,12 @@ ul li,
 ol li {
   line-height: 1.5;
 }
+i.success {
+  color: ##468847;
+}
+i.error {
+  color: #b94a48;
+}
 span.icon.help {
   padding: 0 9px;
   background: url(../img/glyphicons-halflings-light.png);
@@ -544,9 +550,6 @@ div.import-products form.importers div.control-group {
 div.import-products form.importers div.control-group.fileupload div.uneditable-input {
   width: 100px;
 }
-div.import-products form.importers div.control-group.success i {
-  display: none;
-}
 div.import-products form.importers div.control-group.submit {
   margin-bottom: 0;
 }
@@ -569,6 +572,9 @@ div.import-products form.importers div.control-group label.control-label.ids spa
 div.import-products form.importers div.control-group label.control-label i {
   margin-right: 3px;
   margin-left: -15px;
+  width: 15px;
+}
+div.import-products form.importers div.control-group label.control-label i.ready {
   color: #ff4e00;
 }
 div.import-products form.importers div.control-group div.controls input {

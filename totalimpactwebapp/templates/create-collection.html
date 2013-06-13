@@ -23,7 +23,11 @@
                 <div class="form-item control-group email register ready">
                    <label class="control-label">
                       <span class="working"><img src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Checking</span>
-                      <span class="main"><i class="icon-asterisk"></i>Email</span>
+                      <span class="main">
+                         <i class="icon-asterisk ready"></i>
+                         <i class="icon-check success"></i>
+                         <i class="icon-exclamation-sign error"></i>
+                         Email</span>
                       <span class="working">availability...</span>
                       <span class="success">available.</span>
                       <span class="error">already taken...</span>
@@ -35,7 +39,9 @@
 
                 <div class="form-item control-group register password ready">
                    <label class="control-label">
-                      <span class="main"><i class="icon-asterisk"></i>Password</span>
+                      <span class="main">
+                         <i class="icon-asterisk ready"></i>
+                         <i class="icon-check success"></i>Password</span>
                    </label>
                    <div class="controls">
                       <input type="password" placeholder="password" class="password required"/>
@@ -43,7 +49,11 @@
                 </div>
 
                 <div class="form-item control-group ready" id="collection-name">
-                   <label class="control-label" ><span class="main"><i class="icon-asterisk"></i>Your name:</span></label>
+                   <label class="control-label" ><span class="main">
+                      <i class="icon-asterisk ready"></i>
+                      <i class="icon-check success"></i>
+                      Your name:</span>
+                   </label>
                    <div class="controls form-inline names">
                       <input type="text" class="name given no-input-yet input-large required"  placeholder="First name"/>
                       <input type="text" class="name surname no-input-yet input-large required"  placeholder="Last name"/>

@@ -104,6 +104,12 @@ p, ul, ol {
    }
 }
 
+i {
+   &.success {color:  ##468847;}
+   &.error {color:  #b94a48;}
+}
+
+
 span.icon.help {
    padding:0 9px;
    background: url(../img/glyphicons-halflings-light.png);
@@ -571,9 +577,6 @@ div.import-products {
                width: 100px;
             }
          }
-         &.success {
-            i {display: none;}
-         }
          &.submit {
             margin-bottom: 0;
 
@@ -601,7 +604,10 @@ div.import-products {
             i {
                margin-right: 3px;
                margin-left:-15px;
-               color: @linkColor;
+               width: 15px;
+               &.ready{
+                  color: @linkColor;
+               }
             }
 
          }
