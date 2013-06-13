@@ -640,10 +640,8 @@ div#tagline div.wrapper {
 }
 div#tagline div.wrapper h1 {
   color: #555;
-  color: #ff4e00;
   font-size: 72px;
   line-height: .8;
-  text-shadow: 1px 1px 1px #ccc;
   font-family: 'rokkitt', 'georgia', serif;
   letter-spacing: -2px;
   background: url(../img/grad-border-bottom.png) no-repeat bottom;
