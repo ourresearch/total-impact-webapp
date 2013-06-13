@@ -154,7 +154,7 @@ AliasListInputs.prototype = {
 
         // password
         var pw$ = $("input.password")
-        if (pw$.val()) {
+        if (pw$.val().length > 3) {
             changeElemState(pw$,  "success" )
         }
         else {
