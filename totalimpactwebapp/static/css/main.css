@@ -263,6 +263,17 @@ div.navbar ul.nav.pull-right > li.divider-vertical {
 div.navbar ul.nav.pull-right > li.sign-up a {
   color: #ff4e00;
 }
+div.navbar ul.nav.pull-right > li.login a i {
+  vertical-align: -2px;
+  color: #888;
+  padding-left: 6px;
+}
+div.navbar ul.nav.pull-right > li.login a:hover {
+  color: #ff4e00;
+}
+div.navbar ul.nav.pull-right > li.login a:hover i {
+  color: #ff4e00;
+}
 div.navbar ul.nav.pull-right > li.welcome span.hi {
   display: inline-block;
 }

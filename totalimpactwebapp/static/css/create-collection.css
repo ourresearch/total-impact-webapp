@@ -16,6 +16,15 @@ body.create-collection div#page-header h2 {
 body.create-collection div.main {
   margin-top: 30px;
 }
+body.create-collection div.navbar ul.nav li.login span.hi {
+  display: inline-block;
+}
+body.create-collection div.navbar ul.nav li.sign-up {
+  display: none;
+}
+body.create-collection div.navbar ul.nav li.divider-vertical {
+  display: none;
+}
 img.loading {
   height: 30px;
   float: left;

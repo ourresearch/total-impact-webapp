@@ -278,6 +278,19 @@ div.navbar {
                color: @linkColor;
             }
          }
+         &.login {
+            a {
+               i {
+                  vertical-align: -2px;
+                  color: #888;
+                  padding-left: 6px;
+               }
+               &:hover {
+                  color: @linkColor;
+                  i{color:  @linkColor;}
+               }
+            }
+         }
          &.welcome {
             span.hi {display:inline-block;}
             a.given-name {
