@@ -214,7 +214,7 @@ def user_preferences(url_slug):
         abort(404)
 
     # you're not logged in
-    elif g.user is None:
+    elif not g.user.is_authenticated():
         return redirect(url_for('login', next=request.url))
 
     # you're logged in, asked to edit someone else's preferences
@@ -243,7 +243,7 @@ def user_page_from_user_endpoint(url_slug):
 def collection_create():
 
     # don't let logged-in users see the /create page.
-    if g.user:
+    if g.user.is_authenticated():
         return redirect("/" + g.user.url_slug)
 
 

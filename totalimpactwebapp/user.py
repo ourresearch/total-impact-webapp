@@ -51,6 +51,7 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
     def is_authenticated(self):
+        # this gets overriden by Flask-login
         return True
 
     def is_active(self):
