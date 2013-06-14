@@ -117,21 +117,22 @@ body.user-profile div#metrics {
 *****************************************************************************
 *****************************************************************************/
 body.login-base {
-  background-color: #cccccc;
+  background-color: #eeeeee;
   /* Safari 4-5, Chrome 1-9 */
 
   /* Can't specify a percentage size? Laaaaaame. */
 
-  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#ffffff), to(#cccccc));
+  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#ffffff), to(#eeeeee));
   /* Safari 5.1+, Chrome 10+ */
 
-  background: -webkit-radial-gradient(circle, #ffffff, #cccccc);
+  background: -webkit-radial-gradient(circle, #ffffff, #eeeeee);
   /* Firefox 3.6+ */
 
-  background: -moz-radial-gradient(circle, #ffffff, #cccccc);
+  background: -moz-radial-gradient(circle, #ffffff, #eeeeee);
   /* IE 10 */
 
-  background: -ms-radial-gradient(circle, #ffffff, #cccccc);
+  background: -ms-radial-gradient(circle, #ffffff, #eeeeee);
+  background: #f3f3f3;
 }
 body.login-base.change-password div.main div.wrapper form label.control-label {
   width: 200px;
@@ -161,27 +162,29 @@ body.login-base #footer-powered-by img {
   display: none;
 }
 body.login-base h1 {
-  margin: 25px auto;
-  width: 312px;
+  margin: 90px auto 45px;
+  width: 400px;
+}
+body.login-base h1 img {
+  width: 400px;
 }
 body.login-base h2 {
   font-family: rokkitt, serif;
   font-size: 26px;
   text-align: center;
-  margin: 0;
   color: #888;
+  width: 600px;
+  margin: 0 auto;
+  border-bottom: 2px solid #ddd;
 }
 body.login-base div.main {
   background: transparent;
 }
 body.login-base div.main div.wrapper form {
-  background: #fff;
-  border: 1px solid #ccc;
   border-radius: 3px;
-  margin-top: 50px;
+  margin-top: 0px;
   padding: 30px 0;
   margin: 0 auto;
-  box-shadow: 3px 3px 5px #e3e3e3;
   position: relative;
   width: 600px;
 }
@@ -211,8 +214,8 @@ body.login-base div.main div.wrapper form label {
 }
 body.login-base div.main div.wrapper form input {
   font-size: 20px;
-  height: 24px;
-  padding: 6px 6px 2px;
+  height: 30px;
+  padding: 6px 6px 4px;
 }
 body.login-base div.main div.wrapper form div.submit-alternative {
   float: right;

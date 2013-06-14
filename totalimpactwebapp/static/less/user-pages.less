@@ -163,7 +163,7 @@ body.user-profile {
 *****************************************************************************/
 
 body.login-base {
-   @loginBodyBackGroundColor: #ccc;
+   @loginBodyBackGroundColor: #eee;
    background-color: @loginBodyBackGroundColor;
 
    &.change-password {
@@ -206,33 +206,39 @@ body.login-base {
 /* IE 10 */
    background: -ms-radial-gradient(circle, #fff, @loginBodyBackGroundColor);
 
+
+   background: #f3f3f3;
+
+
    div.navbar {display: none;}
    div#page-header {display: none;}
    div#footer {display: none;}
    #footer-powered-by img { display: none; }
 
    h1 {
-      margin: 25px auto;
-      width:  312px; // hack, shouldn't have to know the img width
+      margin: 90px auto 45px;
+      width:  400px;
+      img {
+         width:  400px;
+      }
    }
    h2 {
       font-family: rokkitt, serif;
       font-size: 26px;
       text-align: center;
-      margin: 0;
       color:  #888;
+      width: 600px;
+      margin: 0 auto;
+      border-bottom:  2px solid #ddd;
    }
    div.main {
       background: transparent;
       div.wrapper {
          form {
-            background: #fff;
-            border: 1px solid #ccc;
             border-radius: 3px;
-            margin-top: 50px;
+            margin-top: 0px;
             padding: 30px 0;
             margin: 0 auto;
-            box-shadow: 3px 3px 5px #e3e3e3;
             position: relative;
             width: @formWidth;
 
@@ -259,8 +265,8 @@ body.login-base {
             }
             input {
                font-size: 20px;
-               height: 24px;
-               padding: 6px 6px 2px;
+               height: 30px;
+               padding: 6px 6px 4px;
             }
             div.submit-alternative {
                &.not-registered {margin-top: -2px;}
