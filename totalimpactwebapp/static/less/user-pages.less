@@ -163,7 +163,7 @@ body.user-profile {
 *****************************************************************************/
 
 body.login-base {
-   @loginBodyBackGroundColor: #eee;
+   @loginBodyBackGroundColor: #333;
    background-color: @loginBodyBackGroundColor;
 
    &.change-password {
@@ -195,19 +195,18 @@ body.login-base {
 
 /* Safari 4-5, Chrome 1-9 */
 /* Can't specify a percentage size? Laaaaaame. */
-   background: -webkit-gradient(radial, center center, 0, center center, 460, from(#fff), to(@loginBodyBackGroundColor));
+   background: -webkit-gradient(radial, center center, 0, center center, 460, from(#555), to(@loginBodyBackGroundColor));
 
 /* Safari 5.1+, Chrome 10+ */
-   background: -webkit-radial-gradient(circle, #fff, @loginBodyBackGroundColor);
+   background: -webkit-radial-gradient(circle, #555, @loginBodyBackGroundColor);
 
 /* Firefox 3.6+ */
-   background: -moz-radial-gradient(circle, #fff, @loginBodyBackGroundColor);
+   background: -moz-radial-gradient(circle, #555, @loginBodyBackGroundColor);
 
 /* IE 10 */
-   background: -ms-radial-gradient(circle, #fff, @loginBodyBackGroundColor);
+   background: -ms-radial-gradient(circle, #555, @loginBodyBackGroundColor);
 
 
-   background: #f3f3f3;
 
 
    div.navbar {display: none;}
@@ -217,19 +216,18 @@ body.login-base {
 
    h1 {
       margin: 90px auto 45px;
-      width:  400px;
+      width:  450px;
       img {
-         width:  400px;
+         width:  450px;
       }
    }
    h2 {
-      font-family: rokkitt, serif;
+      font-family: helvetica, arial, sans-serif;
       font-size: 26px;
       text-align: center;
-      color:  #888;
+      color:  #aaa;
       width: 600px;
       margin: 0 auto;
-      border-bottom:  2px solid #ddd;
    }
    div.main {
       background: transparent;
@@ -242,7 +240,6 @@ body.login-base {
             position: relative;
             width: @formWidth;
 
-            div.control-group {padding-left:30px;}
             div.alert {
                &.False { display: none; }
                margin-top: -26px;
@@ -259,8 +256,9 @@ body.login-base {
 
             }
             label {
-               font-size: 24px;
-               color:  #555;
+               font-size: 20px;
+               font-weight: normal;
+               color:  #aaa;
                padding-top: 9px;
             }
             input {
@@ -273,6 +271,9 @@ body.login-base {
                float: right;
                margin: 0 155px 0 0;
                font-size: 14px;
+               a {
+                  color:  #fff;
+               }
             }
             div.controls.button {
                float:left;

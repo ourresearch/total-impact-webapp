@@ -117,22 +117,21 @@ body.user-profile div#metrics {
 *****************************************************************************
 *****************************************************************************/
 body.login-base {
-  background-color: #eeeeee;
+  background-color: #333333;
   /* Safari 4-5, Chrome 1-9 */
 
   /* Can't specify a percentage size? Laaaaaame. */
 
-  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#ffffff), to(#eeeeee));
+  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#555555), to(#333333));
   /* Safari 5.1+, Chrome 10+ */
 
-  background: -webkit-radial-gradient(circle, #ffffff, #eeeeee);
+  background: -webkit-radial-gradient(circle, #555555, #333333);
   /* Firefox 3.6+ */
 
-  background: -moz-radial-gradient(circle, #ffffff, #eeeeee);
+  background: -moz-radial-gradient(circle, #555555, #333333);
   /* IE 10 */
 
-  background: -ms-radial-gradient(circle, #ffffff, #eeeeee);
-  background: #f3f3f3;
+  background: -ms-radial-gradient(circle, #555555, #333333);
 }
 body.login-base.change-password div.main div.wrapper form label.control-label {
   width: 200px;
@@ -163,19 +162,18 @@ body.login-base #footer-powered-by img {
 }
 body.login-base h1 {
   margin: 90px auto 45px;
-  width: 400px;
+  width: 450px;
 }
 body.login-base h1 img {
-  width: 400px;
+  width: 450px;
 }
 body.login-base h2 {
-  font-family: rokkitt, serif;
+  font-family: helvetica, arial, sans-serif;
   font-size: 26px;
   text-align: center;
-  color: #888;
+  color: #aaa;
   width: 600px;
   margin: 0 auto;
-  border-bottom: 2px solid #ddd;
 }
 body.login-base div.main {
   background: transparent;
@@ -187,9 +185,6 @@ body.login-base div.main div.wrapper form {
   margin: 0 auto;
   position: relative;
   width: 600px;
-}
-body.login-base div.main div.wrapper form div.control-group {
-  padding-left: 30px;
 }
 body.login-base div.main div.wrapper form div.alert {
   margin-top: -26px;
@@ -208,8 +203,9 @@ body.login-base div.main div.wrapper form div.alert a {
   text-decoration: underline;
 }
 body.login-base div.main div.wrapper form label {
-  font-size: 24px;
-  color: #555;
+  font-size: 20px;
+  font-weight: normal;
+  color: #aaa;
   padding-top: 9px;
 }
 body.login-base div.main div.wrapper form input {
@@ -224,6 +220,9 @@ body.login-base div.main div.wrapper form div.submit-alternative {
 }
 body.login-base div.main div.wrapper form div.submit-alternative.not-registered {
   margin-top: -2px;
+}
+body.login-base div.main div.wrapper form div.submit-alternative a {
+  color: #fff;
 }
 body.login-base div.main div.wrapper form div.controls.button {
   float: left;
