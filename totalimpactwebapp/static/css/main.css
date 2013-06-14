@@ -624,6 +624,9 @@ body.index {
 body.index div#page-header {
   display: none;
 }
+body.index div#footer {
+  margin-top: 0;
+}
 body.index.not-logged-in div.navbar-inner ul.nav.pull-right li.sign-up {
   display: none;
 }
@@ -633,6 +636,12 @@ body.index.not-logged-in div.navbar-inner ul.nav.pull-right li.divider-vertical 
 body.index.not-logged-in div.navbar-inner ul.nav.pull-right li span.hi {
   display: inline-block;
   margin-right: 10px;
+}
+body.index .tooltip .tooltip-inner {
+  background: #555;
+}
+body.index .tooltip .tooltip-arrow {
+  border-bottom-color: #555;
 }
 div#tagline div.wrapper {
   width: 900px;
@@ -767,7 +776,7 @@ div#sources {
 }
 div#sources div.wrapper {
   padding-top: 15px;
-  width: 1024px;
+  width: 971px;
   margin: 0 auto;
   background: #fff;
 }
@@ -1070,8 +1079,9 @@ div#footer {
   padding: 60px 0 80px;
   width: 100%;
   border-top: 1px solid #aaa;
-  background: url(../img/footer-bg.png) top repeat-x;
+  background: #ddd;
   float: left;
+  margin-top: 30px;
 }
 div#footer p {
   margin: 6px 0 0 0;
@@ -1087,13 +1097,14 @@ div#footer div.wrapper div.footer-col {
   width: 125px;
   padding-right: 0;
   margin-left: 32px;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #ccc;
   min-height: 150px;
 }
 div#footer div.wrapper div.footer-col h3 {
   font-size: 18px;
   font-weight: bold;
   font-family: rokkitt, helvetica, sans-serif;
+  border-bottom: none;
   color: #555;
   margin: 0 0 12px;
 }

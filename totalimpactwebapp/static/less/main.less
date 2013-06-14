@@ -676,6 +676,10 @@ body.index  {
       display:none;
    }
 
+   div#footer {
+      margin-top: 0;
+   }
+
    &.not-logged-in {
       div.navbar-inner ul.nav.pull-right {
          li {
@@ -684,6 +688,17 @@ body.index  {
             span.hi {display:inline-block; margin-right: 10px;}
          }
       }
+   }
+
+   .tooltip {
+      .tooltip-inner {
+         background:  #555;
+      }
+      .tooltip-arrow {
+         border-bottom-color: #555;
+      }
+
+
    }
 
 }
@@ -848,7 +863,7 @@ div#sources {
    text-align: center;
    div.wrapper {
       padding-top: 15px;
-      width: 1024px;
+      width: 971px;
       margin: 0 auto;
       background:  #fff;
       h2 {
@@ -1192,8 +1207,9 @@ div#footer {
    padding: 60px 0 80px;
    width: 100%;
    border-top: 1px solid #aaa;
-   background: url(../img/footer-bg.png) top repeat-x;
+   background: #ddd;
    float:left;
+   margin-top: 30px;
 
    p {
       margin:6px 0 0 0;
@@ -1212,7 +1228,7 @@ div#footer {
          width: 125px;
          padding-right: 0;
          margin-left: 32px;
-         border-right: 1px solid #ddd;
+         border-right: 1px solid #ccc;
          min-height: 150px;
 
 
@@ -1220,6 +1236,7 @@ div#footer {
             font-size: 18px;
             font-weight: bold;
             font-family: rokkitt, helvetica, sans-serif;
+            border-bottom:  none;
 
             color: #555;
             margin: 0 0 12px;
