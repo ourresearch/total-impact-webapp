@@ -118,20 +118,7 @@ body.user-profile div#metrics {
 *****************************************************************************/
 body.login-base {
   background-color: #333333;
-  /* Safari 4-5, Chrome 1-9 */
-
-  /* Can't specify a percentage size? Laaaaaame. */
-
-  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#555555), to(#333333));
-  /* Safari 5.1+, Chrome 10+ */
-
-  background: -webkit-radial-gradient(circle, #555555, #333333);
-  /* Firefox 3.6+ */
-
-  background: -moz-radial-gradient(circle, #555555, #333333);
-  /* IE 10 */
-
-  background: -ms-radial-gradient(circle, #555555, #333333);
+  background: #f3f3f3;
 }
 body.login-base.change-password div.main div.wrapper form label.control-label {
   width: 200px;
@@ -220,9 +207,6 @@ body.login-base div.main div.wrapper form div.submit-alternative {
 }
 body.login-base div.main div.wrapper form div.submit-alternative.not-registered {
   margin-top: -2px;
-}
-body.login-base div.main div.wrapper form div.submit-alternative a {
-  color: #fff;
 }
 body.login-base div.main div.wrapper form div.controls.button {
   float: left;

@@ -567,6 +567,11 @@ div.import-products {
       #go-button {
          width: 255px;
          text-align: center;
+         &[disabled] {
+            background:  #ccc;
+            border: none;
+            cursor: not-allowed;
+         }
       }
 
       &.register {
@@ -743,12 +748,13 @@ div#tagline {
                font-size: 30px;
                .border-radius(30px, 30px, 30px, 30px);
                background: @accentColor;
-               background: #444;
+               background: #333;
+               color:  #eee;
 
                font-family: 'rokkitt', 'georgia', serif;
 
                &:hover {
-                  background: #333;
+                  background: #222;
                }
 
             }
