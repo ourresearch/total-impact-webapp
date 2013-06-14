@@ -624,6 +624,8 @@ body.index {
   /* IE 10 */
 
   background: -ms-radial-gradient(circle, #ffffff, #cccccc);
+  background: blue;
+  background: #777;
   background: #ff4e00;
 }
 body.index div#page-header {
@@ -667,6 +669,7 @@ div#tagline div.wrapper p.subtagline {
   font-size: 20px;
   padding: 5px 0 10px;
   margin-bottom: 40px;
+  font-weight: normal;
 }
 div#tagline div.wrapper #call-to-action {
   margin: 0 auto;
@@ -699,28 +702,27 @@ div#tagline div.wrapper #call-to-action span.container a#create-collection {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background: #0053b0;
-  background: #333;
+  background: #792500;
   color: #eee;
   font-family: 'rokkitt', 'georgia', serif;
 }
 div#tagline div.wrapper #call-to-action span.container a#create-collection:hover {
-  background: #222;
+  background: #333;
 }
 div#tagline div.wrapper #call-to-action p#example-collection {
   font-size: 14px;
   float: left;
   width: 100px;
-  color: #333;
+  color: #792500;
   margin: 2px 0 0 5px;
   padding: 4px 0 0 5px;
-  border-left: 1px solid #444;
+  border-left: 1px solid #callToActionColor;
 }
 div#tagline div.wrapper #call-to-action p#example-collection a {
   font-size: 25px;
   margin-top: -5px;
   margin-left: 5px;
-  color: #333;
+  color: #792500;
   font-family: 'rokkitt', 'georgia', serif;
   display: block;
   width: 175px;
