@@ -789,9 +789,9 @@ div#sources div.wrapper {
   background: #fff;
 }
 div#sources div.wrapper h2 {
-  color: #bbb;
-  font-family: 'Croissant One', cursive;
-  font-size: 17px;
+  color: #ccc;
+  font-size: 20px;
+  font-family: Rokkitt, serif;
   font-weight: normal;
   margin: -70px auto 30px;
   background: #fff;
