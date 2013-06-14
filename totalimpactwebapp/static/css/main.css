@@ -773,13 +773,13 @@ div#sources div.wrapper {
 }
 div#sources div.wrapper h2 {
   color: #bbb;
-  font-family: 'Sofia', cursive;
-  font-size: 19px;
+  font-family: 'Croissant One', cursive;
+  font-size: 17px;
   font-weight: normal;
   margin: -70px auto 30px;
   background: #fff;
   display: block;
-  width: 390px;
+  width: 440px;
   padding: 0 20px;
 }
 div#sources div.wrapper ul#source-logos li {
