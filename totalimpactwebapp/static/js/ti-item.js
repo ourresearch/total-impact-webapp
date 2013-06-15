@@ -220,6 +220,7 @@ function Item(itemData, itemView, $) {
         var metricInfo = _.object(
             _.map([
                 ["citeulike:bookmarks", "scholars", "saved", "badge", 3],
+                ["crossref:citations", "scholars", "cited", "badge", 3],
                 ["delicious:bookmarks", "public", "saved", "badge", 3],
                 ["dryad:most_downloaded_file"],
                 ["dryad:package_views", "scholars", "viewed", "badge", 3],
