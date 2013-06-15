@@ -33,7 +33,7 @@ body.can-edit {
    }
 }
 
-body.needs-to-reset-pw {
+body.login-base.needs-to-reset-pw {
    div.alert.needs-to-reset-pw {
       display:block;
    }
@@ -163,7 +163,7 @@ body.user-profile {
 *****************************************************************************/
 
 body.login-base {
-   @loginBodyBackGroundColor: #333;
+   @loginBodyBackGroundColor: #fff;
    background-color: @loginBodyBackGroundColor;
 
    &.change-password {
@@ -192,15 +192,13 @@ body.login-base {
    }
 
 
-   background: #f3f3f3;
-
    div.navbar {display: none;}
    div#page-header {display: none;}
    div#footer {display: none;}
    #footer-powered-by img { display: none; }
 
    h1 {
-      margin: 90px auto 45px;
+      margin: 60px auto 45px;
       width:  450px;
       img {
          width:  450px;
@@ -219,11 +217,13 @@ body.login-base {
       div.wrapper {
          form {
             border-radius: 3px;
+            border: 1px solid #eee;
             margin-top: 0px;
             padding: 30px 0;
             margin: 0 auto;
             position: relative;
             width: @formWidth;
+            background: #f3f3f3;
 
             div.alert {
                &.False { display: none; }

@@ -24,7 +24,7 @@ body.can-edit .editable-name span.editable:hover {
 body.can-edit .editable-name:hover span.instr span {
   display: inline;
 }
-body.needs-to-reset-pw div.alert.needs-to-reset-pw {
+body.login-base.needs-to-reset-pw div.alert.needs-to-reset-pw {
   display: block;
 }
 .editable-click {
@@ -117,8 +117,7 @@ body.user-profile div#metrics {
 *****************************************************************************
 *****************************************************************************/
 body.login-base {
-  background-color: #333333;
-  background: #f3f3f3;
+  background-color: #ffffff;
 }
 body.login-base.change-password div.main div.wrapper form label.control-label {
   width: 200px;
@@ -148,7 +147,7 @@ body.login-base #footer-powered-by img {
   display: none;
 }
 body.login-base h1 {
-  margin: 90px auto 45px;
+  margin: 60px auto 45px;
   width: 450px;
 }
 body.login-base h1 img {
@@ -167,11 +166,13 @@ body.login-base div.main {
 }
 body.login-base div.main div.wrapper form {
   border-radius: 3px;
+  border: 1px solid #eee;
   margin-top: 0px;
   padding: 30px 0;
   margin: 0 auto;
   position: relative;
   width: 600px;
+  background: #f3f3f3;
 }
 body.login-base div.main div.wrapper form div.alert {
   margin-top: -26px;
