@@ -411,8 +411,9 @@ def user_create():
         db.session.add(user)
         db.session.commit()
 
-    logger.debug("POST /user: Finished creating user {id}, {slug}".format(
+    logger.debug("POST /user: Finished creating user {id}, http://{webapp_pretty}/{slug}".format(
         id=user.id,
+        webapp_pretty=g.roots["webapp_pretty"],
         slug=user.url_slug
     ))
 
