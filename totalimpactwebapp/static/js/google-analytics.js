@@ -10,8 +10,6 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', 'UA-42217314-1', 'impactstory.org');
 ga('send', 'pageview');
 
-
-
 // clasic google analytics
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-23384030-1']);
