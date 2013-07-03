@@ -47,12 +47,20 @@
          var impactStoryUserId = '{{ g.user.id }}'  //also used elsewhere
 
          // not allowed to send email addresses to google analytics, so send user_id instead
+         ga('send', 'pageview', {
+           'dimension1':  impactStoryUserId
+         });
+
+         // is this one also needed?  not sure.
          ga('set', 'dimension1', impactStoryUserId);
 
          mixpanel.name_tag('{{ g.user.email }}');
-
       </script>
    {% else %}
+      <script type="text/javascript">
+         // record it but we don't know any user_id information
+         ga('send', 'pageview');
+      </script>
       {% set login_status = "not-logged-in" %}
    {% endif %}
 
