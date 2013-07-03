@@ -172,7 +172,7 @@ body.login-base div.main div.wrapper form {
   margin: 0 auto;
   position: relative;
   width: 600px;
-  background: #f3f3f3;
+  background: #eee;
 }
 body.login-base div.main div.wrapper form div.alert {
   margin-top: -26px;

@@ -274,7 +274,7 @@ def login():
 
     errors = {"email": False, "password": False}
     if request.method == 'POST':
-        email = request.form['email']
+        email = request.form['email'].lower()
         g.user = User.query.filter_by(email=email).first()
 
         if g.user is None:
@@ -325,7 +325,7 @@ def change_password(reset_token):
     s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
     error = ""
     try:
-        email = s.unsign(reset_token, max_age=60*30) # 30min
+        email = s.unsign(reset_token, max_age=60*30).lower()  # 30min
 
     except SignatureExpired:
         error = "expired-token"
@@ -381,14 +381,15 @@ def user_create():
 
     alias_tiids = request.json["alias_tiids"]
     url = "http://" + g.roots["api"] + "/collection"
+    email = request.json["email"].lower()
 
-    data = {"aliases": alias_tiids, "title": request.json["email"]}
+    data = {"aliases": alias_tiids, "title": email}
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
 
     user = User(
-        email=request.json["email"],
+        email=email,
         password=request.json["password"],
         collection_id=r.json()["collection"]["_id"],
         given_name=request.json["given_name"],
@@ -422,8 +423,9 @@ def user_create():
 
 @app.route("/user", methods=["GET"])
 def user_view():
-    email = request.args["email"]
-    if email is None:
+    try:
+        email = request.args["email"].lower()
+    except AttributeError:
         abort(400, "Bad request, please include email query")
 
     # return a user slug based from an email query
@@ -465,6 +467,7 @@ def user_products_view_and_modify(userId):
 
 @app.route("/user/<email>/password", methods=["GET"])
 def get_password_reset_link(email):
+    email = email.lower()
     retrieved_user = User.query.filter_by(email=email).first()
     if retrieved_user is None:
         abort(404, "That user doesn't exist.")
