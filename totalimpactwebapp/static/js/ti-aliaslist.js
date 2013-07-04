@@ -252,7 +252,7 @@ SubmitButton.prototype = {
         }
 
         $.ajax({
-           url: webapp_root+'/user',
+           url: webapp_root_pretty+'/user',
            type: "POST",
            dataType: "json",
            contentType: "application/json; charset=utf-8",
