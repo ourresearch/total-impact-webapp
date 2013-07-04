@@ -313,6 +313,10 @@ UsernameImporter.prototype = {
         this.start()
         var providerName = this.elem$.attr("id").replace("input_", "")
         var queryStr = this.elem$.val()
+        if (providerName == "orcid") {
+            // remove the leading url characters if they were included
+            queryStr = queryStr.replace("http://orcid.org/", "")
+        }
 
         $.ajax({
             url: api_root+"/provider/"+providerName+"/memberitems/"+queryStr+"?method=sync",
