@@ -313,6 +313,10 @@ UsernameImporter.prototype = {
         this.start()
         var providerName = this.elem$.attr("id").replace("input_", "")
         var queryStr = this.elem$.val()
+        if (providerName == "orcid") {
+            // remove the leading url characters if they were included
+            queryStr = queryStr.replace("http://orcid.org/", "")
+        }
 
         $.ajax({
             url: api_root+"/provider/"+providerName+"/memberitems/"+queryStr+"?method=sync",
@@ -362,34 +366,44 @@ TextareaImporter.prototype = {
         for (i=0; i<ids.length; i++){
             var artifact = [];
             var thisId = ids[i];
+
             if (thisId.indexOf(":") > 0) {
-                artifact[0] = thisId.split(':')[0]; // namespace
-                artifact[1] = thisId.substr(artifact[0].length + 1) // id
+                beforeColon = thisId.split(':')[0]; // namespace
+                afterColon = thisId.substr(beforeColon.length + 1) // id
 
                 // handle urls:
-                if (artifact[0] == "http" || artifact[0] == "https"){
-                    artifact[0] = "url";
-                    artifact[1] = thisId
+                if (beforeColon == "http" || beforeColon == "https"){
+                    if (afterColon.indexOf("//dx.doi.org/10.") == 0) {
+                        namespace = "doi"
+                        thisId = afterColon.replace("//dx.doi.org/", "")
+                    } else {
+                        namespace = "url";
+                        // keep thisId as whole id including the http prefix so it looks like a url
+                    }
+                } else if (beforeColon == "doi" || beforeColon = "pmid") {
+                        namespace = beforeColon
+                        thisId = afterColon
                 }
+                // otherwise ignore because namespace content before colon not recognized
             }
             else {
                 if (thisId.length > 0) {
                     var isnum_with_possible_period = /^[\d\.]+$/.test(thisId)
                     // handle dois entered without the doi prefix
                     if (thisId.substring(0,3) == "10.") {
-                        artifact[0] = "doi"
+                        namespace = "doi"
                     } else if (isnum_with_possible_period && (thisId.length > 5) && (thisId.length <= 8)) {
                         // definition of pmid from http://www.nlm.nih.gov/bsd/mms/medlineelements.html#pmid
                         // this doesn't catch short PMIDs, but that's ok
-                        artifact[0] = "pmid"
+                        namespace = "pmid"
+                    } else {
+                        namespace = "unknown"
                     }
-                    else {
-                        artifact[0] = "unknown"
-                    }
-                    artifact[1] = thisId
                 }
             }
-            if (typeof artifact[1] != "undefined") {
+            if (typeof thisId != "undefined") {
+                artifact[0] = namespace
+                artifact[1] = thisId
                 ret.push(artifact);
             }
         }
