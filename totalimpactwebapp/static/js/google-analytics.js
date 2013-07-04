@@ -8,9 +8,7 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'UA-42217314-1', 'impactstory.org');
-ga('send', 'pageview');
-
-
+// pageviews sent elsewhere so can add relevant dimension info
 
 // clasic google analytics
 var _gaq = _gaq || [];
