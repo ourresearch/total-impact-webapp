@@ -1177,14 +1177,13 @@ div.tooltip div.tooltip-inner {
 }
 div.tooltip.click-to-visit-profile {
   width: auto;
-  font-size: 11px;
 }
 div.tooltip.click-to-visit-profile .tooltip-inner {
   padding: 3px 8px;
-  background: #888;
+  background: #777;
 }
 div.tooltip.click-to-visit-profile .tooltip-arrow {
-  border-left-color: #888;
+  border-left-color: #777;
 }
 code {
   color: #000;
