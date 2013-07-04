@@ -369,9 +369,9 @@ TextareaImporter.prototype = {
 
                 // handle urls:
                 if (beforeColon == "http" || beforeColon == "https"){
-                    if (afterColon.indexOf("http://dx.doi.org/10.") == 0) {
+                    if (afterColon.indexOf("//dx.doi.org/10.") == 0) {
                         namespace = "doi"
-                        thisId = afterColon.substr("http://dx.doi.org/".length + 1)
+                        thisId = afterColon.replace("//dx.doi.org/", "")
                     } else {
                         namespace = "url";
                         // keep thisId as whole id including the http prefix so it looks like a url
