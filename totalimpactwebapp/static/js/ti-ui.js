@@ -101,7 +101,12 @@ var Navbar = function(){
 }
 Navbar.prototype = {
     init: function() {
-        $("ul.nav a.given-name").tooltip({placement:"bottom"})
+        $("ul.nav a.given-name").tooltip({
+             placement:"left",
+             animation: false,
+             template: '<div class="tooltip click-to-visit-profile"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+
+         })
     }
 }
 

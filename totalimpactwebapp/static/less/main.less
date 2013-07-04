@@ -308,6 +308,9 @@ div.navbar {
                display:inline-block;
                margin:  8px 18px 0 0;
                padding: 2px;
+               &:hover {
+                  text-decoration: underline;
+               }
             }
          }
 
@@ -695,17 +698,6 @@ body.index  {
             span.hi {display:inline-block; margin-right: 10px;}
          }
       }
-   }
-
-   .tooltip {
-      .tooltip-inner {
-         background:  #555;
-      }
-      .tooltip-arrow {
-         border-bottom-color: #555;
-      }
-
-
    }
 
 }
@@ -1342,6 +1334,17 @@ div.tooltip {
    div.tooltip-inner {
       padding-top:8px;
       padding-bottom:8px;
+   }
+   &.click-to-visit-profile {
+      width: auto;
+      font-size: 11px;
+      .tooltip-inner {
+         padding:  3px 8px;
+         background:  #888;
+      }
+      .tooltip-arrow {
+         border-left-color: #888;
+      }
    }
 }
 

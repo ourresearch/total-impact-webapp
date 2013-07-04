@@ -290,6 +290,9 @@ div.navbar ul.nav.pull-right > li.welcome a.given-name {
   margin: 8px 18px 0 0;
   padding: 2px;
 }
+div.navbar ul.nav.pull-right > li.welcome a.given-name:hover {
+  text-decoration: underline;
+}
 div.navbar ul.nav.pull-right > li.preferences.open a.dropdown-toggle {
   background: #777;
   background: #f2f2f2;
@@ -643,12 +646,6 @@ body.index.not-logged-in div.navbar-inner ul.nav.pull-right li.divider-vertical 
 body.index.not-logged-in div.navbar-inner ul.nav.pull-right li span.hi {
   display: inline-block;
   margin-right: 10px;
-}
-body.index .tooltip .tooltip-inner {
-  background: #555;
-}
-body.index .tooltip .tooltip-arrow {
-  border-bottom-color: #555;
 }
 div#tagline div.wrapper {
   width: 900px;
@@ -1177,6 +1174,17 @@ div.tooltip.in {
 div.tooltip div.tooltip-inner {
   padding-top: 8px;
   padding-bottom: 8px;
+}
+div.tooltip.click-to-visit-profile {
+  width: auto;
+  font-size: 11px;
+}
+div.tooltip.click-to-visit-profile .tooltip-inner {
+  padding: 3px 8px;
+  background: #888;
+}
+div.tooltip.click-to-visit-profile .tooltip-arrow {
+  border-left-color: #888;
 }
 code {
   color: #000;
