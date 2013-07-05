@@ -41,8 +41,8 @@ class User(db.Model):
         self.url_slug = self.make_url_slug(self.full_name)
 
     def make_url_slug(self, full_name):
-        name_list = full_name.split(" ")
-        return "".join([x.capitalize() for x in name_list])
+        return "".join(full_name.title().split())
+
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
