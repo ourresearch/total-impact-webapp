@@ -8,7 +8,7 @@
    if ("{{ report_id }}" == "kn5auf") {
       report_source = "sample";
    }
-   mixpanel.track("Impression:report", 
+   analytics.track("Impression:report", 
       {"Report Type": "{{ report_type }}", 
        "Report ID": "{{ report_id }}",
        "Report Source": report_source

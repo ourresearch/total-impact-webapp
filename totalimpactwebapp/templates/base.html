@@ -47,6 +47,7 @@
          analytics.identify("{{ g.user.id }}", {
              firstName        : "{{ g.user.given_name }}",
              lastName         : "{{ g.user.surname }}",
+             created          : "{{ g.user.created }}",
              url_slug         : "{{ g.user.url_slug }}",
              email            : "{{ g.user.email }}"
          });

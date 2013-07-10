@@ -272,7 +272,7 @@
 
             // report vital signs
             var apikey = "{{ g.api_key }}"
-//            mixpanel.track("Impression:embed", {"API Key":apikey.toLowerCase()});
+//            analytics.track("Impression:embed", {"API Key":apikey.toLowerCase()});
 
         });
     }
