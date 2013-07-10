@@ -40,9 +40,6 @@
       analytics.load("{{ g.segmentio_key }}");
    </script>
 
-   <!--chartbeat code-->
-   <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
-
    {% if g.user.id %}
       {% set login_status = "logged-in" %}
       <script type="text/javascript">
@@ -380,25 +377,6 @@ These are for rendering items with javascript using Mustache
       tab_position: 'middle-right',
       tab_inverted: false
    }]);
-</script>
-
-<!-- chartbeat code -->
-<script type="text/javascript">
-   var _sf_async_config={uid:49256,domain:"impactstory.org",useCanonical:true};
-   (function(){
-      function loadChartbeat() {
-         window._sf_endpt=(new Date()).getTime();
-         var e = document.createElement('script');
-         e.setAttribute('language', 'javascript');
-         e.setAttribute('type', 'text/javascript');
-         e.setAttribute('src', '//static.chartbeat.com/js/chartbeat.js');
-         document.body.appendChild(e);
-      }
-      var oldonload = window.onload;
-      window.onload = (typeof window.onload != 'function') ?
-              loadChartbeat : function() { oldonload(); loadChartbeat(); };
-   })();
-
 </script>
 
 </body>
