@@ -13,29 +13,18 @@
 {% block content %}
 
 <script type="text/javascript">
-   mixpanel.track("Impression:profile", {
+   analytics.track('Impression:profile', {
             "Profile ID": "{{ profile.id }}",
             "Profile slug": "{{ profile.url_slug }}",
             "Profile ownership": "{{ ownership_status }}"
          });
+
    var impactstoryUserId = {{ profile.id }}
 </script>
 
 {% if g.user.id == profile.id %}
    <script type="text/javascript">
-      mixpanel.people.set({
-         "name": "{{ profile.email }}",
-         "Profile ID": "{{ profile.id }}",
-         "$email": "{{ profile.email }}",
-         "$first_name": "{{ profile.given_name }}",
-         "$last_name": "{{ profile.surname }}",
-         "Profile slug": "{{ profile.url_slug }}"
-      });       
-      mixpanel.identify("{{ profile.email }}");
-
-      ga('set', 'metric1', 1);  // viewed_own_profile
-      ga('send', 'event', 'user', 'impression', 'own_profile', 1);
-
+      analytics.track('Viewed own profile');
    </script>
 {% endif %}
 

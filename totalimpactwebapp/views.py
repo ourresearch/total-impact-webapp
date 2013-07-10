@@ -37,8 +37,7 @@ js = Bundle('js/bootstrap.js',
             'js/ti-userCreds.js',
             'js/ti-userProfile.js',
             'js/ti-ui.js',
-            'js/google-analytics.js',
-            'js/mixpanel.js',
+            'js/segmentio.js',
             filters="yui_js",
             output='js/packed.js'
 )
@@ -60,7 +59,6 @@ js_widget = Bundle(
             'js/icanhaz.js',
             'js/bootstrap-tooltip-and-popover.js',
             'js/underscore.js',
-            # 'js/mixpanel.js',
             'js/ti-item.js',
             filters="yui_js",
             output="js/widget.js",
@@ -128,7 +126,7 @@ def load_globals():
         "webapp": os.getenv("WEBAPP_ROOT"),
         "webapp_pretty": os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
     }
-    g.mixpanel_token = os.getenv("MIXPANEL_TOKEN")
+    g.segmentio_key = os.getenv("SEGMENTIO_KEY")
     g.api_key = os.getenv("API_KEY")
 
 
