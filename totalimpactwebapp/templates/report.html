@@ -32,19 +32,7 @@
    <!-- START report-meta -->
    <div class="wrapper">
       <div id="report-meta">
-         <div id="share">
-            <!-- from https://twitter.com/about/resources/buttons#tweet -->
-            <script src="//platform.twitter.com/widgets.js" type="text/javascript"></script>
-            <!-- based on code here: https://dev.twitter.com/docs/tweet-button -->
-                    <span class="tweet-this">
-                        <a href="https://twitter.com/share" class="twitter-share-button"
-                           data-via="ImpactStory"
-                           data-url="{{request_url}}"
-                           url="{{request_url}}"
-                           data-text="Check out the impact story at {{ page_title }}: "
-                           data-count="horizontal">Tweet</a>
-                    </span>
-         </div>
+         <!-- remove "tweet this" code for now because platform.twitter loading very slowly -->
          <div id="report-button">
             <div class="btn-group update">
                <!-- You can't add or refresh products anymore because collections are deprecated. -->
