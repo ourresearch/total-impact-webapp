@@ -6,7 +6,8 @@
 
 <script type="text/javascript" xmlns="http://www.w3.org/1999/html"
         xmlns="http://www.w3.org/1999/html">
-   analytics.track("View:docs", {"Doc Type": "home page"});
+   analytics.track("View:docs", {"Doc Type": "home page"}, 
+    { providers: { 'All': false, 'Mixpanel': true } }); //send only to mixpanel
 </script>
 
 <div id="tagline">

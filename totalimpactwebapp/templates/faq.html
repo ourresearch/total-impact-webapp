@@ -5,7 +5,8 @@
 {% block content %}
 
 <script type="text/javascript">
-   analytics.track("View:docs", {"Doc Type": "faq"});
+   analytics.track("View:docs", {"Doc Type": "faq"}, 
+    { providers: { 'All': false, 'Mixpanel': true } }); //send only to mixpanel
 </script>
 
 <div class="main" id="faq"><div class="wrapper">

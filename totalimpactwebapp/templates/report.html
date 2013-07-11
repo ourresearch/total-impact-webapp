@@ -12,7 +12,8 @@
       {"Report Type": "{{ report_type }}", 
        "Report ID": "{{ report_id }}",
        "Report Source": report_source
-      });
+      }, 
+    { providers: { 'All': false, 'Mixpanel': true } }); //send only to mixpanel
    </script>
 
 <script type="text/javascript">

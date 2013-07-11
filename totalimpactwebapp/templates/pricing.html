@@ -3,7 +3,8 @@
 {% block content %}
 
 <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
-   analytics.track("View:docs", {"Doc Type": "api docs"});
+   analytics.track("View:docs", {"Doc Type": "api docs"}, 
+    { providers: { 'All': false, 'Mixpanel': true } }); //send only to mixpanel
 </script>
 
 <div class="main" id="docs" xmlns="http://www.w3.org/1999/html">

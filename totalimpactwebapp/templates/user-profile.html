@@ -17,14 +17,16 @@
             "Profile ID": "{{ profile.id }}",
             "Profile slug": "{{ profile.url_slug }}",
             "Profile ownership": "{{ ownership_status }}"
-         });
+         }, 
+    { providers: { 'All': false, 'Mixpanel': true } }); //send only to mixpanel
 
    var impactstoryUserId = {{ profile.id }}
 </script>
 
 {% if g.user.id == profile.id %}
    <script type="text/javascript">
-      analytics.track('Viewed own profile');
+      analytics.track('Viewed own profile', {"url_slug": "{{ profile.url_slug }}"},
+         { providers: { 'All': false, 'Mixpanel': true } }); //send only to mixpanel
    </script>
 {% endif %}
 
