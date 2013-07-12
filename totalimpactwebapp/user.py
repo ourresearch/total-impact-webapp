@@ -19,6 +19,7 @@ class User(db.Model):
     url_slug = db.Column(db.String(100), unique=True)
     collection_id = db.Column(db.String(12))
     created = db.Column(db.DateTime(), default=now)
+    last_viewed_profile = db.Column(db.DateTime(), default=now)
 
     orcid_id = db.Column(db.String(64))
     github_id = db.Column(db.String(64))
@@ -43,6 +44,8 @@ class User(db.Model):
     def make_url_slug(self, full_name):
         return "".join(full_name.title().split())
 
+    def set_last_viewed_profile(self):
+        self.last_viewed_profile = now()
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

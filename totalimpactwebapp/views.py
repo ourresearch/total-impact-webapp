@@ -97,6 +97,7 @@ def json_for_client(obj_or_dict):
     return resp
 
 
+
 def get_user_from_id(userId):
     retrieved_user = User.query.get(userId)
     if retrieved_user is None:
@@ -173,6 +174,7 @@ def redirect_to_profile(dummy):
     return user_profile(dummy)
 
 
+
 def user_profile(url_slug):
 
     retrieved_user = User.query.filter(
@@ -189,6 +191,15 @@ def user_profile(url_slug):
 
     # for now render something quite like the report template. change later.
     else:
+        # if you're logged in
+        if g.user.is_authenticated():
+            # and you're looking at your own profile
+            if g.user.id == retrieved_user.id:
+                # note that you stopped by to view your profile
+                retrieved_user.set_last_viewed_profile()
+                db.session.add(retrieved_user)
+                db.session.commit()
+
         email_hash = hashlib.md5(retrieved_user.email.lower()).hexdigest()
 
         return render_template(
@@ -419,6 +430,7 @@ def user_create():
     login_user(user)
     return json_for_client({"url_slug": user.url_slug})
 
+
 @app.route("/user", methods=["GET"])
 def user_view():
     try:
@@ -430,6 +442,7 @@ def user_view():
     user = User.query.filter_by(email=email).first()
     if user is None:
         abort(404, "There's no user with email " + email)
+
     return json_for_client(user)
 
 
