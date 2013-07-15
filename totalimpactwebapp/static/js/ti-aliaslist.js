@@ -378,7 +378,7 @@ TextareaImporter.prototype = {
                         namespace = "url";
                         // keep thisId as whole id including the http prefix so it looks like a url
                     }
-                } else if (beforeColon == "doi" || beforeColon = "pmid") {
+                } else if (beforeColon == "doi" || beforeColon == "pmid") {
                         namespace = beforeColon
                         thisId = afterColon
                 }
