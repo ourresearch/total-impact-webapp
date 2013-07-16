@@ -38,7 +38,7 @@
 
    <script type="text/javascript">
       analytics.load("{{ g.segmentio_key }}");
-      var mixpanel_distinct_id = JSON.parse(unescape($.cookie("mp_93dca9e3be986909fbbf76c7e0fcc449_mixpanel")))["distinct_id"]
+      var mixpanel_distinct_id = JSON.parse(unescape($.cookie("mp_{{ g.mixpanel_token }}_mixpanel")))["distinct_id"]
       analytics.identify(mixpanel_distinct_id)
    </script>
 
