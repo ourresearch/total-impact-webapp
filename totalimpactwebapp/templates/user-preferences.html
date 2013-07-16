@@ -4,13 +4,12 @@
 {# we only serve this page to logged-in users #}
 {% set edit_status = "can-edit" %}
 
-
-
-
 {% block content %}
+
 <script type="text/javascript">
-   var impactstoryUserId = {{ profile.id }}
+   var impactstoryProfileId = '{{ profile.id }}'  //also used elsewhere
 </script>
+
 <div class="main" id="report">
    <div class="wrapper">
       <div class="pref-category name">

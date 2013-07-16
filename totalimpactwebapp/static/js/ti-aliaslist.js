@@ -258,8 +258,18 @@ SubmitButton.prototype = {
            contentType: "application/json; charset=utf-8",
            data:  JSON.stringify(requestObj),
            success: function(data){
-               console.log("finished creating the user!")
-               location.href = "/" + data.url_slug
+                console.log("finished creating the user!")
+                analytics.alias(data.user_id)
+
+                 analytics.identify(data.user_id, {
+                     firstName        : requestObj["given_name"],
+                     lastName         : requestObj["surname"],
+                     url_slug         : data.url_slug,
+                     email            : requestObj["email"]})
+
+                analytics.track('Created a profile', callback=function() {               
+                    location.href = "/" + data.url_slug; 
+                })
            }
         })
         return false

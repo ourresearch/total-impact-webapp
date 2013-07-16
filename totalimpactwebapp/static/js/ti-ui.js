@@ -52,9 +52,28 @@ function aboutPageInit() {
             .animate({backgroundColor: "#ffffff"}, 1000)
     }
 }
-function decorativeJavascriptInit() {
-    // js for docs etc, not running the actual webapp
 
+function createPageInit() {
+    if (location.href.indexOf("/create") > 0) {
+        window.started_a_profile = false;
+
+        $(".input-append").click(function(e) { 
+            if (!window.started_a_profile) {
+              window.started_a_profile = true;
+              analytics.track("Started a profile")
+            }
+        });
+
+        $(".import-products").keydown(function(e) {     
+            if (!window.started_a_profile) {
+              window.started_a_profile = true;
+              analytics.track("Started a profile")
+            }
+        });
+    }
+}
+
+function decorativeJavascriptInit() {
     // table of contents
     if ($("#toc")[0]) {
         $('#toc').tocBuilder({type: 'headings', startLevel: 3, endLevel: 3, insertBackLinks: 0});
@@ -62,6 +81,7 @@ function decorativeJavascriptInit() {
 
     homePageInit()
     aboutPageInit()
+    createPageInit()
 
     // let people link straight to the item-help modal
     if(window.location.href.indexOf('#context') != -1) {
@@ -115,8 +135,6 @@ Navbar.prototype = {
 $(document).ready(function(){
 
     decorativeJavascriptInit()
-
-
 
     $.cookie.defaults = {path: "/", raw: 1}
 

@@ -38,12 +38,15 @@
 
    <script type="text/javascript">
       analytics.load("{{ g.segmentio_key }}");
+      var mixpanel_distinct_id = JSON.parse(unescape($.cookie("mp_93dca9e3be986909fbbf76c7e0fcc449_mixpanel")))["distinct_id"]
+      analytics.identify(mixpanel_distinct_id)
    </script>
+
 
    {% if g.user.id %}
       {% set login_status = "logged-in" %}
       <script type="text/javascript">
-         var impactStoryUserId = '{{ g.user.id }}'  //also used elsewhere
+         var impactstoryUserId = '{{ g.user.id }}'  //also used elsewhere
          analytics.identify("{{ g.user.id }}", {
              firstName        : "{{ g.user.given_name }}",
              lastName         : "{{ g.user.surname }}",

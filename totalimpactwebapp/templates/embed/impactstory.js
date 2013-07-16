@@ -277,8 +277,8 @@
             }) // done with code that runs for each widget
 
             // report vital signs
-            var apikey = "{{ g.api_key }}"
-//            analytics.track("Impression:embed", {"API Key":apikey.toLowerCase()});
+            // var apikey = "{{ g.api_key }}"
+            // analytics.track("Impression:embed", {"API Key":apikey.toLowerCase()});
 
         });
     }

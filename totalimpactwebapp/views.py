@@ -428,7 +428,7 @@ def user_create():
     ))
 
     login_user(user)
-    return json_for_client({"url_slug": user.url_slug})
+    return json_for_client({"user_id": user.id, "url_slug": user.url_slug})
 
 
 @app.route("/user", methods=["GET"])
