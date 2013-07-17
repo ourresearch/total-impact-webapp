@@ -251,6 +251,14 @@ SubmitButton.prototype = {
             surname: surname
         }
 
+        // make thse calls before POST so they have time to finish
+        analytics.alias(data.user_id)
+        analytics.identify(data.user_id, {
+             firstName        : requestObj["given_name"],
+             lastName         : requestObj["surname"],
+             email            : requestObj["email"]})
+        analytics.track('Created a profile') 
+
         $.ajax({
            url: webapp_root_pretty+'/user',
            type: "POST",
@@ -259,17 +267,7 @@ SubmitButton.prototype = {
            data:  JSON.stringify(requestObj),
            success: function(data){
                 console.log("finished creating the user!")
-                analytics.alias(data.user_id)
-
-                 analytics.identify(data.user_id, {
-                     firstName        : requestObj["given_name"],
-                     lastName         : requestObj["surname"],
-                     url_slug         : data.url_slug,
-                     email            : requestObj["email"]})
-
-                analytics.track('Created a profile', callback=function() {               
-                    location.href = "/" + data.url_slug; 
-                })
+                location.href = "/" + data.url_slug; 
            }
         })
         return false
