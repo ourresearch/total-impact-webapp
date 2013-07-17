@@ -39,9 +39,7 @@
    <script type="text/javascript">
       analytics.load("{{ g.segmentio_key }}");
       var mixpanel_distinct_id = JSON.parse(unescape($.cookie("mp_{{ g.mixpanel_token }}_mixpanel")))["distinct_id"]
-      analytics.identify(mixpanel_distinct_id)
    </script>
-
 
    {% if g.user.id %}
       {% set login_status = "logged-in" %}
@@ -58,7 +56,18 @@
       </script>
    {% else %}
       {% set login_status = "not-logged-in" %}
+      <script type="text/javascript">
+         analytics.identify(mixpanel_distinct_id)
+      </script>
    {% endif %}
+
+<script type="text/javascript">
+   // send one event the first time a user comes to our site, no matter which page
+   if ($.cookie("impactstory") == null) {
+      analytics.track("First visit", {"url": window.location["href"]})
+      $.cookie("impactstory", {"path":window.location["href"]})
+   }
+</script>
 
 </head>
 
