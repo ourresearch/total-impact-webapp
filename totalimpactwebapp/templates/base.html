@@ -45,6 +45,14 @@
       {% set login_status = "logged-in" %}
       <script type="text/javascript">
          var impactstoryUserId = '{{ g.user.id }}'  //also used elsewhere
+
+         // send one event the first time a user is logged in
+         if ($.cookie("impactstory_first_login") == null) {
+            analytics.alias("{{ g.user.id }}")
+            analytics.track("First login")
+            $.cookie("impactstory_first_login", 1)
+         }
+
          analytics.identify("{{ g.user.id }}", {
              firstName               : "{{ g.user.given_name }}",
              lastName                : "{{ g.user.surname }}",
