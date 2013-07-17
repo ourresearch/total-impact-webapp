@@ -29,7 +29,7 @@
       // send one event the first time a user comes to our site, no matter which page
       if ($.cookie("impactstory_loaded_own_profile") == null) {
          analytics.alias("{{ g.user.id }}")
-         analytics.track("First Loaded own profile"})
+         analytics.track("First Loaded own profile")
          $.cookie("impactstory_loaded_own_profile", 1)
       }
 
