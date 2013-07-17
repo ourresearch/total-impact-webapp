@@ -7,8 +7,8 @@ import logging
 
 logger = logging.getLogger("tiwebapp.user")
 
-def now():
-    return datetime.datetime.now()
+def now_in_utc():
+    return datetime.datetime.utcnow()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -18,8 +18,8 @@ class User(db.Model):
     password_hash = db.Column(db.String(120))
     url_slug = db.Column(db.String(100), unique=True)
     collection_id = db.Column(db.String(12))
-    created = db.Column(db.DateTime(), default=now)
-    last_viewed_profile = db.Column(db.DateTime(), default=now)
+    created = db.Column(db.DateTime(), default=now_in_utc)
+    last_viewed_profile = db.Column(db.DateTime(), default=now_in_utc)
 
     orcid_id = db.Column(db.String(64))
     github_id = db.Column(db.String(64))

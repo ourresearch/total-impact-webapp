@@ -13,8 +13,13 @@
 {% if g.user.id == profile.id %}
    <script type="text/javascript">
       var MILLISECONDS_IN_ONE_DAY = 1000 * 60 * 60 * 24
-      var days_since_created = (new Date() - new Date("{{ g.user.created }}"))/MILLISECONDS_IN_ONE_DAY
-      var days_since_last_viewed = (new Date() - new Date("{{ g.user.last_viewed_profile }}"))/MILLISECONDS_IN_ONE_DAY
+      // dates in database are stored in UTC with no timezone information
+      var date_created =  new Date("{{ g.user.created }} GMT-0000 (GMT)") 
+      var date_last_viewed_profile =  new Date("{{ g.user.last_viewed_profile }} GMT-0000 (GMT)")
+
+      var days_since_created = (new Date() - date_created)/MILLISECONDS_IN_ONE_DAY
+      var days_since_last_viewed = (new Date() - date_last_viewed_profile)/MILLISECONDS_IN_ONE_DAY
+
       analytics.track('Loaded own profile', {
          "days_since_created": days_since_created,
          "days_since_last_viewed": days_since_last_viewed
