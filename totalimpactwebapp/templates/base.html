@@ -60,9 +60,9 @@
          analytics.identify(mixpanel_distinct_id)
 
          // send one event the first time a user comes to our site, no matter which page
-         if ($.cookie("impactstory") == null) {
-            analytics.track("First visit", {"url": window.location["href"]})
-            $.cookie("impactstory", 1)
+         if ($.cookie("impactstory_loaded_a_page") == null) {
+            analytics.track("First Loaded a Page", {"url": window.location["href"]})
+            $.cookie("impactstory_loaded_a_page", 1)
          }
       </script>
    {% endif %}
