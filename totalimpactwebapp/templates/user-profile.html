@@ -14,8 +14,9 @@
    <script type="text/javascript">
       var MILLISECONDS_IN_ONE_DAY = 1000 * 60 * 60 * 24
       // dates in database are stored in UTC with no timezone information
-      var date_created =  new Date("{{ g.user.created_utc }}") 
-      var date_last_viewed_profile =  new Date("{{ g.user.last_viewed_profile_utc }}")
+      // append "+0" so parsed in utc
+      var date_created =  new Date("{{ g.user.created }}+0")  // so parsed in utc
+      var date_last_viewed_profile =  new Date("{{ g.user.last_viewed_profile }}+0")
 
       var days_since_created = (new Date() - date_created)/MILLISECONDS_IN_ONE_DAY
       var days_since_last_viewed = (new Date() - date_last_viewed_profile)/MILLISECONDS_IN_ONE_DAY
