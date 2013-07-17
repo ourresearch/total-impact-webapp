@@ -48,7 +48,7 @@
          analytics.identify("{{ g.user.id }}", {
              firstName               : "{{ g.user.given_name }}",
              lastName                : "{{ g.user.surname }}",
-             created                 : "{{ g.user.created }}"+0, //+0 says is utc
+             account_created         : "{{ g.user.created }}"+0, //+0 says is utc
              last_viewed_profile     : "{{ g.user.last_viewed_profile }}+0", //+0 says is utc
              url_slug                : "{{ g.user.url_slug }}",
              email                   : "{{ g.user.email }}"
