@@ -33,6 +33,17 @@ class User(db.Model):
         else:
             return "Anonymous"
 
+    def append_timezone(self, timestamp):
+        return(timestamp + " GMT+0000 (GMT)")
+
+    @property
+    def created_utc(self):
+        return self.append_timezone(self.created)
+
+    @property
+    def last_viewed_profile_utc(self):
+        return self.append_timezone(self.last_viewed_profile)
+
     def __init__(self, email, password, collection_id, **kwargs):
         self.email = email
         self.password = self.set_password(password)

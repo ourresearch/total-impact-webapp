@@ -46,12 +46,12 @@
       <script type="text/javascript">
          var impactstoryUserId = '{{ g.user.id }}'  //also used elsewhere
          analytics.identify("{{ g.user.id }}", {
-             firstName        : "{{ g.user.given_name }}",
-             lastName         : "{{ g.user.surname }}",
-             created          : "{{ g.user.created }}",
-             last_viewed_profile : "{{ g.user.last_viewed_profile }}",
-             url_slug         : "{{ g.user.url_slug }}",
-             email            : "{{ g.user.email }}"
+             firstName               : "{{ g.user.given_name }}",
+             lastName                : "{{ g.user.surname }}",
+             created                 : "{{ g.user.created_utc }}",
+             last_viewed_profile     : "{{ g.user.last_viewed_profile_utc }}",
+             url_slug                : "{{ g.user.url_slug }}",
+             email                   : "{{ g.user.email }}"
          });
       </script>
    {% else %}
