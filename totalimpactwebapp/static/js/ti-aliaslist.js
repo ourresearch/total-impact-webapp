@@ -251,12 +251,7 @@ SubmitButton.prototype = {
             surname: surname
         }
 
-        // make thse calls before POST so they have time to finish
-        analytics.alias(data.user_id)
-        analytics.identify(data.user_id, {
-             firstName        : requestObj["given_name"],
-             lastName         : requestObj["surname"],
-             email            : requestObj["email"]})
+        // make this call before POST so it has time to finish
         analytics.track('Created a profile') 
 
         $.ajax({
