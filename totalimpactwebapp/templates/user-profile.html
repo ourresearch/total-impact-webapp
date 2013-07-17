@@ -25,6 +25,13 @@
          "days_since_created": days_since_created,
          "days_since_last_viewed": days_since_last_viewed
          })
+
+      // send one event the first time a user comes to our site, no matter which page
+      if ($.cookie("impactstory_loaded_own_profile") == null) {
+         analytics.track("First Loaded own profile"})
+         $.cookie("impactstory_loaded_own_profile", 1)
+      }
+
    </script>
 {% endif %}
 
