@@ -7,6 +7,8 @@ import logging
 
 logger = logging.getLogger("tiwebapp.user")
 
+def now_in_utc():
+    return datetime.datetime.utcnow()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,8 +33,6 @@ class User(db.Model):
         else:
             return "Anonymous"
 
-    def now_in_utc():
-        return datetime.datetime.utcnow()
 
     def __init__(self, email, password, collection_id, **kwargs):
         self.email = email
@@ -41,13 +41,13 @@ class User(db.Model):
 
         super(User, self).__init__(**kwargs)
         self.url_slug = self.make_url_slug(self.full_name)
-        self.created = self.now_in_utc()
+        self.created = now_in_utc()
 
     def make_url_slug(self, full_name):
         return "".join(full_name.title().split())
 
     def set_last_viewed_profile(self):
-        self.last_viewed_profile = self.now_in_utc()
+        self.last_viewed_profile = now_in_utc()
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
