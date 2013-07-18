@@ -46,11 +46,13 @@
       <script type="text/javascript">
          var impactstoryUserId = '{{ g.user.id }}'  //also used elsewhere
 
-         // send one event the first time a user is logged in
-         if ($.cookie("impactstory_first_login") == null) {
+         // if on create page and haven't been here before, make alias call and event
+         // alias call needs to be above the identify call below
+         if (($.cookie("impactstory_first_loaded_own_profile") == null) && 
+               (window.location["href"].indexOf("\create") > 0)) {
             analytics.alias("{{ g.user.id }}")
-            analytics.track("First login")
-            $.cookie("impactstory_first_login", 1)
+            analytics.track("First Loaded own profile")
+            $.cookie("impactstory_first_loaded_own_profile", 1)
          }
 
          analytics.identify("{{ g.user.id }}", {
