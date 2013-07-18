@@ -49,7 +49,7 @@
          // if on profile page and haven't been here before, make alias call and event
          // alias call needs to be above the identify call below
          if (($.cookie("impactstory_first_loaded_own_profile") == null) && 
-               (window.location["href"].indexOf("\{{ g.user.url_slug }}") > 0)) {
+               (window.location["href"].indexOf("/{{ g.user.url_slug }}") > 0)) {
             analytics.alias("{{ g.user.id }}")
             analytics.track("First Loaded own profile")
             $.cookie("impactstory_first_loaded_own_profile", 1)
