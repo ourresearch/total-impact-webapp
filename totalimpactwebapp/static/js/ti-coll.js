@@ -318,6 +318,7 @@ function CollController(coll, collViews) {
 
         // refresh all the items
         $("#update-report-button").click(function(){
+            analytics.track("Clicked refresh button")
             coll.refreshItemData();
             return false;
         })
