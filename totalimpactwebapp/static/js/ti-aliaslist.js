@@ -334,6 +334,12 @@ UsernameImporter.prototype = {
     update: function(){},
     done: function(data, providerName, queryStr){
         changeElemState(this.elem$, "success")
+
+        analytics.track("Imported products", {
+            "import source": providerName,
+            "number products imported": data.memberitems.length
+        })
+
         this.ExternalProfileIds[providerName] = queryStr
 
         this.aliases.add(data.memberitems)
@@ -467,6 +473,11 @@ BibtexImporter.prototype = {
     update: function(entries, errors){
         errors = errors || 0
         var that = this
+
+        analytics.track("Imported products", {
+            "import source": "bibtex",
+            "number products imported": entries.biblio.length
+        })
 
         // end conditions
         if (!entries.biblio.length) return this.done(entries)
