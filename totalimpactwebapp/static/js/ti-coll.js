@@ -150,7 +150,7 @@ function Coll(collViews){
                    if (tries > 120) { // give up after 1 minute...
                         console.log("failed to finish update; giving up after 1min.")
 
-                        analytics.track("Profile update timed out", {
+                        analytics.track("Timed out profile load", {
                             "tries": tries,
                             "number products": data.items.length
                         })
@@ -166,7 +166,7 @@ function Coll(collViews){
                200: function(data) {
                    console.log("done with updating")
 
-                    analytics.track("Profile update completed", {
+                    analytics.track("Completed profile load", {
                         "tries": tries,
                         "number products": data.items.length
                     })
