@@ -757,6 +757,7 @@ def widget_analytics():
     dict_to_send = request.json["params"]
     dict_to_send["num_widgets"] = request.json["num_widgets"]
     dict_to_send["url"] = request.json["url"]
+    dict_to_send["hostname"] = request.json["url"].split("/")[2]
     api_key = dict_to_send['api-key']
 
     print "got widget analytics data: " + str(dict_to_send)
