@@ -65,7 +65,6 @@
         if (!window.console) { window.console = {log: function() {}}; }
 
 
-
         var defaultParams = function() {
             return {
                 // required from client; these defaults will not work
@@ -94,9 +93,13 @@
          */
         ;{{ libs }}
 
+        // load segment.io
+        console.debug("loading analytics")
+        analytics.load("{{ g.segmentio_key }}");
 
-        /* initialize mixpanel analytics */
-//        mixpanel.init("{{ g.mixpanel_token }}");
+
+
+
 
         /****************************************
          *
@@ -150,7 +153,6 @@
         }
 
 
-
         function requestStylesheet(stylesheet_url) {
             var stylesheet = document.createElement("link");
             stylesheet.rel = "stylesheet";
@@ -160,6 +162,21 @@
             document.getElementsByTagName("head")[0].appendChild(stylesheet);
         }
 
+        function sendPageAnalytics(apiKey, firstRun){
+            if (firstRun) {
+                console.debug("sending page analytics")
+                analytics.identify("apiKey");
+                analytics.track('Served a page with embedded widget',{
+                    "number of widgets on page": 10
+                })
+            }
+        }
+
+        function sendWidgetAnalytics(params) {
+            console.debug("sending widget analytics")
+            analytics.track('Loaded a widget', params)
+        }
+
         function addLogo(div$, params){
 
             if (!params["show-logo"]) {
@@ -167,7 +184,6 @@
             }
             var imgSrc = webappRoot + "/static/img/impactstory-logo-small.png"
             if (params['badge-palette'] == "grayscale") {
-                console.log("grayscale it is, boss.")
                 imgSrc = imgSrc.replace(".png", "-grayscale.png")
             }
             var img = '<img src="' + imgSrc +'" alt="ImpactStory logo" />'
@@ -196,16 +212,24 @@
          */
 
         requestStylesheet(webappRoot + "/static/css/embed.css");
-        jQuery(document).ready(function ($) {
+        console.debug("done defining ")
+        $(document).ready(function () {
+            console.debug("page loaded, starting scripts")
+            var firstRun = true
+
             var badgesTemplateStr = '{{ badges_template }}'
             badgesTemplateStr = badgesTemplateStr.replace(new RegExp("&apos;", "g"), "'")
+            console.debug("loaded badges template string")
 
             ich.addTemplate("badges", badgesTemplateStr)
             var allParams = [] // holds every param obj created; there's one per widget.
 
 
             // this runs for each instance of the widget on the page
+            console.debug("starting loop to iterate over each widgets")
             $(".impactstory-embed").each(function(index){
+                console.debug("iterating over each widget now")
+
                 var thisDiv$ = $(this)
                 var params = makeParams(thisDiv$)
                 allParams.push(params)
@@ -213,6 +237,8 @@
                     console.error("you're missing required parameters.")
                     return false
                 }
+                sendPageAnalytics(params["apiKey"], firstRun)
+                firstRun = false
 
 
                 /***************************************************************

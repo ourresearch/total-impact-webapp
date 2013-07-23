@@ -59,6 +59,7 @@ js_widget = Bundle(
             'js/icanhaz.js',
             'js/bootstrap-tooltip-and-popover.js',
             'js/underscore.js',
+            'js/segmentio.js',
             'js/ti-item.js',
             filters="yui_js",
             output="js/widget.js",
