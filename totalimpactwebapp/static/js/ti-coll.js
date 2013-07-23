@@ -152,6 +152,7 @@ function Coll(collViews){
 
                         analytics.track("Timed out profile load", {
                             "tries": tries,
+                            "collection id": thisThing.id,
                             "number products": data.items.length
                         })
 
@@ -168,6 +169,7 @@ function Coll(collViews){
 
                     analytics.track("Completed profile load", {
                         "tries": tries,
+                        "collection id": thisThing.id,                        
                         "number products": data.items.length
                     })
 
