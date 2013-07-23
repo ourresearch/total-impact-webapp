@@ -40,6 +40,7 @@ function toTitleCase(str) {
     return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
+
 function homePageInit() {
 }
 
@@ -127,6 +128,22 @@ Navbar.prototype = {
          })
     }
 }
+
+// get the parameters from the page URL and put 'em in the urlParams obj
+// from http://stackoverflow.com/a/2880929/226013
+var urlParams;
+(window.onpopstate = function () {
+    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.search.substring(1);
+
+    urlParams = {};
+    while (match = search.exec(query))
+        urlParams[decode(match[1])] = decode(match[2]);
+})();
+
 
 
 

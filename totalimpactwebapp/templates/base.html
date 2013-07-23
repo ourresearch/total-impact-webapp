@@ -76,6 +76,34 @@
          }
       </script>
    {% endif %}
+   <!-- send a more explicit Page Load event than Segment.io's included one. -->
+   <script type="text/javascript">
+      var pageType
+      if (!!("{{ profile }}")){
+         pageType = "profile"
+      }
+      else if (location.pathname.indexOf("/item") === 0) {
+         pageType = "item"
+      }
+      else if (location.pathname == "/") {
+         pageType = "landing"
+      }
+      else {
+         pageType = "docs"
+      }
+
+      pageLoadObj = {
+         url: window.location["href"],
+         page_type: pageType
+      }
+      console.debug("urlParams: ", urlParams)
+      pageLoadObj = _.extend(pageLoadObj, urlParams)
+      console.debug("loaded a page; pageLoadObj is", pageLoadObj)
+
+      // send one event the first time a user comes to our site, no matter which page
+      analytics.track("Loaded a page (custom)", pageLoadObj)
+   </script>
+
 
 </head>
 
@@ -200,11 +228,6 @@
 
       </div>
    </div> <!-- end footer -->
-   <div id="footer-powered-by">
-      <p><a href="https://mixpanel.com/f/partner">
-         <img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" />
-      </a></p>
-   </div>
 </div>
 
 
