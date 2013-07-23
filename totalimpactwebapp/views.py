@@ -41,7 +41,7 @@ js = Bundle('js/bootstrap.js',
             'js/ti-userProfile.js',
             'js/ti-ui.js',
             'js/segmentio.js',
-            filters="yui_js",
+            filters="yui_js", # comment this out if you want unminified version
             output='js/packed.js'
 )
 
@@ -54,7 +54,7 @@ css = Bundle('css/bootstrap.css',
             'css/report.css',
             'css/user-pages.css',
             'font-awesome/css/font-awesome.css',
-            filters="yui_css",
+            filters="yui_css", # comment this out if you want unminified version
             output="css/packed.css"
 )
 
@@ -64,7 +64,7 @@ js_widget = Bundle(
             'js/bootstrap-tooltip-and-popover.js',
             'js/underscore.js',
             'js/ti-item.js',
-            filters="yui_js",
+            filters="yui_js", # comment this out if you want unminified version
             output="js/widget.js",
 )
 assets.register('js_widget', js_widget)
@@ -688,9 +688,7 @@ def embed_test_widget():
 @app.route("/embed/v1/impactstory.js")
 def impactstory_dot_js():
 
-    badges_template = render_template("js-template-badges.html") \
-        .replace("\n", "") \
-        .replace("'", "&apos;")
+    badges_template = render_template("js-template-badges.html").replace("\n", "").replace("'", "&apos;")
 
     # First build the concatenated js file for the widget. Building makes a file.
     # Then open the file and put it in the template to return.
