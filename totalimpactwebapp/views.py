@@ -758,6 +758,7 @@ def item_report(ns, id):
 def widget_analytics():
     dict_to_send = request.json["params"]
     dict_to_send["num_widgets"] = request.json["num_widgets"]
+    dict_to_send["url"] = request.json["url"]
     api_key = dict_to_send['api-key']
 
     print "got widget analytics data: " + str(dict_to_send)

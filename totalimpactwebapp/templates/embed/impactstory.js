@@ -140,6 +140,7 @@
 
             var dataToSubmit = {
                 params: params,
+                url: location.href,
                 num_widgets: $(".impactstory-embed").length
             }
 
