@@ -94,9 +94,10 @@
 
       pageLoadObj = {
          url: window.location["href"],
-         page_type: pageType
+         page_type: pageType,
+         referrer_hostname: document.referrer.split("/")[2],
+         referrer_fullname: document.referrer
       }
-      console.debug("urlParams: ", urlParams)
       pageLoadObj = _.extend(pageLoadObj, urlParams)
       console.debug("loaded a page; pageLoadObj is", pageLoadObj)
 
