@@ -754,21 +754,21 @@ def item_report(ns, id):
 
 @app.route("/widget-analytics", methods=['POST'])
 def widget_analytics():
-    dict_to_send = request.json["params"]
-    dict_to_send["num_widgets"] = request.json["num_widgets"]
-    dict_to_send["url"] = request.json["url"]
-    dict_to_send["hostname"] = request.json["url"].split("/")[2]
-    api_key = dict_to_send['api-key']
+    d = request.json["params"]
+    d['url'] = request.json['url']
+    d["num_widgets"] = request.json["num_widgets"]
+    d["hostname"] = d['url'].split("/")[2]
+    d["domain"] = ".".join(d['hostname'].split(".")[-2:])  # like "impactstory.org"
 
-    print "got widget analytics data: " + str(dict_to_send)
+    print "got widget analytics data: " + str(d)
 
     # later look stuff up here from db, based on api-key; send along w identify() call...
-    analytics.identify(user_id=api_key)
+    analytics.identify(user_id=d["api-key"])
 
     analytics.track(
-        user_id=api_key,
+        user_id=d["api-key"],
         event="Served a page with embedded widget",
-        properties=dict_to_send
+        properties=d
     )
     analytics.flush(async=False)  # make sure all the data gets sent to segment.io
 
