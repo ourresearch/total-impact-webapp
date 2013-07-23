@@ -41,8 +41,6 @@ function toTitleCase(str) {
 }
 
 function homePageInit() {
-    $('.carousel').carousel()
-    $('.carousel').carousel("cycle")
 }
 
 function aboutPageInit() {

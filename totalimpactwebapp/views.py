@@ -56,6 +56,7 @@ css = Bundle('css/bootstrap.css',
 )
 
 js_widget = Bundle(
+            'js/jquery-1.8.1.min.js',
             'js/icanhaz.js',
             'js/bootstrap-tooltip-and-popover.js',
             'js/underscore.js',
