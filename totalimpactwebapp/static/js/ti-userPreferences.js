@@ -1,6 +1,6 @@
 var UserPreferences = function(options) {
     this.options = options
-    if (typeof impactStoryUserId == "undefined") return false
+    if (typeof impactstoryUserId == "undefined") return false
     this.init()
 }
 
@@ -28,8 +28,8 @@ UserPreferences.prototype = {
         $("span.slug.editable").editable({
             type: "text",
             name: "slug",
-            pk: impactStoryUserId,
-            url: "/user/"+impactStoryUserId+"?fail_on_duplicate=true",
+            pk: impactstoryUserId,
+            url: "/user/"+impactstoryUserId+"?fail_on_duplicate=true",
             mode: "inline",
             ajaxOptions: {
                 type: 'PUT'

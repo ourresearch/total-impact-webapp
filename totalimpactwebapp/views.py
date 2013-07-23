@@ -128,6 +128,7 @@ def load_globals():
         "webapp_pretty": os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
     }
     g.segmentio_key = os.getenv("SEGMENTIO_KEY")
+    g.mixpanel_token = os.getenv("MIXPANEL_TOKEN")
     g.api_key = os.getenv("API_KEY")
 
 
@@ -428,7 +429,7 @@ def user_create():
     ))
 
     login_user(user)
-    return json_for_client({"url_slug": user.url_slug})
+    return json_for_client({"user_id": user.id, "url_slug": user.url_slug})
 
 
 @app.route("/user", methods=["GET"])

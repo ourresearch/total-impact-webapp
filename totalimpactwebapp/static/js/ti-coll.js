@@ -148,9 +148,16 @@ function Coll(collViews){
                    thisThing.render.call(thisThing)
 
                    if (tries > 120) { // give up after 1 minute...
-                       console.log("failed to finish update; giving up after 1min.")
+                        console.log("failed to finish update; giving up after 1min.")
+
+                        analytics.track("Timed out profile load", {
+                            "tries": tries,
+                            "number products": data.items.length
+                        })
+
                    }
                    else {
+                       console.log("trying again, tries="+tries)
                        setTimeout(function(){
                            thisThing.read(interval, tries+1)
                        }, 500)
@@ -158,6 +165,12 @@ function Coll(collViews){
                },
                200: function(data) {
                    console.log("done with updating")
+
+                    analytics.track("Completed profile load", {
+                        "tries": tries,
+                        "number products": data.items.length
+                    })
+
                    thisThing.alias_tiids = data.alias_tiids
                    thisThing.title = data.title
                    thisThing.addItemsFromDicts(data.items)
@@ -318,6 +331,7 @@ function CollController(coll, collViews) {
 
         // refresh all the items
         $("#update-report-button").click(function(){
+            analytics.track("Clicked refresh button")
             coll.refreshItemData();
             return false;
         })

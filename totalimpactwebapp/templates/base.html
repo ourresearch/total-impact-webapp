@@ -38,23 +38,43 @@
 
    <script type="text/javascript">
       analytics.load("{{ g.segmentio_key }}");
+      var mixpanel_distinct_id = JSON.parse(unescape($.cookie("mp_{{ g.mixpanel_token }}_mixpanel")))["distinct_id"]
    </script>
 
    {% if g.user.id %}
       {% set login_status = "logged-in" %}
       <script type="text/javascript">
-         var impactStoryUserId = '{{ g.user.id }}'  //also used elsewhere
+         var impactstoryUserId = '{{ g.user.id }}'  //also used elsewhere
+
+         // if on profile page and haven't been here before, make alias call and event
+         // alias call needs to be above the identify call below
+         if (($.cookie("impactstory_first_loaded_own_profile") == null) && 
+               (window.location["href"].indexOf("/{{ g.user.url_slug }}") > 0)) {
+            analytics.alias("{{ g.user.id }}")
+            analytics.track("First Loaded own profile")
+            $.cookie("impactstory_first_loaded_own_profile", 1)
+         }
+
          analytics.identify("{{ g.user.id }}", {
-             firstName        : "{{ g.user.given_name }}",
-             lastName         : "{{ g.user.surname }}",
-             created          : "{{ g.user.created }}",
-             last_viewed_profile : "{{ g.user.last_viewed_profile }}",
-             url_slug         : "{{ g.user.url_slug }}",
-             email            : "{{ g.user.email }}"
+             firstName               : "{{ g.user.given_name }}",
+             lastName                : "{{ g.user.surname }}",
+             account_created         : "{{ g.user.created }}"+0, //+0 says is utc
+             last_viewed_profile     : "{{ g.user.last_viewed_profile }}+0", //+0 says is utc
+             url_slug                : "{{ g.user.url_slug }}",
+             email                   : "{{ g.user.email }}"
          });
       </script>
    {% else %}
       {% set login_status = "not-logged-in" %}
+      <script type="text/javascript">
+         analytics.identify(mixpanel_distinct_id)
+
+         // send one event the first time a user comes to our site, no matter which page
+         if ($.cookie("impactstory_loaded_a_page") == null) {
+            analytics.track("First Loaded a Page", {"url": window.location["href"]})
+            $.cookie("impactstory_loaded_a_page", 1)
+         }
+      </script>
    {% endif %}
 
 </head>

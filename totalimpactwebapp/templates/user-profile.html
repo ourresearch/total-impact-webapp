@@ -3,33 +3,27 @@
 
 {% if g.user.id == profile.id %}
    {% set edit_status = "can-edit" %}
-   {% set ownership_status = "viewed by owner" %}
 {% else %}
    {% set edit_status = "can-not-edit" %}
-   {% set ownership_status = "other" %}
 {% endif %}
-
 
 {% block content %}
 
-<script type="text/javascript">
-   analytics.track('Impression:profile', {
-            "Profile ID": "{{ profile.id }}",
-            "Profile slug": "{{ profile.url_slug }}",
-            "Profile ownership": "{{ ownership_status }}"
-         }, 
-    { providers: { 'All': false, 'Mixpanel': true } }); //send only to mixpanel
-
-   var impactstoryUserId = {{ profile.id }}
-</script>
 
 {% if g.user.id == profile.id %}
    <script type="text/javascript">
       var MILLISECONDS_IN_ONE_DAY = 1000 * 60 * 60 * 24
-      var days_since_created = (new Date() - new Date("{{ profile.created }}"))/MILLISECONDS_IN_ONE_DAY
-      analytics.track('Viewed own profile', {
-         "url_slug": "{{ profile.url_slug }}", 
-         "days_since_account_created": days_since_created
+      // dates in database are stored in UTC with no timezone information
+      // append "+0" so parsed in utc
+      var date_created =  new Date("{{ g.user.created }}+0")  // so parsed in utc
+      var date_last_viewed_profile =  new Date("{{ g.user.last_viewed_profile }}+0")
+
+      var days_since_created = (new Date() - date_created)/MILLISECONDS_IN_ONE_DAY
+      var days_since_last_viewed = (new Date() - date_last_viewed_profile)/MILLISECONDS_IN_ONE_DAY
+
+      analytics.track('Loaded own profile', {
+         "days_since_created": days_since_created,
+         "days_since_last_viewed": days_since_last_viewed
          })
    </script>
 {% endif %}

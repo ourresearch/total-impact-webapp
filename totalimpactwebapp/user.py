@@ -7,8 +7,8 @@ import logging
 
 logger = logging.getLogger("tiwebapp.user")
 
-def now():
-    return datetime.datetime.now()
+def now_in_utc():
+    return datetime.datetime.utcnow()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -18,8 +18,8 @@ class User(db.Model):
     password_hash = db.Column(db.String(120))
     url_slug = db.Column(db.String(100), unique=True)
     collection_id = db.Column(db.String(12))
-    created = db.Column(db.DateTime(), default=now)
-    last_viewed_profile = db.Column(db.DateTime(), default=now)
+    created = db.Column(db.DateTime())
+    last_viewed_profile = db.Column(db.DateTime())
 
     orcid_id = db.Column(db.String(64))
     github_id = db.Column(db.String(64))
@@ -33,6 +33,7 @@ class User(db.Model):
         else:
             return "Anonymous"
 
+
     def __init__(self, email, password, collection_id, **kwargs):
         self.email = email
         self.password = self.set_password(password)
@@ -40,12 +41,13 @@ class User(db.Model):
 
         super(User, self).__init__(**kwargs)
         self.url_slug = self.make_url_slug(self.full_name)
+        self.created = now_in_utc()
 
     def make_url_slug(self, full_name):
         return "".join(full_name.title().split())
 
     def set_last_viewed_profile(self):
-        self.last_viewed_profile = now()
+        self.last_viewed_profile = now_in_utc()
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
