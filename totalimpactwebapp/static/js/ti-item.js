@@ -505,12 +505,6 @@ function Item(itemData, itemView, $) {
         var id = this.itemId
         var registerParam = (noItemCallback) ? "" : "&register=true" // defaults to true
         var url = apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
-        var logIfFailedRegistration = function(data) {
-            if (registerParam) {
-                if (data.is_registered == false) {
-                    console.log("Automatic registration failed for "+id[0]+':'+ id[1]+ ": quota reached for api key '" +apiKey+ "'. Contact team@impactstory.org to remedy.")
-                }
-            }}
 
         $.ajax({
             url: url,
@@ -523,11 +517,11 @@ function Item(itemData, itemView, $) {
                     dict = thisThing.processDict(data)
                     thisThing.dict = dict
                     successCallback(dict, id)
-                    logIfFailedRegistration(data)
+                    // ideally send a message here if displayed data but registration failed
                 },
                 210: function(data){
                     updatingCallback(data)
-                    logIfFailedRegistration(data)
+                    // ideally send a message here if displayed data but registration failed
                 },
                 403: function(data) {
                     console.log("Invalid api key '" +apiKey+ "'. Contact team@impactstory.org to remedy.")                    
@@ -536,6 +530,7 @@ function Item(itemData, itemView, $) {
                     }
                 },
                 404: function(data) {
+                    console.log(data.responseText)
                     if (noItemCallback) {
                         noItemCallback(data)
                     }
