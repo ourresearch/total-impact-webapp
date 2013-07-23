@@ -1,5 +1,6 @@
 import requests, os, json, logging, re, random, datetime, hashlib
 import mandrill
+import analytics
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
 from flask import render_template, flash
@@ -15,6 +16,8 @@ from totalimpactwebapp import app, util, db, login_manager, forms
 from totalimpactwebapp.user import User
 
 logger = logging.getLogger("tiwebapp.views")
+analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.DEBUG, flush_at=1)
+
 
 assets = Environment(app)
 js = Bundle('js/bootstrap.js',
@@ -60,7 +63,6 @@ js_widget = Bundle(
             'js/icanhaz.js',
             'js/bootstrap-tooltip-and-popover.js',
             'js/underscore.js',
-            'js/segmentio.js',
             'js/ti-item.js',
             filters="yui_js",
             output="js/widget.js",
@@ -752,7 +754,25 @@ def item_report(ns, id):
         api_query="item/{ns}/{id}".format(ns=ns, id=id)
     )
 
+@app.route("/widget-analytics", methods=['POST'])
+def widget_analytics():
+    dict_to_send = request.json["params"]
+    dict_to_send["num_widgets"] = request.json["num_widgets"]
+    api_key = dict_to_send['api-key']
 
+    print "got widget analytics data: " + str(dict_to_send)
+
+    # later look stuff up here from db, based on api-key; send along w identify() call...
+    analytics.identify(user_id=api_key)
+
+    analytics.track(
+        user_id=api_key,
+        event="Served a page with embedded widget",
+        properties=dict_to_send
+    )
+    analytics.flush(async=False)  # make sure all the data gets sent to segment.io
+
+    return make_response('{"success"}', 200)
 
 
 

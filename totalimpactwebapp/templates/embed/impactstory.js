@@ -44,7 +44,7 @@
 
     /*********************************
     *
-    * Use our local jQuery to create all the widgets
+    * Use our local jQuery to create all the widgets.
     *
     *********************************/
     jQuery(document).ready(function ($) {
@@ -135,6 +135,26 @@
             return params
         }
 
+        function logParams(params, isFirstWidget){
+            if (!isFirstWidget) return false
+
+            var dataToSubmit = {
+                params: params,
+                num_widgets: $(".impactstory-embed").length
+            }
+
+            $.ajax({
+                url: webappRoot + "/widget-analytics",
+                type:"POST",
+                data: JSON.stringify(dataToSubmit),
+                contentType: "application/json; charset=utf-8",
+                success:function(r){
+                    console.debug("successfully sent analytics data to server.")
+                }
+           })
+            return false
+        }
+
 
         function addLogo(div$, params){
 
@@ -170,6 +190,7 @@
         */
         // this runs for each instance of the widget on the page
         console.debug("starting loop to iterate over each widgets")
+        var isFirstWidget = true
         $(".impactstory-embed").each(function(index){
 
             var thisDiv$ = $(this)
@@ -179,6 +200,7 @@
                 console.error("you're missing required parameters.")
                 return false
             }
+            isFirstWidget = logParams(params, isFirstWidget)
 
 
 
@@ -212,12 +234,12 @@
 
 
             /**************************************************************
-             *
-             *  procedural code, run for each widget
-             *
-             **************************************************************/
+            *
+            *  procedural code, run for each widget
+            *
+            **************************************************************/
 
-                // apply those user-defined params that apply a class to the whole div:
+            // apply those user-defined params that apply a class to the whole div:
             thisDiv$.addClass("impactstory-" + params["badge-size"])
             thisDiv$.addClass("impactstory-" + params["badge-type"])
             thisDiv$.addClass("impactstory-" + params["badge-palette"])
