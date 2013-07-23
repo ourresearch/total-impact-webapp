@@ -171,7 +171,7 @@
             // I can't figure out how to get the wrapInLink() function to work for a
             // single item like this, so here's this repulsive hack in the meantime:
             var logoLink$ = $('<a href="' + webappRootPretty + '/item/'
-                                  + params["id-type"] + "/" + params["id"] + '" target="_blank">'
+                                  + params["id-type"] + "/" + params["id"] + '?source=widget" target="_blank">'
                                   + img + "</a>");
             div$.prepend(logoLink$)
             return div$
@@ -179,7 +179,7 @@
 
         function wrapInLink(el$, namespace, id){
             return el$.wrapAll("<a href='" + webappRootPretty + "/item/"+
-                                   namespace + "/" + id +  "' target='_blank' />")
+                                   namespace + "/" + id +  "?source=widget' target='_blank' />")
         }
 
 
