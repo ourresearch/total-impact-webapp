@@ -6,6 +6,15 @@
    <meta name="description" content="ImpactStory">
    <meta name="author" content="ImpactStory">
 
+   <!-- errorception logging.  Needs to be BEFORE ALL OTHER SCRIPT TAGS on every page -->
+   <script>
+       (function(_,e,rr,s){_errs=[s];var c=_.onerror;_.onerror=function(){var a=arguments;_errs.push(a);
+       c&&c.apply(this,a)};var b=function(){var c=e.createElement(rr),b=e.getElementsByTagName(rr)[0];
+       c.src="//beacon.errorception.com/"+s+".js";c.async=!0;b.parentNode.insertBefore(c,b)};
+       _.addEventListener?_.addEventListener("load",b,!1):_.attachEvent("onload",b)})
+       (window,document,"script","51ef3db2db2bef20770003e2");
+   </script>
+
    <meta name="google-site-verification" content="JWD8WcfINuKxjh31KejAnijd9Cx34IYEH1-bDMXVzjE" />
    <meta name="google-site-verification" content="ItyBFNIMWtJdRaONjqSQHM8ro_fRjTl9HO3Fq9IsZpM" />
 
