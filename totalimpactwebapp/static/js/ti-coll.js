@@ -124,10 +124,10 @@ function Coll(collViews){
     }
 
 
-    this.read = function(interval, tries) {
+    this.read = function(interval, startTime) {
         console.log("read")
-        if (tries === undefined) {
-            var tries = 0
+        if (startTime === undefined) {
+            var startTime = new Date();
         }
 
         var thisThing = this
@@ -147,28 +147,35 @@ function Coll(collViews){
 
                    thisThing.render.call(thisThing)
 
-                   if (tries > 120) { // give up after 1 minute...
-                        console.log("failed to finish update; giving up after 1min.")
+                   var currentTime = new Date();
+                   var elapsedSeconds = (currentTime - startTime)/1000
+                   if (elapsedSeconds > 60) { // give up after 1 minute...
+                        console.log("failed to finish update; giving up after 1 minute")
 
                         analytics.track("Timed out profile load", {
-                            "tries": tries,
+                            "seconds": elapsedSeconds,
                             "collection id": thisThing.id,
                             "number products": data.items.length
                         })
 
+                   thisThing.views.finishUpdating(thisThing.items, "error")
+
                    }
                    else {
-                       console.log("trying again, tries="+tries)
+                       console.log("trying again, so far " + elapsedSeconds + " seconds")
                        setTimeout(function(){
-                           thisThing.read(interval, tries+1)
-                       }, 500)
+                           thisThing.read(interval, startTime)
+                       }, interval)
                    }
                },
                200: function(data) {
                    console.log("done with updating")
 
-                    analytics.track("Completed profile load", {
-                        "tries": tries,
+                   var currentTime = new Date();
+                   var elapsedSeconds = (currentTime - startTime)/1000
+
+                   analytics.track("Completed profile load", {
+                        "seconds": elapsedSeconds,
                         "collection id": thisThing.id,                        
                         "number products": data.items.length
                     })
@@ -178,7 +185,7 @@ function Coll(collViews){
                    thisThing.addItemsFromDicts(data.items)
 
                    thisThing.render.call(thisThing)
-                   thisThing.views.finishUpdating(thisThing.items)
+                   thisThing.views.finishUpdating(thisThing.items, "ready")
 
 
                    return false;
@@ -274,15 +281,14 @@ function CollViews() {
         }, 0)
     }
 
-    this.finishUpdating = function(items){
+    // state is "ready" or "error"  (error if timed out while still loading)
+    this.finishUpdating = function(items, state){
         // setup page header
         $("#page-header img").remove()
         changeElemState(
             $("body.user-profile #num-items"),
-            "ready"
+            state
         )
-
-
 
         console.log("num items:", _.size(items))
         $("#num-items span.value").text(_.size(items))
