@@ -110,7 +110,11 @@
          referrer_fullname: document.referrer,
          referrer_domain: referrer_domain
       }
-      pageLoadObj = _.extend(pageLoadObj, urlParams)
+
+      // when below line is active in Chrome it is throwing 
+      //    Uncaught ReferenceError: urlParams is not defined
+      //pageLoadObj = _.extend(pageLoadObj, urlParams)
+      
       console.debug("loaded a page; pageLoadObj is", pageLoadObj)
 
       // send one event the first time a user comes to our site, no matter which page
