@@ -111,9 +111,7 @@
          referrer_domain: referrer_domain
       }
 
-      // when below line is active in Chrome it is throwing 
-      //    Uncaught ReferenceError: urlParams is not defined
-      //pageLoadObj = _.extend(pageLoadObj, urlParams)
+      pageLoadObj = _.extend(pageLoadObj, urlParams)
       
       console.debug("loaded a page; pageLoadObj is", pageLoadObj)
 
