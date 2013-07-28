@@ -125,7 +125,7 @@
          pageLoadObj = _.extend(pageLoadObj, urlParams)
       }
 
-      console.debug("loaded a page; pageLoadObj is", pageLoadObj)
+      console.log("loaded a page; pageLoadObj is", pageLoadObj)
 
       // send one event the first time a user comes to our site, no matter which page
       analytics.track("Loaded a page (custom)", pageLoadObj)
