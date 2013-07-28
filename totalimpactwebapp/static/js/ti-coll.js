@@ -342,7 +342,7 @@ function CollController(coll, collViews) {
         this.coll.id = reportId // global loaded by the server
         this.coll.render()
 
-        this.coll.read(1000, ISCookies.lastActionUserDidToCollection())
+        this.coll.read(1000, ISCookies.lastActionUserDidToCollection()+"")
         ISCookies.lastActionUserDidToCollection(null)
         var that = this
 
