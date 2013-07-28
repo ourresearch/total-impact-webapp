@@ -100,19 +100,31 @@
       else {
          pageType = "docs"
       }
-      var referrer_hostname = document.referrer.split("/")[2]
-      var referrer_domain = referrer_hostname.split(".").slice(-2).join(".")
 
-      pageLoadObj = {
+      var referrer_hostname
+      var referrer_domain
+      try {
+         referrer_hostname = document.referrer.split("/")[2]
+         referrer_domain = referrer_hostname.split(".").slice(-2).join(".")
+      } catch (e) {
+         referrer_hostname = ""
+         referrer_domain = ""
+      }         
+
+      var pageLoadObj = {
          url: window.location["href"],
          page_type: pageType,
          referrer_hostname: referrer_hostname,
          referrer_fullname: document.referrer,
-         referrer_domain: referrer_domain
+         referrer_domain: referrer_domain,
+         ga_cookie: $.cookie("_ga"),
+         mixpanel_distinct_id: mixpanel_distinct_id         
       }
 
-      pageLoadObj = _.extend(pageLoadObj, urlParams)
-      
+      if (typeof urlParams !== "undefined") {
+         pageLoadObj = _.extend(pageLoadObj, urlParams)
+      }
+
       console.debug("loaded a page; pageLoadObj is", pageLoadObj)
 
       // send one event the first time a user comes to our site, no matter which page
