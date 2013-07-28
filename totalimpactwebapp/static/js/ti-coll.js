@@ -127,10 +127,8 @@ function Coll(collViews){
 
 
     this.read = function(interval, lastCollAction, startTime) {
-        console.log("read")
+        console.log("reading collection")
         var startTime = startTime || new Date()
-        var elapsedSeconds = (new Date() - startTime)/1000
-
 
         var thisThing = this
         this.views.startUpdating()
@@ -172,7 +170,8 @@ function Coll(collViews){
                },
                200: function(data) {
                    console.log("collection done updating")
-                   console.log("sending 'last collection action': ", lastCollAction)
+                   console.log("sending the last collection action to analytics: ", lastCollAction)
+
 
                    var elapsedSeconds = (new Date() - startTime)/1000
                    analytics.track("Completed profile load", {
@@ -244,7 +243,7 @@ function Coll(collViews){
             url: api_root+'/v1/collection/'+this.id+'?key='+api_key,
             type: "POST",
             success: function(data){
-               console.log("updating.")
+               console.log("refreshing collection.")
                thisThing.read(1000, "refresh");
             }});
         }
@@ -299,7 +298,7 @@ function CollViews() {
             state
         )
 
-        console.log("num items:", _.size(items))
+        console.log("number of items in collection:", _.size(items))
         $("#num-items span.value").text(_.size(items))
 
         // setup item-level zooming
@@ -342,10 +341,9 @@ function CollController(coll, collViews) {
     this.collReportPageInit = function() {
         this.coll.id = reportId // global loaded by the server
         this.coll.render()
-        console.log("the last collection action was: ",
-                    ISCookies.lastActionUserDidToCollection())
 
         this.coll.read(1000, ISCookies.lastActionUserDidToCollection())
+        ISCookies.lastActionUserDidToCollection(null)
         var that = this
 
 
