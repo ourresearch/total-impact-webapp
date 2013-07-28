@@ -238,6 +238,7 @@ SubmitButton.prototype = {
 
     make: function() {
         if (!this.start()) return false
+        ISCookies.lastActionUserDidToCollection("create")
 
         var givenName = $("div.inline-register input.given").val() || "Anonymous"
         var surname = $("div.inline-register input.surname").val() || "User"

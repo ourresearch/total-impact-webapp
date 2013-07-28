@@ -144,6 +144,18 @@ var urlParams;
         urlParams[decode(match[1])] = decode(match[2]);
 })();
 
+ISCookies = {
+    lastActionUserDidToCollection: function(action) {
+        if (typeof action == "undefined") {
+            return $.cookie("last_action_user_did_to_collection")
+        }
+        else {
+            // set the cookie
+            return $.cookie("last_action_user_did_to_collection", action)
+        }
+    }
+}
+
 
 
 

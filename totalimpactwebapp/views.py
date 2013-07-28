@@ -846,3 +846,5 @@ except KeyError:
 def logo():
     filename = "static/img/logos/impactstory-logo-big.png"
     return send_file(filename, mimetype='image/png')
+
+

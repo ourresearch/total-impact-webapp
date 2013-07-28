@@ -117,6 +117,8 @@ function Coll(collViews){
                        console.log("finished making the collection!")
                        var cid=data.collection._id
 
+                       ISCookies.lastActionUserDidToCollection("create")
+
                        // you could pass this in, but you pretty much only want it to redirect:
                        var redirect = function(){location.href = "/collection/" + cid}
                    }
@@ -124,8 +126,10 @@ function Coll(collViews){
     }
 
 
-    this.read = function(interval, tries) {
-        console.log("read")
+    this.read = function(interval, lastCollAction, tries) {
+        console.log("reading collection")
+        ISCookies.lastActionUserDidToCollection("none")
+
         if (tries === undefined) {
             var tries = 0
         }
@@ -149,28 +153,34 @@ function Coll(collViews){
 
                    if (tries > 120) { // give up after 1 minute...
                         console.log("failed to finish update; giving up after 1min.")
+                       console.log("sending 'last collection action': ", lastCollAction)
 
                         analytics.track("Timed out profile load", {
                             "tries": tries,
                             "collection id": thisThing.id,
-                            "number products": data.items.length
+                            "number products": data.items.length,
+                            "prev collection action": lastCollAction
                         })
 
                    }
                    else {
                        console.log("trying again, tries="+tries)
                        setTimeout(function(){
-                           thisThing.read(interval, tries+1)
+                           thisThing.read(interval, lastCollAction, tries+1)
                        }, 500)
                    }
                },
                200: function(data) {
-                   console.log("done with updating")
+                   console.log("collection done updating")
+                   console.log("sending 'last collection action': ", lastCollAction)
 
-                    analytics.track("Completed profile load", {
+
+                   analytics.track("Completed profile load", {
                         "tries": tries,
-                        "collection id": thisThing.id,                        
-                        "number products": data.items.length
+                        "collection id": thisThing.id,
+                        "number products": data.items.length,
+                        "prev collection action": lastCollAction
+
                     })
 
                    thisThing.alias_tiids = data.alias_tiids
@@ -200,10 +210,16 @@ function Coll(collViews){
 
     this.addItems = function(itemsToAdd, callbacks) {
         if (!this.userCanEdit(callbacks)) return false
+        ISCookies.lastActionUserDidToCollection("add_products")
+
         this.update({"aliases": itemsToAdd}, "PUT", callbacks.onSuccess)
     }
 
     this.update = function(payload, httpType, onSuccess){
+        /* note this is NOT the same as refreshing metrics on items; it's just
+        updating things about the collection itself, like number of items or title.
+        See this.refreshItemData() for the former case.
+         */
 
         var url = webapp_root+'/user/'+impactstoryUserId+'/products?'
             + 'api_admin_key='+api_key
@@ -229,7 +245,7 @@ function Coll(collViews){
             type: "POST",
             success: function(data){
                console.log("updating.")
-               thisThing.read(1000);
+               thisThing.read(1000, "refresh");
             }});
         }
 
@@ -327,7 +343,10 @@ function CollController(coll, collViews) {
     this.collReportPageInit = function() {
         this.coll.id = reportId // global loaded by the server
         this.coll.render()
-        this.coll.read(1000)
+        console.log("the last collection action was: ",
+                    ISCookies.lastActionUserDidToCollection())
+
+        this.coll.read(1000, ISCookies.lastActionUserDidToCollection())
         var that = this
 
 
