@@ -70,9 +70,13 @@ body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items spa
 body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items a {
   font-size: 14px;
   color: #999;
+  text-decoration: underline;
 }
 body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items a:hover {
   color: #ff4e00;
+}
+body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items span.error-message {
+  padding-right: 10px;
 }
 body.user-profile div.profile-header div.wrapper div.my-vitals div#num-items span.working {
   color: #ff4e00;
