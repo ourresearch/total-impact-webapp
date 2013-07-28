@@ -84,7 +84,7 @@ function Coll(collViews){
     this.id = null
     this.items = {}
 
-    this.addItemsFromDicts = function(newItemDicts, alias_tiids) {
+    this.addItemsFromDicts = function(newItemDicts) {
         for (var i=0; i<newItemDicts.length; i++) {
             var tiid = newItemDicts[i]["_id"]
             this.items[tiid] = new Item(newItemDicts[i], new ItemView($), $)
@@ -128,9 +128,9 @@ function Coll(collViews){
 
     this.read = function(interval, lastCollAction, startTime) {
         console.log("read")
-        if (startTime === undefined) {
-            var startTime = new Date();
-        }
+        var startTime = startTime || new Date()
+        var elapsedSeconds = (new Date() - startTime)/1000
+
 
         var thisThing = this
         this.views.startUpdating()
@@ -149,8 +149,7 @@ function Coll(collViews){
 
                    thisThing.render.call(thisThing)
 
-                   var currentTime = new Date();
-                   var elapsedSeconds = (currentTime - startTime)/1000
+                   var elapsedSeconds = (new Date() - startTime)/1000
                    if (elapsedSeconds > 60) { // give up after 1 minute...
                         console.log("failed to finish update; giving up after 1 minute")
 
@@ -175,7 +174,7 @@ function Coll(collViews){
                    console.log("collection done updating")
                    console.log("sending 'last collection action': ", lastCollAction)
 
-
+                   var elapsedSeconds = (new Date() - startTime)/1000
                    analytics.track("Completed profile load", {
                         "seconds": elapsedSeconds,
                         "collection id": thisThing.id,
