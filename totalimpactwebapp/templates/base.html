@@ -6,6 +6,9 @@
    <meta name="description" content="ImpactStory">
    <meta name="author" content="ImpactStory">
 
+   <!-- newrelic logging. needs to before other script tags -->
+   {{ g.newrelic_header }}
+
    <!-- errorception logging.  Needs to be BEFORE ALL OTHER SCRIPT TAGS on every page -->
    <script>
        (function(_,e,rr,s){_errs=[s];var c=_.onerror;_.onerror=function(){var a=arguments;_errs.push(a);
@@ -433,6 +436,8 @@ These are for rendering items with javascript using Mustache
       tab_inverted: false
    }]);
 </script>
+
+{{ newrelic_footer }}
 
 </body>
 </html>

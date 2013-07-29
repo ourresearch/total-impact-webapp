@@ -14,6 +14,7 @@ from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
 
 from totalimpactwebapp import app, util, db, login_manager, forms
 from totalimpactwebapp.user import User
+import newrelic.agent
 
 logger = logging.getLogger("tiwebapp.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.DEBUG, flush_at=1)
@@ -100,7 +101,9 @@ def json_for_client(obj_or_dict):
     resp.mimetype = "application/json"
     return resp
 
-
+def render_template_custom(template_name, **kwargs):
+    kwargs["newrelic_footer"] = newrelic.agent.get_browser_timing_footer()
+    return render_template(template_name, **kwargs)
 
 def get_user_from_id(userId):
     retrieved_user = User.query.get(userId)
@@ -134,6 +137,7 @@ def load_globals():
     g.segmentio_key = os.getenv("SEGMENTIO_KEY")
     g.mixpanel_token = os.getenv("MIXPANEL_TOKEN")
     g.api_key = os.getenv("API_KEY")
+    g.newrelic_header = newrelic.agent.get_browser_timing_header()
 
 
 @app.before_request
@@ -207,7 +211,7 @@ def user_profile(url_slug):
 
         email_hash = hashlib.md5(retrieved_user.email.lower()).hexdigest()
 
-        return render_template(
+        return render_template_custom(
             'user-profile.html',
             request_url=request.url,
             email_hash=email_hash,
@@ -242,7 +246,7 @@ def user_preferences(url_slug):
 
     # yay, have some preferences page!
     else:
-        return render_template(
+        return render_template_custom(
             'user-preferences.html',
             profile=retrieved_user
         )
@@ -261,7 +265,7 @@ def collection_create():
         return redirect("/" + g.user.url_slug)
 
 
-    return render_template('create-collection.html')
+    return render_template_custom('create-collection.html')
 
 
 
@@ -303,7 +307,7 @@ def login():
 
     # the code below this is executed if the request method
     # was GET or the credentials were invalid
-    return render_template(
+    return render_template_custom(
         'login.html',
         errors=errors
     )
@@ -326,7 +330,7 @@ def request_reset_token():
     if g.user is not None and g.user.is_authenticated():
         return redirect("/" + g.user.url_slug + "/preferences")
 
-    return render_template('reset-password.html')
+    return render_template_custom('reset-password.html')
 
 
 
@@ -348,10 +352,10 @@ def change_password(reset_token):
         error = "invalid-token"
 
     if error:
-        return render_template("change-password.html", error=error)
+        return render_template_custom("change-password.html", error=error)
 
     if request.method == "GET":
-        return render_template(
+        return render_template_custom(
             'change-password.html',
             error=error
         )
@@ -631,12 +635,12 @@ def user_given_name_modify(userId, name):
 # static pages
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template_custom('index.html')
 
 
 @app.route('/about')
 def about(): 
-    return render_template('about.html')
+    return render_template_custom('about.html')
 
 
 @app.route('/faq')
@@ -656,7 +660,7 @@ def faq():
     except requests.ConnectionError:
         metadata = {}
     
-    return render_template(
+    return render_template_custom(
         'faq.html',
         which_artifacts=which_item_types,
         provider_metadata=metadata
@@ -665,7 +669,7 @@ def faq():
 
 @app.route('/api-docs')
 def apidocs(): 
-    return render_template('api-docs.html')
+    return render_template_custom('api-docs.html')
 
 
 
@@ -681,13 +685,14 @@ def apidocs():
 
 @app.route("/embed/test/widget")
 def embed_test_widget():
-    return render_template("test-pages/sample-embed-internal-test.html")
+    return render_template_custom("test-pages/sample-embed-internal-test.html")
 
 
 @app.route("/embed/impactstory.js")
 @app.route("/embed/v1/impactstory.js")
 def impactstory_dot_js():
 
+    # not using render_template_custom() here, since this is a js page and is Special.
     badges_template = render_template("js-template-badges.html").replace("\n", "").replace("'", "&apos;")
 
     # First build the concatenated js file for the widget. Building makes a file.
@@ -695,6 +700,7 @@ def impactstory_dot_js():
     js_widget.build() # always build this, whether dev in dev env or not
     libs = open(os.path.dirname(__file__) + "/static/js/widget.js", "r").read()
 
+    # not using render_template_custom() here, since this is a js page and is Special.
     rendered = render_template(
         "embed/impactstory.js",
         badges_template=badges_template,
@@ -722,7 +728,7 @@ def collection_report(collection_id):
     r = requests.get(url)
     if r.status_code == 200:
         collection = json.loads(r.text)
-        return render_template(
+        return render_template_custom(
             'report.html',
             request_url=request.url,
             page_title=collection["title"],
@@ -743,7 +749,7 @@ def item_report(ns, id):
         api_key=os.environ["API_KEY"]
     )
     r = requests.get(url)
-    return render_template(
+    return render_template_custom(
         'report.html',
         request_url=request.url,
         page_title="",
@@ -786,7 +792,7 @@ def widget_analytics():
 
 @app.route('/admin/key')
 def generate_api_key():
-    return render_template('generate-api.html')
+    return render_template_custom('generate-api.html')
 
 @app.route('/wospicker', methods=["GET"])
 def wospicker():
