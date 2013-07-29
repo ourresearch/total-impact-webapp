@@ -9,7 +9,7 @@
    <meta name="google-site-verification" content="ItyBFNIMWtJdRaONjqSQHM8ro_fRjTl9HO3Fq9IsZpM" />
 
    <!-- newrelic logging. needs to before other script tags -->
-   {{ g.newrelic_header }}
+   {{ g.newrelic_header|safe }}
 
 
    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
@@ -437,8 +437,7 @@ These are for rendering items with javascript using Mustache
       tab_inverted: false
    }]);
 </script>
-
-{{ newrelic_footer }}
+{{ newrelic_footer|safe }}
 
 </body>
 </html>

@@ -8,7 +8,7 @@ this is just for troubleshooting New Relic...normally we dont' want
 it sending data from localhost.
 """
 # import newrelic.agent
-# newrelic.agent.initialize('newrelic.ini')
+# newrelic.agent.initialize()
 
 
 from totalimpactwebapp import app
