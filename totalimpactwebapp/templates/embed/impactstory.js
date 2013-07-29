@@ -22,7 +22,7 @@
     *
     *********************************/
 
-    console.debug("loading external libs")
+    console.log("loading external libs")
     ;{{ libs }}
 
     /*********************************
@@ -48,7 +48,7 @@
     *
     *********************************/
     jQuery(document).ready(function ($) {
-        console.debug("page has loaded; inside $(document).ready block")
+        console.log("page has loaded; inside $(document).ready block")
 
         $.support.cors = true; // makes IE8 and IE9 support CORS somehow...
         $.ajaxSetup({ cache:false });
@@ -150,7 +150,7 @@
                 data: JSON.stringify(dataToSubmit),
                 contentType: "application/json; charset=utf-8",
                 success:function(r){
-                    console.debug("successfully sent analytics data to server.")
+                    console.log("successfully sent analytics data to server.")
                 }
            })
             return false
@@ -190,7 +190,7 @@
         * ***************************************
         */
         // this runs for each instance of the widget on the page
-        console.debug("starting loop to iterate over each widgets")
+        console.log("starting loop to iterate over each widgets")
         var isFirstWidget = true
         $(".impactstory-embed").each(function(index){
 
