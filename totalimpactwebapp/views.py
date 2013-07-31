@@ -210,12 +210,14 @@ def user_profile(url_slug):
                 db.session.add(retrieved_user)
                 db.session.commit()
 
+        # fyi we're using presence of email_hash var to autodetect profile pages for now
+        #  in base.html. fragile.
         email_hash = hashlib.md5(retrieved_user.email.lower()).hexdigest()
 
         return render_template_custom(
             'user-profile.html',
             request_url=request.url,
-            email_hash=email_hash,
+            email_hash=email_hash, 
             profile=retrieved_user,
             report_id=retrieved_user.collection_id,
             report_id_namespace="impactstory_collection_id",

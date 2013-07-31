@@ -88,14 +88,20 @@
    <!-- send a more explicit Page Load event than Segment.io's included one. -->
    <script type="text/javascript">
       var pageType
-      if (!!("{{ profile }}")){
-         pageType = "profile"
+      if (location.pathname.indexOf("/preferences") >= 0) {
+         pageType = "preferences"
+      }
+      else if (location.pathname.indexOf("/collection") >= 0) {
+         pageType = "old_collection"
       }
       else if (location.pathname.indexOf("/item") === 0) {
          pageType = "item"
       }
       else if (location.pathname == "/") {
          pageType = "landing"
+      }
+      else if ("True" === "{{ email_hash is defined }}") {
+         pageType = "profile"
       }
       else {
          pageType = "docs"
