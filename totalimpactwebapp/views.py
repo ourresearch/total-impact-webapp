@@ -41,6 +41,7 @@ js = Bundle('js/bootstrap.js',
             'js/ti-userCreds.js',
             'js/ti-userProfile.js',
             'js/ti-ui.js',
+            'js/google-analytics.js',
             'js/segmentio.js',
             filters="yui_js", # comment this out if you want unminified version
             output='js/packed.js'
