@@ -560,6 +560,26 @@ def user_put(userId):
     method_name = "user_" + request.form["name"] + "_modify"
     return globals()[method_name](userId, request.form["value"])
 
+@app.route("/user/<int:userId>/email")
+def user_email_modify(userId, new_email):
+    retrieved_user = get_user_from_id(userId)
+    if g.user.get_id() != retrieved_user.get_id():
+        abort(403, "You must be logged in to change your email.")
+
+    # check for duplicates
+    user_with_same_email = User.query.filter(
+        func.lower(User.email) == func.lower(new_email)
+    ).first()
+
+    if user_with_same_email is None:
+        pass
+        retrieved_user.email = new_email
+    else:
+        abort(409, "Someone has already registered this email") # see http://stackoverflow.com/a/3826024/226013
+
+    db.session.commit()
+    return make_response(json.dumps(retrieved_user.email), 200)
+
 
 @app.route("/user/<int:userId>/slug/<new_slug>", methods=["PUT"])
 def user_slug_modify(userId, new_slug):

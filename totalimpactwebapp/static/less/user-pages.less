@@ -313,23 +313,48 @@ body.user-preferences {
                font-size: 24px;
                color: #555;
                margin-bottom:15px;
+               span.msg {
+                  padding-left: 5px;
+                  font-family: helvetica, arial, sans-serif;
+                  font-size: 16px;
+                  &.success {
+                     color:  @successText;
+                  }
+               }
+            }
+            .editable-container {
+               margin-left: 25px;
+            }
+            span.editable {
+               margin-left:-2px;
+               cursor: pointer;
+               padding-right:16px;
+               background: url(../img/edit.png) no-repeat;
+               background-position: right 5px;
+               &:hover {
+                  color: @linkColor;
+                  background-position: right -63px;
+               }
             }
             &.name {
                div.editable-name{
-                  margin-left: 25px;
                   font-size:  20px;
+                  span.editable {
+                     background: none;
+                     padding-right: 0;
+                  }
                   span.instr {
                      background-position: left 6px;
                   }
                }
             }
+            &.email {
+            }
             &.profile-url {
                span.url {
-                  margin-left: 25px;
                   font-size: 20px;
                   span.url-component {
                      margin: 0;
-                     padding: 0;
                      &.base {
                         color: #999;
                         margin: 7px 0 12px 0;
@@ -337,14 +362,6 @@ body.user-preferences {
                      }
                      &.slug { // this mostly doesn't show, keeping it just in case...
                         margin-left:-2px;
-                        cursor: pointer;
-                        padding-right:16px;
-                        background: url(../img/edit.png) no-repeat;
-                        background-position: right 5px;
-                        &:hover {
-                           color: @linkColor;
-                           background-position: right -63px;
-                        }
                      }
                   }
                }

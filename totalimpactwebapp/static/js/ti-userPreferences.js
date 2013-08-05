@@ -8,6 +8,7 @@ UserPreferences.prototype = {
     init: function(){
         this.clickNameToModify()
         this.clickUrlSlugToModify()
+        this.clickEmailToModify()
         this.changePassword()
     }
     , clickNameToModify: function(){
@@ -22,6 +23,32 @@ UserPreferences.prototype = {
                                      type: 'PUT'
                                  }
                              })
+        })
+    }
+    ,clickEmailToModify: function(){
+        $("span.email.editable").editable({
+            type: "text",
+            name: "email",
+            pk: impactstoryUserId,
+            url: "/user/"+impactstoryUserId,
+            mode: "inline",
+            ajaxOptions: {
+                type: 'PUT'
+            },
+            success: function(response, newValue){
+                // super super hacky...refactor and reuse elsewhere, later.
+                $("<span class='msg success'>changed!</span>")
+                    .appendTo("div.email h3")
+                    .fadeOut(2000)
+            },
+            error: function(response, newValue){
+                if (response.status === 409) {
+                  return "Sorry, someone has already registered that email..."
+                }
+                else {
+                  response.responseText // whatever the server sent back...
+                }
+            }
         })
     }
     , clickUrlSlugToModify: function() {

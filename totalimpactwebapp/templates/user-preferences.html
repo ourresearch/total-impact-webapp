@@ -14,7 +14,7 @@
    <div class="wrapper">
       <div class="pref-category name">
          <h3>Name</h3>
-         <div class='editable-name'>
+         <div class='editable-name editable-container'>
             <span class="given-name editable" data-name="given_name">{{ profile.given_name }}</span>
             <span class="surname editable" data-name="surname">{{ profile.surname }}</span>
             <span class="instr">&nbsp;<span>click name to edit</span></span>
@@ -22,9 +22,15 @@
       </div>
       <div class="pref-category profile-url">
          <h3>Profile URL</h3>
-         <span class="url">
+         <span class="url editable-container">
             <span class="url-component base">http://impactstory.org/</span>
             <span class="url-component slug editable">{{ profile.url_slug }}</span>
+         </span>
+      </div>
+      <div class="pref-category email">
+         <h3>Email</h3>
+         <span class="email-container editable-container">
+            <span class="email editable">{{ profile.email }}</span>
          </span>
       </div>
       <div class="pref-category change-pw">
