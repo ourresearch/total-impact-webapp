@@ -359,11 +359,11 @@ function CollController(coll, collViews) {
         $("div#num-items a").toggle(
             function(){
                 $(this).html("(collapse all)")
-                $("li.item").addClass("zoomed").find("div.zoom").show()
+                $("li.item").not(".no-data").addClass("zoomed").find("div.zoom").show()
             },
             function(){
                 $(this).html("(expand all)")
-                $("li.item").removeClass("zoomed").find("div.zoom").hide()
+                $("li.item").not(".no-data").removeClass("zoomed").find("div.zoom").hide()
             }
         )
 
