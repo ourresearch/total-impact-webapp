@@ -514,30 +514,36 @@ function Item(itemData, itemView, $) {
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            statusCode: {
-                200: function(data) {
-                    dict = thisThing.processDict(data)
-                    thisThing.dict = dict
-                    successCallback(dict, id)
-                    // ideally send a message here if displayed data but registration failed
-                },
-                210: function(data){
-                    updatingCallback(data)
-                    // ideally send a message here if displayed data but registration failed
-                },
-                403: function(data) {
-                    console.log("Invalid api key '" +apiKey+ "'. Contact team@impactstory.org to remedy.")                    
-                    if (noItemCallback) {
-                        noItemCallback(data)
-                    }
-                },
-                404: function(data) {
-                    console.log(data.responseText)
-                    if (noItemCallback) {
-                        noItemCallback(data)
-                    }
-                }
+            success:function(data, textStatus, jqXHR){
+                console.log("success!", data, textStatus, jqXHR.status)
+            },
+            error:function(request, status, errorThrown){
+                console.log("error!")
             }
+//            statusCode: {
+//                200: function(data) {
+//                    dict = thisThing.processDict(data)
+//                    thisThing.dict = dict
+//                    successCallback(dict, id)
+//                    // ideally send a message here if displayed data but registration failed
+//                },
+//                210: function(data){
+//                    updatingCallback(data)
+//                    // ideally send a message here if displayed data but registration failed
+//                },
+//                403: function(data) {
+//                    console.log("Invalid api key '" +apiKey+ "'. Contact team@impactstory.org to remedy.")
+//                    if (noItemCallback) {
+//                        noItemCallback(data)
+//                    }
+//                },
+//                404: function(data) {
+//                    console.log(data.responseText)
+//                    if (noItemCallback) {
+//                        noItemCallback(data)
+//                    }
+//                }
+//            }
         });
     }
 
