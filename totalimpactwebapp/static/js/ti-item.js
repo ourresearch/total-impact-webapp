@@ -506,6 +506,8 @@ function Item(itemData, itemView, $) {
         var registerParam = (noItemCallback) ? "" : "&register=true" // defaults to true
         var url = apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
 
+        console.log("Item.get() sending a get request to this url: " + url)
+
         $.ajax({
             url: url,
             cache: false,
