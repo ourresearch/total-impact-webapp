@@ -1,5 +1,12 @@
 function setRoot(url){
-    return url.replace("http:", window.location.protocol)
+    var vmLocalhost = "10.0.2.2"
+
+    if (location.host.indexOf(vmLocalhost) === 0) {
+        url = url.replace("localhost", vmLocalhost)
+    }
+
+    url.replace("http:", window.location.protocol)
+    return url
 }
 
 var api_root=setRoot('{{ g.roots.api }}')
