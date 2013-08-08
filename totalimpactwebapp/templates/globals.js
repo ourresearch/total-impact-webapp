@@ -1,0 +1,6 @@
+var api_root='{{ g.roots.api }}'
+var api_root_pretty='{{ g.roots.api_pretty }}'
+var webapp_root='{{ g.roots.webapp }}'
+var webapp_root_pretty='{{ g.roots.webapp_pretty }}'
+var api_key='{{ g.api_key }}'
+var request_url='{{ request_url }}'

@@ -3,15 +3,11 @@
 
     /*********************************
     *
-    * set params
+    * insert global vars from server
     *
     *********************************/
 
-    var apiRoot = "{{ g.roots.api }}".replace("http:", window.location.protocol)
-    var webappRoot = "{{ g.roots.webapp }}".replace("http:", window.location.protocol)
-    var webappRootPretty = "{{ g.roots.webapp_pretty }}".replace("http:", window.location.protocol)
-
-
+    ;{% include "globals.js" %}
 
     /*********************************
     *
@@ -40,7 +36,7 @@
         stylesheet.media = "all";
         document.getElementsByTagName("head")[0].appendChild(stylesheet);
     }
-    requestStylesheet(webappRoot + "/static/css/embed.css");
+    requestStylesheet(webapp_root + "/static/css/embed.css");
 
 
     /*********************************
@@ -146,7 +142,7 @@
             }
 
             $.ajax({
-                url: webappRoot + "/widget-analytics",
+                url: webapp_root + "/widget-analytics",
                 type:"POST",
                 data: JSON.stringify(dataToSubmit),
                 contentType: "application/json; charset=utf-8",
@@ -163,7 +159,7 @@
             if (!params["show-logo"]) {
                 return div$
             }
-            var imgSrc = webappRoot + "/static/img/impactstory-logo-small.png"
+            var imgSrc = webapp_root + "/static/img/impactstory-logo-small.png"
             if (params['badge-palette'] == "grayscale") {
                 imgSrc = imgSrc.replace(".png", "-grayscale.png")
             }
@@ -171,7 +167,7 @@
 
             // I can't figure out how to get the wrapInLink() function to work for a
             // single item like this, so here's this repulsive hack in the meantime:
-            var logoLink$ = $('<a href="' + webappRootPretty + '/item/'
+            var logoLink$ = $('<a href="' + webapp_root_pretty + '/item/'
                                   + params["id-type"] + "/" + params["id"] + '?source=widget" target="_blank">'
                                   + img + "</a>");
             div$.prepend(logoLink$)
@@ -179,7 +175,7 @@
         }
 
         function wrapInLink(el$, namespace, id){
-            return el$.wrapAll("<a href='" + webappRootPretty + "/item/"+
+            return el$.wrapAll("<a href='" + webapp_root_pretty + "/item/"+
                                    namespace + "/" + id +  "?source=widget' target='_blank' />")
         }
 
@@ -254,7 +250,7 @@
             else {
                 var item = new Item([params["id-type"], params["id"]], new ItemView($), $)
                 item.get(
-                    apiRoot,
+                    api_root,
                     params["api-key"],
                     function(dict, id) { // run insertBadges, then a user-defined callback
                         insertBadges(dict, id)
