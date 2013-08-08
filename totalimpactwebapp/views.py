@@ -66,7 +66,7 @@ js_widget = Bundle(
             'js/bootstrap-tooltip-and-popover.js',
             'js/underscore.js',
             'js/ti-item.js',
-            # filters="yui_js", # comment this out if you want unminified version
+            filters="yui_js", # comment this out if you want unminified version
             output="js/widget.js",
 )
 assets.register('js_widget', js_widget)
