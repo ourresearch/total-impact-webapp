@@ -517,8 +517,8 @@ function Item(itemData, itemView, $) {
             success:function(data, textStatus, jqXHR){
                 console.log("success!", data, textStatus, jqXHR.status)
             },
-            error:function(request, status, errorThrown){
-                console.log("error!")
+            error:function(request, textStatus, errorThrown){
+                console.log("error!", request.status, textStatus, errorThrown)
             }
 //            statusCode: {
 //                200: function(data) {
