@@ -138,11 +138,12 @@ def load_globals():
         "webapp_pretty": os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
     }
 
-
     g.segmentio_key = os.getenv("SEGMENTIO_KEY")
     g.mixpanel_token = os.getenv("MIXPANEL_TOKEN")
     g.api_key = os.getenv("API_KEY")
     g.newrelic_header = newrelic.agent.get_browser_timing_header()
+
+    g.js_globals = render_template("globals.js")
 
 
 @app.before_request
