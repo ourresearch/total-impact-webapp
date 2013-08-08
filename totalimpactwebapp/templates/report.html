@@ -30,8 +30,8 @@
                   <span class="caret"></span>
                </a>
                <ul class="dropdown-menu">
-                  <li><a class="" id="json-report-button" href="http://{{ g.roots.api_pretty }}/v1/{{ api_query }}?key=samplekey">json</a></li>
-                  <li><a class="" id="csv-report-button" href="http://{{ g.roots.api_pretty }}/v1/{{ api_query }}.csv?key=samplekey">csv</a></li>
+                  <li><a class="" id="json-report-button" href="{{ g.roots.api_pretty }}/v1/{{ api_query }}?key=samplekey">json</a></li>
+                  <li><a class="" id="csv-report-button" href="{{ g.roots.api_pretty }}/v1/{{ api_query }}.csv?key=samplekey">csv</a></li>
                </ul>
             </div>
          </div>
@@ -72,7 +72,7 @@
       </script>
       <div class="wrapper">
       </div>
-      <p class="something-missing">More detail on <a href="http://{{ g.roots.webapp_pretty }}/faq#whichmetrics">available metrics</a>.  Missing some products or metrics? See <a href="http://{{ g.roots.webapp_pretty }}/faq#limitations">current limitations.</a>  </p>
+      <p class="something-missing">More detail on <a href="{{ g.roots.webapp_pretty }}/faq#whichmetrics">available metrics</a>.  Missing some products or metrics? See <a href="{{ g.roots.webapp_pretty }}/faq#limitations">current limitations.</a>  </p>
    </div>
 </div>
 

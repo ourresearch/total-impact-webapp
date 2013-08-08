@@ -89,7 +89,7 @@ def get_collection_from_core(collection_id):
     logger.debug("running a GET query for /collection/{collection_id} the api".format(
         collection_id=collection_id))
 
-    query = "http://{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
+    query = "{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
         collection_id=collection_id
@@ -100,7 +100,7 @@ def get_collection_from_core(collection_id):
 
 
 def add_products_to_core_collection(collection_id, aliases_to_add):
-    query = "http://{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
+    query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
         collection_id=collection_id
@@ -113,7 +113,7 @@ def add_products_to_core_collection(collection_id, aliases_to_add):
     return (r.text, r.status_code)
 
 def delete_products_from_core_collection(collection_id, tiids_to_delete):
-    query = "http://{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
+    query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
         collection_id=collection_id

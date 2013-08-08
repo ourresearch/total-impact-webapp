@@ -7,9 +7,10 @@
     *
     *********************************/
 
-    var apiRoot = window.location.protocol + "//{{ g.roots.api }}"
-    var webappRoot = window.location.protocol + "//{{ g.roots.webapp }}"
-    var webappRootPretty = "http://{{ g.roots.webapp_pretty }}"
+    var apiRoot = "{{ g.roots.api }}".replace("http:", window.location.protocol)
+    var webappRoot = "{{ g.roots.webapp }}".replace("http:", window.location.protocol)
+    var webappRootPretty = "{{ g.roots.webapp_pretty }}".replace("http:", window.location.protocol)
+
 
 
     /*********************************

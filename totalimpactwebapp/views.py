@@ -401,7 +401,7 @@ def user_create():
     logger.debug("POST /user: Creating new user")
 
     alias_tiids = request.json["alias_tiids"]
-    url = "http://" + g.roots["api"] + "/collection"
+    url = g.roots["api"] + "/collection"
     email = request.json["email"].lower()
 
     data = {"aliases": alias_tiids, "title": email}
@@ -433,7 +433,7 @@ def user_create():
         db.session.add(user)
         db.session.commit()
 
-    logger.debug("POST /user: Finished creating user {id}, http://{webapp_pretty}/{slug}".format(
+    logger.debug("POST /user: Finished creating user {id}, {webapp_pretty}/{slug}".format(
         id=user.id,
         webapp_pretty=g.roots["webapp_pretty"],
         slug=user.url_slug
@@ -499,7 +499,7 @@ def get_password_reset_link(email):
     s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
     reset_token = s.sign(retrieved_user.email)
 
-    base_reset_url = "http://" + g.roots["webapp_pretty"] + "/change-password"
+    base_reset_url = g.roots["webapp_pretty"] + "/change-password"
     full_reset_url = base_reset_url + "/" + reset_token
 
     # send the email here...
@@ -678,7 +678,7 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        r = requests.get('http://' + g.roots["api"] +'/provider')
+        r = requests.get(g.roots["api"] +'/provider')
         metadata = json.loads(r.text)
     except requests.ConnectionError:
         metadata = {}
@@ -742,7 +742,7 @@ def impactstory_dot_js():
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
-    url = "http://{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
+    url = "{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
         api_root=g.roots["api"],
         api_key=g.api_key,
         collection_id=collection_id
@@ -765,7 +765,7 @@ def collection_report(collection_id):
 
 @app.route('/item/<ns>/<path:id>')
 def item_report(ns, id):
-    url = "http://{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
+    url = "{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
         api_root=g.roots["api"],
         ns=ns,
         id=id,

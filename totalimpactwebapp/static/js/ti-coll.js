@@ -373,7 +373,6 @@ function CollController(coll, collViews) {
                 onNotLoggedIn: that.collViews.onEditNotLoggedIn,
                 onNotOwner: that.collViews.onEditNotOwner
             }
-
             if (!that.coll.userCanEdit(callbacks)) return false
             $("#import-products-modal").modal("show")
             return false
