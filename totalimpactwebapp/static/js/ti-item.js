@@ -539,6 +539,18 @@ function Item(itemData, itemView, $) {
         });
     }
 
+    this.getJsonP = function(apiRoot, apiKey, successCallback, updatingCallback, noItemCallback){
+
+        var thisThing = this
+        var id = this.itemId
+        var registerParam = (noItemCallback) ? "" : "&register=true" // defaults to true
+        var url = apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
+
+        $.getJSON(url + "?callback=?", null, function(data, textStatus, request) {
+
+        })
+    }
+
     this.create = function(apiRoot, successCallback, errorCallback){
         var apiKey = "embed" // should be a param
         var thisThing = this
