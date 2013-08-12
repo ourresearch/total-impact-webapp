@@ -531,7 +531,6 @@ function Item(itemData, itemView, $) {
             }
         }
 
-        console.log("running getJSON")
         $.getJSON(url)
             .done(function(data, textStatus, request) {
                 // we're not looking at the actual status code here, but rather

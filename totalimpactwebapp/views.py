@@ -786,11 +786,13 @@ def item_report(ns, id):
         api_query="item/{ns}/{id}".format(ns=ns, id=id)
     )
 
-@app.route("/widget-analytics", methods=['POST'])
+@app.route("/widget-analytics", methods=['GET'])
 def widget_analytics():
-    d = request.json["params"]
-    d['url'] = request.json['url']
-    d["num_widgets"] = request.json["num_widgets"]
+    data = json.loads(request.args.get("data"))
+
+    d = data["params"]
+    d['url'] = data['url']
+    d["num_widgets"] = data["num_widgets"]
     d["hostname"] = d['url'].split("/")[2]
     d["domain"] = ".".join(d['hostname'].split(".")[-2:])  # like "impactstory.org"
 
@@ -806,7 +808,7 @@ def widget_analytics():
     )
     analytics.flush(async=False)  # make sure all the data gets sent to segment.io
 
-    return make_response('{"success"}', 200)
+    return make_response(request.args.get("callback") + '({"success"})', 200)
 
 
 

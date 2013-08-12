@@ -141,15 +141,15 @@
                 num_widgets: $(".impactstory-embed").length
             }
 
-            $.ajax({
-                url: webapp_root + "/widget-analytics",
-                type:"POST",
-                data: JSON.stringify(dataToSubmit),
-                contentType: "application/json; charset=utf-8",
-                success:function(r){
-                    console.log("successfully sent analytics data to server.")
-                }
-           })
+            var url = webapp_root
+                + "/widget-analytics"
+                + "?data="
+                + JSON.stringify(dataToSubmit)
+                + "&callback=?"
+
+            $.getJSON(url, function(data){
+                    console.log("Sent analytics data to ImpactStory server.")
+            })
             return false
         }
 
