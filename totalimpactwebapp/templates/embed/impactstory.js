@@ -258,7 +258,9 @@
                     },
                     function(data){
                         thisDiv$.append("<span class='loading'>Gathering metrics now...</span>")
-                    }
+                    },
+                    function(){},
+                    true
                 )
                 return true
             }

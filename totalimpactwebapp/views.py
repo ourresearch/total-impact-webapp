@@ -66,7 +66,7 @@ js_widget = Bundle(
             'js/bootstrap-tooltip-and-popover.js',
             'js/underscore.js',
             'js/ti-item.js',
-            filters="yui_js", # comment this out if you want unminified version
+            # filters="yui_js", # comment this out if you want unminified version
             output="js/widget.js",
 )
 assets.register('js_widget', js_widget)
@@ -237,7 +237,7 @@ def user_preferences(url_slug):
 
     # user don't exist
     if retrieved_user is None:
-        abort(404)
+        abort(404, "user doesn't exist")
 
     # you're not logged in
     elif not g.user.is_authenticated():

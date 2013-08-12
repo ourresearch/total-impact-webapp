@@ -485,11 +485,11 @@ function Item(itemData, itemView, $) {
 
 
 
-
     /**
      * Get item data and feed it to a callback.
      *
      * Creates items if they don't already exist, *unless* the noItemCallback arg is present.
+     * @todo put callbacks in an options dict...too many parameters as is.s
      *
      * @id:                as [namespace, id] array.
      * @apiRoot            the api endpoint base to call
@@ -498,58 +498,54 @@ function Item(itemData, itemView, $) {
      * @noItemCallback     function runs if the item doesn't exist and won't be created.
      *                     passing this function in means that missing items will *not*
      *                     be created.
+     * @useJSONP           Make a JSONP GET call instead of XMLHttprequest
      */
-    this.get = function(apiRoot, apiKey, successCallback, updatingCallback, noItemCallback) {
+    this.get = function(apiRoot, apiKey, successCallback, updatingCallback, noItemCallback, useJSONP) {
 
         var thisThing = this
         var id = this.itemId
-        var registerParam = (noItemCallback) ? "" : "&register=true" // defaults to true
+        var registerParam =  "&register=true" // defaults to true
         var url = apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
 
-        $.ajax({
-            url: url,
-            cache: false,
-            type: "GET",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            statusCode: {
-                200: function(data) {
-                    dict = thisThing.processDict(data)
-                    thisThing.dict = dict
-                    successCallback(dict, id)
-                    // ideally send a message here if displayed data but registration failed
-                },
-                210: function(data){
-                    updatingCallback(data)
-                    // ideally send a message here if displayed data but registration failed
-                },
-                403: function(data) {
-                    console.log("Invalid api key '" +apiKey+ "'. Contact team@impactstory.org to remedy.")
-                    if (noItemCallback) {
-                        noItemCallback(data)
-                    }
-                },
-                404: function(data) {
-                    console.log(data.responseText)
-                    if (noItemCallback) {
-                        noItemCallback(data)
-                    }
-                }
+        if (useJSONP){
+            url += "&callback=?"
+        }
+
+        var runCallback = function(status, data) {
+            if (status == 200) {
+                var dict = thisThing.processDict(data)
+                thisThing.dict = dict
+                successCallback(dict, id)
             }
-        });
+            else if (status == 210){
+                updatingCallback(data)
+            }
+            else if (status == 403) {
+                console.log("Invalid api key '" +apiKey+ "'. Contact team@impactstory.org to remedy.")
+            }
+            else if (status == 404) {
+                console.log("got a 404 because this item isn't registered; perhaps you want to set register=true in the call?")
+            }
+            else {
+                console.log("Item.get() returned an unknown status code: " + status)
+            }
+        }
+
+        console.log("running getJSON")
+        $.getJSON(url)
+            .done(function(data, textStatus, request) {
+                // we're not looking at the actual status code here, but rather
+                // the one the server put in teh returned object.
+                runCallback(data.HTTP_status_code, data)
+            })
+            .fail(function( jqxhr, textStatus, error ) {
+                runCallback(jqxhr.status)
+                if (noItemCallback) {
+                    noItemCallback(jqxhr.status)
+                }
+            })
     }
 
-    this.getJsonP = function(apiRoot, apiKey, successCallback, updatingCallback, noItemCallback){
-
-        var thisThing = this
-        var id = this.itemId
-        var registerParam = (noItemCallback) ? "" : "&register=true" // defaults to true
-        var url = apiRoot+ "/v1/item/"+id[0]+'/'+ id[1] +'?key='+apiKey+registerParam
-
-        $.getJSON(url + "?callback=?", null, function(data, textStatus, request) {
-
-        })
-    }
 
     this.create = function(apiRoot, successCallback, errorCallback){
         var apiKey = "embed" // should be a param
