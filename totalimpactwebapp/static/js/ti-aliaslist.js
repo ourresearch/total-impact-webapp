@@ -256,7 +256,7 @@ SubmitButton.prototype = {
         analytics.track('Created a profile') 
 
         $.ajax({
-           url: webapp_root_pretty+'/user',
+           url: webapp_root+'/user',
            type: "POST",
            dataType: "json",
            contentType: "application/json; charset=utf-8",
