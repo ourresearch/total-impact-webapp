@@ -701,7 +701,10 @@ def apidocs():
     return render_template_custom('api-docs.html')
 
 
-
+@app.route("/loading.gif")
+def images():
+    path = "static/img/loading-small.gif"
+    return send_file(path)
 
 
 

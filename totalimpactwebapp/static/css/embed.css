@@ -43,6 +43,9 @@ span.impactstory-embed ul li .label {
   font-size: 12px;
   font-style: italic;
 }
+.impactstory-embed span.loading img {
+  margin-right: 10px;
+}
 .impactstory-embed a {
   border: none;
   text-decoration: none;

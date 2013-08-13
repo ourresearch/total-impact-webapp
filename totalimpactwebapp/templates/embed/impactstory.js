@@ -214,6 +214,7 @@
 
                 thisDiv$ = addLogo(thisDiv$, params)
                 if (params["verbose-badges"]) thisDiv$.addClass("verbose")
+                thisDiv$.find(".loading").remove()
                 thisDiv$.append(badges$)
 
             }

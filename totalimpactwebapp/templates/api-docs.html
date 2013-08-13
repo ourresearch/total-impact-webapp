@@ -29,21 +29,24 @@
                <li>
                   Paste this div where you want the badges to show.
                   <div class="rawembedcode"><pre class="prettyprint">
-{{'<div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS"></div>'|escape()}}
+{{'<div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS">
+   <span class="loading"><img src="http://impactstory.org/loading.gif" />loading data...</span>
+</div>'|escape()}}
             </pre></div>
                </li>
             </ol>
 
 
-       <p>To use the widget, <a href="mailto:team@impactstory.org?subject=API key request">get your free API key</a>
+       <p>You can put whatever text or images you want inside the <code>loading</code> span, or omit it altogether. To use the widget, <a href="mailto:team@impactstory.org?subject=API key request">get your free API key</a>
           and embed the widget on your page. Your free API key works to track metrics on <strong>1000 unique products</strong>.
           If you've got more than that, hang in there; we're working to increase this limit as we
           scale to meet demand.</p>
 
 
+
        <h3>Example</h3>
        <div class="example">
-          <div class="impactstory-embed" id="impactstory" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS" ></div>
+          <div class="impactstory-embed" id="impactstory" data-id="19210768" data-id-type="pmid" data-api-key="API-DOCS" ><span class="loading"><img src="http://impactstory.org/loading.gif" />loading data...</span></div>
           <p>To the left, you can see the result, embedded live on this page: metrics for a sample article,
              <a href="http://impactstory.org/item/pmid/19210768">"Mega-phylogeny approach for comparative
                 biology: an alternative to supertree and supermatrix approaches."</a>
@@ -91,7 +94,7 @@
                      <p>Set to <code>"small"</code> to display smaller badges.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS"></div>
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS"><span class="loading"><img src="http://impactstory.org/loading.gif" />loading data...</span></div>
                   </td>
                </tr>
                <tr>
@@ -102,7 +105,7 @@
                      <p>Set to <code>"icon"</code> to display icons showing engagement type, rather than the word; useful for if you don't have a lot of space. Solid-colored badges still denote 75th percentile.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-badge-size="small" data-api-key="API-DOCS" data-badge-type="icon"></div>
+                     <div class="impactstory-embed" data-id="19210768" data-id-type="pmid" data-badge-size="small" data-api-key="API-DOCS" data-badge-type="icon"><span class="loading"><img src="http://impactstory.org/loading.gif" />loading data...</span></div>
                   </td>
                </tr>
                <tr>
@@ -133,7 +136,7 @@ countBadges = function(awards, div$) {
                         the <code>countBadges</code> function runs when the badges are done loading.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small" data-on-finish="countBadges"></div>
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-api-key="API-DOCS" data-badge-size="small" data-on-finish="countBadges"><span class="loading"><img src="http://impactstory.org/loading.gif" />loading data...</span></div>
                   </td>
                </tr>
                <tr>
@@ -145,7 +148,7 @@ countBadges = function(awards, div$) {
                      of just relying on color-coding and tooltips.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-verbose-badges="true"></div>
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-verbose-badges="true"><span class="loading"><img src="http://impactstory.org/loading.gif" />loading data...</span></div>
                   </td>
                <tr>
                   <td class="attr">
@@ -155,7 +158,7 @@ countBadges = function(awards, div$) {
                      <p>Set to <code>false</code> to hide the ImpactStory logo.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-show-logo="false"></div>
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-show-logo="false"><span class="loading"><img src="http://impactstory.org/loading.gif" />loading data...</span></div>
                   </td>
                </tr>
                <tr>
@@ -166,7 +169,7 @@ countBadges = function(awards, div$) {
                      <p>Set to <code>grayscale</code> for grayscale badges. This makes it impossible to distinguish between scholarly and public badges, so <code>verbose-badges</code> is automatically set to <code>true</code>.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-badge-palette="grayscale"></div>
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-badge-palette="grayscale"><span class="loading"><img src="http://impactstory.org/loading.gif" />loading data...</span></div>
                   </td>
                </tr>
                <tr>
@@ -178,7 +181,7 @@ countBadges = function(awards, div$) {
                         still open a new tab showing this item's report page on impactstory.org.</p>
                   </td>
                   <td class="example">
-                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-show-badges="FALSE"></div>
+                     <div class="impactstory-embed" data-id="10.1002/mrc.2260" data-id-type="doi" data-badge-size="small" data-api-key="API-DOCS" data-show-badges="FALSE"><span class="loading"><img src="http://impactstory.org/loading.gif" />loading data...</span></div>
                   </td>
                </tr>
                </tr>
