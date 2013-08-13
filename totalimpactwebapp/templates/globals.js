@@ -36,6 +36,8 @@ function setRoot(url){
     }
 
     url.replace("http:", window.location.protocol)
+    console.log("making new url; it's now", url)
+
     return url
 }
 
