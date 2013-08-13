@@ -35,7 +35,10 @@ function setRoot(url){
         url = url.replace("localhost", vmLocalhost)
     }
 
-    url.replace("http:", window.location.protocol)
+    console.log("url to modify is ", url)
+    console.log("protocol is ", window.location.protocol)
+
+    url = url.replace("http:", window.location.protocol)
     console.log("making new url; it's now", url)
 
     return url
