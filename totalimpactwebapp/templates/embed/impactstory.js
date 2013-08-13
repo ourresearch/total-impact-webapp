@@ -19,7 +19,6 @@
     *
     *********************************/
 
-    console.log("loading external libs")
     ;{{ libs }}
 
     /*********************************
@@ -45,7 +44,6 @@
     *
     *********************************/
     jQuery(document).ready(function ($) {
-        console.log("page has loaded; inside $(document).ready block")
 
         $.support.cors = true; // makes IE8 and IE9 support CORS somehow...
         $.ajaxSetup({ cache:false });
@@ -187,7 +185,6 @@
         * ***************************************
         */
         // this runs for each instance of the widget on the page
-        console.log("starting loop to iterate over each widgets")
         var isFirstWidget = true
         $(".impactstory-embed").each(function(index){
 

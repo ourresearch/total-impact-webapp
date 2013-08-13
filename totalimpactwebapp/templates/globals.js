@@ -39,7 +39,6 @@ function setRoot(url, httpsify){
         url = url.replace("http:", window.location.protocol)
     }
 
-    console.log("converting url; now it's ", url)
     return url
 }
 
