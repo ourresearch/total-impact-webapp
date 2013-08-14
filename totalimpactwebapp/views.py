@@ -811,7 +811,7 @@ def widget_analytics():
     )
     analytics.flush(async=False)  # make sure all the data gets sent to segment.io
 
-    return make_response(request.args.get("callback") + '({"status": "success"})', 200)
+    return make_response(request.args.get("callback", "") + '({"status": "success"})', 200)
 
 
 
