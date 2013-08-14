@@ -796,16 +796,26 @@ def widget_analytics():
     for k, v in request.args.iteritems():
         d[k] = v
 
-    d["hostname"] = d['url'].split("/")[2]
-    d["domain"] = ".".join(d['hostname'].split(".")[-2:])  # like "impactstory.org"
+    try:
+        d["hostname"] = d['url'].split("/")[2]
+        d["domain"] = ".".join(d['hostname'].split(".")[-2:])  # like "impactstory.org"
+    except KeyError:
+        #nevermind then
+        pass
 
-    print "got widget analytics data: " + str(d)
+    try:
+        api_key = d["api-key"]
+    except KeyError:
+        api_key = "unknown"
+
+    logger.info(u"got widget analytics data: {data}".format(
+        data=d))
 
     # later look stuff up here from db, based on api-key; send along w identify() call...
-    analytics.identify(user_id=d["api-key"])
+    analytics.identify(user_id=api_key)
 
     analytics.track(
-        user_id=d["api-key"],
+        user_id=api_key,
         event="Served a page with embedded widget",
         properties=d
     )
