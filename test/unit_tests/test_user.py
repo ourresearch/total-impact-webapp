@@ -1,7 +1,7 @@
 import unittest
 from nose.tools import nottest, assert_equals
 
-from totalimpactwebapp import user
+from totalimpactwebapp import user, app
 
 class TestViews(unittest.TestCase):
 
@@ -12,6 +12,5 @@ class TestViews(unittest.TestCase):
         assert True
 
 
-        
-        
-        
+
+
