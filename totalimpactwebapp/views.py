@@ -352,7 +352,7 @@ def change_password(reset_token):
     s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
     error = ""
     try:
-        email = s.unsign(reset_token, max_age=60*30).lower()  # 30min
+        email = s.unsign(reset_token, max_age=60*60*24).lower()  # 24 hours
 
     except SignatureExpired:
         error = "expired-token"
