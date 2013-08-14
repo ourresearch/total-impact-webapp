@@ -44,7 +44,7 @@ class User(db.Model):
         self.created = now_in_utc()
 
     def make_url_slug(self, full_name):
-        return "".join(full_name.title().split())
+        return full_name.replace(" ", "")
 
     def set_last_viewed_profile(self):
         self.last_viewed_profile = now_in_utc()

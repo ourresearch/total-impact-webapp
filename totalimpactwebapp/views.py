@@ -430,7 +430,7 @@ def user_create():
         db.session.commit()
     except IntegrityError as e:
         logger.info(e)
-        logger.info("tried to mint a url slug ('{slug}') that already exists".format(
+        logger.info(u"tried to mint a url slug ('{slug}') that already exists".format(
             slug=user.url_slug
         ))
         db.session.rollback()
@@ -439,7 +439,7 @@ def user_create():
         db.session.add(user)
         db.session.commit()
 
-    logger.debug("POST /user: Finished creating user {id}, {webapp_pretty}/{slug}".format(
+    logger.debug(u"POST /user: Finished creating user {id}, {webapp_pretty}/{slug}".format(
         id=user.id,
         webapp_pretty=g.roots["webapp_pretty"],
         slug=user.url_slug
