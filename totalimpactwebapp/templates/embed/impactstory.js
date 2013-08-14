@@ -133,17 +133,19 @@
         function logParams(params, isFirstWidget){
             if (!isFirstWidget) return false
 
-            var dataToSubmit = {
-                params: params,
-                url: location.href,
-                num_widgets: $(".impactstory-embed").length
-            }
+            params.url = location.href
+            params.num_widgets =  $(".impactstory-embed").length
+            var urlParamsArr = _.map(_.pairs(params), function(x){
+                return x[0] + "=" + x[1]
+            })
+
 
             var url = webapp_root
-                + "/widget-analytics"
-                + "?data="
-                + JSON.stringify(dataToSubmit)
+                + "/widget-analytics?"
+                + urlParamsArr.join("&")
                 + "&callback=?"
+
+            console.log("here's the url we'll send to analytics ", url)
 
             $.getJSON(url, function(data){
                     console.log("Sent analytics data to ImpactStory server.")

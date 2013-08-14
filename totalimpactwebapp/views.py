@@ -792,11 +792,10 @@ def item_report(ns, id):
 
 @app.route("/widget-analytics", methods=['GET'])
 def widget_analytics():
-    data = json.loads(request.args.get("data"))
+    d = {}
+    for k, v in request.args.iteritems():
+        d[k] = v
 
-    d = data["params"]
-    d['url'] = data['url']
-    d["num_widgets"] = data["num_widgets"]
     d["hostname"] = d['url'].split("/")[2]
     d["domain"] = ".".join(d['hostname'].split(".")[-2:])  # like "impactstory.org"
 
