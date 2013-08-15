@@ -19,11 +19,14 @@ itsdangerous==0.21
 libsaas==0.2
 mandrill==1.0.37
 newrelic==1.9.0.21
+nose==1.3.0
 oauthlib==0.1.3
 psycopg2==2.4.6
 pyasn1==0.1.3
 python-dateutil==2.1
+python-termstyle==0.1.10
 pytz==2012c
+rednose==0.3
 requests==1.2.3
 rsa==3.0.1
 shortuuid==0.3
