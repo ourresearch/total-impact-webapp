@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+
+{# set jinja page variables #}
+{# ----------------------------------------------------------------------- #}
+
 {% set page_title = profile.given_name ~ " " ~ profile.surname %}
 
 {% if g.user.id == profile.id %}

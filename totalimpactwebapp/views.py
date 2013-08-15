@@ -21,7 +21,8 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.DEBUG)
 
 
 assets = Environment(app)
-js = Bundle('js/bootstrap.js',
+js = Bundle('js/run-first.js',
+            'js/bootstrap.js',
             'js/bootstrapx-clickover.js',
             'js/bootstrap-editable.js',
             'js/prettify.js',
@@ -43,6 +44,7 @@ js = Bundle('js/bootstrap.js',
             'js/ti-ui.js',
             'js/google-analytics.js',
             'js/segmentio.js',
+            'js/ti-analytics.js',
             filters="yui_js", # comment this out if you want unminified version
             output='js/packed.js'
 )

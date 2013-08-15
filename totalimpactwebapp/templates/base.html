@@ -8,11 +8,28 @@
    <meta name="google-site-verification" content="JWD8WcfINuKxjh31KejAnijd9Cx34IYEH1-bDMXVzjE" />
    <meta name="google-site-verification" content="ItyBFNIMWtJdRaONjqSQHM8ro_fRjTl9HO3Fq9IsZpM" />
 
-   <!-- newrelic logging. needs to before other script tags -->
+
+
+
+   {# set jinja page variables #}
+   {# ----------------------------------------------------------------------- #}
+   {% if g.user.id %}
+      {% set login_status = "logged-in" %}
+   {% else %}
+      {% set login_status = "not-logged-in" %}
+   {% endif %}
+
+
+
+
+
+   <!-- Include stuff that has to be at the very tippity-top of the page-->
+   <!-------------------------------------------------------------------------->
+   <!-- newrelic logging. -->
    {{ g.newrelic_header|safe }}
 
-   <!-- errorception logging. put as soon as possible above other script tags -->
    <script>
+      // errorception logging
        (function(_,e,rr,s){_errs=[s];var c=_.onerror;_.onerror=function(){var a=arguments;_errs.push(a);
        c&&c.apply(this,a)};var b=function(){var c=e.createElement(rr),b=e.getElementsByTagName(rr)[0];
        c.src="//beacon.errorception.com/"+s+".js";c.async=!0;b.parentNode.insertBefore(c,b)};
@@ -20,6 +37,11 @@
        (window,document,"script","51ef3db2db2bef20770003e2");
    </script>
 
+
+
+
+   <!-- Load stylesheets -->
+   <!-------------------------------------------------------------------------->
    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
    <!--[if lt IE 9]>
    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -32,56 +54,29 @@
    <link type="text/css" rel="stylesheet" href="{{ ASSET_URL }}" />
    {% endassets %}
 
+
+
+   <!-- Load scripts -->
+   <!-------------------------------------------------------------------------->
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 
-   <script type="text/javascript">;{{ g.js_globals|safe }}</script>
+   <!-- set javascript globals, partly using vars passed from flask via a template -->
+   <script type="text/javascript">;{% include "globals.js" %}</script>
 
+   <!-- let js know what flask knows about the user -->
+   <script type="text/javascript">;{% include "userdict.js" %}</script>
 
+   <!-- flask-assets injecting many script files here; see top of views.py for which. -->
    {% assets "js_all" %}
       <script type="text/javascript" src="{{ ASSET_URL }}"></script>
    {% endassets %}
 
-   <script type="text/javascript">
-      analytics.load("{{ g.segmentio_key }}");
-      var mixpanel_distinct_id = JSON.parse(unescape($.cookie("mp_{{ g.mixpanel_token }}_mixpanel")))["distinct_id"]
-   </script>
 
-   {% if g.user.id %}
-      {% set login_status = "logged-in" %}
-      <script type="text/javascript">
-         var impactstoryUserId = '{{ g.user.id }}'  //also used elsewhere
 
-         // if on profile page and haven't been here before, make alias call and event
-         // alias call needs to be above the identify call below
-         if (($.cookie("impactstory_first_loaded_own_profile") == null) && 
-               (window.location["href"].indexOf("/{{ g.user.url_slug }}") > 0)) {
-            analytics.alias("{{ g.user.id }}")
-            analytics.track("First Loaded own profile")
-            $.cookie("impactstory_first_loaded_own_profile", 1)
-         }
 
-         analytics.identify("{{ g.user.id }}", {
-             firstName               : "{{ g.user.given_name }}",
-             lastName                : "{{ g.user.surname }}",
-             account_created         : "{{ g.user.created }}"+0, //+0 says is utc
-             last_viewed_profile     : "{{ g.user.last_viewed_profile }}+0", //+0 says is utc
-             url_slug                : "{{ g.user.url_slug }}",
-             email                   : "{{ g.user.email }}"
-         });
-      </script>
-   {% else %}
-      {% set login_status = "not-logged-in" %}
-      <script type="text/javascript">
-         analytics.identify(mixpanel_distinct_id)
-
-         // send one event the first time a user comes to our site, no matter which page
-         if ($.cookie("impactstory_loaded_a_page") == null) {
-            analytics.track("First Loaded a Page", {"url": window.location["href"]})
-            $.cookie("impactstory_loaded_a_page", 1)
-         }
-      </script>
-   {% endif %}
    <!-- send a more explicit Page Load event than Segment.io's included one. -->
+
+<!--
    <script type="text/javascript">
       var pageType
       if (location.pathname.indexOf("/preferences") >= 0) {
@@ -132,6 +127,8 @@
       // send one event the first time a user comes to our site, no matter which page
       analytics.track("Loaded a page (custom)", pageLoadObj)
    </script>
+
+-->
 
 
 </head>
@@ -430,25 +427,9 @@ These are for rendering items with javascript using Mustache
 
 </div>
 {% endraw %}
-<!-- UserVoice JavaScript SDK (only needed once on a page) -->
-<script>(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/OQC1qQJBAPv28X1VBsYbw.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})()</script>
 
-<!-- A tab to launch the Classic Widget -->
-<script>
-   UserVoice = window.UserVoice || [];
-   UserVoice.push(['showTab', 'classic_widget', {
-      mode: 'full',
-      primary_color: '#cc6d00',
-      link_color: '#007dbf',
-      default_mode: 'feedback',
-      forum_id: 166950,
-      tab_label: 'Feedback & Support',
-      tab_color: '#ff4d00',
-      tab_position: 'middle-right',
-      tab_inverted: false
-   }]);
-</script>
+
+<script src="{{ url_for('static', filename='js/bottom-of-page.js') }}" type="text/javascript"></script>
 {{ newrelic_footer|safe }}
-
 </body>
 </html>
