@@ -2,8 +2,13 @@ from totalimpactwebapp import db
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
 
-import requests, json, os, datetime
+import requests
+import json
+import os
+import datetime
+import random
 import logging
+import unicodedata
 
 logger = logging.getLogger("tiwebapp.user")
 
@@ -27,11 +32,7 @@ class User(db.Model):
 
     @property
     def full_name(self):
-        name = (self.given_name + " " + self.surname).strip()
-        if name:
-            return name
-        else:
-            return "Anonymous"
+        return (self.given_name + " " + self.surname).strip()
 
 
     def __init__(self, email, password, collection_id, **kwargs):
@@ -40,17 +41,36 @@ class User(db.Model):
         self.collection_id = collection_id
 
         super(User, self).__init__(**kwargs)
-        self.url_slug = self.make_url_slug(self.full_name)
         self.created = now_in_utc()
+        self.given_name = self.given_name or u"Anonymous"
+        self.surname = self.surname or u"User"
+        self.url_slug = self.make_url_slug(
+            self.given_name,
+            self.surname
+        )
 
-    def make_url_slug(self, full_name):
-        return full_name.replace(" ", "")
+    def make_url_slug(self, surname, given_name):
+        slug = (surname + given_name).replace(" ", "")
+        ascii_slug = unicodedata.normalize('NFKD', slug).encode('ascii', 'ignore')
+        if not ascii_slug:
+            ascii_slug = "user" + str(random.randint(1000, 999999))
+
+        return ascii_slug
+
+
+
+    def uniqueify_slug(self):
+        self.url_slug += str(random.randint(1000, 99999))
+        return self.url_slug
+
 
     def set_last_viewed_profile(self):
         self.last_viewed_profile = now_in_utc()
 
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
+
 
     def check_password(self, password):
         if check_password_hash(self.password_hash, password):
@@ -92,10 +112,10 @@ class User(db.Model):
 
 
 def get_collection_from_core(collection_id):
-    logger.debug("running a GET query for /collection/{collection_id} the api".format(
+    logger.debug(u"running a GET query for /collection/{collection_id} the api".format(
         collection_id=collection_id))
 
-    query = "{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
+    query = u"{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
         collection_id=collection_id

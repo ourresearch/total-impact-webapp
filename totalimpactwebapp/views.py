@@ -434,8 +434,7 @@ def user_create():
             slug=user.url_slug
         ))
         db.session.rollback()
-        # to de-duplicate, mint a slug with a random number on it
-        user.url_slug = user.url_slug + str(random.randint(1000,9999))
+        user.uniqueify_slug()
         db.session.add(user)
         db.session.commit()
 
@@ -617,7 +616,7 @@ def user_slug_modify(userId, new_slug):
                 slug=retrieved_user.url_slug
             ))
             # to de-duplicate, mint a slug with a random number on it
-            retrieved_user.url_slug = new_slug + str(random.randint(1000, 9999))
+            retrieved_user.uniqueify_slug()
 
     db.session.commit()
     return make_response(json.dumps(retrieved_user.url_slug), 200)
