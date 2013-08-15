@@ -17,7 +17,7 @@ from totalimpactwebapp.user import User
 import newrelic.agent
 
 logger = logging.getLogger("tiwebapp.views")
-analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.DEBUG, flush_at=1)
+analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.DEBUG)
 
 
 assets = Environment(app)
@@ -796,22 +796,32 @@ def widget_analytics():
     for k, v in request.args.iteritems():
         d[k] = v
 
-    d["hostname"] = d['url'].split("/")[2]
-    d["domain"] = ".".join(d['hostname'].split(".")[-2:])  # like "impactstory.org"
+    try:
+        d["hostname"] = d['url'].split("/")[2]
+        d["domain"] = ".".join(d['hostname'].split(".")[-2:])  # like "impactstory.org"
+    except KeyError:
+        #nevermind then
+        pass
 
-    print "got widget analytics data: " + str(d)
+    try:
+        api_key = d["api-key"]
+    except KeyError:
+        api_key = "unknown"
+
+    logger.info(u"got widget analytics data: {data}".format(
+        data=d))
 
     # later look stuff up here from db, based on api-key; send along w identify() call...
-    analytics.identify(user_id=d["api-key"])
+    analytics.identify(user_id=api_key)
 
     analytics.track(
-        user_id=d["api-key"],
+        user_id=api_key,
         event="Served a page with embedded widget",
         properties=d
     )
     analytics.flush(async=False)  # make sure all the data gets sent to segment.io
 
-    return make_response(request.args.get("callback") + '({"status": "success"})', 200)
+    return make_response(request.args.get("callback", "") + '({"status": "success"})', 200)
 
 
 
