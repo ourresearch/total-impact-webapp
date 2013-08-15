@@ -17,7 +17,7 @@ from totalimpactwebapp.user import User
 import newrelic.agent
 
 logger = logging.getLogger("tiwebapp.views")
-analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.DEBUG, flush_at=1)
+analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.DEBUG)
 
 
 assets = Environment(app)
