@@ -12,7 +12,6 @@ Werkzeug==0.8.3
 analytics-python==0.4.2
 certifi==0.0.8
 chardet==1.0.1
-distribute==0.6.27
 docopt==0.4.0
 gunicorn==0.14.3
 iso8601==0.1.4
