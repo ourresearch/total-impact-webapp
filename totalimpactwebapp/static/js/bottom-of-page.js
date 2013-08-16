@@ -16,4 +16,4 @@ UserVoice.push(['showTab', 'classic_widget', {
 }]);
 
 // run analytics stuff
-tiAnalytics(userDict)
+tiAnalytics = new TiAnalytics(userDict)

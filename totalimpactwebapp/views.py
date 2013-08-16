@@ -14,6 +14,7 @@ from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
 
 from totalimpactwebapp import app, util, db, login_manager, forms
 from totalimpactwebapp.user import User
+from totalimpactwebapp import views_helpers
 import newrelic.agent
 
 logger = logging.getLogger("tiwebapp.views")
@@ -21,7 +22,7 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.DEBUG)
 
 
 assets = Environment(app)
-js = Bundle('js/run-first.js',
+js = Bundle(
             'js/bootstrap.js',
             'js/bootstrapx-clickover.js',
             'js/bootstrap-editable.js',
@@ -108,6 +109,7 @@ def json_for_client(obj_or_dict):
 def render_template_custom(template_name, **kwargs):
     kwargs["newrelic_footer"] = newrelic.agent.get_browser_timing_footer()
 
+    g.page_type = views_helpers.page_type(template_name)
 
     return render_template(template_name, **kwargs)
 
@@ -131,6 +133,8 @@ def setup_db_tables():
     db.create_all()
 
 
+
+
 @app.before_request
 def load_globals():
     g.user = current_user
@@ -146,7 +150,6 @@ def load_globals():
     g.api_key = os.getenv("API_KEY")
     g.newrelic_header = newrelic.agent.get_browser_timing_header()
 
-    g.js_globals = render_template("globals.js")
 
 
 @app.before_request
@@ -762,7 +765,7 @@ def collection_report(collection_id):
     if r.status_code == 200:
         collection = json.loads(r.text)
         return render_template_custom(
-            'report.html',
+            'collection.html',
             request_url=request.url,
             page_title=collection["title"],
             report_id=collection["_id"],
@@ -783,7 +786,7 @@ def item_report(ns, id):
     )
     r = requests.get(url)
     return render_template_custom(
-        'report.html',
+        'item.html',
         request_url=request.url,
         page_title="",
         report_id=id,

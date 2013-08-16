@@ -1,8 +1,8 @@
-tiAnalytics = function(userDict){
+function TiAnalytics(userDict){
     this.userDict = userDict
     this.init()
 }
-tiAnalytics.prototype = {
+TiAnalytics.prototype = {
     init: function(){
         that = this
         analytics.ready(function(){

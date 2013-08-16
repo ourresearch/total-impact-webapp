@@ -1,12 +1,12 @@
 (function () {
 
-
     /*********************************
     *
     * insert global vars from server
     *
     *********************************/
 
+    // {# Jinja stuff inside js comments, to keep editor src highlighting happy. #}
     // {% include "globals.js" %}
 
     /*********************************

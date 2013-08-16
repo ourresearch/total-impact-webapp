@@ -1,8 +1,12 @@
 /******************************************************************************
  *
- *  Gather everything flask knows about the user and give it to javascript
+ *  Set JS globals that are specific to a given Flask request
  *
  ******************************************************************************/
+
+
+/* User-specific stuff
+********************************************************/
 
 // {% if login_status == "logged-in" %}
     var tiUserIsLoggedIn = true
@@ -18,5 +22,7 @@
 // {% endif %}
 
 
-
+/* other kinds of stuff
+ ********************************************************/
+var tiPageType = "{{ g.page_type }}"
 

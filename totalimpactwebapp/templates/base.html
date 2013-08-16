@@ -28,8 +28,8 @@
    <!-- newrelic logging. -->
    {{ g.newrelic_header|safe }}
 
+   <!-- errorception logging. -->
    <script>
-      // errorception logging
        (function(_,e,rr,s){_errs=[s];var c=_.onerror;_.onerror=function(){var a=arguments;_errs.push(a);
        c&&c.apply(this,a)};var b=function(){var c=e.createElement(rr),b=e.getElementsByTagName(rr)[0];
        c.src="//beacon.errorception.com/"+s+".js";c.async=!0;b.parentNode.insertBefore(c,b)};
@@ -51,7 +51,7 @@
    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
    <link rel="icon" type="image/ico" href="/static/img/favicon.ico" />
    {% assets "css_all" %}
-   <link type="text/css" rel="stylesheet" href="{{ ASSET_URL }}" />
+      <link type="text/css" rel="stylesheet" href="{{ ASSET_URL }}" />
    {% endassets %}
 
 
@@ -60,11 +60,11 @@
    <!-------------------------------------------------------------------------->
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 
-   <!-- set javascript globals, partly using vars passed from flask via a template -->
+   <!-- set javascript globals from the flask general environment -->
    <script type="text/javascript">;{% include "globals.js" %}</script>
 
-   <!-- let js know what flask knows about the user -->
-   <script type="text/javascript">;{% include "userdict.js" %}</script>
+   <!-- set js globals specific to this flask request -->
+   <script type="text/javascript">;{% include "request-globals.js" %}</script>
 
    <!-- flask-assets injecting many script files here; see top of views.py for which. -->
    {% assets "js_all" %}
@@ -78,25 +78,7 @@
 
 <!--
    <script type="text/javascript">
-      var pageType
-      if (location.pathname.indexOf("/preferences") >= 0) {
-         pageType = "preferences"
-      }
-      else if (location.pathname.indexOf("/collection") >= 0) {
-         pageType = "old_collection"
-      }
-      else if (location.pathname.indexOf("/item") === 0) {
-         pageType = "item"
-      }
-      else if (location.pathname == "/") {
-         pageType = "landing"
-      }
-      else if ("True" === "{{ email_hash is defined }}") {
-         pageType = "profile"
-      }
-      else {
-         pageType = "docs"
-      }
+
 
       var referrer_hostname
       var referrer_domain
