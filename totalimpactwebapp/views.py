@@ -165,6 +165,7 @@ def add_crossdomain_header(resp):
     resp.headers['Access-Control-Allow-Headers'] = "origin, content-type, accept, x-requested-with"
     return resp
 
+
 @app.template_filter('extract_filename')
 def extract_filename(s):
     res = re.findall('\'([^\']*)\'', str(s))
@@ -419,15 +420,17 @@ def user_create():
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
 
+    # have to explicitly unicodify ascii-looking strings even when encoding
+    # is set by client, it seems:
     user = User(
-        email=email,
-        password=request.json["password"],
-        collection_id=r.json()["collection"]["_id"],
-        given_name=request.json["given_name"],
-        surname=request.json["surname"],
-        orcid_id=request.json["external_profile_ids"]["orcid"],
-        github_id=request.json["external_profile_ids"]["github"],
-        slideshare_id=request.json["external_profile_ids"]["slideshare"]
+        email=unicode(email),
+        password=unicode(request.json["password"]),
+        collection_id=unicode(r.json()["collection"]["_id"]),
+        given_name=unicode(request.json["given_name"]),
+        surname=unicode(request.json["surname"]),
+        orcid_id=unicode(request.json["external_profile_ids"]["orcid"]),
+        github_id=unicode(request.json["external_profile_ids"]["github"]),
+        slideshare_id=unicode(request.json["external_profile_ids"]["slideshare"])
     )
     db.session.add(user)
     try:

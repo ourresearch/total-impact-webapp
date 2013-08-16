@@ -23,7 +23,7 @@ TiAnalytics.prototype = {
         var pageType = this.getPageType()
 
         this.sendPageLoadReport(mixpanelId, pageType)
-        if (tiUserIsLoggedIn) {
+        if (this.userDict) {
             this.userIsLoggedIn()
         }
         else {
@@ -35,7 +35,7 @@ TiAnalytics.prototype = {
         // alias call needs to be above the identify call below
         if (($.cookie("impactstory_first_loaded_own_profile") == null) &&
             (window.location["href"].indexOf(this.userDict.url_slug) > 1)) {
-    
+
             analytics.alias(this.userDict.id)
             analytics.track("First Loaded own profile")
             $.cookie("impactstory_first_loaded_own_profile", 1)
@@ -51,10 +51,12 @@ TiAnalytics.prototype = {
         });
     }
     ,userIsNotLoggedIn: function(mixpanelId){
+        console.log("User not logged in; using Mixpanel ID ", mixpanelId)
         analytics.identify(mixpanelId)
 
         // send one event the first time a user comes to our site, no matter which page
         if ($.cookie("impactstory_loaded_a_page") == null) {
+            console.log("First-ever visit for user with Mixpanel ID ", mixpanelId)
             analytics.track("First Loaded a Page", {"url": window.location["href"]})
             $.cookie("impactstory_loaded_a_page", 1)
         }   

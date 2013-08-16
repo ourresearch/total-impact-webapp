@@ -48,12 +48,12 @@ class TestUser(unittest.TestCase):
         u = user.User("foo", "bar", "baz", given_name=u"John", surname=u"Smith")
         assert_equals(
             u.url_slug,
-            u"JohnSmith"
+            "JohnSmith"
         )
         u.uniqueify_slug()
         assert_equals(
             u.url_slug,
-            u"JohnSmith64303"
+            "JohnSmith64303"
         )
 
     def test_uniqueify_slug_for_default_name(self):
@@ -61,7 +61,7 @@ class TestUser(unittest.TestCase):
         u.uniqueify_slug()
         assert_equals(
             u.url_slug,
-            u"AnonymousUser64303"
+            "AnonymousUser64303"
         )
 
 
