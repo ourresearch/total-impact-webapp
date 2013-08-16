@@ -6,19 +6,23 @@ TiAnalytics.prototype = {
     init: function(){
         that = this
         analytics.ready(function(){
+            console.log("loaded all the analytics")
             that.analyticsLoadedCallback.call(that)
         })
         analytics.load(segmentio_key);
 
     }
     ,getMixpanelId: function(){
-        var mixpanelCookie = JSON.parse(
-            unescape($.cookie("mp_{{ g.mixpanel_token }}_mixpanel"))
-        )
+        var cookieName = "mp_" + mixpanelKey + "_mixpanel"
+        var mixpanelCookie = JSON.parse(unescape($.cookie(cookieName)))
+
         return mixpanelCookie["distinct_id"]
     }
     ,analyticsLoadedCallback: function(){
-        mixpanelId = that.getMixpanelId()
+        var mixpanelId = that.getMixpanelId()
+        var pageType = this.getPageType()
+
+        this.sendPageLoadReport(mixpanelId, pageType)
         if (tiUserIsLoggedIn) {
             this.userIsLoggedIn()
         }
@@ -54,6 +58,84 @@ TiAnalytics.prototype = {
             analytics.track("First Loaded a Page", {"url": window.location["href"]})
             $.cookie("impactstory_loaded_a_page", 1)
         }   
+    }
+    ,sendPageLoadReport: function(mixpanelId, pageType){
+        var referrer_hostname
+        var referrer_domain
+        try {
+            referrer_hostname = document.referrer.split("/")[2]
+            referrer_domain = referrer_hostname.split(".").slice(-2).join(".")
+        } catch (e) {
+            referrer_hostname = ""
+            referrer_domain = ""
+        }
+
+        var pageLoadObj = {
+            url: window.location["href"],
+            page_type: pageType,
+            referrer_hostname: referrer_hostname,
+            referrer_fullname: document.referrer,
+            referrer_domain: referrer_domain,
+            ga_cookie: $.cookie("_ga"),
+            mixpanel_distinct_id: mixpanelId
+        }
+
+        if (typeof urlParams !== "undefined") {
+            pageLoadObj = _.extend(pageLoadObj, urlParams)
+        }
+
+        console.log("loaded a page; pageLoadObj is", pageLoadObj)
+
+        // send one event the first time a user comes to our site, no matter which page
+        analytics.track("Loaded a page (custom)", pageLoadObj)
+    }
+    ,getPageTemplateName: function(){
+        var bodyClasses = document.getElementsByTagName("body")[0].className
+        var re = / template-(.+) /
+        var m = re.exec(bodyClasses)
+        if (m) {
+            return m[1]
+        }
+        else {
+            return "none"
+        }
+    },
+    getPageType: function(){
+        var myPageType = "docs"
+        var myTemplateName = this.getPageTemplateName()
+        var pageTypeLookupTable = {
+            account: [
+                "change-password",
+                "create-collection",
+                "login",
+                "reset-password"
+            ],
+            admin: [
+                "generate-api"
+            ],
+            item: [
+                "item"
+            ],
+            landing: [
+                "index"
+            ],
+            old_collection: [
+                "collection"
+            ],
+            preferences: [
+                "user-preferences"
+            ],
+            profile: [
+                "user-profile"
+            ]
+        }
+
+        _.each(pageTypeLookupTable, function(pageType, templateNames){
+            if (_.contains(templateNames, myTemplateName)) {
+                myPageType = pageType
+            }
+        })
+        return myPageType
     }
 }
 

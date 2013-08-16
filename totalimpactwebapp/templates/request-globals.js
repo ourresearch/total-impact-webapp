@@ -22,7 +22,4 @@
 // {% endif %}
 
 
-/* other kinds of stuff
- ********************************************************/
-var tiPageType = "{{ g.page_type }}"
 

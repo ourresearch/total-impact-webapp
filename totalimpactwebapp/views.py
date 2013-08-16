@@ -109,8 +109,6 @@ def json_for_client(obj_or_dict):
 def render_template_custom(template_name, **kwargs):
     kwargs["newrelic_footer"] = newrelic.agent.get_browser_timing_footer()
 
-    g.page_type = views_helpers.page_type(template_name)
-
     return render_template(template_name, **kwargs)
 
 def get_user_from_id(userId):
@@ -147,6 +145,7 @@ def load_globals():
 
     g.segmentio_key = os.getenv("SEGMENTIO_KEY")
     g.mixpanel_token = os.getenv("MIXPANEL_TOKEN")
+
     g.api_key = os.getenv("API_KEY")
     g.newrelic_header = newrelic.agent.get_browser_timing_header()
 

@@ -74,50 +74,10 @@
 
 
 
-   <!-- send a more explicit Page Load event than Segment.io's included one. -->
-
-<!--
-   <script type="text/javascript">
-
-
-      var referrer_hostname
-      var referrer_domain
-      try {
-         referrer_hostname = document.referrer.split("/")[2]
-         referrer_domain = referrer_hostname.split(".").slice(-2).join(".")
-      } catch (e) {
-         referrer_hostname = ""
-         referrer_domain = ""
-      }         
-
-      var pageLoadObj = {
-         url: window.location["href"],
-         page_type: pageType,
-         referrer_hostname: referrer_hostname,
-         referrer_fullname: document.referrer,
-         referrer_domain: referrer_domain,
-         ga_cookie: $.cookie("_ga"),
-         mixpanel_distinct_id: mixpanel_distinct_id         
-      }
-
-      if (typeof urlParams !== "undefined") {
-         pageLoadObj = _.extend(pageLoadObj, urlParams)
-      }
-
-      console.log("loaded a page; pageLoadObj is", pageLoadObj)
-
-      // send one event the first time a user comes to our site, no matter which page
-      analytics.track("Loaded a page (custom)", pageLoadObj)
-   </script>
-
--->
-
-
 </head>
 
 
-<body class="{{ self | extract_filename }} {{ login_status }} {{ edit_status }}
-      {{ extra_body_classes }}">
+<body class="{{ self | extract_filename }} {{ login_status }} {{ edit_status }} template-{{ self | extract_filename }} {{ extra_body_classes }}">
 
 <div class="staging-warning alert-error alert">
    <strong>This isn't the page you're looking for:</strong>

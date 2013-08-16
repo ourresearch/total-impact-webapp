@@ -17,7 +17,8 @@ var webapp_root_pretty=setRoot('{{ g.roots.webapp_pretty }}')
 // set other globals
 var api_key='{{ g.api_key }}'
 var request_url='{{ request_url }}' // i don't think we need this, keeping for legacy code
-var segmentio_key = 'g.segmentio_key'
+var segmentio_key = '{{ g.segmentio_key }}'
+var mixpanelKey = '{{ g.mixpanel_token }}'
 
 
 
