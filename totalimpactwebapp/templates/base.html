@@ -19,6 +19,15 @@
       {% set login_status = "not-logged-in" %}
    {% endif %}
 
+   {% set filename = self | extract_filename %}
+   {% set body_classes = [
+           filename,
+           "template-"+filename,
+           login_status,
+           edit_status,
+           extra_body_classes
+   ] %}
+
 
 
 
@@ -77,7 +86,7 @@
 </head>
 
 
-<body class="{{ self | extract_filename }} {{ login_status }} {{ edit_status }} template-{{ self | extract_filename }} {{ extra_body_classes }}">
+<body class="{{ body_classes|join(" ")|trim()|replace("  ", " ") }}">
 
 <div class="staging-warning alert-error alert">
    <strong>This isn't the page you're looking for:</strong>
