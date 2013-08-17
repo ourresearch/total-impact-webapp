@@ -73,14 +73,14 @@
       <div id="report-meta">
          <!-- remove "tweet this" code for now because platform.twitter loading very slowly -->
          <div id="share">
-            <!-- from https://twitter.com/about/resources/buttons#tweet -->
             <!-- based on code here: https://dev.twitter.com/docs/tweet-button -->
                              <span class="tweet-this">
+                        {% set link_to_tweet = request.url|replace('www.','') %}
                         <a href="https://twitter.com/share" class="twitter-share-button"
                            data-via="ImpactStory"
-                           data-url="{{ request.url }}"
-                           url="{{ request.url }}"
-                           data-text="Check out the impact story of my research: {{ request.url }}"
+                           data-url="{{ link_to_tweet }}"
+                           url="{{ link_to_tweet }}"
+                           data-text="Check out the impact story of my research: {{ link_to_tweet }}"
                            data-count="horizontal"></a>
                              </span>
          </div>
