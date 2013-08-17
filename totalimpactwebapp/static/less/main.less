@@ -2,6 +2,7 @@
 // useful mixins, from https://github.com/dmitryf/elements
 @import "elements.less";
 @import "bootstrap/variables.less";
+@import "variables.less";
 @linkColor: #FF4E00;
 @accentColor: #0053b0;
 @navbarHeight: 45px;
@@ -117,6 +118,8 @@ span.icon.help {
    background-position: -96px 64px;
 
 }
+
+// popovers are inserted at bottom of the page, w no containing div.
 div.popover {
    p {font-size:14px; }
    a {
@@ -124,7 +127,18 @@ div.popover {
       border-bottom: 1px dotted #555;
       &:hover{border-bottom:1px solid #555; text-decoration:none;}
    }
-   h3 {font-family: helvetica, arial, sans-serif;}
+   h3 {
+      font-family: helvetica, arial, sans-serif;
+      span.audience {
+         font-weight: bold;
+         &.scholars {
+            color: @scholarsColor;
+         }
+         &.public {
+            color:  @publicColor;
+         }
+      }
+   }
 }
 
 div.modal {

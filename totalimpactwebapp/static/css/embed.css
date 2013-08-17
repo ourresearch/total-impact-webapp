@@ -276,6 +276,15 @@ span.impactstory-embed ul li .label {
   -moz-border-radius: 5px 5px 0 0;
   border-radius: 5px 5px 0 0;
 }
+.popover.impactstory .popover-title span.audience {
+  font-weight: bold;
+}
+.popover.impactstory .popover-title span.audience.scholars {
+  color: #377eb8;
+}
+.popover.impactstory .popover-title span.audience.public {
+  color: #4daf4a;
+}
 .popover.impactstory .popover-content {
   padding: 9px 14px;
   font-size: 14px;

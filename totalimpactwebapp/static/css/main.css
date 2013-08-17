@@ -136,6 +136,15 @@ div.popover a:hover {
 div.popover h3 {
   font-family: helvetica, arial, sans-serif;
 }
+div.popover h3 span.audience {
+  font-weight: bold;
+}
+div.popover h3 span.audience.scholars {
+  color: #377eb8;
+}
+div.popover h3 span.audience.public {
+  color: #4daf4a;
+}
 div.modal h3 {
   font-family: rokkitt, helvetica, arial, sans-serif;
   border-bottom: none;
