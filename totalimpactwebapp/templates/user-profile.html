@@ -78,9 +78,9 @@
                              <span class="tweet-this">
                         <a href="https://twitter.com/share" class="twitter-share-button"
                            data-via="ImpactStory"
-                           data-url="{{request_url}}"
-                           url="{{request_url}}"
-                           data-text="Check out the impact story of my research: {{ page_title }} at "
+                           data-url="{{ request.url }}"
+                           url="{{ request.url }}"
+                           data-text="Check out the impact story of my research: {{ request.url }}"
                            data-count="horizontal"></a>
                              </span>
          </div>

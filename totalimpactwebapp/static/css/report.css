@@ -107,15 +107,6 @@ body.user-profile .modal .modal-body form.other-products {
   display: block;
   float: left;
 }
-#report-meta div#share {
-  font-size: 12px;
-  position: absolute;
-  bottom: 5px;
-  right: 0;
-}
-#report-meta div#share a#b {
-  opacity: .5 !important;
-}
 p.something-missing {
   clear: left;
   padding: 50px 20px 20px 0;
