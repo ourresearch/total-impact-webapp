@@ -72,6 +72,18 @@
    <div class="wrapper">
       <div id="report-meta">
          <!-- remove "tweet this" code for now because platform.twitter loading very slowly -->
+         <div id="share">
+            <!-- from https://twitter.com/about/resources/buttons#tweet -->
+            <!-- based on code here: https://dev.twitter.com/docs/tweet-button -->
+                             <span class="tweet-this">
+                        <a href="https://twitter.com/share" class="twitter-share-button"
+                           data-via="ImpactStory"
+                           data-url="{{request_url}}"
+                           url="{{request_url}}"
+                           data-text="Check out the impact story of my research: {{ page_title }} at "
+                           data-count="horizontal"></a>
+                             </span>
+         </div>
 
          <button class="btn btn-small btn-primary" id="import-products-button" name="{{ report_id }}" href="#"><i class="icon-upload-alt"></i>add products</button>
          <div id="report-button">

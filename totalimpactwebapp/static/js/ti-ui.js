@@ -196,4 +196,8 @@ $(document).ready(function(){
     // run analytics stuff
     tiAnalytics = new TiAnalytics(userDict)
 
+    // add the Tweet This button
+    $.getScript("//platform.twitter.com/widgets.js")
+
+
 });

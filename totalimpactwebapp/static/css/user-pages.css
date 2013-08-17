@@ -93,6 +93,7 @@ body.user-profile div.profile-header div.clearfloat {
 body.user-profile #report-meta {
   float: left;
   padding-bottom: 15px;
+  position: relative;
   margin: -10px 0 0 0;
   width: 100%;
 }
@@ -111,6 +112,12 @@ body.user-profile #report-meta div#report-button {
 }
 body.user-profile #report-meta div#report-button i {
   padding-right: 4px;
+}
+body.user-profile #report-meta div#share {
+  font-size: 12px;
+  position: absolute;
+  bottom: 5px;
+  right: 0;
 }
 body.user-profile #report-meta div#share a#b {
   opacity: .5 !important;
