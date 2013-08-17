@@ -226,8 +226,7 @@ def user_profile(url_slug):
 
         return render_template_custom(
             'user-profile.html',
-            request_url=request.url,
-            email_hash=email_hash, 
+            email_hash=email_hash,
             profile=retrieved_user,
             report_id=retrieved_user.collection_id,
             report_id_namespace="impactstory_collection_id",
@@ -767,7 +766,6 @@ def collection_report(collection_id):
         collection = json.loads(r.text)
         return render_template_custom(
             'collection.html',
-            request_url=request.url,
             page_title=collection["title"],
             report_id=collection["_id"],
             report_id_namespace="impactstory_collection_id",
@@ -788,7 +786,6 @@ def item_report(ns, id):
     r = requests.get(url)
     return render_template_custom(
         'item.html',
-        request_url=request.url,
         page_title="",
         report_id=id,
         report_id_namespace=ns,
