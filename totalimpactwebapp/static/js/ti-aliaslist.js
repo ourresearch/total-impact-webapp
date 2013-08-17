@@ -369,7 +369,7 @@ TextareaImporter.prototype = {
         this.aliases.add(newAliases)
     },
     parseTextareaArtifacts: function(str) {
-        var ids = str.split("\n");
+        var ids = str.trim().split("\n");
         var ret = [];
         for (i=0; i<ids.length; i++){
             var artifact = [];
