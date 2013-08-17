@@ -14,6 +14,3 @@ UserVoice.push(['showTab', 'classic_widget', {
     tab_position: 'middle-right',
     tab_inverted: false
 }]);
-
-// run analytics stuff
-tiAnalytics = new TiAnalytics(userDict)

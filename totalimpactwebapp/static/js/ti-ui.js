@@ -193,6 +193,7 @@ $(document).ready(function(){
 
     new Navbar()
 
-
+    // run analytics stuff
+    tiAnalytics = new TiAnalytics(userDict)
 
 });

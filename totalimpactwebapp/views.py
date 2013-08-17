@@ -58,6 +58,7 @@ css = Bundle('css/bootstrap.css',
             'css/report.css',
             'css/user-pages.css',
             'font-awesome/css/font-awesome.css',
+            filters="cssrewrite",
             output="css/packed.css"
 )
 
