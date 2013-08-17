@@ -28,11 +28,11 @@ login_manager.setup_app(app)
 
 # set up configs
 
-# Setting ASSETS_DEBUG=True makes debugging easier by NOT minimizing the assets.
-# Production should have ASSETS_DEBUG=False
-# ASSETS_DEBUG=True is the default
+# Set env PACK_ASSETS=True to pack/minimize assets.
+# Set env PACK_ASSETS=False (default) to keep them in separate files.
+# Production should be PACK_ASSETS=True
+app.config["ASSETS_DEBUG"] = (os.getenv("PACK_ASSETS") != "True")
 
-app.config["ASSETS_DEBUG"] = (os.getenv("ASSETS_DEBUG", "True") == "True")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 

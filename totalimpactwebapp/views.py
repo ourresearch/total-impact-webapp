@@ -46,7 +46,6 @@ js = Bundle(
             'js/google-analytics.js',
             'js/segmentio.js',
             'js/ti-analytics.js',
-            filters="yui_js", # comment this out if you want unminified version
             output='js/packed.js'
 )
 
@@ -59,7 +58,6 @@ css = Bundle('css/bootstrap.css',
             'css/report.css',
             'css/user-pages.css',
             'font-awesome/css/font-awesome.css',
-            filters="yui_css", # comment this out if you want unminified version
             output="css/packed.css"
 )
 
