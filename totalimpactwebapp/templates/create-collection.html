@@ -13,7 +13,7 @@
        {% include 'import-products.html' %}
 
        <div class="import-products">
-          <form class="importers register" id="make-collection" accept-charset="utf-8" action="creating" method="POST">
+          <form class="importers register" id="make-collection" accept-charset="utf-8" action="creating" method="POST" autocomplete="on">
              <h3><span class="step-number">3:</span> Add profile info</h3>
              <div class="inline-register">
                 <div class="form-item control-group email register ready">
@@ -29,7 +29,7 @@
                       <span class="error">already taken...</span>
                    </label>
                    <div class="controls">
-                      <input class="username register email required" type="text" placeholder="email" />
+                      <input id="username" class="username register email required" type="text" placeholder="email" />
                    </div>
                 </div>
 
@@ -40,7 +40,7 @@
                          <i class="icon-check success"></i>Password</span>
                    </label>
                    <div class="controls">
-                      <input type="password" placeholder="password" class="password required"/>
+                      <input id="password" type="password" placeholder="password" class="password required"/>
                    </div>
                 </div>
 

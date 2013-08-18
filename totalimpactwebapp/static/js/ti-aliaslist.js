@@ -252,7 +252,6 @@ SubmitButton.prototype = {
             surname: surname
         }
 
-        // make this call before POST so it has time to finish
         analytics.track('Created a profile')
         $("#user-dict-json").val(
             JSON.stringify(requestObj)

@@ -658,7 +658,7 @@ body.index.not-logged-in div.navbar-inner ul.nav.pull-right li span.hi {
 }
 div#tagline div.wrapper {
   width: 900px;
-  padding: 100px 0 70px;
+  padding: 100px 0 0;
   text-align: center;
 }
 div#tagline div.wrapper h1 {
@@ -678,65 +678,48 @@ div#tagline div.wrapper p.subtagline {
   font-weight: normal;
 }
 div#tagline div.wrapper #call-to-action {
-  margin: 0 auto;
-  width: 525px;
-  margin-bottom: 90px;
+  margin-bottom: 50px;
 }
-div#tagline div.wrapper #call-to-action span.container {
-  height: 114px;
-  display: block;
-  float: left;
-  width: 360px;
-}
-div#tagline div.wrapper #call-to-action span.container a#create-collection {
+div#tagline div.wrapper #call-to-action a.btn-large {
   margin: 3px 0 0 20px;
   padding: 13px 29px;
-  font-size: 2.1em;
-  font-size: 30px;
-  -webkit-border-top-right-radius: 30px;
-  -webkit-border-bottom-right-radius: 30px;
-  -webkit-border-bottom-left-radius: 30px;
-  -webkit-border-top-left-radius: 30px;
-  -moz-border-radius-topright: 30px;
-  -moz-border-radius-bottomright: 30px;
-  -moz-border-radius-bottomleft: 30px;
-  -moz-border-radius-topleft: 30px;
-  border-top-right-radius: 30px;
-  border-bottom-right-radius: 30px;
-  border-bottom-left-radius: 30px;
-  border-top-left-radius: 30px;
+  font-size: 25px;
+  -webkit-border-top-right-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  -webkit-border-top-left-radius: 10px;
+  -moz-border-radius-topright: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius-topleft: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background: #792500;
   color: #eee;
   font-family: 'rokkitt', 'georgia', serif;
+  font-family: Lato, Helvetica, Arial, sans-serif;
+  font-weight: bolder;
 }
-div#tagline div.wrapper #call-to-action span.container a#create-collection:hover {
-  background: #333;
+div#tagline div.wrapper #call-to-action a.btn-large.primary-action {
+  margin-left: 35spx;
+  background: #0053b0;
+  font-weight: bolder;
 }
-div#tagline div.wrapper #call-to-action p#example-collection {
-  font-size: 14px;
-  float: left;
-  width: 100px;
-  color: #792500;
-  margin: 2px 0 0 5px;
-  padding: 4px 0 0 5px;
-  border-left: 1px solid #callToActionColor;
+div#tagline div.wrapper #call-to-action a.btn-large.primary-action:hover {
+  background: #004797;
 }
-div#tagline div.wrapper #call-to-action p#example-collection a {
-  font-size: 25px;
-  margin-top: -5px;
-  margin-left: 5px;
-  color: #792500;
-  font-family: 'rokkitt', 'georgia', serif;
-  display: block;
-  width: 175px;
-  text-align: left;
+div#tagline div.wrapper #call-to-action a.btn-large.secondary-action {
+  background: #555;
+  font-size: 16px;
+  vertical-align: bottom;
+  color: #eee;
 }
-div#tagline div.wrapper #call-to-action p#example-collection a:hover {
-  text-decoration: underline;
-  color: #333;
+div#tagline div.wrapper #call-to-action a.btn-large.secondary-action:hover {
+  background: #444;
 }
 /* the "selling points" section
 *************************************************/
