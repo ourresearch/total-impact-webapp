@@ -133,6 +133,36 @@ function Coll(collViews){
         var thisThing = this
         this.views.startUpdating()
 
+        var incompleteAnswerCallback = function(data){
+            console.log("still updating")
+            thisThing.title = data.title
+            thisThing.alias_tiids = data.alias_tiids
+            thisThing.addItemsFromDicts(data.items)
+
+            thisThing.render.call(thisThing)
+
+            var elapsedSeconds = (new Date() - startTime)/1000
+            if (elapsedSeconds > 60) { // give up after 1 minute...
+                console.log("failed to finish update; giving up after 1 minute")
+
+                analytics.track("Timed out profile load", {
+                    "seconds": elapsedSeconds,
+                    "collection id": thisThing.id,
+                    "number products": data.items.length,
+                    "prev collection action": lastCollAction
+                })
+
+                thisThing.views.finishUpdating(thisThing.items, "error")
+
+            }
+            else {
+                console.log("trying again, so far " + elapsedSeconds + " seconds")
+                setTimeout(function(){
+                    thisThing.read(interval, lastCollAction, startTime)
+                }, interval)
+            }
+        }
+
         $.ajax({
             url: api_root+'/v1/collection/'+thisThing.id+'?key='+api_key,
             type: "GET",
@@ -140,33 +170,7 @@ function Coll(collViews){
             contentType: "application/json; charset=utf-8",
             statusCode: {
                210: function(data){
-                   console.log("still updating")
-                   thisThing.title = data.title
-                   thisThing.alias_tiids = data.alias_tiids
-                   thisThing.addItemsFromDicts(data.items)
-
-                   thisThing.render.call(thisThing)
-
-                   var elapsedSeconds = (new Date() - startTime)/1000
-                   if (elapsedSeconds > 60) { // give up after 1 minute...
-                        console.log("failed to finish update; giving up after 1 minute")
-
-                        analytics.track("Timed out profile load", {
-                            "seconds": elapsedSeconds,
-                            "collection id": thisThing.id,
-                            "number products": data.items.length,
-                            "prev collection action": lastCollAction
-                        })
-
-                   thisThing.views.finishUpdating(thisThing.items, "error")
-
-                   }
-                   else {
-                       console.log("trying again, so far " + elapsedSeconds + " seconds")
-                       setTimeout(function(){
-                           thisThing.read(interval, lastCollAction, startTime)
-                       }, interval)
-                   }
+                    incompleteAnswerCallback(data)
                },
                200: function(data) {
                    console.log("collection done updating")
