@@ -13,7 +13,7 @@ from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
 
 
 from totalimpactwebapp import app, util, db, login_manager, forms
-from totalimpactwebapp.user import User
+from totalimpactwebapp.user import User, create_user
 from totalimpactwebapp import views_helpers
 import newrelic.agent
 
@@ -194,8 +194,16 @@ def redirect_to_profile(dummy):
     return user_profile(dummy)
 
 
+@app.route("/creating", methods=["POST"])
+def creating_profile():
+    user_request_dict = json.loads(request.form["user-dict-json"])
+    user = create_user(user_request_dict, g.roots["api"], db)
 
-def user_profile(url_slug):
+    login_user(user)
+    return redirect("/" + user.url_slug)
+
+
+def user_profile(url_slug, new_user_request_obj=None):
 
     retrieved_user = User.query.filter(
         func.lower(User.url_slug) == func.lower(url_slug) ).first()
@@ -220,8 +228,6 @@ def user_profile(url_slug):
                 db.session.add(retrieved_user)
                 db.session.commit()
 
-        # fyi we're using presence of email_hash var to autodetect profile pages for now
-        #  in base.html. fragile.
         email_hash = hashlib.md5(retrieved_user.email.lower()).hexdigest()
 
         return render_template_custom(
@@ -403,55 +409,6 @@ def change_password(reset_token):
 
 
 #------------------ /user -----------------
-
-@app.route("/user", methods=["POST"])
-def user_create():
-    """create a user"""
-    logger.debug("POST /user: Creating new user")
-
-    alias_tiids = request.json["alias_tiids"]
-    url = g.roots["api"] + "/collection"
-    email = request.json["email"].lower()
-
-    data = {"aliases": alias_tiids, "title": email}
-    headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-
-    r = requests.post(url, data=json.dumps(data), headers=headers)
-
-    # have to explicitly unicodify ascii-looking strings even when encoding
-    # is set by client, it seems:
-    user = User(
-        email=unicode(email),
-        password=unicode(request.json["password"]),
-        collection_id=unicode(r.json()["collection"]["_id"]),
-        given_name=unicode(request.json["given_name"]),
-        surname=unicode(request.json["surname"]),
-        orcid_id=unicode(request.json["external_profile_ids"]["orcid"]),
-        github_id=unicode(request.json["external_profile_ids"]["github"]),
-        slideshare_id=unicode(request.json["external_profile_ids"]["slideshare"])
-    )
-    db.session.add(user)
-    try:
-        db.session.commit()
-    except IntegrityError as e:
-        logger.info(e)
-        logger.info(u"tried to mint a url slug ('{slug}') that already exists".format(
-            slug=user.url_slug
-        ))
-        db.session.rollback()
-        user.uniqueify_slug()
-        db.session.add(user)
-        db.session.commit()
-
-    logger.debug(u"POST /user: Finished creating user {id}, {webapp_pretty}/{slug}".format(
-        id=user.id,
-        webapp_pretty=g.roots["webapp_pretty"],
-        slug=user.url_slug
-    ))
-
-    login_user(user)
-    return json_for_client({"user_id": user.id, "url_slug": user.url_slug})
-
 
 @app.route("/user", methods=["GET"])
 def user_view():

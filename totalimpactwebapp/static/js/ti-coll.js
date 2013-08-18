@@ -191,9 +191,13 @@ function Coll(collViews){
 
 
                    return false;
+               },
+               404: function(){
+                   // add this later when the collection create call is asynch on the server.
+                   console.log("got a 404; the collection hasn't been created yet. That's ok, trying again.")
                }
             }
-            });
+        });
     }
 
 

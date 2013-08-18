@@ -253,20 +253,12 @@ SubmitButton.prototype = {
         }
 
         // make this call before POST so it has time to finish
-        analytics.track('Created a profile') 
+        analytics.track('Created a profile')
+        $("#user-dict-json").val(
+            JSON.stringify(requestObj)
+        )
 
-        $.ajax({
-           url: webapp_root+'/user',
-           type: "POST",
-           dataType: "json",
-           contentType: "application/json; charset=utf-8",
-           data:  JSON.stringify(requestObj),
-           success: function(data){
-                console.log("finished creating the user!")
-                location.href = "/" + data.url_slug; 
-           }
-        })
-        return false
+        return true
     },
     update: function(coll){
         if (!this.start()) return false

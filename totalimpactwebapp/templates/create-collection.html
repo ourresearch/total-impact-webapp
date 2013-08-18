@@ -13,7 +13,7 @@
        {% include 'import-products.html' %}
 
        <div class="import-products">
-          <form class="importers register" id="make-collection" accept-charset="utf-8">
+          <form class="importers register" id="make-collection" accept-charset="utf-8" action="creating" method="POST">
              <h3><span class="step-number">3:</span> Add profile info</h3>
              <div class="inline-register">
                 <div class="form-item control-group email register ready">
@@ -60,6 +60,7 @@
                       <button name="run" type="submit" id="go-button" disabled="true" class="create ready btn btn-large btn-primary">Make my profile</button>
                       <span class="working go"><img class="center" src="{{ url_for('static', filename='img/ajax-loader.gif') }}" />Creating...</span>
                    </div>
+                   <input type="hidden" id="user-dict-json" name="user-dict-json" />
 
                 </div>
 

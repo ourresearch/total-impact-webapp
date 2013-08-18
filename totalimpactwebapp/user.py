@@ -1,6 +1,7 @@
 from totalimpactwebapp import db
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.exc import IntegrityError
 
 import requests
 import json
@@ -9,6 +10,7 @@ import datetime
 import random
 import logging
 import unicodedata
+import string
 
 logger = logging.getLogger("tiwebapp.user")
 
@@ -35,10 +37,9 @@ class User(db.Model):
         return (self.given_name + " " + self.surname).strip()
 
 
-    def __init__(self, email, password, collection_id, **kwargs):
+    def __init__(self, email, password, **kwargs):
         self.email = email
         self.password = self.set_password(password)
-        self.collection_id = collection_id
 
         super(User, self).__init__(**kwargs)
         self.created = now_in_utc()
@@ -56,7 +57,6 @@ class User(db.Model):
             ascii_slug = "user" + str(random.randint(1000, 999999))
 
         return ascii_slug
-
 
 
     def uniqueify_slug(self):
@@ -138,6 +138,7 @@ def add_products_to_core_collection(collection_id, aliases_to_add):
 
     return (r.text, r.status_code)
 
+
 def delete_products_from_core_collection(collection_id, tiids_to_delete):
     query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
@@ -151,3 +152,82 @@ def delete_products_from_core_collection(collection_id, tiids_to_delete):
 
     return (r.text, r.status_code)
 
+
+
+def make_collection_for_user(user, alias_tiids, prepped_request):
+    email = user.email.lower()
+
+    prepped_request.headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+    prepped_request.data = {"aliases": alias_tiids, "title": email}
+    r = requests.Session.send(prepped_request)
+
+    user.collection_id = r.json()["collection"]["_id"]
+    return user
+
+
+
+
+def create_user(user_request_dict, api_root, db):
+    logger.debug("Creating new user")
+
+    # create the user's collection first
+    # ----------------------------------
+    lowercased_email = unicode(user_request_dict["email"]).lower()
+    collection_id = _make_id(6)
+
+    url = api_root + "/collection"
+    params = {"collection_id": collection_id}
+    data = {
+        "aliases": user_request_dict["alias_tiids"],
+        "title": lowercased_email
+    }
+    headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+
+    r = requests.post(url, data=json.dumps(data), headers=headers, params=params)
+
+
+    # then create the actual user
+    #----------------------------
+
+    # have to explicitly unicodify ascii-looking strings even when encoding
+    # is set by client, it seems:
+    user = User(
+        email=lowercased_email,
+        password=unicode(user_request_dict["password"]),
+        given_name=unicode(user_request_dict["given_name"]),
+        surname=unicode(user_request_dict["surname"]),
+        collection_id=collection_id,
+        orcid_id=unicode(user_request_dict["external_profile_ids"]["orcid"]),
+        github_id=unicode(user_request_dict["external_profile_ids"]["github"]),
+        slideshare_id=unicode(user_request_dict["external_profile_ids"]["slideshare"])
+    )
+    db.session.add(user)
+
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        logger.info(e)
+        logger.info(u"tried to mint a url slug ('{slug}') that already exists".format(
+            slug=user.url_slug
+        ))
+        db.session.rollback()
+        user.uniqueify_slug()
+        db.session.add(user)
+        db.session.commit()
+
+    logger.debug(u"POST /user: Finished creating user {id} with slug '{slug}'".format(
+        id=user.id,
+        slug=user.url_slug
+    ))
+
+    return user
+
+def _make_id(len=6):
+    '''Make an id string.
+
+    Currently uses only lowercase and digits for better say-ability. Six
+    places gives us around 2B possible values.
+    C/P'd from core/collection.py
+    '''
+    choices = string.ascii_lowercase + string.digits
+    return ''.join(random.choice(choices) for x in range(len))
