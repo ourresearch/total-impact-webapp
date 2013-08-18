@@ -681,7 +681,6 @@ div#tagline div.wrapper #call-to-action {
   margin-bottom: 50px;
 }
 div#tagline div.wrapper #call-to-action a.btn-large {
-  margin: 3px 0 0 20px;
   padding: 13px 29px;
   font-size: 25px;
   -webkit-border-top-right-radius: 10px;
@@ -705,9 +704,9 @@ div#tagline div.wrapper #call-to-action a.btn-large {
   font-weight: bolder;
 }
 div#tagline div.wrapper #call-to-action a.btn-large.primary-action {
-  margin-left: 35spx;
   background: #0053b0;
   font-weight: bolder;
+  margin-right: 20px;
 }
 div#tagline div.wrapper #call-to-action a.btn-large.primary-action:hover {
   background: #004797;
