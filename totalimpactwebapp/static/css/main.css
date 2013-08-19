@@ -436,12 +436,12 @@ div.error .success {
 div.error label {
   color: #b94a48;
 }
-div label {
+div.control-group label {
   clear: both;
   width: 250px;
   font-weight: bold;
 }
-div img {
+div.control-group img {
   height: 20px;
   margin: -3px 5px 0 0;
 }
@@ -712,9 +712,9 @@ div#tagline div.wrapper #call-to-action a.btn-large.primary-action:hover {
 }
 div#tagline div.wrapper #call-to-action a.btn-large.secondary-action {
   background: #555;
-  font-size: 16px;
+  font-size: 18px;
   vertical-align: bottom;
-  font-weight: bolder;
+  font-weight: normal;
   color: #eee;
 }
 div#tagline div.wrapper #call-to-action a.btn-large.secondary-action:hover {

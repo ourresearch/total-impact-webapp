@@ -435,14 +435,16 @@ div {
       label { color: @errorText;}
    }
 
-   label {
-      clear:both;
-      width: 250px;
-      font-weight: bold;
-   }
-   img{
-      height: 20px;
-      margin: -3px 5px 0 0;
+   &.control-group {
+      label {
+         clear:both;
+         width: 250px;
+         font-weight: bold;
+      }
+      img{
+         height: 20px;
+         margin: -3px 5px 0 0;
+      }
    }
 }
 
@@ -760,9 +762,9 @@ div#tagline {
 
             &.secondary-action{
                background: #555;
-               font-size: 16px;
+               font-size: 18px;
                vertical-align: bottom;
-               font-weight: bolder;
+               font-weight: normal;
                color:  #eee;
                &:hover {
                   background: #444;
