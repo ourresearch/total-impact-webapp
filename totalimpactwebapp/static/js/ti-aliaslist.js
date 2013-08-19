@@ -113,25 +113,25 @@ AliasListInputs.prototype = {
 
 //        if (this.email == $(input).val()) return true // no change
         if (!$(input).val()) {
-            changeElemState($(input), "ready")
+            changeControlGroupState($(input), "ready")
             return true
         }
 
         var that = this
         that.email = $(input).val()
-        changeElemState($(input), "working")
+        changeControlGroupState($(input), "working")
         $("#go-button").attr("disabled", "true")
 
 
         this.user.checkUsername(
             that.email,
             function(){
-                changeElemState($(input), "success")
+                changeControlGroupState($(input), "success")
                 that.emailIsValid = true
                 that.validateRegistrationForm()
             },
             function(){
-                changeElemState($(input), "error")
+                changeControlGroupState($(input), "error")
                 that.emailIsValid = false
                 that.validateRegistrationForm()
             }
@@ -146,7 +146,7 @@ AliasListInputs.prototype = {
 
         if (this.email != email$.val()) {
             valid = false
-            changeElemState(email$, "ready")
+            changeControlGroupState(email$, "ready")
         }
         if (!this.emailIsValid) {
             valid = false
@@ -155,22 +155,22 @@ AliasListInputs.prototype = {
         // password
         var pw$ = $("input.password")
         if (pw$.val().length > 3) {
-            changeElemState(pw$,  "success" )
+            changeControlGroupState(pw$,  "success" )
         }
         else {
             valid = false
-            changeElemState(pw$, "ready" )
+            changeControlGroupState(pw$, "ready" )
         }
 
         // names
         given$ = $("input.name.given")
         surname$ = $("input.name.surname")
         if (given$.val() && surname$.val()){
-            changeElemState(given$, "success")
+            changeControlGroupState(given$, "success")
         }
         else {
             valid = false
-            changeElemState(given$, "ready")
+            changeControlGroupState(given$, "ready")
         }
 
 
@@ -191,6 +191,9 @@ AliasListInputs.prototype = {
                 if (!this$.val()) {
                     this$.val(placeholderText).addClass("default")
                     return false
+                }
+                else {
+                    this$.parents(".import-products")
                 }
             })
             this$.focus(function(){
@@ -221,7 +224,7 @@ AliasListInputs.prototype = {
         console.log("REEEEEEEEEEE SEEEETTTT!")
         this.aliases.clear()
         $(".import-products .control-group").each(function(){
-            changeElemState(this, "ready")
+            changeControlGroupState(this, "ready")
         })
         $(".import-products input").val("")
         $(".import-products textarea").val("")
@@ -274,7 +277,7 @@ SubmitButton.prototype = {
             return false
         }
         else {
-            changeElemState(this.elem$, "working")
+            changeControlGroupState(this.elem$, "working")
             console.log(this.elem$)
             return true
         }
@@ -321,11 +324,11 @@ UsernameImporter.prototype = {
 
     },
     start:function() {
-        changeElemState(this.elem$, "working")
+        changeControlGroupState(this.elem$, "working")
     },
     update: function(){},
     done: function(data, providerName, queryStr){
-        changeElemState(this.elem$, "success")
+        changeControlGroupState(this.elem$, "success")
 
         analytics.track("Imported products", {
             "import source": providerName,
@@ -341,7 +344,7 @@ UsernameImporter.prototype = {
             .html(this.aliases.numAddedLast)
     },
     failure: function(request) {
-        changeElemState(this.elem$, "error")
+        changeControlGroupState(this.elem$, "error")
     }
 }
 
@@ -483,7 +486,7 @@ BibtexImporter.prototype = {
 
     },
     start:function() {
-        changeElemState(this.elem$, "working")
+        changeControlGroupState(this.elem$, "working")
     },
     update: function(entries, errors){
         errors = errors || 0
@@ -511,7 +514,7 @@ BibtexImporter.prototype = {
     },
     done: function(entries){
         console.log("we're done!")
-        changeElemState(this.elem$, "success")
+        changeControlGroupState(this.elem$, "success")
         this.aliases.add(entries.aliases)
         this.elem$
             .parents(".control-group")
@@ -519,7 +522,7 @@ BibtexImporter.prototype = {
             .html(this.aliases.numAddedLast)
     },
     failure: function() {
-        changeElemState(this.elem$, "error")
+        changeControlGroupState(this.elem$, "error")
     },
     updateProgressbar: function(total, remaining) {
         var done = total - remaining

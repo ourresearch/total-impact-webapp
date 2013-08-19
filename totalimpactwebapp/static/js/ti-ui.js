@@ -11,8 +11,13 @@ var tiLinkColor = "#FF4E00"
 var ajaxLoadImg = "<img class='loading' src='../static/img/ajax-loader.gif' alt='loading...' />";
 
 
-changeElemState = function(elem, newClassName){
+changeElemState = function(elem, newStateName){
     var states = ["inactive", "ready", "working", "success", "error"]
+    $(elem)
+        .removeClass(states.join(" "))
+        .addClass(newStateName)
+}
+changeControlGroupState = function(elem, newStateName){
     var controlGroup$
     if ($(elem).hasClass("control-group")) {
         controlGroup$ = $(elem)
@@ -20,10 +25,10 @@ changeElemState = function(elem, newClassName){
     else {
         controlGroup$ = $(elem).parents(".control-group")
     }
-    controlGroup$
-        .removeClass(states.join(" "))
-        .addClass(newClassName)
+    changeElemState(controlGroup$, newStateName)
 }
+
+
 
 // shim Object.create for inheritance.
 // from https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/create#Polyfill

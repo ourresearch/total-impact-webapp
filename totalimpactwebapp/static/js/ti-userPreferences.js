@@ -93,7 +93,7 @@ UserPreferences.prototype = {
                 new_password: $("#new-pw").val()
             }
 
-            changeElemState(
+            changeControlGroupState(
                 this$.find("div.control-group"),
                 "working"
             )
@@ -105,7 +105,7 @@ UserPreferences.prototype = {
                 contentType: "application/json; charset=utf-8",
                 data:  JSON.stringify(requestObj),
                 success: function(data){
-                    changeElemState(
+                    changeControlGroupState(
                         $("div.control-group"),
                         "ready"
                     )
@@ -115,12 +115,12 @@ UserPreferences.prototype = {
                 },
                 error: function(e, textStatus, errorThrown) {
                     if (e.status === 403) {
-                        changeElemState(
+                        changeControlGroupState(
                             $("div.control-group.enter-current-pw"),
                             "error"
                         )
                         // stop the spinner gif, bring back submit button.
-                        changeElemState(
+                        changeControlGroupState(
                             $("div.control-group.confirm-new-pw"),
                             "ready"
                         )

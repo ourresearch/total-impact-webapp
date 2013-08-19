@@ -27,20 +27,20 @@ UserCreds.prototype = {
         var email = this$.find("input#email").val()
         if (!email) return false
 
-        changeElemState(feedback$, "working")
+        changeControlGroupState(feedback$, "working")
 
         $.ajax({
             url: webapp_root_pretty+'/user/' + email +'/password',
             type: "GET",
             success: function(data){
-                changeElemState(feedback$, "success")
+                changeControlGroupState(feedback$, "success")
                 alertWarning$.slideUp()
                 return false
             },
             error: function(e, textStatus, errorThrown) {
                if (e.status === 404) {
                    alertWarning$.slideDown()
-                   changeElemState(feedback$, "ready")
+                   changeControlGroupState(feedback$, "ready")
                    return false
                }
             }
@@ -62,20 +62,20 @@ UserCreds.prototype = {
         var pwConfirm = this$.find("input#confirm-new-pw").val()
 
         if (!pw && !pwConfirm) {
-            changeElemState(feedback$, "ready")
+            changeControlGroupState(feedback$, "ready")
             activate()
             return
         }
         else if (pw && !pwConfirm) {
-            changeElemState(feedback$, "ready")
+            changeControlGroupState(feedback$, "ready")
             deactivate()
         }
         else if (pwConfirm !== pw) {
-            changeElemState(feedback$,"error")
+            changeControlGroupState(feedback$,"error")
             deactivate()
         }
         else {
-            changeElemState(feedback$, "success")
+            changeControlGroupState(feedback$, "success")
             activate()
         }
         return false

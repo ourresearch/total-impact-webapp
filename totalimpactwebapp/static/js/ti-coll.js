@@ -285,7 +285,7 @@ function CollViews() {
         $("img.loading").remove()
 
         $("body.report h2").before(ajaxLoadImg)
-        changeElemState(
+        changeControlGroupState(
             $("body.user-profile #num-items"),
             "working"
         )
@@ -301,7 +301,7 @@ function CollViews() {
     this.finishUpdating = function(items, state){
         // setup page header
         $("#page-header img").remove()
-        changeElemState(
+        changeControlGroupState(
             $("body.user-profile #num-items"),
             state
         )
