@@ -168,7 +168,7 @@ def make_collection_for_user(user, alias_tiids, prepped_request):
 
 
 def create_user(user_request_dict, api_root, db):
-    logger.debug("Creating new user")
+    logger.debug(u"Creating new user")
 
     # create the user's collection first
     # ----------------------------------
@@ -206,7 +206,7 @@ def create_user(user_request_dict, api_root, db):
     try:
         db.session.commit()
     except IntegrityError as e:
-        logger.info(e)
+        logger.info(unicode(e))
         logger.info(u"tried to mint a url slug ('{slug}') that already exists".format(
             slug=user.url_slug
         ))

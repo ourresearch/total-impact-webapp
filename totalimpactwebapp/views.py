@@ -126,7 +126,7 @@ def load_user(user_id):
 
 @app.before_first_request
 def setup_db_tables():
-    logger.info("first request; setting up db tables.")
+    logger.info(u"first request; setting up db tables.")
     db.create_all()
 
 
@@ -154,7 +154,7 @@ def load_globals():
 def log_ip_address():
     if request.endpoint != "static":
         ip_address = request.remote_addr
-        logger.info("%30s IP address calling %s %s" % (ip_address, request.method, request.url))
+        logger.info(u"%30s IP address calling %s %s" % (ip_address, request.method, request.url))
 
 @app.after_request
 def add_crossdomain_header(resp):
@@ -303,7 +303,7 @@ def collection_create():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
-    logger.debug("user trying to log in.")
+    logger.debug(u"user trying to log in.")
 
     if g.user is not None and g.user.is_authenticated():
         return redirect("/" + g.user.url_slug)
@@ -343,7 +343,7 @@ def logout():
 
 @app.route("/reset-password", methods=["GET"])
 def request_reset_token():
-    logger.debug("user trying to reset password.")
+    logger.debug(u"user trying to reset password.")
 
     if g.user is not None and g.user.is_authenticated():
         return redirect("/" + g.user.url_slug + "/preferences")
@@ -457,7 +457,7 @@ def user_products_view_and_modify(userId):
 
 @app.route("/user/<email>/password", methods=["GET"])
 def get_password_reset_link(email):
-    email = email.lower()
+    email = unicode(email).lower()
     retrieved_user = User.query.filter_by(email=email).first()
     if retrieved_user is None:
         abort(404, "That user doesn't exist.")
@@ -495,7 +495,7 @@ team</p>""".format(url=full_reset_url)
         "track_clicks": False
     }
     mailer.messages.send(msg)
-    logger.info("Sent a password reset email to " + email)
+    logger.info(u"Sent a password reset email to " + email)
 
     return json_for_client({"message": "link emailed."})
 
@@ -574,7 +574,7 @@ def user_slug_modify(userId, new_slug):
         if request.args.get("fail_on_duplicate") in ["true", "yes", 1]:
             abort(409, "this url slug already exists") # see http://stackoverflow.com/a/3826024/226013
         else:
-            logger.info("tried to mint a url slug ('{slug}') that already exists, so appending number".format(
+            logger.info(u"tried to mint a url slug ('{slug}') that already exists, so appending number".format(
                 slug=retrieved_user.url_slug
             ))
             # to de-duplicate, mint a slug with a random number on it
@@ -814,7 +814,7 @@ try:
         resp = make_response("42", 200)
         return resp
 except KeyError:
-    logger.error("BLITZ_API_KEY environment variable not defined, not setting up validation api endpoint")
+    logger.error(u"BLITZ_API_KEY environment variable not defined, not setting up validation api endpoint")
 
 
 @app.route('/hirefire/test', methods=["GET"])
@@ -831,7 +831,7 @@ try:
         resp.mimetype = "application:json"
         return resp
 except KeyError:
-    logger.error("HIREFIRE_TOKEN environment variable not defined, not setting up validation api endpoint")
+    logger.error(u"HIREFIRE_TOKEN environment variable not defined, not setting up validation api endpoint")
 
 
 @app.route('/hirefireapp/test', methods=["GET"])
@@ -847,7 +847,7 @@ try:
         resp.mimetype = "application:json"
         return resp
 except KeyError:
-    logger.error("HIREFIREAPP_TOKEN environment variable not defined, not setting up validation api endpoint")
+    logger.error(u"HIREFIREAPP_TOKEN environment variable not defined, not setting up validation api endpoint")
 
 
 @app.route('/logo')
