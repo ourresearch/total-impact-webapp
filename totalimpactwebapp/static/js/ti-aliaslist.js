@@ -358,60 +358,83 @@ TextareaImporter.prototype = {
     pull: function(){
         var newAliases = this.parseTextareaArtifacts(this.elem$.val())
         this.aliases.add(newAliases)
-    },
-    parseTextareaArtifacts: function(str) {
+    }
+    ,parseTextareaArtifacts: function(str) {
         var ids = str.trim().split("\n");
         var ret = [];
         for (i=0; i<ids.length; i++){
-            var artifact = [];
             var thisId = ids[i];
+            if (!thisId) continue
 
-            if (thisId.indexOf(":") > 0) {
-                beforeColon = thisId.split(':')[0]; // namespace
-                afterColon = thisId.substr(beforeColon.length + 1) // id
+            // stacked in order of preference for selection
+            var namespaceIdPairs = [
+                ["doi", this.getDoi(thisId)],
+                ["pmid", this.getPMID(thisId)],
+                ["url", this.getUrl(thisId)],
+                ["unknown", thisId]
+            ]
 
-                // handle urls:
-                if (beforeColon == "http" || beforeColon == "https"){
-                    if (afterColon.indexOf("//dx.doi.org/10.") == 0) {
-                        namespace = "doi"
-                        thisId = afterColon.replace("//dx.doi.org/", "")
-                    } else {
-                        namespace = "url";
-                        // keep thisId as whole id including the http prefix so it looks like a url
-                    }
-                } else if (beforeColon == "doi" || beforeColon == "pmid") {
-                        namespace = beforeColon
-                        thisId = afterColon
-                }
-                // otherwise ignore because namespace content before colon not recognized
-            }
-            else {
-                if (thisId.length > 0) {
-                    var isnum_with_possible_period = /^[\d\.]+$/.test(thisId)
-                    // handle dois entered without the doi prefix
-                    if (thisId.substring(0,3) == "10.") {
-                        namespace = "doi"
-                    } else if (isnum_with_possible_period && (thisId.length > 5) && (thisId.length <= 8)) {
-                        // definition of pmid from http://www.nlm.nih.gov/bsd/mms/medlineelements.html#pmid
-                        // this doesn't catch short PMIDs, but that's ok
-                        namespace = "pmid"
-                    } else {
-                        namespace = "unknown"
-                    }
-                }
-            }
-            if (typeof thisId != "undefined") {
-                artifact[0] = namespace
-                artifact[1] = thisId
-                ret.push(artifact);
-            }
+            // pick the first pair that has a truthy id
+            var bestNamespaceIdPair = _.find(namespaceIdPairs, function(pair){
+                return !!pair[1]
+            })
+
+            ret.push(bestNamespaceIdPair);
         }
+        console.log("returning this aliaslist: ", ret)
         return ret;
-    },
-    start:function(){},
-    update:function(){},
-    done:function(){},
-    failure:function(){}
+    }
+    ,getDoi:function(aliasStr){
+        /* works for these patterns:
+
+            "http://dx.doi.org/10.<str>",
+            "https://dx.doi.org/10.<str>",
+            "http://doi.org/10.<str>",
+            "https://doi.org/10.<str>",
+            "doi:10.<str>"
+        */
+
+        var regex = new RegExp("^https*://(dx\.)*doi.org/(10\..+)")
+        urlMatch = regex.exec(aliasStr)
+
+        if (urlMatch) {
+            return urlMatch[2]  // just the 10.<str> part
+        }
+        else if (aliasStr.indexOf("10.") === 0) {
+            return aliasStr
+        }
+        else if (aliasStr.indexOf("doi:10.") === 0){
+            return aliasStr.slice(4)
+        }
+        else return null
+    }
+    ,getPMID: function(aliasStr){
+        var isnum_with_possible_period = /^[\d\.]+$/.test(aliasStr)
+
+        if (aliasStr.indexOf("pmid:") === 0){
+            return aliasStr.slice(5)
+        }
+        else if (isnum_with_possible_period && (aliasStr.length > 5) && (aliasStr.length <= 8)) {
+            return aliasStr
+        }
+        else {
+            return null
+        }
+    }
+    ,getUrl: function(aliasStr) {
+        var regex = new RegExp("^https*://.+")
+        var matches = aliasStr.match(regex)
+        if (matches) {
+            return matches[0]
+        }
+        else {
+            return null
+        }
+    }
+    ,start:function(){}
+    ,update:function(){}
+    ,done:function(){}
+    ,failure:function(){}
 
 }
 
