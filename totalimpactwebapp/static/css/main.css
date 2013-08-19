@@ -191,7 +191,7 @@ body.staging div.staging-warning strong {
   margin-left: 17px;
 }
 ul.flashes {
-  top: 45px;
+  top: 50px;
   position: absolute;
   width: 100%;
 }
@@ -228,12 +228,13 @@ div.navbar {
   width: 100%;
   margin: 0 auto;
   font-family: rokkitt, cambria, serif;
+  padding-top: 5px;
   border-bottom: 1px solid #999;
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   background: #fff;
-  height: 44px;
+  height: 49px;
   position: fixed;
   top: 0;
   left: 0;
@@ -320,7 +321,7 @@ div.navbar ul.nav.pull-right > li.preferences a.dropdown-toggle i {
 div.navbar ul.nav.pull-right > li.preferences ul.dropdown-menu {
   background: #777;
   background: #f2f2f2;
-  top: 42px;
+  top: 47px;
   border: 1px solid #999;
   border-top: none;
   right: -2px;
@@ -579,6 +580,8 @@ div.import-products form.importers div.control-group.submit #go-button {
   text-align: center;
   padding: 15px;
   background: #0053b0;
+  text-shadow: none;
+  border: none;
   font-size: 22px;
 }
 div.import-products form.importers div.control-group.submit #go-button:hover {

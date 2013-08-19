@@ -5,7 +5,7 @@
 @import "variables.less";
 @linkColor: #FF4E00;
 @accentColor: #0053b0;
-@navbarHeight: 45px;
+@navbarHeight: 50px;
 
 
 
@@ -247,6 +247,7 @@ div.navbar {
    width:100%;
    margin: 0 auto;
    font-family: rokkitt, cambria, serif;
+   padding-top:5px;
 
    border-bottom:1px solid #999;
    .drop-shadow(0, 0, 10px, 0.3);
@@ -619,6 +620,8 @@ div.import-products {
                text-align: center;
                padding: 15px;
                background: @accentColor;
+               text-shadow: none;
+               border: none;
                font-size: 22px;
                &:hover{
                   background: @accentColorHover;
