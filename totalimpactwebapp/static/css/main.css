@@ -701,11 +701,10 @@ div#tagline div.wrapper #call-to-action a.btn-large {
   color: #eee;
   font-family: 'rokkitt', 'georgia', serif;
   font-family: Lato, Helvetica, Arial, sans-serif;
-  font-weight: bolder;
 }
 div#tagline div.wrapper #call-to-action a.btn-large.primary-action {
   background: #0053b0;
-  font-weight: bolder;
+  font-weight: bold;
   margin-right: 20px;
 }
 div#tagline div.wrapper #call-to-action a.btn-large.primary-action:hover {
@@ -715,6 +714,7 @@ div#tagline div.wrapper #call-to-action a.btn-large.secondary-action {
   background: #555;
   font-size: 16px;
   vertical-align: bottom;
+  font-weight: bolder;
   color: #eee;
 }
 div#tagline div.wrapper #call-to-action a.btn-large.secondary-action:hover {
