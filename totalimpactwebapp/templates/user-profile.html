@@ -182,17 +182,16 @@ HTML for modal windows that bootstrap will pop up
 
 <div id="import-products-modal" class="modal hide fade">
    <div class="modal-header import-products">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <div class="control-group submit ready" id="collection-name">
-         <div class="controls">
-            <button name="run" type="submit" id="go-button" class="ready btn btn-primary update">Add Products</button>
-            <div class="working"><img src="{{ url_for('static', filename='img/ajax-loader-transparent.gif') }}" /></div>
+      <form class="profile-products update">
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+         <div class="control-group submit inactive" id="collection-name">
+            <div class="controls">
+               <button name="run" type="submit" id="go-button" class="ready btn btn-primary btn-large update">Add <span class="value"></span> products</button>
+               <div class="working"><i class="icon-refresh icon-spin icon-2x"></i><span class="text">working...</span></div>
+            </div>
          </div>
-      </div>
-      <div class="indicator">
-         <p id="artcounter"><span class="count">0</span> new products</p>
-      </div>
-      <h3>Import products</h3>
+         <h3>Import products</h3>
+      </form>
    </div>
    <div class="modal-body">
       {% include 'import-products.html' %}

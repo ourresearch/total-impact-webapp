@@ -361,87 +361,87 @@ div.navbar ul.nav.pull-right li#logged-in div.dropdown-menu {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div.control-group.inactive .ready {
+div.inactive .ready {
   display: none;
 }
-div.control-group.inactive .working {
+div.inactive .working {
   display: none;
 }
-div.control-group.inactive .success {
+div.inactive .success {
   display: none;
 }
-div.control-group.inactive .error {
+div.inactive .error {
   display: none;
 }
-div.control-group.ready .inactive {
+div.ready .inactive {
   display: none;
 }
-div.control-group.ready .working {
+div.ready .working {
   display: none;
 }
-div.control-group.ready .success {
+div.ready .success {
   display: none;
 }
-div.control-group.ready .error {
+div.ready .error {
   display: none;
 }
-div.control-group.ready label {
+div.ready label {
   color: #555;
 }
-div.control-group.working .inactive {
+div.working .inactive {
   display: none;
 }
-div.control-group.working .ready {
+div.working .ready {
   display: none;
 }
-div.control-group.working .success {
+div.working .success {
   display: none;
 }
-div.control-group.working .error {
+div.working .error {
   display: none;
 }
-div.control-group.working label {
+div.working label {
   color: #ff4e00;
 }
-div.control-group.working button {
+div.working button {
   display: none;
 }
-div.control-group.success .inactive {
+div.success .inactive {
   display: none;
 }
-div.control-group.success .ready {
+div.success .ready {
   display: none;
 }
-div.control-group.success .working {
+div.success .working {
   display: none;
 }
-div.control-group.success .error {
+div.success .error {
   display: none;
 }
-div.control-group.success label {
+div.success label {
   color: #468847;
 }
-div.control-group.error .inactive {
+div.error .inactive {
   display: none;
 }
-div.control-group.error .ready {
+div.error .ready {
   display: none;
 }
-div.control-group.error .working {
+div.error .working {
   display: none;
 }
-div.control-group.error .success {
+div.error .success {
   display: none;
 }
-div.control-group.error label {
+div.error label {
   color: #b94a48;
 }
-div.control-group label {
+div label {
   clear: both;
   width: 250px;
   font-weight: bold;
 }
-div.control-group img {
+div img {
   height: 20px;
   margin: -3px 5px 0 0;
 }

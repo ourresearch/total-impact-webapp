@@ -10,39 +10,47 @@ body.user-profile .modal {
   width: 675px;
   margin: -250px 0 0 -337.5px;
 }
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group {
+  float: right;
+  margin-right: 13px;
+  font-family: Lato, Helvetica, arial, sans-serif;
+}
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group button {
+  font-weight: normal;
+  background: #0053b0;
+}
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group button span.value {
+  font-weight: bolder;
+}
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group div.working {
+  margin-top: 5px;
+  text-align: center;
+  color: #bbb;
+}
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group div.working i {
+  margin-right: 10px;
+  font-size: 24px;
+}
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group div.working span.text {
+  font-size: 25px;
+}
 body.user-profile .modal#import-products-modal .modal-body {
   float: right;
 }
 body.user-profile .modal .modal-header {
-  border-bottom: 1px solid #555;
-  background: #555;
+  background: #eee;
+  padding: 30px;
 }
 body.user-profile .modal .modal-header h3 {
-  color: #fff;
+  color: #555;
   font-weight: normal;
+  font-size: 30px;
+  font-weight: bolder;
+  font-family: Lato, helvetica, arial, sans-serif;
 }
-body.user-profile .modal .modal-header div.indicator {
-  color: #fff;
-  float: right;
-  margin: 4px 10px 0 0;
-  font-weight: normal;
-}
-body.user-profile .modal .modal-header div.indicator span.count {
-  font-weight: bold;
-}
-body.user-profile .modal .modal-header div.control-group {
-  float: right;
-  margin-right: 13px;
-}
-body.user-profile .modal .modal-header div.control-group button {
-  width: 150px;
-}
-body.user-profile .modal .modal-header div.control-group div.working {
-  width: 90px;
-  text-align: center;
-}
-body.user-profile .modal .modal-header div.control-group div.working img {
-  height: 33px;
+body.user-profile .modal .modal-header button.close {
+  margin-left: 10px;
+  font-size: 30px;
 }
 body.user-profile .modal .modal-body {
   max-height: inherit;
