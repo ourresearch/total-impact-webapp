@@ -3,21 +3,20 @@ var AliasList = function(){}
 AliasList.prototype = {
     aliasesByImporter: {},
     numAddedLast: 0,
-    add: function(aliases, importerName, someAliasesCallback, noAliasesCallback) {
+    add: function(aliases, importerName, callbacks) {
         var oldLen = this.count()
         this.aliasesByImporter[importerName] = aliases
         this.numAddedLast = this.count() - oldLen
         this.onChange()
         if (this.count()){
-            someAliasesCallback()
+            callbacks("ready")
         }
         else {
-            noAliasesCallback()
+            callbacks("inactive")
         }
         return this.numAddedLast
     },
     count: function() {
-        console.log("counting: ", this.aliasesByImporter)
         return this.forApi().length
     },
     forApi: function() {
@@ -34,6 +33,9 @@ AliasList.prototype = {
         $("button#go-button span.value").text(this.count())
     }
 }
+var aliasList = new AliasList()
+var registrationFormIsValid = false
+
 
 var ExternalProfileIds = {
     github: null,
@@ -47,15 +49,17 @@ var AliasListInputs = function(user) {
     this.init()
 }
 AliasListInputs.prototype = {
-    aliases: new AliasList(),
     email: "",
-    emailIsValid: false,
     ExternalProfileIds:  ExternalProfileIds, // someday this'll probably be an obj
     init: function() {
         var that = this
 
         this.textareaPlaceholders()
         this.initHelpModals()
+
+        if (!$("form.register").length){
+            registrationFormIsValid = true
+        }
 
         // import orcid, github, and slideshare from usernames
         $(".control-group.username input").each(function(){
@@ -73,6 +77,8 @@ AliasListInputs.prototype = {
 
         $("textarea.ids").each(function(){
             $(this).keyup(function(){
+                if (!$(this).val()) return false
+
                 var importer = new TextareaImporter(
                     that.aliases,
                     that.importerCallbacks,
@@ -96,15 +102,6 @@ AliasListInputs.prototype = {
         $("#go-button").click(function(){
             var action = "update"
 
-            // fetch ids from the textareas first
-            $("textarea.ids").not(".default").each(function(){
-                var importer = new TextareaImporter(
-                    that.aliases,
-                    that.importerCallbacks,
-                    this
-                )
-                importer.pull()
-            })
             var button = new SubmitButton(that.aliases, that.ExternalProfileIds, this)
 
             if ($(this).hasClass(("update"))) {
@@ -137,10 +134,19 @@ AliasListInputs.prototype = {
     importerCallbacks: function(state) {
         // these are callbacks that affect the whole input form.
 
-        return function() {
+        if (state == "ready") {
+            if (!registrationFormIsValid || !aliasList.count()){
+                console.log("changing state to inactive")
+                state = "inactive"
+            }
+        }
+
+
+        ret =function() {
             console.log("firing the importer callback, changing state to ", state)
             changeElemState($("div.control-group.submit"), state)
         }
+        return ret()
 
     },
     validateEmail: function(input) {
@@ -156,7 +162,8 @@ AliasListInputs.prototype = {
         var that = this
         that.email = $(input).val()
         changeControlGroupState($(input), "working")
-        $("#go-button").attr("disabled", "true")
+        this.importerCallbacks("inactive")
+
 
 
         this.user.checkUsername(
@@ -211,10 +218,13 @@ AliasListInputs.prototype = {
 
 
         if (valid) { // there's still a missing val
-            $("#go-button").removeAttr("disabled")
+            registrationFormIsValid = true
+            this.importerCallbacks("ready")
         }
         else {
-            $("#go-button").attr("disabled", "disabled")
+            registrationFormIsValid = false
+            this.importerCallbacks("inactive")
+
         }
     },
     textareaPlaceholders: function() {
@@ -264,7 +274,7 @@ AliasListInputs.prototype = {
         })
     },
     resetList: function() {
-        this.aliases.clear()
+        aliasList.clear()
         $(".import-products .control-group").each(function(){
             changeControlGroupState(this, "ready")
         })
@@ -275,7 +285,6 @@ AliasListInputs.prototype = {
 }
 
 var SubmitButton = function(aliases, ExternalProfileIds,  elem){
-    this.aliases = aliases
     this.ExternalProfileIds = ExternalProfileIds
     this.elem$ = $(elem)
 }
@@ -289,7 +298,7 @@ SubmitButton.prototype = {
         var surname = $("div.inline-register input.surname").val() || "User"
 
         var requestObj = {
-            alias_tiids: this.aliases.forApi(),
+            alias_tiids: aliasList.forApi(),
             external_profile_ids: this.ExternalProfileIds,
             email: $("div.inline-register input.email").val(),
             password: $("div.inline-register input.password").val(),
@@ -306,11 +315,11 @@ SubmitButton.prototype = {
     },
     update: function(coll){
         if (!this.start()) return false
-        this.addItemsToCollection(coll, this.aliases.forApi())
+        this.addItemsToCollection(coll, aliasList.forApi())
         return false
     },
     start:function(){
-        if (!this.aliases.forApi().length) {
+        if (!aliasList.forApi().length) {
             alert("You haven't added any products.")
             return false
         }
@@ -340,7 +349,6 @@ SubmitButton.prototype = {
 
 // Import aliases from external services that want a username
 var UsernameImporter = function(aliases, ExternalProfileIds, callbacks, elem) {
-    this.aliases = aliases
     this.ExternalProfileIds = ExternalProfileIds
     this.callbacks = callbacks
     this.elem$ = $(elem)
@@ -368,11 +376,12 @@ UsernameImporter.prototype = {
     },
     start:function() {
         changeControlGroupState(this.elem$, "working")
-        this.callbacks("working")()
+        this.callbacks("working")
     },
     update: function(){},
     done: function(data, providerName, queryStr){
         changeControlGroupState(this.elem$, "success")
+        console.log("finished adding for ", providerName)
 
         analytics.track("Imported products", {
             "import source": providerName,
@@ -381,18 +390,15 @@ UsernameImporter.prototype = {
 
         this.ExternalProfileIds[providerName] = queryStr
 
-        console.log("callbacks", this.callbacks)
-
-        this.aliases.add(
+        aliasList.add(
             data.memberitems,
             providerName,
-            this.callbacks("ready"),
-            this.callbacks("inactive")
+            this.callbacks
         )
         this.elem$
             .parents(".control-group")
             .find("span.success span.value")
-            .html(this.aliases.numAddedLast)
+            .html(aliasList.numAddedLast)
     },
     failure: function(request) {
         changeControlGroupState(this.elem$, "error")
@@ -405,7 +411,6 @@ UsernameImporter.prototype = {
 
 // Import aliases from external services that want a username
 var TextareaImporter = function(aliases, callbacks, elem) {
-    this.aliases = aliases
     this.callbacks = callbacks
     this.elem$ = $(elem)
 }
@@ -414,11 +419,10 @@ TextareaImporter.prototype = {
         var newAliases = this.parseTextareaArtifacts(this.elem$.val())
         var textareaName = this.elem$.attr("id")
 
-        this.aliases.add(
+        aliasList.add(
             newAliases,
             textareaName,
-            this.callbacks("ready"),
-            this.callbacks("inactive")
+            this.callbacks
         )
     }
     ,parseTextareaArtifacts: function(str) {
@@ -509,7 +513,6 @@ TextareaImporter.prototype = {
 
 // upload bibtex from google scholar
 var BibtexImporter = function(aliases, callbacks, elem) {
-    this.aliases = aliases
     this.callbacks = callbacks
     this.elem$ = $(elem)
     this.bibtexEntriesParsedFromFile = []
@@ -547,7 +550,7 @@ BibtexImporter.prototype = {
     },
     start:function() {
         changeControlGroupState(this.elem$, "working")
-        this.callbacks("working")()
+        this.callbacks("working")
     },
     update: function(entries, errors){
         errors = errors || 0
@@ -576,16 +579,15 @@ BibtexImporter.prototype = {
     done: function(entries){
         console.log("we're done!")
         changeControlGroupState(this.elem$, "success")
-        this.aliases.add(
+        aliasList.add(
             entries.aliases,
             "bibtex", // will break if we have multiple bibtex importers...
-            this.callbacks("ready"),
-            this.callbacks("inactive")
+            this.callbacks
         )
         this.elem$
             .parents(".control-group")
             .find("span.success span.value")
-            .html(this.aliases.numAddedLast)
+            .html(aliasList.numAddedLast)
     },
     failure: function() {
         changeControlGroupState(this.elem$, "error")

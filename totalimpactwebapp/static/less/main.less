@@ -580,18 +580,20 @@ div.import-products {
          font-weight: normal;
          font-size: 12px;
       }
-      p#artcounter {
-         margin-top: 20px;
-      }
-      #go-button {
-         width: 255px;
-         text-align: center;
-         &[disabled] {
-            background:  #ccc;
-            border: none;
-            cursor: not-allowed;
+      div.indicator{
+         p#artcounter {
+            margin-top:0;
+            font-size: 21px;
+            text-align: left;
+            color: #777;
+            span.count{
+               font-weight: bold;
+               color: #333;
+               font-size: 23px;
+            }
          }
       }
+
 
       &.register {
          div.control-group {
@@ -610,6 +612,27 @@ div.import-products {
             margin-bottom: 0;
 
             label { color: #555;}
+            #go-button {
+               width: 255px;
+               font-family: Lato, helvetica, arial, sans-serif;
+               font-weight: bold;
+               text-align: center;
+               padding: 15px;
+               background: @accentColor;
+               font-size: 22px;
+               &:hover{
+                  background: @accentColorHover;
+               }
+            }
+            span.go { // for the go-button "working" msg
+               color:  #ccc;
+               margin-left:20px;
+               font-size: 30px;
+               i {
+                  margin-right:10px;
+                  font-size: 30px;
+               }
+            }
          }
 
 
@@ -656,13 +679,7 @@ div.import-products {
                   color: #999;
                }
                width: 240px;
-            }
-            span.go { // for the go-button "working" msg
-               color:  @linkColor;
-               font-size: 20px;
-               img {
-                  height: 40px;
-               }
+               height: 130px;
             }
          }
       }

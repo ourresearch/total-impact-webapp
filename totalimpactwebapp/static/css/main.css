@@ -546,17 +546,16 @@ div.import-products form.importers span.limit {
   font-weight: normal;
   font-size: 12px;
 }
-div.import-products form.importers p#artcounter {
-  margin-top: 20px;
+div.import-products form.importers div.indicator p#artcounter {
+  margin-top: 0;
+  font-size: 21px;
+  text-align: left;
+  color: #777;
 }
-div.import-products form.importers #go-button {
-  width: 255px;
-  text-align: center;
-}
-div.import-products form.importers #go-button[disabled] {
-  background: #ccc;
-  border: none;
-  cursor: not-allowed;
+div.import-products form.importers div.indicator p#artcounter span.count {
+  font-weight: bold;
+  color: #333;
+  font-size: 23px;
 }
 div.import-products form.importers.register div.control-group {
   margin-bottom: 0;
@@ -572,6 +571,27 @@ div.import-products form.importers div.control-group.submit {
 }
 div.import-products form.importers div.control-group.submit label {
   color: #555;
+}
+div.import-products form.importers div.control-group.submit #go-button {
+  width: 255px;
+  font-family: Lato, helvetica, arial, sans-serif;
+  font-weight: bold;
+  text-align: center;
+  padding: 15px;
+  background: #0053b0;
+  font-size: 22px;
+}
+div.import-products form.importers div.control-group.submit #go-button:hover {
+  background: #004797;
+}
+div.import-products form.importers div.control-group.submit span.go {
+  color: #ccc;
+  margin-left: 20px;
+  font-size: 30px;
+}
+div.import-products form.importers div.control-group.submit span.go i {
+  margin-right: 10px;
+  font-size: 30px;
 }
 div.import-products form.importers div.control-group label.control-label a.help {
   text-decoration: none;
@@ -605,16 +625,10 @@ div.import-products form.importers div.control-group div.controls input.name {
 div.import-products form.importers div.control-group div.controls textarea {
   line-height: 1.6;
   width: 240px;
+  height: 130px;
 }
 div.import-products form.importers div.control-group div.controls textarea.default {
   color: #999;
-}
-div.import-products form.importers div.control-group div.controls span.go {
-  color: #ff4e00;
-  font-size: 20px;
-}
-div.import-products form.importers div.control-group div.controls span.go img {
-  height: 40px;
 }
 /* homepage
 *****************************************************************************
