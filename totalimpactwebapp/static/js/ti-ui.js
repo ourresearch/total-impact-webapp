@@ -102,7 +102,7 @@ function decorativeJavascriptInit() {
 
 
     prettyPrint()
-    fadeNavOnScroll()
+//    fadeNavOnScroll()
 }
 
 function manageBanners() {
