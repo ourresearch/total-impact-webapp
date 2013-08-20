@@ -937,10 +937,18 @@ div#about img {
 }
 div#about p {
   margin-top: 0;
-  margin-bottom: .5em;
+  margin-top: 20px;
+}
+div#about ul {
+  padding-left: 2em;
+  margin-bottom: 0;
+}
+div#about ul li {
+  list-style-type: circle;
 }
 div#about h3 {
-  margin-top: 50px;
+  clear: both;
+  margin-top: 90px;
   margin-bottom: 10px;
 }
 div#about h3.first {
@@ -948,12 +956,6 @@ div#about h3.first {
 }
 div#about div.team-member.second {
   margin-top: 50px;
-}
-div#about ul {
-  padding-left: 2em;
-}
-div#about ul li {
-  list-style-type: circle;
 }
 div#about div#contact p {
   padding: 15px;
