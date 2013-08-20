@@ -191,7 +191,7 @@ body.staging div.staging-warning strong {
   margin-left: 17px;
 }
 ul.flashes {
-  top: 50px;
+  top: 0;
   position: absolute;
   width: 100%;
 }
@@ -203,6 +203,7 @@ ul.flashes li.alert {
   border-right: none;
   border-top: none;
   text-align: center;
+  padding-top: 65px;
 }
 body.report #page-header,
 body.user-profile #page-header {

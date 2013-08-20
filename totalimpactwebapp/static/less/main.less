@@ -199,7 +199,7 @@ body.staging {
 }
 
 ul.flashes {
-   top: @navbarHeight;
+   top: 0;
    position: absolute;
    width: 100%;
    li.alert {
@@ -208,6 +208,7 @@ ul.flashes {
       border-width: 2px;
       border-left: none; border-right: none; border-top: none;
       text-align: center;
+      padding-top: @navbarHeight + 15px;
    }
 }
 
