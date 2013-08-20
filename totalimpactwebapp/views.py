@@ -719,6 +719,7 @@ def collection_report(collection_id):
     )
     
     r = requests.get(url)
+    flash("You're looking at an old-style collection page. Check out our new <a href='http://blog.impactstory.org/2013/06/17/impact-profiles/'>profile pages!</a>", "alert")
     if r.status_code == 200:
         collection = json.loads(r.text)
         return render_template_custom(
