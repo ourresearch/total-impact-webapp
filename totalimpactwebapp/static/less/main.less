@@ -249,7 +249,6 @@ div.navbar {
    font-family: rokkitt, cambria, serif;
    padding-top:5px;
 
-   border-bottom:1px solid #999;
    .drop-shadow(0, 0, 10px, 0.3);
    background:#fff;
    height: @navbarHeight - 1px;
@@ -264,7 +263,9 @@ div.navbar {
       margin: 0 auto;
       border: none;
       box-shadow: none;
-      min-height: 0;
+      height: 0;
+      background: #fff;
+      filter:none;
 
       a.brand {
          margin: 7px 0 0 0;
@@ -282,6 +283,7 @@ div.navbar {
    ul.nav.pull-right {
 
       > li {
+         height: @navbarHeight;
          margin-top: 0;
          span.hi {
             font-family: "Helvetica", "Arial", sans-serif;
@@ -340,23 +342,31 @@ div.navbar {
             a.dropdown-toggle {
                padding-left:17px;
                padding-right: 17px;
+               padding-bottom:15px;
+               .border-radius(5px, 0, 0, 5px);
                i {vertical-align: -2px; color: @linkColor;}
             }
             ul.dropdown-menu {
                background: #777;
                background: #f2f2f2;
                top: @navbarHeight - 3px;
-               border: 1px solid #999;
+               border: 1px solid #fff;
                border-top: none;
-               right: -2px;
-               -moz-border-radius-topleft: 0;
-               -moz-border-radius-topright: 0;
-               border-radius: 0 0 3px 3px;
+               right: -1px;
+
+               .drop-shadow(0, 3px, 2px, .1);
+
+
+               .border-radius(0, 3px, 3px, 0);
                min-width: 150px;
                padding: 10px 0;
                li{
                   margin: 0;
                   padding: 0;
+                  a {
+                     padding-top: 5px;
+                     padding-bottom: 5px;
+                  }
                   &.divider {
                      border-bottom: 1px solid #fff;
                      background-color:#eee;

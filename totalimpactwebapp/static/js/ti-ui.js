@@ -102,6 +102,7 @@ function decorativeJavascriptInit() {
 
 
     prettyPrint()
+    fadeNavOnScroll()
 }
 
 function manageBanners() {
@@ -163,12 +164,38 @@ ISCookies = {
     }
 }
 
+function fadeNavOnScroll(){
+    var maxVisibleHeight = 100
+    $(window).scroll(function(){
+        var navbar$ = $("div.navbar")
+        var currentOpacity = navbar$.css("opacity")
+        var isHidden = navbar$.is(":hidden")
+
+        var amountLeftToBeVisibile = Math.max(
+            (maxVisibleHeight - $(this).scrollTop()),
+            0
+        )
+
+        if (amountLeftToBeVisibile == 0) {
+            navbar$.hide()
+        }
+        else {
+            var opacity = amountLeftToBeVisibile / maxVisibleHeight
+            console.log("opacity: ", opacity)
+            navbar$.fadeTo(0, opacity)
+        }
+
+
+    })
+}
+
 
 
 
 $(document).ready(function(){
 
     decorativeJavascriptInit()
+
 
     $.cookie.defaults = {path: "/", raw: 1}
 

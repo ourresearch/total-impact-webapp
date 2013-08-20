@@ -36,13 +36,13 @@ body.user-profile div#page-header {
 body.user-profile div.profile-header div.wrapper div.my-picture {
   float: left;
   background: #eee;
-  margin-top: 120px;
+  margin-top: 130px;
   height: 110px;
   width: 110px;
   background: #ddd;
 }
 body.user-profile div.profile-header div.wrapper div.my-vitals {
-  margin: 120px 0 0 30px;
+  margin: 130px 0 0 30px;
   width: 600px;
   float: left;
 }
