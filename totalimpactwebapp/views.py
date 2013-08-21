@@ -18,7 +18,7 @@ from totalimpactwebapp import views_helpers
 import newrelic.agent
 
 logger = logging.getLogger("tiwebapp.views")
-analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.DEBUG)
+analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 
 assets = Environment(app)
@@ -787,8 +787,12 @@ def widget_analytics():
         event="Served a page with embedded widget",
         properties=d
     )
-    analytics.flush(async=False)  # make sure all the data gets sent to segment.io
-
+    try:
+        analytics.flush(async=False)  # make sure all the data gets sent to segment.io
+    except IndexError:
+        # sometimes the data was already flushed and we get an error popping from an empty queue
+        pass
+        
     return make_response(request.args.get("callback", "") + '({"status": "success"})', 200)
 
 
