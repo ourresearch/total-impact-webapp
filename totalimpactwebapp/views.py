@@ -651,7 +651,7 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        url = "http://{api_root}/provider".format(
+        url = "{api_root}/provider".format(
             api_root=g.roots["api"])        
         r = requests.get(url)
         metadata = json.loads(r.text)
@@ -792,7 +792,7 @@ def widget_analytics():
     except IndexError:
         # sometimes the data was already flushed and we get an error popping from an empty queue
         pass
-        
+
     return make_response(request.args.get("callback", "") + '({"status": "success"})', 200)
 
 
