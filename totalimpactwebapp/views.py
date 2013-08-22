@@ -459,6 +459,12 @@ def delete_test_user():
         return make_response("these endpoint only supports deleting for now.")
 
 
+@app.route("/users/test/collection_ids")
+def test_user_cids():
+    test_users = User.query.filter(User.surname == "impactstory").all()
+    print "test_users: ", test_users
+    test_collection_ids = [user.collection_id for user in test_users]
+    return json_for_client({"collection_ids": test_collection_ids})
 
 
 #------------------ user/:userId/products -----------------
