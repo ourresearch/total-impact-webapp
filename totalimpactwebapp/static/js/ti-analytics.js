@@ -4,22 +4,36 @@ function TiAnalytics(userDict){
 }
 TiAnalytics.prototype = {
     init: function(){
-        that = this
-        analytics.ready(function(){
-            console.log("loaded all the analytics")
-            that.analyticsLoadedCallback.call(that)
-        })
+        var that = this
         analytics.load(segmentio_key);
+
+        // should be able to use analytics.ready for this, but doesn't seem to always work...
+        var analyticsLoadedInterval = setInterval(
+            function(){
+                console.log("trying to run analytics")
+                var callbackSuccess = that.analyticsLoadedCallback.call(that)
+                if (callbackSuccess) {
+                    clearInterval(analyticsLoadedInterval)
+                    console.log("ran analytics, clearing interval")
+                }
+            },
+            100
+        )
 
     }
     ,getMixpanelId: function(){
         var cookieName = "mp_" + mixpanelKey + "_mixpanel"
         var mixpanelCookie = JSON.parse(unescape($.cookie(cookieName)))
-
         return mixpanelCookie["distinct_id"]
+
     }
     ,analyticsLoadedCallback: function(){
-        var mixpanelId = that.getMixpanelId()
+        try{
+            var mixpanelId = that.getMixpanelId()
+        }
+        catch(e) {
+            return false
+        }
         var pageType = this.getPageType()
 
         this.sendPageLoadReport(mixpanelId, pageType)
@@ -29,6 +43,7 @@ TiAnalytics.prototype = {
         else {
             this.userIsNotLoggedIn(mixpanelId)
         }
+        return true
     }
     ,userIsLoggedIn: function() {
         // if on profile page and haven't been here before, make alias call and event
