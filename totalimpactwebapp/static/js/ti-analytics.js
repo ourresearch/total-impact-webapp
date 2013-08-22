@@ -29,7 +29,7 @@ TiAnalytics.prototype = {
     }
     ,analyticsLoadedCallback: function(){
         try{
-            var mixpanelId = that.getMixpanelId()
+            var mixpanelId = this.getMixpanelId()
         }
         catch(e) {
             return false
