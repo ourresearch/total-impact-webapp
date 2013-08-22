@@ -425,6 +425,35 @@ def user_view():
     return json_for_client(user)
 
 
+@app.route("/users/test", methods=["DELETE", "GET"])
+def delete_test_user():
+    coll_delete_params = {
+        "include_items": "true",
+        "api_admin_key": os.getenv("API_ADMIN_KEY")
+    }
+    if request.method == "DELETE" or request.args.get("method") == "delete":
+
+        # for now just the first one...should be all of them
+        retrieved_users = User.query.filter(User.surname == "impactstory").all()
+        for user in retrieved_users:
+            if user.collection_id is None:
+                continue
+
+            url = g.roots["api"] + "/v1/collection/" + user.collection_id
+            r = requests.delete(url, params=coll_delete_params)
+            print "delete colls and items; " + r.text
+
+            print "deleting user ", user.email
+            db.session.delete(user)
+
+        db.session.commit()
+        return make_response("deleted {num_users} users.".format(
+            num_users=len(retrieved_users)))
+    else:
+        return make_response("these endpoint only supports deleting for now.")
+
+
+
 
 #------------------ user/:userId/products -----------------
 
