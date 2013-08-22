@@ -18,7 +18,7 @@ from totalimpactwebapp import views_helpers
 import newrelic.agent
 
 logger = logging.getLogger("tiwebapp.views")
-analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.DEBUG)
+analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 
 assets = Environment(app)
@@ -153,8 +153,14 @@ def load_globals():
 @app.before_request
 def log_ip_address():
     if request.endpoint != "static":
-        ip_address = request.remote_addr
-        logger.info(u"%30s IP address calling %s %s" % (ip_address, request.method, request.url))
+        try:
+            logger.info(u"{ip_address} IP address calling {method} {url}".format(
+                ip_address=request.remote_addr, 
+                method=request.method, 
+                url=request.url))
+        except UnicodeDecodeError:
+            logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
+
 
 @app.after_request
 def add_crossdomain_header(resp):
@@ -674,7 +680,9 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        r = requests.get(g.roots["api"] +'/provider')
+        url = "{api_root}/provider".format(
+            api_root=g.roots["api"])        
+        r = requests.get(url)
         metadata = json.loads(r.text)
     except requests.ConnectionError:
         metadata = {}
@@ -808,7 +816,11 @@ def widget_analytics():
         event="Served a page with embedded widget",
         properties=d
     )
-    analytics.flush(async=False)  # make sure all the data gets sent to segment.io
+    try:
+        analytics.flush(async=False)  # make sure all the data gets sent to segment.io
+    except IndexError:
+        # sometimes the data was already flushed and we get an error popping from an empty queue
+        pass
 
     return make_response(request.args.get("callback", "") + '({"status": "success"})', 200)
 
