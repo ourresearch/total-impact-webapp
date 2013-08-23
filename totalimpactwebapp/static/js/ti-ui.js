@@ -95,7 +95,7 @@ function decorativeJavascriptInit() {
     }
 
     // show a warning if it's the staging website
-    if (location.hostname == "impactstory.it") {
+    if (location.hostname == "staging-impactstory.org") {
         $("body").addClass("staging")
     }
     $("div.staging-warning").click(function(){$(this).hide(); return true})
