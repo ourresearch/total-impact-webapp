@@ -397,8 +397,9 @@ def change_password(reset_token):
         return redirect("/" + retrieved_user.url_slug)
 
 
-
-
+@app.route("/oauth/orcid")
+def oath_orcid():
+    return "placeholder for now..."
 
 
 
