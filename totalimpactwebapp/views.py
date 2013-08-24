@@ -15,6 +15,7 @@ from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
 from totalimpactwebapp import app, util, db, login_manager, forms
 from totalimpactwebapp.user import User, create_user
 from totalimpactwebapp import views_helpers
+from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 import newrelic.agent
 
 logger = logging.getLogger("tiwebapp.views")
@@ -157,7 +158,7 @@ def log_ip_address():
             logger.info(u"{ip_address} IP address calling {method} {url}".format(
                 ip_address=request.remote_addr, 
                 method=request.method, 
-                url=request.url))
+                url=to_unicode_or_bust(request.url)))
         except UnicodeDecodeError:
             logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
 
