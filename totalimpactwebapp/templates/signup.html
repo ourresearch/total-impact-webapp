@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% set page_title = "Create profile" %}
+
+{% block content %}
+{% raw %}
+<div class="signup-header">
+   <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a>
+   <ol class="signup-steps">
+      <li>Name</li>
+      <li>Import products</li>
+      <li>Login</li>
+   </ol>
+</div>
+
+
+
+<div class="main">
+   <div class="control-group name" ng-controller="signupCtrl">
+      <input class="input-large" type="text" ng-model="user.firstname" placeholder="First name">
+      <input class="input-large" type="text" ng-model="user.surname" placeholder="Last name">
+      <h4>First name: {{ user.firstname }}</h4>
+   </div>
+
+
+</div>
+{% endraw %}
+{% endblock %}

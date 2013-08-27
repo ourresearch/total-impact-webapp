@@ -46,6 +46,9 @@ js = Bundle(
             'js/google-analytics.js',
             'js/segmentio.js',
             'js/ti-analytics.js',
+            'vendor/angular/angular-resource.js',
+            'src/common/user.js',
+            'src/app.js',
             output='js/packed.js'
 )
 
@@ -57,6 +60,7 @@ css = Bundle('css/bootstrap.css',
             'css/create-collection.css',
             'css/report.css',
             'css/user-pages.css',
+            'css/signup.css',
             'font-awesome/css/font-awesome.css',
             filters="cssrewrite",
             output="css/packed.css"
@@ -290,6 +294,18 @@ def collection_create():
 
 
     return render_template_custom('create-collection.html')
+
+
+
+@app.route('/signup', methods=["GET"])
+def signup():
+
+    # don't let logged-in users see the /signup page.
+    if g.user.is_authenticated():
+        return redirect("/" + g.user.url_slug)
+
+
+    return render_template_custom('signup.html')
 
 
 

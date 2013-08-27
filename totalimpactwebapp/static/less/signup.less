@@ -1,0 +1,49 @@
+@import "elements.less";
+@import "variables.less";
+
+body.signup {
+
+   // hide the normal page stuff
+   div.main-header {display:none;}
+   div#footer { display: none; }
+
+   div.signup-header {
+      padding: 20px;
+      a.brand {
+         width: 300px;
+         display: block;
+         margin: 10px auto 20px;
+      }
+
+      ol.signup-steps {
+         text-align: center;
+         padding: 0;
+         margin: 0;
+         li {
+            display:inline;
+            list-style-type: none;
+            margin: 0 20px 0 20px;
+         }
+      }
+      background: #eee;
+   }
+
+   div.main {
+      div.control-group.name {
+         padding-top: 80px;
+         width: 500px;
+         margin: 0 auto;
+         input {
+            width: 500px;
+            font-size: 50px;
+            line-height: 1;
+            height: 50px;
+            padding-top: 15px;
+            margin: 20px 0 0 0;
+         }
+      }
+   }
+
+
+
+}
