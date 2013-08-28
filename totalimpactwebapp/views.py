@@ -15,6 +15,7 @@ from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
 from totalimpactwebapp import app, util, db, login_manager, forms
 from totalimpactwebapp.user import User, create_user
 from totalimpactwebapp import views_helpers
+from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 import newrelic.agent
 
 logger = logging.getLogger("tiwebapp.views")
@@ -157,7 +158,7 @@ def log_ip_address():
             logger.info(u"{ip_address} IP address calling {method} {url}".format(
                 ip_address=request.remote_addr, 
                 method=request.method, 
-                url=request.url))
+                url=to_unicode_or_bust(request.url)))
         except UnicodeDecodeError:
             logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
 
@@ -815,19 +816,26 @@ def widget_analytics():
     logger.info(u"got widget analytics data: {data}".format(
         data=d))
 
-    # later look stuff up here from db, based on api-key; send along w identify() call...
-    analytics.identify(user_id=api_key)
+    try:
+        # later look stuff up here from db, based on api-key; send along w identify() call...
+        analytics.identify(user_id=api_key)
+    except IndexError:
+        logger.debug(u"IndexError when doing analytics.identify in widget_analytics")
 
-    analytics.track(
-        user_id=api_key,
-        event="Served a page with embedded widget",
-        properties=d
-    )
+    try:
+        analytics.track(
+            user_id=api_key,
+            event="Served a page with embedded widget",
+            properties=d
+        )
+    except IndexError:
+        logger.debug(u"IndexError when doing analytics.track in widget_analytics")
+
     try:
         analytics.flush(async=False)  # make sure all the data gets sent to segment.io
     except IndexError:
         # sometimes the data was already flushed and we get an error popping from an empty queue
-        pass
+        logger.debug(u"IndexError when doing analytics.flush in widget_analytics")
 
     return make_response(request.args.get("callback", "") + '({"status": "success"})', 200)
 
