@@ -2,6 +2,7 @@
 @import "variables.less";
 
 body.signup {
+   background: #fafafa;
 
    // hide the normal page stuff
    div.main-header {display:none;}
@@ -9,6 +10,8 @@ body.signup {
 
    div.signup-header {
       padding: 20px;
+      background: #fff;
+      border-bottom: 4px solid @linkColor;
       a.brand {
          width: 300px;
          display: block;
@@ -25,21 +28,29 @@ body.signup {
             margin: 0 20px 0 20px;
          }
       }
-      background: #eee;
    }
 
    div.main {
+      background: transparent;
       div.control-group.name {
          padding-top: 80px;
          width: 500px;
          margin: 0 auto;
+         position: relative;
          input {
-            width: 500px;
+            width: 486px;
             font-size: 50px;
             line-height: 1;
             height: 50px;
             padding-top: 15px;
             margin: 20px 0 0 0;
+         }
+         button {
+            margin-top: 20px;
+            width: 45%;
+            &.next {
+               float:right;
+            }
          }
       }
    }

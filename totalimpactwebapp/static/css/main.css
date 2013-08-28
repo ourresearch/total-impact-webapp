@@ -238,6 +238,29 @@ body.user-profile div.main {
   margin: 0;
   padding: 0;
 }
+/**
+ * Extra large button extensions. Extends `.btn`.
+ */
+.btn-xlarge {
+  padding: 16px 26px;
+  font-size: 28px;
+  line-height: normal;
+  -webkit-border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  -moz-border-radius-topleft: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
 /* navbar
 *****************************************************************************
 *****************************************************************************

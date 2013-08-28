@@ -47,6 +47,7 @@ js = Bundle(
             'js/segmentio.js',
             'js/ti-analytics.js',
             'vendor/angular/angular-resource.js',
+            'vendor/angular/angular-ui-router.js',
             'src/common/user.js',
             'src/app.js',
             output='js/packed.js'
