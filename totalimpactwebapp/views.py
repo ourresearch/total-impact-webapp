@@ -914,10 +914,6 @@ except KeyError:
 
 @app.route('/logo')
 def logo():
-
-    from time import sleep
-    sleep(35)
-
     filename = "static/img/logos/impactstory-logo-big.png"
     return send_file(filename, mimetype='image/png')
 
