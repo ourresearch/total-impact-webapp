@@ -1,58 +1,83 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html"
+      xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
    <meta charset="utf-8">
    <title>ImpactStory: Down for maintenance</title>
-   <link href='http://fonts.googleapis.com/css?family=Rokkitt:400,700' rel='stylesheet' type='text/css' />
+   <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'>
 
 
    <style type="text/css">
       body {
-         background: #fff;
+         margin: 0;
+         padding: 0;
+
       }
-      h1 {
+      div.top {
+         background: #ffffff;
+         margin: 0;
+      }
+      div.top div.logo img {
+         width:  175px;
+         display: block;
+         margin: 0 auto;
+         padding: 15px;
+      }
+      div.top h1 {
          text-align: center;
-         margin-bottom: 0;
-         padding-bottom: 0;
-
-      }
-      h1 img {
-         width:  500px;
-         margin: 100px auto 0 auto;
-      }
-
-      h2 {
-         font-family: Rokkitt, helvetica, sans-serif;
-         font-size:  60px;
+         font-family: Lato, helvetica, sans-serif;
+         font-weight: bolder;
+         font-size:  50px;
          color:  #777;
          text-align: center;
-         margin: 0;
-         padding: 0 0 20px 0;
-         border-bottom: 5px solid #eee;
+         margin: 120px auto 10px;
+         width: 800px;
+         padding: 0 0 10px 0;
+
       }
 
-      p {
-         font-size:  22px;
-         color:  #999;
-         width:  500px;
-         line-height: 2;
-         margin:  40px auto 0 auto;
+      div.bottom {
+
+      }
+
+      div.bottom h2 {
+         font-family: Lato, helvetica, sans-serif;
+         font-size:  24px;
+         color:  #777;
          text-align: center;
-         font-family: helvetica, arial, sans-serif;
+         margin: 0 auto;
+         padding: 0 0 70px 0;
+         width: 600px;
+      }
+
+      div.bottom p {
+         font-size:  18px;
+         color:  #999;
+         width:  400px;
+         line-height: 2;
+         margin:  0 auto 30px auto;
+         text-align: center;
+         font-family: Lato, helvetica, sans-serif;
       }
 
       a {
          color:  #FF4E00;
       }
 
+
    </style>
 
 </head>
 <body>
-<h1><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></h1>
+<div class="top">
+   <div class="logo"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></div>
+   <h1>We're down for maintenance...</h1>
+</div>
+<div class="bottom">
+   <h2>but hang tight, we'll be back soon.</h2>
+   <p>In the meantime, you can keep updated on our progress via our <a href="http://www.twitter.com/ImpactStory_now">status feed</a>.</p>
+</div>
 
-<h2>Sorry, we're down for maintenance!</h2>
-<p>But hold tight, we'll be right back. Keep an eye on our <a href="http://www.twitter.com/ImpactStory">Twitter feed</a>; we'll announce there when we're back online.</p>
 
 
 </body>
