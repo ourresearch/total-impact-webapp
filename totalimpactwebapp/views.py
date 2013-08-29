@@ -108,6 +108,11 @@ def json_for_client(obj_or_dict):
 
 def render_template_custom(template_name, **kwargs):
     kwargs["newrelic_footer"] = newrelic.agent.get_browser_timing_footer()
+    if os.getenv("STATUS_SLOW", False) in [True, "true", "True", 1]:
+        flash(
+            "<strong>Performance notice:</strong> our server is currently backed up. We're fixing it now; see our <a href='http://twitter.com/impactstory_now'>status feed</a> for updates.",
+            "error"
+        )
 
     return render_template(template_name, **kwargs)
 
