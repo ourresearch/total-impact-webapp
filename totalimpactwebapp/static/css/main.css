@@ -221,7 +221,6 @@ ul.flashes li.alert {
   border-top: none;
   text-align: center;
   padding-top: 65px;
-  border-bottom: 3px solid #fff;
 }
 body.report #page-header,
 body.user-profile #page-header {
