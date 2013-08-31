@@ -35,7 +35,6 @@ js = Bundle(
             'js/jquery.color.js',
             'js/jquery.cookie.js',
             'js/icanhaz.js',
-            'js/browser-fixes.js', # don't need any more, use underscore.js
             'js/ti-item.js',
             'js/ti-user.js',
             'js/ti-aliaslist.js',
@@ -47,10 +46,7 @@ js = Bundle(
             'js/google-analytics.js',
             'js/segmentio.js',
             'js/ti-analytics.js',
-            'vendor/angular/angular-resource.js',
-            'src/common/resources/user.js',
-            'src/signup/signup.js',
-            'src/app.js',
+
             output='js/packed.js'
 )
 

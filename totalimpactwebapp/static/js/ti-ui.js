@@ -123,20 +123,6 @@ function manageBanners() {
 
 }
 
-var Navbar = function(){
-    this.init()
-}
-Navbar.prototype = {
-    init: function() {
-        $("ul.nav a.given-name").tooltip({
-             placement:"left",
-             animation: false,
-             template: '<div class="tooltip click-to-visit-profile"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
-
-         })
-    }
-}
-
 // get the parameters from the page URL and put 'em in the urlParams obj
 // from http://stackoverflow.com/a/2880929/226013
 var urlParams;
@@ -198,35 +184,35 @@ $(document).ready(function(){
 
 
     $.cookie.defaults = {path: "/", raw: 1}
-
-    collViews = new CollViews()
-    coll = new Coll(collViews)
-    collController = new CollController(coll, collViews);
-
-    itemController = new ItemController($)
-
-    // report pages
-    if (typeof reportIdNamespace == "undefined"){
-        // nothing
-    }
-    else if (reportIdNamespace == "impactstory_collection_id") {
-        collController.collReportPageInit()
-    }
-    else { // looks to be an item report page
-        itemController.itemReportPageInit()
-    }
-
-    var user = new User()
-    new AliasListInputs(user)
-
-    new UserPreferences()
-    new UserCreds()
-    new UserProfile()
-
-    new Navbar()
-
-    // run analytics stuff
-    tiAnalytics = new TiAnalytics(userDict)
+//
+//    collViews = new CollViews()
+//    coll = new Coll(collViews)
+//    collController = new CollController(coll, collViews);
+//
+//    itemController = new ItemController($)
+//
+//    // report pages
+//    if (typeof reportIdNamespace == "undefined"){
+//        // nothing
+//    }
+//    else if (reportIdNamespace == "impactstory_collection_id") {
+//        collController.collReportPageInit()
+//    }
+//    else { // looks to be an item report page
+//        itemController.itemReportPageInit()
+//    }
+//
+//    var user = new User()
+//    new AliasListInputs(user)
+//
+//    new UserPreferences()
+//    new UserCreds()
+//    new UserProfile()
+//
+//    new Navbar()
+//
+//    // run analytics stuff
+//    tiAnalytics = new TiAnalytics(userDict)
 
     // add the Tweet This button
     $.getScript("//platform.twitter.com/widgets.js")
