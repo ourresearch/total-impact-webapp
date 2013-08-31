@@ -242,7 +242,7 @@ body.user-profile div.main {
  * Extra large button extensions. Extends `.btn`.
  */
 .btn-xlarge {
-  padding: 16px 26px;
+  padding: 12px 20px;
   font-size: 28px;
   line-height: normal;
   -webkit-border-top-right-radius: 5px;

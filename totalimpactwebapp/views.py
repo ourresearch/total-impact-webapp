@@ -48,8 +48,8 @@ js = Bundle(
             'js/segmentio.js',
             'js/ti-analytics.js',
             'vendor/angular/angular-resource.js',
-            'vendor/angular/angular-ui-router.js',
-            'src/common/user.js',
+            'src/common/resources/user.js',
+            'src/signup/signup.js',
             'src/app.js',
             output='js/packed.js'
 )
@@ -171,6 +171,27 @@ def log_ip_address():
                 url=to_unicode_or_bust(request.url)))
         except UnicodeDecodeError:
             logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
+
+
+@app.before_request
+def add_trailing_slash_for_angular_pages():
+    """
+    Super hacky way to fix the /signup page for angular.js.
+
+    This'll have to be improved if we end up with more angular pages.
+    """
+
+    if request.path == '/' or request.path == "/signup/":
+        pass  # these trailing-slash pages are ok
+
+    elif request.path == "/signup":
+        return redirect("/signup/")  # angular.js likes the extra slash
+
+    elif request.path.endswith("/"):
+        return redirect(request.path[:-1])  # generally we dislike terminal slash
+
+    else:
+        pass  # no terminal slash, carry on here
 
 
 @app.after_request
@@ -304,18 +325,21 @@ def collection_create():
 
 
 
-@app.route('/signup', methods=["GET"])
+@app.route('/signup/', methods=["GET"])
 def signup():
 
     # don't let logged-in users see the /signup page.
     if g.user.is_authenticated():
         return redirect("/" + g.user.url_slug)
 
-
     return render_template_custom('signup.html')
 
 
-
+@app.route("/signup/<path:path>")
+def signup_static_resources(path):
+    path_root = "static/src/signup/"
+    full_path = path_root + path
+    return send_file(full_path)
 
 
 
@@ -698,6 +722,7 @@ def about():
     return render_template_custom('about.html')
 
 
+
 @app.route('/faq')
 def faq(): 
     # get the table of items and identifiers
@@ -927,6 +952,8 @@ try:
         return resp
 except KeyError:
     logger.error(u"HIREFIREAPP_TOKEN environment variable not defined, not setting up validation api endpoint")
+
+
 
 
 @app.route('/logo')
