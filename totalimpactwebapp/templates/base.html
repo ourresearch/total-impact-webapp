@@ -58,10 +58,11 @@
 
    <link href='http://fonts.googleapis.com/css?family=Rokkitt:400,700' rel='stylesheet' type='text/css' />
    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
+
+   <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/flatly/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" type="text/css" href="static/less/css/ImpactStory.css" />
+
    <link rel="icon" type="image/ico" href="/static/img/favicon.ico" />
-   {% assets "css_all" %}
-      <link type="text/css" rel="stylesheet" href="{{ ASSET_URL }}" />
-   {% endassets %}
 
 
 
@@ -71,6 +72,8 @@
    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
    <script type="text/javascript" src="static/dist/bootstrap.js"></script>
    <script type="text/javascript" src="static/dist/ImpactStory.js"></script>
+
+
 
 
 
@@ -100,66 +103,12 @@
    </div>
 </div>
 
-<div id="container" ng-view>
-
-   <div class="main-header">
-      <div class="navbar">
-         <div class="navbar-inner">
-            <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a>
-            <ul class="nav pull-right">
-
-               <!--Not logged in-->
-
-               <li class="sign-up not-logged-in"><a href="/create">Sign up</a></li>
-               <li class="divider-vertical not-logged-in"></li>
-               <li class="login not-logged-in"><a href="/login"><span class="hi">Already have a profile? </span>Log in<i class="icon-signin"></i></a></li>
+<div ng-include="'header.tpl.html'"></div>
+<div id="container">
 
 
-               <!--Logged in-->
-               <li class="welcome logged-in">
-                  <span class="hi">Welcome back, </span>
-                  <a href="/{{ g.user.url_slug }}" class="given-name" data-toggle="tooltip" title="View your profile">{{g.user.given_name}}!</a>
-               </li>
-               <li class="divider-vertical logged-in"></li>
 
-               <li class="logged-in preferences dropdown">
-                  <a href="#" class="preferences dropdown-toggle" data-toggle="dropdown" title="Change URL and other preferences">
-                     <i class="icon-cog"></i>
-                  </a>
-                  <ul class='preferences-actions dropdown-menu'>
-                     <li><a href="/{{ g.user.url_slug }}/preferences" class="profile"><i class="icon-cogs"></i>Preferences</a></li>
-                     <li><a href="/api-docs" class="profile"><i class="icon-suitcase"></i>Embed</a></li>
-                     <li class="divider"></li>
-                     <li><a href="{{ url_for('logout') }}" class="logout"><i class="icon-off"></i>Log out</a></li>
-                  </ul>
-               </li>
-            </ul>
-         </div>
-      </div>
-
-
-      {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-      <ul class="flashes">
-         {% for category, message in messages %}
-         <li class="alert alert-{{ category }} fade in">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            {{ message|safe }}
-         </li>
-         {% endfor %}
-      </ul>
-      {% endif %}
-      {% endwith %}
-
-      <div id="page-header">
-         <div class="wrapper">
-            <h2 class='page-title'>{{ page_title }}</h2>
-         </div>
-      </div>
-   </div>
-
-
-   {% block content %}{% endblock %}
+{#   {% block content %}{% endblock %}#}
 
    <div id="footer">
       <div class="wrapper">

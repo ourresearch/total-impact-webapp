@@ -50,19 +50,6 @@ js = Bundle(
             output='js/packed.js'
 )
 
-css = Bundle('css/bootstrap.css',
-            'css/prettify.css',
-            'css/bootstrap-editable.css',
-            'css/jasny-bootstrap.css',
-            'css/main.css',
-            'css/create-collection.css',
-            'css/report.css',
-            'css/user-pages.css',
-            'css/signup.css',
-            'font-awesome/css/font-awesome.css',
-            filters="cssrewrite",
-            output="css/packed.css"
-)
 
 js_widget = Bundle(
             'js/jquery-1.8.1.min.js',
@@ -76,7 +63,6 @@ js_widget = Bundle(
 )
 assets.register('js_widget', js_widget)
 assets.register('js_all', js)
-assets.register('css_all', css)
 
 
 
@@ -235,6 +221,12 @@ def creating_profile():
 
     login_user(user)
     return redirect("/" + user.url_slug)
+
+
+@app.route("/current-user")
+def current_user():
+    return json_for_client(current_user)
+
 
 
 def user_profile(url_slug, new_user_request_obj=None):
