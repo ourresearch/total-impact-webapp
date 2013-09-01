@@ -59,10 +59,11 @@
    <link href='http://fonts.googleapis.com/css?family=Rokkitt:400,700' rel='stylesheet' type='text/css' />
    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
 
+   <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
    <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/flatly/bootstrap.min.css" rel="stylesheet">
    <link rel="stylesheet" type="text/css" href="static/less/css/ImpactStory.css" />
 
-   <link rel="icon" type="image/ico" href="/static/img/favicon.ico" />
+   <link rel="icon" type="image/ico" href="/static/dist/img/favicon.ico" />
 
 
 
@@ -95,7 +96,7 @@
 </head>
 
 
-<body class="{{ body_classes|join(" ")|trim()|replace("  ", " ") }}">
+<body ng-controller="AppCtrl" class="{{ body_classes|join(" ")|trim()|replace("  ", " ") }}">
 
 <div class="staging-warning">
    <div class="content">
@@ -106,6 +107,8 @@
 <div ng-include="'header.tpl.html'"></div>
 <div id="container">
 
+   <div ng-view class="main-view"></div>
+
 
 
 {#   {% block content %}{% endblock %}#}
@@ -113,7 +116,7 @@
    <div id="footer">
       <div class="wrapper">
          <div id="footer-branding" class="footer-col">
-            <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a>
+            <a class="brand" href="/"><img src="/static/dist/img/impactstory-logo.png" alt="ImpactStory" /></a>
 
             <p>We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>
             <p class="license">
@@ -158,7 +161,7 @@
          <div id="footer-funders" class="footer-col">
             <h3>Supported by</h3>
             <a href="http://sloan.org/" id="footer-sloan-link">
-               <img src="{{ url_for('static', filename='img/sloan-logo.png') }}"  width="200"/>
+               <img src="{{ url_for('static', filename='dist/img/sloan-logo.png') }}"  width="200"/>
             </a>
          </div>
 

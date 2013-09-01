@@ -734,16 +734,6 @@ div.import-products {
 *****************************************************************************
 *****************************************************************************/
 body.index  {
-   background:  @linkColor;
-
-
-   div#page-header {
-      display:none;
-   }
-
-   div#footer {
-      margin-top: 0;
-   }
 
    &.not-logged-in {
       div.navbar-inner ul.nav.pull-right {
@@ -754,10 +744,11 @@ body.index  {
          }
       }
    }
-
 }
 
 div#tagline {
+   background: @linkColor;
+   padding: 1px;
    div.wrapper {
       width: 900px;
       padding: 100px 0 0;
@@ -874,11 +865,8 @@ div#selling-points{
          list-style-type: none;
          min-height: 270px;
          &.middle {
-            &.middle {
-               padding-left:5%;
-               padding-right:5%;
-            }
-
+               margin-left:5%;
+               margin-right:5%;
          }
       }
    }
@@ -895,6 +883,7 @@ div#sources {
    padding: 30px 0 40px;
    border-top:  5px solid #f3f3f3;
    text-align: center;
+   margin-bottom: -20px;
    div.wrapper {
       padding-top: 15px;
       width: 971px;
@@ -905,7 +894,7 @@ div#sources {
          font-size: 20px;
          font-family: Rokkitt, serif;
          font-weight: normal;
-         margin: -70px auto 30px;
+         margin: -59px auto 30px;
          background: #fff;
          display:block;
          width:  440px;
@@ -918,7 +907,7 @@ div#sources {
             line-height: 3.5;
             img {
                height: 22px;
-               opacity: .7;
+               opacity: .5;
 
                filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
                filter: gray; /* IE6-9 */
