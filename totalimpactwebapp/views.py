@@ -223,11 +223,6 @@ def creating_profile():
     return redirect("/" + user.url_slug)
 
 
-@app.route("/current-user")
-def current_user():
-    return json_for_client(current_user)
-
-
 
 def user_profile(url_slug, new_user_request_obj=None):
 
@@ -354,7 +349,7 @@ def login():
     if g.user is None:
         abort(404, "Email doesn't exist")
     elif not g.user.check_password(password):
-        abort(410, "Wrong password")
+        abort(401, "Wrong password")
     else:
         # Yay, no errors! Log the user in.
         login_user(g.user)
@@ -363,14 +358,21 @@ def login():
     return json_for_client({"user": g.user.as_dict()})
 
 
-@app.route('/logout')
+
+@app.route("/user/current")
+def get_current_user():
+    try:
+        return json_for_client({"user": g.user.as_dict()})
+
+    except AttributeError:  # anon user has no as_dict()
+        return json_for_client({"user": None})
+
+
+@app.route('/user/logout', methods=["POST"])
 def logout():
     logout_user()
-    next = request.args.get("next", "")
-    if next == "login":
-        return redirect(url_for("login"))
-    else:
-        return redirect(url_for('index'))
+    return json_for_client({"msg": "user logged out"})
+
 
 
 @app.route("/reset-password", methods=["GET"])

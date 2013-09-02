@@ -137,12 +137,23 @@ div.popover {
       }
    }
 }
-
+div.modal-backdrop {
+   opacity: .7;
+}
 div.modal {
+   display:block;
+   width: 600px;
+   background: #fff;
+   top:  50%;
+   bottom: auto;
+   left: 50%;
+   margin: -250px 0 0 -300px;
    h3 {
       font-family: rokkitt, helvetica, arial, sans-serif;
-
       border-bottom: none;
+   }
+   div.modal-body {
+
    }
 
    &.error {
@@ -169,13 +180,13 @@ div.modal {
 }
 
 
-// managing login and edit states
-body.logged-in {
-   .not-logged-in {display:none;}
-}
-body.not-logged-in {
-   .logged-in {display:none;}
-}
+// managing login and edit states (commented out b/c Angular should be doing this)
+//body.logged-in {
+//   .not-logged-in {display:none;}
+//}
+//body.not-logged-in {
+//   .logged-in {display:none;}
+//}
 
 // manage the staging warning
 div.staging-warning { display:none;}
@@ -297,134 +308,152 @@ div.navbar {
       a.brand {
          margin: 7px 0 0 0;
          padding-top: 0;
+         img {
+            margin-top: 8px;
+            height: 35px;
+         }
       }
 
       .nav { position: static;}
-   }
 
-   a.brand img{
-      height: 35px;
-      margin-top: -2px;
-   }
+      ul.nav.pull-right {
 
-   ul.nav.pull-right {
-
-      > li {
-         height: @navbarHeight;
-         margin-top: 0;
-         span.hi {
-            font-family: "Helvetica", "Arial", sans-serif;
-            font-size: 12px;
-            display:inline-block;
-            color:  #999;
-            margin-right: 5px;
-            display:none;
-         }
-         &.divider-vertical {
-            height: 30px;
-            margin: 7px -1px 0;
-            border-right: 1px solid #e6e6e6;
-            border-left: 1px solid #ffffff;
-         }
-         &.sign-up {
+         > li {
+            height: @navbarHeight;
+            margin-top: 4px;
+            float:left;
             a {
-               color: @linkColor;
+               background: transparent;
             }
-         }
-         &.login {
-            a {
-               i {
-                  vertical-align: -2px;
-                  color: #888;
-                  padding-left: 6px;
-               }
-               &:hover {
-                  color: @linkColor;
-                  i{color:  @linkColor;}
-               }
-            }
-         }
-         &.welcome {
-            span.hi {display:inline-block;}
-            a.given-name {
-               font-weight: bold;
-               color: @linkColor;
+            span.context {
+               font-family: "Helvetica", "Arial", sans-serif;
+               font-size: 12px;
                display:inline-block;
-               margin:  8px 18px 0 0;
-               padding: 2px;
-               &:hover {
-                  text-decoration: underline;
-               }
+               color:  #999;
+               margin-right: 5px;
             }
-         }
-
-         &.preferences {
-            &.open {
-               a.dropdown-toggle {
-                  background:  #777;
-                  background:  #f2f2f2;
-                  i {color: #333}
-               }
+            &.divider-vertical {
+               height: 25px;
+               margin: 17px 0 0;
+               border-right: 1px solid #e6e6e6;
+               border-left: none;
+               width: 1px;
             }
-            a.dropdown-toggle {
-               padding-left:17px;
-               padding-right: 17px;
-               padding-bottom:15px;
-               .border-radius(5px, 0, 0, 5px);
-               i {vertical-align: -2px; color: @linkColor;}
-            }
-            ul.dropdown-menu {
-               background: #777;
-               background: #f2f2f2;
-               top: @navbarHeight - 3px;
-               border: 1px solid #fff;
-               border-top: none;
-               right: -1px;
-
-               .drop-shadow(0, 3px, 2px, .1);
-
-
-               .border-radius(0, 3px, 3px, 0);
-               min-width: 150px;
-               padding: 10px 0;
-               li{
-                  margin: 0;
-                  padding: 0;
-                  a {
-                     padding-top: 5px;
-                     padding-bottom: 5px;
-                  }
-                  &.divider {
-                     border-bottom: 1px solid #fff;
-                     background-color:#eee;
-                     margin-bottom: 5px;
-                  }
-               }
-               &::after {
-                  border: none;
-               }
-               &::before {
-                  border: none;
-               }
+            &.sign-up {
                a {
-                  font-family: "Helvetica", "Arial", sans-serif;
-                  font-size:  14px;
-                  i {
-                     margin-left: -5px;
-                     margin-right: 11px;
+                  color: @linkColor;
+               }
+            }
+            &.login {
+               form{
+                  margin-top: 17px;
+                  a.login {
+                     color: #888;
+                     i {
+                        vertical-align: -2px;
+                        color: #888;
+                        padding-left: 6px;
+                     }
+                     &:hover {
+                        color: @linkColor;
+                        text-decoration: none;
+                        i{color:  @linkColor;}
+                     }
+                  }
+
+               }
+            }
+            &.logged-in-user {
+               a.current-user {
+                  background: transparent;
+                  font-weight: bold;
+                  color: @linkColor;
+                  display:inline-block;
+                  margin:  8px 18px 0 0;
+                  padding: 5px 2px;
+                  font-size: 18px;
+                  &:hover {
+                     text-decoration: underline;
+                     background: transparent;
+                  }
+               }
+            }
+
+            &.preferences {
+               position: relative;
+               &.open {
+                  a.dropdown-toggle {
+                     background:  #777;
+                     background:  #f2f2f2;
+                     background: #fff;
+                     i {color: #333}
+                  }
+               }
+               a.dropdown-toggle {
+                  padding-left:17px;
+                  padding-right: 17px;
+                  padding-bottom:15px;
+                  .border-radius(5px, 0, 0, 5px);
+                  i {vertical-align: -6px; color: @linkColor;}
+               }
+               ul.dropdown-menu {
+                  background: #777;
+                  background: #f2f2f2;
+                  top: @navbarHeight - 2px;
+                  border: 1px solid #999;
+                  border-top: none;
+                  right: -1px;
+                  left: auto;
+
+                  .drop-shadow(0, 3px, 2px, .1);
+
+
+                  .border-radius(0, 3px, 3px, 0);
+                  min-width: 150px;
+                  padding: 10px 0;
+                  li{
+                     margin: 0;
+                     padding: 0;
+                     a {
+                        padding-top: 5px;
+                        padding-bottom: 5px;
+                        color: #555;
+                        &:hover {
+                           background: @accentColor;
+                           color: #fff;
+                        }
+                     }
+                     &.divider {
+                        border-bottom: 1px solid #fff;
+                        background-color:#eee;
+                     }
+                  }
+                  &::after {
+                     border: none;
+                  }
+                  &::before {
+                     border: none;
+                  }
+                  a {
+                     font-family: "Helvetica", "Arial", sans-serif;
+                     font-size:  14px;
+                     i {
+                        margin-left: -5px;
+                        margin-right: 11px;
+                     }
                   }
                }
             }
          }
-      }
 
-      li#logged-in {
-         div.dropdown-menu{
-            min-width: 200px;
-            padding:5px 0 10px 0;
+         li#logged-in {
+            div.dropdown-menu{
+               min-width: 200px;
+               padding:5px 0 10px 0;
+            }
          }
-      }
 
+      }
    }
 }
 
@@ -739,7 +768,6 @@ body.index  {
       div.navbar-inner ul.nav.pull-right {
          li {
             &.sign-up {display:none; } // it's got a huge button in middle of page...
-            &.divider-vertical {display:none;}
             span.hi {display:inline-block; margin-right: 10px;}
          }
       }

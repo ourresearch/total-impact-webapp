@@ -115,6 +115,7 @@ class User(db.Model):
         properties_to_return = [
             "id",
             "given_name",
+            "surname",
             "email",
             "url_slug",
             "collection_id",
