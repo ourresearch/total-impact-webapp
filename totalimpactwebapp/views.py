@@ -341,35 +341,26 @@ def signup_static_resources(path):
 ###############################################################################
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/user/login", methods=["POST"])
 def login():
 
     logger.debug(u"user trying to log in.")
 
-    if g.user is not None and g.user.is_authenticated():
-        return redirect("/" + g.user.url_slug)
+    email = unicode(request.json["email"]).lower()
+    password = unicode(request.json["password"])
 
-    errors = {"email": False, "password": False}
-    if request.method == 'POST':
-        email = request.form['email'].lower()
-        g.user = User.query.filter_by(email=email).first()
+    g.user = User.query.filter_by(email=email).first()
 
-        if g.user is None:
-            errors["email"] = True
-        elif not g.user.check_password(request.form["password"]):
-            errors["password"] = True
-        else:
-            # Yay, no errors! Log the user in and redirect.
-            login_user(g.user)
-            return redirect("/" + g.user.url_slug)
+    if g.user is None:
+        abort(404, "Email doesn't exist")
+    elif not g.user.check_password(password):
+        abort(410, "Wrong password")
+    else:
+        # Yay, no errors! Log the user in.
+        login_user(g.user)
 
 
-    # the code below this is executed if the request method
-    # was GET or the credentials were invalid
-    return render_template_custom(
-        'login.html',
-        errors=errors
-    )
+    return json_for_client({"user": g.user.as_dict()})
 
 
 @app.route('/logout')

@@ -110,6 +110,36 @@ class User(db.Model):
         return '<User {name}>'.format(name=self.full_name)
 
 
+    def as_dict(self):
+
+        properties_to_return = [
+            "id",
+            "given_name",
+            "email",
+            "url_slug",
+            "collection_id",
+            "created",
+            "last_viewed_profile",
+            "orcid_id",
+            "github_id",
+            "slideshare_id"
+        ]
+
+        ret_dict = {}
+        for property in properties_to_return:
+            val = getattr(self, property, None)
+            try:
+                # if we want dict, we probably want something json-serializable
+                val = val.isoformat()
+            except AttributeError:
+                pass
+
+            ret_dict[property] = val
+
+        return ret_dict
+
+
+
 
 def get_collection_from_core(collection_id):
     logger.debug(u"running a GET query for /collection/{collection_id} the api".format(

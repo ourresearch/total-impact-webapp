@@ -18,4 +18,8 @@ class TestViews(unittest.TestCase):
         assert res.status == '200 OK', res.status
 
 
+    def test_login(self):
+        assert True
+
+
 
