@@ -175,7 +175,8 @@ def create_user(user_request_dict, api_root, db):
     lowercased_email = unicode(user_request_dict["email"]).lower()
     collection_id = _make_id(6)
 
-    url = api_root + "/v1/collection"
+    url = api_root + "/v1/collection?key={api_key}".format(
+        api_key=os.getenv("API_KEY"))
     params = {"collection_id": collection_id}
     data = {
         "aliases": user_request_dict["alias_tiids"],
