@@ -108,7 +108,7 @@ function Coll(collViews){
 
         console.log("making the collection now.")
         $.ajax({
-                   url: api_root+'/collection',
+                   url: api_root+'/v1/collection',
                    type: "POST",
                    dataType: "json",
                    contentType: "application/json; charset=utf-8",

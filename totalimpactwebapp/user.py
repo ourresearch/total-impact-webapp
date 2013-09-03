@@ -175,7 +175,7 @@ def create_user(user_request_dict, api_root, db):
     lowercased_email = unicode(user_request_dict["email"]).lower()
     collection_id = _make_id(6)
 
-    url = api_root + "/collection"
+    url = api_root + "/v1/collection"
     params = {"collection_id": collection_id}
     data = {
         "aliases": user_request_dict["alias_tiids"],
@@ -215,7 +215,7 @@ def create_user(user_request_dict, api_root, db):
         db.session.add(user)
         db.session.commit()
 
-    logger.debug(u"POST /user: Finished creating user {id} with slug '{slug}'".format(
+    logger.debug(u"Finished creating user {id} with slug '{slug}'".format(
         id=user.id,
         slug=user.url_slug
     ))
