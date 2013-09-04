@@ -1,4 +1,4 @@
-var omitUndefined = function(obj) { return _.omit(obj, "undefined")}
+var ItemOmitUndefined = function(obj) { return _.omit(obj, "undefined")}
 
 
 // patch Array.filter() for IE8
@@ -185,10 +185,10 @@ function Item(itemData, itemView, $) {
 
     this.makeAwardsList = function(metrics) {
         var awards = []
-        var audiencesObj = omitUndefined(_.groupBy(metrics, "audience"))
+        var audiencesObj = ItemOmitUndefined(_.groupBy(metrics, "audience"))
         _.each(audiencesObj, function(audienceMetrics, audienceName) {
 
-            var engagementTypesObj = omitUndefined(_.groupBy(audienceMetrics, "engagementType"))
+            var engagementTypesObj = ItemOmitUndefined(_.groupBy(audienceMetrics, "engagementType"))
             _.each(engagementTypesObj, function(engagementType, engagementTypeName) {
 
                 awards.push(new Award(audienceName, engagementTypeName, engagementType))
@@ -770,8 +770,5 @@ function ItemController($){
         $("#context").modal("show")
         return false;
     })
-
-
-
 
 }
