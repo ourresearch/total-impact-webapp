@@ -477,24 +477,32 @@ def test_user_cids():
 #------------------ user/:userId/products -----------------
 
 
-@app.route("/user/<int:userId>/products", methods=["GET", "PUT", "DELETE"])
+@app.route("/user/<int:userId>/products", methods=["GET", "POST", "PUT", "DELETE"])
 def user_products_view_and_modify(userId):
     retrieved_user = User.query.get(userId)
+
     if retrieved_user is None:
         abort(404, "That user doesn't exist.")
 
     if request.method == "GET":
-        (profile_collection, status_code) = retrieved_user.get_products()
+        (resp, status_code) = retrieved_user.get_products()
+
+    elif request.method == "POST":
+        # you can't add/create stuff here, just refresh extant products.
+        resp, status_code = retrieved_user.refresh_products()
+
     elif request.method == "PUT":
         aliases_to_add = request.json.get("aliases")
-        (profile_collection, status_code) = retrieved_user.add_products(aliases_to_add)
+        (resp, status_code) = retrieved_user.add_products(aliases_to_add)
+
     elif request.method == "DELETE":
         tiids_to_delete = request.json.get("tiids")
-        (profile_collection, status_code) = retrieved_user.delete_products(tiids_to_delete)
+        (resp, status_code) = retrieved_user.delete_products(tiids_to_delete)
+
     else:
         abort(405)  #method not supported.  Won't get here.
 
-    response_to_send = make_response(profile_collection, status_code)
+    response_to_send = make_response(resp, status_code)
     return response_to_send
 
 

@@ -248,8 +248,9 @@ function Coll(collViews){
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
-            url: api_root+'/v1/collection/'+this.id+'?key='+api_key,
+            url: webapp_root+'/user/'+impactstoryUserId+'/products',
             type: "POST",
+            data: JSON.stringify({}),
             success: function(data){
                console.log("refreshing collection.")
                thisThing.read(1000, "refresh");
