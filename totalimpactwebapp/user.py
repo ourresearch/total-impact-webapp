@@ -94,8 +94,11 @@ class User(db.Model):
     def get_id(self):
         return unicode(self.id)
 
-    def get_products(self):
-        (collection, status_code) = get_collection_from_core(self.collection_id)
+    def get_products(self, get_products=1):
+        (collection, status_code) = get_collection_from_core(
+            self.collection_id,
+            get_products
+        )
         return (collection, status_code)
 
     def add_products(self, aliases_to_add):
@@ -111,7 +114,7 @@ class User(db.Model):
 
 
 
-def get_collection_from_core(collection_id):
+def get_collection_from_core(collection_id, include_items=1):
     logger.debug(u"running a GET query for /collection/{collection_id} the api".format(
         collection_id=collection_id))
 
@@ -120,7 +123,7 @@ def get_collection_from_core(collection_id):
         api_admin_key=os.getenv("API_KEY"),
         collection_id=collection_id
     )
-    r = requests.get(query, params={"include_items": 0})
+    r = requests.get(query, params={"include_items": include_items})
 
     return (r.text, r.status_code)
 
