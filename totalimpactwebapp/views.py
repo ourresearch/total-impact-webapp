@@ -669,6 +669,30 @@ def user_given_name_modify(userId, name):
 
 
 
+#------------------ provider/...  (proxy methods for api) -----------------
+
+@app.route('/provider/<provider_name>/memberitems/<query_string>', methods=["GET"])
+def provider_get_memberitems_proxy(provider_name, query_string):
+
+
+    query = "{core_api_root}/v1/provider/{provider_name}/memberitems/{query_string}".format(
+        core_api_root=g.roots["api"],
+        provider_name=provider_name,
+        query_string=query_string
+    )
+    r = requests.get(
+        query,
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'},
+        params={"api_admin_key": os.getenv("API_ADMIN_KEY")}
+    )
+
+    return r.text, r.status_code
+
+
+
+
+
+
 
 
 ###############################################################################

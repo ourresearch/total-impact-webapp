@@ -91,40 +91,6 @@ function Coll(collViews){
         }
     }
 
-    this.create = function(aliases, title) {
-        /*
-        *   Make a new collection. On success, add it to the user's list of colls,
-        *   and redirect to the webapp's /collection/<cid> report page.
-         */
-
-
-        // @todo: remove. this is no longer used, as coll being created on server.
-
-        var that = this
-        var requestObj = {
-            aliases: aliases,
-            title:title
-        }
-
-        console.log("making the collection now.")
-        $.ajax({
-                   url: api_root+'/collection',
-                   type: "POST",
-                   dataType: "json",
-                   contentType: "application/json; charset=utf-8",
-                   data:  JSON.stringify(requestObj),
-                   success: function(data){
-                       console.log("finished making the collection!")
-                       var cid=data.collection._id
-
-                       ISCookies.lastActionUserDidToCollection("create")
-
-                       // you could pass this in, but you pretty much only want it to redirect:
-                       var redirect = function(){location.href = "/collection/" + cid}
-                   }
-               })
-    }
-
 
     this.read = function(interval, lastCollAction, startTime) {
         console.log("reading collection")

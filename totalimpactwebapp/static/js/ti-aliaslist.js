@@ -366,7 +366,7 @@ UsernameImporter.prototype = {
         }
 
         $.ajax({
-            url: api_root+"/provider/"+providerName+"/memberitems/"+queryStr+"?method=sync",
+            url: webapp_root+"/provider/"+providerName+"/memberitems/"+queryStr,
             type: "GET",
             dataType: "json",
             success: function(data){that.done.call(that, data, providerName, queryStr)},
