@@ -76,9 +76,9 @@ def json_for_client(obj_or_dict):
 
     # convert to a dict if it's not one already
     try:
-        temp = obj_or_dict.__dict__
+        temp = input.__dict__
     except AttributeError:
-        temp = obj_or_dict
+        temp = input
 
     obj_dict = {}
     for k, v in temp.iteritems():
@@ -221,7 +221,6 @@ def creating_profile():
 
     login_user(user)
     return redirect("/" + user.url_slug)
-
 
 
 def user_profile(url_slug, new_user_request_obj=None):
@@ -499,24 +498,32 @@ def test_user_cids():
 #------------------ user/:userId/products -----------------
 
 
-@app.route("/user/<int:userId>/products", methods=["GET", "PUT", "DELETE"])
+@app.route("/user/<int:userId>/products", methods=["GET", "POST", "PUT", "DELETE"])
 def user_products_view_and_modify(userId):
     retrieved_user = User.query.get(userId)
+
     if retrieved_user is None:
         abort(404, "That user doesn't exist.")
 
     if request.method == "GET":
-        (profile_collection, status_code) = retrieved_user.get_products()
+        (resp, status_code) = retrieved_user.get_products()
+
+    elif request.method == "POST":
+        # you can't add/create stuff here, just refresh extant products.
+        resp, status_code = retrieved_user.refresh_products()
+
     elif request.method == "PUT":
         aliases_to_add = request.json.get("aliases")
-        (profile_collection, status_code) = retrieved_user.add_products(aliases_to_add)
+        (resp, status_code) = retrieved_user.add_products(aliases_to_add)
+
     elif request.method == "DELETE":
         tiids_to_delete = request.json.get("tiids")
-        (profile_collection, status_code) = retrieved_user.delete_products(tiids_to_delete)
+        (resp, status_code) = retrieved_user.delete_products(tiids_to_delete)
+
     else:
         abort(405)  #method not supported.  Won't get here.
 
-    response_to_send = make_response(profile_collection, status_code)
+    response_to_send = make_response(resp, status_code)
     return response_to_send
 
 
@@ -683,6 +690,50 @@ def user_given_name_modify(userId, name):
 
 
 
+#------------------ provider/...  (proxy methods for api) -----------------
+
+@app.route('/provider/<provider_name>/memberitems/<query_string>', methods=["GET"])
+def provider_get_memberitems_proxy(provider_name, query_string):
+
+    query = "{core_api_root}/v1/provider/{provider_name}/memberitems/{query_string}".format(
+        core_api_root=g.roots["api"],
+        provider_name=provider_name,
+        query_string=query_string
+    )
+    r = requests.get(
+        query,
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'},
+        params={"api_admin_key": os.getenv("API_ADMIN_KEY")}
+    )
+
+    return json_for_client(r.json())
+
+
+@app.route('/provider/<provider_name>/memberitems', methods=["POST"])
+def provider_post_memberitems_proxy(provider_name):
+
+    file = request.files['file']
+    logger.debug(u"In"+provider_name+"/memberitems, got file: filename="+file.filename)
+    entries_str = file.read().decode("utf-8")
+
+    url = "{core_api_root}/v1/provider/{provider_name}/memberitems".format(
+        core_api_root=g.roots["api"],
+        provider_name=provider_name
+    )
+    r = requests.post(
+        url,
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'},
+        data=json.dumps({"descr": entries_str}),
+        params={"api_admin_key": os.getenv("API_ADMIN_KEY")}
+    )
+
+    return json_for_client(r.json())
+
+
+
+
+
+
 
 
 ###############################################################################
@@ -703,7 +754,6 @@ def about():
     return render_template_custom('about.html')
 
 
-
 @app.route('/faq')
 def faq(): 
     # get the table of items and identifiers
@@ -716,8 +766,9 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        url = "{api_root}/provider".format(
-            api_root=g.roots["api"])        
+        url = "{api_root}/v1/provider?key={api_key}".format(
+            api_key=g.api_key,
+            api_root=g.roots["api"])
         r = requests.get(url)
         metadata = json.loads(r.text)
     except requests.ConnectionError:
