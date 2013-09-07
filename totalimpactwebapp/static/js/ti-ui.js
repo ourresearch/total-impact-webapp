@@ -79,6 +79,22 @@ function createPageInit() {
     }
 }
 
+function manageBanners() {
+  // if the user's on IE, tell 'em we're broken for them
+  if ($.browser.msie) {
+    if (location.pathname.indexOf("/create") === 0) {
+      alert("Sorry, Internet Explorer isn't supported for signup right now; we're working on it and hope to add support in November. In the meantime, you may want to try another browser like Safari, Firefox, or Google Chrome.")
+      location.href = "/"
+    }
+  }
+
+  // pretty-close for flask's flashed messages
+  $("ul.flashed button.close").click(function(){
+    $(this).parents("li").slideUp()
+  })
+
+}
+
 function decorativeJavascriptInit() {
     // table of contents
     if ($("#toc")[0]) {
@@ -88,6 +104,7 @@ function decorativeJavascriptInit() {
     homePageInit()
     aboutPageInit()
     createPageInit()
+    manageBanners()
 
     // let people link straight to the item-help modal
     if(window.location.href.indexOf('#context') != -1) {
@@ -105,23 +122,6 @@ function decorativeJavascriptInit() {
 //    fadeNavOnScroll()
 }
 
-function manageBanners() {
-    // if the user's on IE, tell 'em we're broken for them
-    if ($.browser.msie) {
-        $(".ie").show()
-        $("#report-meta, #report-button, #metrics").hide()
-
-        if (location.href.indexOf("api-docs") < 0) { // api-docs may work fine on IE
-            return false
-        }
-    }
-
-    // pretty-close for flask's flashed messages
-    $("ul.flashed button.close").click(function(){
-        $(this).parents("li").slideUp()
-    })
-
-}
 
 var Navbar = function(){
     this.init()
