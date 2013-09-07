@@ -130,7 +130,7 @@ function Coll(collViews){
         }
 
         $.ajax({
-            url: webapp_root+'/user/'+impactstoryUserId+'/products',
+            url: webapp_root+'/user/'+thisThing.id+'/products',
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
