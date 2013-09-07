@@ -745,7 +745,8 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        url = "{api_root}/provider".format(
+        url = "{api_root}/v1/provider?key={api_key}".format(
+            api_key=g.api_key,            
             api_root=g.roots["api"])        
         r = requests.get(url)
         metadata = json.loads(r.text)
