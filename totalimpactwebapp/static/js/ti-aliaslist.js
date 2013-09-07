@@ -366,7 +366,7 @@ UsernameImporter.prototype = {
         }
 
         $.ajax({
-            url: webapp_root+"/provider/"+providerName+"/memberitems/"+queryStr,
+            url: webapp_root_pretty+"/provider/"+providerName+"/memberitems/"+queryStr,
             type: "GET",
             dataType: "json",
             success: function(data){that.done.call(that, data, providerName, queryStr)},
@@ -528,7 +528,7 @@ BibtexImporter.prototype = {
         formData.append('file', this.elem$[0].files[0]);
 
         $.ajax({
-                   url: webapp_root+'/provider/bibtex/memberitems',
+                   url: webapp_root_pretty+'/provider/bibtex/memberitems',
                    type: "POST",
                    processData: false,
                    contentType: false,
