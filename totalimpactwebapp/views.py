@@ -79,7 +79,7 @@ assets.register('css_all', css)
 
 
 
-def json_for_client(obj_or_dict):
+def json_for_client(input):
     """
     JSON-serialize an obj or dict and put it in a Flask response.
 
@@ -89,9 +89,9 @@ def json_for_client(obj_or_dict):
 
     # convert to a dict if it's not one already
     try:
-        temp = obj_or_dict.__dict__
+        temp = input.__dict__
     except AttributeError:
-        temp = obj_or_dict
+        temp = input
 
     obj_dict = {}
     for k, v in temp.iteritems():
@@ -674,7 +674,6 @@ def user_given_name_modify(userId, name):
 @app.route('/provider/<provider_name>/memberitems/<query_string>', methods=["GET"])
 def provider_get_memberitems_proxy(provider_name, query_string):
 
-
     query = "{core_api_root}/v1/provider/{provider_name}/memberitems/{query_string}".format(
         core_api_root=g.roots["api"],
         provider_name=provider_name,
@@ -686,7 +685,28 @@ def provider_get_memberitems_proxy(provider_name, query_string):
         params={"api_admin_key": os.getenv("API_ADMIN_KEY")}
     )
 
-    return r.text, r.status_code
+    return json_for_client(r.json())
+
+
+@app.route('/provider/<provider_name>/memberitems', methods=["POST"])
+def provider_post_memberitems_proxy(provider_name):
+
+    file = request.files['file']
+    logger.debug(u"In"+provider_name+"/memberitems, got file: filename="+file.filename)
+    entries_str = file.read().decode("utf-8")
+
+    url = "{core_api_root}/v1/provider/{provider_name}/memberitems".format(
+        core_api_root=g.roots["api"],
+        provider_name=provider_name
+    )
+    r = requests.post(
+        url,
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'},
+        data=json.dumps({"descr": entries_str}),
+        params={"api_admin_key": os.getenv("API_ADMIN_KEY")}
+    )
+
+    return json_for_client(r.json())
 
 
 

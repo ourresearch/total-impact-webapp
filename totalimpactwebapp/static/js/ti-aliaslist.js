@@ -528,7 +528,7 @@ BibtexImporter.prototype = {
         formData.append('file', this.elem$[0].files[0]);
 
         $.ajax({
-                   url: api_root+'/provider/bibtex/memberitems',
+                   url: webapp_root+'/provider/bibtex/memberitems',
                    type: "POST",
                    processData: false,
                    contentType: false,
@@ -536,9 +536,9 @@ BibtexImporter.prototype = {
                    data: formData,
                    dataType: "json",
                    success:  function(data){
-                       entries = {
-                           biblio: data,
-                           total: data.length,
+                       var entries = {
+                           biblio: data.memberitems,
+                           total: data.memberitems.length,
                            aliases: []
                        }
                        console.log("got some items back:", data)
