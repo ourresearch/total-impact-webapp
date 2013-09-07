@@ -94,8 +94,11 @@ class User(db.Model):
     def get_id(self):
         return unicode(self.id)
 
-    def get_products(self):
-        (collection, status_code) = get_collection_from_core(self.collection_id)
+    def get_products(self, get_products=1):
+        (collection, status_code) = get_collection_from_core(
+            self.collection_id,
+            get_products
+        )
         return (collection, status_code)
 
     def add_products(self, aliases_to_add):
@@ -105,6 +108,9 @@ class User(db.Model):
     def delete_products(self, tiids_to_delete):
         (collection, status_code) = delete_products_from_core_collection(self.collection_id, tiids_to_delete)
         return (collection, status_code)
+
+    def refresh_products(self):
+        return refresh_products_from_core_collection(self.collection_id)
 
     def __repr__(self):
         return '<User {name}>'.format(name=self.full_name)
@@ -142,7 +148,7 @@ class User(db.Model):
 
 
 
-def get_collection_from_core(collection_id):
+def get_collection_from_core(collection_id, include_items=1):
     logger.debug(u"running a GET query for /collection/{collection_id} the api".format(
         collection_id=collection_id))
 
@@ -151,9 +157,9 @@ def get_collection_from_core(collection_id):
         api_admin_key=os.getenv("API_KEY"),
         collection_id=collection_id
     )
-    r = requests.get(query, params={"include_items": 0})
+    r = requests.get(query, params={"include_items": include_items})
 
-    return (r.text, r.status_code)
+    return r.text, r.status_code
 
 
 def add_products_to_core_collection(collection_id, aliases_to_add):
@@ -167,7 +173,7 @@ def add_products_to_core_collection(collection_id, aliases_to_add):
             data=json.dumps({"aliases": aliases_to_add}), 
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-    return (r.text, r.status_code)
+    return r.text, r.status_code
 
 
 def delete_products_from_core_collection(collection_id, tiids_to_delete):
@@ -181,8 +187,21 @@ def delete_products_from_core_collection(collection_id, tiids_to_delete):
             data=json.dumps({"tiids": tiids_to_delete}), 
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-    return (r.text, r.status_code)
+    return r.text, r.status_code
 
+
+def refresh_products_from_core_collection(collection_id):
+    query = "{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
+        core_api_root=g.roots["api"],
+        api_admin_key=os.getenv("API_KEY"),
+        collection_id=collection_id
+    )
+    r = requests.post(
+        query,
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
+    )
+
+    return r.text, r.status_code
 
 
 def make_collection_for_user(user, alias_tiids, prepped_request):
@@ -206,7 +225,8 @@ def create_user(user_request_dict, api_root, db):
     lowercased_email = unicode(user_request_dict["email"]).lower()
     collection_id = _make_id(6)
 
-    url = api_root + "/collection"
+    url = api_root + "/v1/collection?key={api_key}".format(
+        api_key=os.getenv("API_KEY"))
     params = {"collection_id": collection_id}
     data = {
         "aliases": user_request_dict["alias_tiids"],
@@ -246,7 +266,7 @@ def create_user(user_request_dict, api_root, db):
         db.session.add(user)
         db.session.commit()
 
-    logger.debug(u"POST /user: Finished creating user {id} with slug '{slug}'".format(
+    logger.debug(u"Finished creating user {id} with slug '{slug}'".format(
         id=user.id,
         slug=user.url_slug
     ))
