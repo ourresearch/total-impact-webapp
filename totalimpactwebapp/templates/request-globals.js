@@ -21,4 +21,9 @@
 // {% endif %}
 
 
+// {% if profile %}
+  var profileId = '{{ profile.id }}'
+// {% endif %}
+
+
 

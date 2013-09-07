@@ -130,7 +130,7 @@ function Coll(collViews){
         }
 
         $.ajax({
-            url: webapp_root+'/user/'+thisThing.id+'/products',
+            url: webapp_root+'/user/'+profileId+'/products',
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -214,7 +214,7 @@ function Coll(collViews){
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
-            url: webapp_root+'/user/'+impactstoryUserId+'/products',
+            url: webapp_root+'/user/'+userDict.id+'/products',
             type: "POST",
             data: JSON.stringify({}),
             success: function(data){
