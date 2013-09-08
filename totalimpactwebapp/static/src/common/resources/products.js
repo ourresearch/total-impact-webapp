@@ -4,18 +4,17 @@ angular.module('resources.products').factory('Products', ['$http', function ($ht
   var Products = {};
 
   Products.forUser = function(userId, successcb, errorcb) {
-    $http.get("/user/"+userId+"/products")
-      .success(function(data, status){
+    var url = "/user/"+userId+"/products";
+    var scb = successcb || angular.noop;
+    var ecb = errorcb || angular.noop;
 
-        successcb(data, status)
-
-
-
-
-
+    return $http.get(url)
+      .then(function(response){
+        console.log("got some response data back, it seems: ", response);
+        scb(response, status)
+        return response.data.items
 
       })
-      .error(function(data, status){ errorcb(data, status)})
   };
 
   Products.isProductOwner = function (userId) {

@@ -23,9 +23,13 @@ angular.module("profile", [
   'Products',
   function ($scope, $location, security, Products)
   {
-  console.log("security: ", security)
-  console.log("products:", Products)
+    console.log("security: ", security)
+    console.log("products:", Products)
 
-  console.log("ProfileCtrl running!")
+    Products.forUser(1).then(function(response){
+      $scope.products = response;
+    })
+
+    console.log("ProfileCtrl running!")
 }]);
 
