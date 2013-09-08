@@ -1,0 +1,55 @@
+<a href="#" class="item-help"><span class="icon help"></span>What do these numbers mean?</a>
+{{#audiences}}
+<div class="audience {{ audience }}">
+   <!--<h5 >{{ audience }}</h5>-->
+   <ul class="engagement-types">{{#cells}}
+      <li class="engagement-type {{engagementType}}">
+         <h6>
+               <span class="descr">
+                  <span class="engagement-type">{{engagementType}}</span> by
+                  <span class="audience">{{ audience }}</span>
+               </span>
+         </h6>
+         <ul class="metrics">{{#metrics}}
+            <li>
+               <div class="meta">
+                  <img src="{{ static_meta.icon }}" width="16" height="16" border="0" rel="tooltip" title="<strong>{{static_meta.provider}} {{static_meta.display_name}}</strong>: {{static_meta.description}}">
+                  {{#provenance_url}}
+                  <a class="value-and-name" target="_blank" href="{{provenance_url}}">
+                     <span class="metric-value value">{{ values.raw }}</span>
+                     <span class="metric-name">{{ static_meta.display_name }}</span>
+                  </a>
+                  {{/provenance_url}}
+
+                  <!-- sometimes, like with facebook, there's no url. then show a span, not a link -->
+                  {{^provenance_url}}
+                     <span class="value-and-name">
+                        <span class="metric-value value">{{ values.raw }}</span>
+                        <span class="metric-name">{{ static_meta.display_name }}</span>
+                     </span>
+                  {{/provenance_url}}
+               </div>
+
+               <div class="line">
+                  <!-- if we've got ranges, show 'em, along sizeable div to show range -->
+                  {{#percentiles}}
+                  <div class="metric-perc-range ci" rel="tooltip" title='Percentile range for this metric relative to a random set of items published the same year'>
+                     <span class="start endpoint"><span class="value">{{CI95_lower}}</span></span>
+                     <span class="bar"></span>
+                     <span class="end endpoint"><span class="value">{{CI95_upper}}</span></span>
+                  </div>
+                  {{/percentiles}}
+
+                  <!-- if no ranges, show an NA -->
+                  {{^percentiles}}
+                  <div class="percentile-fail">
+                     <span class="no-perc">no percentile data.</span>
+                  </div>
+                  {{/percentiles}}
+               </div>
+            </li>
+            {{/metrics}}</ul>
+      </li>
+      {{/cells}}</ul>
+</div>
+{{/audiences}}

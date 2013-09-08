@@ -66,9 +66,10 @@ assets.register('js_all', js)
 
 
 
-def json_for_client(obj_or_dict):
+def json_for_client(thing_to_jsonify):
     """
     JSON-serialize an obj or dict and put it in a Flask response.
+    This should be converted to an object and moved out of here...
 
     :param obj: the obj you want to serialize to json and send back
     :return: a flask json response, ready to send to client
@@ -76,9 +77,9 @@ def json_for_client(obj_or_dict):
 
     # convert to a dict if it's not one already
     try:
-        temp = input.__dict__
+        temp = thing_to_jsonify.__dict__
     except AttributeError:
-        temp = input
+        temp = thing_to_jsonify
 
     obj_dict = {}
     for k, v in temp.iteritems():
