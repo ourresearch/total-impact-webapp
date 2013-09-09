@@ -1,5 +1,6 @@
 angular.module("profile", [
   'resources.products',
+  'product.product',
   'security'
 ])
 
@@ -21,6 +22,7 @@ angular.module("profile", [
   '$location',
   'security',
   'Products',
+  'Product',
   function ($scope, $location, security, Products)
   {
     console.log("security: ", security)

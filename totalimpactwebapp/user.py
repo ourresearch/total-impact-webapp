@@ -2,6 +2,7 @@ from totalimpactwebapp import db
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import DataError
 
 import requests
 import json
@@ -162,6 +163,13 @@ def get_collection_from_core(collection_id, include_items=1):
     return r.text, r.status_code
 
 
+def get_products_from_core(collection_id):
+    coll_text, status = get_collection_from_core(collection_id)
+    coll_obj = json.loads(coll_text)
+    return coll_obj["items"]
+
+
+
 def add_products_to_core_collection(collection_id, aliases_to_add):
     query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
@@ -272,6 +280,30 @@ def create_user(user_request_dict, api_root, db):
     ))
 
     return user
+
+
+def get_user_from_id(id, id_type="userid"):
+    if id_type == "userid":
+        try:
+            user = User.query.get(id)
+        except DataError:  # id has to be an int
+            user = None
+
+    elif id_type == "email":
+        user = User.query.filter_by(email=id).first()
+
+    elif id_type == "slug":
+        user = User.query.filter_by(url_slug=id).first()
+
+    try:
+        user.products = get_products_from_core(user.collection_id)
+    except AttributeError:  # user has no collection_id  'cause it's None
+        pass
+
+    return user
+
+
+
 
 def _make_id(len=6):
     '''Make an id string.

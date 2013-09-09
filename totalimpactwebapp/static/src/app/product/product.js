@@ -1,5 +1,5 @@
-angular.module('products.product', ['products.award'])
-angular.module('products.product').factory('Product', function(Award) {
+angular.module('product.product', ['product.award'])
+angular.module('product.product').factory('Product', function(Award) {
 
 
   var itemOmitUndefinedv = function(obj) { return _.omit(obj, "undefined")}

@@ -1,5 +1,5 @@
-angular.module('products.award', []);
-angular.module('products.award').factory('Award', function() {
+angular.module('product.award', []);
+angular.module('product.award').factory('Award', function() {
 
   return {
 

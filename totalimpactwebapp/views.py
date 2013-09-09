@@ -13,7 +13,7 @@ from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
 
 
 from totalimpactwebapp import app, util, db, login_manager, forms
-from totalimpactwebapp.user import User, create_user
+from totalimpactwebapp.user import User, create_user, get_user_from_id
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 import newrelic.agent
@@ -104,8 +104,8 @@ def render_template_custom(template_name, **kwargs):
 
     return render_template(template_name, **kwargs)
 
-def get_user_from_id(userId):
-    retrieved_user = User.query.get(userId)
+def get_user_for_response(id, id_type="userid"):
+    retrieved_user = get_user_from_id(id, id_type)
     if retrieved_user is None:
         abort(404, "That user doesn't exist.")
 
@@ -198,131 +198,7 @@ def extract_filename(s):
 
 
 
-###############################################################################
-#
-#   USER PAGES
-#
-###############################################################################
 
-
-@app.route("/<path:dummy>")  # from http://stackoverflow.com/a/14023930/226013
-def redirect_to_profile(dummy):
-    """
-    Route things that look like user profile urls.
-
-    *Everything* not explicitly routed to another function will end up here.
-    """
-    return user_profile(dummy)
-
-
-@app.route("/creating", methods=["POST"])
-def creating_profile():
-    user_request_dict = json.loads(request.form["user-dict-json"])
-    user = create_user(user_request_dict, g.roots["api"], db)
-
-    login_user(user)
-    return redirect("/" + user.url_slug)
-
-
-def user_profile(url_slug, new_user_request_obj=None):
-
-    retrieved_user = User.query.filter(
-        func.lower(User.url_slug) == func.lower(url_slug) ).first()
-
-    # user don't exist
-    if retrieved_user is None:
-        abort(404)
-
-    # you used a non-standard capitalization of the url slug
-    elif retrieved_user.url_slug != url_slug:
-        # redirect user to a URL that uses correctly-capitalized slug.
-        return redirect("/" + retrieved_user.url_slug)
-
-    # for now render something quite like the report template. change later.
-    else:
-        # if you're logged in
-        if g.user.is_authenticated():
-            # and you're looking at your own profile
-            if g.user.id == retrieved_user.id:
-                # note that you stopped by to view your profile
-                retrieved_user.set_last_viewed_profile()
-                db.session.add(retrieved_user)
-                db.session.commit()
-
-        email_hash = hashlib.md5(retrieved_user.email.lower()).hexdigest()
-
-        return render_template_custom(
-            'user-profile.html',
-            email_hash=email_hash,
-            profile=retrieved_user,
-            report_id=retrieved_user.collection_id,
-            report_id_namespace="impactstory_collection_id",
-            api_query="collection/" + retrieved_user.collection_id
-        )
-
-@app.route("/<url_slug>/preferences")
-def user_preferences(url_slug):
-
-    retrieved_user = User.query.filter(
-        func.lower(User.url_slug) == func.lower(url_slug) ).first()
-
-    # user don't exist
-    if retrieved_user is None:
-        abort(404, "user doesn't exist")
-
-    # you're not logged in
-    elif not g.user.is_authenticated():
-        return redirect(url_for('login', next=request.url))
-
-    # you're logged in, asked to edit someone else's preferences
-    elif g.user.id != retrieved_user.id:
-        return redirect("/" + url_slug)
-
-    # you used a non-standard capitalization of the url slug
-    elif retrieved_user.url_slug != url_slug:
-        # redirect user to a URL that uses correctly-capitalized slug.
-        return redirect(url_for('user_preferences', url_slug=retrieved_user.url_slug))
-
-    # yay, have some preferences page!
-    else:
-        return render_template_custom(
-            'user-preferences.html',
-            profile=retrieved_user
-        )
-
-
-@app.route("/user/<url_slug>")
-def user_page_from_user_endpoint(url_slug):
-    return redirect("/" + url_slug)
-
-
-@app.route('/create', methods=["GET"])
-def collection_create():
-
-    # don't let logged-in users see the /create page.
-    if g.user.is_authenticated():
-        return redirect("/" + g.user.url_slug)
-
-
-    return render_template_custom('create-collection.html')
-
-
-
-@app.route('/signup/', methods=["GET"])
-def signup():
-
-    # don't let logged-in users see the /signup page.
-    if g.user.is_authenticated():
-        return redirect("/" + g.user.url_slug)
-
-    return render_template_custom('signup.html')
-
-
-@app.route("/signup/<path:path>")
-def signup_static_resources(path):
-    path_root = "static/src/signup/"
-    full_path = path_root + path
-    return send_file(full_path)
 
 
 
@@ -331,32 +207,13 @@ def signup_static_resources(path):
 
 ###############################################################################
 #
-#   USER LOGIN AND PASSWORD-MANAGEMENT PAGES
+#   JSON VIEWS (API)
 #
 ###############################################################################
 
 
-@app.route("/user/login", methods=["POST"])
-def login():
 
-    logger.debug(u"user trying to log in.")
-
-    email = unicode(request.json["email"]).lower()
-    password = unicode(request.json["password"])
-
-    g.user = User.query.filter_by(email=email).first()
-
-    if g.user is None:
-        abort(404, "Email doesn't exist")
-    elif not g.user.check_password(password):
-        abort(401, "Wrong password")
-    else:
-        # Yay, no errors! Log the user in.
-        login_user(g.user)
-
-
-    return json_for_client({"user": g.user.as_dict()})
-
+#------------------ /user (current user using the site) -----------------
 
 
 @app.route("/user/current")
@@ -375,125 +232,19 @@ def logout():
 
 
 
-@app.route("/reset-password", methods=["GET"])
-def request_reset_token():
-    logger.debug(u"user trying to reset password.")
-
-    if g.user is not None and g.user.is_authenticated():
-        return redirect("/" + g.user.url_slug + "/preferences")
-
-    return render_template_custom('reset-password.html')
+#------------------ /user/:id   -----------------
 
 
-
-@app.route("/change-password/<reset_token>", methods=["GET", "POST"])
-def change_password(reset_token):
-    """
-    Password change form; authenticates w/ token we've sent to user.
-    """
-
-    s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
-    error = ""
-    try:
-        email = s.unsign(reset_token, max_age=60*60*24).lower()  # 24 hours
-
-    except SignatureExpired:
-        error = "expired-token"
-
-    except BadTimeSignature:
-        error = "invalid-token"
-
-    if error:
-        return render_template_custom("change-password.html", error=error)
-
-    if request.method == "GET":
-        return render_template_custom(
-            'change-password.html',
-            error=error
-        )
-
-    elif request.method == "POST":
-        # the token is one we made. Whoever has it pwns this account
-        retrieved_user = User.query.filter_by(email=email).first()
-        if retrieved_user is None:
-            abort(404, "Sorry, that user doesn't exist.")
-
-        retrieved_user.set_password(request.form["confirm_new_pw"])
-        login_user(retrieved_user)
-        db.session.commit()
-        flash("Password changed.", "success")
-        return redirect("/" + retrieved_user.url_slug)
-
-
-@app.route("/oauth/orcid")
-def oath_orcid():
-    return "placeholder for now..."
-
-
-
-
-
-
-
-    ###############################################################################
-#
-#   JSON VIEWS (API)
-#
-###############################################################################
-
-
-
-#------------------ /user -----------------
-
-@app.route("/user", methods=["GET"])
-def user_view():
-    try:
-        email = request.args["email"].lower()
-    except AttributeError:
-        abort(400, "Bad request, please include email query")
-
-    # return a user slug based from an email query
-    user = User.query.filter_by(email=email).first()
-    if user is None:
-        abort(404, "There's no user with email " + email)
+@app.route("/user/<profile_id>", methods=['GET'])
+def get_user(profile_id):
+    user = get_user_for_response(profile_id, request.args.get("id_type", "userid"))
 
     return json_for_client(user)
 
 
-@app.route("/users/test", methods=["DELETE", "GET"])
-def delete_test_user():
-    coll_delete_params = {
-        "include_items": "true",
-        "api_admin_key": os.getenv("API_ADMIN_KEY")
-    }
-    if request.method == "DELETE" or request.args.get("method") == "delete":
-
-        # for now just the first one...should be all of them
-        retrieved_users = User.query.filter(User.surname == "impactstory").all()
-        for user in retrieved_users:
-            if user.collection_id is None:
-                continue
-
-            url = g.roots["api"] + "/v1/collection/" + user.collection_id
-            r = requests.delete(url, params=coll_delete_params)
-            print "delete colls and items; " + r.text
-
-            print "deleting user ", user.email
-            db.session.delete(user)
-
-        db.session.commit()
-        return make_response("deleted {num_users} users.".format(
-            num_users=len(retrieved_users)))
-    else:
-        return make_response("these endpoint only supports deleting for now.")
 
 
-@app.route("/users/test/collection_ids")
-def test_user_cids():
-    test_users = User.query.filter(User.surname == "impactstory").all()
-    print "test_users: ", test_users
-    test_collection_ids = [user.collection_id for user in test_users]
-    return json_for_client({"collection_ids": test_collection_ids})
+
 
 
 #------------------ user/:userId/products -----------------
@@ -526,6 +277,7 @@ def user_products_view_and_modify(userId):
 
     response_to_send = make_response(resp, status_code)
     return response_to_send
+
 
 
 
@@ -580,7 +332,7 @@ team</p>""".format(url=full_reset_url)
 
 @app.route("/user/<int:userId>/password", methods=["PUT"])
 def user_password_modify(userId):
-    retrieved_user = get_user_from_id(userId)
+    retrieved_user = get_user_for_response(userId)
 
     if  retrieved_user.check_password(request.json["current_password"]):
         retrieved_user.set_password(request.json["new_password"])
@@ -607,7 +359,7 @@ def user_put(userId):
 
 @app.route("/user/<int:userId>/email")
 def user_email_modify(userId, new_email):
-    retrieved_user = get_user_from_id(userId)
+    retrieved_user = get_user_for_response(userId)
     if g.user.get_id() != retrieved_user.get_id():
         abort(403, "You must be logged in to change your email.")
 
@@ -635,7 +387,7 @@ def user_slug_modify(userId, new_slug):
         abort(400, "Character not allowed.")
 
     # check for user login
-    retrieved_user = get_user_from_id(userId)
+    retrieved_user = get_user_for_response(userId)
     if g.user.get_id() != retrieved_user.get_id():
         abort(403, "You must be logged in to change your URL.")
 
@@ -670,7 +422,7 @@ def user_name_modify(userId, name, name_type):
     :param name_type: surname or given_name
     """
 
-    retrieved_user = get_user_from_id(userId)
+    retrieved_user = get_user_for_response(userId)
     if g.user.get_id() != retrieved_user.get_id():
         abort(403, "You must be logged in to change your name.")
 
@@ -687,6 +439,49 @@ def user_surname_modify(userId, name):
 @app.route("/user/<int:userId>/given_name/<name>", methods=["PUT"])
 def user_given_name_modify(userId, name):
     return user_name_modify(userId, name, "given_name")
+
+
+
+
+#------------------ users/test  (manage test users) -----------------
+
+
+@app.route("/users/test", methods=["DELETE", "GET"])
+def delete_test_user():
+    coll_delete_params = {
+        "include_items": "true",
+        "api_admin_key": os.getenv("API_ADMIN_KEY")
+    }
+    if request.method == "DELETE" or request.args.get("method") == "delete":
+
+        # for now just the first one...should be all of them
+        retrieved_users = User.query.filter(User.surname == "impactstory").all()
+        for user in retrieved_users:
+            if user.collection_id is None:
+                continue
+
+            url = g.roots["api"] + "/v1/collection/" + user.collection_id
+            r = requests.delete(url, params=coll_delete_params)
+            print "delete colls and items; " + r.text
+
+            print "deleting user ", user.email
+            db.session.delete(user)
+
+        db.session.commit()
+        return make_response("deleted {num_users} users.".format(
+            num_users=len(retrieved_users)))
+    else:
+        return make_response("these endpoint only supports deleting for now.")
+
+
+@app.route("/users/test/collection_ids")
+def test_user_cids():
+    test_users = User.query.filter(User.surname == "impactstory").all()
+    print "test_users: ", test_users
+    test_collection_ids = [user.collection_id for user in test_users]
+    return json_for_client({"collection_ids": test_collection_ids})
+
+
 
 
 
