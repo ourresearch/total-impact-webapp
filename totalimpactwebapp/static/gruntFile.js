@@ -90,7 +90,7 @@ module.exports = function (grunt) {
         }
       },
       angular: {
-        src:['vendor/angular/angular.js'],
+        src:['vendor/angular/*.js'],
         dest: '<%= distdir %>/angular.js'
       },
       bootstrap: {

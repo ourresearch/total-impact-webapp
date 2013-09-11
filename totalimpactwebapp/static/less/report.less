@@ -2,86 +2,6 @@
 @zoomCellWidth: (@metricsSectionWidth / 6);
 
 
-/* report
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-@modalWidth: 675px;
-body.user-profile {
-   div.main{
-      margin-top:0;
-      padding-top:0;
-   }
-
-   .modal {
-      width:  @modalWidth;
-      margin:  -250px 0 0 -(@modalWidth / 2);
-      &#import-products-modal {
-         div.modal-header.import-products {
-
-            div.control-group {
-               float:right;
-               margin-right: 13px;
-               font-family: Lato, Helvetica, arial, sans-serif;
-               button {
-                  font-weight: normal;
-                  background: @accentColor;
-                  span.value {
-                     font-weight: bolder;
-                  }
-               }
-               div.working {
-                  margin-top:5px;
-                  text-align: center;
-                  color: #bbb;
-                  i {
-                     margin-right:10px;
-                     font-size: 24px;
-                  }
-                  span.text{
-                     font-size: 25px;
-                  }
-               }
-            }
-         }
-         .modal-body {
-            float:right; // otherwise the floated stuff in the .modal-header breaks it.
-         }
-      }
-
-
-      .modal-header {
-         background: #eee;
-         padding: 30px;
-
-         h3 {
-            color:  #555;
-            font-weight: normal;
-            font-size: 30px;
-            font-weight: bolder;
-            font-family: Lato, helvetica, arial, sans-serif;
-         }
-         button.close {
-            margin-left:10px;
-            font-size: 30px;
-         }
-
-      }
-
-      .modal-body {
-         max-height: inherit;
-         form {
-            h3 {
-               span.step-number {display:none;}
-               color:  #333;
-            }
-            &.other-products { margin-right:20px;}
-         }
-      }
-   }
-
-
-}
 #page-header img.loading {
    width: 32px;
    margin: -6px 0 0 -35px;
@@ -180,88 +100,16 @@ input.report {
 
 
 
-/** report printout ******************************************************/
-div#metrics {
-   min-height: 500px;
-   min-width: 1212px; // make sure "click to expand" shows.
-   background: none repeat scroll 0 0 #FFFFFF;
-   float: left;
-   width: 100%;
-   div.wrapper {
-      width: @metricsSectionWidth;
-   }
-
-   h3 {
-      font-family: rokkitt, georgia, serif;
-      font-size:24px;
-      color:@linkColor;
-      clear:both;
-      font-weight:bold;
-   }
-   div.genre {
-      margin-top:50px;
-      float:left;
-      clear:both;
-      ol, ul, ul li {
-         line-height: 1.2; // mostly for space beween rows of badges on same item
-      }
-      h3 {
-         border-bottom:  none;
-         font-size:  30px;
-      }
-      h4.plus-more {
-         float:left;
-         font-size: 16px;
-         margin:40px 0 0 20px;
-         text-indent:-20px;
-         cursor:pointer;
-         &:hover{ color: @linkColor;}
-         &.showing {
-            color: @linkColor;
-            span.icon {
-               background-position: -24px 64px;
-            }
-         }
-         span.icon {
-            padding:0 9px;
-            background: url(../img/glyphicons-halflings.png);
-            background-position: 0 64px;
-         }
-         span.show-hide {
-            font-weight: normal;
-            font-style: normal;
-            font-size:12px;
-         }
-      }
-      ul.items.inactive {
-         display:none;
-         clear:both;
-         margin-left:20px;
-         li.item div.biblio h5 {
-            color: #666;
-         }
-      }
-   }
-}
 
 
-// collections/reports are deprecated, so users can't edit them anymore.
-body.report {
-   li.item {
-      &:hover {
-         div.item-controls {
-            a.item-delete-button {display:none}
-         }
-      }
-   }
-}
 
 
 
 // li.item is in #metrics, but big enough it gets its own block.
-li.item {
+li.product {
    float:left;
    clear:both;
+   padding:  20px 0;
    position:relative; // for positioning the item-controls
    &.zoomed {
       div.biblio h5 span.title {color: @linkColor;}
@@ -324,81 +172,70 @@ li.item {
    }
 
 
-   div.item-header {
-      clear:both;
-      padding-top: 10px;
-      cursor:default;
-      &.zoomable {
-         &:hover {
-            cursor:pointer;
-         }
-      }
 
-      div.biblio{
-         float:left;
-         width: 728px;
-         h5 {
-            font-size:16px;
-            margin: 0 0 -3px 0;
-            a {
-               width: 12px;
-               height: 12px;
+   div.biblio{
+      float:left;
+      width: 728px;
+      h5 {
+         font-size:16px;
+         margin: 0 0 -3px 0;
+         float: left;
+         padding: 10px 5px 10px 0;
+         a {
+            i {
+               color:  #ddd;
                margin-right: 5px;
-               background: url(../img/linkout-icon.png);
-               background-repeat: no-repeat;
-               background-position: right 1px;
-               display:inline-block;
-               span.help-text{
-                  display:none;
-                  padding-left:16px;
-                  float:left;
-                  margin-top:-2px;
-                  color: @linkColor;
-                  font-size:12px;
-                  font-weight: normal;
-                  text-decoration: none;
-               }
-               &:hover {
-                  background-position: right -23px;
-                  span.help-text{display: inline-block;}
-               }
+            }
+            span.help-text{
+               display:none;
+               margin-top:-2px;
+               color: @linkColor;
+               font-size:12px;
+               font-weight: normal;
+               text-decoration: none;
             }
          }
-
-         span.year, span.authors, span.repo, span.descr {
-            font-size:12px;
-            color: #888;
-            line-height: 1.3;
+         &:hover {
+            a {
+               span.help-text {display: inline; }
+               i { color:  @linkColor}
+            }
          }
-         span.repo {font-style:italic;}
       }
 
-      div.badges {
-         width: 280px;
-         margin-left: 20px;
+      span.year, span.authors, span.repo, span.descr {
+         font-size:12px;
+         color: #888;
+         line-height: 1.3;
+      }
+      span.repo {font-style:italic;}
+   }
+
+   div.badges {
+      width: 280px;
+      margin-left: 20px;
+      float:left;
+      ul.ti-badges {
          float:left;
-         ul.ti-badges {
+         li {
             float:left;
-            li {
-               float:left;
-               margin:0 3px 5px 0;
-               span.ti-badge {
-                  font-size: 12px;
-                  font-weight:normal;
-                  padding: 3px 6px;
-                  span.audience {display:none;}
-                  &.scholars {background: @scholarsColor; border:1px solid @scholarsColor;}
-                  &.public {background: @publicColor; border:1px solid @publicColor;}
-                  &.big-badge {
-                  }
-                  &.lil-badge {
-                     &.scholars {color: @scholarsColor;}
-                     &.public {color: @publicColor;}
-                     background: #fff;
-                     text-shadow: none;
-                  }
-                  &:hover {border:1px solid #000;}
+            margin:0 3px 5px 0;
+            span.ti-badge {
+               font-size: 12px;
+               font-weight:normal;
+               padding: 3px 6px;
+               span.audience {display:none;}
+               &.scholars {background: @scholarsColor; border:1px solid @scholarsColor;}
+               &.public {background: @publicColor; border:1px solid @publicColor;}
+               &.big-badge {
                }
+               &.lil-badge {
+                  &.scholars {color: @scholarsColor;}
+                  &.public {color: @publicColor;}
+                  background: #fff;
+                  text-shadow: none;
+               }
+               &:hover {border:1px solid #000;}
             }
          }
       }

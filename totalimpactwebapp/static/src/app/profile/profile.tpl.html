@@ -1,10 +1,13 @@
-<br><br><br><br><br><h1>Hey y'all I'm a profile!</h1>
+<br><br><br><br>
 
 
-<ul class="products" ng-repeat="product in products">
+<ul class="products">
+   <li class="product" ng-repeat="product in user.products" ng-controller="productCtrl">
+      <div class="item-header">
+         <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
+      </div>
 
-
-   <li>{{ product.biblio.title }}</li>
+   </li>
 
 
 

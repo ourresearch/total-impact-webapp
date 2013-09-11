@@ -84,13 +84,33 @@ angular.module('product.product').factory('Product', function(Award) {
 
   return {
 
-    make: function(itemData){
-      return this.processDict(itemData)
+    makeMetrics: function(itemData){
+      var metrics = itemData.metrics
+      metrics = this.addMetricsInfoDataToMetrics(metrics)
+      metrics = this.expandMetricMetadta(metrics, itemData.biblio.year)
+      metrics = this.getMetricPercentiles(metrics)
+      return metrics
     }
 
+    ,makeBiblio: function(itemData) {
+      var biblio = itemData.biblio
+      biblio.url = (itemData.aliases.url) ?  itemData.aliases.url[0] : false
+      biblio.title = biblio.title || "no title"
+      if (biblio.authors) {
+        // screws up names w/ commas in them
+        var auths = biblio.authors.split(",", 3).join(",") // first 3 authors
+        if (auths.length < biblio.authors.length) auths += " et al."
+        biblio.authors = auths
+      }
 
+      return biblio
+    }
+    
 
-  ,makeAwardsList: function(metrics) {
+  ,makeAwards: function(itemData) {
+      
+      metrics = this.makeMetrics(itemData)
+      
       var awards = []
       var audiencesObj = itemOmitUndefinedv(_.groupBy(metrics, "audience"))
       _.each(audiencesObj, function(audienceMetrics, audienceName) {
@@ -281,20 +301,27 @@ angular.module('product.product').factory('Product', function(Award) {
 
 
 
-
-    ,processDict: function(dict) {
-      dict.metrics = this.addMetricsInfoDataToMetrics(dict.metrics)
-      dict.metrics = this.expandMetricMetadta(dict.metrics, dict.biblio.year)
-      dict.metrics = this.getMetricPercentiles(dict.metrics)
-
-      // we're not using this now, and it breaks stuff, so commenting it out...
-      //        dict.metrics = this.add_derived_metrics(dict.metrics)
-
-      dict.awards = new this.makeAwardsList(dict.metrics)
-      return dict
-    }
   };
-});
+})
+
+  .controller('productCtrl', function ($scope, Product, $location, security) {
+
+      $scope.biblio = Product.makeBiblio($scope.product)
+      $scope.metrics = Product.makeMetrics($scope.product)
+      $scope.awards = Product.makeAwards($scope.product)
+
+  })
+
+  .directive('productBiblio', function(Product) {
+    return {
+      restrict: 'A',
+      link: function(scope, elem, atts) {
+
+      }
+    }
+
+
+  })
 
 
 

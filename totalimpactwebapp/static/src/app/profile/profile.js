@@ -1,5 +1,5 @@
 angular.module("profile", [
-  'resources.products',
+  'resources.users',
   'product.product',
   'security'
 ])
@@ -21,16 +21,11 @@ angular.module("profile", [
   '$scope',
   '$location',
   'security',
-  'Products',
-  'Product',
-  function ($scope, $location, security, Products)
+  'Users',
+  function ($scope, $location, security, Users)
   {
-    console.log("security: ", security)
-    console.log("products:", Products)
 
-    Products.forUser(1).then(function(response){
-      $scope.products = response;
-    })
+    $scope.user = Users.get({id: "JasonPriem", idType: "slug"})
 
     console.log("ProfileCtrl running!")
 }]);

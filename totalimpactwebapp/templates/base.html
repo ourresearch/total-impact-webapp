@@ -70,7 +70,8 @@
    <!-- Load scripts -->
    <!-------------------------------------------------------------------------->
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script>
+   <script type="text/javascript" src="static/dist/angular.js"></script> <!-- extra Angular modules -->
    <script type="text/javascript" src="static/dist/bootstrap.js"></script>
    <script type="text/javascript" src="static/js/browser-fixes.js"></script> <!-- get rid of this -->
    <script type="text/javascript" src="static/dist/ImpactStory.js"></script>
@@ -107,69 +108,66 @@
 
 <div ng-include="'header.tpl.html'"></div>
 <div id="container">
-
    <div ng-view class="main-view"></div>
-
-
+</div>
 
 {#   {% block content %}{% endblock %}#}
 
-   <div id="footer">
-      <div class="wrapper">
-         <div id="footer-branding" class="footer-col">
-            <a class="brand" href="/"><img src="/static/dist/img/impactstory-logo.png" alt="ImpactStory" /></a>
+<div id="footer">
+   <div class="wrapper">
+      <div id="footer-branding" class="footer-col">
+         <a class="brand" href="/"><img src="/static/dist/img/impactstory-logo.png" alt="ImpactStory" /></a>
 
-            <p>We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>
-            <p class="license">
-               <!--<a rel="license" href="http://creativecommons.org/licenses/by/2.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/2.0/80x15.png" /></a>-->
-               <span class="text">Except where otherwise noted, content on this site is licensed under the
-                  <a rel="license" href="http://creativecommons.org/licenses/by/2.0/">CC-BY license</a>.
-               </span>
-            </p>
-         </div>
-
-
-         <div id="footer-follow" class="footer-col">
-            <h3>Follow</h3>
-            <ul>
-               <li><a href="http://twitter.com/#!/ImpactStory">Twitter</a></li>
-               <li><a href="http://twitter.com/#!/ImpactStory_now">Site status</a></li>
-               <li><a href="http://blog.impactstory.org">Blog</a></li>
-               <li><a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">Newsgroup</a></li>
-               <li><a href="https://github.com/total-impact">GitHub</a></li>
-
-            </ul>
-         </div>
-
-         <div id="footer-about" class="footer-col">
-            <h3>About</h3>
-            <ul>
-               <li><a href="/about">About us</a></li>
-               <li><a href="http://feedback.impactstory.org" target="_blank">Feedback</a></li>
-               <li>
-                  <a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="166950">Support</a>
-               </li>
-
-
-               <li><a href="/api-docs">API/embed</a></li>
-               <li><a href="/faq">FAQ</a></li>
-               <!--<li><a href="/about#contact">Contact us</a></li>-->
-               <li><a href="/faq#tos">Terms of use</a></li>
-            </ul>
-         </div>
-
-
-         <div id="footer-funders" class="footer-col">
-            <h3>Supported by</h3>
-            <a href="http://sloan.org/" id="footer-sloan-link">
-               <img src="{{ url_for('static', filename='dist/img/sloan-logo.png') }}"  width="200"/>
-            </a>
-         </div>
-
-
+         <p>We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>
+         <p class="license">
+            <!--<a rel="license" href="http://creativecommons.org/licenses/by/2.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/2.0/80x15.png" /></a>-->
+            <span class="text">Except where otherwise noted, content on this site is licensed under the
+               <a rel="license" href="http://creativecommons.org/licenses/by/2.0/">CC-BY license</a>.
+            </span>
+         </p>
       </div>
-   </div> <!-- end footer -->
-</div>
+
+
+      <div id="footer-follow" class="footer-col">
+         <h3>Follow</h3>
+         <ul>
+            <li><a href="http://twitter.com/#!/ImpactStory">Twitter</a></li>
+            <li><a href="http://twitter.com/#!/ImpactStory_now">Site status</a></li>
+            <li><a href="http://blog.impactstory.org">Blog</a></li>
+            <li><a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">Newsgroup</a></li>
+            <li><a href="https://github.com/total-impact">GitHub</a></li>
+
+         </ul>
+      </div>
+
+      <div id="footer-about" class="footer-col">
+         <h3>About</h3>
+         <ul>
+            <li><a href="/about">About us</a></li>
+            <li><a href="http://feedback.impactstory.org" target="_blank">Feedback</a></li>
+            <li>
+               <a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="166950">Support</a>
+            </li>
+
+
+            <li><a href="/api-docs">API/embed</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <!--<li><a href="/about#contact">Contact us</a></li>-->
+            <li><a href="/faq#tos">Terms of use</a></li>
+         </ul>
+      </div>
+
+
+      <div id="footer-funders" class="footer-col">
+         <h3>Supported by</h3>
+         <a href="http://sloan.org/" id="footer-sloan-link">
+            <img src="{{ url_for('static', filename='dist/img/sloan-logo.png') }}"  width="200"/>
+         </a>
+      </div>
+
+
+   </div>
+</div> <!-- end footer -->
 
 
 <!------------------------------------------------------------------------------
