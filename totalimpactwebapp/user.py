@@ -12,6 +12,7 @@ import random
 import logging
 import unicodedata
 import string
+import hashlib
 
 logger = logging.getLogger("tiwebapp.user")
 
@@ -37,9 +38,13 @@ class User(db.Model):
     def full_name(self):
         return (self.given_name + " " + self.surname).strip()
 
+    @property
+    def email_hash(self):
+        return hashlib.md5(self.email).hexdigest()
+
 
     def __init__(self, email, password, **kwargs):
-        self.email = email
+        self.email = email.lower()
         self.password = self.set_password(password)
 
         super(User, self).__init__(**kwargs)
@@ -124,6 +129,7 @@ class User(db.Model):
             "given_name",
             "surname",
             "email",
+            "email_hash",
             "url_slug",
             "collection_id",
             "created",
@@ -282,7 +288,7 @@ def create_user(user_request_dict, api_root, db):
     return user
 
 
-def get_user_from_id(id, id_type="userid"):
+def get_user_from_id(id, id_type="userid", include_items=True):
     if id_type == "userid":
         try:
             user = User.query.get(id)
@@ -295,10 +301,11 @@ def get_user_from_id(id, id_type="userid"):
     elif id_type == "slug":
         user = User.query.filter_by(url_slug=id).first()
 
-    try:
-        user.products = get_products_from_core(user.collection_id)
-    except AttributeError:  # user has no collection_id  'cause it's None
-        pass
+    if include_items:
+        try:
+            user.products = get_products_from_core(user.collection_id)
+        except AttributeError:  # user has no collection_id  'cause it's None
+            pass
 
     return user
 

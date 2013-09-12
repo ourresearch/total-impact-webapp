@@ -1,7 +1,7 @@
 <ul class="nav pull-right">
    <li ng-show="isAuthenticated()" class="logged-in-user">
       <span class="context">Welcome back, </span>
-      <a class="current-user" href="#">{{currentUser.given_name}}</a>
+      <a class="current-user" href="/{{ currentUser.url_slug }}">{{currentUser.given_name}}</a>
    </li>
    <li ng-show="isAuthenticated()" class="divider-vertical"></li>
    <li ng-show="isAuthenticated()" class="logged-in preferences dropdown">

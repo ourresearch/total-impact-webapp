@@ -25,7 +25,18 @@ angular.module("profile", [
   function ($scope, $location, security, Users)
   {
 
-    $scope.user = Users.get({id: "JasonPriem", idType: "slug"})
+
+    $scope.aboutUser = Users.get({
+      id: $location.path().substring(1),
+      idType: "slug",
+      property: "about"
+    })
+
+    $scope.products = Users.query({
+      id: $location.path().substring(1),
+      idType: "slug",
+      property: "products"
+    })
 
     console.log("ProfileCtrl running!")
 }]);

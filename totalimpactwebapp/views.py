@@ -22,51 +22,36 @@ logger = logging.getLogger("tiwebapp.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 
-assets = Environment(app)
-js = Bundle(
-            'js/bootstrap.js',
-            'js/bootstrapx-clickover.js',
-            'js/bootstrap-editable.js',
-            'js/prettify.js',
-            'js/underscore.js',
-            'js/hmac-sha1.js',
-            'js/jquery.placeholder.js',
-            'js/jquery.headerlinks.js',
-            'js/jquery.color.js',
-            'js/jquery.cookie.js',
-            'js/icanhaz.js',
-            'js/ti-item.js',
-            'js/ti-user.js',
-            'js/ti-aliaslist.js',
-            'js/ti-coll.js',
-            'js/ti-userPreferences.js',
-            'js/ti-userCreds.js',
-            'js/ti-userProfile.js',
-            'js/ti-ui.js',
-            'js/google-analytics.js',
-            'js/segmentio.js',
-            'js/ti-analytics.js',
-
-            output='js/packed.js'
-)
-
-
-js_widget = Bundle(
-            'js/jquery-1.8.1.min.js',
-            'js/json3.min.js',
-            'js/icanhaz.js',
-            'js/bootstrap-tooltip-and-popover.js',
-            'js/underscore.js',
-            'js/ti-item.js',
-            # filters="yui_js", # comment this out if you want unminified version
-            output="js/widget.js",
-)
-assets.register('js_widget', js_widget)
-assets.register('js_all', js)
 
 
 
-def json_for_client(thing_to_jsonify):
+
+
+
+
+
+
+
+
+
+
+###############################################################################
+#
+#   CONVENIENCE FUNCTIONS
+#
+###############################################################################
+
+
+
+
+def json_resp_from_jsonable_thing(jsonable_thing):
+    json_str = json.dumps(jsonable_thing, sort_keys=True, indent=4)
+    resp = make_response(json_str, 200)
+    resp.mimetype = "application/json"
+    return resp
+
+
+def json_resp_from_thing(thing):
     """
     JSON-serialize an obj or dict and put it in a Flask response.
     This should be converted to an object and moved out of here...
@@ -75,24 +60,30 @@ def json_for_client(thing_to_jsonify):
     :return: a flask json response, ready to send to client
     """
 
-    # convert to a dict if it's not one already
     try:
-        temp = thing_to_jsonify.__dict__
+        return json_resp_from_jsonable_thing(thing)
+    except TypeError:
+        pass
+
+    try:
+        return json_resp_from_jsonable_thing(thing.as_dict())
     except AttributeError:
-        temp = thing_to_jsonify
+        pass
 
+    temp_dict = thing.__dict__
     obj_dict = {}
-    for k, v in temp.iteritems():
-        if k[0] != "_":  # no private attributes
+    for k, v in temp_dict.iteritems():
+        if k[0] != "_":  # we don't care to serialize private attributes
 
-            if type(v) is datetime.datetime: # convert datetimes to strings
+            if type(v) is datetime.datetime:  # convert datetimes to strings
                 obj_dict[k] = v.isoformat()
             else:
                 obj_dict[k] = v
 
-    resp = make_response(json.dumps(obj_dict, sort_keys=True, indent=4), 200)
-    resp.mimetype = "application/json"
-    return resp
+    return json_resp_from_jsonable_thing(obj_dict)
+
+
+
 
 def render_template_custom(template_name, **kwargs):
     kwargs["newrelic_footer"] = newrelic.agent.get_browser_timing_footer()
@@ -104,12 +95,32 @@ def render_template_custom(template_name, **kwargs):
 
     return render_template(template_name, **kwargs)
 
-def get_user_for_response(id, id_type="userid"):
-    retrieved_user = get_user_from_id(id, id_type)
+def get_user_for_response(id, id_type="userid", include_products=True):
+    retrieved_user = get_user_from_id(id, id_type, include_products)
     if retrieved_user is None:
         abort(404, "That user doesn't exist.")
 
     return retrieved_user
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###############################################################################
+#
+#   BEFORE AND AFTER REQUESTS
+#
+###############################################################################
 
 
 
@@ -157,25 +168,13 @@ def log_ip_address():
 
 
 @app.before_request
-def add_trailing_slash_for_angular_pages():
-    """
-    Super hacky way to fix the /signup page for angular.js.
-
-    This'll have to be improved if we end up with more angular pages.
-    """
-
-    if request.path == '/' or request.path == "/signup/":
-        pass  # these trailing-slash pages are ok
-
-    elif request.path == "/signup":
-        return redirect("/signup/")  # angular.js likes the extra slash
-
-    elif request.path.endswith("/"):
-        return redirect(request.path[:-1])  # generally we dislike terminal slash
-
-    else:
-        pass  # no terminal slash, carry on here
-
+def redirect_everything_but_root_and_static_and_api():
+    reasons_not_to_redirect = [
+        (request.path[0:4] == "/api"),
+        (request.path == "/"),
+        (request.path[0:7] == "/static")
+    ]
+    path = request.path
 
 @app.after_request
 def add_crossdomain_header(resp):
@@ -205,6 +204,14 @@ def extract_filename(s):
 
 
 
+
+
+
+
+
+
+
+
 ###############################################################################
 #
 #   JSON VIEWS (API)
@@ -219,16 +226,16 @@ def extract_filename(s):
 @app.route("/user/current")
 def get_current_user():
     try:
-        return json_for_client({"user": g.user.as_dict()})
+        return json_resp_from_thing({"user": g.user.as_dict()})
 
     except AttributeError:  # anon user has no as_dict()
-        return json_for_client({"user": None})
+        return json_resp_from_thing({"user": None})
 
 
 @app.route('/user/logout', methods=["POST"])
 def logout():
     logout_user()
-    return json_for_client({"msg": "user logged out"})
+    return json_resp_from_thing({"msg": "user logged out"})
 
 
 
@@ -239,7 +246,26 @@ def logout():
 def get_user(profile_id):
     user = get_user_for_response(profile_id, request.args.get("id_type", "userid"))
 
-    return json_for_client(user)
+    return json_resp_from_thing(user)
+
+
+@app.route("/user/<profile_id>/about", methods=['GET'])
+def get_user_about(profile_id):
+    user = get_user_for_response(
+        profile_id,
+        request.args.get("id_type", "userid"),
+        include_products=False  # returns faster this way.
+    )
+
+    return json_resp_from_thing(user)
+
+
+@app.route("/user/<profile_id>/products", methods=['GET'])
+def get_user_products(profile_id):
+    user = get_user_for_response(profile_id, request.args.get("id_type", "userid"))
+
+    return json_resp_from_thing(user.products)
+
 
 
 
@@ -327,7 +353,7 @@ team</p>""".format(url=full_reset_url)
     mailer.messages.send(msg)
     logger.info(u"Sent a password reset email to " + email)
 
-    return json_for_client({"message": "link emailed."})
+    return json_resp_from_thing({"message": "link emailed."})
 
 
 @app.route("/user/<int:userId>/password", methods=["PUT"])
@@ -479,7 +505,7 @@ def test_user_cids():
     test_users = User.query.filter(User.surname == "impactstory").all()
     print "test_users: ", test_users
     test_collection_ids = [user.collection_id for user in test_users]
-    return json_for_client({"collection_ids": test_collection_ids})
+    return json_resp_from_thing({"collection_ids": test_collection_ids})
 
 
 
@@ -502,7 +528,7 @@ def provider_get_memberitems_proxy(provider_name, query_string):
         params={"api_admin_key": os.getenv("API_ADMIN_KEY")}
     )
 
-    return json_for_client(r.json())
+    return json_resp_from_thing(r.json())
 
 
 @app.route('/provider/<provider_name>/memberitems', methods=["POST"])
@@ -523,7 +549,19 @@ def provider_post_memberitems_proxy(provider_name):
         params={"api_admin_key": os.getenv("API_ADMIN_KEY")}
     )
 
-    return json_for_client(r.json())
+    return json_resp_from_thing(r.json())
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -539,15 +577,23 @@ def provider_post_memberitems_proxy(provider_name):
 ###############################################################################
 
 
+
+
+@app.route("/<path:dummy>")  # from http://stackoverflow.com/a/14023930/226013
+def redirect_to_profile(dummy):
+    """
+    Route things that look like user profile urls.
+
+    *Everything* not explicitly routed to another function will end up here.
+    """
+    return render_template_custom('index.html')
+
+
+
 # static pages
 @app.route('/')
 def index():
     return render_template_custom('index.html')
-
-
-@app.route('/about')
-def about(): 
-    return render_template_custom('about.html')
 
 
 @app.route('/faq')
@@ -589,9 +635,27 @@ def images():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###############################################################################
 #
-#   ITEM- AND COLLECTION-LEVEL STUFF
+#   WIDGET STUFF
 #
 ###############################################################################
 
@@ -629,46 +693,6 @@ def impactstory_dot_js():
     resp.headers["Content-Type"] = "application/javascript; charset=utf-8"
     return resp
 
-
-@app.route('/collection/<collection_id>')
-def collection_report(collection_id):
-    url = "{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
-        api_root=g.roots["api"],
-        api_key=g.api_key,
-        collection_id=collection_id
-    )
-    
-    r = requests.get(url)
-    flash("You're looking at an old-style collection page. Check out our new <a href='http://blog.impactstory.org/2013/06/17/impact-profiles/'>profile pages!</a>", "alert")
-    if r.status_code == 200:
-        collection = json.loads(r.text)
-        return render_template_custom(
-            'collection.html',
-            page_title=collection["title"],
-            report_id=collection["_id"],
-            report_id_namespace="impactstory_collection_id",
-            api_query="collection/" + collection["_id"]
-        )
-    else:
-        abort(404, "This collection doesn't seem to exist yet. " + url)
-
-
-@app.route('/item/<ns>/<path:id>')
-def item_report(ns, id):
-    url = "{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
-        api_root=g.roots["api"],
-        ns=ns,
-        id=id,
-        api_key=os.environ["API_KEY"]
-    )
-    r = requests.get(url)
-    return render_template_custom(
-        'item.html',
-        page_title="",
-        report_id=id,
-        report_id_namespace=ns,
-        api_query="item/{ns}/{id}".format(ns=ns, id=id)
-    )
 
 @app.route("/widget-analytics", methods=['GET'])
 def widget_analytics():
@@ -716,73 +740,9 @@ def widget_analytics():
 
 
 
-
-
-###############################################################################
-#
-#   ADMIN AND UTILITY FUNCTIONS
-#
-###############################################################################
-
 @app.route('/admin/key')
 def generate_api_key():
     return render_template_custom('generate-api.html')
-
-@app.route('/wospicker', methods=["GET"])
-def wospicker():
-    num_total = int(request.args.get("total"))
-    num_subset = int(request.args.get("subset"))
-
-    pages_and_ids = util.pickWosItems(num_total, num_subset)
-
-    resp = make_response(json.dumps(pages_and_ids, indent=4), 200)
-    resp.mimetype = "application/json"
-    return resp
-
-try:
-    # see http://support.blitz.io/discussions/problems/363-authorization-error
-    @app.route('/mu-' + os.environ["BLITZ_API_KEY"], methods=["GET"])
-    def blitz_validation():
-        resp = make_response("42", 200)
-        return resp
-except KeyError:
-    logger.error(u"BLITZ_API_KEY environment variable not defined, not setting up validation api endpoint")
-
-
-@app.route('/hirefire/test', methods=["GET"])
-def hirefire_test():
-    resp = make_response("HireFire", 200)
-    resp.mimetype = "text/html"
-    return resp
-
-try:
-    @app.route('/hirefire/' + os.environ["HIREFIRE_TOKEN"] + '/info', methods=["GET"])
-    def hirefire_worker_count():
-        import time
-        resp = make_response(json.dumps([{"worker":1}]), 200)
-        resp.mimetype = "application:json"
-        return resp
-except KeyError:
-    logger.error(u"HIREFIRE_TOKEN environment variable not defined, not setting up validation api endpoint")
-
-
-@app.route('/hirefireapp/test', methods=["GET"])
-def hirefireapp_test():
-    resp = make_response("HireFire", 200)
-    resp.mimetype = "text/html"
-    return resp
-
-try:
-    @app.route('/hirefireapp/' + os.environ["HIREFIREAPP_TOKEN"] + '/info', methods=["GET"])
-    def hirefireapp_worker_count():
-        resp = make_response(json.dumps({"worker":1}), 200)
-        resp.mimetype = "application:json"
-        return resp
-except KeyError:
-    logger.error(u"HIREFIREAPP_TOKEN environment variable not defined, not setting up validation api endpoint")
-
-
-
 
 @app.route('/logo')
 def logo():

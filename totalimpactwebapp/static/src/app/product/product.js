@@ -369,22 +369,6 @@ function ItemView($) {
   }
 
 
-  this.renderBiblio = function(biblio, url) {
-    var html = ""
-
-    biblio.url = url
-    biblio.title = biblio.title || "no title"
-    if (biblio.authors) {
-      // screws up names w/ commas in them
-      var auths = biblio.authors.split(",", 3).join(",") // first 3 authors
-      if (auths.length < biblio.authors.length) auths += " et al."
-      biblio.authors = auths
-    }
-
-    var templateName = "biblio_" + biblio.genre
-    return $(ich[templateName](biblio, true))
-  }
-
 
   this.findBarLabelOffsets = function(start, end) {
     var minWidth = 27

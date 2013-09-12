@@ -1,14 +1,42 @@
-<br><br><br><br>
 
-
-<ul class="products">
-   <li class="product" ng-repeat="product in user.products" ng-controller="productCtrl">
-      <div class="item-header">
-         <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
+<div class="profile-header">
+   <div class="wrapper">
+      <div class="loading" ng-show="!aboutUser.id">
+         <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
       </div>
+      <div class="my-picture" ng-show="aboutUser.id">
+         <a href="http://www.gravatar.com" >
+            <img class="gravatar" ng-src="http://www.gravatar.com/avatar/{{ aboutUser.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
+         </a>
+      </div>
+      <div class="my-vitals">
+         <h2 class='page-title editable-name'>
+            <span class="given-name editable" data-name="given_name">{{ aboutUser.given_name }}</span>
+            <span class="surname editable" data-name="surname">{{ aboutUser.surname }}</span>
+         </h2>
 
-   </li>
+         <div id="num-items" class="control-group working">
+            <span class="ready"><span class="value"></span> products <a href="#">expand all</a></span>
+            <span class="error"><span class="value"></span> products <span class="error-message">(though failed to load all metrics)</span><a href="#">expand all</a></span>
+         </div>
+      </div>
+      <div class="my-metrics"></div> <!-- profile-level stats go here -->
+   </div>
+   <div class="clearfloat"></div>
+</div>
 
-
-
-</ul>
+<div class="products">
+   <div class="wrapper">
+      <div class="loading" ng-show="!products.length">
+         <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading products...</span></div>
+      </div>
+      <ul class="products-list">
+         <li class="product" ng-repeat="product in products" ng-controller="productCtrl" id="{{ product._id }}">
+            <div class="product-controls">
+               <a href="#" class="product-delete-button"><span class="help-text">remove</span><i class="icon-trash"></i></a>
+            </div>
+            <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
+         </li>
+      </ul>
+   </div>
+</div>
