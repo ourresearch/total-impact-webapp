@@ -70,7 +70,9 @@
    <!-- Load scripts -->
    <!-------------------------------------------------------------------------->
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script>
+
    <script type="text/javascript" src="static/dist/angular.js"></script> <!-- extra Angular modules -->
    <script type="text/javascript" src="static/dist/bootstrap.js"></script>
    <script type="text/javascript" src="static/js/browser-fixes.js"></script> <!-- get rid of this -->
@@ -78,19 +80,6 @@
 
 
 
-
-
-
-   <!-- set javascript globals from the flask general environment -->
-   <script type="text/javascript">;{% include "globals.js" %}</script>
-
-   <!-- set js globals specific to this flask request -->
-   <script type="text/javascript">;{% include "request-globals.js" %}</script>
-
-   <!-- flask-assets injecting many script files here; see top of views.py for which. -->
-   {% assets "js_all" %}
-      <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-   {% endassets %}
 
 
 

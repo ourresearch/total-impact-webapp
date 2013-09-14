@@ -101,19 +101,16 @@ class User(db.Model):
         return unicode(self.id)
 
     def get_products(self, get_products=1):
-        (collection, status_code) = get_collection_from_core(
+        return get_collection_from_core(
             self.collection_id,
             get_products
         )
-        return (collection, status_code)
 
     def add_products(self, aliases_to_add):
-        (collection, status_code) = add_products_to_core_collection(self.collection_id, aliases_to_add)
-        return (collection, status_code)
+        return add_products_to_core_collection(self.collection_id, aliases_to_add)
 
     def delete_products(self, tiids_to_delete):
-        (collection, status_code) = delete_products_from_core_collection(self.collection_id, tiids_to_delete)
-        return (collection, status_code)
+        return delete_products_from_core_collection(self.collection_id, tiids_to_delete)
 
     def refresh_products(self):
         return refresh_products_from_core_collection(self.collection_id)
@@ -166,12 +163,11 @@ def get_collection_from_core(collection_id, include_items=1):
     )
     r = requests.get(query, params={"include_items": include_items})
 
-    return r.text, r.status_code
+    return r.json()
 
 
 def get_products_from_core(collection_id):
-    coll_text, status = get_collection_from_core(collection_id)
-    coll_obj = json.loads(coll_text)
+    coll_obj = get_collection_from_core(collection_id)
     return coll_obj["items"]
 
 
@@ -187,7 +183,7 @@ def add_products_to_core_collection(collection_id, aliases_to_add):
             data=json.dumps({"aliases": aliases_to_add}), 
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-    return r.text, r.status_code
+    return r.json()
 
 
 def delete_products_from_core_collection(collection_id, tiids_to_delete):
@@ -201,7 +197,7 @@ def delete_products_from_core_collection(collection_id, tiids_to_delete):
             data=json.dumps({"tiids": tiids_to_delete}), 
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-    return r.text, r.status_code
+    return r.json()
 
 
 def refresh_products_from_core_collection(collection_id):
@@ -215,7 +211,7 @@ def refresh_products_from_core_collection(collection_id):
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
 
-    return r.text, r.status_code
+    return r.json()
 
 
 def make_collection_for_user(user, alias_tiids, prepped_request):

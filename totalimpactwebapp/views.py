@@ -95,7 +95,10 @@ def render_template_custom(template_name, **kwargs):
 
     return render_template(template_name, **kwargs)
 
-def get_user_for_response(id, id_type="userid", include_products=True):
+
+def get_user_for_response(id, request, include_products=True):
+    id_type = request.args.get("id_type", "userid")
+
     retrieved_user = get_user_from_id(id, id_type, include_products)
     if retrieved_user is None:
         abort(404, "That user doesn't exist.")
@@ -238,13 +241,34 @@ def logout():
     return json_resp_from_thing({"msg": "user logged out"})
 
 
+@app.route("/user/login", methods=["POST"])
+def login():
+
+    logger.debug(u"user trying to log in.")
+
+    email = unicode(request.json["email"]).lower()
+    password = unicode(request.json["password"])
+
+    user = User.query.filter_by(email=email).first()
+
+    if g.user is None:
+        abort(404, "Email doesn't exist")
+    elif not user.check_password(password):
+        abort(401, "Wrong password")
+    else:
+        # Yay, no errors! Log the user in.
+        login_user(user)
+
+
+    return json_resp_from_thing({"user": user.as_dict()})
+
 
 #------------------ /user/:id   -----------------
 
 
 @app.route("/user/<profile_id>", methods=['GET'])
 def get_user(profile_id):
-    user = get_user_for_response(profile_id, request.args.get("id_type", "userid"))
+    user = get_user_for_response(profile_id, request)
 
     return json_resp_from_thing(user)
 
@@ -253,20 +277,11 @@ def get_user(profile_id):
 def get_user_about(profile_id):
     user = get_user_for_response(
         profile_id,
-        request.args.get("id_type", "userid"),
+        request,
         include_products=False  # returns faster this way.
     )
 
     return json_resp_from_thing(user)
-
-
-@app.route("/user/<profile_id>/products", methods=['GET'])
-def get_user_products(profile_id):
-    user = get_user_for_response(profile_id, request.args.get("id_type", "userid"))
-
-    return json_resp_from_thing(user.products)
-
-
 
 
 
@@ -276,32 +291,32 @@ def get_user_products(profile_id):
 #------------------ user/:userId/products -----------------
 
 
-@app.route("/user/<int:userId>/products", methods=["GET", "POST", "PUT", "DELETE"])
-def user_products_view_and_modify(userId):
-    retrieved_user = User.query.get(userId)
 
-    if retrieved_user is None:
-        abort(404, "That user doesn't exist.")
+
+@app.route("/user/<id>/products", methods=["GET", "POST", "PUT", "DELETE"])
+def user_products_view_and_modify(id):
+
+    user = get_user_for_response(id, request)
 
     if request.method == "GET":
-        (resp, status_code) = retrieved_user.get_products()
+        resp = user.products
 
     elif request.method == "POST":
         # you can't add/create stuff here, just refresh extant products.
-        resp, status_code = retrieved_user.refresh_products()
+        resp = user.refresh_products()
 
     elif request.method == "PUT":
         aliases_to_add = request.json.get("aliases")
-        (resp, status_code) = retrieved_user.add_products(aliases_to_add)
+        resp = user.add_products(aliases_to_add)
 
     elif request.method == "DELETE":
         tiids_to_delete = request.json.get("tiids")
-        (resp, status_code) = retrieved_user.delete_products(tiids_to_delete)
+        resp = user.delete_products(tiids_to_delete)
 
     else:
-        abort(405)  #method not supported.  Won't get here.
+        abort(405)  # method not supported.  We shouldn't get here.
 
-    response_to_send = make_response(resp, status_code)
+    response_to_send = json_resp_from_thing(resp)
     return response_to_send
 
 

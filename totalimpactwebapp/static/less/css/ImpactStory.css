@@ -1310,9 +1310,6 @@ div.profile-header div.wrapper div.my-vitals h2.editable-name {
   padding-top: 0;
   float: left;
 }
-div.profile-header div.wrapper div.my-vitals h2.editable-name span.instr {
-  background-position: left 22px;
-}
 div.profile-header div.wrapper div.my-vitals div#num-items {
   float: left;
   font-size: 20px;
@@ -1333,6 +1330,9 @@ div.profile-header div.wrapper div.my-vitals div#num-items a:hover {
 }
 div.profile-header div.wrapper div.my-vitals div#num-items span.error-message {
   padding-right: 10px;
+}
+div.profile-header div.wrapper div.my-vitals div.edit-profile {
+  clear: both;
 }
 div.profile-header div.clearfloat {
   clear: both;

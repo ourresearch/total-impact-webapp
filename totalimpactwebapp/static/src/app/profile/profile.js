@@ -20,24 +20,36 @@ angular.module("profile", [
 .controller('ProfileCtrl', [
   '$scope',
   '$location',
+  '$http',
   'security',
   'Users',
-  function ($scope, $location, security, Users)
+  function ($scope, $location, $http, security, Users)
   {
+    var userSlug = $location.path().substring(1)
 
 
     $scope.aboutUser = Users.get({
-      id: $location.path().substring(1),
+      id: userSlug,
       idType: "slug",
       property: "about"
     })
 
     $scope.products = Users.query({
-      id: $location.path().substring(1),
+      id: userSlug,
       idType: "slug",
       property: "products"
     })
 
-    console.log("ProfileCtrl running!")
+    $scope.currentUserIsProfileOwner = function(){
+      if (!security.currentUser) return false
+      return (security.currentUser.url_slug == userSlug)
+    }
+
+    $scope.removeProduct = function(product) {
+      console.log("delete product")
+      var url = "/user/" + security.currentUser.id + '/products/' + product._id;
+      $http.delete(url)
+    }
+
 }]);
 

@@ -19,6 +19,11 @@
             <span class="ready"><span class="value"></span> products <a href="#">expand all</a></span>
             <span class="error"><span class="value"></span> products <span class="error-message">(though failed to load all metrics)</span><a href="#">expand all</a></span>
          </div>
+
+         <div class="edit-profile" ng-show="currentUserIsProfileOwner()">
+            <a href="/settings/profile">Edit profile</a>
+         </div>
+
       </div>
       <div class="my-metrics"></div> <!-- profile-level stats go here -->
    </div>
@@ -30,10 +35,11 @@
       <div class="loading" ng-show="!products.length">
          <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading products...</span></div>
       </div>
+
       <ul class="products-list">
-         <li class="product" ng-repeat="product in products" ng-controller="productCtrl" id="{{ product._id }}">
+         <li class="product" ng-repeat="product in products"  ng-controller="productCtrl" id="{{ product._id }}">
             <div class="product-controls">
-               <a href="#" class="product-delete-button"><span class="help-text">remove</span><i class="icon-trash"></i></a>
+               <a ng-click="removeProduct(product)" class="product-delete-button"><span class="help-text">remove</span><i class="icon-trash"></i></a>
             </div>
             <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
          </li>
