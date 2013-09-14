@@ -214,7 +214,7 @@ function Coll(collViews){
         var thisThing = this
         this.views.startUpdating()
         $.ajax({
-            url: webapp_root_pretty+'/user/'+userDict.id+'/products',
+            url: webapp_root_pretty+'/user/'+profileId+'/products',
             type: "POST",
             data: JSON.stringify({}),
             success: function(data){
