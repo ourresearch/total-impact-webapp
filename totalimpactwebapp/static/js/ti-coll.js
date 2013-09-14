@@ -165,6 +165,14 @@ function Coll(collViews){
                404: function(){
                    // add this later when the collection create call is asynch on the server.
                    console.log("got a 404; the collection hasn't been created yet. That's ok, trying again.")
+               },
+               503: function() {
+                    console.log("failed to finish update; got a status=503")
+                    analytics.track("Timed out profile load", {
+                        "collection id": thisThing.id,
+                        "prev collection action": lastCollAction
+                    })
+                    thisThing.views.finishUpdating(thisThing.items, "error")
                }
             }
         });
