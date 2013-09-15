@@ -2,6 +2,7 @@ import os, logging, sys
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
+from flask_debugtoolbar import DebugToolbarExtension
 
 # set up logging
 # see http://wiki.pylonshq.com/display/pylonscookbook/Alternative+logging+configuration
@@ -36,6 +37,11 @@ app.config["ASSETS_DEBUG"] = (os.getenv("PACK_ASSETS") != "True")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
+# set up Flask-DebugToolbar
+if (os.getenv("FLASK_DEBUG", False) == "True"):
+    logger.info("Setting app.debug=True; Flask-DebugToolbar will display")
+    app.debug = True
+toolbar = DebugToolbarExtension(app)
 
 # set up views
 from totalimpactwebapp import views
