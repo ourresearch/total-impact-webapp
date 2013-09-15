@@ -1,0 +1,68 @@
+div.settings {
+   div.settings-header {
+      margin: 0 0 50px 300px;
+      p {
+         font-size: 18px;
+         color: #999;
+      }
+   }
+
+   div.settings-nav {
+      float:left;
+      width: 200px;
+      ul {
+         li {
+            a {
+               padding: 10px;
+               display: block;
+               margin-top:5px;
+               color: @accentColor;
+               .border-radius(3px, 3px, 3px, 3px);
+               &.selected {
+                  background: @accentColor;
+                  color:  #fff;
+               }
+               &:hover {
+                  background: #f5f5f5;
+                  text-decoration: none;
+                  &.selected {background: @accentColor;}
+               }
+               i {
+                  float:right;
+                  margin-top: 4px;
+               }
+
+            }
+         }
+      }
+   }
+
+   div.settings-input {
+      margin-left: 300px;
+      form{
+         padding: 0;
+         margin:0;
+         width: 600px;
+         .form-group {
+            &.photo {
+               margin-bottom: 50px;
+               div.my-picture {
+                  position: relative;
+                  p {
+                     position: absolute;
+                     bottom: 0;
+                     margin-bottom: 0;
+                     left: 120px;
+                     color: #777;
+                  }
+               }
+            }
+            &.submit {
+               margin-top: 40px;
+            }
+         }
+      }
+   }
+
+
+}

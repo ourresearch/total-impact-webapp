@@ -24,6 +24,7 @@ body {
 }
 body div#container {
   min-height: 600px;
+  margin-top: 100px;
 }
 body div#namechange {
   font-size: 16px;
@@ -61,6 +62,9 @@ ol li {
   list-style-type: decimal;
   margin-bottom: .5em;
 }
+form .form-group label {
+  font-size: 20px;
+}
 legend {
   border-bottom: none;
 }
@@ -79,6 +83,15 @@ body a:hover {
 }
 .clearfix {
   clear: both;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Lato, Helvetica, sans-serif;
+  font-weight: bold;
 }
 h3 {
   margin: 20px 0 0 0;
@@ -1932,4 +1945,75 @@ body.user-preferences div.main div.wrapper div.pref-category form.editableform d
 }
 body.user-preferences div.main div.wrapper div.pref-category form.editableform div.control-group button.editable-cancel {
   display: none;
+}
+div.settings div.settings-header {
+  margin: 0 0 50px 300px;
+}
+div.settings div.settings-header p {
+  font-size: 18px;
+  color: #999;
+}
+div.settings div.settings-nav {
+  float: left;
+  width: 200px;
+}
+div.settings div.settings-nav ul li a {
+  padding: 10px;
+  display: block;
+  margin-top: 5px;
+  color: #0053b0;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+div.settings div.settings-nav ul li a.selected {
+  background: #0053b0;
+  color: #fff;
+}
+div.settings div.settings-nav ul li a:hover {
+  background: #f5f5f5;
+  text-decoration: none;
+}
+div.settings div.settings-nav ul li a:hover.selected {
+  background: #0053b0;
+}
+div.settings div.settings-nav ul li a i {
+  float: right;
+  margin-top: 4px;
+}
+div.settings div.settings-input {
+  margin-left: 300px;
+}
+div.settings div.settings-input form {
+  padding: 0;
+  margin: 0;
+  width: 600px;
+}
+div.settings div.settings-input form .form-group.photo {
+  margin-bottom: 50px;
+}
+div.settings div.settings-input form .form-group.photo div.my-picture {
+  position: relative;
+}
+div.settings div.settings-input form .form-group.photo div.my-picture p {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 0;
+  left: 120px;
+  color: #777;
+}
+div.settings div.settings-input form .form-group.submit {
+  margin-top: 40px;
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="app" lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
+   <base href="/">
    <meta charset="utf-8">
    <title>ImpactStory: {{ page_title }}</title>
    <meta name="description" content="ImpactStory">
@@ -61,9 +62,11 @@
 
    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
    <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/flatly/bootstrap.min.css" rel="stylesheet">
-   <link rel="stylesheet" type="text/css" href="static/less/css/ImpactStory.css" />
 
-   <link rel="icon" type="image/ico" href="/static/dist/img/favicon.ico" />
+   <!-- stylesheet is in less/css dir; it's a hack to get around limitations of CodeKit -->
+   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='less/css/ImpactStory.css') }}" />
+
+   <link rel="icon" type="image/ico" href="{{ url_for('static', filename='dist/img/favicon.ico') }}" />
 
 
 
@@ -73,15 +76,11 @@
    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script>
 
-   <script type="text/javascript" src="static/dist/angular.js"></script> <!-- extra Angular modules -->
-   <script type="text/javascript" src="static/dist/bootstrap.js"></script>
-   <script type="text/javascript" src="static/js/browser-fixes.js"></script> <!-- get rid of this -->
-   <script type="text/javascript" src="static/dist/ImpactStory.js"></script>
-
-
-
-
-
+   <script type="text/javascript" src="{{ url_for('static', filename='dist/angular.js') }}"></script> <!-- extra Angular modules -->
+   <script type="text/javascript" src="{{ url_for('static', filename='dist/bootstrap.js') }}"></script>
+   <script type="text/javascript" src="{{ url_for('static', filename='dist/bootstrap.js') }}"></script>
+   <script type="text/javascript" src="{{ url_for('static', filename='js/browser-fixes.js') }}"></script> <!-- get rid of this -->
+   <script type="text/javascript" src="{{ url_for('static', filename='dist/ImpactStory.js') }}"></script>
 
 
 </head>

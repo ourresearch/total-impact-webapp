@@ -1,11 +1,13 @@
 angular.module('app', [
-  'signup',
-  'profile',
-  'infopages',
   'security',
   'directives.crud',
   'templates.app',
-  'templates.common']);
+  'templates.common',
+  'signup',
+  'profile',
+  'settings',
+  'infopages'
+]);
 
 angular.module('app').constant('TEST', {
   baseUrl: 'http://localhost:5000/',
@@ -29,7 +31,7 @@ angular.module('app').constant('I18N.MESSAGES', {
 
 angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
-//  $routeProvider.otherwise({redirectTo:'/'});
+
 }]);
 
 
@@ -46,14 +48,13 @@ angular.module('app').controller('AppCtrl', ['$scope', function($scope) {
 
 angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'security', 'httpRequestTracker',
   function ($scope, $location, $route, security, httpRequestTracker) {
-  $scope.location = $location;
 
+   $scope.location = $location;
   $scope.isAuthenticated = security.isAuthenticated;
-  $scope.isAdmin = security.isAdmin;
 
   $scope.home = function () {
     if (security.isAuthenticated()) {
-      $location.path('/currentUserNameGoesHere');
+      $location.path('/' + security.requestCurrentUser().url_slug);
     } else {
       $location.path('/');
     }

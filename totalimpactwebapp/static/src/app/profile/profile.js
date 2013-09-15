@@ -7,10 +7,12 @@ angular.module("profile", [
 
 
 .config(['$routeProvider', function ($routeProvider) {
+
   $routeProvider.otherwise({
     templateUrl:'profile/profile.tpl.html',
     controller:'ProfileCtrl'
   });
+
 }])
 
 
@@ -25,7 +27,10 @@ angular.module("profile", [
   'Users',
   function ($scope, $location, $http, security, Users)
   {
+    console.log("profile controller")
     var userSlug = $location.path().substring(1)
+    console.log("path is: ", $location.path())
+    console.log("user slug is: ", userSlug)
 
 
     $scope.aboutUser = Users.get({
@@ -45,11 +50,7 @@ angular.module("profile", [
       return (security.currentUser.url_slug == userSlug)
     }
 
-    $scope.removeProduct = function(product) {
-      console.log("delete product")
-      var url = "/user/" + security.currentUser.id + '/products/' + product._id;
-      $http.delete(url)
-    }
+
 
 }]);
 
