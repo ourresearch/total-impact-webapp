@@ -38,5 +38,6 @@ angular.module("profile", [
       return (security.currentUser.url_slug == userSlug)
     }
 
-});
+})
+
 

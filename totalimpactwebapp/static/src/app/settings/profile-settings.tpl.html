@@ -1,4 +1,10 @@
-<form novalidate name="userProfileForm" class="form-horizontal" ng-submit="onSave()">
+<div class="settings-header">
+   <h1>Profile</h1>
+   <p>Modify what's displayed in your profile.</p>
+</div>
+
+
+<form novalidate name="userProfileForm" class="form-horizontal" ng-submit="onSave()" ng-controller="profileSettingsCtrl">
 
    <div class="form-group photo">
       <label class="control-label col-lg-3">Photo</label>
@@ -30,7 +36,7 @@
    <div class="form-group submit">
       <div class=" col-lg-offset-3 col-lg-9">
          <button class="btn btn-primary" type="submit">Save</button>
-         <button class="btn btn-default" ng-click="onCancel()">Cancel</button>
+         <button class="btn btn-default" ng-click="home()">Cancel</button>
 
 
       </div>

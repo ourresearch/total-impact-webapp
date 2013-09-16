@@ -1,4 +1,5 @@
 angular.module('resources.users',['ngResource'])
+
   .factory('Users', function ($resource) {
 
     return $resource(
@@ -6,6 +7,7 @@ angular.module('resources.users',['ngResource'])
       {idType: "userid"}
     )
   })
+
   .factory('UsersProducts', function ($resource) {
 
     return $resource(
@@ -18,6 +20,7 @@ angular.module('resources.users',['ngResource'])
       }
     )
   })
+
   .factory('UsersAbout', function ($resource) {
 
     return $resource(
@@ -29,5 +32,13 @@ angular.module('resources.users',['ngResource'])
           params:{id:"@about.id"}
         }
       }
+    )
+  })
+
+  .factory('UsersPassword', function ($resource) {
+
+    return $resource(
+      "/user/:id/password?id_type=:idType",
+      {idType: "userid"}
     )
   })

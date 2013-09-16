@@ -1,6 +1,12 @@
 div.settings {
    div.settings-header {
-      margin: 0 0 50px 300px;
+      margin: 0 0 70px 20px;
+      padding: 0 0 0 30px;
+      border-bottom: 5px solid #fafafa;
+      width: 600px;
+      h1 {
+         padding-top:7px;
+      }
       p {
          font-size: 18px;
          color: #999;
@@ -39,14 +45,23 @@ div.settings {
    }
 
    div.settings-input {
-      margin-left: 300px;
+      margin-left: 250px;
       form{
          padding: 0;
          margin:0;
-         width: 600px;
          .form-group {
+            label {
+               color: #555;
+            }
+            &.disabled {
+               transition: 1s linear all;
+               label {
+                  color: #aaa;
+               }
+            }
+
             &.photo {
-               margin-bottom: 50px;
+               margin-bottom: 100px;
                div.my-picture {
                   position: relative;
                   p {
@@ -57,6 +72,9 @@ div.settings {
                      color: #777;
                   }
                }
+            }
+            &.current-password {
+               margin-bottom: 50px;
             }
             &.submit {
                margin-top: 40px;

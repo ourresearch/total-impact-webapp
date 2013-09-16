@@ -1,4 +1,4 @@
-angular.module('settings', ['resources.users', 'security'])
+angular.module('settings', ['resources.users', 'security', 'directives.pwMatch'])
 
   .config(function ($routeProvider) {
 
@@ -18,11 +18,11 @@ angular.module('settings', ['resources.users', 'security'])
 
     $routeProvider
       .when('/settings/profile', routeParams("profile"))
-      .when('.settings/password', routeParams('password'))
-      .when('.settings/account', routeParams('account'))
+      .when('/settings/password', routeParams('password'))
+      .when('/settings/account', routeParams('account'))
   })
 
-  .controller('settingsCtrl', function ($scope, $location, authenticatedUser, UsersAbout, $route, security) {
+  .controller('settingsCtrl', function ($scope, $location, authenticatedUser, UsersAbout, $route) {
     $scope.authenticatedUser = authenticatedUser;
     $scope.user = angular.copy(authenticatedUser)
 
@@ -32,25 +32,42 @@ angular.module('settings', ['resources.users', 'security'])
     $scope.currentSection =  $route.current.section;
     $scope.sections = ['profile', 'password', 'account']
 
-    var home = function(){
+    $scope.home = function(){
       $location.path('/' + authenticatedUser.url_slug);
-
     }
 
-    $scope.onCancel = function(){home()}
+  })
 
+  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security) {
     $scope.onSave = function() {
 //      i18nNotifications.pushForNextRoute('crud.project.save.success', 'success', {id : project.$id()});
-      home();
+      $scope.home();
       UsersAbout.patch(
         $scope.user.id,
         {about: $scope.user},
         function(resp) {
-          console.log("got this back: ", resp.about)
           security.currentUser = resp.about; // update the current authenticated user.
         }
+      )
+    };
+  })
+
+  .controller('passwordSettingsCtrl', function ($scope, UsersPassword, security) {
+    $scope.onSave = function() {
+      UsersPassword.save(
+        {id: $scope.user.id},
+        $scope.user,
+        function(resp) {
+//        i18nNotifications.pushForNextRoute('crud.project.save.success', 'success', {id : project.$id()});
+          console.log("password changed!")
+//          $scope.home()
+        },
+        function(resp) {
+          console.log("crap, something done broke.")
+        }
+
       )
 
 
     };
-  });
+  })

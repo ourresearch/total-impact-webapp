@@ -24,7 +24,7 @@ body {
 }
 body div#container {
   min-height: 600px;
-  margin-top: 100px;
+  margin-top: 120px;
 }
 body div#namechange {
   font-size: 16px;
@@ -64,6 +64,22 @@ ol li {
 }
 form .form-group label {
   font-size: 20px;
+}
+form .form-group.has-error span.help-inline.error {
+  opacity: 1;
+  transition-delay: 0s;
+}
+form span.help-inline {
+  font-size: 16px;
+  margin-top: 10px;
+  display: block;
+}
+form span.help-inline.error {
+  opacity: 0;
+  transition: opacity 0.2s linear;
+}
+.btn-primary {
+  background: #0053b0;
 }
 legend {
   border-bottom: none;
@@ -1947,7 +1963,13 @@ body.user-preferences div.main div.wrapper div.pref-category form.editableform d
   display: none;
 }
 div.settings div.settings-header {
-  margin: 0 0 50px 300px;
+  margin: 0 0 70px 20px;
+  padding: 0 0 0 30px;
+  border-bottom: 5px solid #fafafa;
+  width: 600px;
+}
+div.settings div.settings-header h1 {
+  padding-top: 7px;
 }
 div.settings div.settings-header p {
   font-size: 18px;
@@ -1995,15 +2017,23 @@ div.settings div.settings-nav ul li a i {
   margin-top: 4px;
 }
 div.settings div.settings-input {
-  margin-left: 300px;
+  margin-left: 250px;
 }
 div.settings div.settings-input form {
   padding: 0;
   margin: 0;
-  width: 600px;
+}
+div.settings div.settings-input form .form-group label {
+  color: #555;
+}
+div.settings div.settings-input form .form-group.disabled {
+  transition: 1s linear all;
+}
+div.settings div.settings-input form .form-group.disabled label {
+  color: #aaa;
 }
 div.settings div.settings-input form .form-group.photo {
-  margin-bottom: 50px;
+  margin-bottom: 100px;
 }
 div.settings div.settings-input form .form-group.photo div.my-picture {
   position: relative;
@@ -2014,6 +2044,9 @@ div.settings div.settings-input form .form-group.photo div.my-picture p {
   margin-bottom: 0;
   left: 120px;
   color: #777;
+}
+div.settings div.settings-input form .form-group.current-password {
+  margin-bottom: 50px;
 }
 div.settings div.settings-input form .form-group.submit {
   margin-top: 40px;

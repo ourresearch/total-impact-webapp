@@ -21,7 +21,7 @@ body {
 
    div#container {
       min-height: 600px;
-      margin-top: 100px;
+      margin-top: 120px;
    }
    div#namechange {
       font-size: 16px;
@@ -62,7 +62,23 @@ form {
       label {
          font-size: 20px;
       }
+      &.has-error {
+         span.help-inline.error { opacity:1; transition-delay:0s; }
+      }
    }
+   span.help-inline {
+      font-size: 16px;
+      margin-top: 10px;
+      display: block;
+      &.error {
+         opacity:0;
+         transition: opacity 0.2s linear;
+      }
+   }
+}
+
+.btn-primary {
+   background: @accentColor;
 }
 
 

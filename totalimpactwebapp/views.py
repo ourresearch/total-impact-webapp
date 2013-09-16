@@ -373,14 +373,14 @@ team</p>""".format(url=full_reset_url)
     return json_resp_from_thing({"message": "link emailed."})
 
 
-@app.route("/user/<int:userId>/password", methods=["PUT"])
-def user_password_modify(userId):
-    retrieved_user = get_user_for_response(userId)
+@app.route("/user/<id>/password", methods=["POST"])
+def user_password_modify(id):
+    retrieved_user = get_user_for_response(id, request)
 
-    if  retrieved_user.check_password(request.json["current_password"]):
-        retrieved_user.set_password(request.json["new_password"])
+    if  retrieved_user.check_password(request.json["currentPassword"]):
+        retrieved_user.set_password(request.json["newPassword"])
         db.session.commit()
-        return make_response(json.dumps("ok"), 200)
+        return json_resp_from_thing({"response": "ok"})
 
     else:
         abort(403, "The current password is not correct.")
