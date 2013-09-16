@@ -489,7 +489,7 @@ def user_products_view_and_modify(userId):
 
     elif request.method == "POST":
         # you can't add/create stuff here, just refresh extant products.
-        resp, status_code = retrieved_user.refresh_products()
+        (resp, status_code) = retrieved_user.refresh_products()
 
     elif request.method == "PUT":
         aliases_to_add = request.json.get("aliases")

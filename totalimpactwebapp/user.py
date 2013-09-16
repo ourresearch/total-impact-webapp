@@ -128,7 +128,7 @@ def get_collection_from_core(collection_id, include_items=1):
     )
     r = requests.get(query, params={"include_items": include_items})
 
-    return r.text, r.status_code
+    return (r.text, r.status_code)
 
 
 def add_products_to_core_collection(collection_id, aliases_to_add):
@@ -142,7 +142,7 @@ def add_products_to_core_collection(collection_id, aliases_to_add):
             data=json.dumps({"aliases": aliases_to_add}), 
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-    return r.text, r.status_code
+    return (r.text, r.status_code)
 
 
 def delete_products_from_core_collection(collection_id, tiids_to_delete):
@@ -156,7 +156,10 @@ def delete_products_from_core_collection(collection_id, tiids_to_delete):
             data=json.dumps({"tiids": tiids_to_delete}), 
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-    return r.text, r.status_code
+    logger.debug(u"delete products returned {text}".format(
+        text=r.text))
+
+    return (r.text, r.status_code)
 
 
 def refresh_products_from_core_collection(collection_id):
@@ -170,7 +173,7 @@ def refresh_products_from_core_collection(collection_id):
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
 
-    return r.text, r.status_code
+    return (r.text, r.status_code)
 
 
 def make_collection_for_user(user, alias_tiids, prepped_request):
