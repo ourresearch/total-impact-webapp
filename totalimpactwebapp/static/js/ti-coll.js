@@ -385,7 +385,7 @@ function CollController(coll, collViews) {
                 start: function() {item$.slideUp();},
                 success: function(data){
                     console.log("deleted, done. blam.", data)
-                    $("#num-items span.value").text(data.items.length)
+                    $("#num-items span.value").text(_.size(data.alias_tiids))
                 },
                 onNotLoggedIn: that.collViews.onEditNotLoggedIn,
                 onNotOwner: that.collViews.onEditNotOwner
