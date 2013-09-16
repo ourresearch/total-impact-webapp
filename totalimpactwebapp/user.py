@@ -156,9 +156,6 @@ def delete_products_from_core_collection(collection_id, tiids_to_delete):
             data=json.dumps({"tiids": tiids_to_delete}), 
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-    logger.debug(u"delete products returned {text}".format(
-        text=r.text))
-
     return (r.text, r.status_code)
 
 
