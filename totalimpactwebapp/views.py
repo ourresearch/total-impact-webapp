@@ -263,25 +263,27 @@ def login():
     return json_resp_from_thing({"user": user.as_dict()})
 
 
-#------------------ /user/:id   -----------------
+#------------------ /user/:id/about   -----------------
 
 
-@app.route("/user/<profile_id>", methods=['GET'])
-def get_user(profile_id):
-    user = get_user_for_response(profile_id, request)
-
-    return json_resp_from_thing(user)
-
-
-@app.route("/user/<profile_id>/about", methods=['GET'])
+@app.route("/user/<profile_id>/about", methods=['GET', 'PATCH'])
 def get_user_about(profile_id):
+
     user = get_user_for_response(
         profile_id,
         request,
         include_products=False  # returns faster this way.
     )
 
-    return json_resp_from_thing(user)
+    if request.method == "GET":
+        pass
+
+    elif request.method == "PATCH":
+        user.patch(request.json["about"])
+        db.session.commit()
+
+
+    return json_resp_from_thing({"about": user.as_dict()})
 
 
 

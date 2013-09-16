@@ -9,8 +9,8 @@ angular.module('settings', ['resources.users', 'security'])
         section: section,
         controller: "settingsCtrl",
         resolve:{
-          currentUser:function (security) {
-            return security.requestCurrentUser()
+          authenticatedUser:function (security) {
+            return security.requestCurrentUser();
           }
         }
       }
@@ -22,21 +22,35 @@ angular.module('settings', ['resources.users', 'security'])
       .when('.settings/account', routeParams('account'))
   })
 
-  .controller('settingsCtrl', function ($scope, $location, currentUser, $route, security) {
-    $scope.currentUser = currentUser;
+  .controller('settingsCtrl', function ($scope, $location, authenticatedUser, UsersAbout, $route, security) {
+    $scope.authenticatedUser = authenticatedUser;
+    $scope.user = angular.copy(authenticatedUser)
+
+
+
     $scope.inputTemplateUrl =  'settings/' + $route.current.section + '-settings.tpl.html'
     $scope.currentSection =  $route.current.section;
     $scope.sections = ['profile', 'password', 'account']
 
     var home = function(){
-      $location.path('/' + security.currentUser.url_slug);
+      $location.path('/' + authenticatedUser.url_slug);
 
     }
 
     $scope.onCancel = function(){home()}
 
-    $scope.onSave = function(user) {
+    $scope.onSave = function() {
 //      i18nNotifications.pushForNextRoute('crud.project.save.success', 'success', {id : project.$id()});
       home();
+      UsersAbout.patch(
+        $scope.user.id,
+        {about: $scope.user},
+        function(resp) {
+          console.log("got this back: ", resp.about)
+          security.currentUser = resp.about; // update the current authenticated user.
+        }
+      )
+
+
     };
   });

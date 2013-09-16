@@ -2,15 +2,32 @@ angular.module('resources.users',['ngResource'])
   .factory('Users', function ($resource) {
 
     return $resource(
-      "/user/:id/:property?id_type=:idType",
-      {
-        idType: "userid",
-        property: "about" // can be "about" or "products"
-      },
+      "/user/:id?id_type=:idType",
+      {idType: "userid"}
+    )
+  })
+  .factory('UsersProducts', function ($resource) {
+
+    return $resource(
+      "/user/:id/products?id_type=:idType",
+      {idType: "userid"},
       {
         update:{
           method: "PUT"
         }
       }
     )
-  });
+  })
+  .factory('UsersAbout', function ($resource) {
+
+    return $resource(
+      "/user/:id/about?id_type=:idType",
+      {idType: "userid"},
+      {
+        patch:{
+          method: "PATCH",
+          params:{id:"@about.id"}
+        }
+      }
+    )
+  })

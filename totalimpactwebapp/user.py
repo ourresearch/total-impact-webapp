@@ -106,6 +106,17 @@ class User(db.Model):
             get_products
         )
 
+    def patch(self, newValuesDict):
+        for k, v in newValuesDict.iteritems():
+            if hasattr(self, k):
+                try:
+                    setattr(self, k, v)
+                except AttributeError:
+                    pass
+
+        return self
+
+
     def add_products(self, aliases_to_add):
         return add_products_to_core_collection(self.collection_id, aliases_to_add)
 
@@ -114,6 +125,8 @@ class User(db.Model):
 
     def refresh_products(self):
         return refresh_products_from_core_collection(self.collection_id)
+
+
 
     def __repr__(self):
         return '<User {name}>'.format(name=self.full_name)

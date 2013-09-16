@@ -19,30 +19,18 @@ angular.module("profile", [
 
 
 
-.controller('ProfileCtrl', [
-  '$scope',
-  '$location',
-  '$http',
-  'security',
-  'Users',
-  function ($scope, $location, $http, security, Users)
+.controller('ProfileCtrl', function ($scope, $location, $http, security, UsersAbout, UsersProducts)
   {
-    console.log("profile controller")
     var userSlug = $location.path().substring(1)
-    console.log("path is: ", $location.path())
-    console.log("user slug is: ", userSlug)
 
-
-    $scope.aboutUser = Users.get({
+    $scope.user = UsersAbout.get({
       id: userSlug,
-      idType: "slug",
-      property: "about"
+      idType: "slug"
     })
 
-    $scope.products = Users.query({
+    $scope.products = UsersProducts.query({
       id: userSlug,
-      idType: "slug",
-      property: "products"
+      idType: "slug"
     })
 
     $scope.currentUserIsProfileOwner = function(){
@@ -50,7 +38,5 @@ angular.module("profile", [
       return (security.currentUser.url_slug == userSlug)
     }
 
-
-
-}]);
+});
 
