@@ -36,12 +36,18 @@ angular.module('settings', [
 
 
 
+
     $scope.inputTemplateUrl =  'settings/' + $route.current.section + '-settings.tpl.html'
     $scope.currentSection =  $route.current.section;
     $scope.sections = ['profile', 'password', 'account']
 
     $scope.home = function(){
       $location.path('/' + authenticatedUser.url_slug);
+    }
+
+    $scope.onCancel = function(){
+      $scope.resetUser();
+      $scope.home();
     }
 
 
@@ -64,8 +70,9 @@ angular.module('settings', [
 
   .controller('passwordSettingsCtrl', function ($scope, UsersPassword, security, i18nNotifications) {
 
-      $scope.showPassword = false;
-      $scope.onSave = function() {
+    $scope.showPassword = false;
+
+    $scope.onSave = function() {
       $scope.loading = true;
 
       UsersPassword.save(
@@ -82,9 +89,6 @@ angular.module('settings', [
           $scope.wrongPassword = true;
           scroll(0,0)
         }
-
       )
-
-
     };
   })

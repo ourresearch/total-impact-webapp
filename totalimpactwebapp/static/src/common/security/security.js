@@ -85,7 +85,7 @@ angular.module('security.service', [
 
     // Give up trying to login and clear the retry queue
     cancelLogin: function() {
-      closeLoginDialog(false);f
+      closeLoginDialog(false);
       redirect();
     },
 
