@@ -2,7 +2,7 @@ angular.module('settings', [
     'resources.users',
     'services.i18nNotifications',
     'security',
-    'directives.pwMatch'])
+    'directives.forms'])
 
   .config(function ($routeProvider) {
 
@@ -63,7 +63,9 @@ angular.module('settings', [
   })
 
   .controller('passwordSettingsCtrl', function ($scope, UsersPassword, security, i18nNotifications) {
-    $scope.onSave = function() {
+
+      $scope.showPassword = false;
+      $scope.onSave = function() {
       $scope.loading = true;
 
       UsersPassword.save(

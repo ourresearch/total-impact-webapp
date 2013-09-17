@@ -81,8 +81,11 @@ form span.help-inline.error {
 form div.working {
   font-size: 24px;
   padding-left: 10px;
-  color: #ddd;
+  color: #999;
   font-family: Lato, Helvetica, sans-serif;
+}
+form i.icon-check-empty {
+  padding-right: 3px;
 }
 .btn-primary {
   background: #0053b0;
@@ -2050,8 +2053,18 @@ div.settings div.settings-input form .form-group.photo div.my-picture p {
   left: 120px;
   color: #777;
 }
-div.settings div.settings-input form .form-group.current-password {
-  margin-bottom: 50px;
+div.settings div.settings-input form .form-group.current-password div.controls.show-password div.checkmark-and-text {
+  margin: 19px 0 0 -18px;
+  color: #555;
+  cursor: pointer;
+}
+div.settings div.settings-input form .form-group.current-password div.controls.show-password div.checkmark-and-text span.text {
+  font-size: 16px;
+  margin-left: 5px;
+}
+div.settings div.settings-input form .form-group.current-password div.controls.show-password div.checkmark-and-text i {
+  font-size: 24px;
+  vertical-align: -1px;
 }
 div.settings div.settings-input form .form-group.submit {
   margin-top: 40px;
