@@ -75,6 +75,13 @@ form {
          transition: opacity 0.2s linear;
       }
    }
+
+   div.working {
+      font-size: 24px;
+      padding-left: 10px;
+      color:  #ddd;
+      font-family: Lato, Helvetica, sans-serif;
+   }
 }
 
 .btn-primary {
@@ -258,17 +265,17 @@ body.staging {
    }
 }
 
-ul.flashes {
-   top: 0;
-   position: absolute;
+ul.notifications {
+   padding-top: @navbarHeight + 10px;
    width: 100%;
+   margin-bottom: -(@navbarHeight + 10px);
    li.alert {
       border-radius: 0;
       margin-bottom:0;
       border-width: 2px;
       border-left: none; border-right: none; border-top: none;
       text-align: center;
-      padding-top: @navbarHeight + 15px;
+//      padding-top: @navbarHeight + 15px;
    }
 }
 

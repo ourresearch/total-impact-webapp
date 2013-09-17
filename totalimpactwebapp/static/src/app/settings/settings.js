@@ -1,4 +1,8 @@
-angular.module('settings', ['resources.users', 'security', 'directives.pwMatch'])
+angular.module('settings', [
+    'resources.users',
+    'services.i18nNotifications',
+    'security',
+    'directives.pwMatch'])
 
   .config(function ($routeProvider) {
 
@@ -24,7 +28,11 @@ angular.module('settings', ['resources.users', 'security', 'directives.pwMatch']
 
   .controller('settingsCtrl', function ($scope, $location, authenticatedUser, UsersAbout, $route) {
     $scope.authenticatedUser = authenticatedUser;
-    $scope.user = angular.copy(authenticatedUser)
+
+    $scope.resetUser = function(){
+      $scope.user = angular.copy(authenticatedUser)
+    }
+    $scope.resetUser()
 
 
 
@@ -36,34 +44,41 @@ angular.module('settings', ['resources.users', 'security', 'directives.pwMatch']
       $location.path('/' + authenticatedUser.url_slug);
     }
 
+
   })
 
-  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security) {
+  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, i18nNotifications) {
     $scope.onSave = function() {
-//      i18nNotifications.pushForNextRoute('crud.project.save.success', 'success', {id : project.$id()});
-      $scope.home();
+      $scope.loading = true;
       UsersAbout.patch(
         $scope.user.id,
         {about: $scope.user},
         function(resp) {
           security.currentUser = resp.about; // update the current authenticated user.
+          i18nNotifications.pushForNextRoute('settings.profile.change.success', 'success');
+          $scope.home();
         }
       )
     };
   })
 
-  .controller('passwordSettingsCtrl', function ($scope, UsersPassword, security) {
+  .controller('passwordSettingsCtrl', function ($scope, UsersPassword, security, i18nNotifications) {
     $scope.onSave = function() {
+      $scope.loading = true;
+
       UsersPassword.save(
         {id: $scope.user.id},
         $scope.user,
         function(resp) {
-//        i18nNotifications.pushForNextRoute('crud.project.save.success', 'success', {id : project.$id()});
-          console.log("password changed!")
-//          $scope.home()
+          i18nNotifications.pushForNextRoute('settings.password.change.success', 'success');
+          $scope.home()
         },
         function(resp) {
-          console.log("crap, something done broke.")
+          i18nNotifications.pushForCurrentRoute('settings.password.change.error.unauthenticated', 'danger');
+          $scope.loading = false;
+          $scope.resetUser();  // reset the form
+          $scope.wrongPassword = true;
+          scroll(0,0)
         }
 
       )

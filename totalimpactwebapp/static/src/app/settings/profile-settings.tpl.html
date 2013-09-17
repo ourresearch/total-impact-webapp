@@ -8,7 +8,7 @@
 
    <div class="form-group photo">
       <label class="control-label col-lg-3">Photo</label>
-      <div class="controls col-lg-7">
+      <div class="controls col-lg-5">
          <div class="my-picture">
             <a href="http://www.gravatar.com" >
                <img class="gravatar" ng-src="http://www.gravatar.com/avatar/{{ currentUser.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
@@ -20,7 +20,7 @@
 
    <div class="form-group">
       <label class="control-label col-lg-3">First name</label>
-      <div class="controls col-lg-7">
+      <div class="controls col-lg-5">
          <input ng-model="user.given_name" name="givenname" class="form-control">
       </div>
 
@@ -28,17 +28,14 @@
 
    <div class="form-group">
       <label class="control-label col-lg-3">Surname</label>
-      <div class="controls col-lg-7">
+      <div class="controls col-lg-5">
          <input ng-model="user.surname" name="surname" class="form-control">
       </div>
    </div>
 
    <div class="form-group submit">
       <div class=" col-lg-offset-3 col-lg-9">
-         <button class="btn btn-primary" type="submit">Save</button>
-         <button class="btn btn-default" ng-click="home()">Cancel</button>
-
-
+         <div ng-include="'forms/save-and-cancel-buttons.tpl.html'"></div>
       </div>
    </div>
 

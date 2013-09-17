@@ -78,6 +78,12 @@ form span.help-inline.error {
   opacity: 0;
   transition: opacity 0.2s linear;
 }
+form div.working {
+  font-size: 24px;
+  padding-left: 10px;
+  color: #ddd;
+  font-family: Lato, Helvetica, sans-serif;
+}
 .btn-primary {
   background: #0053b0;
 }
@@ -242,12 +248,12 @@ body.staging div.staging-warning div.content span {
   font-family: Lato, Helvetica;
   text-shadow: 1px 0 0 #000;
 }
-ul.flashes {
-  top: 0;
-  position: absolute;
+ul.notifications {
+  padding-top: 60px;
   width: 100%;
+  margin-bottom: -60px;
 }
-ul.flashes li.alert {
+ul.notifications li.alert {
   border-radius: 0;
   margin-bottom: 0;
   border-width: 2px;
@@ -255,7 +261,6 @@ ul.flashes li.alert {
   border-right: none;
   border-top: none;
   text-align: center;
-  padding-top: 65px;
 }
 body.report #page-header,
 body.user-profile #page-header {

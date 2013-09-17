@@ -1,0 +1,17 @@
+<div class="buttons" ng-show="!loading">
+   <button
+           class="btn btn-primary"
+           ng-disabled="!userPasswordForm.$valid"
+           type="submit">
+      Save
+   </button>
+   <button
+           class="btn btn-default"
+           ng-click="onCancel()">
+      Cancel
+   </button>
+</div>
+<div class="working" ng-show="loading">
+   <i class="icon-refresh icon-spin"></i>
+   <span class="text">Saving...</span>
+</div>
