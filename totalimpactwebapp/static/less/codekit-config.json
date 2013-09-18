@@ -19,10 +19,19 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/profile.less" : {
+    "\/css\/ImpactStory.css" : {
+      "ignoreWasSetByUser" : 0,
+      "ignore" : 1,
+      "hidden" : 0,
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/css\/ImpactStory.css",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 16
+    },
+    "\/variables.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/profile.less",
-      "outputAbbreviatedPath" : "\/css\/profile.css",
+      "inputAbbreviatedPath" : "\/variables.less",
+      "outputAbbreviatedPath" : "\/css\/variables.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -36,10 +45,10 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/variables.less" : {
+    "\/profile.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/variables.less",
-      "outputAbbreviatedPath" : "\/css\/variables.css",
+      "inputAbbreviatedPath" : "\/profile.less",
+      "outputAbbreviatedPath" : "\/css\/profile.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -69,15 +78,6 @@
       "outputStyle" : 0,
       "fileType" : 1,
       "debugStyle" : 0
-    },
-    "\/css\/embed.css" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/css\/embed.css",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 16
     },
     "\/elements.less" : {
       "ieCompatibility" : 1,
@@ -207,12 +207,12 @@
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 16
     },
-    "\/css\/ImpactStory.css" : {
+    "\/css\/embed.css" : {
       "ignoreWasSetByUser" : 0,
       "ignore" : 1,
       "hidden" : 0,
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/css\/ImpactStory.css",
+      "inputAbbreviatedPath" : "\/css\/embed.css",
       "outputAbbreviatedPath" : "No Output Path",
       "fileType" : 16
     }

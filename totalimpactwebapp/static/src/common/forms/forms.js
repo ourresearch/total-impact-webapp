@@ -25,9 +25,14 @@ angular.module('directives.forms', [])
   return {
     templateUrl: 'forms/save-buttons.tpl.html',
     replace: true,
+    scope: true,
+    require: "^form",
     restrict: "E",
-    link:function(scope, elem, attr, form){
-      scope.valid = attr.valid;
+    link:function(scope, elem, attr, formController){
+      console.log("valid: ", formController.$valid)
+      scope.isValid = function() {
+        return formController.$valid;
+      }
     }
 
   }
