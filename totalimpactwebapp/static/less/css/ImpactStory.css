@@ -6447,6 +6447,23 @@ body.user-profile div.main {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
+div.no-page {
+  margin-top: 150px;
+}
+div.no-page h2 {
+  font-size: 100px;
+  color: #ddd;
+  text-align: center;
+}
+div.no-page p {
+  margin-top: 30px;
+  font-size: 22px;
+  color: #555;
+  text-align: center;
+}
+div.no-page p span.slug {
+  font-weight: bold;
+}
 /* navbar
 *****************************************************************************
 *****************************************************************************

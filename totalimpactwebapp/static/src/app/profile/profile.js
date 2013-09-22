@@ -8,10 +8,15 @@ angular.module("profile", [
 
 .config(['$routeProvider', function ($routeProvider) {
 
-  $routeProvider.otherwise({
+  $routeProvider.when("/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
     controller:'ProfileCtrl'
   });
+
+  $routeProvider.when("/foo", {
+    template:'<h1>I am the foo page. Groovy!</h1>'
+  });
+
 
 }])
 
@@ -19,14 +24,25 @@ angular.module("profile", [
 
 
 
-.controller('ProfileCtrl', function ($scope, $location, $http, security, UsersAbout, UsersProducts)
+.controller('ProfileCtrl', function ($scope, $routeParams, $http, security, UsersAbout, UsersProducts)
   {
-    var userSlug = $location.path().substring(1)
+    var userSlug = $routeParams.url_slug;
+    $scope.userExists = true;
+
+    console.log(userSlug)
 
     $scope.user = UsersAbout.get({
       id: userSlug,
       idType: "url_slug"
-    })
+    },
+    function(resp) {}, // success callback
+    function(resp) {
+      if (resp.status == 404) {
+        $scope.userExists = false;
+        $scope.slug = userSlug;
+      }
+    }
+    )
 
     $scope.products = UsersProducts.query({
       id: userSlug,

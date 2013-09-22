@@ -5,9 +5,9 @@ angular.module('app', [
   'templates.app',
   'templates.common',
   'signup',
+  'infopages', // comes before profile, so '/about' isn't routed as a user named About.
   'profile',
-  'settings',
-  'infopages'
+  'settings'
 ]);
 
 angular.module('app').constant('TEST', {
@@ -18,6 +18,9 @@ angular.module('app').constant('TEST', {
 
 angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
+  $routeProvider.otherwise({
+    template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
+  });
 
 }]);
 
@@ -47,10 +50,11 @@ angular.module('app').controller('AppCtrl', function($scope, i18nNotifications, 
 angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'security', 'httpRequestTracker',
   function ($scope, $location, $route, security, httpRequestTracker) {
 
-   $scope.location = $location;
+  $scope.location = $location;
   $scope.isAuthenticated = security.isAuthenticated;
 
   $scope.home = function () {
+    console.log("home!")
     if (security.isAuthenticated()) {
       $location.path('/' + security.requestCurrentUser().url_slug);
     } else {

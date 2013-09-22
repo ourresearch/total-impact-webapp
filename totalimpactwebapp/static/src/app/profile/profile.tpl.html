@@ -1,5 +1,4 @@
-
-<div class="profile-header">
+<div class="profile-header" ng-show="userExists">
    <div class="wrapper">
       <div class="loading" ng-show="!user.about.id">
          <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
@@ -20,7 +19,7 @@
             <span class="error"><span class="value"></span> products <span class="error-message">(though failed to load all metrics)</span><a href="#">expand all</a></span>
          </div>
 
-         <div class="edit-profile" ng-show="currentUserIsProfileOwner()">
+         <div class="edit-profile" ng-show="currentUserIsProfileOwner() && user.about.id">
             <a href="/settings/profile">Edit profile</a>
          </div>
 
@@ -30,7 +29,7 @@
    <div class="clearfloat"></div>
 </div>
 
-<div class="products">
+<div class="products" ng-show="userExists">
    <div class="wrapper">
       <div class="loading" ng-show="!products.length">
          <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading products...</span></div>
@@ -45,4 +44,10 @@
          </li>
       </ul>
    </div>
+</div>
+
+<div class="user-does-not-exist no-page" ng-show="!userExists">
+   <h2>Whoops!</h2>
+   <p>We don't have a user account for <span class="slug">'{{ slug }}.'</span><br> Would you like to <a href="/signup">make one?</a></p>
+
 </div>
