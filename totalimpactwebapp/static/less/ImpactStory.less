@@ -1,10 +1,21 @@
 @linkColor: #FF4E00;
 @accentColor: #0053b0;
 
-@import "elements.less";
-@import "variables.less";
-@import "main.less";
+// start with base bootstrap
+@import "bootstrap/bootstrap";
+
+// overlay with bootswatch Flatly theme
+@import "bootswatch/variables";
+@import "bootswatch/bootswatch";
+
+// overlay with our own custom stuff
+@import "elements";
+@import "variables";
+
+
+// files for different parts of the application
+@import "main";
 @import "profile";
-@import "signup.less";
-@import "user-pages.less";
-@import "settings.less";
+@import "signup";
+@import "user-pages";
+@import "settings";

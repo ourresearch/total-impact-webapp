@@ -269,6 +269,9 @@ def login():
 @app.route("/user/<profile_id>/about", methods=['GET', 'PATCH'])
 def get_user_about(profile_id):
 
+    from time import sleep
+    sleep(1)
+
     user = get_user_for_response(
         profile_id,
         request,

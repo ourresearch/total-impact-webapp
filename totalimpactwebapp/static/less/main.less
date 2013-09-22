@@ -13,7 +13,6 @@ html {
 
 }
 body {
-    font-family: "Helvetica", sans-serif;
     margin: 0;
 
     height: 100%;
@@ -62,25 +61,35 @@ form {
       label {
          font-size: 20px;
       }
-      &.has-error {
-         span.help-inline.error { opacity:1; transition-delay:0s; }
-      }
    }
-   span.help-inline {
-      font-size: 16px;
-      margin-top: 10px;
-      display: block;
-      &.error {
-         opacity:0;
-         transition: opacity 0.2s linear;
-      }
+   .input-group-addon {
+      border-width:  0;
    }
 
-   div.working {
-      font-size: 24px;
-      padding-left: 10px;
-      color:  #999;
-      font-family: Lato, Helvetica, sans-serif;
+   div.help-block {
+      font-size: 16px;
+      margin-top: 12px;
+      display: block;
+      float:left;
+//      &.error {
+//         opacity:0;
+//         transition: opacity 0.2s linear;
+//         color: #e74c3c;
+//      }
+//      &.success {
+//         opacity:0;
+//         transition: opacity 0.2s linear;
+//         color: #18bc9c;
+//      }
+   }
+
+   div.buttons-group.save {
+      div.working {
+         font-size: 24px;
+         padding-left: 10px;
+         color:  #999;
+         i {margin-right: 5px;}
+      }
    }
    i.icon-check-empty {
       padding-right: 3px;

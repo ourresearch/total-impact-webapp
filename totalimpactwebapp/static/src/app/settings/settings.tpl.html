@@ -1,19 +1,15 @@
 <div class="wrapper settings">
    <div class="settings-nav ">
       <ul nav-list nav>
-         <li ng-repeat="section in sections">
-            <a ng-class="{selected: section == currentSection}"
-               href="/settings/{{ section }}">
-               {{ section }}
+         <li ng-repeat="pageDescr in pageDescriptions">
+            <a ng-class="{selected: isCurrentPath(pageDescr.urlPath)}"
+               href="{{ pageDescr.urlPath }}">
+               {{ pageDescr.displayName }}
                <i class="icon-chevron-right"></i>
             </a>
          </li>
       </ul>
    </div>
 
-   <div class="settings-input" ng-include='inputTemplateUrl'></div>
-
-
-
-
+   <div class="settings-input" ng-include='include'></div>
 </div>

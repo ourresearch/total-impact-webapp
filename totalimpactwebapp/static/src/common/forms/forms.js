@@ -33,8 +33,60 @@ angular.module('directives.forms', [])
       scope.isValid = function() {
         return formController.$valid;
       }
+      console.log(formController)
+      scope.isLoading = function(){
+        return scope.loading[formController.$name]
+      }
     }
 
   }
 
+})
+
+
+.directive('requireUnique', function($http, $q) {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function(scope, elem, attr, ctrl) {
+
+      var canceler = $q.defer()
+      var userPropertyToCheck = attr.ngModel.split(".")[1];
+
+      var setLoading = function(isLoading) {
+        scope.loading[attr.ngModel] = isLoading;
+      }
+
+      scope.$watch(attr.ngModel, function(value) {
+        ctrl.$setValidity('checkingUnique', false);
+        ctrl.$setValidity('requireUnique', true);
+
+        canceler.resolve()
+
+        if (value == scope.authenticatedUser[userPropertyToCheck]){
+          ctrl.$setPristine();
+          setLoading(false);
+          return true;
+        }
+
+        canceler = $q.defer()
+        setLoading(true);
+        var url = '/user/' + value + '/about?id_type=' + userPropertyToCheck;
+
+        $http.get(url, {timeout: canceler.promise})
+        .success(function(data) {
+          ctrl.$setValidity('requireUnique', false);
+          ctrl.$setValidity('checkingUnique', true);
+          setLoading(false)
+        })
+        .error(function(data) {
+          if (data) {
+            ctrl.$setValidity('requireUnique', true);
+            ctrl.$setValidity('checkingUnique', true);
+            setLoading(false)
+          }
+        })
+      })
+    }
+  }
 })

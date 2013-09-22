@@ -29,9 +29,10 @@ angular.module('app').run(['security', function(security) {
 }]);
 
 
-angular.module('app').controller('AppCtrl', ['$scope', 'i18nNotifications', function($scope, i18nNotifications, localizedMessages) {
+angular.module('app').controller('AppCtrl', function($scope, i18nNotifications, localizedMessages) {
 
   $scope.notifications = i18nNotifications;
+  $scope.loading = {};
 
   $scope.removeNotification = function (notification) {
     i18nNotifications.remove(notification);
@@ -40,7 +41,7 @@ angular.module('app').controller('AppCtrl', ['$scope', 'i18nNotifications', func
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
     i18nNotifications.pushForCurrentRoute('errors.route.changeError', 'error', {}, {rejection: rejection});
   });
-}]);
+});
 
 
 angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'security', 'httpRequestTracker',

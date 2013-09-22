@@ -25,12 +25,12 @@ angular.module("profile", [
 
     $scope.user = UsersAbout.get({
       id: userSlug,
-      idType: "slug"
+      idType: "url_slug"
     })
 
     $scope.products = UsersProducts.query({
       id: userSlug,
-      idType: "slug"
+      idType: "url_slug"
     })
 
     $scope.currentUserIsProfileOwner = function(){

@@ -21,6 +21,7 @@ div.settings {
             a {
                text-transform: capitalize;
                padding: 10px;
+               font-size: 18px;
                display: block;
                margin-top:5px;
                color: @accentColor;
@@ -49,6 +50,9 @@ div.settings {
       form{
          padding: 0;
          margin:0;
+         &.custom-url {
+            padding-left: 50px;
+         }
          .form-group {
             label {
                color: #555;
@@ -88,6 +92,11 @@ div.settings {
                         vertical-align: -1px;
                      }
                   }
+               }
+            }
+            &.custom-url {
+               .working {
+                  i {margin-right: 5px;}
                }
             }
             &.submit {

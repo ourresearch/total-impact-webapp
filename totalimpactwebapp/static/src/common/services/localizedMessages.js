@@ -17,7 +17,8 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'test.first': "This is a test of the notification system...",
     'settings.password.change.success': "Password changed.",
     'settings.password.change.error.unauthenticated': "Sorry, looks like you typed your password wrong.",
-    'settings.profile.change.success': "Your profile's been updated."
+    'settings.profile.change.success': "Your profile's been updated.",
+    'settings.url.change.success': "Your profile URL has been updated."
 
   };
 

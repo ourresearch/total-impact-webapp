@@ -307,7 +307,7 @@ def get_user_from_id(id, id_type="userid", include_items=True):
     elif id_type == "email":
         user = User.query.filter_by(email=id).first()
 
-    elif id_type == "slug":
+    elif id_type == "url_slug":
         user = User.query.filter_by(url_slug=id).first()
 
     if include_items:
