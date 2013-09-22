@@ -2,10 +2,10 @@
   "CodeKitInfo" : "This is a CodeKit project configuration file. It is designed to sync project settings across multiple machines. Modifying the contents of this file can be a poor life decision if you don't know what you're doing. This file is not useful unless accompanied by the project that created it in CodeKit. For more information, see: http:\/\/incident57.com\/codekit",
   "creatorBuild" : "8317",
   "files" : {
-    "\/bootstrap\/tables.less" : {
+    "\/bootstrap\/thumbnails.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/bootstrap\/tables.less",
-      "outputAbbreviatedPath" : "\/bootstrap\/css\/tables.css",
+      "inputAbbreviatedPath" : "\/bootstrap\/thumbnails.less",
+      "outputAbbreviatedPath" : "\/bootstrap\/css\/thumbnails.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -172,10 +172,10 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/bootstrap\/utilities.less" : {
+    "\/bootstrap\/list-group.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/bootstrap\/utilities.less",
-      "outputAbbreviatedPath" : "\/bootstrap\/css\/utilities.css",
+      "inputAbbreviatedPath" : "\/bootstrap\/list-group.less",
+      "outputAbbreviatedPath" : "\/bootstrap\/css\/list-group.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -189,10 +189,10 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/bootstrap\/list-group.less" : {
+    "\/bootstrap\/utilities.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/bootstrap\/list-group.less",
-      "outputAbbreviatedPath" : "\/bootstrap\/css\/list-group.css",
+      "inputAbbreviatedPath" : "\/bootstrap\/utilities.less",
+      "outputAbbreviatedPath" : "\/bootstrap\/css\/utilities.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -513,22 +513,14 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/bootstrap\/jumbotron.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/bootstrap\/jumbotron.less",
-      "outputAbbreviatedPath" : "\/bootstrap\/css\/jumbotron.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
+    "\/css\/ImpactStory.css" : {
       "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
+      "ignore" : 1,
       "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 0,
-      "fileType" : 1,
-      "debugStyle" : 0
+      "outputPathIsSetByUser" : 0,
+      "inputAbbreviatedPath" : "\/css\/ImpactStory.css",
+      "outputAbbreviatedPath" : "No Output Path",
+      "fileType" : 16
     },
     "\/embed.less" : {
       "ieCompatibility" : 1,
@@ -564,14 +556,22 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/css\/ImpactStory.css" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 1,
-      "hidden" : 0,
+    "\/bootstrap\/jumbotron.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/bootstrap\/jumbotron.less",
+      "outputAbbreviatedPath" : "\/bootstrap\/css\/jumbotron.css",
       "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/css\/ImpactStory.css",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 16
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 0,
+      "fileType" : 1,
+      "debugStyle" : 0
     },
     "\/user-pages.less" : {
       "ieCompatibility" : 1,
@@ -743,6 +743,23 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
+    "\/bootstrap\/button-groups.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/bootstrap\/button-groups.less",
+      "outputAbbreviatedPath" : "\/bootstrap\/css\/button-groups.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 0,
+      "fileType" : 1,
+      "debugStyle" : 0
+    },
     "\/bootstrap\/theme.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/bootstrap\/theme.less",
@@ -781,23 +798,6 @@
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/bootstrap\/input-groups.less",
       "outputAbbreviatedPath" : "\/bootstrap\/css\/input-groups.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 0,
-      "fileType" : 1,
-      "debugStyle" : 0
-    },
-    "\/bootstrap\/button-groups.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/bootstrap\/button-groups.less",
-      "outputAbbreviatedPath" : "\/bootstrap\/css\/button-groups.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -913,10 +913,10 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/bootstrap\/thumbnails.less" : {
+    "\/bootstrap\/tables.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/bootstrap\/thumbnails.less",
-      "outputAbbreviatedPath" : "\/bootstrap\/css\/thumbnails.css",
+      "inputAbbreviatedPath" : "\/bootstrap\/tables.less",
+      "outputAbbreviatedPath" : "\/bootstrap\/css\/tables.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,

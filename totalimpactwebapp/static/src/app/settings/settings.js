@@ -48,15 +48,13 @@ angular.module('settings', [
     }
 
     var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
+                console.log(currentPageDescr)
 
     $scope.resetUser()
     $scope.loading = {};
     $scope.include =  currentPageDescr.templatePath;
     $scope.authenticatedUser = authenticatedUser;
     $scope.pageDescriptions = SettingsPageDescriptions.get();
-
-
-
 
   })
 
@@ -116,4 +114,26 @@ angular.module('settings', [
         }
       )
     };
-    })
+  })
+
+
+
+  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications) {
+
+     $scope.onSave = function() {
+      $scope.setLoading("userEmailForm", true)
+      UsersAbout.patch(
+        $scope.user.id,
+        {about: $scope.user},
+        function(resp) {
+          security.currentUser = resp.about; // update the current authenticated user.
+          i18nNotifications.pushForNextRoute(
+            'settings.email.change.success',
+            'success',
+            {email: resp.about.email}
+          );
+          $location.path('/' + resp.about.url_slug)
+        }
+      )
+    };
+  })

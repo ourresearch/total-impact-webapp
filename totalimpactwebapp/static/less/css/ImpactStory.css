@@ -8181,6 +8181,9 @@ div.settings div.settings-input form.custom-url {
 div.settings div.settings-input form .form-group label {
   color: #555;
 }
+div.settings div.settings-input form .form-group .working i {
+  margin-right: 5px;
+}
 div.settings div.settings-input form .form-group.disabled {
   transition: 1s linear all;
 }
@@ -8212,9 +8215,6 @@ div.settings div.settings-input form .form-group.current-password div.controls.s
 div.settings div.settings-input form .form-group.current-password div.controls.show-password div.checkmark-and-text i {
   font-size: 24px;
   vertical-align: -1px;
-}
-div.settings div.settings-input form .form-group.custom-url .working i {
-  margin-right: 5px;
 }
 div.settings div.settings-input form .form-group.submit {
   margin-top: 40px;

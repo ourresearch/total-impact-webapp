@@ -18,7 +18,8 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'settings.password.change.success': "Password changed.",
     'settings.password.change.error.unauthenticated': "Sorry, looks like you typed your password wrong.",
     'settings.profile.change.success': "Your profile's been updated.",
-    'settings.url.change.success': "Your profile URL has been updated."
+    'settings.url.change.success': "Your profile URL has been updated.",
+    'settings.email.change.success': "Your email has been updated to {{email}}."
 
   };
 
