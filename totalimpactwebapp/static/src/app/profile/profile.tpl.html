@@ -30,7 +30,26 @@
 </div>
 
 <div class="products" ng-show="userExists">
+   <div class="product-controls">
+      <div class="wrapper">
+         <div class="edit-controls">
+            <a type="button" class="btn add"><i class="icon-upload-alt"></i>Add</a><span class="sep">|</span>
+            <a type="button" class="btn" ><i class="icon-edit"></i>Edit</a><span class="sep">|</span>
+            <a type="button" class="btn" ><i class="icon-refresh"></i>Refresh metrics</a>
+         </div>
+         <div class="view-controls">
+            <span class="dropdown download">
+               <a id="adminmenu" role="button" class="dropdown-toggle btn"><i class="icon-download"></i>Download</a>
+               <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
+                  <li><a tabindex="-1" href="http://api.impactstory.org/v1/collection/{{ user.about.collection_id }}.csv?key=samplekey"><i class="icon-table"></i>csv</a></li>
+                  <li><a tabindex="-1" href="http://api.impactstory.org/v1/collection/{{ user.about.collection_id }}?key=samplekey"><i class="json">{&hellip;}</i>json</a></li>
+               </ul>
+            </span>
+         </div>
+      </div>
+   </div>
    <div class="wrapper">
+
       <div class="loading" ng-show="!products.length">
          <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading products...</span></div>
       </div>

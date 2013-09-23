@@ -326,11 +326,12 @@ div.no-page {
 *****************************************************************************
 *****************************************************************************/
 
-div.navbar {
+div.navbar.site-nav {
    width:100%;
    margin: 0 auto;
    font-family: rokkitt, cambria, serif;
    padding-top:5px;
+   .border-radius(0, 0, 0, 0);
 
    .drop-shadow(0, 0, 10px, 0.3);
    background:#fff;
@@ -809,14 +810,6 @@ div.import-products {
 *****************************************************************************/
 body.index  {
 
-   &.not-logged-in {
-      div.navbar-inner ul.nav.pull-right {
-         li {
-            &.sign-up {display:none; } // it's got a huge button in middle of page...
-            span.hi {display:inline-block; margin-right: 10px;}
-         }
-      }
-   }
 }
 
 div#tagline {
