@@ -1,5 +1,5 @@
 <ul class="ti-badges">
-   <li ng-repeat="award in awards" class="award">
+   <li ng-repeat="award in awards | orderBy:['!isHighly', 'displayOrder']" class="award">
       <span href="#"
             class="ti-badge lil-badge {{award.audience}} {{award.engagementType}}"
             ng-show="!award.isHighly"
@@ -15,7 +15,7 @@
        </span>
 
       <span href="#"
-            class="label ti-badge big-badge {{award.audience}} {{award.engagementType}}"
+            class="ti-badge big-badge {{award.audience}} {{award.engagementType}}"
             ng-show="award.isHighly"
             popover-trigger="mouseenter"
             popover-placement="bottom"
@@ -32,6 +32,9 @@
          <span class="audience">by {{award.audience}}</span>
       </span>
 
+      <span class="metrics" >
+         <img ng-repeat="metric in award.metrics" ng-src="{{ metric.static_meta.icon }}"
+      </span>
 
 
    </li>

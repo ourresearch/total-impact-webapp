@@ -165,28 +165,6 @@ span.icon.help {
    background-position: -96px 64px;
 
 }
-
-// popovers are inserted at bottom of the page, w no containing div.
-div.popover {
-   p {font-size:14px; }
-   a {
-      color: #555;
-      border-bottom: 1px dotted #555;
-      &:hover{border-bottom:1px solid #555; text-decoration:none;}
-   }
-   h3 {
-      font-family: helvetica, arial, sans-serif;
-      span.audience {
-         font-weight: bold;
-         &.scholars {
-            color: @scholarsColor;
-         }
-         &.public {
-            color:  @publicColor;
-         }
-      }
-   }
-}
 div.modal-backdrop {
    opacity: .7;
 }
@@ -1003,11 +981,7 @@ div#sources {
             line-height: 3.5;
             img {
                height: 22px;
-               opacity: .5;
-
-               filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
-               filter: gray; /* IE6-9 */
-               -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
+               .grayscale(.5);
 
             }
          }

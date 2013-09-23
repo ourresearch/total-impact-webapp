@@ -6144,6 +6144,11 @@ input[type="color"]:focus,
   box-shadow: none;
   border-width: 0;
 }
+/* ---------------------------------------------
+
+Some of my own mixins
+
+-------------------------------------------------*/
 /*---------------------------------------------------
     LESS Elements 0.6
   ---------------------------------------------------
@@ -6302,29 +6307,6 @@ span.icon.help {
   padding: 0 9px;
   background: url(../img/glyphicons-halflings-light.png);
   background-position: -96px 64px;
-}
-div.popover p {
-  font-size: 14px;
-}
-div.popover a {
-  color: #555;
-  border-bottom: 1px dotted #555;
-}
-div.popover a:hover {
-  border-bottom: 1px solid #555;
-  text-decoration: none;
-}
-div.popover h3 {
-  font-family: helvetica, arial, sans-serif;
-}
-div.popover h3 span.audience {
-  font-weight: bold;
-}
-div.popover h3 span.audience.scholars {
-  color: #377eb8;
-}
-div.popover h3 span.audience.public {
-  color: #4daf4a;
 }
 div.modal-backdrop {
   opacity: .7;
@@ -7084,7 +7066,7 @@ div#sources div.wrapper ul#source-logos li {
 }
 div#sources div.wrapper ul#source-logos li img {
   height: 22px;
-  opacity: .5;
+  opacity: 0.5;
   filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
   /* Firefox 10+, Firefox on Android */
 
@@ -7575,7 +7557,7 @@ div.products {
 li.product {
   float: left;
   clear: both;
-  padding: 0;
+  padding: 25px 0 0;
   position: relative;
 }
 li.product:hover div.product-controls {
@@ -7613,13 +7595,13 @@ li.product div.product-controls a.product-delete-button span.help-text {
 }
 li.product div.biblio {
   float: left;
-  width: 728px;
+  width: 700px;
 }
 li.product div.biblio h5 {
   font-size: 16px;
   margin: 0 0 -3px 0;
   float: left;
-  padding: 10px 5px 10px 0;
+  padding: 0 5px 10px 0;
 }
 li.product div.biblio h5 a {
   color: #ddd;
@@ -7639,7 +7621,7 @@ li.product div.biblio div.optional-biblio span.repository {
   font-style: italic;
 }
 li.product div.badges {
-  width: 280px;
+  width: 360px;
   margin-left: 20px;
   float: left;
 }
@@ -7647,45 +7629,92 @@ li.product div.badges ul.ti-badges {
   float: left;
 }
 li.product div.badges ul.ti-badges li.award {
+  margin: 0 7px 7px 0;
   float: left;
-  margin: 0 3px 5px 0;
+}
+li.product div.badges ul.ti-badges li.award span.metrics {
+  display: block;
+  float: left;
+  border: 1px solid #333;
+  border-left: none;
+  height: 26px;
+  padding-right: 8px;
+  -webkit-border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topright: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -moz-border-radius-bottomleft: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+li.product div.badges ul.ti-badges li.award span.metrics img {
+  height: 16px;
+  margin-left: 7px;
+  margin-top: 4px;
+  vertical-align: top;
+  opacity: 0.75;
+  filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
+  /* Firefox 10+, Firefox on Android */
+
+  filter: gray;
+  /* IE6-9 */
+
+  -webkit-filter: grayscale(100%);
+  /* Chrome 19+, Safari 6+, Safari 6+ iOS */
+
 }
 li.product div.badges ul.ti-badges li.award span.ti-badge {
+  height: 26px;
   font-size: 12px;
+  text-align: center;
+  padding: 3px 9px;
+  float: left;
+  display: block;
   font-weight: normal;
-  padding: 3px 6px;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  -moz-border-radius-topright: 3px;
-  -moz-border-radius-bottomright: 3px;
-  -moz-border-radius-bottomleft: 3px;
-  -moz-border-radius-topleft: 3px;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -webkit-border-bottom-left-radius: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomright: 0;
+  -moz-border-radius-bottomleft: 5px;
+  -moz-border-radius-topleft: 5px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   cursor: pointer;
   font-family: helvetica, arial, sans-serif;
+  background: black;
+  border: 1px solid black;
 }
 li.product div.badges ul.ti-badges li.award span.ti-badge span.audience {
   display: none;
 }
 li.product div.badges ul.ti-badges li.award span.ti-badge.scholars {
   background: #377eb8;
-  border: 1px solid #377eb8;
+  border-color: #377eb8;
 }
 li.product div.badges ul.ti-badges li.award span.ti-badge.public {
   background: #4daf4a;
-  border: 1px solid #4daf4a;
+  border-color: #4daf4a;
+}
+li.product div.badges ul.ti-badges li.award span.ti-badge.big-badge {
+  color: #fff;
 }
 li.product div.badges ul.ti-badges li.award span.ti-badge.lil-badge {
   background: #fff;
-  text-shadow: none;
 }
 li.product div.badges ul.ti-badges li.award span.ti-badge.lil-badge.scholars {
   color: #377eb8;
@@ -7699,6 +7728,7 @@ li.product div.badges ul.ti-badges li.award div.popover {
 }
 li.product div.badges ul.ti-badges li.award div.popover h3 {
   font-size: 16px;
+  font-family: helvetica, arial, sans-serif;
 }
 li.product div.badges ul.ti-badges li.award div.popover .popover-content {
   font-size: 14px;

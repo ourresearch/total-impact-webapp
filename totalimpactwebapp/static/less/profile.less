@@ -122,7 +122,7 @@ div.products {
 li.product {
    float:left;
    clear:both;
-   padding:  0;
+   padding:  25px 0 0;
    position:relative; // for positioning the item-controls
 
    &:hover {
@@ -163,12 +163,12 @@ li.product {
 
    div.biblio{
       float:left;
-      width: 728px;
+      width: 700px;
       h5 {
          font-size:16px;
          margin: 0 0 -3px 0;
          float: left;
-         padding: 10px 5px 10px 0;
+         padding: 0 5px 10px 0;
          a {
             color:  #ddd;
             margin-left:5px;
@@ -190,37 +190,61 @@ li.product {
 
 
    div.badges {
-      width: 280px;
+      width: 360px;
       margin-left: 20px;
       float:left;
       ul.ti-badges {
          float:left;
          li.award {
+            margin:0 7px 7px 0;
             float:left;
-            margin:0 3px 5px 0;
+            span.metrics {
+               display:block;
+               float:left;
+               img {
+                  height: 16px;
+                  margin-left:7px;
+                  margin-top: 4px;
+                  vertical-align: top;
+                  .grayscale(.75);
+               }
+               border: 1px solid #333;
+               border-left: none;
+               height: 26px;
+               padding-right:8px;
+               .border-radius(5px, 5px, 0, 0);
+
+            }
+
             span.ti-badge {
+               height: 26px;
                font-size: 12px;
+               text-align: center;
+               padding: 3px 9px;
+               float:left;
+               display:block;
                font-weight:normal;
-               padding: 3px 6px;
-               .border-radius(3px, 3px, 3px, 3px);
+               .border-radius(0, 0, 5px, 5px);
                cursor: pointer;
                font-family: helvetica, arial, sans-serif;
                span.audience {display:none;}
-               &.scholars {background: @scholarsColor; border:1px solid @scholarsColor;}
-               &.public {background: @publicColor; border:1px solid @publicColor;}
+               background:  black;
+               border: 1px solid black;
+               &.scholars {background: @scholarsColor; border-color: @scholarsColor;}
+               &.public {background: @publicColor; border-color: @publicColor;}
                &.big-badge {
+                  color:  #fff;
                }
                &.lil-badge {
                   &.scholars {color: @scholarsColor;}
                   &.public {color: @publicColor;}
                   background: #fff;
-                  text-shadow: none;
                }
             }
             div.popover {
                font-family: helvetica, arial, sans-serif;
                max-width: 230px;
-               h3 {font-size: 16px;}
+               h3 {font-size: 16px; font-family: helvetica, arial, sans-serif;}
                .popover-content {font-size: 14px;}
             }
 

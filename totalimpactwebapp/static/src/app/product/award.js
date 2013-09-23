@@ -14,6 +14,9 @@ angular.module('product.award').factory('Award', function() {
 
 
     ,make: function(audience, engagementType, metrics){
+
+      console.log("makin' metrics: ", metrics)
+
       return {
         engagementTypeNoun: this.config[engagementType][0]
         ,engagementType: engagementType
@@ -22,6 +25,7 @@ angular.module('product.award').factory('Award', function() {
         ,topMetric: this.getTopMetric(metrics)
         ,isHighly: this.calculateIsHighly(metrics)
         ,displayAudience: audience.replace("public", "the public")
+        ,metrics: metrics
       }
     }
 
