@@ -2,7 +2,7 @@
 angular.module('security.service', [
   'security.retryQueue',    // Keeps track of failed requests that need to be retried once the user logs in
   'security.login',         // Contains the login form template and controller
-  'ui.bootstrap.dialog'     // Used to display the login form as a modal dialog.
+  'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
 .factory('security', ['$http', '$q', '$location', 'securityRetryQueue', '$dialog', function($http, $q, $location, queue, $dialog) {

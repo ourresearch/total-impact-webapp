@@ -12,27 +12,6 @@
 
 
 
-   {# set jinja page variables #}
-   {# ----------------------------------------------------------------------- #}
-   {% if g.user.id %}
-      {% set login_status = "logged-in" %}
-   {% else %}
-      {% set login_status = "not-logged-in" %}
-   {% endif %}
-
-   {% set filename = self | extract_filename %}
-   {% set body_classes = [
-           filename,
-           "template-"+filename,
-           login_status,
-           edit_status,
-           extra_body_classes
-   ] %}
-
-
-
-
-
    <!-- Include stuff that has to be at the very tippity-top of the page-->
    <!-------------------------------------------------------------------------->
    <!-- newrelic logging. -->
@@ -74,9 +53,8 @@
    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script>
 
+   <script type="text/javascript" src="{{ url_for('static', filename='dist/bootstrap.js') }}"></script>
    <script type="text/javascript" src="{{ url_for('static', filename='dist/angular.js') }}"></script> <!-- extra Angular modules -->
-   <script type="text/javascript" src="{{ url_for('static', filename='dist/bootstrap.js') }}"></script>
-   <script type="text/javascript" src="{{ url_for('static', filename='dist/bootstrap.js') }}"></script>
    <script type="text/javascript" src="{{ url_for('static', filename='js/browser-fixes.js') }}"></script> <!-- get rid of this -->
    <script type="text/javascript" src="{{ url_for('static', filename='dist/ImpactStory.js') }}"></script>
 

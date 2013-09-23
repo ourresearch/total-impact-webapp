@@ -180,7 +180,7 @@ li.product {
       }
       div.optional-biblio {
          clear:both;
-         font-size:12px;
+         font-size:13px;
          color: #888;
          line-height: 1.3;
          span.repository {font-style:italic;}
@@ -195,13 +195,16 @@ li.product {
       float:left;
       ul.ti-badges {
          float:left;
-         li {
+         li.award {
             float:left;
             margin:0 3px 5px 0;
             span.ti-badge {
                font-size: 12px;
                font-weight:normal;
                padding: 3px 6px;
+               .border-radius(3px, 3px, 3px, 3px);
+               cursor: pointer;
+               font-family: helvetica, arial, sans-serif;
                span.audience {display:none;}
                &.scholars {background: @scholarsColor; border:1px solid @scholarsColor;}
                &.public {background: @publicColor; border:1px solid @publicColor;}
@@ -213,160 +216,16 @@ li.product {
                   background: #fff;
                   text-shadow: none;
                }
-               &:hover {border:1px solid #000;}
             }
-         }
-      }
-   }
-
-   div.zoom {
-      display:none;
-      float:left;
-      clear:left;
-      width:725px;
-      position: relative;
-      margin: 5px 0 35px;
-      padding-bottom: 15px;
-      border-top: 1px solid #aaa;
-
-
-      span.value{ font-weight: bold;}
-
-
-      a.item-help {
-         left:787px;
-         top:5px;
-         position: absolute;
-         width:300px;
-         font-size: 14px;
-         color:#555;
-      }
-
-      div.audience {
-         &.scholars {
-            margin-right: 40px;
-            span.bar {background: @scholarsColor;}
-            h6 {color: @scholarsColor;}
-         }
-         &.public {
-            span.bar {background: @publicColor;}
-            h6 {color: @publicColor;}
-         }
-         width: 330px;
-         float:left;
-         margin-left:10px;
-
-
-         h5 {
-            margin-bottom: 0;
-            margin-left:162px;
-            color: #555;
-            &:after {content: " audience"}
-//            width: 350px;
-//            margin-left: 160px;
-         }
-
-         ul.engagement-types {
-            li.engagement-type {
-               margin-bottom: 25px;
-               float:left;
-               h6  {
-                  font-weight: normal;
-                  font-size: 13px;
-                  span.engagement-type { font-weight: bold;}
-               }
-               ul.metrics {
-                  li {
-                     float:left;
-                     width: 100%;
-                     margin: 0 0 5px 0;
-
-                     div.line {
-                        width: 150px;
-                        height: 16px;
-                        margin-top:-6px;
-                        border-bottom: 1px solid #bbb;
-                        float:left;
-
-                        div.percentile-fail {
-                           color: #999;
-                           font-size:11px;
-                           margin-top: 6px;
-                           background: #fff;
-                           span {
-                              text-align: left;
-                              padding:0 4px;
-                           }
-                        }
-
-                        div.metric-perc-range {
-                           position:relative;
-                           cursor:default;
-                           &.estimate {display:none;}
-
-                           span.bar{
-                              height:5px;
-                              margin-top:12px;
-                              display: block;
-                           }
-
-                           span.endpoint {
-                              font-size: 10px;
-                              display:block;
-                              position:absolute;
-                              top:2px;
-                              color: #999;
-                              &.start {left:0;}
-                              &.start {left:0;}
-                              &.end {right:0;}
-                           }
-                        }
-                     }
-
-                     div.meta {
-                        width: 100px;
-                        margin-right: 10px;
-                        float:left;
-                        display:block;
-                        text-align: right;
-                        font-size:11px;
-                        color: #555;
-
-                        .value-and-name  {
-                           width: 130px;
-                           display:inline-block;
-                           width: 75px;
-                           line-height: 1.3;
-                           margin-right: 5px;
-                           color: #999;
-                        }
-                        a.value-and-name {
-                           &:hover {color: @linkColor;}
-                        }
-                        img {
-                           float:right;
-                        }
-                     }
-                  }
-               }
+            div.popover {
+               font-family: helvetica, arial, sans-serif;
+               max-width: 230px;
+               h3 {font-size: 16px;}
+               .popover-content {font-size: 14px;}
             }
+
          }
       }
    }
-}
 
-div#context {
-   p {
-      font-size:15px;
-   }
-   ul {
-      padding-left:20px;
-      li {list-style-type: circle;}
-   }
-   .modal-body {
-      padding:30px
-   }
-   .modal-header {
-      padding: 12px 30px;
-   }
 }

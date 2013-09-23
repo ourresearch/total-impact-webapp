@@ -37,10 +37,8 @@
 
       <ul class="products-list">
          <li class="product" ng-repeat="product in products"  ng-controller="productCtrl" id="{{ product._id }}">
-            <div class="product-controls">
-               <a ng-click="removeProduct(product)" class="product-delete-button"><span class="help-text">remove</span><i class="icon-trash"></i></a>
-            </div>
             <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
+            <div class="badges" ng-include="'product/badges.tpl.html'"></div>
          </li>
       </ul>
    </div>

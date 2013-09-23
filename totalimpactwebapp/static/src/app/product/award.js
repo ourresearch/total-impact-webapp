@@ -16,6 +16,8 @@ angular.module('product.award').factory('Award', function() {
     ,make: function(audience, engagementType, metrics){
       return {
         engagementTypeNoun: this.config[engagementType][0]
+        ,engagementType: engagementType
+        ,audience: audience
         ,displayOrder: this.config[engagementType][1]
         ,topMetric: this.getTopMetric(metrics)
         ,isHighly: this.calculateIsHighly(metrics)

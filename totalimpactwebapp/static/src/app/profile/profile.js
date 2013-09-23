@@ -1,6 +1,7 @@
 angular.module("profile", [
   'resources.users',
   'product.product',
+  'ui.bootstrap',
   'security'
 ])
 

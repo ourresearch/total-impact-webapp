@@ -1,34 +1,38 @@
-<ul class="ti-badges" ng-repeat="award in product.awards">
-   <li>
+<ul class="ti-badges">
+   <li ng-repeat="award in awards" class="award">
+      <span href="#"
+            class="ti-badge lil-badge {{award.audience}} {{award.engagementType}}"
+            ng-show="!award.isHighly"
+            popover-trigger="mouseenter"
+            popover-placement="bottom"
+            popover-title="{{award.engagementType}} by {{award.displayAudience}}"
+            popover="This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}
+            {{award.topMetric.displayInteraction}}, suggesting it's been
+            {{award.engagementType}} by {{award.displayAudience}}.
+            Click to learn more.">
+         <span class="engagement-type">{{award.engagementType}}</span>
+         <span class="audience">by {{award.audience}}</span>
+       </span>
+
       <span href="#"
             class="label ti-badge big-badge {{award.audience}} {{award.engagementType}}"
-            rel="tooltip"
-            title="Highly {{award.engagementType}} by <span class='audience {{award.audience}}'>{{award.displayAudience}}</span>"
-            data-content="This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}
-             {{award.topMetric.displayInteraction}}. That's better than
-             {{award.topMetric.percentiles.CI95_lower}}% of items
-             {{award.topMetric.referenceSetStorageVerb}} {{award.topMetric.refSet}} in {{award.topMetric.referenceSetYear}},
-             suggesting it's highly {{award.engagementType}} by {{award. displayAudience }}.
-             Click to learn more."
-              >
+            ng-show="award.isHighly"
+            popover-trigger="mouseenter"
+            popover-placement="bottom"
+            popover-title="Highly {{award.engagementType}} by {{award.displayAudience}}"
+            popover="This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}
+            {{award.topMetric.displayInteraction}}. That's better than
+            {{award.topMetric.percentiles.CI95_lower}}% of items
+            {{award.topMetric.referenceSetStorageVerb}} {{award.topMetric.refSet}} in {{award.topMetric.referenceSetYear}},
+            suggesting it's highly {{award.engagementType}} by {{award.displayAudience }}.
+            Click to learn more.">
+
          <span class="modifier">highly</span>
          <span class="engagement-type">{{award.engagementType}}</span>
          <span class="audience">by {{award.audience}}</span>
       </span>
-   </li>
 
-   <li>
-      <span href="#"
-            class="label ti-badge lil-badge {{award.audience}} {{award.engagementType}}"
-            rel="tooltip"
-            title="{{award.engagementType}} by <span class='audience {{award.audience}}'>{{award.displayAudience}}</span>"
-            data-content="This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}
-          {{award.topMetric.displayInteraction}}, suggesting it's been
-          {{award.engagementType}} by {{award.displayAudience}}.
-          Click to learn more."
-              >
-         <span class="engagement-type">{{award.engagementType}}</span>
-         <span class="audience">by {{award.audience}}</span>
-       </span>
+
+
    </li>
 </ul>

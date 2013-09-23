@@ -6942,6 +6942,7 @@ body.index.not-logged-in div.navbar-inner ul.nav.pull-right li span.hi {
 div#tagline {
   background: #ff4e00;
   padding: 1px;
+  margin-top: -120px;
 }
 div#tagline div.wrapper {
   width: 900px;
@@ -7630,7 +7631,7 @@ li.product div.biblio h5 a:hover {
 }
 li.product div.biblio div.optional-biblio {
   clear: both;
-  font-size: 12px;
+  font-size: 13px;
   color: #888;
   line-height: 1.3;
 }
@@ -7645,40 +7646,64 @@ li.product div.badges {
 li.product div.badges ul.ti-badges {
   float: left;
 }
-li.product div.badges ul.ti-badges li {
+li.product div.badges ul.ti-badges li.award {
   float: left;
   margin: 0 3px 5px 0;
 }
-li.product div.badges ul.ti-badges li span.ti-badge {
+li.product div.badges ul.ti-badges li.award span.ti-badge {
   font-size: 12px;
   font-weight: normal;
   padding: 3px 6px;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  cursor: pointer;
+  font-family: helvetica, arial, sans-serif;
 }
-li.product div.badges ul.ti-badges li span.ti-badge span.audience {
+li.product div.badges ul.ti-badges li.award span.ti-badge span.audience {
   display: none;
 }
-li.product div.badges ul.ti-badges li span.ti-badge.scholars {
+li.product div.badges ul.ti-badges li.award span.ti-badge.scholars {
   background: #377eb8;
   border: 1px solid #377eb8;
 }
-li.product div.badges ul.ti-badges li span.ti-badge.public {
+li.product div.badges ul.ti-badges li.award span.ti-badge.public {
   background: #4daf4a;
   border: 1px solid #4daf4a;
 }
-li.product div.badges ul.ti-badges li span.ti-badge.lil-badge {
+li.product div.badges ul.ti-badges li.award span.ti-badge.lil-badge {
   background: #fff;
   text-shadow: none;
 }
-li.product div.badges ul.ti-badges li span.ti-badge.lil-badge.scholars {
+li.product div.badges ul.ti-badges li.award span.ti-badge.lil-badge.scholars {
   color: #377eb8;
 }
-li.product div.badges ul.ti-badges li span.ti-badge.lil-badge.public {
+li.product div.badges ul.ti-badges li.award span.ti-badge.lil-badge.public {
   color: #4daf4a;
 }
-li.product div.badges ul.ti-badges li span.ti-badge:hover {
-  border: 1px solid #000;
+li.product div.badges ul.ti-badges li.award div.popover {
+  font-family: helvetica, arial, sans-serif;
+  max-width: 230px;
 }
-li.product div.zoom {
+li.product div.badges ul.ti-badges li.award div.popover h3 {
+  font-size: 16px;
+}
+li.product div.badges ul.ti-badges li.award div.popover .popover-content {
+  font-size: 14px;
+}
+div.zoom {
   display: none;
   float: left;
   clear: left;
@@ -7688,10 +7713,10 @@ li.product div.zoom {
   padding-bottom: 15px;
   border-top: 1px solid #aaa;
 }
-li.product div.zoom span.value {
+div.zoom span.value {
   font-weight: bold;
 }
-li.product div.zoom a.item-help {
+div.zoom a.item-help {
   left: 787px;
   top: 5px;
   position: absolute;
@@ -7699,96 +7724,96 @@ li.product div.zoom a.item-help {
   font-size: 14px;
   color: #555;
 }
-li.product div.zoom div.audience {
+div.zoom div.audience {
   width: 330px;
   float: left;
   margin-left: 10px;
 }
-li.product div.zoom div.audience.scholars {
+div.zoom div.audience.scholars {
   margin-right: 40px;
 }
-li.product div.zoom div.audience.scholars span.bar {
+div.zoom div.audience.scholars span.bar {
   background: #377eb8;
 }
-li.product div.zoom div.audience.scholars h6 {
+div.zoom div.audience.scholars h6 {
   color: #377eb8;
 }
-li.product div.zoom div.audience.public span.bar {
+div.zoom div.audience.public span.bar {
   background: #4daf4a;
 }
-li.product div.zoom div.audience.public h6 {
+div.zoom div.audience.public h6 {
   color: #4daf4a;
 }
-li.product div.zoom div.audience h5 {
+div.zoom div.audience h5 {
   margin-bottom: 0;
   margin-left: 162px;
   color: #555;
 }
-li.product div.zoom div.audience h5:after {
+div.zoom div.audience h5:after {
   content: " audience";
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type {
+div.zoom div.audience ul.engagement-types li.engagement-type {
   margin-bottom: 25px;
   float: left;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type h6 {
+div.zoom div.audience ul.engagement-types li.engagement-type h6 {
   font-weight: normal;
   font-size: 13px;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type h6 span.engagement-type {
+div.zoom div.audience ul.engagement-types li.engagement-type h6 span.engagement-type {
   font-weight: bold;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li {
   float: left;
   width: 100%;
   margin: 0 0 5px 0;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line {
   width: 150px;
   height: 16px;
   margin-top: -6px;
   border-bottom: 1px solid #bbb;
   float: left;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.percentile-fail {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.percentile-fail {
   color: #999;
   font-size: 11px;
   margin-top: 6px;
   background: #fff;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.percentile-fail span {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.percentile-fail span {
   text-align: left;
   padding: 0 4px;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range {
   position: relative;
   cursor: default;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range.estimate {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range.estimate {
   display: none;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.bar {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.bar {
   height: 5px;
   margin-top: 12px;
   display: block;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint {
   font-size: 10px;
   display: block;
   position: absolute;
   top: 2px;
   color: #999;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
   left: 0;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
   left: 0;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.end {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.end {
   right: 0;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta {
   width: 100px;
   margin-right: 10px;
   float: left;
@@ -7797,7 +7822,7 @@ li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metri
   font-size: 11px;
   color: #555;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta .value-and-name {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta .value-and-name {
   width: 130px;
   display: inline-block;
   width: 75px;
@@ -7805,26 +7830,11 @@ li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metri
   margin-right: 5px;
   color: #999;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta a.value-and-name:hover {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta a.value-and-name:hover {
   color: #ff4e00;
 }
-li.product div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta img {
+div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta img {
   float: right;
-}
-div#context p {
-  font-size: 15px;
-}
-div#context ul {
-  padding-left: 20px;
-}
-div#context ul li {
-  list-style-type: circle;
-}
-div#context .modal-body {
-  padding: 30px;
-}
-div#context .modal-header {
-  padding: 12px 30px;
 }
 body.signup {
   background: #fafafa;
