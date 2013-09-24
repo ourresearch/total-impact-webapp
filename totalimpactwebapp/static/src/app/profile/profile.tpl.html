@@ -13,39 +13,39 @@
             <span class="given-name editable" data-name="given_name">{{ user.about.given_name }}</span>
             <span class="surname editable" data-name="surname">{{ user.about.surname }}</span>
          </h2>
-
-         <div class="num-items" ng-show="products.length">
-            <p class="shown"><span class="value">{{ getProducts().length }}</span> research products</p>
-            <p class="not-shown" ng-show="showProductsWithoutMetrics"><span class="value">{{ getProducts("withoutMetrics").length }}</span> with no activity found.
-               <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics">(hide these)</a></p>
-         </div>
-
       </div>
       <div class="my-metrics"></div> <!-- profile-level stats go here -->
    </div>
-   <div class="clearfloat"></div>
+</div>
+
+<div class="product-controls" ng-show="products.length">
+   <div class="wrapper">
+      <div class="edit-controls btn-group">
+         <div class="num-items">
+            <span class="val-plus-text"><span class="value">{{ getProducts().length }}</span> research products</span>
+            <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics" ng-show="showProductsWithoutMetrics">
+               (hide <span class="value">{{ getProducts("withoutMetrics").length }}</span> without metrics)
+            </a>
+         </div>
+         <a><i class="icon-edit"></i>Edit products</a>
+      </div>
+      <div class="view-controls">
+         <a><i class="icon-refresh"></i>Refresh metrics</a>
+         <span class="dropdown download">
+            <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
+               <li><a tabindex="-1" href="http://api.impactstory.org/v1/collection/{{ user.about.collection_id }}.csv?key=samplekey"><i class="icon-table"></i>csv</a></li>
+               <li><a tabindex="-1" href="http://api.impactstory.org/v1/collection/{{ user.about.collection_id }}?key=samplekey"><i class="json">{&hellip;}</i>json</a></li>
+            </ul>
+         </span>
+      </div>
+   </div>
 </div>
 
 <div class="products" ng-show="userExists">
-   <div class="product-controls">
-      <div class="wrapper">
-         <div class="edit-controls btn-group">
-            <a type="button" class="btn add"><i class="icon-upload-alt"></i>Add</a>
-            <a type="button" class="btn" ><i class="icon-edit"></i>Edit</a>
-            <a type="button" class="btn" ><i class="icon-refresh"></i>Refresh metrics</a>
-         </div>
-         <div class="view-controls">
-            <span class="dropdown download">
-               <a id="adminmenu" role="button" class="dropdown-toggle btn"><i class="icon-download"></i>Download</a>
-               <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
-                  <li><a tabindex="-1" href="http://api.impactstory.org/v1/collection/{{ user.about.collection_id }}.csv?key=samplekey"><i class="icon-table"></i>csv</a></li>
-                  <li><a tabindex="-1" href="http://api.impactstory.org/v1/collection/{{ user.about.collection_id }}?key=samplekey"><i class="json">{&hellip;}</i>json</a></li>
-               </ul>
-            </span>
-         </div>
-      </div>
-   </div>
    <div class="wrapper">
+
+
 
       <div class="loading" ng-show="!products.length">
          <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading products...</span></div>

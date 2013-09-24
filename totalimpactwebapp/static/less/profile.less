@@ -17,6 +17,7 @@ div.loading {
 
 div.profile-header {
    margin-top: 100px;
+   margin-bottom: 50px;
    .clearfix();
    div.wrapper {
       div.loading {
@@ -44,50 +45,33 @@ div.profile-header {
             float:left;
          }
 
-         div.num-items {
-            float:left;
-            margin-top: 20px;
-            margin-bottom:0;
-            clear:left;
-            p {
-               font-size: 18px;
-               margin-bottom: 0;
-               color:  #555;
-               &.not-shown {
-                  font-size: 14px;
-                  color: #999;
-                  margin-top:0;
-               }
-               span.value {
-               }
-               a {
-                  font-size: 12px;
-               }
-            }
-         }
-
       }
    }
 }
 
 
 div.product-controls {
-   @product-controls-bg-color: transparent;
-   .clearfix();
-   background: @product-controls-bg-color;
    margin-bottom: 10px;
-   margin-top: -40px;
-   .border-radius(5px, 5px, 5px, 5px);
+   margin-top:0;
+   font-size:  16px;
+   border-bottom:  5px solid #eee;
+   .clearfix();
    div.view-controls {
       float:right;
-      margin-right: 20px;
+      margin: 0 20px 0;
       ul.dropdown-menu {
          border: none;
          .drop-shadow(0, 0, 0, 0);
          .border-radius(0, 3px, 3px, 0);
-         background: @product-controls-bg-color;
-         top: 32px;
+         padding: 0;
+         background: #eee;
+         top: 22px;
          min-width:  120px;
+         a {
+            margin: 0;
+            width: 100%;
+            &:hover {color:  #fff;}
+         }
          i {
             font-style: normal;
             margin-right: 5px;
@@ -100,20 +84,23 @@ div.product-controls {
    }
    div.edit-controls {
       float:left;
-   }
-   .btn {
-      .border-radius(0, 0, 0, 0);
-      color: #777;
-//      color: #fff;
-      background: transparent;
-      border: none;
-      font-size:  16px;
-      margin: 0;
-      &.add {
+      div.num-items {
+         float:left;
+         span.val-plus-text {font-size: 20px; margin: 0; }
+         a {
+            font-size: 14px;
+            margin-left: 5px;
+         }
       }
+   }
+   a {
+      color: #777;
+      margin-left: 15px;
+      margin-top: 6px;
+      display:inline-block;
       &:hover {
-         background:  @accentColor;
-         color: #fff;
+         color: @linkColor;
+         text-decoration: none;
       }
       i {
          margin-right:5px;
@@ -123,8 +110,7 @@ div.product-controls {
 
 
 div.products {
-   margin-top: 90px;
-   border-top:  5px solid #eee;
+   margin-top: 0;
    div.loading {
 
    }
