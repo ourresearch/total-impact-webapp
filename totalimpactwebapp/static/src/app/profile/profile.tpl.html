@@ -14,13 +14,10 @@
             <span class="surname editable" data-name="surname">{{ user.about.surname }}</span>
          </h2>
 
-         <div id="num-items" class="control-group working">
-            <span class="ready"><span class="value"></span> products <a href="#">expand all</a></span>
-            <span class="error"><span class="value"></span> products <span class="error-message">(though failed to load all metrics)</span><a href="#">expand all</a></span>
-         </div>
-
-         <div class="edit-profile" ng-show="currentUserIsProfileOwner() && user.about.id">
-            <a href="/settings/profile">Edit profile</a>
+         <div class="num-items" ng-show="products.length">
+            <p class="shown"><span class="value">{{ getProducts().length }}</span> research products</p>
+            <p class="not-shown" ng-show="showProductsWithoutMetrics"><span class="value">{{ getProducts("withoutMetrics").length }}</span> with no activity found.
+               <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics">(hide these)</a></p>
          </div>
 
       </div>
@@ -32,9 +29,9 @@
 <div class="products" ng-show="userExists">
    <div class="product-controls">
       <div class="wrapper">
-         <div class="edit-controls">
-            <a type="button" class="btn add"><i class="icon-upload-alt"></i>Add</a><span class="sep">|</span>
-            <a type="button" class="btn" ><i class="icon-edit"></i>Edit</a><span class="sep">|</span>
+         <div class="edit-controls btn-group">
+            <a type="button" class="btn add"><i class="icon-upload-alt"></i>Add</a>
+            <a type="button" class="btn" ><i class="icon-edit"></i>Edit</a>
             <a type="button" class="btn" ><i class="icon-refresh"></i>Refresh metrics</a>
          </div>
          <div class="view-controls">
@@ -55,12 +52,25 @@
       </div>
 
       <ul class="products-list">
-         <li class="product" ng-repeat="product in products"  ng-controller="productCtrl" id="{{ product._id }}">
+         <li class="product"
+             ng-repeat="product in products"
+             ng-controller="productCtrl"
+             ng-show="hasMetrics() || showProductsWithoutMetrics"
+             id="{{ product._id }}">
             <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
             <div class="badges" ng-include="'product/badges.tpl.html'"></div>
          </li>
       </ul>
    </div>
+
+   <div class="products-without-metrics wrapper" ng-show="products.length && !showProductsWithoutMetrics">
+      <div class="well">
+         Another <span class="value">{{ getProducts("withoutMetrics").length }}</span> products aren't shown, because we couldn't find any impact data for them.
+         <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics">Show these, too.</a>
+      </div>
+   </div>
+
+
 </div>
 
 <div class="user-does-not-exist no-page" ng-show="!userExists">

@@ -29,8 +29,25 @@ angular.module("profile", [
   {
     var userSlug = $routeParams.url_slug;
     $scope.userExists = true;
+    $scope.showProductsWithoutMetrics = false;
 
-    console.log(userSlug)
+    $scope.getProducts = function(type) {
+
+      var productsWithMetrics = _.filter($scope.products, function(x){return _.size(x.metrics) })
+      var productsWitoutMetrics = _.filter($scope.products, function(x){return x.metrics && _.size(x.metrics)==0 })
+      var pseudoProducts = _.filter($scope.products, function(x){return !x.metrics })
+
+      if (type == "withMetrics") {
+        return productsWithMetrics
+      }
+      else if (type === "withoutMetrics") {
+        return productsWitoutMetrics
+      }
+      else {
+        return productsWithMetrics.concat(productsWitoutMetrics);
+      }
+    }
+
 
     $scope.user = UsersAbout.get({
       id: userSlug,

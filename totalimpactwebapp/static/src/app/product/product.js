@@ -310,6 +310,10 @@ angular.module('product.product').factory('Product', function(Award) {
       $scope.metrics = Product.makeMetrics($scope.product)
       $scope.awards = Product.makeAwards($scope.product)
 
+      $scope.hasMetrics = function(){
+        return _.size($scope.metrics);
+      }
+
   })
 
   .directive('productBiblio', function(Product) {
