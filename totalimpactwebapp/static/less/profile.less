@@ -32,16 +32,15 @@ div.profile-header {
       }
       div.my-vitals {
          width:  600px;
-         margin-left: 30px;
+         margin-left: 40px;
          float:left;
          h2.editable-name {
             font-family: Lato, Helvetica, Arial, sans-serif;
             font-weight: bolder;
-            font-size:  40px;
+            font-size:  45px;
             color:  #555;
             margin: 0;
-            padding-top: 60px;
-            padding-top: 0;
+            padding-top: 30px;
             float:left;
          }
 
@@ -51,14 +50,13 @@ div.profile-header {
 
 
 div.product-controls {
-   margin-bottom: 10px;
    margin-top:0;
    font-size:  16px;
    border-bottom:  5px solid #eee;
    .clearfix();
    div.view-controls {
       float:right;
-      margin: 0 20px 0;
+      margin: 0 30px 0 0;
       ul.dropdown-menu {
          border: none;
          .drop-shadow(0, 0, 0, 0);
@@ -86,10 +84,12 @@ div.product-controls {
       float:left;
       div.num-items {
          float:left;
-         span.val-plus-text {font-size: 20px; margin: 0; }
+         span.val-plus-text {font-size: 20px; margin: 0; font-weight: bold }
          a {
             font-size: 14px;
             margin-left: 5px;
+            color: @linkColor;
+            &:hover {text-decoration: underline;}
          }
       }
    }
@@ -121,6 +121,8 @@ div.products {
    div.products-without-metrics {
       div.well {
          margin: 0 20px 70px;
+         text-align: center;
+         font-size: 16px;
          color:  #777;
          a {
             font-size: 80%;
@@ -157,8 +159,27 @@ li.product {
    }
 
 
+   h2.product-heading {
+      margin: 50px 0 -10px -39px;
+      font-weight: 900;
+      text-transform: capitalize;
+      font-size: 30px;
+      color: @linkColor;
+      color:  #555;
+      i {
+         display:none;
+         font-size: 20px;
+         width:  30px;
+         margin-right: 4px;
+         vertical-align: 2px;
+         text-align: right;
+      }
+      &.article{ i.article {display:inline-block;}}
+      &.software{ i.software {display:inline-block;}}
+      &.dataset{ i.dataset {display:inline-block;}}
+   }
 
-   div.biblio{
+   .biblio{
       float:left;
       width: 700px;
       h5 {
@@ -187,7 +208,7 @@ li.product {
 
 
 
-   div.badges {
+   .badges {
       width: 360px;
       margin-left: 20px;
       float:left;
@@ -201,20 +222,20 @@ li.product {
                float:left;
                img {
                   height: 16px;
-                  margin-left:7px;
+                  margin-left:5px;
                   vertical-align: top;
                   .grayscale(.75);
                }
                border: 1px solid #333;
                border-left: none;
-               height: 26px;
-               padding:4px 8px 0 0;
+               height: 24px;
+               padding:3px 10px 0 0;
                .border-radius(13px, 13px, 0, 0);
 
             }
 
             span.ti-badge {
-               height: 26px;
+               height: 24px;
                font-size: 12px;
                text-align: center;
                padding: 3px 9px;

@@ -11,8 +11,11 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersProducts', function ($resource) {
 
     return $resource(
-      "/user/:id/products?id_type=:idType",
-      {idType: "userid"},
+      "/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",
+      {
+        idType: "userid",
+        includeHeadingProducts: false
+      },
       {
         update:{
           method: "PUT"

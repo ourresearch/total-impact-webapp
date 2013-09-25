@@ -22,12 +22,12 @@
    <div class="wrapper">
       <div class="edit-controls btn-group">
          <div class="num-items">
-            <span class="val-plus-text"><span class="value">{{ getProducts().length }}</span> research products</span>
+            <span class="val-plus-text"><span class="value">{{ filterProducts(products).length }}</span> research products</span>
             <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics" ng-show="showProductsWithoutMetrics">
-               (hide <span class="value">{{ getProducts("withoutMetrics").length }}</span> without metrics)
+               (hide <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> without metrics)
             </a>
          </div>
-         <a><i class="icon-edit"></i>Edit products</a>
+         <a><i class="icon-edit"></i>Edit</a>
       </div>
       <div class="view-controls">
          <a><i class="icon-refresh"></i>Refresh metrics</a>
@@ -44,28 +44,35 @@
 
 <div class="products" ng-show="userExists">
    <div class="wrapper">
-
-
-
       <div class="loading" ng-show="!products.length">
          <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading products...</span></div>
       </div>
 
       <ul class="products-list">
          <li class="product"
-             ng-repeat="product in products"
+             ng-repeat="product in products | orderBy:[getGenre, 'isHeading', getBadgeCount]"
              ng-controller="productCtrl"
-             ng-show="hasMetrics() || showProductsWithoutMetrics"
+             ng-show="hasMetrics() || showProductsWithoutMetrics || product.isHeading"
              id="{{ product._id }}">
-            <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
-            <div class="badges" ng-include="'product/badges.tpl.html'"></div>
+
+            <h2 class="product-heading {{ product.headingDimension }} {{ product.headingValue }}"
+                ng-show="product.isHeading">
+               <i class="icon-save software"></i>
+               <i class="icon-file-text-alt article"></i>
+               <i class="icon-table dataset"></i>
+               {{ product.headingValue }}
+            </h2>
+            <div class="real-product" ng-show="!product.isHeading">
+               <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
+               <div class="badges" ng-include="'product/badges.tpl.html'"></div>
+            </div>
          </li>
       </ul>
    </div>
 
    <div class="products-without-metrics wrapper" ng-show="products.length && !showProductsWithoutMetrics">
       <div class="well">
-         Another <span class="value">{{ getProducts("withoutMetrics").length }}</span> products aren't shown, because we couldn't find any impact data for them.
+         Another <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> products aren't shown, because we couldn't find any impact data for them.
          <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics">Show these, too.</a>
       </div>
    </div>

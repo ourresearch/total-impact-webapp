@@ -1,5 +1,5 @@
-<h5 class="title">
-   {{biblio.title}}
+<h5 class="title" xmlns="http://www.w3.org/1999/html">
+   <a href="{{ getDrilldownUrl() }}">{{biblio.title}}</a>
    <a ng-if="biblio.url" class="linkout url title" target="_blank" href="{{ biblio.url }}">
       <i class="icon-external-link-sign"></i>
    </a>

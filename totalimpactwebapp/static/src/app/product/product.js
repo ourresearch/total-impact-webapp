@@ -1,5 +1,18 @@
 angular.module('product.product', ['product.award'])
-angular.module('product.product').factory('Product', function(Award) {
+angular.module('product.product')
+
+
+  .config(['$routeProvider', function ($routeProvider) {
+
+    $routeProvider.when("/product/:tiid", {
+      templateUrl:'product/product-page.tpl.html',
+      controller:'productCtrl'
+    });
+
+  }])
+
+
+  .factory('Product', function(Award) {
 
 
   var itemOmitUndefinedv = function(obj) { return _.omit(obj, "undefined")}
@@ -92,6 +105,22 @@ angular.module('product.product').factory('Product', function(Award) {
       return metrics
     }
 
+    ,getGenre: function(itemData) {
+      if (itemData.biblio) {
+        return itemData.biblio.genre;
+      }
+      else if (itemData.headingValue) {
+        return itemData.headingValue;
+      }
+    }
+
+    ,getBadgeCount: function(itemData) {
+      if (itemData.biblio) {
+        return this.makeAwards(itemData).length;
+      }
+      return 0;
+    }
+
     ,makeBiblio: function(itemData) {
       var biblio = itemData.biblio
       biblio.url = (itemData.aliases.url) ?  itemData.aliases.url[0] : false
@@ -108,7 +137,7 @@ angular.module('product.product').factory('Product', function(Award) {
     
 
   ,makeAwards: function(itemData) {
-      
+
       metrics = this.makeMetrics(itemData)
       
       var awards = []
@@ -306,13 +335,21 @@ angular.module('product.product').factory('Product', function(Award) {
 
   .controller('productCtrl', function ($scope, Product, $location, security) {
 
-      $scope.biblio = Product.makeBiblio($scope.product)
-      $scope.metrics = Product.makeMetrics($scope.product)
-      $scope.awards = Product.makeAwards($scope.product)
+      if (!$scope.product.isHeading){ // deal with hacky "heading products" that aren't real products.
+        $scope.biblio = Product.makeBiblio($scope.product)
+        $scope.metrics = Product.makeMetrics($scope.product)
+        $scope.awards = Product.makeAwards($scope.product)
+      }
 
       $scope.hasMetrics = function(){
         return _.size($scope.metrics);
       }
+
+  })
+
+
+  .controller('productPageCtrl', function($scope, Product){
+
 
   })
 
@@ -326,6 +363,9 @@ angular.module('product.product').factory('Product', function(Award) {
 
 
   })
+
+
+
 
 
 

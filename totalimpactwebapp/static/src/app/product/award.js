@@ -15,8 +15,6 @@ angular.module('product.award').factory('Award', function() {
 
     ,make: function(audience, engagementType, metrics){
 
-      console.log("makin' metrics: ", metrics)
-
       return {
         engagementTypeNoun: this.config[engagementType][0]
         ,engagementType: engagementType
@@ -36,8 +34,7 @@ angular.module('product.award').factory('Award', function() {
         if (typeof metric.percentiles === "undefined") {
           return false
         }
-        else if (metric.percentiles.CI95_lower >= 75
-          && metric.actualCount >= metric.minForAward) {
+        else if (metric.percentiles.CI95_lower >= 75 && metric.actualCount >= metric.minForAward) {
           return true
         }
         else {

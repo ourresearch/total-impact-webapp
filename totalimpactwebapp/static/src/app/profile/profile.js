@@ -6,6 +6,47 @@ angular.module("profile", [
 ])
 
 
+.factory('UserProfile', function(UsersAbout, security){
+  return {
+    filterProducts: function(products, filterBy) {
+      var productsWithMetrics = _.filter(products, function(x){return _.size(x.metrics); });
+      var productsWitoutMetrics = _.filter(products, function(x){return x.metrics && _.size(x.metrics)==0; });
+      var pseudoProducts = _.filter(products, function(x){return !x.metrics; });
+
+      if (filterBy == "withMetrics") {
+        return productsWithMetrics;
+      }
+      else if (filterBy === "withoutMetrics") {
+        return productsWitoutMetrics;
+      }
+      else {
+        return productsWithMetrics.concat(productsWitoutMetrics);
+      }
+    },
+    getUser: function($scope, slug) {
+      console.log("getUser")
+      return UsersAbout.get(
+        {
+          id: slug,
+          idType: "url_slug"
+        },
+        function(resp) {}, // success callback
+        function(resp) {
+          if (resp.status == 404) {
+            $scope.userExists = false;
+            $scope.slug = slug;
+          }
+        }
+      );
+    },
+    slugIsCurrentUser: function(slug){
+      if (!security.currentUser) return false;
+      return (security.currentUser.url_slug == slug);
+    }
+  }
+})
+
+
 
 .config(['$routeProvider', function ($routeProvider) {
 
@@ -14,64 +55,37 @@ angular.module("profile", [
     controller:'ProfileCtrl'
   });
 
-  $routeProvider.when("/foo", {
-    template:'<h1>I am the foo page. Groovy!</h1>'
-  });
-
-
 }])
 
 
 
 
 
-.controller('ProfileCtrl', function ($scope, $routeParams, $http, security, UsersAbout, UsersProducts)
+.controller('ProfileCtrl', function ($scope, $routeParams, $http, UsersProducts, Product, UserProfile)
   {
     var userSlug = $routeParams.url_slug;
     $scope.userExists = true;
     $scope.showProductsWithoutMetrics = false;
+    $scope.filterProducts =  UserProfile.filterProducts;
+    $scope.user = UserProfile.getUser($scope, userSlug);
+    $scope.currentUserIsProfileOwner = UserProfile.slugIsCurrentUser(userSlug);
 
-    $scope.getProducts = function(type) {
 
-      var productsWithMetrics = _.filter($scope.products, function(x){return _.size(x.metrics) })
-      var productsWitoutMetrics = _.filter($scope.products, function(x){return x.metrics && _.size(x.metrics)==0 })
-      var pseudoProducts = _.filter($scope.products, function(x){return !x.metrics })
 
-      if (type == "withMetrics") {
-        return productsWithMetrics
-      }
-      else if (type === "withoutMetrics") {
-        return productsWitoutMetrics
-      }
-      else {
-        return productsWithMetrics.concat(productsWitoutMetrics);
-      }
+    $scope.getBadgeCount = function(product) {
+      return Product.getBadgeCount(product) * -1;
     }
 
-
-    $scope.user = UsersAbout.get({
-      id: userSlug,
-      idType: "url_slug"
-    },
-    function(resp) {}, // success callback
-    function(resp) {
-      if (resp.status == 404) {
-        $scope.userExists = false;
-        $scope.slug = userSlug;
-      }
+    $scope.getGenre = function(product) {
+      return Product.getGenre(product);
     }
-    )
 
     $scope.products = UsersProducts.query({
       id: userSlug,
+      includeHeadingProducts: true,
       idType: "url_slug"
-    })
+    });
 
-    $scope.currentUserIsProfileOwner = function(){
-      if (!security.currentUser) return false
-      return (security.currentUser.url_slug == userSlug)
-    }
-
-})
+});
 
 

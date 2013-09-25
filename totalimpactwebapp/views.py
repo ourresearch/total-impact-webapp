@@ -13,7 +13,7 @@ from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
 
 
 from totalimpactwebapp import app, util, db, login_manager, forms
-from totalimpactwebapp.user import User, create_user, get_user_from_id
+from totalimpactwebapp.user import User, create_user, get_user_from_id, make_genre_heading_products
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 import newrelic.agent
@@ -305,6 +305,8 @@ def user_products_view_and_modify(id):
 
     if request.method == "GET":
         resp = user.products
+        if request.args.get("include_heading_products") in [1, "true", "True"]:
+            resp += make_genre_heading_products(resp)
 
     elif request.method == "POST":
         # you can't add/create stuff here, just refresh extant products.

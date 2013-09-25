@@ -319,6 +319,28 @@ def get_user_from_id(id, id_type="userid", include_items=True):
     return user
 
 
+def make_genre_heading_products(products):
+    genre_names = set([product["biblio"]["genre"] for product in products])
+
+
+    print("genre names:", genre_names)
+
+    genre_heading_products = []
+    for genre_name in genre_names:
+        heading_product = {
+            "isHeading": True,
+            "headingDimension": "genre",
+            "headingValue": genre_name
+        }
+        genre_heading_products.append(heading_product)
+
+
+    print("genre_heading_products", genre_heading_products)
+
+    return genre_heading_products
+
+
+
 
 
 def _make_id(len=6):
