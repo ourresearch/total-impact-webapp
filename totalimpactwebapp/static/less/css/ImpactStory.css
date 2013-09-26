@@ -7990,24 +7990,52 @@ div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.m
   float: right;
 }
 div.signup-header {
-  padding: 20px;
   background: #fff;
   border-bottom: 4px solid #ff4e00;
+  position: absolute;
+  height: 80px;
+  top: 0;
+  width: 100%;
+  background: #ff4e00;
 }
-div.signup-header a.brand {
-  width: 300px;
-  display: block;
-  margin: 10px auto 20px;
-}
-div.signup-header ol.signup-steps {
-  text-align: center;
-  padding: 0;
+div.signup-header h1 {
+  position: absolute;
+  left: 30px;
+  top: 10px;
   margin: 0;
 }
+div.signup-header h1 span.text {
+  color: #fff;
+  font-size: 19px;
+  margin-left: 4px;
+  text-transform: uppercase;
+  vertical-align: 4px;
+}
+div.signup-header h1 a.brand {
+  float: left;
+}
+div.signup-header h1 a.brand img {
+  width: 200px;
+}
+div.signup-header ol.signup-steps {
+  padding: 0;
+  margin: 10px auto;
+  padding-left: 20px;
+  width: 500px;
+}
 div.signup-header ol.signup-steps li {
-  display: inline;
+  display: inline-block;
   list-style-type: none;
-  margin: 0 20px 0 20px;
+  padding: 20px;
+}
+div.signup-header span.next-button {
+  position: absolute;
+  text-transform: uppercase;
+  font-size: 19px;
+  font-weight: bold;
+  top: 20px;
+  right: 30px;
+  color: #fff;
 }
 div.signup {
   background: transparent;

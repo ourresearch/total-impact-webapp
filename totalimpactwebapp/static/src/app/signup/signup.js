@@ -1,39 +1,65 @@
 angular.module( 'signup', [
     ])
+  .factory("Signup", function($rootScope){
+    return {
+      init: function(){
+        $rootScope.showHeaderAndFooter = false;
+      },
+      signupSteps: function(){
+        return [
+          "Name",
+          "Url",
+          "products",
+          "register",
+          "create"
+        ]
+      }
+    }
+  })
 
-    .config(['$routeProvider', function($routeProvider) {
-        $routeProvider
+.config(['$routeProvider', function($routeProvider) {
+  $routeProvider
+    .when('/signup/name', {
+        templateUrl: 'signup/signup-name.tpl.html',
+        controller: 'signupNameCtrl'
+    })
+    .when('/signup/url', {
+        templateUrl: 'signup-url.tpl.html',
+        controller: 'signupUrlCtrl'
+    })
+    .when('/signup/products', {
+        templateUrl: 'signup-products.tpl.html',
+        controller: 'signupProductsCtrl'
+    })
+    .when('/signup/register', {
+        templateUrl: 'register.tpl.html',
+        controller: 'signupRegisterCtrl'
+    })
+    .when('/signup', {redirectTo: '/signup/name'});
 
-            .when('/name', {
-                templateUrl: 'user-real-name.tpl.html',
-                controller: 'nameCtrl'
-            })
-            .when('/import-products', {
-                templateUrl: 'import-products.tpl.html',
-                controller: 'importProductsCtrl'
-            })
-            .when('/register', {
-                templateUrl: 'register.tpl.html',
-                controller: 'registerCtrl'
-            })
+}])
 
-            .otherwise({redirectTo: '/name'});
+  .controller('signupHeaderCtrl', function($scope, Signup){
+      $scope.signupSteps = Signup.signupSteps();
+  })
 
-    }])
+  .controller( 'signupNameCtrl', function ( $scope, Signup ) {
+     Signup.init();
+   })
 
-    .controller( 'nameCtrl', function signupCtrl ( $scope ) {
-        $scope.thisControllerBeRunning = true
+  .controller( 'signupUrlCtrl', function ( $scope ) {
+      $scope.thisControllerBeRunning = true
 
-     })
+   })
 
-    .controller( 'importProductsCtrl', function importProductsCtrl ( $scope ) {
-        $scope.thisControllerBeRunning = true
+  .controller( 'signupProductsCtrl', function ( $scope ) {
+      $scope.thisControllerBeRunning = true
 
-     })
+   })
 
-    .controller( 'registerCtrl', function registerCtrl ( $scope ) {
-        $scope.thisControllerBeRunning = true
+  .controller( 'signupRegisterCtrl', function ( $scope ) {
+      $scope.thisControllerBeRunning = true
 
-     })
+   })
 
 ;

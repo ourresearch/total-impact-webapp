@@ -32,10 +32,11 @@ angular.module('app').run(['security', function(security) {
 }]);
 
 
-angular.module('app').controller('AppCtrl', function($scope, i18nNotifications, localizedMessages) {
+angular.module('app').controller('AppCtrl', function($scope, i18nNotifications, localizedMessages, $rootScope) {
 
   $scope.notifications = i18nNotifications;
   $scope.loading = {};
+  $rootScope.showHeaderAndFooter = true;
 
   $scope.removeNotification = function (notification) {
     i18nNotifications.remove(notification);

@@ -1,23 +1,55 @@
 div.signup-header {
-   padding: 20px;
    background: #fff;
    border-bottom: 4px solid @linkColor;
-   a.brand {
-      width: 300px;
-      display: block;
-      margin: 10px auto 20px;
+   position:  absolute;
+   height: 80px;
+   top: 0;
+   width:  100%;
+   background: @linkColor;
+   h1 {
+      position: absolute;
+      left: 30px;
+      top: 10px;
+      margin: 0;
+
+      span.text {
+         color:  #fff;
+         font-size: 19px;
+         margin-left: 4px;
+         text-transform: uppercase;
+         vertical-align: 4px;
+      }
+      a.brand {
+         float:left;
+         img {
+            width:  200px;
+         }
+      }
+
    }
 
    ol.signup-steps {
-      text-align: center;
       padding: 0;
-      margin: 0;
+      margin: 10px auto;
+      padding-left: 20px;
+      width: 500px;
+
       li {
-         display:inline;
+         display:inline-block;
          list-style-type: none;
-         margin: 0 20px 0 20px;
+         padding: 20px;
       }
    }
+   span.next-button {
+      position: absolute;
+      text-transform: uppercase;
+      font-size: 19px;
+      font-weight: bold;
+      top: 20px;
+      right:  30px;
+      color: #fff;
+   }
+
 }
 
 div.signup {
