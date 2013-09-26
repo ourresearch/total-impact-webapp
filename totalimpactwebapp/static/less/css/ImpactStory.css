@@ -7989,45 +7989,36 @@ div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.m
 div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta img {
   float: right;
 }
-body.signup {
-  background: #fafafa;
-}
-body.signup div.main-header {
-  display: none;
-}
-body.signup div#footer {
-  display: none;
-}
-body.signup div.signup-header {
+div.signup-header {
   padding: 20px;
   background: #fff;
   border-bottom: 4px solid #ff4e00;
 }
-body.signup div.signup-header a.brand {
+div.signup-header a.brand {
   width: 300px;
   display: block;
   margin: 10px auto 20px;
 }
-body.signup div.signup-header ol.signup-steps {
+div.signup-header ol.signup-steps {
   text-align: center;
   padding: 0;
   margin: 0;
 }
-body.signup div.signup-header ol.signup-steps li {
+div.signup-header ol.signup-steps li {
   display: inline;
   list-style-type: none;
   margin: 0 20px 0 20px;
 }
-body.signup div.signup {
+div.signup {
   background: transparent;
 }
-body.signup div.signup div.control-group.name {
+div.signup div.control-group.name {
   padding-top: 80px;
   width: 500px;
   margin: 0 auto;
   position: relative;
 }
-body.signup div.signup div.control-group.name input {
+div.signup div.control-group.name input {
   width: 486px;
   font-size: 30px;
   line-height: 1;
@@ -8035,11 +8026,11 @@ body.signup div.signup div.control-group.name input {
   padding-top: 15px;
   margin: 20px 0 0 0;
 }
-body.signup div.signup div.control-group.name a.btn {
+div.signup div.control-group.name a.btn {
   margin-top: 20px;
   width: 45%;
 }
-body.signup div.signup div.control-group.name a.btn.next {
+div.signup div.control-group.name a.btn.next {
   float: right;
 }
 body.can-not-edit .editable-name span.instr {

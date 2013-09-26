@@ -31,18 +31,15 @@
 
    <!-- Load stylesheets -->
    <!-------------------------------------------------------------------------->
-   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
    <!--[if lt IE 9]>
    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
    <![endif]-->
 
    <link href='http://fonts.googleapis.com/css?family=Rokkitt:400,700' rel='stylesheet' type='text/css' />
-
    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
 
    <!-- stylesheet is in less/css dir; it's a hack to get around limitations of CodeKit -->
    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='less/css/ImpactStory.css') }}" />
-
    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='dist/img/favicon.ico') }}" />
 
 
@@ -62,295 +59,18 @@
 </head>
 
 
-<body ng-controller="AppCtrl" class="{{ body_classes|join(" ")|trim()|replace("  ", " ") }}">
+<body ng-controller="AppCtrl">
 
-<div class="staging-warning">
-   <div class="content">
-      <span>staging, yo</span>
-   </div>
-</div>
+<div class="staging-warning"><div class="content"><span>staging, yo</span></div></div>
 
-<div ng-include="'header.tpl.html'"></div>
+<div ng-include="'header.tpl.html'" ng-show="!hideHeaderAndFooter"></div>
 <div ng-include="'notifications.tpl.html'" class="container-fluid" ng-show="notifications.getCurrent().length"></div>
-
 <div id="container">
    <div ng-view class="main-view"></div>
 </div>
+<div ng-include="'footer.tpl.html'" ng-show="!hideHeaderAndFooter"></div>
 
 
-<div id="footer">
-   <div class="wrapper">
-      <div id="footer-branding" class="footer-col">
-         <a class="brand" href="/"><img src="/static/dist/img/impactstory-logo.png" alt="ImpactStory" /></a>
-
-         <p>We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>
-         <p class="license">
-            <!--<a rel="license" href="http://creativecommons.org/licenses/by/2.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/2.0/80x15.png" /></a>-->
-            <span class="text">Except where otherwise noted, content on this site is licensed under the
-               <a rel="license" href="http://creativecommons.org/licenses/by/2.0/">CC-BY license</a>.
-            </span>
-         </p>
-      </div>
-
-
-      <div id="footer-follow" class="footer-col">
-         <h3>Follow</h3>
-         <ul>
-            <li><a href="http://twitter.com/#!/ImpactStory">Twitter</a></li>
-            <li><a href="http://twitter.com/#!/ImpactStory_now">Site status</a></li>
-            <li><a href="http://blog.impactstory.org">Blog</a></li>
-            <li><a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">Newsgroup</a></li>
-            <li><a href="https://github.com/total-impact">GitHub</a></li>
-
-         </ul>
-      </div>
-
-      <div id="footer-about" class="footer-col">
-         <h3>About</h3>
-         <ul>
-            <li><a href="/about">About us</a></li>
-            <li><a href="http://feedback.impactstory.org" target="_blank">Feedback</a></li>
-            <li>
-               <a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="166950">Support</a>
-            </li>
-
-
-            <li><a href="/api-docs">API/embed</a></li>
-            <li><a href="/faq">FAQ</a></li>
-            <!--<li><a href="/about#contact">Contact us</a></li>-->
-            <li><a href="/faq#tos">Terms of use</a></li>
-         </ul>
-      </div>
-
-
-      <div id="footer-funders" class="footer-col">
-         <h3>Supported by</h3>
-         <a href="http://sloan.org/" id="footer-sloan-link">
-            <img src="{{ url_for('static', filename='dist/img/sloan-logo.png') }}"  width="200"/>
-         </a>
-      </div>
-
-
-   </div>
-</div> <!-- end footer -->
-
-
-<!------------------------------------------------------------------------------
-Modals
-HTML for modal windows that bootstrap will pop up
-Models here are used in *multiple* templates; otherwise they should go just
-on the template that uses 'em.
-------------------------------------------------------------------------------->
-
-<div id="orcid-help" class="modal hide fade">
-   <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h3>Import Articles from ORCID</h3>
-   </div>
-   <div class="modal-body">
-      <p>Just enter your <a href="http://about.orcid.org/">ORCID ID</a> (for example, <em>0000-0001-5109-3700</em>).  We'll import the public <a href="http://support.orcid.org/knowledgebase/articles/118795">publication Works</a> associated with your ORCID record.</p>
-      <p>If you don't have an ORCID ID yet, it only takes a few minutes to <a href="http://orcid.org/register">register for one</a> and automatically add your publications to it.</p>
-      <p>ImpactStory only imports <strong>public</strong> publications.  If your Works are currently listed in your ORCID profile as "limited" or "private", you can change them to "public" on your <a href="http://orcid.org/works-update">ORCID Works update</a> page.</p>
-   </div>
-</div>
-
-<div id="google-scholar-help" class="modal hide fade">
-   <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h3>Import Articles from Google Scholar Profile</h3>
-   </div>
-   <div class="modal-body">
-      <ol>
-         <li>Visit your Google Scholar Citations <a href="http://scholar.google.com/citations?hl=en">author profile</a>.  If you don't have one yet, <a href="http://scholar.google.com/intl/en/scholar/citations.html">make one</a>.</li>
-         <li>In the green header above your articles you will see a white drop down box that says <strong>Actions</strong>.  Change this to <strong>Export</strong>. </li>
-         <li>You will be redirected to the Export Articles page. Click <strong>Export all my articles</strong> (leave the file format as "BibTeX"). Save the file.</li>
-         <li>Return to ImpactStory.  On the create collections page, click <strong>Select BibTeX file</strong> and upload the previously saved file.  Once the file is 100% loaded, name your collection and click the <strong>go!</strong> button.</li>
-      </ol>
-
-   </div>
-</div>
-
-<div id="bibtex-fail-help" class="modal hide fade error">
-   <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h3>Well, this is embarrassing.</h3>
-   </div>
-   <div class="modal-body">
-      <p>Looks like we couldn't correctly process your file. This probably means it has characters or formatting we've never seen before; we've logged the error and will start fixing it right away.</p>
-      <p>If you take a second to fill out a support ticket, we'll email you a link to your finished report just as soon as we fix the bug.</p>
-      <p>Thanks for your patience; as an early user of our beta release, you're helping us make ImpactStory better!</p>
-   </div>
-   <div class="modal-footer">
-      <a class="btn">Dismiss</a>
-      <a class="btn btn-danger uservoice">Submit a support ticket</a>
-
-   </div>
-</div>
-
-
-
-
-<!------------------------------------------------------------------------------
-Javascript templates
-These are for rendering items with javascript using Mustache
-------------------------------------------------------------------------------->
-{% raw %}
-<div id="templates">
-   <script id="title" class="partial" type="text/html">
-      <h5 class="{{activeAudiences}}">
-         <span class="title">{{title}}</span>
-         {{#url}}
-         <a class="linkout url title" target="_blank" href="{{ url }}"><span class="help-text">linkout</span></a>
-         {{/url}}
-      </h5>
-   </script>
-
-   <script id="biblio_dataset" type="text/html">
-      {{>title}}
-      {{#year}}
-      <span class="year">({{ year }})</span>
-      {{/year}}
-      <span class="authors">{{ authors }}</span>
-      <span class="authors">{{ authors_literal }}</span>
-      <span class="repo">{{ repository }}</span>
-   </script>
-   <script id="biblio_article" type="text/html">
-      {{>title}}
-      {{#year}}
-      <span class="year">({{ year }})</span>
-      {{/year}}
-      <span class="authors">{{ authors }}</span>
-      <span class="authors">{{ authors_literal }}</span>
-      <span class="repo">{{ journal }}</span>
-   </script>
-   <script id="biblio_webpage" type="text/html">
-      {{>title}}
-   </script>
-   <script id="biblio_slides" type="text/html">
-      {{>title}}
-      <span class="repo">Slideshare</span>
-   </script>
-   <script id="biblio_software" type="text/html">
-      {{>title}}
-      <span class="year">({{ year }})</span>
-      <span class="descr">{{ description }}</span>
-      <span class="repo">GitHub</span>
-   </script>
-   <script id="biblio_unknown" type="text/html">
-      {{>title}}
-   </script>
-
-   <script id="displayItem" type="text/html">
-      <li class="item" id="{{ _id }}">
-         <div class="item-controls">
-            <a href="#" class="item-delete-button"><span class="help-text">remove</span> <span class="x">&times;</span></a>
-            <a href="#" class="item-expand-button">click to expand</a>
-         </div>
-         <div class="item-header">
-            <div class="biblio"></div>
-            <div class="badges"></div>
-         </div>
-         <div class="zoom"><a href="#" class="item-help"><span class="icon help"></span>What do these numbers mean?</a></div>
-      </li>
-   </script>
-
-   <!-- TODO: include from js-template-badges.html -->
-   <script id="badges" type="text/html">
-      {% endraw %}
-      {% include "js-template-badges.html" %}
-      {% raw %}
-   </script>
-
-   <script id="zoomTable" type="text/html">
-      {{#audiences}}
-      <div class="audience {{ audience }}">
-         <!--<h5 >{{ audience }}</h5>-->
-         <ul class="engagement-types">{{#cells}}
-            <li class="engagement-type {{engagementType}}">
-               <h6>
-                  <span class="descr">
-                     <span class="engagement-type">{{engagementType}}</span> by
-                     <span class="audience">{{ audience }}</span>
-                  </span>
-               </h6>
-               <ul class="metrics">{{#metrics}}
-                  <li>
-                     <div class="meta">
-                        <img src="{{ static_meta.icon }}" width="16" height="16" border="0" rel="tooltip" title="<strong>{{static_meta.provider}} {{static_meta.display_name}}</strong>: {{static_meta.description}}">
-                        {{#provenance_url}}
-                        <a class="value-and-name" target="_blank" href="{{provenance_url}}">
-                           <span class="metric-value value">{{ values.raw }}</span>
-                           <span class="metric-name">{{ static_meta.display_name }}</span>
-                        </a>
-                        {{/provenance_url}}
-
-                        <!-- sometimes, like with facebook, there's no url. then show a span, not a link -->
-                        {{^provenance_url}}
-                        <span class="value-and-name">
-                           <span class="metric-value value">{{ values.raw }}</span>
-                           <span class="metric-name">{{ static_meta.display_name }}</span>
-                        </span>
-                        {{/provenance_url}}
-                     </div>
-
-                     <div class="line">
-                        <!-- if we've got ranges, show 'em, along sizeable div to show range -->
-                        {{#percentiles}}
-                        <div class="metric-perc-range ci" rel="tooltip" title='Percentile range for this metric relative to a random set of items published the same year'>
-                           <span class="start endpoint"><span class="value">{{CI95_lower}}</span></span>
-                           <span class="bar"></span>
-                           <span class="end endpoint"><span class="value">{{CI95_upper}}</span></span>
-                        </div>
-                        {{/percentiles}}
-
-                        <!-- if no ranges, show an NA -->
-                        {{^percentiles}}
-                        <div class="percentile-fail">
-                           <span class="no-perc">no percentile data.</span>
-                        </div>
-                        {{/percentiles}}
-                     </div>
-                  </li>
-                  {{/metrics}}</ul>
-            </li>
-            {{/cells}}</ul>
-      </div>
-      {{/audiences}}
-   </script>
-
-
-
-
-   <script id="genreTemplate" type="text/html">
-      <div class="genre {{name}}">
-         <h3><span>{{name}}</span></h3>
-         <ul class="items active">
-         </ul>
-         <h4 class="plus-more">
-            <span class="icon"></span><span class="value"></span> items with no metrics found
-            <span class="show-hide">(show)</span>
-         </h4>
-         <ul class="items inactive">
-         </ul>
-      </div>
-   </script>
-
-   <script id="bibtexUploadDoneMsg" type="text/html">
-      <span class='items-added-msg'>articles added
-         <span class='from'>{{numFailedItems}} couldn't be added because of
-            <a class="help-text" rel="clickover"
-               data-original-title="Missing DOIs?"
-               data-content="DOIs are unique IDs for articles. Sometimes we can't find them; other times (especially for conference papers), they don't exist at all. Either way, we can't import. Hang in there, though: we're rolling out new import methods soon!">
-               missing DOIs.
-            </a>
-         </span>
-      </span>
-   </script>
-
-
-
-</div>
-{% endraw %}
 
 
 <script src="{{ url_for('static', filename='js/bottom-of-page.js') }}" type="text/javascript"></script>

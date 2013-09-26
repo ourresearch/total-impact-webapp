@@ -828,23 +828,6 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/settings.less" : {
-      "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/settings.less",
-      "outputAbbreviatedPath" : "\/css\/settings.css",
-      "outputPathIsSetByUser" : 0,
-      "strictUnits" : 0,
-      "relativeURLS" : 0,
-      "ignore" : 1,
-      "strictImports" : 0,
-      "ignoreWasSetByUser" : 0,
-      "shouldRunBless" : 0,
-      "hidden" : 0,
-      "strictMath" : 0,
-      "outputStyle" : 0,
-      "fileType" : 1,
-      "debugStyle" : 0
-    },
     "\/main.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/main.less",
@@ -862,10 +845,10 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/product.less" : {
+    "\/settings.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/product.less",
-      "outputAbbreviatedPath" : "\/css\/product.css",
+      "inputAbbreviatedPath" : "\/settings.less",
+      "outputAbbreviatedPath" : "\/css\/settings.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -896,10 +879,10 @@
       "fileType" : 1,
       "debugStyle" : 0
     },
-    "\/variables.less" : {
+    "\/product.less" : {
       "ieCompatibility" : 1,
-      "inputAbbreviatedPath" : "\/variables.less",
-      "outputAbbreviatedPath" : "\/css\/variables.css",
+      "inputAbbreviatedPath" : "\/product.less",
+      "outputAbbreviatedPath" : "\/css\/product.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,
@@ -917,6 +900,23 @@
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/bootstrap\/popovers.less",
       "outputAbbreviatedPath" : "\/bootstrap\/css\/popovers.css",
+      "outputPathIsSetByUser" : 0,
+      "strictUnits" : 0,
+      "relativeURLS" : 0,
+      "ignore" : 1,
+      "strictImports" : 0,
+      "ignoreWasSetByUser" : 0,
+      "shouldRunBless" : 0,
+      "hidden" : 0,
+      "strictMath" : 0,
+      "outputStyle" : 0,
+      "fileType" : 1,
+      "debugStyle" : 0
+    },
+    "\/variables.less" : {
+      "ieCompatibility" : 1,
+      "inputAbbreviatedPath" : "\/variables.less",
+      "outputAbbreviatedPath" : "\/css\/variables.css",
       "outputPathIsSetByUser" : 0,
       "strictUnits" : 0,
       "relativeURLS" : 0,

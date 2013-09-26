@@ -23,6 +23,20 @@ angular.module('resources.users',['ngResource'])
       }
     )
   })
+  .factory('UsersProduct', function ($resource) {
+
+    return $resource(
+      "/user/:id/product/:tiid?id_type=:idType",
+      {
+        idType: "userid"
+      },
+      {
+        update:{
+          method: "PUT"
+        }
+      }
+    )
+  })
 
   .factory('UsersAbout', function ($resource) {
 
