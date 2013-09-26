@@ -39,7 +39,6 @@ angular.module('settings', [
     }
 
     $scope.testClick = function(formCtrl){
-      console.log("click!", formCtrl)
       formCtrl.$setPristine()
     }
 

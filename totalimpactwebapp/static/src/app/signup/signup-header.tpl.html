@@ -3,9 +3,12 @@
       <span class="text">signup</span>
    </h1>
    <ol class="signup-steps">
-      <li ng-repeat="stepName in signupSteps">{{ stepName }}</li>
+      <li ng-repeat="stepName in signupSteps"
+          class="{{ stepName }}"
+          ng-class="{current: isStepCurrent(stepName), completed: isStepCompleted(stepName)}">
+         {{ stepName }}
+      </li>
    </ol>
-   <span class="next-button">Next <i class="icon-arrow-right"></i></span>
 
 
 </div>

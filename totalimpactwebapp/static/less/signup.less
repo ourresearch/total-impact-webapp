@@ -30,42 +30,43 @@ div.signup-header {
 
    ol.signup-steps {
       padding: 0;
-      margin: 10px auto;
+      margin: 23px auto;
       padding-left: 20px;
-      width: 500px;
+      width: 425px;
 
       li {
          display:inline-block;
          list-style-type: none;
-         padding: 20px;
+         padding: 5px 20px;
+         &.creating {display: none;}
+         &.current {
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color:  #fff;
+         }
+         &.completed {
+//            text-decoration: line-through;
+//            opacity:.5;
+            opacity: .4;
+            color: #fff;
+         }
       }
-   }
-   span.next-button {
-      position: absolute;
-      text-transform: uppercase;
-      font-size: 19px;
-      font-weight: bold;
-      top: 20px;
-      right:  30px;
-      color: #fff;
    }
 
 }
 
-div.signup {
+form.signup {
    background: transparent;
-   div.control-group.name {
-      padding-top: 80px;
-      width: 500px;
-      margin: 0 auto;
-      position: relative;
-      input {
+   width:  400px;
+   margin: 300px auto;
+   div.form-group {
+      input.form-control {
          width: 486px;
-         font-size: 30px;
+         font-size: 25px;
          line-height: 1;
-         height: 40px;
+         height: 55px;
          padding-top: 15px;
-         margin: 20px 0 0 0;
       }
       a.btn {
          margin-top: 20px;
@@ -73,6 +74,32 @@ div.signup {
          &.next {
             float:right;
          }
+      }
+   }
+   button.next-button {
+      @next-button-size: 100px;
+      position: fixed;
+      height: @next-button-size;
+      width: @next-button-size + 5px;
+      .border-radius(0, 0, @next-button-size / 2, @next-button-size / 2);
+      border: none;
+      background: #eee;
+      text-transform: uppercase;
+      font-size: @next-button-size / 6;
+      font-weight: bold;
+      top: 50%;
+      margin-top: @next-button-size / -2;
+      right:  0;
+      color: #fff;
+      padding-top: 7px;
+      padding-left: @next-button-size / 4;
+      cursor: pointer;
+      &.enabled {
+         &:hover {
+            width:  @next-button-size + 10px;
+            text-decoration: none;
+         }
+         background:  @linkColor;
       }
    }
 }

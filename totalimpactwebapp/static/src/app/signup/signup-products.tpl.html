@@ -1,1 +1,16 @@
-<h2 class="signup-product">I am adding products!</h2>
+<div ng-include="'signup/signup-header.tpl.html'"></div>
+
+<form class="signup name form-horizontal" name="signupForm">
+   <h2>Products stuff...</h2>
+
+
+   <button type="submit"
+           class="next-button"
+           ng-click="goToNextStep()"
+           ng-class="{'next-button': true, enabled: signupForm.$valid}"
+           ng-disabled="signupForm.$invalid">
+      <span class="text">Next</span>
+      <i class="icon-arrow-right"></i>
+   </button>
+
+</form>
