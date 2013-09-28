@@ -8044,7 +8044,15 @@ div.signup-header ol.signup-steps li.completed {
 form.signup {
   background: transparent;
   width: 400px;
-  margin: 300px auto;
+  margin: 200px auto;
+}
+form.signup div.intro {
+  margin-bottom: 50px;
+  color: #999;
+  line-height: 1.8;
+  font-size: 22px;
+  width: 700px;
+  margin-left: -100px;
 }
 form.signup div.form-group input.form-control {
   width: 486px;

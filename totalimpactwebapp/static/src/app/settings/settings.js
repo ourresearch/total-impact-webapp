@@ -47,7 +47,7 @@ angular.module('settings', [
     }
 
     var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
-                console.log(currentPageDescr)
+    console.log(currentPageDescr)
 
     $scope.resetUser()
     $scope.loading = {};
