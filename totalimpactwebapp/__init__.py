@@ -21,6 +21,7 @@ app = Flask(__name__)
 # http://flask.pocoo.org/mailinglist/archive/2011/2/27/re-automatic-removal-of-trailing-slashes/#043b1a0b6e841ab8e7d38bd7374cbb58
 app.url_map.strict_slashes = False
 
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
@@ -34,13 +35,13 @@ login_manager.setup_app(app)
 # Production should be PACK_ASSETS=True
 app.config["ASSETS_DEBUG"] = (os.getenv("PACK_ASSETS") != "True")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 # set up Flask-DebugToolbar
 if (os.getenv("FLASK_DEBUG", False) == "True"):
     logger.info("Setting app.debug=True; Flask-DebugToolbar will display")
     app.debug = True
+    app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False    
 toolbar = DebugToolbarExtension(app)
 
 # set up views
