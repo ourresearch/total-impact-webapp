@@ -1,3 +1,47 @@
-<div class="signup-input url">
-   <h2>URL stuff...</h2>
+<div class="signup-input url" ng-controller="signupUrlCtrl">
+   <div class="intro"><br>Okay, {{ user.firstName }}, your next step is to pick your profile's custom URL. (Don't worry, you can change this later, too):</div>
+   
+   <div class="form-group custom-url"
+        ng-model="user.url_slug"
+        ng-class="{ 'has-error':  signupForm.url_slug.$invalid && signupForm.url_slug.$dirty && !loading['user.url_slug'],
+                    'has-success': signupForm.url_slug.$valid && !loading['user.url_slug']}">
+
+      <div class="controls input-group">
+         <span class="input-group-addon">http://impactstory.org/</span>
+         <input ng-model="user.url_slug"
+                name="url_slug"
+                class="form-control"
+                required
+                data-require-unique
+                data-check-initial-value="true"
+                ng-pattern="/^\w+$/"
+                 />
+
+      </div>
+      <div class="help-info">
+         <spinner loading="user.url_slug" msg="Checking"></spinner>
+
+         <div class="help-block error"
+              ng-show="signupForm.url_slug.$error.pattern
+               && signupForm.url_slug.$dirty
+               && !loading['user.url_slug']">
+            Sorry, this URL has invalid characters.<br> You can only use numbers or Latin letters (without diacritics).
+         </div>
+
+         <div class="help-block error"
+              ng-show="signupForm.url_slug.$error.requireUnique
+               && signupForm.url_slug.$dirty
+               && !loading.user.url_slug">
+            Sorry, someone else is using that URL.<br>Try changing it to make it more unique.
+         </div>
+         <div class="help-block success"
+              ng-show="signupForm.url_slug.$valid
+               && signupForm.url_slug.$dirty
+               && !loading['user.url_slug']">
+            This URL looks good!
+         </div>
+      </div>
+
+
+   </div>
 </div>

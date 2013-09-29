@@ -6223,6 +6223,7 @@ form div.help-block {
   font-size: 16px;
   margin-top: 12px;
   display: block;
+  color: #999;
   float: left;
 }
 form div.buttons-group.save div.working {
@@ -8043,7 +8044,7 @@ div.signup-header ol.signup-steps li.completed {
 }
 form.signup {
   background: transparent;
-  width: 400px;
+  width: 700px;
   margin: 200px auto;
 }
 form.signup div.intro {
@@ -8051,15 +8052,14 @@ form.signup div.intro {
   color: #999;
   line-height: 1.8;
   font-size: 22px;
-  width: 700px;
-  margin-left: -100px;
 }
 form.signup div.form-group input.form-control {
-  width: 486px;
   font-size: 25px;
   line-height: 1;
   height: 55px;
   padding-top: 15px;
+  width: 400px;
+  margin: 0 auto;
 }
 form.signup div.form-group a.btn {
   margin-top: 20px;
@@ -8067,6 +8067,36 @@ form.signup div.form-group a.btn {
 }
 form.signup div.form-group a.btn.next {
   float: right;
+}
+form.signup div.form-group.custom-url {
+  margin-top: 75px;
+}
+form.signup div.form-group.custom-url .input-group {
+  margin-right: 15px;
+  width: 300px;
+  margin: 0 auto;
+}
+form.signup div.form-group.custom-url .input-group input.form-control {
+  width: 300px;
+}
+form.signup div.form-group.custom-url .input-group .input-group-addon {
+  padding-top: 15px;
+}
+form.signup div.form-group.custom-url .input-group input.form-control {
+  padding-top: 10px;
+}
+form.signup div.form-group.custom-url .help-info {
+  margin-top: 20px;
+  text-align: center;
+}
+form.signup div.form-group.custom-url .help-info i {
+  margin-right: 10px;
+}
+form.signup div.form-group.custom-url .help-info .help-block {
+  font-size: 18px;
+  clear: both;
+  margin: 0 auto;
+  float: none;
 }
 form.signup button.next-button {
   position: fixed;

@@ -1,4 +1,5 @@
 angular.module( 'signup', [
+    'services.slug'
     ])
   .factory("Signup", function($rootScope, $location){
 
@@ -36,7 +37,6 @@ angular.module( 'signup', [
       },
       goToNextSignupStep: function() {
         var path = "/signup/" + signupSteps[getIndexOfCurrentStep() + 1]
-        console.log("redirecting to this path: ", path)
         return $location.path(path)
       },
       isBeforeCurrentSignupStep: function(stepToCheck) {
@@ -47,6 +47,13 @@ angular.module( 'signup', [
         return "signup/signup-" + getCurrentStep() + '.tpl.html';
       }
     }
+  })
+
+  .factory("NewUser", function(){
+    var newUser = {}
+    return {}
+
+
   })
 
 .config(['$routeProvider', function($routeProvider) {
@@ -60,7 +67,7 @@ angular.module( 'signup', [
 
 }])
 
-  .controller('signupCtrl', function($scope, Signup){
+  .controller('signupCtrl', function($scope, Signup, NewUser){
     Signup.init()
 
     $scope.signupSteps = Signup.signupSteps();
@@ -68,8 +75,11 @@ angular.module( 'signup', [
     $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
     $scope.goToNextStep = Signup.goToNextSignupStep;
 
+    $scope.user = NewUser
+
     $scope.include =  Signup.getTemplatePath();
     $scope.inputCtrl =  Signup.getTemplatePath();
+    $scope.pristineOk =  true;
 
 
   })
@@ -77,7 +87,12 @@ angular.module( 'signup', [
   .controller( 'signupNameCtrl', function ( $scope, Signup ) {
   })
 
-  .controller( 'signupUrlCtrl', function ( $scope, Signup ) {
+  .controller( 'signupUrlCtrl', function ( $scope, Signup, NewUser, Slug) {
+
+    NewUser.url_slug = Slug.make(NewUser.firstName, NewUser.surname)
+    console.log($scope.signupForm)
+
+
   })
 
   .controller( 'signupProductsCtrl', function ( $scope, Signup ) {

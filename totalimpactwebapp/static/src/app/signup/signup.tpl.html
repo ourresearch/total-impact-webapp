@@ -18,8 +18,8 @@
    <button type="submit"
            class="next-button"
            ng-click="goToNextStep()"
-           ng-class="{'next-button': true, enabled: signupForm.$valid}"
-           ng-disabled="signupForm.$invalid">
+           ng-class="{'next-button': true, enabled: signupForm.$valid || signupForm.pristineOk}"
+           ng-disabled="signupForm.$invalid || signupForm.pristineOk">
       <span class="text">Next</span>
       <i class="icon-arrow-right"></i>
    </button>

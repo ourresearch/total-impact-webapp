@@ -58,24 +58,23 @@ div.signup-header {
 
 form.signup {
    background: transparent;
-   width:  400px;
+   width:  700px;
    margin: 200px auto;
    div.intro {
       margin-bottom: 50px;
       color:  #999;
       line-height: 1.8;
       font-size: 22px;
-      width: 700px;
-      margin-left: -100px;
    }
 
    div.form-group {
       input.form-control {
-         width: 486px;
          font-size: 25px;
          line-height: 1;
          height: 55px;
          padding-top: 15px;
+         width: 400px;
+         margin: 0 auto;
       }
       a.btn {
          margin-top: 20px;
@@ -84,6 +83,35 @@ form.signup {
             float:right;
          }
       }
+      &.custom-url {
+         margin-top: 75px;
+         .input-group {
+            margin-right: 15px;
+            width:  300px;
+            margin: 0 auto;
+            input.form-control{
+               width: 300px;
+            }
+            .input-group-addon {
+               padding-top: 15px;
+            }
+            input.form-control {
+               padding-top: 10px;
+            }
+         }
+         .help-info {
+            margin-top: 20px;
+            i {margin-right: 10px;}
+            text-align: center;
+            .help-block {
+               font-size: 18px;
+               clear:both;
+               margin: 0 auto;
+               float: none;
+            }
+         }
+      }
+
    }
    button.next-button {
       @next-button-size: 100px;

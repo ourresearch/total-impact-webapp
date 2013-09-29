@@ -52,6 +52,8 @@ angular.module('directives.forms', [])
 
       var canceler = $q.defer()
       var userPropertyToCheck = attr.ngModel.split(".")[1];
+      var initialValue = scope.user[userPropertyToCheck]
+      console.log("requireUnique initial value = ", initialValue)
 
       var setLoading = function(isLoading) {
         scope.loading[attr.ngModel] = isLoading;
@@ -63,8 +65,12 @@ angular.module('directives.forms', [])
 
         canceler.resolve()
 
-        if (value == scope.authenticatedUser[userPropertyToCheck]){
+        if (!attr.checkInitialValue && value == initialValue){
           ctrl.$setPristine();
+          ctrl.$setValidity('requireUnique', true);
+          ctrl.$setValidity('checkingUnique', true);
+          console.log("setting validity")
+
           setLoading(false);
           return true;
         }
@@ -77,12 +83,14 @@ angular.module('directives.forms', [])
         .success(function(data) {
           ctrl.$setValidity('requireUnique', false);
           ctrl.$setValidity('checkingUnique', true);
+          ctrl.$dirty = true;
           setLoading(false)
         })
         .error(function(data) {
           if (data) {
             ctrl.$setValidity('requireUnique', true);
             ctrl.$setValidity('checkingUnique', true);
+            ctrl.$dirty = true;
             setLoading(false)
           }
         })
