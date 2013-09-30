@@ -1,4 +1,6 @@
 @import url("//fonts.googleapis.com/css?family=Lato:300,400,700,900,400italic");
+
+@import "animate.css";
 /*!
  * Bootstrap v3.0.0
  *
@@ -6168,14 +6170,7 @@ html {
   height: 100%;
 }
 body {
-  margin: 0;
   color: #333;
-  height: 100%;
-  padding-bottom: 0;
-}
-body div#container {
-  min-height: 600px;
-  margin-top: 120px;
 }
 body div#namechange {
   font-size: 16px;
@@ -8045,7 +8040,7 @@ div.signup-header ol.signup-steps li.completed {
 form.signup {
   background: transparent;
   width: 700px;
-  margin: 200px auto;
+  margin: 200px auto 0;
 }
 form.signup div.intro {
   margin-bottom: 50px;
@@ -8099,6 +8094,7 @@ form.signup div.form-group.custom-url .help-info .help-block {
   float: none;
 }
 form.signup button.next-button {
+  z-index: 500;
   position: fixed;
   height: 100px;
   width: 105px;
@@ -8493,4 +8489,51 @@ div.settings div.settings-input form .form-group.current-password div.controls.s
 }
 div.settings div.settings-input form .form-group.submit {
   margin-top: 40px;
+}
+div.importers {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+div.importers div.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  transition: opacity 0.5s;
+  -webkit-transition: opacity 0.5s;
+}
+div.importers div.import-window {
+  position: fixed;
+  left: 38.19%;
+  top: 0;
+  bottom: 0;
+  min-height: 100%;
+  right: 0;
+  z-index: 1001;
+  background: #fff;
+  padding: 100px 50px;
+  border-left: 1px solid #555;
+  -webkit-box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+}
+div.importers div.importer-widget {
+  float: left;
+  width: 33.333%;
+  padding: 30px;
+  border-right: 1px solid #999;
+  border-bottom: 1px solid #999;
+  text-align: center;
+  cursor: pointer;
+}
+div.importers div.importer-widget div.importer-name img {
+  height: 80px;
+  background: #fff;
 }

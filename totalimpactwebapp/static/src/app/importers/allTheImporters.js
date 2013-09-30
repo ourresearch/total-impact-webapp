@@ -6,23 +6,23 @@ angular.module('importers.allTheImporters')
 .factory('AllTheImporters', function(){
 
   var importerNames = [
-    'github',
-    'orcid',
-    'bibtex',
-    'slideshare',
-    'figshareDois',
-    'dryadDois',
-    'datasetDois',
-    'articleDois',
-    'pubmedIds'
+    'github'
+//    'orcid',
+//    'bibtex',
+//    'slideshare',
+//    'figshareDois',
+//    'dryadDois',
+//    'datasetDois',
+//    'articleDois',
+//    'pubmedIds'
   ]
 
   var templatePath = function(importerName){
-    return 'importers/'+importerName+'tpl.html'
+    return 'importers/'+importerName+'.tpl.html';
   }
 
   var logoPath = function(importerName) {
-    return '/static/img/logos/' + importerName;
+    return '/static/dist/img/logos/' + importerName + '.png';
   }
 
   return {

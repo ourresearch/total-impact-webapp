@@ -59,7 +59,7 @@ div.signup-header {
 form.signup {
    background: transparent;
    width:  700px;
-   margin: 200px auto;
+   margin: 200px auto 0;
    div.intro {
       margin-bottom: 50px;
       color:  #999;
@@ -115,6 +115,7 @@ form.signup {
    }
    button.next-button {
       @next-button-size: 100px;
+      z-index: 500;
       position: fixed;
       height: @next-button-size;
       width: @next-button-size + 5px;
