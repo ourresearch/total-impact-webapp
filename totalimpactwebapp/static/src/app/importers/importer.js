@@ -24,6 +24,14 @@ angular.module('importers.importer')
   $scope.onSave = function() {
     $scope.loading = true;
     console.log("hey man, i saved a thing!");
+  }
 
+  $scope.onCancel = function(){
+    $scope.importWindowOpen = false;
+  }
+  $scope.onImport = function(){
+    console.log("we're going to make a call to /import/"
+                  + $scope.importer.name + "/"
+                  + $scope.importer.input)
   }
 })

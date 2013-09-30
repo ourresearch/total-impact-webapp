@@ -29,7 +29,9 @@ angular.module('directives.forms', [])
     require: "^form",
     restrict: "E",
     link:function(scope, elem, attr, formController){
-      console.log("valid: ", formController.$valid)
+      console.log("attr: ", attr)
+      scope.action = (attr.action) ? attr.action : "Save";
+
       scope.isValid = function() {
         return formController.$valid;
       }

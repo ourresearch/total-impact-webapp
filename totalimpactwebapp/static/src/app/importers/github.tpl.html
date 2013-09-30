@@ -8,14 +8,14 @@
    GitHub. Anything is possible. GitHub. GitHub. Anything. GitHub.
 </div>
 
-<form name="githubImporterForm" class="form-horizontal">
+<form name="githubImporterForm" novalidate class="form-horizontal" ng-submit="onImport()">
 
    <div class="form-group">
       <label class="control-label">GitHub username</label>
-      <input ng-model="importerInput" type="text" required>
+      <input ng-model="importer.input" type="text" required>
    </div>
 
 
-   <save-buttons valid="githubImporterForm.$valid"></save-buttons>
+   <save-buttons action="Import"></save-buttons>
 
 </form>

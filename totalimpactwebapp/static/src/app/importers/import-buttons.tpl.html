@@ -1,10 +1,10 @@
-<div class="buttons-group save">
+<div class="buttons-group import-buttons">
    <div class="buttons" ng-show="!isLoading()">
       <button
               class="btn btn-primary"
               ng-disabled="!isValid()"
               type="submit">
-         {{ action }}
+         Save
       </button>
       <button
               class="btn btn-default"
@@ -12,8 +12,8 @@
          Cancel
       </button>
    </div>
-   <div class="working" ng-show="isLoading()">
+   <div class="working" ng-show="isWorking()">
       <i class="icon-refresh icon-spin"></i>
-      <span class="text">{{ action }}ing...</span>
+      <span class="text">Importing...</span>
    </div>
 </div>
