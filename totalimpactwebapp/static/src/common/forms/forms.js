@@ -35,7 +35,8 @@ angular.module('directives.forms', [])
       }
       console.log(formController)
       scope.isLoading = function(){
-        return scope.loading[formController.$name]
+        return _.size(scope.loading)
+//        return scope.loading[formController.$name]
       }
     }
 
@@ -69,7 +70,6 @@ angular.module('directives.forms', [])
           ctrl.$setPristine();
           ctrl.$setValidity('requireUnique', true);
           ctrl.$setValidity('checkingUnique', true);
-          console.log("setting validity")
 
           setLoading(false);
           return true;

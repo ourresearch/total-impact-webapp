@@ -1,5 +1,7 @@
 angular.module( 'signup', [
-    'services.slug'
+    'services.slug',
+    'importers.allTheImporters',
+    'importers.importer'
     ])
   .factory("Signup", function($rootScope, $location){
 
@@ -95,8 +97,8 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupProductsCtrl', function ( $scope, Signup ) {
-
+  .controller( 'signupProductsCtrl', function ( $scope, Signup, AllTheImporters ) {
+    $scope.importers = AllTheImporters.get()
   })
 
   .controller( 'signupPasswordCtrl', function ( $scope, Signup ) {

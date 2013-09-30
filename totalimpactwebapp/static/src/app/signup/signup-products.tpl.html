@@ -1,3 +1,21 @@
-<div class="signup-input url">
-   <h2>products stuff...</h2>
-</div> 
+<div class="signup-input url" ng-controller="signupProductsCtrl">
+
+   <div class="importer"
+        ng-repeat="importer in importers"
+        ng-controller="importerCtrl">
+
+      <div class="importer-widget">
+         <h2>Hi i am a widget for {{ importer.name }}</h2>
+
+      </div>
+
+   </div>
+
+
+
+
+
+
+
+
+</div>
