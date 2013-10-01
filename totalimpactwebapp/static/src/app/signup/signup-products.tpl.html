@@ -2,28 +2,12 @@
 
    <div class="importer"
         ng-repeat="importer in importers"
-        ng-controller="importerCtrl">
-
-      <div class="importer-widget" ng-click="showImporterWindow()">
-         <div class="importer-name"><img ng-src="{{ importer.logoPath }}"></div>
-      </div>
-      <div class="overlay"
-         ng-click="hideImportWindow()"
-         ng-if="importWindowOpen"
-         ng-animate="{enter: 'animated fadeIn', leave: 'animated fadeOut'}"></div>
-
-      <div class="import-window"
-         ng-include="importer.templatePath"
-         ng-if="importWindowOpen"
-         ng-animate="{enter: 'animated slideInRight', leave: 'animated slideOutRight'}"></div>
-
+        ng-controller="importerCtrl"
+        ng-include="'importers/importer.tpl.html'"
+        >
    </div>
 
-
-
-
-
-
+   <div class="more-importers-coming">More importers coming soon...</div>
 
 
 </div>

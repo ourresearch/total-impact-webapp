@@ -81,7 +81,6 @@ angular.module( 'signup', [
 
     $scope.include =  Signup.getTemplatePath();
     $scope.inputCtrl =  Signup.getTemplatePath();
-    $scope.pristineOk =  true;
 
 
   })
@@ -99,6 +98,8 @@ angular.module( 'signup', [
 
   .controller( 'signupProductsCtrl', function ( $scope, Signup, AllTheImporters ) {
     $scope.importers = AllTheImporters.get()
+    $scope.pristineOk =  true;
+
   })
 
   .controller( 'signupPasswordCtrl', function ( $scope, Signup ) {

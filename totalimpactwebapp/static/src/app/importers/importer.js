@@ -34,4 +34,5 @@ angular.module('importers.importer')
                   + $scope.importer.name + "/"
                   + $scope.importer.input)
   }
+  $scope.loading = {}
 })

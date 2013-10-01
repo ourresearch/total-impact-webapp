@@ -4,6 +4,7 @@ div.importers {
    left: 0;
    right: 0;
    bottom: 0;
+   background: #eee;
    div.overlay {
       position: fixed;
       top: 0;
@@ -34,18 +35,28 @@ div.importers {
 
    div.importer-widget {
       float:left;
+      background: #fff;
       width:  33.333%;
-      padding:  30px;
-      border-right: 1px solid #999;
-      border-bottom: 1px solid #999;
+      padding: 60px 30px;
+      border-right: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
       text-align: center;
       cursor: pointer;
       div.importer-name {
          img {
-            height: 80px;
+            height: 50px;
             background: #fff;
          }
       }
 
+   }
+
+   div.more-importers-coming {
+      .clearfix();
+      text-align: center;
+      color: #ccc;
+      padding-top: 30px;
+      font-size: 26px;
+      font-weight: lighter;
    }
 }

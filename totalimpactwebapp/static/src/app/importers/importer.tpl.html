@@ -1,0 +1,36 @@
+<div class="importer-widget" ng-click="showImporterWindow()">
+   <div class="importer-name"><img ng-src="{{ importer.logoPath }}"></div>
+</div>
+
+<div class="overlay"
+     ng-click="hideImportWindow()"
+     ng-if="importWindowOpen"
+     ng-animate="{enter: 'animated fadeIn', leave: 'animated fadeOut'}"></div>
+
+<div class="import-window"
+     ng-if="importWindowOpen"
+     ng-animate="{enter: 'animated slideInRight', leave: 'animated slideOutRight'}">
+
+
+   <h2 class="importer-logo"><img ng-src="{{ importer.logoPath }}" /> </h2>
+
+
+   <div class="descr">{{ importer.descr }}</div>
+
+   <form name="{{ importer.name }}ImporterForm" novalidate class="form-horizontal" ng-submit="onImport()">
+
+      <div class="form-group">
+         <label class="control-label">{{ importer.displayName }}</label>
+         <input ng-model="importer.input" type="text" >
+      </div>
+
+
+      <save-buttons action="Import"></save-buttons>
+
+   </form>
+</div>
+
+
+
+
+
