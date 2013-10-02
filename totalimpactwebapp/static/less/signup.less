@@ -123,6 +123,7 @@ form.signup {
       border: none;
       background: #eee;
       text-transform: uppercase;
+      text-align: left;
       font-size: @next-button-size / 6;
       font-weight: bold;
       top: 50%;
@@ -130,8 +131,10 @@ form.signup {
       right:  0;
       color: #fff;
       padding-top: 7px;
-      padding-left: @next-button-size / 4;
+      padding-left: @next-button-size / 3.5;
       cursor: pointer;
+      transition: width .2s;
+      -webkit-transition: width .2s;
       &.enabled {
          &:hover {
             width:  @next-button-size + 10px;

@@ -6266,7 +6266,6 @@ h6 {
 h3 {
   margin: 20px 0 0 0;
   margin-top: 20px;
-  font-family: rokkitt, georgia, serif;
   font-size: 25px;
   color: #555;
   line-height: 1;
@@ -8116,6 +8115,7 @@ form.signup button.next-button {
   border: none;
   background: #eee;
   text-transform: uppercase;
+  text-align: left;
   font-size: 16.666666666666668px;
   font-weight: bold;
   top: 50%;
@@ -8123,8 +8123,10 @@ form.signup button.next-button {
   right: 0;
   color: #fff;
   padding-top: 7px;
-  padding-left: 25px;
+  padding-left: 28.571428571428573px;
   cursor: pointer;
+  transition: width .2s;
+  -webkit-transition: width .2s;
 }
 form.signup button.next-button.enabled {
   background: #ff4e00;
@@ -8497,6 +8499,7 @@ div.importers {
   right: 0;
   bottom: 0;
   background: #eee;
+  float: left;
 }
 div.importers div.overlay {
   position: fixed;
@@ -8519,11 +8522,92 @@ div.importers div.import-window {
   right: 0;
   z-index: 1001;
   background: #fff;
-  padding: 100px 50px;
+  padding: 50px;
   border-left: 1px solid #555;
   -webkit-box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
   box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+}
+div.importers div.import-window h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+div.importers div.import-window h2 img {
+  height: 90px;
+}
+div.importers div.import-window h2 a.visit {
+  font-size: 16px;
+  color: #999;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-weight: normal;
+}
+div.importers div.import-window h2 a.visit i {
+  margin-left: 5px;
+  font-size: 70%;
+}
+div.importers div.import-window h2 a.visit:hover {
+  text-decoration: none;
+  color: #555;
+}
+div.importers div.import-window .content {
+  width: 500px;
+  margin: 0 auto;
+}
+div.importers div.import-window .content form {
+  margin-top: 60px;
+}
+div.importers div.import-window .content form .form-group {
+  margin-left: 0;
+}
+div.importers div.import-window .content form .form-group label span.one-per-line {
+  font-size: 66%;
+  font-weight: 500;
+  margin-left: 9px;
+}
+div.importers div.import-window .content form .form-group label i {
+  color: #999;
+  margin-left: 1px;
+  font-size: 90%;
+  vertical-align: 1px;
+}
+div.importers div.import-window .content form .form-group label i:hover {
+  color: #000;
+}
+div.importers div.import-window .content form .form-group label .tooltip .tooltip-inner {
+  background: #333;
+  font-weight: 300;
+  font-size: 15px;
+  min-width: 400px;
+  padding: 20px;
+}
+div.importers div.import-window .content form .form-group textarea {
+  height: 150px;
+}
+div.importers div.import-window .content form .form-group .form-control {
+  margin-left: 0;
+  width: 100%;
+}
+div.importers div.import-window .content form .buttons-group {
+  text-align: center;
+}
+div.importers div.import-window .content .extra {
+  margin-top: 50px;
+  font-size: 16px;
+  color: #555;
+  border-top: 3px solid #eee;
+}
+div.importers div.import-window .content .extra h3 {
+  border-bottom: none;
+  font-size: 20px;
+  margin: 0 0 15px 0;
+  padding-top: 15px;
+  color: #333;
+}
+div.importers div.import-window .content .extra code {
+  border: 1px solid #dddddd;
 }
 div.importers div.importer-widget {
   float: left;
@@ -8534,6 +8618,15 @@ div.importers div.importer-widget {
   border-bottom: 1px solid #ccc;
   text-align: center;
   cursor: pointer;
+  position: relative;
+}
+div.importers div.importer-widget:hover {
+  -webkit-box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  -webkit-transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s;
 }
 div.importers div.importer-widget div.importer-name img {
   height: 50px;
