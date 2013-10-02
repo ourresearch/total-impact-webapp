@@ -1,9 +1,10 @@
 angular.module( 'signup', [
     'services.slug',
+    'resources.users',
     'importers.allTheImporters',
     'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location){
+  .factory("Signup", function($rootScope, $location, NewProfile, UsersAbout, UsersProducts){
 
     var signupSteps = [
       "name",
@@ -39,6 +40,16 @@ angular.module( 'signup', [
       },
       goToNextSignupStep: function() {
         var path = "/signup/" + signupSteps[getIndexOfCurrentStep() + 1]
+        if (NewProfile.url_slug) {
+          console.log("now is the part where we make that user.")
+          Users.save(
+            {id: NewProfile.url_slug, idType: "url_slug"},
+            function(value, headers){
+              console.log("i'm saved!", value, headers)
+            }
+          )
+        }
+
         return $location.path(path)
       },
       isBeforeCurrentSignupStep: function(stepToCheck) {
@@ -51,8 +62,8 @@ angular.module( 'signup', [
     }
   })
 
-  .factory("NewUser", function(){
-    var newUser = {}
+  .factory("NewProfile", function(){
+    var newProfile = {}
     return {}
 
 
@@ -69,7 +80,7 @@ angular.module( 'signup', [
 
 }])
 
-  .controller('signupCtrl', function($scope, Signup, NewUser){
+  .controller('signupCtrl', function($scope, Signup, NewProfile){
     Signup.init()
 
     $scope.signupSteps = Signup.signupSteps();
@@ -77,10 +88,11 @@ angular.module( 'signup', [
     $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
     $scope.goToNextStep = Signup.goToNextSignupStep;
 
-    $scope.user = NewUser
+    $scope.user = NewProfile
 
     $scope.include =  Signup.getTemplatePath();
     $scope.inputCtrl =  Signup.getTemplatePath();
+    $scope.pristineOk =  true;
 
 
   })
@@ -88,9 +100,9 @@ angular.module( 'signup', [
   .controller( 'signupNameCtrl', function ( $scope, Signup ) {
   })
 
-  .controller( 'signupUrlCtrl', function ( $scope, Signup, NewUser, Slug) {
+  .controller( 'signupUrlCtrl', function ( $scope, Signup, NewProfile, Slug) {
 
-    NewUser.url_slug = Slug.make(NewUser.firstName, NewUser.surname)
+    NewProfile.url_slug = Slug.make(NewProfile.firstName, NewProfile.surname)
     console.log($scope.signupForm)
 
 
@@ -98,7 +110,7 @@ angular.module( 'signup', [
 
   .controller( 'signupProductsCtrl', function ( $scope, Signup, AllTheImporters ) {
     $scope.importers = AllTheImporters.get()
-    $scope.pristineOk =  true;
+  $scope.pristineOk =  true;
 
   })
 

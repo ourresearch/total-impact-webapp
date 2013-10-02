@@ -5,6 +5,7 @@ angular.module('importers.allTheImporters', [
 angular.module('importers.allTheImporters')
 .factory('AllTheImporters', function(){
 
+  var importedProducts = []
   var importers = [
     {
       displayName: "GitHub",
@@ -117,11 +118,15 @@ angular.module('importers.allTheImporters')
            
 
   return {
+    addProducts: function(products) {
+      importedProducts = importedProducts.concat(products)
+}   ,
+    getProducts: function(){
+      return importedProducts
+    },
     get: function(){
       var importersWithAllData = _.map(importers, function(importer){
-        var name = makeName(importer.displayName)
-
-        importer.name = name
+        importer.name = makeName(importer.displayName)
         importer.logoPath = makeLogoPath(importer.displayName)
 
         return importer

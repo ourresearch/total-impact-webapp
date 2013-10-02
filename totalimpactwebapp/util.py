@@ -1,6 +1,7 @@
 from functools import wraps
 from flask import request, current_app
 import random, math
+import re
 
 
 # a slow decorator for tests, so can exclude them when necessary
@@ -43,3 +44,15 @@ def pickWosItems(num_total_results, num_subset_results):
 
     return pages_and_ids
 
+
+_underscorer1 = re.compile(r'(.)([A-Z][a-z]+)')
+_underscorer2 = re.compile('([a-z0-9])([A-Z])')
+
+
+def camel_to_snake_case(s):
+    """
+    from http://stackoverflow.com/questions/1175208/elegant-python-function-to-convert-camelcase-to-camel-case
+    and https://gist.github.com/jaytaylor/3660565
+    """
+    subbed = _underscorer1.sub(r'\1_\2', s)
+    return _underscorer2.sub(r'\1_\2', subbed).lower()

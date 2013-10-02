@@ -1,17 +1,17 @@
 angular.module('importers.importer', [
-  'directives.forms'
+  'directives.forms',
+  'resources.products'
 ])
 angular.module('importers.importer')
 .factory('Importer', function(){
+  return {
 
- return {
-
- }
+  }
 
 })
 
 
-.controller('importerCtrl', function($scope){
+.controller('importerCtrl', function($scope, Products){
 
   $scope.showImporterWindow = function(){
     console.log("show that window, yo! here is the importer: ", $scope.importer)
@@ -30,9 +30,17 @@ angular.module('importers.importer')
     $scope.importWindowOpen = false;
   }
   $scope.onImport = function(){
-    console.log("we're going to make a call to /import/"
-                  + $scope.importer.name + "/"
-                  + $scope.importer.input)
+    console.log("now calling /importer/" + $scope.importer.name)
+    Products.save(
+      {importerName: $scope.importer.name},
+      {input: $scope.input},
+      function(){
+        console.log("we got stuff!")
+      },
+      function() {
+        console.log("crap, something didn't work.")
+      }
+    )
   }
   $scope.loading = {}
 })

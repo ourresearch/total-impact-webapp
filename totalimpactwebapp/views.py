@@ -1,21 +1,21 @@
-import requests, os, json, logging, re, random, datetime, hashlib
+import requests, os, json, logging, re, datetime
 import mandrill
 import analytics
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
 from flask import render_template, flash
-from flask.ext.assets import Environment, Bundle
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
-from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy import func
-from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
+from sqlalchemy.exc import IntegrityError
+from itsdangerous import TimestampSigner
 
 
-from totalimpactwebapp import app, util, db, login_manager, forms
-from totalimpactwebapp.user import User, create_user, get_user_from_id, make_genre_heading_products
-from totalimpactwebapp import views_helpers
+from totalimpactwebapp import app, db, login_manager
+from totalimpactwebapp.user import User, create_user, get_user_from_id
+from totalimpactwebapp.user import make_genre_heading_products
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
+from totalimpactwebapp.util import camel_to_snake_case
 import newrelic.agent
 
 logger = logging.getLogger("tiwebapp.views")
@@ -81,6 +81,20 @@ def json_resp_from_thing(thing):
                 obj_dict[k] = v
 
     return json_resp_from_jsonable_thing(obj_dict)
+
+
+def abort_json(status_code, msg):
+    body_dict = {
+        "HTTP_status_code": status_code,
+        "message": msg,
+        "error": True
+    }
+
+    resp_string = json.dumps(body_dict, sort_keys=True, indent=4)
+    resp = make_response(resp_string, status_code)
+    resp.mimetype = "application/json"
+
+    abort(resp)
 
 
 
@@ -222,8 +236,25 @@ def extract_filename(s):
 ###############################################################################
 
 
+#------------------ /user -----------------
 
-#------------------ /user (current user using the site) -----------------
+@app.route("/user", methods=["POST"])
+def create_user_profile():
+    userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
+    if "url_slug" not in userdict.keys():
+        abort_json(400, "You must include a url_slug.")
+
+    try:
+        user = create_user(userdict, g.roots["api"], db)
+        print "USER!", user
+    except IntegrityError:
+        abort_json(409, "Your user_slug isn't unique.")
+
+    return json_resp_from_thing(user)
+
+
+
+#------------------ /user/:actions -----------------
 
 
 @app.route("/user/current")
@@ -263,6 +294,21 @@ def login():
     return json_resp_from_thing({"user": user.as_dict()})
 
 
+#------------------ /user/:id   -----------------
+
+
+@app.route("/user/<profile_id>", methods=['GET'])
+def user_profile(profile_id):
+
+    user = get_user_for_response(
+        profile_id,
+        request,
+        include_products=False  # returns faster this way.
+    )
+
+    return json_resp_from_thing(user)
+
+
 #------------------ /user/:id/about   -----------------
 
 
@@ -296,8 +342,6 @@ def get_user_about(profile_id):
 #------------------ user/:userId/products -----------------
 
 
-
-
 @app.route("/user/<id>/products", methods=["GET", "POST", "PUT", "DELETE"])
 def user_products_view_and_modify(id):
 
@@ -327,6 +371,24 @@ def user_products_view_and_modify(id):
     return response_to_send
 
 
+#------------------ importers/:importer -----------------
+
+@app.route("/importer/<importer_name>", methods=["POST"])
+def import_products(importer_name):
+
+    query = "{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
+        core_api_root=g.roots["api"],
+        importer_name=importer_name,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    r = requests.post(
+        query,
+        # data=json.dumps({"input", request.json["input"]}),
+        data=request.data,
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
+    )
+
+    return json_resp_from_thing(r.json)
 
 
 

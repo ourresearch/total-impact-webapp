@@ -19,6 +19,8 @@ logger = logging.getLogger("tiwebapp.user")
 def now_in_utc():
     return datetime.datetime.utcnow()
 
+
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     given_name = db.Column(db.String(64))
@@ -40,21 +42,16 @@ class User(db.Model):
 
     @property
     def email_hash(self):
-        return hashlib.md5(self.email).hexdigest()
+        try:
+            return hashlib.md5(self.email).hexdigest()
+        except TypeError:
+            return None  # there's no email to hash.
 
-
-    def __init__(self, email, password, **kwargs):
-        self.email = email.lower()
-        self.password = self.set_password(password)
-
+    def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         self.created = now_in_utc()
         self.given_name = self.given_name or u"Anonymous"
         self.surname = self.surname or u"User"
-        self.url_slug = self.make_url_slug(
-            self.given_name,
-            self.surname
-        )
 
     def make_url_slug(self, surname, given_name):
         slug = (surname + given_name).replace(" ", "")
@@ -240,24 +237,29 @@ def make_collection_for_user(user, alias_tiids, prepped_request):
 
 
 
+
 def create_user(user_request_dict, api_root, db):
     logger.debug(u"Creating new user")
 
+    unicode_request_dict = {k: unicode(v) for k, v in user_request_dict.iteritems()}
+
     # create the user's collection first
     # ----------------------------------
-    lowercased_email = unicode(user_request_dict["email"]).lower()
-    collection_id = _make_id(6)
-
     url = api_root + "/v1/collection?key={api_key}".format(
         api_key=os.getenv("API_KEY"))
-    params = {"collection_id": collection_id}
     data = {
-        "aliases": user_request_dict["alias_tiids"],
-        "title": lowercased_email
+        "title": unicode_request_dict["url_slug"]
     }
+
+    try:
+        data["tiids"] = unicode_request_dict["tiids"]
+    except KeyError:
+        data["tiids"] = []
+
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
-    r = requests.post(url, data=json.dumps(data), headers=headers, params=params)
+    r = requests.post(url, data=json.dumps(data), headers=headers)
+    unicode_request_dict["collection_id"] = r.json()["collection"]["key"]
 
 
     # then create the actual user
@@ -265,29 +267,10 @@ def create_user(user_request_dict, api_root, db):
 
     # have to explicitly unicodify ascii-looking strings even when encoding
     # is set by client, it seems:
-    user = User(
-        email=lowercased_email,
-        password=unicode(user_request_dict["password"]),
-        given_name=unicode(user_request_dict["given_name"]),
-        surname=unicode(user_request_dict["surname"]),
-        collection_id=collection_id,
-        orcid_id=unicode(user_request_dict["external_profile_ids"]["orcid"]),
-        github_id=unicode(user_request_dict["external_profile_ids"]["github"]),
-        slideshare_id=unicode(user_request_dict["external_profile_ids"]["slideshare"])
-    )
-    db.session.add(user)
+    user = User(**unicode_request_dict)
 
-    try:
-        db.session.commit()
-    except IntegrityError as e:
-        logger.info(unicode(e))
-        logger.info(u"tried to mint a url slug ('{slug}') that already exists".format(
-            slug=user.url_slug
-        ))
-        db.session.rollback()
-        user.uniqueify_slug()
-        db.session.add(user)
-        db.session.commit()
+    db.session.add(user)
+    db.session.commit()
 
     logger.debug(u"Finished creating user {id} with slug '{slug}'".format(
         id=user.id,
