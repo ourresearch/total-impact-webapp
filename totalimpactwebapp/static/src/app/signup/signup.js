@@ -4,7 +4,7 @@ angular.module( 'signup', [
     'importers.allTheImporters',
     'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location, NewProfile, UsersAbout, UsersProducts){
+  .factory("Signup", function($rootScope, $location, NewProfile, Users){
 
     var signupSteps = [
       "name",
@@ -39,15 +39,16 @@ angular.module( 'signup', [
         return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
       },
       goToNextSignupStep: function() {
+        console.log("next step!")
+
         var path = "/signup/" + signupSteps[getIndexOfCurrentStep() + 1]
-        if (NewProfile.url_slug) {
-          console.log("now is the part where we make that user.")
-          Users.save(
-            {id: NewProfile.url_slug, idType: "url_slug"},
+        if (NewProfile.readyToCreateOnServer()) {
+          NewProfile.about = Users.save({
+            id: NewProfile.about.url_slug, idType: "url_slug"},
+            NewProfile.about,
             function(value, headers){
               console.log("i'm saved!", value, headers)
-            }
-          )
+          })
         }
 
         return $location.path(path)
@@ -62,9 +63,21 @@ angular.module( 'signup', [
     }
   })
 
-  .factory("NewProfile", function(){
-    var newProfile = {}
-    return {}
+  .factory("NewProfile", function(Slug){
+    var about = {}
+    var products = {}
+    return {
+      makeSlug: function(){
+        about.url_slug = Slug.make(about.givenName, about.surname)
+      },
+      readyToCreateOnServer: function(){
+        return about.url_slug && !about.id;
+      },
+      updateData: function(newData) {
+        about = newData;
+      },
+      about: about
+    }
 
 
   })
@@ -88,7 +101,7 @@ angular.module( 'signup', [
     $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
     $scope.goToNextStep = Signup.goToNextSignupStep;
 
-    $scope.user = NewProfile
+    $scope.profileAbout = NewProfile.about
 
     $scope.include =  Signup.getTemplatePath();
     $scope.inputCtrl =  Signup.getTemplatePath();
@@ -100,9 +113,9 @@ angular.module( 'signup', [
   .controller( 'signupNameCtrl', function ( $scope, Signup ) {
   })
 
-  .controller( 'signupUrlCtrl', function ( $scope, Signup, NewProfile, Slug) {
+  .controller( 'signupUrlCtrl', function ( $scope, Signup, NewProfile) {
 
-    NewProfile.url_slug = Slug.make(NewProfile.firstName, NewProfile.surname)
+    NewProfile.makeSlug()
     console.log($scope.signupForm)
 
 

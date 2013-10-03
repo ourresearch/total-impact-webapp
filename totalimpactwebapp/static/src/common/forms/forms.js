@@ -54,8 +54,11 @@ angular.module('directives.forms', [])
     link: function(scope, elem, attr, ctrl) {
 
       var canceler = $q.defer()
-      var userPropertyToCheck = attr.ngModel.split(".")[1];
-      var initialValue = scope.user[userPropertyToCheck]
+      var modelParts =  attr.ngModel.split(".")
+      var userModelName = modelParts[0]
+      var userPropertyToCheck = modelParts[1];
+
+      var initialValue = scope[userModelName][userPropertyToCheck]
       console.log("requireUnique initial value = ", initialValue)
 
       var setLoading = function(isLoading) {

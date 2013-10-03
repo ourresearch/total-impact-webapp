@@ -238,10 +238,11 @@ def make_collection_for_user(user, alias_tiids, prepped_request):
 
 
 
-def create_user(user_request_dict, api_root, db):
+def create_user_from_slug(url_slug, user_request_dict, api_root, db):
     logger.debug(u"Creating new user")
 
     unicode_request_dict = {k: unicode(v) for k, v in user_request_dict.iteritems()}
+    unicode_request_dict["url_slug"] = unicode(url_slug)
 
     # create the user's collection first
     # ----------------------------------

@@ -12,7 +12,7 @@ from itsdangerous import TimestampSigner
 
 
 from totalimpactwebapp import app, db, login_manager
-from totalimpactwebapp.user import User, create_user, get_user_from_id
+from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
 from totalimpactwebapp.user import make_genre_heading_products
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
@@ -236,23 +236,6 @@ def extract_filename(s):
 ###############################################################################
 
 
-#------------------ /user -----------------
-
-@app.route("/user", methods=["POST"])
-def create_user_profile():
-    userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
-    if "url_slug" not in userdict.keys():
-        abort_json(400, "You must include a url_slug.")
-
-    try:
-        user = create_user(userdict, g.roots["api"], db)
-        print "USER!", user
-    except IntegrityError:
-        abort_json(409, "Your user_slug isn't unique.")
-
-    return json_resp_from_thing(user)
-
-
 
 #------------------ /user/:actions -----------------
 
@@ -297,14 +280,29 @@ def login():
 #------------------ /user/:id   -----------------
 
 
-@app.route("/user/<profile_id>", methods=['GET'])
+@app.route("/user/<profile_id>", methods=['GET', 'POST'])
 def user_profile(profile_id):
 
-    user = get_user_for_response(
-        profile_id,
-        request,
-        include_products=False  # returns faster this way.
-    )
+    if request.method == "GET":
+        user = get_user_for_response(
+            profile_id,
+            request,
+            include_products=False  # returns faster this way.
+        )
+    elif request.method == "POST":
+        if request.args.get("id_type") != "url_slug":
+            abort_json(400, "You can only create new users from a url slug for now.")
+
+        userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
+        try:
+            user = create_user_from_slug(profile_id, userdict, g.roots["api"], db)
+        except IntegrityError:
+            abort_json(409, "Your user_slug isn't unique.")
+
+        return json_resp_from_thing(user)
+
+
+
 
     return json_resp_from_thing(user)
 

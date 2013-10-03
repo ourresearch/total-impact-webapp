@@ -100,8 +100,8 @@ angular.module('services.slug')
   }
 
   return {
-    make: function(firstName, surname) {
-      var slug = removeDiacritics(firstName) + removeDiacritics(surname);
+    make: function(givenName, surname) {
+      var slug = removeDiacritics(givenName) + removeDiacritics(surname);
 
       if (/^\w+$/.test(slug)) { // our slug is an ASCII string
         return slug;

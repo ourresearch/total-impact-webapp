@@ -2,6 +2,7 @@
    <h1><a class="brand" href="/"><img src="/static/dist/img/impactstory-logo-white.png" alt="ImpactStory" /></a>
       <span class="text">signup</span>
    </h1>
+   <pre>{{ profileAbout | json}}</pre>
    <ol class="signup-steps">
       <li ng-repeat="stepName in signupSteps"
           class="{{ stepName }}"

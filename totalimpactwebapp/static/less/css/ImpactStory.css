@@ -7985,6 +7985,7 @@ div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.m
   float: right;
 }
 div.signup-header {
+  z-index: 99999;
   background: #fff;
   border-bottom: 4px solid #ff4e00;
   position: absolute;
