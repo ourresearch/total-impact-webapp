@@ -1,5 +1,6 @@
 angular.module('settings', [
     'resources.users',
+    'services.loading',
     'directives.spinner',
     'settings.pageDescriptions',
     'services.i18nNotifications',
@@ -21,7 +22,7 @@ angular.module('settings', [
     )
   })
 
-  .controller('settingsCtrl', function ($scope, $location, authenticatedUser, SettingsPageDescriptions, $routeParams) {
+  .controller('settingsCtrl', function ($scope, $location, authenticatedUser, SettingsPageDescriptions, $routeParams, Loading) {
 
     $scope.resetUser = function(){
       $scope.user = angular.copy(authenticatedUser)
@@ -42,24 +43,20 @@ angular.module('settings', [
       formCtrl.$setPristine()
     }
 
-    $scope.setLoading = function(formName, loading){
-      $scope.loading[formName] = loading
-    }
-
     var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
     console.log(currentPageDescr)
 
     $scope.resetUser()
-    $scope.loading = {};
+    Loading.finish()
     $scope.include =  currentPageDescr.templatePath;
     $scope.authenticatedUser = authenticatedUser;
     $scope.pageDescriptions = SettingsPageDescriptions.get();
 
   })
 
-  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, i18nNotifications) {
+  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, i18nNotifications, Loading) {
     $scope.onSave = function() {
-      $scope.setLoading("userProfileForm", true)
+      Loading.start()
       UsersAbout.patch(
         $scope.user.id,
         {about: $scope.user},
@@ -72,12 +69,12 @@ angular.module('settings', [
     };
   })
 
-  .controller('passwordSettingsCtrl', function ($scope, UsersPassword, security, i18nNotifications) {
+  .controller('passwordSettingsCtrl', function ($scope, UsersPassword, security, i18nNotifications, Loading) {
 
     $scope.showPassword = false;
 
     $scope.onSave = function() {
-      $scope.setLoading("userPasswordForm", true)
+      Loading.start()
 
       UsersPassword.save(
         {id: $scope.user.id},
@@ -88,7 +85,7 @@ angular.module('settings', [
         },
         function(resp) {
           i18nNotifications.pushForCurrentRoute('settings.password.change.error.unauthenticated', 'danger');
-          $scope.setLoading("userPasswordForm", false)
+          Loading.finish()
           $scope.resetUser();  // reset the form
           $scope.wrongPassword = true;
           scroll(0,0)
@@ -99,10 +96,10 @@ angular.module('settings', [
 
 
 
-  .controller('urlSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications) {
+  .controller('urlSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
 
      $scope.onSave = function() {
-      $scope.setLoading("userUrlForm", true)
+       Loading.start()
       UsersAbout.patch(
         $scope.user.id,
         {about: $scope.user},
@@ -117,10 +114,10 @@ angular.module('settings', [
 
 
 
-  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications) {
+  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
 
      $scope.onSave = function() {
-      $scope.setLoading("userEmailForm", true)
+      Loading.start()
       UsersAbout.patch(
         $scope.user.id,
         {about: $scope.user},

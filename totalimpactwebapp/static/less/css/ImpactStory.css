@@ -7985,7 +7985,6 @@ div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.m
   float: right;
 }
 div.signup-header {
-  z-index: 99999;
   background: #fff;
   border-bottom: 4px solid #ff4e00;
   position: absolute;
@@ -8610,7 +8609,7 @@ div.importers div.import-window .content .extra h3 {
 div.importers div.import-window .content .extra code {
   border: 1px solid #dddddd;
 }
-div.importers div.importer-widget {
+div.importers div.importer-tile {
   float: left;
   background: #fff;
   width: 33.333%;
@@ -8621,7 +8620,7 @@ div.importers div.importer-widget {
   cursor: pointer;
   position: relative;
 }
-div.importers div.importer-widget:hover {
+div.importers div.importer-tile:hover {
   -webkit-box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
   box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
@@ -8629,9 +8628,41 @@ div.importers div.importer-widget:hover {
   -webkit-transition: box-shadow 0.3s;
   transition: box-shadow 0.3s;
 }
-div.importers div.importer-widget div.importer-name img {
+div.importers div.importer-tile.has-products {
+  -webkit-box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.3);
+  cursor: default;
+  background: #fafafa;
+}
+div.importers div.importer-tile.has-products:hover {
+  box-shadow: none;
+}
+div.importers div.importer-tile.has-products div.importer-name {
+  float: left;
+  margin-left: 15%;
+}
+div.importers div.importer-tile.has-products div.imported-products-count {
+  display: block;
+}
+div.importers div.importer-tile div.importer-name img {
   height: 50px;
   background: #fff;
+}
+div.importers div.importer-tile div.imported-products-count {
+  display: none;
+  float: right;
+  margin-right: 5%;
+}
+div.importers div.importer-tile div.imported-products-count span.count {
+  font-weight: 900;
+  color: #555;
+  font-size: 35px;
+}
+div.importers div.importer-tile div.imported-products-count span.descr {
+  width: 60px;
+  display: inline-block;
+  font-size: 12px;
 }
 div.importers div.more-importers-coming {
   clear: both;

@@ -1,5 +1,5 @@
 <div class="buttons-group save">
-   <div class="buttons" ng-show="!isLoading()">
+   <div class="buttons" ng-show="!loading.is()">
       <button
               class="btn btn-primary"
               ng-disabled="!isValid()"
@@ -12,8 +12,9 @@
          Cancel
       </button>
    </div>
-   <div class="working" ng-show="isLoading()">
+   <div class="working" ng-show="loading.is()">
       <i class="icon-refresh icon-spin"></i>
       <span class="text">{{ action }}ing...</span>
    </div>
+
 </div>

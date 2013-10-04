@@ -43,8 +43,8 @@ angular.module( 'signup', [
 
         var path = "/signup/" + signupSteps[getIndexOfCurrentStep() + 1]
         if (NewProfile.readyToCreateOnServer()) {
-          NewProfile.about = Users.save({
-            id: NewProfile.about.url_slug, idType: "url_slug"},
+          NewProfile.about = Users.save(
+            {id: NewProfile.about.url_slug, idType: "url_slug"},
             NewProfile.about,
             function(value, headers){
               console.log("i'm saved!", value, headers)
@@ -65,7 +65,7 @@ angular.module( 'signup', [
 
   .factory("NewProfile", function(Slug){
     var about = {}
-    var products = {}
+    var products = []
     return {
       makeSlug: function(){
         about.url_slug = Slug.make(about.givenName, about.surname)
@@ -73,8 +73,15 @@ angular.module( 'signup', [
       readyToCreateOnServer: function(){
         return about.url_slug && !about.id;
       },
-      updateData: function(newData) {
-        about = newData;
+      addProducts: function(newProducts) {
+        console.log("adding new products: ", newProducts)
+
+        var tiids = _.pluck(newProducts, "tiid")
+        console.log("adding these tiids: ", tiids)
+
+        products = products.concat(tiids)
+        console.log("now we got these products: ", products)
+
       },
       about: about
     }

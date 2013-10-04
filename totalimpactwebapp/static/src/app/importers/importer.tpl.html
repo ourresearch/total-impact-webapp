@@ -1,5 +1,15 @@
-<div class="importer-widget" ng-click="showImporterWindow()">
+
+
+<div class="importer-tile"
+     ng-click="showImporterWindow()"
+     ng-class="{'has-products': products.length}">
+
    <div class="importer-name"><img ng-src="{{ importer.logoPath }}"></div>
+   <div class="imported-products-count">
+      <span class="count">{{ products.length }}</span>
+      <span class="descr">products imported</span>
+   </div>
+
 </div>
 
 <div class="overlay"

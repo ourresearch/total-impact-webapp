@@ -6,8 +6,8 @@
 <form novalidate name="userEmailForm" class="form-horizontal custom-url" ng-submit="onSave()" ng-controller="emailSettingsCtrl">
   <div class="form-group change-email"
   ng-model="user.email"
-  ng-class="{ 'has-error':  userEmailForm.email.$invalid && userEmailForm.email.$dirty && !loading['user.email'],
-                    'has-success': userEmailForm.email.$valid && userEmailForm.email.$dirty && !loading['user.email']}">
+  ng-class="{ 'has-error':  userEmailForm.email.$invalid && userEmailForm.email.$dirty && !loading.is(),
+                    'has-success': userEmailForm.email.$valid && userEmailForm.email.$dirty && !loading.is()}">
 
     <div class="controls input-group col-lg-7">
       <span class="input-group-addon"><i class="icon-envelope-alt"></i></span>
@@ -20,23 +20,23 @@
 
     </div>
 
-    <spinner loading="user.email" msg="Checking"></spinner>
+    <spinner msg="Checking"></spinner>
 
     <div class="help-block error"
     ng-show="userEmailForm.email.$error.requireUnique
             && userEmailForm.email.$dirty
-            && !loading.user.email">
+            && !loading.is()">
     That email address is already in use.
     </div>
     <div class="help-block success"
     ng-show="userEmailForm.email.$valid
             && userEmailForm.email.$dirty
-            && !loading['user.email']">
+            && !loading.is()">
     Looks good!
     </div>
     <div class="help-block"
     ng-show="userEmailForm.email.$pristine
-            && !loading['user.email']">
+            && !loading.is()">
     This is your currently registered email.
     </div>
 

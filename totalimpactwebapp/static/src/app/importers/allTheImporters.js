@@ -112,7 +112,7 @@ angular.module('importers.allTheImporters')
       return word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)
     })
     capitalizedWords[0] = capitalizedWords[0].toLowerCase()
-    return capitalizedWords.join();
+    return capitalizedWords.join("");
 
   }
            

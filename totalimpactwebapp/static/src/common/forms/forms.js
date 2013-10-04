@@ -36,10 +36,6 @@ angular.module('directives.forms', [])
         return formController.$valid;
       }
       console.log(formController)
-      scope.isLoading = function(){
-        return _.size(scope.loading)
-//        return scope.loading[formController.$name]
-      }
     }
 
   }
@@ -47,7 +43,7 @@ angular.module('directives.forms', [])
 })
 
 
-.directive('requireUnique', function($http, $q) {
+.directive('requireUnique', function($http, $q, Loading) {
   return {
     restrict: 'A',
     require: 'ngModel',
@@ -59,11 +55,6 @@ angular.module('directives.forms', [])
       var userPropertyToCheck = modelParts[1];
 
       var initialValue = scope[userModelName][userPropertyToCheck]
-      console.log("requireUnique initial value = ", initialValue)
-
-      var setLoading = function(isLoading) {
-        scope.loading[attr.ngModel] = isLoading;
-      }
 
       scope.$watch(attr.ngModel, function(value) {
         ctrl.$setValidity('checkingUnique', false);
@@ -76,12 +67,12 @@ angular.module('directives.forms', [])
           ctrl.$setValidity('requireUnique', true);
           ctrl.$setValidity('checkingUnique', true);
 
-          setLoading(false);
+          Loading.finish();
           return true;
         }
 
         canceler = $q.defer()
-        setLoading(true);
+        Loading.start();
         var url = '/user/' + value + '/about?id_type=' + userPropertyToCheck;
 
         $http.get(url, {timeout: canceler.promise})
@@ -89,14 +80,14 @@ angular.module('directives.forms', [])
           ctrl.$setValidity('requireUnique', false);
           ctrl.$setValidity('checkingUnique', true);
           ctrl.$dirty = true;
-          setLoading(false)
+          Loading.finish()
         })
         .error(function(data) {
           if (data) {
             ctrl.$setValidity('requireUnique', true);
             ctrl.$setValidity('checkingUnique', true);
             ctrl.$dirty = true;
-            setLoading(false)
+            Loading.finish()
           }
         })
       })

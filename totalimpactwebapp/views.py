@@ -340,7 +340,7 @@ def get_user_about(profile_id):
 #------------------ user/:userId/products -----------------
 
 
-@app.route("/user/<id>/products", methods=["GET", "POST", "PUT", "DELETE"])
+@app.route("/user/<id>/products", methods=["GET", "POST", "DELETE", "PATCH"])
 def user_products_view_and_modify(id):
 
     user = get_user_for_response(id, request)
@@ -354,9 +354,10 @@ def user_products_view_and_modify(id):
         # you can't add/create stuff here, just refresh extant products.
         resp = user.refresh_products()
 
-    elif request.method == "PUT":
-        aliases_to_add = request.json.get("aliases")
-        resp = user.add_products(aliases_to_add)
+    elif request.method == "PATCH":
+        print "got a request to add products to the user's profile."
+        tiids_to_add = request.json.get("tiids")
+        resp = {"products": user.add_products(tiids_to_add)}
 
     elif request.method == "DELETE":
         tiids_to_delete = request.json.get("tiids")
@@ -386,7 +387,7 @@ def import_products(importer_name):
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
 
-    return json_resp_from_thing(r.json)
+    return json_resp_from_thing(r.json())
 
 
 
@@ -590,48 +591,6 @@ def test_user_cids():
     return json_resp_from_thing({"collection_ids": test_collection_ids})
 
 
-
-
-
-
-#------------------ provider/...  (proxy methods for api) -----------------
-
-@app.route('/provider/<provider_name>/memberitems/<query_string>', methods=["GET"])
-def provider_get_memberitems_proxy(provider_name, query_string):
-
-    query = "{core_api_root}/v1/provider/{provider_name}/memberitems/{query_string}".format(
-        core_api_root=g.roots["api"],
-        provider_name=provider_name,
-        query_string=query_string
-    )
-    r = requests.get(
-        query,
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'},
-        params={"api_admin_key": os.getenv("API_ADMIN_KEY")}
-    )
-
-    return json_resp_from_thing(r.json())
-
-
-@app.route('/provider/<provider_name>/memberitems', methods=["POST"])
-def provider_post_memberitems_proxy(provider_name):
-
-    file = request.files['file']
-    logger.debug(u"In"+provider_name+"/memberitems, got file: filename="+file.filename)
-    entries_str = file.read().decode("utf-8")
-
-    url = "{core_api_root}/v1/provider/{provider_name}/memberitems".format(
-        core_api_root=g.roots["api"],
-        provider_name=provider_name
-    )
-    r = requests.post(
-        url,
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'},
-        data=json.dumps({"descr": entries_str}),
-        params={"api_admin_key": os.getenv("API_ADMIN_KEY")}
-    )
-
-    return json_resp_from_thing(r.json())
 
 
 

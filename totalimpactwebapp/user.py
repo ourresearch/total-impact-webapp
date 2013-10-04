@@ -114,8 +114,9 @@ class User(db.Model):
         return self
 
 
-    def add_products(self, aliases_to_add):
-        return add_products_to_core_collection(self.collection_id, aliases_to_add)
+    def add_products(self, tiids_to_add):
+        return add_products_to_core_collection(
+            self.collection_id, tiids_to_add)["items"]
 
     def delete_products(self, tiids_to_delete):
         return delete_products_from_core_collection(self.collection_id, tiids_to_delete)
@@ -168,7 +169,7 @@ def get_collection_from_core(collection_id, include_items=1):
 
     query = u"{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_KEY"),
+        api_admin_key=os.getenv("API_ADMIN_KEY"),
         collection_id=collection_id
     )
     r = requests.get(query, params={"include_items": include_items})
@@ -182,15 +183,18 @@ def get_products_from_core(collection_id):
 
 
 
-def add_products_to_core_collection(collection_id, aliases_to_add):
+def add_products_to_core_collection(collection_id, tiids_to_add):
     query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_KEY"),
+        api_admin_key=os.getenv("API_ADMIN_KEY"),
         collection_id=collection_id
     )
-    r = requests.post(query, 
-            params={"http_method": "PUT"}, 
-            data=json.dumps({"aliases": aliases_to_add}), 
+
+    print "sending this query: ", query
+    print "sending these tiids: ", tiids_to_add
+
+    r = requests.put(query,
+            data=json.dumps({"tiids": tiids_to_add}),
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
     return r.json()
@@ -199,7 +203,7 @@ def add_products_to_core_collection(collection_id, aliases_to_add):
 def delete_products_from_core_collection(collection_id, tiids_to_delete):
     query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_KEY"),
+        api_admin_key=os.getenv("API_ADMIN_KEY"),
         collection_id=collection_id
     )
     r = requests.post(query, 
@@ -213,7 +217,7 @@ def delete_products_from_core_collection(collection_id, tiids_to_delete):
 def refresh_products_from_core_collection(collection_id):
     query = "{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_KEY"),
+        api_admin_key=os.getenv("API_ADMIN_KEY"),
         collection_id=collection_id
     )
     r = requests.post(
@@ -246,8 +250,8 @@ def create_user_from_slug(url_slug, user_request_dict, api_root, db):
 
     # create the user's collection first
     # ----------------------------------
-    url = api_root + "/v1/collection?key={api_key}".format(
-        api_key=os.getenv("API_KEY"))
+    url = api_root + "/v1/collection?api_admin_key={api_admin_key}".format(
+        api_admin_key=os.getenv("API_ADMIN_KEY"))
     data = {
         "title": unicode_request_dict["url_slug"]
     }
@@ -260,7 +264,8 @@ def create_user_from_slug(url_slug, user_request_dict, api_root, db):
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
     r = requests.post(url, data=json.dumps(data), headers=headers)
-    unicode_request_dict["collection_id"] = r.json()["collection"]["key"]
+    print "we got this back when we made teh collection: ", r.json()
+    unicode_request_dict["collection_id"] = r.json()["collection"]["_id"]
 
 
     # then create the actual user

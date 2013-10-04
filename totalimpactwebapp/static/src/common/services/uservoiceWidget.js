@@ -42,7 +42,13 @@ angular.module("services.uservoiceWidget")
       catch (e) {
         // UserVoice throws this error when you load it again from /signup.
         // not sure what it is, but everything seems to still work, so ignore it.
-        if (e.message !== "Cannot read property 'transitionDuration' of null"){
+
+        var errorsToIgnore = [
+          "Cannot read property 'transitionDuration' of null",
+          "Cannot read property 'style' of undefined"
+        ]
+
+        if (!_.contains(errorsToIgnore, e.message)){
           throw e
         }
       }

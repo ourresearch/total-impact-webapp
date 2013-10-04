@@ -19,6 +19,9 @@ angular.module('resources.users',['ngResource'])
       {
         update:{
           method: "PUT"
+        },
+        patch: {
+          method: "PATCH"
         }
       }
     )

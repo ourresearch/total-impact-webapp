@@ -1,4 +1,5 @@
 angular.module('app', [
+  'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
   'security',
@@ -33,10 +34,10 @@ angular.module('app').run(['security', function(security) {
 }]);
 
 
-angular.module('app').controller('AppCtrl', function($scope, i18nNotifications, localizedMessages, $rootScope, UservoiceWidget, $location) {
+angular.module('app').controller('AppCtrl', function($scope, i18nNotifications, localizedMessages, $rootScope, UservoiceWidget, $location, Loading) {
 
   $scope.notifications = i18nNotifications;
-  $scope.loading = {};
+  $scope.loading = Loading;
   $rootScope.showHeaderAndFooter = true;
 
   $scope.removeNotification = function (notification) {

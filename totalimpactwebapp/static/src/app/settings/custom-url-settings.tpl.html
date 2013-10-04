@@ -7,8 +7,8 @@
 <form novalidate name="userUrlForm" class="form-horizontal custom-url" ng-submit="onSave()" ng-controller="urlSettingsCtrl">
    <div class="form-group custom-url"
         ng-model="user.url_slug"
-        ng-class="{ 'has-error':  userUrlForm.url_slug.$invalid && userUrlForm.url_slug.$dirty && !loading['user.url_slug'],
-                    'has-success': userUrlForm.url_slug.$valid && userUrlForm.url_slug.$dirty && !loading['user.url_slug']}">
+        ng-class="{ 'has-error':  userUrlForm.url_slug.$invalid && userUrlForm.url_slug.$dirty && !loading.is(),
+                    'has-success': userUrlForm.url_slug.$valid && userUrlForm.url_slug.$dirty && !loading.is()">
 
       <div class="controls input-group col-lg-7">
          <span class="input-group-addon">http://impactstory.org/</span>
@@ -22,30 +22,30 @@
 
       </div>
 
-      <spinner loading="user.url_slug" msg="Checking"></spinner>
+      <spinner msg="Checking"></spinner>
 
       <div class="help-block error"
             ng-show="userUrlForm.url_slug.$error.pattern
             && userUrlForm.url_slug.$dirty
-            && !loading['user.url_slug']">
+            && !loading.is()">
          This URL has invalid characters.
       </div>
 
       <div class="help-block error"
             ng-show="userUrlForm.url_slug.$error.requireUnique
             && userUrlForm.url_slug.$dirty
-            && !loading.user.url_slug">
+            && !loading.is()">
          Someone else is using that URL.
       </div>
       <div class="help-block success"
             ng-show="userUrlForm.url_slug.$valid
             && userUrlForm.url_slug.$dirty
-            && !loading['user.url_slug']">
+            && !loading.is()">
          Looks good!
       </div>
       <div class="help-block"
             ng-show="userUrlForm.url_slug.$pristine
-            && !loading['user.url_slug']">
+            && !loading.is()">
          This is your current URL.
       </div>
 

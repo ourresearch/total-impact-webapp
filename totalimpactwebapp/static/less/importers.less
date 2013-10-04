@@ -117,7 +117,7 @@ div.importers {
    }
 
 
-   div.importer-widget {
+   div.importer-tile {
       float:left;
       background: #fff;
       width:  33.333%;
@@ -133,10 +133,38 @@ div.importers {
          -webkit-transition: box-shadow .3s;
          transition: box-shadow .3s;
       }
+      &.has-products {
+         .inner-shadow(0, 1px, 7px, .3);
+         cursor: default;
+         &:hover {
+            box-shadow: none;
+         }
+         background: #fafafa;
+         div.importer-name{
+            float:left;
+            margin-left:15%;
+         }
+         div.imported-products-count {display:block;}
+      }
       div.importer-name {
          img {
             height: 50px;
             background: #fff;
+         }
+      }
+      div.imported-products-count {
+         display:none;
+         float:right;
+         margin-right: 5%;
+         span.count {
+            font-weight: 900;
+            color:  #555;
+            font-size: 35px;
+         }
+         span.descr {
+            width: 60px;
+            display:inline-block;
+            font-size: 12px;
          }
       }
 
