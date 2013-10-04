@@ -66,53 +66,89 @@ form.signup {
       line-height: 1.8;
       font-size: 22px;
    }
-
-   div.form-group {
-      input.form-control {
-         font-size: 25px;
-         line-height: 1;
-         height: 55px;
-         padding-top: 15px;
-         width: 400px;
-         margin: 0 auto;
-      }
-      a.btn {
-         margin-top: 20px;
-         width: 45%;
-         &.next {
-            float:right;
-         }
-      }
-      &.custom-url {
-         margin-top: 75px;
-         .input-group {
-            margin-right: 15px;
-            width:  300px;
+   div.signup-input {
+      div.form-group {
+         input.form-control {
+            font-size: 25px;
+            line-height: 1;
+            height: 55px;
+            padding-top: 15px;
+            width: 400px;
             margin: 0 auto;
-            input.form-control{
-               width: 300px;
-            }
-            .input-group-addon {
-               padding-top: 15px;
-            }
-            input.form-control {
-               padding-top: 10px;
+         }
+         div.input-group {
+            margin: 0 auto;
+            width:  400px + 50px;
+         }
+         a.btn {
+            margin-top: 20px;
+            width: 45%;
+            &.next {
+               float:right;
             }
          }
-         .help-info {
-            margin-top: 20px;
-            i {margin-right: 10px;}
-            text-align: center;
-            .help-block {
-               font-size: 18px;
-               clear:both;
+
+         &.password, &.email {
+//            width:  400px + 130px;
+//            margin:  20px auto;
+            margin-left: 100px;
+            position: relative;
+            .input-group {
+               float:left;
+               margin-right: 10px;
+               i {
+                  min-width: 20px;
+                  display:inline-block;
+                  color: #000;
+                  opacity: .4;
+               }
+            }
+            .checkmark-and-text {
+               color: #777;
+               cursor:pointer;
+               margin-top: 30px;
+            }
+            .help-info {
+               width: 140px;
+               margin-top: 5px;
+               float:left;
+               .help-block.tall {
+                  margin-top: 0;
+               }
+            }
+         }
+
+         &.custom-url {
+            margin-top: 75px;
+            .input-group {
+               margin-right: 15px;
+               width:  300px;
                margin: 0 auto;
-               float: none;
+               input.form-control{
+                  width: 300px;
+               }
+               .input-group-addon {
+                  padding-top: 15px;
+               }
+               input.form-control {
+                  padding-top: 10px;
+               }
+            }
+            .help-info {
+               margin-top: 20px;
+               i {margin-right: 10px;}
+               text-align: center;
+               .help-block {
+                  font-size: 18px;
+                  clear:both;
+                  margin: 0 auto;
+                  float: none;
+               }
             }
          }
       }
-
    }
+
    button.next-button {
       @next-button-size: 100px;
       z-index: 500;

@@ -28,7 +28,7 @@ angular.module('importers.importer')
   }
   $scope.onImport = function(){
     Loading.start()
-    var profileId = NewProfile.about.id
+    var profileId = NewProfile.getId()
     console.log("now calling /importer/" + $scope.importer.name)
     console.log("here's the profile ID we'll update:", profileId)
 
@@ -38,7 +38,6 @@ angular.module('importers.importer')
       {input: $scope.importer.input},
       function(resp, headers){
         var tiids;
-        console.log("here is the resp: ", resp)
 
         if (resp.error){
           tiids = []
@@ -47,7 +46,7 @@ angular.module('importers.importer')
           tiids = _.keys(resp.products)
         }
 
-        // store our new products in the Importer service to keep track of 'em
+        // store our new products in this importer's scope
         $scope.products = tiids;
 
         // add the new products to the user's profile on the server

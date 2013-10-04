@@ -299,7 +299,7 @@ def user_profile(profile_id):
         except IntegrityError:
             abort_json(409, "Your user_slug isn't unique.")
 
-        return json_resp_from_thing(user)
+        return json_resp_from_thing({"user": user.as_dict()})
 
 
 

@@ -42,14 +42,20 @@ angular.module( 'signup', [
         console.log("next step!")
 
         var path = "/signup/" + signupSteps[getIndexOfCurrentStep() + 1]
+
         if (NewProfile.readyToCreateOnServer()) {
-          NewProfile.about = Users.save(
+          Users.save(
             {id: NewProfile.about.url_slug, idType: "url_slug"},
             NewProfile.about,
-            function(value, headers){
-              console.log("i'm saved!", value, headers)
+            function(resp, headers){
+              console.log("i'm saved!", resp, headers)
+              NewProfile.setId(resp.user.id)
+
+              console.log("set NewProfile.getId(): ", NewProfile.getId())
           })
         }
+
+        NewProfile.setCreds()
 
         return $location.path(path)
       },
@@ -63,27 +69,33 @@ angular.module( 'signup', [
     }
   })
 
-  .factory("NewProfile", function(Slug){
+  .factory("NewProfile", function(Slug, UsersAbout){
     var about = {}
     var products = []
+    var id
     return {
       makeSlug: function(){
         about.url_slug = Slug.make(about.givenName, about.surname)
       },
       readyToCreateOnServer: function(){
-        return about.url_slug && !about.id;
+        return about.url_slug && !id;
       },
-      addProducts: function(newProducts) {
-        console.log("adding new products: ", newProducts)
-
-        var tiids = _.pluck(newProducts, "tiid")
-        console.log("adding these tiids: ", tiids)
-
-        products = products.concat(tiids)
-        console.log("now we got these products: ", products)
+      setCreds: function() {
+        if (!about.password || !about.email) {
+          return false
+        }
+        UsersAbout.patch(
+          {"id": id},
+          {about: {email: about.email}},
+          function(resp) {
+            console.log("updated creds", resp)
+          }
+        )
 
       },
-      about: about
+      setId: function(newId){id = newId},
+      getId: function(){return id},
+      "about": about
     }
 
 
@@ -130,11 +142,14 @@ angular.module( 'signup', [
 
   .controller( 'signupProductsCtrl', function ( $scope, Signup, AllTheImporters ) {
     $scope.importers = AllTheImporters.get()
-  $scope.pristineOk =  true;
+    $scope.pristineOk =  true;
 
   })
 
   .controller( 'signupPasswordCtrl', function ( $scope, Signup ) {
+
+
+
   })
 
   .controller( 'signupCreatingCtrl', function ( $scope, Signup ) {

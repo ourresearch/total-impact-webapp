@@ -6221,13 +6221,13 @@ form div.help-block {
   color: #999;
   float: left;
 }
+form div.working i {
+  margin-right: 5px;
+}
 form div.buttons-group.save div.working {
   font-size: 24px;
   padding-left: 10px;
   color: #999;
-}
-form div.buttons-group.save div.working i {
-  margin-right: 5px;
 }
 form i.icon-check-empty {
   padding-right: 3px;
@@ -8047,7 +8047,7 @@ form.signup div.intro {
   line-height: 1.8;
   font-size: 22px;
 }
-form.signup div.form-group input.form-control {
+form.signup div.signup-input div.form-group input.form-control {
   font-size: 25px;
   line-height: 1;
   height: 55px;
@@ -8055,38 +8055,75 @@ form.signup div.form-group input.form-control {
   width: 400px;
   margin: 0 auto;
 }
-form.signup div.form-group a.btn {
+form.signup div.signup-input div.form-group div.input-group {
+  margin: 0 auto;
+  width: 450px;
+}
+form.signup div.signup-input div.form-group a.btn {
   margin-top: 20px;
   width: 45%;
 }
-form.signup div.form-group a.btn.next {
+form.signup div.signup-input div.form-group a.btn.next {
   float: right;
 }
-form.signup div.form-group.custom-url {
+form.signup div.signup-input div.form-group.password,
+form.signup div.signup-input div.form-group.email {
+  margin-left: 100px;
+  position: relative;
+}
+form.signup div.signup-input div.form-group.password .input-group,
+form.signup div.signup-input div.form-group.email .input-group {
+  float: left;
+  margin-right: 10px;
+}
+form.signup div.signup-input div.form-group.password .input-group i,
+form.signup div.signup-input div.form-group.email .input-group i {
+  min-width: 20px;
+  display: inline-block;
+  color: #000;
+  opacity: .4;
+}
+form.signup div.signup-input div.form-group.password .checkmark-and-text,
+form.signup div.signup-input div.form-group.email .checkmark-and-text {
+  color: #777;
+  cursor: pointer;
+  margin-top: 30px;
+}
+form.signup div.signup-input div.form-group.password .help-info,
+form.signup div.signup-input div.form-group.email .help-info {
+  width: 140px;
+  margin-top: 5px;
+  float: left;
+}
+form.signup div.signup-input div.form-group.password .help-info .help-block.tall,
+form.signup div.signup-input div.form-group.email .help-info .help-block.tall {
+  margin-top: 0;
+}
+form.signup div.signup-input div.form-group.custom-url {
   margin-top: 75px;
 }
-form.signup div.form-group.custom-url .input-group {
+form.signup div.signup-input div.form-group.custom-url .input-group {
   margin-right: 15px;
   width: 300px;
   margin: 0 auto;
 }
-form.signup div.form-group.custom-url .input-group input.form-control {
+form.signup div.signup-input div.form-group.custom-url .input-group input.form-control {
   width: 300px;
 }
-form.signup div.form-group.custom-url .input-group .input-group-addon {
+form.signup div.signup-input div.form-group.custom-url .input-group .input-group-addon {
   padding-top: 15px;
 }
-form.signup div.form-group.custom-url .input-group input.form-control {
+form.signup div.signup-input div.form-group.custom-url .input-group input.form-control {
   padding-top: 10px;
 }
-form.signup div.form-group.custom-url .help-info {
+form.signup div.signup-input div.form-group.custom-url .help-info {
   margin-top: 20px;
   text-align: center;
 }
-form.signup div.form-group.custom-url .help-info i {
+form.signup div.signup-input div.form-group.custom-url .help-info i {
   margin-right: 10px;
 }
-form.signup div.form-group.custom-url .help-info .help-block {
+form.signup div.signup-input div.form-group.custom-url .help-info .help-block {
   font-size: 18px;
   clear: both;
   margin: 0 auto;
