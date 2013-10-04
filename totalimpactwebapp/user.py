@@ -17,6 +17,21 @@ logger = logging.getLogger("tiwebapp.user")
 def now_in_utc():
     return datetime.datetime.utcnow()
 
+class CollectionTiid(db.Model):
+    cid = db.Column(db.Text, primary_key=True, index=True)
+    tiid = db.Column(db.Text, primary_key=True)
+
+    def __init__(self, **kwargs):
+        logger.debug(u"new CollectionTiid {kwargs}".format(
+            kwargs=kwargs))                
+        super(CollectionTiid, self).__init__(**kwargs)
+
+    def __repr__(self):
+        return '<CollectionTiid {cid} {tiid}>'.format(
+            cid=self.cid, 
+            tiid=self.tiid)
+
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     given_name = db.Column(db.String(64))
@@ -173,24 +188,7 @@ def refresh_products_from_core_collection(collection_id):
     return (r.text, r.status_code)
 
 
-def make_collection_for_user(user, alias_tiids, prepped_request):
-    email = user.email.lower()
-
-    prepped_request.headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-    prepped_request.data = {"aliases": alias_tiids, "title": email}
-    r = requests.Session.send(prepped_request)
-
-    user.collection_id = r.json()["collection"]["_id"]
-    return user
-
-
-
-
-def create_user(user_request_dict, api_root, db):
-    logger.debug(u"Creating new user")
-
-    # create the user's collection first
-    # ----------------------------------
+def create_user_collection(user_request_dict, api_root):
     lowercased_email = unicode(user_request_dict["email"]).lower()
     collection_id = _make_id(6)
 
@@ -205,14 +203,25 @@ def create_user(user_request_dict, api_root, db):
 
     r = requests.post(url, data=json.dumps(data), headers=headers, params=params)
 
+    collection_doc = r.json()["collection"]
+    return collection_doc
+
+
+def create_user(user_request_dict, api_root, db):
+    logger.debug(u"Creating new user")
+
+    # create the user's collection first
+    # ----------------------------------
+    collection_doc = create_user_collection(user_request_dict, api_root)
+    collection_id = collection_doc["_id"]
 
     # then create the actual user
     #----------------------------
 
     # have to explicitly unicodify ascii-looking strings even when encoding
-    # is set by client, it seems:
+    # is set by client, it seems:    
     user = User(
-        email=lowercased_email,
+        email=unicode(user_request_dict["email"]).lower(),
         password=unicode(user_request_dict["password"]),
         given_name=unicode(user_request_dict["given_name"]),
         surname=unicode(user_request_dict["surname"]),
@@ -239,6 +248,12 @@ def create_user(user_request_dict, api_root, db):
         id=user.id,
         slug=user.url_slug
     ))
+
+    tiids = collection_doc["alias_tiids"].values()
+    for tiid in tiids:
+        collection_tiid = CollectionTiid(cid=collection_id, tiid=tiid)
+        db.session.add(collection_tiid)
+    db.session.commit()
 
     return user
 
