@@ -8617,10 +8617,10 @@ div.importers div.importer-tile {
   border-right: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
   text-align: center;
-  cursor: pointer;
   position: relative;
+  cursor: pointer;
 }
-div.importers div.importer-tile:hover {
+div.importers div.importer-tile.not-run:hover {
   -webkit-box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
   box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
@@ -8628,21 +8628,18 @@ div.importers div.importer-tile:hover {
   -webkit-transition: box-shadow 0.3s;
   transition: box-shadow 0.3s;
 }
-div.importers div.importer-tile.has-products {
-  -webkit-box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.3);
-  box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.3);
+div.importers div.importer-tile.has-run {
+  -webkit-box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.2);
   cursor: default;
   background: #fafafa;
 }
-div.importers div.importer-tile.has-products:hover {
-  box-shadow: none;
-}
-div.importers div.importer-tile.has-products div.importer-name {
+div.importers div.importer-tile.has-run div.importer-name {
   float: left;
   margin-left: 15%;
 }
-div.importers div.importer-tile.has-products div.imported-products-count {
+div.importers div.importer-tile.has-run div.imported-products-count {
   display: block;
 }
 div.importers div.importer-tile div.importer-name img {

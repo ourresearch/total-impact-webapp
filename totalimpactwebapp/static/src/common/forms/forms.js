@@ -35,7 +35,6 @@ angular.module('directives.forms', [])
       scope.isValid = function() {
         return formController.$valid;
       }
-      console.log(formController)
     }
 
   }

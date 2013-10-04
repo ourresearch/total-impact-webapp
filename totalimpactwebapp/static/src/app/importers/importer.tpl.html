@@ -2,7 +2,7 @@
 
 <div class="importer-tile"
      ng-click="showImporterWindow()"
-     ng-class="{'has-products': products.length}">
+     ng-class="{'has-run': importerHasRun, 'not-run': !importerHasRun}">
 
    <div class="importer-name"><img ng-src="{{ importer.logoPath }}"></div>
    <div class="imported-products-count">

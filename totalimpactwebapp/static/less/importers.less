@@ -125,20 +125,19 @@ div.importers {
       border-right: 1px solid #ccc;
       border-bottom: 1px solid #ccc;
       text-align: center;
-      cursor: pointer;
       position: relative;
-      &:hover {
+      cursor: pointer;
+      &.not-run:hover {
          .drop-shadow(0, 1px, 7px, .3);
          z-index: 1;
          -webkit-transition: box-shadow .3s;
          transition: box-shadow .3s;
       }
-      &.has-products {
-         .inner-shadow(0, 1px, 7px, .3);
-         cursor: default;
+      &.has-run {
          &:hover {
-            box-shadow: none;
          }
+         .inner-shadow(0, 1px, 7px, .2);
+         cursor: default;
          background: #fafafa;
          div.importer-name{
             float:left;
