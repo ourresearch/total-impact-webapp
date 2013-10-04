@@ -23,10 +23,10 @@ class TestUser(unittest.TestCase):
         )
 
     def test_instantiation(self):
-        u = user.User("foo", "bar", "baz")
+        u = user.User("foo", "bar")
 
     def test_names_use_defaults_if_not_set_explicitly(self):
-        u = user.User("foo", "bar", "baz")
+        u = user.User("foo", "bar")
         assert_equals(
             u.given_name,
             "Anonymous"
@@ -38,14 +38,14 @@ class TestUser(unittest.TestCase):
         )
 
     def test_slug_smooshes_first_and_last_name(self):
-        u = user.User("foo", "bar", "baz", given_name=u"Willie", surname=u"Nelson")
+        u = user.User("foo", "bar", given_name=u"Willie", surname=u"Nelson")
         assert_equals(
             u.url_slug,
             "WillieNelson"
         )
 
     def test_uniqueify_slug(self):
-        u = user.User("foo", "bar", "baz", given_name=u"John", surname=u"Smith")
+        u = user.User("foo", "bar", given_name=u"John", surname=u"Smith")
         assert_equals(
             u.url_slug,
             "JohnSmith"
@@ -57,7 +57,7 @@ class TestUser(unittest.TestCase):
         )
 
     def test_uniqueify_slug_for_default_name(self):
-        u = user.User(u"foo", u"bar", u"baz")
+        u = user.User(u"foo", u"bar")
         u.uniqueify_slug()
         assert_equals(
             u.url_slug,
@@ -66,7 +66,7 @@ class TestUser(unittest.TestCase):
 
 
     def test_initial_url_slug_is_ascii_even_when_names_are_unicode(self):
-        u = user.User("foo", "bar", "baz",
+        u = user.User("foo", "bar",
                       given_name=u"Matsuo", surname=u"Bash\u014D")
 
         assert_equals(
@@ -76,7 +76,7 @@ class TestUser(unittest.TestCase):
 
     def test_fails_gracefully_when_given_unasciiable_chars(self):
         # kanji don't degrade to anything useful in latin alphabet:
-        u = user.User("foo", "bar", "baz", given_name=u"\u6000", surname=u"\u6001")
+        u = user.User("foo", "bar", given_name=u"\u6000", surname=u"\u6001")
         assert_equals(
             u.url_slug,
             "user639787"
