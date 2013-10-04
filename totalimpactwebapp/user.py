@@ -18,7 +18,7 @@ def now_in_utc():
     return datetime.datetime.utcnow()
 
 class CollectionTiid(db.Model):
-    cid = db.Column(db.Text, primary_key=True, index=True)
+    cid = db.Column(db.Text, db.ForeignKey('user.collection_id'), primary_key=True, index=True)
     tiid = db.Column(db.Text, primary_key=True)
 
     def __init__(self, **kwargs):
@@ -47,10 +47,17 @@ class User(db.Model):
     github_id = db.Column(db.String(64))
     slideshare_id = db.Column(db.String(64))
 
+    tiid_links = db.relationship('CollectionTiid', lazy='subquery', cascade="all, delete-orphan",
+        backref=db.backref("user", lazy="subquery"))
+
+
     @property
     def full_name(self):
         return (self.given_name + " " + self.surname).strip()
 
+    @property
+    def tiids(self):
+        return [tiid_link.tiid for tiid_link in self.tiid_links]
 
     def __init__(self, email, password, **kwargs):
         self.email = email
@@ -117,11 +124,11 @@ class User(db.Model):
         return (collection, status_code)
 
     def add_products(self, aliases_to_add):
-        (collection, status_code) = add_products_to_core_collection(self.collection_id, aliases_to_add)
+        (collection, status_code) = add_products_to_core_collection(self.id, self.collection_id, aliases_to_add, db)
         return (collection, status_code)
 
     def delete_products(self, tiids_to_delete):
-        (collection, status_code) = delete_products_from_core_collection(self.collection_id, tiids_to_delete)
+        (collection, status_code) = delete_products_from_core_collection(self.id, self.collection_id, tiids_to_delete, db)
         return (collection, status_code)
 
     def refresh_products(self):
@@ -146,7 +153,7 @@ def get_collection_from_core(collection_id, include_items=1):
     return (r.text, r.status_code)
 
 
-def add_products_to_core_collection(collection_id, aliases_to_add):
+def add_products_to_core_collection(profile_id, collection_id, aliases_to_add, db):
     query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
@@ -157,10 +164,27 @@ def add_products_to_core_collection(collection_id, aliases_to_add):
             data=json.dumps({"aliases": aliases_to_add}), 
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
+    collection_doc = r.json()
+    tiids = collection_doc["alias_tiids"].values()
+
+    profile_object = User.query.get(profile_id)
+    db.session.merge(profile_object)
+
+    for tiid in tiids:
+        if tiid not in profile_object.tiids:
+            profile_object.tiid_links += [CollectionTiid(cid=collection_id, tiid=tiid)]
+    try:
+        db.session.commit()
+    except (IntegrityError, FlushError) as e:
+        db.session.rollback()
+        logger.warning(u"Fails Integrity check in add_products_to_core_collection for {cid}, rolling back.  Message: {message}".format(
+            cid=collection_id, 
+            message=e.message))
+
     return (r.text, r.status_code)
 
 
-def delete_products_from_core_collection(collection_id, tiids_to_delete):
+def delete_products_from_core_collection(profile_id, collection_id, tiids_to_delete, db):
     query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
@@ -170,6 +194,20 @@ def delete_products_from_core_collection(collection_id, tiids_to_delete):
             params={"http_method": "DELETE"}, 
             data=json.dumps({"tiids": tiids_to_delete}), 
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+
+    profile_object = User.query.get(profile_id)
+    db.session.merge(profile_object)
+    
+    for collection_tiid_obj in profile_object.tiid_links:
+        if collection_tiid_obj.tiid in tiids_to_delete:
+            profile_object.tiid_links.remove(collection_tiid_obj)
+    try:
+        db.session.commit()
+    except (IntegrityError, FlushError) as e:
+        db.session.rollback()
+        logger.warning(u"Fails Integrity check in delete_products_from_core_collection for {cid}, rolling back.  Message: {message}".format(
+            cid=collection_id, 
+            message=e.message))
 
     return (r.text, r.status_code)
 
