@@ -82,18 +82,17 @@ function GenreList(items) {
 function Coll(collViews){
     this.views = collViews;
     this.id = null
-    this.items = {}
+    this.products = {}
 
     this.addItemsFromDicts = function(newItemDicts) {
-        for (var i=0; i<newItemDicts.length; i++) {
-            var tiid = newItemDicts[i]["_id"]
-            this.items[tiid] = new Item(newItemDicts[i], new ItemView($), $)
+        for (var tiid in newItemDicts) {
+            this.products[tiid] = new Item(newItemDicts[tiid], new ItemView($), $)
         }
     }
 
 
     this.read = function(interval, lastCollAction, startTime) {
-        console.log("reading collection")
+        console.log("reading profile")
         var startTime = startTime || new Date()
 
         var thisThing = this
@@ -101,9 +100,7 @@ function Coll(collViews){
 
         var incompleteAnswerCallback = function(data){
             console.log("still updating")
-            thisThing.title = data.title
-            thisThing.alias_tiids = data.alias_tiids
-            thisThing.addItemsFromDicts(data.items)
+            thisThing.addItemsFromDicts(data.products)
 
             thisThing.render.call(thisThing)
 
@@ -114,11 +111,11 @@ function Coll(collViews){
                 analytics.track("Timed out profile load", {
                     "seconds": elapsedSeconds,
                     "collection id": thisThing.id,
-                    "number products": data.items.length,
+                    "number products": _.size(data.products),
                     "prev collection action": lastCollAction
                 })
 
-                thisThing.views.finishUpdating(thisThing.items, "error")
+                thisThing.views.finishUpdating(thisThing.products, "error")
 
             }
             else {
@@ -139,32 +136,30 @@ function Coll(collViews){
                     incompleteAnswerCallback(data)
                },
                200: function(data) {
-                   console.log("collection done updating")
-                   console.log("sending the last collection action to analytics: ", lastCollAction)
+                   console.log("profile done updating")
+                   console.log("sending the last profile action to analytics: ", lastCollAction)
 
 
                    var elapsedSeconds = (new Date() - startTime)/1000
                    analytics.track("Completed profile load", {
                         "seconds": elapsedSeconds,
                         "collection id": thisThing.id,
-                        "number products": data.items.length,
+                        "number products": data.products.length,
                         "prev collection action": lastCollAction
 
                     })
 
-                   thisThing.alias_tiids = data.alias_tiids
-                   thisThing.title = data.title
-                   thisThing.addItemsFromDicts(data.items)
+                   thisThing.addItemsFromDicts(data.products)
 
                    thisThing.render.call(thisThing)
-                   thisThing.views.finishUpdating(thisThing.items, "ready")
+                   thisThing.views.finishUpdating(thisThing.products, "ready")
 
 
                    return false;
                },
                404: function(){
-                   // add this later when the collection create call is asynch on the server.
-                   console.log("got a 404; the collection hasn't been created yet. That's ok, trying again.")
+                   // add this later when the profile create call is asynch on the server.
+                   console.log("got a 404; the profile hasn't been created yet. That's ok, trying again.")
                },
                500: function() {
                     console.log("failed to finish update; got a status=500")
@@ -172,7 +167,7 @@ function Coll(collViews){
                         "collection id": thisThing.id,
                         "prev collection action": lastCollAction
                     })
-                    thisThing.views.finishUpdating(thisThing.items, "error")
+                    thisThing.views.finishUpdating(thisThing.products, "error")
                },
                503: function() {
                     console.log("failed to finish update; got a status=503")
@@ -180,7 +175,7 @@ function Coll(collViews){
                         "collection id": thisThing.id,
                         "prev collection action": lastCollAction
                     })
-                    thisThing.views.finishUpdating(thisThing.items, "error")
+                    thisThing.views.finishUpdating(thisThing.products, "error")
                }
             }
         });
@@ -220,7 +215,7 @@ function Coll(collViews){
                    contentType: "application/json; charset=utf-8",
                    data:  JSON.stringify(payload),
                    success: function(data){
-                       console.log("finished updating the collection!")
+                       console.log("finished updating the profile products!")
                        onSuccess(data)
                    }
                })
@@ -234,7 +229,7 @@ function Coll(collViews){
             type: "POST",
             data: JSON.stringify({}),
             success: function(data){
-               console.log("refreshing collection.")
+               console.log("refreshing profile products.")
                thisThing.read(1000, "refresh");
             }});
         }
@@ -257,7 +252,7 @@ function Coll(collViews){
 
 
     this.render = function(){
-        this.views.renderItems(this.items)
+        this.views.renderItems(this.products)
 //        this.views.renderTitle(this.title)
 
     }
@@ -281,7 +276,7 @@ function CollViews() {
     }
 
     // state is "ready" or "error"  (error if timed out while still loading)
-    this.finishUpdating = function(items, state){
+    this.finishUpdating = function(products, state){
         // setup page header
         $("#page-header img").remove()
         changeControlGroupState(
@@ -289,8 +284,8 @@ function CollViews() {
             state
         )
 
-        console.log("number of items in collection:", _.size(items))
-        $("#num-items span.value").text(_.size(items))
+        console.log("number of products in profile:", _.size(products))
+        $("#num-items span.value").text(_.size(products))
 
         // setup item-level zooming
         $("ul.active li.item div.item-header").addClass("zoomable")
@@ -385,7 +380,7 @@ function CollController(coll, collViews) {
                 start: function() {item$.slideUp();},
                 success: function(data){
                     console.log("deleted, done. blam.", data)
-                    $("#num-items span.value").text(_.size(data.alias_tiids))
+                    $("#num-items span.value").text(_.size(data.products))
                 },
                 onNotLoggedIn: that.collViews.onEditNotLoggedIn,
                 onNotOwner: that.collViews.onEditNotOwner

@@ -144,107 +144,81 @@ class User(db.Model):
     def get_id(self):
         return unicode(self.id)
 
-    def get_products(self, get_products=1):
-        (collection, status_code) = get_collection_from_core(
-            self.collection_id,
-            get_products
-        )
-        return (collection, status_code)
+    def get_products(self):
+        (products, status_code) = get_products_from_core(self.tiids)
+        return (products, status_code)
 
     def add_products(self, aliases_to_add):
-        (collection, status_code) = add_products_to_core_collection(self.id, self.collection_id, aliases_to_add, db)
-        return (collection, status_code)
+        added_tiids = add_products_to_user(self.id, aliases_to_add, db)
+        return (json.dumps({"added_tiids": added_tiids}), 200)
 
     def delete_products(self, tiids_to_delete):
-        (collection, status_code) = delete_products_from_core_collection(self.id, self.collection_id, tiids_to_delete, db)
-        return (collection, status_code)
+        delete_products_from_user(self.id, tiids_to_delete, db)
+        return (json.dumps({"deleted_tiids": tiids_to_delete}), 200)
 
     def refresh_products(self):
-        return refresh_products_from_core_collection(self.collection_id)
+        return refresh_products_in_core(self.tiids)
 
     def __repr__(self):
         return '<User {name}>'.format(name=self.full_name)
 
 
 
-def get_collection_from_core(collection_id, include_items=1):
-    logger.debug(u"running a GET query for /collection/{collection_id} the api".format(
-        collection_id=collection_id))
-
-    query = u"{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
+def get_products_from_core(tiids):
+    query = u"{core_api_root}/v1/products/{tiids_string}?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
-        collection_id=collection_id
+        tiids_string=",".join(tiids)
     )
-    r = requests.get(query, params={"include_items": include_items})
+    r = requests.get(query)
 
     return (r.text, r.status_code)
 
 
-def add_products_to_core_collection(user_id, collection_id, aliases_to_add, db):
-    query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
-        core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_KEY"),
-        collection_id=collection_id
-    )
-    r = requests.post(query, 
-            params={"http_method": "PUT"}, 
-            data=json.dumps({"aliases": aliases_to_add}), 
-            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-
-    collection_doc = r.json()
-    tiids = collection_doc["alias_tiids"].values()
-
+def add_products_to_user(user_id, aliases_to_add, db):
+    tiids = create_products_on_core(aliases_to_add, g.roots["api"])
     user_object = User.query.get(user_id)
     db.session.merge(user_object)
 
     for tiid in tiids:
         if tiid not in user_object.tiids:
             user_object.tiid_links += [UserTiid(user_id=user_id, tiid=tiid)]
+
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in add_products_to_core_collection for {user_id}, rolling back.  Message: {message}".format(
+        logger.warning(u"Fails Integrity check in add_products_to_user for {user_id}, rolling back.  Message: {message}".format(
             user_id=user_id, 
             message=e.message))
 
-    return (r.text, r.status_code)
+    return tiids
 
 
-def delete_products_from_core_collection(user_id, collection_id, tiids_to_delete, db):
-    query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
-        core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_KEY"),
-        collection_id=collection_id
-    )
-    r = requests.post(query, 
-            params={"http_method": "DELETE"}, 
-            data=json.dumps({"tiids": tiids_to_delete}), 
-            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-
+def delete_products_from_user(user_id, tiids_to_delete, db):
     user_object = User.query.get(user_id)
     db.session.merge(user_object)
     
-    for collection_tiid_obj in user_object.tiid_links:
-        if collection_tiid_obj.tiid in tiids_to_delete:
-            user_object.tiid_links.remove(collection_tiid_obj)
+    for user_tiid_obj in user_object.tiid_links:
+        if user_tiid_obj.tiid in tiids_to_delete:
+            user_object.tiid_links.remove(user_tiid_obj)
+
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in delete_products_from_core_collection for {cid}, rolling back.  Message: {message}".format(
-            cid=collection_id, 
+        logger.warning(u"Fails Integrity check in delete_products_from_user for {user_id}, rolling back.  Message: {message}".format(
+            user_id=user_id, 
             message=e.message))
 
-    return (r.text, r.status_code)
+    return
 
 
-def refresh_products_from_core_collection(collection_id):
-    query = "{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
+def refresh_products_in_core(tiids):
+    query = "{core_api_root}/v1/products/{tiids_string}?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
-        collection_id=collection_id
+        tiids_string=",".join(tiids)
     )
     r = requests.post(
         query,
