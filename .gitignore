@@ -11,7 +11,6 @@ doc/_build/*
 /nbproject
 .webassets-cache
 build
-dist
 venv
 .idea
 packed.css
