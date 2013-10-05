@@ -226,35 +226,21 @@ def refresh_products_from_core_collection(collection_id):
     return (r.text, r.status_code)
 
 
-def create_user_collection(user_request_dict, api_root):
-    lowercased_email = unicode(user_request_dict["email"]).lower()
-    collection_id = _make_id(6)
-
-    url = api_root + "/v1/collection?key={api_key}".format(
+def create_products_on_core(aliases, core_api_root):
+    url = core_api_root + "/v1/products?key={api_key}".format(
         api_key=os.getenv("API_KEY"))
-    params = {"collection_id": collection_id}
-    data = {
-        "aliases": user_request_dict["alias_tiids"],
-        "title": lowercased_email
-    }
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+    data = {"aliases": aliases}
 
     r = requests.post(url, data=json.dumps(data), headers=headers, params=params)
 
-    collection_doc = r.json()["collection"]
-    return collection_doc
+    products_dict = r.json()["products"]
+    tiids = products_dict.keys()
+    return tiids
 
 
-def create_user(user_request_dict, api_root, db):
+def create_user(user_request_dict, core_api_root, db):
     logger.debug(u"Creating new user")
-
-    # create the user's collection first
-    # ----------------------------------
-    collection_doc = create_user_collection(user_request_dict, api_root)
-    collection_id = collection_doc["_id"]
-
-    # then create the actual user
-    #----------------------------
 
     # have to explicitly unicodify ascii-looking strings even when encoding
     # is set by client, it seems:    
@@ -263,7 +249,7 @@ def create_user(user_request_dict, api_root, db):
         password=unicode(user_request_dict["password"]),
         given_name=unicode(user_request_dict["given_name"]),
         surname=unicode(user_request_dict["surname"]),
-        collection_id=collection_id,
+        collection_id=None,
         orcid_id=unicode(user_request_dict["external_profile_ids"]["orcid"]),
         github_id=unicode(user_request_dict["external_profile_ids"]["github"]),
         slideshare_id=unicode(user_request_dict["external_profile_ids"]["slideshare"])
@@ -287,7 +273,8 @@ def create_user(user_request_dict, api_root, db):
         slug=user.url_slug
     ))
 
-    tiids = collection_doc["alias_tiids"].values()
+    aliases = user_request_dict["alias_tiids"]
+    tiids = create_products_on_core(aliases, core_api_root)
     for tiid in tiids:
         collection_tiid = CollectionTiid(cid=collection_id, tiid=tiid)
         db.session.add(collection_tiid)
@@ -295,12 +282,3 @@ def create_user(user_request_dict, api_root, db):
 
     return user
 
-def _make_id(len=6):
-    '''Make an id string.
-
-    Currently uses only lowercase and digits for better say-ability. Six
-    places gives us around 2B possible values.
-    C/P'd from core/collection.py
-    '''
-    choices = string.ascii_lowercase + string.digits
-    return ''.join(random.choice(choices) for x in range(len))
