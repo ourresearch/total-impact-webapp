@@ -232,7 +232,7 @@ def create_products_on_core(aliases, core_api_root):
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
     data = {"aliases": aliases}
 
-    r = requests.post(url, data=json.dumps(data), headers=headers, params=params)
+    r = requests.post(url, data=json.dumps(data), headers=headers)
 
     products_dict = r.json()["products"]
     tiids = products_dict.keys()
