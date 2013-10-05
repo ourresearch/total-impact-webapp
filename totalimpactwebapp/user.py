@@ -18,7 +18,7 @@ def now_in_utc():
     return datetime.datetime.utcnow()
 
 class UserTiid(db.Model):
-    user_id = db.Column(db.Text, db.ForeignKey('user.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     tiid = db.Column(db.Text, primary_key=True)
 
     def __init__(self, **kwargs):
