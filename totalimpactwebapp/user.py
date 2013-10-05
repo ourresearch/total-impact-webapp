@@ -17,20 +17,18 @@ logger = logging.getLogger("tiwebapp.user")
 def now_in_utc():
     return datetime.datetime.utcnow()
 
-class CollectionTiid(db.Model):
-    cid = db.Column(db.Text, db.ForeignKey('user.collection_id'), primary_key=True, index=True)
+class UserTiid(db.Model):
+    user_id = db.Column(db.Text, db.ForeignKey('user.id'), primary_key=True)
     tiid = db.Column(db.Text, primary_key=True)
-    profile_id = db.Column(db.Text, index=True)
 
     def __init__(self, **kwargs):
-        logger.debug(u"new CollectionTiid {kwargs}".format(
+        logger.debug(u"new UserTiid {kwargs}".format(
             kwargs=kwargs))                
-        super(CollectionTiid, self).__init__(**kwargs)
+        super(UserTiid, self).__init__(**kwargs)
 
     def __repr__(self):
-        return '<CollectionTiid {profile_id} {cid} {tiid}>'.format(
-            profile_id=self.profile_id, 
-            cid=self.cid, 
+        return '<UserTiid {user_id} {tiid}>'.format(
+            user_id=self.user_id, 
             tiid=self.tiid)
 
 
@@ -49,7 +47,7 @@ class User(db.Model):
     github_id = db.Column(db.String(64))
     slideshare_id = db.Column(db.String(64))
 
-    tiid_links = db.relationship('CollectionTiid', lazy='subquery', cascade="all, delete-orphan",
+    tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
 
 
@@ -155,7 +153,7 @@ def get_collection_from_core(collection_id, include_items=1):
     return (r.text, r.status_code)
 
 
-def add_products_to_core_collection(profile_id, collection_id, aliases_to_add, db):
+def add_products_to_core_collection(user_id, collection_id, aliases_to_add, db):
     query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
@@ -174,13 +172,13 @@ def add_products_to_core_collection(profile_id, collection_id, aliases_to_add, d
 
     for tiid in tiids:
         if tiid not in profile_object.tiids:
-            profile_object.tiid_links += [CollectionTiid(profile_id=profile_id, cid=collection_id, tiid=tiid)]
+            profile_object.tiid_links += [UserTiid(user_id=user_id, tiid=tiid)]
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in add_products_to_core_collection for {profile_id}, rolling back.  Message: {message}".format(
-            profile_id=profile_id, 
+        logger.warning(u"Fails Integrity check in add_products_to_core_collection for {user_id}, rolling back.  Message: {message}".format(
+            user_id=user_id, 
             message=e.message))
 
     return (r.text, r.status_code)
@@ -291,8 +289,8 @@ def create_user(user_request_dict, api_root, db):
 
     tiids = collection_doc["alias_tiids"].values()
     for tiid in tiids:
-        collection_tiid = CollectionTiid(profile_id=user.id, cid=collection_id, tiid=tiid)
-        db.session.add(collection_tiid)
+        user_tiid = UserTiid(user_id=user.id, tiid=tiid)
+        db.session.add(user_tiid)
     db.session.commit()
 
     return user
