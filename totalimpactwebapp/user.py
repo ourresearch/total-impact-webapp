@@ -249,7 +249,7 @@ def create_user(user_request_dict, core_api_root, db):
         password=unicode(user_request_dict["password"]),
         given_name=unicode(user_request_dict["given_name"]),
         surname=unicode(user_request_dict["surname"]),
-        collection_id=None,
+        collection_id="",
         orcid_id=unicode(user_request_dict["external_profile_ids"]["orcid"]),
         github_id=unicode(user_request_dict["external_profile_ids"]["github"]),
         slideshare_id=unicode(user_request_dict["external_profile_ids"]["slideshare"])
