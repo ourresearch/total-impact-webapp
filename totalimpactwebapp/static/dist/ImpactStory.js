@@ -4040,7 +4040,7 @@ angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", fun
     "<div class=\"signup-input creating\" ng-controller=\"signupCreatingCtrl\">\n" +
     "   <div class=\"intro\"><br>We're creating your profile now! Right now, we're scouring the web, finding the ways your products have made an impact...</div>\n" +
     "\n" +
-    "   <div class=\"update-progress\" ng-show=\"{{ numNotDone }}\">\n" +
+    "   <div class=\"update-progress\" ng-show=\"numNotDone\">\n" +
     "      <div class=\"products not-done\">\n" +
     "         <span class=\"count still-working\">{{ numNotDone }}</span>\n" +
     "         <span class=\"descr\">now updating</span>\n" +
