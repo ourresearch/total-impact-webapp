@@ -7716,17 +7716,24 @@ li.product .biblio {
   width: 700px;
 }
 li.product .biblio h5 {
+  margin-top: 0;
+}
+li.product .biblio h5 a.title-text {
   font-size: 16px;
   color: #333;
   margin: 0 0 -3px 0;
   float: left;
   padding: 0 5px 10px 0;
 }
-li.product .biblio h5 a {
+li.product .biblio h5 a.title-text:hover {
+  color: #ff4e00;
+  text-decoration: none;
+}
+li.product .biblio h5 a.linkout {
   color: #ddd;
   margin-left: 5px;
 }
-li.product .biblio h5 a:hover {
+li.product .biblio h5 a.linkout:hover {
   color: #ff4e00;
   text-decoration: none;
 }
@@ -8046,6 +8053,54 @@ form.signup div.intro {
   color: #999;
   line-height: 1.8;
   font-size: 22px;
+}
+form.signup div.signup-input.creating div.products {
+  margin: 0 50px;
+  text-align: center;
+}
+form.signup div.signup-input.creating div.products span.count {
+  display: block;
+  font-size: 150px;
+  font-weight: bolder;
+  line-height: 1;
+}
+form.signup div.signup-input.creating div.products span.descr {
+  font-size: 16px;
+  text-align: center;
+}
+form.signup div.signup-input.creating div.products.done {
+  float: right;
+}
+form.signup div.signup-input.creating div.products.not-done {
+  float: left;
+}
+form.signup div.signup-input.creating pre {
+  clear: both;
+  margin-top: 300px;
+}
+form.signup div.signup-input.creating pre:before,
+form.signup div.signup-input.creating pre:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+form.signup div.signup-input.creating pre:after {
+  clear: both;
+}
+form.signup div.signup-input.creating pre:before,
+form.signup div.signup-input.creating pre:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+form.signup div.signup-input.creating pre:after {
+  clear: both;
 }
 form.signup div.signup-input div.form-group input.form-control {
   font-size: 25px;

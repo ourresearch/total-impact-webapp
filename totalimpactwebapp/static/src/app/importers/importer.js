@@ -29,12 +29,12 @@ angular.module('importers.importer')
   $scope.onImport = function(){
     Loading.start()
     var profileId = NewProfile.getId()
-    console.log("now calling /importer/" + $scope.importer.name)
+    console.log("now calling /importer/" + $scope.importer.endpoint)
     console.log("here's the profile ID we'll update:", profileId)
 
     // import the new products
     Products.save(
-      {importerName: $scope.importer.name},
+      {importerName: $scope.importer.endpoint},
       {input: $scope.importer.input},
       function(resp, headers){
         var tiids;

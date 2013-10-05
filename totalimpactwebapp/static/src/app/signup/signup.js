@@ -103,6 +103,7 @@ angular.module( 'signup', [
       },
       setId: function(newId){id = newId},
       getId: function(){return id},
+      getSlug: function(){return about.url_slug},
       "about": about
     }
 
@@ -153,29 +154,50 @@ angular.module( 'signup', [
   .controller( 'signupPasswordCtrl', function ( $scope, Signup ) {
   })
 
-  .controller( 'signupCreatingCtrl', function ( $scope, $timeout, NewProfile, UsersProducts ) {
-    var productsDoneUpdating = function(products) {
-      return _.filter(products, function(product){
+  .controller( 'signupCreatingCtrl', function ( $scope, $timeout, $location, NewProfile, UsersProducts ) {
+
+    var numDone = function(products, completedStatus){
+      console.log("numDone input: ", products)
+
+      var productsDone =  _.filter(products, function(product){
         return !product.currently_updating
       })
-    }
 
-    $scope.products = UsersProducts.query(
-      {id: NewProfile.getId()},
-      function(resp){console.log("i got some products!", resp)}
+      if (completedStatus) {
+        return productsDone.length
+      }
+      else {
+        return products.length - productsDone.length
+      }
+    };
 
-    )
-    $scope.numDone = function(products){
-      ret = productsDoneUpdating(products).length
-      console.log("numDone: ", ret)
-      return ret
-    }
-    $scope.numNotDone = function(products){
-      var ret = products.length - productsDoneUpdating(products).length;
-      console.log("numNotDone: ", ret)
-      return ret
 
-    }
+    (function tick() {
+      console.log("running tick!");
+      console.log("Tick! NewProfile.getId(): ", NewProfile.getId());
+
+
+      UsersProducts.query(
+        {id: NewProfile.getId()},
+//        {id:183},
+        function(resp){
+          console.log("i got some products!", resp);
+
+          if (numDone(resp, false) == 0) {
+            var profilePath = "/"+NewProfile.getSlug();
+            console.log("redirecting to path", profilePath);
+            $location.path(profilePath);
+            $timeout.cancel(signupPoll);
+          }
+
+          $scope.numDone = numDone(resp, true)
+          $scope.numNotDone = numDone(resp, false)
+
+          var signupPoll = $timeout(tick, 500);
+
+        }
+      )
+    })();
 
 
   })

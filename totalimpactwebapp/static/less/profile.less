@@ -183,17 +183,26 @@ li.product {
       float:left;
       width: 700px;
       h5 {
-         font-size:16px;
-         color: #333;
-         margin: 0 0 -3px 0;
-         float: left;
-         padding: 0 5px 10px 0;
+         margin-top: 0;
          a {
-            color:  #ddd;
-            margin-left:5px;
-            &:hover {
-               color:  @linkColor;
-               text-decoration: none;
+            &.title-text {
+               font-size:16px;
+               color: #333;
+               margin: 0 0 -3px 0;
+               float: left;
+               padding: 0 5px 10px 0;
+               &:hover {
+                  color:  @linkColor;
+                  text-decoration: none;
+               }
+            }
+            &.linkout {
+               color:  #ddd;
+               margin-left:5px;
+               &:hover {
+                  color:  @linkColor;
+                  text-decoration: none;
+               }
             }
          }
       }
