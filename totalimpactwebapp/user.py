@@ -20,6 +20,7 @@ def now_in_utc():
 class CollectionTiid(db.Model):
     cid = db.Column(db.Text, db.ForeignKey('user.collection_id'), primary_key=True, index=True)
     tiid = db.Column(db.Text, primary_key=True)
+    profile_id = db.Column(db.Text, index=True)
 
     def __init__(self, **kwargs):
         logger.debug(u"new CollectionTiid {kwargs}".format(
@@ -27,7 +28,8 @@ class CollectionTiid(db.Model):
         super(CollectionTiid, self).__init__(**kwargs)
 
     def __repr__(self):
-        return '<CollectionTiid {cid} {tiid}>'.format(
+        return '<CollectionTiid {profile_id} {cid} {tiid}>'.format(
+            profile_id=self.profile_id, 
             cid=self.cid, 
             tiid=self.tiid)
 
@@ -172,13 +174,13 @@ def add_products_to_core_collection(profile_id, collection_id, aliases_to_add, d
 
     for tiid in tiids:
         if tiid not in profile_object.tiids:
-            profile_object.tiid_links += [CollectionTiid(cid=collection_id, tiid=tiid)]
+            profile_object.tiid_links += [CollectionTiid(profile_id=profile_id, cid=collection_id, tiid=tiid)]
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in add_products_to_core_collection for {cid}, rolling back.  Message: {message}".format(
-            cid=collection_id, 
+        logger.warning(u"Fails Integrity check in add_products_to_core_collection for {profile_id}, rolling back.  Message: {message}".format(
+            profile_id=profile_id, 
             message=e.message))
 
     return (r.text, r.status_code)
@@ -289,7 +291,7 @@ def create_user(user_request_dict, api_root, db):
 
     tiids = collection_doc["alias_tiids"].values()
     for tiid in tiids:
-        collection_tiid = CollectionTiid(cid=collection_id, tiid=tiid)
+        collection_tiid = CollectionTiid(profile_id=user.id, cid=collection_id, tiid=tiid)
         db.session.add(collection_tiid)
     db.session.commit()
 
