@@ -28,7 +28,7 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
   });
-
+  console.log("alert!")
 }]);
 
 
@@ -3235,8 +3235,10 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
 
 angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("infopages/about.tpl.html",
-    "<div class=\"main\" id=\"about\">\n" +
+    "<div class=\"main infopage\" id=\"about\">\n" +
+    "\n" +
     "   <div class=\"wrapper\">\n" +
+    "      <h2 class=\"infopage-heading\">About</h2>\n" +
     "\n" +
     "\n" +
     "      <p>ImpactStory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.\n" +
@@ -3289,7 +3291,9 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
 
 angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("infopages/faq.tpl.html",
-    "<div class=\"main\" id=\"faq\"><div class=\"wrapper\">\n" +
+    "<div class=\"main infopage\" id=\"faq\"><div class=\"wrapper\">\n" +
+    "   <h2 class=\"infopage-heading\">FAQ</h2>\n" +
+    "\n" +
     "   <div id=\"toc\"></div>\n" +
     "\n" +
     "   <h3 id=\"what\" class=\"first\">what is ImpactStory?</h3>\n" +
@@ -3491,59 +3495,60 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
 
 angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("infopages/landing.tpl.html",
-    "\n" +
-    "<div id=\"tagline\">\n" +
-    "   <div class=\"wrapper\">\n" +
-    "      <h1>Share the full story of your <br>research impact.</h1>\n" +
-    "      <p class=\"subtagline\">ImpactStory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>\n" +
-    "      <div id=\"call-to-action\">\n" +
-    "         <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">Make my impact profile</a>\n" +
-    "         <a href=\"/CarlBoettiger\" class=\"btn btn-large btn-primary secondary-action\" id=\"view-sample-collection\">View a sample profile</a>\n" +
+    "<div class=\"main infopage landing\">\n" +
+    "   <div id=\"tagline\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <h1>Share the full story of your <br>research impact.</h1>\n" +
+    "         <p class=\"subtagline\">ImpactStory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>\n" +
+    "         <div id=\"call-to-action\">\n" +
+    "            <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">Make my impact profile</a>\n" +
+    "            <a href=\"/CarlBoettiger\" class=\"btn btn-large btn-primary secondary-action\" id=\"view-sample-collection\">View a sample profile</a>\n" +
+    "         </div>\n" +
     "      </div>\n" +
+    "\n" +
     "   </div>\n" +
     "\n" +
-    "</div>\n" +
-    "\n" +
-    "<div id=\"selling-points\">\n" +
-    "   <ul class=\"wrapper\" >\n" +
-    "      <li>\n" +
-    "         <h3 id=\"metrics-in-seconds\"><i class=\"icon-time icon-2x\"></i><span class=\"text\">View metrics in seconds</span></h3>\n" +
-    "         <p>Point us to your slides, code, datasets, and articles. In a few seconds, you'll have a report detailing your impacts: citations, bookmarks, downloads, tweets, and more.</p>\n" +
-    "      </li>\n" +
-    "      <li class=\"middle\">\n" +
-    "         <h3 id=\"embed-metrics-anywhere\"><i class=\"icon-suitcase icon-2x\"></i><span class=\"text\">Embed them anywhere</span></h3>\n" +
-    "         <p>Drop ImpactStory's embeddable <a href=\"/api-docs\">Javascript widget</a> into your own online CV or website to show the impacts of your projects.</p>\n" +
-    "      </li>\n" +
-    "      <li>\n" +
-    "         <h3 id=\"its-open\"><i class=\"icon-wrench icon-2x\"></i><span class=\"text\">Open data,<br> open source.</span></h3>\n" +
-    "         <p>Our data, like our <a href=\"http://github.com/total-impact\">source code</a>, is wide open.  As a non-profit, we're built around supporting open tools to nurture Web-native scholarship.</p>\n" +
-    "      </li>\n" +
-    "   </ul>\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "<div id=\"sources\">\n" +
-    "   <div class=\"wrapper\">\n" +
-    "      <h2>Uncover your impacts from all across the Web: </h2>\n" +
-    "      <ul id=\"source-logos\">\n" +
-    "         <li><img src=\"/static/img/logos/citeulike.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/delicious.jpg\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/dryad.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/f1000.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/github.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/mendeley.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/orcid.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/plos.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/pmc.gif\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/scienceseeker.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/scopus.jpg\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
-    "         <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
+    "   <div id=\"selling-points\">\n" +
+    "      <ul class=\"wrapper\" >\n" +
+    "         <li>\n" +
+    "            <h3 id=\"metrics-in-seconds\"><i class=\"icon-time icon-2x\"></i><span class=\"text\">View metrics in seconds</span></h3>\n" +
+    "            <p>Point us to your slides, code, datasets, and articles. In a few seconds, you'll have a report detailing your impacts: citations, bookmarks, downloads, tweets, and more.</p>\n" +
+    "         </li>\n" +
+    "         <li class=\"middle\">\n" +
+    "            <h3 id=\"embed-metrics-anywhere\"><i class=\"icon-suitcase icon-2x\"></i><span class=\"text\">Embed them anywhere</span></h3>\n" +
+    "            <p>Drop ImpactStory's embeddable <a href=\"/api-docs\">Javascript widget</a> into your own online CV or website to show the impacts of your projects.</p>\n" +
+    "         </li>\n" +
+    "         <li>\n" +
+    "            <h3 id=\"its-open\"><i class=\"icon-wrench icon-2x\"></i><span class=\"text\">Open data,<br> open source.</span></h3>\n" +
+    "            <p>Our data, like our <a href=\"http://github.com/total-impact\">source code</a>, is wide open.  As a non-profit, we're built around supporting open tools to nurture Web-native scholarship.</p>\n" +
+    "         </li>\n" +
     "      </ul>\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "   <div id=\"sources\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <h2>Uncover your impacts from all across the Web: </h2>\n" +
+    "         <ul id=\"source-logos\">\n" +
+    "            <li><img src=\"/static/img/logos/citeulike.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/delicious.jpg\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/dryad.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/f1000.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/github.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/mendeley.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/orcid.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/plos.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/pmc.gif\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/scienceseeker.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/scopus.jpg\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
     "");

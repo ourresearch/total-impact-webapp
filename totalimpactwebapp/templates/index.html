@@ -1,64 +1,80 @@
-{% extends "base.html" %}
-{% set page_title = "Share the full story of your research impact" %}
+<!DOCTYPE html>
+<html ng-app="app" lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+   <base href="/">
+   <meta charset="utf-8">
+   <title>ImpactStory: {{ page_title }}</title>
+   <meta name="description" content="ImpactStory">
+   <meta name="author" content="ImpactStory">
+   <meta name="google-site-verification" content="JWD8WcfINuKxjh31KejAnijd9Cx34IYEH1-bDMXVzjE" />
+   <meta name="google-site-verification" content="ItyBFNIMWtJdRaONjqSQHM8ro_fRjTl9HO3Fq9IsZpM" />
 
 
-{% block content %}
 
-<div id="tagline">
-   <div class="wrapper">
-      <h1>Share the full story of your <br>research impact.</h1>
-      <p class="subtagline">ImpactStory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>
-      <div id="call-to-action">
-         <a href="/create" class="btn btn-large btn-primary primary-action" id="create-collection">Make my impact profile</a>
-         <a href="/CarlBoettiger" class="btn btn-large btn-primary secondary-action" id="view-sample-collection">View a sample profile</a>
-      </div>
-   </div>
 
+   <!-- Include stuff that has to be at the very tippity-top of the page-->
+   <!-------------------------------------------------------------------------->
+   <!-- newrelic logging. -->
+   {{ g.newrelic_header|safe }}
+
+   <!-- errorception logging. -->
+{#   <script>#}
+{#       (function(_,e,rr,s){_errs=[s];var c=_.onerror;_.onerror=function(){var a=arguments;_errs.push(a);#}
+{#       c&&c.apply(this,a)};var b=function(){var c=e.createElement(rr),b=e.getElementsByTagName(rr)[0];#}
+{#       c.src="//beacon.errorception.com/"+s+".js";c.async=!0;b.parentNode.insertBefore(c,b)};#}
+{#       _.addEventListener?_.addEventListener("load",b,!1):_.attachEvent("onload",b)})#}
+{#       (window,document,"script","51ef3db2db2bef20770003e2");#}
+{#   </script>#}
+
+
+
+
+   <!-- Load stylesheets -->
+   <!-------------------------------------------------------------------------->
+   <!--[if lt IE 9]>
+   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+   <![endif]-->
+
+   <link href='http://fonts.googleapis.com/css?family=Rokkitt:400,700' rel='stylesheet' type='text/css' />
+   <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+
+   <!-- stylesheet is in less/css dir; it's a hack to get around limitations of CodeKit -->
+   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='less/css/ImpactStory.css') }}" />
+   <link rel="icon" type="image/ico" href="{{ url_for('static', filename='dist/img/favicon.ico') }}" />
+
+
+
+
+   <!-- Load scripts -->
+   <!-------------------------------------------------------------------------->
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script>
+
+   <script type="text/javascript" src="{{ url_for('static', filename='dist/bootstrap.js') }}"></script>
+   <script type="text/javascript" src="{{ url_for('static', filename='dist/angular.js') }}"></script> <!-- extra Angular modules -->
+   <script type="text/javascript" src="{{ url_for('static', filename='js/browser-fixes.js') }}"></script> <!-- get rid of this -->
+   <script type="text/javascript" src="{{ url_for('static', filename='dist/ImpactStory.js') }}"></script>
+
+
+</head>
+
+
+<body ng-controller="AppCtrl">
+
+<div class="staging-warning"><div class="content"><span>staging, yo</span></div></div>
+
+<div ng-include="'header.tpl.html'" ng-show="showHeaderAndFooter"></div>
+<div ng-include="'notifications.tpl.html'" class="container-fluid" ng-show="notifications.getCurrent().length"></div>
+<div id="container">
+   <div ng-view class="main-view"></div>
 </div>
-
-<div id="selling-points">
-    <ul class="wrapper" >
-        <li>
-            <h3 id="metrics-in-seconds"><i class="icon-time icon-2x"></i><span class="text">View metrics in seconds</span></h3>
-            <p>Point us to your slides, code, datasets, and articles. In a few seconds, you'll have a report detailing your impacts: citations, bookmarks, downloads, tweets, and more.</p>
-        </li>
-        <li class="middle">
-            <h3 id="embed-metrics-anywhere"><i class="icon-suitcase icon-2x"></i><span class="text">Embed them anywhere</span></h3>
-            <p>Drop ImpactStory's embeddable <a href="/api-docs">Javascript widget</a> into your own online CV or website to show the impacts of your projects.</p>
-        </li>
-        <li>
-            <h3 id="its-open"><i class="icon-wrench icon-2x"></i><span class="text">Open data,<br> open source.</span></h3>
-            <p>Our data, like our <a href="http://github.com/total-impact">source code</a>, is wide open.  As a non-profit, we're built around supporting open tools to nurture Web-native scholarship.</p>
-        </li>
-    </ul>
-</div>
-
-
-<div id="sources">
-   <div class="wrapper">
-      <h2>Uncover your impacts from all across the Web: </h2>
-      <ul id="source-logos">
-         <li><img src="{{ url_for('static', filename='img/logos/citeulike.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/crossref.jpg') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/delicious.jpg') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/dryad.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/f1000.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/figshare.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/github.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/mendeley.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/orcid.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/plos.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/pmc.gif') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/pubmed.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/scienceseeker.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/scopus.jpg') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/slideshare.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/twitter.png') }}" /></li>
-         <li><img src="{{ url_for('static', filename='img/logos/wikipedia.png') }}" /></li>
-      </ul>
-   </div>
-</div>
+<div ng-include="'footer.tpl.html'" ng-show="showHeaderAndFooter"></div>
 
 
 
-{% endblock %}
+
+<script src="{{ url_for('static', filename='js/bottom-of-page.js') }}" type="text/javascript"></script>
+{{ newrelic_footer|safe }}
+</body>
+</html>

@@ -6163,12 +6163,6 @@ Some of my own mixins
 
     More info at: http://lesselements.com
 -----------------------------------------------------*/
-/* globals */
-html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
 body {
   color: #333;
 }
@@ -6193,20 +6187,16 @@ body div#namechange a.dismiss {
 body div#namechange a.dismiss:hover {
   color: #ff4e00;
 }
-ul,
-li {
-  padding: 0;
-  margin: 0;
-}
-li {
-  list-style-type: none;
-}
 ol {
   padding-left: 2em;
 }
 ol li {
   list-style-type: decimal;
   margin-bottom: .5em;
+}
+ul {
+  padding: 0;
+  list-style-type: none;
 }
 form .form-group label {
   font-size: 20px;
@@ -6385,22 +6375,6 @@ ul.notifications li.alert {
   border-right: none;
   border-top: none;
   text-align: center;
-}
-body.report #page-header,
-body.user-profile #page-header {
-  padding-top: 80px;
-}
-body.report #page-header h2,
-body.user-profile #page-header h2 {
-  font-size: 35px;
-  text-align: left;
-  background: transparent;
-  border-bottom: 1px solid #ddd;
-}
-body.report div.main,
-body.user-profile div.main {
-  margin: 0;
-  padding: 0;
 }
 /**
  * Extra large button extensions. Extends `.btn`.
@@ -6652,290 +6626,28 @@ div.navbar.site-nav .navbar-inner ul.nav.pull-right li#logged-in div.dropdown-me
   min-width: 200px;
   padding: 5px 0 10px 0;
 }
-/* registration form stuff
+/* infopages in general.
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div.inactive .ready {
-  display: none;
+div.infopage {
+  padding-top: 100px;
 }
-div.inactive .working {
-  display: none;
-}
-div.inactive .success {
-  display: none;
-}
-div.inactive .error {
-  display: none;
-}
-div.ready .inactive {
-  display: none;
-}
-div.ready .working {
-  display: none;
-}
-div.ready .success {
-  display: none;
-}
-div.ready .error {
-  display: none;
-}
-div.ready label {
-  color: #555;
-}
-div.working .inactive {
-  display: none;
-}
-div.working .ready {
-  display: none;
-}
-div.working .success {
-  display: none;
-}
-div.working .error {
-  display: none;
-}
-div.working label {
-  color: #ff4e00;
-}
-div.working button {
-  display: none;
-}
-div.success .inactive {
-  display: none;
-}
-div.success .ready {
-  display: none;
-}
-div.success .working {
-  display: none;
-}
-div.success .error {
-  display: none;
-}
-div.error .inactive {
-  display: none;
-}
-div.error .ready {
-  display: none;
-}
-div.error .working {
-  display: none;
-}
-div.error .success {
-  display: none;
-}
-div.control-group label {
-  clear: both;
-  width: 250px;
-  font-weight: bold;
-}
-div.control-group img {
-  height: 20px;
-  margin: -3px 5px 0 0;
-}
-div#login-register {
-  background: #fcfcfc;
-  border: 3px solid #ff4e00;
-  width: 580px;
-}
-div#login-register h3 {
-  font-family: rokkitt, helvetica, sans-serif;
-  color: #ff4e00;
-  margin: 0 0 20px;
-}
-div#login-register h3 span.or {
-  float: right;
-  font-family: helvetica, arial, sans-serif;
-  font-size: 12px;
-  color: #555;
-  margin-right: -26px;
-  font-style: italic;
-  font-weight: normal;
-  background: #fcfcfc;
-  padding: 5px;
-  margin-top: -6px;
-}
-div#login-register form {
-  width: 250px;
-  float: left;
-}
-div#login-register form input {
-  width: 220px;
-}
-div#login-register form button {
-  float: right;
-  margin: 5px 15px 15px 0;
-}
-div#login-register form:first-child {
-  margin-right: 30px;
-  padding-right: 15px;
-  border-right: 1px solid #ddd;
-}
-.editableform-loading {
-  background: url(../img/loading-bar.gif) no-repeat;
-  background-position: center center;
-}
-/* page header
+/* landing page
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div#page-header {
-  padding-top: 110px;
-  /*    background-color: #ff4e00;*/
-
-  /*    background: url(img/h2-bg.png) bottom  left repeat-x;*/
-
-}
-div#page-header h2 {
-  font-family: rokkitt, georgia, sans-serif;
-  font-weight: bold;
-  font-size: 50px;
-  text-align: center;
-  margin: 40px 0 0 0;
-  float: none;
-  color: #444;
-  background: url(../img/grad-border-bottom.png) no-repeat bottom;
-}
-div.main {
-  background: #fff;
-  padding-top: 30px;
-  font-size: 18px;
-  padding-bottom: 100px;
-  color: #333;
-  min-height: 350px;
-  clear: both;
-}
-div.main h3:first {
-  margin-top: 0;
-}
-/* import products
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-div.import-products {
-  color: #333;
-  font-weight: bold;
-}
-div.import-products div.control-group.submit img {
-  height: 32px;
-  padding-left: 5px;
-}
-div.import-products form.importers {
-  width: 270px;
-  margin-right: 60px;
-  float: left;
-}
-div.import-products form.importers h3 {
-  margin-bottom: 20px;
-}
-div.import-products form.importers span.limit {
-  display: block;
-  color: #888;
-  font-weight: normal;
-  font-size: 12px;
-}
-div.import-products form.importers div.indicator p#artcounter {
-  margin-top: 0;
-  font-size: 21px;
-  text-align: left;
-  color: #777;
-}
-div.import-products form.importers div.indicator p#artcounter span.count {
-  font-weight: bold;
-  color: #333;
-  font-size: 23px;
-}
-div.import-products form.importers.register div.control-group {
-  margin-bottom: 0;
-}
-div.import-products form.importers div.control-group {
-  margin-bottom: 30px;
-}
-div.import-products form.importers div.control-group.fileupload div.uneditable-input {
-  width: 100px;
-}
-div.import-products form.importers div.control-group.submit {
-  margin-bottom: 0;
-}
-div.import-products form.importers div.control-group.submit label {
-  color: #555;
-}
-div.import-products form.importers div.control-group.submit #go-button {
-  width: 255px;
-  font-family: Lato, helvetica, arial, sans-serif;
-  font-weight: bold;
-  text-align: center;
-  padding: 15px;
-  background: #0053b0;
-  text-shadow: none;
-  border: none;
-  font-size: 22px;
-}
-div.import-products form.importers div.control-group.submit #go-button:hover {
-  background: #004797;
-}
-div.import-products form.importers div.control-group.submit span.go {
-  color: #ccc;
-  margin-left: 20px;
-  font-size: 30px;
-}
-div.import-products form.importers div.control-group.submit span.go i {
-  margin-right: 10px;
-  font-size: 30px;
-}
-div.import-products form.importers div.control-group label.control-label a.help {
-  text-decoration: none;
-  font-weight: normal;
-  float: right;
-  color: #888;
-}
-div.import-products form.importers div.control-group label.control-label a.help:hover {
-  text-decoration: underline;
-  color: #ff4e00;
-}
-div.import-products form.importers div.control-group label.control-label.ids span.success {
-  float: right;
-}
-div.import-products form.importers div.control-group label.control-label i {
-  margin-right: 3px;
-  margin-left: -15px;
-  width: 15px;
-}
-div.import-products form.importers div.control-group label.control-label i.ready {
-  color: #ff4e00;
-}
-div.import-products form.importers div.control-group div.controls input {
-  font-size: 16px;
-  width: 240px;
-}
-div.import-products form.importers div.control-group div.controls input.name {
-  width: 111px;
-  margin-bottom: 45px;
-}
-div.import-products form.importers div.control-group div.controls textarea {
-  line-height: 1.6;
-  width: 240px;
-  height: 130px;
-}
-div.import-products form.importers div.control-group div.controls textarea.default {
-  color: #999;
-}
-/* homepage
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-div#tagline {
+div.infopage.landing {
   background: #ff4e00;
-  padding: 1px;
-  margin-top: -120px;
 }
-div#tagline div.wrapper {
+div.infopage.landing div#tagline {
+  padding: 1px;
+}
+div.infopage.landing div#tagline div.wrapper {
   width: 900px;
-  padding: 100px 0 0;
   text-align: center;
 }
-div#tagline div.wrapper h1 {
+div.infopage.landing div#tagline div.wrapper h1 {
   color: #fff;
   font-size: 80px;
   line-height: .8;
@@ -6944,17 +6656,17 @@ div#tagline div.wrapper h1 {
   font-family: 'rokkitt', 'georgia', serif;
   font-weight: lighter;
 }
-div#tagline div.wrapper p.subtagline {
+div.infopage.landing div#tagline div.wrapper p.subtagline {
   color: #fff;
   font-size: 20px;
   padding: 5px 0 10px;
   margin-bottom: 40px;
   font-weight: normal;
 }
-div#tagline div.wrapper #call-to-action {
+div.infopage.landing div#tagline div.wrapper #call-to-action {
   margin-bottom: 50px;
 }
-div#tagline div.wrapper #call-to-action a.btn-large {
+div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large {
   padding: 13px 29px;
   font-size: 25px;
   -webkit-border-top-right-radius: 10px;
@@ -6976,22 +6688,22 @@ div#tagline div.wrapper #call-to-action a.btn-large {
   font-family: 'rokkitt', 'georgia', serif;
   font-family: Lato, Helvetica, Arial, sans-serif;
 }
-div#tagline div.wrapper #call-to-action a.btn-large.primary-action {
+div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.primary-action {
   background: #0053b0;
   font-weight: bold;
   margin-right: 20px;
 }
-div#tagline div.wrapper #call-to-action a.btn-large.primary-action:hover {
+div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.primary-action:hover {
   background: #004797;
 }
-div#tagline div.wrapper #call-to-action a.btn-large.secondary-action {
+div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.secondary-action {
   background: #555;
   font-size: 18px;
   vertical-align: bottom;
   font-weight: normal;
   color: #eee;
 }
-div#tagline div.wrapper #call-to-action a.btn-large.secondary-action:hover {
+div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.secondary-action:hover {
   background: #444;
 }
 /* the "selling points" section
@@ -7104,18 +6816,6 @@ th {
 }
 #faq li {
   list-style-type: circle;
-}
-#faq {
-  background: #fff;
-  padding-bottom: 50px;
-  padding-top: 40px;
-}
-#faq h3 {
-  margin-top: 70px;
-}
-#faq h3.first {
-  margin-top: 0;
-  padding-top: 0;
 }
 ul#providers-metadata > li {
   margin-bottom: 15px;
@@ -7314,33 +7014,6 @@ div#docs ul#required-attributes li {
 .description {
   /*    margin-left: 50px;*/
 
-}
-/* misc snippets
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-.ie {
-  display: none;
-}
-#ie-fail-warning {
-  width: 800px;
-  margin-top: 50px;
-  margin-bottom: 200px;
-  border: 5px solid #ccc;
-  padding: 30px;
-}
-#ie-fail-warning img {
-  float: left;
-  margin: -10px 20px 0 0;
-  height: 80px;
-}
-#ie-fail-warning h2 {
-  font-family: rokkitt, serif;
-  font-size: 65px;
-  padding-bottom: 10px;
-}
-#ie-fail-warning p {
-  font-size: 18px;
 }
 /* footer
 *****************************************************************************

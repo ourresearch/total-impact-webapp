@@ -1,17 +1,5 @@
-
-// useful mixins, from https://github.com/dmitryf/elements
-
 @navbarHeight: 50px;
 
-
-
-/* globals */
-html {
-    margin:0;
-    padding:0;
-    height: 100%;
-
-}
 body {
    color:  #333;
    div#container {
@@ -35,19 +23,16 @@ body {
    }
 
 }
-ul, li {
-    padding: 0;
-    margin: 0;
-}
-li {
-   list-style-type: none;
-}
 ol {
    padding-left:2em;
    li {
       list-style-type: decimal;
       margin-bottom: .5em;
    }
+}
+ul {
+   padding: 0;
+   list-style-type: none;
 }
 
 form {
@@ -194,14 +179,6 @@ div.modal {
 }
 
 
-// managing login and edit states (commented out b/c Angular should be doing this)
-//body.logged-in {
-//   .not-logged-in {display:none;}
-//}
-//body.not-logged-in {
-//   .logged-in {display:none;}
-//}
-
 // manage the staging warning
 div.staging-warning { display:none;}
 body.staging {
@@ -255,23 +232,6 @@ ul.notifications {
    }
 }
 
-// Hack so that we can modify legacy collections at the same time
-// as user profiles.
-body.report, body.user-profile {
-   #page-header {
-      padding-top:80px;
-      h2 {
-         font-size: 35px;
-         text-align: left;
-         background: transparent;
-         border-bottom:  1px solid #ddd;
-      }
-   }
-   div.main{
-      margin: 0;
-      padding: 0;
-   }
-}
 
 /**
  * Extra large button extensions. Extends `.btn`.
@@ -491,372 +451,93 @@ div.navbar.site-nav {
 
 
 
-/* registration form stuff
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-div {
 
-   // there are five states a div can have:
-   &.inactive {
-      .ready {display:none;}
-      .working {display:none;}
-      .success {display:none;}
-      .error {display:none;}
-   }
-   &.ready {
-      .inactive {display:none;}
-      .working {display:none;}
-      .success {display:none;}
-      .error {display:none;}
-      label { color: #555;}
-   }
-   &.working {
-      .inactive {display:none;}
-      .ready {display:none;}
-      .success {display:none;}
-      .error {display:none;}
-      label { color: @linkColor;}
-      button {display: none;}
-   }
-   &.success {
-      .inactive {display:none;}
-      .ready {display:none;}
-      .working {display:none;}
-      .error {display:none;}
-//      label { color: @successText;}
-   }
-   &.error {
-      .inactive {display:none;}
-      .ready {display:none;}
-      .working {display:none;}
-      .success {display:none;}
-//      label { color: @errorText;}
-   }
-
-   &.control-group {
-      label {
-         clear:both;
-         width: 250px;
-         font-weight: bold;
-      }
-      img{
-         height: 20px;
-         margin: -3px 5px 0 0;
-      }
-   }
-}
-
-div#login-register {
-   background: #fcfcfc;
-   border: 3px solid @linkColor;
-   width: 580px;
-   h3 {
-      font-family: rokkitt, helvetica, sans-serif;
-
-      color:@linkColor;
-      margin:0 0 20px;
-      span.or { // quick hack
-         float:right;
-         font-family: helvetica, arial, sans-serif;
-         font-size: 12px;
-         color: #555;
-         margin-right:-26px;
-         font-style: italic;
-         font-weight: normal;
-         background: #fcfcfc;
-         padding:5px;
-         margin-top: -6px;
-      }
-   }
-   form {
-      width: 250px;
-      float:left;
-      input{width:220px;}
-      button{
-         float:right;
-         margin:5px 15px 15px 0;
-      }
-      &:first-child {
-         margin-right:30px;
-         padding-right: 15px;
-         border-right: 1px solid #ddd;
-      }
-   }
-}
-
-.editableform-loading {
-   background: url(../img/loading-bar.gif) no-repeat;
-   background-position: center center;
-}
-
-
-
-
-
-
-/* page header
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-div#page-header {
-    padding-top: 110px;
-    /*    background-color: #ff4e00;*/
-    /*    background: url(img/h2-bg.png) bottom  left repeat-x;*/
-}
-div#page-header h2 {
-   font-family: rokkitt, georgia, sans-serif;
-
-   font-weight: bold;
-   font-size: 50px;
-   text-align: center;
-   margin: 40px 0 0 0;
-   float:none;
-   color:#444;
-   background: url(../img/grad-border-bottom.png) no-repeat bottom;
-}
-
-
-div.main {
-    background: #fff;
-    padding-top: 30px;
-    font-size: 18px;
-    padding-bottom: 100px;
-    color: #333;
-    min-height: 350px;
-//   border-top:  3px solid #eee;
-   clear:both;
-
-   div.wrapper {
-//      border-top: 1px solid #999;
-   }
-
-
-}
-div.main p {
-}
-div.main h3:first {
-    margin-top: 0;
-
-}
-
-
-
-
-
-
-
-
-
-
-/* import products
+/* infopages in general.
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
 
-div.import-products {
-   color: #333;
-   font-weight: bold;
-
-   div.control-group.submit img {
-      // this is separate because sometimes (in the report add-products
-      // modal), the control-group isn't in a form.
-      height:32px;
-      padding-left: 5px;
-
-   }
-
-   form.importers {
-      width: 270px;
-      margin-right: 60px;
-      float:left;
-      h3 {
-         margin-bottom: 20px;
-      }
-      span.limit {
-         display:block;
-         color: #888;
-         font-weight: normal;
-         font-size: 12px;
-      }
-      div.indicator{
-         p#artcounter {
-            margin-top:0;
-            font-size: 21px;
-            text-align: left;
-            color: #777;
-            span.count{
-               font-weight: bold;
-               color: #333;
-               font-size: 23px;
-            }
-         }
-      }
-
-
-      &.register {
-         div.control-group {
-            margin-bottom: 0;
-         }
-      }
-
-      div.control-group {
-         margin-bottom: 30px;
-         &.fileupload {
-            div.uneditable-input {
-               width: 100px;
-            }
-         }
-         &.submit {
-            margin-bottom: 0;
-
-            label { color: #555;}
-            #go-button {
-               width: 255px;
-               font-family: Lato, helvetica, arial, sans-serif;
-               font-weight: bold;
-               text-align: center;
-               padding: 15px;
-               background: @accentColor;
-               text-shadow: none;
-               border: none;
-               font-size: 22px;
-               &:hover{
-                  background: @accentColorHover;
-               }
-            }
-            span.go { // for the go-button "working" msg
-               color:  #ccc;
-               margin-left:20px;
-               font-size: 30px;
-               i {
-                  margin-right:10px;
-                  font-size: 30px;
-               }
-            }
-         }
-
-
-
-         label.control-label {
-            a.help {
-               text-decoration: none;
-               font-weight: normal;
-               float:right;
-               color: #888;
-               &:hover {
-                  text-decoration: underline;
-                  color:@linkColor;
-               }
-            }
-            &.ids {
-               span.success {
-                  float:right;
-               }
-            }
-            i {
-               margin-right: 3px;
-               margin-left:-15px;
-               width: 15px;
-               &.ready{
-                  color: @linkColor;
-               }
-            }
-
-         }
-
-         div.controls {
-            input{
-               font-size:16px;
-               width:240px;
-               &.name {
-                  width:  111px;
-                  margin-bottom: 45px;
-               }
-            }
-            textarea {
-               line-height: 1.6;
-               &.default{
-                  color: #999;
-               }
-               width: 240px;
-               height: 130px;
-            }
-         }
-      }
-   }
+div.infopage {
+   padding-top: 100px;
 }
 
 
 
 
-/* homepage
+
+
+
+
+/* landing page
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-body.index  {
 
-}
-
-div#tagline {
+div.infopage.landing {
    background: @linkColor;
-   padding: 1px;
-   margin-top: -120px; // unlike most pages, we want no space under the nav.
-   div.wrapper {
-      width: 900px;
-      padding: 100px 0 0;
-      text-align: center;
-      h1 {
-         color: #fff;
-         font-size: 80px;
-         line-height: .8;
-         letter-spacing: -2px;
-         padding-bottom: 15px;
-         font-family: 'rokkitt', 'georgia', serif;
-
-         font-weight: lighter;
-      }
-      p.subtagline {
-         color: #fff;
-         font-size: 20px;
-         padding: 5px 0 10px;
-         margin-bottom: 40px;
-         font-weight: normal;
-      }
-
-      #call-to-action {
-         margin-bottom: 50px;
-         a.btn-large {
-            padding: 13px 29px;
-            font-size: 25px;
-            .border-radius(10px, 10px, 10px, 10px);
-            color:  #eee;
+   div#tagline {
+      padding: 1px;
+      div.wrapper {
+         width: 900px;
+   //      padding: 100px 0 0;
+         text-align: center;
+         h1 {
+            color: #fff;
+            font-size: 80px;
+            line-height: .8;
+            letter-spacing: -2px;
+            padding-bottom: 15px;
             font-family: 'rokkitt', 'georgia', serif;
-            font-family: Lato, Helvetica, Arial, sans-serif;
 
-            &.primary-action{
-               background: @accentColor;
-               font-weight: bold;
-               margin-right: 20px;
-               &:hover {
-                  background: @accentColorHover;
-               }
-            }
+            font-weight: lighter;
+         }
+         p.subtagline {
+            color: #fff;
+            font-size: 20px;
+            padding: 5px 0 10px;
+            margin-bottom: 40px;
+            font-weight: normal;
+         }
 
-            &.secondary-action{
-               background: #555;
-               font-size: 18px;
-               vertical-align: bottom;
-               font-weight: normal;
+         #call-to-action {
+            margin-bottom: 50px;
+            a.btn-large {
+               padding: 13px 29px;
+               font-size: 25px;
+               .border-radius(10px, 10px, 10px, 10px);
                color:  #eee;
-               &:hover {
-                  background: #444;
+               font-family: 'rokkitt', 'georgia', serif;
+               font-family: Lato, Helvetica, Arial, sans-serif;
+
+               &.primary-action{
+                  background: @accentColor;
+                  font-weight: bold;
+                  margin-right: 20px;
+                  &:hover {
+                     background: @accentColorHover;
+                  }
+               }
+
+               &.secondary-action{
+                  background: #555;
+                  font-size: 18px;
+                  vertical-align: bottom;
+                  font-weight: normal;
+                  color:  #eee;
+                  &:hover {
+                     background: #444;
+                  }
                }
             }
          }
       }
    }
+
+
 }
+
+
+
 
 
 
@@ -1005,17 +686,6 @@ th {
    list-style-type: circle;
 }
 
-#faq div.wrapper{
-}
-#faq {
-    background: #fff;
-    padding-bottom: 50px;
-    padding-top: 40px;
-   h3 {
-      margin-top: 70px;
-      &.first {margin-top:0; padding-top:0;}
-   }
-}
 
 ul#providers-metadata > li {
     margin-bottom: 15px;
@@ -1230,40 +900,6 @@ div#docs {
 
 
 
-
-
-
-
-
-/* misc snippets
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-
-.ie {display:none;}
-
-#ie-fail-warning {
-   width:  800px;
-   margin-top: 50px;
-   margin-bottom: 200px;
-   border:  5px solid #ccc;
-   padding:  30px;
-
-   img{
-      float:left;
-      margin: -10px 20px 0 0;
-      height: 80px;
-   }
-   h2 {
-      font-family: rokkitt, serif;
-
-      font-size: 65px;
-      padding-bottom: 10px;
-   }
-   p {
-      font-size: 18px;
-   }
-}
 
 
 
