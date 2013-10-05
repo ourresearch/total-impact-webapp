@@ -440,23 +440,10 @@ def user_view():
 
 @app.route("/users/test", methods=["DELETE", "GET"])
 def delete_test_user():
-    coll_delete_params = {
-        "include_items": "true",
-        "api_admin_key": os.getenv("API_ADMIN_KEY")
-    }
     if request.method == "DELETE" or request.args.get("method") == "delete":
-
-        # for now just the first one...should be all of them
         retrieved_users = User.query.filter(User.surname == "impactstory").all()
         for user in retrieved_users:
-            if user.collection_id is None:
-                continue
-
-            url = g.roots["api"] + "/v1/collection/" + user.collection_id
-            r = requests.delete(url, params=coll_delete_params)
-            print "delete colls and items; " + r.text
-
-            print "deleting user ", user.email
+            print "deleting user", user.email
             db.session.delete(user)
 
         db.session.commit()
@@ -466,12 +453,12 @@ def delete_test_user():
         return make_response("these endpoint only supports deleting for now.")
 
 
-@app.route("/users/test/collection_ids")
+@app.route("/users/test/user_ids")
 def test_user_cids():
     test_users = User.query.filter(User.surname == "impactstory").all()
     print "test_users: ", test_users
-    test_collection_ids = [user.collection_id for user in test_users]
-    return json_for_client({"collection_ids": test_collection_ids})
+    test_user_ids = [user.id for user in test_users]
+    return json_for_client({"user_ids": test_user_ids})
 
 
 #------------------ user/:userId/products -----------------
@@ -822,7 +809,7 @@ def collection_report(collection_id):
     )
     
     r = requests.get(url)
-    flash("You're looking at an old-style collection page. Check out our new <a href='http://blog.impactstory.org/2013/06/17/impact-profiles/'>profile pages!</a>", "alert")
+    flash("You're looking at an old-style collection page: it will be disabled soon. Check out our new <a href='http://blog.impactstory.org/2013/06/17/impact-profiles/'>profile pages!</a>", "alert")
     if r.status_code == 200:
         collection = json.loads(r.text)
         return render_template_custom(

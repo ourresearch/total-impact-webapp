@@ -17,18 +17,18 @@ logger = logging.getLogger("tiwebapp.user")
 def now_in_utc():
     return datetime.datetime.utcnow()
 
-class CollectionTiid(db.Model):
-    cid = db.Column(db.Text, db.ForeignKey('user.collection_id'), primary_key=True, index=True)
+class UserTiid(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     tiid = db.Column(db.Text, primary_key=True)
 
     def __init__(self, **kwargs):
-        logger.debug(u"new CollectionTiid {kwargs}".format(
+        logger.debug(u"new UserTiid {kwargs}".format(
             kwargs=kwargs))                
-        super(CollectionTiid, self).__init__(**kwargs)
+        super(UserTiid, self).__init__(**kwargs)
 
     def __repr__(self):
-        return '<CollectionTiid {cid} {tiid}>'.format(
-            cid=self.cid, 
+        return '<UserTiid {user_id} {tiid}>'.format(
+            user_id=self.user_id, 
             tiid=self.tiid)
 
 
@@ -47,7 +47,7 @@ class User(db.Model):
     github_id = db.Column(db.String(64))
     slideshare_id = db.Column(db.String(64))
 
-    tiid_links = db.relationship('CollectionTiid', lazy='subquery', cascade="all, delete-orphan",
+    tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
 
 
@@ -153,7 +153,7 @@ def get_collection_from_core(collection_id, include_items=1):
     return (r.text, r.status_code)
 
 
-def add_products_to_core_collection(profile_id, collection_id, aliases_to_add, db):
+def add_products_to_core_collection(user_id, collection_id, aliases_to_add, db):
     query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
@@ -167,24 +167,24 @@ def add_products_to_core_collection(profile_id, collection_id, aliases_to_add, d
     collection_doc = r.json()
     tiids = collection_doc["alias_tiids"].values()
 
-    profile_object = User.query.get(profile_id)
-    db.session.merge(profile_object)
+    user_object = User.query.get(user_id)
+    db.session.merge(user_object)
 
     for tiid in tiids:
-        if tiid not in profile_object.tiids:
-            profile_object.tiid_links += [CollectionTiid(cid=collection_id, tiid=tiid)]
+        if tiid not in user_object.tiids:
+            user_object.tiid_links += [UserTiid(user_id=user_id, tiid=tiid)]
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in add_products_to_core_collection for {cid}, rolling back.  Message: {message}".format(
-            cid=collection_id, 
+        logger.warning(u"Fails Integrity check in add_products_to_core_collection for {user_id}, rolling back.  Message: {message}".format(
+            user_id=user_id, 
             message=e.message))
 
     return (r.text, r.status_code)
 
 
-def delete_products_from_core_collection(profile_id, collection_id, tiids_to_delete, db):
+def delete_products_from_core_collection(user_id, collection_id, tiids_to_delete, db):
     query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
@@ -195,12 +195,12 @@ def delete_products_from_core_collection(profile_id, collection_id, tiids_to_del
             data=json.dumps({"tiids": tiids_to_delete}), 
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-    profile_object = User.query.get(profile_id)
-    db.session.merge(profile_object)
+    user_object = User.query.get(user_id)
+    db.session.merge(user_object)
     
-    for collection_tiid_obj in profile_object.tiid_links:
+    for collection_tiid_obj in user_object.tiid_links:
         if collection_tiid_obj.tiid in tiids_to_delete:
-            profile_object.tiid_links.remove(collection_tiid_obj)
+            user_object.tiid_links.remove(collection_tiid_obj)
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
@@ -276,8 +276,8 @@ def create_user(user_request_dict, core_api_root, db):
     aliases = user_request_dict["alias_tiids"]
     tiids = create_products_on_core(aliases, core_api_root)
     for tiid in tiids:
-        collection_tiid = CollectionTiid(cid=collection_id, tiid=tiid)
-        db.session.add(collection_tiid)
+        user_tiid = UserTiid(user_id=user.id, tiid=tiid)
+        db.session.add(user_tiid)
     db.session.commit()
 
     return user
