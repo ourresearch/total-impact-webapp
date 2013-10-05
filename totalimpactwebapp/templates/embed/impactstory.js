@@ -6,8 +6,15 @@
     *
     *********************************/
 
-    // {# Jinja stuff inside js comments, to keep editor src highlighting happy. #}
-    // {% include "globals.js" %}
+    // set various roots
+    var api_root = '{{ g.roots.api }}'
+    var webapp_root = '{{ g.roots.webapp }}'
+    var webapp_root_pretty = '{{ g.roots.webapp_pretty }}'
+
+
+    // set other globals
+    var api_key='{{ g.api_key }}'
+    var segmentio_key = '{{ g.segmentio_key }}'
 
     /*********************************
     *
@@ -35,7 +42,14 @@
         stylesheet.media = "all";
         document.getElementsByTagName("head")[0].appendChild(stylesheet);
     }
-    requestStylesheet(webapp_root + "/static/css/embed.css");
+    requestStylesheet(webapp_root + "/static/less/css/embed.css");
+
+
+
+
+
+
+
 
 
     /*********************************

@@ -23,6 +23,21 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 
 
+# i despise that we still have to have this :(
+from flask.ext.assets import Environment, Bundle
+assets = Environment(app)
+
+js_widget = Bundle(
+    'js/jquery-1.8.1.min.js',
+    'js/json3.min.js',
+    'js/icanhaz.js',
+    'js/bootstrap-tooltip-and-popover.js',
+    'js/underscore.js',
+    'js/ti-item.js',
+    # filters="yui_js", # comment this out if you want unminified version
+    output="js/widget.js",
+)
+assets.register('js_widget', js_widget)
 
 
 

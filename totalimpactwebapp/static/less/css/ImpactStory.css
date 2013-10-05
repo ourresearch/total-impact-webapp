@@ -6167,7 +6167,7 @@ body {
   color: #333;
 }
 body div#namechange {
-  font-size: 16px;
+  font-size: 18px;
   background: #444;
   color: #fff;
   min-width: 1100px;
@@ -6187,16 +6187,23 @@ body div#namechange a.dismiss {
 body div#namechange a.dismiss:hover {
   color: #ff4e00;
 }
+body p {
+  font-size: 18px;
+}
 ol {
   padding-left: 2em;
 }
 ol li {
   list-style-type: decimal;
   margin-bottom: .5em;
+  font-size: 18px;
 }
 ul {
   padding: 0;
   list-style-type: none;
+}
+ul li {
+  font-size: 18px;
 }
 form .form-group label {
   font-size: 20px;
