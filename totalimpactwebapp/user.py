@@ -167,12 +167,12 @@ def add_products_to_core_collection(user_id, collection_id, aliases_to_add, db):
     collection_doc = r.json()
     tiids = collection_doc["alias_tiids"].values()
 
-    profile_object = User.query.get(profile_id)
-    db.session.merge(profile_object)
+    user_object = User.query.get(user_id)
+    db.session.merge(user_object)
 
     for tiid in tiids:
-        if tiid not in profile_object.tiids:
-            profile_object.tiid_links += [UserTiid(user_id=user_id, tiid=tiid)]
+        if tiid not in user_object.tiids:
+            user_object.tiid_links += [UserTiid(user_id=user_id, tiid=tiid)]
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
@@ -184,7 +184,7 @@ def add_products_to_core_collection(user_id, collection_id, aliases_to_add, db):
     return (r.text, r.status_code)
 
 
-def delete_products_from_core_collection(profile_id, collection_id, tiids_to_delete, db):
+def delete_products_from_core_collection(user_id, collection_id, tiids_to_delete, db):
     query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_KEY"),
@@ -195,12 +195,12 @@ def delete_products_from_core_collection(profile_id, collection_id, tiids_to_del
             data=json.dumps({"tiids": tiids_to_delete}), 
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-    profile_object = User.query.get(profile_id)
-    db.session.merge(profile_object)
+    user_object = User.query.get(user_id)
+    db.session.merge(user_object)
     
-    for collection_tiid_obj in profile_object.tiid_links:
+    for collection_tiid_obj in user_object.tiid_links:
         if collection_tiid_obj.tiid in tiids_to_delete:
-            profile_object.tiid_links.remove(collection_tiid_obj)
+            user_object.tiid_links.remove(collection_tiid_obj)
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
