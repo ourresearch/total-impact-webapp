@@ -593,36 +593,36 @@ def index():
     return render_template_custom('index.html')
 
 
-@app.route('/faq')
-def faq(): 
-    # get the table of items and identifiers
-    which_items_loc = os.path.join(
-        os.path.dirname(__file__),
-        "static",
-        "whichartifacts.html"
-        )
-    which_item_types = open(which_items_loc).read()
+# @app.route('/faq')
+# def faq():
+#     # get the table of items and identifiers
+#     which_items_loc = os.path.join(
+#         os.path.dirname(__file__),
+#         "static",
+#         "whichartifacts.html"
+#         )
+#     which_item_types = open(which_items_loc).read()
+#
+#     # get the static_meta info for each metric
+#     try:
+#         url = "{api_root}/v1/provider?key={api_key}".format(
+#             api_key=g.api_key,
+#             api_root=g.roots["api"])
+#         r = requests.get(url)
+#         metadata = json.loads(r.text)
+#     except requests.ConnectionError:
+#         metadata = {}
+#
+#     return render_template_custom(
+#         'faq.html',
+#         which_artifacts=which_item_types,
+#         provider_metadata=metadata
+#         )
 
-    # get the static_meta info for each metric
-    try:
-        url = "{api_root}/v1/provider?key={api_key}".format(
-            api_key=g.api_key,
-            api_root=g.roots["api"])
-        r = requests.get(url)
-        metadata = json.loads(r.text)
-    except requests.ConnectionError:
-        metadata = {}
-    
-    return render_template_custom(
-        'faq.html',
-        which_artifacts=which_item_types,
-        provider_metadata=metadata
-        )
 
-
-@app.route('/api-docs')
-def apidocs(): 
-    return render_template_custom('api-docs.html')
+# @app.route('/api-docs')
+# def apidocs():
+#     return render_template_custom('api-docs.html')
 
 
 @app.route("/loading.gif")
