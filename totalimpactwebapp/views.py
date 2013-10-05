@@ -249,7 +249,7 @@ def user_profile(url_slug, new_user_request_obj=None):
             profile=retrieved_user,
             report_id=retrieved_user.collection_id,
             report_id_namespace="impactstory_collection_id",
-            api_query="collection/" + retrieved_user.collection_id
+            api_query="user/{user_id}/products".format(user_id=retrieved_user.id)
         )
 
 @app.route("/<url_slug>/preferences")
