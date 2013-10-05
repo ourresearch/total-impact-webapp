@@ -50,6 +50,8 @@ angular.module('app').controller('AppCtrl', function($scope, i18nNotifications, 
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     UservoiceWidget.updateTabPosition($location.path())
+    $rootScope.showHeaderAndFooter = true;
+
   })
 
 });
