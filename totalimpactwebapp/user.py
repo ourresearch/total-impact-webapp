@@ -17,6 +17,7 @@ logger = logging.getLogger("tiwebapp.user")
 def now_in_utc():
     return datetime.datetime.utcnow()
 
+
 class UserTiid(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     tiid = db.Column(db.Text, primary_key=True)
@@ -30,6 +31,30 @@ class UserTiid(db.Model):
         return '<UserTiid {user_id} {tiid}>'.format(
             user_id=self.user_id, 
             tiid=self.tiid)
+
+
+def sqla_object_to_dict(inst, cls):
+    """
+    from http://stackoverflow.com/questions/7102754/jsonify-a-sqlalchemy-result-set-in-flask
+    dict-ify the sql alchemy query result, so it can be exported to json via json.dumps
+    """
+    convert = dict()
+    # add your coversions for things like datetime's 
+    # and what-not that aren't serializable.
+    d = dict()
+    for c in cls.__table__.columns:
+        v = getattr(inst, c.name)
+        if c.type in convert.keys() and v is not None:
+            try:
+                d[c.name] = convert[c.type](v)
+            except:
+                d[c.name] = "Error:  Failed to covert using ", str(convert[c.type])
+        elif v is None:
+            d[c.name] = str()
+        else:
+            d[c.name] = v
+    #json.dumps(d)
+    return d
 
 
 class User(db.Model):
@@ -58,6 +83,9 @@ class User(db.Model):
     @property
     def tiids(self):
         return [tiid_link.tiid for tiid_link in self.tiid_links]
+
+    def to_dict(self):
+        return sqla_object_to_dict(self, self.__class__)
 
     def __init__(self, email, password, **kwargs):
         self.email = email

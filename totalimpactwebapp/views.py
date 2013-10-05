@@ -105,6 +105,7 @@ def json_for_client(input):
     resp = make_response(json.dumps(obj_dict, sort_keys=True, indent=4), 200)
     resp.mimetype = "application/json"
     return resp
+    
 
 def render_template_custom(template_name, **kwargs):
     kwargs["newrelic_footer"] = newrelic.agent.get_browser_timing_footer()
@@ -435,7 +436,7 @@ def user_view():
     if user is None:
         abort(404, "There's no user with email " + email)
 
-    return json_for_client(user)
+    return json_for_client(user.to_dict())
 
 
 @app.route("/users/test", methods=["DELETE", "GET"])
