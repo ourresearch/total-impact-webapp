@@ -1,1 +1,17 @@
-<h2>Creating your thing!</h2>
+<div class="signup-input creating" ng-controller="signupCreatingCtrl">
+   <div class="intro"><br>We're creating your profile now! Right now, we're scouring the web, finding the ways your products have made an impact...</div>
+
+   <div class="update-progress">
+      <div class="products-not-done">
+         <span class="count still-working">{{ numNotDone(products) }}</span> products.
+         <span class="descr">products still updating</span>
+      </div>
+
+      <div class="products-done">
+         <span class="count finished">{{ numDone(products) }}</span>
+         <span class="descr">products done updating</span>
+      </div>
+   </div>
+   <pre>{{ products | json }}</pre>
+
+</div>

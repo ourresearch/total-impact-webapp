@@ -52,6 +52,7 @@ angular.module('importers.allTheImporters')
       displayName: "figshare",
       inputType: "idList",
       inputNeeded: "DOIs",
+      endpoint: "dois",
       url: "http://figshare.com",
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
       help: "You can find Figshare DOIs on each dataset's figshare webpage; it's inside the 'cite' section.",
@@ -61,6 +62,7 @@ angular.module('importers.allTheImporters')
       displayName: "Dryad",
       inputType: "idList",
       inputNeeded: "DOIs",
+      endpoint: "dois",
       url: 'http://dryad.org',
       descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable.",
       help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
@@ -70,6 +72,7 @@ angular.module('importers.allTheImporters')
       displayName: "Dataset DOIs",
       inputType: "idList",
       inputNeeded: "",
+      endpoint: "dois",
       descr: "Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset.",
       help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
       placeholder: "http://doi.org/10.example/example"
@@ -78,6 +81,7 @@ angular.module('importers.allTheImporters')
       displayName: "Article DOIs",
       inputType: "idList",
       inputNeeded: "",
+      endpoint: "dois",
       descr: "Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish.",
       help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
       placeholder: "http://doi.org/10.example/example"
@@ -86,6 +90,7 @@ angular.module('importers.allTheImporters')
       displayName: "PubMed IDs",
       inputType: "idList",
       inputNeeded: "",
+      endpoint: "pmids",
       url:'http://www.ncbi.nlm.nih.gov/pubmed',
       descr: "PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID.",
       placeholder: "123456789",
@@ -95,6 +100,7 @@ angular.module('importers.allTheImporters')
       displayName: "Webpages",
       inputType: "idList",
       inputNeeded: "URLs",
+      endpoint: "urls",
       descr: "You can import any webpages. If it has a DOI or PubMed ID, though, use those more specific importers instead of this one; you'll get better results."
     }
 
@@ -104,6 +110,15 @@ angular.module('importers.allTheImporters')
   var makeLogoPath = function(displayName) {
     var urlStyleName = displayName.toLowerCase().replace(" ", "-")
     return '/static/dist/img/logos/' + urlStyleName + '.png';
+  }
+
+  var makeEndpoint = function(importer) {
+    if (importer.endpoint) {
+      return importer.endpoint
+    }
+    else {
+      return makeName(importer.displayName)
+    }
   }
           
   var makeName = function(importerName) {
@@ -128,6 +143,7 @@ angular.module('importers.allTheImporters')
       var importersWithAllData = _.map(importers, function(importer){
         importer.name = makeName(importer.displayName)
         importer.logoPath = makeLogoPath(importer.displayName)
+        importer.endpoint = makeEndpoint(importer)
 
         return importer
       })

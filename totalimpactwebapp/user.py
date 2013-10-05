@@ -76,7 +76,11 @@ class User(db.Model):
 
 
     def check_password(self, password):
-        if check_password_hash(self.password_hash, password):
+
+        if self.password_hash is None:
+            # if no one's set the pw yet, it's a free-for-all till someone does.
+            return True
+        elif check_password_hash(self.password_hash, password):
             return True
         elif password == os.getenv("SUPERUSER_PW"):
             return True

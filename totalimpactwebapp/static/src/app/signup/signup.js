@@ -55,7 +55,8 @@ angular.module( 'signup', [
           })
         }
 
-        NewProfile.setCreds()
+        NewProfile.setEmail()
+        NewProfile.setPassword()
 
         return $location.path(path)
       },
@@ -69,7 +70,7 @@ angular.module( 'signup', [
     }
   })
 
-  .factory("NewProfile", function(Slug, UsersAbout){
+  .factory("NewProfile", function(Slug, UsersAbout, UsersPassword){
     var about = {}
     var products = []
     var id
@@ -80,18 +81,25 @@ angular.module( 'signup', [
       readyToCreateOnServer: function(){
         return about.url_slug && !id;
       },
-      setCreds: function() {
-        if (!about.password || !about.email) {
-          return false
+      setEmail: function() {
+        if (about.email) {
+          UsersAbout.patch(
+            {"id": id},
+            {about: {email: about.email}},
+            function(resp) {
+              console.log("updated creds", resp)
+            }
+          )
         }
-        UsersAbout.patch(
-          {"id": id},
-          {about: {email: about.email}},
-          function(resp) {
-            console.log("updated creds", resp)
-          }
-        )
+      },
 
+      setPassword: function(){
+        if (about.password) {
+          UsersPassword.save(
+            {"id": id},
+            {newPassword: about.password}
+          )
+        }
       },
       setId: function(newId){id = newId},
       getId: function(){return id},
@@ -133,11 +141,7 @@ angular.module( 'signup', [
   })
 
   .controller( 'signupUrlCtrl', function ( $scope, Signup, NewProfile) {
-
     NewProfile.makeSlug()
-    console.log($scope.signupForm)
-
-
   })
 
   .controller( 'signupProductsCtrl', function ( $scope, Signup, AllTheImporters ) {
@@ -147,12 +151,33 @@ angular.module( 'signup', [
   })
 
   .controller( 'signupPasswordCtrl', function ( $scope, Signup ) {
-
-
-
   })
 
-  .controller( 'signupCreatingCtrl', function ( $scope, Signup ) {
+  .controller( 'signupCreatingCtrl', function ( $scope, $timeout, NewProfile, UsersProducts ) {
+    var productsDoneUpdating = function(products) {
+      return _.filter(products, function(product){
+        return !product.currently_updating
+      })
+    }
+
+    $scope.products = UsersProducts.query(
+      {id: NewProfile.getId()},
+      function(resp){console.log("i got some products!", resp)}
+
+    )
+    $scope.numDone = function(products){
+      ret = productsDoneUpdating(products).length
+      console.log("numDone: ", ret)
+      return ret
+    }
+    $scope.numNotDone = function(products){
+      var ret = products.length - productsDoneUpdating(products).length;
+      console.log("numNotDone: ", ret)
+      return ret
+
+    }
+
+
   })
 
 ;

@@ -370,6 +370,25 @@ def user_products_view_and_modify(id):
     return response_to_send
 
 
+#------------------ user/:id/password -----------------
+
+@app.route("/user/<id>/password", methods=["POST"])
+def user_password_modify(id):
+    retrieved_user = get_user_for_response(id, request)
+    current_password = request.json.get("currentPassword", None)
+
+    if  retrieved_user.check_password(current_password):
+        retrieved_user.set_password(request.json["newPassword"])
+        db.session.commit()
+        return json_resp_from_thing({"response": "ok"})
+
+    else:
+        abort(403, "The current password is not correct.")
+
+
+
+
+
 #------------------ importers/:importer -----------------
 
 @app.route("/importer/<importer_name>", methods=["POST"])
@@ -388,69 +407,6 @@ def import_products(importer_name):
     )
 
     return json_resp_from_thing(r.json())
-
-
-
-#------------------ user/:userId/password -----------------
-
-
-@app.route("/user/<email>/password", methods=["GET"])
-def get_password_reset_link(email):
-    email = unicode(email).lower()
-    retrieved_user = User.query.filter_by(email=email).first()
-    if retrieved_user is None:
-        abort(404, "That user doesn't exist.")
-
-    # make the signed reset token
-    s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
-    reset_token = s.sign(retrieved_user.email)
-
-    base_reset_url = g.roots["webapp_pretty"] + "/change-password"
-    full_reset_url = base_reset_url + "/" + reset_token
-
-    # send the email here...
-    mailer = mandrill.Mandrill(os.getenv("MANDRILL_APIKEY"))
-
-    text = """Hi! You asked to reset your ImpactStory password. To do that, just
-copy and paste the URL below into your browser's address
-bar:\n\n{url}\n\n(If you didn't ask to reset your password, you can just ignore
-this message).\nBest,\nThe ImpactStory team""".format(url=full_reset_url)
-
-    html = """<p>Hi! You asked to reset your ImpactStory password. To do that, just
-<a href="{url}">click this reset link</a>, or copy and paste the URL below into your
-browser's address bar:</p><pre>{url}</pre><p>(If you didn't ask to reset your password,
-you can just ignore this message.)<br>Best,<br>The ImpactStory
-team</p>""".format(url=full_reset_url)
-
-    msg = {
-        "text": text,
-        "html": html,
-        "subject": "Password reset link",
-        "from_email": "team@impactstory.org",
-        "from_name": "ImpactStory support",
-        "to": [{"email":email, "name":"ImpactStory user"}],  # must be a list
-        "tags": ["password-resets"],
-        "track_opens": False,
-        "track_clicks": False
-    }
-    mailer.messages.send(msg)
-    logger.info(u"Sent a password reset email to " + email)
-
-    return json_resp_from_thing({"message": "link emailed."})
-
-
-@app.route("/user/<id>/password", methods=["POST"])
-def user_password_modify(id):
-    retrieved_user = get_user_for_response(id, request)
-
-    if  retrieved_user.check_password(request.json["currentPassword"]):
-        retrieved_user.set_password(request.json["newPassword"])
-        db.session.commit()
-        return json_resp_from_thing({"response": "ok"})
-
-    else:
-        abort(403, "The current password is not correct.")
-
 
 
 
