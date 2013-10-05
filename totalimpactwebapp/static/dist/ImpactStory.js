@@ -193,7 +193,7 @@ angular.module('importers.allTheImporters')
 
   var makeLogoPath = function(displayName) {
     var urlStyleName = displayName.toLowerCase().replace(" ", "-")
-    return '/static/dist/img/logos/' + urlStyleName + '.png';
+    return '/static/img/logos/' + urlStyleName + '.png';
   }
 
   var makeEndpoint = function(importer) {
@@ -3055,7 +3055,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "<div id=\"footer\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
-    "         <a class=\"brand\" href=\"/\"><img src=\"/static/dist/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
+    "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
     "\n" +
     "         <p>We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>\n" +
     "         <p class=\"license\">\n" +
@@ -3100,7 +3100,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "      <div id=\"footer-funders\" class=\"footer-col\">\n" +
     "         <h3>Supported by</h3>\n" +
     "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
-    "            <img src=\"/static/dist/img/sloan-logo.png\"  width=\"200\"/>\n" +
+    "            <img src=\"/static/img/sloan-logo.png\"  width=\"200\"/>\n" +
     "         </a>\n" +
     "      </div>\n" +
     "\n" +
@@ -3115,7 +3115,7 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "<div class=\"main-header\">\n" +
     "   <div class=\"navbar site-nav\">\n" +
     "      <div class=\"navbar-inner\">\n" +
-    "         <a class=\"brand\" href=\"/\"><img src=\"/static/dist/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
+    "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
     "\n" +
     "            <ul class=\"nav\" ng-show=\"isAuthenticated()\">\n" +
     "               <li ng-class=\"{active:isNavbarActive('projects')}\"><a href=\"/projects\">My Projects</a></li>\n" +
@@ -3129,7 +3129,7 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "            </ul>\n" +
     "            <ul class=\"nav pull-right\" ng-show=\"hasPendingRequests()\">\n" +
     "               <li class=\"divider-vertical\"></li>\n" +
-    "               <li><a href=\"#\"><img src=\"/static/dist/img/spinner.gif\"></a></li>\n" +
+    "               <li><a href=\"#\"><img src=\"/static/img/spinner.gif\"></a></li>\n" +
     "            </ul>\n" +
     "\n" +
     "            <!-- this is where most of the login mgt work is done -->\n" +
@@ -3526,23 +3526,23 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "   <div class=\"wrapper\">\n" +
     "      <h2>Uncover your impacts from all across the Web: </h2>\n" +
     "      <ul id=\"source-logos\">\n" +
-    "         <li><img src=\"/static/dist/img/logos/citeulike.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/crossref.jpg\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/delicious.jpg\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/dryad.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/f1000.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/figshare.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/github.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/mendeley.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/orcid.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/plos.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/pmc.gif\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/pubmed.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/scienceseeker.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/scopus.jpg\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/slideshare.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/twitter.png\" /></li>\n" +
-    "         <li><img src=\"/static/dist/img/logos/wikipedia.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/citeulike.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/delicious.jpg\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/dryad.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/f1000.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/github.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/mendeley.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/orcid.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/plos.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/pmc.gif\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/scienceseeker.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/scopus.jpg\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
+    "         <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
     "</div>\n" +
@@ -4213,7 +4213,7 @@ angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function
 angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup.tpl.html",
     "<div class=\"signup-header\">\n" +
-    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/dist/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
     "      <span class=\"text\">signup</span>\n" +
     "   </h1>\n" +
     "   <ol class=\"signup-steps\">\n" +

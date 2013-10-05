@@ -109,7 +109,7 @@ angular.module('importers.allTheImporters')
 
   var makeLogoPath = function(displayName) {
     var urlStyleName = displayName.toLowerCase().replace(" ", "-")
-    return '/static/dist/img/logos/' + urlStyleName + '.png';
+    return '/static/img/logos/' + urlStyleName + '.png';
   }
 
   var makeEndpoint = function(importer) {

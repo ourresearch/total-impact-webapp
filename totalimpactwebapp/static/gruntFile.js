@@ -4,15 +4,14 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-testacular');
   grunt.loadNpmTasks('grunt-html2js');
 
   // Default task.
   grunt.registerTask('default', ['jshint','build','testacular:unit']);
-  grunt.registerTask('build', ['clean','html2js','concat','copy:assets']);
-  grunt.registerTask('release', ['clean','html2js','uglify','jshint','testacular:unit','concat:index', 'copy:assets','testacular:e2e']);
+  grunt.registerTask('build', ['clean','html2js','concat']);
+  grunt.registerTask('release', ['clean','html2js','uglify','jshint','testacular:unit','concat:index','testacular:e2e']);
   grunt.registerTask('test-watch', ['testacular:watch']);
 
   // Print a timestamp (useful for when watching)
@@ -46,11 +45,7 @@ module.exports = function (grunt) {
       }
     },
     clean: ['<%= distdir %>/*'],
-    copy: {
-      assets: {
-        files: [{ dest: '<%= distdir %>', src : '**', expand: true, cwd: 'src/assets/' }]
-      }
-    },
+
     testacular: {
       unit: { options: testacularConfig('test/config/unit.js') },
       e2e: { options: testacularConfig('test/config/e2e.js') },
