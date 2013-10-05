@@ -803,25 +803,7 @@ def impactstory_dot_js():
 
 @app.route('/collection/<collection_id>')
 def collection_report(collection_id):
-    url = "{api_root}/v1/collection/{collection_id}?key={api_key}&include_items=0".format(
-        api_root=g.roots["api"],
-        api_key=g.api_key,
-        collection_id=collection_id
-    )
-    
-    r = requests.get(url)
-    flash("You're looking at an old-style collection page: it will be disabled soon. Check out our new <a href='http://blog.impactstory.org/2013/06/17/impact-profiles/'>profile pages!</a>", "alert")
-    if r.status_code == 200:
-        collection = json.loads(r.text)
-        return render_template_custom(
-            'collection.html',
-            page_title=collection["title"],
-            report_id=collection["_id"],
-            report_id_namespace="impactstory_collection_id",
-            api_query="collection/" + collection["_id"]
-        )
-    else:
-        abort(404, "This collection doesn't seem to exist yet. " + url)
+    return render_template_custom('collection.html')
 
 
 @app.route('/item/<ns>/<path:id>')
