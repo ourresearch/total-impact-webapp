@@ -147,11 +147,9 @@ class User(db.Model):
     def get_id(self):
         return unicode(self.id)
 
-    def get_products(self, get_products=1):
-        return get_collection_from_core(
-            self.collection_id,
-            get_products
-        )
+    def get_products(self):
+        products = get_products_from_core(self.tiids)
+        return products
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -227,10 +225,17 @@ def get_collection_from_core(collection_id, include_items=1):
     return r.json()
 
 
-def get_products_from_core(collection_id):
-    coll_obj = get_collection_from_core(collection_id)
-    return coll_obj["items"]
+def get_products_from_core(tiids):
+    query = u"{core_api_root}/v1/products/{tiids_string}?api_admin_key={api_admin_key}".format(
+        core_api_root=g.roots["api"],
+        api_admin_key=os.getenv("API_KEY"),
+        tiids_string=",".join(tiids)
+    )
+    r = requests.get(query)
+    products = r.json()["products"]
+    products_list = products.values()
 
+    return products_list
 
 
 def add_products_to_core_collection(collection_id, tiids_to_add):
@@ -351,7 +356,7 @@ def get_user_from_id(id, id_type="userid", include_items=True):
 
     if include_items:
         try:
-            user.products = get_products_from_core(user.collection_id)
+            user.products = get_products_from_core(user.tiids)
         except AttributeError:  # user has no collection_id  'cause it's None
             pass
 
