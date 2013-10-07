@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-10-05
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-10-06
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -3742,7 +3742,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "            <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "               <!--li><a tabindex=\"-1\" href=\"http://api.impactstory.org/v1/collection/{{ user.about.collection_id }}.csv?key=samplekey\"><i class=\"icon-table\"></i>csv</a></li-->\n" +
+    "               <li><a tabindex=\"-1\" href=\"http://impactstory.org/user/{{ user.about.id }}/products.csv\"><i class=\"icon-table\"></i>csv</a></li>\n" +
     "               <li><a tabindex=\"-1\" href=\"http://impactstory.org/user/{{ user.about.id }}/products\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "            </ul>\n" +
     "         </span>\n" +

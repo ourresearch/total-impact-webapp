@@ -297,13 +297,14 @@ def login():
 
 @app.route("/user/<profile_id>", methods=['GET', 'POST'])
 def user_profile(profile_id):
-
     if request.method == "GET":
         user = get_user_for_response(
             profile_id,
             request,
             include_products=False  # returns faster this way.
         )
+        return json_resp_from_thing(user)
+
     elif request.method == "POST":
         if request.args.get("id_type") != "url_slug":
             abort_json(400, "You can only create new users from a url slug for now.")
@@ -318,8 +319,6 @@ def user_profile(profile_id):
 
 
 
-
-    return json_resp_from_thing(user)
 
 
 #------------------ /user/:id/about   -----------------
@@ -383,6 +382,30 @@ def user_products_view_and_modify(id):
 
     response_to_send = json_resp_from_thing(resp)
     return response_to_send
+
+
+@app.route("/user/<id>/products.csv", methods=["GET"])
+def user_products_csv(id):
+
+    user = get_user_for_response(id, request)
+    tiids = user.tiids
+
+    url = "{api_root}/v1/products.csv/{tiids_string}?key={api_key}".format(
+        api_key=g.api_key,
+        api_root=g.roots["api"],
+        tiids_string=",".join(tiids))
+    r = requests.get(url)
+    csv_contents = r.text
+    print csv_contents
+
+    resp = make_response(csv_contents, r.status_code)
+    resp.mimetype = "text/csv;charset=UTF-8"
+    resp.headers.add("Content-Disposition",
+                     "attachment; filename=impactstory.csv")
+    resp.headers.add("Content-Encoding", "UTF-8")
+
+    return resp
+
 
 
 #------------------ user/:id/password -----------------
