@@ -396,9 +396,8 @@ def user_products_csv(id):
         tiids_string=",".join(tiids))
     r = requests.get(url)
     csv_contents = r.text
-    print csv_contents
 
-    resp = make_response(csv_contents, r.status_code)
+    resp = make_response(unicode(csv_contents), r.status_code)
     resp.mimetype = "text/csv;charset=UTF-8"
     resp.headers.add("Content-Disposition",
                      "attachment; filename=impactstory.csv")
