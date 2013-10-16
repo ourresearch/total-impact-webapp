@@ -812,7 +812,7 @@ def item_report(ns, id):
         api_root=g.roots["api"],
         ns=ns,
         id=id,
-        api_key=os.environ["API_KEY"]
+        api_key=os.environ["API_ADMIN_KEY"]
     )
     r = requests.get(url)
     return render_template_custom(
