@@ -167,7 +167,7 @@ class User(db.Model):
 def get_products_from_core(tiids):
     query = u"{core_api_root}/v1/products/{tiids_string}?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_KEY"),
+        api_admin_key=os.getenv("API_ADMIN_KEY"),
         tiids_string=",".join(tiids)
     )
     r = requests.get(query)
@@ -217,7 +217,7 @@ def delete_products_from_user(user_id, tiids_to_delete, db):
 def refresh_products_in_core(tiids):
     query = "{core_api_root}/v1/products/{tiids_string}?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_KEY"),
+        api_admin_key=os.getenv("API_ADMIN_KEY"),
         tiids_string=",".join(tiids)
     )
     r = requests.post(
