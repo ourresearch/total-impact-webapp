@@ -466,7 +466,7 @@ def test_user_cids():
 
 
 @app.route("/user/<int:userId>/products.csv", methods=["GET"])
-def user_products_csv(id):
+def user_products_csv(userId):
 
     user = User.query.get(userId)
     tiids = user.tiids
