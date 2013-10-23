@@ -56,6 +56,7 @@ css = Bundle('css/bootstrap.css',
             'css/jasny-bootstrap.css',
             'css/main.css',
             'css/create-collection.css',
+            'less/css/create-collection.css', # hack cos using webkit w multiple branches...
             'css/report.css',
             'css/user-pages.css',
             'font-awesome/css/font-awesome.css',
