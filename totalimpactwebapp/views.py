@@ -465,6 +465,28 @@ def test_user_cids():
 #------------------ user/:userId/products -----------------
 
 
+@app.route("/user/<int:userId>/products.csv", methods=["GET"])
+def user_products_csv(id):
+
+    user = User.query.get(userId)
+    tiids = user.tiids
+
+    url = "{api_root}/v1/products.csv/{tiids_string}?key={api_key}".format(
+        api_key=g.api_key,
+        api_root=g.roots["api"],
+        tiids_string=",".join(tiids))
+    r = requests.get(url)
+    csv_contents = r.text
+
+    resp = make_response(csv_contents, r.status_code)
+    resp.mimetype = "text/csv;charset=UTF-8"
+    resp.headers.add("Content-Disposition",
+                     "attachment; filename=impactstory.csv")
+    resp.headers.add("Content-Encoding", "UTF-8")
+
+    return resp
+
+
 @app.route("/user/<int:userId>/products", methods=["GET", "POST", "PUT", "DELETE"])
 def user_products_view_and_modify(userId):
     retrieved_user = User.query.get(userId)
