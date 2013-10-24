@@ -250,7 +250,7 @@ def user_profile(url_slug, new_user_request_obj=None):
             profile=retrieved_user,
             report_id=retrieved_user.collection_id,
             report_id_namespace="impactstory_collection_id",
-            api_query="user/{user_id}/products".format(user_id=retrieved_user.id)
+            api_query=u"user/{user_id}/products".format(user_id=retrieved_user.id)
         )
 
 @app.route("/<url_slug>/preferences")
@@ -843,7 +843,7 @@ def item_report(ns, id):
         page_title="",
         report_id=id,
         report_id_namespace=ns,
-        api_query="item/{ns}/{id}".format(ns=ns, id=id)
+        api_query=u"item/{ns}/{id}".format(ns=ns, id=id)
     )
 
 @app.route("/widget-analytics", methods=['GET'])
