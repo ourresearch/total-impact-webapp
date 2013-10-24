@@ -472,7 +472,7 @@ def user_products_csv(userId):
     user = User.query.get(userId)
     tiids = user.tiids
 
-    url = "{api_root}/v1/products.csv/{tiids_string}?key={api_key}".format(
+    url = u"{api_root}/v1/products.csv/{tiids_string}?key={api_key}".format(
         api_key=g.api_key,
         api_root=g.roots["api"],
         tiids_string=",".join(tiids))
@@ -706,7 +706,7 @@ def provider_post_memberitems_proxy(provider_name):
     logger.debug(u"In"+provider_name+"/memberitems, got file: filename="+file.filename)
     entries_str = file.read().decode("utf-8")
 
-    url = "{core_api_root}/v1/provider/{provider_name}/memberitems".format(
+    url = u"{core_api_root}/v1/provider/{provider_name}/memberitems".format(
         core_api_root=g.roots["api"],
         provider_name=provider_name
     )
@@ -756,7 +756,7 @@ def faq():
 
     # get the static_meta info for each metric
     try:
-        url = "{api_root}/v1/provider?key={api_key}".format(
+        url = u"{api_root}/v1/provider?key={api_key}".format(
             api_key=g.api_key,            
             api_root=g.roots["api"])        
         r = requests.get(url)
@@ -831,7 +831,7 @@ def collection_report(collection_id):
 
 @app.route('/item/<ns>/<path:id>')
 def item_report(ns, id):
-    url = "{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
+    url = u"{api_root}/v1/item/{ns}/{id}?key={api_key}".format(
         api_root=g.roots["api"],
         ns=ns,
         id=id,
