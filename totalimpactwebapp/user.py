@@ -226,6 +226,9 @@ def get_collection_from_core(collection_id, include_items=1):
 
 
 def get_products_from_core(tiids):
+    if not tiids:
+        return None
+        
     query = u"{core_api_root}/v1/products/{tiids_string}?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_ADMIN_KEY"),

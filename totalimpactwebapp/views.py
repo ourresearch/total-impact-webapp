@@ -130,6 +130,8 @@ def get_user_for_response(id, request, include_products=True):
 
     retrieved_user = get_user_from_id(id, id_type, include_products)
     if retrieved_user is None:
+        logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
+            id=id))
         abort(404, "That user doesn't exist.")
 
     return retrieved_user
