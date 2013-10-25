@@ -231,7 +231,12 @@ def get_products_from_core(tiids):
         api_admin_key=os.getenv("API_ADMIN_KEY"),
         tiids_string=",".join(tiids)
     )
+    logger.debug(u"in get_products_from_core with query {query}".format(
+        query=query))
+
     r = requests.get(query)
+    logger.debug(u"in get_products_from_core with response {r}".format(
+        r=r))
     products = r.json()["products"]
     products_list = products.values()
 
@@ -346,6 +351,8 @@ def get_user_from_id(id, id_type="userid", include_items=True):
         try:
             user = User.query.get(id)
         except DataError:  # id has to be an int
+            logger.debug(u"get_user_from_id no user found from userid {id}".format(
+                id=id))
             user = None
 
     elif id_type == "email":
@@ -358,6 +365,8 @@ def get_user_from_id(id, id_type="userid", include_items=True):
         try:
             user.products = get_products_from_core(user.tiids)
         except AttributeError:  # user has no collection_id  'cause it's None
+            logger.debug(u"get_user_from_id no user products found for userid {id}".format(
+                id=id))
             pass
 
     return user
