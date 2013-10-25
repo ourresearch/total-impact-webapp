@@ -513,6 +513,8 @@ def user_products_view_and_modify(userId):
         abort(405)  #method not supported.  Won't get here.
 
     response_to_send = make_response(resp, status_code)
+    response_to_send.mimetype = "application/json"
+
     return response_to_send
 
 
