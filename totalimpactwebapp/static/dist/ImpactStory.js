@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-10-06
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-10-25
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -293,6 +293,7 @@ angular.module('importers.importer')
         }
 
         // store our new products in this importer's scope
+        console.log("here are the tiids:", tiids);
         $scope.products = tiids;
 
         // add the new products to the user's profile on the server
@@ -300,6 +301,7 @@ angular.module('importers.importer')
           {id: profileId},
           {"tiids": tiids},
           function(){
+            console.log("patch finished");
             Loading.finish()
           }
         )

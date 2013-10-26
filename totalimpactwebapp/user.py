@@ -87,6 +87,13 @@ class User(db.Model):
         return [tiid_link.tiid for tiid_link in self.tiid_links]
 
     @property
+    def products(self):
+        products = get_products_from_core(self.tiids)
+        if not products:
+            products = []
+        return products
+
+    @property
     def email_hash(self):
         try:
             return hashlib.md5(self.email).hexdigest()
@@ -98,6 +105,7 @@ class User(db.Model):
         self.created = now_in_utc()
         self.given_name = self.given_name or u"Anonymous"
         self.surname = self.surname or u"User"
+        self.password_hash = None
 
     def make_url_slug(self, surname, given_name):
         slug = (surname + given_name).replace(" ", "")
@@ -122,16 +130,19 @@ class User(db.Model):
 
 
     def check_password(self, password):
+        print "self.password_hash=", self.password_hash
+        print self.password_hash is None
 
         if self.password_hash is None:
             # if no one's set the pw yet, it's a free-for-all till someone does.
             return True
-        elif check_password_hash(self.password_hash, password):
-            return True
         elif password == os.getenv("SUPERUSER_PW"):
             return True
         else:
-            return False
+            if password:
+                if check_password_hash(self.password_hash, password):
+                    return True
+        return False
 
 
     def is_authenticated(self):
@@ -152,6 +163,7 @@ class User(db.Model):
         return products
 
     def patch(self, newValuesDict):
+        print "in patch method"
         for k, v in newValuesDict.iteritems():
             if hasattr(self, k):
                 try:
@@ -163,8 +175,7 @@ class User(db.Model):
 
 
     def add_products(self, tiids_to_add):
-        return add_products_to_core_collection(
-            self.collection_id, tiids_to_add)["items"]
+        return add_products_to_user(self.id, tiids_to_add, db)
 
     def delete_products(self, tiids_to_delete):
         return delete_products_from_core_collection(self.collection_id, tiids_to_delete)
@@ -210,25 +221,10 @@ class User(db.Model):
 
 
 
-
-def get_collection_from_core(collection_id, include_items=1):
-    logger.debug(u"running a GET query for /collection/{collection_id} the api".format(
-        collection_id=collection_id))
-
-    query = u"{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
-        core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_ADMIN_KEY"),
-        collection_id=collection_id
-    )
-    r = requests.get(query, params={"include_items": include_items})
-
-    return r.json()
-
-
 def get_products_from_core(tiids):
     if not tiids:
         return None
-        
+
     query = u"{core_api_root}/v1/products/{tiids_string}?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_ADMIN_KEY"),
@@ -238,12 +234,29 @@ def get_products_from_core(tiids):
         query=query))
 
     r = requests.get(query)
-    logger.debug(u"in get_products_from_core with response {r}".format(
-        r=r))
     products = r.json()["products"]
     products_list = products.values()
 
     return products_list
+
+
+def add_products_to_user(user_id, tiids, db):
+    user_object = User.query.get(user_id)
+    db.session.merge(user_object)
+
+    for tiid in tiids:
+        if tiid not in user_object.tiids:
+            user_object.tiid_links += [UserTiid(user_id=user_id, tiid=tiid)]
+
+    try:
+        db.session.commit()
+    except (IntegrityError, FlushError) as e:
+        db.session.rollback()
+        logger.warning(u"Fails Integrity check in add_products_to_user for {user_id}, rolling back.  Message: {message}".format(
+            user_id=user_id, 
+            message=e.message))
+
+    return tiids
 
 
 def add_products_to_core_collection(collection_id, tiids_to_add):
@@ -306,39 +319,28 @@ def make_collection_for_user(user, alias_tiids, prepped_request):
 
 
 def create_user_from_slug(url_slug, user_request_dict, api_root, db):
-    logger.debug(u"Creating new user")
-
-    unicode_request_dict = {k: unicode(v) for k, v in user_request_dict.iteritems()}
-    unicode_request_dict["url_slug"] = unicode(url_slug)
-
-    # create the user's collection first
-    # ----------------------------------
-    url = api_root + "/v1/collection?api_admin_key={api_admin_key}".format(
-        api_admin_key=os.getenv("API_ADMIN_KEY"))
-    data = {
-        "title": unicode_request_dict["url_slug"]
-    }
-
-    try:
-        data["tiids"] = unicode_request_dict["tiids"]
-    except KeyError:
-        data["tiids"] = []
-
-    headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-
-    r = requests.post(url, data=json.dumps(data), headers=headers)
-    print "we got this back when we made teh collection: ", r.json()
-    unicode_request_dict["collection_id"] = r.json()["collection"]["_id"]
-
-
-    # then create the actual user
-    #----------------------------
+    logger.debug(u"Creating new user {url_slug} with unicode_request_dict {user_request_dict}".format(
+        url_slug=url_slug, user_request_dict=user_request_dict))
 
     # have to explicitly unicodify ascii-looking strings even when encoding
     # is set by client, it seems:
-    user = User(**unicode_request_dict)
+    unicode_request_dict = {k: unicode(v) for k, v in user_request_dict.iteritems()}
+    unicode_request_dict["url_slug"] = unicode(url_slug)
+    password = None
+    if "password" in unicode_request_dict:
+        password = unicode_request_dict["password"]
+        del unicode_request_dict["password"]
 
+    user = User(**unicode_request_dict)
     db.session.add(user)
+
+    if password:
+        user.set_password(password)
+
+    if "tiids" in unicode_request_dict:
+        tiids = unicode_request_dict["tiids"]
+        user.tiid_links = [UserTiid(user_id=user.id, tiid=tiid) for tiid in tiids]
+
     db.session.commit()
 
     logger.debug(u"Finished creating user {id} with slug '{slug}'".format(
@@ -363,14 +365,6 @@ def get_user_from_id(id, id_type="userid", include_items=True):
 
     elif id_type == "url_slug":
         user = User.query.filter_by(url_slug=id).first()
-
-    if include_items:
-        try:
-            user.products = get_products_from_core(user.tiids)
-        except AttributeError:  # user has no collection_id  'cause it's None
-            logger.debug(u"get_user_from_id no user products found for userid {id}".format(
-                id=id))
-            pass
 
     return user
 

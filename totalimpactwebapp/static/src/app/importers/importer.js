@@ -47,6 +47,7 @@ angular.module('importers.importer')
         }
 
         // store our new products in this importer's scope
+        console.log("here are the tiids:", tiids);
         $scope.products = tiids;
 
         // add the new products to the user's profile on the server

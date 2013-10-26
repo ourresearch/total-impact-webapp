@@ -360,6 +360,8 @@ def get_user_about(profile_id):
 def user_products_view_and_modify(id):
 
     user = get_user_for_response(id, request)
+    logger.debug(u"got user {user}".format(
+        user=user))
 
     if request.method == "GET":
         resp = user.products
@@ -373,6 +375,7 @@ def user_products_view_and_modify(id):
     elif request.method == "PATCH":
         print "got a request to add products to the user's profile."
         tiids_to_add = request.json.get("tiids")
+        print "adding tiids", tiids_to_add
         resp = {"products": user.add_products(tiids_to_add)}
 
     elif request.method == "DELETE":
@@ -416,7 +419,7 @@ def user_password_modify(id):
     retrieved_user = get_user_for_response(id, request)
     current_password = request.json.get("currentPassword", None)
 
-    if  retrieved_user.check_password(current_password):
+    if retrieved_user.check_password(current_password):
         retrieved_user.set_password(request.json["newPassword"])
         db.session.commit()
         return json_resp_from_thing({"response": "ok"})
