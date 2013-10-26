@@ -130,9 +130,6 @@ class User(db.Model):
 
 
     def check_password(self, password):
-        print "self.password_hash=", self.password_hash
-        print self.password_hash is None
-
         if self.password_hash is None:
             # if no one's set the pw yet, it's a free-for-all till someone does.
             return True
@@ -163,7 +160,6 @@ class User(db.Model):
         return products
 
     def patch(self, newValuesDict):
-        print "in patch method"
         for k, v in newValuesDict.iteritems():
             if hasattr(self, k):
                 try:
@@ -265,9 +261,6 @@ def add_products_to_core_collection(collection_id, tiids_to_add):
         api_admin_key=os.getenv("API_ADMIN_KEY"),
         collection_id=collection_id
     )
-
-    print "sending this query: ", query
-    print "sending these tiids: ", tiids_to_add
 
     r = requests.put(query,
             data=json.dumps({"tiids": tiids_to_add}),
