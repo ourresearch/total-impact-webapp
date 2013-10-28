@@ -197,7 +197,9 @@
                 console.error("you're missing required parameters.")
                 return false
             }
-            isFirstWidget = logParams(params, isFirstWidget)
+            
+            // DISABLE analytics call for now
+            // isFirstWidget = logParams(params, isFirstWidget)
 
 
 
