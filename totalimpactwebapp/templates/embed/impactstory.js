@@ -145,11 +145,11 @@
                 + urlParamsArr.join("&")
                 + "&callback=?"
 
-            console.log("here's the url we'll send to analytics ", url)
+            // console.log("here's the url we'll send to analytics ", url)
 
-            $.getJSON(url, function(data){
-                    console.log("Sent analytics data to ImpactStory server.")
-            })
+            // $.getJSON(url, function(data){
+            //         console.log("Sent analytics data to ImpactStory server.")
+            // })
             return false
         }
 
@@ -198,8 +198,7 @@
                 return false
             }
             
-            // DISABLE analytics call for now
-            // isFirstWidget = logParams(params, isFirstWidget)
+            isFirstWidget = logParams(params, isFirstWidget)
 
 
 
