@@ -10,13 +10,24 @@ angular.module("profileProduct", [
   .config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.when("/:url_slug/product/:tiid", {
-      templateUrl:'profile/profile.tpl.html',
-      controller:'ProfileProductCtrl'
+      templateUrl:'profile-product/profile-product-page.tpl.html',
+      controller:'ProfileProductPageCtrl'
     });
 
   }])
 
-  .controller('ProfileProductCtrl', function ($scope, $routeParams, $http, security, UsersAbout, UsersProducts, Product) {
+  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, security, UsersProduct, Product) {
 
+    $scope.product = UsersProduct.get({
+      id: $routeParams.url_slug,
+      tiid: $routeParams.tiid,
+      idType: "url_slug"
+    },
+    function(data){
+      console.log("data", data)
+      $scope.biblio = Product.makeBiblio(data)
+      $scope.awards = Product.makeAwards(data)
+    }
 
+    )
   })

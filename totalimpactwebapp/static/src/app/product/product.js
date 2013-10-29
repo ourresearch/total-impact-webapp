@@ -2,15 +2,6 @@ angular.module('product.product', ['product.award'])
 angular.module('product.product')
 
 
-  .config(['$routeProvider', function ($routeProvider) {
-
-    $routeProvider.when("/product/:tiid", {
-      templateUrl:'product/product-page.tpl.html',
-      controller:'productCtrl'
-    });
-
-  }])
-
 
   .factory('Product', function(Award) {
 
@@ -102,6 +93,12 @@ angular.module('product.product')
       metrics = this.addMetricsInfoDataToMetrics(metrics)
       metrics = this.expandMetricMetadta(metrics, itemData.biblio.year)
       metrics = this.getMetricPercentiles(metrics)
+
+      _.each(metrics, function(metric){
+        metric.award = Award.makeForSingleMetric(metric.audience, metric.engagementType, metric)
+      })
+
+      console.log("metrics!", metrics)
       return metrics
     }
 
@@ -153,6 +150,8 @@ angular.module('product.product')
 
       return awards
     }
+
+
 
 
 
@@ -344,14 +343,12 @@ angular.module('product.product')
       $scope.hasMetrics = function(){
         return _.size($scope.metrics);
       }
+      $scope.getProductPageUrl = function(){
+        return $location.path() + "/product/" + $scope.product._id
+      }
 
   })
 
-
-  .controller('productPageCtrl', function($scope, Product){
-
-
-  })
 
   .directive('productBiblio', function(Product) {
     return {

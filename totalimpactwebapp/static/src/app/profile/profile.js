@@ -54,17 +54,9 @@ angular.module("profile", [
     templateUrl:'profile/profile.tpl.html',
     controller:'ProfileCtrl'
   })
-    .when("/:url_slug/product/:tiid", {
-      templateUrl:'profile/profile-product-page.tpl.html',
-      controller:'ProfileProductPageCtrl'
-    })
-
 }])
 
 
-.controller('ProfileProductPageCtrl', function(UserProfile, UsersProduct){
-
-})
 
 
 

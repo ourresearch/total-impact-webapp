@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-10-25
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-10-28
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -13,6 +13,7 @@ angular.module('app', [
   'templates.common',
   'signup',
   'infopages', // comes before profile, so '/about' isn't routed as a user named About.
+  'profileProduct',
   'profile',
   'settings'
 ]);
@@ -28,7 +29,6 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
   });
-  console.log("alert!")
 }]);
 
 
@@ -301,7 +301,6 @@ angular.module('importers.importer')
           {id: profileId},
           {"tiids": tiids},
           function(){
-            console.log("patch finished");
             Loading.finish()
           }
         )
@@ -381,6 +380,18 @@ angular.module('product.award').factory('Award', function() {
       }
     }
 
+    ,makeForSingleMetric: function(audience, engagementType, metric){
+      return {
+        engagementTypeNoun: this.config[engagementType][0]
+        ,engagementType: engagementType
+        ,audience: audience
+        ,displayOrder: this.config[engagementType][1]
+        ,isHighly: this.calculateIsHighly([metric])
+        ,displayAudience: audience.replace("public", "the public")
+      }
+
+    }
+
 
     ,calculateIsHighly: function(metrics){
 
@@ -424,15 +435,6 @@ angular.module('product.award').factory('Award', function() {
 angular.module('product.product', ['product.award'])
 angular.module('product.product')
 
-
-  .config(['$routeProvider', function ($routeProvider) {
-
-    $routeProvider.when("/product/:tiid", {
-      templateUrl:'product/product-page.tpl.html',
-      controller:'productCtrl'
-    });
-
-  }])
 
 
   .factory('Product', function(Award) {
@@ -525,6 +527,12 @@ angular.module('product.product')
       metrics = this.addMetricsInfoDataToMetrics(metrics)
       metrics = this.expandMetricMetadta(metrics, itemData.biblio.year)
       metrics = this.getMetricPercentiles(metrics)
+
+      _.each(metrics, function(metric){
+        metric.award = Award.makeForSingleMetric(metric.audience, metric.engagementType, metric)
+      })
+
+      console.log("metrics!", metrics)
       return metrics
     }
 
@@ -576,6 +584,8 @@ angular.module('product.product')
 
       return awards
     }
+
+
 
 
 
@@ -767,14 +777,12 @@ angular.module('product.product')
       $scope.hasMetrics = function(){
         return _.size($scope.metrics);
       }
+      $scope.getProductPageUrl = function(){
+        return $location.path() + "/product/" + $scope.product._id
+      }
 
   })
 
-
-  .controller('productPageCtrl', function($scope, Product){
-
-
-  })
 
   .directive('productBiblio', function(Product) {
     return {
@@ -967,15 +975,26 @@ angular.module("profileProduct", [
   .config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.when("/:url_slug/product/:tiid", {
-      templateUrl:'profile/profile.tpl.html',
-      controller:'ProfileProductCtrl'
+      templateUrl:'profile-product/profile-product-page.tpl.html',
+      controller:'ProfileProductPageCtrl'
     });
 
   }])
 
-  .controller('ProfileProductCtrl', function ($scope, $routeParams, $http, security, UsersAbout, UsersProducts, Product) {
+  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, security, UsersProduct, Product) {
 
+    $scope.product = UsersProduct.get({
+      id: $routeParams.url_slug,
+      tiid: $routeParams.tiid,
+      idType: "url_slug"
+    },
+    function(data){
+      console.log("data", data)
+      $scope.biblio = Product.makeBiblio(data)
+      $scope.awards = Product.makeAwards(data)
+    }
 
+    )
   })
 
 angular.module("profile", [
@@ -1034,17 +1053,9 @@ angular.module("profile", [
     templateUrl:'profile/profile.tpl.html',
     controller:'ProfileCtrl'
   })
-    .when("/:url_slug/product/:tiid", {
-      templateUrl:'profile/profile-product-page.tpl.html',
-      controller:'ProfileProductPageCtrl'
-    })
-
 }])
 
 
-.controller('ProfileProductPageCtrl', function(UserProfile, UsersProduct){
-
-})
 
 
 
@@ -3050,7 +3061,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'product/profile-product-page.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -3619,7 +3630,7 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
 angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product/biblio.tpl.html",
     "<h5 class=\"title\" xmlns=\"http://www.w3.org/1999/html\">\n" +
-    "   <a class=\"title-text\" href=\"{{ getDrilldownUrl() }}\">{{biblio.title}}</a>\n" +
+    "   <a class=\"title-text\" href=\"{{ getProductPageUrl() }}\">{{biblio.title}}</a>\n" +
     "   <a ng-if=\"biblio.url\" class=\"linkout url title\" target=\"_blank\" href=\"{{ biblio.url }}\">\n" +
     "      <i class=\"icon-external-link-sign\"></i>\n" +
     "   </a>\n" +
@@ -3640,69 +3651,59 @@ angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($t
 
 angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product/metrics-table.tpl.html",
-    "<a href=\"#\" class=\"item-help\"><span class=\"icon help\"></span>What do these numbers mean?</a>\n" +
-    "{{#audiences}}\n" +
-    "<div class=\"audience {{ audience }}\">\n" +
-    "   <!--<h5 >{{ audience }}</h5>-->\n" +
-    "   <ul class=\"engagement-types\">{{#cells}}\n" +
-    "      <li class=\"engagement-type {{engagementType}}\">\n" +
-    "         <h6>\n" +
-    "               <span class=\"descr\">\n" +
-    "                  <span class=\"engagement-type\">{{engagementType}}</span> by\n" +
-    "                  <span class=\"audience\">{{ audience }}</span>\n" +
-    "               </span>\n" +
-    "         </h6>\n" +
-    "         <ul class=\"metrics\">{{#metrics}}\n" +
-    "            <li>\n" +
-    "               <div class=\"meta\">\n" +
-    "                  <img src=\"{{ static_meta.icon }}\" width=\"16\" height=\"16\" border=\"0\" rel=\"tooltip\" title=\"<strong>{{static_meta.provider}} {{static_meta.display_name}}</strong>: {{static_meta.description}}\">\n" +
-    "                  {{#provenance_url}}\n" +
-    "                  <a class=\"value-and-name\" target=\"_blank\" href=\"{{provenance_url}}\">\n" +
-    "                     <span class=\"metric-value value\">{{ values.raw }}</span>\n" +
-    "                     <span class=\"metric-name\">{{ static_meta.display_name }}</span>\n" +
-    "                  </a>\n" +
-    "                  {{/provenance_url}}\n" +
+    "<ul class=\"award-details\">\n" +
+    "   <li ng-repeat=\"award in awards | orderBy:['!isHighly', 'displayOrder']\" class=\"award\">\n" +
     "\n" +
-    "                  <!-- sometimes, like with facebook, there's no url. then show a span, not a link -->\n" +
-    "                  {{^provenance_url}}\n" +
-    "                     <span class=\"value-and-name\">\n" +
-    "                        <span class=\"metric-value value\">{{ values.raw }}</span>\n" +
-    "                        <span class=\"metric-name\">{{ static_meta.display_name }}</span>\n" +
-    "                     </span>\n" +
-    "                  {{/provenance_url}}\n" +
-    "               </div>\n" +
+    "      <span href=\"#\"\n" +
+    "            class=\"ti-badge lil-badge {{award.audience}} {{award.engagementType}}\"\n" +
+    "            ng-show=\"!award.isHighly\"\n" +
+    "            popover-trigger=\"mouseenter\"\n" +
+    "            popover-placement=\"bottom\"\n" +
+    "            popover-title=\"{{award.engagementType}} by {{award.displayAudience}}\"\n" +
+    "            popover=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
+    "            {{award.topMetric.displayInteraction}}, suggesting it's been\n" +
+    "            {{award.engagementType}} by {{award.displayAudience}}.\n" +
+    "            Click to learn more.\">\n" +
+    "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
+    "         <span class=\"audience\">by {{award.audience}}</span>\n" +
+    "       </span>\n" +
     "\n" +
-    "               <div class=\"line\">\n" +
-    "                  <!-- if we've got ranges, show 'em, along sizeable div to show range -->\n" +
-    "                  {{#percentiles}}\n" +
-    "                  <div class=\"metric-perc-range ci\" rel=\"tooltip\" title='Percentile range for this metric relative to a random set of items published the same year'>\n" +
-    "                     <span class=\"start endpoint\"><span class=\"value\">{{CI95_lower}}</span></span>\n" +
-    "                     <span class=\"bar\"></span>\n" +
-    "                     <span class=\"end endpoint\"><span class=\"value\">{{CI95_upper}}</span></span>\n" +
-    "                  </div>\n" +
-    "                  {{/percentiles}}\n" +
+    "      <span href=\"#\"\n" +
+    "            class=\"ti-badge big-badge {{award.audience}} {{award.engagementType}}\"\n" +
+    "            ng-show=\"award.isHighly\"\n" +
+    "            popover-trigger=\"mouseenter\"\n" +
+    "            popover-placement=\"bottom\"\n" +
+    "            popover-title=\"Highly {{award.engagementType}} by {{award.displayAudience}}\"\n" +
+    "            popover=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
+    "            {{award.topMetric.displayInteraction}}. That's better than\n" +
+    "            {{award.topMetric.percentiles.CI95_lower}}% of items\n" +
+    "            {{award.topMetric.referenceSetStorageVerb}} {{award.topMetric.refSet}} in {{award.topMetric.referenceSetYear}},\n" +
+    "            suggesting it's highly {{award.engagementType}} by {{award.displayAudience }}.\n" +
+    "            Click to learn more.\">\n" +
     "\n" +
-    "                  <!-- if no ranges, show an NA -->\n" +
-    "                  {{^percentiles}}\n" +
-    "                  <div class=\"percentile-fail\">\n" +
-    "                     <span class=\"no-perc\">no percentile data.</span>\n" +
-    "                  </div>\n" +
-    "                  {{/percentiles}}\n" +
-    "               </div>\n" +
-    "            </li>\n" +
-    "            {{/metrics}}</ul>\n" +
-    "      </li>\n" +
-    "      {{/cells}}</ul>\n" +
-    "</div>\n" +
-    "{{/audiences}}");
+    "         <span class=\"modifier\">highly</span>\n" +
+    "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
+    "         <span class=\"audience\">by {{award.audience}}</span>\n" +
+    "      </span>\n" +
+    "      <span class=\"metrics\">\n" +
+    "         <img ng-repeat=\"metric in award.metrics\" ng-src=\"{{ metric.static_meta.icon }}\">\n" +
+    "      </span>\n" +
+    "\n" +
+    "   </li>\n" +
+    "</ul>");
 }]);
 
-angular.module("product/profile-product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product/profile-product-page.tpl.html",
+angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-product/profile-product-page.tpl.html",
     "<div class=\"product-page\">\n" +
-    "   <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
-    "   <div class=\"badges\" ng-include=\"'product/badges.tpl.html'\"></div>\n" +
-    "   <div class=\"metrics-table\" ng-include=\"'product/metrics-table.tpl.html\"></div>\n" +
+    "   <div class=\"wrapper\">\n" +
+    "      <div class=\"product\">\n" +
+    "         <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
+    "         <div class=\"metrics-table\" ng-include=\"'product/metrics-table.tpl.html'\"></div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
     "</div>");
 }]);
 

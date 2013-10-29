@@ -1,55 +1,40 @@
-<a href="#" class="item-help"><span class="icon help"></span>What do these numbers mean?</a>
-{{#audiences}}
-<div class="audience {{ audience }}">
-   <!--<h5 >{{ audience }}</h5>-->
-   <ul class="engagement-types">{{#cells}}
-      <li class="engagement-type {{engagementType}}">
-         <h6>
-               <span class="descr">
-                  <span class="engagement-type">{{engagementType}}</span> by
-                  <span class="audience">{{ audience }}</span>
-               </span>
-         </h6>
-         <ul class="metrics">{{#metrics}}
-            <li>
-               <div class="meta">
-                  <img src="{{ static_meta.icon }}" width="16" height="16" border="0" rel="tooltip" title="<strong>{{static_meta.provider}} {{static_meta.display_name}}</strong>: {{static_meta.description}}">
-                  {{#provenance_url}}
-                  <a class="value-and-name" target="_blank" href="{{provenance_url}}">
-                     <span class="metric-value value">{{ values.raw }}</span>
-                     <span class="metric-name">{{ static_meta.display_name }}</span>
-                  </a>
-                  {{/provenance_url}}
+<ul class="award-details">
+   <li ng-repeat="award in awards | orderBy:['!isHighly', 'displayOrder']" class="award">
 
-                  <!-- sometimes, like with facebook, there's no url. then show a span, not a link -->
-                  {{^provenance_url}}
-                     <span class="value-and-name">
-                        <span class="metric-value value">{{ values.raw }}</span>
-                        <span class="metric-name">{{ static_meta.display_name }}</span>
-                     </span>
-                  {{/provenance_url}}
-               </div>
+      <span href="#"
+            class="ti-badge lil-badge {{award.audience}} {{award.engagementType}}"
+            ng-show="!award.isHighly"
+            popover-trigger="mouseenter"
+            popover-placement="bottom"
+            popover-title="{{award.engagementType}} by {{award.displayAudience}}"
+            popover="This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}
+            {{award.topMetric.displayInteraction}}, suggesting it's been
+            {{award.engagementType}} by {{award.displayAudience}}.
+            Click to learn more.">
+         <span class="engagement-type">{{award.engagementType}}</span>
+         <span class="audience">by {{award.audience}}</span>
+       </span>
 
-               <div class="line">
-                  <!-- if we've got ranges, show 'em, along sizeable div to show range -->
-                  {{#percentiles}}
-                  <div class="metric-perc-range ci" rel="tooltip" title='Percentile range for this metric relative to a random set of items published the same year'>
-                     <span class="start endpoint"><span class="value">{{CI95_lower}}</span></span>
-                     <span class="bar"></span>
-                     <span class="end endpoint"><span class="value">{{CI95_upper}}</span></span>
-                  </div>
-                  {{/percentiles}}
+      <span href="#"
+            class="ti-badge big-badge {{award.audience}} {{award.engagementType}}"
+            ng-show="award.isHighly"
+            popover-trigger="mouseenter"
+            popover-placement="bottom"
+            popover-title="Highly {{award.engagementType}} by {{award.displayAudience}}"
+            popover="This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}
+            {{award.topMetric.displayInteraction}}. That's better than
+            {{award.topMetric.percentiles.CI95_lower}}% of items
+            {{award.topMetric.referenceSetStorageVerb}} {{award.topMetric.refSet}} in {{award.topMetric.referenceSetYear}},
+            suggesting it's highly {{award.engagementType}} by {{award.displayAudience }}.
+            Click to learn more.">
 
-                  <!-- if no ranges, show an NA -->
-                  {{^percentiles}}
-                  <div class="percentile-fail">
-                     <span class="no-perc">no percentile data.</span>
-                  </div>
-                  {{/percentiles}}
-               </div>
-            </li>
-            {{/metrics}}</ul>
-      </li>
-      {{/cells}}</ul>
-</div>
-{{/audiences}}
+         <span class="modifier">highly</span>
+         <span class="engagement-type">{{award.engagementType}}</span>
+         <span class="audience">by {{award.audience}}</span>
+      </span>
+      <span class="metrics">
+         <img ng-repeat="metric in award.metrics" ng-src="{{ metric.static_meta.icon }}">
+      </span>
+
+   </li>
+</ul>

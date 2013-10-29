@@ -27,6 +27,18 @@ angular.module('product.award').factory('Award', function() {
       }
     }
 
+    ,makeForSingleMetric: function(audience, engagementType, metric){
+      return {
+        engagementTypeNoun: this.config[engagementType][0]
+        ,engagementType: engagementType
+        ,audience: audience
+        ,displayOrder: this.config[engagementType][1]
+        ,isHighly: this.calculateIsHighly([metric])
+        ,displayAudience: audience.replace("public", "the public")
+      }
+
+    }
+
 
     ,calculateIsHighly: function(metrics){
 

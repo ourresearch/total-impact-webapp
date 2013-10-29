@@ -1,3 +1,165 @@
+.product {
+   float:left;
+   clear:both;
+   padding:  25px 0 0;
+   position:relative; // for positioning the item-controls
+
+   &:hover {
+      div.product-controls{
+         display: block;
+      }
+   }
+   div.product-controls {
+      position: absolute;
+      display:none;
+      left: -100px;
+      width: 100px;
+      height: 40px;
+      top: 12px;
+      text-align:right;
+      line-height: 1;
+      font-size:14px;
+   }
+
+
+   h2.product-heading {
+      margin: 50px 0 -10px -39px;
+      font-weight: 900;
+      text-transform: capitalize;
+      font-size: 30px;
+      color: @linkColor;
+      color:  #555;
+      i {
+         display:none;
+         font-size: 20px;
+         width:  30px;
+         margin-right: 4px;
+         vertical-align: 2px;
+         text-align: right;
+      }
+      &.article{ i.article {display:inline-block;}}
+      &.software{ i.software {display:inline-block;}}
+      &.dataset{ i.dataset {display:inline-block;}}
+   }
+
+   .biblio{
+      float:left;
+      width: 700px;
+      h5 {
+         margin-top: 0;
+         a {
+            &.title-text {
+               font-size:16px;
+               color: #333;
+               margin: 0 0 -3px 0;
+               float: left;
+               padding: 0 5px 10px 0;
+               &:hover {
+                  color:  @linkColor;
+                  text-decoration: none;
+               }
+            }
+            &.linkout {
+               color:  #ddd;
+               margin-left:5px;
+               &:hover {
+                  color:  @linkColor;
+                  text-decoration: none;
+               }
+            }
+         }
+      }
+      div.optional-biblio {
+         clear:both;
+         font-size:13px;
+         color: #888;
+         line-height: 1.3;
+         span.repository {font-style:italic;}
+      }
+   }
+
+
+
+   .badges {
+      width: 360px;
+      margin-left: 20px;
+      float:left;
+      ul.ti-badges {
+         float:left;
+      }
+   }
+
+   .award {
+      margin:0 7px 7px 0;
+      float:left;
+      span.metrics {
+         display:block;
+         float:left;
+         img {
+            height: 16px;
+            margin-left:5px;
+            vertical-align: top;
+            .grayscale(.75);
+         }
+         border: 1px solid #333;
+         border-left: none;
+         height: 24px;
+         padding:3px 10px 0 0;
+         .border-radius(13px, 13px, 0, 0);
+
+      }
+
+      span.ti-badge {
+         height: 24px;
+         font-size: 12px;
+         text-align: center;
+         padding: 3px 9px;
+         float:left;
+         display:block;
+         font-weight:normal;
+         .border-radius(0, 0, 3px, 3px);
+         cursor: pointer;
+         font-family: helvetica, arial, sans-serif;
+         span.audience {display:none;}
+         background:  black;
+         border: 1px solid black;
+         &.scholars {background: @scholarsColor; border-color: @scholarsColor;}
+         &.public {background: @publicColor; border-color: @publicColor;}
+         &.big-badge {
+            color:  #fff;
+         }
+         &.lil-badge {
+            &.scholars {color: @scholarsColor;}
+            &.public {color: @publicColor;}
+            background: #fff;
+         }
+      }
+      div.popover {
+         font-family: helvetica, arial, sans-serif;
+         max-width: 230px;
+         h3 {font-size: 16px; font-family: helvetica, arial, sans-serif;}
+         .popover-content {font-size: 14px;}
+      }
+
+   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // storing this here for now...just cut-n-pasted from the old profile styles

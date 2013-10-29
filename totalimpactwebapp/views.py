@@ -389,6 +389,16 @@ def user_products_view_and_modify(id):
     return response_to_send
 
 
+@app.route("/user/<user_id>/product/<tiid>", methods=['GET'])
+def user_product(user_id, tiid):
+
+    user = get_user_for_response(user_id, request)
+    requested_product = [product for product in user.products if product["_id"] == tiid][0]
+
+    return json_resp_from_thing(requested_product)
+
+
+
 @app.route("/user/<id>/products.csv", methods=["GET"])
 def user_products_csv(id):
 

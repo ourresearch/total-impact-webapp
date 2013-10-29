@@ -8,6 +8,7 @@ angular.module('app', [
   'templates.common',
   'signup',
   'infopages', // comes before profile, so '/about' isn't routed as a user named About.
+  'profileProduct',
   'profile',
   'settings'
 ]);
@@ -23,7 +24,6 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
   });
-  console.log("alert!")
 }]);
 
 
