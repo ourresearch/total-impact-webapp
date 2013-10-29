@@ -502,8 +502,12 @@ def user_products_view_and_modify(userId):
         (resp, status_code) = retrieved_user.refresh_products()
 
     elif request.method == "PUT":
-        aliases_to_add = request.json.get("aliases")
-        (resp, status_code) = retrieved_user.add_products(aliases_to_add)
+        aliases_to_add = request.json.get("aliases", None)
+        if aliases_to_add:
+            (resp, status_code) = retrieved_user.add_products(aliases_to_add)
+        else:
+            tiids_to_add = request.json.get("tiids", None)
+            (resp, status_code) = retrieved_user.add_products_from_tiids(tiids_to_add)
 
     elif request.method == "DELETE":
         tiids_to_delete = request.json.get("tiids")

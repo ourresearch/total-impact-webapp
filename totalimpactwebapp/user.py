@@ -152,6 +152,10 @@ class User(db.Model):
         added_tiids = add_products_to_user(self.id, aliases_to_add, db)
         return (json.dumps({"added_tiids": added_tiids}), 200)
 
+    def add_products_from_tiids(self, tiids_to_add):
+        added_tiids = add_products_to_user_from_tiids(self.id, tiids_to_add, db)
+        return (json.dumps({"added_tiids": added_tiids}), 200)
+
     def delete_products(self, tiids_to_delete):
         delete_products_from_user(self.id, tiids_to_delete, db)
         return (json.dumps({"deleted_tiids": tiids_to_delete}), 200)
@@ -175,12 +179,11 @@ def get_products_from_core(tiids):
     return (r.text, r.status_code)
 
 
-def add_products_to_user(user_id, aliases_to_add, db):
-    tiids = create_products_on_core(aliases_to_add, g.roots["api"])
+def add_products_to_user_from_tiids(user_id, tiids_to_add, db):
     user_object = User.query.get(user_id)
     db.session.merge(user_object)
 
-    for tiid in tiids:
+    for tiid in tiids_to_add:
         if tiid not in user_object.tiids:
             user_object.tiid_links += [UserTiid(user_id=user_id, tiid=tiid)]
 
@@ -191,8 +194,11 @@ def add_products_to_user(user_id, aliases_to_add, db):
         logger.warning(u"Fails Integrity check in add_products_to_user for {user_id}, rolling back.  Message: {message}".format(
             user_id=user_id, 
             message=e.message))
+    return tiids_to_add
 
-    return tiids
+def add_products_to_user(user_id, aliases_to_add, db):
+    tiids_to_add = create_products_on_core(aliases_to_add, g.roots["api"])
+    return add_products_to_user_from_tiids(user_id, tiids_to_add, db)
 
 
 def delete_products_from_user(user_id, tiids_to_delete, db):
