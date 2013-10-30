@@ -3,8 +3,48 @@ div.product-page {
    min-height: 500px;
 
    .product { // overrides the main .product styles
-      h2.product-heading {
-         font-size: 30px;
+      .biblio {
+         float:none;
+         width:  100%;
+         h5 {
+            a {
+               font-size: 30px;
+               i {font-size:  15px;}
+            }
+         }
+         div.optional-biblio {
+            font-size: 20px;
+         }
+      }
+      .metric-details {
+         margin-top: 20px;
+         ul.metric-details-list {
+            li.metric-detail {
+               line-height: 1.2;
+               .badge-container {
+                  width: 200px;
+                  display:inline-block;
+                  .ti-badge {
+                     float:right;
+                     span.audience {display:inline;} // override
+                  }
+               }
+               a.value-and-name {
+                  span.raw-value {
+
+                  }
+                  img {
+                     height: 16px;
+                     margin-left:5px;
+                     vertical-align: top;
+//                     .grayscale(.75);
+                  }
+               }
+
+
+            }
+         }
+
       }
 
 

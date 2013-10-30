@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-10-28
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-10-30
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -565,11 +565,10 @@ angular.module('product.product')
 
       return biblio
     }
-    
 
   ,makeAwards: function(itemData) {
 
-      metrics = this.makeMetrics(itemData)
+      var metrics = this.makeMetrics(itemData)
       
       var awards = []
       var audiencesObj = itemOmitUndefinedv(_.groupBy(metrics, "audience"))
@@ -991,7 +990,7 @@ angular.module("profileProduct", [
     function(data){
       console.log("data", data)
       $scope.biblio = Product.makeBiblio(data)
-      $scope.awards = Product.makeAwards(data)
+      $scope.metrics = Product.makeMetrics(data)
     }
 
     )
@@ -3651,42 +3650,54 @@ angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($t
 
 angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product/metrics-table.tpl.html",
-    "<ul class=\"award-details\">\n" +
-    "   <li ng-repeat=\"award in awards | orderBy:['!isHighly', 'displayOrder']\" class=\"award\">\n" +
+    "<ul class=\"metric-details-list\">\n" +
+    "   <li ng-repeat=\"metric in metrics\" class=\"metric-detail\">\n" +
     "\n" +
-    "      <span href=\"#\"\n" +
-    "            class=\"ti-badge lil-badge {{award.audience}} {{award.engagementType}}\"\n" +
-    "            ng-show=\"!award.isHighly\"\n" +
-    "            popover-trigger=\"mouseenter\"\n" +
-    "            popover-placement=\"bottom\"\n" +
-    "            popover-title=\"{{award.engagementType}} by {{award.displayAudience}}\"\n" +
-    "            popover=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
-    "            {{award.topMetric.displayInteraction}}, suggesting it's been\n" +
-    "            {{award.engagementType}} by {{award.displayAudience}}.\n" +
-    "            Click to learn more.\">\n" +
-    "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
-    "         <span class=\"audience\">by {{award.audience}}</span>\n" +
-    "       </span>\n" +
+    "      <span class=\"badge-container\">\n" +
+    "         <span href=\"#\"\n" +
+    "               class=\"ti-badge lil-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
+    "               ng-show=\"!award.isHighly\"\n" +
+    "               popover-trigger=\"mouseenter\"\n" +
+    "               popover-placement=\"bottom\"\n" +
+    "               popover-title=\"{{metric.award.engagementType}} by {{metric.award.displayAudience}}\"\n" +
+    "               popover=\"This item has {{metric.actualCount}} {{metric.environment}}\n" +
+    "               {{metric.displayInteraction}}, suggesting it's been\n" +
+    "               {{metric.award.engagementType}} by {{metric.award.displayAudience}}.\n" +
+    "               Click to learn more.\">\n" +
+    "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
+    "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
+    "          </span>\n" +
     "\n" +
-    "      <span href=\"#\"\n" +
-    "            class=\"ti-badge big-badge {{award.audience}} {{award.engagementType}}\"\n" +
-    "            ng-show=\"award.isHighly\"\n" +
-    "            popover-trigger=\"mouseenter\"\n" +
-    "            popover-placement=\"bottom\"\n" +
-    "            popover-title=\"Highly {{award.engagementType}} by {{award.displayAudience}}\"\n" +
-    "            popover=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
-    "            {{award.topMetric.displayInteraction}}. That's better than\n" +
-    "            {{award.topMetric.percentiles.CI95_lower}}% of items\n" +
-    "            {{award.topMetric.referenceSetStorageVerb}} {{award.topMetric.refSet}} in {{award.topMetric.referenceSetYear}},\n" +
-    "            suggesting it's highly {{award.engagementType}} by {{award.displayAudience }}.\n" +
-    "            Click to learn more.\">\n" +
+    "         <span href=\"#\"\n" +
+    "               class=\"ti-badge big-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
+    "               ng-show=\"award.isHighly\"\n" +
+    "               popover-trigger=\"mouseenter\"\n" +
+    "               popover-placement=\"bottom\"\n" +
+    "               popover-title=\"Highly {{metric.award.engagementType}} by {{metric.award.displayAudience}}\"\n" +
+    "               popover=\"This item has {{metric.actualCount}} {{metric.environment}}\n" +
+    "               {{metric.displayInteraction}}. That's better than\n" +
+    "               {{metric.percentiles.CI95_lower}}% of items\n" +
+    "               {{metric.referenceSetStorageVerb}} {{metric.refSet}} in {{metric.referenceSetYear}},\n" +
+    "               suggesting it's highly {{metric.award.engagementType}} by {{metric.award.displayAudience }}.\n" +
     "\n" +
-    "         <span class=\"modifier\">highly</span>\n" +
-    "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
-    "         <span class=\"audience\">by {{award.audience}}</span>\n" +
+    "               Click to learn more.\">\n" +
+    "            <span class=\"modifier\">highly</span>\n" +
+    "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
+    "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
+    "         </span>\n" +
+    "\n" +
     "      </span>\n" +
-    "      <span class=\"metrics\">\n" +
-    "         <img ng-repeat=\"metric in award.metrics\" ng-src=\"{{ metric.static_meta.icon }}\">\n" +
+    "      <a class=\"value-and-name\" href=\"\">\n" +
+    "         <img ng-src=\"{{ metric.static_meta.icon }}\">\n" +
+    "         <span class=\"raw-value\">{{ metric.actualCount }}</span>\n" +
+    "         <span class=\"environment\">{{ metric.environment }}</span>\n" +
+    "         <span class=\"interaction\">{{ metric.displayInteraction }}</span>\n" +
+    "      </a>\n" +
+    "      <span class=\"percentile\" ng-show=\"metric.percentiles\">\n" +
+    "         <span class=\"lower\">{{ metric.percentiles.CI95_lower }}</span>\n" +
+    "         <span class=\"dash\">-</span>\n" +
+    "         <span class=\"upper\">{{ metric.percentiles.CI95_upper }}</span>\n" +
+    "         <span class=\"descr\">percentile</span>\n" +
     "      </span>\n" +
     "\n" +
     "   </li>\n" +
@@ -3699,9 +3710,8 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"product\">\n" +
     "         <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
-    "         <div class=\"metrics-table\" ng-include=\"'product/metrics-table.tpl.html'\"></div>\n" +
+    "         <div class=\"metric-details\" ng-include=\"'product/metrics-table.tpl.html'\"></div>\n" +
     "      </div>\n" +
-    "\n" +
     "\n" +
     "   </div>\n" +
     "</div>");

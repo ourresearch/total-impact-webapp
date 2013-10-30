@@ -26,7 +26,7 @@ angular.module("profileProduct", [
     function(data){
       console.log("data", data)
       $scope.biblio = Product.makeBiblio(data)
-      $scope.awards = Product.makeAwards(data)
+      $scope.metrics = Product.makeMetrics(data)
     }
 
     )

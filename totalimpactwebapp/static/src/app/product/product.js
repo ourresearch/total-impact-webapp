@@ -131,11 +131,10 @@ angular.module('product.product')
 
       return biblio
     }
-    
 
   ,makeAwards: function(itemData) {
 
-      metrics = this.makeMetrics(itemData)
+      var metrics = this.makeMetrics(itemData)
       
       var awards = []
       var audiencesObj = itemOmitUndefinedv(_.groupBy(metrics, "audience"))

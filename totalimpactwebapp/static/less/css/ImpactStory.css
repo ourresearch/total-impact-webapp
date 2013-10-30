@@ -7434,11 +7434,11 @@ div.products div.products-without-metrics div.well a {
 .product .badges ul.ti-badges {
   float: left;
 }
-.product .award {
+.product .badges ul.ti-badges .award {
   margin: 0 7px 7px 0;
   float: left;
 }
-.product .award span.metrics {
+.product .badges ul.ti-badges .award span.metrics {
   display: block;
   float: left;
   border: 1px solid #333;
@@ -7461,7 +7461,7 @@ div.products div.products-without-metrics div.well a {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-.product .award span.metrics img {
+.product .badges ul.ti-badges .award span.metrics img {
   height: 16px;
   margin-left: 5px;
   vertical-align: top;
@@ -7476,7 +7476,7 @@ div.products div.products-without-metrics div.well a {
   /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 
 }
-.product .award span.ti-badge {
+.product span.ti-badge {
   height: 24px;
   font-size: 12px;
   text-align: center;
@@ -7504,38 +7504,38 @@ div.products div.products-without-metrics div.well a {
   background: black;
   border: 1px solid black;
 }
-.product .award span.ti-badge span.audience {
+.product span.ti-badge span.audience {
   display: none;
 }
-.product .award span.ti-badge.scholars {
+.product span.ti-badge.scholars {
   background: #377eb8;
   border-color: #377eb8;
 }
-.product .award span.ti-badge.public {
+.product span.ti-badge.public {
   background: #4daf4a;
   border-color: #4daf4a;
 }
-.product .award span.ti-badge.big-badge {
+.product span.ti-badge.big-badge {
   color: #fff;
 }
-.product .award span.ti-badge.lil-badge {
+.product span.ti-badge.lil-badge {
   background: #fff;
 }
-.product .award span.ti-badge.lil-badge.scholars {
+.product span.ti-badge.lil-badge.scholars {
   color: #377eb8;
 }
-.product .award span.ti-badge.lil-badge.public {
+.product span.ti-badge.lil-badge.public {
   color: #4daf4a;
 }
-.product .award div.popover {
+.product div.popover {
   font-family: helvetica, arial, sans-serif;
   max-width: 230px;
 }
-.product .award div.popover h3 {
+.product div.popover h3 {
   font-size: 16px;
   font-family: helvetica, arial, sans-serif;
 }
-.product .award div.popover .popover-content {
+.product div.popover .popover-content {
   font-size: 14px;
 }
 div.zoom {
@@ -7675,8 +7675,39 @@ div.product-page {
   margin-top: 100px;
   min-height: 500px;
 }
-div.product-page .product h2.product-heading {
+div.product-page .product .biblio {
+  float: none;
+  width: 100%;
+}
+div.product-page .product .biblio h5 a {
   font-size: 30px;
+}
+div.product-page .product .biblio h5 a i {
+  font-size: 15px;
+}
+div.product-page .product .biblio div.optional-biblio {
+  font-size: 20px;
+}
+div.product-page .product .metric-details {
+  margin-top: 20px;
+}
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail {
+  line-height: 1.2;
+}
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail .badge-container {
+  width: 200px;
+  display: inline-block;
+}
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail .badge-container .ti-badge {
+  float: right;
+}
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail .badge-container .ti-badge span.audience {
+  display: inline;
+}
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail a.value-and-name img {
+  height: 16px;
+  margin-left: 5px;
+  vertical-align: top;
 }
 div.signup-header {
   background: #fff;

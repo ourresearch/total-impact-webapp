@@ -86,61 +86,62 @@
       float:left;
       ul.ti-badges {
          float:left;
+         .award {
+            margin:0 7px 7px 0;
+            float:left;
+            span.metrics {
+               display:block;
+               float:left;
+               img {
+                  height: 16px;
+                  margin-left:5px;
+                  vertical-align: top;
+                  .grayscale(.75);
+               }
+               border: 1px solid #333;
+               border-left: none;
+               height: 24px;
+               padding:3px 10px 0 0;
+               .border-radius(13px, 13px, 0, 0);
+
+            }
+
+
+         }
       }
    }
 
-   .award {
-      margin:0 7px 7px 0;
+
+   span.ti-badge {
+      height: 24px;
+      font-size: 12px;
+      text-align: center;
+      padding: 3px 9px;
       float:left;
-      span.metrics {
-         display:block;
-         float:left;
-         img {
-            height: 16px;
-            margin-left:5px;
-            vertical-align: top;
-            .grayscale(.75);
-         }
-         border: 1px solid #333;
-         border-left: none;
-         height: 24px;
-         padding:3px 10px 0 0;
-         .border-radius(13px, 13px, 0, 0);
-
+      display:block;
+      font-weight:normal;
+      .border-radius(0, 0, 3px, 3px);
+      cursor: pointer;
+      font-family: helvetica, arial, sans-serif;
+      span.audience {display:none;}
+      background:  black;
+      border: 1px solid black;
+      &.scholars {background: @scholarsColor; border-color: @scholarsColor;}
+      &.public {background: @publicColor; border-color: @publicColor;}
+      &.big-badge {
+         color:  #fff;
       }
-
-      span.ti-badge {
-         height: 24px;
-         font-size: 12px;
-         text-align: center;
-         padding: 3px 9px;
-         float:left;
-         display:block;
-         font-weight:normal;
-         .border-radius(0, 0, 3px, 3px);
-         cursor: pointer;
-         font-family: helvetica, arial, sans-serif;
-         span.audience {display:none;}
-         background:  black;
-         border: 1px solid black;
-         &.scholars {background: @scholarsColor; border-color: @scholarsColor;}
-         &.public {background: @publicColor; border-color: @publicColor;}
-         &.big-badge {
-            color:  #fff;
-         }
-         &.lil-badge {
-            &.scholars {color: @scholarsColor;}
-            &.public {color: @publicColor;}
-            background: #fff;
-         }
+      &.lil-badge {
+         &.scholars {color: @scholarsColor;}
+         &.public {color: @publicColor;}
+         background: #fff;
       }
-      div.popover {
-         font-family: helvetica, arial, sans-serif;
-         max-width: 230px;
-         h3 {font-size: 16px; font-family: helvetica, arial, sans-serif;}
-         .popover-content {font-size: 14px;}
-      }
-
+   }
+   div.popover {
+      font-family: helvetica, arial, sans-serif;
+      max-width: 230px;
+      h3 {font-size: 16px; font-family: helvetica, arial, sans-serif;}
+      .popover-content {font-size: 14px;}
    }
 }
 
