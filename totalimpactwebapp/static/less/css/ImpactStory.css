@@ -7692,10 +7692,13 @@ div.product-page .product .metric-details {
   margin-top: 20px;
 }
 div.product-page .product .metric-details ul.metric-details-list li.metric-detail {
-  line-height: 1.2;
+  line-height: 1.5;
+  font-size: 15px;
 }
 div.product-page .product .metric-details ul.metric-details-list li.metric-detail .badge-container {
   width: 200px;
+  margin-top: 8px;
+  margin-bottom: -5px;
   display: inline-block;
 }
 div.product-page .product .metric-details ul.metric-details-list li.metric-detail .badge-container .ti-badge {
@@ -7704,10 +7707,36 @@ div.product-page .product .metric-details ul.metric-details-list li.metric-detai
 div.product-page .product .metric-details ul.metric-details-list li.metric-detail .badge-container .ti-badge span.audience {
   display: inline;
 }
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail a.value-and-name {
+  color: #333;
+  display: inline-block;
+}
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail a.value-and-name:hover {
+  text-decoration: none;
+  color: #ff4e00;
+}
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail a.value-and-name span.raw-value {
+  margin-left: 5px;
+  display: inline-block;
+  text-align: right;
+  font-weight: bold;
+  font-size: 16px;
+}
 div.product-page .product .metric-details ul.metric-details-list li.metric-detail a.value-and-name img {
   height: 16px;
-  margin-left: 5px;
-  vertical-align: top;
+  margin: 0 3px 0 3px;
+  vertical-align: middle;
+}
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.percentile span.values {
+  font-weight: bold;
+}
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.percentile span.values span.upper,
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.percentile span.values span.lower {
+  font-size: 16px;
+}
+div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.percentile span.descr {
+  color: #aaa;
+  font-size: 80%;
 }
 div.signup-header {
   background: #fff;

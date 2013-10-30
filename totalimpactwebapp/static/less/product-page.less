@@ -20,9 +20,12 @@ div.product-page {
          margin-top: 20px;
          ul.metric-details-list {
             li.metric-detail {
-               line-height: 1.2;
+               line-height: 1.5;
+               font-size:  15px;
                .badge-container {
                   width: 200px;
+                  margin-top: 8px;
+                  margin-bottom: -5px;
                   display:inline-block;
                   .ti-badge {
                      float:right;
@@ -30,18 +33,45 @@ div.product-page {
                   }
                }
                a.value-and-name {
+                  color:  #333;
+//                  min-width: 200px;
+                  display: inline-block;
+                  &:hover {
+                     text-decoration: none;
+                     color:  @linkColor;
+                  }
                   span.raw-value {
-
+                     margin-left:5px;
+                     display: inline-block;
+                     text-align: right;
+                     font-weight: bold;
+                     font-size:  16px;
+                  }
+                  span.environment {
+                  }
+                  span.interaction {
                   }
                   img {
                      height: 16px;
-                     margin-left:5px;
-                     vertical-align: top;
+                     margin: 0 3px 0 3px;
+                     vertical-align: middle;
 //                     .grayscale(.75);
                   }
+
                }
 
-
+               span.percentile {
+                  span.values {
+                     font-weight: bold;
+                     span.upper, span.lower {
+                        font-size:  16px;
+                     }
+                  }
+                  span.descr {
+                     color:  #aaa;
+                     font-size: 80%;
+                  }
+               }
             }
          }
 

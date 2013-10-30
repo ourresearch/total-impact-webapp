@@ -594,21 +594,20 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "      <span class=\"badge-container\">\n" +
     "         <span href=\"#\"\n" +
     "               class=\"ti-badge lil-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
-    "               ng-show=\"!award.isHighly\"\n" +
+    "               ng-show=\"!metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
     "               popover-placement=\"bottom\"\n" +
     "               popover-title=\"{{metric.award.engagementType}} by {{metric.award.displayAudience}}\"\n" +
     "               popover=\"This item has {{metric.actualCount}} {{metric.environment}}\n" +
     "               {{metric.displayInteraction}}, suggesting it's been\n" +
-    "               {{metric.award.engagementType}} by {{metric.award.displayAudience}}.\n" +
-    "               Click to learn more.\">\n" +
+    "               {{metric.award.engagementType}} by {{metric.award.displayAudience}}.\">\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
     "          </span>\n" +
     "\n" +
     "         <span href=\"#\"\n" +
     "               class=\"ti-badge big-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
-    "               ng-show=\"award.isHighly\"\n" +
+    "               ng-show=\"metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
     "               popover-placement=\"bottom\"\n" +
     "               popover-title=\"Highly {{metric.award.engagementType}} by {{metric.award.displayAudience}}\"\n" +
@@ -616,26 +615,32 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "               {{metric.displayInteraction}}. That's better than\n" +
     "               {{metric.percentiles.CI95_lower}}% of items\n" +
     "               {{metric.referenceSetStorageVerb}} {{metric.refSet}} in {{metric.referenceSetYear}},\n" +
-    "               suggesting it's highly {{metric.award.engagementType}} by {{metric.award.displayAudience }}.\n" +
-    "\n" +
-    "               Click to learn more.\">\n" +
+    "               suggesting it's highly {{metric.award.engagementType}} by {{metric.award.displayAudience }}.\">\n" +
     "            <span class=\"modifier\">highly</span>\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
     "         </span>\n" +
     "\n" +
     "      </span>\n" +
-    "      <a class=\"value-and-name\" href=\"\">\n" +
+    "      <a class=\"value-and-name\"\n" +
+    "         href=\"\"\n" +
+    "         popover-trigger='mouseenter'\n" +
+    "         popover-placement=\"bottom\"\n" +
+    "         popover=\"{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.\">\n" +
     "         <img ng-src=\"{{ metric.static_meta.icon }}\">\n" +
     "         <span class=\"raw-value\">{{ metric.actualCount }}</span>\n" +
     "         <span class=\"environment\">{{ metric.environment }}</span>\n" +
-    "         <span class=\"interaction\">{{ metric.displayInteraction }}</span>\n" +
+    "         <span class=\"interaction\">{{ metric.displayInteraction }}</span>.\n" +
     "      </a>\n" +
     "      <span class=\"percentile\" ng-show=\"metric.percentiles\">\n" +
-    "         <span class=\"lower\">{{ metric.percentiles.CI95_lower }}</span>\n" +
-    "         <span class=\"dash\">-</span>\n" +
-    "         <span class=\"upper\">{{ metric.percentiles.CI95_upper }}</span>\n" +
-    "         <span class=\"descr\">percentile</span>\n" +
+    "         <span class=\"descr\">That's in the </span>\n" +
+    "         <span class=\"values\">\n" +
+    "            <span class=\"lower\">{{ metric.percentiles.CI95_lower }}</span>\n" +
+    "            <span class=\"dash\">-</span>\n" +
+    "            <span class=\"upper\">{{ metric.percentiles.CI95_upper }}</span>\n" +
+    "            <span class=\"unit\">percentile</span>\n" +
+    "         </span>\n" +
+    "         <span class=\"descr\">of {{ biblio.genre }}s published in {{ biblio.year }}</span>\n" +
     "      </span>\n" +
     "\n" +
     "   </li>\n" +

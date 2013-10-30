@@ -48,7 +48,6 @@ angular.module( 'signup', [
             {id: NewProfile.about.url_slug, idType: "url_slug"},
             NewProfile.about,
             function(resp, headers){
-              console.log("i'm saved!", resp, headers)
               NewProfile.setId(resp.user.id)
 
               console.log("set NewProfile.getId(): ", NewProfile.getId())

@@ -91,10 +91,14 @@ angular.module('product.product')
     makeMetrics: function(itemData){
       var metrics = itemData.metrics
       metrics = this.addMetricsInfoDataToMetrics(metrics)
+      metrics = _.filter(metrics, function(metric){
+        return typeof metric.audience !== "undefined"
+      })
       metrics = this.expandMetricMetadta(metrics, itemData.biblio.year)
       metrics = this.getMetricPercentiles(metrics)
 
       _.each(metrics, function(metric){
+        console.log("metric: ", metric)
         metric.award = Award.makeForSingleMetric(metric.audience, metric.engagementType, metric)
       })
 

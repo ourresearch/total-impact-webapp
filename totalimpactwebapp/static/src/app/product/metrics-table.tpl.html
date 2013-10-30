@@ -4,21 +4,20 @@
       <span class="badge-container">
          <span href="#"
                class="ti-badge lil-badge {{metric.award.audience}} {{metric.award.engagementType}}"
-               ng-show="!award.isHighly"
+               ng-show="!metric.award.isHighly"
                popover-trigger="mouseenter"
                popover-placement="bottom"
                popover-title="{{metric.award.engagementType}} by {{metric.award.displayAudience}}"
                popover="This item has {{metric.actualCount}} {{metric.environment}}
                {{metric.displayInteraction}}, suggesting it's been
-               {{metric.award.engagementType}} by {{metric.award.displayAudience}}.
-               Click to learn more.">
+               {{metric.award.engagementType}} by {{metric.award.displayAudience}}.">
             <span class="engagement-type">{{metric.award.engagementType}}</span>
             <span class="audience">by {{metric.award.audience}}</span>
           </span>
 
          <span href="#"
                class="ti-badge big-badge {{metric.award.audience}} {{metric.award.engagementType}}"
-               ng-show="award.isHighly"
+               ng-show="metric.award.isHighly"
                popover-trigger="mouseenter"
                popover-placement="bottom"
                popover-title="Highly {{metric.award.engagementType}} by {{metric.award.displayAudience}}"
@@ -26,26 +25,32 @@
                {{metric.displayInteraction}}. That's better than
                {{metric.percentiles.CI95_lower}}% of items
                {{metric.referenceSetStorageVerb}} {{metric.refSet}} in {{metric.referenceSetYear}},
-               suggesting it's highly {{metric.award.engagementType}} by {{metric.award.displayAudience }}.
-
-               Click to learn more.">
+               suggesting it's highly {{metric.award.engagementType}} by {{metric.award.displayAudience }}.">
             <span class="modifier">highly</span>
             <span class="engagement-type">{{metric.award.engagementType}}</span>
             <span class="audience">by {{metric.award.audience}}</span>
          </span>
 
       </span>
-      <a class="value-and-name" href="">
+      <a class="value-and-name"
+         href=""
+         popover-trigger='mouseenter'
+         popover-placement="bottom"
+         popover="{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.">
          <img ng-src="{{ metric.static_meta.icon }}">
          <span class="raw-value">{{ metric.actualCount }}</span>
          <span class="environment">{{ metric.environment }}</span>
-         <span class="interaction">{{ metric.displayInteraction }}</span>
+         <span class="interaction">{{ metric.displayInteraction }}</span>.
       </a>
       <span class="percentile" ng-show="metric.percentiles">
-         <span class="lower">{{ metric.percentiles.CI95_lower }}</span>
-         <span class="dash">-</span>
-         <span class="upper">{{ metric.percentiles.CI95_upper }}</span>
-         <span class="descr">percentile</span>
+         <span class="descr">That's in the </span>
+         <span class="values">
+            <span class="lower">{{ metric.percentiles.CI95_lower }}</span>
+            <span class="dash">-</span>
+            <span class="upper">{{ metric.percentiles.CI95_upper }}</span>
+            <span class="unit">percentile</span>
+         </span>
+         <span class="descr">of {{ biblio.genre }}s published in {{ biblio.year }}</span>
       </span>
 
    </li>
