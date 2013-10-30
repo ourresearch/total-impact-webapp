@@ -11,7 +11,7 @@
     More info at: http://lesselements.com
 -----------------------------------------------------*/
 body.create-collection div#page-header h2 {
-  margin-top: 60px;
+  margin-top: 0px;
 }
 body.create-collection div.main {
   margin-top: 30px;
@@ -33,6 +33,32 @@ div.progressbar {
   margin: 3px 0 0 5px;
   color: #ff4e00;
   float: left;
+}
+div.email-your-cv {
+  margin-bottom: 50px;
+}
+div.email-your-cv a.cv-btn {
+  margin: 10px 10px 10px 180px;
+  display: clear;
+}
+div.email-your-cv a.cv-btn span {
+  font-size: 80%;
+  font-weight: normal;
+}
+div.email-your-cv span.descr {
+  font-weight: normal;
+  font-size: 16px;
+  margin-left: 250px;
+  display: block;
+  padding-right: 200px;
+}
+div.email-your-cv span.or {
+  display: block;
+  width: 350px;
+  font-size: 21px;
+  text-align: center;
+  margin: 50px auto -30px;
+  background: #fff;
 }
 li#bibtex-import span.added {
   padding-top: 8px;
