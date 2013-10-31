@@ -431,6 +431,7 @@ def user_password_modify(id):
 
     if retrieved_user.check_password(current_password):
         retrieved_user.set_password(request.json["newPassword"])
+        login_user(retrieved_user)
         db.session.commit()
         return json_resp_from_thing({"response": "ok"})
 

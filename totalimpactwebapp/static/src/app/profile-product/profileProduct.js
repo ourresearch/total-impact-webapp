@@ -32,23 +32,6 @@ angular.module("profileProduct", [
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
-    // this modal stuff should go in it's own controller i think.
-//    var percentilesInfoModal = null;
-//    $scope.openPercentilesInfoModal = function() {
-//      console.log("openPercentilesInfoModal() fired.")
-//      percentilesInfoModal = $dialog.dialog({
-//        templateUrl: "profile-product/percentilesInfoModal.tpl.html"
-//      });
-//      percentilesInfoModal.open();
-//    }
-//
-//    $scope.closeModal = function() {
-//      console.log("closeModal fired.", percentilesInfoModal)
-//      if (percentilesInfoModal) {
-//        percentilesInfoModal.close(success);
-//        percentilesInfoModal = null;
-//      }
-//    }
 
 
     $scope.product = UsersProduct.get({

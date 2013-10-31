@@ -1,6 +1,7 @@
 angular.module( 'signup', [
     'services.slug',
     'resources.users',
+    'security.service',
     'importers.allTheImporters',
     'importers.importer'
     ])
@@ -69,7 +70,7 @@ angular.module( 'signup', [
     }
   })
 
-  .factory("NewProfile", function(Slug, UsersAbout, UsersPassword){
+  .factory("NewProfile", function(Slug, UsersAbout, UsersPassword, security){
     var about = {}
     var products = []
     var id
@@ -93,10 +94,15 @@ angular.module( 'signup', [
       },
 
       setPassword: function(){
-        if (about.password) {
+        if (about.password && about) {
           UsersPassword.save(
             {"id": id},
-            {newPassword: about.password}
+            {newPassword: about.password},
+            function(data){ // runs on successful password set.
+              console.log("we set the password successfully. logging the user in")
+              var user = security.requestCurrentUser()
+              console.log("we found this user: ", user)
+            }
           )
         }
       },

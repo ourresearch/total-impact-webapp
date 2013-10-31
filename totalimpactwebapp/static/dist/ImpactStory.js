@@ -1000,23 +1000,6 @@ angular.module("profileProduct", [
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
-    // this modal stuff should go in it's own controller i think.
-//    var percentilesInfoModal = null;
-//    $scope.openPercentilesInfoModal = function() {
-//      console.log("openPercentilesInfoModal() fired.")
-//      percentilesInfoModal = $dialog.dialog({
-//        templateUrl: "profile-product/percentilesInfoModal.tpl.html"
-//      });
-//      percentilesInfoModal.open();
-//    }
-//
-//    $scope.closeModal = function() {
-//      console.log("closeModal fired.", percentilesInfoModal)
-//      if (percentilesInfoModal) {
-//        percentilesInfoModal.close(success);
-//        percentilesInfoModal = null;
-//      }
-//    }
 
 
     $scope.product = UsersProduct.get({
@@ -1307,6 +1290,7 @@ angular.module('settings', [
 angular.module( 'signup', [
     'services.slug',
     'resources.users',
+    'security.service',
     'importers.allTheImporters',
     'importers.importer'
     ])
@@ -1375,7 +1359,7 @@ angular.module( 'signup', [
     }
   })
 
-  .factory("NewProfile", function(Slug, UsersAbout, UsersPassword){
+  .factory("NewProfile", function(Slug, UsersAbout, UsersPassword, security){
     var about = {}
     var products = []
     var id
@@ -1399,10 +1383,15 @@ angular.module( 'signup', [
       },
 
       setPassword: function(){
-        if (about.password) {
+        if (about.password && about) {
           UsersPassword.save(
             {"id": id},
-            {newPassword: about.password}
+            {newPassword: about.password}, 
+            function(data){ // runs on successful password set.
+              console.log("we set the password successfully. logging the user in")
+              var user = security.requestCurrentUser()
+              console.log("we found this user: ", user)
+            }
           )
         }
       },
@@ -2401,28 +2390,6 @@ angular.module('security.service', [
     loginDialog.result.then();
   }
 
-//  function closeLoginDialog(success) {
-//    if (loginDialog) {
-//      loginDialog.close(success);
-//      loginDialog = null;
-//    }
-//  }
-//  function onLoginDialogClose(success) {
-//    if ( success ) {
-//      queue.retryAll();
-//    } else {
-//      queue.cancelAll();
-//      redirect();
-//    }
-//  }
-
-  // Register a handler for when an item is added to the retry queue
-//  queue.onItemAddedCallbacks.push(function(retryItem) {
-//    if ( queue.hasMore() ) {
-//      service.showLogin();
-//    }
-//  });
-
   // The public API of the service
   var service = {
 
@@ -2438,12 +2405,7 @@ angular.module('security.service', [
       request
         .success(function(data, status) {
             service.currentUser = data.user;
-
             console.log("we've got a current user now", service.currentUser)
-
-            if ( service.isAuthenticated() ) {
-              closeLoginDialog(true);
-            }
           })
         .error(function(data, status, headers, config){
           console.log("oh crap, an error: ", status);
@@ -2453,12 +2415,6 @@ angular.module('security.service', [
       return request;
 
     },
-
-    // Give up trying to login and clear the retry queue
-//    cancelLogin: function() {
-//      closeLoginDialog(false);
-//      redirect();
-//    },
 
     // Logout the current user and redirect
     logout: function(redirectTo) {
@@ -2485,6 +2441,7 @@ angular.module('security.service', [
 
     // Is the current user authenticated?
     isAuthenticated: function(){
+      console.log("calling isAuthenticated. current user: ", service.currentUser)
       return !!service.currentUser;
     },
     
@@ -4404,12 +4361,6 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         <li><a href=\"#\" class=\"logout\" ng-click=\"logout()\"><i class=\"icon-off\"></i>Log out</a></li>\n" +
     "      </ul>\n" +
     "   </li>\n" +
-    "\n" +
-    "   <!--<li ng-show=\"isAuthenticated()\" class=\"logout\">\n" +
-    "      <form class=\"navbar-form\">\n" +
-    "         <button class=\"btn logout\" ng-click=\"logout()\">Log out</button>\n" +
-    "      </form>\n" +
-    "   </li>-->\n" +
     "\n" +
     "   <li ng-hide=\"isAuthenticated()\" class=\"login\">\n" +
     "      <form class=\"navbar-form\">\n" +

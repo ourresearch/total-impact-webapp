@@ -24,28 +24,6 @@ angular.module('security.service', [
     loginDialog.result.then();
   }
 
-//  function closeLoginDialog(success) {
-//    if (loginDialog) {
-//      loginDialog.close(success);
-//      loginDialog = null;
-//    }
-//  }
-//  function onLoginDialogClose(success) {
-//    if ( success ) {
-//      queue.retryAll();
-//    } else {
-//      queue.cancelAll();
-//      redirect();
-//    }
-//  }
-
-  // Register a handler for when an item is added to the retry queue
-//  queue.onItemAddedCallbacks.push(function(retryItem) {
-//    if ( queue.hasMore() ) {
-//      service.showLogin();
-//    }
-//  });
-
   // The public API of the service
   var service = {
 
@@ -61,12 +39,7 @@ angular.module('security.service', [
       request
         .success(function(data, status) {
             service.currentUser = data.user;
-
             console.log("we've got a current user now", service.currentUser)
-
-            if ( service.isAuthenticated() ) {
-              closeLoginDialog(true);
-            }
           })
         .error(function(data, status, headers, config){
           console.log("oh crap, an error: ", status);
@@ -76,12 +49,6 @@ angular.module('security.service', [
       return request;
 
     },
-
-    // Give up trying to login and clear the retry queue
-//    cancelLogin: function() {
-//      closeLoginDialog(false);
-//      redirect();
-//    },
 
     // Logout the current user and redirect
     logout: function(redirectTo) {
@@ -108,6 +75,7 @@ angular.module('security.service', [
 
     // Is the current user authenticated?
     isAuthenticated: function(){
+      console.log("calling isAuthenticated. current user: ", service.currentUser)
       return !!service.currentUser;
     },
     
