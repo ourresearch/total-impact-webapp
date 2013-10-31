@@ -5,7 +5,7 @@ angular.module('security.service', [
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', ['$http', '$q', '$location', 'securityRetryQueue', '$dialog', function($http, $q, $location, queue, $dialog) {
+.factory('security', ['$http', '$q', '$location', 'securityRetryQueue', '$modal', function($http, $q, $location, queue, $modal) {
 
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
@@ -16,44 +16,38 @@ angular.module('security.service', [
   // Login form dialog stuff
   var loginDialog = null;
   function openLoginDialog() {
-      console.log("openLoginDialog() fired.")
-    var dialogOpts = {
+    console.log("openLoginDialog() fired.")
+    loginDialog = $modal.open({
       templateUrl: "security/login/form.tpl.html",
-      dialogFade: true,
       controller: "LoginFormController"
-    }
-    loginDialog = $dialog.dialog(dialogOpts);
-    loginDialog.open().then(onLoginDialogClose);
-  }
-  function closeLoginDialog(success) {
-    if (loginDialog) {
-      loginDialog.close(success);
-      loginDialog = null;
-    }
-  }
-  function onLoginDialogClose(success) {
-    if ( success ) {
-      queue.retryAll();
-    } else {
-      queue.cancelAll();
-      redirect();
-    }
+    });
+    loginDialog.result.then();
   }
 
+//  function closeLoginDialog(success) {
+//    if (loginDialog) {
+//      loginDialog.close(success);
+//      loginDialog = null;
+//    }
+//  }
+//  function onLoginDialogClose(success) {
+//    if ( success ) {
+//      queue.retryAll();
+//    } else {
+//      queue.cancelAll();
+//      redirect();
+//    }
+//  }
+
   // Register a handler for when an item is added to the retry queue
-  queue.onItemAddedCallbacks.push(function(retryItem) {
-    if ( queue.hasMore() ) {
-      service.showLogin();
-    }
-  });
+//  queue.onItemAddedCallbacks.push(function(retryItem) {
+//    if ( queue.hasMore() ) {
+//      service.showLogin();
+//    }
+//  });
 
   // The public API of the service
   var service = {
-
-    // Get the first reason for needing a login
-    getLoginReason: function() {
-      return queue.retryReason();
-    },
 
     // Show the modal login dialog
     showLogin: function() {
@@ -84,10 +78,10 @@ angular.module('security.service', [
     },
 
     // Give up trying to login and clear the retry queue
-    cancelLogin: function() {
-      closeLoginDialog(false);
-      redirect();
-    },
+//    cancelLogin: function() {
+//      closeLoginDialog(false);
+//      redirect();
+//    },
 
     // Logout the current user and redirect
     logout: function(redirectTo) {

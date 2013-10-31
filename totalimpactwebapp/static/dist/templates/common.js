@@ -45,8 +45,7 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "    </div>\n" +
     "    <div class=\"modal-footer\">\n" +
     "        <button class=\"btn btn-primary login\" ng-click=\"login()\" ng-disabled='form.$invalid'>Sign in</button>\n" +
-    "        <button class=\"btn clear\" ng-click=\"clearForm()\">Clear</button>\n" +
-    "        <button class=\"btn btn-warning cancel\" ng-click=\"cancelLogin()\">Cancel</button>\n" +
+    "        <button class=\"btn cancel\" ng-click=\"cancel()\">Cancel</button>\n" +
     "    </div>\n" +
     "</form>\n" +
     "");

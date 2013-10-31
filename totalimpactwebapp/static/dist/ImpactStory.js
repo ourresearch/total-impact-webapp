@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-10-30
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-10-31
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -969,6 +969,7 @@ function ItemView($) {
 angular.module("profileProduct", [
     'resources.users',
     'product.product',
+    'services.loading',
     'ui.bootstrap',
     'security'
   ])
@@ -984,10 +985,42 @@ angular.module("profileProduct", [
 
   }])
 
-  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, security, UsersProduct, Product) {
+  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $modal, security, UsersProduct, UsersAbout, Product, Loading) {
+
+    var slug = $routeParams.url_slug
+    Loading.start()
+
+    $scope.userSlug = slug
+    $scope.loading = Loading
+
+    $scope.profileAbout = UsersAbout.get({
+        id: slug,
+        idType: "url_slug"
+    })
+    $scope.openInfoModal = function(){
+      $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
+    }
+    // this modal stuff should go in it's own controller i think.
+//    var percentilesInfoModal = null;
+//    $scope.openPercentilesInfoModal = function() {
+//      console.log("openPercentilesInfoModal() fired.")
+//      percentilesInfoModal = $dialog.dialog({
+//        templateUrl: "profile-product/percentilesInfoModal.tpl.html"
+//      });
+//      percentilesInfoModal.open();
+//    }
+//
+//    $scope.closeModal = function() {
+//      console.log("closeModal fired.", percentilesInfoModal)
+//      if (percentilesInfoModal) {
+//        percentilesInfoModal.close(success);
+//        percentilesInfoModal = null;
+//      }
+//    }
+
 
     $scope.product = UsersProduct.get({
-      id: $routeParams.url_slug,
+      id: slug,
       tiid: $routeParams.tiid,
       idType: "url_slug"
     },
@@ -995,10 +1028,12 @@ angular.module("profileProduct", [
       console.log("data", data)
       $scope.biblio = Product.makeBiblio(data)
       $scope.metrics = Product.makeMetrics(data)
+      Loading.finish()
     }
-
     )
   })
+
+  .controller('modalCtrl')
 
 angular.module("profile", [
   'resources.users',
@@ -2201,28 +2236,18 @@ angular.module('security.interceptor', ['security.retryQueue'])
 .config(['$httpProvider', function($httpProvider) {
   $httpProvider.responseInterceptors.push('securityInterceptor');
 }]);
-angular.module('security.login.form', ['services.localizedMessages'])
+angular.module('security.login.form', ['services.localizedMessages', 'ui.bootstrap'])
 
 // The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
 // This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
-.controller('LoginFormController', ['$scope', 'security', 'localizedMessages', function($scope, security, localizedMessages) {
+.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance) {
   // The model for this form 
   $scope.user = {};
 
   // Any error message from failing to login
   $scope.authError = null;
 
-  // The reason that we are being asked to login - for instance because we tried to access something to which we are not authorized
-  // We could do something diffent for each reason here but to keep it simple...
-  $scope.authReason = null;
-  if ( security.getLoginReason() ) {
-    $scope.authReason = ( security.isAuthenticated() ) ?
-      localizedMessages.get('login.reason.notAuthorized') :
-      localizedMessages.get('login.reason.notAuthenticated');
-  }
-
-  // Attempt to authenticate the user specified in the form's model
-  $scope.login = function() {
+  $scope.login = function () {
     // Clear any previous security errors
     $scope.authError = null;
 
@@ -2231,26 +2256,30 @@ angular.module('security.login.form', ['services.localizedMessages'])
 
       console.log("this is what we got from the security.login promise: ", loggedIn)
 
-      if ( !loggedIn ) {
+      if (loggedIn) {
+        $modalInstance.close($scope.user);
+      }
+      else {
         // If we get here then the login failed due to bad credentials
         console.log("we fired an authError")
         $scope.authError = localizedMessages.get('login.error.invalidCredentials');
       }
-    }, function(x) {
+    },
+    function(x) {
       // If we get here then there was a problem with the login request to the server
         console.log("server error")
       $scope.authError = localizedMessages.get('login.error.serverError', { exception: x });
     });
+
+
   };
 
-  $scope.clearForm = function() {
-    $scope.user = {};
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
   };
 
-  $scope.cancelLogin = function() {
-    security.cancelLogin();
-  };
-}]);
+
+});
 angular.module('security.login', ['security.login.form', 'security.login.toolbar']);
 angular.module('security.login.toolbar', [
   'ui.bootstrap'
@@ -2353,7 +2382,7 @@ angular.module('security.service', [
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', ['$http', '$q', '$location', 'securityRetryQueue', '$dialog', function($http, $q, $location, queue, $dialog) {
+.factory('security', ['$http', '$q', '$location', 'securityRetryQueue', '$modal', function($http, $q, $location, queue, $modal) {
 
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
@@ -2364,44 +2393,38 @@ angular.module('security.service', [
   // Login form dialog stuff
   var loginDialog = null;
   function openLoginDialog() {
-      console.log("openLoginDialog() fired.")
-    var dialogOpts = {
+    console.log("openLoginDialog() fired.")
+    loginDialog = $modal.open({
       templateUrl: "security/login/form.tpl.html",
-      dialogFade: true,
       controller: "LoginFormController"
-    }
-    loginDialog = $dialog.dialog(dialogOpts);
-    loginDialog.open().then(onLoginDialogClose);
-  }
-  function closeLoginDialog(success) {
-    if (loginDialog) {
-      loginDialog.close(success);
-      loginDialog = null;
-    }
-  }
-  function onLoginDialogClose(success) {
-    if ( success ) {
-      queue.retryAll();
-    } else {
-      queue.cancelAll();
-      redirect();
-    }
+    });
+    loginDialog.result.then();
   }
 
+//  function closeLoginDialog(success) {
+//    if (loginDialog) {
+//      loginDialog.close(success);
+//      loginDialog = null;
+//    }
+//  }
+//  function onLoginDialogClose(success) {
+//    if ( success ) {
+//      queue.retryAll();
+//    } else {
+//      queue.cancelAll();
+//      redirect();
+//    }
+//  }
+
   // Register a handler for when an item is added to the retry queue
-  queue.onItemAddedCallbacks.push(function(retryItem) {
-    if ( queue.hasMore() ) {
-      service.showLogin();
-    }
-  });
+//  queue.onItemAddedCallbacks.push(function(retryItem) {
+//    if ( queue.hasMore() ) {
+//      service.showLogin();
+//    }
+//  });
 
   // The public API of the service
   var service = {
-
-    // Get the first reason for needing a login
-    getLoginReason: function() {
-      return queue.retryReason();
-    },
 
     // Show the modal login dialog
     showLogin: function() {
@@ -2432,10 +2455,10 @@ angular.module('security.service', [
     },
 
     // Give up trying to login and clear the retry queue
-    cancelLogin: function() {
-      closeLoginDialog(false);
-      redirect();
-    },
+//    cancelLogin: function() {
+//      closeLoginDialog(false);
+//      redirect();
+//    },
 
     // Logout the current user and redirect
     logout: function(redirectTo) {
@@ -3063,7 +3086,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -3687,36 +3710,78 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "         </span>\n" +
     "\n" +
     "      </span>\n" +
-    "      <a class=\"value-and-name\"\n" +
-    "         href=\"\"\n" +
-    "         popover-trigger='mouseenter'\n" +
-    "         popover-placement=\"bottom\"\n" +
-    "         popover=\"{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.\">\n" +
-    "         <img ng-src=\"{{ metric.static_meta.icon }}\">\n" +
-    "         <span class=\"raw-value\">{{ metric.actualCount }}</span>\n" +
-    "         <span class=\"environment\">{{ metric.environment }}</span>\n" +
-    "         <span class=\"interaction\">{{ metric.displayInteraction }}</span>.\n" +
-    "      </a>\n" +
-    "      <span class=\"percentile\" ng-show=\"metric.percentiles\">\n" +
-    "         <span class=\"descr\">That's in the </span>\n" +
-    "         <span class=\"values\">\n" +
-    "            <span class=\"lower\">{{ metric.percentiles.CI95_lower }}</span>\n" +
-    "            <span class=\"dash\">-</span>\n" +
-    "            <span class=\"upper\">{{ metric.percentiles.CI95_upper }}</span>\n" +
-    "            <span class=\"unit\">percentile</span>\n" +
+    "      <span class=\"text\">\n" +
+    "         <a class=\"value-and-name\"\n" +
+    "            href=\"\"\n" +
+    "            popover-trigger='mouseenter'\n" +
+    "            popover-placement=\"bottom\"\n" +
+    "            popover=\"{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.\">\n" +
+    "            <img ng-src=\"{{ metric.static_meta.icon }}\">\n" +
+    "            <span class=\"raw-value\">{{ metric.actualCount }}</span>\n" +
+    "            <span class=\"environment\">{{ metric.environment }}</span>\n" +
+    "            <span class=\"interaction\">{{ metric.displayInteraction }}</span>\n" +
+    "            <i class=\"icon-external-link-sign\"></i>\n" +
+    "         </a>\n" +
+    "         <span class=\"percentile\" ng-show=\"metric.percentiles\">\n" +
+    "            <span class=\"values\">\n" +
+    "               <span class=\"lower\">{{ metric.percentiles.CI95_lower }}</span>\n" +
+    "               <span class=\"dash\">-</span>\n" +
+    "               <span class=\"upper\">{{ metric.percentiles.CI95_upper }}</span>\n" +
+    "               <span class=\"unit\">percentile</span>\n" +
+    "               <i class=\"icon-info-sign\" ng-click=\"openInfoModal()\"></i>\n" +
+    "            </span>\n" +
+    "            <span class=\"descr\">of {{ biblio.genre }}s published in {{ biblio.year }}</span>\n" +
     "         </span>\n" +
-    "         <span class=\"descr\">of {{ biblio.genre }}s published in {{ biblio.year }}</span>\n" +
     "      </span>\n" +
     "\n" +
     "   </li>\n" +
     "</ul>");
 }]);
 
+angular.module("profile-product/percentilesInfoModal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-product/percentilesInfoModal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <h3>What do these numbers mean?</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body\">\n" +
+    "   <p>ImpactStory classifies metrics along two dimensions: <strong>audience</strong> (<em>scholars</em> or the <em>public</em>) and <strong>type of engagement</strong> with research (<em>view</em>, <em>discuss</em>, <em>save</em>, <em>cite</em>, and <em>recommend</em>).</p>\n" +
+    "\n" +
+    "   <p>For each metric, the coloured bar shows its percentile relative to all articles indexed in the Web of Science that year.  The bars show a range, representing the 95% confidence interval around your percentile (and also accounting for ties).  Along with ranges, we show “Highly” badges for metrics above the 75th percentile that exceed a minimum frequency.</p>\n" +
+    "\n" +
+    "   <p>Each metric's raw count is shown to the left of its name.  Click the raw count to visit that metric source's external page for the item; there, you can explore the engagement in more detail.</p>\n" +
+    "\n" +
+    "   <p>For more information, see these blog posts and <a href=\"{{ url_for('faq') }}\">FAQ</a> sections:</p>\n" +
+    "\n" +
+    "   <ul>\n" +
+    "      <li><a href=\"http://blog.impactstory.org/2012/09/10/31256247948/\">What do we expect?</a></li>\n" +
+    "      <li><a href=\"http://blog.impactstory.org/2012/09/14/31524247207/\">Our framework for classifying altmetrics</a></li>\n" +
+    "      <li>Reference sets: <a href=\"http://blog.impactstory.org/2012/09/13/31461657926/\">Motivation</a>; Choosing Web of Science (TBA)</li>\n" +
+    "      <li>Percentiles: <a href=\"http://blog.impactstory.org/2012/09/11/31342582590/\">Part 1</a>, <a href=\"http://blog.impactstory.org/2012/09/12/31408899657/\">Part 2</a>, and <a href=\"http://blog.impactstory.org/2012/09/12/31411187588/\">Part 3</a></li>\n" +
+    "      <li>Why <a href=\"{{ url_for('faq') }}#toc_3_9\">citation counts may not be what you expect</a></li>\n" +
+    "      <li>Sampling and 95% confidence (TBA)</li>\n" +
+    "   </ul>\n" +
+    "</div>");
+}]);
+
 angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/profile-product-page.tpl.html",
     "<div class=\"product-page\">\n" +
     "   <div class=\"wrapper\">\n" +
+    "      <div class=\"return-to-profile\">\n" +
+    "         <a href=\"/{{ userSlug }}\" ng-show=\"profileAbout.about\">\n" +
+    "            <i class=\"icon-chevron-left\"></i>\n" +
+    "            Return to {{ profileAbout.about.given_name }}\n" +
+    "            {{ profileAbout.about.surname }}'s profile\n" +
+    "         </a>\n" +
+    "      </div>\n" +
     "      <div class=\"product\">\n" +
+    "         <div class=\"working\" ng-show=\"loading.is()\">\n" +
+    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "            <span class=\"text\">Loading product...</span>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
     "         <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
     "         <div class=\"metric-details\" ng-include=\"'product/metrics-table.tpl.html'\"></div>\n" +
     "      </div>\n" +
@@ -4314,8 +4379,7 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "    </div>\n" +
     "    <div class=\"modal-footer\">\n" +
     "        <button class=\"btn btn-primary login\" ng-click=\"login()\" ng-disabled='form.$invalid'>Sign in</button>\n" +
-    "        <button class=\"btn clear\" ng-click=\"clearForm()\">Clear</button>\n" +
-    "        <button class=\"btn btn-warning cancel\" ng-click=\"cancelLogin()\">Cancel</button>\n" +
+    "        <button class=\"btn cancel\" ng-click=\"cancel()\">Cancel</button>\n" +
     "    </div>\n" +
     "</form>\n" +
     "");

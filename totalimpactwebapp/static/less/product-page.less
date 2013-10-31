@@ -1,15 +1,51 @@
 div.product-page {
-   margin-top: 100px;
+   margin-top: 80px;
    min-height: 500px;
 
+   div.return-to-profile {
+      a {
+         color:  #999;
+         font-weight: bold;
+         margin-left:-20px;
+         i {
+            margin-right: 2px;
+         }
+         &:hover {
+            text-decoration: none;
+            color:  #777;
+         }
+      }
+   }
+
    .product { // overrides the main .product styles
+//      margin-left:200px;
+      width:  100%;
+      margin-top: 50px;
+      margin-bottom: 100px;
+
+      div.working {
+         color: #ddd;
+         font-size: 30px;
+         font-family: Lato;
+         font-weight: bolder;
+         text-align: center;
+         span.text { margin-left: 10px;}
+      }
+
       .biblio {
          float:none;
          width:  100%;
          h5 {
             a {
                font-size: 30px;
-               i {font-size:  15px;}
+               i {
+                  font-size:  15px;
+                  &:hover {cursor: pointer;}
+               }
+               &:hover {
+                  color:  inherit;
+                  cursor: default;
+               }
             }
          }
          div.optional-biblio {
@@ -17,59 +53,78 @@ div.product-page {
          }
       }
       .metric-details {
-         margin-top: 20px;
+         margin-top: 40px;
          ul.metric-details-list {
             li.metric-detail {
-               line-height: 1.5;
                font-size:  15px;
+               margin-bottom: 20px;
+               clear:both;
+               .clearfix;
                .badge-container {
-                  width: 200px;
+                  width: 250px;
+                  float:left;
                   margin-top: 8px;
-                  margin-bottom: -5px;
                   display:inline-block;
                   .ti-badge {
                      float:right;
                      span.audience {display:inline;} // override
                   }
                }
-               a.value-and-name {
-                  color:  #333;
-//                  min-width: 200px;
-                  display: inline-block;
-                  &:hover {
-                     text-decoration: none;
-                     color:  @linkColor;
-                  }
-                  span.raw-value {
-                     margin-left:5px;
+               span.text {
+                  float:left;
+                  margin-left: 10px;
+                  padding-top: 5px;
+                  a.value-and-name {
+
+                     color:  #333;
+   //                  min-width: 200px;
                      display: inline-block;
-                     text-align: right;
-                     font-weight: bold;
-                     font-size:  16px;
-                  }
-                  span.environment {
-                  }
-                  span.interaction {
-                  }
-                  img {
-                     height: 16px;
-                     margin: 0 3px 0 3px;
-                     vertical-align: middle;
-//                     .grayscale(.75);
-                  }
-
-               }
-
-               span.percentile {
-                  span.values {
-                     font-weight: bold;
-                     span.upper, span.lower {
+                     vertical-align: 8px;
+                     &:hover {
+                        text-decoration: none;
+                        color:  @linkColor;
+                        i {color:  @linkColor;}
+                     }
+                     span.raw-value {
+                        margin-left:5px;
+                        display: inline-block;
+                        text-align: right;
+                        font-weight: bold;
                         font-size:  16px;
                      }
+                     span.environment {
+                     }
+                     span.interaction {
+                     }
+                     img {
+                        height: 16px;
+                        margin: 0 3px 0 3px;
+                        vertical-align: middle;
+   //                     .grayscale(.75);
+                     }
+                     i {color:  #ddd;}
+
                   }
-                  span.descr {
-                     color:  #aaa;
-                     font-size: 80%;
+
+                  span.percentile {
+                     display:block;
+                     float:left;
+                     border-bottom: 1px solid #eee;
+                     span.values {
+                        font-weight: bold;
+                        span.upper, span.lower {
+                           font-size:  16px;
+                        }
+                        i {
+                           opacity: .5;
+                           cursor: pointer;
+                           &:hover {opacity: .8;}
+                        }
+                     }
+                     span.descr {
+                        color:  #aaa;
+                        font-size: 80%;
+                     }
                   }
                }
             }

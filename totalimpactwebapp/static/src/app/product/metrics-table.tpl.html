@@ -32,25 +32,28 @@
          </span>
 
       </span>
-      <a class="value-and-name"
-         href=""
-         popover-trigger='mouseenter'
-         popover-placement="bottom"
-         popover="{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.">
-         <img ng-src="{{ metric.static_meta.icon }}">
-         <span class="raw-value">{{ metric.actualCount }}</span>
-         <span class="environment">{{ metric.environment }}</span>
-         <span class="interaction">{{ metric.displayInteraction }}</span>.
-      </a>
-      <span class="percentile" ng-show="metric.percentiles">
-         <span class="descr">That's in the </span>
-         <span class="values">
-            <span class="lower">{{ metric.percentiles.CI95_lower }}</span>
-            <span class="dash">-</span>
-            <span class="upper">{{ metric.percentiles.CI95_upper }}</span>
-            <span class="unit">percentile</span>
+      <span class="text">
+         <a class="value-and-name"
+            href=""
+            popover-trigger='mouseenter'
+            popover-placement="bottom"
+            popover="{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.">
+            <img ng-src="{{ metric.static_meta.icon }}">
+            <span class="raw-value">{{ metric.actualCount }}</span>
+            <span class="environment">{{ metric.environment }}</span>
+            <span class="interaction">{{ metric.displayInteraction }}</span>
+            <i class="icon-external-link-sign"></i>
+         </a>
+         <span class="percentile" ng-show="metric.percentiles">
+            <span class="values">
+               <span class="lower">{{ metric.percentiles.CI95_lower }}</span>
+               <span class="dash">-</span>
+               <span class="upper">{{ metric.percentiles.CI95_upper }}</span>
+               <span class="unit">percentile</span>
+               <i class="icon-info-sign" ng-click="openInfoModal()"></i>
+            </span>
+            <span class="descr">of {{ biblio.genre }}s published in {{ biblio.year }}</span>
          </span>
-         <span class="descr">of {{ biblio.genre }}s published in {{ biblio.year }}</span>
       </span>
 
    </li>

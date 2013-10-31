@@ -1,4 +1,4 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -622,36 +622,78 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "         </span>\n" +
     "\n" +
     "      </span>\n" +
-    "      <a class=\"value-and-name\"\n" +
-    "         href=\"\"\n" +
-    "         popover-trigger='mouseenter'\n" +
-    "         popover-placement=\"bottom\"\n" +
-    "         popover=\"{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.\">\n" +
-    "         <img ng-src=\"{{ metric.static_meta.icon }}\">\n" +
-    "         <span class=\"raw-value\">{{ metric.actualCount }}</span>\n" +
-    "         <span class=\"environment\">{{ metric.environment }}</span>\n" +
-    "         <span class=\"interaction\">{{ metric.displayInteraction }}</span>.\n" +
-    "      </a>\n" +
-    "      <span class=\"percentile\" ng-show=\"metric.percentiles\">\n" +
-    "         <span class=\"descr\">That's in the </span>\n" +
-    "         <span class=\"values\">\n" +
-    "            <span class=\"lower\">{{ metric.percentiles.CI95_lower }}</span>\n" +
-    "            <span class=\"dash\">-</span>\n" +
-    "            <span class=\"upper\">{{ metric.percentiles.CI95_upper }}</span>\n" +
-    "            <span class=\"unit\">percentile</span>\n" +
+    "      <span class=\"text\">\n" +
+    "         <a class=\"value-and-name\"\n" +
+    "            href=\"\"\n" +
+    "            popover-trigger='mouseenter'\n" +
+    "            popover-placement=\"bottom\"\n" +
+    "            popover=\"{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.\">\n" +
+    "            <img ng-src=\"{{ metric.static_meta.icon }}\">\n" +
+    "            <span class=\"raw-value\">{{ metric.actualCount }}</span>\n" +
+    "            <span class=\"environment\">{{ metric.environment }}</span>\n" +
+    "            <span class=\"interaction\">{{ metric.displayInteraction }}</span>\n" +
+    "            <i class=\"icon-external-link-sign\"></i>\n" +
+    "         </a>\n" +
+    "         <span class=\"percentile\" ng-show=\"metric.percentiles\">\n" +
+    "            <span class=\"values\">\n" +
+    "               <span class=\"lower\">{{ metric.percentiles.CI95_lower }}</span>\n" +
+    "               <span class=\"dash\">-</span>\n" +
+    "               <span class=\"upper\">{{ metric.percentiles.CI95_upper }}</span>\n" +
+    "               <span class=\"unit\">percentile</span>\n" +
+    "               <i class=\"icon-info-sign\" ng-click=\"openInfoModal()\"></i>\n" +
+    "            </span>\n" +
+    "            <span class=\"descr\">of {{ biblio.genre }}s published in {{ biblio.year }}</span>\n" +
     "         </span>\n" +
-    "         <span class=\"descr\">of {{ biblio.genre }}s published in {{ biblio.year }}</span>\n" +
     "      </span>\n" +
     "\n" +
     "   </li>\n" +
     "</ul>");
 }]);
 
+angular.module("profile-product/percentilesInfoModal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-product/percentilesInfoModal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <h3>What do these numbers mean?</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body\">\n" +
+    "   <p>ImpactStory classifies metrics along two dimensions: <strong>audience</strong> (<em>scholars</em> or the <em>public</em>) and <strong>type of engagement</strong> with research (<em>view</em>, <em>discuss</em>, <em>save</em>, <em>cite</em>, and <em>recommend</em>).</p>\n" +
+    "\n" +
+    "   <p>For each metric, the coloured bar shows its percentile relative to all articles indexed in the Web of Science that year.  The bars show a range, representing the 95% confidence interval around your percentile (and also accounting for ties).  Along with ranges, we show “Highly” badges for metrics above the 75th percentile that exceed a minimum frequency.</p>\n" +
+    "\n" +
+    "   <p>Each metric's raw count is shown to the left of its name.  Click the raw count to visit that metric source's external page for the item; there, you can explore the engagement in more detail.</p>\n" +
+    "\n" +
+    "   <p>For more information, see these blog posts and <a href=\"{{ url_for('faq') }}\">FAQ</a> sections:</p>\n" +
+    "\n" +
+    "   <ul>\n" +
+    "      <li><a href=\"http://blog.impactstory.org/2012/09/10/31256247948/\">What do we expect?</a></li>\n" +
+    "      <li><a href=\"http://blog.impactstory.org/2012/09/14/31524247207/\">Our framework for classifying altmetrics</a></li>\n" +
+    "      <li>Reference sets: <a href=\"http://blog.impactstory.org/2012/09/13/31461657926/\">Motivation</a>; Choosing Web of Science (TBA)</li>\n" +
+    "      <li>Percentiles: <a href=\"http://blog.impactstory.org/2012/09/11/31342582590/\">Part 1</a>, <a href=\"http://blog.impactstory.org/2012/09/12/31408899657/\">Part 2</a>, and <a href=\"http://blog.impactstory.org/2012/09/12/31411187588/\">Part 3</a></li>\n" +
+    "      <li>Why <a href=\"{{ url_for('faq') }}#toc_3_9\">citation counts may not be what you expect</a></li>\n" +
+    "      <li>Sampling and 95% confidence (TBA)</li>\n" +
+    "   </ul>\n" +
+    "</div>");
+}]);
+
 angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/profile-product-page.tpl.html",
     "<div class=\"product-page\">\n" +
     "   <div class=\"wrapper\">\n" +
+    "      <div class=\"return-to-profile\">\n" +
+    "         <a href=\"/{{ userSlug }}\" ng-show=\"profileAbout.about\">\n" +
+    "            <i class=\"icon-chevron-left\"></i>\n" +
+    "            Return to {{ profileAbout.about.given_name }}\n" +
+    "            {{ profileAbout.about.surname }}'s profile\n" +
+    "         </a>\n" +
+    "      </div>\n" +
     "      <div class=\"product\">\n" +
+    "         <div class=\"working\" ng-show=\"loading.is()\">\n" +
+    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "            <span class=\"text\">Loading product...</span>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
     "         <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
     "         <div class=\"metric-details\" ng-include=\"'product/metrics-table.tpl.html'\"></div>\n" +
     "      </div>\n" +
