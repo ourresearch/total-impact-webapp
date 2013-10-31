@@ -276,8 +276,11 @@ function Item(itemData, itemView, $) {
                 ["youtube:views", "public", "viewed", "badge", 3],
                 ["youtube:likes", "public", "recommended", "badge", 3],
                 ["youtube:dislikes", "public", "discussed", "badge", 3],
-                ["youtube:favorites", "public", "recommended", "badge", 3],
+                ["youtube:favorites", "public", "saved", "badge", 3],
                 ["youtube:comments", "public", "discussed", "badge", 3],
+                ["vimeo:plays", "public", "viewed", "badge", 3],
+                ["vimeo:likes", "public", "recommended", "badge", 3],
+                ["vimeo:comments", "public", "discussed", "badge", 3],
                 ["wikipedia:mentions", "public", "cited", "badge", 3]
             ],
             function(metric){ // second arg in map() call
