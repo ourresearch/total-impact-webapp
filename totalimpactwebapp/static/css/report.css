@@ -323,6 +323,7 @@ li.item div.item-header div.biblio h5 a:hover span.help-text {
 }
 li.item div.item-header div.biblio span.year,
 li.item div.item-header div.biblio span.authors,
+li.item div.item-header div.biblio span.channel,
 li.item div.item-header div.biblio span.repo,
 li.item div.item-header div.biblio span.descr {
   font-size: 12px;

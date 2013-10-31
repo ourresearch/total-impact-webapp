@@ -311,6 +311,12 @@ These are for rendering items with javascript using Mustache
       <span class="descr">{{ description }}</span>
       <span class="repo">GitHub</span>
    </script>
+   <script id="biblio_video" type="text/html">
+      {{>title}}
+      <span class="year">({{ year }})</span>
+      <span class="channel">{{ channel_title }}</span>      
+      <span class="repo">{{ repository }}</span>
+   </script>
    <script id="biblio_unknown" type="text/html">
       {{>title}}
    </script>
