@@ -8485,12 +8485,22 @@ div.importers div.importer-tile {
   float: left;
   background: #fff;
   width: 33.333%;
-  padding: 60px 30px;
+  padding: 60px 2% 60px 3%;
   border-right: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
   text-align: center;
   position: relative;
   cursor: pointer;
+}
+@media (max-width: 65em) {
+  div.importers div.importer-tile {
+    width: 50%;
+  }
+}
+@media (max-width: 42em) {
+  div.importers div.importer-tile {
+    width: 100%;
+  }
 }
 div.importers div.importer-tile.not-run:hover {
   -webkit-box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
@@ -8509,7 +8519,6 @@ div.importers div.importer-tile.has-run {
 }
 div.importers div.importer-tile.has-run div.importer-name {
   float: left;
-  margin-left: 15%;
 }
 div.importers div.importer-tile.has-run div.imported-products-count {
   display: block;

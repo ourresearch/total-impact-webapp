@@ -121,12 +121,19 @@ div.importers {
       float:left;
       background: #fff;
       width:  33.333%;
-      padding: 60px 30px;
+      padding: 60px 2% 60px 3%;
       border-right: 1px solid #ccc;
       border-bottom: 1px solid #ccc;
       text-align: center;
       position: relative;
       cursor: pointer;
+      @media(max-width: 65em){
+         width:  50%;
+      }
+      @media(max-width: 42em){
+         width:  100%;
+      }
+
       &.not-run:hover {
          .drop-shadow(0, 1px, 7px, .3);
          z-index: 1;
@@ -141,7 +148,6 @@ div.importers {
          background: #fafafa;
          div.importer-name{
             float:left;
-            margin-left:15%;
          }
          div.imported-products-count {display:block;}
       }
