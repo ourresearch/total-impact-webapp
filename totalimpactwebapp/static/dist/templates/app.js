@@ -496,7 +496,9 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            <li><img src=\"/static/img/logos/scopus.jpg\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/vimeo.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
     "   </div>\n" +
