@@ -6,7 +6,7 @@ angular.module( 'signup', [
     'importers.allTheImporters',
     'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location, NewProfile, Users, Update){
+  .factory("Signup", function($rootScope, $location, NewProfile, Users, Update, $modal){
 
     var signupSteps = [
       "name",
@@ -29,6 +29,16 @@ angular.module( 'signup', [
        return _.indexOf(signupSteps, getCurrentStep())
     }
 
+
+    var showUpdateModalThenRedirectWhenDone = function(){
+       Update.showUpdate(
+         NewProfile.getId(),
+         function(){
+           $location.path("/" + NewProfile.getSlug())
+         })
+     }
+
+
     return {
       init: function(){
         $rootScope.showHeaderAndFooter = false;
@@ -39,6 +49,7 @@ angular.module( 'signup', [
       onSignupStep: function(step){
         return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
       },
+
       goToNextSignupStep: function() {
         if (NewProfile.readyToCreateOnServer()) {
           Users.save(
@@ -56,12 +67,13 @@ angular.module( 'signup', [
 
         var nextPage = signupSteps[getIndexOfCurrentStep() + 1]
         if (typeof nextPage === "undefined") {
-          Update.update(NewProfile.getId(), function(){console.log("finished updating")})
+          showUpdateModalThenRedirectWhenDone()
         }
         else {
           $location.path("/signup/" + nextPage)
         }
       },
+
       isBeforeCurrentSignupStep: function(stepToCheck) {
         var indexOfStepToCheck = _.indexOf(signupSteps, stepToCheck)
         return getIndexOfCurrentStep() > -1 && indexOfStepToCheck < getIndexOfCurrentStep()

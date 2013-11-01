@@ -1,7 +1,10 @@
+
+// NOTE! I've had to change .progress-bar to .bar here for angular-ui compatibility.
+
+
 //
 // Progress bars
 // --------------------------------------------------
-
 
 // Bar animations
 // -------------------------
@@ -46,7 +49,7 @@
 }
 
 // Bar of progress
-.progress-bar {
+.bar{
   float: left;
   width: 0%;
   height: 100%;
@@ -59,13 +62,13 @@
 }
 
 // Striped bars
-.progress-striped .progress-bar {
+.progress-striped .bar{
   #gradient > .striped(@progress-bar-bg);
   background-size: 40px 40px;
 }
 
 // Call animation for the active one
-.progress.active .progress-bar {
+.progress.active .bar{
   -webkit-animation: progress-bar-stripes 2s linear infinite;
      -moz-animation: progress-bar-stripes 2s linear infinite;
       -ms-animation: progress-bar-stripes 2s linear infinite;

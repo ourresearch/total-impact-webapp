@@ -4507,7 +4507,7 @@ a.thumbnail:focus {
   -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
-.progress-bar {
+.bar {
   float: left;
   width: 0%;
   height: 100%;
@@ -4524,14 +4524,14 @@ a.thumbnail:focus {
   -moz-transition: all width 0.6s ease ease-out;
   transition: all width 0.6s ease ease-out;
 }
-.progress-striped .progress-bar {
+.progress-striped .bar {
   background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
   background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
   background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
   background-size: 40px 40px;
 }
-.progress.active .progress-bar {
+.progress.active .bar {
   -webkit-animation: progress-bar-stripes 2s linear infinite;
   -moz-animation: progress-bar-stripes 2s linear infinite;
   -ms-animation: progress-bar-stripes 2s linear infinite;
@@ -7882,54 +7882,6 @@ form.signup div.intro {
   line-height: 1.8;
   font-size: 22px;
 }
-form.signup div.signup-input.creating div.products {
-  margin: 0 50px;
-  text-align: center;
-}
-form.signup div.signup-input.creating div.products span.count {
-  display: block;
-  font-size: 150px;
-  font-weight: bolder;
-  line-height: 1;
-}
-form.signup div.signup-input.creating div.products span.descr {
-  font-size: 16px;
-  text-align: center;
-}
-form.signup div.signup-input.creating div.products.done {
-  float: right;
-}
-form.signup div.signup-input.creating div.products.not-done {
-  float: left;
-}
-form.signup div.signup-input.creating pre {
-  clear: both;
-  margin-top: 300px;
-}
-form.signup div.signup-input.creating pre:before,
-form.signup div.signup-input.creating pre:after {
-  content: " ";
-  /* 1 */
-
-  display: table;
-  /* 2 */
-
-}
-form.signup div.signup-input.creating pre:after {
-  clear: both;
-}
-form.signup div.signup-input.creating pre:before,
-form.signup div.signup-input.creating pre:after {
-  content: " ";
-  /* 1 */
-
-  display: table;
-  /* 2 */
-
-}
-form.signup div.signup-input.creating pre:after {
-  clear: both;
-}
 form.signup div.signup-input div.form-group input.form-control {
   font-size: 25px;
   line-height: 1;
@@ -8612,4 +8564,33 @@ div.importers div.more-importers-coming:after {
 }
 div.importers div.more-importers-coming:after {
   clear: both;
+}
+.modal-body.update div.intro {
+  text-align: center;
+  color: #777;
+  width: 80%;
+  margin: 0 auto 50px;
+}
+.modal-body.update div.progress {
+  float: left;
+  width: 69%;
+  height: 20px;
+}
+.modal-body.update div.products {
+  float: left;
+  margin-bottom: 50px;
+  width: 15%;
+  line-height: .9;
+  text-align: center;
+}
+.modal-body.update div.products span.count {
+  display: block;
+  font-size: 25px;
+  margin-top: -3px;
+  font-weight: bolder;
+  line-height: 1;
+}
+.modal-body.update div.products span.descr {
+  font-size: 12px;
+  text-align: center;
 }

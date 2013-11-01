@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-10-31
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-01
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -1295,7 +1295,7 @@ angular.module( 'signup', [
     'importers.allTheImporters',
     'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location, NewProfile, Users, Update){
+  .factory("Signup", function($rootScope, $location, NewProfile, Users, Update, $modal){
 
     var signupSteps = [
       "name",
@@ -1318,6 +1318,16 @@ angular.module( 'signup', [
        return _.indexOf(signupSteps, getCurrentStep())
     }
 
+
+    var showUpdateModalThenRedirectWhenDone = function(){
+       Update.showUpdate(
+         NewProfile.getId(),
+         function(){
+           $location.path("/" + NewProfile.getSlug())
+         })
+     }
+
+
     return {
       init: function(){
         $rootScope.showHeaderAndFooter = false;
@@ -1328,6 +1338,7 @@ angular.module( 'signup', [
       onSignupStep: function(step){
         return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
       },
+
       goToNextSignupStep: function() {
         if (NewProfile.readyToCreateOnServer()) {
           Users.save(
@@ -1345,12 +1356,13 @@ angular.module( 'signup', [
 
         var nextPage = signupSteps[getIndexOfCurrentStep() + 1]
         if (typeof nextPage === "undefined") {
-          Update.update(NewProfile.getId(), function(){console.log("finished updating")})
+          showUpdateModalThenRedirectWhenDone()
         }
         else {
           $location.path("/signup/" + nextPage)
         }
       },
+
       isBeforeCurrentSignupStep: function(stepToCheck) {
         var indexOfStepToCheck = _.indexOf(signupSteps, stepToCheck)
         return getIndexOfCurrentStep() > -1 && indexOfStepToCheck < getIndexOfCurrentStep()
@@ -1491,16 +1503,16 @@ angular.module( 'signup', [
 angular.module( 'update.update', [
     'resources.users'
   ])
-  .factory("Update", function($rootScope, $location, UsersProducts, $timeout){
+  .factory("Update", function($rootScope, $location, UsersProducts, $timeout, $modal){
 
     var updateStatus = {
-      numDone: 0,
-      numNotDone:0
+      numDone: null,
+      numNotDone: null,
+      percentComplete: null
     }
     var firstCheck = true
 
     var keepPolling = function(userId, onFinish){
-      console.log("here's the onFinish we got, at beginning of keepPolling: ", onFinish)
 
 
       if (firstCheck || updateStatus.numNotDone > 0) {
@@ -1510,9 +1522,7 @@ angular.module( 'update.update', [
           function(resp){
             updateStatus.numDone = numDone(resp, true)
             updateStatus.numNotDone = numDone(resp, false)
-
-            console.log("polling: ", updateStatus)
-            console.log("here's the onFinish, right after polling:", onFinish)
+            updateStatus.percentComplete = updateStatus.numDone * 100 / (updateStatus.numDone + updateStatus.numNotDone)
 
             $timeout(function(){keepPolling(userId, onFinish)}, 500);
           })
@@ -1524,8 +1534,6 @@ angular.module( 'update.update', [
     }
 
     var numDone = function(products, completedStatus){
-       console.log("numDone input: ", products)
-
        var productsDone =  _.filter(products, function(product){
          return !product.currently_updating
        })
@@ -1538,16 +1546,29 @@ angular.module( 'update.update', [
        }
     };
 
+    var update = function(userId, onFinish){
+      var modal = $modal.open({
+        templateUrl: 'update/update-progress.tpl.html',
+        controller: 'updateProgressModalCtrl',
+        backdrop:"static",
+        keyboard: false
+      });
 
-    return {
-      update: function(userId, onFinish){
-        console.log("here's teh onFinish we get at first: ", onFinish)
-        keepPolling(userId, onFinish)
-      },
-      'updateStatus': updateStatus
+      keepPolling(userId, function(){
+        modal.close()
+        onFinish()
+      })
+
     }
 
 
+    return {
+      showUpdate: update,
+      'updateStatus': updateStatus
+    }
+  })
+  .controller("updateProgressModalCtrl", function($scope, Update){
+    $scope.updateStatus = Update.updateStatus
   })
 
 angular.module('directives.crud', ['directives.crud.buttons', 'directives.crud.edit']);
@@ -3094,7 +3115,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -4338,6 +4359,36 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "   </button>\n" +
     "\n" +
     "</form>");
+}]);
+
+angular.module("update/update-progress.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("update/update-progress.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h3>Finding impact data</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body update\">\n" +
+    "   <div class=\"intro\"><br>We're scouring the web to discover the impacts of all your research products...</div>\n" +
+    "\n" +
+    "   <div class=\"update-progress\">\n" +
+    "      <div class=\"products not-done\">\n" +
+    "         <div class=\"content\" ng-show=\"updateStatus.numNotDone\"></div>\n" +
+    "            <span class=\"count still-working\">{{ updateStatus.numNotDone }}</span>\n" +
+    "            <span class=\"descr\">products updating</span>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <progress percent=\"updateStatus.percentComplete\" class=\"progress-striped active\"></progress>\n" +
+    "\n" +
+    "      <div class=\"products done\">\n" +
+    "         <div class=\"content\" ng-show=\"updateStatus.numNotDone\"></div>\n" +
+    "            <span class=\"count finished\">{{ updateStatus.numDone}}</span>\n" +
+    "            <span class=\"descr\">products <br>done</span>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<!--  57@e.com -->");
 }]);
 
 angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/toolbar.tpl.html']);

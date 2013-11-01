@@ -1,4 +1,4 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -1242,4 +1242,34 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "   </button>\n" +
     "\n" +
     "</form>");
+}]);
+
+angular.module("update/update-progress.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("update/update-progress.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h3>Finding impact data</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body update\">\n" +
+    "   <div class=\"intro\"><br>We're scouring the web to discover the impacts of all your research products...</div>\n" +
+    "\n" +
+    "   <div class=\"update-progress\">\n" +
+    "      <div class=\"products not-done\">\n" +
+    "         <div class=\"content\" ng-show=\"updateStatus.numNotDone\"></div>\n" +
+    "            <span class=\"count still-working\">{{ updateStatus.numNotDone }}</span>\n" +
+    "            <span class=\"descr\">products updating</span>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <progress percent=\"updateStatus.percentComplete\" class=\"progress-striped active\"></progress>\n" +
+    "\n" +
+    "      <div class=\"products done\">\n" +
+    "         <div class=\"content\" ng-show=\"updateStatus.numNotDone\"></div>\n" +
+    "            <span class=\"count finished\">{{ updateStatus.numDone}}</span>\n" +
+    "            <span class=\"descr\">products <br>done</span>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<!--  57@e.com -->");
 }]);
