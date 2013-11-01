@@ -736,7 +736,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <a><i class=\"icon-edit\"></i>Edit</a>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
-    "         <a><i class=\"icon-refresh\"></i>Refresh metrics</a>\n" +
+    "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "            <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +

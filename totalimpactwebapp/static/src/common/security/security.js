@@ -75,7 +75,6 @@ angular.module('security.service', [
 
     // Is the current user authenticated?
     isAuthenticated: function(){
-      console.log("calling isAuthenticated. current user: ", service.currentUser)
       return !!service.currentUser;
     },
     

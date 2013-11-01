@@ -1290,18 +1290,18 @@ angular.module('settings', [
 angular.module( 'signup', [
     'services.slug',
     'resources.users',
+    'update.update',
     'security.service',
     'importers.allTheImporters',
     'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location, NewProfile, Users){
+  .factory("Signup", function($rootScope, $location, NewProfile, Users, Update){
 
     var signupSteps = [
       "name",
       "url",
       "products",
-      "password",
-      "creating"
+      "password"
     ]
     var currentSignupStepRegex = /^\/signup\/(\w+)$/;
     var getCurrentStep = function(){
@@ -1329,10 +1329,6 @@ angular.module( 'signup', [
         return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
       },
       goToNextSignupStep: function() {
-        console.log("next step!")
-
-        var path = "/signup/" + signupSteps[getIndexOfCurrentStep() + 1]
-
         if (NewProfile.readyToCreateOnServer()) {
           Users.save(
             {id: NewProfile.about.url_slug, idType: "url_slug"},
@@ -1347,7 +1343,13 @@ angular.module( 'signup', [
         NewProfile.setEmail()
         NewProfile.setPassword()
 
-        return $location.path(path)
+        var nextPage = signupSteps[getIndexOfCurrentStep() + 1]
+        if (typeof nextPage === "undefined") {
+          Update.update(NewProfile.getId(), function(){console.log("finished updating")})
+        }
+        else {
+          $location.path("/signup/" + nextPage)
+        }
       },
       isBeforeCurrentSignupStep: function(stepToCheck) {
         var indexOfStepToCheck = _.indexOf(signupSteps, stepToCheck)
@@ -1386,7 +1388,7 @@ angular.module( 'signup', [
         if (about.password && about) {
           UsersPassword.save(
             {"id": id},
-            {newPassword: about.password}, 
+            {newPassword: about.password},
             function(data){ // runs on successful password set.
               console.log("we set the password successfully. logging the user in")
               var user = security.requestCurrentUser()
@@ -1450,24 +1452,12 @@ angular.module( 'signup', [
 
   .controller( 'signupCreatingCtrl', function ( $scope, $timeout, $location, NewProfile, UsersProducts ) {
 
-    var numDone = function(products, completedStatus){
-      console.log("numDone input: ", products)
-
-      var productsDone =  _.filter(products, function(product){
-        return !product.currently_updating
-      })
-
-      if (completedStatus) {
-        return productsDone.length
-      }
-      else {
-        return products.length - productsDone.length
-      }
-    };
-
+    $scope.updateStatus = {
+      numDone: 0,
+      numNotDone: 0
+    }
 
     (function tick() {
-      console.log("running tick!");
       console.log("Tick! NewProfile.getId(): ", NewProfile.getId());
 
 
@@ -1497,6 +1487,68 @@ angular.module( 'signup', [
   })
 
 ;
+
+angular.module( 'update.update', [
+    'resources.users'
+  ])
+  .factory("Update", function($rootScope, $location, UsersProducts, $timeout){
+
+    var updateStatus = {
+      numDone: 0,
+      numNotDone:0
+    }
+    var firstCheck = true
+
+    var keepPolling = function(userId, onFinish){
+      console.log("here's the onFinish we got, at beginning of keepPolling: ", onFinish)
+
+
+      if (firstCheck || updateStatus.numNotDone > 0) {
+        firstCheck = false
+        UsersProducts.query(
+          {id: userId},
+          function(resp){
+            updateStatus.numDone = numDone(resp, true)
+            updateStatus.numNotDone = numDone(resp, false)
+
+            console.log("polling: ", updateStatus)
+            console.log("here's the onFinish, right after polling:", onFinish)
+
+            $timeout(function(){keepPolling(userId, onFinish)}, 500);
+          })
+      }
+      else {
+
+        onFinish()
+      }
+    }
+
+    var numDone = function(products, completedStatus){
+       console.log("numDone input: ", products)
+
+       var productsDone =  _.filter(products, function(product){
+         return !product.currently_updating
+       })
+
+       if (completedStatus) {
+         return productsDone.length
+       }
+       else {
+         return products.length - productsDone.length
+       }
+    };
+
+
+    return {
+      update: function(userId, onFinish){
+        console.log("here's teh onFinish we get at first: ", onFinish)
+        keepPolling(userId, onFinish)
+      },
+      'updateStatus': updateStatus
+    }
+
+
+  })
 
 angular.module('directives.crud', ['directives.crud.buttons', 'directives.crud.edit']);
 
@@ -2441,7 +2493,6 @@ angular.module('security.service', [
 
     // Is the current user authenticated?
     isAuthenticated: function(){
-      console.log("calling isAuthenticated. current user: ", service.currentUser)
       return !!service.currentUser;
     },
     
@@ -3781,7 +3832,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <a><i class=\"icon-edit\"></i>Edit</a>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
-    "         <a><i class=\"icon-refresh\"></i>Refresh metrics</a>\n" +
+    "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "            <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +

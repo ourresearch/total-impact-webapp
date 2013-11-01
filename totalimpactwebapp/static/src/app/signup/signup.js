@@ -1,18 +1,18 @@
 angular.module( 'signup', [
     'services.slug',
     'resources.users',
+    'update.update',
     'security.service',
     'importers.allTheImporters',
     'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location, NewProfile, Users){
+  .factory("Signup", function($rootScope, $location, NewProfile, Users, Update){
 
     var signupSteps = [
       "name",
       "url",
       "products",
-      "password",
-      "creating"
+      "password"
     ]
     var currentSignupStepRegex = /^\/signup\/(\w+)$/;
     var getCurrentStep = function(){
@@ -40,10 +40,6 @@ angular.module( 'signup', [
         return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
       },
       goToNextSignupStep: function() {
-        console.log("next step!")
-
-        var path = "/signup/" + signupSteps[getIndexOfCurrentStep() + 1]
-
         if (NewProfile.readyToCreateOnServer()) {
           Users.save(
             {id: NewProfile.about.url_slug, idType: "url_slug"},
@@ -58,7 +54,13 @@ angular.module( 'signup', [
         NewProfile.setEmail()
         NewProfile.setPassword()
 
-        return $location.path(path)
+        var nextPage = signupSteps[getIndexOfCurrentStep() + 1]
+        if (typeof nextPage === "undefined") {
+          Update.update(NewProfile.getId(), function(){console.log("finished updating")})
+        }
+        else {
+          $location.path("/signup/" + nextPage)
+        }
       },
       isBeforeCurrentSignupStep: function(stepToCheck) {
         var indexOfStepToCheck = _.indexOf(signupSteps, stepToCheck)
@@ -161,24 +163,12 @@ angular.module( 'signup', [
 
   .controller( 'signupCreatingCtrl', function ( $scope, $timeout, $location, NewProfile, UsersProducts ) {
 
-    var numDone = function(products, completedStatus){
-      console.log("numDone input: ", products)
-
-      var productsDone =  _.filter(products, function(product){
-        return !product.currently_updating
-      })
-
-      if (completedStatus) {
-        return productsDone.length
-      }
-      else {
-        return products.length - productsDone.length
-      }
-    };
-
+    $scope.updateStatus = {
+      numDone: 0,
+      numNotDone: 0
+    }
 
     (function tick() {
-      console.log("running tick!");
       console.log("Tick! NewProfile.getId(): ", NewProfile.getId());
 
 
