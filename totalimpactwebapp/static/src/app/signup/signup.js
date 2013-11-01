@@ -6,7 +6,7 @@ angular.module( 'signup', [
     'importers.allTheImporters',
     'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location, NewProfile, Users, Update, $modal){
+  .factory("Signup", function($rootScope, $location, NewProfile, Users, Update){
 
     var signupSteps = [
       "name",
@@ -42,6 +42,7 @@ angular.module( 'signup', [
     return {
       init: function(){
         $rootScope.showHeaderAndFooter = false;
+        NewProfile.reset()
       },
       signupSteps: function(){
         return signupSteps;
@@ -86,7 +87,6 @@ angular.module( 'signup', [
 
   .factory("NewProfile", function(Slug, UsersAbout, UsersPassword, security){
     var about = {}
-    var products = []
     var id
     return {
       makeSlug: function(){
@@ -105,6 +105,10 @@ angular.module( 'signup', [
             }
           )
         }
+      },
+
+      reset:function(){
+        about = {}
       },
 
       setPassword: function(){
@@ -141,6 +145,7 @@ angular.module( 'signup', [
 }])
 
   .controller('signupCtrl', function($scope, Signup, NewProfile){
+                
     Signup.init()
 
     $scope.signupSteps = Signup.signupSteps();

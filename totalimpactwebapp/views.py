@@ -282,7 +282,7 @@ def login():
 
     user = User.query.filter_by(email=email).first()
 
-    if g.user is None:
+    if user is None:
         abort(404, "Email doesn't exist")
     elif not user.check_password(password):
         abort(401, "Wrong password")

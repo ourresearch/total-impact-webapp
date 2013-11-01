@@ -59,6 +59,16 @@ angular.module('importers.allTheImporters')
       placeholder: "http://dx.doi.org/10.6084/m9.figshare.example"
     },
     {
+      displayName: "YouTube",
+      inputType: "idList",
+      inputNeeded: "DOIs",
+      endpoint: "dois",
+      url: "http://figshare.com",
+      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
+      help: "You can find Figshare DOIs on each dataset's figshare webpage; it's inside the 'cite' section.",
+      placeholder: "http://dx.doi.org/10.6084/m9.figshare.example"
+    },
+    {
       displayName: "Dryad",
       inputType: "idList",
       inputNeeded: "DOIs",
