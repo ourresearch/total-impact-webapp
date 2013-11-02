@@ -74,7 +74,15 @@ angular.module('product.product')
             ["slideshare:views", "public", "viewed", "badge", 3],
             ["topsy:influential_tweets", "public", "discussed", "zoom", 0],
             ["topsy:tweets", "public", "discussed", "badge", 3],
-            ["wikipedia:mentions", "public", "cited", "badge", 3]
+            ["vimeo:plays", "public", "viewed", "badge", 3],
+            ["vimeo:likes", "public", "recommended", "badge", 3],
+            ["vimeo:comments", "public", "discussed", "badge", 3],
+            ["wikipedia:mentions", "public", "cited", "badge", 3],            
+            ["youtube:likes", "public", "recommended", "badge", 3],
+            ["youtube:dislikes", "public", "discussed", "badge", 3],
+            ["youtube:favorites", "public", "saved", "badge", 3],
+            ["youtube:comments", "public", "discussed", "badge", 3],
+            ["youtube:views", "public", "viewed", "badge", 3]
           ],
           function(metric){ // second arg in map() call
             return[ metric[0], _.object(metricInfoKeys, metric )]

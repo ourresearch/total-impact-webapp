@@ -221,15 +221,17 @@ def get_products_from_core(tiids):
     if not tiids:
         return None
 
-    query = u"{core_api_root}/v1/products/{tiids_string}?api_admin_key={api_admin_key}".format(
+    query = u"{core_api_root}/v1/products?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_ADMIN_KEY"),
-        tiids_string=",".join(tiids)
-    )
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )    
     logger.debug(u"in get_products_from_core with query {query}".format(
         query=query))
 
-    r = requests.get(query)
+    r = requests.post(query, 
+            data=json.dumps({"tiids": tiids}), 
+            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+
     products = r.json()["products"]
     products_list = products.values()
 

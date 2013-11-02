@@ -526,7 +526,15 @@ angular.module('product.product')
             ["slideshare:views", "public", "viewed", "badge", 3],
             ["topsy:influential_tweets", "public", "discussed", "zoom", 0],
             ["topsy:tweets", "public", "discussed", "badge", 3],
-            ["wikipedia:mentions", "public", "cited", "badge", 3]
+            ["vimeo:plays", "public", "viewed", "badge", 3],
+            ["vimeo:likes", "public", "recommended", "badge", 3],
+            ["vimeo:comments", "public", "discussed", "badge", 3],
+            ["wikipedia:mentions", "public", "cited", "badge", 3],            
+            ["youtube:likes", "public", "recommended", "badge", 3],
+            ["youtube:dislikes", "public", "discussed", "badge", 3],
+            ["youtube:favorites", "public", "saved", "badge", 3],
+            ["youtube:comments", "public", "discussed", "badge", 3],
+            ["youtube:views", "public", "viewed", "badge", 3]
           ],
           function(metric){ // second arg in map() call
             return[ metric[0], _.object(metricInfoKeys, metric )]
@@ -3635,7 +3643,9 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            <li><img src=\"/static/img/logos/scopus.jpg\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/vimeo.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
     "   </div>\n" +
