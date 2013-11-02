@@ -61,12 +61,20 @@ angular.module('importers.allTheImporters')
     {
       displayName: "YouTube",
       inputType: "idList",
-      inputNeeded: "DOIs",
-      endpoint: "dois",
-      url: "http://figshare.com",
-      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
-      help: "You can find Figshare DOIs on each dataset's figshare webpage; it's inside the 'cite' section.",
-      placeholder: "http://dx.doi.org/10.6084/m9.figshare.example"
+      inputNeeded: "URLs",
+      url: "http://youtube.com",
+      descr: "YouTube is an online video-sharing site.",
+      help: "Copy the URL for the video you want to add, then paste it here.",
+      placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
+    },
+    {
+      displayName: "Vimeo",
+      inputType: "idList",
+      inputNeeded: "URLs",
+      url: "http://vimeo.com",
+      descr: "Vimeo is an online video-sharing site.",
+      help: "Copy the URL for the video you want to add, then paste it here.",
+      placeholder: "http://vimeo.com/48605764"
     },
     {
       displayName: "Dryad",

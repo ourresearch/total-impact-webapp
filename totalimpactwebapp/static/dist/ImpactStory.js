@@ -143,6 +143,24 @@ angular.module('importers.allTheImporters')
       placeholder: "http://dx.doi.org/10.6084/m9.figshare.example"
     },
     {
+      displayName: "YouTube",
+      inputType: "idList",
+      inputNeeded: "URLs",
+      url: "http://youtube.com",
+      descr: "YouTube is an online video-sharing site.",
+      help: "Copy the URL for the video you want to add, then paste it here.",
+      placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
+    },
+    {
+      displayName: "Vimeo",
+      inputType: "idList",
+      inputNeeded: "URLs",
+      url: "http://vimeo.com",
+      descr: "Vimeo is an online video-sharing site.",
+      help: "Copy the URL for the video you want to add, then paste it here.",
+      placeholder: "http://vimeo.com/48605764"
+    },
+    {
       displayName: "Dryad",
       inputType: "idList",
       inputNeeded: "DOIs",
@@ -1295,7 +1313,7 @@ angular.module( 'signup', [
     'importers.allTheImporters',
     'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location, NewProfile, Users, Update, $modal){
+  .factory("Signup", function($rootScope, $location, NewProfile, Users, Update){
 
     var signupSteps = [
       "name",
@@ -1375,7 +1393,6 @@ angular.module( 'signup', [
 
   .factory("NewProfile", function(Slug, UsersAbout, UsersPassword, security){
     var about = {}
-    var products = []
     var id
     return {
       makeSlug: function(){
@@ -1394,6 +1411,10 @@ angular.module( 'signup', [
             }
           )
         }
+      },
+
+      reset:function(){
+        about = {}
       },
 
       setPassword: function(){
@@ -1430,6 +1451,7 @@ angular.module( 'signup', [
 }])
 
   .controller('signupCtrl', function($scope, Signup, NewProfile){
+                
     Signup.init()
 
     $scope.signupSteps = Signup.signupSteps();

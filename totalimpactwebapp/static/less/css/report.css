@@ -1,0 +1,524 @@
+/* report
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+body.user-profile div.main {
+  margin-top: 0;
+  padding-top: 0;
+}
+body.user-profile .modal {
+  width: 675px;
+  margin: -250px 0 0 -337.5px;
+}
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group {
+  float: right;
+  margin-right: 13px;
+  font-family: Lato, Helvetica, arial, sans-serif;
+}
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group button {
+  font-weight: normal;
+  background: #0053b0;
+}
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group button span.value {
+  font-weight: bolder;
+}
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group div.working {
+  margin-top: 5px;
+  text-align: center;
+  color: #bbb;
+}
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group div.working i {
+  margin-right: 10px;
+  font-size: 24px;
+}
+body.user-profile .modal#import-products-modal div.modal-header.import-products div.control-group div.working span.text {
+  font-size: 25px;
+}
+body.user-profile .modal#import-products-modal .modal-body {
+  float: right;
+}
+body.user-profile .modal .modal-header {
+  background: #eee;
+  padding: 30px;
+}
+body.user-profile .modal .modal-header h3 {
+  color: #555;
+  font-weight: normal;
+  font-size: 30px;
+  font-weight: bolder;
+  font-family: Lato, helvetica, arial, sans-serif;
+}
+body.user-profile .modal .modal-header button.close {
+  margin-left: 10px;
+  font-size: 30px;
+}
+body.user-profile .modal .modal-body {
+  max-height: inherit;
+}
+body.user-profile .modal .modal-body form h3 {
+  color: #333;
+}
+body.user-profile .modal .modal-body form h3 span.step-number {
+  display: none;
+}
+body.user-profile .modal .modal-body form.other-products {
+  margin-right: 20px;
+}
+#page-header img.loading {
+  width: 32px;
+  margin: -6px 0 0 -35px;
+  height: auto;
+  float: left;
+  padding-top: 7px;
+}
+#report {
+  min-height: 500px;
+  min-width: 1212px;
+  padding-bottom: 20px;
+}
+#report-meta {
+  margin: -69px 0 0 0;
+  float: right;
+}
+#report-meta div#num-items {
+  color: #777;
+  padding: 41px 7px 0 0;
+  display: block;
+  float: right;
+  font-size: 14px;
+}
+#report-meta div#num-items span.value {
+  font-weight: bold;
+  font-size: 16px;
+}
+#report-meta div#num-items a {
+  color: #777;
+}
+#report-meta div#num-items a:hover {
+  color: #ff4e00;
+}
+#report-meta div#report-button {
+  float: right;
+  margin-top: 37px;
+}
+#report-meta div#report-button div.update {
+  float: right;
+  margin: 0 5px 0 0;
+}
+#report-meta div#report-button div.update .dropdown-menu {
+  left: inherit;
+  right: 0;
+  min-width: inherit;
+  width: 80px;
+}
+#report-meta div#report-button button {
+  display: block;
+  float: left;
+}
+p.something-missing {
+  clear: left;
+  padding: 50px 20px 20px 0;
+  font-size: 75%;
+  color: #999;
+  background: #fff;
+  text-align: center;
+  margin: 0;
+}
+p.something-missing a {
+  color: #999;
+  border-bottom: 1px dotted #999;
+}
+p.something-missing a:hover {
+  color: #ff4e00;
+  border-bottom: 1px solid #ff4e00;
+  text-decoration: none;
+}
+.tweet-this iframe {
+  width: 97px;
+}
+.twitter-feed {
+  clear: both;
+  padding-top: 30px;
+}
+input.report {
+  border-top: none;
+  border-left: none;
+  border-bottom: 1px solid #EEE;
+  border-right: 1px solid #EEE;
+  background-color: #FF4E00;
+  color: #FFF;
+  margin-top: 3px;
+  height: 28px;
+}
+/** report printout ******************************************************/
+div#metrics {
+  min-height: 500px;
+  min-width: 1212px;
+  background: none repeat scroll 0 0 #FFFFFF;
+  float: left;
+  width: 100%;
+}
+div#metrics div.wrapper {
+  width: 1030px;
+}
+div#metrics h3 {
+  font-family: rokkitt, georgia, serif;
+  font-size: 24px;
+  color: #ff4e00;
+  clear: both;
+  font-weight: bold;
+}
+div#metrics div.genre {
+  margin-top: 50px;
+  float: left;
+  clear: both;
+}
+div#metrics div.genre ol,
+div#metrics div.genre ul,
+div#metrics div.genre ul li {
+  line-height: 1.2;
+}
+div#metrics div.genre h3 {
+  border-bottom: none;
+  font-size: 30px;
+}
+div#metrics div.genre h4.plus-more {
+  float: left;
+  font-size: 16px;
+  margin: 40px 0 0 20px;
+  text-indent: -20px;
+  cursor: pointer;
+}
+div#metrics div.genre h4.plus-more:hover {
+  color: #ff4e00;
+}
+div#metrics div.genre h4.plus-more.showing {
+  color: #ff4e00;
+}
+div#metrics div.genre h4.plus-more.showing span.icon {
+  background-position: -24px 64px;
+}
+div#metrics div.genre h4.plus-more span.icon {
+  padding: 0 9px;
+  background: url(../img/glyphicons-halflings.png);
+  background-position: 0 64px;
+}
+div#metrics div.genre h4.plus-more span.show-hide {
+  font-weight: normal;
+  font-style: normal;
+  font-size: 12px;
+}
+div#metrics div.genre ul.items.inactive {
+  display: none;
+  clear: both;
+  margin-left: 20px;
+}
+div#metrics div.genre ul.items.inactive li.item div.biblio h5 {
+  color: #666;
+}
+body.report li.item:hover div.item-controls a.item-delete-button {
+  display: none;
+}
+li.item {
+  float: left;
+  clear: both;
+  position: relative;
+}
+li.item.zoomed div.biblio h5 span.title {
+  color: #ff4e00;
+}
+li.item.no-data div.zoom {
+  border-top: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+li.item.no-data div.zoom span {
+  display: none;
+}
+li.item.no-data div.zoom a.item-help {
+  display: none;
+}
+li.item:hover div.item-controls a.item-delete-button {
+  display: block;
+}
+li.item div.item-controls {
+  position: absolute;
+  left: -100px;
+  width: 100px;
+  height: 40px;
+  top: 7px;
+  text-align: right;
+  line-height: 1;
+  font-size: 14px;
+}
+li.item div.item-controls:hover a.item-delete-button {
+  display: block;
+  text-decoration: none;
+  color: #ff4e00;
+}
+li.item div.item-controls:hover a.item-delete-button span.help-text {
+  display: inline;
+}
+li.item div.item-controls a.item-delete-button {
+  display: none;
+  height: 40px;
+  padding: 0 7px 10px 0;
+  color: #aaa;
+}
+li.item div.item-controls a.item-delete-button span.x {
+  font-size: 22px;
+}
+li.item div.item-controls a.item-delete-button span.help-text {
+  display: none;
+}
+li.item div.item-controls a.item-expand-button {
+  display: none;
+  width: 100px;
+  padding: 5px 15px 10px 0;
+  color: #ff4e00;
+}
+li.item div.item-controls a.item-expand-button:hover {
+  text-decoration: none;
+}
+li.item div.item-header {
+  clear: both;
+  padding-top: 10px;
+  cursor: default;
+}
+li.item div.item-header.zoomable:hover {
+  cursor: pointer;
+}
+li.item div.item-header div.biblio {
+  float: left;
+  width: 728px;
+}
+li.item div.item-header div.biblio h5 {
+  font-size: 16px;
+  margin: 0 0 -3px 0;
+}
+li.item div.item-header div.biblio h5 a {
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  background: url(../img/linkout-icon.png);
+  background-repeat: no-repeat;
+  background-position: right 1px;
+  display: inline-block;
+}
+li.item div.item-header div.biblio h5 a span.help-text {
+  display: none;
+  padding-left: 16px;
+  float: left;
+  margin-top: -2px;
+  color: #ff4e00;
+  font-size: 12px;
+  font-weight: normal;
+  text-decoration: none;
+}
+li.item div.item-header div.biblio h5 a:hover {
+  background-position: right -23px;
+}
+li.item div.item-header div.biblio h5 a:hover span.help-text {
+  display: inline-block;
+}
+li.item div.item-header div.biblio span.year,
+li.item div.item-header div.biblio span.authors,
+li.item div.item-header div.biblio span.channel,
+li.item div.item-header div.biblio span.repo,
+li.item div.item-header div.biblio span.descr {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.3;
+}
+li.item div.item-header div.biblio span.repo {
+  font-style: italic;
+}
+li.item div.item-header div.badges {
+  width: 280px;
+  margin-left: 20px;
+  float: left;
+}
+li.item div.item-header div.badges ul.ti-badges {
+  float: left;
+}
+li.item div.item-header div.badges ul.ti-badges li {
+  float: left;
+  margin: 0 3px 5px 0;
+}
+li.item div.item-header div.badges ul.ti-badges li span.ti-badge {
+  font-size: 12px;
+  font-weight: normal;
+  padding: 3px 6px;
+}
+li.item div.item-header div.badges ul.ti-badges li span.ti-badge span.audience {
+  display: none;
+}
+li.item div.item-header div.badges ul.ti-badges li span.ti-badge.scholars {
+  background: #377eb8;
+  border: 1px solid #377eb8;
+}
+li.item div.item-header div.badges ul.ti-badges li span.ti-badge.public {
+  background: #4daf4a;
+  border: 1px solid #4daf4a;
+}
+li.item div.item-header div.badges ul.ti-badges li span.ti-badge.lil-badge {
+  background: #fff;
+  text-shadow: none;
+}
+li.item div.item-header div.badges ul.ti-badges li span.ti-badge.lil-badge.scholars {
+  color: #377eb8;
+}
+li.item div.item-header div.badges ul.ti-badges li span.ti-badge.lil-badge.public {
+  color: #4daf4a;
+}
+li.item div.item-header div.badges ul.ti-badges li span.ti-badge:hover {
+  border: 1px solid #000;
+}
+li.item div.zoom {
+  display: none;
+  float: left;
+  clear: left;
+  width: 725px;
+  position: relative;
+  margin: 5px 0 35px;
+  padding-bottom: 15px;
+  border-top: 1px solid #aaa;
+}
+li.item div.zoom span.value {
+  font-weight: bold;
+}
+li.item div.zoom a.item-help {
+  left: 787px;
+  top: 5px;
+  position: absolute;
+  width: 300px;
+  font-size: 14px;
+  color: #555;
+}
+li.item div.zoom div.audience {
+  width: 330px;
+  float: left;
+  margin-left: 10px;
+}
+li.item div.zoom div.audience.scholars {
+  margin-right: 40px;
+}
+li.item div.zoom div.audience.scholars span.bar {
+  background: #377eb8;
+}
+li.item div.zoom div.audience.scholars h6 {
+  color: #377eb8;
+}
+li.item div.zoom div.audience.public span.bar {
+  background: #4daf4a;
+}
+li.item div.zoom div.audience.public h6 {
+  color: #4daf4a;
+}
+li.item div.zoom div.audience h5 {
+  margin-bottom: 0;
+  margin-left: 162px;
+  color: #555;
+}
+li.item div.zoom div.audience h5:after {
+  content: " audience";
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type {
+  margin-bottom: 25px;
+  float: left;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type h6 {
+  font-weight: normal;
+  font-size: 13px;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type h6 span.engagement-type {
+  font-weight: bold;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li {
+  float: left;
+  width: 100%;
+  margin: 0 0 5px 0;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line {
+  width: 150px;
+  height: 16px;
+  margin-top: -6px;
+  border-bottom: 1px solid #bbb;
+  float: left;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.percentile-fail {
+  color: #999;
+  font-size: 11px;
+  margin-top: 6px;
+  background: #fff;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.percentile-fail span {
+  text-align: left;
+  padding: 0 4px;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range {
+  position: relative;
+  cursor: default;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range.estimate {
+  display: none;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.bar {
+  height: 5px;
+  margin-top: 12px;
+  display: block;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint {
+  font-size: 10px;
+  display: block;
+  position: absolute;
+  top: 2px;
+  color: #999;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
+  left: 0;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
+  left: 0;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.end {
+  right: 0;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta {
+  width: 100px;
+  margin-right: 10px;
+  float: left;
+  display: block;
+  text-align: right;
+  font-size: 11px;
+  color: #555;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta .value-and-name {
+  width: 130px;
+  display: inline-block;
+  width: 75px;
+  line-height: 1.3;
+  margin-right: 5px;
+  color: #999;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta a.value-and-name:hover {
+  color: #ff4e00;
+}
+li.item div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta img {
+  float: right;
+}
+div#context p {
+  font-size: 15px;
+}
+div#context ul {
+  padding-left: 20px;
+}
+div#context ul li {
+  list-style-type: circle;
+}
+div#context .modal-body {
+  padding: 30px;
+}
+div#context .modal-header {
+  padding: 12px 30px;
+}

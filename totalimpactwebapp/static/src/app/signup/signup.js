@@ -42,7 +42,6 @@ angular.module( 'signup', [
     return {
       init: function(){
         $rootScope.showHeaderAndFooter = false;
-        NewProfile.reset()
       },
       signupSteps: function(){
         return signupSteps;
