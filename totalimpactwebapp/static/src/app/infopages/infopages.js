@@ -1,12 +1,18 @@
 angular.module( 'infopages', [
+    'security'
     ])
 
-    .config(['$routeProvider', function($routeProvider) {
+    .config(['$routeProvider', function($routeProvider, security) {
         $routeProvider
 
             .when('/', {
                       templateUrl: 'infopages/landing.tpl.html',
-                      controller: 'landingPageCtrl'
+                      controller: 'landingPageCtrl',
+                      resolve:{
+                        currentUser: function(security){
+                          return security.noUserLoggedIn()
+                        }
+                      }
                   })
             .when('/faq', {
                       templateUrl: 'infopages/faq.tpl.html',

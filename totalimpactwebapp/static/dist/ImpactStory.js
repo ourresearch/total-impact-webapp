@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-01
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-02
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -7,6 +7,7 @@ angular.module('app', [
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
+  'services.routeChangeErrorHandler',
   'security',
   'directives.crud',
   'templates.app',
@@ -39,7 +40,14 @@ angular.module('app').run(['security', function(security) {
 }]);
 
 
-angular.module('app').controller('AppCtrl', function($scope, i18nNotifications, localizedMessages, $rootScope, UservoiceWidget, $location, Loading) {
+angular.module('app').controller('AppCtrl', function($scope,
+                                                     i18nNotifications,
+                                                     localizedMessages,
+                                                     $rootScope,
+                                                     UservoiceWidget,
+                                                     $location,
+                                                     Loading,
+                                                     RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
   $scope.loading = Loading;
@@ -51,12 +59,12 @@ angular.module('app').controller('AppCtrl', function($scope, i18nNotifications, 
 
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
     i18nNotifications.pushForCurrentRoute('errors.route.changeError', 'error', {}, {rejection: rejection});
+    RouteChangeErrorHandler.handle(event, current, previous, rejection)
   });
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     UservoiceWidget.updateTabPosition($location.path())
     $rootScope.showHeaderAndFooter = true;
-
   })
 
 });
@@ -333,14 +341,20 @@ angular.module('importers.importer')
 })
 
 angular.module( 'infopages', [
+    'security'
     ])
 
-    .config(['$routeProvider', function($routeProvider) {
+    .config(['$routeProvider', function($routeProvider, security) {
         $routeProvider
 
             .when('/', {
                       templateUrl: 'infopages/landing.tpl.html',
-                      controller: 'landingPageCtrl'
+                      controller: 'landingPageCtrl',
+                      resolve:{
+                        currentUser: function(security){
+                          return security.noUserLoggedIn()
+                        }
+                      }
                   })
             .when('/faq', {
                       templateUrl: 'infopages/faq.tpl.html',
@@ -2539,6 +2553,31 @@ angular.module('security.service', [
       }
     },
 
+    noUserLoggedIn: function(){
+      console.log("no user logged in?")
+      var deferred = $q.defer();
+//      deferred.resolve("true")
+//      return deferred.promise
+
+      service.requestCurrentUser().then(
+        function(user){
+          if (user){
+            deferred.reject("false, there is a user logged in.")
+          }
+          else {
+            deferred.resolve("true, there is no user logged in")
+          }
+        }
+      )
+      return deferred.promise
+    },
+
+    redirectToProfile: function(){
+      service.requestCurrentUser().then(function(user){
+        redirect("/" + user.url_slug)
+      })
+    },
+
     // Information about the current user
     currentUser: null,
 
@@ -2957,6 +2996,29 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
 
   return notificationsService;
 }]);
+angular.module('services.routeChangeErrorHandler', [
+  'signup', // for the NewProfile factory
+  'security'
+])
+  .factory("RouteChangeErrorHandler", function(NewProfile, security, $location){
+
+
+    var restrictPageFromLoggedInUsers = function(path, event){
+      var restrictedPathRegexes = [
+        /^\/signup\//,   // signup page. you're already signed up, dude.
+        /^\/$/           // landing page.
+      ]
+    }
+
+    var handle = function(event, current, previous, rejection){
+      console.log("handlin' it:", event, current, previous, rejection)
+    }
+
+    return {
+      'handle': handle
+    }
+  })
+
 angular.module('services.slug', [])
 angular.module('services.slug')
 .factory('Slug', function(){

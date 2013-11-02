@@ -6166,6 +6166,9 @@ Some of my own mixins
 body {
   color: #333;
 }
+body div#container {
+  min-height: 800px;
+}
 body div#namechange {
   font-size: 18px;
   background: #444;

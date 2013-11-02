@@ -70,6 +70,31 @@ angular.module('security.service', [
       }
     },
 
+    noUserLoggedIn: function(){
+      console.log("no user logged in?")
+      var deferred = $q.defer();
+//      deferred.resolve("true")
+//      return deferred.promise
+
+      service.requestCurrentUser().then(
+        function(user){
+          if (user){
+            deferred.reject("false, there is a user logged in.")
+          }
+          else {
+            deferred.resolve("true, there is no user logged in")
+          }
+        }
+      )
+      return deferred.promise
+    },
+
+    redirectToProfile: function(){
+      service.requestCurrentUser().then(function(user){
+        redirect("/" + user.url_slug)
+      })
+    },
+
     // Information about the current user
     currentUser: null,
 

@@ -2,6 +2,7 @@ angular.module('app', [
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
+  'services.routeChangeErrorHandler',
   'security',
   'directives.crud',
   'templates.app',
@@ -34,7 +35,14 @@ angular.module('app').run(['security', function(security) {
 }]);
 
 
-angular.module('app').controller('AppCtrl', function($scope, i18nNotifications, localizedMessages, $rootScope, UservoiceWidget, $location, Loading) {
+angular.module('app').controller('AppCtrl', function($scope,
+                                                     i18nNotifications,
+                                                     localizedMessages,
+                                                     $rootScope,
+                                                     UservoiceWidget,
+                                                     $location,
+                                                     Loading,
+                                                     RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
   $scope.loading = Loading;
@@ -46,12 +54,12 @@ angular.module('app').controller('AppCtrl', function($scope, i18nNotifications, 
 
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
     i18nNotifications.pushForCurrentRoute('errors.route.changeError', 'error', {}, {rejection: rejection});
+    RouteChangeErrorHandler.handle(event, current, previous, rejection)
   });
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     UservoiceWidget.updateTabPosition($location.path())
     $rootScope.showHeaderAndFooter = true;
-
   })
 
 });
