@@ -9,7 +9,7 @@ angular.module('importers.importer')
 })
 
 
-.controller('importerCtrl', function($scope, Products, NewProfile, UsersProducts, Importer, Loading){
+.controller('importerCtrl', function($scope, Products, UsersProfile, UsersProducts, Importer, Loading){
 
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
@@ -23,20 +23,19 @@ angular.module('importers.importer')
   $scope.importerHasRun = false
 
   $scope.onCancel = function(){
-    console.log("onCancel!")
     $scope.importWindowOpen = false;
   }
   $scope.onImport = function(){
     Loading.start()
-    var profileId = NewProfile.getId()
+    var profileId = UsersProfile.getId() ||
     console.log("now calling /importer/" + $scope.importer.endpoint)
     console.log("here's the profile ID we'll update:", profileId)
 
     // import the new products
     Products.save(
-      {importerName: $scope.importer.endpoint},
-      {input: $scope.importer.input},
-      function(resp, headers){
+      {importerName: $scope.importer.endpoint}, // define the url
+      {input: $scope.importer.input}, // the post data, from user input
+      function(resp, headers){  // run when the server gives us something back.
         var tiids;
 
         if (resp.error){
@@ -46,14 +45,14 @@ angular.module('importers.importer')
           tiids = _.keys(resp.products)
         }
 
-        // store our new products in this importer's scope
+        // store our new products in this importer's scope, so we can display count to user
         console.log("here are the tiids:", tiids);
         $scope.products = tiids;
 
         // add the new products to the user's profile on the server
         UsersProducts.patch(
-          {id: profileId},
-          {"tiids": tiids},
+          {id: profileId},  // the url
+          {"tiids": tiids},  // the POST data
           function(){
             Loading.finish()
           }

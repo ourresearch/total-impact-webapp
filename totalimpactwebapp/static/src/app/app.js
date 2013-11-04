@@ -53,7 +53,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   };
 
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
-    i18nNotifications.pushForCurrentRoute('errors.route.changeError', 'error', {}, {rejection: rejection});
     RouteChangeErrorHandler.handle(event, current, previous, rejection)
   });
 

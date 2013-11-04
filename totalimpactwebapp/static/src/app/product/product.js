@@ -106,11 +106,9 @@ angular.module('product.product')
       metrics = this.getMetricPercentiles(metrics)
 
       _.each(metrics, function(metric){
-        console.log("metric: ", metric)
         metric.award = Award.makeForSingleMetric(metric.audience, metric.engagementType, metric)
       })
 
-      console.log("metrics!", metrics)
       return metrics
     }
 

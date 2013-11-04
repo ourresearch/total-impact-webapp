@@ -39,7 +39,7 @@ angular.module('security.service', [
       request
         .success(function(data, status) {
             service.currentUser = data.user;
-            console.log("we've got a current user now", service.currentUser)
+            service.redirectToProfile()
           })
         .error(function(data, status, headers, config){
           console.log("oh crap, an error: ", status);
@@ -71,15 +71,12 @@ angular.module('security.service', [
     },
 
     noUserLoggedIn: function(){
-      console.log("no user logged in?")
       var deferred = $q.defer();
-//      deferred.resolve("true")
-//      return deferred.promise
 
       service.requestCurrentUser().then(
         function(user){
           if (user){
-            deferred.reject("false, there is a user logged in.")
+            deferred.reject("userLoggedIn")
           }
           else {
             deferred.resolve("true, there is no user logged in")

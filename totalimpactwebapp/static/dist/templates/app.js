@@ -1,4 +1,4 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -704,6 +704,19 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "</div>");
 }]);
 
+angular.module("profile/profile-add-products.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile/profile-add-products.tpl.html",
+    "<div class=\"profile-add-products importers\" ng-controller=\"addProductsCtrl\">\n" +
+    "\n" +
+    "   <div class=\"importer\"\n" +
+    "        ng-repeat=\"importer in importers\"\n" +
+    "        ng-controller=\"importerCtrl\"\n" +
+    "        ng-include=\"'importers/importer.tpl.html'\">\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>");
+}]);
+
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile.tpl.html",
     "<div class=\"profile-header\" ng-show=\"userExists\">\n" +
@@ -735,7 +748,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
     "            </a>\n" +
     "         </div>\n" +
-    "         <a><i class=\"icon-edit\"></i>Edit</a>\n" +
+    "         <a href=\"/{{ user.about.url_slug }}\"><i class=\"icon-edit\"></i>Import products</a>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
@@ -1064,14 +1077,14 @@ angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", fun
 
 angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-name.tpl.html",
-    "<div class=\"signup-input url\">\n" +
+    "<div class=\"signup-input url\" ng-controller=\"signupNameCtrl\">\n" +
     "   <div class=\"intro\">Let's get started making your account! It'll take less than five minutes. And don't worry; you can always edit or change anything in your account later. First things first: what's your name?</div>\n" +
     "\n" +
     "   <div class=\"form-group\">\n" +
-    "      <input required class=\"form-control\" type=\"text\" ng-model=\"profileAbout.givenName\" placeholder=\"First name\">\n" +
+    "      <input required class=\"form-control\" type=\"text\" ng-model=\"input.givenName\" placeholder=\"First name\">\n" +
     "   </div>\n" +
     "   <div class=\"form-group\">\n" +
-    "      <input required class=\"input-large form-control\" type=\"text\" ng-model=\"profileAbout.surname\" placeholder=\"Last name\">\n" +
+    "      <input required class=\"input-large form-control\" type=\"text\" ng-model=\"input.surname\" placeholder=\"Last name\">\n" +
     "   </div>\n" +
     "</div>\n" +
     "");
@@ -1167,7 +1180,7 @@ angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", fun
 angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-url.tpl.html",
     "<div class=\"signup-input url\" ng-controller=\"signupUrlCtrl\">\n" +
-    "   <div class=\"intro\"><br>Okay, {{ profileAbout.givenName }}, your next step is to pick your profile's custom URL. (Don't worry, you can change this later, too):</div>\n" +
+    "   <div class=\"intro\"><br>Okay, {{ givenName }}, your next step is to pick your profile's custom URL. (Don't worry, you can change this later, too):</div>\n" +
     "   \n" +
     "   <div class=\"form-group custom-url\"\n" +
     "        ng-model=\"profileAbout.url_slug\"\n" +
@@ -1176,7 +1189,7 @@ angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function
     "\n" +
     "      <div class=\"controls input-group\">\n" +
     "         <span class=\"input-group-addon\">http://impactstory.org/</span>\n" +
-    "         <input ng-model=\"profileAbout.url_slug\"\n" +
+    "         <input ng-model=\"input.url_slug\"\n" +
     "                name=\"url_slug\"\n" +
     "                class=\"form-control\"\n" +
     "                required\n" +
@@ -1232,18 +1245,21 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "<form class=\"signup name form-horizontal\" name=\"signupForm\">\n" +
     "\n" +
+    "\n" +
     "   <div ng-include=\"include\"></div>\n" +
     "\n" +
     "   <button type=\"submit\"\n" +
     "           class=\"next-button\"\n" +
-    "           ng-click=\"goToNextStep()\"\n" +
+    "           ng-click=\"nav.goToNextStep()\"\n" +
     "           ng-class=\"{'next-button': true, enabled: signupForm.$valid}\"\n" +
     "           ng-disabled=\"signupForm.$invalid\">\n" +
     "      <span class=\"text\">Next</span>\n" +
     "      <i class=\"icon-arrow-right\"></i>\n" +
     "   </button>\n" +
+    "</form>\n" +
     "\n" +
-    "</form>");
+    "\n" +
+    "");
 }]);
 
 angular.module("update/update-progress.tpl.html", []).run(["$templateCache", function($templateCache) {

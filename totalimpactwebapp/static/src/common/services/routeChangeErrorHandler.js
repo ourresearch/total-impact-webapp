@@ -1,8 +1,7 @@
 angular.module('services.routeChangeErrorHandler', [
-  'signup', // for the NewProfile factory
   'security'
 ])
-  .factory("RouteChangeErrorHandler", function(NewProfile, security, $location){
+  .factory("RouteChangeErrorHandler", function(security, $location){
 
 
     var restrictPageFromLoggedInUsers = function(path, event){
@@ -13,7 +12,17 @@ angular.module('services.routeChangeErrorHandler', [
     }
 
     var handle = function(event, current, previous, rejection){
-      console.log("handlin' it:", event, current, previous, rejection)
+      var path = $location.path()
+      if (path == "/" && rejection == "userLoggedIn"){
+        $location.path("/"+security.currentUser.url_slug)
+      }
+      else if (path.indexOf("/signup"===0) && rejection == "userLoggedIn") {
+        $location.path("/"+security.currentUser.url_slug)
+      }
+      else if (rejection == "signupFlowOutOfOrder") {
+        $location.path("/signup/name")
+      }
+
     }
 
     return {

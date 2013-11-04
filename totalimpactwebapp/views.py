@@ -259,6 +259,8 @@ def extract_filename(s):
 
 @app.route("/user/current")
 def get_current_user():
+    # from time import sleep
+    # sleep(1)
     try:
         return json_resp_from_thing({"user": g.user.as_dict()})
 
