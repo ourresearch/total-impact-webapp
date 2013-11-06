@@ -10,7 +10,7 @@ angular.module( 'infopages', [
                       controller: 'landingPageCtrl',
                       resolve:{
                         currentUser: function(security){
-                          return security.noUserLoggedIn()
+                          return security.currentUserHasNoEmail()
                         }
                       }
                   })
@@ -22,7 +22,7 @@ angular.module( 'infopages', [
                       templateUrl: 'infopages/about.tpl.html',
                       controller: 'aboutPageCtrl'
                   })
-    }])
+  }])
 
     .controller( 'landingPageCtrl', function landingPageCtrl ( $scope ) {
                      $scope.thisControllerBeRunning = true

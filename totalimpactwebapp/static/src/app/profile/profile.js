@@ -54,35 +54,11 @@ angular.module("profile", [
     readyToCreateOnServer: function(){
       return about.url_slug && !id;
     },
-    setEmail: function() {
-      if (about.email) {
-        UsersAbout.patch(
-          {"id": id},
-          {about: {email: about.email}},
-          function(resp) {
-            console.log("updated creds", resp)
-          }
-        )
-      }
-    },
 
     reset:function(){
       about = {}
     },
 
-    setPassword: function(){
-      if (about.password && about) {
-        UsersPassword.save(
-          {"id": id},
-          {newPassword: about.password},
-          function(data){ // runs on successful password set.
-            console.log("we set the password successfully. logging the user in")
-            var user = security.requestCurrentUser()
-            console.log("we found this user: ", user)
-          }
-        )
-      }
-    },
     setId: function(newId){id = newId},
     getId: function(){return id},
     getSlug: function(){return about.url_slug},
@@ -91,23 +67,9 @@ angular.module("profile", [
 })
 
 
-
-.config(['$routeProvider', function ($routeProvider) {
-
-  $routeProvider.when("/:url_slug", {
-    templateUrl:'profile/profile.tpl.html',
-    controller:'ProfileCtrl'
-  })
-}])
-
-
-
-
-
-
-
 .controller('ProfileCtrl', function ($scope, $routeParams, $http, UsersProducts, Product, UserProfile)
   {
+
     var userSlug = $routeParams.url_slug;
     $scope.userExists = true;
     $scope.showProductsWithoutMetrics = false;

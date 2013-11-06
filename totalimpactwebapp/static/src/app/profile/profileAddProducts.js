@@ -12,7 +12,7 @@ angular.module('profile.addProducts')
         controller: 'addProductsCtrl'
 //        resolve:{
 //          currentUser: function(security){
-//            return security.noUserLoggedIn()
+//            return security.currentUserHasNoEmail()
 //          }
 //        }
       })

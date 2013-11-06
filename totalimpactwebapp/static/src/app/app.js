@@ -7,8 +7,8 @@ angular.module('app', [
   'directives.crud',
   'templates.app',
   'templates.common',
-  'signup',
   'infopages', // comes before profile, so '/about' isn't routed as a user named About.
+  'signup',
   'profileProduct',
   'profile',
   'settings'
@@ -22,6 +22,12 @@ angular.module('app').constant('TEST', {
 
 angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
+
+  // want to make sure the user profile route loads last, because it's super greedy.
+  $routeProvider.when("/:url_slug", {
+    templateUrl:'profile/profile.tpl.html',
+    controller:'ProfileCtrl'
+  })
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
   });

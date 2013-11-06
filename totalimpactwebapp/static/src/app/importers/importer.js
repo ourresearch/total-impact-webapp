@@ -1,7 +1,9 @@
 angular.module('importers.importer', [
   'directives.forms',
   'services.loading',
-  'resources.products'
+  'resources.users',
+  'resources.products',
+  'profile'
 ])
 angular.module('importers.importer')
 .factory('Importer', function(){
@@ -9,8 +11,13 @@ angular.module('importers.importer')
 })
 
 
-.controller('importerCtrl', function($scope, Products, UsersProfile, UsersProducts, Importer, Loading){
+.controller('importerCtrl', function($scope, $location, Products, UserProfile, UsersProducts, Importer, Loading){
 
+  var getUserSlug = function(){
+    var re = /\/(\w+)\/products/
+    var res = re.exec($location.path())
+    return res[1]
+  }
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
       $scope.importWindowOpen = true;
@@ -27,9 +34,9 @@ angular.module('importers.importer')
   }
   $scope.onImport = function(){
     Loading.start()
-    var profileId = UsersProfile.getId() ||
+    var slug = getUserSlug()
     console.log("now calling /importer/" + $scope.importer.endpoint)
-    console.log("here's the profile ID we'll update:", profileId)
+    console.log("here's the profile slug we'll update:", slug)
 
     // import the new products
     Products.save(
@@ -51,7 +58,7 @@ angular.module('importers.importer')
 
         // add the new products to the user's profile on the server
         UsersProducts.patch(
-          {id: profileId},  // the url
+          {id: slug, idType:"url_slug"},  // the url
           {"tiids": tiids},  // the POST data
           function(){
             Loading.finish()

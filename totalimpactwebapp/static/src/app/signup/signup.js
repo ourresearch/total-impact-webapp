@@ -4,10 +4,9 @@ angular.module( 'signup', [
     'update.update',
     'security.service',
     'importers.allTheImporters',
-    'importers.importer',
-    'profile'
+    'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location, Users, UserProfile, Update, $q){
+  .factory("Signup", function($rootScope, $location){
 
     var signupSteps = [
       "name",
@@ -37,17 +36,6 @@ angular.module( 'signup', [
        return _.indexOf(signupSteps, getCurrentStep())
     }
 
-//
-//    var showUpdateModalThenRedirectWhenDone = function(){
-//       Update.showUpdate(
-//         NewProfile.getId(),
-//         function(){
-//           $location.path("/" + NewProfile.getSlug())
-//           NewProfile.reset()
-//         })
-//     }
-
-
     return {
       init: function(){
         $rootScope.showHeaderAndFooter = false;
@@ -58,50 +46,12 @@ angular.module( 'signup', [
       onSignupStep: function(step){
         return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
       },
-
-//      currentSignupStepPromise: function(){
-//        var deferred = $q.defer()
-//        if (getIndexOfCurrentStep() > 0 && !_.size(NewProfile.about)) {
-//          deferred.reject("signupFlowOutOfOrder")
-//        }
-//        else {
-//          deferred.resolve(getIndexOfCurrentStep())
-//        }
-//        return deferred.promise
-//      },
-
-//      goToNextSignupStep: function() {
-//        if (NewProfile.readyToCreateOnServer()) {
-//          Users.save(
-//            {id: NewProfile.about.url_slug, idType: "url_slug"},
-//            NewProfile.about,
-//            function(resp, headers){
-//              NewProfile.setId(resp.user.id)
-//
-//          })
-//        }
-//
-//        NewProfile.setEmail()
-//        NewProfile.setPassword()
-//
-//        var nextPage = signupSteps[getIndexOfCurrentStep() + 1]
-//        if (typeof nextPage === "undefined") {
-//          showUpdateModalThenRedirectWhenDone()
-//        }
-//        else {
-//          $location.path("/signup/" + nextPage)
-//        }
-//      },
-
       isBeforeCurrentSignupStep: function(stepToCheck) {
         var indexOfStepToCheck = _.indexOf(signupSteps, stepToCheck)
         return getIndexOfCurrentStep() > -1 && indexOfStepToCheck < getIndexOfCurrentStep()
       },
       getTemplatePath: function(){
         return "signup/signup-" + getCurrentStep() + '.tpl.html';
-      },
-      getControllerName: function(){
-        return "signup" + getCurrentStep(true) + "Ctrl";
       }
     }
   })
@@ -109,12 +59,13 @@ angular.module( 'signup', [
 .config(['$routeProvider', function($routeProvider) {
 
   $routeProvider
+
     .when("/signup/*rest", {
       templateUrl: 'signup/signup.tpl.html',
       controller: 'signupCtrl',
       resolve:{
-        currentUser: function(security){
-          return security.noUserLoggedIn()
+        currentUserHasNoEmail: function(security){
+          return security.currentUserHasNoEmail()
         }
       }
     })
@@ -128,13 +79,11 @@ angular.module( 'signup', [
     Signup.init()
 
     $scope.input = {}
-
     $scope.signupSteps = Signup.signupSteps();
     $scope.isStepCurrent = Signup.onSignupStep;
     $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
 
     $scope.include =  Signup.getTemplatePath();
-    $scope.signupFormCtrl =  Signup.getControllerName();
     $scope.nav = { // defined as an object so that controllers in child scopes can override...
       goToNextStep: function(){
         console.log("go to next step!")
@@ -151,8 +100,8 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupUrlCtrl', function ( $scope, Users, Slug, UserProfile, $location) {
-    var nameRegex = /\/signup\/(.+?)\/(.+?)\/url/
+  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, Slug, $location) {
+    var  nameRegex = /\/(\w+)\/(\w+)\/url/
     var res = nameRegex.exec($location.path())
 
     $scope.givenName = res[1]
@@ -166,21 +115,48 @@ angular.module( 'signup', [
           surname: res[2],
           url_slug: $scope.input.url_slug
         },
-        function(resp, headers){}
+        function(resp, headers){
+          console.log("got response back from save user", resp)
+          $location.path("signup/" + $scope.input.url_slug + "/products/add")
+
+        }
       )
-      $location.path("signup/" + $scope.input.url_slug + "/products/add")
+    }
+  })
+
+  .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporters, security ) {
+    var m = /\/signup\/(\w+)\//.exec($location.path())
+
+    $scope.importers = AllTheImporters.get()
+    $scope.nav.goToNextStep = function(){
+      $location.path("signup/" + m[1] + "/password")
+    }
+  })
+
+  .controller( 'signupPasswordCtrl', function ($scope, $location, security, UsersAbout, UsersPassword, Update) {
+    var url_slug = /\/signup\/(\w+)\//.exec($location.path())[1]
+    var redirectCb = function(){
+      $location.path("/" + url_slug)
+      security.requestCurrentUser()
     }
 
-
-  })
-
-  .controller( 'signupProductsCtrl', function ( $scope, Signup, AllTheImporters ) {
-    $scope.importers = AllTheImporters.get()
-    $scope.pristineOk =  true;
-
-  })
-
-  .controller( 'signupPasswordCtrl', function ( $scope, Signup ) {
+    $scope.nav.goToNextStep = function(){
+      UsersAbout.patch(
+        {"id": url_slug, idType:"url_slug"},
+        {about: {email: $scope.input.email}},
+        function(resp) {
+          console.log("we set the email", resp)
+        }
+      )
+      UsersPassword.save(
+        {"id": url_slug, idType:"url_slug"},
+        {newPassword: $scope.input.password},
+        function(data){
+          console.log("we set the password; showing the 'updating' modal.")
+          Update.showUpdate(url_slug, redirectCb)
+        }
+      )
+    }
   })
 
 

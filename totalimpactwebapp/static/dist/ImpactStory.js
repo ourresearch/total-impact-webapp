@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-04
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-06
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -12,8 +12,8 @@ angular.module('app', [
   'directives.crud',
   'templates.app',
   'templates.common',
-  'signup',
   'infopages', // comes before profile, so '/about' isn't routed as a user named About.
+  'signup',
   'profileProduct',
   'profile',
   'settings'
@@ -27,6 +27,12 @@ angular.module('app').constant('TEST', {
 
 angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
+
+  // want to make sure the user profile route loads last, because it's super greedy.
+  $routeProvider.when("/:url_slug", {
+    templateUrl:'profile/profile.tpl.html',
+    controller:'ProfileCtrl'
+  })
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
   });
@@ -272,7 +278,9 @@ angular.module('importers.allTheImporters')
 angular.module('importers.importer', [
   'directives.forms',
   'services.loading',
-  'resources.products'
+  'resources.users',
+  'resources.products',
+  'profile'
 ])
 angular.module('importers.importer')
 .factory('Importer', function(){
@@ -280,8 +288,13 @@ angular.module('importers.importer')
 })
 
 
-.controller('importerCtrl', function($scope, Products, UsersProfile, UsersProducts, Importer, Loading){
+.controller('importerCtrl', function($scope, $location, Products, UserProfile, UsersProducts, Importer, Loading){
 
+  var getUserSlug = function(){
+    var re = /\/(\w+)\/products/
+    var res = re.exec($location.path())
+    return res[1]
+  }
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
       $scope.importWindowOpen = true;
@@ -298,9 +311,9 @@ angular.module('importers.importer')
   }
   $scope.onImport = function(){
     Loading.start()
-    var profileId = UsersProfile.getId() ||
+    var slug = getUserSlug()
     console.log("now calling /importer/" + $scope.importer.endpoint)
-    console.log("here's the profile ID we'll update:", profileId)
+    console.log("here's the profile slug we'll update:", slug)
 
     // import the new products
     Products.save(
@@ -322,7 +335,7 @@ angular.module('importers.importer')
 
         // add the new products to the user's profile on the server
         UsersProducts.patch(
-          {id: profileId},  // the url
+          {id: slug, idType:"url_slug"},  // the url
           {"tiids": tiids},  // the POST data
           function(){
             Loading.finish()
@@ -350,7 +363,7 @@ angular.module( 'infopages', [
                       controller: 'landingPageCtrl',
                       resolve:{
                         currentUser: function(security){
-                          return security.noUserLoggedIn()
+                          return security.currentUserHasNoEmail()
                         }
                       }
                   })
@@ -362,7 +375,7 @@ angular.module( 'infopages', [
                       templateUrl: 'infopages/about.tpl.html',
                       controller: 'aboutPageCtrl'
                   })
-    }])
+  }])
 
     .controller( 'landingPageCtrl', function landingPageCtrl ( $scope ) {
                      $scope.thisControllerBeRunning = true
@@ -1110,35 +1123,11 @@ angular.module("profile", [
     readyToCreateOnServer: function(){
       return about.url_slug && !id;
     },
-    setEmail: function() {
-      if (about.email) {
-        UsersAbout.patch(
-          {"id": id},
-          {about: {email: about.email}},
-          function(resp) {
-            console.log("updated creds", resp)
-          }
-        )
-      }
-    },
 
     reset:function(){
       about = {}
     },
 
-    setPassword: function(){
-      if (about.password && about) {
-        UsersPassword.save(
-          {"id": id},
-          {newPassword: about.password},
-          function(data){ // runs on successful password set.
-            console.log("we set the password successfully. logging the user in")
-            var user = security.requestCurrentUser()
-            console.log("we found this user: ", user)
-          }
-        )
-      }
-    },
     setId: function(newId){id = newId},
     getId: function(){return id},
     getSlug: function(){return about.url_slug},
@@ -1147,23 +1136,9 @@ angular.module("profile", [
 })
 
 
-
-.config(['$routeProvider', function ($routeProvider) {
-
-  $routeProvider.when("/:url_slug", {
-    templateUrl:'profile/profile.tpl.html',
-    controller:'ProfileCtrl'
-  })
-}])
-
-
-
-
-
-
-
 .controller('ProfileCtrl', function ($scope, $routeParams, $http, UsersProducts, Product, UserProfile)
   {
+
     var userSlug = $routeParams.url_slug;
     $scope.userExists = true;
     $scope.showProductsWithoutMetrics = false;
@@ -1206,7 +1181,7 @@ angular.module('profile.addProducts')
         controller: 'addProductsCtrl'
 //        resolve:{
 //          currentUser: function(security){
-//            return security.noUserLoggedIn()
+//            return security.currentUserHasNoEmail()
 //          }
 //        }
       })
@@ -1397,10 +1372,9 @@ angular.module( 'signup', [
     'update.update',
     'security.service',
     'importers.allTheImporters',
-    'importers.importer',
-    'profile'
+    'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location, Users, UserProfile, Update, $q){
+  .factory("Signup", function($rootScope, $location){
 
     var signupSteps = [
       "name",
@@ -1430,17 +1404,6 @@ angular.module( 'signup', [
        return _.indexOf(signupSteps, getCurrentStep())
     }
 
-//
-//    var showUpdateModalThenRedirectWhenDone = function(){
-//       Update.showUpdate(
-//         NewProfile.getId(),
-//         function(){
-//           $location.path("/" + NewProfile.getSlug())
-//           NewProfile.reset()
-//         })
-//     }
-
-
     return {
       init: function(){
         $rootScope.showHeaderAndFooter = false;
@@ -1451,50 +1414,12 @@ angular.module( 'signup', [
       onSignupStep: function(step){
         return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
       },
-
-//      currentSignupStepPromise: function(){
-//        var deferred = $q.defer()
-//        if (getIndexOfCurrentStep() > 0 && !_.size(NewProfile.about)) {
-//          deferred.reject("signupFlowOutOfOrder")
-//        }
-//        else {
-//          deferred.resolve(getIndexOfCurrentStep())
-//        }
-//        return deferred.promise
-//      },
-
-//      goToNextSignupStep: function() {
-//        if (NewProfile.readyToCreateOnServer()) {
-//          Users.save(
-//            {id: NewProfile.about.url_slug, idType: "url_slug"},
-//            NewProfile.about,
-//            function(resp, headers){
-//              NewProfile.setId(resp.user.id)
-//
-//          })
-//        }
-//
-//        NewProfile.setEmail()
-//        NewProfile.setPassword()
-//
-//        var nextPage = signupSteps[getIndexOfCurrentStep() + 1]
-//        if (typeof nextPage === "undefined") {
-//          showUpdateModalThenRedirectWhenDone()
-//        }
-//        else {
-//          $location.path("/signup/" + nextPage)
-//        }
-//      },
-
       isBeforeCurrentSignupStep: function(stepToCheck) {
         var indexOfStepToCheck = _.indexOf(signupSteps, stepToCheck)
         return getIndexOfCurrentStep() > -1 && indexOfStepToCheck < getIndexOfCurrentStep()
       },
       getTemplatePath: function(){
         return "signup/signup-" + getCurrentStep() + '.tpl.html';
-      },
-      getControllerName: function(){
-        return "signup" + getCurrentStep(true) + "Ctrl";
       }
     }
   })
@@ -1502,12 +1427,13 @@ angular.module( 'signup', [
 .config(['$routeProvider', function($routeProvider) {
 
   $routeProvider
+
     .when("/signup/*rest", {
       templateUrl: 'signup/signup.tpl.html',
       controller: 'signupCtrl',
       resolve:{
-        currentUser: function(security){
-          return security.noUserLoggedIn()
+        currentUserHasNoEmail: function(security){
+          return security.currentUserHasNoEmail()
         }
       }
     })
@@ -1521,13 +1447,11 @@ angular.module( 'signup', [
     Signup.init()
 
     $scope.input = {}
-
     $scope.signupSteps = Signup.signupSteps();
     $scope.isStepCurrent = Signup.onSignupStep;
     $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
 
     $scope.include =  Signup.getTemplatePath();
-    $scope.signupFormCtrl =  Signup.getControllerName();
     $scope.nav = { // defined as an object so that controllers in child scopes can override...
       goToNextStep: function(){
         console.log("go to next step!")
@@ -1544,8 +1468,8 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupUrlCtrl', function ( $scope, Users, Slug, UserProfile, $location) {
-    var nameRegex = /\/signup\/(.+?)\/(.+?)\/url/
+  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, Slug, $location) {
+    var  nameRegex = /\/(\w+)\/(\w+)\/url/
     var res = nameRegex.exec($location.path())
 
     $scope.givenName = res[1]
@@ -1559,21 +1483,48 @@ angular.module( 'signup', [
           surname: res[2],
           url_slug: $scope.input.url_slug
         },
-        function(resp, headers){}
+        function(resp, headers){
+          console.log("got response back from save user", resp)
+          $location.path("signup/" + $scope.input.url_slug + "/products/add")
+
+        }
       )
-      $location.path("signup/" + $scope.input.url_slug + "/products/add")
+    }
+  })
+
+  .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporters, security ) {
+    var m = /\/signup\/(\w+)\//.exec($location.path())
+
+    $scope.importers = AllTheImporters.get()
+    $scope.nav.goToNextStep = function(){
+      $location.path("signup/" + m[1] + "/password")
+    }
+  })
+
+  .controller( 'signupPasswordCtrl', function ($scope, $location, security, UsersAbout, UsersPassword, Update) {
+    var url_slug = /\/signup\/(\w+)\//.exec($location.path())[1]
+    var redirectCb = function(){
+      $location.path("/" + url_slug)
+      security.requestCurrentUser()
     }
 
-
-  })
-
-  .controller( 'signupProductsCtrl', function ( $scope, Signup, AllTheImporters ) {
-    $scope.importers = AllTheImporters.get()
-    $scope.pristineOk =  true;
-
-  })
-
-  .controller( 'signupPasswordCtrl', function ( $scope, Signup ) {
+    $scope.nav.goToNextStep = function(){
+      UsersAbout.patch(
+        {"id": url_slug, idType:"url_slug"},
+        {about: {email: $scope.input.email}},
+        function(resp) {
+          console.log("we set the email", resp)
+        }
+      )
+      UsersPassword.save(
+        {"id": url_slug, idType:"url_slug"},
+        {newPassword: $scope.input.password},
+        function(data){
+          console.log("we set the password; showing the 'updating' modal.")
+          Update.showUpdate(url_slug, redirectCb)
+        }
+      )
+    }
   })
 
 
@@ -1591,19 +1542,19 @@ angular.module( 'update.update', [
     }
     var firstCheck = true
 
-    var keepPolling = function(userId, onFinish){
+    var keepPolling = function(url_slug, onFinish){
 
 
       if (firstCheck || updateStatus.numNotDone > 0) {
         firstCheck = false
         UsersProducts.query(
-          {id: userId},
+          {id: url_slug, idType:"url_slug"},
           function(resp){
             updateStatus.numDone = numDone(resp, true)
             updateStatus.numNotDone = numDone(resp, false)
             updateStatus.percentComplete = updateStatus.numDone * 100 / (updateStatus.numDone + updateStatus.numNotDone)
 
-            $timeout(function(){keepPolling(userId, onFinish)}, 500);
+            $timeout(function(){keepPolling(url_slug, onFinish)}, 500);
           })
       }
       else {
@@ -1625,7 +1576,7 @@ angular.module( 'update.update', [
        }
     };
 
-    var update = function(userId, onFinish){
+    var update = function(url_slug, onFinish){
       var modal = $modal.open({
         templateUrl: 'update/update-progress.tpl.html',
         controller: 'updateProgressModalCtrl',
@@ -1633,7 +1584,7 @@ angular.module( 'update.update', [
         keyboard: false
       });
 
-      keepPolling(userId, function(){
+      keepPolling(url_slug, function(){
         modal.close()
         onFinish()
       })
@@ -2528,6 +2479,7 @@ angular.module('security.service', [
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
     url = url || '/';
+    console.log("in security, redirectin' to " + url)
     $location.path(url);
   }
 
@@ -2588,24 +2540,26 @@ angular.module('security.service', [
       }
     },
 
-    noUserLoggedIn: function(){
+    currentUserHasNoEmail: function(){
       var deferred = $q.defer();
 
       service.requestCurrentUser().then(
         function(user){
-          if (user){
-            deferred.reject("userLoggedIn")
+          if (user && user.email){
+            deferred.reject("userHasAnEmail")
           }
           else {
-            deferred.resolve("true, there is no user logged in")
+            deferred.resolve("yay, the user has no email!")
           }
         }
       )
       return deferred.promise
+
     },
 
     redirectToProfile: function(){
       service.requestCurrentUser().then(function(user){
+        console.log("redirect to profile.")
         redirect("/" + user.url_slug)
       })
     },
@@ -3042,15 +2996,17 @@ angular.module('services.routeChangeErrorHandler', [
     }
 
     var handle = function(event, current, previous, rejection){
+      console.log("handling route change error.", event, current, previous, rejection)
       var path = $location.path()
       if (path == "/" && rejection == "userLoggedIn"){
         $location.path("/"+security.currentUser.url_slug)
       }
-      else if (path.indexOf("/signup"===0) && rejection == "userLoggedIn") {
-        $location.path("/"+security.currentUser.url_slug)
-      }
       else if (rejection == "signupFlowOutOfOrder") {
         $location.path("/signup/name")
+      }
+      else if (rejection == "userHasAnEmail"){
+        // if you've got an email, you're done signing up and have a profile. go there.
+        $location.path("/"+security.currentUser.url_slug)
       }
 
     }
@@ -4342,7 +4298,7 @@ angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", functio
 
 angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-password.tpl.html",
-    "<div class=\"signup-input email-and-password\">\n" +
+    "<div class=\"signup-input email-and-password\" ng-controller=\"signupPasswordCtrl\">\n" +
     "   <div class=\"intro\"><br>Last step! Enter your email (which we never share) and pick a password:</div>\n" +
     "\n" +
     "   <div class=\"form-group email\"\n" +
@@ -4351,7 +4307,7 @@ angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "      <div class=\"controls input-group\">\n" +
     "         <span class=\"input-group-addon\"><i class=\"icon-envelope\"></i></span>\n" +
-    "         <input ng-model=\"profileAbout.email\"\n" +
+    "         <input ng-model=\"input.email\"\n" +
     "                placeholder=\"email\"\n" +
     "                name=\"email\"\n" +
     "                class=\"form-control\"\n" +
@@ -4387,7 +4343,7 @@ angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", fun
     "      <div class=\"controls input-group\">\n" +
     "         <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
     "\n" +
-    "         <input ng-model=\"profileAbout.password\"\n" +
+    "         <input ng-model=\"input.password\"\n" +
     "                name=\"password\"\n" +
     "                type=\"password\"\n" +
     "                placeholder=\"password\"\n" +
@@ -4395,7 +4351,7 @@ angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", fun
     "                class=\"form-control\"\n" +
     "                required>\n" +
     "\n" +
-    "         <input ng-model=\"profileAbout.password\"\n" +
+    "         <input ng-model=\"input.password\"\n" +
     "                name=\"password\"\n" +
     "                type=\"text\"\n" +
     "                placeholder=\"password\"\n" +

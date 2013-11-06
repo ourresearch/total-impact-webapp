@@ -10,6 +10,7 @@ angular.module('security.service', [
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
     url = url || '/';
+    console.log("in security, redirectin' to " + url)
     $location.path(url);
   }
 
@@ -70,24 +71,26 @@ angular.module('security.service', [
       }
     },
 
-    noUserLoggedIn: function(){
+    currentUserHasNoEmail: function(){
       var deferred = $q.defer();
 
       service.requestCurrentUser().then(
         function(user){
-          if (user){
-            deferred.reject("userLoggedIn")
+          if (user && user.email){
+            deferred.reject("userHasAnEmail")
           }
           else {
-            deferred.resolve("true, there is no user logged in")
+            deferred.resolve("yay, the user has no email!")
           }
         }
       )
       return deferred.promise
+
     },
 
     redirectToProfile: function(){
       service.requestCurrentUser().then(function(user){
+        console.log("redirect to profile.")
         redirect("/" + user.url_slug)
       })
     },

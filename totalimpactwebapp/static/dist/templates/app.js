@@ -1092,7 +1092,7 @@ angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", functio
 
 angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-password.tpl.html",
-    "<div class=\"signup-input email-and-password\">\n" +
+    "<div class=\"signup-input email-and-password\" ng-controller=\"signupPasswordCtrl\">\n" +
     "   <div class=\"intro\"><br>Last step! Enter your email (which we never share) and pick a password:</div>\n" +
     "\n" +
     "   <div class=\"form-group email\"\n" +
@@ -1101,7 +1101,7 @@ angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "      <div class=\"controls input-group\">\n" +
     "         <span class=\"input-group-addon\"><i class=\"icon-envelope\"></i></span>\n" +
-    "         <input ng-model=\"profileAbout.email\"\n" +
+    "         <input ng-model=\"input.email\"\n" +
     "                placeholder=\"email\"\n" +
     "                name=\"email\"\n" +
     "                class=\"form-control\"\n" +
@@ -1137,7 +1137,7 @@ angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", fun
     "      <div class=\"controls input-group\">\n" +
     "         <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
     "\n" +
-    "         <input ng-model=\"profileAbout.password\"\n" +
+    "         <input ng-model=\"input.password\"\n" +
     "                name=\"password\"\n" +
     "                type=\"password\"\n" +
     "                placeholder=\"password\"\n" +
@@ -1145,7 +1145,7 @@ angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", fun
     "                class=\"form-control\"\n" +
     "                required>\n" +
     "\n" +
-    "         <input ng-model=\"profileAbout.password\"\n" +
+    "         <input ng-model=\"input.password\"\n" +
     "                name=\"password\"\n" +
     "                type=\"text\"\n" +
     "                placeholder=\"password\"\n" +

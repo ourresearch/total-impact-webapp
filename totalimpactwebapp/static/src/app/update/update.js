@@ -10,19 +10,19 @@ angular.module( 'update.update', [
     }
     var firstCheck = true
 
-    var keepPolling = function(userId, onFinish){
+    var keepPolling = function(url_slug, onFinish){
 
 
       if (firstCheck || updateStatus.numNotDone > 0) {
         firstCheck = false
         UsersProducts.query(
-          {id: userId},
+          {id: url_slug, idType:"url_slug"},
           function(resp){
             updateStatus.numDone = numDone(resp, true)
             updateStatus.numNotDone = numDone(resp, false)
             updateStatus.percentComplete = updateStatus.numDone * 100 / (updateStatus.numDone + updateStatus.numNotDone)
 
-            $timeout(function(){keepPolling(userId, onFinish)}, 500);
+            $timeout(function(){keepPolling(url_slug, onFinish)}, 500);
           })
       }
       else {
@@ -44,7 +44,7 @@ angular.module( 'update.update', [
        }
     };
 
-    var update = function(userId, onFinish){
+    var update = function(url_slug, onFinish){
       var modal = $modal.open({
         templateUrl: 'update/update-progress.tpl.html',
         controller: 'updateProgressModalCtrl',
@@ -52,7 +52,7 @@ angular.module( 'update.update', [
         keyboard: false
       });
 
-      keepPolling(userId, function(){
+      keepPolling(url_slug, function(){
         modal.close()
         onFinish()
       })
