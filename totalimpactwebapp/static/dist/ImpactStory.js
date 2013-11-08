@@ -370,7 +370,7 @@ angular.module( 'infopages', [
                       controller: 'landingPageCtrl',
                       resolve:{
                         allowed: function(security){
-                          return security.testUserAuthenticationLevel("anon")
+                          return security.testUserAuthenticationLevel("loggedIn", false)
                         }
                       }
                   })
@@ -1434,13 +1434,26 @@ angular.module( 'signup', [
 .config(['$routeProvider', function($routeProvider) {
 
   $routeProvider
-
+    .when('/signup/:url_slug/products/add', {
+            resolve:{
+              userOwnsThisProfile: function(security){
+                return security.testUserAuthenticationLevel("ownsThisProfile")
+              }
+            }
+          })
+    .when('/signup/:url_slug/password', {
+            resolve:{
+              userOwnsThisProfile: function(security){
+                return security.testUserAuthenticationLevel("ownsThisProfile")
+              }
+            }
+          })
     .when("/signup/*rest", {
       templateUrl: 'signup/signup.tpl.html',
       controller: 'signupCtrl',
       resolve:{
-        currentUserHasNoEmail: function(security){
-          return security.currentUserHasNoEmail()
+        userNotLoggedIn: function(security){
+          return security.testUserAuthenticationLevel("loggedIn", false)
         }
       }
     })
@@ -2502,15 +2515,11 @@ angular.module('security.service', [
 
 
 
-  var rejectOrResolve = function(resolve, level){
-    var deferred = $q.defer()
-    if (resolve){
-      deferred.resolve(reason)
-    }
-    else {
-      deferred.reject("not" + _.capitalize(reason))
-    }
-    return deferred.promise
+  var currentUrlSlug = function(){
+    var m = /^(\/signup)?\/(\w+)\//.exec($location.path())
+    var current_slug = (m) ? m[2] : false;
+    console.log("current slug is", current_slug)
+    return current_slug
   }
 
 
@@ -2548,7 +2557,19 @@ angular.module('security.service', [
       });
     },
 
-    testUserAuthenticationLevel: function(level){
+    testUserAuthenticationLevel: function(level, falseToNegate){
+
+      var negateIfToldTo  = function(arg){
+        return (falseToNegate === false) ? !arg : arg
+      }
+
+      var makeErrorMsg = function(msg){
+        if (falseToNegate === false) { // it was supposed to NOT be this level, but it was.
+          return msg
+        }
+        return "not" + _.capitalize(level) // it was supposed to be this level, but wasn't.
+      }
+
       var levelRules = {
         anon: function(user){
           return !user
@@ -2557,9 +2578,10 @@ angular.module('security.service', [
           return (user && user.url_slug && !user.email)
         },
         loggedIn: function(user){
-
+          return (user && user.url_slug && user.email)
         },
         ownsThisProfile: function(user){
+          return (user && user.url_slug && user.url_slug == currentUrlSlug())
 
         }
       }
@@ -2567,11 +2589,13 @@ angular.module('security.service', [
       var deferred = $q.defer()
       service.requestCurrentUser().then(
         function(user){
-          if (levelRules[level](user)){
+          var shouldResolve = negateIfToldTo(levelRules[level](user))
+
+          if (shouldResolve){
             deferred.resolve(level)
           }
           else {
-            deferred.reject("not" + _.capitalize(level))
+            deferred.reject(makeErrorMsg(level))
           }
 
         }
@@ -3089,19 +3113,16 @@ angular.module('services.routeChangeErrorHandler', [
     var handle = function(event, current, previous, rejection){
       console.log("handling route change error.", event, current, previous, rejection)
       var path = $location.path()
-      if (rejection == "notAnon"){
-        security.redirectToProfile()
-      }
-      else if (rejection == "signupFlowOutOfOrder") {
+      if (rejection == "signupFlowOutOfOrder") {
         $location.path("/signup/name")
       }
       else if (rejection == "userNotLoggedIn"){
         // do something more useful later
         $location.path("/")
       }
-      else if (rejection == "userHasAnEmail"){
-        // if you've got an email, you're done signing up and have a profile. go there.
-        $location.path("/"+security.currentUser.url_slug)
+      else if (rejection == "loggedIn"){
+        // you've got a profile, homey. go there.
+        security.redirectToProfile()
       }
       else if (rejection == "userDoesNotOwnThisProfile"){
         $location.path("/") // do something more useful later

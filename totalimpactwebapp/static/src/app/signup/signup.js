@@ -59,13 +59,26 @@ angular.module( 'signup', [
 .config(['$routeProvider', function($routeProvider) {
 
   $routeProvider
-
+    .when('/signup/:url_slug/products/add', {
+            resolve:{
+              userOwnsThisProfile: function(security){
+                return security.testUserAuthenticationLevel("ownsThisProfile")
+              }
+            }
+          })
+    .when('/signup/:url_slug/password', {
+            resolve:{
+              userOwnsThisProfile: function(security){
+                return security.testUserAuthenticationLevel("ownsThisProfile")
+              }
+            }
+          })
     .when("/signup/*rest", {
       templateUrl: 'signup/signup.tpl.html',
       controller: 'signupCtrl',
       resolve:{
-        currentUserHasNoEmail: function(security){
-          return security.currentUserHasNoEmail()
+        userNotLoggedIn: function(security){
+          return security.testUserAuthenticationLevel("loggedIn", false)
         }
       }
     })

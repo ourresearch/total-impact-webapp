@@ -10,7 +10,7 @@ angular.module( 'infopages', [
                       controller: 'landingPageCtrl',
                       resolve:{
                         allowed: function(security){
-                          return security.testUserAuthenticationLevel("anon")
+                          return security.testUserAuthenticationLevel("loggedIn", false)
                         }
                       }
                   })

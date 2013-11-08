@@ -27,15 +27,11 @@ angular.module('security.service', [
 
 
 
-  var rejectOrResolve = function(resolve, level){
-    var deferred = $q.defer()
-    if (resolve){
-      deferred.resolve(reason)
-    }
-    else {
-      deferred.reject("not" + _.capitalize(reason))
-    }
-    return deferred.promise
+  var currentUrlSlug = function(){
+    var m = /^(\/signup)?\/(\w+)\//.exec($location.path())
+    var current_slug = (m) ? m[2] : false;
+    console.log("current slug is", current_slug)
+    return current_slug
   }
 
 
@@ -73,7 +69,19 @@ angular.module('security.service', [
       });
     },
 
-    testUserAuthenticationLevel: function(level){
+    testUserAuthenticationLevel: function(level, falseToNegate){
+
+      var negateIfToldTo  = function(arg){
+        return (falseToNegate === false) ? !arg : arg
+      }
+
+      var makeErrorMsg = function(msg){
+        if (falseToNegate === false) { // it was supposed to NOT be this level, but it was.
+          return msg
+        }
+        return "not" + _.capitalize(level) // it was supposed to be this level, but wasn't.
+      }
+
       var levelRules = {
         anon: function(user){
           return !user
@@ -82,9 +90,10 @@ angular.module('security.service', [
           return (user && user.url_slug && !user.email)
         },
         loggedIn: function(user){
-
+          return (user && user.url_slug && user.email)
         },
         ownsThisProfile: function(user){
+          return (user && user.url_slug && user.url_slug == currentUrlSlug())
 
         }
       }
@@ -92,11 +101,13 @@ angular.module('security.service', [
       var deferred = $q.defer()
       service.requestCurrentUser().then(
         function(user){
-          if (levelRules[level](user)){
+          var shouldResolve = negateIfToldTo(levelRules[level](user))
+
+          if (shouldResolve){
             deferred.resolve(level)
           }
           else {
-            deferred.reject("not" + _.capitalize(level))
+            deferred.reject(makeErrorMsg(level))
           }
 
         }
