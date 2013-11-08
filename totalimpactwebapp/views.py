@@ -344,8 +344,8 @@ def user_profile(profile_id):
 @app.route("/user/<profile_id>/about", methods=['GET', 'PATCH'])
 def get_user_about(profile_id):
 
-    from time import sleep
-    sleep(1)
+    # from time import sleep
+    # sleep(1)
 
     user = get_user_for_response(
         profile_id,
@@ -370,20 +370,35 @@ def get_user_about(profile_id):
 
 #------------------ user/:userId/products -----------------
 
+@app.route("/user/<id>/products", methods=["GET"])
+def user_products_get(id):
+
+    user = get_user_for_response(id, request)
+
+    resp = user.products
+    if request.args.get("include_heading_products") in [1, "true", "True"]:
+        resp += make_genre_heading_products(resp)
+
+    return  json_resp_from_thing(resp)
+
+
 
 @app.route("/user/<id>/products", methods=["GET", "POST", "DELETE", "PATCH"])
-def user_products_view_and_modify(id):
+def user_products_modify(id):
+
+
 
     user = get_user_for_response(id, request)
     logger.debug(u"got user {user}".format(
         user=user))
 
-    if request.method == "GET":
-        resp = user.products
-        if request.args.get("include_heading_products") in [1, "true", "True"]:
-            resp += make_genre_heading_products(resp)
+    # Make sure the user is allowed to make these modifications:
+    if current_user is None:
+        abort_json(405, "You must be logged in to modify profiles.")
+    elif current_user.url_slug != user.url_slug:
+        abort_json(401, "Only profile owners can modify profiles.")
 
-    elif request.method == "POST":
+    if request.method == "POST":
         # you can't add/create stuff here, just refresh extant products.
         resp = user.refresh_products()
 

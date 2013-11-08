@@ -14,15 +14,22 @@ angular.module('services.routeChangeErrorHandler', [
     var handle = function(event, current, previous, rejection){
       console.log("handling route change error.", event, current, previous, rejection)
       var path = $location.path()
-      if (path == "/" && rejection == "userLoggedIn"){
-        $location.path("/"+security.currentUser.url_slug)
+      if (rejection == "notAnon"){
+        security.redirectToProfile()
       }
       else if (rejection == "signupFlowOutOfOrder") {
         $location.path("/signup/name")
       }
+      else if (rejection == "userNotLoggedIn"){
+        // do something more useful later
+        $location.path("/")
+      }
       else if (rejection == "userHasAnEmail"){
         // if you've got an email, you're done signing up and have a profile. go there.
         $location.path("/"+security.currentUser.url_slug)
+      }
+      else if (rejection == "userDoesNotOwnThisProfile"){
+        $location.path("/") // do something more useful later
       }
 
     }

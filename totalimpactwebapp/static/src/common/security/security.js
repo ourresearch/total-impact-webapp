@@ -25,6 +25,20 @@ angular.module('security.service', [
     loginDialog.result.then();
   }
 
+
+
+  var rejectOrResolve = function(resolve, level){
+    var deferred = $q.defer()
+    if (resolve){
+      deferred.resolve(reason)
+    }
+    else {
+      deferred.reject("not" + _.capitalize(reason))
+    }
+    return deferred.promise
+  }
+
+
   // The public API of the service
   var service = {
 
@@ -59,6 +73,38 @@ angular.module('security.service', [
       });
     },
 
+    testUserAuthenticationLevel: function(level){
+      var levelRules = {
+        anon: function(user){
+          return !user
+        },
+        partlySignedUp: function(user){
+          return (user && user.url_slug && !user.email)
+        },
+        loggedIn: function(user){
+
+        },
+        ownsThisProfile: function(user){
+
+        }
+      }
+
+      var deferred = $q.defer()
+      service.requestCurrentUser().then(
+        function(user){
+          if (levelRules[level](user)){
+            deferred.resolve(level)
+          }
+          else {
+            deferred.reject("not" + _.capitalize(level))
+          }
+
+        }
+      )
+      return deferred.promise
+    },
+
+
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
       if ( service.isAuthenticated() ) {
@@ -71,12 +117,31 @@ angular.module('security.service', [
       }
     },
 
+    userIsLoggedIn: function(){
+      var deferred = $q.defer();
+
+      service.requestCurrentUser().then(
+        function(user){
+          if (!user){
+            deferred.reject("userNotLoggedIn")
+          }
+          else {
+            deferred.resolve(user)
+          }
+        }
+      )
+      return deferred.promise
+    },
+
     currentUserHasNoEmail: function(){
       var deferred = $q.defer();
 
       service.requestCurrentUser().then(
         function(user){
-          if (user && user.email){
+          if (!user){
+            deferred.reject("userNotLoggedIn")
+          }
+          else if (user.email){
             deferred.reject("userHasAnEmail")
           }
           else {
@@ -85,8 +150,28 @@ angular.module('security.service', [
         }
       )
       return deferred.promise
-
     },
+
+    currentUserOwnsThisProfile: function(){
+      var m = /^(\/signup)?\/(\w+)\//.exec($location.path())
+      var current_slug = (m) ? m[2] : false;
+      console.log("current slug", current_slug)
+      var deferred = $q.defer()
+
+      service.requestCurrentUser().then(
+        function(user){
+          if (user && user.url_slug && user.url_slug==current_slug){
+            deferred.resolve(true)
+          }
+          else {
+            deferred.reject("userDoesNotOwnThisProfile")
+          }
+        }
+      )
+      return deferred.promise
+    },
+
+
 
     redirectToProfile: function(){
       service.requestCurrentUser().then(function(user){

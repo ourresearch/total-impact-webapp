@@ -1,3 +1,8 @@
+// setup libs outside angular-land. this may break some unit tests at some point...#problemForLater
+// Underscore string functions: https://github.com/epeli/underscore.string
+_.mixin(_.str.exports());
+
+
 angular.module('app', [
   'services.loading',
   'services.i18nNotifications',
@@ -7,7 +12,7 @@ angular.module('app', [
   'directives.crud',
   'templates.app',
   'templates.common',
-  'infopages', // comes before profile, so '/about' isn't routed as a user named About.
+  'infopages',
   'signup',
   'profileProduct',
   'profile',

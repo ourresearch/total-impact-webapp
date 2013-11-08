@@ -3,18 +3,12 @@ angular.module( 'update.update', [
   ])
   .factory("Update", function($rootScope, $location, UsersProducts, $timeout, $modal){
 
-    var updateStatus = {
-      numDone: null,
-      numNotDone: null,
-      percentComplete: null
-    }
-    var firstCheck = true
+    var updateStatus = {}
 
     var keepPolling = function(url_slug, onFinish){
 
 
-      if (firstCheck || updateStatus.numNotDone > 0) {
-        firstCheck = false
+      if (updateStatus.numNotDone > 0 || _.isNull(updateStatus.numNotDone)) {
         UsersProducts.query(
           {id: url_slug, idType:"url_slug"},
           function(resp){
@@ -45,6 +39,11 @@ angular.module( 'update.update', [
     };
 
     var update = function(url_slug, onFinish){
+      // reset the updateStatus var defined up in the factory scope.
+      updateStatus.numDone = null
+      updateStatus.numNotDone = null
+      updateStatus.percentComplete = null
+
       var modal = $modal.open({
         templateUrl: 'update/update-progress.tpl.html',
         controller: 'updateProgressModalCtrl',

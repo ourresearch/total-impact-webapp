@@ -9,12 +9,12 @@ angular.module('profile.addProducts')
     $routeProvider
       .when("/:url_slug/products/add", {
         templateUrl: 'profile/profile-add-products.tpl.html',
-        controller: 'addProductsCtrl'
-//        resolve:{
-//          currentUser: function(security){
-//            return security.currentUserHasNoEmail()
-//          }
-//        }
+        controller: 'addProductsCtrl',
+        resolve:{
+          userOwnsThisProfile: function(security){
+            return security.currentUserOwnsThisProfile()
+          }
+        }
       })
 
   }])

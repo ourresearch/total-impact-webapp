@@ -1,8 +1,13 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-06
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-08
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
  */
+// setup libs outside angular-land. this may break some unit tests at some point...#problemForLater
+// Underscore string functions: https://github.com/epeli/underscore.string
+_.mixin(_.str.exports());
+
+
 angular.module('app', [
   'services.loading',
   'services.i18nNotifications',
@@ -12,7 +17,7 @@ angular.module('app', [
   'directives.crud',
   'templates.app',
   'templates.common',
-  'infopages', // comes before profile, so '/about' isn't routed as a user named About.
+  'infopages',
   'signup',
   'profileProduct',
   'profile',
@@ -280,6 +285,7 @@ angular.module('importers.importer', [
   'services.loading',
   'resources.users',
   'resources.products',
+  'update.update',
   'profile'
 ])
 angular.module('importers.importer')
@@ -288,7 +294,7 @@ angular.module('importers.importer')
 })
 
 
-.controller('importerCtrl', function($scope, $location, Products, UserProfile, UsersProducts, Importer, Loading){
+.controller('importerCtrl', function($scope, $location, Products, UserProfile, UsersProducts, Importer, Loading, Update){
 
   var getUserSlug = function(){
     var re = /\/(\w+)\/products/
@@ -344,6 +350,7 @@ angular.module('importers.importer')
 
         // close the window
         $scope.hideImportWindow()
+        Update.showUpdate(slug, function(){$location.path("/"+slug)})
         $scope.importerHasRun = true
       }
     )
@@ -362,8 +369,8 @@ angular.module( 'infopages', [
                       templateUrl: 'infopages/landing.tpl.html',
                       controller: 'landingPageCtrl',
                       resolve:{
-                        currentUser: function(security){
-                          return security.currentUserHasNoEmail()
+                        allowed: function(security){
+                          return security.testUserAuthenticationLevel("anon")
                         }
                       }
                   })
@@ -1178,12 +1185,12 @@ angular.module('profile.addProducts')
     $routeProvider
       .when("/:url_slug/products/add", {
         templateUrl: 'profile/profile-add-products.tpl.html',
-        controller: 'addProductsCtrl'
-//        resolve:{
-//          currentUser: function(security){
-//            return security.currentUserHasNoEmail()
-//          }
-//        }
+        controller: 'addProductsCtrl',
+        resolve:{
+          userOwnsThisProfile: function(security){
+            return security.currentUserOwnsThisProfile()
+          }
+        }
       })
 
   }])
@@ -1535,18 +1542,12 @@ angular.module( 'update.update', [
   ])
   .factory("Update", function($rootScope, $location, UsersProducts, $timeout, $modal){
 
-    var updateStatus = {
-      numDone: null,
-      numNotDone: null,
-      percentComplete: null
-    }
-    var firstCheck = true
+    var updateStatus = {}
 
     var keepPolling = function(url_slug, onFinish){
 
 
-      if (firstCheck || updateStatus.numNotDone > 0) {
-        firstCheck = false
+      if (updateStatus.numNotDone > 0 || _.isNull(updateStatus.numNotDone)) {
         UsersProducts.query(
           {id: url_slug, idType:"url_slug"},
           function(resp){
@@ -1577,6 +1578,11 @@ angular.module( 'update.update', [
     };
 
     var update = function(url_slug, onFinish){
+      // reset the updateStatus var defined up in the factory scope.
+      updateStatus.numDone = null
+      updateStatus.numNotDone = null
+      updateStatus.percentComplete = null
+
       var modal = $modal.open({
         templateUrl: 'update/update-progress.tpl.html',
         controller: 'updateProgressModalCtrl',
@@ -2494,6 +2500,20 @@ angular.module('security.service', [
     loginDialog.result.then();
   }
 
+
+
+  var rejectOrResolve = function(resolve, level){
+    var deferred = $q.defer()
+    if (resolve){
+      deferred.resolve(reason)
+    }
+    else {
+      deferred.reject("not" + _.capitalize(reason))
+    }
+    return deferred.promise
+  }
+
+
   // The public API of the service
   var service = {
 
@@ -2528,6 +2548,38 @@ angular.module('security.service', [
       });
     },
 
+    testUserAuthenticationLevel: function(level){
+      var levelRules = {
+        anon: function(user){
+          return !user
+        },
+        partlySignedUp: function(user){
+          return (user && user.url_slug && !user.email)
+        },
+        loggedIn: function(user){
+
+        },
+        ownsThisProfile: function(user){
+
+        }
+      }
+
+      var deferred = $q.defer()
+      service.requestCurrentUser().then(
+        function(user){
+          if (levelRules[level](user)){
+            deferred.resolve(level)
+          }
+          else {
+            deferred.reject("not" + _.capitalize(level))
+          }
+
+        }
+      )
+      return deferred.promise
+    },
+
+
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
       if ( service.isAuthenticated() ) {
@@ -2540,12 +2592,31 @@ angular.module('security.service', [
       }
     },
 
+    userIsLoggedIn: function(){
+      var deferred = $q.defer();
+
+      service.requestCurrentUser().then(
+        function(user){
+          if (!user){
+            deferred.reject("userNotLoggedIn")
+          }
+          else {
+            deferred.resolve(user)
+          }
+        }
+      )
+      return deferred.promise
+    },
+
     currentUserHasNoEmail: function(){
       var deferred = $q.defer();
 
       service.requestCurrentUser().then(
         function(user){
-          if (user && user.email){
+          if (!user){
+            deferred.reject("userNotLoggedIn")
+          }
+          else if (user.email){
             deferred.reject("userHasAnEmail")
           }
           else {
@@ -2554,8 +2625,28 @@ angular.module('security.service', [
         }
       )
       return deferred.promise
-
     },
+
+    currentUserOwnsThisProfile: function(){
+      var m = /^(\/signup)?\/(\w+)\//.exec($location.path())
+      var current_slug = (m) ? m[2] : false;
+      console.log("current slug", current_slug)
+      var deferred = $q.defer()
+
+      service.requestCurrentUser().then(
+        function(user){
+          if (user && user.url_slug && user.url_slug==current_slug){
+            deferred.resolve(true)
+          }
+          else {
+            deferred.reject("userDoesNotOwnThisProfile")
+          }
+        }
+      )
+      return deferred.promise
+    },
+
+
 
     redirectToProfile: function(){
       service.requestCurrentUser().then(function(user){
@@ -2998,15 +3089,22 @@ angular.module('services.routeChangeErrorHandler', [
     var handle = function(event, current, previous, rejection){
       console.log("handling route change error.", event, current, previous, rejection)
       var path = $location.path()
-      if (path == "/" && rejection == "userLoggedIn"){
-        $location.path("/"+security.currentUser.url_slug)
+      if (rejection == "notAnon"){
+        security.redirectToProfile()
       }
       else if (rejection == "signupFlowOutOfOrder") {
         $location.path("/signup/name")
       }
+      else if (rejection == "userNotLoggedIn"){
+        // do something more useful later
+        $location.path("/")
+      }
       else if (rejection == "userHasAnEmail"){
         // if you've got an email, you're done signing up and have a profile. go there.
         $location.path("/"+security.currentUser.url_slug)
+      }
+      else if (rejection == "userDoesNotOwnThisProfile"){
+        $location.path("/") // do something more useful later
       }
 
     }
@@ -3954,7 +4052,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
     "            </a>\n" +
     "         </div>\n" +
-    "         <a href=\"/{{ user.about.url_slug }}\"><i class=\"icon-edit\"></i>Import products</a>\n" +
+    "         <a href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-edit\"></i>Import products</a>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +

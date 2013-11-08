@@ -9,8 +9,8 @@ angular.module( 'infopages', [
                       templateUrl: 'infopages/landing.tpl.html',
                       controller: 'landingPageCtrl',
                       resolve:{
-                        currentUser: function(security){
-                          return security.currentUserHasNoEmail()
+                        allowed: function(security){
+                          return security.testUserAuthenticationLevel("anon")
                         }
                       }
                   })

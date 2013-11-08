@@ -3,6 +3,7 @@ angular.module('importers.importer', [
   'services.loading',
   'resources.users',
   'resources.products',
+  'update.update',
   'profile'
 ])
 angular.module('importers.importer')
@@ -11,7 +12,7 @@ angular.module('importers.importer')
 })
 
 
-.controller('importerCtrl', function($scope, $location, Products, UserProfile, UsersProducts, Importer, Loading){
+.controller('importerCtrl', function($scope, $location, Products, UserProfile, UsersProducts, Importer, Loading, Update){
 
   var getUserSlug = function(){
     var re = /\/(\w+)\/products/
@@ -67,6 +68,7 @@ angular.module('importers.importer')
 
         // close the window
         $scope.hideImportWindow()
+        Update.showUpdate(slug, function(){$location.path("/"+slug)})
         $scope.importerHasRun = true
       }
     )

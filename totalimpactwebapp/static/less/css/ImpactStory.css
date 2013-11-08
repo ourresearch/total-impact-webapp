@@ -6317,8 +6317,10 @@ div.modal {
   margin: -250px 0 0 -300px;
 }
 div.modal h3 {
-  font-family: rokkitt, helvetica, arial, sans-serif;
   border-bottom: none;
+  font-weight: bolder;
+  text-align: center;
+  color: #555;
 }
 div.modal.error {
   border: 2px solid #BD362F;
@@ -7860,6 +7862,7 @@ div.signup-header ol.signup-steps li {
   display: inline-block;
   list-style-type: none;
   padding: 5px 20px;
+  color: #fff;
 }
 div.signup-header ol.signup-steps li.creating {
   display: none;
@@ -7868,11 +7871,9 @@ div.signup-header ol.signup-steps li.current {
   font-size: 20px;
   font-weight: bold;
   text-transform: uppercase;
-  color: #fff;
 }
 div.signup-header ol.signup-steps li.completed {
   opacity: .4;
-  color: #fff;
 }
 form.signup {
   background: transparent;
@@ -8375,6 +8376,9 @@ div.importers {
   bottom: 0;
   background: #eee;
   float: left;
+}
+div.importers.profile-add-products {
+  top: 60px;
 }
 div.importers div.overlay {
   position: fixed;
