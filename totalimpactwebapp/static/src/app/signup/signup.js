@@ -60,13 +60,17 @@ angular.module( 'signup', [
 
   $routeProvider
     .when('/signup/:url_slug/products/add', {
-            resolve:{
+              templateUrl: 'signup/signup.tpl.html',
+              controller: 'signupCtrl',
+              resolve:{
               userOwnsThisProfile: function(security){
                 return security.testUserAuthenticationLevel("ownsThisProfile")
               }
             }
           })
     .when('/signup/:url_slug/password', {
+            templateUrl: 'signup/signup.tpl.html',
+            controller: 'signupCtrl',
             resolve:{
               userOwnsThisProfile: function(security){
                 return security.testUserAuthenticationLevel("ownsThisProfile")
@@ -88,7 +92,6 @@ angular.module( 'signup', [
 }])
 
   .controller('signupCtrl', function($scope, Signup){
-                
     Signup.init()
 
     $scope.input = {}
@@ -99,7 +102,7 @@ angular.module( 'signup', [
     $scope.include =  Signup.getTemplatePath();
     $scope.nav = { // defined as an object so that controllers in child scopes can override...
       goToNextStep: function(){
-        console.log("go to next step!")
+        console.log("we should be overriding me.")
       }
     }
 

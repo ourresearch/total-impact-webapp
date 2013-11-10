@@ -38,6 +38,7 @@ angular.module('importers.allTheImporters')
       displayName: "Google Scholar",
       inputType: "file",
       inputNeeded: "BibTeX file",
+      endpoint: "bibtex",
       url: 'http://scholar.google.com/citations',
       descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
       extra: '<h3>How to import your Google Scholar profile:</h3>'

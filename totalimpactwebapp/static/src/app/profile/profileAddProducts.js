@@ -19,5 +19,6 @@ angular.module('profile.addProducts')
 
   }])
   .controller("addProductsCtrl", function($scope, $routeParams, AllTheImporters){
+    $scope.redirectAfterImport = true
     $scope.importers = AllTheImporters.get()
   })

@@ -25,7 +25,7 @@ angular.module('services.routeChangeErrorHandler', [
         // you've got a profile, homey. go there.
         security.redirectToProfile()
       }
-      else if (rejection == "userDoesNotOwnThisProfile"){
+      else if (rejection == "notOwnsThisProfile"){
         $location.path("/") // do something more useful later
       }
 

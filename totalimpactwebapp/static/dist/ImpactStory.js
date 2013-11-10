@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-08
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-10
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -140,6 +140,7 @@ angular.module('importers.allTheImporters')
       displayName: "Google Scholar",
       inputType: "file",
       inputNeeded: "BibTeX file",
+      endpoint: "bibtex",
       url: 'http://scholar.google.com/citations',
       descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
       extra: '<h3>How to import your Google Scholar profile:</h3>'
@@ -304,6 +305,7 @@ angular.module('importers.importer')
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
       $scope.importWindowOpen = true;
+      $scope.importer.input = null  // may have been used before; clear it.
     }
   }
   $scope.hideImportWindow = function(){
@@ -336,7 +338,7 @@ angular.module('importers.importer')
         }
 
         // store our new products in this importer's scope, so we can display count to user
-        console.log("here are the tiids:", tiids);
+        console.log("importer got us some tiids:", tiids);
         $scope.products = tiids;
 
         // add the new products to the user's profile on the server
@@ -350,13 +352,30 @@ angular.module('importers.importer')
 
         // close the window
         $scope.hideImportWindow()
-        Update.showUpdate(slug, function(){$location.path("/"+slug)})
+        if ($scope.redirectAfterImport) { // inherited from parent scope
+          Update.showUpdate(slug, function(){$location.path("/"+slug)})
+        }
         $scope.importerHasRun = true
       }
     )
   }
   Loading.finish()
 })
+  .directive("ngFileSelect",function(){
+    return {
+      link: function($scope,el){
+        el.bind("change", function(e){
+          var reader = new FileReader()
+          reader.onload = function(e){
+            $scope.importer.input = reader.result
+          }
+
+          var file = (e.srcElement || e.target).files[0];
+          reader.readAsText(file)
+        })
+      }
+    }
+  })
 
 angular.module( 'infopages', [
     'security'
@@ -1195,6 +1214,7 @@ angular.module('profile.addProducts')
 
   }])
   .controller("addProductsCtrl", function($scope, $routeParams, AllTheImporters){
+    $scope.redirectAfterImport = true
     $scope.importers = AllTheImporters.get()
   })
 angular.module("settings.pageDescriptions", [])
@@ -1435,13 +1455,17 @@ angular.module( 'signup', [
 
   $routeProvider
     .when('/signup/:url_slug/products/add', {
-            resolve:{
+              templateUrl: 'signup/signup.tpl.html',
+              controller: 'signupCtrl',
+              resolve:{
               userOwnsThisProfile: function(security){
                 return security.testUserAuthenticationLevel("ownsThisProfile")
               }
             }
           })
     .when('/signup/:url_slug/password', {
+            templateUrl: 'signup/signup.tpl.html',
+            controller: 'signupCtrl',
             resolve:{
               userOwnsThisProfile: function(security){
                 return security.testUserAuthenticationLevel("ownsThisProfile")
@@ -1463,7 +1487,6 @@ angular.module( 'signup', [
 }])
 
   .controller('signupCtrl', function($scope, Signup){
-                
     Signup.init()
 
     $scope.input = {}
@@ -1474,7 +1497,7 @@ angular.module( 'signup', [
     $scope.include =  Signup.getTemplatePath();
     $scope.nav = { // defined as an object so that controllers in child scopes can override...
       goToNextStep: function(){
-        console.log("go to next step!")
+        console.log("we should be overriding me.")
       }
     }
 
@@ -3124,7 +3147,7 @@ angular.module('services.routeChangeErrorHandler', [
         // you've got a profile, homey. go there.
         security.redirectToProfile()
       }
-      else if (rejection == "userDoesNotOwnThisProfile"){
+      else if (rejection == "notOwnsThisProfile"){
         $location.path("/") // do something more useful later
       }
 
@@ -3485,7 +3508,8 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "            <div class=\"importer-input\" ng-switch on=\"importer.inputType\">\n" +
     "               <input class=\"form-control input-lg\" ng-model=\"importer.input\" type=\"text\" ng-switch-when=\"username\" placeholder=\"{{ importer.placeholder }}\">\n" +
     "               <textarea placeholder=\"{{ importer.placeholder }}\" class=\"form-control\" ng-model=\"importer.input\" ng-switch-when=\"idList\"></textarea>\n" +
-    "               <!-- todo: add file upload, see https://github.com/danialfarid/angular-file-upload -->\n" +
+    "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select>\n" +
+    "\n" +
     "            </div>\n" +
     "         </div>\n" +
     "\n" +

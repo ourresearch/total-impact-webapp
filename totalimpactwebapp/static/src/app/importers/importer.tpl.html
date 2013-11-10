@@ -40,7 +40,8 @@
             <div class="importer-input" ng-switch on="importer.inputType">
                <input class="form-control input-lg" ng-model="importer.input" type="text" ng-switch-when="username" placeholder="{{ importer.placeholder }}">
                <textarea placeholder="{{ importer.placeholder }}" class="form-control" ng-model="importer.input" ng-switch-when="idList"></textarea>
-               <!-- todo: add file upload, see https://github.com/danialfarid/angular-file-upload -->
+               <input type="file" ng-switch-when="file" size="300" ng-file-select>
+
             </div>
          </div>
 

@@ -160,7 +160,8 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "            <div class=\"importer-input\" ng-switch on=\"importer.inputType\">\n" +
     "               <input class=\"form-control input-lg\" ng-model=\"importer.input\" type=\"text\" ng-switch-when=\"username\" placeholder=\"{{ importer.placeholder }}\">\n" +
     "               <textarea placeholder=\"{{ importer.placeholder }}\" class=\"form-control\" ng-model=\"importer.input\" ng-switch-when=\"idList\"></textarea>\n" +
-    "               <!-- todo: add file upload, see https://github.com/danialfarid/angular-file-upload -->\n" +
+    "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select>\n" +
+    "\n" +
     "            </div>\n" +
     "         </div>\n" +
     "\n" +

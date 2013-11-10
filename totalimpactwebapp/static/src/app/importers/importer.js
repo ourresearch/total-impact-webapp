@@ -22,6 +22,7 @@ angular.module('importers.importer')
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
       $scope.importWindowOpen = true;
+      $scope.importer.input = null  // may have been used before; clear it.
     }
   }
   $scope.hideImportWindow = function(){
@@ -54,7 +55,7 @@ angular.module('importers.importer')
         }
 
         // store our new products in this importer's scope, so we can display count to user
-        console.log("here are the tiids:", tiids);
+        console.log("importer got us some tiids:", tiids);
         $scope.products = tiids;
 
         // add the new products to the user's profile on the server
@@ -68,10 +69,27 @@ angular.module('importers.importer')
 
         // close the window
         $scope.hideImportWindow()
-        Update.showUpdate(slug, function(){$location.path("/"+slug)})
+        if ($scope.redirectAfterImport) { // inherited from parent scope
+          Update.showUpdate(slug, function(){$location.path("/"+slug)})
+        }
         $scope.importerHasRun = true
       }
     )
   }
   Loading.finish()
 })
+  .directive("ngFileSelect",function(){
+    return {
+      link: function($scope,el){
+        el.bind("change", function(e){
+          var reader = new FileReader()
+          reader.onload = function(e){
+            $scope.importer.input = reader.result
+          }
+
+          var file = (e.srcElement || e.target).files[0];
+          reader.readAsText(file)
+        })
+      }
+    }
+  })
