@@ -13,7 +13,7 @@ angular.module('resources.users',['ngResource'])
     return $resource(
       "/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",
       {
-        idType: "userid",
+        idType: "url_slug",
         includeHeadingProducts: false
       },
       {
@@ -22,6 +22,10 @@ angular.module('resources.users',['ngResource'])
         },
         patch: {
           method: "PATCH"
+        },
+        delete: {
+          method: "DELETE",
+          headers: {'Content-Type': 'application/json'}
         }
       }
     )
@@ -31,7 +35,7 @@ angular.module('resources.users',['ngResource'])
     return $resource(
       "/user/:id/product/:tiid?id_type=:idType",
       {
-        idType: "userid"
+        idType: "url_slug"
       },
       {
         update:{
@@ -45,7 +49,7 @@ angular.module('resources.users',['ngResource'])
 
     return $resource(
       "/user/:id/about?id_type=:idType",
-      {idType: "userid"},
+      {idType: "url_slug"},
       {
         patch:{
           method: "PATCH",
@@ -59,6 +63,6 @@ angular.module('resources.users',['ngResource'])
 
     return $resource(
       "/user/:id/password?id_type=:idType",
-      {idType: "userid"}
+      {idType: "url_slug"}
     )
   })

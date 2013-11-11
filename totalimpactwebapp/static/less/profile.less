@@ -13,9 +13,8 @@ div.loading {
       span.text { margin-left: 10px;}
    }
 }
-
-div.profile-add-products {
-   div.add-products-header { // probably going to refactor this out, will use elsewhere.
+div.profile-subpage {
+   div.profile-subpage-header {
       height:  70px;
       padding-top: 24px;
       background:  #555;
@@ -25,17 +24,19 @@ div.profile-add-products {
       div.wrapper {
          position: relative;
          a {
-            position: absolute;
             top:  5px;
-            left:  0px;
-            float:left;
-            i {margin-right: 5px; font-size: 80%}
-            font-weight: lighter;
             color:  #fff;
             font-size: 15px;
+            i {margin-right: 5px;}
             &:hover {
                text-decoration: none;
-               color:  #fff;
+            }
+            &.back-to-profile {
+               position: absolute;
+               left:  0px;
+               float:left;
+               font-weight: lighter;
+               i { font-size: 80%;}
             }
          }
          h2 {
@@ -47,12 +48,16 @@ div.profile-add-products {
          }
       }
    }
-   div.importers {
-      top:  130px; // override the top margin used in the /signup flow
-      margin-bottom: 0;
-      padding-bottom: 0;
-      background: #fff;
+   &.profile-add-products {
+
+      div.importers {
+         top:  130px; // override the top margin used in the /signup flow
+         margin-bottom: 0;
+         padding-bottom: 0;
+         background: #fff;
+      }
    }
+
 }
 
 div.profile-header {

@@ -7151,7 +7151,7 @@ div.loading div.working {
 div.loading div.working span.text {
   margin-left: 10px;
 }
-div.profile-add-products div.add-products-header {
+div.profile-subpage div.profile-subpage-header {
   height: 70px;
   padding-top: 24px;
   background: #555;
@@ -7159,34 +7159,37 @@ div.profile-add-products div.add-products-header {
   margin-top: 60px;
   color: #eee;
 }
-div.profile-add-products div.add-products-header div.wrapper {
+div.profile-subpage div.profile-subpage-header div.wrapper {
   position: relative;
 }
-div.profile-add-products div.add-products-header div.wrapper a {
-  position: absolute;
+div.profile-subpage div.profile-subpage-header div.wrapper a {
   top: 5px;
-  left: 0px;
-  float: left;
-  font-weight: lighter;
   color: #fff;
   font-size: 15px;
 }
-div.profile-add-products div.add-products-header div.wrapper a i {
+div.profile-subpage div.profile-subpage-header div.wrapper a i {
   margin-right: 5px;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper a:hover {
+  text-decoration: none;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper a.back-to-profile {
+  position: absolute;
+  left: 0px;
+  float: left;
+  font-weight: lighter;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper a.back-to-profile i {
   font-size: 80%;
 }
-div.profile-add-products div.add-products-header div.wrapper a:hover {
-  text-decoration: none;
-  color: #fff;
-}
-div.profile-add-products div.add-products-header div.wrapper h2 {
+div.profile-subpage div.profile-subpage-header div.wrapper h2 {
   text-align: center;
   font-size: 24px;
   padding: 0;
   width: 70%;
   margin: 0 auto;
 }
-div.profile-add-products div.importers {
+div.profile-subpage.profile-add-products div.importers {
   top: 130px;
   margin-bottom: 0;
   padding-bottom: 0;
@@ -7716,20 +7719,11 @@ div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.m
   float: right;
 }
 div.product-page {
-  margin-top: 80px;
   min-height: 500px;
 }
-div.product-page div.return-to-profile a {
-  color: #999;
-  font-weight: bold;
-  margin-left: -20px;
-}
-div.product-page div.return-to-profile a i {
-  margin-right: 2px;
-}
-div.product-page div.return-to-profile a:hover {
-  text-decoration: none;
-  color: #777;
+div.product-page div.header a.delete-product {
+  position: absolute;
+  right: 16px;
 }
 div.product-page .product {
   width: 100%;

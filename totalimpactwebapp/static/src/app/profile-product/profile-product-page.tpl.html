@@ -1,22 +1,25 @@
-<div class="product-page">
-   <div class="wrapper">
-      <div class="return-to-profile">
-         <a href="/{{ userSlug }}" ng-show="profileAbout.about">
-            <i class="icon-chevron-left"></i>
-            Return to {{ profileAbout.about.given_name }}
-            {{ profileAbout.about.surname }}'s profile
+<div class="product-page profile-subpage">
+   <div class="header profile-subpage-header product-page-header">
+      <div class="wrapper">
+         <a back-to-profile></a>
+         <a class="delete-product"
+            ng-click="deleteProduct()"
+            tooltip="Remove this product from your profile."
+            tooltip-placement="bottom">
+            <i class="icon-trash"></i>
+            Delete product
          </a>
       </div>
-      <div class="product">
+   </div>
+   <div class="product">
+      <div class="wrapper">
          <div class="working" ng-show="loading.is()">
             <i class="icon-refresh icon-spin"></i>
             <span class="text">Loading product...</span>
          </div>
 
-
          <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
          <div class="metric-details" ng-include="'product/metrics-table.tpl.html'"></div>
       </div>
-
    </div>
 </div>

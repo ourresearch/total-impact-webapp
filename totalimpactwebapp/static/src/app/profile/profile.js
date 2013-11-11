@@ -99,7 +99,7 @@ angular.module("profile", [
    return {
      restrict: 'A',
      replace: true,
-     template:"<a ng-show='url_slug' href='/{{ url_slug }}'><i class='icon-chevron-left'></i>back to profile</a>",
+     template:"<a ng-show='url_slug' class='back-to-profile' href='/{{ url_slug }}'><i class='icon-chevron-left'></i>back to profile</a>",
      link: function($scope,el){
        var re = /^\/(\w+)\/\w+/
        var m = re.exec($location.path())

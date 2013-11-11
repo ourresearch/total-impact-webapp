@@ -1064,7 +1064,7 @@ angular.module("profileProduct", [
 
   }])
 
-  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $modal, security, UsersProduct, UsersAbout, Product, Loading) {
+  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $location, $modal, security, UsersProduct, UsersProducts, Product, Loading) {
 
     var slug = $routeParams.url_slug
     Loading.start()
@@ -1072,25 +1072,35 @@ angular.module("profileProduct", [
     $scope.userSlug = slug
     $scope.loading = Loading
 
-    $scope.profileAbout = UsersAbout.get({
-        id: slug,
-        idType: "url_slug"
-    })
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
+    }
+    $scope.deleteProduct = function(){
+      security.redirectToProfile()
+
+      // do the deletion in the background, without a progress spinner...
+      UsersProducts.delete(
+        {id: slug, idType:"url_slug"},  // the url
+        {"tiids": [$routeParams.tiid]},  // the body data
+        function(){
+          console.log("finished deleting", $routeParams.tiid)
+        }
+      )
     }
 
 
     $scope.product = UsersProduct.get({
       id: slug,
-      tiid: $routeParams.tiid,
-      idType: "url_slug"
+      tiid: $routeParams.tiid
     },
     function(data){
       console.log("data", data)
       $scope.biblio = Product.makeBiblio(data)
       $scope.metrics = Product.makeMetrics(data)
       Loading.finish()
+    },
+    function(data){
+      $location.path("/"+slug) // replace this with "product not found" message...
     }
     )
   })
@@ -1198,7 +1208,7 @@ angular.module("profile", [
    return {
      restrict: 'A',
      replace: true,
-     template:"<a ng-show='url_slug' href='/{{ url_slug }}'><i class='icon-chevron-left'></i>back to profile</a>",
+     template:"<a ng-show='url_slug' class='back-to-profile' href='/{{ url_slug }}'><i class='icon-chevron-left'></i>back to profile</a>",
      link: function($scope,el){
        var re = /^\/(\w+)\/\w+/
        var m = re.exec($location.path())
@@ -2267,7 +2277,7 @@ angular.module('resources.users',['ngResource'])
     return $resource(
       "/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",
       {
-        idType: "userid",
+        idType: "url_slug",
         includeHeadingProducts: false
       },
       {
@@ -2276,6 +2286,10 @@ angular.module('resources.users',['ngResource'])
         },
         patch: {
           method: "PATCH"
+        },
+        delete: {
+          method: "DELETE",
+          headers: {'Content-Type': 'application/json'}
         }
       }
     )
@@ -2285,7 +2299,7 @@ angular.module('resources.users',['ngResource'])
     return $resource(
       "/user/:id/product/:tiid?id_type=:idType",
       {
-        idType: "userid"
+        idType: "url_slug"
       },
       {
         update:{
@@ -2299,7 +2313,7 @@ angular.module('resources.users',['ngResource'])
 
     return $resource(
       "/user/:id/about?id_type=:idType",
-      {idType: "userid"},
+      {idType: "url_slug"},
       {
         patch:{
           method: "PATCH",
@@ -2313,7 +2327,7 @@ angular.module('resources.users',['ngResource'])
 
     return $resource(
       "/user/:id/password?id_type=:idType",
-      {idType: "userid"}
+      {idType: "url_slug"}
     )
   })
 
@@ -4051,34 +4065,37 @@ angular.module("profile-product/percentilesInfoModal.tpl.html", []).run(["$templ
 
 angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/profile-product-page.tpl.html",
-    "<div class=\"product-page\">\n" +
-    "   <div class=\"wrapper\">\n" +
-    "      <div class=\"return-to-profile\">\n" +
-    "         <a href=\"/{{ userSlug }}\" ng-show=\"profileAbout.about\">\n" +
-    "            <i class=\"icon-chevron-left\"></i>\n" +
-    "            Return to {{ profileAbout.about.given_name }}\n" +
-    "            {{ profileAbout.about.surname }}'s profile\n" +
+    "<div class=\"product-page profile-subpage\">\n" +
+    "   <div class=\"header profile-subpage-header product-page-header\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <a back-to-profile></a>\n" +
+    "         <a class=\"delete-product\"\n" +
+    "            ng-click=\"deleteProduct()\"\n" +
+    "            tooltip=\"Remove this product from your profile.\"\n" +
+    "            tooltip-placement=\"bottom\">\n" +
+    "            <i class=\"icon-trash\"></i>\n" +
+    "            Delete product\n" +
     "         </a>\n" +
     "      </div>\n" +
-    "      <div class=\"product\">\n" +
+    "   </div>\n" +
+    "   <div class=\"product\">\n" +
+    "      <div class=\"wrapper\">\n" +
     "         <div class=\"working\" ng-show=\"loading.is()\">\n" +
     "            <i class=\"icon-refresh icon-spin\"></i>\n" +
     "            <span class=\"text\">Loading product...</span>\n" +
     "         </div>\n" +
     "\n" +
-    "\n" +
     "         <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
     "         <div class=\"metric-details\" ng-include=\"'product/metrics-table.tpl.html'\"></div>\n" +
     "      </div>\n" +
-    "\n" +
     "   </div>\n" +
     "</div>");
 }]);
 
 angular.module("profile/profile-add-products.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile-add-products.tpl.html",
-    "<div class=\"profile-add-products\" >\n" +
-    "   <div class=\"add-products-header\">\n" +
+    "<div class=\"profile-add-products profile-subpage\" >\n" +
+    "   <div class=\"add-products-header profile-subpage-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
     "         <h2 class=\"instr\">Select a source to import from</h2>\n" +

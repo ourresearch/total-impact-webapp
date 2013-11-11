@@ -681,34 +681,37 @@ angular.module("profile-product/percentilesInfoModal.tpl.html", []).run(["$templ
 
 angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/profile-product-page.tpl.html",
-    "<div class=\"product-page\">\n" +
-    "   <div class=\"wrapper\">\n" +
-    "      <div class=\"return-to-profile\">\n" +
-    "         <a href=\"/{{ userSlug }}\" ng-show=\"profileAbout.about\">\n" +
-    "            <i class=\"icon-chevron-left\"></i>\n" +
-    "            Return to {{ profileAbout.about.given_name }}\n" +
-    "            {{ profileAbout.about.surname }}'s profile\n" +
+    "<div class=\"product-page profile-subpage\">\n" +
+    "   <div class=\"header profile-subpage-header product-page-header\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <a back-to-profile></a>\n" +
+    "         <a class=\"delete-product\"\n" +
+    "            ng-click=\"deleteProduct()\"\n" +
+    "            tooltip=\"Remove this product from your profile.\"\n" +
+    "            tooltip-placement=\"bottom\">\n" +
+    "            <i class=\"icon-trash\"></i>\n" +
+    "            Delete product\n" +
     "         </a>\n" +
     "      </div>\n" +
-    "      <div class=\"product\">\n" +
+    "   </div>\n" +
+    "   <div class=\"product\">\n" +
+    "      <div class=\"wrapper\">\n" +
     "         <div class=\"working\" ng-show=\"loading.is()\">\n" +
     "            <i class=\"icon-refresh icon-spin\"></i>\n" +
     "            <span class=\"text\">Loading product...</span>\n" +
     "         </div>\n" +
     "\n" +
-    "\n" +
     "         <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
     "         <div class=\"metric-details\" ng-include=\"'product/metrics-table.tpl.html'\"></div>\n" +
     "      </div>\n" +
-    "\n" +
     "   </div>\n" +
     "</div>");
 }]);
 
 angular.module("profile/profile-add-products.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile-add-products.tpl.html",
-    "<div class=\"profile-add-products\" >\n" +
-    "   <div class=\"add-products-header\">\n" +
+    "<div class=\"profile-add-products profile-subpage\" >\n" +
+    "   <div class=\"add-products-header profile-subpage-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
     "         <h2 class=\"instr\">Select a source to import from</h2>\n" +

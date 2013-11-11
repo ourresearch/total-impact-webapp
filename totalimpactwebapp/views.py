@@ -403,9 +403,7 @@ def user_products_modify(id):
         resp = user.refresh_products()
 
     elif request.method == "PATCH":
-        print "got a request to add products to the user's profile."
         tiids_to_add = request.json.get("tiids")
-        print "adding tiids", tiids_to_add
         resp = {"products": user.add_products(tiids_to_add)}
 
     elif request.method == "DELETE":
@@ -423,7 +421,10 @@ def user_products_modify(id):
 def user_product(user_id, tiid):
 
     user = get_user_for_response(user_id, request)
-    requested_product = [product for product in user.products if product["_id"] == tiid][0]
+    try:
+        requested_product = [product for product in user.products if product["_id"] == tiid][0]
+    except IndexError:
+        abort_json(404, "That product doesn't exist.")
 
     return json_resp_from_thing(requested_product)
 

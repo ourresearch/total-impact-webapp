@@ -174,10 +174,11 @@ class User(db.Model):
         return add_products_to_user(self.id, tiids_to_add, db)
 
     def delete_products(self, tiids_to_delete):
-        return delete_products_from_core_collection(self.collection_id, tiids_to_delete)
+        delete_products_from_user(self.id, tiids_to_delete, db)
+        return {"deleted_tiids": tiids_to_delete}
 
     def refresh_products(self):
-        return refresh_products_from_core_collection(self.collection_id)
+        raise NotImplementedError
 
 
 
@@ -224,12 +225,12 @@ def get_products_from_core(tiids):
     query = u"{core_api_root}/v1/products?api_admin_key={api_admin_key}".format(
         core_api_root=g.roots["api"],
         api_admin_key=os.getenv("API_ADMIN_KEY")
-    )    
+    )
     logger.debug(u"in get_products_from_core with query {query}".format(
         query=query))
 
-    r = requests.post(query, 
-            data=json.dumps({"tiids": tiids}), 
+    r = requests.post(query,
+            data=json.dumps({"tiids": tiids}),
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
     products = r.json()["products"]
@@ -251,52 +252,30 @@ def add_products_to_user(user_id, tiids, db):
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
         logger.warning(u"Fails Integrity check in add_products_to_user for {user_id}, rolling back.  Message: {message}".format(
-            user_id=user_id, 
+            user_id=user_id,
             message=e.message))
 
     return tiids
 
 
-def add_products_to_core_collection(collection_id, tiids_to_add):
-    query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
-        core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_ADMIN_KEY"),
-        collection_id=collection_id
-    )
+def delete_products_from_user(user_id, tiids_to_delete, db):
+    user_object = User.query.get(user_id)
+    db.session.merge(user_object)
 
-    r = requests.put(query,
-            data=json.dumps({"tiids": tiids_to_add}),
-            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+    for user_tiid_obj in user_object.tiid_links:
+        if user_tiid_obj.tiid in tiids_to_delete:
+            user_object.tiid_links.remove(user_tiid_obj)
 
-    return r.json()
+    try:
+        db.session.commit()
+    except (IntegrityError, FlushError) as e:
+        db.session.rollback()
+        logger.warning(u"Fails Integrity check in delete_products_from_user for {user_id}, rolling back.  Message: {message}".format(
+            user_id=user_id,
+            message=e.message))
 
+    return True
 
-def delete_products_from_core_collection(collection_id, tiids_to_delete):
-    query = "{core_api_root}/v1/collection/{collection_id}/items?api_admin_key={api_admin_key}".format(
-        core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_ADMIN_KEY"),
-        collection_id=collection_id
-    )
-    r = requests.post(query, 
-            params={"http_method": "DELETE"}, 
-            data=json.dumps({"tiids": tiids_to_delete}), 
-            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-
-    return r.json()
-
-
-def refresh_products_from_core_collection(collection_id):
-    query = "{core_api_root}/v1/collection/{collection_id}?api_admin_key={api_admin_key}".format(
-        core_api_root=g.roots["api"],
-        api_admin_key=os.getenv("API_ADMIN_KEY"),
-        collection_id=collection_id
-    )
-    r = requests.post(
-        query,
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
-    )
-
-    return r.json()
 
 
 def make_collection_for_user(user, alias_tiids, prepped_request):
