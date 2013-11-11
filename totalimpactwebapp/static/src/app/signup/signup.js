@@ -38,7 +38,8 @@ angular.module( 'signup', [
 
     return {
       init: function(){
-        $rootScope.showHeaderAndFooter = false;
+        $rootScope.showHeader = false;
+        $rootScope.showFooter = false;
       },
       signupSteps: function(){
         return signupSteps;

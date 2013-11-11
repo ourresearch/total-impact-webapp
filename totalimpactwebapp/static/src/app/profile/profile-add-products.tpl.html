@@ -1,9 +1,17 @@
-<div class="profile-add-products importers" ng-controller="addProductsCtrl">
+<div class="profile-add-products" >
+   <div class="add-products-header">
+      <div class="wrapper">
+         <a back-to-profile></a>
+         <h2 class="instr">Select a source to import from</h2>
+      </div>
+   </div>
 
-   <div class="importer"
-        ng-repeat="importer in importers"
-        ng-controller="importerCtrl"
-        ng-include="'importers/importer.tpl.html'">
+   <div class="importers" ng-controller="addProductsCtrl">
+      <div class="importer"
+           ng-repeat="importer in importers"
+           ng-controller="importerCtrl"
+           ng-include="'importers/importer.tpl.html'">
+      </div>
    </div>
 
 </div>

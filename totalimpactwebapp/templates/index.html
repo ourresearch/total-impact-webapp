@@ -65,12 +65,12 @@
 
 <div class="staging-warning"><div class="content"><span>staging, yo</span></div></div>
 
-<div ng-include="'header.tpl.html'" ng-show="showHeaderAndFooter"></div>
+<div ng-include="'header.tpl.html'"></div>
 <div ng-include="'notifications.tpl.html'" class="container-fluid" ng-show="notifications.getCurrent().length"></div>
 <div id="container">
    <div ng-view class="main-view"></div>
 </div>
-<div ng-include="'footer.tpl.html'" ng-show="showHeaderAndFooter"></div>
+<div ng-include="'footer.tpl.html'"></div>
 
 
 

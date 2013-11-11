@@ -58,6 +58,9 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.notifications = i18nNotifications;
   $scope.loading = Loading;
   $rootScope.showHeaderAndFooter = true;
+  $rootScope.showFooter = true
+  $rootScope.showHeader = true
+
 
   $scope.removeNotification = function (notification) {
     i18nNotifications.remove(notification);
@@ -69,7 +72,8 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     UservoiceWidget.updateTabPosition($location.path())
-    $rootScope.showHeaderAndFooter = true;
+    $rootScope.showHeader = true;
+    $rootScope.showFooter = true;
   })
 
 });

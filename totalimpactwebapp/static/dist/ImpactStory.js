@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-10
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-11
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -63,6 +63,9 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.notifications = i18nNotifications;
   $scope.loading = Loading;
   $rootScope.showHeaderAndFooter = true;
+  $rootScope.showFooter = true
+  $rootScope.showHeader = true
+
 
   $scope.removeNotification = function (notification) {
     i18nNotifications.remove(notification);
@@ -74,7 +77,8 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     UservoiceWidget.updateTabPosition($location.path())
-    $rootScope.showHeaderAndFooter = true;
+    $rootScope.showHeader = true;
+    $rootScope.showFooter = true;
   })
 
 });
@@ -1189,7 +1193,23 @@ angular.module("profile", [
       idType: "url_slug"
     });
 
-});
+})
+  .directive("backToProfile",function($location){
+   return {
+     restrict: 'A',
+     replace: true,
+     template:"<a ng-show='url_slug' href='/{{ url_slug }}'><i class='icon-chevron-left'></i>back to profile</a>",
+     link: function($scope,el){
+       var re = /^\/(\w+)\/\w+/
+       var m = re.exec($location.path())
+       $scope.url_slug = null
+       if (m){
+          $scope.url_slug = m[1]
+       }
+     }
+   }
+  })
+
 
 
 
@@ -1213,7 +1233,8 @@ angular.module('profile.addProducts')
       })
 
   }])
-  .controller("addProductsCtrl", function($scope, $routeParams, AllTheImporters){
+  .controller("addProductsCtrl", function($scope, $rootScope, $routeParams, AllTheImporters){
+    $rootScope.showFooter = false
     $scope.redirectAfterImport = true
     $scope.importers = AllTheImporters.get()
   })
@@ -1433,7 +1454,8 @@ angular.module( 'signup', [
 
     return {
       init: function(){
-        $rootScope.showHeaderAndFooter = false;
+        $rootScope.showHeader = false;
+        $rootScope.showFooter = false;
       },
       signupSteps: function(){
         return signupSteps;
@@ -3350,7 +3372,7 @@ angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importer
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
-    "<div id=\"footer\">\n" +
+    "<div id=\"footer\" ng-show=\"showFooter\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -3410,7 +3432,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header\">\n" +
+    "<div class=\"main-header\" ng-show=\"showHeader\">\n" +
     "   <div class=\"navbar site-nav\">\n" +
     "      <div class=\"navbar-inner\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -4055,12 +4077,20 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
 
 angular.module("profile/profile-add-products.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile-add-products.tpl.html",
-    "<div class=\"profile-add-products importers\" ng-controller=\"addProductsCtrl\">\n" +
+    "<div class=\"profile-add-products\" >\n" +
+    "   <div class=\"add-products-header\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <a back-to-profile></a>\n" +
+    "         <h2 class=\"instr\">Select a source to import from</h2>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
     "\n" +
-    "   <div class=\"importer\"\n" +
-    "        ng-repeat=\"importer in importers\"\n" +
-    "        ng-controller=\"importerCtrl\"\n" +
-    "        ng-include=\"'importers/importer.tpl.html'\">\n" +
+    "   <div class=\"importers\" ng-controller=\"addProductsCtrl\">\n" +
+    "      <div class=\"importer\"\n" +
+    "           ng-repeat=\"importer in importers\"\n" +
+    "           ng-controller=\"importerCtrl\"\n" +
+    "           ng-include=\"'importers/importer.tpl.html'\">\n" +
+    "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "</div>");

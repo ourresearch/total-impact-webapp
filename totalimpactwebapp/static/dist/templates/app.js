@@ -2,7 +2,7 @@ angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importer
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
-    "<div id=\"footer\">\n" +
+    "<div id=\"footer\" ng-show=\"showFooter\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -62,7 +62,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header\">\n" +
+    "<div class=\"main-header\" ng-show=\"showHeader\">\n" +
     "   <div class=\"navbar site-nav\">\n" +
     "      <div class=\"navbar-inner\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -707,12 +707,20 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
 
 angular.module("profile/profile-add-products.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile-add-products.tpl.html",
-    "<div class=\"profile-add-products importers\" ng-controller=\"addProductsCtrl\">\n" +
+    "<div class=\"profile-add-products\" >\n" +
+    "   <div class=\"add-products-header\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <a back-to-profile></a>\n" +
+    "         <h2 class=\"instr\">Select a source to import from</h2>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
     "\n" +
-    "   <div class=\"importer\"\n" +
-    "        ng-repeat=\"importer in importers\"\n" +
-    "        ng-controller=\"importerCtrl\"\n" +
-    "        ng-include=\"'importers/importer.tpl.html'\">\n" +
+    "   <div class=\"importers\" ng-controller=\"addProductsCtrl\">\n" +
+    "      <div class=\"importer\"\n" +
+    "           ng-repeat=\"importer in importers\"\n" +
+    "           ng-controller=\"importerCtrl\"\n" +
+    "           ng-include=\"'importers/importer.tpl.html'\">\n" +
+    "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "</div>");

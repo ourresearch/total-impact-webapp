@@ -18,7 +18,8 @@ angular.module('profile.addProducts')
       })
 
   }])
-  .controller("addProductsCtrl", function($scope, $routeParams, AllTheImporters){
+  .controller("addProductsCtrl", function($scope, $rootScope, $routeParams, AllTheImporters){
+    $rootScope.showFooter = false
     $scope.redirectAfterImport = true
     $scope.importers = AllTheImporters.get()
   })

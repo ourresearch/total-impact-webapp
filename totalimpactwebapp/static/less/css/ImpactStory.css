@@ -6167,7 +6167,7 @@ body {
   color: #333;
 }
 body div#container {
-  min-height: 800px;
+  min-height: 600px;
 }
 body div#namechange {
   font-size: 18px;
@@ -7150,6 +7150,47 @@ div.loading div.working {
 }
 div.loading div.working span.text {
   margin-left: 10px;
+}
+div.profile-add-products div.add-products-header {
+  height: 70px;
+  padding-top: 24px;
+  background: #555;
+  background: #ff4e00;
+  margin-top: 60px;
+  color: #eee;
+}
+div.profile-add-products div.add-products-header div.wrapper {
+  position: relative;
+}
+div.profile-add-products div.add-products-header div.wrapper a {
+  position: absolute;
+  top: 5px;
+  left: 0px;
+  float: left;
+  font-weight: lighter;
+  color: #fff;
+  font-size: 15px;
+}
+div.profile-add-products div.add-products-header div.wrapper a i {
+  margin-right: 5px;
+  font-size: 80%;
+}
+div.profile-add-products div.add-products-header div.wrapper a:hover {
+  text-decoration: none;
+  color: #fff;
+}
+div.profile-add-products div.add-products-header div.wrapper h2 {
+  text-align: center;
+  font-size: 24px;
+  padding: 0;
+  width: 70%;
+  margin: 0 auto;
+}
+div.profile-add-products div.importers {
+  top: 130px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  background: #fff;
 }
 div.profile-header {
   margin-top: 100px;
@@ -8376,9 +8417,6 @@ div.importers {
   bottom: 0;
   background: #eee;
   float: left;
-}
-div.importers.profile-add-products {
-  top: 60px;
 }
 div.importers div.overlay {
   position: fixed;
