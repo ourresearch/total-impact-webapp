@@ -385,9 +385,6 @@ div.navbar.site-nav {
                position: relative;
                &.open {
                   a.dropdown-toggle {
-                     background:  #777;
-                     background:  #f2f2f2;
-                     background: #fff;
                      i {color: #333}
                   }
                }
@@ -399,19 +396,18 @@ div.navbar.site-nav {
                   i {vertical-align: -6px; color: @linkColor;}
                }
                ul.dropdown-menu {
-                  background: #777;
-                  background: #f2f2f2;
+                  background: #fff;
                   top: @navbarHeight - 2px;
-                  border: 1px solid #999;
+                  border: 1px solid #ccc;
                   border-top: none;
-                  right: -1px;
+                  right: 10px;
                   left: auto;
 
                   .drop-shadow(0, 3px, 2px, .1);
 
 
                   .border-radius(0, 3px, 3px, 0);
-                  min-width: 150px;
+                  min-width: 200px;
                   padding: 10px 0;
                   li{
                      margin: 0;

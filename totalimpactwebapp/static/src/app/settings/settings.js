@@ -58,7 +58,7 @@ angular.module('settings', [
     $scope.onSave = function() {
       Loading.start()
       UsersAbout.patch(
-        $scope.user.id,
+        {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
           security.currentUser = resp.about; // update the current authenticated user.
@@ -77,7 +77,7 @@ angular.module('settings', [
       Loading.start()
 
       UsersPassword.save(
-        {id: $scope.user.id},
+        {id: $scope.user.url_slug},
         $scope.user,
         function(resp) {
           i18nNotifications.pushForNextRoute('settings.password.change.success', 'success');
@@ -101,7 +101,7 @@ angular.module('settings', [
      $scope.onSave = function() {
        Loading.start()
       UsersAbout.patch(
-        $scope.user.id,
+        {id: $scope.user.id, idType:"userid"},
         {about: $scope.user},
         function(resp) {
           security.currentUser = resp.about; // update the current authenticated user.
@@ -119,7 +119,7 @@ angular.module('settings', [
      $scope.onSave = function() {
       Loading.start()
       UsersAbout.patch(
-        $scope.user.id,
+        {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
           security.currentUser = resp.about; // update the current authenticated user.

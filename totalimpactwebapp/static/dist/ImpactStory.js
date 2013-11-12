@@ -1348,7 +1348,7 @@ angular.module('settings', [
     $scope.onSave = function() {
       Loading.start()
       UsersAbout.patch(
-        $scope.user.id,
+        {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
           security.currentUser = resp.about; // update the current authenticated user.
@@ -1367,7 +1367,7 @@ angular.module('settings', [
       Loading.start()
 
       UsersPassword.save(
-        {id: $scope.user.id},
+        {id: $scope.user.url_slug},
         $scope.user,
         function(resp) {
           i18nNotifications.pushForNextRoute('settings.password.change.success', 'success');
@@ -1391,7 +1391,7 @@ angular.module('settings', [
      $scope.onSave = function() {
        Loading.start()
       UsersAbout.patch(
-        $scope.user.id,
+        {id: $scope.user.id, idType:"userid"},
         {about: $scope.user},
         function(resp) {
           security.currentUser = resp.about; // update the current authenticated user.
@@ -1409,7 +1409,7 @@ angular.module('settings', [
      $scope.onSave = function() {
       Loading.start()
       UsersAbout.patch(
-        $scope.user.id,
+        {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
           security.currentUser = resp.about; // update the current authenticated user.
@@ -4216,7 +4216,7 @@ angular.module("settings/custom-url-settings.tpl.html", []).run(["$templateCache
     "   <div class=\"form-group custom-url\"\n" +
     "        ng-model=\"user.url_slug\"\n" +
     "        ng-class=\"{ 'has-error':  userUrlForm.url_slug.$invalid && userUrlForm.url_slug.$dirty && !loading.is(),\n" +
-    "                    'has-success': userUrlForm.url_slug.$valid && userUrlForm.url_slug.$dirty && !loading.is()\">\n" +
+    "                    'has-success': userUrlForm.url_slug.$valid && userUrlForm.url_slug.$dirty && !loading.is() }\">\n" +
     "\n" +
     "      <div class=\"controls input-group col-lg-7\">\n" +
     "         <span class=\"input-group-addon\">http://impactstory.org/</span>\n" +
@@ -4284,7 +4284,7 @@ angular.module("settings/email-settings.tpl.html", []).run(["$templateCache", fu
     "\n" +
     "    <div class=\"controls input-group col-lg-7\">\n" +
     "      <span class=\"input-group-addon\"><i class=\"icon-envelope-alt\"></i></span>\n" +
-    "      <input ng-modesave-bul=\"user.email\"\n" +
+    "      <input ng-model=\"user.email\"\n" +
     "      name=\"email\"\n" +
     "      class=\"form-control\"\n" +
     "      required\n" +
