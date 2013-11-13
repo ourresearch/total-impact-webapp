@@ -12,7 +12,7 @@ angular.module('profile.addProducts')
         controller: 'addProductsCtrl',
         resolve:{
           userOwnsThisProfile: function(security){
-            return security.currentUserOwnsThisProfile()
+            return security.testUserAuthenticationLevel("ownsThisProfile")
           }
         }
       })
