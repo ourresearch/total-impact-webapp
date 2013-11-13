@@ -35,7 +35,7 @@ angular.module('importers.importer')
     $scope.importWindowOpen = false;
   }
   $scope.onImport = function(){
-    Loading.start()
+    Loading.start('saveButton')
     var slug = getUserSlug()
     console.log("now calling /importer/" + $scope.importer.endpoint)
     console.log("here's the profile slug we'll update:", slug)
@@ -63,7 +63,7 @@ angular.module('importers.importer')
           {id: slug, idType:"url_slug"},  // the url
           {"tiids": tiids},  // the POST data
           function(){
-            Loading.finish()
+            Loading.finish('saveButton')
           }
         )
 
@@ -76,7 +76,7 @@ angular.module('importers.importer')
       }
     )
   }
-  Loading.finish()
+  Loading.finish('saveButton')
 })
   .directive("ngFileSelect",function(){
     return {

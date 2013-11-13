@@ -1,4 +1,4 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/import-buttons.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -91,29 +91,6 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "\n" +
     "</div>\n" +
     "");
-}]);
-
-angular.module("importers/import-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("importers/import-buttons.tpl.html",
-    "<div class=\"buttons-group import-buttons\">\n" +
-    "   <div class=\"buttons\" ng-show=\"!isLoading()\">\n" +
-    "      <button\n" +
-    "              class=\"btn btn-primary\"\n" +
-    "              ng-disabled=\"!isValid()\"\n" +
-    "              type=\"submit\">\n" +
-    "         Save\n" +
-    "      </button>\n" +
-    "      <button\n" +
-    "              class=\"btn btn-default\"\n" +
-    "              ng-click=\"onCancel()\">\n" +
-    "         Cancel\n" +
-    "      </button>\n" +
-    "   </div>\n" +
-    "   <div class=\"working\" ng-show=\"isWorking()\">\n" +
-    "      <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "      <span class=\"text\">Importing...</span>\n" +
-    "   </div>\n" +
-    "</div>");
 }]);
 
 angular.module("importers/importer.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -1176,7 +1153,7 @@ angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", fun
 angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-products.tpl.html",
     "<div class=\"signup-input signup-products\" ng-controller=\"signupProductsCtrl\">\n" +
-    "   <div class=\"intro\">Next, let's import a few of your products from these sources <br><span class=\"paren\">(you can more later, too)</span></div>\n" +
+    "   <div class=\"intro\">Next, let's import a few of your products from these sources <br><span class=\"paren\">(you can more add more later, too)</span></div>\n" +
     "\n" +
     "\n" +
     "   <div class=\"importers signup-importers\">\n" +
