@@ -3,7 +3,7 @@ angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/log
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
     "<div class=\"buttons-group save\">\n" +
-    "   <div class=\"buttons\" ng-show=\"!loading.is()\">\n" +
+    "   <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
     "      <button\n" +
     "              class=\"btn btn-primary\"\n" +
     "              ng-disabled=\"!isValid()\"\n" +
@@ -16,9 +16,9 @@ angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", functio
     "         Cancel\n" +
     "      </a>\n" +
     "   </div>\n" +
-    "   <div class=\"working\" ng-show=\"loading.is()\">\n" +
+    "   <div class=\"working\" ng-show=\"loading.is('saveButton')\">\n" +
     "      <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "      <span class=\"text\">{{ action }}ing...</span>\n" +
+    "      <span class=\"text\">{{ actionGerund }}...</span>\n" +
     "   </div>\n" +
     "\n" +
     "</div>");

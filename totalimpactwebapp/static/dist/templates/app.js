@@ -1090,7 +1090,7 @@ angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", fun
 angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-name.tpl.html",
     "<div class=\"signup-input url\" ng-controller=\"signupNameCtrl\">\n" +
-    "   <div class=\"intro\">Let's get started making your account! It'll take less than five minutes. And don't worry; you can always edit or change anything in your account later. First things first: what's your name?</div>\n" +
+    "   <div class=\"intro\">Making a profile takes less than 5 minutes--let’s get started!</div>\n" +
     "\n" +
     "   <div class=\"form-group\">\n" +
     "      <input required class=\"form-control\" type=\"text\" ng-model=\"input.givenName\" placeholder=\"First name\">\n" +
@@ -1105,7 +1105,7 @@ angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", functio
 angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-password.tpl.html",
     "<div class=\"signup-input email-and-password\" ng-controller=\"signupPasswordCtrl\">\n" +
-    "   <div class=\"intro\"><br>Last step! Enter your email (which we never share) and pick a password:</div>\n" +
+    "   <div class=\"intro\"><br>Last step! Enter your email and pick a password:<br><span class=\"paren\">(Don't worry, we never share your email)</span></div>\n" +
     "\n" +
     "   <div class=\"form-group email\"\n" +
     "        ng-class=\"{ 'has-error':  signupForm.email.$invalid && signupForm.email.$dirty && !loading.is(),\n" +
@@ -1175,14 +1175,19 @@ angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", fun
 
 angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-products.tpl.html",
-    "<div class=\"signup-input importers\" ng-controller=\"signupProductsCtrl\">\n" +
+    "<div class=\"signup-input signup-products\" ng-controller=\"signupProductsCtrl\">\n" +
+    "   <div class=\"intro\">Next, let's import a few of your products from these sources <br><span class=\"paren\">(you can more later, too)</span></div>\n" +
     "\n" +
-    "   <div class=\"importer\"\n" +
-    "        ng-repeat=\"importer in importers\"\n" +
-    "        ng-controller=\"importerCtrl\"\n" +
-    "        ng-include=\"'importers/importer.tpl.html'\"\n" +
-    "        >\n" +
-    "   </div>\n" +
+    "\n" +
+    "   <div class=\"importers signup-importers\">\n" +
+    "      <div class=\"importer\"\n" +
+    "           ng-repeat=\"importer in importers\"\n" +
+    "           ng-controller=\"importerCtrl\"\n" +
+    "           ng-include=\"'importers/importer.tpl.html'\"\n" +
+    "           >\n" +
+    "      </div>\n" +
+    "  </div>\n" +
+    "\n" +
     "\n" +
     "\n" +
     "\n" +
@@ -1192,7 +1197,7 @@ angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", fun
 angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-url.tpl.html",
     "<div class=\"signup-input url\" ng-controller=\"signupUrlCtrl\">\n" +
-    "   <div class=\"intro\"><br>Okay, {{ givenName }}, your next step is to pick your profile's custom URL. (Don't worry, you can change this later, too):</div>\n" +
+    "   <div class=\"intro\"><br>Great, {{ givenName }}, your next step is to pick your profile's custom URL. <br><span class=\"paren\">(you can always change this later)</span></div>\n" +
     "   \n" +
     "   <div class=\"form-group custom-url\"\n" +
     "        ng-model=\"profileAbout.url_slug\"\n" +

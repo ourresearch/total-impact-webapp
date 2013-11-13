@@ -16,6 +16,9 @@ angular.module('settings', [
         resolve:{
           authenticatedUser:function (security) {
             return security.requestCurrentUser();
+          },
+          allowed: function(security){
+            return security.testUserAuthenticationLevel("loggedIn")
           }
         }
       }
@@ -56,7 +59,7 @@ angular.module('settings', [
 
   .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, i18nNotifications, Loading) {
     $scope.onSave = function() {
-      Loading.start()
+      Loading.start('saveButton')
       UsersAbout.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},
@@ -74,7 +77,7 @@ angular.module('settings', [
     $scope.showPassword = false;
 
     $scope.onSave = function() {
-      Loading.start()
+      Loading.start('saveButton')
 
       UsersPassword.save(
         {id: $scope.user.url_slug},
@@ -85,7 +88,7 @@ angular.module('settings', [
         },
         function(resp) {
           i18nNotifications.pushForCurrentRoute('settings.password.change.error.unauthenticated', 'danger');
-          Loading.finish()
+          Loading.finish('saveButton')
           $scope.resetUser();  // reset the form
           $scope.wrongPassword = true;
           scroll(0,0)
@@ -99,7 +102,7 @@ angular.module('settings', [
   .controller('urlSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
 
      $scope.onSave = function() {
-       Loading.start()
+      Loading.start('saveButton')
       UsersAbout.patch(
         {id: $scope.user.id, idType:"userid"},
         {about: $scope.user},
@@ -117,7 +120,7 @@ angular.module('settings', [
   .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
 
      $scope.onSave = function() {
-      Loading.start()
+      Loading.start('saveButton')
       UsersAbout.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},

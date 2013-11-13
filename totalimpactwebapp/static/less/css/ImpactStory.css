@@ -7151,7 +7151,7 @@ div.profile-subpage div.profile-subpage-header {
   background: #555;
   background: #ff4e00;
   margin-top: 60px;
-  color: #eee;
+  color: #fff;
 }
 div.profile-subpage div.profile-subpage-header div.wrapper {
   position: relative;
@@ -7884,36 +7884,58 @@ div.signup-header h1 a.brand img {
 div.signup-header ol.signup-steps {
   padding: 0;
   margin: 23px auto;
-  padding-left: 20px;
-  width: 425px;
+  padding-left: 60px;
+  width: 500px;
 }
 div.signup-header ol.signup-steps li {
   display: inline-block;
   list-style-type: none;
   padding: 5px 20px;
+  font-size: 16px;
   color: #fff;
 }
 div.signup-header ol.signup-steps li.creating {
   display: none;
-}
-div.signup-header ol.signup-steps li.current {
-  font-size: 20px;
-  font-weight: bold;
-  text-transform: uppercase;
 }
 div.signup-header ol.signup-steps li.completed {
   opacity: .4;
 }
 form.signup {
   background: transparent;
-  width: 700px;
+  width: 750px;
   margin: 200px auto 0;
 }
 form.signup div.intro {
   margin-bottom: 50px;
   color: #999;
   line-height: 1.8;
-  font-size: 22px;
+  font-size: 26px;
+  text-align: center;
+}
+form.signup div.intro span.paren {
+  font-weight: 300;
+  font-size: 85%;
+}
+form.signup div.signup-input.signup-products div.intro {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  right: 0;
+  height: 160px;
+  background: #fff;
+  margin-top: 80px;
+  color: #999;
+  text-align: center;
+  font-weight: normal;
+  padding-top: 30px;
+}
+form.signup div.signup-input.signup-products div.importers {
+  border-top: 1px solid #ddd;
+  top: 250px;
+}
+form.signup div.signup-input.signup-products div.importers .importer-tile {
+  padding-top: 45px;
+  padding-bottom: 45px;
 }
 form.signup div.signup-input div.form-group input.form-control {
   font-size: 25px;
@@ -8292,7 +8314,7 @@ body.user-preferences div.main div.wrapper div.pref-category form.editableform d
   display: none;
 }
 div.settings div.settings-header {
-  margin: 0 0 70px 20px;
+  margin: 100px 0 70px 20px;
   padding: 0 0 0 30px;
   border-bottom: 5px solid #fafafa;
   width: 600px;

@@ -144,43 +144,6 @@ angular.module('security.service', [
       return deferred.promise
     },
 
-    currentUserHasNoEmail: function(){
-      var deferred = $q.defer();
-
-      service.requestCurrentUser().then(
-        function(user){
-          if (!user){
-            deferred.reject("userNotLoggedIn")
-          }
-          else if (user.email){
-            deferred.reject("userHasAnEmail")
-          }
-          else {
-            deferred.resolve("yay, the user has no email!")
-          }
-        }
-      )
-      return deferred.promise
-    },
-
-    currentUserOwnsThisProfile: function(){
-      var m = /^(\/signup)?\/(\w+)\//.exec($location.path())
-      var current_slug = (m) ? m[2] : false;
-      console.log("current slug", current_slug)
-      var deferred = $q.defer()
-
-      service.requestCurrentUser().then(
-        function(user){
-          if (user && user.url_slug && user.url_slug==current_slug){
-            deferred.resolve(true)
-          }
-          else {
-            deferred.reject("userDoesNotOwnThisProfile")
-          }
-        }
-      )
-      return deferred.promise
-    },
 
 
 

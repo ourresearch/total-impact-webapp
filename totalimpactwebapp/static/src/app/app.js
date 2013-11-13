@@ -74,6 +74,7 @@ angular.module('app').controller('AppCtrl', function($scope,
     UservoiceWidget.updateTabPosition($location.path())
     $rootScope.showHeader = true;
     $rootScope.showFooter = true;
+    $scope.loading.clear()
   })
 
 });

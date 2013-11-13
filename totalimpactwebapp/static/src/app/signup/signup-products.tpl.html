@@ -1,11 +1,16 @@
-<div class="signup-input importers" ng-controller="signupProductsCtrl">
+<div class="signup-input signup-products" ng-controller="signupProductsCtrl">
+   <div class="intro">Next, let's import a few of your products from these sources <br><span class="paren">(you can more later, too)</span></div>
 
-   <div class="importer"
-        ng-repeat="importer in importers"
-        ng-controller="importerCtrl"
-        ng-include="'importers/importer.tpl.html'"
-        >
-   </div>
+
+   <div class="importers signup-importers">
+      <div class="importer"
+           ng-repeat="importer in importers"
+           ng-controller="importerCtrl"
+           ng-include="'importers/importer.tpl.html'"
+           >
+      </div>
+  </div>
+
 
 
 

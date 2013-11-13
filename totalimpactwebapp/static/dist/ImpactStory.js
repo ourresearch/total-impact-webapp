@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-11
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-13
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -79,6 +79,7 @@ angular.module('app').controller('AppCtrl', function($scope,
     UservoiceWidget.updateTabPosition($location.path())
     $rootScope.showHeader = true;
     $rootScope.showFooter = true;
+    $scope.loading.clear()
   })
 
 });
@@ -1306,6 +1307,9 @@ angular.module('settings', [
         resolve:{
           authenticatedUser:function (security) {
             return security.requestCurrentUser();
+          },
+          allowed: function(security){
+            return security.testUserAuthenticationLevel("loggedIn")
           }
         }
       }
@@ -1346,7 +1350,7 @@ angular.module('settings', [
 
   .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, i18nNotifications, Loading) {
     $scope.onSave = function() {
-      Loading.start()
+      Loading.start('saveButton')
       UsersAbout.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},
@@ -1364,7 +1368,7 @@ angular.module('settings', [
     $scope.showPassword = false;
 
     $scope.onSave = function() {
-      Loading.start()
+      Loading.start('saveButton')
 
       UsersPassword.save(
         {id: $scope.user.url_slug},
@@ -1375,7 +1379,7 @@ angular.module('settings', [
         },
         function(resp) {
           i18nNotifications.pushForCurrentRoute('settings.password.change.error.unauthenticated', 'danger');
-          Loading.finish()
+          Loading.finish('saveButton')
           $scope.resetUser();  // reset the form
           $scope.wrongPassword = true;
           scroll(0,0)
@@ -1389,7 +1393,7 @@ angular.module('settings', [
   .controller('urlSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
 
      $scope.onSave = function() {
-       Loading.start()
+      Loading.start('saveButton')
       UsersAbout.patch(
         {id: $scope.user.id, idType:"userid"},
         {about: $scope.user},
@@ -1407,7 +1411,7 @@ angular.module('settings', [
   .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
 
      $scope.onSave = function() {
-      Loading.start()
+      Loading.start('saveButton')
       UsersAbout.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},
@@ -1471,6 +1475,9 @@ angular.module( 'signup', [
         return signupSteps;
       },
       onSignupStep: function(step){
+        console.log("on signup step")
+        console.log("path", $location.path())
+        return step == getCurrentStep()
         return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
       },
       isBeforeCurrentSignupStep: function(stepToCheck) {
@@ -2188,7 +2195,14 @@ angular.module('directives.forms', [])
     restrict: "E",
     link:function(scope, elem, attr, formController){
       console.log("attr: ", attr)
-      scope.action = (attr.action) ? attr.action : "Save";
+      if (attr.action) {
+        scope.action = attr.action
+        scope.actionGerund = attr.action + "ing"
+      }
+      else {
+        scope.action = "Save"
+        scope.actionGerund = "Saving"
+      }
 
       scope.isValid = function() {
         return formController.$valid;
@@ -2691,43 +2705,6 @@ angular.module('security.service', [
       return deferred.promise
     },
 
-    currentUserHasNoEmail: function(){
-      var deferred = $q.defer();
-
-      service.requestCurrentUser().then(
-        function(user){
-          if (!user){
-            deferred.reject("userNotLoggedIn")
-          }
-          else if (user.email){
-            deferred.reject("userHasAnEmail")
-          }
-          else {
-            deferred.resolve("yay, the user has no email!")
-          }
-        }
-      )
-      return deferred.promise
-    },
-
-    currentUserOwnsThisProfile: function(){
-      var m = /^(\/signup)?\/(\w+)\//.exec($location.path())
-      var current_slug = (m) ? m[2] : false;
-      console.log("current slug", current_slug)
-      var deferred = $q.defer()
-
-      service.requestCurrentUser().then(
-        function(user){
-          if (user && user.url_slug && user.url_slug==current_slug){
-            deferred.resolve(true)
-          }
-          else {
-            deferred.reject("userDoesNotOwnThisProfile")
-          }
-        }
-      )
-      return deferred.promise
-    },
 
 
 
@@ -3048,15 +3025,41 @@ angular.module("services.loading", [])
 angular.module("services.loading")
 .factory("Loading", function(){
   var loading = false;
+  var loadingJobs = {}
+  var setLoading = function(setLoadingTo, jobName) {
+    if (jobName){
+      loadingJobs[jobName] = !!setLoadingTo
+    }
+    else {
+      loading = !!setLoadingTo;
+    }
+    return !!setLoadingTo
+  }
 
   return {
-    is: function(){return loading},
-    set: function(setLoadingTo) {
-      loading = !!setLoadingTo;
-      return loading
+    is: function(jobName){
+      if (jobName && jobName in loadingJobs){
+        return loadingJobs[jobName]
+      }
+      else if (jobName && !(jobName in loadingJobs)){
+        // you asked for loading state of a job that doesn't exist:
+        return null
+      }
+      else {
+        return loading
+      }
     },
-    start: function(){loading = true;},
-    finish:function(){loading = false}
+    set: setLoading,
+    start: function(jobName){
+      setLoading(true, jobName)
+    },
+    finish:function(jobName){
+      setLoading(false, jobName)
+    },
+    clear: function(){
+      loading = false;
+      for (var jobName in loadingJobs) delete loadingJobs[jobName]
+    }
   }
 })
 angular.module('services.localizedMessages', []).factory('localizedMessages', function ($interpolate) {
@@ -3175,8 +3178,8 @@ angular.module('services.routeChangeErrorHandler', [
       if (rejection == "signupFlowOutOfOrder") {
         $location.path("/signup/name")
       }
-      else if (rejection == "userNotLoggedIn"){
-        // do something more useful later
+      else if (rejection == "notLoggedIn"){
+        // do something more useful later...popup login dialog, maybe.
         $location.path("/")
       }
       else if (rejection == "loggedIn"){
@@ -4474,7 +4477,7 @@ angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", fun
 angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-name.tpl.html",
     "<div class=\"signup-input url\" ng-controller=\"signupNameCtrl\">\n" +
-    "   <div class=\"intro\">Let's get started making your account! It'll take less than five minutes. And don't worry; you can always edit or change anything in your account later. First things first: what's your name?</div>\n" +
+    "   <div class=\"intro\">Making a profile takes less than 5 minutes--let’s get started!</div>\n" +
     "\n" +
     "   <div class=\"form-group\">\n" +
     "      <input required class=\"form-control\" type=\"text\" ng-model=\"input.givenName\" placeholder=\"First name\">\n" +
@@ -4489,7 +4492,7 @@ angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", functio
 angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-password.tpl.html",
     "<div class=\"signup-input email-and-password\" ng-controller=\"signupPasswordCtrl\">\n" +
-    "   <div class=\"intro\"><br>Last step! Enter your email (which we never share) and pick a password:</div>\n" +
+    "   <div class=\"intro\"><br>Last step! Enter your email and pick a password:<br><span class=\"paren\">(Don't worry, we never share your email)</span></div>\n" +
     "\n" +
     "   <div class=\"form-group email\"\n" +
     "        ng-class=\"{ 'has-error':  signupForm.email.$invalid && signupForm.email.$dirty && !loading.is(),\n" +
@@ -4559,14 +4562,19 @@ angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", fun
 
 angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-products.tpl.html",
-    "<div class=\"signup-input importers\" ng-controller=\"signupProductsCtrl\">\n" +
+    "<div class=\"signup-input signup-products\" ng-controller=\"signupProductsCtrl\">\n" +
+    "   <div class=\"intro\">Next, let's import a few of your products from these sources <br><span class=\"paren\">(you can more later, too)</span></div>\n" +
     "\n" +
-    "   <div class=\"importer\"\n" +
-    "        ng-repeat=\"importer in importers\"\n" +
-    "        ng-controller=\"importerCtrl\"\n" +
-    "        ng-include=\"'importers/importer.tpl.html'\"\n" +
-    "        >\n" +
-    "   </div>\n" +
+    "\n" +
+    "   <div class=\"importers signup-importers\">\n" +
+    "      <div class=\"importer\"\n" +
+    "           ng-repeat=\"importer in importers\"\n" +
+    "           ng-controller=\"importerCtrl\"\n" +
+    "           ng-include=\"'importers/importer.tpl.html'\"\n" +
+    "           >\n" +
+    "      </div>\n" +
+    "  </div>\n" +
+    "\n" +
     "\n" +
     "\n" +
     "\n" +
@@ -4576,7 +4584,7 @@ angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", fun
 angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-url.tpl.html",
     "<div class=\"signup-input url\" ng-controller=\"signupUrlCtrl\">\n" +
-    "   <div class=\"intro\"><br>Okay, {{ givenName }}, your next step is to pick your profile's custom URL. (Don't worry, you can change this later, too):</div>\n" +
+    "   <div class=\"intro\"><br>Great, {{ givenName }}, your next step is to pick your profile's custom URL. <br><span class=\"paren\">(you can always change this later)</span></div>\n" +
     "   \n" +
     "   <div class=\"form-group custom-url\"\n" +
     "        ng-model=\"profileAbout.url_slug\"\n" +
@@ -4693,7 +4701,7 @@ angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/log
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
     "<div class=\"buttons-group save\">\n" +
-    "   <div class=\"buttons\" ng-show=\"!loading.is()\">\n" +
+    "   <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
     "      <button\n" +
     "              class=\"btn btn-primary\"\n" +
     "              ng-disabled=\"!isValid()\"\n" +
@@ -4706,9 +4714,9 @@ angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", functio
     "         Cancel\n" +
     "      </a>\n" +
     "   </div>\n" +
-    "   <div class=\"working\" ng-show=\"loading.is()\">\n" +
+    "   <div class=\"working\" ng-show=\"loading.is('saveButton')\">\n" +
     "      <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "      <span class=\"text\">{{ action }}ing...</span>\n" +
+    "      <span class=\"text\">{{ actionGerund }}...</span>\n" +
     "   </div>\n" +
     "\n" +
     "</div>");

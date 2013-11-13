@@ -30,7 +30,14 @@ angular.module('directives.forms', [])
     restrict: "E",
     link:function(scope, elem, attr, formController){
       console.log("attr: ", attr)
-      scope.action = (attr.action) ? attr.action : "Save";
+      if (attr.action) {
+        scope.action = attr.action
+        scope.actionGerund = attr.action + "ing"
+      }
+      else {
+        scope.action = "Save"
+        scope.actionGerund = "Saving"
+      }
 
       scope.isValid = function() {
         return formController.$valid;

@@ -45,6 +45,9 @@ angular.module( 'signup', [
         return signupSteps;
       },
       onSignupStep: function(step){
+        console.log("on signup step")
+        console.log("path", $location.path())
+        return step == getCurrentStep()
         return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
       },
       isBeforeCurrentSignupStep: function(stepToCheck) {

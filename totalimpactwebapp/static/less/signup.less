@@ -31,19 +31,21 @@ div.signup-header {
    ol.signup-steps {
       padding: 0;
       margin: 23px auto;
-      padding-left: 20px;
-      width: 425px;
+      padding-left: 60px;
+      width: 500px;
 
       li {
          display:inline-block;
          list-style-type: none;
          padding: 5px 20px;
+         font-size: 16px;
          color:  #fff;
          &.creating {display: none;}
          &.current {
-            font-size: 20px;
-            font-weight: bold;
-            text-transform: uppercase;
+//            text-transform: uppercase;
+//            background:  #fff;
+//            color: @linkColor;
+//            .border-radius(10px, 10px, 10px, 10px);
          }
          &.completed {
 //            text-decoration: line-through;
@@ -57,15 +59,40 @@ div.signup-header {
 
 form.signup {
    background: transparent;
-   width:  700px;
+   width:  750px;
    margin: 200px auto 0;
    div.intro {
       margin-bottom: 50px;
       color:  #999;
       line-height: 1.8;
-      font-size: 22px;
+      font-size: 26px;
+      text-align: center;
+      span.paren {font-weight: 300; font-size:  85%;}
    }
    div.signup-input {
+      &.signup-products{
+         div.intro {
+            position: absolute;
+            top:  0px;
+            left: 0;
+            right: 0;
+            height: 160px;
+            background: #fff;
+            margin-top:80px;
+            color:  #999;
+            text-align: center;
+            font-weight: normal;
+            padding-top: 30px;
+         }
+         div.importers {
+            border-top: 1px solid #ddd;
+            top:  250px;
+            .importer-tile {
+               padding-top: 45px;
+               padding-bottom: 45px;
+            }
+         }
+      }
       div.form-group {
          input.form-control {
             font-size: 25px;

@@ -17,8 +17,8 @@ angular.module('services.routeChangeErrorHandler', [
       if (rejection == "signupFlowOutOfOrder") {
         $location.path("/signup/name")
       }
-      else if (rejection == "userNotLoggedIn"){
-        // do something more useful later
+      else if (rejection == "notLoggedIn"){
+        // do something more useful later...popup login dialog, maybe.
         $location.path("/")
       }
       else if (rejection == "loggedIn"){
