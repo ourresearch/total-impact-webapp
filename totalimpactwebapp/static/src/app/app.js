@@ -8,6 +8,7 @@ angular.module('app', [
   'services.i18nNotifications',
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
+  'services.page',
   'security',
   'directives.crud',
   'templates.app',
@@ -49,17 +50,15 @@ angular.module('app').run(['security', function(security) {
 angular.module('app').controller('AppCtrl', function($scope,
                                                      i18nNotifications,
                                                      localizedMessages,
-                                                     $rootScope,
                                                      UservoiceWidget,
                                                      $location,
                                                      Loading,
+                                                     Page,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
   $scope.loading = Loading;
-  $rootScope.showHeaderAndFooter = true;
-  $rootScope.showFooter = true
-  $rootScope.showHeader = true
+  $scope.getPageTitle = Page.getTitle
 
 
   $scope.removeNotification = function (notification) {
@@ -70,10 +69,14 @@ angular.module('app').controller('AppCtrl', function($scope,
     RouteChangeErrorHandler.handle(event, current, previous, rejection)
   });
 
-  $scope.$on('$routeChangeSuccess', function(next, current){
+  $scope.$on('$routeChangeSuccess', function(next, current){ // hacky...
     UservoiceWidget.updateTabPosition($location.path())
-    $rootScope.showHeader = true;
-    $rootScope.showFooter = true;
+  })
+
+  $scope.$on('$locationChangeStart', function(event, next, current){
+    Page.showFrame(true, true)
+    $scope.footer = Page.footer
+    $scope.header = Page.header
     $scope.loading.clear()
   })
 

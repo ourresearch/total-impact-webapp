@@ -1,13 +1,14 @@
 angular.module("profile", [
   'resources.users',
   'product.product',
+  'services.page',
   'ui.bootstrap',
   'security',
   'profile.addProducts'
 ])
 
 
-.factory('UserProfile', function(UsersAbout, security, Slug, UsersPassword){
+.factory('UserProfile', function(UsersAbout, security, Slug, Page){
   var about = {}
 
   return {
@@ -16,7 +17,6 @@ angular.module("profile", [
     filterProducts: function(products, filterBy) {
       var productsWithMetrics = _.filter(products, function(x){return _.size(x.metrics); });
       var productsWitoutMetrics = _.filter(products, function(x){return x.metrics && _.size(x.metrics)==0; });
-      var pseudoProducts = _.filter(products, function(x){return !x.metrics; });
 
       if (filterBy == "withMetrics") {
         return productsWithMetrics;
@@ -34,9 +34,10 @@ angular.module("profile", [
           id: slug,
           idType: "url_slug"
         },
-        function(resp) { // success callback. could set the 'about' var here, but don't think we need to
+        function(resp) { // success
+          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
         },
-        function(resp) {
+        function(resp) { // fail
           if (resp.status == 404) {
             $scope.userExists = false;
             $scope.slug = slug;
@@ -67,7 +68,7 @@ angular.module("profile", [
 })
 
 
-.controller('ProfileCtrl', function ($scope, $routeParams, $http, UsersProducts, Product, UserProfile)
+.controller('ProfileCtrl', function ($scope, $routeParams, $http, UsersProducts, Product, UserProfile, Page)
   {
 
     var userSlug = $routeParams.url_slug;

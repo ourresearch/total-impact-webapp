@@ -13,6 +13,7 @@ angular.module('app', [
   'services.i18nNotifications',
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
+  'services.page',
   'security',
   'directives.crud',
   'templates.app',
@@ -54,17 +55,15 @@ angular.module('app').run(['security', function(security) {
 angular.module('app').controller('AppCtrl', function($scope,
                                                      i18nNotifications,
                                                      localizedMessages,
-                                                     $rootScope,
                                                      UservoiceWidget,
                                                      $location,
                                                      Loading,
+                                                     Page,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
   $scope.loading = Loading;
-  $rootScope.showHeaderAndFooter = true;
-  $rootScope.showFooter = true
-  $rootScope.showHeader = true
+  $scope.getPageTitle = Page.getTitle
 
 
   $scope.removeNotification = function (notification) {
@@ -75,10 +74,14 @@ angular.module('app').controller('AppCtrl', function($scope,
     RouteChangeErrorHandler.handle(event, current, previous, rejection)
   });
 
-  $scope.$on('$routeChangeSuccess', function(next, current){
+  $scope.$on('$routeChangeSuccess', function(next, current){ // hacky...
     UservoiceWidget.updateTabPosition($location.path())
-    $rootScope.showHeader = true;
-    $rootScope.showFooter = true;
+  })
+
+  $scope.$on('$locationChangeStart', function(event, next, current){
+    Page.showFrame(true, true)
+    $scope.footer = Page.footer
+    $scope.header = Page.header
     $scope.loading.clear()
   })
 
@@ -383,7 +386,8 @@ angular.module('importers.importer')
   })
 
 angular.module( 'infopages', [
-    'security'
+    'security',
+    'services.page'
     ])
 
     .config(['$routeProvider', function($routeProvider, security) {
@@ -408,18 +412,17 @@ angular.module( 'infopages', [
                   })
   }])
 
-    .controller( 'landingPageCtrl', function landingPageCtrl ( $scope ) {
-                     $scope.thisControllerBeRunning = true
+    .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {
+                  Page.setTitle("Share the full story of your research impact.")
+                 })
+
+    .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page ) {
+                   Page.setTitle("FAQ")
 
                  })
 
-    .controller( 'faqPageCtrl', function faqPageCtrl ( $scope ) {
-                     $scope.thisControllerBeRunning = true
-
-                 })
-
-    .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope ) {
-                     $scope.thisControllerBeRunning = true
+    .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
+                   Page.setTitle("about")
 
                  })
 
@@ -1111,13 +1114,14 @@ angular.module("profileProduct", [
 angular.module("profile", [
   'resources.users',
   'product.product',
+  'services.page',
   'ui.bootstrap',
   'security',
   'profile.addProducts'
 ])
 
 
-.factory('UserProfile', function(UsersAbout, security, Slug, UsersPassword){
+.factory('UserProfile', function(UsersAbout, security, Slug, Page){
   var about = {}
 
   return {
@@ -1126,7 +1130,6 @@ angular.module("profile", [
     filterProducts: function(products, filterBy) {
       var productsWithMetrics = _.filter(products, function(x){return _.size(x.metrics); });
       var productsWitoutMetrics = _.filter(products, function(x){return x.metrics && _.size(x.metrics)==0; });
-      var pseudoProducts = _.filter(products, function(x){return !x.metrics; });
 
       if (filterBy == "withMetrics") {
         return productsWithMetrics;
@@ -1144,9 +1147,10 @@ angular.module("profile", [
           id: slug,
           idType: "url_slug"
         },
-        function(resp) { // success callback. could set the 'about' var here, but don't think we need to
+        function(resp) { // success
+          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
         },
-        function(resp) {
+        function(resp) { // fail
           if (resp.status == 404) {
             $scope.userExists = false;
             $scope.slug = slug;
@@ -1177,7 +1181,7 @@ angular.module("profile", [
 })
 
 
-.controller('ProfileCtrl', function ($scope, $routeParams, $http, UsersProducts, Product, UserProfile)
+.controller('ProfileCtrl', function ($scope, $routeParams, $http, UsersProducts, Product, UserProfile, Page)
   {
 
     var userSlug = $routeParams.url_slug;
@@ -1226,6 +1230,7 @@ angular.module("profile", [
 
 angular.module('profile.addProducts', [
   'importers.allTheImporters',
+  'services.page',
   'importers.importer'
 ])
 angular.module('profile.addProducts')
@@ -1244,8 +1249,8 @@ angular.module('profile.addProducts')
       })
 
   }])
-  .controller("addProductsCtrl", function($scope, $rootScope, $routeParams, AllTheImporters){
-    $rootScope.showFooter = false
+  .controller("addProductsCtrl", function($scope, Page, $routeParams, AllTheImporters){
+    Page.showFrame(true, false) // hide footer
     $scope.redirectAfterImport = true
     $scope.importers = AllTheImporters.get()
   })
@@ -1430,13 +1435,14 @@ angular.module('settings', [
 
 angular.module( 'signup', [
     'services.slug',
+    'services.page',
     'resources.users',
     'update.update',
     'security.service',
     'importers.allTheImporters',
     'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location){
+  .factory("Signup", function($location){
 
     var signupSteps = [
       "name",
@@ -1467,16 +1473,10 @@ angular.module( 'signup', [
     }
 
     return {
-      init: function(){
-        $rootScope.showHeader = false;
-        $rootScope.showFooter = false;
-      },
       signupSteps: function(){
         return signupSteps;
       },
       onSignupStep: function(step){
-        console.log("on signup step")
-        console.log("path", $location.path())
         return step == getCurrentStep()
         return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
       },
@@ -1525,8 +1525,10 @@ angular.module( 'signup', [
 
 }])
 
-  .controller('signupCtrl', function($scope, Signup){
-    Signup.init()
+  .controller('signupCtrl', function($scope, Signup, Page){
+    Page.showFrame(false, false) // hide header and footer
+    Page.setTitle("signup")
+
 
     $scope.input = {}
     $scope.signupSteps = Signup.signupSteps();
@@ -3159,6 +3161,24 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
 
   return notificationsService;
 }]);
+angular.module("services.page", [])
+angular.module("services.page")
+.factory("Page", function(){
+   var title = '';
+   var showHeader = true
+   var showFooter = true
+
+   return {
+     getTitle: function() { return title; },
+     setTitle: function(newTitle) { title = newTitle },
+     'showFrame': function(header, footer) {
+       showHeader = !!header;
+       showFooter = !!footer;
+     },
+     header: function(){return showHeader},
+     footer: function(){return showFooter}
+   };
+})
 angular.module('services.routeChangeErrorHandler', [
   'security'
 ])
@@ -3389,7 +3409,7 @@ angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importer
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
-    "<div id=\"footer\" ng-show=\"showFooter\">\n" +
+    "<div id=\"footer\" ng-show=\"footer()\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -3449,7 +3469,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header\" ng-show=\"showHeader\">\n" +
+    "<div class=\"main-header\" ng-show=\"header()\">\n" +
     "   <div class=\"navbar site-nav\">\n" +
     "      <div class=\"navbar-inner\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +

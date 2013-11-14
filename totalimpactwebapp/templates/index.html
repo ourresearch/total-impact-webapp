@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html ng-app="app" lang="en" xmlns="http://www.w3.org/1999/html">
+<html ng-app="app" ng-controller="AppCtrl" lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
    <base href="/">
    <meta charset="utf-8">
-   <title>ImpactStory: {{ page_title }}</title>
+   <title>{% raw %}ImpactStory: {{ getPageTitle() }}{% endraw %}</title>
    <meta name="description" content="ImpactStory">
    <meta name="author" content="ImpactStory">
    <meta name="google-site-verification" content="JWD8WcfINuKxjh31KejAnijd9Cx34IYEH1-bDMXVzjE" />
@@ -61,7 +61,7 @@
 </head>
 
 
-<body ng-controller="AppCtrl">
+<body>
 
 <div class="staging-warning"><div class="content"><span>staging, yo</span></div></div>
 

@@ -1,12 +1,13 @@
 angular.module( 'signup', [
     'services.slug',
+    'services.page',
     'resources.users',
     'update.update',
     'security.service',
     'importers.allTheImporters',
     'importers.importer'
     ])
-  .factory("Signup", function($rootScope, $location){
+  .factory("Signup", function($location){
 
     var signupSteps = [
       "name",
@@ -37,16 +38,10 @@ angular.module( 'signup', [
     }
 
     return {
-      init: function(){
-        $rootScope.showHeader = false;
-        $rootScope.showFooter = false;
-      },
       signupSteps: function(){
         return signupSteps;
       },
       onSignupStep: function(step){
-        console.log("on signup step")
-        console.log("path", $location.path())
         return step == getCurrentStep()
         return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
       },
@@ -95,8 +90,10 @@ angular.module( 'signup', [
 
 }])
 
-  .controller('signupCtrl', function($scope, Signup){
-    Signup.init()
+  .controller('signupCtrl', function($scope, Signup, Page){
+    Page.showFrame(false, false) // hide header and footer
+    Page.setTitle("signup")
+
 
     $scope.input = {}
     $scope.signupSteps = Signup.signupSteps();

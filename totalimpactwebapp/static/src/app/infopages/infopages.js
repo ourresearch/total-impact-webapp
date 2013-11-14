@@ -1,5 +1,6 @@
 angular.module( 'infopages', [
-    'security'
+    'security',
+    'services.page'
     ])
 
     .config(['$routeProvider', function($routeProvider, security) {
@@ -24,18 +25,17 @@ angular.module( 'infopages', [
                   })
   }])
 
-    .controller( 'landingPageCtrl', function landingPageCtrl ( $scope ) {
-                     $scope.thisControllerBeRunning = true
+    .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {
+                  Page.setTitle("Share the full story of your research impact.")
+                 })
+
+    .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page ) {
+                   Page.setTitle("FAQ")
 
                  })
 
-    .controller( 'faqPageCtrl', function faqPageCtrl ( $scope ) {
-                     $scope.thisControllerBeRunning = true
-
-                 })
-
-    .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope ) {
-                     $scope.thisControllerBeRunning = true
+    .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
+                   Page.setTitle("about")
 
                  })
 

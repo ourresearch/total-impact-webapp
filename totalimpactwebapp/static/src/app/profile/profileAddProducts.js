@@ -1,5 +1,6 @@
 angular.module('profile.addProducts', [
   'importers.allTheImporters',
+  'services.page',
   'importers.importer'
 ])
 angular.module('profile.addProducts')
@@ -18,8 +19,8 @@ angular.module('profile.addProducts')
       })
 
   }])
-  .controller("addProductsCtrl", function($scope, $rootScope, $routeParams, AllTheImporters){
-    $rootScope.showFooter = false
+  .controller("addProductsCtrl", function($scope, Page, $routeParams, AllTheImporters){
+    Page.showFrame(true, false) // hide footer
     $scope.redirectAfterImport = true
     $scope.importers = AllTheImporters.get()
   })

@@ -2,7 +2,7 @@ angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importer
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
-    "<div id=\"footer\" ng-show=\"showFooter\">\n" +
+    "<div id=\"footer\" ng-show=\"footer()\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -62,7 +62,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header\" ng-show=\"showHeader\">\n" +
+    "<div class=\"main-header\" ng-show=\"header()\">\n" +
     "   <div class=\"navbar site-nav\">\n" +
     "      <div class=\"navbar-inner\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
