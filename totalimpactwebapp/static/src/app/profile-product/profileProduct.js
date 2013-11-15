@@ -20,7 +20,7 @@ angular.module("profileProduct", [
   .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $location, $modal, security, UsersProduct, UsersProducts, Product, Loading) {
 
     var slug = $routeParams.url_slug
-    Loading.start()
+    Loading.start('profileProduct')
 
     $scope.userSlug = slug
     $scope.loading = Loading
@@ -50,7 +50,7 @@ angular.module("profileProduct", [
       console.log("data", data)
       $scope.biblio = Product.makeBiblio(data)
       $scope.metrics = Product.makeMetrics(data)
-      Loading.finish()
+      Loading.finish('profileProduct')
     },
     function(data){
       $location.path("/"+slug) // replace this with "product not found" message...

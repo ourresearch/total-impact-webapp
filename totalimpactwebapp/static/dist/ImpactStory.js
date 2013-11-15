@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-13
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-14
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -298,8 +298,86 @@ angular.module('importers.importer', [
   'profile'
 ])
 angular.module('importers.importer')
-.factory('Importer', function(){
+.factory('Importer', function(Loading, Products, UsersProducts, UsersAbout){
+  var waitingOn = {}
+  var tiidsAdded = []
+  var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
 
+  var finish = function(importJobName){
+    waitingOn[importJobName] = false;
+    if (!_.some(_.values(waitingOn))) { // we're not waiting on anything...
+      Loading.finish('saveButton')
+      onImportCompletion()
+    }
+  }
+
+  var start = function(importJobName){
+    Loading.start("saveButton")
+    waitingOn[importJobName] = true
+  }
+
+
+  var saveProducts = function(url_slug, importerName, userInput){
+    start("saveProducts")
+    Products.save(
+      {'importerName': importerName}, // define the url
+      {input: userInput}, // the post data, from user input
+      function(resp, headers){  // run when the server gives us something back.
+        var tiids;
+
+        if (resp.error){
+          tiids = []
+        }
+        else {
+          tiids = _.keys(resp.products)
+        }
+
+        console.log("importer got us some tiids:", tiids);
+        tiidsAdded = tiids
+
+        // add the new products to the user's profile on the server
+        UsersProducts.patch(
+          {id: url_slug},  // the url
+          {"tiids": tiids},  // the POST data
+          function(){
+            finish("saveProducts")
+          }
+        )
+      }
+    )
+  }
+
+  var saveExternalUsername = function(url_slug, importerName, userInput, importerType){
+    if (importerType != "username") {
+      return false
+    }
+    var patchData = {about:{}}
+    patchData.about[importerName + "_id"] = userInput
+
+    start("saveExternalUsernames")
+    console.log("saving usernames.")
+    UsersAbout.patch(
+      {id:url_slug},
+      patchData,
+      function(){
+        finish("saveExternalUsernames")
+      }
+    )
+
+
+
+
+  }
+
+
+  return {
+    'saveProducts': saveProducts,
+    'saveExternalUsername': saveExternalUsername,
+    setOnImportCompletion: function(callback){
+      onImportCompletion = callback
+    },
+    getTiids: function(){return tiidsAdded}
+  }
 })
 
 
@@ -316,58 +394,43 @@ angular.module('importers.importer')
       $scope.importer.input = null  // may have been used before; clear it.
     }
   }
-  $scope.hideImportWindow = function(){
-    $scope.importWindowOpen = false;
-  }
   $scope.products = []
   $scope.importerHasRun = false
 
   $scope.onCancel = function(){
     $scope.importWindowOpen = false;
   }
+
   $scope.onImport = function(){
-    Loading.start('saveButton')
+
+    // define vars
     var slug = getUserSlug()
-    console.log("now calling /importer/" + $scope.importer.endpoint)
-    console.log("here's the profile slug we'll update:", slug)
-
-    // import the new products
-    Products.save(
-      {importerName: $scope.importer.endpoint}, // define the url
-      {input: $scope.importer.input}, // the post data, from user input
-      function(resp, headers){  // run when the server gives us something back.
-        var tiids;
-
-        if (resp.error){
-          tiids = []
-        }
-        else {
-          tiids = _.keys(resp.products)
-        }
-
-        // store our new products in this importer's scope, so we can display count to user
-        console.log("importer got us some tiids:", tiids);
-        $scope.products = tiids;
-
-        // add the new products to the user's profile on the server
-        UsersProducts.patch(
-          {id: slug, idType:"url_slug"},  // the url
-          {"tiids": tiids},  // the POST data
-          function(){
-            Loading.finish('saveButton')
-          }
-        )
-
+    Importer.setOnImportCompletion(
+      function(){
         // close the window
-        $scope.hideImportWindow()
+        $scope.importWindowOpen = false;
+        $scope.products = Importer.getTiids();
+
+        // redirectAfterImport or not (inherits this from parent scope)
         if ($scope.redirectAfterImport) { // inherited from parent scope
           Update.showUpdate(slug, function(){$location.path("/"+slug)})
         }
         $scope.importerHasRun = true
       }
     )
+
+    // ok, let's do this
+    console.log("/importer/" + $scope.importer.endpoint + " updating " + "'" + slug + "'")
+
+    Importer.saveProducts(slug, $scope.importer.endpoint, $scope.importer.input)
+    Importer.saveExternalUsername(slug,
+                                  $scope.importer.endpoint,
+                                  $scope.importer.input,
+                                  $scope.importer.inputType)
+
+
   }
-  Loading.finish('saveButton')
+//  Loading.finish('saveButton')  // not sure why this is here?
 })
   .directive("ngFileSelect",function(){
     return {
@@ -1071,7 +1134,7 @@ angular.module("profileProduct", [
   .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $location, $modal, security, UsersProduct, UsersProducts, Product, Loading) {
 
     var slug = $routeParams.url_slug
-    Loading.start()
+    Loading.start('profileProduct')
 
     $scope.userSlug = slug
     $scope.loading = Loading
@@ -1101,7 +1164,7 @@ angular.module("profileProduct", [
       console.log("data", data)
       $scope.biblio = Product.makeBiblio(data)
       $scope.metrics = Product.makeMetrics(data)
-      Loading.finish()
+      Loading.finish('profileProduct')
     },
     function(data){
       $location.path("/"+slug) // replace this with "product not found" message...
@@ -2240,12 +2303,12 @@ angular.module('directives.forms', [])
           ctrl.$setValidity('requireUnique', true);
           ctrl.$setValidity('checkingUnique', true);
 
-          Loading.finish();
+          Loading.finish('requireUnique');
           return true;
         }
 
         canceler = $q.defer()
-        Loading.start();
+        Loading.start('requireUnique');
         var url = '/user/' + value + '/about?id_type=' + userPropertyToCheck;
 
         $http.get(url, {timeout: canceler.promise})
@@ -2253,14 +2316,14 @@ angular.module('directives.forms', [])
           ctrl.$setValidity('requireUnique', false);
           ctrl.$setValidity('checkingUnique', true);
           ctrl.$dirty = true;
-          Loading.finish()
+          Loading.finish('requireUnique')
         })
         .error(function(data) {
           if (data) {
             ctrl.$setValidity('requireUnique', true);
             ctrl.$setValidity('checkingUnique', true);
             ctrl.$dirty = true;
-            Loading.finish()
+            Loading.finish('requireUnique')
           }
         })
       })
@@ -2333,7 +2396,7 @@ angular.module('resources.users',['ngResource'])
       {
         patch:{
           method: "PATCH",
-          params:{id:"@about.id"}
+          params:{id:"@about.id"} // use the 'id' property of submitted data obj
         }
       }
     )
@@ -3026,29 +3089,33 @@ angular.module('services.i18nNotifications').factory('i18nNotifications', ['loca
 angular.module("services.loading", [])
 angular.module("services.loading")
 .factory("Loading", function(){
-  var loading = false;
+
   var loadingJobs = {}
+
   var setLoading = function(setLoadingTo, jobName) {
-    if (jobName){
-      loadingJobs[jobName] = !!setLoadingTo
-    }
-    else {
-      loading = !!setLoadingTo;
-    }
-    return !!setLoadingTo
+    loadingJobs[jobName] = !!setLoadingTo
   }
+
 
   return {
     is: function(jobName){
-      if (jobName && jobName in loadingJobs){
-        return loadingJobs[jobName]
+
+      // loading.is() ... is ANY loading job set to True?
+      if (!jobName) {
+        _.some(_.values(loadingJobs))
       }
-      else if (jobName && !(jobName in loadingJobs)){
-        // you asked for loading state of a job that doesn't exist:
-        return null
-      }
+
+      // loading.is("jobname") ... is THIS job set to true?
       else {
-        return loading
+
+        // no one ever set this job
+        if (!(jobName in loadingJobs)) {
+          return null
+        }
+
+        // ok, someone asked for a real job object.
+        return loadingJobs[jobName]
+
       }
     },
     set: setLoading,
@@ -4130,6 +4197,28 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"given-name editable\" data-name=\"given_name\">{{ user.about.given_name }}</span>\n" +
     "            <span class=\"surname editable\" data-name=\"surname\">{{ user.about.surname }}</span>\n" +
     "         </h2>\n" +
+    "         <div class=\"external-usernames\">\n" +
+    "            <ul>\n" +
+    "               <li ng-show=\"user.about.github_id\">\n" +
+    "                  <a href=\"https://github.com/{{ user.about.github_id }}\">\n" +
+    "                     <img src=\"https://github.com/fluidicon.png\" />\n" +
+    "                     <span class=\"service\">GitHub</span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "               <li ng-show=\"user.about.orcid_id\">\n" +
+    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\">\n" +
+    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\" />\n" +
+    "                     <span class=\"service\">ORCID</span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "               <li ng-show=\"user.about.slideshare_id\">\n" +
+    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
+    "                     <img src=\"http://www.slideshare.net/favicon.ico\" />\n" +
+    "                     <span class=\"service\">Slideshare</span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"my-metrics\"></div> <!-- profile-level stats go here -->\n" +
     "   </div>\n" +

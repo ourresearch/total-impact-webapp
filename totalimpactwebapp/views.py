@@ -1,6 +1,7 @@
 import requests, os, json, logging, re, datetime
 import mandrill
 import analytics
+from time import sleep
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
 from flask import render_template, flash
@@ -344,7 +345,6 @@ def user_profile(profile_id):
 @app.route("/user/<profile_id>/about", methods=['GET', 'PATCH'])
 def get_user_about(profile_id):
 
-    # from time import sleep
     # sleep(1)
 
     user = get_user_for_response(
@@ -385,7 +385,7 @@ def user_products_get(id):
 
 @app.route("/user/<id>/products", methods=["GET", "POST", "DELETE", "PATCH"])
 def user_products_modify(id):
-
+    sleep(5)
 
 
     user = get_user_for_response(id, request)

@@ -53,7 +53,7 @@ angular.module('resources.users',['ngResource'])
       {
         patch:{
           method: "PATCH",
-          params:{id:"@about.id"}
+          params:{id:"@about.id"} // use the 'id' property of submitted data obj
         }
       }
     )

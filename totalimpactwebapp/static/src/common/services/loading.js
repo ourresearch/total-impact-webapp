@@ -1,29 +1,33 @@
 angular.module("services.loading", [])
 angular.module("services.loading")
 .factory("Loading", function(){
-  var loading = false;
+
   var loadingJobs = {}
+
   var setLoading = function(setLoadingTo, jobName) {
-    if (jobName){
-      loadingJobs[jobName] = !!setLoadingTo
-    }
-    else {
-      loading = !!setLoadingTo;
-    }
-    return !!setLoadingTo
+    loadingJobs[jobName] = !!setLoadingTo
   }
+
 
   return {
     is: function(jobName){
-      if (jobName && jobName in loadingJobs){
-        return loadingJobs[jobName]
+
+      // loading.is() ... is ANY loading job set to True?
+      if (!jobName) {
+        _.some(_.values(loadingJobs))
       }
-      else if (jobName && !(jobName in loadingJobs)){
-        // you asked for loading state of a job that doesn't exist:
-        return null
-      }
+
+      // loading.is("jobname") ... is THIS job set to true?
       else {
-        return loading
+
+        // no one ever set this job
+        if (!(jobName in loadingJobs)) {
+          return null
+        }
+
+        // ok, someone asked for a real job object.
+        return loadingJobs[jobName]
+
       }
     },
     set: setLoading,

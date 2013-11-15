@@ -73,12 +73,12 @@ angular.module('directives.forms', [])
           ctrl.$setValidity('requireUnique', true);
           ctrl.$setValidity('checkingUnique', true);
 
-          Loading.finish();
+          Loading.finish('requireUnique');
           return true;
         }
 
         canceler = $q.defer()
-        Loading.start();
+        Loading.start('requireUnique');
         var url = '/user/' + value + '/about?id_type=' + userPropertyToCheck;
 
         $http.get(url, {timeout: canceler.promise})
@@ -86,14 +86,14 @@ angular.module('directives.forms', [])
           ctrl.$setValidity('requireUnique', false);
           ctrl.$setValidity('checkingUnique', true);
           ctrl.$dirty = true;
-          Loading.finish()
+          Loading.finish('requireUnique')
         })
         .error(function(data) {
           if (data) {
             ctrl.$setValidity('requireUnique', true);
             ctrl.$setValidity('checkingUnique', true);
             ctrl.$dirty = true;
-            Loading.finish()
+            Loading.finish('requireUnique')
           }
         })
       })

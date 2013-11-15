@@ -7,8 +7,86 @@ angular.module('importers.importer', [
   'profile'
 ])
 angular.module('importers.importer')
-.factory('Importer', function(){
+.factory('Importer', function(Loading, Products, UsersProducts, UsersAbout){
+  var waitingOn = {}
+  var tiidsAdded = []
+  var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
 
+  var finish = function(importJobName){
+    waitingOn[importJobName] = false;
+    if (!_.some(_.values(waitingOn))) { // we're not waiting on anything...
+      Loading.finish('saveButton')
+      onImportCompletion()
+    }
+  }
+
+  var start = function(importJobName){
+    Loading.start("saveButton")
+    waitingOn[importJobName] = true
+  }
+
+
+  var saveProducts = function(url_slug, importerName, userInput){
+    start("saveProducts")
+    Products.save(
+      {'importerName': importerName}, // define the url
+      {input: userInput}, // the post data, from user input
+      function(resp, headers){  // run when the server gives us something back.
+        var tiids;
+
+        if (resp.error){
+          tiids = []
+        }
+        else {
+          tiids = _.keys(resp.products)
+        }
+
+        console.log("importer got us some tiids:", tiids);
+        tiidsAdded = tiids
+
+        // add the new products to the user's profile on the server
+        UsersProducts.patch(
+          {id: url_slug},  // the url
+          {"tiids": tiids},  // the POST data
+          function(){
+            finish("saveProducts")
+          }
+        )
+      }
+    )
+  }
+
+  var saveExternalUsername = function(url_slug, importerName, userInput, importerType){
+    if (importerType != "username") {
+      return false
+    }
+    var patchData = {about:{}}
+    patchData.about[importerName + "_id"] = userInput
+
+    start("saveExternalUsernames")
+    console.log("saving usernames.")
+    UsersAbout.patch(
+      {id:url_slug},
+      patchData,
+      function(){
+        finish("saveExternalUsernames")
+      }
+    )
+
+
+
+
+  }
+
+
+  return {
+    'saveProducts': saveProducts,
+    'saveExternalUsername': saveExternalUsername,
+    setOnImportCompletion: function(callback){
+      onImportCompletion = callback
+    },
+    getTiids: function(){return tiidsAdded}
+  }
 })
 
 
@@ -25,58 +103,43 @@ angular.module('importers.importer')
       $scope.importer.input = null  // may have been used before; clear it.
     }
   }
-  $scope.hideImportWindow = function(){
-    $scope.importWindowOpen = false;
-  }
   $scope.products = []
   $scope.importerHasRun = false
 
   $scope.onCancel = function(){
     $scope.importWindowOpen = false;
   }
+
   $scope.onImport = function(){
-    Loading.start('saveButton')
+
+    // define vars
     var slug = getUserSlug()
-    console.log("now calling /importer/" + $scope.importer.endpoint)
-    console.log("here's the profile slug we'll update:", slug)
-
-    // import the new products
-    Products.save(
-      {importerName: $scope.importer.endpoint}, // define the url
-      {input: $scope.importer.input}, // the post data, from user input
-      function(resp, headers){  // run when the server gives us something back.
-        var tiids;
-
-        if (resp.error){
-          tiids = []
-        }
-        else {
-          tiids = _.keys(resp.products)
-        }
-
-        // store our new products in this importer's scope, so we can display count to user
-        console.log("importer got us some tiids:", tiids);
-        $scope.products = tiids;
-
-        // add the new products to the user's profile on the server
-        UsersProducts.patch(
-          {id: slug, idType:"url_slug"},  // the url
-          {"tiids": tiids},  // the POST data
-          function(){
-            Loading.finish('saveButton')
-          }
-        )
-
+    Importer.setOnImportCompletion(
+      function(){
         // close the window
-        $scope.hideImportWindow()
+        $scope.importWindowOpen = false;
+        $scope.products = Importer.getTiids();
+
+        // redirectAfterImport or not (inherits this from parent scope)
         if ($scope.redirectAfterImport) { // inherited from parent scope
           Update.showUpdate(slug, function(){$location.path("/"+slug)})
         }
         $scope.importerHasRun = true
       }
     )
+
+    // ok, let's do this
+    console.log("/importer/" + $scope.importer.endpoint + " updating " + "'" + slug + "'")
+
+    Importer.saveProducts(slug, $scope.importer.endpoint, $scope.importer.input)
+    Importer.saveExternalUsername(slug,
+                                  $scope.importer.endpoint,
+                                  $scope.importer.input,
+                                  $scope.importer.inputType)
+
+
   }
-  Loading.finish('saveButton')
+//  Loading.finish('saveButton')  // not sure why this is here?
 })
   .directive("ngFileSelect",function(){
     return {

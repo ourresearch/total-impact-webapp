@@ -13,6 +13,28 @@
             <span class="given-name editable" data-name="given_name">{{ user.about.given_name }}</span>
             <span class="surname editable" data-name="surname">{{ user.about.surname }}</span>
          </h2>
+         <div class="external-usernames">
+            <ul>
+               <li ng-show="user.about.github_id">
+                  <a href="https://github.com/{{ user.about.github_id }}">
+                     <img src="https://github.com/fluidicon.png" />
+                     <span class="service">GitHub</span>
+                  </a>
+               </li>
+               <li ng-show="user.about.orcid_id">
+                  <a href="https://orcid.org/{{ user.about.orcid_id }}">
+                     <img src="http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico" />
+                     <span class="service">ORCID</span>
+                  </a>
+               </li>
+               <li ng-show="user.about.slideshare_id">
+                  <a href="https://www.slideshare.net/{{ user.about.slideshare_id }}">
+                     <img src="http://www.slideshare.net/favicon.ico" />
+                     <span class="service">Slideshare</span>
+                  </a>
+               </li>
+            </ul>
+         </div>
       </div>
       <div class="my-metrics"></div> <!-- profile-level stats go here -->
    </div>

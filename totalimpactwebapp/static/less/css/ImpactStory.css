@@ -7246,6 +7246,22 @@ div.profile-header div.wrapper div.my-vitals h2.editable-name {
   padding-top: 30px;
   float: left;
 }
+div.profile-header div.wrapper div.my-vitals div.external-usernames {
+  float: left;
+  clear: left;
+}
+div.profile-header div.wrapper div.my-vitals div.external-usernames li {
+  float: left;
+  margin: 0 10px 0 2px;
+}
+div.profile-header div.wrapper div.my-vitals div.external-usernames li a {
+  font-size: 14px;
+  color: #555;
+}
+div.profile-header div.wrapper div.my-vitals div.external-usernames li a img {
+  height: 16px;
+  margin-top: -3px;
+}
 div.product-controls {
   margin-top: 0;
   font-size: 16px;
