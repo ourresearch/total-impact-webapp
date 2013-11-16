@@ -171,13 +171,12 @@ angular.module('importers.allTheImporters')
     },
     {
       displayName: "figshare",
-      inputType: "idList",
-      inputNeeded: "DOIs",
-      endpoint: "dois",
+      inputType: "username",
+      inputNeeded: "author page URL",
       url: "http://figshare.com",
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
-      help: "You can find Figshare DOIs on each dataset's figshare webpage; it's inside the 'cite' section.",
-      placeholder: "http://dx.doi.org/10.6084/m9.figshare.example"
+      help: "Your figshare author page URL is the URL of the webpage you arrive at when you click your name on one of your figshare item pages.",
+      placeholder: "http://figshare.com/authors/schamberlain/96554"
     },
     {
       displayName: "YouTube",
