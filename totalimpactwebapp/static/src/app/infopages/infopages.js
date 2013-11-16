@@ -29,8 +29,14 @@ angular.module( 'infopages', [
                   Page.setTitle("Share the full story of your research impact.")
                  })
 
-    .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page ) {
+    .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, $http ) {
                    Page.setTitle("FAQ")
+                   $http.get("/providers").then(
+                     function(resp){
+                       $scope.providers = resp
+                     },
+                     function(resp){console.log("/providers failed.")}
+                   )
 
                  })
 

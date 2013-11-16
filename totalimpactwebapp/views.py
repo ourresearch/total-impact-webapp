@@ -305,7 +305,7 @@ def login():
         # Yay, no errors! Log the user in.
         login_user(user)
 
-    user = User.query.filter_by(email="52@e.com").first()
+    user = User.query.filter_by(email=email).first()
     login_user(user)
 
     return json_resp_from_thing({"user": user.as_dict()})
@@ -565,7 +565,12 @@ def providers():
     except requests.ConnectionError:
         metadata = {}
 
-    return json_resp_from_thing(metadata)
+    metadata_list = []
+    for k, v in metadata.iteritems():
+        v.name = k
+        metadata_list.append(v)
+
+    return json_resp_from_thing(metadata_list)
 
 
 
