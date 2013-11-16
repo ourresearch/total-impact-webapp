@@ -9,6 +9,7 @@ _.mixin(_.str.exports());
 
 
 angular.module('app', [
+  'placeholderShim',
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -4866,11 +4867,10 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "        <div class=\"alert alert-error\" ng-show=\"authError\">\n" +
     "            {{authError}}\n" +
     "        </div>\n" +
-    "        <div class=\"alert alert-info\">Please enter your login details</div>\n" +
     "        <label>E-mail</label>\n" +
-    "        <input name=\"login\" type=\"email\" ng-model=\"user.email\" required autofocus>\n" +
+    "        <input name=\"login\" type=\"email\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
     "        <label>Password</label>\n" +
-    "        <input name=\"pass\" type=\"password\" ng-model=\"user.password\" required>\n" +
+    "        <input name=\"pass\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
     "    </div>\n" +
     "    <div class=\"modal-footer\">\n" +
     "        <button class=\"btn btn-primary login\" ng-click=\"login()\" ng-disabled='form.$invalid'>Sign in</button>\n" +
