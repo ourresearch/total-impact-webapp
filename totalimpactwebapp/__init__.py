@@ -5,6 +5,8 @@ from flask.ext.login import LoginManager
 from sqlalchemy import exc
 from sqlalchemy import event
 from sqlalchemy.pool import Pool
+from totalimpactwebapp.util import HTTPMethodOverrideMiddleware
+
 
 # set up logging
 # see http://wiki.pylonshq.com/display/pylonscookbook/Alternative+logging+configuration
@@ -18,6 +20,9 @@ logger = logging.getLogger("tiwebapp")
 
 # set up application
 app = Flask(__name__)
+
+# so you can fake PATCH support (http://flask.pocoo.org/docs/patterns/methodoverrides/)
+app.wsgi_app = HTTPMethodOverrideMiddleware(app.wsgi_app)
 
 
 # database stuff

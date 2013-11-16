@@ -17,6 +17,7 @@ from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
 from totalimpactwebapp.user import make_genre_heading_products
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
+
 import newrelic.agent
 
 logger = logging.getLogger("tiwebapp.views")
