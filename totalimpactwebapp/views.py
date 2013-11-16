@@ -176,9 +176,6 @@ def setup_db_tables():
 def load_globals():
     g.user = current_user
 
-    logger.debug("before request. here's our current user", g.user.as_dict())
-
-
     g.roots = {
         "api": os.getenv("API_ROOT"),
         "api_pretty": os.getenv("API_ROOT_PRETTY", os.getenv("API_ROOT")),
@@ -342,6 +339,9 @@ def user_profile(profile_id):
 
 
 
+@app.route("/patchtest", methods=["PATCH"])
+def patchtest():
+    return json_resp_from_thing({"success": True})
 
 #------------------ /user/:id/about   -----------------
 
