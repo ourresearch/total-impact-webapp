@@ -345,19 +345,24 @@ def user_profile(profile_id):
 @app.route("/user/<profile_id>/about", methods=['GET', 'PATCH'])
 def get_user_about(profile_id):
 
-    # sleep(1)
+    logger.debug("got request for user", profile_id, request.json)
 
     user = get_user_for_response(
         profile_id,
         request,
         include_products=False  # returns faster this way.
     )
+    logger.debug("got the user out: ", user.as_dict())
 
     if request.method == "GET":
         pass
 
     elif request.method == "PATCH":
+        logger.debug("got patch request for user")
+
         user.patch(request.json["about"])
+        logger.debug("patched the user: ", user.as_dict())
+
         db.session.commit()
 
 
@@ -385,8 +390,6 @@ def user_products_get(id):
 
 @app.route("/user/<id>/products", methods=["GET", "POST", "DELETE", "PATCH"])
 def user_products_modify(id):
-    sleep(5)
-
 
     user = get_user_for_response(id, request)
     logger.debug(u"got user {user}".format(
