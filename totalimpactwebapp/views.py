@@ -215,7 +215,7 @@ def redirect_everything_but_root_and_static_and_api():
 def add_crossdomain_header(resp):
     #support CORS
     resp.headers['Access-Control-Allow-Origin'] = "*"
-    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+    resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE, PATCH"
     resp.headers['Access-Control-Allow-Headers'] = "origin, content-type, accept, x-requested-with"
     return resp
 
