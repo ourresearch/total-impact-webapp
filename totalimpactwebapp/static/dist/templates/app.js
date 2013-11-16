@@ -501,7 +501,7 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "\n" +
     "   <li ng-repeat=\"award in awards | orderBy:['!isHighly', 'displayOrder']\" class=\"award\">\n" +
     "\n" +
-    "      <span href=\"#\"\n" +
+    "      <a href=\"{{ getProductPageUrl() }}\"\n" +
     "            class=\"ti-badge lil-badge {{award.audience}} {{award.engagementType}}\"\n" +
     "            ng-show=\"!award.isHighly\"\n" +
     "            popover-trigger=\"mouseenter\"\n" +
@@ -513,9 +513,9 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "            Click to learn more.\">\n" +
     "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
     "         <span class=\"audience\">by {{award.audience}}</span>\n" +
-    "       </span>\n" +
+    "       </a>\n" +
     "\n" +
-    "      <span href=\"#\"\n" +
+    "      <a href=\"{{ getProductPageUrl() }}\"\n" +
     "            class=\"ti-badge big-badge {{award.audience}} {{award.engagementType}}\"\n" +
     "            ng-show=\"award.isHighly\"\n" +
     "            popover-trigger=\"mouseenter\"\n" +
@@ -531,7 +531,7 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "         <span class=\"modifier\">highly</span>\n" +
     "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
     "         <span class=\"audience\">by {{award.audience}}</span>\n" +
-    "      </span>\n" +
+    "      </a>\n" +
     "\n" +
     "      <span class=\"metrics\">\n" +
     "         <img ng-repeat=\"metric in award.metrics\" ng-src=\"{{ metric.static_meta.icon }}\">\n" +

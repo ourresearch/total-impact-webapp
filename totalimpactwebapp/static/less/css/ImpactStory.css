@@ -7545,7 +7545,7 @@ div.products div.products-without-metrics div.well a {
   /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 
 }
-.product span.ti-badge {
+.product a.ti-badge {
   height: 24px;
   font-size: 12px;
   text-align: center;
@@ -7573,27 +7573,30 @@ div.products div.products-without-metrics div.well a {
   background: black;
   border: 1px solid black;
 }
-.product span.ti-badge span.audience {
+.product a.ti-badge span.audience {
   display: none;
 }
-.product span.ti-badge.scholars {
+.product a.ti-badge:hover {
+  text-decoration: none;
+}
+.product a.ti-badge.scholars {
   background: #377eb8;
   border-color: #377eb8;
 }
-.product span.ti-badge.public {
+.product a.ti-badge.public {
   background: #4daf4a;
   border-color: #4daf4a;
 }
-.product span.ti-badge.big-badge {
+.product a.ti-badge.big-badge {
   color: #fff;
 }
-.product span.ti-badge.lil-badge {
+.product a.ti-badge.lil-badge {
   background: #fff;
 }
-.product span.ti-badge.lil-badge.scholars {
+.product a.ti-badge.lil-badge.scholars {
   color: #377eb8;
 }
-.product span.ti-badge.lil-badge.public {
+.product a.ti-badge.lil-badge.public {
   color: #4daf4a;
 }
 .product div.popover {
