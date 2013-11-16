@@ -2365,7 +2365,7 @@ angular.module('resources.users',['ngResource'])
         },
         patch: {
           method: "POST",
-          headers: {'X_HTTP_METHOD_OVERRIDE': 'PATCH'}
+          headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'}
 
         },
         delete: {
@@ -2398,7 +2398,7 @@ angular.module('resources.users',['ngResource'])
       {
         patch:{
           method: "POST",
-          headers: {'X_HTTP_METHOD_OVERRIDE': 'PATCH'},
+          headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'},
           params:{id:"@about.id"} // use the 'id' property of submitted data obj
         }
       }

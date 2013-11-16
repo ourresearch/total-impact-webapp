@@ -239,6 +239,17 @@ def extract_filename(s):
 
 
 
+@app.route("/headers", methods=["GET", "POST"])
+def test_headers():
+    headers = {}
+    for k, v in request.headers.iteritems():
+        headers[k] = v
+
+    del headers["Cookie"]  # takes up too much space
+
+    return json_resp_from_thing(headers)
+
+
 
 
 
@@ -339,10 +350,6 @@ def user_profile(profile_id):
 
 
 
-
-@app.route("/patchtest", methods=["PATCH"])
-def patchtest():
-    return json_resp_from_thing({"success": True})
 
 #------------------ /user/:id/about   -----------------
 
