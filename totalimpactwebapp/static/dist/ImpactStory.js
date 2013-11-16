@@ -145,6 +145,16 @@ angular.module('importers.allTheImporters')
       help: "Your username is right after \"slideshare.net/\" in your profile's URL."
     },
     {
+      displayName: "Twitter",
+      inputType: "username",
+      inputNeeded: "username",
+      endpoint: "twitter_account",      
+      url: "http://twitter.com",
+      descr: "Twitter is a social networking site for sharing short messages.",
+      help: "Your Twitter username is often written starting with @.",
+      placeholder: "@username"
+    },     
+    {
       displayName: "Google Scholar",
       inputType: "file",
       inputNeeded: "BibTeX file",
@@ -161,13 +171,12 @@ angular.module('importers.allTheImporters')
     },
     {
       displayName: "figshare",
-      inputType: "idList",
-      inputNeeded: "DOIs",
-      endpoint: "dois",
+      inputType: "username",
+      inputNeeded: "author page URL",
       url: "http://figshare.com",
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
-      help: "You can find Figshare DOIs on each dataset's figshare webpage; it's inside the 'cite' section.",
-      placeholder: "http://dx.doi.org/10.6084/m9.figshare.example"
+      help: "Your figshare author page URL is the URL of the webpage you arrive at when you click your name on one of your figshare item pages.",
+      placeholder: "http://figshare.com/authors/schamberlain/96554"
     },
     {
       displayName: "YouTube",
@@ -186,7 +195,7 @@ angular.module('importers.allTheImporters')
       descr: "Vimeo is an online video-sharing site.",
       help: "Copy the URL for the video you want to add, then paste it here.",
       placeholder: "http://vimeo.com/48605764"
-    },
+    },   
     {
       displayName: "Dryad",
       inputType: "idList",
@@ -648,6 +657,8 @@ angular.module('product.product')
             ["slideshare:views", "public", "viewed", "badge", 3],
             ["topsy:influential_tweets", "public", "discussed", "zoom", 0],
             ["topsy:tweets", "public", "discussed", "badge", 3],
+            ["twitter_account:followers", "public", "recommended", "badge", 3],
+            ["twitter_account:lists", "public", "saved", "badge", 3],
             ["vimeo:plays", "public", "viewed", "badge", 3],
             ["vimeo:likes", "public", "recommended", "badge", 3],
             ["vimeo:comments", "public", "discussed", "badge", 3],
@@ -4037,8 +4048,8 @@ angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($t
     "</h5>\n" +
     "<div class=\"optional-biblio\">\n" +
     "   <span ng-if=\"biblio.year\" class=\"year\">({{ biblio.year }})</span>\n" +
-    "   <span ng-if=\"biblio.authors\" class=\"authors\">{{ biblio.authors }}</span>\n" +
-    "   <span ng-if=\"biblio.repository\" class=\"repository\">{{ biblio.repository }}</span>\n" +
+    "   <span ng-if=\"biblio.authors\" class=\"authors\">{{ biblio.authors }}. </span>\n" +
+    "   <span ng-if=\"biblio.repository\" class=\"repository\">{{ biblio.repository }}. </span>\n" +
     "   <span ng-if=\"biblio.journal\" class=\"repository\">{{ biblio.journal }}</span>\n" +
     "   <span ng-if=\"biblio.description\" class=\"repository\">{{ biblio.description }}</span>\n" +
     "\n" +
