@@ -792,6 +792,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <i class=\"icon-save software\"></i>\n" +
     "               <i class=\"icon-file-text-alt article\"></i>\n" +
     "               <i class=\"icon-table dataset\"></i>\n" +
+    "               <i class=\"icon-desktop slides\"></i>\n" +
+    "               <i class=\"icon-globe webpage\"></i>\n" +
+    "               <i class=\"icon-facetime-video video\"></i>\n" +
     "               {{ product.headingValue }}\n" +
     "            </h2>\n" +
     "            <div class=\"real-product\" ng-show=\"!product.isHeading\">\n" +

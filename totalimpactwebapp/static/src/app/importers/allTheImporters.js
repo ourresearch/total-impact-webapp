@@ -82,7 +82,7 @@ angular.module('importers.allTheImporters')
       inputType: "idList",
       inputNeeded: "DOIs",
       endpoint: "dois",
-      url: 'http://dryad.org',
+      url: 'http://datadryad.org',
       descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable.",
       help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
       placeholder: "doi:10.5061/dryad.example"
