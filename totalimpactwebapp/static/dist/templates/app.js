@@ -748,11 +748,13 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"product-controls\" ng-show=\"products.length\">\n" +
+    "<div class=\"product-controls\" >\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"edit-controls btn-group\">\n" +
     "         <div class=\"num-items\">\n" +
-    "            <span class=\"val-plus-text\"><span class=\"value\">{{ filterProducts(products).length }}</span> research products</span>\n" +
+    "            <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
+    "               <span class=\"value\">{{ filterProducts(products).length }}</span> research products\n" +
+    "            </span>\n" +
     "            <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
     "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
     "            </a>\n" +
@@ -774,8 +776,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div class=\"products\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
-    "      <div class=\"loading\" ng-show=\"!products.length\">\n" +
-    "         <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading products...</span></div>\n" +
+    "      <div class=\"loading\" ng-show=\"loadingProducts()\">\n" +
+    "         <div class=\"working products-loading\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading products...</span></div>\n" +
     "      </div>\n" +
     "\n" +
     "      <ul class=\"products-list\">\n" +
@@ -800,7 +802,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </ul>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"products-without-metrics wrapper\" ng-show=\"products.length && !showProductsWithoutMetrics\">\n" +
+    "   <div class=\"products-without-metrics wrapper\"\n" +
+    "        ng-show=\"!loadingProducts() && !showProductsWithoutMetrics && filterProducts(products, 'withoutMetrics').length\">\n" +
     "      <div class=\"well\">\n" +
     "         Another <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> products aren't shown, because we couldn't find any impact data for them.\n" +
     "         <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\">Show these, too.</a>\n" +

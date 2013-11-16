@@ -7145,6 +7145,7 @@ div.loading div.working {
   font-family: Lato;
   font-weight: bolder;
   text-align: center;
+  margin-top: 50px;
 }
 div.loading div.working span.text {
   margin-left: 10px;
@@ -7196,6 +7197,7 @@ div.profile-subpage.profile-add-products div.importers {
 div.profile-header {
   margin-top: 100px;
   margin-bottom: 50px;
+  height: 110px;
   clear: both;
 }
 div.profile-header:before,
@@ -7221,9 +7223,6 @@ div.profile-header:after {
 }
 div.profile-header:after {
   clear: both;
-}
-div.profile-header div.wrapper div.loading div.working {
-  padding-top: 50px;
 }
 div.profile-header div.wrapper div.my-picture {
   float: left;

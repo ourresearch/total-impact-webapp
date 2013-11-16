@@ -40,11 +40,13 @@
    </div>
 </div>
 
-<div class="product-controls" ng-show="products.length">
+<div class="product-controls" >
    <div class="wrapper">
       <div class="edit-controls btn-group">
          <div class="num-items">
-            <span class="val-plus-text"><span class="value">{{ filterProducts(products).length }}</span> research products</span>
+            <span ng-hide="loadingProducts()" class="val-plus-text">
+               <span class="value">{{ filterProducts(products).length }}</span> research products
+            </span>
             <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics" ng-show="showProductsWithoutMetrics">
                (hide <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> without metrics)
             </a>
@@ -66,8 +68,8 @@
 
 <div class="products" ng-show="userExists">
    <div class="wrapper">
-      <div class="loading" ng-show="!products.length">
-         <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading products...</span></div>
+      <div class="loading" ng-show="loadingProducts()">
+         <div class="working products-loading"><i class="icon-refresh icon-spin"></i><span class="text">Loading products...</span></div>
       </div>
 
       <ul class="products-list">
@@ -92,7 +94,8 @@
       </ul>
    </div>
 
-   <div class="products-without-metrics wrapper" ng-show="products.length && !showProductsWithoutMetrics">
+   <div class="products-without-metrics wrapper"
+        ng-show="!loadingProducts() && !showProductsWithoutMetrics && filterProducts(products, 'withoutMetrics').length">
       <div class="well">
          Another <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> products aren't shown, because we couldn't find any impact data for them.
          <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics">Show these, too.</a>

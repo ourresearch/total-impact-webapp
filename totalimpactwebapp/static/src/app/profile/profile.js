@@ -72,6 +72,10 @@ angular.module("profile", [
   {
 
     var userSlug = $routeParams.url_slug;
+    var loadingProducts = true
+    $scope.loadingProducts = function(){
+      return loadingProducts
+    }
     $scope.userExists = true;
     $scope.showProductsWithoutMetrics = false;
     $scope.filterProducts =  UserProfile.filterProducts;
@@ -89,11 +93,15 @@ angular.module("profile", [
       return Product.getGenre(product);
     }
 
+
     $scope.products = UsersProducts.query({
       id: userSlug,
       includeHeadingProducts: true,
       idType: "url_slug"
-    });
+    },
+      function(resp){loadingProducts = false},
+      function(resp){loadingProducts = false}
+    );
 
 })
   .directive("backToProfile",function($location){

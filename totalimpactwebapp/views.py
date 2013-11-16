@@ -388,6 +388,7 @@ def get_user_about(profile_id):
 @app.route("/user/<id>/products", methods=["GET"])
 def user_products_get(id):
 
+
     user = get_user_for_response(id, request)
 
     resp = user.products
