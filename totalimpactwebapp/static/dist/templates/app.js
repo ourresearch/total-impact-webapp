@@ -222,8 +222,6 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "<div class=\"main infopage\" id=\"faq\"><div class=\"wrapper\">\n" +
     "   <h2 class=\"infopage-heading\">FAQ</h2>\n" +
     "\n" +
-    "   <div id=\"toc\"></div>\n" +
-    "\n" +
     "   <h3 id=\"what\" class=\"first\">what is ImpactStory?</h3>\n" +
     "\n" +
     "   <p>ImpactStory is an open-source, web-based tool that helps researchers expore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.\n" +
