@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-15
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-16
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -660,7 +660,7 @@ angular.module('product.product')
             ["topsy:influential_tweets", "public", "discussed", "zoom", 0],
             ["topsy:tweets", "public", "discussed", "badge", 3],
             ["twitter_account:followers", "public", "recommended", "badge", 3],
-            ["twitter_account:lists", "public", "saved", "badge", 3],
+            ["twitter_account:lists", "public", "saved", "badge", 3],            
             ["vimeo:plays", "public", "viewed", "badge", 3],
             ["vimeo:likes", "public", "recommended", "badge", 3],
             ["vimeo:comments", "public", "discussed", "badge", 3],
@@ -4050,8 +4050,8 @@ angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($t
     "</h5>\n" +
     "<div class=\"optional-biblio\">\n" +
     "   <span ng-if=\"biblio.year\" class=\"year\">({{ biblio.year }})</span>\n" +
-    "   <span ng-if=\"biblio.authors\" class=\"authors\">{{ biblio.authors }}. </span>\n" +
-    "   <span ng-if=\"biblio.repository\" class=\"repository\">{{ biblio.repository }}. </span>\n" +
+    "   <span ng-if=\"biblio.authors\" class=\"authors\">{{ biblio.authors }}.</span>\n" +
+    "   <span ng-if=\"biblio.repository\" class=\"repository\">{{ biblio.repository }}.</span>\n" +
     "   <span ng-if=\"biblio.journal\" class=\"repository\">{{ biblio.journal }}</span>\n" +
     "   <span ng-if=\"biblio.description\" class=\"repository\">{{ biblio.description }}</span>\n" +
     "\n" +

@@ -74,6 +74,8 @@ angular.module('product.product')
             ["slideshare:views", "public", "viewed", "badge", 3],
             ["topsy:influential_tweets", "public", "discussed", "zoom", 0],
             ["topsy:tweets", "public", "discussed", "badge", 3],
+            ["twitter_account:followers", "public", "recommended", "badge", 3],
+            ["twitter_account:lists", "public", "saved", "badge", 3],            
             ["vimeo:plays", "public", "viewed", "badge", 3],
             ["vimeo:likes", "public", "recommended", "badge", 3],
             ["vimeo:comments", "public", "discussed", "badge", 3],
