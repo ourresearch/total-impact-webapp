@@ -73,6 +73,8 @@ class User(db.Model):
     orcid_id = db.Column(db.String(64))
     github_id = db.Column(db.String(64))
     slideshare_id = db.Column(db.String(64))
+    twitter_account_id = db.Column(db.String(64))
+    figshare_id = db.Column(db.String(64))
 
     tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
@@ -200,7 +202,9 @@ class User(db.Model):
             "last_viewed_profile",
             "orcid_id",
             "github_id",
-            "slideshare_id"
+            "slideshare_id",
+            "twitter_account_id",
+            "figshare_id"
         ]
 
         ret_dict = {}

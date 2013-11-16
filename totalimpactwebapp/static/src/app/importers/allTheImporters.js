@@ -35,6 +35,16 @@ angular.module('importers.allTheImporters')
       help: "Your username is right after \"slideshare.net/\" in your profile's URL."
     },
     {
+      displayName: "Twitter",
+      inputType: "username",
+      inputNeeded: "username",
+      endpoint: "twitter_account",      
+      url: "http://twitter.com",
+      descr: "Twitter is a social networking site for sharing short messages.",
+      help: "Your Twitter username is often written starting with @.",
+      placeholder: "@username"
+    },     
+    {
       displayName: "Google Scholar",
       inputType: "file",
       inputNeeded: "BibTeX file",
@@ -51,18 +61,18 @@ angular.module('importers.allTheImporters')
     },
     {
       displayName: "figshare",
-      inputType: "idList",
-      inputNeeded: "DOIs",
-      endpoint: "dois",
+      inputType: "username",
+      inputNeeded: "author page URL",
       url: "http://figshare.com",
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
-      help: "You can find Figshare DOIs on each dataset's figshare webpage; it's inside the 'cite' section.",
-      placeholder: "http://dx.doi.org/10.6084/m9.figshare.example"
+      help: "Your figshare author page URL is the URL of the webpage you arrive at when you click your name on one of your figshare item pages.",
+      placeholder: "http://figshare.com/authors/schamberlain/96554"
     },
     {
       displayName: "YouTube",
       inputType: "idList",
       inputNeeded: "URLs",
+      endpoint: "urls",            
       url: "http://youtube.com",
       descr: "YouTube is an online video-sharing site.",
       help: "Copy the URL for the video you want to add, then paste it here.",
@@ -72,11 +82,12 @@ angular.module('importers.allTheImporters')
       displayName: "Vimeo",
       inputType: "idList",
       inputNeeded: "URLs",
+      endpoint: "urls",      
       url: "http://vimeo.com",
       descr: "Vimeo is an online video-sharing site.",
       help: "Copy the URL for the video you want to add, then paste it here.",
       placeholder: "http://vimeo.com/48605764"
-    },
+    },   
     {
       displayName: "Dryad",
       inputType: "idList",

@@ -337,7 +337,8 @@ def user_profile(profile_id):
         except IntegrityError:
             abort_json(409, "Your user_slug isn't unique.")
 
-        print "logging in user", user.as_dict()
+        logger.debug(u"logging in user {user}".format(
+            user=user.as_dict()))
         login_user(user)
         return json_resp_from_thing({"user": user.as_dict()})
 
@@ -355,23 +356,27 @@ def user_profile(profile_id):
 @app.route("/user/<profile_id>/about", methods=['GET', 'PATCH'])
 def get_user_about(profile_id):
 
-    logger.debug("got request for user", profile_id, request.json)
+    logger.debug(u"got request for user {profile_id}".format(
+        profile_id=profile_id))
 
     user = get_user_for_response(
         profile_id,
         request,
         include_products=False  # returns faster this way.
     )
-    logger.debug("got the user out: ", user.as_dict())
+    logger.debug(u"got the user out: {user}".format(
+        user=user.as_dict()))
 
     if request.method == "GET":
         pass
 
     elif request.method == "PATCH":
-        logger.debug("got patch request for user")
+        logger.debug(u"got patch request for user {profile_id} {json}".format(
+            profile_id=profile_id, json=request.json))
 
         user.patch(request.json["about"])
-        logger.debug("patched the user: ", user.as_dict())
+        logger.debug(u"patched the user: {user} ".format(
+            user=user.as_dict()))
 
         db.session.commit()
 
@@ -531,9 +536,12 @@ def delete_test_user():
 
             url = g.roots["api"] + "/v1/collection/" + user.collection_id
             r = requests.delete(url, params=coll_delete_params)
-            print "delete colls and items; " + r.text
+            logger.debug(u"delete colls and items; {text}".format(
+                text=r.text))
 
-            print "deleting user ", user.email
+            logger.debug(u"deleting user {email}".format(
+                email=user.email))
+
             db.session.delete(user)
 
         db.session.commit()
@@ -546,7 +554,9 @@ def delete_test_user():
 @app.route("/users/test/collection_ids")
 def test_user_cids():
     test_users = User.query.filter(User.surname == "impactstory").all()
-    print "test_users: ", test_users
+    logger.debug(u"test users: {test_users}".format(
+        test_users=test_users))
+
     test_collection_ids = [user.collection_id for user in test_users]
     return json_resp_from_thing({"collection_ids": test_collection_ids})
 

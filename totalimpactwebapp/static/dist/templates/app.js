@@ -551,8 +551,8 @@ angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($t
     "</h5>\n" +
     "<div class=\"optional-biblio\">\n" +
     "   <span ng-if=\"biblio.year\" class=\"year\">({{ biblio.year }})</span>\n" +
-    "   <span ng-if=\"biblio.authors\" class=\"authors\">{{ biblio.authors }}</span>\n" +
-    "   <span ng-if=\"biblio.repository\" class=\"repository\">{{ biblio.repository }}</span>\n" +
+    "   <span ng-if=\"biblio.authors\" class=\"authors\">{{ biblio.authors }}.</span>\n" +
+    "   <span ng-if=\"biblio.repository\" class=\"repository\">{{ biblio.repository }}.</span>\n" +
     "   <span ng-if=\"biblio.journal\" class=\"repository\">{{ biblio.journal }}</span>\n" +
     "   <span ng-if=\"biblio.description\" class=\"repository\">{{ biblio.description }}</span>\n" +
     "\n" +
@@ -722,6 +722,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </h2>\n" +
     "         <div class=\"external-usernames\">\n" +
     "            <ul>\n" +
+    "               <li ng-show=\"user.about.twitter_account_id\">\n" +
+    "                  <a href=\"https://twitter.com/{{ user.about.twitter_account_id }}\">\n" +
+    "                     <img src=\"https://twitter.com/favicon.ico\" />\n" +
+    "                     <span class=\"service\">Twitter</span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
     "               <li ng-show=\"user.about.github_id\">\n" +
     "                  <a href=\"https://github.com/{{ user.about.github_id }}\">\n" +
     "                     <img src=\"https://github.com/fluidicon.png\" />\n" +
@@ -738,6 +744,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
     "                     <img src=\"http://www.slideshare.net/favicon.ico\" />\n" +
     "                     <span class=\"service\">Slideshare</span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "               <li ng-show=\"user.about.figshare_id\">\n" +
+    "                  <a href=\"{{ user.about.figshare_id }}\">\n" +
+    "                     <img src=\"http://figshare.com/static/img/favicon.png\" />\n" +
+    "                     <span class=\"service\">figshare</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "            </ul>\n" +
