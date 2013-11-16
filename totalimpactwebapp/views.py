@@ -509,100 +509,6 @@ def import_products(importer_name):
 
 
 
-#------------------ user/:userId/... -----------------
-
-
-@app.route("/user/<int:userId>", methods=["PUT"])
-def user_put(userId):
-    """
-    Just a shortcut so the edit-in-place plugin can access JSON methods
-    """
-    method_name = "user_" + request.form["name"] + "_modify"
-    return globals()[method_name](userId, request.form["value"])
-
-@app.route("/user/<int:userId>/email")
-def user_email_modify(userId, new_email):
-    retrieved_user = get_user_for_response(userId)
-    if g.user.get_id() != retrieved_user.get_id():
-        abort(403, "You must be logged in to change your email.")
-
-    # check for duplicates
-    user_with_same_email = User.query.filter(
-        func.lower(User.email) == func.lower(new_email)
-    ).first()
-
-    if user_with_same_email is None:
-        pass
-        retrieved_user.email = new_email
-    else:
-        abort(409, "Someone has already registered this email") # see http://stackoverflow.com/a/3826024/226013
-
-    db.session.commit()
-    return make_response(json.dumps(retrieved_user.email), 200)
-
-
-@app.route("/user/<int:userId>/slug/<new_slug>", methods=["PUT"])
-def user_slug_modify(userId, new_slug):
-
-    # check for allowed characters
-    has_non_word_chars = re.compile("[^\w'-]", re.U).search(new_slug)
-    if has_non_word_chars is not None:
-        abort(400, "Character not allowed.")
-
-    # check for user login
-    retrieved_user = get_user_for_response(userId)
-    if g.user.get_id() != retrieved_user.get_id():
-        abort(403, "You must be logged in to change your URL.")
-
-    # check for duplicates
-    user_with_same_slug = User.query.filter(
-        func.lower(User.url_slug) == func.lower(new_slug)
-    ).first()
-
-    if user_with_same_slug is None:
-        pass
-        retrieved_user.url_slug = new_slug
-    else:
-
-        if request.args.get("fail_on_duplicate") in ["true", "yes", 1]:
-            abort(409, "this url slug already exists") # see http://stackoverflow.com/a/3826024/226013
-        else:
-            logger.info(u"tried to mint a url slug ('{slug}') that already exists, so appending number".format(
-                slug=retrieved_user.url_slug
-            ))
-            # to de-duplicate, mint a slug with a random number on it
-            retrieved_user.uniqueify_slug()
-
-    db.session.commit()
-    return make_response(json.dumps(retrieved_user.url_slug), 200)
-
-
-
-def user_name_modify(userId, name, name_type):
-    """
-    Refactored out stuff that both given and surname edits use.
-
-    :param name_type: surname or given_name
-    """
-
-    retrieved_user = get_user_for_response(userId)
-    if g.user.get_id() != retrieved_user.get_id():
-        abort(403, "You must be logged in to change your name.")
-
-    setattr(retrieved_user, name_type, name)
-    db.session.commit()
-    return make_response(json.dumps(name), 200)
-
-
-@app.route("/user/<int:userId>/surname/<name>", methods=["PUT"])
-def user_surname_modify(userId, name):
-    return user_name_modify(userId, name, "surname")
-
-
-@app.route("/user/<int:userId>/given_name/<name>", methods=["PUT"])
-def user_given_name_modify(userId, name):
-    return user_name_modify(userId, name, "given_name")
-
 
 
 
@@ -647,7 +553,19 @@ def test_user_cids():
 
 
 
+#------------------ /providers  (information about providers) -----------------
+@app.route('/providers', methods=["GET"])
+def providers():
+    try:
+        url = "{api_root}/v1/provider?key={api_key}".format(
+            api_key=g.api_key,
+            api_root=g.roots["api"])
+        r = requests.get(url)
+        metadata = r.json()
+    except requests.ConnectionError:
+        metadata = {}
 
+    return json_resp_from_thing(metadata)
 
 
 
@@ -690,32 +608,6 @@ def redirect_to_profile(dummy):
 def index():
     return render_template_custom('index.html')
 
-
-# @app.route('/faq')
-# def faq():
-#     # get the table of items and identifiers
-#     which_items_loc = os.path.join(
-#         os.path.dirname(__file__),
-#         "static",
-#         "whichartifacts.html"
-#         )
-#     which_item_types = open(which_items_loc).read()
-#
-#     # get the static_meta info for each metric
-#     try:
-#         url = "{api_root}/v1/provider?key={api_key}".format(
-#             api_key=g.api_key,
-#             api_root=g.roots["api"])
-#         r = requests.get(url)
-#         metadata = json.loads(r.text)
-#     except requests.ConnectionError:
-#         metadata = {}
-#
-#     return render_template_custom(
-#         'faq.html',
-#         which_artifacts=which_item_types,
-#         provider_metadata=metadata
-#         )
 
 
 # @app.route('/api-docs')
