@@ -279,16 +279,15 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <p><a href=\"http://altmetrics.org/manifesto/\">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">altmetrics library</a> on Mendeley for a growing list of relevant research.\n" +
     "\n" +
-    "      {{ which_artifacts|safe() }}\n" +
     "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
     "\n" +
     "   <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>\n" +
     "\n" +
+    "   <pre>{{ providers | safe }}</pre>\n" +
+    "\n" +
     "   <ul id=\"providers-metadata\"> <!-- list of providers -->\n" +
-    "      {% for provider_name, provider in provider_metadata.iteritems() %}\n" +
-    "         {% if provider.metrics %}\n" +
-    "            <li> <!-- the provider -->\n" +
+    "            <li ng-repeat=\"provider\"> <!-- the provider -->\n" +
     "               <a href=\"{{ provider.url }}\">{{ provider_name }}</a> <span class=\"descr\">{{ provider.descr|safe() }}</span>\n" +
     "               <ul> <!-- list of metrics supplied by this provider -->\n" +
     "                  {% for metric_name, metric in provider.metrics.iteritems() %}\n" +
