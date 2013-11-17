@@ -227,7 +227,7 @@ def get_products_from_core(tiids):
         return None
 
     query = u"{core_api_root}/v1/products?api_admin_key={api_admin_key}".format(
-        core_api_root=g.roots["api"],
+        core_api_root=g.api_root,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     logger.debug(u"in get_products_from_core with query {query}".format(

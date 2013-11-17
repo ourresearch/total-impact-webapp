@@ -6357,6 +6357,7 @@ div.modal.creds .modal-footer a:hover {
   text-decoration: none;
 }
 div.modal div.modal-header {
+  background: #fafafa;
   background: #fff;
   position: relative;
 }
