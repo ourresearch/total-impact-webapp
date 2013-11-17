@@ -1,11 +1,12 @@
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
+  'services.i18nNotifications',
   'security.retryQueue',    // Keeps track of failed requests that need to be retried once the user logs in
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', ['$http', '$q', '$location', 'securityRetryQueue', '$modal', function($http, $q, $location, queue, $modal) {
+.factory('security', function($http, $q, $location, $modal, i18nNotifications) {
 
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
@@ -60,6 +61,24 @@ angular.module('security.service', [
 
       return request;
 
+    },
+
+    loginFromUrl: function(url){
+      var re = /login_token=(.+?)/
+      m = re.exec(url)
+      if (!m) return false
+      $http.post("/user/login", {token: m[1]}).then(
+        function(resp){
+          service.currentUser = resp.data.user
+          i18nNotifications.pushForCurrentRoute('passwordReset.ready', 'success');
+
+        },
+        function(resp){
+          i18nNotifications.pushForCurrentRoute('passwordReset.error.invalidToken', 'danger');
+        }
+      )
+
+      console.log("logging in from url", url)
     },
 
     // Logout the current user and redirect
@@ -170,4 +189,4 @@ angular.module('security.service', [
   };
 
   return service;
-}]);
+});

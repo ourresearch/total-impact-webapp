@@ -13,7 +13,7 @@ def send_reset_token(email, url_base):
     s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
     reset_token = s.sign(email)
 
-    base_reset_url = url_base + "change-password"
+    base_reset_url = url_base + "settings/password"
     full_reset_url = base_reset_url + "?reset_token=" + reset_token
 
     # send the email here...

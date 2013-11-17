@@ -9,7 +9,7 @@ angular.module('settings', [
 
   .config(function ($routeProvider) {
 
-    $routeProvider.when('/settings/:page',
+    $routeProvider.when('/settings/:page?',
       {
         templateUrl:'settings/settings.tpl.html',
         controller: "settingsCtrl",

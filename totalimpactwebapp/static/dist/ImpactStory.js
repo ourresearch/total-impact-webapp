@@ -60,6 +60,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $location,
                                                      Loading,
                                                      Page,
+                                                     security,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
@@ -81,6 +82,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$locationChangeStart', function(event, next, current){
     Page.showFrame(true, true)
+    security.loginFromUrl(next)
     $scope.footer = Page.footer
     $scope.header = Page.header
     $scope.loading.clear()
@@ -1396,7 +1398,7 @@ angular.module('settings', [
 
   .config(function ($routeProvider) {
 
-    $routeProvider.when('/settings/:page',
+    $routeProvider.when('/settings/:page?',
       {
         templateUrl:'settings/settings.tpl.html',
         controller: "settingsCtrl",
@@ -2697,12 +2699,13 @@ angular.module('security.retryQueue', [])
 
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
+  'services.i18nNotifications',
   'security.retryQueue',    // Keeps track of failed requests that need to be retried once the user logs in
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', ['$http', '$q', '$location', 'securityRetryQueue', '$modal', function($http, $q, $location, queue, $modal) {
+.factory('security', function($http, $q, $location, $modal, i18nNotifications) {
 
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
@@ -2757,6 +2760,24 @@ angular.module('security.service', [
 
       return request;
 
+    },
+
+    loginFromUrl: function(url){
+      var re = /login_token=(.+?)/
+      m = re.exec(url)
+      if (!m) return false
+      $http.post("/user/login", {token: m[1]}).then(
+        function(resp){
+          service.currentUser = resp.data.user
+          i18nNotifications.pushForCurrentRoute('passwordReset.ready', 'success');
+
+        },
+        function(resp){
+          i18nNotifications.pushForCurrentRoute('passwordReset.error.invalidToken', 'danger');
+        }
+      )
+
+      console.log("logging in from url", url)
     },
 
     // Logout the current user and redirect
@@ -2867,7 +2888,7 @@ angular.module('security.service', [
   };
 
   return service;
-}]);
+});
 angular.module('services.breadcrumbs', []);
 angular.module('services.breadcrumbs').factory('breadcrumbs', ['$rootScope', '$location', function($rootScope, $location){
 
@@ -3224,7 +3245,9 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'settings.password.change.error.unauthenticated': "Sorry, looks like you typed your password wrong.",
     'settings.profile.change.success': "Your profile's been updated.",
     'settings.url.change.success': "Your profile URL has been updated.",
-    'settings.email.change.success': "Your email has been updated to {{email}}."
+    'settings.email.change.success': "Your email has been updated to {{email}}.",
+    'passwordReset.error.invalidToken': "Looks like you've got an expired password reset token in the URL.",
+    'passwordReset.ready': "You're temporarily logged in. You should change your password now."
 
   };
 

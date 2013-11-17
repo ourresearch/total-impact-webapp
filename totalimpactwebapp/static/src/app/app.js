@@ -55,6 +55,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $location,
                                                      Loading,
                                                      Page,
+                                                     security,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
@@ -76,6 +77,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$locationChangeStart', function(event, next, current){
     Page.showFrame(true, true)
+    security.loginFromUrl(next)
     $scope.footer = Page.footer
     $scope.header = Page.header
     $scope.loading.clear()

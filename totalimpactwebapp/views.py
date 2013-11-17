@@ -306,6 +306,30 @@ def login():
     return json_resp_from_thing({"user": user.as_dict()})
 
 
+@app.route("/user/login/token", methods=["POST"])
+def login_from_token():
+    logger.debug(u"user trying to log in from token.")
+
+    reset_token = unicode(request.json["reset_token"])
+    s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
+    error = ""
+    try:
+        email = s.unsign(reset_token, max_age=60*60*24).lower()  # 24 hours
+
+    except (SignatureExpired, BadTimeSignature):
+        abort_json(401, "This token ain't no good.")
+
+    # the token is one we made. Whoever has it pwns this account
+    retrieved_user = User.query.filter_by(email=email).first()
+    if retrieved_user is None:
+        abort(404, "Sorry, that user doesn't exist.")
+
+    login_user(retrieved_user)
+    return json_resp_from_thing({"user": retrieved_user.as_dict()})
+
+
+
+
 #------------------ /user/:id   -----------------
 
 
