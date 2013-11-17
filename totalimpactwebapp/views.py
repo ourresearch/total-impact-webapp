@@ -310,7 +310,7 @@ def login():
 def login_from_token():
     logger.debug(u"user trying to log in from token.")
 
-    reset_token = unicode(request.json["reset_token"])
+    reset_token = unicode(request.json["token"])
     s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
     error = ""
     try:

@@ -82,7 +82,6 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$locationChangeStart', function(event, next, current){
     Page.showFrame(true, true)
-    security.loginFromUrl(next)
     $scope.footer = Page.footer
     $scope.header = Page.header
     $scope.loading.clear()
@@ -2706,6 +2705,7 @@ angular.module('security.service', [
 ])
 
 .factory('security', function($http, $q, $location, $modal, i18nNotifications) {
+  var loadedUserFromServer = false
 
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
@@ -2735,6 +2735,11 @@ angular.module('security.service', [
     return current_slug
   }
 
+  var getResetToken = function(){
+    var re = /reset_token=(.+)/
+    m = re.exec($location.path())
+    return (m) ? m[1] : false
+  }
 
   // The public API of the service
   var service = {
@@ -2747,7 +2752,6 @@ angular.module('security.service', [
     // Attempt to authenticate a user by the given email and password
     login: function(email, password) {
       var request = $http.post('/user/login', {email: email, password: password})
-
       request
         .success(function(data, status) {
             service.currentUser = data.user;
@@ -2762,11 +2766,8 @@ angular.module('security.service', [
 
     },
 
-    loginFromUrl: function(url){
-      var re = /login_token=(.+?)/
-      m = re.exec(url)
-      if (!m) return false
-      $http.post("/user/login", {token: m[1]}).then(
+    loginFromToken: function(token){
+      return $http.post("/user/login/token", {token: m[1]}).then(
         function(resp){
           service.currentUser = resp.data.user
           i18nNotifications.pushForCurrentRoute('passwordReset.ready', 'success');
@@ -2776,9 +2777,17 @@ angular.module('security.service', [
           i18nNotifications.pushForCurrentRoute('passwordReset.error.invalidToken', 'danger');
         }
       )
-
-      console.log("logging in from url", url)
     },
+
+
+    loginFromCookie: function(){
+      return $http.get('/user/current').then(function(response) {
+        loadedUserFromServer = true
+        service.currentUser = response.data.user;
+        return service.currentUser;
+      });
+    },
+
 
     // Logout the current user and redirect
     logout: function(redirectTo) {
@@ -2820,6 +2829,7 @@ angular.module('security.service', [
       var deferred = $q.defer()
       service.requestCurrentUser().then(
         function(user){
+          console.log("in testUserAuthenticationLevel. Here's the user", user)
           var shouldResolve = negateIfToldTo(levelRules[level](user))
 
           if (shouldResolve){
@@ -2837,13 +2847,27 @@ angular.module('security.service', [
 
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
-      if ( service.isAuthenticated() ) {
+      console.log("requsting current user")
+
+      if (loadedUserFromServer) {
+        console.log("we've already checked with the server. returning what we got", service.currentUser)
         return $q.when(service.currentUser);
+
       } else {
-        return $http.get('/user/current').then(function(response) {
-          service.currentUser = response.data.user;
-          return service.currentUser;
-        });
+        console.log("we're updating currentUser by checking on the server.")
+        var resetToken = getResetToken()
+
+        if (resetToken) {
+          console.log("logging in user from token then loading: ", resetToken)
+          return service.loginFromToken(resetToken)
+        }
+        else {
+          console.log("loading user from cookie")
+          return service.loginFromCookie()
+        }
+
+
+
       }
     },
 

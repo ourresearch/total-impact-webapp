@@ -6433,7 +6433,7 @@ body.staging div.staging-warning div.content span {
 ul.notifications {
   padding-top: 60px;
   width: 100%;
-  margin-bottom: -60px;
+  margin-bottom: 0;
 }
 ul.notifications li.alert {
   border-radius: 0;
@@ -6443,6 +6443,7 @@ ul.notifications li.alert {
   border-right: none;
   border-top: none;
   text-align: center;
+  padding-top: 25px;
 }
 /**
  * Extra large button extensions. Extends `.btn`.
