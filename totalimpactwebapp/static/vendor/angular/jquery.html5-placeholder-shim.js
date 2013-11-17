@@ -3,8 +3,6 @@
 (function($) {
   // @todo Document this.
 
-  console.log("loading jquery placeholder shim!")
-
   $.extend($,{ placeholder: {
     browser_supported: function() {
       return this._supported !== undefined ?

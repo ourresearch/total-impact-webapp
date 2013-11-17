@@ -6316,14 +6316,66 @@ div.modal {
   left: 50%;
   margin: -250px 0 0 -300px;
 }
+div.modal.creds {
+  width: 400px;
+  margin-left: -200px;
+}
+div.modal.creds .modal-body {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+div.modal.creds .modal-body .form-group {
+  width: 100%;
+  margin-top: 20px;
+}
+div.modal.creds .modal-body .inst {
+  color: #999;
+  font-size: 18px;
+  line-height: 1.6;
+}
+div.modal.creds .modal-footer {
+  border: none;
+  padding: 0;
+  text-align: center;
+}
+div.modal.creds .modal-footer button.btn {
+  width: 66%;
+  margin: 20px auto 0;
+  float: none;
+  display: block;
+}
+div.modal.creds .modal-footer a {
+  clear: both;
+  text-align: center;
+  margin-top: 10px;
+  display: inline-block;
+  color: #999;
+  font-size: 14px;
+}
+div.modal.creds .modal-footer a:hover {
+  color: #555;
+  text-decoration: none;
+}
 div.modal div.modal-header {
   background: #fff;
+  position: relative;
 }
 div.modal div.modal-header h4 {
   border-bottom: none;
   font-weight: bolder;
   text-align: center;
   color: #555;
+}
+div.modal div.modal-header a.dismiss {
+  position: absolute;
+  top: 22px;
+  right: 30px;
+  color: #eee;
+  font-size: 25px;
+}
+div.modal div.modal-header a.dismiss:hover {
+  text-decoration: none;
+  color: #999;
 }
 div.modal.error {
   border: 2px solid #BD362F;

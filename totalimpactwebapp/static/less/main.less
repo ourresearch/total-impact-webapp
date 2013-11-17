@@ -148,6 +148,44 @@ div.modal-backdrop {
    opacity: .7;
 }
 div.modal {
+   &.creds {
+      width:  400px;
+      margin-left:-200px;
+      .modal-body{
+         padding-left: 30px;
+         padding-right: 30px;
+         .form-group {
+            width:  100%;
+            margin-top: 20px;
+         }
+         .inst {
+            color: #999;
+            font-size: 18px;
+            line-height: 1.6;
+         }
+      }
+      .modal-footer {
+         border: none;
+         padding: 0;
+         text-align:  center;
+         button.btn {
+            width: 66%;
+            margin: 20px auto 0;
+            float:none;
+            display:block;
+         }
+         a {
+            clear:both;
+            text-align: center;
+            margin-top: 10px;
+            display:inline-block;
+            color: #999;
+            font-size: 14px;
+            &:hover {color: #555; text-decoration: none;}
+         }
+      }
+
+   }
    display:block;
    width: 600px;
    background: #fff;
@@ -161,11 +199,23 @@ div.modal {
    }
    div.modal-header {
       background: #fff;
+      position: relative;
       h4 {
          border-bottom: none;
          font-weight: bolder;
          text-align:center;
          color:  #555;
+      }
+      a.dismiss {
+         position: absolute;
+         top: 22px;
+         right: 30px;
+         color: #eee;
+         font-size: 25px;
+         &:hover {
+            text-decoration: none;
+            color:  #999;
+         }
       }
 
    }

@@ -1,8 +1,12 @@
-angular.module('security.login.form', ['services.localizedMessages', 'ui.bootstrap'])
+angular.module('security.login.form', [
+    'services.localizedMessages',
+    'security.login.resetPassword',
+    'ui.bootstrap'
+  ])
 
 // The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
 // This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
-.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance) {
+.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance, $modal) {
   // The model for this form 
   $scope.user = {};
 
@@ -35,6 +39,16 @@ angular.module('security.login.form', ['services.localizedMessages', 'ui.bootstr
 
 
   };
+  $scope.showForgotPasswordModal = function(){
+    console.log("launching the forgot password modal.")
+    $modalInstance.dismiss('cancel');
+
+    var forgotPasswordModal = $modal.open({
+      templateUrl: "security/login/reset-password-modal.tpl.html",
+      controller: "ResetPasswordModalCtrl",
+      windowClass: "creds forgot-password"
+    })
+  }
 
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');

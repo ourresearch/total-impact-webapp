@@ -20,7 +20,8 @@ angular.module('security.service', [
     console.log("openLoginDialog() fired.")
     loginDialog = $modal.open({
       templateUrl: "security/login/form.tpl.html",
-      controller: "LoginFormController"
+      controller: "LoginFormController",
+      windowClass: "creds"
     });
     loginDialog.result.then();
   }

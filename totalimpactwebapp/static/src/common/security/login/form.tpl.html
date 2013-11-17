@@ -1,21 +1,32 @@
-<form name="form" novalidate class="login-form">
-    <div class="modal-header">
-        <h4>Sign in</h4>
-    </div>
-    <div class="modal-body">
-        <div class="alert alert-warning" ng-show="authReason">
-            {{authReason}}
-        </div>
-        <div class="alert alert-error" ng-show="authError">
-            {{authError}}
-        </div>
-        <label>E-mail</label>
-        <input name="login" type="email" ng-model="user.email" placeholder="email" required autofocus>
-        <label>Password</label>
-        <input name="pass" type="password" ng-model="user.password" placeholder="password" required>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary login" ng-click="login()" ng-disabled='form.$invalid'>Sign in</button>
-        <button class="btn cancel" ng-click="cancel()">Cancel</button>
-    </div>
-</form>
+<div class="modal-header">
+   <h4>Sign in</h4>
+   <a class="dismiss" ng-click="cancel()">&times;</a>
+</div>
+
+<div class="modal-body">
+   <div class="alert alert-warning" ng-show="authReason">
+      {{authReason}}
+   </div>
+   <div class="alert alert-error" ng-show="authError">
+      {{authError}}
+   </div>
+
+   <form name="form" novalidate class="login-form form-inline">
+      <div class="form-group">
+         <label class="sr-only">E-mail</label>
+         <input name="login" class="form-control" type="email" ng-model="user.email" placeholder="email" required autofocus>
+      </div>
+      <div class="form-group">
+         <label class="sr-only">Password</label>
+         <input name="pass" class="form-control" type="password" ng-model="user.password" placeholder="password" required>
+      </div>
+      <div class="modal-footer">
+         <button class="btn btn-primary login" ng-click="login()" ng-disabled='form.$invalid'>Sign in</button>
+         <a class="forgot-login-details" ng-click="showForgotPasswordModal()">
+            <i class="icon-question-sign"></i>
+            Forgot your login details?
+         </a>
+      </div>
+   </form>
+</div>
+

@@ -1,4 +1,4 @@
-angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/toolbar.tpl.html']);
+angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html']);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
@@ -26,27 +26,70 @@ angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", functio
 
 angular.module("security/login/form.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login/form.tpl.html",
-    "<form name=\"form\" novalidate class=\"login-form\">\n" +
-    "    <div class=\"modal-header\">\n" +
-    "        <h4>Sign in</h4>\n" +
-    "    </div>\n" +
-    "    <div class=\"modal-body\">\n" +
-    "        <div class=\"alert alert-warning\" ng-show=\"authReason\">\n" +
-    "            {{authReason}}\n" +
-    "        </div>\n" +
-    "        <div class=\"alert alert-error\" ng-show=\"authError\">\n" +
-    "            {{authError}}\n" +
-    "        </div>\n" +
-    "        <label>E-mail</label>\n" +
-    "        <input name=\"login\" type=\"email\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
-    "        <label>Password</label>\n" +
-    "        <input name=\"pass\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
-    "    </div>\n" +
-    "    <div class=\"modal-footer\">\n" +
-    "        <button class=\"btn btn-primary login\" ng-click=\"login()\" ng-disabled='form.$invalid'>Sign in</button>\n" +
-    "        <button class=\"btn cancel\" ng-click=\"cancel()\">Cancel</button>\n" +
-    "    </div>\n" +
-    "</form>\n" +
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Sign in</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"cancel()\">&times;</a>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"modal-body\">\n" +
+    "   <div class=\"alert alert-warning\" ng-show=\"authReason\">\n" +
+    "      {{authReason}}\n" +
+    "   </div>\n" +
+    "   <div class=\"alert alert-error\" ng-show=\"authError\">\n" +
+    "      {{authError}}\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <form name=\"form\" novalidate class=\"login-form form-inline\">\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"sr-only\">E-mail</label>\n" +
+    "         <input name=\"login\" class=\"form-control\" type=\"email\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
+    "      </div>\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"sr-only\">Password</label>\n" +
+    "         <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
+    "      </div>\n" +
+    "      <div class=\"modal-footer\">\n" +
+    "         <button class=\"btn btn-primary login\" ng-click=\"login()\" ng-disabled='form.$invalid'>Sign in</button>\n" +
+    "         <a class=\"forgot-login-details\" ng-click=\"showForgotPasswordModal()\">\n" +
+    "            <i class=\"icon-question-sign\"></i>\n" +
+    "            Forgot your login details?\n" +
+    "         </a>\n" +
+    "      </div>\n" +
+    "   </form>\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
+angular.module("security/login/reset-password-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("security/login/reset-password-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Reset password</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"close()\">&times;</a>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"modal-body\">\n" +
+    "   <form name=\"form\" ng-show=\"!emailSubmitted()\" novalidate class=\"reset-password creds form-inline\">\n" +
+    "      <div class=\"inst\">Enter your email and we'll send you instructions on how to reset your password.</div>\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"sr-only\">E-mail</label>\n" +
+    "         <input name=\"login\" class=\"form-control\" type=\"email\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
+    "      </div>\n" +
+    "      <div class=\"modal-footer\">\n" +
+    "         <button class=\"btn btn-primary login\" ng-click=\"sendEmail()\" ng-disabled='form.$invalid'>Reset password</button>\n" +
+    "      </div>\n" +
+    "   </form>\n" +
+    "   <div ng-show=\"emailSubmitted()\" class=\"email-submitted\">\n" +
+    "      <div class=\"inst\">\n" +
+    "         We've sent you password reset email. It should arrive in a few minutes\n" +
+    "         (don't forget to check your spam folder).\n" +
+    "      </div>\n" +
+    "      <div class=\"modal-footer\">\n" +
+    "         <button class=\"btn btn-primary cancel\" ng-click=\"close()\">OK</button>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
     "");
 }]);
 
