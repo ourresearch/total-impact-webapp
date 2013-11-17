@@ -9,10 +9,11 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
-from itsdangerous import TimestampSigner
+from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
 
 
 from totalimpactwebapp import app, db, login_manager
+from totalimpactwebapp.password_reset import send_reset_token
 from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
 from totalimpactwebapp.user import make_genre_heading_products
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
@@ -488,6 +489,18 @@ def user_password_modify(id):
     else:
         abort(403, "The current password is not correct.")
 
+
+
+
+@app.route("/user/<id>/password", methods=["GET"])
+def get_password_reset_link(id):
+    if request.args.get("id_type") != "email":
+        abort_json(400, "id_type param must be 'email' for this endpoint.")
+
+    retrieved_user = get_user_for_response(id, request)
+
+    ret = send_reset_token(retrieved_user.email, request.url_root)
+    return json_resp_from_thing({"sent_reset_email": ret})
 
 
 
