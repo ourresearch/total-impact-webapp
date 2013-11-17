@@ -178,13 +178,7 @@ def setup_db_tables():
 def load_globals():
     g.user = current_user
 
-    g.roots = {
-        "api": os.getenv("API_ROOT"),
-        "api_pretty": os.getenv("API_ROOT_PRETTY", os.getenv("API_ROOT")),
-        "webapp": os.getenv("WEBAPP_ROOT"),
-        "webapp_pretty": os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
-    }
-
+    g.api_root = os.getenv("API_ROOT")
     g.segmentio_key = os.getenv("SEGMENTIO_KEY")
     g.mixpanel_token = os.getenv("MIXPANEL_TOKEN")
 
@@ -331,7 +325,7 @@ def user_profile(profile_id):
 
         userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
         try:
-            user = create_user_from_slug(profile_id, userdict, g.roots["api"], db)
+            user = create_user_from_slug(profile_id, userdict, g.api_root, db)
 
             # user = User.query.filter_by(email="52@e.com").first()
 
@@ -458,7 +452,7 @@ def user_products_csv(id):
 
     url = "{api_root}/v1/products.csv/{tiids_string}?key={api_key}".format(
         api_key=g.api_key,
-        api_root=g.roots["api"],
+        api_root=g.api_root,
         tiids_string=",".join(tiids))
     r = requests.get(url)
     csv_contents = r.text
@@ -511,7 +505,7 @@ def get_password_reset_link(id):
 def import_products(importer_name):
 
     query = "{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
-        core_api_root=g.roots["api"],
+        core_api_root=g.api_root,
         importer_name=importer_name,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
@@ -547,7 +541,7 @@ def delete_test_user():
             if user.collection_id is None:
                 continue
 
-            url = g.roots["api"] + "/v1/collection/" + user.collection_id
+            url = g.api_root + "/v1/collection/" + user.collection_id
             r = requests.delete(url, params=coll_delete_params)
             logger.debug(u"delete colls and items; {text}".format(
                 text=r.text))
@@ -582,7 +576,7 @@ def providers():
     try:
         url = "{api_root}/v1/provider?key={api_key}".format(
             api_key=g.api_key,
-            api_root=g.roots["api"])
+            api_root=g.api_root)
         r = requests.get(url)
         metadata = r.json()
     except requests.ConnectionError:
