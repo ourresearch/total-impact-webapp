@@ -8,6 +8,7 @@ angular.module('security.service', [
 
 .factory('security', function($http, $q, $location, $modal, i18nNotifications) {
   var loadedUserFromServer = false
+  var currentUser
 
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
@@ -54,7 +55,7 @@ angular.module('security.service', [
       var request = $http.post('/user/login', {email: email, password: password})
       request
         .success(function(data, status) {
-            service.currentUser = data.user;
+            currentUser = data.user;
             service.redirectToProfile()
           })
         .error(function(data, status, headers, config){
@@ -66,37 +67,7 @@ angular.module('security.service', [
 
     },
 
-    loginFromToken: function(token){
-      return $http.post("/user/login/token", {'token': token}).then(
-        function(resp){
-          service.currentUser = resp.data.user
-          $location.search({})
-          i18nNotifications.pushSticky('passwordReset.ready', 'success');
 
-        },
-        function(resp){
-          i18nNotifications.pushSticky('passwordReset.error.invalidToken', 'danger');
-        }
-      )
-    },
-
-
-    loginFromCookie: function(){
-      return $http.get('/user/current').then(function(response) {
-        loadedUserFromServer = true
-        service.currentUser = response.data.user;
-        return service.currentUser;
-      });
-    },
-
-
-    // Logout the current user and redirect
-    logout: function(redirectTo) {
-      $http.post('/user/logout').then(function() {
-        service.currentUser = null;
-        redirect(redirectTo);
-      });
-    },
 
     testUserAuthenticationLevel: function(level, falseToNegate){
 
@@ -130,6 +101,7 @@ angular.module('security.service', [
       var deferred = $q.defer()
       service.requestCurrentUser().then(
         function(user){
+          console.log("in testAuth(), this is our user: ", user)
           var shouldResolve = negateIfToldTo(levelRules[level](user))
 
           if (shouldResolve){
@@ -147,24 +119,65 @@ angular.module('security.service', [
 
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
+      console.log("requesting current user. it's ", currentUser)
 
       if (loadedUserFromServer) {
-        return $q.when(service.currentUser);
+        console.log("we have already loaded the user. here it is:", currentUser)
+        return $q.when(currentUser);
 
       } else {
         var resetToken = getResetToken()
 
         if (resetToken) {
+          console.log("logging in with reset token ", resetToken)
           return service.loginFromToken(resetToken)
         }
         else {
+          console.log("we are logging the user in from a cookie.")
           return service.loginFromCookie()
         }
-
-
-
       }
     },
+
+    loginFromToken: function(token){
+      return $http.post("/user/login/token", {'token': token})
+        .success(function(data, status, headers, config){
+          currentUser = data.user
+//          $location.search({})
+          i18nNotifications.pushSticky('passwordReset.ready', 'success');
+
+        })
+        .error(function(data, status, headers, config){
+          i18nNotifications.pushSticky('passwordReset.error.invalidToken', 'danger');
+        })
+        .then(function(){return currentUser})
+    },
+
+
+    loginFromCookie: function(){
+      return $http.get('/user/current')
+        .success(function(data, status, headers, config) {
+          console.log("we called user/current, and we got a user back: ", data.user)
+          loadedUserFromServer = true
+          currentUser = data.user;
+        })
+        .then(function(){return currentUser})
+    },
+
+
+    // Logout the current user and redirect
+    logout: function(redirectTo) {
+//      $location.search({})
+      currentUser = null;
+      console.log("logging out.")
+      $http.get('/user/logout').success(function(data, status, headers, config) {
+        console.log("logout message: ", data)
+//        redirect(redirectTo);
+      });
+    },
+
+
+
 
     userIsLoggedIn: function(){
       var deferred = $q.defer();
@@ -192,17 +205,19 @@ angular.module('security.service', [
       })
     },
 
-    // Information about the current user
-    currentUser: null,
+
+    getCurrentUser: function(){
+      return currentUser
+    },
 
     // Is the current user authenticated?
     isAuthenticated: function(){
-      return !!service.currentUser;
+      return !!currentUser;
     },
     
     // Is the current user an adminstrator?
     isAdmin: function() {
-      return !!(service.currentUser && service.currentUser.admin);
+      return !!(currentUser && currentUser.admin);
     }
   };
 

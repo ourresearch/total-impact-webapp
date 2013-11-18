@@ -268,6 +268,7 @@ def test_headers():
 
 @app.route("/user/current")
 def get_current_user():
+    sleep(1)
 
     try:
         return json_resp_from_thing({"user": g.user.as_dict()})
@@ -276,8 +277,9 @@ def get_current_user():
         return json_resp_from_thing({"user": None})
 
 
-@app.route('/user/logout', methods=["POST"])
+@app.route('/user/logout', methods=["POST", "GET"])
 def logout():
+    sleep(1)
     logout_user()
     return json_resp_from_thing({"msg": "user logged out"})
 
@@ -286,6 +288,7 @@ def logout():
 def login():
 
     logger.debug(u"user trying to log in.")
+    sleep(1)
 
     email = unicode(request.json["email"]).lower()
     password = unicode(request.json["password"])
@@ -309,6 +312,7 @@ def login():
 @app.route("/user/login/token", methods=["POST"])
 def login_from_token():
     logger.debug(u"user trying to log in from token.")
+    sleep(1)
 
     reset_token = unicode(request.json["token"])
     s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
@@ -320,12 +324,12 @@ def login_from_token():
         abort_json(401, "This token ain't no good.")
 
     # the token is one we made. Whoever has it pwns this account
-    retrieved_user = User.query.filter_by(email=email).first()
-    if retrieved_user is None:
+    user = User.query.filter_by(email=email).first()
+    if user is None:
         abort(404, "Sorry, that user doesn't exist.")
 
-    login_user(retrieved_user)
-    return json_resp_from_thing({"user": retrieved_user.as_dict()})
+    login_user(user)
+    return json_resp_from_thing({"user": user.as_dict()})
 
 
 

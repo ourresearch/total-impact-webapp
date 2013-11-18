@@ -15,7 +15,7 @@ angular.module('security.login.toolbar', [
       $scope.login = security.showLogin;
       $scope.logout = security.logout;
       $scope.$watch(function() {
-        return security.currentUser;
+        return security.getCurrentUser();
       }, function(currentUser) {
         $scope.currentUser = currentUser;
       });
