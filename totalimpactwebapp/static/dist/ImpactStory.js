@@ -2736,9 +2736,7 @@ angular.module('security.service', [
   }
 
   var getResetToken = function(){
-    var re = /reset_token=(.+)/
-    m = re.exec($location.path())
-    return (m) ? m[1] : false
+    return $location.search()["reset_token"]
   }
 
   // The public API of the service
@@ -2767,14 +2765,15 @@ angular.module('security.service', [
     },
 
     loginFromToken: function(token){
-      return $http.post("/user/login/token", {token: m[1]}).then(
+      return $http.post("/user/login/token", {'token': token}).then(
         function(resp){
           service.currentUser = resp.data.user
-          i18nNotifications.pushForCurrentRoute('passwordReset.ready', 'success');
+          $location.search({})
+          i18nNotifications.pushSticky('passwordReset.ready', 'success');
 
         },
         function(resp){
-          i18nNotifications.pushForCurrentRoute('passwordReset.error.invalidToken', 'danger');
+          i18nNotifications.pushSticky('passwordReset.error.invalidToken', 'danger');
         }
       )
     },
@@ -2829,7 +2828,6 @@ angular.module('security.service', [
       var deferred = $q.defer()
       service.requestCurrentUser().then(
         function(user){
-          console.log("in testUserAuthenticationLevel. Here's the user", user)
           var shouldResolve = negateIfToldTo(levelRules[level](user))
 
           if (shouldResolve){
@@ -2847,22 +2845,17 @@ angular.module('security.service', [
 
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
-      console.log("requsting current user")
 
       if (loadedUserFromServer) {
-        console.log("we've already checked with the server. returning what we got", service.currentUser)
         return $q.when(service.currentUser);
 
       } else {
-        console.log("we're updating currentUser by checking on the server.")
         var resetToken = getResetToken()
 
         if (resetToken) {
-          console.log("logging in user from token then loading: ", resetToken)
           return service.loginFromToken(resetToken)
         }
         else {
-          console.log("loading user from cookie")
           return service.loginFromCookie()
         }
 
@@ -3299,12 +3292,27 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
   };
   var notificationsService = {};
 
+  var notificationAlreadyLoaded = function(notification){
+    var allNotifications = _.flatten(notifications)
+    var allNotificationMessages =   _.pluck(allNotifications, "message")
+
+    return _.contains(allNotificationMessages, notification.message)
+
+  }
+
   var addNotification = function (notificationsArray, notificationObj) {
     if (!angular.isObject(notificationObj)) {
       throw new Error("Only object can be added to the notification service");
     }
-    notificationsArray.push(notificationObj);
-    return notificationObj;
+
+    if (notificationAlreadyLoaded(notificationObj)) {
+      // no point in having duplicate notifications.
+      return false
+    }
+    else {
+      notificationsArray.push(notificationObj);
+      return notificationObj;
+    }
   };
 
   $rootScope.$on('$routeChangeSuccess', function () {

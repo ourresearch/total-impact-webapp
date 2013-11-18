@@ -4,6 +4,7 @@ body {
    color:  #333;
    div#container {
       min-height: 600px;
+      margin-top: @navbarHeight;
    }
    div#namechange {
       font-size: 18px;
@@ -284,18 +285,20 @@ body.staging {
    }
 }
 
+// really complicated to position. seems like it's in the right spot now,
+// but i honestly have no idea why.
 ul.notifications {
-   padding-top: @navbarHeight + 10px;
+   padding-top: @navbarHeight;
    width: 100%;
    margin-bottom: 0;
-//   margin-bottom: -(@navbarHeight + 10px);
    li.alert {
+      height: 75px;
       border-radius: 0;
-      margin-bottom:0;
+      margin-bottom:-50px; // ?
+      padding-top: 30px;
       border-width: 2px;
       border-left: none; border-right: none; border-top: none;
       text-align: center;
-      padding-top: @navbarHeight - 25px;
    }
 }
 
@@ -515,18 +518,19 @@ div.navbar.site-nav {
 
 
 
-/* infopages in general.
+/* info pages
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
 
 div.infopage {
-   padding-top: 100px;
+   padding-top: 50px;
+   h2.infopage-heading {
+      font-weight: bolder;
+      font-size:  30pxs;
+   }
+
 }
-
-
-
-
 
 
 

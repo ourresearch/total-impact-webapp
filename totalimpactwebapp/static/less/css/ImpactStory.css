@@ -6168,6 +6168,7 @@ body {
 }
 body div#container {
   min-height: 600px;
+  margin-top: 50px;
 }
 body div#namechange {
   font-size: 18px;
@@ -6431,19 +6432,20 @@ body.staging div.staging-warning div.content span {
   text-shadow: 1px 0 0 #000;
 }
 ul.notifications {
-  padding-top: 60px;
+  padding-top: 50px;
   width: 100%;
   margin-bottom: 0;
 }
 ul.notifications li.alert {
+  height: 75px;
   border-radius: 0;
-  margin-bottom: 0;
+  margin-bottom: -50px;
+  padding-top: 30px;
   border-width: 2px;
   border-left: none;
   border-right: none;
   border-top: none;
   text-align: center;
-  padding-top: 25px;
 }
 /**
  * Extra large button extensions. Extends `.btn`.
@@ -6690,12 +6692,16 @@ div.navbar.site-nav .navbar-inner ul.nav.pull-right li#logged-in div.dropdown-me
   min-width: 200px;
   padding: 5px 0 10px 0;
 }
-/* infopages in general.
+/* info pages
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
 div.infopage {
-  padding-top: 100px;
+  padding-top: 50px;
+}
+div.infopage h2.infopage-heading {
+  font-weight: bolder;
+  font-size: 30pxs;
 }
 /* landing page
 *****************************************************************************
@@ -8405,13 +8411,15 @@ body.user-preferences div.main div.wrapper div.pref-category form.editableform d
   display: none;
 }
 div.settings div.settings-header {
-  margin: 100px 0 70px 20px;
+  margin: 0 0 70px 20px;
   padding: 0 0 0 30px;
   border-bottom: 5px solid #fafafa;
   width: 600px;
 }
 div.settings div.settings-header h1 {
-  padding-top: 7px;
+  padding-top: 10px;
+  font-weight: bolder;
+  font-size: 30px;
 }
 div.settings div.settings-header p {
   font-size: 18px;
@@ -8461,6 +8469,7 @@ div.settings div.settings-nav ul li a i {
 }
 div.settings div.settings-input {
   margin-left: 250px;
+  margin-top: 100px;
 }
 div.settings div.settings-input form {
   padding: 0;
