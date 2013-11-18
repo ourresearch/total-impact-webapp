@@ -1,4 +1,4 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -224,7 +224,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <h3 id=\"what\" class=\"first\">what is ImpactStory?</h3>\n" +
     "\n" +
-    "   <p>ImpactStory is an open-source, web-based tool that helps researchers expore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.\n" +
+    "   <p>ImpactStory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.\n" +
     "\n" +
     "   <p>ImpactStory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
     "   <ul>\n" +
@@ -490,6 +490,55 @@ angular.module("notifications.tpl.html", []).run(["$templateCache", function($te
     "   </li>\n" +
     "</ul>\n" +
     "");
+}]);
+
+angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("password-reset/password-reset.tpl.html",
+    "<div class=\"password-reset\">\n" +
+    "   <div class=\"password-reset-header\">\n" +
+    "      <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "         <span class=\"text\">password reset</span>\n" +
+    "      </h1>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <form novalidate\n" +
+    "         name=\"passwordResetForm\"\n" +
+    "         class=\"form-horizontal password-reset\"\n" +
+    "         ng-submit=\"onSave()\"\n" +
+    "        >\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"form-group new-password\">\n" +
+    "         <label class=\"control-label col-lg-3\">New password</label>\n" +
+    "         <div class=\"controls col-lg-4\">\n" +
+    "            <input ng-model=\"user.newPassword\"\n" +
+    "                   name=\"newPassword\"\n" +
+    "                   type=\"password\"\n" +
+    "                   ng-show=\"!showPassword\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   required>\n" +
+    "\n" +
+    "            <input ng-model=\"user.newPassword\"\n" +
+    "                   name=\"newPassword\"\n" +
+    "                   type=\"text\"\n" +
+    "                   ng-show=\"showPassword\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   required>\n" +
+    "         </div>\n" +
+    "         <div class=\"controls col-lg-4 show-password\">\n" +
+    "            <pretty-checkbox value=\"showPassword\" text=\"Show\"></pretty-checkbox>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"form-group submit\">\n" +
+    "         <div class=\" col-lg-offset-4 col-lg-4\">\n" +
+    "            <save-buttons></save-buttons>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </form>\n" +
+    "</div>");
 }]);
 
 angular.module("product/badges.tpl.html", []).run(["$templateCache", function($templateCache) {

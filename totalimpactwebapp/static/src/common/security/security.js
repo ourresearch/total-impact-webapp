@@ -38,9 +38,6 @@ angular.module('security.service', [
     return current_slug
   }
 
-  var getResetToken = function(){
-    return $location.search()["reset_token"]
-  }
 
   // The public API of the service
   var service = {
@@ -101,7 +98,6 @@ angular.module('security.service', [
       var deferred = $q.defer()
       service.requestCurrentUser().then(
         function(user){
-          console.log("in testAuth(), this is our user: ", user)
           var shouldResolve = negateIfToldTo(levelRules[level](user))
 
           if (shouldResolve){
@@ -119,45 +115,17 @@ angular.module('security.service', [
 
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
-      console.log("requesting current user. it's ", currentUser)
-
       if (loadedUserFromServer) {
-        console.log("we have already loaded the user. here it is:", currentUser)
         return $q.when(currentUser);
 
       } else {
-        var resetToken = getResetToken()
-
-        if (resetToken) {
-          console.log("logging in with reset token ", resetToken)
-          return service.loginFromToken(resetToken)
-        }
-        else {
-          console.log("we are logging the user in from a cookie.")
-          return service.loginFromCookie()
-        }
+        return service.loginFromCookie()
       }
     },
-
-    loginFromToken: function(token){
-      return $http.post("/user/login/token", {'token': token})
-        .success(function(data, status, headers, config){
-          currentUser = data.user
-//          $location.search({})
-          i18nNotifications.pushSticky('passwordReset.ready', 'success');
-
-        })
-        .error(function(data, status, headers, config){
-          i18nNotifications.pushSticky('passwordReset.error.invalidToken', 'danger');
-        })
-        .then(function(){return currentUser})
-    },
-
 
     loginFromCookie: function(){
       return $http.get('/user/current')
         .success(function(data, status, headers, config) {
-          console.log("we called user/current, and we got a user back: ", data.user)
           loadedUserFromServer = true
           currentUser = data.user;
         })

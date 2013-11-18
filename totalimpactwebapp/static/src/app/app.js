@@ -16,6 +16,7 @@ angular.module('app', [
   'templates.common',
   'infopages',
   'signup',
+  'passwordReset',
   'profileProduct',
   'profile',
   'settings'

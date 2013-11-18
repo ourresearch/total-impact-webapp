@@ -21,6 +21,7 @@ angular.module('app', [
   'templates.common',
   'infopages',
   'signup',
+  'passwordReset',
   'profileProduct',
   'profile',
   'settings'
@@ -510,6 +511,35 @@ angular.module( 'infopages', [
 
 ;
 
+/**
+ * Created with PyCharm.
+ * User: jay
+ * Date: 11/18/13
+ * Time: 3:21 PM
+ * To change this template use File | Settings | File Templates.
+ */
+angular.module('passwordReset', [
+    'resources.users',
+    'services.loading',
+    'directives.spinner',
+    'services.i18nNotifications',
+    'security',
+    'directives.forms'])
+
+  .config(function ($routeProvider) {
+
+  $routeProvider.when('/reset-password/:resetToken',
+  {
+    templateUrl:'password-reset/password-reset.tpl.html',
+    controller: "passwordResetCtrl"
+  }
+  )
+})
+
+.controller("passwordResetCtrl", function($routeParams, UsersPassword){
+
+  console.log("reset token", $routeParams.resetToken)
+})
 angular.module('product.award', []);
 angular.module('product.award').factory('Award', function() {
 
@@ -2738,9 +2768,6 @@ angular.module('security.service', [
     return current_slug
   }
 
-  var getResetToken = function(){
-    return $location.search()["reset_token"]
-  }
 
   // The public API of the service
   var service = {
@@ -2801,7 +2828,6 @@ angular.module('security.service', [
       var deferred = $q.defer()
       service.requestCurrentUser().then(
         function(user){
-          console.log("in testAuth(), this is our user: ", user)
           var shouldResolve = negateIfToldTo(levelRules[level](user))
 
           if (shouldResolve){
@@ -2819,45 +2845,17 @@ angular.module('security.service', [
 
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
-      console.log("requesting current user. it's ", currentUser)
-
       if (loadedUserFromServer) {
-        console.log("we have already loaded the user. here it is:", currentUser)
         return $q.when(currentUser);
 
       } else {
-        var resetToken = getResetToken()
-
-        if (resetToken) {
-          console.log("logging in with reset token ", resetToken)
-          return service.loginFromToken(resetToken)
-        }
-        else {
-          console.log("we are logging the user in from a cookie.")
-          return service.loginFromCookie()
-        }
+        return service.loginFromCookie()
       }
     },
-
-    loginFromToken: function(token){
-      return $http.post("/user/login/token", {'token': token})
-        .success(function(data, status, headers, config){
-          currentUser = data.user
-//          $location.search({})
-          i18nNotifications.pushSticky('passwordReset.ready', 'success');
-
-        })
-        .error(function(data, status, headers, config){
-          i18nNotifications.pushSticky('passwordReset.error.invalidToken', 'danger');
-        })
-        .then(function(){return currentUser})
-    },
-
 
     loginFromCookie: function(){
       return $http.get('/user/current')
         .success(function(data, status, headers, config) {
-          console.log("we called user/current, and we got a user back: ", data.user)
           loadedUserFromServer = true
           currentUser = data.user;
         })
@@ -3616,7 +3614,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -4108,6 +4106,55 @@ angular.module("notifications.tpl.html", []).run(["$templateCache", function($te
     "   </li>\n" +
     "</ul>\n" +
     "");
+}]);
+
+angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("password-reset/password-reset.tpl.html",
+    "<div class=\"password-reset\">\n" +
+    "   <div class=\"password-reset-header\">\n" +
+    "      <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "         <span class=\"text\">password reset</span>\n" +
+    "      </h1>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <form novalidate\n" +
+    "         name=\"passwordResetForm\"\n" +
+    "         class=\"form-horizontal password-reset\"\n" +
+    "         ng-submit=\"onSave()\"\n" +
+    "        >\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"form-group new-password\">\n" +
+    "         <label class=\"control-label col-lg-3\">New password</label>\n" +
+    "         <div class=\"controls col-lg-4\">\n" +
+    "            <input ng-model=\"user.newPassword\"\n" +
+    "                   name=\"newPassword\"\n" +
+    "                   type=\"password\"\n" +
+    "                   ng-show=\"!showPassword\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   required>\n" +
+    "\n" +
+    "            <input ng-model=\"user.newPassword\"\n" +
+    "                   name=\"newPassword\"\n" +
+    "                   type=\"text\"\n" +
+    "                   ng-show=\"showPassword\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   required>\n" +
+    "         </div>\n" +
+    "         <div class=\"controls col-lg-4 show-password\">\n" +
+    "            <pretty-checkbox value=\"showPassword\" text=\"Show\"></pretty-checkbox>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"form-group submit\">\n" +
+    "         <div class=\" col-lg-offset-4 col-lg-4\">\n" +
+    "            <save-buttons></save-buttons>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </form>\n" +
+    "</div>");
 }]);
 
 angular.module("product/badges.tpl.html", []).run(["$templateCache", function($templateCache) {
