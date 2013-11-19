@@ -60,8 +60,8 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
+  $scope.page = Page;
   $scope.loading = Loading;
-  $scope.getPageTitle = Page.getTitle
 
 
   $scope.removeNotification = function (notification) {
@@ -77,10 +77,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.showFrame(true, true)
-    $scope.footer = Page.footer
-    $scope.header = Page.header
     $scope.loading.clear()
+    Page.setTemplates("header", "footer")
   })
 
 });

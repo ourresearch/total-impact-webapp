@@ -95,12 +95,12 @@ angular.module("security/login/reset-password-modal.tpl.html", []).run(["$templa
 angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login/toolbar.tpl.html",
     "<ul class=\"nav pull-right\">\n" +
-    "   <li ng-show=\"isAuthenticated()\" class=\"logged-in-user\">\n" +
+    "   <li ng-show=\"currentUser\" class=\"logged-in-user\">\n" +
     "      <span class=\"context\">Welcome back, </span>\n" +
     "      <a class=\"current-user\" href=\"/{{ currentUser.url_slug }}\">{{currentUser.given_name}}</a>\n" +
     "   </li>\n" +
-    "   <li ng-show=\"isAuthenticated()\" class=\"divider-vertical\"></li>\n" +
-    "   <li ng-show=\"isAuthenticated()\" class=\"logged-in preferences dropdown\">\n" +
+    "   <li ng-show=\"currentUser\" class=\"divider-vertical\"></li>\n" +
+    "   <li ng-show=\"currentUser\" class=\"logged-in preferences dropdown\">\n" +
     "      <a href=\"#\" class=\"preferences dropdown-toggle\" data-toggle=\"dropdown\" title=\"Change URL and other preferences\">\n" +
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
@@ -108,11 +108,11 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         <li><a href=\"/settings/profile\" class=\"profile\"><i class=\"icon-cogs\"></i>Preferences</a></li>\n" +
     "         <li><a href=\"/api-docs\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>\n" +
     "         <li class=\"divider\"></li>\n" +
-    "         <li><a href=\"#\" class=\"logout\" ng-click=\"logout()\"><i class=\"icon-off\"></i>Log out</a></li>\n" +
+    "         <li><a class=\"logout\" ng-click=\"logout()\"><i class=\"icon-off\"></i>Log out</a></li>\n" +
     "      </ul>\n" +
     "   </li>\n" +
     "\n" +
-    "   <li ng-hide=\"isAuthenticated()\" class=\"login\">\n" +
+    "   <li ng-hide=\"currentUser\" class=\"login\">\n" +
     "      <form class=\"navbar-form\">\n" +
     "         <span class=\"context\">Already have a profile?</span>\n" +
     "         <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +

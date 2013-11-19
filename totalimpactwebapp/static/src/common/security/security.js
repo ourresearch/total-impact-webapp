@@ -7,7 +7,7 @@ angular.module('security.service', [
 ])
 
 .factory('security', function($http, $q, $location, $modal, i18nNotifications) {
-  var loadedUserFromServer = false
+  var useCachedUser = false
   var currentUser
 
   // Redirect to the given url (defaults to '/')
@@ -90,6 +90,7 @@ angular.module('security.service', [
           return (user && user.url_slug && user.email)
         },
         ownsThisProfile: function(user){
+          console.log("user.url_slug, currentUrlSlug", user.url_slug, currentUrlSlug())
           return (user && user.url_slug && user.url_slug == currentUrlSlug())
 
         }
@@ -115,10 +116,14 @@ angular.module('security.service', [
 
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
-      if (loadedUserFromServer) {
+      console.log("requesting current user.")
+
+      if (useCachedUser) {
+        console.log("already loaded from server: ", currentUser)
         return $q.when(currentUser);
 
       } else {
+        console.log("logging in from cookie")
         return service.loginFromCookie()
       }
     },
@@ -126,18 +131,16 @@ angular.module('security.service', [
     loginFromCookie: function(){
       return $http.get('/user/current')
         .success(function(data, status, headers, config) {
-          loadedUserFromServer = true
+          useCachedUser = true
           currentUser = data.user;
         })
         .then(function(){return currentUser})
     },
 
 
-    // Logout the current user and redirect
     logout: function(redirectTo) {
-//      $location.search({})
       currentUser = null;
-      console.log("logging out.")
+      console.log("logging out. and it's new!")
       $http.get('/user/logout').success(function(data, status, headers, config) {
         console.log("logout message: ", data)
 //        redirect(redirectTo);
@@ -153,6 +156,7 @@ angular.module('security.service', [
       service.requestCurrentUser().then(
         function(user){
           if (!user){
+            deferred.reject("userNotLoggedIn")
             deferred.reject("userNotLoggedIn")
           }
           else {
@@ -173,8 +177,14 @@ angular.module('security.service', [
       })
     },
 
+    clearCachedUser: function(){
+      currentUser = null
+      useCachedUser = false
+    },
+
 
     getCurrentUser: function(){
+      console.log("calling getCurrentUser")
       return currentUser
     },
 

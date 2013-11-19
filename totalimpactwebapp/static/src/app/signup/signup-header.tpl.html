@@ -1,0 +1,12 @@
+<div class="signup-header header" ng-controller="signupHeaderCtrl">
+   <h1><a class="brand" href="/"><img src="/static/img/impactstory-logo-white.png" alt="ImpactStory" /></a>
+      <span class="text">signup</span>
+   </h1>
+   <ol class="signup-steps">
+      <li ng-repeat="stepName in signupSteps"
+          class="{{ stepName }}"
+          ng-class="{current: isStepCurrent(stepName), completed: isStepCompleted(stepName)}">
+         {{ stepName }}
+      </li>
+   </ol>
+</div>

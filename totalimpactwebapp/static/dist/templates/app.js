@@ -1,8 +1,8 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
-    "<div id=\"footer\" ng-show=\"footer()\">\n" +
+    "<div id=\"footer\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -62,7 +62,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header\" ng-show=\"header()\">\n" +
+    "<div class=\"main-header\">\n" +
     "   <div class=\"navbar site-nav\">\n" +
     "      <div class=\"navbar-inner\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -495,13 +495,6 @@ angular.module("notifications.tpl.html", []).run(["$templateCache", function($te
 angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("password-reset/password-reset.tpl.html",
     "<div class=\"password-reset\">\n" +
-    "   <div class=\"password-reset-header\">\n" +
-    "      <h1><a class=\"brand\" href=\"/\">\n" +
-    "         <img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
-    "         <span class=\"text\">password reset</span>\n" +
-    "      </h1>\n" +
-    "   </div>\n" +
-    "\n" +
     "   <form novalidate\n" +
     "         name=\"passwordResetForm\"\n" +
     "         class=\"form-horizontal password-reset\"\n" +
@@ -1157,6 +1150,22 @@ angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", fun
     "");
 }]);
 
+angular.module("signup/signup-header.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("signup/signup-header.tpl.html",
+    "<div class=\"signup-header header\" ng-controller=\"signupHeaderCtrl\">\n" +
+    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "      <span class=\"text\">signup</span>\n" +
+    "   </h1>\n" +
+    "   <ol class=\"signup-steps\">\n" +
+    "      <li ng-repeat=\"stepName in signupSteps\"\n" +
+    "          class=\"{{ stepName }}\"\n" +
+    "          ng-class=\"{current: isStepCurrent(stepName), completed: isStepCompleted(stepName)}\">\n" +
+    "         {{ stepName }}\n" +
+    "      </li>\n" +
+    "   </ol>\n" +
+    "</div>");
+}]);
+
 angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-name.tpl.html",
     "<div class=\"signup-input url\" ng-controller=\"signupNameCtrl\">\n" +
@@ -1317,22 +1326,8 @@ angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function
 
 angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup.tpl.html",
-    "<div class=\"signup-header\">\n" +
-    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
-    "      <span class=\"text\">signup</span>\n" +
-    "   </h1>\n" +
-    "   <ol class=\"signup-steps\">\n" +
-    "      <li ng-repeat=\"stepName in signupSteps\"\n" +
-    "          class=\"{{ stepName }}\"\n" +
-    "          ng-class=\"{current: isStepCurrent(stepName), completed: isStepCompleted(stepName)}\">\n" +
-    "         {{ stepName }}\n" +
-    "      </li>\n" +
-    "   </ol>\n" +
-    "</div>\n" +
     "\n" +
     "<form class=\"signup name form-horizontal\" name=\"signupForm\">\n" +
-    "\n" +
-    "\n" +
     "   <div ng-include=\"include\"></div>\n" +
     "\n" +
     "   <button type=\"submit\"\n" +

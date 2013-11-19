@@ -65,8 +65,8 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
+  $scope.page = Page;
   $scope.loading = Loading;
-  $scope.getPageTitle = Page.getTitle
 
 
   $scope.removeNotification = function (notification) {
@@ -82,10 +82,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.showFrame(true, true)
-    $scope.footer = Page.footer
-    $scope.header = Page.header
     $scope.loading.clear()
+    Page.setTemplates("header", "footer")
   })
 
 });
@@ -1672,15 +1670,10 @@ angular.module( 'signup', [
 
 }])
 
-  .controller('signupCtrl', function($scope, Signup, Page){
-    Page.showFrame(false, false) // hide header and footer
-    Page.setTitle("signup")
-
-
+  .controller('signupCtrl', function($scope, Signup, Page, security){
+    Page.setTemplates("signup/signup-header", "")
+//    security.logout()
     $scope.input = {}
-    $scope.signupSteps = Signup.signupSteps();
-    $scope.isStepCurrent = Signup.onSignupStep;
-    $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
 
     $scope.include =  Signup.getTemplatePath();
     $scope.nav = { // defined as an object so that controllers in child scopes can override...
@@ -1699,7 +1692,7 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, Slug, $location) {
+  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, Slug, $location, security) {
     var  nameRegex = /\/(\w+)\/(\w+)\/url/
     var res = nameRegex.exec($location.path())
 
@@ -1716,6 +1709,7 @@ angular.module( 'signup', [
         },
         function(resp, headers){
           console.log("got response back from save user", resp)
+          security.clearCachedUser()
           $location.path("signup/" + $scope.input.url_slug + "/products/add")
 
         }
@@ -1758,6 +1752,15 @@ angular.module( 'signup', [
     }
   })
 
+.controller("signupHeaderCtrl", function($scope, Signup, Page) {
+
+  Page.setTitle("signup")
+
+  $scope.signupSteps = Signup.signupSteps();
+  $scope.isStepCurrent = Signup.onSignupStep;
+  $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
+
+})
 
 ;
 
@@ -2675,9 +2678,9 @@ angular.module('security.login.toolbar', [
     replace: true,
     scope: true,
     link: function($scope, $element, $attrs, $controller) {
-      $scope.isAuthenticated = security.isAuthenticated;
       $scope.login = security.showLogin;
       $scope.logout = security.logout;
+
       $scope.$watch(function() {
         return security.getCurrentUser();
       }, function(currentUser) {
@@ -2765,7 +2768,7 @@ angular.module('security.service', [
 ])
 
 .factory('security', function($http, $q, $location, $modal, i18nNotifications) {
-  var loadedUserFromServer = false
+  var useCachedUser = false
   var currentUser
 
   // Redirect to the given url (defaults to '/')
@@ -2848,6 +2851,7 @@ angular.module('security.service', [
           return (user && user.url_slug && user.email)
         },
         ownsThisProfile: function(user){
+          console.log("user.url_slug, currentUrlSlug", user.url_slug, currentUrlSlug())
           return (user && user.url_slug && user.url_slug == currentUrlSlug())
 
         }
@@ -2873,10 +2877,14 @@ angular.module('security.service', [
 
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
-      if (loadedUserFromServer) {
+      console.log("requesting current user.")
+
+      if (useCachedUser) {
+        console.log("already loaded from server: ", currentUser)
         return $q.when(currentUser);
 
       } else {
+        console.log("logging in from cookie")
         return service.loginFromCookie()
       }
     },
@@ -2884,18 +2892,16 @@ angular.module('security.service', [
     loginFromCookie: function(){
       return $http.get('/user/current')
         .success(function(data, status, headers, config) {
-          loadedUserFromServer = true
+          useCachedUser = true
           currentUser = data.user;
         })
         .then(function(){return currentUser})
     },
 
 
-    // Logout the current user and redirect
     logout: function(redirectTo) {
-//      $location.search({})
       currentUser = null;
-      console.log("logging out.")
+      console.log("logging out. and it's new!")
       $http.get('/user/logout').success(function(data, status, headers, config) {
         console.log("logout message: ", data)
 //        redirect(redirectTo);
@@ -2911,6 +2917,7 @@ angular.module('security.service', [
       service.requestCurrentUser().then(
         function(user){
           if (!user){
+            deferred.reject("userNotLoggedIn")
             deferred.reject("userNotLoggedIn")
           }
           else {
@@ -2931,8 +2938,14 @@ angular.module('security.service', [
       })
     },
 
+    clearCachedUser: function(){
+      currentUser = null
+      useCachedUser = false
+    },
+
 
     getCurrentUser: function(){
+      console.log("calling getCurrentUser")
       return currentUser
     },
 
@@ -3399,22 +3412,45 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
 
   return notificationsService;
 }]);
-angular.module("services.page", [])
+angular.module("services.page", [
+  'signup'
+])
 angular.module("services.page")
 .factory("Page", function(){
    var title = '';
-   var showHeader = true
-   var showFooter = true
+   var frameTemplatePaths = {
+     header: "",
+     footer: ""
+   }
+
+   var addTplHtml = function(pathRoot){
+     if (pathRoot){
+       return pathRoot + ".tpl.html"
+     }
+     else {
+       return ""
+     }
+   }
+
+
+
+   var headers = {
+     signup: "signup/signup-header.tpl.html"
+   }
 
    return {
-     getTitle: function() { return title; },
-     setTitle: function(newTitle) { title = newTitle },
-     'showFrame': function(header, footer) {
-       showHeader = !!header;
-       showFooter = !!footer;
+     setTemplates: function(headerPathRoot, footerPathRoot){
+       frameTemplatePaths.header = addTplHtml(headerPathRoot)
+       frameTemplatePaths.footer = addTplHtml(footerPathRoot)
      },
-     header: function(){return showHeader},
-     footer: function(){return showFooter}
+     getTemplate: function(templateName){
+       return frameTemplatePaths[templateName]
+     },
+
+
+     getTitle: function() { return title; },
+     setTitle: function(newTitle) { title = newTitle }
+
    };
 })
 angular.module('services.routeChangeErrorHandler', [
@@ -3643,11 +3679,11 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
-    "<div id=\"footer\" ng-show=\"footer()\">\n" +
+    "<div id=\"footer\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -3707,7 +3743,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header\" ng-show=\"header()\">\n" +
+    "<div class=\"main-header\">\n" +
     "   <div class=\"navbar site-nav\">\n" +
     "      <div class=\"navbar-inner\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -4140,13 +4176,6 @@ angular.module("notifications.tpl.html", []).run(["$templateCache", function($te
 angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("password-reset/password-reset.tpl.html",
     "<div class=\"password-reset\">\n" +
-    "   <div class=\"password-reset-header\">\n" +
-    "      <h1><a class=\"brand\" href=\"/\">\n" +
-    "         <img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
-    "         <span class=\"text\">password reset</span>\n" +
-    "      </h1>\n" +
-    "   </div>\n" +
-    "\n" +
     "   <form novalidate\n" +
     "         name=\"passwordResetForm\"\n" +
     "         class=\"form-horizontal password-reset\"\n" +
@@ -4802,6 +4831,22 @@ angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", fun
     "");
 }]);
 
+angular.module("signup/signup-header.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("signup/signup-header.tpl.html",
+    "<div class=\"signup-header header\" ng-controller=\"signupHeaderCtrl\">\n" +
+    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "      <span class=\"text\">signup</span>\n" +
+    "   </h1>\n" +
+    "   <ol class=\"signup-steps\">\n" +
+    "      <li ng-repeat=\"stepName in signupSteps\"\n" +
+    "          class=\"{{ stepName }}\"\n" +
+    "          ng-class=\"{current: isStepCurrent(stepName), completed: isStepCompleted(stepName)}\">\n" +
+    "         {{ stepName }}\n" +
+    "      </li>\n" +
+    "   </ol>\n" +
+    "</div>");
+}]);
+
 angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-name.tpl.html",
     "<div class=\"signup-input url\" ng-controller=\"signupNameCtrl\">\n" +
@@ -4962,22 +5007,8 @@ angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function
 
 angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup.tpl.html",
-    "<div class=\"signup-header\">\n" +
-    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
-    "      <span class=\"text\">signup</span>\n" +
-    "   </h1>\n" +
-    "   <ol class=\"signup-steps\">\n" +
-    "      <li ng-repeat=\"stepName in signupSteps\"\n" +
-    "          class=\"{{ stepName }}\"\n" +
-    "          ng-class=\"{current: isStepCurrent(stepName), completed: isStepCompleted(stepName)}\">\n" +
-    "         {{ stepName }}\n" +
-    "      </li>\n" +
-    "   </ol>\n" +
-    "</div>\n" +
     "\n" +
     "<form class=\"signup name form-horizontal\" name=\"signupForm\">\n" +
-    "\n" +
-    "\n" +
     "   <div ng-include=\"include\"></div>\n" +
     "\n" +
     "   <button type=\"submit\"\n" +
@@ -5121,12 +5152,12 @@ angular.module("security/login/reset-password-modal.tpl.html", []).run(["$templa
 angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login/toolbar.tpl.html",
     "<ul class=\"nav pull-right\">\n" +
-    "   <li ng-show=\"isAuthenticated()\" class=\"logged-in-user\">\n" +
+    "   <li ng-show=\"currentUser\" class=\"logged-in-user\">\n" +
     "      <span class=\"context\">Welcome back, </span>\n" +
     "      <a class=\"current-user\" href=\"/{{ currentUser.url_slug }}\">{{currentUser.given_name}}</a>\n" +
     "   </li>\n" +
-    "   <li ng-show=\"isAuthenticated()\" class=\"divider-vertical\"></li>\n" +
-    "   <li ng-show=\"isAuthenticated()\" class=\"logged-in preferences dropdown\">\n" +
+    "   <li ng-show=\"currentUser\" class=\"divider-vertical\"></li>\n" +
+    "   <li ng-show=\"currentUser\" class=\"logged-in preferences dropdown\">\n" +
     "      <a href=\"#\" class=\"preferences dropdown-toggle\" data-toggle=\"dropdown\" title=\"Change URL and other preferences\">\n" +
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
@@ -5134,11 +5165,11 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         <li><a href=\"/settings/profile\" class=\"profile\"><i class=\"icon-cogs\"></i>Preferences</a></li>\n" +
     "         <li><a href=\"/api-docs\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>\n" +
     "         <li class=\"divider\"></li>\n" +
-    "         <li><a href=\"#\" class=\"logout\" ng-click=\"logout()\"><i class=\"icon-off\"></i>Log out</a></li>\n" +
+    "         <li><a class=\"logout\" ng-click=\"logout()\"><i class=\"icon-off\"></i>Log out</a></li>\n" +
     "      </ul>\n" +
     "   </li>\n" +
     "\n" +
-    "   <li ng-hide=\"isAuthenticated()\" class=\"login\">\n" +
+    "   <li ng-hide=\"currentUser\" class=\"login\">\n" +
     "      <form class=\"navbar-form\">\n" +
     "         <span class=\"context\">Already have a profile?</span>\n" +
     "         <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +

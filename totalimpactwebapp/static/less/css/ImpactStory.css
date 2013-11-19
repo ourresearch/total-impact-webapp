@@ -8784,7 +8784,7 @@ div.importers div.more-importers-coming:after {
   font-size: 12px;
   text-align: center;
 }
-div.password-reset div.password-reset-header {
+div.password-reset-header {
   background: #ff4e00;
   height: 100px;
   position: absolute;
@@ -8792,14 +8792,14 @@ div.password-reset div.password-reset-header {
   left: 0;
   right: 0;
 }
-div.password-reset div.password-reset-header h1 {
+div.password-reset-header h1 {
   text-align: center;
 }
-div.password-reset div.password-reset-header h1 img {
+div.password-reset-header h1 img {
   height: 50px;
   margin-top: 5px;
 }
-div.password-reset div.password-reset-header h1 span {
+div.password-reset-header h1 span {
   font-size: 25px;
   font-weight: 300;
   text-transform: uppercase;

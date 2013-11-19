@@ -11,9 +11,9 @@ angular.module('security.login.toolbar', [
     replace: true,
     scope: true,
     link: function($scope, $element, $attrs, $controller) {
-      $scope.isAuthenticated = security.isAuthenticated;
       $scope.login = security.showLogin;
       $scope.logout = security.logout;
+
       $scope.$watch(function() {
         return security.getCurrentUser();
       }, function(currentUser) {

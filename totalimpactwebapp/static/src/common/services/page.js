@@ -1,18 +1,41 @@
-angular.module("services.page", [])
+angular.module("services.page", [
+  'signup'
+])
 angular.module("services.page")
 .factory("Page", function(){
    var title = '';
-   var showHeader = true
-   var showFooter = true
+   var frameTemplatePaths = {
+     header: "",
+     footer: ""
+   }
+
+   var addTplHtml = function(pathRoot){
+     if (pathRoot){
+       return pathRoot + ".tpl.html"
+     }
+     else {
+       return ""
+     }
+   }
+
+
+
+   var headers = {
+     signup: "signup/signup-header.tpl.html"
+   }
 
    return {
-     getTitle: function() { return title; },
-     setTitle: function(newTitle) { title = newTitle },
-     'showFrame': function(header, footer) {
-       showHeader = !!header;
-       showFooter = !!footer;
+     setTemplates: function(headerPathRoot, footerPathRoot){
+       frameTemplatePaths.header = addTplHtml(headerPathRoot)
+       frameTemplatePaths.footer = addTplHtml(footerPathRoot)
      },
-     header: function(){return showHeader},
-     footer: function(){return showFooter}
+     getTemplate: function(templateName){
+       return frameTemplatePaths[templateName]
+     },
+
+
+     getTitle: function() { return title; },
+     setTitle: function(newTitle) { title = newTitle }
+
    };
 })

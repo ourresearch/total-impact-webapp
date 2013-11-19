@@ -3,7 +3,7 @@
 <head>
    <base href="/">
    <meta charset="utf-8">
-   <title>{% raw %}ImpactStory: {{ getPageTitle() }}{% endraw %}</title>
+   <title>{% raw %}ImpactStory: {{ page.getTitle() }}{% endraw %}</title>
    <meta name="description" content="ImpactStory">
    <meta name="author" content="ImpactStory">
    <meta name="google-site-verification" content="JWD8WcfINuKxjh31KejAnijd9Cx34IYEH1-bDMXVzjE" />
@@ -59,22 +59,13 @@
 
 
 </head>
-
-
 <body>
-
+{% raw %}
 <div class="staging-warning"><div class="content"><span>staging, yo</span></div></div>
-
-<div ng-include="'header.tpl.html'"></div>
-<div ng-include="'notifications.tpl.html'" class="container-fluid" ng-show="notifications.getCurrent().length"></div>
-
-
-
-<div id="container">
-   <div ng-view class="main-view"></div>
-</div>
-<div ng-include="'footer.tpl.html'"></div>
-
+<div ng-include="page.getTemplate('header')"></div>
+<div ng-view class="main-view"></div>
+<div ng-include="page.getTemplate('footer')"></div>
+{% endraw %}
 
 
 

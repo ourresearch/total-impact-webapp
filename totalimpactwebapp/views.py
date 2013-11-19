@@ -339,7 +339,9 @@ def user_profile(profile_id):
 
         logger.debug(u"logging in user {user}".format(
             user=user.as_dict()))
+
         login_user(user)
+
         return json_resp_from_thing({"user": user.as_dict()})
 
 
