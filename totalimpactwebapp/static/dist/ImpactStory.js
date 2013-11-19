@@ -521,6 +521,7 @@ angular.module( 'infopages', [
 angular.module('passwordReset', [
     'resources.users',
     'services.loading',
+    'services.page',
     'directives.spinner',
     'services.i18nNotifications',
     'security',
@@ -530,15 +531,37 @@ angular.module('passwordReset', [
 
   $routeProvider.when('/reset-password/:resetToken',
   {
-    templateUrl:'password-reset/password-reset.tpl.html',
-    controller: "passwordResetCtrl"
+    templateUrl:'password-reset/password-reset.tpl.html'
   }
   )
 })
 
-.controller("passwordResetCtrl", function($routeParams, UsersPassword){
-
+.controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, i18nNotifications, security){
+  Page.showFrame(false, false)
   console.log("reset token", $routeParams.resetToken)
+
+  $scope.password = ""
+  $scope.onSave = function(){
+    console.log("submitting password to change", $scope.password)
+    Loading.start("saveButton")
+    UsersPassword.save(
+      {id: $routeParams.resetToken, idType:"reset_token"},
+      {newPassword: $scope.password},
+      function(resp) {
+        i18nNotifications.pushForNextRoute('settings.password.change.success', 'success', {}, {hideInHeader:true});
+        $location.path("/")
+        security.showLogin()
+      },
+      function(resp) {
+        i18nNotifications.pushForCurrentRoute('settings.password.change.error.unauthenticated', 'danger');
+        Loading.finish('saveButton')
+        $scope.password = "";  // reset the form
+      }
+    )
+  }
+  $scope.onCancel = function(){
+    $location.path("/")
+  }
 })
 angular.module('product.award', []);
 angular.module('product.award').factory('Award', function() {
@@ -2551,15 +2574,20 @@ angular.module('security.interceptor', ['security.retryQueue'])
 }]);
 angular.module('security.login.form', [
     'services.localizedMessages',
+    'services.i18nNotifications',
     'security.login.resetPassword',
     'ui.bootstrap'
   ])
 
 // The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
 // This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
-.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance, $modal) {
+.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance, $modal, i18nNotifications) {
   // The model for this form 
   $scope.user = {};
+  $scope.notifications = i18nNotifications
+
+
+  console.log("notifications!", $scope.notifications)
 
   // Any error message from failing to login
   $scope.authError = null;
@@ -3272,6 +3300,7 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'login.reason.notAuthenticated':"You must be logged in to access this part of the application.",
     'login.error.invalidCredentials': "Login failed.  Please check your credentials and try again.",
     'login.error.serverError': "There was a problem with authenticating: {{exception}}.",
+
     'test.first': "This is a test of the notification system...",
     'settings.password.change.success': "Password changed.",
     'settings.password.change.error.unauthenticated': "Sorry, looks like you typed your password wrong.",
@@ -4100,7 +4129,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
 angular.module("notifications.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("notifications.tpl.html",
     "<ul class=\"notifications\">\n" +
-    "   <li ng-class=\"['alert', 'alert-'+notification.type]\" ng-repeat=\"notification in notifications.getCurrent()\">\n" +
+    "   <li ng-class=\"['alert', 'alert-'+notification.type]\" ng-show=\"!notification.hideInHeader\" ng-repeat=\"notification in notifications.getCurrent()\">\n" +
     "       <button class=\"close\" ng-click=\"removeNotification(notification)\">&times;</button>\n" +
     "       {{notification.message}}\n" +
     "   </li>\n" +
@@ -4112,7 +4141,8 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
   $templateCache.put("password-reset/password-reset.tpl.html",
     "<div class=\"password-reset\">\n" +
     "   <div class=\"password-reset-header\">\n" +
-    "      <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "      <h1><a class=\"brand\" href=\"/\">\n" +
+    "         <img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
     "         <span class=\"text\">password reset</span>\n" +
     "      </h1>\n" +
     "   </div>\n" +
@@ -4121,34 +4151,40 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
     "         name=\"passwordResetForm\"\n" +
     "         class=\"form-horizontal password-reset\"\n" +
     "         ng-submit=\"onSave()\"\n" +
+    "         ng-controller=\"passwordResetFormCtrl\"\n" +
     "        >\n" +
     "\n" +
+    "      <!--<div class=\"inst\">\n" +
+    "         Enter your new password:\n" +
+    "      </div>-->\n" +
     "\n" +
     "      <div class=\"form-group new-password\">\n" +
-    "         <label class=\"control-label col-lg-3\">New password</label>\n" +
-    "         <div class=\"controls col-lg-4\">\n" +
-    "            <input ng-model=\"user.newPassword\"\n" +
+    "         <label class=\"control-label sr-only\">New password</label>\n" +
+    "         <div class=\"controls \">\n" +
+    "            <input ng-model=\"password\"\n" +
     "                   name=\"newPassword\"\n" +
     "                   type=\"password\"\n" +
     "                   ng-show=\"!showPassword\"\n" +
-    "                   class=\"form-control\"\n" +
+    "                   class=\"form-control input-lg\"\n" +
+    "                   placeholder=\"new password\"\n" +
     "                   required>\n" +
     "\n" +
-    "            <input ng-model=\"user.newPassword\"\n" +
+    "            <input ng-model=\"password\"\n" +
     "                   name=\"newPassword\"\n" +
     "                   type=\"text\"\n" +
     "                   ng-show=\"showPassword\"\n" +
-    "                   class=\"form-control\"\n" +
+    "                   class=\"form-control input-lg\"\n" +
+    "                   placeholder=\"new password\"\n" +
     "                   required>\n" +
     "         </div>\n" +
-    "         <div class=\"controls col-lg-4 show-password\">\n" +
+    "         <div class=\"controls show-password\">\n" +
     "            <pretty-checkbox value=\"showPassword\" text=\"Show\"></pretty-checkbox>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
     "      <div class=\"form-group submit\">\n" +
-    "         <div class=\" col-lg-offset-4 col-lg-4\">\n" +
+    "         <div>\n" +
     "            <save-buttons></save-buttons>\n" +
     "         </div>\n" +
     "      </div>\n" +
@@ -5022,12 +5058,11 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "</div>\n" +
     "\n" +
     "<div class=\"modal-body\">\n" +
-    "   <div class=\"alert alert-warning\" ng-show=\"authReason\">\n" +
-    "      {{authReason}}\n" +
-    "   </div>\n" +
-    "   <div class=\"alert alert-error\" ng-show=\"authError\">\n" +
-    "      {{authError}}\n" +
-    "   </div>\n" +
+    "   <ul class=\"modal-notifications\">\n" +
+    "      <li ng-class=\"['alert', 'alert-'+notification.type]\" ng-repeat=\"notification in notifications.getCurrent()\">\n" +
+    "         {{notification.message}}\n" +
+    "      </li>\n" +
+    "   </ul>\n" +
     "\n" +
     "   <form name=\"form\" novalidate class=\"login-form form-inline\">\n" +
     "      <div class=\"form-group\">\n" +

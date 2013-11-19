@@ -1,14 +1,19 @@
 angular.module('security.login.form', [
     'services.localizedMessages',
+    'services.i18nNotifications',
     'security.login.resetPassword',
     'ui.bootstrap'
   ])
 
 // The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
 // This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
-.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance, $modal) {
+.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance, $modal, i18nNotifications) {
   // The model for this form 
   $scope.user = {};
+  $scope.notifications = i18nNotifications
+
+
+  console.log("notifications!", $scope.notifications)
 
   // Any error message from failing to login
   $scope.authError = null;

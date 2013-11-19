@@ -6357,6 +6357,32 @@ div.modal.creds .modal-footer a:hover {
   color: #555;
   text-decoration: none;
 }
+div.modal div.modal-body {
+  position: relative;
+}
+div.modal div.modal-body ul.modal-notifications {
+  margin: -20px -30px;
+  text-align: center;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #fff;
+}
+div.modal div.modal-body ul.modal-notifications li {
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomright: 0;
+  -moz-border-radius-bottomleft: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
 div.modal div.modal-header {
   background: #fafafa;
   background: #fff;
@@ -6372,7 +6398,7 @@ div.modal div.modal-header a.dismiss {
   position: absolute;
   top: 22px;
   right: 30px;
-  color: #eee;
+  color: #ddd;
   font-size: 25px;
 }
 div.modal div.modal-header a.dismiss:hover {
@@ -8756,5 +8782,47 @@ div.importers div.more-importers-coming:after {
 }
 .modal-body.update div.products span.descr {
   font-size: 12px;
+  text-align: center;
+}
+div.password-reset div.password-reset-header {
+  background: #ff4e00;
+  height: 100px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+div.password-reset div.password-reset-header h1 {
+  text-align: center;
+}
+div.password-reset div.password-reset-header h1 img {
+  height: 50px;
+  margin-top: 5px;
+}
+div.password-reset div.password-reset-header h1 span {
+  font-size: 25px;
+  font-weight: 300;
+  text-transform: uppercase;
+  color: #fff;
+}
+div.password-reset form.password-reset {
+  width: 500px;
+  margin: 300px auto;
+}
+div.password-reset form.password-reset div.new-password {
+  position: relative;
+}
+div.password-reset form.password-reset div.new-password input {
+  font-size: 30px;
+  width: 470px;
+}
+div.password-reset form.password-reset div.new-password div.show-password {
+  font-size: 30px;
+  position: absolute;
+  bottom: -7px;
+  right: -60px;
+  color: #999;
+}
+div.password-reset form.password-reset div.submit {
   text-align: center;
 }

@@ -196,7 +196,16 @@ div.modal {
    margin: -250px 0 0 -300px;
 
    div.modal-body {
-
+      position: relative;
+      ul.modal-notifications {
+         margin: -20px -30px;
+         text-align: center;
+         border-left: 1px solid #fff;
+         border-right: 1px solid #fff;
+         li{
+            .border-radius(0, 0, 0, 0);
+         }
+      }
    }
    div.modal-header {
       background: #fafafa;
@@ -212,7 +221,7 @@ div.modal {
          position: absolute;
          top: 22px;
          right: 30px;
-         color: #eee;
+         color: #ddd;
          font-size: 25px;
          &:hover {
             text-decoration: none;

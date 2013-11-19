@@ -2,9 +2,14 @@ import mandrill
 import os
 import logging
 from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
+from totalimpactwebapp.user import User, get_user_from_id
+
 
 logger = logging.getLogger("tiwebapp.password_reset")
 
+
+class PasswordResetError(Exception):
+    pass
 
 
 def send_reset_token(email, url_base):
@@ -44,4 +49,37 @@ team</p>""".format(url=full_reset_url)
     logger.info(u"Sent a password reset email to " + email)
 
     return True
+
+
+def reset_password_from_token(reset_token, new_password):
+    s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
+    try:
+        email = s.unsign(reset_token, max_age=60*60*24).lower()  # 24 hours
+
+    except SignatureExpired:
+        raise PasswordResetError("expired-token")
+
+    except BadTimeSignature:
+        raise PasswordResetError("invalid-token")
+
+    user = get_user_from_id(email, "email", include_items=False)
+    user.set_password(new_password)
+    return user
+
+
+def reset_password(id, id_type, current_password, new_password):
+    user = get_user_from_id(id, id_type, include_items=False)
+    if user.check_password(current_password):
+        user.set_password(new_password)
+    else:
+        raise PasswordResetError("invalid-password")
+
+    return user
+
+
+
+
+
+
+
 

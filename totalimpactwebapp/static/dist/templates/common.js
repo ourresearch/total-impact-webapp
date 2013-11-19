@@ -32,12 +32,11 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "</div>\n" +
     "\n" +
     "<div class=\"modal-body\">\n" +
-    "   <div class=\"alert alert-warning\" ng-show=\"authReason\">\n" +
-    "      {{authReason}}\n" +
-    "   </div>\n" +
-    "   <div class=\"alert alert-error\" ng-show=\"authError\">\n" +
-    "      {{authError}}\n" +
-    "   </div>\n" +
+    "   <ul class=\"modal-notifications\">\n" +
+    "      <li ng-class=\"['alert', 'alert-'+notification.type]\" ng-repeat=\"notification in notifications.getCurrent()\">\n" +
+    "         {{notification.message}}\n" +
+    "      </li>\n" +
+    "   </ul>\n" +
     "\n" +
     "   <form name=\"form\" novalidate class=\"login-form form-inline\">\n" +
     "      <div class=\"form-group\">\n" +

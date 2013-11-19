@@ -4,12 +4,11 @@
 </div>
 
 <div class="modal-body">
-   <div class="alert alert-warning" ng-show="authReason">
-      {{authReason}}
-   </div>
-   <div class="alert alert-error" ng-show="authError">
-      {{authError}}
-   </div>
+   <ul class="modal-notifications">
+      <li ng-class="['alert', 'alert-'+notification.type]" ng-repeat="notification in notifications.getCurrent()">
+         {{notification.message}}
+      </li>
+   </ul>
 
    <form name="form" novalidate class="login-form form-inline">
       <div class="form-group">

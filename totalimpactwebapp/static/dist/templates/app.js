@@ -484,7 +484,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
 angular.module("notifications.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("notifications.tpl.html",
     "<ul class=\"notifications\">\n" +
-    "   <li ng-class=\"['alert', 'alert-'+notification.type]\" ng-repeat=\"notification in notifications.getCurrent()\">\n" +
+    "   <li ng-class=\"['alert', 'alert-'+notification.type]\" ng-show=\"!notification.hideInHeader\" ng-repeat=\"notification in notifications.getCurrent()\">\n" +
     "       <button class=\"close\" ng-click=\"removeNotification(notification)\">&times;</button>\n" +
     "       {{notification.message}}\n" +
     "   </li>\n" +
@@ -496,7 +496,8 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
   $templateCache.put("password-reset/password-reset.tpl.html",
     "<div class=\"password-reset\">\n" +
     "   <div class=\"password-reset-header\">\n" +
-    "      <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "      <h1><a class=\"brand\" href=\"/\">\n" +
+    "         <img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
     "         <span class=\"text\">password reset</span>\n" +
     "      </h1>\n" +
     "   </div>\n" +
@@ -505,34 +506,40 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
     "         name=\"passwordResetForm\"\n" +
     "         class=\"form-horizontal password-reset\"\n" +
     "         ng-submit=\"onSave()\"\n" +
+    "         ng-controller=\"passwordResetFormCtrl\"\n" +
     "        >\n" +
     "\n" +
+    "      <!--<div class=\"inst\">\n" +
+    "         Enter your new password:\n" +
+    "      </div>-->\n" +
     "\n" +
     "      <div class=\"form-group new-password\">\n" +
-    "         <label class=\"control-label col-lg-3\">New password</label>\n" +
-    "         <div class=\"controls col-lg-4\">\n" +
-    "            <input ng-model=\"user.newPassword\"\n" +
+    "         <label class=\"control-label sr-only\">New password</label>\n" +
+    "         <div class=\"controls \">\n" +
+    "            <input ng-model=\"password\"\n" +
     "                   name=\"newPassword\"\n" +
     "                   type=\"password\"\n" +
     "                   ng-show=\"!showPassword\"\n" +
-    "                   class=\"form-control\"\n" +
+    "                   class=\"form-control input-lg\"\n" +
+    "                   placeholder=\"new password\"\n" +
     "                   required>\n" +
     "\n" +
-    "            <input ng-model=\"user.newPassword\"\n" +
+    "            <input ng-model=\"password\"\n" +
     "                   name=\"newPassword\"\n" +
     "                   type=\"text\"\n" +
     "                   ng-show=\"showPassword\"\n" +
-    "                   class=\"form-control\"\n" +
+    "                   class=\"form-control input-lg\"\n" +
+    "                   placeholder=\"new password\"\n" +
     "                   required>\n" +
     "         </div>\n" +
-    "         <div class=\"controls col-lg-4 show-password\">\n" +
+    "         <div class=\"controls show-password\">\n" +
     "            <pretty-checkbox value=\"showPassword\" text=\"Show\"></pretty-checkbox>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
     "      <div class=\"form-group submit\">\n" +
-    "         <div class=\" col-lg-offset-4 col-lg-4\">\n" +
+    "         <div>\n" +
     "            <save-buttons></save-buttons>\n" +
     "         </div>\n" +
     "      </div>\n" +

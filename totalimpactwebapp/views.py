@@ -9,11 +9,16 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
-from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
+from itsdangerous import TimestampSigner
 
 
 from totalimpactwebapp import app, db, login_manager
+
 from totalimpactwebapp.password_reset import send_reset_token
+from totalimpactwebapp.password_reset import reset_password_from_token
+from totalimpactwebapp.password_reset import reset_password
+from totalimpactwebapp.password_reset import PasswordResetError
+
 from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
 from totalimpactwebapp.user import make_genre_heading_products
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
@@ -303,32 +308,6 @@ def login():
         # Yay, no errors! Log the user in.
         login_user(user)
 
-    user = User.query.filter_by(email=email).first()
-    login_user(user)
-
-    return json_resp_from_thing({"user": user.as_dict()})
-
-
-@app.route("/user/login/token", methods=["POST"])
-def login_from_token():
-    logger.debug(u"user trying to log in from token.")
-    sleep(1)
-
-    reset_token = unicode(request.json["token"])
-    s = TimestampSigner(os.getenv("SECRET_KEY"), salt="reset-password")
-    error = ""
-    try:
-        email = s.unsign(reset_token, max_age=60*60*24).lower()  # 24 hours
-
-    except (SignatureExpired, BadTimeSignature):
-        abort_json(401, "This token ain't no good.")
-
-    # the token is one we made. Whoever has it pwns this account
-    user = User.query.filter_by(email=email).first()
-    if user is None:
-        abort(404, "Sorry, that user doesn't exist.")
-
-    login_user(user)
     return json_resp_from_thing({"user": user.as_dict()})
 
 
@@ -355,8 +334,6 @@ def user_profile(profile_id):
         try:
             user = create_user_from_slug(profile_id, userdict, g.api_root, db)
 
-            # user = User.query.filter_by(email="52@e.com").first()
-
         except IntegrityError:
             abort_json(409, "Your user_slug isn't unique.")
 
@@ -365,10 +342,7 @@ def user_profile(profile_id):
         login_user(user)
         return json_resp_from_thing({"user": user.as_dict()})
 
-    user = User.query.filter_by(email="52@e.com").first()
-    login_user(user)
 
-    return json_resp_from_thing({"user": user.as_dict()})
 
 
 
@@ -499,17 +473,24 @@ def user_products_csv(id):
 
 @app.route("/user/<id>/password", methods=["POST"])
 def user_password_modify(id):
-    retrieved_user = get_user_for_response(id, request)
+
     current_password = request.json.get("currentPassword", None)
+    new_password = request.json.get("newPassword", None)
+    id_type = request.args.get("id_type")
 
-    if retrieved_user.check_password(current_password):
-        retrieved_user.set_password(request.json["newPassword"])
-        login_user(retrieved_user)
-        db.session.commit()
-        return json_resp_from_thing({"response": "ok"})
+    try:
+        if id_type == "reset_token":
+            user = reset_password_from_token(id, request.json["newPassword"])
+        else:
+            user = reset_password(id, id_type, current_password, new_password)
 
-    else:
-        abort(403, "The current password is not correct.")
+    except PasswordResetError as e:
+        abort_json(403, e.message)
+
+    db.session.commit()
+    return json_resp_from_thing({"about": user.as_dict()})
+
+
 
 
 

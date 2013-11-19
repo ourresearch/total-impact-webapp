@@ -14,6 +14,7 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'login.reason.notAuthenticated':"You must be logged in to access this part of the application.",
     'login.error.invalidCredentials': "Login failed.  Please check your credentials and try again.",
     'login.error.serverError': "There was a problem with authenticating: {{exception}}.",
+
     'test.first': "This is a test of the notification system...",
     'settings.password.change.success': "Password changed.",
     'settings.password.change.error.unauthenticated': "Sorry, looks like you typed your password wrong.",

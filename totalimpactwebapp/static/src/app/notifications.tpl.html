@@ -1,5 +1,5 @@
 <ul class="notifications">
-   <li ng-class="['alert', 'alert-'+notification.type]" ng-repeat="notification in notifications.getCurrent()">
+   <li ng-class="['alert', 'alert-'+notification.type]" ng-show="!notification.hideInHeader" ng-repeat="notification in notifications.getCurrent()">
        <button class="close" ng-click="removeNotification(notification)">&times;</button>
        {{notification.message}}
    </li>
