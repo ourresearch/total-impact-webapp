@@ -509,13 +509,6 @@ angular.module( 'infopages', [
 
 ;
 
-/**
- * Created with PyCharm.
- * User: jay
- * Date: 11/18/13
- * Time: 3:21 PM
- * To change this template use File | Settings | File Templates.
- */
 angular.module('passwordReset', [
     'resources.users',
     'services.loading',
@@ -535,7 +528,7 @@ angular.module('passwordReset', [
 })
 
 .controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, i18nNotifications, security){
-  Page.showFrame(false, false)
+  Page.setTemplates('password-reset/password-reset-header', false)
   console.log("reset token", $routeParams.resetToken)
 
   $scope.password = ""
@@ -1210,6 +1203,7 @@ angular.module("profileProduct", [
 
     $scope.userSlug = slug
     $scope.loading = Loading
+    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
 
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
@@ -2851,7 +2845,6 @@ angular.module('security.service', [
           return (user && user.url_slug && user.email)
         },
         ownsThisProfile: function(user){
-          console.log("user.url_slug, currentUrlSlug", user.url_slug, currentUrlSlug())
           return (user && user.url_slug && user.url_slug == currentUrlSlug())
 
         }
@@ -3244,6 +3237,9 @@ angular.module('services.i18nNotifications').factory('i18nNotifications', ['loca
     },
     getCurrent:function () {
       return notifications.getCurrent();
+    },
+    getFirst:function(){
+      return notifications.getCurrent()[0]
     },
     remove:function (notification) {
       return notifications.remove(notification);
@@ -3679,7 +3675,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -3743,7 +3739,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header\">\n" +
+    "<div class=\"main-header header\">\n" +
     "   <div class=\"navbar site-nav\">\n" +
     "      <div class=\"navbar-inner\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -3768,9 +3764,9 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "\n" +
-    "\n" +
     "</div>\n" +
+    "<div ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
+    "\n" +
     "");
 }]);
 
@@ -4165,11 +4161,26 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
 angular.module("notifications.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("notifications.tpl.html",
     "<ul class=\"notifications\">\n" +
-    "   <li ng-class=\"['alert', 'alert-'+notification.type]\" ng-show=\"!notification.hideInHeader\" ng-repeat=\"notification in notifications.getCurrent()\">\n" +
+    "   <li ng-class=\"['alert', 'alert-'+notification.type]\"\n" +
+    "       ng-hide=\"notification.hideInHeader\"\n" +
+    "       ng-repeat=\"notification in notifications.getCurrent()\">\n" +
+    "\n" +
     "       <button class=\"close\" ng-click=\"removeNotification(notification)\">&times;</button>\n" +
     "       {{notification.message}}\n" +
     "   </li>\n" +
     "</ul>\n" +
+    "");
+}]);
+
+angular.module("password-reset/password-reset-header.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("password-reset/password-reset-header.tpl.html",
+    "<div class=\"password-reset-header\">\n" +
+    "   <h1><a class=\"brand\" href=\"/\">\n" +
+    "      <img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "      <span class=\"text\">password reset</span>\n" +
+    "   </h1>\n" +
+    "</div>\n" +
+    "<div ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
     "");
 }]);
 
@@ -4391,6 +4402,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         <a back-to-profile></a>\n" +
     "         <a class=\"delete-product\"\n" +
     "            ng-click=\"deleteProduct()\"\n" +
+    "            ng-show=\"userOwnsThisProfile\"\n" +
     "            tooltip=\"Remove this product from your profile.\"\n" +
     "            tooltip-placement=\"bottom\">\n" +
     "            <i class=\"icon-trash\"></i>\n" +

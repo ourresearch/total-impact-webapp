@@ -1,10 +1,3 @@
-/**
- * Created with PyCharm.
- * User: jay
- * Date: 11/18/13
- * Time: 3:21 PM
- * To change this template use File | Settings | File Templates.
- */
 angular.module('passwordReset', [
     'resources.users',
     'services.loading',
@@ -24,7 +17,7 @@ angular.module('passwordReset', [
 })
 
 .controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, i18nNotifications, security){
-  Page.showFrame(false, false)
+  Page.setTemplates('password-reset/password-reset-header', false)
   console.log("reset token", $routeParams.resetToken)
 
   $scope.password = ""

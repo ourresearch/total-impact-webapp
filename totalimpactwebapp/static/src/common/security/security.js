@@ -90,7 +90,6 @@ angular.module('security.service', [
           return (user && user.url_slug && user.email)
         },
         ownsThisProfile: function(user){
-          console.log("user.url_slug, currentUrlSlug", user.url_slug, currentUrlSlug())
           return (user && user.url_slug && user.url_slug == currentUrlSlug())
 
         }

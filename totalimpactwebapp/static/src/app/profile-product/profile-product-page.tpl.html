@@ -4,6 +4,7 @@
          <a back-to-profile></a>
          <a class="delete-product"
             ng-click="deleteProduct()"
+            ng-show="userOwnsThisProfile"
             tooltip="Remove this product from your profile."
             tooltip-placement="bottom">
             <i class="icon-trash"></i>

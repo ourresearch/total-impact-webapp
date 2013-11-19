@@ -1,7 +1,7 @@
 import mandrill
 import os
 import logging
-from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature
+from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature, BadSignature
 from totalimpactwebapp.user import User, get_user_from_id
 
 
@@ -59,7 +59,7 @@ def reset_password_from_token(reset_token, new_password):
     except SignatureExpired:
         raise PasswordResetError("expired-token")
 
-    except BadTimeSignature:
+    except (BadTimeSignature, BadSignature):
         raise PasswordResetError("invalid-token")
 
     user = get_user_from_id(email, "email", include_items=False)

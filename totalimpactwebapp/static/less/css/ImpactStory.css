@@ -6458,19 +6458,18 @@ body.staging div.staging-warning div.content span {
   text-shadow: 1px 0 0 #000;
 }
 ul.notifications {
-  padding-top: 50px;
   width: 100%;
   margin-bottom: 0;
 }
 ul.notifications li.alert {
-  height: 75px;
+  height: 60px;
   border-radius: 0;
-  margin-bottom: -50px;
-  padding-top: 30px;
+  margin-bottom: -30px;
+  padding-top: 15px;
   border-width: 2px;
   border-left: none;
   border-right: none;
-  border-top: none;
+  border-top: 3px solid #fff;
   text-align: center;
 }
 /**
@@ -6537,15 +6536,8 @@ div.navbar.site-nav {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   background: #fff;
   height: 49px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
 }
 div.navbar.site-nav .navbar-inner {
   max-width: 1100px;
@@ -6558,13 +6550,13 @@ div.navbar.site-nav .navbar-inner {
   filter: none;
 }
 div.navbar.site-nav .navbar-inner a.brand {
-  margin: 0;
+  margin: 0 0 0 -5px;
   padding-top: 0;
   float: left;
 }
 div.navbar.site-nav .navbar-inner a.brand img {
-  margin-top: 8px;
-  height: 35px;
+  margin-top: 4px;
+  height: 40px;
 }
 div.navbar.site-nav .navbar-inner .nav {
   position: static;
@@ -7284,7 +7276,7 @@ div.profile-subpage.profile-add-products div.importers {
   background: #fff;
 }
 div.profile-header {
-  margin-top: 100px;
+  margin-top: 50px;
   margin-bottom: 50px;
   height: 110px;
   clear: both;
@@ -8495,7 +8487,7 @@ div.settings div.settings-nav ul li a i {
 }
 div.settings div.settings-input {
   margin-left: 250px;
-  margin-top: 100px;
+  margin-top: 50px;
 }
 div.settings div.settings-input form {
   padding: 0;
@@ -8787,13 +8779,11 @@ div.importers div.more-importers-coming:after {
 div.password-reset-header {
   background: #ff4e00;
   height: 100px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  padding-top: 20px;
 }
 div.password-reset-header h1 {
   text-align: center;
+  margin: 0;
 }
 div.password-reset-header h1 img {
   height: 50px;
@@ -8807,7 +8797,7 @@ div.password-reset-header h1 span {
 }
 div.password-reset form.password-reset {
   width: 500px;
-  margin: 300px auto;
+  margin: 200px auto 0;
 }
 div.password-reset form.password-reset div.new-password {
   position: relative;
