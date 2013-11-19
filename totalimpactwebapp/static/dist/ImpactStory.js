@@ -2938,7 +2938,6 @@ angular.module('security.service', [
 
 
     getCurrentUser: function(){
-      console.log("calling getCurrentUser")
       return currentUser
     },
 
