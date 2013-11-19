@@ -6550,7 +6550,7 @@ div.navbar.site-nav .navbar-inner {
   filter: none;
 }
 div.navbar.site-nav .navbar-inner a.brand {
-  margin: 0 0 0 -5px;
+  margin: 0 0 0 -10px;
   padding-top: 0;
   float: left;
 }
@@ -7236,7 +7236,6 @@ div.profile-subpage div.profile-subpage-header {
   padding-top: 24px;
   background: #555;
   background: #ff4e00;
-  margin-top: 60px;
   color: #fff;
 }
 div.profile-subpage div.profile-subpage-header div.wrapper {

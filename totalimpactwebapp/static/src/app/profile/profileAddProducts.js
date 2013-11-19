@@ -20,7 +20,7 @@ angular.module('profile.addProducts')
 
   }])
   .controller("addProductsCtrl", function($scope, Page, $routeParams, AllTheImporters){
-    Page.showFrame(true, false) // hide footer
+    Page.setTemplates("header", false)
     $scope.redirectAfterImport = true
     $scope.importers = AllTheImporters.get()
   })
