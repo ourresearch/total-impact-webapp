@@ -123,11 +123,21 @@ angular.module('product.product')
       }
     }
 
-    ,getBadgeCount: function(itemData) {
+    ,getSortScore: function(itemData) {
+      var highlyAwardIsAsGoodAsThisManyRegularAwards = 3
+      var score = 0;
       if (itemData.biblio) {
-        return this.makeAwards(itemData).length;
+        var awards = this.makeAwards(itemData)
+        _.each(awards, function(award){
+          if (award.isHighly) {
+            score += highlyAwardIsAsGoodAsThisManyRegularAwards
+          }
+          else {
+            score += 1
+          }
+        })
       }
-      return 0;
+      return score;
     }
 
     ,makeBiblio: function(itemData) {
