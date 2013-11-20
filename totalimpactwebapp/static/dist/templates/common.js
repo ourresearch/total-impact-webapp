@@ -48,7 +48,14 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "         <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
-    "         <button class=\"btn btn-primary login\" ng-click=\"login()\" ng-disabled='form.$invalid'>Sign in</button>\n" +
+    "         <button class=\"btn btn-primary login\"\n" +
+    "                 ng-click=\"login()\"\n" +
+    "                 ng-hide=\"loading.is('login')\"\n" +
+    "                 ng-disabled='form.$invalid'>Sign in</button>\n" +
+    "         <div class=\"working\" ng-show=\"loading.is('login')\">\n" +
+    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "            <span class=\"text\">logging in...</span>\n" +
+    "         </div>\n" +
     "         <a class=\"forgot-login-details\" ng-click=\"showForgotPasswordModal()\">\n" +
     "            <i class=\"icon-question-sign\"></i>\n" +
     "            Forgot your login details?\n" +

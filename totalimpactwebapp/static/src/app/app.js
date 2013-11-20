@@ -5,6 +5,7 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
+
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',

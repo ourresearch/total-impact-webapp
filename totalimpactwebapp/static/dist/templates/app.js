@@ -88,8 +88,7 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
-    "<div ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
-    "\n" +
+    "<div ng-show=\"page.showNotificationsIn('header')\" ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
     "");
 }]);
 
@@ -128,16 +127,24 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "\n" +
     "      <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
     "\n" +
-    "         <div class=\"form-group\">\n" +
+    "         <div class=\"form-group\" ng-repeat=\"input in importer.inputs\">\n" +
     "            <label class=\"control-label\">\n" +
-    "               {{ importer.displayName }} {{ importer.inputNeeded }}\n" +
-    "               <i class=\"icon-question-sign\" ng-show=\"importer.help\" tooltip-html-unsafe=\"{{ importer.help }}\"></i>\n" +
+    "               {{ input.displayName }} {{ input.inputNeeded }}\n" +
+    "               <i class=\"icon-question-sign\" ng-show=\"importer.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
     "               <span class=\"one-per-line\" ng-show=\"importer.inputType=='idList'\">(one per line)</span>\n" +
     "            </label>\n" +
-    "            <div class=\"importer-input\" ng-switch on=\"importer.inputType\">\n" +
-    "               <input class=\"form-control input-lg\" ng-model=\"importer.input\" type=\"text\" ng-switch-when=\"username\" placeholder=\"{{ importer.placeholder }}\">\n" +
-    "               <textarea placeholder=\"{{ importer.placeholder }}\" class=\"form-control\" ng-model=\"importer.input\" ng-switch-when=\"idList\"></textarea>\n" +
-    "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select>\n" +
+    "            <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
+    "               <input\n" +
+    "                       class=\"form-control input-lg\"\n" +
+    "                       ng-model=\"userInput[input.inputType]\"\n" +
+    "                       type=\"text\" ng-switch-when=\"username\"\n" +
+    "                       placeholder=\"{{ importer.placeholder }}\">\n" +
+    "               <textarea placeholder=\"{{ input.placeholder }}\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         ng-model=\"userInput[input.inputType]\"\n" +
+    "                         ng-switch-when=\"idList\"></textarea>\n" +
+    "               <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
+    "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +
     "\n" +
     "            </div>\n" +
     "         </div>\n" +
@@ -485,7 +492,6 @@ angular.module("notifications.tpl.html", []).run(["$templateCache", function($te
   $templateCache.put("notifications.tpl.html",
     "<ul class=\"notifications\">\n" +
     "   <li ng-class=\"['alert', 'alert-'+notification.type]\"\n" +
-    "       ng-hide=\"notification.hideInHeader\"\n" +
     "       ng-repeat=\"notification in notifications.getCurrent()\">\n" +
     "\n" +
     "       <button class=\"close\" ng-click=\"removeNotification(notification)\">&times;</button>\n" +

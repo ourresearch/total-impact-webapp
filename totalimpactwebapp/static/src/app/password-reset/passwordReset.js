@@ -28,7 +28,7 @@ angular.module('passwordReset', [
       {id: $routeParams.resetToken, idType:"reset_token"},
       {newPassword: $scope.password},
       function(resp) {
-        i18nNotifications.pushForNextRoute('settings.password.change.success', 'success', {}, {hideInHeader:true});
+        i18nNotifications.pushForNextRoute('settings.password.change.success', 'success');
         $location.path("/")
         security.showLogin()
       },

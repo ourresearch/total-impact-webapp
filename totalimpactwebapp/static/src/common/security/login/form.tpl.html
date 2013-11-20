@@ -20,7 +20,14 @@
          <input name="pass" class="form-control" type="password" ng-model="user.password" placeholder="password" required>
       </div>
       <div class="modal-footer">
-         <button class="btn btn-primary login" ng-click="login()" ng-disabled='form.$invalid'>Sign in</button>
+         <button class="btn btn-primary login"
+                 ng-click="login()"
+                 ng-hide="loading.is('login')"
+                 ng-disabled='form.$invalid'>Sign in</button>
+         <div class="working" ng-show="loading.is('login')">
+            <i class="icon-refresh icon-spin"></i>
+            <span class="text">logging in...</span>
+         </div>
          <a class="forgot-login-details" ng-click="showForgotPasswordModal()">
             <i class="icon-question-sign"></i>
             Forgot your login details?

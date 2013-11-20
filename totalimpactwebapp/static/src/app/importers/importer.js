@@ -100,10 +100,11 @@ angular.module('importers.importer')
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
       $scope.importWindowOpen = true;
-      $scope.importer.input = null  // may have been used before; clear it.
+      $scope.importer.userInput = null  // may have been used before; clear it.
     }
   }
   $scope.products = []
+  $scope.userInput = {}
   $scope.importerHasRun = false
 
   $scope.onCancel = function(){
@@ -129,25 +130,34 @@ angular.module('importers.importer')
     )
 
     // ok, let's do this
-    console.log("/importer/" + $scope.importer.endpoint + " updating " + "'" + slug + "'")
+    console.log(
+      _.sprintf("/importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
+      $scope.userInput
+    )
 
-    Importer.saveProducts(slug, $scope.importer.endpoint, $scope.importer.input)
+    return true
+
+
+
+
+
+    Importer.saveProducts(slug, $scope.importer.endpoint, $scope.importer.userInput)
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
-                                  $scope.importer.input,
+                                  $scope.importer.userInput,
                                   $scope.importer.inputType)
 
 
   }
-//  Loading.finish('saveButton')  // not sure why this is here?
 })
   .directive("ngFileSelect",function(){
     return {
-      link: function($scope,el){
+      link: function($scope, el, attrs){
         el.bind("change", function(e){
           var reader = new FileReader()
           reader.onload = function(e){
-            $scope.importer.input = reader.result
+            // you can only have ONE file input per importer, otherwise namespace collision
+            $scope.userInput.fileContents = reader.result
           }
 
           var file = (e.srcElement || e.target).files[0];

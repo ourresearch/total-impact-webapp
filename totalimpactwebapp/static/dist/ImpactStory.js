@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-18
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-19
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -10,6 +10,7 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
+
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -120,45 +121,64 @@ angular.module('importers.allTheImporters')
   var importers = [
     {
       displayName: "GitHub",
-      inputType: "username",
-      inputNeeded: "username",
+      inputs: [{
+        inputType: "username",
+        inputNeeded: "username",
+        help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+      }],
       url: 'http://github.com',
-      descr: "GitHub is an online code repository emphasizing community collaboration features.",
-      help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+      descr: "GitHub is an online code repository emphasizing community collaboration features."
     },
+
+
     {
       displayName: "ORCID",
-      inputType: "username",
-      inputNeeded: "ID",
+      inputs: [{
+        inputType: "username",
+        inputNeeded: "ID",
+        placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
+        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
+      }],
       url: 'http://orcid.org',
       signupUrl: 'http://orcid.org/register',
       descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into ImpactStory.",
-      help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in).",
-      placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
       extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
     },
+
+
     {
       displayName: "Slideshare",
-      inputType: "username",
-      inputNeeded: "username",
+      inputs: [{
+        inputType: "username",
+        inputNeeded: "username",
+        help: "Your username is right after \"slideshare.net/\" in your profile's URL."
+      }],
       url:'http://slideshare.net',
-      descr: "Slideshare is community for sharing presentations online.",
-      help: "Your username is right after \"slideshare.net/\" in your profile's URL."
+      descr: "Slideshare is community for sharing presentations online."
     },
+
+
     {
       displayName: "Twitter",
-      inputType: "username",
-      inputNeeded: "username",
-      endpoint: "twitter_account",      
+      inputs: [{
+        inputType: "username",
+        inputNeeded: "username",
+        help: "Your Twitter username is often written starting with @.",
+        placeholder: "@username"
+      }],
+      endpoint: "twitter_account",
       url: "http://twitter.com",
-      descr: "Twitter is a social networking site for sharing short messages.",
-      help: "Your Twitter username is often written starting with @.",
-      placeholder: "@username"
-    },     
+      descr: "Twitter is a social networking site for sharing short messages."
+    },
+
+
     {
       displayName: "Google Scholar",
-      inputType: "file",
-      inputNeeded: "BibTeX file",
+      inputs: [{
+        inputType: "file",
+        inputNeeded: "BibTeX file",
+        help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+      }],
       endpoint: "bibtex",
       url: 'http://scholar.google.com/citations',
       descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
@@ -170,81 +190,116 @@ angular.module('importers.allTheImporters')
           + '<li>Return to ImpactStory. Click "upload" in this window, select your previously saved file, and upload.'
         + '</ol>'
     },
+
+
     {
       displayName: "figshare",
-      inputType: "username",
-      inputNeeded: "author page URL",
+      inputs: [{
+        inputType: "username",
+        inputNeeded: "author page URL",
+        help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
+        placeholder: "http://figshare.com/authors/schamberlain/96554"
+      }],
       url: "http://figshare.com",
-      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
-      help: "Your figshare author page URL is the URL of the webpage you arrive at when you click your name on one of your figshare item pages.",
-      placeholder: "http://figshare.com/authors/schamberlain/96554"
+      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner."
     },
+
+
     {
       displayName: "YouTube",
-      inputType: "idList",
-      inputNeeded: "URLs",
-      endpoint: "urls",            
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "URLs",
+        help: "Copy the URL for the video you want to add, then paste it here.",
+        placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
+      }],
+      endpoint: "urls",
       url: "http://youtube.com",
-      descr: "YouTube is an online video-sharing site.",
-      help: "Copy the URL for the video you want to add, then paste it here.",
-      placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
+      descr: "YouTube is an online video-sharing site."
     },
+
+
     {
       displayName: "Vimeo",
-      inputType: "idList",
-      inputNeeded: "URLs",
-      endpoint: "urls",      
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "URLs",
+        help: "Copy the URL for the video you want to add, then paste it here.",
+        placeholder: "http://vimeo.com/48605764"
+      }],
+      endpoint: "urls",
       url: "http://vimeo.com",
-      descr: "Vimeo is an online video-sharing site.",
-      help: "Copy the URL for the video you want to add, then paste it here.",
-      placeholder: "http://vimeo.com/48605764"
-    },   
+      descr: "Vimeo is an online video-sharing site."
+    },
+
+
     {
       displayName: "Dryad",
-      inputType: "idList",
-      inputNeeded: "DOIs",
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "DOIs",
+        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
+        placeholder: "doi:10.5061/dryad.example"
+      }],
       endpoint: "dois",
       url: 'http://datadryad.org',
-      descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable.",
-      help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
-      placeholder: "doi:10.5061/dryad.example"
+      descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."
     },
+
+
     {
       displayName: "Dataset DOIs",
-      inputType: "idList",
-      inputNeeded: "",
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "",
+        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
+        placeholder: "doi:10.5061/dryad.example",
+        help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
+        placeholder: "http://doi.org/10.example/example"
+      }],
       endpoint: "dois",
-      descr: "Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset.",
-      help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
-      placeholder: "http://doi.org/10.example/example"
+      descr: "Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."
     },
+
+
     {
       displayName: "Article DOIs",
-      inputType: "idList",
-      inputNeeded: "",
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "",
+        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
+        placeholder: "doi:10.5061/dryad.example",
+        help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
+        placeholder: "http://doi.org/10.example/example"
+      }],
       endpoint: "dois",
-      descr: "Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish.",
-      help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
-      placeholder: "http://doi.org/10.example/example"
+      descr: "Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."
     },
+
+
     {
       displayName: "PubMed IDs",
-      inputType: "idList",
-      inputNeeded: "",
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "",
+        placeholder: "123456789",
+        help: "You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."
+      }],
       endpoint: "pmids",
       url:'http://www.ncbi.nlm.nih.gov/pubmed',
-      descr: "PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID.",
-      placeholder: "123456789",
-      help: "You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."
+      descr: "PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."
     },
+
+
     {
       displayName: "Webpages",
-      inputType: "idList",
-      inputNeeded: "URLs",
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "URLs"
+      }],
       endpoint: "urls",
       descr: "You can import any webpages. If it has a DOI or PubMed ID, though, use those more specific importers instead of this one; you'll get better results."
     }
-
   ]
 
 
@@ -403,10 +458,11 @@ angular.module('importers.importer')
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
       $scope.importWindowOpen = true;
-      $scope.importer.input = null  // may have been used before; clear it.
+      $scope.importer.userInput = null  // may have been used before; clear it.
     }
   }
   $scope.products = []
+  $scope.userInput = {}
   $scope.importerHasRun = false
 
   $scope.onCancel = function(){
@@ -432,25 +488,34 @@ angular.module('importers.importer')
     )
 
     // ok, let's do this
-    console.log("/importer/" + $scope.importer.endpoint + " updating " + "'" + slug + "'")
+    console.log(
+      _.sprintf("/importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
+      $scope.userInput
+    )
 
-    Importer.saveProducts(slug, $scope.importer.endpoint, $scope.importer.input)
+    return true
+
+
+
+
+
+    Importer.saveProducts(slug, $scope.importer.endpoint, $scope.importer.userInput)
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
-                                  $scope.importer.input,
+                                  $scope.importer.userInput,
                                   $scope.importer.inputType)
 
 
   }
-//  Loading.finish('saveButton')  // not sure why this is here?
 })
   .directive("ngFileSelect",function(){
     return {
-      link: function($scope,el){
+      link: function($scope, el, attrs){
         el.bind("change", function(e){
           var reader = new FileReader()
           reader.onload = function(e){
-            $scope.importer.input = reader.result
+            // you can only have ONE file input per importer, otherwise namespace collision
+            $scope.userInput.fileContents = reader.result
           }
 
           var file = (e.srcElement || e.target).files[0];
@@ -539,7 +604,7 @@ angular.module('passwordReset', [
       {id: $routeParams.resetToken, idType:"reset_token"},
       {newPassword: $scope.password},
       function(resp) {
-        i18nNotifications.pushForNextRoute('settings.password.change.success', 'success', {}, {hideInHeader:true});
+        i18nNotifications.pushForNextRoute('settings.password.change.success', 'success');
         $location.path("/")
         security.showLogin()
       },
@@ -2494,83 +2559,16 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
-angular.module('security.authorization', ['security.service'])
-
-// This service provides guard methods to support AngularJS routes.
-// You can add them as resolves to routes to require authorization levels
-// before allowing a route change to complete
-.provider('securityAuthorization', {
-
-  requireAdminUser: ['securityAuthorization', function(securityAuthorization) {
-    return securityAuthorization.requireAdminUser();
-  }],
-
-  requireAuthenticatedUser: ['securityAuthorization', function(securityAuthorization) {
-    return securityAuthorization.requireAuthenticatedUser();
-  }],
-
-  $get: ['security', 'securityRetryQueue', function(security, queue) {
-    var service = {
-
-      // Require that there is an authenticated user
-      // (use this in a route resolve to prevent non-authenticated users from entering that route)
-      requireAuthenticatedUser: function() {
-        var promise = security.requestCurrentUser().then(function(userInfo) {
-          if ( !security.isAuthenticated() ) {
-            return queue.pushRetryFn('unauthenticated-client', service.requireAuthenticatedUser);
-          }
-        });
-        return promise;
-      },
-
-      // Require that there is an administrator logged in
-      // (use this in a route resolve to prevent non-administrators from entering that route)
-      requireAdminUser: function() {
-        var promise = security.requestCurrentUser().then(function(userInfo) {
-          if ( !security.isAdmin() ) {
-            return queue.pushRetryFn('unauthorized-client', service.requireAdminUser);
-          }
-        });
-        return promise;
-      }
-
-    };
-
-    return service;
-  }]
-});
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security', [
   'security.service',
-  'security.interceptor',
-  'security.login',
-  'security.authorization']);
+  'security.login'
+]);
 
-angular.module('security.interceptor', ['security.retryQueue'])
-
-// This http interceptor listens for authentication failures
-.factory('securityInterceptor', ['$injector', 'securityRetryQueue', function($injector, queue) {
-  return function(promise) {
-    // Intercept failed requests
-    return promise.then(null, function(originalResponse) {
-      if(originalResponse.status === 401) {
-        // The request bounced because it was not authorized - add a new request to the retry queue
-        promise = queue.pushRetryFn('unauthorized-server', function retryRequest() {
-          // We must use $injector to get the $http service to prevent circular dependency
-          return $injector.get('$http')(originalResponse.config);
-        });
-      }
-      return promise;
-    });
-  };
-}])
-
-// We have to add the interceptor to the queue as a string because the interceptor depends upon service instances that are not available in the config block.
-.config(['$httpProvider', function($httpProvider) {
-  $httpProvider.responseInterceptors.push('securityInterceptor');
-}]);
 angular.module('security.login.form', [
     'services.localizedMessages',
+    'services.page',
+    'services.loading',
     'services.i18nNotifications',
     'security.login.resetPassword',
     'ui.bootstrap'
@@ -2578,46 +2576,55 @@ angular.module('security.login.form', [
 
 // The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
 // This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
-.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance, $modal, i18nNotifications) {
-  // The model for this form 
+.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance, $modal, i18nNotifications, Page, Loading) {
+  var reportError = function(status){
+    var key
+    if (status == 401) {
+      key = "login.error.invalidPassword"
+    }
+    else if (status == 404) {
+      key = "login.error.invalidUser"
+    }
+    else {
+      key = "login.error.serverError"
+    }
+    i18nNotifications.pushForCurrentRoute(key, "danger")
+
+  }
+  var dismissModal = function(){
+    i18nNotifications.removeAll()
+    Page.setNotificationsLoc("header")
+    $modalInstance.dismiss('cancel');
+    Loading.finish('login')
+  }
+
+  console.log("setting notifications to modal")
+  Page.setNotificationsLoc("modal")
   $scope.user = {};
   $scope.notifications = i18nNotifications
+  $scope.loading = Loading
 
-
-  console.log("notifications!", $scope.notifications)
-
-  // Any error message from failing to login
-  $scope.authError = null;
 
   $scope.login = function () {
     // Clear any previous security errors
-    $scope.authError = null;
+    i18nNotifications.removeAll()
+    Loading.start('login')
 
     // Try to login
-    security.login($scope.user.email, $scope.user.password).then(function(loggedIn) {
-
-      console.log("this is what we got from the security.login promise: ", loggedIn)
-
-      if (loggedIn) {
-        $modalInstance.close($scope.user);
-      }
-      else {
-        // If we get here then the login failed due to bad credentials
-        console.log("we fired an authError")
-        $scope.authError = localizedMessages.get('login.error.invalidCredentials');
-      }
-    },
-    function(x) {
-      // If we get here then there was a problem with the login request to the server
-        console.log("server error")
-      $scope.authError = localizedMessages.get('login.error.serverError', { exception: x });
-    });
-
-
+    security.login($scope.user.email, $scope.user.password)
+      .success(function(data, status){
+        dismissModal()
+        security.redirectToProfile()
+      })
+      .error(function(data, status){
+        console.log("login error!", status)
+        Loading.finish('login')
+        reportError(status)
+      })
   };
   $scope.showForgotPasswordModal = function(){
     console.log("launching the forgot password modal.")
-    $modalInstance.dismiss('cancel');
+    dismissModal()
 
     var forgotPasswordModal = $modal.open({
       templateUrl: "security/login/reset-password-modal.tpl.html",
@@ -2627,7 +2634,7 @@ angular.module('security.login.form', [
   }
 
   $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
+    dismissModal()
   };
 
 
@@ -2684,79 +2691,9 @@ angular.module('security.login.toolbar', [
   };
   return directive;
 }]);
-angular.module('security.retryQueue', [])
-
-// This is a generic retry queue for security failures.  Each item is expected to expose two functions: retry and cancel.
-.factory('securityRetryQueue', ['$q', '$log', function($q, $log) {
-  var retryQueue = [];
-  var service = {
-    // The security service puts its own handler in here!
-    onItemAddedCallbacks: [],
-    
-    hasMore: function() {
-      return retryQueue.length > 0;
-    },
-    push: function(retryItem) {
-      retryQueue.push(retryItem);
-      // Call all the onItemAdded callbacks
-      angular.forEach(service.onItemAddedCallbacks, function(cb) {
-        try {
-          cb(retryItem);
-        } catch(e) {
-          $log.error('securityRetryQueue.push(retryItem): callback threw an error' + e);
-        }
-      });
-    },
-    pushRetryFn: function(reason, retryFn) {
-      // The reason parameter is optional
-      if ( arguments.length === 1) {
-        retryFn = reason;
-        reason = undefined;
-      }
-
-      // The deferred object that will be resolved or rejected by calling retry or cancel
-      var deferred = $q.defer();
-      var retryItem = {
-        reason: reason,
-        retry: function() {
-          // Wrap the result of the retryFn into a promise if it is not already
-          $q.when(retryFn()).then(function(value) {
-            // If it was successful then resolve our deferred
-            deferred.resolve(value);
-          }, function(value) {
-            // Othewise reject it
-            deferred.reject(value);
-          });
-        },
-        cancel: function() {
-          // Give up on retrying and reject our deferred
-          deferred.reject();
-        }
-      };
-      service.push(retryItem);
-      return deferred.promise;
-    },
-    retryReason: function() {
-      return service.hasMore() && retryQueue[0].reason;
-    },
-    cancelAll: function() {
-      while(service.hasMore()) {
-        retryQueue.shift().cancel();
-      }
-    },
-    retryAll: function() {
-      while(service.hasMore()) {
-        retryQueue.shift().retry();
-      }
-    }
-  };
-  return service;
-}]);
-
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
   'services.i18nNotifications',
-  'security.retryQueue',    // Keeps track of failed requests that need to be retried once the user logs in
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
@@ -2797,26 +2734,16 @@ angular.module('security.service', [
   // The public API of the service
   var service = {
 
-    // Show the modal login dialog
     showLogin: function() {
       openLoginDialog();
     },
 
-    // Attempt to authenticate a user by the given email and password
     login: function(email, password) {
-      var request = $http.post('/user/login', {email: email, password: password})
-      request
+      return $http.post('/user/login', {email: email, password: password})
         .success(function(data, status) {
+            console.log("success in security.login()")
             currentUser = data.user;
-            service.redirectToProfile()
-          })
-        .error(function(data, status, headers, config){
-          console.log("oh crap, an error: ", status);
-        }
-      );
-
-      return request;
-
+        })
     },
 
 
@@ -2870,14 +2797,10 @@ angular.module('security.service', [
 
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
-      console.log("requesting current user.")
-
       if (useCachedUser) {
-        console.log("already loaded from server: ", currentUser)
         return $q.when(currentUser);
 
       } else {
-        console.log("logging in from cookie")
         return service.loginFromCookie()
       }
     },
@@ -3242,6 +3165,9 @@ angular.module('services.i18nNotifications').factory('i18nNotifications', ['loca
     },
     remove:function (notification) {
       return notifications.remove(notification);
+    },
+    removeAll: function(){
+      return notifications.removeAll()
     }
   };
 
@@ -3296,18 +3222,10 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
 
 
   var i18nmessages = {
-    'errors.route.changeError':'Route change error',
-    'crud.user.save.success':"A user with id '{{id}}' was saved successfully.",
-    'crud.user.remove.success':"A user with id '{{id}}' was removed successfully.",
-    'crud.user.remove.error':"Something went wrong when removing user with id '{{id}}'.",
-    'crud.user.save.error':"Something went wrong when saving a user...",
-    'crud.project.save.success':"A project with id '{{id}}' was saved successfully.",
-    'crud.project.remove.success':"A project with id '{{id}}' was removed successfully.",
-    'crud.project.save.error':"Something went wrong when saving a project...",
-    'login.reason.notAuthorized':"You do not have the necessary access permissions.  Do you want to login as someone else?",
-    'login.reason.notAuthenticated':"You must be logged in to access this part of the application.",
-    'login.error.invalidCredentials': "Login failed.  Please check your credentials and try again.",
-    'login.error.serverError': "There was a problem with authenticating: {{exception}}.",
+
+    'login.error.invalidPassword':"Whoops! We recognize your email address but it looks like you've got the wrong password.",
+    'login.error.invalidUser':"Sorry, we don't recognize that email address.",
+    'login.error.serverError': "Uh oh, looks like we've got a system error...feel free to let us know, and we'll fix it.",
 
     'test.first': "This is a test of the notification system...",
     'settings.password.change.success': "Password changed.",
@@ -3413,6 +3331,7 @@ angular.module("services.page", [
 angular.module("services.page")
 .factory("Page", function(){
    var title = '';
+   var notificationsLoc = "header"
    var frameTemplatePaths = {
      header: "",
      footer: ""
@@ -3440,6 +3359,12 @@ angular.module("services.page")
      },
      getTemplate: function(templateName){
        return frameTemplatePaths[templateName]
+     },
+     'setNotificationsLoc': function(loc){
+         notificationsLoc = loc;
+     },
+     showNotificationsIn: function(loc){
+       return notificationsLoc == loc
      },
 
 
@@ -3764,8 +3689,7 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
-    "<div ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
-    "\n" +
+    "<div ng-show=\"page.showNotificationsIn('header')\" ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
     "");
 }]);
 
@@ -3804,16 +3728,24 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "\n" +
     "      <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
     "\n" +
-    "         <div class=\"form-group\">\n" +
+    "         <div class=\"form-group\" ng-repeat=\"input in importer.inputs\">\n" +
     "            <label class=\"control-label\">\n" +
-    "               {{ importer.displayName }} {{ importer.inputNeeded }}\n" +
-    "               <i class=\"icon-question-sign\" ng-show=\"importer.help\" tooltip-html-unsafe=\"{{ importer.help }}\"></i>\n" +
+    "               {{ input.displayName }} {{ input.inputNeeded }}\n" +
+    "               <i class=\"icon-question-sign\" ng-show=\"importer.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
     "               <span class=\"one-per-line\" ng-show=\"importer.inputType=='idList'\">(one per line)</span>\n" +
     "            </label>\n" +
-    "            <div class=\"importer-input\" ng-switch on=\"importer.inputType\">\n" +
-    "               <input class=\"form-control input-lg\" ng-model=\"importer.input\" type=\"text\" ng-switch-when=\"username\" placeholder=\"{{ importer.placeholder }}\">\n" +
-    "               <textarea placeholder=\"{{ importer.placeholder }}\" class=\"form-control\" ng-model=\"importer.input\" ng-switch-when=\"idList\"></textarea>\n" +
-    "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select>\n" +
+    "            <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
+    "               <input\n" +
+    "                       class=\"form-control input-lg\"\n" +
+    "                       ng-model=\"userInput[input.inputType]\"\n" +
+    "                       type=\"text\" ng-switch-when=\"username\"\n" +
+    "                       placeholder=\"{{ importer.placeholder }}\">\n" +
+    "               <textarea placeholder=\"{{ input.placeholder }}\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         ng-model=\"userInput[input.inputType]\"\n" +
+    "                         ng-switch-when=\"idList\"></textarea>\n" +
+    "               <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
+    "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +
     "\n" +
     "            </div>\n" +
     "         </div>\n" +
@@ -4161,7 +4093,6 @@ angular.module("notifications.tpl.html", []).run(["$templateCache", function($te
   $templateCache.put("notifications.tpl.html",
     "<ul class=\"notifications\">\n" +
     "   <li ng-class=\"['alert', 'alert-'+notification.type]\"\n" +
-    "       ng-hide=\"notification.hideInHeader\"\n" +
     "       ng-repeat=\"notification in notifications.getCurrent()\">\n" +
     "\n" +
     "       <button class=\"close\" ng-click=\"removeNotification(notification)\">&times;</button>\n" +
@@ -5116,7 +5047,14 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "         <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
-    "         <button class=\"btn btn-primary login\" ng-click=\"login()\" ng-disabled='form.$invalid'>Sign in</button>\n" +
+    "         <button class=\"btn btn-primary login\"\n" +
+    "                 ng-click=\"login()\"\n" +
+    "                 ng-hide=\"loading.is('login')\"\n" +
+    "                 ng-disabled='form.$invalid'>Sign in</button>\n" +
+    "         <div class=\"working\" ng-show=\"loading.is('login')\">\n" +
+    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "            <span class=\"text\">logging in...</span>\n" +
+    "         </div>\n" +
     "         <a class=\"forgot-login-details\" ng-click=\"showForgotPasswordModal()\">\n" +
     "            <i class=\"icon-question-sign\"></i>\n" +
     "            Forgot your login details?\n" +

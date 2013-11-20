@@ -163,6 +163,14 @@ div.modal-backdrop {
    opacity: .7;
 }
 div.modal {
+   display:block;
+   width: 600px;
+   background: #fff;
+   top:  50%;
+   bottom: auto;
+   left: 50%;
+   margin: -250px 0 0 -300px;
+
    &.creds {
       width:  400px;
       margin-left:-200px;
@@ -185,9 +193,17 @@ div.modal {
          text-align:  center;
          button.btn {
             width: 66%;
+            height: 50px;
             margin: 20px auto 0;
             float:none;
             display:block;
+         }
+         div.working { // similar as possible to button above...
+            margin: 20px auto 0;
+            height: 50px;
+            font-size: 20px;
+            padding-top:10px;
+            color: #999;
          }
          a {
             clear:both;
@@ -199,25 +215,24 @@ div.modal {
             &:hover {color: #555; text-decoration: none;}
          }
       }
-
    }
-   display:block;
-   width: 600px;
-   background: #fff;
-   top:  50%;
-   bottom: auto;
-   left: 50%;
-   margin: -250px 0 0 -300px;
 
    div.modal-body {
       position: relative;
       ul.modal-notifications {
-         margin: -20px -30px;
          text-align: center;
-         border-left: 1px solid #fff;
-         border-right: 1px solid #fff;
          li{
             .border-radius(0, 0, 0, 0);
+            margin: 0 -10px;
+            padding: 0;
+            border: none;
+            background: #fff;
+            &.alert-danger {
+               color: @alert-danger-bg;
+            }
+            &.alert-success {
+               color: @alert-success-bg;
+            }
          }
       }
    }

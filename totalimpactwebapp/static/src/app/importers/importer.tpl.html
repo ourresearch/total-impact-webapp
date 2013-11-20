@@ -31,16 +31,24 @@
 
       <form name="{{ importer.name }}ImporterForm" novalidate class="form" ng-submit="onImport()">
 
-         <div class="form-group">
+         <div class="form-group" ng-repeat="input in importer.inputs">
             <label class="control-label">
-               {{ importer.displayName }} {{ importer.inputNeeded }}
-               <i class="icon-question-sign" ng-show="importer.help" tooltip-html-unsafe="{{ importer.help }}"></i>
+               {{ input.displayName }} {{ input.inputNeeded }}
+               <i class="icon-question-sign" ng-show="importer.help" tooltip-html-unsafe="{{ input.help }}"></i>
                <span class="one-per-line" ng-show="importer.inputType=='idList'">(one per line)</span>
             </label>
-            <div class="importer-input" ng-switch on="importer.inputType">
-               <input class="form-control input-lg" ng-model="importer.input" type="text" ng-switch-when="username" placeholder="{{ importer.placeholder }}">
-               <textarea placeholder="{{ importer.placeholder }}" class="form-control" ng-model="importer.input" ng-switch-when="idList"></textarea>
-               <input type="file" ng-switch-when="file" size="300" ng-file-select>
+            <div class="importer-input" ng-switch on="input.inputType">
+               <input
+                       class="form-control input-lg"
+                       ng-model="userInput[input.inputType]"
+                       type="text" ng-switch-when="username"
+                       placeholder="{{ importer.placeholder }}">
+               <textarea placeholder="{{ input.placeholder }}"
+                         class="form-control"
+                         ng-model="userInput[input.inputType]"
+                         ng-switch-when="idList"></textarea>
+               <!-- you can only have ONE file input per importer, otherwise namespace collision -->
+               <input type="file" ng-switch-when="file" size="300" ng-file-select="input.inputType">
 
             </div>
          </div>

@@ -2,18 +2,10 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
 
 
   var i18nmessages = {
-    'errors.route.changeError':'Route change error',
-    'crud.user.save.success':"A user with id '{{id}}' was saved successfully.",
-    'crud.user.remove.success':"A user with id '{{id}}' was removed successfully.",
-    'crud.user.remove.error':"Something went wrong when removing user with id '{{id}}'.",
-    'crud.user.save.error':"Something went wrong when saving a user...",
-    'crud.project.save.success':"A project with id '{{id}}' was saved successfully.",
-    'crud.project.remove.success':"A project with id '{{id}}' was removed successfully.",
-    'crud.project.save.error':"Something went wrong when saving a project...",
-    'login.reason.notAuthorized':"You do not have the necessary access permissions.  Do you want to login as someone else?",
-    'login.reason.notAuthenticated':"You must be logged in to access this part of the application.",
-    'login.error.invalidCredentials': "Login failed.  Please check your credentials and try again.",
-    'login.error.serverError': "There was a problem with authenticating: {{exception}}.",
+
+    'login.error.invalidPassword':"Whoops! We recognize your email address but it looks like you've got the wrong password.",
+    'login.error.invalidUser':"Sorry, we don't recognize that email address.",
+    'login.error.serverError': "Uh oh, looks like we've got a system error...feel free to let us know, and we'll fix it.",
 
     'test.first': "This is a test of the notification system...",
     'settings.password.change.success': "Password changed.",

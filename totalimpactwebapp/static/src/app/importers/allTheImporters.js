@@ -9,45 +9,64 @@ angular.module('importers.allTheImporters')
   var importers = [
     {
       displayName: "GitHub",
-      inputType: "username",
-      inputNeeded: "username",
+      inputs: [{
+        inputType: "username",
+        inputNeeded: "username",
+        help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+      }],
       url: 'http://github.com',
-      descr: "GitHub is an online code repository emphasizing community collaboration features.",
-      help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+      descr: "GitHub is an online code repository emphasizing community collaboration features."
     },
+
+
     {
       displayName: "ORCID",
-      inputType: "username",
-      inputNeeded: "ID",
+      inputs: [{
+        inputType: "username",
+        inputNeeded: "ID",
+        placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
+        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
+      }],
       url: 'http://orcid.org',
       signupUrl: 'http://orcid.org/register',
       descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into ImpactStory.",
-      help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in).",
-      placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
       extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
     },
+
+
     {
       displayName: "Slideshare",
-      inputType: "username",
-      inputNeeded: "username",
+      inputs: [{
+        inputType: "username",
+        inputNeeded: "username",
+        help: "Your username is right after \"slideshare.net/\" in your profile's URL."
+      }],
       url:'http://slideshare.net',
-      descr: "Slideshare is community for sharing presentations online.",
-      help: "Your username is right after \"slideshare.net/\" in your profile's URL."
+      descr: "Slideshare is community for sharing presentations online."
     },
+
+
     {
       displayName: "Twitter",
-      inputType: "username",
-      inputNeeded: "username",
-      endpoint: "twitter_account",      
+      inputs: [{
+        inputType: "username",
+        inputNeeded: "username",
+        help: "Your Twitter username is often written starting with @.",
+        placeholder: "@username"
+      }],
+      endpoint: "twitter_account",
       url: "http://twitter.com",
-      descr: "Twitter is a social networking site for sharing short messages.",
-      help: "Your Twitter username is often written starting with @.",
-      placeholder: "@username"
-    },     
+      descr: "Twitter is a social networking site for sharing short messages."
+    },
+
+
     {
       displayName: "Google Scholar",
-      inputType: "file",
-      inputNeeded: "BibTeX file",
+      inputs: [{
+        inputType: "file",
+        inputNeeded: "BibTeX file",
+        help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+      }],
       endpoint: "bibtex",
       url: 'http://scholar.google.com/citations',
       descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
@@ -59,81 +78,116 @@ angular.module('importers.allTheImporters')
           + '<li>Return to ImpactStory. Click "upload" in this window, select your previously saved file, and upload.'
         + '</ol>'
     },
+
+
     {
       displayName: "figshare",
-      inputType: "username",
-      inputNeeded: "author page URL",
+      inputs: [{
+        inputType: "username",
+        inputNeeded: "author page URL",
+        help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
+        placeholder: "http://figshare.com/authors/schamberlain/96554"
+      }],
       url: "http://figshare.com",
-      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
-      help: "Your figshare author page URL is the URL of the webpage you arrive at when you click your name on one of your figshare item pages.",
-      placeholder: "http://figshare.com/authors/schamberlain/96554"
+      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner."
     },
+
+
     {
       displayName: "YouTube",
-      inputType: "idList",
-      inputNeeded: "URLs",
-      endpoint: "urls",            
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "URLs",
+        help: "Copy the URL for the video you want to add, then paste it here.",
+        placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
+      }],
+      endpoint: "urls",
       url: "http://youtube.com",
-      descr: "YouTube is an online video-sharing site.",
-      help: "Copy the URL for the video you want to add, then paste it here.",
-      placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
+      descr: "YouTube is an online video-sharing site."
     },
+
+
     {
       displayName: "Vimeo",
-      inputType: "idList",
-      inputNeeded: "URLs",
-      endpoint: "urls",      
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "URLs",
+        help: "Copy the URL for the video you want to add, then paste it here.",
+        placeholder: "http://vimeo.com/48605764"
+      }],
+      endpoint: "urls",
       url: "http://vimeo.com",
-      descr: "Vimeo is an online video-sharing site.",
-      help: "Copy the URL for the video you want to add, then paste it here.",
-      placeholder: "http://vimeo.com/48605764"
-    },   
+      descr: "Vimeo is an online video-sharing site."
+    },
+
+
     {
       displayName: "Dryad",
-      inputType: "idList",
-      inputNeeded: "DOIs",
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "DOIs",
+        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
+        placeholder: "doi:10.5061/dryad.example"
+      }],
       endpoint: "dois",
       url: 'http://datadryad.org',
-      descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable.",
-      help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
-      placeholder: "doi:10.5061/dryad.example"
+      descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."
     },
+
+
     {
       displayName: "Dataset DOIs",
-      inputType: "idList",
-      inputNeeded: "",
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "",
+        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
+        placeholder: "doi:10.5061/dryad.example",
+        help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
+        placeholder: "http://doi.org/10.example/example"
+      }],
       endpoint: "dois",
-      descr: "Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset.",
-      help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
-      placeholder: "http://doi.org/10.example/example"
+      descr: "Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."
     },
+
+
     {
       displayName: "Article DOIs",
-      inputType: "idList",
-      inputNeeded: "",
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "",
+        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
+        placeholder: "doi:10.5061/dryad.example",
+        help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
+        placeholder: "http://doi.org/10.example/example"
+      }],
       endpoint: "dois",
-      descr: "Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish.",
-      help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
-      placeholder: "http://doi.org/10.example/example"
+      descr: "Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."
     },
+
+
     {
       displayName: "PubMed IDs",
-      inputType: "idList",
-      inputNeeded: "",
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "",
+        placeholder: "123456789",
+        help: "You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."
+      }],
       endpoint: "pmids",
       url:'http://www.ncbi.nlm.nih.gov/pubmed',
-      descr: "PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID.",
-      placeholder: "123456789",
-      help: "You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."
+      descr: "PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."
     },
+
+
     {
       displayName: "Webpages",
-      inputType: "idList",
-      inputNeeded: "URLs",
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "URLs"
+      }],
       endpoint: "urls",
       descr: "You can import any webpages. If it has a DOI or PubMed ID, though, use those more specific importers instead of this one; you'll get better results."
     }
-
   ]
 
 

@@ -28,6 +28,9 @@ angular.module('services.i18nNotifications').factory('i18nNotifications', ['loca
     },
     remove:function (notification) {
       return notifications.remove(notification);
+    },
+    removeAll: function(){
+      return notifications.removeAll()
     }
   };
 

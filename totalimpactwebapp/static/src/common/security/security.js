@@ -1,7 +1,6 @@
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
   'services.i18nNotifications',
-  'security.retryQueue',    // Keeps track of failed requests that need to be retried once the user logs in
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
@@ -42,26 +41,16 @@ angular.module('security.service', [
   // The public API of the service
   var service = {
 
-    // Show the modal login dialog
     showLogin: function() {
       openLoginDialog();
     },
 
-    // Attempt to authenticate a user by the given email and password
     login: function(email, password) {
-      var request = $http.post('/user/login', {email: email, password: password})
-      request
+      return $http.post('/user/login', {email: email, password: password})
         .success(function(data, status) {
+            console.log("success in security.login()")
             currentUser = data.user;
-            service.redirectToProfile()
-          })
-        .error(function(data, status, headers, config){
-          console.log("oh crap, an error: ", status);
-        }
-      );
-
-      return request;
-
+        })
     },
 
 
@@ -115,14 +104,10 @@ angular.module('security.service', [
 
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
-      console.log("requesting current user.")
-
       if (useCachedUser) {
-        console.log("already loaded from server: ", currentUser)
         return $q.when(currentUser);
 
       } else {
-        console.log("logging in from cookie")
         return service.loginFromCookie()
       }
     },

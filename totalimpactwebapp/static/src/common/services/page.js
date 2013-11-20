@@ -4,6 +4,7 @@ angular.module("services.page", [
 angular.module("services.page")
 .factory("Page", function(){
    var title = '';
+   var notificationsLoc = "header"
    var frameTemplatePaths = {
      header: "",
      footer: ""
@@ -31,6 +32,12 @@ angular.module("services.page")
      },
      getTemplate: function(templateName){
        return frameTemplatePaths[templateName]
+     },
+     'setNotificationsLoc': function(loc){
+         notificationsLoc = loc;
+     },
+     showNotificationsIn: function(loc){
+       return notificationsLoc == loc
      },
 
 

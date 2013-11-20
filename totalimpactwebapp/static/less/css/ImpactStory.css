@@ -6348,9 +6348,17 @@ div.modal.creds .modal-footer {
 }
 div.modal.creds .modal-footer button.btn {
   width: 66%;
+  height: 50px;
   margin: 20px auto 0;
   float: none;
   display: block;
+}
+div.modal.creds .modal-footer div.working {
+  margin: 20px auto 0;
+  height: 50px;
+  font-size: 20px;
+  padding-top: 10px;
+  color: #999;
 }
 div.modal.creds .modal-footer a {
   clear: both;
@@ -6368,10 +6376,7 @@ div.modal div.modal-body {
   position: relative;
 }
 div.modal div.modal-body ul.modal-notifications {
-  margin: -20px -30px;
   text-align: center;
-  border-left: 1px solid #fff;
-  border-right: 1px solid #fff;
 }
 div.modal div.modal-body ul.modal-notifications li {
   -webkit-border-top-right-radius: 0;
@@ -6389,6 +6394,16 @@ div.modal div.modal-body ul.modal-notifications li {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+  margin: 0 -10px;
+  padding: 0;
+  border: none;
+  background: #fff;
+}
+div.modal div.modal-body ul.modal-notifications li.alert-danger {
+  color: #e74c3c;
+}
+div.modal div.modal-body ul.modal-notifications li.alert-success {
+  color: #18bc9c;
 }
 div.modal div.modal-header {
   background: #fafafa;
