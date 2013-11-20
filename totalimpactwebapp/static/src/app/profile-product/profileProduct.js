@@ -1,5 +1,6 @@
 angular.module("profileProduct", [
     'resources.users',
+    'services.page',
     'product.product',
     'services.loading',
     'ui.bootstrap',
@@ -17,7 +18,7 @@ angular.module("profileProduct", [
 
   }])
 
-  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $location, $modal, security, UsersProduct, UsersProducts, Product, Loading) {
+  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $location, $modal, security, UsersProduct, UsersProducts, Product, Loading, Page) {
 
     var slug = $routeParams.url_slug
     Loading.start('profileProduct')
@@ -52,6 +53,8 @@ angular.module("profileProduct", [
       $scope.biblio = Product.makeBiblio(data)
       $scope.metrics = Product.makeMetrics(data)
       Loading.finish('profileProduct')
+      Page.setTitle(data.biblio.title)
+
     },
     function(data){
       $location.path("/"+slug) // replace this with "product not found" message...
