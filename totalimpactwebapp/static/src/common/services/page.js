@@ -5,6 +5,7 @@ angular.module("services.page")
 .factory("Page", function(){
    var title = '';
    var notificationsLoc = "header"
+   var uservoiceTabLoc = "right"
    var frameTemplatePaths = {
      header: "",
      footer: ""
@@ -39,8 +40,14 @@ angular.module("services.page")
      showNotificationsIn: function(loc){
        return notificationsLoc == loc
      },
+     getBodyClasses: function(){
+        return {
+          'show-tab-on-bottom': uservoiceTabLoc == "bottom",
+          'show-tab-on-right': uservoiceTabLoc == "right"
+        }
+     },
 
-
+     setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
      getTitle: function() { return title; },
      setTitle: function(newTitle) { title = newTitle }
 

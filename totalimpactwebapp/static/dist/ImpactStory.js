@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-19
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-20
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -68,6 +68,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.notifications = i18nNotifications;
   $scope.page = Page;
   $scope.loading = Loading;
+  UservoiceWidget.insertTabs()
 
 
   $scope.removeNotification = function (notification) {
@@ -79,12 +80,13 @@ angular.module('app').controller('AppCtrl', function($scope,
   });
 
   $scope.$on('$routeChangeSuccess', function(next, current){ // hacky...
-    UservoiceWidget.updateTabPosition($location.path())
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
+    console.log("location change start", event, next, current)
     $scope.loading.clear()
     Page.setTemplates("header", "footer")
+    Page.setUservoiceTabLoc("right")
   })
 
 });
@@ -1750,6 +1752,7 @@ angular.module( 'signup', [
 }])
 
   .controller('signupCtrl', function($scope, Signup, Page, security){
+    Page.setUservoiceTabLoc("bottom")
     Page.setTemplates("signup/signup-header", "")
 //    security.logout()
     $scope.input = {}
@@ -3352,6 +3355,7 @@ angular.module("services.page")
 .factory("Page", function(){
    var title = '';
    var notificationsLoc = "header"
+   var uservoiceTabLoc = "right"
    var frameTemplatePaths = {
      header: "",
      footer: ""
@@ -3386,8 +3390,14 @@ angular.module("services.page")
      showNotificationsIn: function(loc){
        return notificationsLoc == loc
      },
+     getBodyClasses: function(){
+        return {
+          'show-tab-on-bottom': uservoiceTabLoc == "bottom",
+          'show-tab-on-right': uservoiceTabLoc == "right"
+        }
+     },
 
-
+     setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
      getTitle: function() { return title; },
      setTitle: function(newTitle) { title = newTitle }
 
@@ -3574,16 +3584,11 @@ angular.module("services.uservoiceWidget")
     }
   }
 
-  var uservoiceTabIsInPrimaryPosition = false;
 
   return {
-    updateTabPosition: function(path) {
-      if (path.indexOf('/signup/') === 0) {
-        this.pushTab("secondary");
-      }
-      else {
-        this.pushTab("primary");
-      }
+    insertTabs: function() {
+      this.pushTab("secondary");
+      this.pushTab("primary");
     },
 
     pushTab: function(settingsKey) {
@@ -3601,8 +3606,8 @@ angular.module("services.uservoiceWidget")
         }]);
       }
       catch (e) {
-        // UserVoice throws this error when you load it again from /signup.
-        // not sure what it is, but everything seems to still work, so ignore it.
+        // UserVoice throws these errors when you load two tabs.
+        // not sure what thy are, but everything seems to still work, so ignore.
 
         var errorsToIgnore = [
           "Cannot read property 'transitionDuration' of null",

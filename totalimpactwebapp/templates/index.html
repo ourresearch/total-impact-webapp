@@ -59,8 +59,8 @@
 
 
 </head>
-<body>
 {% raw %}
+<body ng-class="page.getBodyClasses()">
 <div class="staging-warning"><div class="content"><span>staging, yo</span></div></div>
 <div ng-include="page.getTemplate('header')"></div>
 <div ng-view class="main-view"></div>

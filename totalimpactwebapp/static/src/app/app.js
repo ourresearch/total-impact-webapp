@@ -63,6 +63,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.notifications = i18nNotifications;
   $scope.page = Page;
   $scope.loading = Loading;
+  UservoiceWidget.insertTabs()
 
 
   $scope.removeNotification = function (notification) {
@@ -74,12 +75,13 @@ angular.module('app').controller('AppCtrl', function($scope,
   });
 
   $scope.$on('$routeChangeSuccess', function(next, current){ // hacky...
-    UservoiceWidget.updateTabPosition($location.path())
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
+    console.log("location change start", event, next, current)
     $scope.loading.clear()
     Page.setTemplates("header", "footer")
+    Page.setUservoiceTabLoc("right")
   })
 
 });

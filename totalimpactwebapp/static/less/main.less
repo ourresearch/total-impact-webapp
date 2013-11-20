@@ -2,10 +2,18 @@
 
 body {
    color:  #333;
-   div#container {
-      min-height: 600px;
-      margin-top: @navbarHeight;
+
+   &.show-tab-on-right {
+      .uv-tab.uv-slide-bottom {
+         display:none !important;
+      }
    }
+   &.show-tab-on-bottom {
+      .uv-tab.uv-slide-right {
+         display:none !important;
+      }
+   }
+
    div#namechange {
       font-size: 18px;
       background: #444;

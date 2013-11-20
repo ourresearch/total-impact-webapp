@@ -6166,9 +6166,11 @@ Some of my own mixins
 body {
   color: #333;
 }
-body div#container {
-  min-height: 600px;
-  margin-top: 50px;
+body.show-tab-on-right .uv-tab.uv-slide-bottom {
+  display: none !important;
+}
+body.show-tab-on-bottom .uv-tab.uv-slide-right {
+  display: none !important;
 }
 body div#namechange {
   font-size: 18px;
