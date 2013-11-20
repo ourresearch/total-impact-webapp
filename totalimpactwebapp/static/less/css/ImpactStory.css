@@ -6520,7 +6520,7 @@ ul.notifications li.alert {
   background-clip: padding-box;
 }
 div.no-page {
-  margin-top: 150px;
+  margin-top: 120px;
 }
 div.no-page h2 {
   font-size: 100px;
@@ -6742,7 +6742,124 @@ div.navbar.site-nav .navbar-inner ul.nav.pull-right li#logged-in div.dropdown-me
   min-width: 200px;
   padding: 5px 0 10px 0;
 }
-/* info pages
+/* footer
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div#footer {
+  font-size: 100%;
+  clear: both;
+  color: #777;
+  padding: 60px 0 80px;
+  width: 100%;
+  border-top: 1px solid #aaa;
+  background: #ddd;
+  float: left;
+  margin-top: 30px;
+}
+div#footer p {
+  margin: 6px 0 0 0;
+  line-height: 1.4;
+  font-size: 16px;
+}
+div#footer div.wrapper {
+  margin-top: 30px;
+  margin: 0 auto;
+}
+div#footer div.wrapper div.footer-col {
+  float: left;
+  width: 125px;
+  padding-right: 0;
+  margin-left: 32px;
+  border-right: 1px solid #ccc;
+  min-height: 150px;
+}
+div#footer div.wrapper div.footer-col#footer-branding {
+  margin-top: -5px;
+}
+div#footer div.wrapper div.footer-col h3 {
+  font-size: 18px;
+  font-weight: bolder;
+  font-family: Lato, helvetica, sans-serif;
+  border-bottom: none;
+  color: #777;
+  margin: 0 0 15px;
+}
+div#footer div.wrapper div.footer-col ul li {
+  line-height: 1.6;
+}
+div#footer div.wrapper div.footer-col ul a {
+  color: #777;
+  font-size: 15px;
+}
+div#footer div.wrapper div.footer-col ul a:hover {
+  color: #ff4e00;
+}
+div#footer div.wrapper div.footer-col#footer-branding {
+  width: 400px;
+  margin-left: 0;
+  padding-right: 22px;
+}
+div#footer div.wrapper div.footer-col#footer-branding a.brand img {
+  width: 170px;
+}
+div#footer div.wrapper div.footer-col#footer-branding p.license {
+  font-size: 13px;
+  color: #777;
+  line-height: 1.5;
+  width: 330px;
+  margin-top: 25px;
+}
+div#footer div.wrapper div.footer-col#footer-branding p.license a {
+  color: #777;
+  text-decoration: none;
+  border-bottom: 1px dotted #777;
+}
+div#footer div.wrapper div.footer-col#footer-branding p.license a:hover {
+  border-bottom: 1px solid #ff4e00;
+  color: #ff4e00;
+}
+div#footer div.wrapper div.footer-col#footer-funders {
+  width: 200px;
+  border-right: none;
+  padding-right: none;
+}
+div#footer div.wrapper div.footer-col#footer-follow img {
+  float: right;
+  height: 28px;
+}
+#footer-powered-by img {
+  height: 30px;
+  margin-bottom: 30px;
+  float: right;
+  margin-top: -30px;
+}
+div.tooltip {
+  font-size: 12px;
+  width: 140px;
+  line-height: 1.5;
+}
+div.tooltip.in {
+  opacity: 1;
+}
+div.tooltip div.tooltip-inner {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+div.tooltip.click-to-visit-profile {
+  width: auto;
+}
+div.tooltip.click-to-visit-profile .tooltip-inner {
+  padding: 3px 8px;
+  background: #777;
+}
+div.tooltip.click-to-visit-profile .tooltip-arrow {
+  border-left-color: #777;
+}
+code {
+  color: #000;
+}
+/* info pages in general
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
@@ -7001,6 +7118,13 @@ div#about div#contact p {
   padding: 15px;
   margin: -15px 0 0 -15px;
 }
+/* "about" page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+#collections {
+  padding-top: 0;
+}
 /* "api" page
 *****************************************************************************
 *****************************************************************************
@@ -7134,123 +7258,6 @@ div#docs ul#required-attributes li {
 .description {
   /*    margin-left: 50px;*/
 
-}
-/* footer
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-div#footer {
-  font-size: 100%;
-  clear: both;
-  color: #777;
-  padding: 60px 0 80px;
-  width: 100%;
-  border-top: 1px solid #aaa;
-  background: #ddd;
-  float: left;
-  margin-top: 30px;
-}
-div#footer p {
-  margin: 6px 0 0 0;
-  line-height: 1.4;
-  font-size: 16px;
-}
-div#footer div.wrapper {
-  margin-top: 30px;
-  margin: 0 auto;
-}
-div#footer div.wrapper div.footer-col {
-  float: left;
-  width: 125px;
-  padding-right: 0;
-  margin-left: 32px;
-  border-right: 1px solid #ccc;
-  min-height: 150px;
-}
-div#footer div.wrapper div.footer-col#footer-branding {
-  margin-top: -5px;
-}
-div#footer div.wrapper div.footer-col h3 {
-  font-size: 18px;
-  font-weight: bolder;
-  font-family: Lato, helvetica, sans-serif;
-  border-bottom: none;
-  color: #777;
-  margin: 0 0 15px;
-}
-div#footer div.wrapper div.footer-col ul li {
-  line-height: 1.6;
-}
-div#footer div.wrapper div.footer-col ul a {
-  color: #777;
-  font-size: 15px;
-}
-div#footer div.wrapper div.footer-col ul a:hover {
-  color: #ff4e00;
-}
-div#footer div.wrapper div.footer-col#footer-branding {
-  width: 400px;
-  margin-left: 0;
-  padding-right: 22px;
-}
-div#footer div.wrapper div.footer-col#footer-branding a.brand img {
-  width: 170px;
-}
-div#footer div.wrapper div.footer-col#footer-branding p.license {
-  font-size: 13px;
-  color: #777;
-  line-height: 1.5;
-  width: 330px;
-  margin-top: 25px;
-}
-div#footer div.wrapper div.footer-col#footer-branding p.license a {
-  color: #777;
-  text-decoration: none;
-  border-bottom: 1px dotted #777;
-}
-div#footer div.wrapper div.footer-col#footer-branding p.license a:hover {
-  border-bottom: 1px solid #ff4e00;
-  color: #ff4e00;
-}
-div#footer div.wrapper div.footer-col#footer-funders {
-  width: 200px;
-  border-right: none;
-  padding-right: none;
-}
-div#footer div.wrapper div.footer-col#footer-follow img {
-  float: right;
-  height: 28px;
-}
-#footer-powered-by img {
-  height: 30px;
-  margin-bottom: 30px;
-  float: right;
-  margin-top: -30px;
-}
-div.tooltip {
-  font-size: 12px;
-  width: 140px;
-  line-height: 1.5;
-}
-div.tooltip.in {
-  opacity: 1;
-}
-div.tooltip div.tooltip-inner {
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-div.tooltip.click-to-visit-profile {
-  width: auto;
-}
-div.tooltip.click-to-visit-profile .tooltip-inner {
-  padding: 3px 8px;
-  background: #777;
-}
-div.tooltip.click-to-visit-profile .tooltip-arrow {
-  border-left-color: #777;
-}
-code {
-  color: #000;
 }
 div.loading div.working {
   color: #ddd;
