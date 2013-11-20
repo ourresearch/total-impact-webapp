@@ -142,7 +142,7 @@ p, ul, ol {
 }
 
 i {
-   &.success {color:  ##468847;}
+   &.success {color: #468847;}
    &.error {color:  #b94a48;}
 }
 
@@ -489,34 +489,38 @@ div.navbar.site-nav {
                }
             }
 
-            &.preferences {
+            &.dropdown.preferences {
                position: relative;
                &.open {
                   a.dropdown-toggle {
                      i {color: #333}
+                     border-color: #cccccc;
+                     border-bottom:none;
                   }
                }
                a.dropdown-toggle {
+                  border:1px solid #fff;
+                  background: #fff;
+                  border-bottom:none
+                  position:relative;
+                  z-index: 1000;
                   padding-left:17px;
                   padding-right: 17px;
                   padding-bottom:15px;
-                  .border-radius(5px, 0, 0, 5px);
+                  .border-radius(3px, 0, 0, 3px);
                   i {vertical-align: -6px; color: @linkColor;}
                }
                ul.dropdown-menu {
-                  background: #fff;
-                  top: @navbarHeight + 2px;
-                  border: 1px solid #ccc;
-                  border-top: none;
-                  right: 10px;
+                  top: @navbarHeight;
+                  border: 1px solid #cccccc;
+                  right: 0;
                   left: auto;
-
-                  .drop-shadow(0, 3px, 2px, .1);
-
-
-                  .border-radius(0, 3px, 3px, 0);
-                  min-width: 200px;
+                  .drop-shadow(0, 0, 0, 0);
+                  z-index: 10;
+                  .border-radius(0, 3px, 3px, 3px);
+                  min-width: 150px;
                   padding: 10px 0;
+
                   li{
                      margin: 0;
                      padding: 0;

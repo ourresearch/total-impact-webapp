@@ -131,6 +131,7 @@ angular.module('importers.allTheImporters')
       {
         inputType: "username",
         inputNeeded: "API key",
+        placeholder: "This is just for testing.",
         name: "apiKey",
         help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
       }],
@@ -259,7 +260,7 @@ angular.module('importers.allTheImporters')
       displayName: "Dataset DOIs",
       inputs: [{
         inputType: "idList",
-        inputNeeded: "",
+        inputNeeded: "DOIs",
         help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
         placeholder: "doi:10.5061/dryad.example",
         help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
@@ -274,7 +275,7 @@ angular.module('importers.allTheImporters')
       displayName: "Article DOIs",
       inputs: [{
         inputType: "idList",
-        inputNeeded: "",
+        inputNeeded: "DOIs",
         help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
         placeholder: "doi:10.5061/dryad.example",
         help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
@@ -289,7 +290,7 @@ angular.module('importers.allTheImporters')
       displayName: "PubMed IDs",
       inputs: [{
         inputType: "idList",
-        inputNeeded: "",
+        inputNeeded: "IDs",
         placeholder: "123456789",
         help: "You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."
       }],
@@ -336,7 +337,12 @@ angular.module('importers.allTheImporters')
   }
 
   var prepInputObject = function(inputObject) {
-    inputObject.name || (inputObject.name = "primary")
+
+    // @todo: fix core /importer to support new obj inputs w 'primary' key.
+//    var defaultInputName = "primary"
+    var defaultInputName = "input"
+
+    inputObject.name || (inputObject.name = defaultInputName)
     return inputObject
   }
 
