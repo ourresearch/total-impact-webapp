@@ -37,7 +37,10 @@ angular.module( 'infopages', [
     Page.setTitle("FAQ")
     $http.get("/providers").then(
       function(resp){
-        $scope.providers = resp
+        $scope.providers = _.filter(resp.data, function(provider){
+          // only show providers with a description
+          return !!provider.descr
+        })
       },
       function(resp){console.log("/providers failed.")}
     )

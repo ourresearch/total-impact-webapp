@@ -6,6 +6,7 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'login.error.invalidPassword':"Whoops! We recognize your email address but it looks like you've got the wrong password.",
     'login.error.invalidUser':"Sorry, we don't recognize that email address.",
     'login.error.serverError': "Uh oh, looks like we've got a system error...feel free to let us know, and we'll fix it.",
+    'logout.success': "You've logged out.",
 
     'test.first': "This is a test of the notification system...",
     'settings.password.change.success': "Password changed.",

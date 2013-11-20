@@ -6264,21 +6264,7 @@ h4,
 h5,
 h6 {
   font-family: Lato, Helvetica, sans-serif;
-  font-weight: bold;
-}
-h3 {
-  margin: 20px 0 0 0;
-  margin-top: 20px;
-  font-size: 25px;
-  color: #555;
-  line-height: 1;
-  border-bottom: 1px solid #eee;
-}
-h3.first {
-  margin-top: 0;
-  padding-top: 0;
-}
-h4 {
+  font-weight: 900;
   color: #777;
 }
 a {
@@ -6755,7 +6741,7 @@ div#footer {
   border-top: 1px solid #aaa;
   background: #ddd;
   float: left;
-  margin-top: 30px;
+  margin-top: 100px;
 }
 div#footer p {
   margin: 6px 0 0 0;
@@ -6780,10 +6766,8 @@ div#footer div.wrapper div.footer-col#footer-branding {
 div#footer div.wrapper div.footer-col h3 {
   font-size: 18px;
   font-weight: bolder;
-  font-family: Lato, helvetica, sans-serif;
-  border-bottom: none;
+  margin-top: 0;
   color: #777;
-  margin: 0 0 15px;
 }
 div#footer div.wrapper div.footer-col ul li {
   line-height: 1.6;
@@ -6867,8 +6851,16 @@ div.infopage {
   padding-top: 50px;
 }
 div.infopage h2.infopage-heading {
-  font-weight: bolder;
-  font-size: 30pxs;
+  font-size: 50px;
+}
+div.infopage h3 {
+  margin-top: 90px;
+}
+div.infopage h3.first {
+  margin-top: 20px;
+}
+div.infopage p {
+  line-height: 1.6;
 }
 /* landing page
 *****************************************************************************
@@ -7034,53 +7026,50 @@ div#sources div.wrapper ul#source-logos li img {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-table {
+#faq table {
   border-collapse: collapse;
   padding: 2px;
   border-color: #ccc;
-  width: 700px;
+  border: none;
 }
-td {
-  padding: 3px 8px;
+#faq table td {
+  padding: 15px;
   border: 1px solid #ccc;
   border-left: none;
   border-right: none;
 }
-th {
-  background: #FF4E00;
-  color: #fff;
+#faq table th {
   border: none;
+  font-weight: 900;
+  padding: 0 15px;
 }
 #faq li {
-  list-style-type: circle;
+  list-style-type: disc;
+  margin-left: 20px;
 }
-ul#providers-metadata > li {
-  margin-bottom: 15px;
+#faq ul#providers-metadata span {
+  margin-left: .5em;
 }
-ul#providers-metadata li ul li {
+#faq ul#providers-metadata li {
+  margin-bottom: 30px;
+}
+#faq ul#providers-metadata li a.provider-name {
+  font-weight: bold;
+}
+#faq ul#providers-metadata li img {
+  margin-right: 5px;
+}
+#faq ul#providers-metadata li ul li.metric {
   list-style-type: none;
+  margin-bottom: 5px;
 }
-ul#providers-metadata li img {
-  margin-bottom: -0.2em;
+#faq ul#providers-metadata li ul li.metric span.metric-descr {
+  font-size: 80%;
 }
-ul#providers-metadata span.csv-name {
+#faq ul#providers-metadata li ul li.metric span.csv-name {
   font-family: monaco, consolas, monospace;
-  color: #777;
-  font-size: 10px;
-}
-#toc {
-  border: 1px solid #333333;
-  line-height: 1.5;
-  float: right;
-  margin: 16px 21px 12px;
-  padding: 16px;
-  text-align: left;
-  -webkit-border-radius: 4px;
-  /* CSS3 rounded borders for Safari      */
-
-  -moz-border-radius: 4px;
-  /* CSS3 rounded borders for Firefox   */
-
+  color: #999;
+  font-size: 80%;
 }
 /* "about" page
 *****************************************************************************

@@ -59,29 +59,39 @@
    <p><a href="http://altmetrics.org/manifesto/">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href="http://www.mendeley.com/groups/586171/altmetrics/papers/">altmetrics library</a> on Mendeley for a growing list of relevant research.
 
 
+   <h3 id="whichartifacts">which identifiers are supported?</h3>
+   <table class="permitted-artifact-ids" border=1>
+           <tr><th>artifact type</th><th>host</th><th>supported<br>ID format</th><th>example (id-type:id)</th><tr>
+           <tr><td>published article</td><td>an article with a DOI</td><td>DOI</td><td><b>doi:</b>10.1371/journal.pcbi.1000361</td></tr>
+           <tr><td>published article</td><td>an article in PubMed</td><td>PMID</td><td><b>pmid:</b>19304878</td></tr>
+           <tr><td>dataset</td><td>Dryad or figshare</td><td>DOI</td><td><b>doi:</b>10.5061/dryad.1295</td></tr>
+           <tr><td>software</td><td>GitHub</td><td>URL</td><td><b>url:</b>https://github.com/egonw/biostar-central</td></tr>
+           <tr><td>slides</td><td>SlideShare</td><td>URL</td><td><b>url:</b>http://www.slideshare.net/phylogenomics/eisenall-hands</td></tr>
+           <tr><td>generic</td><td>A conference paper, website resource, etc.</td><td>URL</td><td><b>url:</b>http://opensciencesummit.com/program/</td></tr>
+   </table>
+
+
    <h3 id="whichmetrics">which metrics are measured?</h3>
 
    <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>
 
-   <pre>{{ providers | safe }}</pre>
+   <ul id="providers-metadata">
+      <!-- the provider -->
+      <li ng-repeat="provider in providers">
+         <a href="{{ provider.url }}" class="provider-name">{{ provider.name }}:</a> <span class="descr">{{ provider.descr }}</span>
 
-   <ul id="providers-metadata"> <!-- list of providers -->
-            <li ng-repeat="provider"> <!-- the provider -->
-               <a href="{{ provider.url }}">{{ provider_name }}</a> <span class="descr">{{ provider.descr|safe() }}</span>
-               <ul> <!-- list of metrics supplied by this provider -->
-                  {% for metric_name, metric in provider.metrics.iteritems() %}
-                     <li> <!-- information about a particular metric -->
-                        <img src="{{ metric.icon }}" width="16" height="16" />
-                        <strong>{{ metric.display_name }}</strong>
-                        <span class="metric-descr">{{ metric.description }}</span>
-                        <span class="csv-name">({{ provider_name }}:{{ metric_name }})</span>
-                     </li>
-                  {% endfor %}
-               </ul>
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <li ng-repeat="(metric_name, metric) in provider.metrics" class="metric">
+               <img src="{{ metric.icon }}" width="16" height="16" />
+               <strong>{{ metric.display_name }}</strong>
+               <span class="metric-descr">{{ metric.description }}</span>
+               <span class="csv-name">({{ provider.name }}:{{ metric_name }})</span>
             </li>
-         {% endif %}
-      {% endfor %}
+         </ul>
+      </li>
    </ul>
+
 
    <h3 id="whereisif">where is the journal impact factor?</h3>
 

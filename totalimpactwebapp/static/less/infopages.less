@@ -8,8 +8,16 @@
 div.infopage {
    padding-top: 50px;
    h2.infopage-heading {
-      font-weight: bolder;
-      font-size:  30pxs;
+      font-size:  50px;
+   }
+   h3 {
+      margin-top: 90px;
+      &.first {
+         margin-top: 20px;
+      }
+   }
+   p {
+      line-height: 1.6;
    }
 
 }
@@ -211,58 +219,62 @@ div#sources {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+#faq {
 
-table {
-    border-collapse: collapse;
-    padding:2px;
-    border-color: #ccc;
-    width: 700px;
-}
-td {
-    padding: 3px 8px;
-    border:1px solid #ccc;
-    border-left:none;
-    border-right:none;
-}
-th {
-    background: #FF4E00;
-    color:#fff;
-    border:none;
-}
+   table {
+       border-collapse: collapse;
+       padding:2px;
+       border-color: #ccc;
+      border:none;
+      td {
+          padding: 15px;
+          border:1px solid #ccc;
+          border-left:none;
+          border-right:none;
+      }
+      th {
+          border:none;
+         font-weight: 900;
+         padding: 0 15px;
+      }
+   }
 
-#faq li {
-   list-style-type: circle;
-}
+   li {
+      list-style-type: disc;
+      margin-left:20px;
+   }
 
 
-ul#providers-metadata > li {
-    margin-bottom: 15px;
-}
+   ul#providers-metadata {
+      span {
+         margin-left: .5em;
+      }
 
-ul#providers-metadata li ul li{
-    list-style-type: none;
+      li {
+         margin-bottom: 30px;
+         a.provider-name {
+            font-weight: bold;
+         }
+         img {
+            margin-right: 5px;
+         }
+         ul {
+            li.metric {
+               list-style-type: none;
+               margin-bottom: 5px;
+               span.metric-descr {
+                  font-size: 80%;
+               }
+               span.csv-name {
+                  font-family: monaco, consolas, monospace;
+                  color: #999;
+                  font-size: 80%;
+               }
+            }
+         }
+      }
+   }
 }
-
-ul#providers-metadata li img {
-    margin-bottom: -.2em;
-}
-ul#providers-metadata span.csv-name {
-   font-family: monaco, consolas, monospace;
-   color: #777;
-   font-size:10px;
-}
-
-#toc {
-    border: 1px solid #333333;
-    line-height: 1.5;
-    float: right;
-    margin: 16px 21px 12px;
-    padding: 16px;
-    text-align: left;
-    -webkit-border-radius: 4px;    /* CSS3 rounded borders for Safari      */
-    -moz-border-radius: 4px;       /* CSS3 rounded borders for Firefox   */
-}
-
 
 
 

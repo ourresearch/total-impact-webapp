@@ -582,7 +582,10 @@ angular.module( 'infopages', [
     Page.setTitle("FAQ")
     $http.get("/providers").then(
       function(resp){
-        $scope.providers = resp
+        $scope.providers = _.filter(resp.data, function(provider){
+          // only show providers with a description
+          return !!provider.descr
+        })
       },
       function(resp){console.log("/providers failed.")}
     )
@@ -2861,6 +2864,7 @@ angular.module('security.service', [
       console.log("logging out. and it's new!")
       $http.get('/user/logout').success(function(data, status, headers, config) {
         console.log("logout message: ", data)
+        i18nNotifications.pushForCurrentRoute("logout.success", "success")
 //        redirect(redirectTo);
       });
     },
@@ -3267,6 +3271,7 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'login.error.invalidPassword':"Whoops! We recognize your email address but it looks like you've got the wrong password.",
     'login.error.invalidUser':"Sorry, we don't recognize that email address.",
     'login.error.serverError': "Uh oh, looks like we've got a system error...feel free to let us know, and we'll fix it.",
+    'logout.success': "You've logged out.",
 
     'test.first': "This is a test of the notification system...",
     'settings.password.change.success': "Password changed.",
@@ -3946,29 +3951,39 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <p><a href=\"http://altmetrics.org/manifesto/\">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">altmetrics library</a> on Mendeley for a growing list of relevant research.\n" +
     "\n" +
     "\n" +
+    "   <h3 id=\"whichartifacts\">which identifiers are supported?</h3>\n" +
+    "   <table class=\"permitted-artifact-ids\" border=1>\n" +
+    "           <tr><th>artifact type</th><th>host</th><th>supported<br>ID format</th><th>example (id-type:id)</th><tr>\n" +
+    "           <tr><td>published article</td><td>an article with a DOI</td><td>DOI</td><td><b>doi:</b>10.1371/journal.pcbi.1000361</td></tr>\n" +
+    "           <tr><td>published article</td><td>an article in PubMed</td><td>PMID</td><td><b>pmid:</b>19304878</td></tr>\n" +
+    "           <tr><td>dataset</td><td>Dryad or figshare</td><td>DOI</td><td><b>doi:</b>10.5061/dryad.1295</td></tr>\n" +
+    "           <tr><td>software</td><td>GitHub</td><td>URL</td><td><b>url:</b>https://github.com/egonw/biostar-central</td></tr>\n" +
+    "           <tr><td>slides</td><td>SlideShare</td><td>URL</td><td><b>url:</b>http://www.slideshare.net/phylogenomics/eisenall-hands</td></tr>\n" +
+    "           <tr><td>generic</td><td>A conference paper, website resource, etc.</td><td>URL</td><td><b>url:</b>http://opensciencesummit.com/program/</td></tr>\n" +
+    "   </table>\n" +
+    "\n" +
+    "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
     "\n" +
     "   <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>\n" +
     "\n" +
-    "   <pre>{{ providers | safe }}</pre>\n" +
+    "   <ul id=\"providers-metadata\">\n" +
+    "      <!-- the provider -->\n" +
+    "      <li ng-repeat=\"provider in providers\">\n" +
+    "         <a href=\"{{ provider.url }}\" class=\"provider-name\">{{ provider.name }}:</a> <span class=\"descr\">{{ provider.descr }}</span>\n" +
     "\n" +
-    "   <ul id=\"providers-metadata\"> <!-- list of providers -->\n" +
-    "            <li ng-repeat=\"provider\"> <!-- the provider -->\n" +
-    "               <a href=\"{{ provider.url }}\">{{ provider_name }}</a> <span class=\"descr\">{{ provider.descr|safe() }}</span>\n" +
-    "               <ul> <!-- list of metrics supplied by this provider -->\n" +
-    "                  {% for metric_name, metric in provider.metrics.iteritems() %}\n" +
-    "                     <li> <!-- information about a particular metric -->\n" +
-    "                        <img src=\"{{ metric.icon }}\" width=\"16\" height=\"16\" />\n" +
-    "                        <strong>{{ metric.display_name }}</strong>\n" +
-    "                        <span class=\"metric-descr\">{{ metric.description }}</span>\n" +
-    "                        <span class=\"csv-name\">({{ provider_name }}:{{ metric_name }})</span>\n" +
-    "                     </li>\n" +
-    "                  {% endfor %}\n" +
-    "               </ul>\n" +
+    "         <ul>\n" +
+    "            <!-- a metric supplied by this provider -->\n" +
+    "            <li ng-repeat=\"(metric_name, metric) in provider.metrics\" class=\"metric\">\n" +
+    "               <img src=\"{{ metric.icon }}\" width=\"16\" height=\"16\" />\n" +
+    "               <strong>{{ metric.display_name }}</strong>\n" +
+    "               <span class=\"metric-descr\">{{ metric.description }}</span>\n" +
+    "               <span class=\"csv-name\">({{ provider.name }}:{{ metric_name }})</span>\n" +
     "            </li>\n" +
-    "         {% endif %}\n" +
-    "      {% endfor %}\n" +
+    "         </ul>\n" +
+    "      </li>\n" +
     "   </ul>\n" +
+    "\n" +
     "\n" +
     "   <h3 id=\"whereisif\">where is the journal impact factor?</h3>\n" +
     "\n" +

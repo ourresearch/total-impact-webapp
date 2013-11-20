@@ -595,7 +595,7 @@ def providers():
 
     metadata_list = []
     for k, v in metadata.iteritems():
-        v.name = k
+        v["name"] = k
         metadata_list.append(v)
 
     return json_resp_from_thing(metadata_list)
