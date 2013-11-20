@@ -77,7 +77,7 @@
 
    <ul id="providers-metadata">
       <!-- the provider -->
-      <li ng-repeat="provider in providers">
+      <li ng-repeat="provider in providers | orderBy: ['name']">
          <a href="{{ provider.url }}" class="provider-name">{{ provider.name }}:</a> <span class="descr">{{ provider.descr }}</span>
 
          <ul>

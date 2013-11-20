@@ -3969,7 +3969,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <ul id=\"providers-metadata\">\n" +
     "      <!-- the provider -->\n" +
-    "      <li ng-repeat=\"provider in providers\">\n" +
+    "      <li ng-repeat=\"provider in providers | orderBy: ['name']\">\n" +
     "         <a href=\"{{ provider.url }}\" class=\"provider-name\">{{ provider.name }}:</a> <span class=\"descr\">{{ provider.descr }}</span>\n" +
     "\n" +
     "         <ul>\n" +
