@@ -130,18 +130,18 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "         <div class=\"form-group\" ng-repeat=\"input in importer.inputs\">\n" +
     "            <label class=\"control-label\">\n" +
     "               {{ input.displayName }} {{ input.inputNeeded }}\n" +
-    "               <i class=\"icon-question-sign\" ng-show=\"importer.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
-    "               <span class=\"one-per-line\" ng-show=\"importer.inputType=='idList'\">(one per line)</span>\n" +
+    "               <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
+    "               <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
     "            </label>\n" +
     "            <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
     "               <input\n" +
-    "                       class=\"form-control input-lg\"\n" +
-    "                       ng-model=\"userInput[input.inputType]\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       ng-model=\"userInput[input.name]\"\n" +
     "                       type=\"text\" ng-switch-when=\"username\"\n" +
-    "                       placeholder=\"{{ importer.placeholder }}\">\n" +
+    "                       placeholder=\"{{ input.placeholder }}\">\n" +
     "               <textarea placeholder=\"{{ input.placeholder }}\"\n" +
     "                         class=\"form-control\"\n" +
-    "                         ng-model=\"userInput[input.inputType]\"\n" +
+    "                         ng-model=\"userInput[input.name]\"\n" +
     "                         ng-switch-when=\"idList\"></textarea>\n" +
     "               <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
     "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +

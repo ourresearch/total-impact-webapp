@@ -13,6 +13,12 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "username",
         help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+      },
+      {
+        inputType: "username",
+        inputNeeded: "API key",
+        name: "apiKey",
+        help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
       }],
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features."
@@ -214,7 +220,13 @@ angular.module('importers.allTheImporters')
     return capitalizedWords.join("");
 
   }
-           
+
+  var prepInputObject = function(inputObject) {
+    inputObject.name || (inputObject.name = "primary")
+    return inputObject
+  }
+
+
 
   return {
     addProducts: function(products) {
@@ -228,6 +240,9 @@ angular.module('importers.allTheImporters')
         importer.name = makeName(importer.displayName)
         importer.logoPath = makeLogoPath(importer.displayName)
         importer.endpoint = makeEndpoint(importer)
+
+        importer.inputs = _.map(importer.inputs, prepInputObject)
+
 
         return importer
       })

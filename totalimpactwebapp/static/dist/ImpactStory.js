@@ -125,6 +125,12 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "username",
         help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+      },
+      {
+        inputType: "username",
+        inputNeeded: "API key",
+        name: "apiKey",
+        help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
       }],
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features."
@@ -326,7 +332,13 @@ angular.module('importers.allTheImporters')
     return capitalizedWords.join("");
 
   }
-           
+
+  var prepInputObject = function(inputObject) {
+    inputObject.name || (inputObject.name = "primary")
+    return inputObject
+  }
+
+
 
   return {
     addProducts: function(products) {
@@ -340,6 +352,9 @@ angular.module('importers.allTheImporters')
         importer.name = makeName(importer.displayName)
         importer.logoPath = makeLogoPath(importer.displayName)
         importer.endpoint = makeEndpoint(importer)
+
+        importer.inputs = _.map(importer.inputs, prepInputObject)
+
 
         return importer
       })
@@ -388,7 +403,7 @@ angular.module('importers.importer')
     start("saveProducts")
     Products.save(
       {'importerName': importerName}, // define the url
-      {input: userInput}, // the post data, from user input
+      userInput, // the post data, from user input
       function(resp, headers){  // run when the server gives us something back.
         var tiids;
 
@@ -493,16 +508,11 @@ angular.module('importers.importer')
       $scope.userInput
     )
 
-    return true
 
-
-
-
-
-    Importer.saveProducts(slug, $scope.importer.endpoint, $scope.importer.userInput)
+    Importer.saveProducts(slug, $scope.importer.endpoint, $scope.userInput)
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
-                                  $scope.importer.userInput,
+                                  $scope.userInput,
                                   $scope.importer.inputType)
 
 
@@ -514,8 +524,8 @@ angular.module('importers.importer')
         el.bind("change", function(e){
           var reader = new FileReader()
           reader.onload = function(e){
-            // you can only have ONE file input per importer, otherwise namespace collision
-            $scope.userInput.fileContents = reader.result
+            // file input is always the primary one. sure, why not.
+            $scope.userInput.primary = reader.result
           }
 
           var file = (e.srcElement || e.target).files[0];
@@ -3731,18 +3741,18 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "         <div class=\"form-group\" ng-repeat=\"input in importer.inputs\">\n" +
     "            <label class=\"control-label\">\n" +
     "               {{ input.displayName }} {{ input.inputNeeded }}\n" +
-    "               <i class=\"icon-question-sign\" ng-show=\"importer.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
-    "               <span class=\"one-per-line\" ng-show=\"importer.inputType=='idList'\">(one per line)</span>\n" +
+    "               <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
+    "               <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
     "            </label>\n" +
     "            <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
     "               <input\n" +
-    "                       class=\"form-control input-lg\"\n" +
-    "                       ng-model=\"userInput[input.inputType]\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       ng-model=\"userInput[input.name]\"\n" +
     "                       type=\"text\" ng-switch-when=\"username\"\n" +
-    "                       placeholder=\"{{ importer.placeholder }}\">\n" +
+    "                       placeholder=\"{{ input.placeholder }}\">\n" +
     "               <textarea placeholder=\"{{ input.placeholder }}\"\n" +
     "                         class=\"form-control\"\n" +
-    "                         ng-model=\"userInput[input.inputType]\"\n" +
+    "                         ng-model=\"userInput[input.name]\"\n" +
     "                         ng-switch-when=\"idList\"></textarea>\n" +
     "               <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
     "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +

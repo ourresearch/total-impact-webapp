@@ -34,18 +34,18 @@
          <div class="form-group" ng-repeat="input in importer.inputs">
             <label class="control-label">
                {{ input.displayName }} {{ input.inputNeeded }}
-               <i class="icon-question-sign" ng-show="importer.help" tooltip-html-unsafe="{{ input.help }}"></i>
-               <span class="one-per-line" ng-show="importer.inputType=='idList'">(one per line)</span>
+               <i class="icon-question-sign" ng-show="input.help" tooltip-html-unsafe="{{ input.help }}"></i>
+               <span class="one-per-line" ng-show="input.inputType=='idList'">(one per line)</span>
             </label>
             <div class="importer-input" ng-switch on="input.inputType">
                <input
-                       class="form-control input-lg"
-                       ng-model="userInput[input.inputType]"
+                       class="form-control"
+                       ng-model="userInput[input.name]"
                        type="text" ng-switch-when="username"
-                       placeholder="{{ importer.placeholder }}">
+                       placeholder="{{ input.placeholder }}">
                <textarea placeholder="{{ input.placeholder }}"
                          class="form-control"
-                         ng-model="userInput[input.inputType]"
+                         ng-model="userInput[input.name]"
                          ng-switch-when="idList"></textarea>
                <!-- you can only have ONE file input per importer, otherwise namespace collision -->
                <input type="file" ng-switch-when="file" size="300" ng-file-select="input.inputType">

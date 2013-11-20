@@ -30,7 +30,7 @@ angular.module('importers.importer')
     start("saveProducts")
     Products.save(
       {'importerName': importerName}, // define the url
-      {input: userInput}, // the post data, from user input
+      userInput, // the post data, from user input
       function(resp, headers){  // run when the server gives us something back.
         var tiids;
 
@@ -135,16 +135,11 @@ angular.module('importers.importer')
       $scope.userInput
     )
 
-    return true
 
-
-
-
-
-    Importer.saveProducts(slug, $scope.importer.endpoint, $scope.importer.userInput)
+    Importer.saveProducts(slug, $scope.importer.endpoint, $scope.userInput)
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
-                                  $scope.importer.userInput,
+                                  $scope.userInput,
                                   $scope.importer.inputType)
 
 
@@ -156,8 +151,8 @@ angular.module('importers.importer')
         el.bind("change", function(e){
           var reader = new FileReader()
           reader.onload = function(e){
-            // you can only have ONE file input per importer, otherwise namespace collision
-            $scope.userInput.fileContents = reader.result
+            // file input is always the primary one. sure, why not.
+            $scope.userInput.primary = reader.result
           }
 
           var file = (e.srcElement || e.target).files[0];
