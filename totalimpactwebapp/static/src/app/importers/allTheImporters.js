@@ -112,6 +112,8 @@ angular.module('importers.allTheImporters')
       url: "http://wordpress.com",
       descr: "WordPress.com is a blog hosting site."
     },    
+
+
     {
       displayName: "YouTube",
       inputs: [{
@@ -122,7 +124,6 @@ angular.module('importers.allTheImporters')
       }],
       endpoint: "urls",
       url: "http://youtube.com",
-      help: "Copy the URLs for the videos you want to add, then paste them here.",
       descr: "YouTube is an online video-sharing site."
     },
 
@@ -135,7 +136,7 @@ angular.module('importers.allTheImporters')
         help: "Copy the URL for the video you want to add, then paste it here.",
         placeholder: "http://vimeo.com/48605764"
       }],
-      endpoint: "urls"
+      endpoint: "urls",
       url: "http://vimeo.com",
       descr: "Vimeo is an online video-sharing site."
     },
