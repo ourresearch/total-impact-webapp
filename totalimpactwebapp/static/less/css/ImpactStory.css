@@ -7462,6 +7462,12 @@ div.products div.products-without-metrics div.well a {
 .product h2.product-heading.video i.video {
   display: inline-block;
 }
+.product h2.product-heading.account i.account {
+  display: inline-block;
+}
+.product h2.product-heading.blog i.blog {
+  display: inline-block;
+}
 .product .biblio {
   float: left;
   width: 700px;

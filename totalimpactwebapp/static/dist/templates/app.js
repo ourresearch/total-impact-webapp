@@ -474,6 +474,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/vimeo.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/wordpress-circle.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
@@ -807,6 +808,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <i class=\"icon-desktop slides\"></i>\n" +
     "               <i class=\"icon-globe webpage\"></i>\n" +
     "               <i class=\"icon-facetime-video video\"></i>\n" +
+    "               <i class=\"icon-edit-sign blog\"></i>                  \n" +
+    "               <i class=\"icon-comments account\"></i>               \n" +
     "               {{ product.headingValue }}\n" +
     "            </h2>\n" +
     "            <div class=\"real-product\" ng-show=\"!product.isHeading\">\n" +

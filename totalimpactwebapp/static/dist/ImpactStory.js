@@ -179,13 +179,23 @@ angular.module('importers.allTheImporters')
       placeholder: "http://figshare.com/authors/schamberlain/96554"
     },
     {
+      displayName: "WordPress",
+      inputType: "idList",
+      inputNeeded: ".com  URLs",
+      endpoint: "wordpresscom",            
+      url: "http://wordpress.com",
+      descr: "WordPress.com is a blog hosting site.",
+      help: "Paste the URLs for WordPress.com blogs.  The URLs can be on custom domains (like http://blog.impactstory.org), as long as the blogs are hosted on WordPress.com.",
+      placeholder: "http://retractionwatch.wordpress.com"
+    },    
+    {
       displayName: "YouTube",
       inputType: "idList",
       inputNeeded: "URLs",
       endpoint: "urls",            
       url: "http://youtube.com",
       descr: "YouTube is an online video-sharing site.",
-      help: "Copy the URL for the video you want to add, then paste it here.",
+      help: "Copy the URLs for the videos you want to add, then paste them here.",
       placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
     },
     {
@@ -195,7 +205,7 @@ angular.module('importers.allTheImporters')
       endpoint: "urls",      
       url: "http://vimeo.com",
       descr: "Vimeo is an online video-sharing site.",
-      help: "Copy the URL for the video you want to add, then paste it here.",
+      help: "Copy the URLs for the videos you want to add, then paste them here.",
       placeholder: "http://vimeo.com/48605764"
     },   
     {
@@ -665,6 +675,7 @@ angular.module('product.product')
             ["vimeo:likes", "public", "recommended", "badge", 3],
             ["vimeo:comments", "public", "discussed", "badge", 3],
             ["wikipedia:mentions", "public", "cited", "badge", 3],            
+            ["wordpresscom:subscribers", "public", "viewed", "badge", 3],
             ["youtube:likes", "public", "recommended", "badge", 3],
             ["youtube:dislikes", "public", "discussed", "badge", 3],
             ["youtube:favorites", "public", "saved", "badge", 3],
@@ -3972,6 +3983,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/vimeo.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
+    "            <li><img src=\"/static/img/logos/wordpress-circle.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
@@ -4305,6 +4317,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <i class=\"icon-desktop slides\"></i>\n" +
     "               <i class=\"icon-globe webpage\"></i>\n" +
     "               <i class=\"icon-facetime-video video\"></i>\n" +
+    "               <i class=\"icon-edit-sign blog\"></i>                  \n" +
+    "               <i class=\"icon-comments account\"></i>               \n" +
     "               {{ product.headingValue }}\n" +
     "            </h2>\n" +
     "            <div class=\"real-product\" ng-show=\"!product.isHeading\">\n" +

@@ -69,13 +69,23 @@ angular.module('importers.allTheImporters')
       placeholder: "http://figshare.com/authors/schamberlain/96554"
     },
     {
+      displayName: "WordPress",
+      inputType: "idList",
+      inputNeeded: ".com  URLs",
+      endpoint: "wordpresscom",            
+      url: "http://wordpress.com",
+      descr: "WordPress.com is a blog hosting site.",
+      help: "Paste the URLs for WordPress.com blogs.  The URLs can be on custom domains (like http://blog.impactstory.org), as long as the blogs are hosted on WordPress.com.",
+      placeholder: "http://retractionwatch.wordpress.com"
+    },    
+    {
       displayName: "YouTube",
       inputType: "idList",
       inputNeeded: "URLs",
       endpoint: "urls",            
       url: "http://youtube.com",
       descr: "YouTube is an online video-sharing site.",
-      help: "Copy the URL for the video you want to add, then paste it here.",
+      help: "Copy the URLs for the videos you want to add, then paste them here.",
       placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
     },
     {
@@ -85,7 +95,7 @@ angular.module('importers.allTheImporters')
       endpoint: "urls",      
       url: "http://vimeo.com",
       descr: "Vimeo is an online video-sharing site.",
-      help: "Copy the URL for the video you want to add, then paste it here.",
+      help: "Copy the URLs for the videos you want to add, then paste them here.",
       placeholder: "http://vimeo.com/48605764"
     },   
     {
