@@ -625,6 +625,11 @@ def redirect_to_profile(dummy="index"):
 # def apidocs():
 #     return render_template_custom('api-docs.html')
 
+@app.route("/google6653442d2224e762.html")
+def google_verification():
+    # needed for https://support.google.com/webmasters/answer/35179?hl=en
+    return send_file("static/rendered-pages/google6653442d2224e762.html")
+
 
 @app.route("/loading.gif")
 def images():
