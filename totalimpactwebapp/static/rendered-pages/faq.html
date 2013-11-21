@@ -1,0 +1,1609 @@
+<html ng-app="app" ng-controller="AppCtrl" lang="en" xmlns="http://www.w3.org/1999/html" class="ng-scope"><head>
+   <base href="/">
+   <meta charset="utf-8">
+   <title class="ng-binding">ImpactStory: FAQ</title>
+   <meta name="description" content="ImpactStory">
+   <meta name="author" content="ImpactStory">
+   <meta name="google-site-verification" content="JWD8WcfINuKxjh31KejAnijd9Cx34IYEH1-bDMXVzjE">
+   <meta name="google-site-verification" content="ItyBFNIMWtJdRaONjqSQHM8ro_fRjTl9HO3Fq9IsZpM">
+
+
+
+
+   <!-- Include stuff that has to be at the very tippity-top of the page-->
+   <!-------------------------------------------------------------------------->
+   <!-- newrelic logging. -->
+   
+
+   <!-- errorception logging. -->
+
+
+
+
+
+
+
+
+
+
+
+   <!-- Load stylesheets -->
+   <!-------------------------------------------------------------------------->
+   <!--[if lt IE 9]>
+   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+   <![endif]-->
+
+   <link href="http://fonts.googleapis.com/css?family=Rokkitt:400,700" rel="stylesheet" type="text/css">
+   <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+
+   <!-- stylesheet is in less/css dir; it's a hack to get around limitations of CodeKit -->
+   <link rel="stylesheet" type="text/css" href="/static/less/css/ImpactStory.css">
+   <link rel="icon" type="image/ico" href="/static/dist/img/favicon.ico">
+
+
+
+
+   <!-- Load scripts -->
+   <!-------------------------------------------------------------------------->
+   <script type="text/javascript" async="" src="//widget.uservoice.com/OQC1qQJBAPv28X1VBsYbw.js"></script><script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.string/2.3.3/underscore.string.min.js"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{display:none;}ng\:form{display:block;}</style>
+
+   <script type="text/javascript" src="/static/dist/bootstrap.js"></script>
+   <script type="text/javascript" src="/static/dist/angular.js"></script> <!-- extra Angular modules -->
+   <script type="text/javascript" src="/static/js/browser-fixes.js"></script> <!-- get rid of this -->
+   <script type="text/javascript" src="/static/dist/ImpactStory.js"></script>
+
+
+<script>(function bootstrap(window) {
+
+      var angular = window.angular;
+
+      // Helper to determine if the root 'ng' module has been loaded
+      // window.angular may be available if the app is bootstrapped asynchronously, but 'ng' might
+      // finish loading later.
+      var ngLoaded = function () {
+        if (!window.angular) {
+          return false;
+        }
+        try {
+          window.angular.module('ng');
+        }
+        catch (e) {
+          return false;
+        }
+        return true;
+      };
+
+      if (!ngLoaded()) {
+        (function () {
+          // TODO: var name
+          var areWeThereYet = function (ev) {
+            if (ev.srcElement.tagName === 'SCRIPT') {
+              var oldOnload = ev.srcElement.onload;
+              ev.srcElement.onload = function () {
+                if (ngLoaded()) {
+
+                  document.removeEventListener('DOMNodeInserted', areWeThereYet);
+                  bootstrap(window);
+                }
+                if (oldOnload) {
+                  oldOnload.apply(this, arguments);
+                }
+              };
+            }
+          };
+          document.addEventListener('DOMNodeInserted', areWeThereYet);
+        }());
+        return;
+      }
+
+      // do not patch twice
+      if (window.__ngDebug) {
+        return;
+      }
+
+      // Helpers
+      // =======
+
+      // polyfill for performance.now on older webkit
+      if (!performance.now) {
+        performance.now = performance.webkitNow;
+      }
+
+      // Based on cycle.js
+      // https://github.com/douglascrockford/JSON-js/blob/master/cycle.js
+
+      // Make a deep copy of an object or array, assuring that there is at most
+      // one instance of each object or array in the resulting structure. The
+      // duplicate references (which might be forming cycles) are replaced with
+      // an object of the form
+      //      {$ref: PATH}
+      // where the PATH is a JSONPath string that locates the first occurrence.
+      var decycle = function (object) {
+        var objects = [],   // Keep a reference to each unique object or array
+            paths = [];     // Keep the path to each unique object or array
+
+        return (function derez(value, path) {
+          var i,          // The loop counter
+              name,       // Property name
+              nu;         // The new object or array
+          switch (typeof value) {
+          case 'object':
+            if (value instanceof HTMLElement) {
+              return value.innerHTML.toString().trim();
+            }
+            if (!value) {
+              return null;
+            }
+            for (i = 0; i < objects.length; i += 1) {
+              if (objects[i] === value) {
+                return {$ref: paths[i]};
+              }
+            }
+            objects.push(value);
+            paths.push(path);
+            if (value instanceof Array) {
+              nu = [];
+              for (i = 0; i < value.length; i += 1) {
+                nu[i] = derez(value[i], path + '[' + i + ']');
+              }
+            } else {
+              nu = {};
+              for (name in value) {
+                if (name[0] !== '$' && Object.prototype.hasOwnProperty.call(value, name)) {
+                  nu[name] = derez(value[name],
+                    path + '[' + JSON.stringify(name) + ']');
+                }
+              }
+            }
+            return nu;
+          case 'number':
+          case 'string':
+          case 'boolean':
+            return value;
+          }
+        }(object, '$'));
+      };
+      // End
+      // ===
+
+      // given a scope object, return an object with deep clones
+      // of the models exposed on that scope
+      var getScopeLocals = function (scope) {
+        var scopeLocals = {}, prop;
+        for (prop in scope) {
+          if (scope.hasOwnProperty(prop) && prop !== 'this' && prop[0] !== '$') {
+            scopeLocals[prop] = decycle(scope[prop]);
+          }
+        }
+        return scopeLocals;
+      };
+
+      // helper to extract dependencies from function arguments
+      // not all versions of AngularJS expose annotate
+      var annotate = angular.injector().annotate;
+      if (!annotate) {
+        annotate = (function () {
+
+          var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
+          var FN_ARG_SPLIT = /,/;
+          var FN_ARG = /^\s*(_?)(.+?)\1\s*$/;
+          var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+
+          // TODO: should I keep these assertions?
+          function assertArg(arg, name, reason) {
+            if (!arg) {
+              throw new Error("Argument '" + (name || '?') + "' is " + (reason || "required"));
+            }
+            return arg;
+          }
+          function assertArgFn(arg, name, acceptArrayAnnotation) {
+            if (acceptArrayAnnotation && angular.isArray(arg)) {
+              arg = arg[arg.length - 1];
+            }
+
+            assertArg(angular.isFunction(arg), name, 'not a function, got ' +
+                (arg && typeof arg == 'object' ? arg.constructor.name || 'Object' : typeof arg));
+            return arg;
+          }
+
+          return function (fn) {
+            var $inject,
+                fnText,
+                argDecl,
+                last;
+
+            if (typeof fn == 'function') {
+              if (!($inject = fn.$inject)) {
+                $inject = [];
+                fnText = fn.toString().replace(STRIP_COMMENTS, '');
+                argDecl = fnText.match(FN_ARGS);
+                argDecl[1].split(FN_ARG_SPLIT).forEach(function(arg) {
+                  arg.replace(FN_ARG, function(all, underscore, name) {
+                    $inject.push(name);
+                  });
+                });
+                fn.$inject = $inject;
+              }
+            } else if (angular.isArray(fn)) {
+              last = fn.length - 1;
+              assertArgFn(fn[last], 'fn');
+              $inject = fn.slice(0, last);
+            } else {
+              assertArgFn(fn, 'fn', true);
+            }
+            return $inject;
+          };
+        }());
+      }
+
+      // throttle based on _.throttle from Lo-Dash
+      // https://github.com/bestiejs/lodash/blob/master/lodash.js#L4625
+      var throttle = function (func, wait) {
+        var args,
+            result,
+            thisArg,
+            timeoutId,
+            lastCalled = 0;
+
+        function trailingCall() {
+          lastCalled = new Date();
+          timeoutId = null;
+          result = func.apply(thisArg, args);
+        }
+        return function() {
+          var now = new Date(),
+            remaining = wait - (now - lastCalled);
+
+          args = arguments;
+          thisArg = this;
+
+          if (remaining <= 0) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+            lastCalled = now;
+            result = func.apply(thisArg, args);
+          }
+          else if (!timeoutId) {
+            timeoutId = setTimeout(trailingCall, remaining);
+          }
+          return result;
+        };
+      };
+
+      var debounce = function (func, wait, immediate) {
+        var args,
+          result,
+          thisArg,
+          timeoutId;
+
+        function delayed() {
+          timeoutId = null;
+          if (!immediate) {
+            result = func.apply(thisArg, args);
+          }
+        }
+        return function() {
+          var isImmediate = immediate && !timeoutId;
+          args = arguments;
+          thisArg = this;
+
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(delayed, wait);
+
+          if (isImmediate) {
+            result = func.apply(thisArg, args);
+          }
+          return result;
+        };
+      };
+
+      var updateScopeModelCache = function (scope) {
+        debug.models[scope.$id] = getScopeLocals(scope);
+        debug.scopeDirty[scope.$id] = false;
+      };
+
+      var popover = null;
+
+      // Public API
+      // ==========
+
+      var api = window.__ngDebug = {
+
+        getDeps: function () {
+          return debug.deps;
+        },
+
+        getRootScopeIds: function () {
+          var ids = [];
+          angular.forEach(debug.rootScopes, function (elt, id) {
+            ids.push(id);
+          });
+          return ids;
+        },
+
+        // returns null or cached scope
+        getModel: function (id) {
+          if (debug.scopeDirty[id]) {
+            updateScopeModelCache(debug.scopes[id]);
+            return debug.models[id];
+          }
+        },
+
+        getScopeTree: function (id) {
+          if (debug.scopeTreeDirty[id] === false) {
+            return;
+          }
+          var traverse = function (sc) {
+            var tree = {
+              id: sc.$id,
+              children: []
+            };
+
+            var child = sc.$$childHead;
+            if (child) {
+              do {
+                tree.children.push(traverse(child));
+              } while (child !== sc.$$childTail && (child = child.$$nextSibling));
+            }
+
+            return tree;
+          };
+
+          var root = debug.rootScopes[id];
+          var tree = traverse(root);
+
+          if (tree) {
+            debug.scopeTreeDirty[id] = false;
+          }
+
+
+          return tree;
+        },
+
+        getWatchPerf: function () {
+          var changes = [];
+          angular.forEach(debug.watchPerf, function (info, name) {
+            if (info.time > 0) {
+              changes.push({
+                name: name,
+                time: info.time
+              });
+              info.time = 0;
+            }
+          });
+          return changes;
+        },
+
+        getWatchTree: function (id) {
+          var traverse = function (sc) {
+            var tree = {
+              id: sc.$id,
+              watchers: debug.watchers[sc.$id],
+              children: []
+            };
+
+            var child = sc.$$childHead;
+            if (child) {
+              do {
+                tree.children.push(traverse(child));
+              } while (child !== sc.$$childTail && (child = child.$$nextSibling));
+            }
+
+            return tree;
+          };
+
+          var root = debug.rootScopes[id];
+          var tree = traverse(root);
+
+          return tree;
+        },
+
+        enable: function () {
+          if (popover) {
+            return;
+          }
+          var angular = window.angular;
+          popover = angular.element(
+            '<div style="position: fixed; left: 50px; top: 50px; z-index: 9999; background-color: #f1f1f1; box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;">' +
+              '<div style="position: relative" style="min-width: 300px; min-height: 100px;">' +
+                '<div style="min-width: 100px; min-height: 50px; padding: 5px;"><pre>{ Please select a scope }</pre></div>' +
+                '<button style="position: absolute; top: -15px; left: -15px; cursor: move;">⇱</button>' +
+                '<button style="position: absolute; top: -15px; left: 10px;">+</button>' +
+                '<button style="position: absolute; top: -15px; right: -15px;">x</button>' +
+                '<style>' +
+                  '.ng-scope.bat-selected { border: 1px solid red; } ' +
+                  '.bat-indent { margin-left: 20px; }' +
+                '</style>' +
+              '</div>' +
+            '</div>');
+          angular.element(window.document.body).append(popover);
+          var popoverContent = angular.element(angular.element(popover.children('div')[0]).children()[0]);
+          var dragElt = angular.element(angular.element(popover.children('div')[0]).children()[1]);
+          var selectElt = angular.element(angular.element(popover.children('div')[0]).children()[2]);
+          var closeElt = angular.element(angular.element(popover.children('div')[0]).children()[3]);
+
+          var currentScope = null,
+            currentElt = null;
+
+          function onMove (ev) {
+            var x = ev.clientX,
+              y = ev.clientY;
+
+            if (x > window.outerWidth - 100) {
+              x = window.outerWidth - 100;
+            } else if (x < 0) {
+              x = 0;
+            }
+            if (y > window.outerHeight - 100) {
+              y = window.outerHeight - 100;
+            } else if (y < 0) {
+              y = 0;
+            }
+
+            x += 5;
+            y += 5;
+
+            popover.css('left', x + 'px');
+            popover.css('top', y + 'px');
+          }
+
+          closeElt.bind('click', function () {
+            popover.remove();
+            popover = null;
+          });
+
+          selectElt.bind('click', bindSelectScope);
+
+          var selecting = false;
+          function bindSelectScope () {
+            if (selecting) {
+              return;
+            }
+            setTimeout(function () {
+              selecting = true;
+              selectElt.attr('disabled', true);
+              angular.element(document.body).css('cursor', 'crosshair');
+              angular.element(document.getElementsByClassName('ng-scope'))
+                .bind('click', onSelectScope)
+                .bind('mouseover', onHoverScope);
+            }, 30);
+          }
+
+          var hoverScopeElt = null;
+
+          function markHoverElt () {
+            if (hoverScopeElt) {
+              hoverScopeElt.addClass('bat-selected');
+            }
+          }
+          function unmarkHoverElt () {
+            if (hoverScopeElt) {
+              hoverScopeElt.removeClass('bat-selected');
+            }
+          }
+
+          function onSelectScope (ev) {
+            render(this);
+            angular.element(document.getElementsByClassName('ng-scope'))
+              .unbind('click', onSelectScope)
+              .unbind('mouseover', onHoverScope);
+            unmarkHoverElt();
+            selecting = false;
+            selectElt.attr('disabled', false);
+            angular.element(document.body).css('cursor', '');
+            hovering = false;
+          }
+
+          var hovering = false;
+          function onHoverScope (ev) {
+            if (hovering) {
+              return;
+            }
+            hovering = true;
+            var that = this;
+            setTimeout(function () {
+              unmarkHoverElt();
+              hoverScopeElt = angular.element(that);
+              markHoverElt();
+              hovering = false;
+              render(that);
+            }, 100);
+          }
+
+          function onUnhoverScope (ev) {
+            angular.element(this).css('border', '');
+          }
+
+          dragElt.bind('mousedown', function (ev) {
+            ev.preventDefault();
+            rendering = true;
+            angular.element(document).bind('mousemove', onMove);
+          });
+          angular.element(document).bind('mouseup', function () {
+            angular.element(document).unbind('mousemove', onMove);
+            setTimeout(function () {
+              rendering = false;
+            }, 120);
+          });
+
+          function renderTree (data) {
+            var tree = angular.element('<div class="bat-indent"></div>');
+            angular.forEach(data, function (val, key) {
+              var toAppend;
+              if (val === undefined) {
+                toAppend = '<i>undefined</i>';
+              } else if (val === null) {
+                toAppend = '<i>null</i>';
+              } else if (val instanceof Array) {
+                toAppend = '[ ... ]';
+              } else if (val instanceof Object) {
+                toAppend = '{ ... }';
+              } else {
+                toAppend = val.toString();
+              }
+              if (data instanceof Array) {
+                toAppend = '<div>' +
+                  toAppend +
+                  ((key===data.length-1)?'':',') +
+                  '</div>';
+              } else {
+                toAppend = '<div>' +
+                  key +
+                  ': ' +
+                  toAppend +
+                  (key!==0?'':',') +
+                  '</div>';
+              }
+              toAppend = angular.element(toAppend);
+              if (val instanceof Array || val instanceof Object) {
+                function recur () {
+                  toAppend.unbind('click', recur);
+                  toAppend.html('');
+                  toAppend
+                    .append(angular.element('<span>' +
+                      key + ': ' +
+                      ((val instanceof Array)?'[':'{') +
+                      '<span>').bind('click', collapse))
+                    .append(renderTree(val))
+                    .append('<span>' + ((val instanceof Array)?']':'}') + '<span>');
+                }
+                function collapse () {
+                  toAppend.html('');
+                  toAppend.append(angular.element('<div>' +
+                    key +
+                    ': ' +
+                    ((val instanceof Array)?'[ ... ]':'{ ... }') +
+                    '</div>').bind('click', recur));
+                }
+                toAppend.bind('click', recur);
+              }
+              tree.append(toAppend);
+            });
+
+            return tree;
+          }
+
+          var isEmpty = function (object) {
+            var prop;
+            for (prop in object) {
+              if (object.hasOwnProperty(prop)) {
+                return false;
+              }
+            }
+            return true;
+          };
+
+          var objLength = function (object) {
+            var prop, len = 0;
+            for (prop in object) {
+              if (object.hasOwnProperty(prop)) {
+                len += 1;
+              }
+            }
+            return len;
+          };
+
+          var rendering = false;
+          var render = function (elt) {
+            if (rendering) {
+              return;
+            }
+            rendering = true;
+            setTimeout(function () {
+              var scope = angular.element(elt).scope();
+              rendering = false;
+              if (scope === currentScope) {
+                return;
+              }
+              currentScope = scope;
+              currentElt = elt;
+
+              var models = getScopeLocals(scope);
+              popoverContent.children().remove();
+              if (isEmpty(models)) {
+                popoverContent.append(angular.element('<i>This scope has no models</i>'));
+              } else {
+                popoverContent.append(renderTree(models));
+              }
+
+            }, 100);
+          };
+
+        }
+      };
+
+
+      // Private state
+      // =============
+
+      //var bootstrap = window.angular.bootstrap;
+      var debug = {
+        // map of scopes --> watcher function name strings
+        watchers: {},
+
+        // maps of watch/apply exp/fns to perf data
+        watchPerf: {},
+        applyPerf: {},
+
+        // map of scope.$ids --> $scope objects
+        scopes: {},
+        // map of scope.$ids --> model objects
+        models: {},
+        // map of $ids --> bools
+        scopeDirty: {},
+
+        // map of $ids --> refs to $rootScope objects
+        rootScopes: {},
+        scopeTreeDirty: {},
+
+        deps: []
+      };
+
+
+      // Instrumentation
+      // ===============
+
+      var ng = angular.module('ng');
+      ng.config(function ($provide) {
+        // methods to patch
+
+        // $provide.provider
+        var temp = $provide.provider;
+        $provide.provider = function (name, definition) {
+          if (!definition) {
+            angular.forEach(name, function (definition, name) {
+              var tempGet = definition.$get;
+              definition.$get = function () {
+                debug.deps.push({
+                  name: name,
+                  imports: annotate(tempGet)
+                });
+                return tempGet.apply(this, arguments);
+              };
+            });
+          } else if (definition instanceof Array) {
+            // it is a constructoctor with array syntax
+            var tempConstructor = definition[definition.length - 1];
+
+            definition[definition.length - 1] = function () {
+              debug.deps.push({
+                name: name,
+                imports: annotate(tempConstructor)
+              });
+              return tempConstructor.apply(this, arguments);
+            };
+          } else if (definition.$get instanceof Array) {
+            // it should have a $get
+            var tempGet = definition.$get[definition.$get.length - 1];
+
+            definition.$get[definition.$get.length - 1] = function () {
+              debug.deps.push({
+                name: name,
+                imports: annotate(tempGet)
+              });
+              return tempGet.apply(this, arguments);
+            };
+          } else if (typeof definition === 'object') {
+            // it should have a $get
+            var tempGet = definition.$get;
+
+            // preserve original annotations
+            definition.$get = annotate(definition.$get);
+            definition.$get.push(function () {
+              debug.deps.push({
+                name: name,
+                imports: annotate(tempGet)
+              });
+              return tempGet.apply(this, arguments);
+            });
+          } else {
+            debug.deps.push({
+              name: name,
+              imports: annotate(definition)
+            });
+          }
+          return temp.apply(this, arguments);
+        };
+
+        // $provide.(factory|service)
+        [
+          'factory',
+          'service'
+        ].forEach(function (met) {
+          var temp = $provide[met];
+          $provide[met] = function (name, definition) {
+            if (typeof name === 'object') {
+              angular.forEach(name, function (value, key) {
+                name[key] = function () {
+                  debug.deps.push({
+                    name: key,
+                    imports: annotate(value)
+                  });
+                  return value.apply(this, arguments);
+                };
+              });
+            } else {
+              debug.deps.push({
+                name: name,
+                imports: annotate(definition)
+              });
+            }
+            return temp.apply(this, arguments);
+          };
+        });
+
+        $provide.decorator('$rootScope', function ($delegate) {
+
+          var watchFnToHumanReadableString = function (fn) {
+            if (fn.exp) {
+              return fn.exp.trim();
+            } else if (fn.name) {
+              return fn.name.trim();
+            } else {
+              return fn.toString();
+            }
+          };
+
+          var applyFnToLogString = function (fn) {
+            var str;
+            if (fn) {
+              if (fn.name) {
+                str = fn.name;
+              } else if (fn.toString().split('\n').length > 1) {
+                str = 'fn () { ' + fn.toString().split('\n')[1].trim() + ' /* ... */ }';
+              } else {
+                str = fn.toString().trim().substr(0, 30) + '...';
+              }
+            } else {
+              str = '$apply';
+            }
+            return str;
+          };
+
+
+          // patch registering watchers
+          // ==========================
+
+          var _watch = $delegate.__proto__.$watch;
+          $delegate.__proto__.$watch = function (watchExpression, applyFunction) {
+            var thatScope = this;
+            var watchStr = watchFnToHumanReadableString(watchExpression);
+
+            if (!debug.watchPerf[watchStr]) {
+              debug.watchPerf[watchStr] = {
+                time: 0,
+                calls: 0
+              };
+            }
+            if (!debug.watchers[thatScope.$id]) {
+              debug.watchers[thatScope.$id] = [];
+            }
+            debug.watchers[thatScope.$id].push(watchStr);
+
+            // patch watchExpression
+            // ---------------------
+            var w = watchExpression;
+            if (typeof w === 'function') {
+              watchExpression = function () {
+                var start = performance.now();
+                var ret = w.apply(this, arguments);
+                var end = performance.now();
+                debug.watchPerf[watchStr].time += (end - start);
+                debug.watchPerf[watchStr].calls += 1;
+                return ret;
+              };
+            } else {
+              watchExpression = function () {
+                var start = performance.now();
+                var ret = thatScope.$eval(w);
+                var end = performance.now();
+                debug.watchPerf[watchStr].time += (end - start);
+                debug.watchPerf[watchStr].calls += 1;
+                return ret;
+              };
+            }
+
+            // patch applyFunction
+            // -------------------
+            if (typeof applyFunction === 'function') {
+              var applyStr = applyFunction.toString();
+              var unpatchedApplyFunction = applyFunction;
+              applyFunction = function () {
+                var start = performance.now();
+                var ret = unpatchedApplyFunction.apply(this, arguments);
+                var end = performance.now();
+                debug.scopeDirty[this.$id] = true;
+
+                //TODO: move these checks out of here and into registering the watcher
+                if (!debug.applyPerf[applyStr]) {
+                  debug.applyPerf[applyStr] = {
+                    time: 0,
+                    calls: 0
+                  };
+                }
+                debug.applyPerf[applyStr].time += (end - start);
+                debug.applyPerf[applyStr].calls += 1;
+                return ret;
+              };
+            }
+
+            return _watch.apply(this, arguments);
+          };
+
+
+          // patch $destroy
+          // --------------
+          var _destroy = $delegate.__proto__.$destroy;
+          $delegate.__proto__.$destroy = function () {
+            if (debug.watchers[this.$id]) {
+              delete debug.watchers[this.$id];
+            }
+            if (debug.models[this.$id]) {
+              delete debug.models[this.$id];
+            }
+            if (debug.scopes[this.$id]) {
+              delete debug.scopes[this.$id];
+            }
+            return _destroy.apply(this, arguments);
+          };
+
+
+          // patch $new
+          // ----------
+          var _new = $delegate.__proto__.$new;
+          $delegate.__proto__.$new = function () {
+
+            var ret = _new.apply(this, arguments);
+            if (ret.$root) {
+              debug.rootScopes[ret.$root.$id] = ret.$root;
+              debug.scopeTreeDirty[ret.$root.$id] = true;
+            }
+
+            // create empty watchers array for this scope
+            if (!debug.watchers[ret.$id]) {
+              debug.watchers[ret.$id] = [];
+            }
+
+            debug.scopes[ret.$id] = ret;
+            debug.scopes[this.$id] = this;
+            debug.scopeDirty[ret.$id] = true;
+
+            return ret;
+          };
+
+
+          // patch $digest
+          // -------------
+          var _digest = $delegate.__proto__.$digest;
+          $delegate.__proto__.$digest = function (fn) {
+            var ret = _digest.apply(this, arguments);
+            debug.scopeDirty[this.$id] = true;
+            return ret;
+          };
+
+
+          // patch $apply
+          // ------------
+          var _apply = $delegate.__proto__.$apply;
+          $delegate.__proto__.$apply = function (fn) {
+            var start = performance.now();
+            var ret = _apply.apply(this, arguments);
+            var end = performance.now();
+            debug.scopeDirty[this.$id] = true;
+
+            // If the debugging option is enabled, log to console
+            // --------------------------------------------------
+            if (debug.log) {
+              console.log(applyFnToLogString(fn) + '\t\t' + (end - start).toPrecision(4) + 'ms');
+            }
+
+            return ret;
+          };
+
+
+          return $delegate;
+        });
+      });
+    }(window))</script><style type="text/css" media="screen">.uv-icon{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:inline-block;cursor:pointer;position:relative;-webkit-transition:all 300ms;-moz-transition:all 300ms;-o-transition:all 300ms;transition:all 300ms;width:39px;height:39px;position:fixed;z-index:100002;opacity:0.8;-webkit-transition:opacity 100ms;-moz-transition:opacity 100ms;-o-transition:opacity 100ms;transition:opacity 100ms}.uv-icon.uv-bottom-right{bottom:10px;right:12px}.uv-icon.uv-top-right{top:10px;right:12px}.uv-icon.uv-bottom-left{bottom:10px;left:12px}.uv-icon.uv-top-left{top:10px;left:12px}.uv-icon.uv-is-selected{opacity:1}.uv-icon svg{width:39px;height:39px}.uv-popover{font-family:sans-serif;font-weight:100;font-size:13px;color:black;position:fixed;z-index:100001}.uv-popover-content{-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;background:white;position:relative;width:325px;height:325px;-webkit-transition:background 200ms;-moz-transition:background 200ms;-o-transition:background 200ms;transition:background 200ms}.uv-bottom .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) 0 -10px 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) 0 -10px 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) 0 -10px 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-top .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) 0 10px 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) 0 10px 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) 0 10px 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-left .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) 10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) 10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) 10px 0 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-right .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) -10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) -10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) -10px 0 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-ie8 .uv-popover-content{position:relative}.uv-ie8 .uv-popover-content .uv-popover-content-shadow{display:block;background:black;content:'';position:absolute;left:-15px;top:-15px;width:100%;height:100%;filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius=15,MakeShadow=true,ShadowOpacity=0.30);z-index:-1}.uv-popover-tail{border:8px solid transparent;width:0;z-index:10;position:absolute;-webkit-transition:border-top-color 200ms;-moz-transition:border-top-color 200ms;-o-transition:border-top-color 200ms;transition:border-top-color 200ms}.uv-top .uv-popover-tail{bottom:-20px;border-top:12px solid white}.uv-bottom .uv-popover-tail{top:-20px;border-bottom:12px solid white}.uv-left .uv-popover-tail{right:-20px;border-left:12px solid white}.uv-right .uv-popover-tail{left:-20px;border-right:12px solid white}.uv-popover-loading{background:white;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;position:absolute;width:100%;height:100%;left:0;top:0}.uv-popover-loading-text{position:absolute;top:50%;margin-top:-0.5em;width:100%;text-align:center}.uv-popover-iframe-container{height:100%}.uv-popover-iframe{-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;overflow:hidden}.uv-is-hidden{display:none}.uv-is-invisible{display:block !important;visibility:hidden !important}.uv-is-transitioning{display:block !important}.uv-no-transition{-moz-transition:none !important;-webkit-transition:none !important;-o-transition:color 0 ease-in !important;transition:none !important}.uv-fade{opacity:1;-webkit-transition:opacity 200ms ease-out;-moz-transition:opacity 200ms ease-out;-o-transition:opacity 200ms ease-out;transition:opacity 200ms ease-out}.uv-fade.uv-is-hidden{opacity:0}.uv-scale-top,.uv-scale-top-left,.uv-scale-top-right,.uv-scale-bottom,.uv-scale-bottom-left,.uv-scale-bottom-right,.uv-scale-right,.uv-scale-right-top,.uv-scale-right-bottom,.uv-scale-left,.uv-scale-left-top,.uv-scale-left-bottom,.uv-slide-top,.uv-slide-bottom,.uv-slide-left,.uv-slide-right{opacity:1;-webkit-transition:all 80ms ease-out;-moz-transition:all 80ms ease-out;-o-transition:all 80ms ease-out;transition:all 80ms ease-out}.uv-scale-top.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(-15%);-moz-transform:scale(0.8) translateY(-15%);-ms-transform:scale(0.8) translateY(-15%);-o-transform:scale(0.8) translateY(-15%);transform:scale(0.8) translateY(-15%)}.uv-scale-top-left.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(-15%) translateX(-10%);-moz-transform:scale(0.8) translateY(-15%) translateX(-10%);-ms-transform:scale(0.8) translateY(-15%) translateX(-10%);-o-transform:scale(0.8) translateY(-15%) translateX(-10%);transform:scale(0.8) translateY(-15%) translateX(-10%)}.uv-scale-top-right.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(-15%) translateX(10%);-moz-transform:scale(0.8) translateY(-15%) translateX(10%);-ms-transform:scale(0.8) translateY(-15%) translateX(10%);-o-transform:scale(0.8) translateY(-15%) translateX(10%);transform:scale(0.8) translateY(-15%) translateX(10%)}.uv-scale-bottom.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(15%);-moz-transform:scale(0.8) translateY(15%);-ms-transform:scale(0.8) translateY(15%);-o-transform:scale(0.8) translateY(15%);transform:scale(0.8) translateY(15%)}.uv-scale-bottom-left.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(15%) translateX(-10%);-moz-transform:scale(0.8) translateY(15%) translateX(-10%);-ms-transform:scale(0.8) translateY(15%) translateX(-10%);-o-transform:scale(0.8) translateY(15%) translateX(-10%);transform:scale(0.8) translateY(15%) translateX(-10%)}.uv-scale-bottom-right.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(15%) translateX(10%);-moz-transform:scale(0.8) translateY(15%) translateX(10%);-ms-transform:scale(0.8) translateY(15%) translateX(10%);-o-transform:scale(0.8) translateY(15%) translateX(10%);transform:scale(0.8) translateY(15%) translateX(10%)}.uv-scale-right.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(15%);-moz-transform:scale(0.8) translateX(15%);-ms-transform:scale(0.8) translateX(15%);-o-transform:scale(0.8) translateX(15%);transform:scale(0.8) translateX(15%)}.uv-scale-right-top.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(15%) translateY(-10%);-moz-transform:scale(0.8) translateX(15%) translateY(-10%);-ms-transform:scale(0.8) translateX(15%) translateY(-10%);-o-transform:scale(0.8) translateX(15%) translateY(-10%);transform:scale(0.8) translateX(15%) translateY(-10%)}.uv-scale-right-bottom.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(15%) translateY(10%);-moz-transform:scale(0.8) translateX(15%) translateY(10%);-ms-transform:scale(0.8) translateX(15%) translateY(10%);-o-transform:scale(0.8) translateX(15%) translateY(10%);transform:scale(0.8) translateX(15%) translateY(10%)}.uv-scale-left.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(-15%);-moz-transform:scale(0.8) translateX(-15%);-ms-transform:scale(0.8) translateX(-15%);-o-transform:scale(0.8) translateX(-15%);transform:scale(0.8) translateX(-15%)}.uv-scale-left-top.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(-15%) translateY(-10%);-moz-transform:scale(0.8) translateX(-15%) translateY(-10%);-ms-transform:scale(0.8) translateX(-15%) translateY(-10%);-o-transform:scale(0.8) translateX(-15%) translateY(-10%);transform:scale(0.8) translateX(-15%) translateY(-10%)}.uv-scale-left-bottom.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(-15%) translateY(10%);-moz-transform:scale(0.8) translateX(-15%) translateY(10%);-ms-transform:scale(0.8) translateX(-15%) translateY(10%);-o-transform:scale(0.8) translateX(-15%) translateY(10%);transform:scale(0.8) translateX(-15%) translateY(10%)}.uv-slide-top.uv-is-hidden{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.uv-slide-bottom.uv-is-hidden{-webkit-transform:translateY(100%);-moz-transform:translateY(100%);-ms-transform:translateY(100%);-o-transform:translateY(100%);transform:translateY(100%)}.uv-slide-left.uv-is-hidden{-webkit-transform:translateX(-100%);-moz-transform:translateX(-100%);-ms-transform:translateX(-100%);-o-transform:translateX(-100%);transform:translateX(-100%)}.uv-slide-right.uv-is-hidden{-webkit-transform:translateX(100%);-moz-transform:translateX(100%);-ms-transform:translateX(100%);-o-transform:translateX(100%);transform:translateX(100%)}
+</style><style type="text/css" media="print">#uvTab,.uv-tray,.uv-icon,.uv-popover,.uv-bubble{display:none!important}</style></head>
+
+<body ng-class="page.getBodyClasses()" class="show-tab-on-right" style=""><div id="uvTab" style="background-image: url(http://widget.uservoice.com/images/clients/widget2/tab-right-dark.png); border-top-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-style: solid none solid solid; border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-left-color: rgb(255, 255, 255); border-top-left-radius: 4px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 4px; -webkit-box-shadow: rgba(255, 255, 255, 0.247059) 1px 1px 1px inset, rgba(0, 0, 0, 0.498039) 0px 1px 2px; box-shadow: rgba(255, 255, 255, 0.247059) 1px 1px 1px inset, rgba(0, 0, 0, 0.498039) 0px 1px 2px; font-style: normal; font-variant: normal; font-weight: bold; font-size: 14px; line-height: 1em; font-family: Arial, sans-serif; position: fixed; right: 0px; top: 50%; z-index: 9999; background-color: rgb(255, 77, 0); margin-top: -101px; background-position: 50% 0px; background-repeat: no-repeat no-repeat;" class="uv-tab uv-slide-right "><a id="uvTabLabel" style="background-color: transparent; display:block;padding:39px 5px 10px 5px;text-decoration:none;" href="javascript:return false;"><img src="http://widget.uservoice.com/dcache/widget/feedback-tab.png?t=Feedback%20%26%20Support&amp;c=ffffff&amp;r=90" alt="Feedback &amp; Support" style="border:0; background-color: transparent; padding:0; margin:0;"></a></div><div id="uvTab" style="background:red url(http://widget.uservoice.com/images/clients/widget2/tab-horizontal-dark.png) 0 50% no-repeat;border:1px solid #FFF;border-bottom:none;-moz-border-radius:4px 4px 0 0;-webkit-border-radius:4px 4px 0 0;border-radius:4px 4px 0 0;-moz-box-shadow:inset rgba(255,255,255,.25) 1px 1px 1px, rgba(0,0,0,.5) 0 1px 2px;-webkit-box-shadow:inset rgba(255,255,255,.25) 1px 1px 1px, rgba(0,0,0,.5) 0 1px 2px;box-shadow:inset rgba(255,255,255,.25) 1px 1px 1px, rgba(0,0,0,.5) 0 1px 2px;font:normal normal bold 14px/1em Arial, sans-serif;position:fixed;left:10px;bottom:0;z-index:9999;background-color:#999999;" class="uv-tab uv-slide-bottom uv-is-transitioning"><a id="uvTabLabel" style="background-color: transparent; display:block;padding:6px 10px 2px 42px;text-decoration:none;" href="javascript:return false;"><img src="http://widget.uservoice.com/dcache/widget/feedback-tab.png?t=Feedback%20%26%20Support&amp;c=ffffff&amp;r=0" alt="Feedback &amp; Support" style="border:0; background-color: transparent; padding:0; margin:0;"></a></div>
+<div class="staging-warning"><div class="content"><span>staging, yo</span></div></div>
+<div ng-include="page.getTemplate('header')"><div class="main-header header ng-scope" ng-class="{big: page.isLandingPage()}">
+   <div class="wrapper">
+      <a class="brand" href="/">
+         <img src="/static/img/impactstory-logo.png" alt="ImpactStory">
+      </a>
+      <ul class="main-nav">
+   <li ng-show="currentUser" class="logged-in-user nav-item" style="display: none;">
+      <span class="context">Welcome back, </span>
+      <a class="current-user ng-binding" href="/"></a>
+   </li>
+
+   <li ng-show="currentUser" class="divider-vertical nav-item" style="display: none;"></li>
+
+   <li ng-show="currentUser" class="logged-in preferences dropdown nav-item" style="display: none;">
+      <a href="#" class="preferences dropdown-toggle" data-toggle="dropdown" title="Change URL and other preferences">
+         <i class="icon-cog"></i>
+      </a>
+      <ul class="preferences-actions dropdown-menu">
+         <li><a href="/settings/profile" class="profile"><i class="icon-cogs"></i>Preferences</a></li>
+         <li><a href="/api-docs" class="profile"><i class="icon-suitcase"></i>Embed</a></li>
+         <li class="divider"></li>
+         <li><a class="logout" ng-click="logout()"><i class="icon-off"></i>Log out</a></li>
+      </ul>
+   </li>
+
+   <li ng-show="!currentUser" class="login-and-signup nav-item">
+      <span ng-show="page.isLandingPage()" class="context" style="display: none;">Already have a profile?</span>
+      <a ng-show="!page.isLandingPage()" class="signup" href="/signup/name">Sign up</a>
+      <span ng-show="!page.isLandingPage()" class="or"></span>
+      <a class="login" ng-click="login()">Log in<i class="icon-signin"></i></a>
+   </li>
+</ul>
+   </div>
+</div>
+<div ng-show="page.showNotificationsIn('header')" ng-include="'notifications.tpl.html'" class="container-fluid ng-scope"><ul class="notifications ng-scope">
+   <!-- ngRepeat: notification in notifications.getCurrent() -->
+</ul>
+</div>
+</div>
+<div ng-view="" class="main-view"><div class="main infopage ng-scope" id="faq"><div class="wrapper">
+   <h2 class="infopage-heading">FAQ</h2>
+
+   <h3 id="what" class="first">what is ImpactStory?</h3>
+
+   <p>ImpactStory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products—from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.
+
+   </p><p>ImpactStory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>
+   <ul>
+      <li><b>Open metrics</b>: Our <a href="http://impactstory.org/api-docs">data</a> (to the extent allowed by providers’ terms of service), <a href="https://github.com/total-impact">code</a>, and <a href="http://blog.impactstory.org/2012/03/01/18535014681/">governance</a> are all open.</li>
+      <li><b>With context</b>: To help researcher move from raw <a href="http://altmetrics.org/manifesto/">altmetrics</a> data to <a href="http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>
+      <li><b>Diverse products</b>: Datasets, software, slides, and other research products are presented as an integrated section of a comprehensive impact report, alongside articles--each genre a first-class citizen, each making its own kind of impact.</li>
+   </ul>
+
+   <h3 id="audience">who is it for?</h3>
+
+   <ul>
+      <li><b>researchers</b> who want to know how many times their work has been downloaded, bookmarked, and blogged
+      </li><li><b>research groups</b> who want to look at the broad impact of their work and see what has demonstrated interest
+      </li><li><b>funders</b> who want to see what sort of impact they may be missing when only considering citations to papers
+      </li><li><b>repositories</b> who want to report on how their research products are being discussed
+      </li><li><b>all of us</b> who believe that people should be rewarded when their work (no matter what the format) makes a positive impact (no matter what the venue). Aggregating evidence of impact will facilitate appropriate rewards, thereby encouraging additional openness of useful forms of research output.
+   </li></ul>
+
+   <h3 id="uses">how should it be used?</h3>
+
+   <p>ImpactStory data can be:</p>
+   <ul>
+      <li>highlighted as indications of the <em>minimum</em> impact a research product has made on the community
+      </li><li>explored more deeply to see who is citing, bookmarking, and otherwise using your work
+      </li><li>run to collect usage information for mention in biosketches
+      </li><li>included as a link in CVs
+      </li><li>analyzed by downloading detailed metric information
+   </li></ul>
+
+   <h3 id="pooruses">how <em>shouldn’t</em> it be used?</h3>
+
+   <p>Some of these issues relate to the early-development phase of ImpactStory, some reflect our <a href="http://www.mendeley.com/groups/586171/altmetrics/papers/">early-understanding of altmetrics</a>, and some are just common sense.  ImpactStory reports shouldn't be used:
+
+   </p><ul>
+      <li><b>as indication of comprehensive impact</b>
+         <p>ImpactStory is in early development. See <a href="#limitations">limitations</a> and take it all with a grain of salt.
+
+            </p></li><li><b>for serious comparison</b>
+               <p>ImpactStory is currently better at collecting comprehensive metrics for some products than others, in ways that are not clear in the report. Extreme care should be taken in comparisons. Numbers should be considered minimums. Even more care should be taken in comparing collections of products, since some ImpactStory is currently better at identifying products identified in some ways than others. Finally, some of these metrics can be easily gamed. This is one reason we believe having many metrics is valuable.
+
+                  </p></li><li><b>as if we knew exactly what it all means</b>
+                     <p>The meaning of these metrics are not yet well understood; see <a href="#meaning">section</a> below.
+
+                        </p></li><li><b>as a substitute for personal judgement of quality</b>
+         <p>Metrics are only one part of the story. Look at the research product for yourself and talk about it with informed colleagues.
+
+   </p></li></ul>
+
+   <h3 id="meaning">what do these number actually mean?</h3>
+
+   <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sited: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like ImpactStory, can be found in the nascent scholarly literature on “altmetrics.”
+
+   </p><p><a href="http://altmetrics.org/manifesto/">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href="http://www.mendeley.com/groups/586171/altmetrics/papers/">altmetrics library</a> on Mendeley for a growing list of relevant research.
+
+
+   </p><h3 id="whichartifacts">which identifiers are supported?</h3>
+   <table class="permitted-artifact-ids" border="1">
+           <tbody><tr><th>artifact type</th><th>host</th><th>supported<br>ID format</th><th>example (id-type:id)</th></tr><tr>
+           </tr><tr><td>published article</td><td>an article with a DOI</td><td>DOI</td><td><b>doi:</b>10.1371/journal.pcbi.1000361</td></tr>
+           <tr><td>published article</td><td>an article in PubMed</td><td>PMID</td><td><b>pmid:</b>19304878</td></tr>
+           <tr><td>dataset</td><td>Dryad or figshare</td><td>DOI</td><td><b>doi:</b>10.5061/dryad.1295</td></tr>
+           <tr><td>software</td><td>GitHub</td><td>URL</td><td><b>url:</b>https://github.com/egonw/biostar-central</td></tr>
+           <tr><td>slides</td><td>SlideShare</td><td>URL</td><td><b>url:</b>http://www.slideshare.net/phylogenomics/eisenall-hands</td></tr>
+           <tr><td>generic</td><td>A conference paper, website resource, etc.</td><td>URL</td><td><b>url:</b>http://opensciencesummit.com/program/</td></tr>
+   </tbody></table>
+
+
+   <h3 id="whichmetrics">which metrics are measured?</h3>
+
+   <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>
+
+   <ul id="providers-metadata">
+      <!-- the provider -->
+      <!-- ngRepeat: provider in providers | orderBy: ['name'] --><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.citeulike.org/" class="provider-name ng-binding">citeulike:</a> <span class="descr ng-binding">CiteULike is a free service to help you to store, organise and share the scholarly papers you are reading.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://citeulike.org/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">bookmarks</strong>
+               <span class="metric-descr ng-binding">Number of users who have bookmarked this item.</span>
+               <span class="csv-name ng-binding">(citeulike:bookmarks)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.crossref.org/" class="provider-name ng-binding">crossref:</a> <span class="descr ng-binding">An official Digital Object Identifier (DOI) Registration Agency of the International DOI Foundation.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics -->
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.dataone.org" class="provider-name ng-binding">dataone:</a> <span class="descr ng-binding">Cyberinfrastructure for new innovative environmental science</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics -->
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.delicious.com" class="provider-name ng-binding">delicious:</a> <span class="descr ng-binding">Online social bookmarking service</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://g.etfv.co/http://delicious.com" width="16" height="16">
+               <strong class="ng-binding">bookmarks</strong>
+               <span class="metric-descr ng-binding">The number of bookmarks to this artifact (maximum=100).</span>
+               <span class="csv-name ng-binding">(delicious:bookmarks)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.datadryad.org" class="provider-name ng-binding">dryad:</a> <span class="descr ng-binding">An international repository of data underlying peer-reviewed articles in the basic and applied biology.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http:\/\/datadryad.org\/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">package views</strong>
+               <span class="metric-descr ng-binding">Dryad package views: number of views of the main package page</span>
+               <span class="csv-name ng-binding">(dryad:package_views)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http:\/\/datadryad.org\/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">total downloads</strong>
+               <span class="metric-descr ng-binding">Dryad total downloads: combined number of downloads of the data package and data files</span>
+               <span class="csv-name ng-binding">(dryad:total_downloads)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://figshare.com" class="provider-name ng-binding">figshare:</a> <span class="descr ng-binding">Make all of your research outputs sharable, citable and visible in the browser for free.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://figshare.com/static/img/favicon.png" width="16" height="16">
+               <strong class="ng-binding">downloads</strong>
+               <span class="metric-descr ng-binding">The number of times this has been downloaded</span>
+               <span class="csv-name ng-binding">(figshare:downloads)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://figshare.com/static/img/favicon.png" width="16" height="16">
+               <strong class="ng-binding">shares</strong>
+               <span class="metric-descr ng-binding">The number of times this has been shared</span>
+               <span class="csv-name ng-binding">(figshare:shares)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://figshare.com/static/img/favicon.png" width="16" height="16">
+               <strong class="ng-binding">views</strong>
+               <span class="metric-descr ng-binding">The number of times this item has been viewed</span>
+               <span class="csv-name ng-binding">(figshare:views)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://github.com" class="provider-name ng-binding">github:</a> <span class="descr ng-binding">A social, online repository for open-source software.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="https://github.com/fluidicon.png" width="16" height="16">
+               <strong class="ng-binding">forks</strong>
+               <span class="metric-descr ng-binding">The number of people who have forked the GitHub repository</span>
+               <span class="csv-name ng-binding">(github:forks)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="https://github.com/fluidicon.png" width="16" height="16">
+               <strong class="ng-binding">stars</strong>
+               <span class="metric-descr ng-binding">The number of people who have given the GitHub repository a star</span>
+               <span class="csv-name ng-binding">(github:stars)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.mendeley.com" class="provider-name ng-binding">mendeley:</a> <span class="descr ng-binding"> A research management tool for desktop and web.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.mendeley.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">career stage, top 3 percentages</strong>
+               <span class="metric-descr ng-binding">Percent of readers by career stage, for top three career stages (csv, api only)</span>
+               <span class="csv-name ng-binding">(mendeley:career_stage)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.mendeley.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">country, top 3 percentages</strong>
+               <span class="metric-descr ng-binding">Percent of readers by country, for top three countries (csv, api only)</span>
+               <span class="csv-name ng-binding">(mendeley:country)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.mendeley.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">discipline, top 3 percentages</strong>
+               <span class="metric-descr ng-binding">Percent of readers by discipline, for top three disciplines (csv, api only)</span>
+               <span class="csv-name ng-binding">(mendeley:discipline)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.mendeley.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">groups</strong>
+               <span class="metric-descr ng-binding">The number of groups who have added the article to their libraries</span>
+               <span class="csv-name ng-binding">(mendeley:groups)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.mendeley.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">readers</strong>
+               <span class="metric-descr ng-binding">The number of readers who have added the article to their libraries</span>
+               <span class="csv-name ng-binding">(mendeley:readers)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.plos.org/" class="provider-name ng-binding">plosalm:</a> <span class="descr ng-binding">PLOS article level metrics.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.plos.org/wp-content/themes/plos/images/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">html views</strong>
+               <span class="metric-descr ng-binding">the number of views of the HTML article on PLOS</span>
+               <span class="csv-name ng-binding">(plosalm:html_views)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.plos.org/wp-content/themes/plos/images/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">pdf views</strong>
+               <span class="metric-descr ng-binding">the number of downloads of the PDF from PLOS</span>
+               <span class="csv-name ng-binding">(plosalm:pdf_views)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.plos.org/" class="provider-name ng-binding">plossearch:</a> <span class="descr ng-binding">PLoS article level metrics.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://a0.twimg.com/profile_images/67542107/Globe_normal.jpg" width="16" height="16">
+               <strong class="ng-binding">mentions</strong>
+               <span class="metric-descr ng-binding">the number of times the doi was mentioned in the full-text of PLOS papers</span>
+               <span class="csv-name ng-binding">(plossearch:mentions)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.ncbi.nlm.nih.gov/pmc" class="provider-name ng-binding">pmc:</a> <span class="descr ng-binding">a free archive of biomedical and life sciences journal literature at the NIH/NLM</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.ncbi.nlm.nih.gov/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">abstract views</strong>
+               <span class="metric-descr ng-binding">Number of times the abstract has been viewed on PMC</span>
+               <span class="csv-name ng-binding">(pmc:abstract_views)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.ncbi.nlm.nih.gov/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">figure views</strong>
+               <span class="metric-descr ng-binding">Number of times the figures have been viewed on PMC</span>
+               <span class="csv-name ng-binding">(pmc:figure_views)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.ncbi.nlm.nih.gov/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">fulltext views</strong>
+               <span class="metric-descr ng-binding">Number of times the full text has been viewed on PMC</span>
+               <span class="csv-name ng-binding">(pmc:fulltext_views)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.ncbi.nlm.nih.gov/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">PDF downloads</strong>
+               <span class="metric-descr ng-binding">Number of times the PDF has been downloaded from PMC</span>
+               <span class="csv-name ng-binding">(pmc:pdf_downloads)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.ncbi.nlm.nih.gov/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">suppdata views</strong>
+               <span class="metric-descr ng-binding">Number of times the supplementary data has been viewed on PMC</span>
+               <span class="csv-name ng-binding">(pmc:suppdata_views)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.ncbi.nlm.nih.gov/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">unique IP views</strong>
+               <span class="metric-descr ng-binding">Number of unique IP addresses that have viewed this on PMC</span>
+               <span class="csv-name ng-binding">(pmc:unique_ip_views)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://pubmed.gov" class="provider-name ng-binding">pubmed:</a> <span class="descr ng-binding">PubMed comprises more than 21 million citations for biomedical literature</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://f1000.com/1371136042516/images/favicons/favicon-F1000.ico" width="16" height="16">
+               <strong class="ng-binding">reviewed</strong>
+               <span class="metric-descr ng-binding">The article has been reviewed by F1000</span>
+               <span class="csv-name ng-binding">(pubmed:f1000)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.ncbi.nlm.nih.gov/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">citations</strong>
+               <span class="metric-descr ng-binding">The number of citations by papers in PubMed Central</span>
+               <span class="csv-name ng-binding">(pubmed:pmc_citations)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.ncbi.nlm.nih.gov/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">citations: editorials</strong>
+               <span class="metric-descr ng-binding">The number of citations by editorials papers in PubMed Central</span>
+               <span class="csv-name ng-binding">(pubmed:pmc_citations_editorials)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.ncbi.nlm.nih.gov/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">citations: reviews</strong>
+               <span class="metric-descr ng-binding">The number of citations by review papers in PubMed Central</span>
+               <span class="csv-name ng-binding">(pubmed:pmc_citations_reviews)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.scienceseeker.org" class="provider-name ng-binding">scienceseeker:</a> <span class="descr ng-binding">Science news from science newsmakers</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://scienceseeker.org/images/misc/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">blog posts</strong>
+               <span class="metric-descr ng-binding">The number of blog posts that cite this item.</span>
+               <span class="csv-name ng-binding">(scienceseeker:blog_posts)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.info.sciverse.com/scopus/about" class="provider-name ng-binding">scopus:</a> <span class="descr ng-binding">The world's largest abstract and citation database of peer-reviewed literature.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.info.sciverse.com/sites/all/themes/sciverse/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">citations</strong>
+               <span class="metric-descr ng-binding">Number of times the item has been cited</span>
+               <span class="csv-name ng-binding">(scopus:citations)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.slideshare.net/" class="provider-name ng-binding">slideshare:</a> <span class="descr ng-binding">The best way to share presentations, documents and professional videos.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.slideshare.net/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">comments</strong>
+               <span class="metric-descr ng-binding">The number of comments the presentation has received</span>
+               <span class="csv-name ng-binding">(slideshare:comments)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.slideshare.net/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">downloads</strong>
+               <span class="metric-descr ng-binding">The number of times the presentation has been downloaded</span>
+               <span class="csv-name ng-binding">(slideshare:downloads)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.slideshare.net/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">favorites</strong>
+               <span class="metric-descr ng-binding">The number of times the presentation has been favorited</span>
+               <span class="csv-name ng-binding">(slideshare:favorites)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.slideshare.net/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">views</strong>
+               <span class="metric-descr ng-binding">The number of times the presentation has been viewed</span>
+               <span class="csv-name ng-binding">(slideshare:views)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.topsy.com/" class="provider-name ng-binding">topsy:</a> <span class="descr ng-binding">Real-time search for the social web, &lt;a href='http://topsy.com'&gt;&lt;img src='http://cdn.topsy.com/img/powered.png'/&gt;&lt;/a&gt;</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://twitter.com/phoenix/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">influential tweets</strong>
+               <span class="metric-descr ng-binding">Number of times the item has been tweeted by influential tweeters</span>
+               <span class="csv-name ng-binding">(topsy:influential_tweets)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://twitter.com/phoenix/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">tweets</strong>
+               <span class="metric-descr ng-binding">Number of times the item has been tweeted</span>
+               <span class="csv-name ng-binding">(topsy:tweets)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://twitter.com" class="provider-name ng-binding">twitter_account:</a> <span class="descr ng-binding">Social networking and microblogging service.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="https://twitter.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">followers</strong>
+               <span class="metric-descr ng-binding">The number of people following this Twitter account</span>
+               <span class="csv-name ng-binding">(twitter_account:followers)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="https://twitter.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">lists</strong>
+               <span class="metric-descr ng-binding">The number of people who have included this Twitter account in a Twitter list</span>
+               <span class="csv-name ng-binding">(twitter_account:lists)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://vimeo.com" class="provider-name ng-binding">vimeo:</a> <span class="descr ng-binding">Vimeo: Your videos belong here.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="https://secure-a.vimeocdn.com/images_v6/favicon_32.ico" width="16" height="16">
+               <strong class="ng-binding">comments</strong>
+               <span class="metric-descr ng-binding">The number of comments on a video</span>
+               <span class="csv-name ng-binding">(vimeo:comments)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="https://secure-a.vimeocdn.com/images_v6/favicon_32.ico" width="16" height="16">
+               <strong class="ng-binding">likes</strong>
+               <span class="metric-descr ng-binding">The number of people who have 'liked' the video</span>
+               <span class="csv-name ng-binding">(vimeo:likes)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="https://secure-a.vimeocdn.com/images_v6/favicon_32.ico" width="16" height="16">
+               <strong class="ng-binding">plays</strong>
+               <span class="metric-descr ng-binding">The number of people who have played the video</span>
+               <span class="csv-name ng-binding">(vimeo:plays)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://total-impact.org" class="provider-name ng-binding">webpage:</a> <span class="descr ng-binding">Information scraped from webpages by total-impact</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics -->
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://www.wikipedia.org/" class="provider-name ng-binding">wikipedia:</a> <span class="descr ng-binding">The free encyclopedia that anyone can edit.</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://wikipedia.org/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">mentions</strong>
+               <span class="metric-descr ng-binding">The number of Wikipedia articles that mentioned this object.</span>
+               <span class="csv-name ng-binding">(wikipedia:mentions)</span>
+            </li>
+         </ul>
+      </li><li ng-repeat="provider in providers | orderBy: ['name']" class="ng-scope">
+         <a href="http://youtube.com" class="provider-name ng-binding">youtube:</a> <span class="descr ng-binding">YouTube allows billions of people to discover, watch and share originally-created videos</span>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <!-- ngRepeat: (metric_name, metric) in provider.metrics --><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.youtube.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">comments</strong>
+               <span class="metric-descr ng-binding">The number of comments on a video</span>
+               <span class="csv-name ng-binding">(youtube:comments)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.youtube.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">dislikes</strong>
+               <span class="metric-descr ng-binding">The number of people who have who have 'disliked' the video</span>
+               <span class="csv-name ng-binding">(youtube:dislikes)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.youtube.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">favorites</strong>
+               <span class="metric-descr ng-binding">The number of people who have marked the video as a favorite</span>
+               <span class="csv-name ng-binding">(youtube:favorites)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.youtube.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">likes</strong>
+               <span class="metric-descr ng-binding">The number of people who have 'liked' the video</span>
+               <span class="csv-name ng-binding">(youtube:likes)</span>
+            </li><li ng-repeat="(metric_name, metric) in provider.metrics" class="metric ng-scope">
+               <img src="http://www.youtube.com/favicon.ico" width="16" height="16">
+               <strong class="ng-binding">views</strong>
+               <span class="metric-descr ng-binding">The number of people who have viewed the video</span>
+               <span class="csv-name ng-binding">(youtube:views)</span>
+            </li>
+         </ul>
+      </li>
+   </ul>
+
+
+   <h3 id="whereisif">where is the journal impact factor?</h3>
+
+   <p>We do not include the Journal Impact Factor (or any similar proxy) on purpose. As has been <a href="https://www.zotero.org/groups/impact_factor_problems/items">repeatedly shown</a>, the Impact Factor is not appropriate for judging the quality of individual research products. Individual article citations reflect much more about how useful papers actually were. Better yet are article-level metrics, as initiated by PLoS, in which we examine traces of impact beyond citation. ImpactStory broadens this approach to reflect <b>product-level metrics</b>, by inclusion of preprints, datasets, presentation slides, and other research output formats.
+
+   </p><h3 id="similar">where is my other favourite metric?</h3>
+
+   <p>We only include open metrics here, and so far only a selection of those. We welcome contributions of plugins. Write your own and tell us about it.
+
+   </p><p>Not sure ImpactStory is your cup of tea?  Check out these similar tools:
+   </p><ul>
+      <li><a href="http://altmetric.com">altmetric.com</a>
+      </li><li><a href="http://www.plumanalytics.com/">Plum Analytics</a>
+      </li><li><a href="http://code.google.com/p/alt-metrics/">PLoS Article-Level Metrics application</a>
+      </li><li><a href="http://sciencecard.org/">Science Card</a>
+      </li><li><a href="http://citedin.org/">CitedIn</a>
+      </li><li><a href="http://readermeter.org/">ReaderMeter</a>
+   </li></ul>
+
+   <h3 id="you-are-not-geting-all-my-citations">you're not getting all my citations!</h3>
+   <p>We'd love to display citation information from Google Scholar and Thomson Reuter's Web of Science in ImpactStory, but sadly neither Google Scholar nor Web of Science allow us to do this. We're really pleased that Scopus has been more open with their data, allowing us to display their citation data on our website.  PubMed and Crossref are exemplars of open data: we display their citation counts on our website, in ImpactStory widgets, and through our API.  As more citation databases open up, we'll include their data as fully as we can.</p>
+
+   <p>Each source of citation data gathers citations in its own ways, with their own strengths and limitations.  Web of Science gets  citation counts by manually gathering citations from a relatively small set of "core" journals.  Scopus and Google Scholar crawl a much more expansive set of publisher webpages, and Google also examines papers hosted elsewhere on the web.  PubMed looks at the reference sections of papers in PubMed Central, and CrossRef by looking at the reference lists that they see.  Google Scholar's scraping techniques and citation criteria are the most inclusive; the number of citations found by Google Scholar is typically the highest, though the least curated. A lot of folks have looked into the differences between citation counts from different providers, comparing Google Scholar, Scopus, and Web of Science and finding many differences; if you'd like to learn more, you might start with <a href="http://eprints.rclis.org/8605/">this article.</a></p>
+
+
+   <h3 id="limitations">what are the current limitations of the system?</h3>
+
+   <p>ImpactStory is in early development and has many limitations. Some of the ones we know about:
+
+   </p><h4>gathering IDs sometimes misses products</h4>
+   <ul>
+      <li>ORCID and BibTex import sometimes can't parse or locate all objects.
+   </li></ul>
+
+   <h4>products are sometimes missing metrics</h4>
+   <ul>
+      <li>doesn’t display metrics with a zero value
+      </li><li>sometimes the products were received without sufficient information to use all metrics. For example, the system sometimes can't figure out all URLs from a DOI.
+   </li></ul>
+
+   <h4>metrics sometimes have values that are too low</h4>
+   <ul>
+      <li>some sources have multiple records for a given product. ImpactStory only identifies one copy and so only reports the impact metrics for that record. It makes no current attempt to aggregate across duplications within a source.
+   </li></ul>
+
+   <h4>other</h4>
+   <ul>
+      <li>the number of items on a report is currently limited.
+   </li></ul>
+
+   Tell us about bugs! <a href="http://twitter.com/#!/ImpactStory">@ImpactStory</a> (or via email to team@impactstory.org)
+
+   <h3 id="isitopen">is this data Open?</h3>
+
+   <p>We’d like to make all of the data displayed by ImpactStory available under CC0. Unfortunately, the terms-of-use of most of the data sources don’t allow that. We're trying to figure out how to handle this.
+   </p><p>An option to restrict the displayed reports to Fully Open metrics — those suitable for commercial use — is on the To Do list.
+   </p><p>The ImpactStory software itself is fully open source under an MIT license. <a href="https://github.com/total-impact">GitHub</a>
+
+   </p><h3 id="api">does ImpactStory have an api?</h3>
+
+   <p>yes! ImpactStory is built on its own api, and others may build on it too.
+   </p><p>We also have javascript to make embedding ImpactStory data very easy.  We'll document it soon: contact us for details in the meantime.
+
+
+   </p><h3 id="who">who developed ImpactStory?</h3>
+
+   <p>Concept originally hacked at the <a href="http://www.beyond-impact.org/">Beyond Impact Workshop</a>, part of the Beyond Impact project funded by the Open Society Foundations <a href="https://github.com/mhahnel/Total-Impact/contributors">(initial contributors)</a>.  Here's the <a href="/about">current team</a>.
+
+   </p><h3 id="funding">who funds ImpactStory?</h3>
+
+   <p>Early development was done on personal time, plus some discretionary time while funded through <a href="http://dataone.org">DataONE</a> (Heather Piwowar) and a <a href="http://gradschool.unc.edu/programs/royster">UNC Royster Fellowship</a> (Jason Priem).
+
+   </p><p>In early 2012, ImpactStory was given £17,000 through the <a href="http://www.beyond-impact.org/">Beyond Impact project</a> from the <a href="http://www.soros.org/">Open Society Foundation</a>.  As of May 2012, ImpactStory is funded through a $125k grant from the <a href="http://sloan.org/">Alfred P. Sloan Foundation. </a>
+
+   </p><h3 id="learned">what have you learned?</h3>
+
+   <ul>
+      <li>the multitude of IDs for a given product is a bigger problem than we guessed. Even articles that have DOIs often also have urls, PubMed IDs, PubMed Central IDs, Mendeley IDs, etc. There is no one place to find all synonyms, yet the various APIs often only work with a specific one or two ID types. This makes comprehensive impact-gathering time consuming and error-prone.
+      </li><li>some data is harder to get than we thought (wordpress stats without requesting consumer key information)
+      </li><li>some data is easier to get than we thought (vendors willing to work out special agreements, permit web scraping for particular purposes, etc)
+      </li><li>lack of an author-identifier makes us reliant on user-populated systems like Mendeley for tracking author-based work (we need ORCID and we need it now!)
+      </li><li>API limits like those on PubMed Central (3 request per second) make their data difficult to incorporate in this sort of application
+   </li></ul>
+
+   <h3 id="howhelp">how can I help?</h3>
+
+   <ul>
+      <li><b>do you have data?</b> If it is already available in some public format, let us know so we can add it. If it isn’t, either please open it up or contact us to work out some mutually beneficial way we can work together.
+      </li><li><b>do you have money?</b> We need money :) We need to fund future development of the system and are actively looking for appropriate opportunities.
+      </li><li><b>do you have ideas?</b> Maybe enhancements to ImpactStory would fit in with a grant you are writing, or maybe you want to make it work extra-well for your institution’s research outputs. We’re interested: please get in touch (see bottom).
+      </li><li><b>do you have energy?</b> We need better “see what it does” documentation, better lists of collections, etc. Make some and tell us, please!
+      </li><li><b>do you have anger that your favourite data source is missing?</b> After you confirm that its data isn't available for open purposes like this, write to them and ask them to open it up... it might work. If the data is open but isn't included here, let us know to help us prioritize.
+      </li><li><b>can you email, blog, post, tweet, or walk down the hall to tell a friend?</b> See the <a href="#cool">this is so cool</a> section for your vital role....
+   </li></ul>
+
+   <h3 id="cool">this is so cool.</h3>
+
+   <p>Thanks! We agree :)
+   </p><p>You can help us.  Demonstrating the value of ImpactStory is key to receiving future funding.
+   </p><p>Buzz and testimonials will help. Tweet your reports. Blog, send email, and show off ImpactStory at your next group meeting to help spread the word.
+   </p><p>Tell us how cool it is at <a href="http://twitter.com/#!/ImpactStory">@ImpactStory</a> (or via email to team@impactstory.org) so we can consolidate the feedback.
+
+   </p><h3 id="suggestion">I have a suggestion!</h3>
+
+   <p><b>We want to hear it.</b> Send it to us at <a href="http://twitter.com/#!/ImpactStory">@ImpactStory</a> (or via email to team@impactstory.org).
+
+   </p><h3 id="tos">terms of use</h3>
+   <p>Due to agreements we have made with data providers, you may not scrape this website.  Use our <a href="/api-docs">JavaScript widget or API</a> instead.</p>
+
+
+</div><!-- end wrapper -->
+</div><!-- end faq -->
+</div>
+<div ng-include="page.getTemplate('footer')"><div id="footer" class="ng-scope">
+   <div class="wrapper">
+      <div id="footer-branding" class="footer-col">
+         <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory"></a>
+
+         <p>We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>
+         <p class="license">
+            <!--<a rel="license" href="http://creativecommons.org/licenses/by/2.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/2.0/80x15.png" /></a>-->
+            <span class="text">Except where otherwise noted, content on this site is licensed under the
+               <a rel="license" href="http://creativecommons.org/licenses/by/2.0/">CC-BY license</a>.
+            </span>
+         </p>
+      </div>
+
+
+      <div id="footer-follow" class="footer-col">
+         <h3>Follow</h3>
+         <ul>
+            <li><a href="http://twitter.com/#!/ImpactStory">Twitter</a></li>
+            <li><a href="http://twitter.com/#!/ImpactStory_now">Site status</a></li>
+            <li><a href="http://blog.impactstory.org">Blog</a></li>
+            <li><a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">Newsgroup</a></li>
+            <li><a href="https://github.com/total-impact">GitHub</a></li>
+
+         </ul>
+      </div>
+
+      <div id="footer-about" class="footer-col">
+         <h3>About</h3>
+         <ul>
+            <li><a href="/about">About us</a></li>
+            <li><a href="http://feedback.impactstory.org" target="_blank">Feedback</a></li>
+            <li>
+               <a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="166950" data-uv-scanned="true" id="uv-3">Support</a>
+            </li>
+
+
+            <li><a href="/api-docs">API/embed</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <!--<li><a href="/about#contact">Contact us</a></li>-->
+            <li><a href="/faq#tos">Terms of use</a></li>
+         </ul>
+      </div>
+
+
+      <div id="footer-funders" class="footer-col">
+         <h3>Supported by</h3>
+         <a href="http://sloan.org/" id="footer-sloan-link">
+            <img src="/static/img/sloan-logo.png" width="200">
+         </a>
+      </div>
+
+
+   </div>
+</div> <!-- end footer -->
+</div>
+
+
+
+
+<script src="/static/js/bottom-of-page.js" type="text/javascript"></script>
+
+
+<iframe id="rdbIndicator" width="100%" height="270" border="0" src="chrome-extension://oknpjjbmpnndlpmnhmekjpocelpnlfdi/indicator.html" style="display: none; border: 0; position: fixed; left: 0; top: 0; z-index: 2147483647"></iframe></body></html>

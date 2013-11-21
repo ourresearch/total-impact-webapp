@@ -7281,7 +7281,7 @@ div.profile-header div.wrapper div.my-vitals h2.editable-name {
   font-size: 45px;
   color: #555;
   margin: 0;
-  padding-top: 30px;
+  padding-top: 0;
   float: left;
 }
 div.profile-header div.wrapper div.my-vitals div.external-usernames {

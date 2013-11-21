@@ -609,11 +609,13 @@ def redirect_to_profile(dummy="index"):
 
     useragent = request.headers.get("User-Agent").lower()
     crawer_useragent_fragments = ["googlebot", "bingbot"]
+
     file_template = "static/rendered-pages/{page}.html"
+    page = dummy.replace("/", "_")
 
     for useragent_fragment in crawer_useragent_fragments:
         if useragent_fragment in useragent:
-            return send_file(file_template.format(page=dummy))
+            return send_file(file_template.format(page=page))
 
 
 
