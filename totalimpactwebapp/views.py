@@ -204,14 +204,7 @@ def log_ip_address():
             logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
 
 
-@app.before_request
-def redirect_everything_but_root_and_static_and_api():
-    reasons_not_to_redirect = [
-        (request.path[0:4] == "/api"),
-        (request.path == "/"),
-        (request.path[0:7] == "/static")
-    ]
-    path = request.path
+
 
 @app.after_request
 def add_crossdomain_header(resp):
@@ -222,32 +215,14 @@ def add_crossdomain_header(resp):
     return resp
 
 
+
+
 @app.template_filter('extract_filename')
 def extract_filename(s):
     res = re.findall('\'([^\']*)\'', str(s))
     if res:
         return res[0].split(".")[0]
     return None
-
-
-
-
-
-
-
-
-
-
-
-@app.route("/headers", methods=["GET", "POST"])
-def test_headers():
-    headers = {}
-    for k, v in request.headers.iteritems():
-        headers[k] = v
-
-    del headers["Cookie"]  # takes up too much space
-
-    return json_resp_from_thing(headers)
 
 
 
@@ -626,19 +601,22 @@ def providers():
 
 
 @app.route("/<path:dummy>")  # from http://stackoverflow.com/a/14023930/226013
-def redirect_to_profile(dummy):
+@app.route("/")
+def redirect_to_profile(dummy="index"):
     """
-    Route things that look like user profile urls.
-
-    *Everything* not explicitly routed to another function will end up here.
+    EVERYTHING not explicitly routed to another view function will end up here.
     """
-    return render_template_custom('index.html')
+
+    useragent = request.headers.get("User-Agent").lower()
+    crawer_useragent_fragments = ["googlebot", "bingbot"]
+    file_template = "static/rendered-pages/{page}.html"
+
+    for useragent_fragment in crawer_useragent_fragments:
+        if useragent_fragment in useragent:
+            return send_file(file_template.format(page=dummy))
 
 
 
-# static pages
-@app.route('/')
-def index():
     return render_template_custom('index.html')
 
 
