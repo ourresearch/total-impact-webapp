@@ -630,6 +630,11 @@ def google_verification():
     # needed for https://support.google.com/webmasters/answer/35179?hl=en
     return send_file("static/rendered-pages/google6653442d2224e762.html")
 
+@app.route("/robots.txt")
+def google_verification():
+    # needed for https://support.google.com/webmasters/answer/35179?hl=en
+    return send_file("static/rendered-pages/robots.txt")
+
 
 @app.route("/loading.gif")
 def images():
