@@ -2711,12 +2711,14 @@ angular.module('security.login.resetPassword',
 })
 
 angular.module('security.login.toolbar', [
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'services.page',
+  'security'
   ])
 
 // The loginToolbar directive is a reusable widget that can show login or logout buttons
 // and information the current authenticated user
-.directive('loginToolbar', ['security', function(security) {
+.directive('loginToolbar', function(Page, security) {
   var directive = {
     templateUrl: 'security/login/toolbar.tpl.html',
     restrict: 'E',
@@ -2725,6 +2727,7 @@ angular.module('security.login.toolbar', [
     link: function($scope, $element, $attrs, $controller) {
       $scope.login = security.showLogin;
       $scope.logout = security.logout;
+      $scope.page = Page  // so toolbar can change when you're on  landing page.
 
       $scope.$watch(function() {
         return security.getCurrentUser();
@@ -2734,7 +2737,7 @@ angular.module('security.login.toolbar', [
     }
   };
   return directive;
-}]);
+});
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
   'services.i18nNotifications',
@@ -3375,7 +3378,7 @@ angular.module("services.page", [
   'signup'
 ])
 angular.module("services.page")
-.factory("Page", function(){
+.factory("Page", function($location){
    var title = '';
    var notificationsLoc = "header"
    var uservoiceTabLoc = "right"
@@ -3422,7 +3425,11 @@ angular.module("services.page")
 
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
      getTitle: function() { return title; },
-     setTitle: function(newTitle) { title = newTitle }
+     setTitle: function(newTitle) { title = newTitle },
+
+     isLandingPage: function(){
+       return ($location.path() == "/")
+     }
 
    };
 })
@@ -3712,29 +3719,9 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
     "<div class=\"main-header header\">\n" +
-    "   <div class=\"navbar site-nav\">\n" +
-    "      <div class=\"navbar-inner\">\n" +
-    "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
-    "\n" +
-    "            <ul class=\"nav\" ng-show=\"isAuthenticated()\">\n" +
-    "               <li ng-class=\"{active:isNavbarActive('projects')}\"><a href=\"/projects\">My Projects</a></li>\n" +
-    "               <li class=\"dropdown\" ng-class=\"{active:isNavbarActive('admin'), open:isAdminOpen}\" ng-show=\"isAdmin()\">\n" +
-    "                  <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\" ng-click=\"isAdminOpen=!isAdminOpen\">Admin<b class=\"caret\"></b></a>\n" +
-    "                  <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "                     <li><a tabindex=\"-1\" href=\"/admin/projects\" ng-click=\"isAdminOpen=false\">Manage Projects</a></li>\n" +
-    "                     <li><a tabindex=\"-1\" href=\"/admin/users\" ng-click=\"isAdminOpen=false\">Manage Users</a></li>\n" +
-    "                  </ul>\n" +
-    "               </li>\n" +
-    "            </ul>\n" +
-    "            <ul class=\"nav pull-right\" ng-show=\"hasPendingRequests()\">\n" +
-    "               <li class=\"divider-vertical\"></li>\n" +
-    "               <li><a href=\"#\"><img src=\"/static/img/spinner.gif\"></a></li>\n" +
-    "            </ul>\n" +
-    "\n" +
-    "            <!-- this is where most of the login mgt work is done -->\n" +
-    "            <login-toolbar></login-toolbar>\n" +
-    "         </div>\n" +
-    "      </div>\n" +
+    "   <div class=\"wrapper\">\n" +
+    "      <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
+    "      <login-toolbar></login-toolbar>\n" +
     "   </div>\n" +
     "</div>\n" +
     "<div ng-show=\"page.showNotificationsIn('header')\" ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
@@ -5172,13 +5159,15 @@ angular.module("security/login/reset-password-modal.tpl.html", []).run(["$templa
 
 angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login/toolbar.tpl.html",
-    "<ul class=\"nav pull-right\">\n" +
-    "   <li ng-show=\"currentUser\" class=\"logged-in-user\">\n" +
+    "<ul class=\"main-nav\">\n" +
+    "   <li ng-show=\"currentUser\" class=\"logged-in-user nav-item\">\n" +
     "      <span class=\"context\">Welcome back, </span>\n" +
     "      <a class=\"current-user\" href=\"/{{ currentUser.url_slug }}\">{{currentUser.given_name}}</a>\n" +
     "   </li>\n" +
-    "   <li ng-show=\"currentUser\" class=\"divider-vertical\"></li>\n" +
-    "   <li ng-show=\"currentUser\" class=\"logged-in preferences dropdown\">\n" +
+    "\n" +
+    "   <li ng-show=\"currentUser\" class=\"divider-vertical nav-item\"></li>\n" +
+    "\n" +
+    "   <li ng-show=\"currentUser\" class=\"logged-in preferences dropdown nav-item\">\n" +
     "      <a href=\"#\" class=\"preferences dropdown-toggle\" data-toggle=\"dropdown\" title=\"Change URL and other preferences\">\n" +
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
@@ -5190,11 +5179,11 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      </ul>\n" +
     "   </li>\n" +
     "\n" +
-    "   <li ng-hide=\"currentUser\" class=\"login\">\n" +
-    "      <form class=\"navbar-form\">\n" +
-    "         <span class=\"context\">Already have a profile?</span>\n" +
-    "         <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
-    "      </form>\n" +
+    "   <li ng-show=\"!currentUser\" class=\"login-and-signup nav-item\">\n" +
+    "      <span ng-show=\"page.isLandingPage()\" class=\"context\">Already have a profile?</span>\n" +
+    "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup/name\">Sign up</a>\n" +
+    "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
+    "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
     "   </li>\n" +
     "</ul>");
 }]);

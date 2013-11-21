@@ -101,13 +101,15 @@ angular.module("security/login/reset-password-modal.tpl.html", []).run(["$templa
 
 angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login/toolbar.tpl.html",
-    "<ul class=\"nav pull-right\">\n" +
-    "   <li ng-show=\"currentUser\" class=\"logged-in-user\">\n" +
+    "<ul class=\"main-nav\">\n" +
+    "   <li ng-show=\"currentUser\" class=\"logged-in-user nav-item\">\n" +
     "      <span class=\"context\">Welcome back, </span>\n" +
     "      <a class=\"current-user\" href=\"/{{ currentUser.url_slug }}\">{{currentUser.given_name}}</a>\n" +
     "   </li>\n" +
-    "   <li ng-show=\"currentUser\" class=\"divider-vertical\"></li>\n" +
-    "   <li ng-show=\"currentUser\" class=\"logged-in preferences dropdown\">\n" +
+    "\n" +
+    "   <li ng-show=\"currentUser\" class=\"divider-vertical nav-item\"></li>\n" +
+    "\n" +
+    "   <li ng-show=\"currentUser\" class=\"logged-in preferences dropdown nav-item\">\n" +
     "      <a href=\"#\" class=\"preferences dropdown-toggle\" data-toggle=\"dropdown\" title=\"Change URL and other preferences\">\n" +
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
@@ -119,11 +121,11 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      </ul>\n" +
     "   </li>\n" +
     "\n" +
-    "   <li ng-hide=\"currentUser\" class=\"login\">\n" +
-    "      <form class=\"navbar-form\">\n" +
-    "         <span class=\"context\">Already have a profile?</span>\n" +
-    "         <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
-    "      </form>\n" +
+    "   <li ng-show=\"!currentUser\" class=\"login-and-signup nav-item\">\n" +
+    "      <span ng-show=\"page.isLandingPage()\" class=\"context\">Already have a profile?</span>\n" +
+    "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup/name\">Sign up</a>\n" +
+    "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
+    "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
     "   </li>\n" +
     "</ul>");
 }]);

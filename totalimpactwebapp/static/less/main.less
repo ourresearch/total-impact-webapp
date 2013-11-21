@@ -1,5 +1,3 @@
-@navbarHeight: 50px;
-
 body {
    color:  #333;
 
@@ -28,7 +26,6 @@ body {
          color: #fff;
          font-size: 14px;
          border-bottom: #000;
-         &:hover{color: @linkColor; }
       }
    }
    p {
@@ -97,10 +94,6 @@ body a:link {
     text-decoration: none;
     cursor: pointer;
 }
-body a:hover {
-    text-decoration: underline;
-   color:@linkColor;
-}
 
 .wrapper {
     margin: 0 auto;
@@ -117,8 +110,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a {
-    color: #ff4e00;
+    color: @linkColor;
     cursor: pointer;
+   text-decoration:none;
+   &:hover {
+      color: darken(@linkColor, 10%);
+      text-decoration: none;
+   }
 }
 
 p, ul, ol {
@@ -208,7 +206,6 @@ div.modal {
             display:inline-block;
             color: #999;
             font-size: 14px;
-            &:hover {color: #555; text-decoration: none;}
          }
       }
    }
@@ -248,10 +245,6 @@ div.modal {
          right: 30px;
          color: #ddd;
          font-size: 25px;
-         &:hover {
-            text-decoration: none;
-            color:  #999;
-         }
       }
 
    }
@@ -377,129 +370,84 @@ div.no-page {
 *****************************************************************************
 *****************************************************************************/
 
-div.navbar.site-nav {
-   width:100%;
-   margin: 0 auto;
-   font-family: rokkitt, cambria, serif;
-   padding-top:5px;
-   .border-radius(0, 0, 0, 0);
 
-//   .drop-shadow(0, 0, 10px, 0.3);
-   background:#fff;
-//   background: @linkColor;
-   height: @navbarHeight - 1px;
-//   position: fixed;
-//   top:0;
-//   left: 0;
-//   z-index: 1000;
-
-   .navbar-inner{
-      max-width: 1100px;
-      padding-right:0;
-      margin: 0 auto;
-      border: none;
-      box-shadow: none;
-      height: 0;
-      background: #fff;
-      filter:none;
-
+div.main-header {
+   padding: 15px 0 20px;
+   height: 75px;
+   div.wrapper {
+      position:relative;
       a.brand {
-         margin: 0 0 0 -10px;
-         padding-top: 0;
-         float:left;
          img {
-            margin-top: 4px;
-            height: 40px;
+            margin: 0 0 0 -10px;
+            height: 45px;
          }
       }
 
-      .nav { position: static; clear: none;}
-
-      ul.nav.pull-right {
-
-         > li {
-            height: @navbarHeight;
+      ul.main-nav {
+         position: absolute;
+         right:10px;
+         top:10px;
+         li.nav-item {
+            display:block;
             float:left;
-            a {
-               background: transparent;
-            }
             span.context {
-               font-family: "Helvetica", "Arial", sans-serif;
-               font-size: 12px;
+               font-size: 14px;
                display:inline-block;
-               color:  #999;
+               color:  #aaaaaa;
                margin-right: 5px;
+               font-weight: 300;
             }
-            &.divider-vertical {
-               height: 25px;
-               margin: 17px 0 0;
-               border-right: 1px solid #e6e6e6;
-               border-left: none;
-               width: 1px;
-            }
-            &.sign-up {
-               a {
-                  color: @linkColor;
+            &.login-and-signup {
+               span.or {
+                  font-size: 70%;
+                  color: #cccccc;
+                  margin:0 10px;
+                  border-left: 1px solid #aaa;
                }
-            }
-            &.login {
-               form{
-                  margin-top: 17px;
-                  a.login {
-                     color: #888;
-                     i {
-                        vertical-align: -2px;
-                        color: #888;
-                        padding-left: 6px;
-                     }
-                     &:hover {
-                        color: @linkColor;
-                        text-decoration: none;
-                        i{color:  @linkColor;}
-                     }
+               a {
+                  font-size: 16px;
+                  &.signup {
+                     font-weight: bold;
+                     &:hover {color: darken(@linkColor, 10%)}
                   }
-
+                  &.login {
+                     color: #777;
+                     display:inline-block;
+                     i {margin-left: 5px;}
+                     &:hover {color: #333;}
+                  }
                }
             }
             &.logged-in-user {
-               a.current-user {
-                  background: transparent;
-                  font-weight: bold;
-                  color: @linkColor;
-                  display:inline-block;
-                  margin:  8px 18px 0 0;
-                  padding: 5px 2px;
-                  font-size: 18px;
-                  &:hover {
-                     text-decoration: underline;
-                     background: transparent;
-                  }
+               a{
+                  &:hover{color:darken(@linkColor, 10%);}
+                  padding: 10px 10px 10px 0;
                }
             }
+            &.preferences.dropdown {
 
-            &.dropdown.preferences {
                position: relative;
+               border-left: 1px solid #dddddd;
                &.open {
+                  border:none;
+                  padding-left: 1px;
                   a.dropdown-toggle {
                      i {color: #333}
                      border-color: #cccccc;
-                     border-bottom:none;
+                     position:relative;
                   }
                }
                a.dropdown-toggle {
                   border:1px solid #fff;
+                  border-bottom:none;
                   background: #fff;
-                  border-bottom:none
-                  position:relative;
                   z-index: 1000;
-                  padding-left:17px;
-                  padding-right: 17px;
-                  padding-bottom:15px;
                   .border-radius(3px, 0, 0, 3px);
-                  i {vertical-align: -6px; color: @linkColor;}
+                  padding:10px;
+                  &:hover{color: darken(@linkColor, 10%)}
                }
                ul.dropdown-menu {
-                  top: @navbarHeight;
+                  top: 31px;
                   border: 1px solid #cccccc;
                   right: 0;
                   left: auto;
@@ -516,6 +464,11 @@ div.navbar.site-nav {
                         padding-top: 5px;
                         padding-bottom: 5px;
                         color: #555;
+                        font-size:  14px;
+                        i {
+                           margin-left: -5px;
+                           margin-right: 11px;
+                        }
                         &:hover {
                            background: @accentColor;
                            color: #fff;
@@ -526,34 +479,13 @@ div.navbar.site-nav {
                         background-color:#eee;
                      }
                   }
-                  &::after {
-                     border: none;
-                  }
-                  &::before {
-                     border: none;
-                  }
-                  a {
-                     font-family: "Helvetica", "Arial", sans-serif;
-                     font-size:  14px;
-                     i {
-                        margin-left: -5px;
-                        margin-right: 11px;
-                     }
-                  }
                }
             }
          }
-
-         li#logged-in {
-            div.dropdown-menu{
-               min-width: 200px;
-               padding:5px 0 10px 0;
-            }
-         }
-
       }
    }
 }
+
 
 
 
@@ -580,6 +512,11 @@ div#footer {
       margin:6px 0 0 0;
       line-height: 1.4;
       font-size: 16px;
+   }
+
+   a {
+      color: #777;
+      &:hover {color: darken(#777777, 20%);}
    }
 
 
@@ -613,11 +550,7 @@ div#footer {
                line-height: 1.6;
             }
             a {
-               color:  #777;
                font-size: 15px;
-               &:hover {
-                  color:  @linkColor;
-               }
             }
          }
 
@@ -640,13 +573,7 @@ div#footer {
                margin-top: 25px;
 
                a {
-                  color:  #777;
-                  text-decoration: none;
-                  border-bottom: 1px dotted #777;
-                  &:hover {
-                     border-bottom: 1px solid @linkColor;
-                     color:  @linkColor;
-                  }
+                  text-decoration: underline;
                }
             }
 

@@ -1,27 +1,7 @@
 <div class="main-header header">
-   <div class="navbar site-nav">
-      <div class="navbar-inner">
-         <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a>
-
-            <ul class="nav" ng-show="isAuthenticated()">
-               <li ng-class="{active:isNavbarActive('projects')}"><a href="/projects">My Projects</a></li>
-               <li class="dropdown" ng-class="{active:isNavbarActive('admin'), open:isAdminOpen}" ng-show="isAdmin()">
-                  <a id="adminmenu" role="button" class="dropdown-toggle" ng-click="isAdminOpen=!isAdminOpen">Admin<b class="caret"></b></a>
-                  <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
-                     <li><a tabindex="-1" href="/admin/projects" ng-click="isAdminOpen=false">Manage Projects</a></li>
-                     <li><a tabindex="-1" href="/admin/users" ng-click="isAdminOpen=false">Manage Users</a></li>
-                  </ul>
-               </li>
-            </ul>
-            <ul class="nav pull-right" ng-show="hasPendingRequests()">
-               <li class="divider-vertical"></li>
-               <li><a href="#"><img src="/static/img/spinner.gif"></a></li>
-            </ul>
-
-            <!-- this is where most of the login mgt work is done -->
-            <login-toolbar></login-toolbar>
-         </div>
-      </div>
+   <div class="wrapper">
+      <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a>
+      <login-toolbar></login-toolbar>
    </div>
 </div>
 <div ng-show="page.showNotificationsIn('header')" ng-include="'notifications.tpl.html'" class="container-fluid"></div>

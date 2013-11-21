@@ -1,10 +1,12 @@
-<ul class="nav pull-right">
-   <li ng-show="currentUser" class="logged-in-user">
+<ul class="main-nav">
+   <li ng-show="currentUser" class="logged-in-user nav-item">
       <span class="context">Welcome back, </span>
       <a class="current-user" href="/{{ currentUser.url_slug }}">{{currentUser.given_name}}</a>
    </li>
-   <li ng-show="currentUser" class="divider-vertical"></li>
-   <li ng-show="currentUser" class="logged-in preferences dropdown">
+
+   <li ng-show="currentUser" class="divider-vertical nav-item"></li>
+
+   <li ng-show="currentUser" class="logged-in preferences dropdown nav-item">
       <a href="#" class="preferences dropdown-toggle" data-toggle="dropdown" title="Change URL and other preferences">
          <i class="icon-cog"></i>
       </a>
@@ -16,10 +18,10 @@
       </ul>
    </li>
 
-   <li ng-hide="currentUser" class="login">
-      <form class="navbar-form">
-         <span class="context">Already have a profile?</span>
-         <a class="login" ng-click="login()">Log in<i class="icon-signin"></i></a>
-      </form>
+   <li ng-show="!currentUser" class="login-and-signup nav-item">
+      <span ng-show="page.isLandingPage()" class="context">Already have a profile?</span>
+      <a ng-show="!page.isLandingPage()" class="signup" href="/signup/name">Sign up</a>
+      <span ng-show="!page.isLandingPage()" class="or"></span>
+      <a class="login" ng-click="login()">Log in<i class="icon-signin"></i></a>
    </li>
 </ul>

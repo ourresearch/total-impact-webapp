@@ -2,7 +2,7 @@ angular.module("services.page", [
   'signup'
 ])
 angular.module("services.page")
-.factory("Page", function(){
+.factory("Page", function($location){
    var title = '';
    var notificationsLoc = "header"
    var uservoiceTabLoc = "right"
@@ -49,7 +49,11 @@ angular.module("services.page")
 
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
      getTitle: function() { return title; },
-     setTitle: function(newTitle) { title = newTitle }
+     setTitle: function(newTitle) { title = newTitle },
+
+     isLandingPage: function(){
+       return ($location.path() == "/")
+     }
 
    };
 })
