@@ -85,8 +85,8 @@ angular.module("profile", [
 
 
 
-    $scope.getBadgeCount = function(product) {
-      return Product.getBadgeCount(product) * -1;
+    $scope.getSortScore = function(product) {
+      return Product.getSortScore(product) * -1;
     }
 
     $scope.getGenre = function(product) {

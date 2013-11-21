@@ -5,7 +5,7 @@
 
    <li ng-repeat="award in awards | orderBy:['!isHighly', 'displayOrder']" class="award">
 
-      <span href="#"
+      <a href="{{ getProductPageUrl() }}"
             class="ti-badge lil-badge {{award.audience}} {{award.engagementType}}"
             ng-show="!award.isHighly"
             popover-trigger="mouseenter"
@@ -17,9 +17,9 @@
             Click to learn more.">
          <span class="engagement-type">{{award.engagementType}}</span>
          <span class="audience">by {{award.audience}}</span>
-       </span>
+       </a>
 
-      <span href="#"
+      <a href="{{ getProductPageUrl() }}"
             class="ti-badge big-badge {{award.audience}} {{award.engagementType}}"
             ng-show="award.isHighly"
             popover-trigger="mouseenter"
@@ -35,7 +35,7 @@
          <span class="modifier">highly</span>
          <span class="engagement-type">{{award.engagementType}}</span>
          <span class="audience">by {{award.audience}}</span>
-      </span>
+      </a>
 
       <span class="metrics">
          <img ng-repeat="metric in award.metrics" ng-src="{{ metric.static_meta.icon }}">

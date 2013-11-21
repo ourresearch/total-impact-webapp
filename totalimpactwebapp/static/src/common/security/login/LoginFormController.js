@@ -1,43 +1,73 @@
-angular.module('security.login.form', ['services.localizedMessages', 'ui.bootstrap'])
+angular.module('security.login.form', [
+    'services.localizedMessages',
+    'services.page',
+    'services.loading',
+    'services.i18nNotifications',
+    'security.login.resetPassword',
+    'ui.bootstrap'
+  ])
 
 // The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
 // This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
-.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance) {
-  // The model for this form 
-  $scope.user = {};
+.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance, $modal, i18nNotifications, Page, Loading) {
+  var reportError = function(status){
+    var key
+    if (status == 401) {
+      key = "login.error.invalidPassword"
+    }
+    else if (status == 404) {
+      key = "login.error.invalidUser"
+    }
+    else {
+      key = "login.error.serverError"
+    }
+    i18nNotifications.pushForCurrentRoute(key, "danger")
 
-  // Any error message from failing to login
-  $scope.authError = null;
+  }
+  var dismissModal = function(){
+    i18nNotifications.removeAll()
+    Page.setNotificationsLoc("header")
+    $modalInstance.dismiss('cancel');
+    Loading.finish('login')
+  }
+
+  console.log("setting notifications to modal")
+  Page.setNotificationsLoc("modal")
+  $scope.user = {};
+  $scope.notifications = i18nNotifications
+  $scope.loading = Loading
+
 
   $scope.login = function () {
     // Clear any previous security errors
-    $scope.authError = null;
+    i18nNotifications.removeAll()
+    Loading.start('login')
 
     // Try to login
-    security.login($scope.user.email, $scope.user.password).then(function(loggedIn) {
-
-      console.log("this is what we got from the security.login promise: ", loggedIn)
-
-      if (loggedIn) {
-        $modalInstance.close($scope.user);
-      }
-      else {
-        // If we get here then the login failed due to bad credentials
-        console.log("we fired an authError")
-        $scope.authError = localizedMessages.get('login.error.invalidCredentials');
-      }
-    },
-    function(x) {
-      // If we get here then there was a problem with the login request to the server
-        console.log("server error")
-      $scope.authError = localizedMessages.get('login.error.serverError', { exception: x });
-    });
-
-
+    security.login($scope.user.email, $scope.user.password)
+      .success(function(data, status){
+        dismissModal()
+        security.redirectToProfile()
+      })
+      .error(function(data, status){
+        console.log("login error!", status)
+        Loading.finish('login')
+        reportError(status)
+      })
   };
+  $scope.showForgotPasswordModal = function(){
+    console.log("launching the forgot password modal.")
+    dismissModal()
+
+    var forgotPasswordModal = $modal.open({
+      templateUrl: "security/login/reset-password-modal.tpl.html",
+      controller: "ResetPasswordModalCtrl",
+      windowClass: "creds forgot-password"
+    })
+  }
 
   $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
+    dismissModal()
   };
 
 

@@ -1,10 +1,17 @@
-@navbarHeight: 50px;
-
 body {
    color:  #333;
-   div#container {
-      min-height: 600px;
+
+   &.show-tab-on-right {
+      .uv-tab.uv-slide-bottom {
+         display:none !important;
+      }
    }
+   &.show-tab-on-bottom {
+      .uv-tab.uv-slide-right {
+         display:none !important;
+      }
+   }
+
    div#namechange {
       font-size: 18px;
       background: #444;
@@ -19,7 +26,6 @@ body {
          color: #fff;
          font-size: 14px;
          border-bottom: #000;
-         &:hover{color: @linkColor; }
       }
    }
    p {
@@ -88,10 +94,6 @@ body a:link {
     text-decoration: none;
     cursor: pointer;
 }
-body a:hover {
-    text-decoration: underline;
-   color:@linkColor;
-}
 
 .wrapper {
     margin: 0 auto;
@@ -103,25 +105,18 @@ body a:hover {
 }
 h1, h2, h3, h4, h5, h6 {
    font-family: Lato, Helvetica, sans-serif;
-   font-weight: bold;
+   font-weight: 900;
+   color: #777;
 }
 
-h3 {
-   margin: 20px 0 0 0;
-   margin-top:20px;
-
-   font-size: 25px;
-   color:  #555;
-   line-height: 1;
-   border-bottom:  1px solid #eee;
-   &.first {margin-top: 0; padding-top: 0;}
-}
-h4 {
-   color:  #777;
-}
 a {
-    color: #ff4e00;
+    color: @linkColor;
     cursor: pointer;
+   text-decoration:none;
+   &:hover {
+      color: darken(@linkColor, 10%);
+      text-decoration: none;
+   }
 }
 
 p, ul, ol {
@@ -133,7 +128,7 @@ p, ul, ol {
 }
 
 i {
-   &.success {color:  ##468847;}
+   &.success {color: #468847;}
    &.error {color:  #b94a48;}
 }
 
@@ -144,6 +139,20 @@ span.icon.help {
    background-position: -96px 64px;
 
 }
+
+
+
+div.main-view {
+   min-height: 500px;
+}
+
+
+
+/* modals
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+
 div.modal-backdrop {
    opacity: .7;
 }
@@ -155,13 +164,88 @@ div.modal {
    bottom: auto;
    left: 50%;
    margin: -250px 0 0 -300px;
-   h3 {
-      border-bottom: none;
-      font-weight: bolder;
-      text-align:center;
-      color:  #555;
+
+   &.creds {
+      width:  400px;
+      margin-left:-200px;
+      .modal-body{
+         padding-left: 30px;
+         padding-right: 30px;
+         .form-group {
+            width:  100%;
+            margin-top: 20px;
+         }
+         .inst {
+            color: #999;
+            font-size: 18px;
+            line-height: 1.6;
+         }
+      }
+      .modal-footer {
+         border: none;
+         padding: 0;
+         text-align:  center;
+         button.btn {
+            width: 66%;
+            height: 50px;
+            margin: 20px auto 0;
+            float:none;
+            display:block;
+         }
+         div.working { // similar as possible to button above...
+            margin: 20px auto 0;
+            height: 50px;
+            font-size: 20px;
+            padding-top:10px;
+            color: #999;
+         }
+         a {
+            clear:both;
+            text-align: center;
+            margin-top: 10px;
+            display:inline-block;
+            color: #999;
+            font-size: 14px;
+         }
+      }
    }
+
    div.modal-body {
+      position: relative;
+      ul.modal-notifications {
+         text-align: center;
+         li{
+            .border-radius(0, 0, 0, 0);
+            margin: 0 -10px;
+            padding: 0;
+            border: none;
+            background: #fff;
+            &.alert-danger {
+               color: @alert-danger-bg;
+            }
+            &.alert-success {
+               color: @alert-success-bg;
+            }
+         }
+      }
+   }
+   div.modal-header {
+      background: #fafafa;
+      background: #fff;
+      position: relative;
+      h4 {
+         border-bottom: none;
+         font-weight: bolder;
+         text-align:center;
+         color:  #555;
+      }
+      a.dismiss {
+         position: absolute;
+         top: 22px;
+         right: 30px;
+         color: #ddd;
+         font-size: 25px;
+      }
 
    }
 
@@ -228,17 +312,21 @@ body.staging {
    }
 }
 
+// really complicated to position. seems like it's in the right spot now,
+// but i honestly have no idea why.
 ul.notifications {
-   padding-top: @navbarHeight + 10px;
    width: 100%;
-   margin-bottom: -(@navbarHeight + 10px);
+   margin-bottom: 0;
    li.alert {
+      height: 60px;
       border-radius: 0;
-      margin-bottom:0;
+      margin-bottom:-30px; // ?
+      padding-top: 15px;
       border-width: 2px;
-      border-left: none; border-right: none; border-top: none;
+      border-left: none;
+      border-right: none;
+      border-top: 3px solid #fff;
       text-align: center;
-//      padding-top: @navbarHeight + 15px;
    }
 }
 
@@ -255,7 +343,7 @@ ul.notifications {
 
 // 404 'page'.
 div.no-page {
-   margin-top: 150px;
+   margin-top: 120px;
    h2 {
       font-size: 100px;
       color:  #ddd;
@@ -282,133 +370,101 @@ div.no-page {
 *****************************************************************************
 *****************************************************************************/
 
-div.navbar.site-nav {
-   width:100%;
-   margin: 0 auto;
-   font-family: rokkitt, cambria, serif;
-   padding-top:5px;
-   .border-radius(0, 0, 0, 0);
 
-   .drop-shadow(0, 0, 10px, 0.3);
-   background:#fff;
-   height: @navbarHeight - 1px;
-   position: fixed;
-   top:0;
-   left: 0;
-   z-index: 1000;
-
-   .navbar-inner{
-      max-width: 1100px;
-      padding-right:0;
-      margin: 0 auto;
-      border: none;
-      box-shadow: none;
-      height: 0;
-      background: #fff;
-      filter:none;
-
+div.main-header {
+   padding: 15px 0 20px;
+   height: 70px;
+//   &.big {
+//      height: 90px;
+//      padding-top: 24px;
+//      .wrapper{
+//         a.brand{img{height: 45px}}
+//         ul.main-nav{top: 10px;}
+//      }
+//   }
+   div.wrapper {
+      position:relative;
       a.brand {
-         margin: 0;
-         padding-top: 0;
-         float:left;
          img {
-            margin-top: 8px;
-            height: 35px;
+            margin: 0 0 0 -10px;
+            height: 40px;
          }
       }
 
-      .nav { position: static; clear: none;}
-
-      ul.nav.pull-right {
-
-         > li {
-            height: @navbarHeight;
+      ul.main-nav {
+         position: absolute;
+         top:8px;
+         right: 10px;
+         li.nav-item {
+            display:block;
             float:left;
-            a {
-               background: transparent;
-            }
             span.context {
-               font-family: "Helvetica", "Arial", sans-serif;
-               font-size: 12px;
+               font-size: 14px;
                display:inline-block;
-               color:  #999;
+               color:  #aaaaaa;
                margin-right: 5px;
+               font-weight: 300;
             }
-            &.divider-vertical {
-               height: 25px;
-               margin: 17px 0 0;
-               border-right: 1px solid #e6e6e6;
-               border-left: none;
-               width: 1px;
-            }
-            &.sign-up {
-               a {
-                  color: @linkColor;
+            &.login-and-signup {
+               span.or {
+                  font-size: 70%;
+                  color: #cccccc;
+                  margin:0 10px;
+                  border-left: 1px solid #aaa;
                }
-            }
-            &.login {
-               form{
-                  margin-top: 17px;
-                  a.login {
-                     color: #888;
-                     i {
-                        vertical-align: -2px;
-                        color: #888;
-                        padding-left: 6px;
-                     }
-                     &:hover {
-                        color: @linkColor;
-                        text-decoration: none;
-                        i{color:  @linkColor;}
-                     }
+               a {
+                  font-size: 16px;
+                  &.signup {
+                     font-weight: bold;
+                     &:hover {color: darken(@linkColor, 10%)}
                   }
-
+                  &.login {
+                     color: #777;
+                     display:inline-block;
+                     i {margin-left: 5px;}
+                     &:hover {color: #333;}
+                  }
                }
             }
             &.logged-in-user {
-               a.current-user {
-                  background: transparent;
-                  font-weight: bold;
-                  color: @linkColor;
-                  display:inline-block;
-                  margin:  8px 18px 0 0;
-                  padding: 5px 2px;
-                  font-size: 18px;
-                  &:hover {
-                     text-decoration: underline;
-                     background: transparent;
-                  }
+               a{
+                  &:hover{color:darken(@linkColor, 10%);}
+                  padding: 10px 10px 10px 0;
                }
             }
+            &.preferences.dropdown {
 
-            &.preferences {
                position: relative;
+               border-left: 1px solid #dddddd;
                &.open {
+                  border:none;
+                  padding-left: 1px;
                   a.dropdown-toggle {
                      i {color: #333}
+                     border-color: #cccccc;
+                     position:relative;
                   }
                }
                a.dropdown-toggle {
-                  padding-left:17px;
-                  padding-right: 17px;
-                  padding-bottom:15px;
-                  .border-radius(5px, 0, 0, 5px);
-                  i {vertical-align: -6px; color: @linkColor;}
+                  border:1px solid #fff;
+                  border-bottom:none;
+                  background: #fff;
+                  z-index: 1000;
+                  .border-radius(3px, 0, 0, 3px);
+                  padding:10px;
+                  &:hover{color: darken(@linkColor, 10%)}
                }
                ul.dropdown-menu {
-                  background: #fff;
-                  top: @navbarHeight + 2px;
-                  border: 1px solid #ccc;
-                  border-top: none;
-                  right: 10px;
+                  top: 31px;
+                  border: 1px solid #cccccc;
+                  right: 0;
                   left: auto;
-
-                  .drop-shadow(0, 3px, 2px, .1);
-
-
-                  .border-radius(0, 3px, 3px, 0);
-                  min-width: 200px;
+                  .drop-shadow(0, 0, 0, 0);
+                  z-index: 10;
+                  .border-radius(0, 3px, 3px, 3px);
+                  min-width: 150px;
                   padding: 10px 0;
+
                   li{
                      margin: 0;
                      padding: 0;
@@ -416,6 +472,11 @@ div.navbar.site-nav {
                         padding-top: 5px;
                         padding-bottom: 5px;
                         color: #555;
+                        font-size:  14px;
+                        i {
+                           margin-left: -5px;
+                           margin-right: 11px;
+                        }
                         &:hover {
                            background: @accentColor;
                            color: #fff;
@@ -426,486 +487,12 @@ div.navbar.site-nav {
                         background-color:#eee;
                      }
                   }
-                  &::after {
-                     border: none;
-                  }
-                  &::before {
-                     border: none;
-                  }
-                  a {
-                     font-family: "Helvetica", "Arial", sans-serif;
-                     font-size:  14px;
-                     i {
-                        margin-left: -5px;
-                        margin-right: 11px;
-                     }
-                  }
-               }
-            }
-         }
-
-         li#logged-in {
-            div.dropdown-menu{
-               min-width: 200px;
-               padding:5px 0 10px 0;
-            }
-         }
-
-      }
-   }
-}
-
-
-
-
-/* infopages in general.
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-
-div.infopage {
-   padding-top: 100px;
-}
-
-
-
-
-
-
-
-
-/* landing page
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-
-div.infopage.landing {
-   background: @linkColor;
-   div#tagline {
-      padding: 1px;
-      div.wrapper {
-         width: 900px;
-   //      padding: 100px 0 0;
-         text-align: center;
-         h1 {
-            color: #fff;
-            font-size: 80px;
-            line-height: .8;
-            letter-spacing: -2px;
-            padding-bottom: 15px;
-            font-family: 'rokkitt', 'georgia', serif;
-
-            font-weight: lighter;
-         }
-         p.subtagline {
-            color: #fff;
-            font-size: 20px;
-            padding: 5px 0 10px;
-            margin-bottom: 40px;
-            font-weight: normal;
-         }
-
-         #call-to-action {
-            margin-bottom: 50px;
-            a.btn-large {
-               padding: 13px 29px;
-               font-size: 25px;
-               .border-radius(10px, 10px, 10px, 10px);
-               color:  #eee;
-               font-family: 'rokkitt', 'georgia', serif;
-               font-family: Lato, Helvetica, Arial, sans-serif;
-
-               &.primary-action{
-                  background: @accentColor;
-                  font-weight: bold;
-                  margin-right: 20px;
-                  &:hover {
-                     background: @accentColorHover;
-                  }
-               }
-
-               &.secondary-action{
-                  background: #555;
-                  font-size: 18px;
-                  vertical-align: bottom;
-                  font-weight: normal;
-                  color:  #eee;
-                  &:hover {
-                     background: #444;
-                  }
                }
             }
          }
       }
    }
-
-
 }
-
-
-
-
-
-
-
-
-/* the "selling points" section
-*************************************************/
-div#selling-points{
-    background-color:#fff;
-    min-height: 330px;
-   padding-top: 50px;
-    background-position: bottom;
-    background-repeat: repeat-x;
-
-   h3 {
-      color:#666;
-      font-family:rokkitt, georgia, serif;
-
-      font-weight: normal;
-      font-size: 26px;
-      padding-bottom: 15px;
-      line-height: 1;
-      margin-top: 0px;
-      border-bottom: none;
-      i {
-         float:left;
-      }
-      span.text {
-         margin-left:18px;
-         display:inline-block;
-         width:  165px;
-
-      }
-
-      &#metrics-in-seconds {
-//         background:url(../img/stopwatch-icon.png) no-repeat top left;
-         span.text {
-         }
-      }
-      &#embed-metrics-anywhere {
-//         background:url(../img/suitcase-icon.png) no-repeat top left;
-      }
-      &#its-open {
-//         background:url(../img/wrench-icon.png) no-repeat 0 10px;
-      }
-   }
-
-   p {
-       margin-top:0;
-       color: #777;
-       line-height: 1.8;
-      font-size: 18px;
-   }
-
-   ul {
-      li {
-         float:left;
-         width: 30%;
-         list-style-type: none;
-         min-height: 270px;
-         &.middle {
-               margin-left:5%;
-               margin-right:5%;
-         }
-      }
-   }
-}
-
-
-
-
-div#sources {
-   width:100%;
-   background:#fff;
-   width: 100%;
-   float:left;
-   padding: 30px 0 40px;
-   border-top:  5px solid #f3f3f3;
-   text-align: center;
-   margin-bottom: -20px;
-   div.wrapper {
-      padding-top: 15px;
-      width: 971px;
-      margin: 0 auto;
-      background:  #fff;
-      h2 {
-         color: #ccc;
-         font-size: 20px;
-         font-family: Rokkitt, serif;
-         font-weight: normal;
-         margin: -59px auto 30px;
-         background: #fff;
-         display:block;
-         width:  440px;
-         padding: 0 20px;
-      }
-      ul#source-logos {
-         li {
-            margin:0 20px 20px 0;
-            display:inline;
-            line-height: 3.5;
-            img {
-               height: 22px;
-               .grayscale(.5);
-
-            }
-         }
-      }
-   }
-}
-
-
-
-
-
-
-
-
-
-
-
-/* "faq" page
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-
-table {
-    border-collapse: collapse;
-    padding:2px;
-    border-color: #ccc;
-    width: 700px;
-}
-td {
-    padding: 3px 8px;
-    border:1px solid #ccc;
-    border-left:none;
-    border-right:none;
-}
-th {
-    background: #FF4E00;
-    color:#fff;
-    border:none;
-}
-
-#faq li {
-   list-style-type: circle;
-}
-
-
-ul#providers-metadata > li {
-    margin-bottom: 15px;
-}
-
-ul#providers-metadata li ul li{
-    list-style-type: none;
-}
-
-ul#providers-metadata li img {
-    margin-bottom: -.2em;
-}
-ul#providers-metadata span.csv-name {
-   font-family: monaco, consolas, monospace;
-   color: #777;
-   font-size:10px;
-}
-
-#toc {
-    border: 1px solid #333333;
-    line-height: 1.5;
-    float: right;
-    margin: 16px 21px 12px;
-    padding: 16px;
-    text-align: left;
-    -webkit-border-radius: 4px;    /* CSS3 rounded borders for Safari      */
-    -moz-border-radius: 4px;       /* CSS3 rounded borders for Firefox   */
-}
-
-
-
-
-/* "about" page
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-
-div#about img {
-    float:left;
-    margin:5px 15px 10px 0;
-    border:1px solid #555;
-   height: 138px;
-}
-div#about {
-   p {
-       margin-top: 0;
-       margin-top: 20px;
-   }
-   ul{
-      padding-left:2em;
-      margin-bottom:0;
-      li { list-style-type: circle; }
-   }
-}
-div#about h3 {
-   clear: both;
-    margin-top: 90px;
-    margin-bottom: 10px;
-   &.first {margin-top: 10px}
-}
-div#about div.team-member.second {
-    margin-top: 50px;
-}
-div#about div#contact p{
-   padding:15px;
-   margin: -15px 0 0 -15px;
-}
-
-
-/* "api" page
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-
-table {
-    border-collapse: collapse;
-    padding:2px;
-    border-color: #ccc;
-    width: 100%;
-   margin:50px 0;
-}
-td {
-    padding: 15px 8px;
-    border:1px solid #ccc;
-    border-left:none;
-    border-right:none;
-   pre.prettyprint {
-      padding-bottom:0;
-   }
-   &.attr {
-      min-width: 150px;
-   }
-   &.example {
-      width: 100px;
-      div.impactstory-embed div {
-         font-size:12px;
-         color: red;
-         font-weight: bold;
-         margin: 5px 0;
-         clear:both;
-      }
-   }
-}
-th {
-    border:none;
-   background: #fff;
-   color:#555;
-   text-align:left;
-   padding-left:5px;
-}
-h3.apicall:first-of-type {
-    margin-top: 50px;
-}
-
-div.example {
-   clear:both;
-}
-
-
-
-
-div#api{
-    margin-top: 120px;
-}
-#toc {
-    border: 1px solid #333333;
-    float: right;
-    margin: 16px 21px 12px;
-    padding: 16px;
-    text-align: left;
-    -webkit-border-radius: 4px;    /* CSS3 rounded borders for Safari      */
-    -moz-border-radius: 4px;       /* CSS3 rounded borders for Firefox   */
-}
-
-a.tocBackLink {
-    text-align: right;
-    font-size: 10px;
-    font-weight: normal;
-    margin-left: 10px;
-}
-pre {
-   font-family:consolas, monospace;
-   display: block;
-   padding: 10px;
-   margin: 0 0 9px;
-   font-size: 14px;
-   line-height: 1.5;
-   word-break: break-all;
-   word-wrap: break-word;
-   white-space: pre;
-   white-space: pre-wrap;
-   background-color: #f5f5f5;
-   border: 1px solid #ccc;
-   border: 1px solid rgba(0, 0, 0, 0.15);
-   -webkit-border-radius: 4px;
-   -moz-border-radius: 4px;
-   border-radius: 4px;
-
-   &.prettyprint { // needed to overwrite prettyprint.css's imposed settings.
-      margin-bottom: 18px;
-      border: 1px solid #ccc;
-      padding:10px;
-   }
-}
-.pre-scrollable {
-   max-height: 340px;
-   overflow-y: scroll;
-}
-
-h3.apicall {
-    white-space: normal !important;
-    font-family:consolas, monospace;
-    margin-top: 150px;
-    font-size:30px;
-    color: #555;
-    margin-bottom: 10px;
-}
-div#docs {
-   h4 {
-      font-size: 22px;
-      margin-bottom: 5px;
-   }
-   h3 { margin-top: 90px;}
-
-   h3.first {margin-top: 30px}
-
-   li {
-      margin-left: 1em;
-   }
-   ol {
-      padding-left:0;
-      margin-left:0;
-   }
-   ul li {
-      list-style-type: disc;
-   }
-   div.impactstory-embed {
-      float:left;
-      margin:22px 15px 17px 5px;
-   }
-   ul#required-attributes {
-      li{margin-bottom: 15px;}
-   }
-
-}
-
-
-.description {
-/*    margin-left: 50px;*/
-}
-
-
-
-
 
 
 
@@ -927,12 +514,17 @@ div#footer {
    border-top: 1px solid #aaa;
    background: #ddd;
    float:left;
-   margin-top: 30px;
+   margin-top: 100px;
 
    p {
       margin:6px 0 0 0;
       line-height: 1.4;
       font-size: 16px;
+   }
+
+   a {
+      color: #777;
+      &:hover {color: darken(#777777, 20%);}
    }
 
 
@@ -956,11 +548,9 @@ div#footer {
          h3 {
             font-size: 18px;
             font-weight: bolder;
-            font-family: Lato, helvetica, sans-serif;
-            border-bottom:  none;
+            margin-top: 0;
 
             color: #777;
-            margin: 0 0 15px;
          }
 
          ul {
@@ -968,11 +558,7 @@ div#footer {
                line-height: 1.6;
             }
             a {
-               color:  #777;
                font-size: 15px;
-               &:hover {
-                  color:  @linkColor;
-               }
             }
          }
 
@@ -995,13 +581,7 @@ div#footer {
                margin-top: 25px;
 
                a {
-                  color:  #777;
-                  text-decoration: none;
-                  border-bottom: 1px dotted #777;
-                  &:hover {
-                     border-bottom: 1px solid @linkColor;
-                     color:  @linkColor;
-                  }
+                  text-decoration: underline;
                }
             }
 

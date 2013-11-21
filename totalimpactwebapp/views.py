@@ -13,6 +13,12 @@ from itsdangerous import TimestampSigner
 
 
 from totalimpactwebapp import app, db, login_manager
+
+from totalimpactwebapp.password_reset import send_reset_token
+from totalimpactwebapp.password_reset import reset_password_from_token
+from totalimpactwebapp.password_reset import reset_password
+from totalimpactwebapp.password_reset import PasswordResetError
+
 from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
 from totalimpactwebapp.user import make_genre_heading_products
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
@@ -177,13 +183,7 @@ def setup_db_tables():
 def load_globals():
     g.user = current_user
 
-    g.roots = {
-        "api": os.getenv("API_ROOT"),
-        "api_pretty": os.getenv("API_ROOT_PRETTY", os.getenv("API_ROOT")),
-        "webapp": os.getenv("WEBAPP_ROOT"),
-        "webapp_pretty": os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
-    }
-
+    g.api_root = os.getenv("API_ROOT")
     g.segmentio_key = os.getenv("SEGMENTIO_KEY")
     g.mixpanel_token = os.getenv("MIXPANEL_TOKEN")
 
@@ -204,14 +204,7 @@ def log_ip_address():
             logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
 
 
-@app.before_request
-def redirect_everything_but_root_and_static_and_api():
-    reasons_not_to_redirect = [
-        (request.path[0:4] == "/api"),
-        (request.path == "/"),
-        (request.path[0:7] == "/static")
-    ]
-    path = request.path
+
 
 @app.after_request
 def add_crossdomain_header(resp):
@@ -222,32 +215,14 @@ def add_crossdomain_header(resp):
     return resp
 
 
+
+
 @app.template_filter('extract_filename')
 def extract_filename(s):
     res = re.findall('\'([^\']*)\'', str(s))
     if res:
         return res[0].split(".")[0]
     return None
-
-
-
-
-
-
-
-
-
-
-
-@app.route("/headers", methods=["GET", "POST"])
-def test_headers():
-    headers = {}
-    for k, v in request.headers.iteritems():
-        headers[k] = v
-
-    del headers["Cookie"]  # takes up too much space
-
-    return json_resp_from_thing(headers)
 
 
 
@@ -273,6 +248,7 @@ def test_headers():
 
 @app.route("/user/current")
 def get_current_user():
+    sleep(1)
 
     try:
         return json_resp_from_thing({"user": g.user.as_dict()})
@@ -281,8 +257,9 @@ def get_current_user():
         return json_resp_from_thing({"user": None})
 
 
-@app.route('/user/logout', methods=["POST"])
+@app.route('/user/logout', methods=["POST", "GET"])
 def logout():
+    sleep(1)
     logout_user()
     return json_resp_from_thing({"msg": "user logged out"})
 
@@ -291,6 +268,7 @@ def logout():
 def login():
 
     logger.debug(u"user trying to log in.")
+    sleep(1)
 
     email = unicode(request.json["email"]).lower()
     password = unicode(request.json["password"])
@@ -305,10 +283,9 @@ def login():
         # Yay, no errors! Log the user in.
         login_user(user)
 
-    user = User.query.filter_by(email="52@e.com").first()
-    login_user(user)
-
     return json_resp_from_thing({"user": user.as_dict()})
+
+
 
 
 #------------------ /user/:id   -----------------
@@ -330,22 +307,19 @@ def user_profile(profile_id):
 
         userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
         try:
-            user = create_user_from_slug(profile_id, userdict, g.roots["api"], db)
-
-            # user = User.query.filter_by(email="52@e.com").first()
+            user = create_user_from_slug(profile_id, userdict, g.api_root, db)
 
         except IntegrityError:
             abort_json(409, "Your user_slug isn't unique.")
 
         logger.debug(u"logging in user {user}".format(
             user=user.as_dict()))
+
         login_user(user)
+
         return json_resp_from_thing({"user": user.as_dict()})
 
-    user = User.query.filter_by(email="52@e.com").first()
-    login_user(user)
 
-    return json_resp_from_thing({"user": user.as_dict()})
 
 
 
@@ -457,7 +431,7 @@ def user_products_csv(id):
 
     url = "{api_root}/v1/products.csv/{tiids_string}?key={api_key}".format(
         api_key=g.api_key,
-        api_root=g.roots["api"],
+        api_root=g.api_root,
         tiids_string=",".join(tiids))
     r = requests.get(url)
     csv_contents = r.text
@@ -476,18 +450,37 @@ def user_products_csv(id):
 
 @app.route("/user/<id>/password", methods=["POST"])
 def user_password_modify(id):
-    retrieved_user = get_user_for_response(id, request)
+
     current_password = request.json.get("currentPassword", None)
+    new_password = request.json.get("newPassword", None)
+    id_type = request.args.get("id_type")
 
-    if retrieved_user.check_password(current_password):
-        retrieved_user.set_password(request.json["newPassword"])
-        login_user(retrieved_user)
-        db.session.commit()
-        return json_resp_from_thing({"response": "ok"})
+    try:
+        if id_type == "reset_token":
+            user = reset_password_from_token(id, request.json["newPassword"])
+        else:
+            user = reset_password(id, id_type, current_password, new_password)
 
-    else:
-        abort(403, "The current password is not correct.")
+    except PasswordResetError as e:
+        abort_json(403, e.message)
 
+    db.session.commit()
+    return json_resp_from_thing({"about": user.as_dict()})
+
+
+
+
+
+
+@app.route("/user/<id>/password", methods=["GET"])
+def get_password_reset_link(id):
+    if request.args.get("id_type") != "email":
+        abort_json(400, "id_type param must be 'email' for this endpoint.")
+
+    retrieved_user = get_user_for_response(id, request)
+
+    ret = send_reset_token(retrieved_user.email, request.url_root)
+    return json_resp_from_thing({"sent_reset_email": ret})
 
 
 
@@ -498,7 +491,7 @@ def user_password_modify(id):
 def import_products(importer_name):
 
     query = "{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
-        core_api_root=g.roots["api"],
+        core_api_root=g.api_root,
         importer_name=importer_name,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
@@ -513,100 +506,6 @@ def import_products(importer_name):
 
 
 
-
-#------------------ user/:userId/... -----------------
-
-
-@app.route("/user/<int:userId>", methods=["PUT"])
-def user_put(userId):
-    """
-    Just a shortcut so the edit-in-place plugin can access JSON methods
-    """
-    method_name = "user_" + request.form["name"] + "_modify"
-    return globals()[method_name](userId, request.form["value"])
-
-@app.route("/user/<int:userId>/email")
-def user_email_modify(userId, new_email):
-    retrieved_user = get_user_for_response(userId)
-    if g.user.get_id() != retrieved_user.get_id():
-        abort(403, "You must be logged in to change your email.")
-
-    # check for duplicates
-    user_with_same_email = User.query.filter(
-        func.lower(User.email) == func.lower(new_email)
-    ).first()
-
-    if user_with_same_email is None:
-        pass
-        retrieved_user.email = new_email
-    else:
-        abort(409, "Someone has already registered this email") # see http://stackoverflow.com/a/3826024/226013
-
-    db.session.commit()
-    return make_response(json.dumps(retrieved_user.email), 200)
-
-
-@app.route("/user/<int:userId>/slug/<new_slug>", methods=["PUT"])
-def user_slug_modify(userId, new_slug):
-
-    # check for allowed characters
-    has_non_word_chars = re.compile("[^\w'-]", re.U).search(new_slug)
-    if has_non_word_chars is not None:
-        abort(400, "Character not allowed.")
-
-    # check for user login
-    retrieved_user = get_user_for_response(userId)
-    if g.user.get_id() != retrieved_user.get_id():
-        abort(403, "You must be logged in to change your URL.")
-
-    # check for duplicates
-    user_with_same_slug = User.query.filter(
-        func.lower(User.url_slug) == func.lower(new_slug)
-    ).first()
-
-    if user_with_same_slug is None:
-        pass
-        retrieved_user.url_slug = new_slug
-    else:
-
-        if request.args.get("fail_on_duplicate") in ["true", "yes", 1]:
-            abort(409, "this url slug already exists") # see http://stackoverflow.com/a/3826024/226013
-        else:
-            logger.info(u"tried to mint a url slug ('{slug}') that already exists, so appending number".format(
-                slug=retrieved_user.url_slug
-            ))
-            # to de-duplicate, mint a slug with a random number on it
-            retrieved_user.uniqueify_slug()
-
-    db.session.commit()
-    return make_response(json.dumps(retrieved_user.url_slug), 200)
-
-
-
-def user_name_modify(userId, name, name_type):
-    """
-    Refactored out stuff that both given and surname edits use.
-
-    :param name_type: surname or given_name
-    """
-
-    retrieved_user = get_user_for_response(userId)
-    if g.user.get_id() != retrieved_user.get_id():
-        abort(403, "You must be logged in to change your name.")
-
-    setattr(retrieved_user, name_type, name)
-    db.session.commit()
-    return make_response(json.dumps(name), 200)
-
-
-@app.route("/user/<int:userId>/surname/<name>", methods=["PUT"])
-def user_surname_modify(userId, name):
-    return user_name_modify(userId, name, "surname")
-
-
-@app.route("/user/<int:userId>/given_name/<name>", methods=["PUT"])
-def user_given_name_modify(userId, name):
-    return user_name_modify(userId, name, "given_name")
 
 
 
@@ -628,7 +527,7 @@ def delete_test_user():
             if user.collection_id is None:
                 continue
 
-            url = g.roots["api"] + "/v1/collection/" + user.collection_id
+            url = g.api_root + "/v1/collection/" + user.collection_id
             r = requests.delete(url, params=coll_delete_params)
             logger.debug(u"delete colls and items; {text}".format(
                 text=r.text))
@@ -657,7 +556,24 @@ def test_user_cids():
 
 
 
+#------------------ /providers  (information about providers) -----------------
+@app.route('/providers', methods=["GET"])
+def providers():
+    try:
+        url = "{api_root}/v1/provider?key={api_key}".format(
+            api_key=g.api_key,
+            api_root=g.api_root)
+        r = requests.get(url)
+        metadata = r.json()
+    except requests.ConnectionError:
+        metadata = {}
 
+    metadata_list = []
+    for k, v in metadata.iteritems():
+        v["name"] = k
+        metadata_list.append(v)
+
+    return json_resp_from_thing(metadata_list)
 
 
 
@@ -685,52 +601,39 @@ def test_user_cids():
 
 
 @app.route("/<path:dummy>")  # from http://stackoverflow.com/a/14023930/226013
-def redirect_to_profile(dummy):
+@app.route("/")
+def redirect_to_profile(dummy="index"):
     """
-    Route things that look like user profile urls.
+    EVERYTHING not explicitly routed to another view function will end up here.
+    """
 
-    *Everything* not explicitly routed to another function will end up here.
-    """
+    useragent = request.headers.get("User-Agent").lower()
+    crawer_useragent_fragments = ["googlebot", "bingbot"]
+    file_template = "static/rendered-pages/{page}.html"
+
+    for useragent_fragment in crawer_useragent_fragments:
+        if useragent_fragment in useragent:
+            return send_file(file_template.format(page=dummy))
+
+
+
     return render_template_custom('index.html')
 
-
-
-# static pages
-@app.route('/')
-def index():
-    return render_template_custom('index.html')
-
-
-# @app.route('/faq')
-# def faq():
-#     # get the table of items and identifiers
-#     which_items_loc = os.path.join(
-#         os.path.dirname(__file__),
-#         "static",
-#         "whichartifacts.html"
-#         )
-#     which_item_types = open(which_items_loc).read()
-#
-#     # get the static_meta info for each metric
-#     try:
-#         url = "{api_root}/v1/provider?key={api_key}".format(
-#             api_key=g.api_key,
-#             api_root=g.roots["api"])
-#         r = requests.get(url)
-#         metadata = json.loads(r.text)
-#     except requests.ConnectionError:
-#         metadata = {}
-#
-#     return render_template_custom(
-#         'faq.html',
-#         which_artifacts=which_item_types,
-#         provider_metadata=metadata
-#         )
 
 
 # @app.route('/api-docs')
 # def apidocs():
 #     return render_template_custom('api-docs.html')
+
+@app.route("/google6653442d2224e762.html")
+def google_verification():
+    # needed for https://support.google.com/webmasters/answer/35179?hl=en
+    return send_file("static/rendered-pages/google6653442d2224e762.html")
+
+@app.route("/robots.txt")
+def google_verification():
+    # needed for https://support.google.com/webmasters/answer/35179?hl=en
+    return send_file("static/rendered-pages/robots.txt")
 
 
 @app.route("/loading.gif")

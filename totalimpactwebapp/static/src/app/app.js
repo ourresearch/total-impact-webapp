@@ -4,6 +4,8 @@ _.mixin(_.str.exports());
 
 
 angular.module('app', [
+  'placeholderShim',
+
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -15,6 +17,7 @@ angular.module('app', [
   'templates.common',
   'infopages',
   'signup',
+  'passwordReset',
   'profileProduct',
   'profile',
   'settings'
@@ -54,11 +57,13 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $location,
                                                      Loading,
                                                      Page,
+                                                     security,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
+  $scope.page = Page;
   $scope.loading = Loading;
-  $scope.getPageTitle = Page.getTitle
+  UservoiceWidget.insertTabs()
 
 
   $scope.removeNotification = function (notification) {
@@ -70,14 +75,13 @@ angular.module('app').controller('AppCtrl', function($scope,
   });
 
   $scope.$on('$routeChangeSuccess', function(next, current){ // hacky...
-    UservoiceWidget.updateTabPosition($location.path())
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.showFrame(true, true)
-    $scope.footer = Page.footer
-    $scope.header = Page.header
+    console.log("location change start", event, next, current)
     $scope.loading.clear()
+    Page.setTemplates("header", "footer")
+    Page.setUservoiceTabLoc("right")
   })
 
 });

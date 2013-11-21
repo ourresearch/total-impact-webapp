@@ -7,12 +7,27 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
   };
   var notificationsService = {};
 
+  var notificationAlreadyLoaded = function(notification){
+    var allNotifications = _.flatten(notifications)
+    var allNotificationMessages =   _.pluck(allNotifications, "message")
+
+    return _.contains(allNotificationMessages, notification.message)
+
+  }
+
   var addNotification = function (notificationsArray, notificationObj) {
     if (!angular.isObject(notificationObj)) {
       throw new Error("Only object can be added to the notification service");
     }
-    notificationsArray.push(notificationObj);
-    return notificationObj;
+
+    if (notificationAlreadyLoaded(notificationObj)) {
+      // no point in having duplicate notifications.
+      return false
+    }
+    else {
+      notificationsArray.push(notificationObj);
+      return notificationObj;
+    }
   };
 
   $rootScope.$on('$routeChangeSuccess', function () {

@@ -1,8 +1,8 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
-    "<div id=\"footer\" ng-show=\"footer()\">\n" +
+    "<div id=\"footer\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
@@ -62,34 +62,15 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header\" ng-show=\"header()\">\n" +
-    "   <div class=\"navbar site-nav\">\n" +
-    "      <div class=\"navbar-inner\">\n" +
-    "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
-    "\n" +
-    "            <ul class=\"nav\" ng-show=\"isAuthenticated()\">\n" +
-    "               <li ng-class=\"{active:isNavbarActive('projects')}\"><a href=\"/projects\">My Projects</a></li>\n" +
-    "               <li class=\"dropdown\" ng-class=\"{active:isNavbarActive('admin'), open:isAdminOpen}\" ng-show=\"isAdmin()\">\n" +
-    "                  <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\" ng-click=\"isAdminOpen=!isAdminOpen\">Admin<b class=\"caret\"></b></a>\n" +
-    "                  <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "                     <li><a tabindex=\"-1\" href=\"/admin/projects\" ng-click=\"isAdminOpen=false\">Manage Projects</a></li>\n" +
-    "                     <li><a tabindex=\"-1\" href=\"/admin/users\" ng-click=\"isAdminOpen=false\">Manage Users</a></li>\n" +
-    "                  </ul>\n" +
-    "               </li>\n" +
-    "            </ul>\n" +
-    "            <ul class=\"nav pull-right\" ng-show=\"hasPendingRequests()\">\n" +
-    "               <li class=\"divider-vertical\"></li>\n" +
-    "               <li><a href=\"#\"><img src=\"/static/img/spinner.gif\"></a></li>\n" +
-    "            </ul>\n" +
-    "\n" +
-    "            <!-- this is where most of the login mgt work is done -->\n" +
-    "            <login-toolbar></login-toolbar>\n" +
-    "         </div>\n" +
-    "      </div>\n" +
+    "<div class=\"main-header header\" ng-class=\"{big: page.isLandingPage()}\">\n" +
+    "   <div class=\"wrapper\">\n" +
+    "      <a class=\"brand\" href=\"/\">\n" +
+    "         <img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" />\n" +
+    "      </a>\n" +
+    "      <login-toolbar></login-toolbar>\n" +
     "   </div>\n" +
-    "\n" +
-    "\n" +
     "</div>\n" +
+    "<div ng-show=\"page.showNotificationsIn('header')\" ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
     "");
 }]);
 
@@ -128,16 +109,24 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "\n" +
     "      <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
     "\n" +
-    "         <div class=\"form-group\">\n" +
+    "         <div class=\"form-group\" ng-repeat=\"input in importer.inputs\">\n" +
     "            <label class=\"control-label\">\n" +
-    "               {{ importer.displayName }} {{ importer.inputNeeded }}\n" +
-    "               <i class=\"icon-question-sign\" ng-show=\"importer.help\" tooltip-html-unsafe=\"{{ importer.help }}\"></i>\n" +
-    "               <span class=\"one-per-line\" ng-show=\"importer.inputType=='idList'\">(one per line)</span>\n" +
+    "               {{ input.displayName }} {{ input.inputNeeded }}\n" +
+    "               <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
+    "               <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
     "            </label>\n" +
-    "            <div class=\"importer-input\" ng-switch on=\"importer.inputType\">\n" +
-    "               <input class=\"form-control input-lg\" ng-model=\"importer.input\" type=\"text\" ng-switch-when=\"username\" placeholder=\"{{ importer.placeholder }}\">\n" +
-    "               <textarea placeholder=\"{{ importer.placeholder }}\" class=\"form-control\" ng-model=\"importer.input\" ng-switch-when=\"idList\"></textarea>\n" +
-    "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select>\n" +
+    "            <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
+    "               <input\n" +
+    "                       class=\"form-control\"\n" +
+    "                       ng-model=\"userInput[input.name]\"\n" +
+    "                       type=\"text\" ng-switch-when=\"username\"\n" +
+    "                       placeholder=\"{{ input.placeholder }}\">\n" +
+    "               <textarea placeholder=\"{{ input.placeholder }}\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         ng-model=\"userInput[input.name]\"\n" +
+    "                         ng-switch-when=\"idList\"></textarea>\n" +
+    "               <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
+    "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +
     "\n" +
     "            </div>\n" +
     "         </div>\n" +
@@ -217,6 +206,21 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "</div>");
 }]);
 
+angular.module("infopages/collection.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("infopages/collection.tpl.html",
+    "<div class=\"main infopage no-page\" id=\"collections\">\n" +
+    "\n" +
+    "   <div class=\"wrapper\">\n" +
+    "      <h2 class=\"infopage-heading\">Retired</h2>\n" +
+    "      <p class=\"info\">\n" +
+    "         This old-style collection page has been retired.\n" +
+    "         Check out our new <a href=\"http://blog.impactstory.org/2013/06/17/impact-profiles/\">profile pages!</a>\n" +
+    "      </p>\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("infopages/faq.tpl.html",
     "<div class=\"main infopage\" id=\"faq\"><div class=\"wrapper\">\n" +
@@ -224,7 +228,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <h3 id=\"what\" class=\"first\">what is ImpactStory?</h3>\n" +
     "\n" +
-    "   <p>ImpactStory is an open-source, web-based tool that helps researchers expore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.\n" +
+    "   <p>ImpactStory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.\n" +
     "\n" +
     "   <p>ImpactStory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
     "   <ul>\n" +
@@ -279,31 +283,40 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <p><a href=\"http://altmetrics.org/manifesto/\">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">altmetrics library</a> on Mendeley for a growing list of relevant research.\n" +
     "\n" +
-    "      {{ which_artifacts|safe() }}\n" +
+    "\n" +
+    "   <h3 id=\"whichartifacts\">which identifiers are supported?</h3>\n" +
+    "   <table class=\"permitted-artifact-ids\" border=1>\n" +
+    "           <tr><th>artifact type</th><th>host</th><th>supported<br>ID format</th><th>example (id-type:id)</th><tr>\n" +
+    "           <tr><td>published article</td><td>an article with a DOI</td><td>DOI</td><td><b>doi:</b>10.1371/journal.pcbi.1000361</td></tr>\n" +
+    "           <tr><td>published article</td><td>an article in PubMed</td><td>PMID</td><td><b>pmid:</b>19304878</td></tr>\n" +
+    "           <tr><td>dataset</td><td>Dryad or figshare</td><td>DOI</td><td><b>doi:</b>10.5061/dryad.1295</td></tr>\n" +
+    "           <tr><td>software</td><td>GitHub</td><td>URL</td><td><b>url:</b>https://github.com/egonw/biostar-central</td></tr>\n" +
+    "           <tr><td>slides</td><td>SlideShare</td><td>URL</td><td><b>url:</b>http://www.slideshare.net/phylogenomics/eisenall-hands</td></tr>\n" +
+    "           <tr><td>generic</td><td>A conference paper, website resource, etc.</td><td>URL</td><td><b>url:</b>http://opensciencesummit.com/program/</td></tr>\n" +
+    "   </table>\n" +
+    "\n" +
     "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
     "\n" +
     "   <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>\n" +
     "\n" +
-    "   <ul id=\"providers-metadata\"> <!-- list of providers -->\n" +
-    "      {% for provider_name, provider in provider_metadata.iteritems() %}\n" +
-    "         {% if provider.metrics %}\n" +
-    "            <li> <!-- the provider -->\n" +
-    "               <a href=\"{{ provider.url }}\">{{ provider_name }}</a> <span class=\"descr\">{{ provider.descr|safe() }}</span>\n" +
-    "               <ul> <!-- list of metrics supplied by this provider -->\n" +
-    "                  {% for metric_name, metric in provider.metrics.iteritems() %}\n" +
-    "                     <li> <!-- information about a particular metric -->\n" +
-    "                        <img src=\"{{ metric.icon }}\" width=\"16\" height=\"16\" />\n" +
-    "                        <strong>{{ metric.display_name }}</strong>\n" +
-    "                        <span class=\"metric-descr\">{{ metric.description }}</span>\n" +
-    "                        <span class=\"csv-name\">({{ provider_name }}:{{ metric_name }})</span>\n" +
-    "                     </li>\n" +
-    "                  {% endfor %}\n" +
-    "               </ul>\n" +
+    "   <ul id=\"providers-metadata\">\n" +
+    "      <!-- the provider -->\n" +
+    "      <li ng-repeat=\"provider in providers | orderBy: ['name']\">\n" +
+    "         <a href=\"{{ provider.url }}\" class=\"provider-name\">{{ provider.name }}:</a> <span class=\"descr\">{{ provider.descr }}</span>\n" +
+    "\n" +
+    "         <ul>\n" +
+    "            <!-- a metric supplied by this provider -->\n" +
+    "            <li ng-repeat=\"(metric_name, metric) in provider.metrics\" class=\"metric\">\n" +
+    "               <img src=\"{{ metric.icon }}\" width=\"16\" height=\"16\" />\n" +
+    "               <strong>{{ metric.display_name }}</strong>\n" +
+    "               <span class=\"metric-descr\">{{ metric.description }}</span>\n" +
+    "               <span class=\"csv-name\">({{ provider.name }}:{{ metric_name }})</span>\n" +
     "            </li>\n" +
-    "         {% endif %}\n" +
-    "      {% endfor %}\n" +
+    "         </ul>\n" +
+    "      </li>\n" +
     "   </ul>\n" +
+    "\n" +
     "\n" +
     "   <h3 id=\"whereisif\">where is the journal impact factor?</h3>\n" +
     "\n" +
@@ -486,12 +499,75 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
 angular.module("notifications.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("notifications.tpl.html",
     "<ul class=\"notifications\">\n" +
-    "   <li ng-class=\"['alert', 'alert-'+notification.type]\" ng-repeat=\"notification in notifications.getCurrent()\">\n" +
+    "   <li ng-class=\"['alert', 'alert-'+notification.type]\"\n" +
+    "       ng-repeat=\"notification in notifications.getCurrent()\">\n" +
+    "\n" +
     "       <button class=\"close\" ng-click=\"removeNotification(notification)\">&times;</button>\n" +
     "       {{notification.message}}\n" +
     "   </li>\n" +
     "</ul>\n" +
     "");
+}]);
+
+angular.module("password-reset/password-reset-header.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("password-reset/password-reset-header.tpl.html",
+    "<div class=\"password-reset-header\">\n" +
+    "   <h1><a class=\"brand\" href=\"/\">\n" +
+    "      <img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "      <span class=\"text\">password reset</span>\n" +
+    "   </h1>\n" +
+    "</div>\n" +
+    "<div ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
+    "");
+}]);
+
+angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("password-reset/password-reset.tpl.html",
+    "<div class=\"password-reset\">\n" +
+    "   <form novalidate\n" +
+    "         name=\"passwordResetForm\"\n" +
+    "         class=\"form-horizontal password-reset\"\n" +
+    "         ng-submit=\"onSave()\"\n" +
+    "         ng-controller=\"passwordResetFormCtrl\"\n" +
+    "        >\n" +
+    "\n" +
+    "      <!--<div class=\"inst\">\n" +
+    "         Enter your new password:\n" +
+    "      </div>-->\n" +
+    "\n" +
+    "      <div class=\"form-group new-password\">\n" +
+    "         <label class=\"control-label sr-only\">New password</label>\n" +
+    "         <div class=\"controls \">\n" +
+    "            <input ng-model=\"password\"\n" +
+    "                   name=\"newPassword\"\n" +
+    "                   type=\"password\"\n" +
+    "                   ng-show=\"!showPassword\"\n" +
+    "                   class=\"form-control input-lg\"\n" +
+    "                   placeholder=\"new password\"\n" +
+    "                   required>\n" +
+    "\n" +
+    "            <input ng-model=\"password\"\n" +
+    "                   name=\"newPassword\"\n" +
+    "                   type=\"text\"\n" +
+    "                   ng-show=\"showPassword\"\n" +
+    "                   class=\"form-control input-lg\"\n" +
+    "                   placeholder=\"new password\"\n" +
+    "                   required>\n" +
+    "         </div>\n" +
+    "         <div class=\"controls show-password\">\n" +
+    "            <pretty-checkbox value=\"showPassword\" text=\"Show\"></pretty-checkbox>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"form-group submit\">\n" +
+    "         <div>\n" +
+    "            <save-buttons></save-buttons>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </form>\n" +
+    "</div>");
 }]);
 
 angular.module("product/badges.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -503,7 +579,7 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "\n" +
     "   <li ng-repeat=\"award in awards | orderBy:['!isHighly', 'displayOrder']\" class=\"award\">\n" +
     "\n" +
-    "      <span href=\"#\"\n" +
+    "      <a href=\"{{ getProductPageUrl() }}\"\n" +
     "            class=\"ti-badge lil-badge {{award.audience}} {{award.engagementType}}\"\n" +
     "            ng-show=\"!award.isHighly\"\n" +
     "            popover-trigger=\"mouseenter\"\n" +
@@ -515,9 +591,9 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "            Click to learn more.\">\n" +
     "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
     "         <span class=\"audience\">by {{award.audience}}</span>\n" +
-    "       </span>\n" +
+    "       </a>\n" +
     "\n" +
-    "      <span href=\"#\"\n" +
+    "      <a href=\"{{ getProductPageUrl() }}\"\n" +
     "            class=\"ti-badge big-badge {{award.audience}} {{award.engagementType}}\"\n" +
     "            ng-show=\"award.isHighly\"\n" +
     "            popover-trigger=\"mouseenter\"\n" +
@@ -533,7 +609,7 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "         <span class=\"modifier\">highly</span>\n" +
     "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
     "         <span class=\"audience\">by {{award.audience}}</span>\n" +
-    "      </span>\n" +
+    "      </a>\n" +
     "\n" +
     "      <span class=\"metrics\">\n" +
     "         <img ng-repeat=\"metric in award.metrics\" ng-src=\"{{ metric.static_meta.icon }}\">\n" +
@@ -568,10 +644,9 @@ angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($t
 angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product/metrics-table.tpl.html",
     "<ul class=\"metric-details-list\">\n" +
-    "   <li ng-repeat=\"metric in metrics\" class=\"metric-detail\">\n" +
-    "\n" +
+    "   <li ng-repeat=\"metric in metrics | orderBy: ['-award.isHighly', '-award.audience']\" class=\"metric-detail\">\n" +
     "      <span class=\"badge-container\">\n" +
-    "         <span href=\"#\"\n" +
+    "         <a href=\"#\"\n" +
     "               class=\"ti-badge lil-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
     "               ng-show=\"!metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
@@ -582,9 +657,9 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "               {{metric.award.engagementType}} by {{metric.award.displayAudience}}.\">\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "          </span>\n" +
+    "          </a>\n" +
     "\n" +
-    "         <span href=\"#\"\n" +
+    "         <a href=\"#\"\n" +
     "               class=\"ti-badge big-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
     "               ng-show=\"metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
@@ -598,7 +673,7 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "            <span class=\"modifier\">highly</span>\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "         </span>\n" +
+    "         </a>\n" +
     "\n" +
     "      </span>\n" +
     "      <span class=\"text\">\n" +
@@ -663,6 +738,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         <a back-to-profile></a>\n" +
     "         <a class=\"delete-product\"\n" +
     "            ng-click=\"deleteProduct()\"\n" +
+    "            ng-show=\"userOwnsThisProfile\"\n" +
     "            tooltip=\"Remove this product from your profile.\"\n" +
     "            tooltip-placement=\"bottom\">\n" +
     "            <i class=\"icon-trash\"></i>\n" +
@@ -761,7 +837,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"product-controls\" >\n" +
+    "<div class=\"product-controls\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"edit-controls btn-group\">\n" +
     "         <div class=\"num-items\">\n" +
@@ -795,7 +871,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product\"\n" +
-    "             ng-repeat=\"product in products | orderBy:[getGenre, 'isHeading', getBadgeCount]\"\n" +
+    "             ng-repeat=\"product in products | orderBy:[getGenre, 'isHeading', getSortScore]\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"hasMetrics() || showProductsWithoutMetrics || product.isHeading\"\n" +
     "             id=\"{{ product._id }}\">\n" +
@@ -1105,6 +1181,22 @@ angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", fun
     "");
 }]);
 
+angular.module("signup/signup-header.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("signup/signup-header.tpl.html",
+    "<div class=\"signup-header header\" ng-controller=\"signupHeaderCtrl\">\n" +
+    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "      <span class=\"text\">signup</span>\n" +
+    "   </h1>\n" +
+    "   <ol class=\"signup-steps\">\n" +
+    "      <li ng-repeat=\"stepName in signupSteps\"\n" +
+    "          class=\"{{ stepName }}\"\n" +
+    "          ng-class=\"{current: isStepCurrent(stepName), completed: isStepCompleted(stepName)}\">\n" +
+    "         {{ stepName }}\n" +
+    "      </li>\n" +
+    "   </ol>\n" +
+    "</div>");
+}]);
+
 angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-name.tpl.html",
     "<div class=\"signup-input url\" ng-controller=\"signupNameCtrl\">\n" +
@@ -1265,22 +1357,8 @@ angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function
 
 angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup.tpl.html",
-    "<div class=\"signup-header\">\n" +
-    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
-    "      <span class=\"text\">signup</span>\n" +
-    "   </h1>\n" +
-    "   <ol class=\"signup-steps\">\n" +
-    "      <li ng-repeat=\"stepName in signupSteps\"\n" +
-    "          class=\"{{ stepName }}\"\n" +
-    "          ng-class=\"{current: isStepCurrent(stepName), completed: isStepCompleted(stepName)}\">\n" +
-    "         {{ stepName }}\n" +
-    "      </li>\n" +
-    "   </ol>\n" +
-    "</div>\n" +
     "\n" +
     "<form class=\"signup name form-horizontal\" name=\"signupForm\">\n" +
-    "\n" +
-    "\n" +
     "   <div ng-include=\"include\"></div>\n" +
     "\n" +
     "   <button type=\"submit\"\n" +

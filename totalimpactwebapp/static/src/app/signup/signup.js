@@ -90,15 +90,11 @@ angular.module( 'signup', [
 
 }])
 
-  .controller('signupCtrl', function($scope, Signup, Page){
-    Page.showFrame(false, false) // hide header and footer
-    Page.setTitle("signup")
-
-
+  .controller('signupCtrl', function($scope, Signup, Page, security){
+    Page.setUservoiceTabLoc("bottom")
+    Page.setTemplates("signup/signup-header", "")
+//    security.logout()
     $scope.input = {}
-    $scope.signupSteps = Signup.signupSteps();
-    $scope.isStepCurrent = Signup.onSignupStep;
-    $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
 
     $scope.include =  Signup.getTemplatePath();
     $scope.nav = { // defined as an object so that controllers in child scopes can override...
@@ -117,7 +113,7 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, Slug, $location) {
+  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, Slug, $location, security) {
     var  nameRegex = /\/(\w+)\/(\w+)\/url/
     var res = nameRegex.exec($location.path())
 
@@ -134,6 +130,7 @@ angular.module( 'signup', [
         },
         function(resp, headers){
           console.log("got response back from save user", resp)
+          security.clearCachedUser()
           $location.path("signup/" + $scope.input.url_slug + "/products/add")
 
         }
@@ -176,5 +173,14 @@ angular.module( 'signup', [
     }
   })
 
+.controller("signupHeaderCtrl", function($scope, Signup, Page) {
+
+  Page.setTitle("signup")
+
+  $scope.signupSteps = Signup.signupSteps();
+  $scope.isStepCurrent = Signup.onSignupStep;
+  $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
+
+})
 
 ;

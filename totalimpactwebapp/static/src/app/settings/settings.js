@@ -72,9 +72,11 @@ angular.module('settings', [
     };
   })
 
-  .controller('passwordSettingsCtrl', function ($scope, UsersPassword, security, i18nNotifications, Loading) {
+  .controller('passwordSettingsCtrl', function ($scope, $location, UsersPassword, security, i18nNotifications, Loading) {
 
     $scope.showPassword = false;
+    var resetToken =  $location.search()["reset_token"]
+    $scope.requireCurrentPassword = !resetToken
 
     $scope.onSave = function() {
       Loading.start('saveButton')

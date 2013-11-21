@@ -117,7 +117,7 @@
    }
 
 
-   span.ti-badge {
+   a.ti-badge {
       height: 24px;
       font-size: 12px;
       text-align: center;
@@ -131,6 +131,7 @@
       span.audience {display:none;}
       background:  black;
       border: 1px solid black;
+      &:hover{text-decoration: none;}
       &.scholars {background: @scholarsColor; border-color: @scholarsColor;}
       &.public {background: @publicColor; border-color: @publicColor;}
       &.big-badge {

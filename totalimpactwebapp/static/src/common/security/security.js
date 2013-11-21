@@ -1,11 +1,13 @@
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
-  'security.retryQueue',    // Keeps track of failed requests that need to be retried once the user logs in
+  'services.i18nNotifications',
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', ['$http', '$q', '$location', 'securityRetryQueue', '$modal', function($http, $q, $location, queue, $modal) {
+.factory('security', function($http, $q, $location, $modal, i18nNotifications) {
+  var useCachedUser = false
+  var currentUser
 
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
@@ -20,7 +22,8 @@ angular.module('security.service', [
     console.log("openLoginDialog() fired.")
     loginDialog = $modal.open({
       templateUrl: "security/login/form.tpl.html",
-      controller: "LoginFormController"
+      controller: "LoginFormController",
+      windowClass: "creds"
     });
     loginDialog.result.then();
   }
@@ -38,36 +41,19 @@ angular.module('security.service', [
   // The public API of the service
   var service = {
 
-    // Show the modal login dialog
     showLogin: function() {
       openLoginDialog();
     },
 
-    // Attempt to authenticate a user by the given email and password
     login: function(email, password) {
-      var request = $http.post('/user/login', {email: email, password: password})
-
-      request
+      return $http.post('/user/login', {email: email, password: password})
         .success(function(data, status) {
-            service.currentUser = data.user;
-            service.redirectToProfile()
-          })
-        .error(function(data, status, headers, config){
-          console.log("oh crap, an error: ", status);
-        }
-      );
-
-      return request;
-
+            console.log("success in security.login()")
+            currentUser = data.user;
+        })
     },
 
-    // Logout the current user and redirect
-    logout: function(redirectTo) {
-      $http.post('/user/logout').then(function() {
-        service.currentUser = null;
-        redirect(redirectTo);
-      });
-    },
+
 
     testUserAuthenticationLevel: function(level, falseToNegate){
 
@@ -118,15 +104,36 @@ angular.module('security.service', [
 
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
-      if ( service.isAuthenticated() ) {
-        return $q.when(service.currentUser);
+      if (useCachedUser) {
+        return $q.when(currentUser);
+
       } else {
-        return $http.get('/user/current').then(function(response) {
-          service.currentUser = response.data.user;
-          return service.currentUser;
-        });
+        return service.loginFromCookie()
       }
     },
+
+    loginFromCookie: function(){
+      return $http.get('/user/current')
+        .success(function(data, status, headers, config) {
+          useCachedUser = true
+          currentUser = data.user;
+        })
+        .then(function(){return currentUser})
+    },
+
+
+    logout: function(redirectTo) {
+      currentUser = null;
+      console.log("logging out. and it's new!")
+      $http.get('/user/logout').success(function(data, status, headers, config) {
+        console.log("logout message: ", data)
+        i18nNotifications.pushForCurrentRoute("logout.success", "success")
+//        redirect(redirectTo);
+      });
+    },
+
+
+
 
     userIsLoggedIn: function(){
       var deferred = $q.defer();
@@ -134,6 +141,7 @@ angular.module('security.service', [
       service.requestCurrentUser().then(
         function(user){
           if (!user){
+            deferred.reject("userNotLoggedIn")
             deferred.reject("userNotLoggedIn")
           }
           else {
@@ -154,19 +162,26 @@ angular.module('security.service', [
       })
     },
 
-    // Information about the current user
-    currentUser: null,
+    clearCachedUser: function(){
+      currentUser = null
+      useCachedUser = false
+    },
+
+
+    getCurrentUser: function(){
+      return currentUser
+    },
 
     // Is the current user authenticated?
     isAuthenticated: function(){
-      return !!service.currentUser;
+      return !!currentUser;
     },
     
     // Is the current user an adminstrator?
     isAdmin: function() {
-      return !!(service.currentUser && service.currentUser.admin);
+      return !!(currentUser && currentUser.admin);
     }
   };
 
   return service;
-}]);
+});

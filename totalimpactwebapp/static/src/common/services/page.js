@@ -1,18 +1,59 @@
-angular.module("services.page", [])
+angular.module("services.page", [
+  'signup'
+])
 angular.module("services.page")
-.factory("Page", function(){
+.factory("Page", function($location){
    var title = '';
-   var showHeader = true
-   var showFooter = true
+   var notificationsLoc = "header"
+   var uservoiceTabLoc = "right"
+   var frameTemplatePaths = {
+     header: "",
+     footer: ""
+   }
+
+   var addTplHtml = function(pathRoot){
+     if (pathRoot){
+       return pathRoot + ".tpl.html"
+     }
+     else {
+       return ""
+     }
+   }
+
+
+
+   var headers = {
+     signup: "signup/signup-header.tpl.html"
+   }
 
    return {
+     setTemplates: function(headerPathRoot, footerPathRoot){
+       frameTemplatePaths.header = addTplHtml(headerPathRoot)
+       frameTemplatePaths.footer = addTplHtml(footerPathRoot)
+     },
+     getTemplate: function(templateName){
+       return frameTemplatePaths[templateName]
+     },
+     'setNotificationsLoc': function(loc){
+         notificationsLoc = loc;
+     },
+     showNotificationsIn: function(loc){
+       return notificationsLoc == loc
+     },
+     getBodyClasses: function(){
+        return {
+          'show-tab-on-bottom': uservoiceTabLoc == "bottom",
+          'show-tab-on-right': uservoiceTabLoc == "right"
+        }
+     },
+
+     setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
      getTitle: function() { return title; },
      setTitle: function(newTitle) { title = newTitle },
-     'showFrame': function(header, footer) {
-       showHeader = !!header;
-       showFooter = !!footer;
-     },
-     header: function(){return showHeader},
-     footer: function(){return showFooter}
+
+     isLandingPage: function(){
+       return ($location.path() == "/")
+     }
+
    };
 })
