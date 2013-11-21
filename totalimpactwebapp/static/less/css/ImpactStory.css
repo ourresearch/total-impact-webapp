@@ -6518,19 +6518,19 @@ div.no-page p span.slug {
 *****************************************************************************/
 div.main-header {
   padding: 15px 0 20px;
-  height: 75px;
+  height: 70px;
 }
 div.main-header div.wrapper {
   position: relative;
 }
 div.main-header div.wrapper a.brand img {
   margin: 0 0 0 -10px;
-  height: 45px;
+  height: 40px;
 }
 div.main-header div.wrapper ul.main-nav {
   position: absolute;
+  top: 8px;
   right: 10px;
-  top: 10px;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item {
   display: block;

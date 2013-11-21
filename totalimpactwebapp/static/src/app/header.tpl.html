@@ -1,6 +1,8 @@
-<div class="main-header header">
+<div class="main-header header" ng-class="{big: page.isLandingPage()}">
    <div class="wrapper">
-      <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory" /></a>
+      <a class="brand" href="/">
+         <img src="/static/img/impactstory-logo.png" alt="ImpactStory" />
+      </a>
       <login-toolbar></login-toolbar>
    </div>
 </div>
