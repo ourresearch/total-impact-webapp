@@ -611,10 +611,10 @@ def redirect_to_profile(dummy="index"):
     crawer_useragent_fragments = ["googlebot", "bingbot"]
     file_template = "static/rendered-pages/{page}.html"
 
-    #for useragent_fragment in crawer_useragent_fragments:
-    #    if useragent_fragment in useragent:
-    #        return send_file(file_template.format(page=dummy))
-    #
+    for useragent_fragment in crawer_useragent_fragments:
+        if useragent_fragment in useragent:
+            return send_file(file_template.format(page=dummy))
+
 
 
     return render_template_custom('index.html')
