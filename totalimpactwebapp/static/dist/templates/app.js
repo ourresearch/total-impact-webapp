@@ -677,7 +677,8 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "      </span>\n" +
     "      <span class=\"text\">\n" +
     "         <a class=\"value-and-name\"\n" +
-    "            href=\"\"\n" +
+    "            href=\"{{ metric.provenance_url }}\"\n" +
+    "            target=\"_blank\"\n" +
     "            popover-trigger='mouseenter'\n" +
     "            popover-placement=\"bottom\"\n" +
     "            popover=\"{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.\">\n" +

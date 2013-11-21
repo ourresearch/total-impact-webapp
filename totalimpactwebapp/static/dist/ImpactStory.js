@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-20
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-21
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -4333,7 +4333,8 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "      </span>\n" +
     "      <span class=\"text\">\n" +
     "         <a class=\"value-and-name\"\n" +
-    "            href=\"\"\n" +
+    "            href=\"{{ metric.provenance_url }}\"\n" +
+    "            target=\"_blank\"\n" +
     "            popover-trigger='mouseenter'\n" +
     "            popover-placement=\"bottom\"\n" +
     "            popover=\"{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.\">\n" +
