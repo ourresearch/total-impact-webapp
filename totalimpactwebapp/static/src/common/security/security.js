@@ -105,9 +105,11 @@ angular.module('security.service', [
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
       if (useCachedUser) {
+        console.log("getting the cached user", currentUser)
         return $q.when(currentUser);
 
       } else {
+        console.log("logging in from cookie")
         return service.loginFromCookie()
       }
     },

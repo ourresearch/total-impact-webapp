@@ -10,20 +10,28 @@
       </li>
    </ul>
 
-   <form name="form" novalidate class="login-form form-inline">
-      <div class="form-group">
+   <form name="loginForm" novalidate class="login-form form-inline">
+      <div class="form-group" >
          <label class="sr-only">E-mail</label>
-         <input name="login" class="form-control" type="email" ng-model="user.email" placeholder="email" required autofocus>
+         <div class="controls input-group" >
+            <span class="input-group-addon"><i class="icon-envelope-alt"></i></span>
+            <input name="login" class="form-control" type="username" ng-model="user.email" placeholder="email" required autofocus>
+         </div>
       </div>
       <div class="form-group">
          <label class="sr-only">Password</label>
-         <input name="pass" class="form-control" type="password" ng-model="user.password" placeholder="password" required>
+         <div class="controls input-group">
+            <span class="input-group-addon"><i class="icon-key"></i></span>
+            <input name="pass" class="form-control" type="password" ng-model="user.password" placeholder="password" required>
+         </div>
       </div>
       <div class="modal-footer">
          <button class="btn btn-primary login"
                  ng-click="login()"
                  ng-hide="loading.is('login')"
-                 ng-disabled='form.$invalid'>Sign in</button>
+                 ng-disabled='loginForm.$invalid'
+
+                 >Sign in</button>
          <div class="working" ng-show="loading.is('login')">
             <i class="icon-refresh icon-spin"></i>
             <span class="text">logging in...</span>

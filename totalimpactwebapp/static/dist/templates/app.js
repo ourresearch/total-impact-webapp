@@ -645,7 +645,7 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "<ul class=\"metric-details-list\">\n" +
     "   <li ng-repeat=\"metric in metrics | orderBy: ['-award.isHighly', '-award.audience']\" class=\"metric-detail\">\n" +
     "      <span class=\"badge-container\">\n" +
-    "         <a href=\"#\"\n" +
+    "         <span\n" +
     "               class=\"ti-badge lil-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
     "               ng-show=\"!metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
@@ -656,9 +656,9 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "               {{metric.award.engagementType}} by {{metric.award.displayAudience}}.\">\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "          </a>\n" +
+    "          </span>\n" +
     "\n" +
-    "         <a href=\"#\"\n" +
+    "         <span\n" +
     "               class=\"ti-badge big-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
     "               ng-show=\"metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
@@ -672,7 +672,7 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "            <span class=\"modifier\">highly</span>\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "         </a>\n" +
+    "         </span>\n" +
     "\n" +
     "      </span>\n" +
     "      <span class=\"text\">\n" +

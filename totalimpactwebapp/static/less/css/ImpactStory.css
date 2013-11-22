@@ -6208,10 +6208,30 @@ ul {
 ul li {
   font-size: 18px;
 }
+form .form-control:focus {
+  -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
+  -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
+}
+form .form-control:focus + .input-group-addon {
+  border-color: red;
+  background: red;
+  color: red;
+  border: 5px solid red;
+}
 form .form-group label {
   font-size: 20px;
 }
-form .input-group-addon {
+form div.input-group {
+  border: red;
+}
+form div.input-group:focus {
+  border: 5px solid red;
+}
+form div.input-group:focus input {
+  border-color: red;
+}
+form div.input-group .input-group-addon {
   border-width: 0;
 }
 form div.help-block {
@@ -6550,7 +6570,7 @@ div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup span.or {
   border-left: 1px solid #aaa;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a {
-  font-size: 16px;
+  font-size: 15px;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.signup {
   font-weight: bold;
@@ -7584,7 +7604,7 @@ div.products div.products-without-metrics div.well a {
   /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 
 }
-.product a.ti-badge {
+.product .ti-badge {
   height: 24px;
   font-size: 12px;
   text-align: center;
@@ -7607,35 +7627,34 @@ div.products div.products-without-metrics div.well a {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  cursor: pointer;
   font-family: helvetica, arial, sans-serif;
   background: black;
   border: 1px solid black;
 }
-.product a.ti-badge span.audience {
+.product .ti-badge span.audience {
   display: none;
 }
-.product a.ti-badge:hover {
+.product .ti-badge:hover {
   text-decoration: none;
 }
-.product a.ti-badge.scholars {
+.product .ti-badge.scholars {
   background: #377eb8;
   border-color: #377eb8;
 }
-.product a.ti-badge.public {
+.product .ti-badge.public {
   background: #4daf4a;
   border-color: #4daf4a;
 }
-.product a.ti-badge.big-badge {
+.product .ti-badge.big-badge {
   color: #fff;
 }
-.product a.ti-badge.lil-badge {
+.product .ti-badge.lil-badge {
   background: #fff;
 }
-.product a.ti-badge.lil-badge.scholars {
+.product .ti-badge.lil-badge.scholars {
   color: #377eb8;
 }
-.product a.ti-badge.lil-badge.public {
+.product .ti-badge.lil-badge.public {
   color: #4daf4a;
 }
 .product div.popover {

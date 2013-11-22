@@ -83,7 +83,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    console.log("location change start", event, next, current)
     $scope.loading.clear()
     Page.setTemplates("header", "footer")
     Page.setUservoiceTabLoc("right")
@@ -1849,6 +1848,7 @@ angular.module( 'signup', [
         {newPassword: $scope.input.password},
         function(data){
           console.log("we set the password; showing the 'updating' modal.")
+          security.clearCachedUser()
           Update.showUpdate(url_slug, redirectCb)
         }
       )
@@ -2845,9 +2845,11 @@ angular.module('security.service', [
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
       if (useCachedUser) {
+        console.log("getting the cached user", currentUser)
         return $q.when(currentUser);
 
       } else {
+        console.log("logging in from cookie")
         return service.loginFromCookie()
       }
     },
@@ -4301,7 +4303,7 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "<ul class=\"metric-details-list\">\n" +
     "   <li ng-repeat=\"metric in metrics | orderBy: ['-award.isHighly', '-award.audience']\" class=\"metric-detail\">\n" +
     "      <span class=\"badge-container\">\n" +
-    "         <a href=\"#\"\n" +
+    "         <span\n" +
     "               class=\"ti-badge lil-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
     "               ng-show=\"!metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
@@ -4312,9 +4314,9 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "               {{metric.award.engagementType}} by {{metric.award.displayAudience}}.\">\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "          </a>\n" +
+    "          </span>\n" +
     "\n" +
-    "         <a href=\"#\"\n" +
+    "         <span\n" +
     "               class=\"ti-badge big-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
     "               ng-show=\"metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
@@ -4328,7 +4330,7 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "            <span class=\"modifier\">highly</span>\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "         </a>\n" +
+    "         </span>\n" +
     "\n" +
     "      </span>\n" +
     "      <span class=\"text\">\n" +
@@ -5099,20 +5101,28 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "      </li>\n" +
     "   </ul>\n" +
     "\n" +
-    "   <form name=\"form\" novalidate class=\"login-form form-inline\">\n" +
-    "      <div class=\"form-group\">\n" +
+    "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\">\n" +
+    "      <div class=\"form-group\" >\n" +
     "         <label class=\"sr-only\">E-mail</label>\n" +
-    "         <input name=\"login\" class=\"form-control\" type=\"email\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
+    "         <div class=\"controls input-group\" >\n" +
+    "            <span class=\"input-group-addon\"><i class=\"icon-envelope-alt\"></i></span>\n" +
+    "            <input name=\"login\" class=\"form-control\" type=\"username\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
     "         <label class=\"sr-only\">Password</label>\n" +
-    "         <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
+    "         <div class=\"controls input-group\">\n" +
+    "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
+    "            <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
     "         <button class=\"btn btn-primary login\"\n" +
     "                 ng-click=\"login()\"\n" +
     "                 ng-hide=\"loading.is('login')\"\n" +
-    "                 ng-disabled='form.$invalid'>Sign in</button>\n" +
+    "                 ng-disabled='loginForm.$invalid'\n" +
+    "\n" +
+    "                 >Sign in</button>\n" +
     "         <div class=\"working\" ng-show=\"loading.is('login')\">\n" +
     "            <i class=\"icon-refresh icon-spin\"></i>\n" +
     "            <span class=\"text\">logging in...</span>\n" +

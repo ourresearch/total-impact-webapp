@@ -167,6 +167,7 @@ angular.module( 'signup', [
         {newPassword: $scope.input.password},
         function(data){
           console.log("we set the password; showing the 'updating' modal.")
+          security.clearCachedUser()
           Update.showUpdate(url_slug, redirectCb)
         }
       )

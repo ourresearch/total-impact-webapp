@@ -78,7 +78,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    console.log("location change start", event, next, current)
     $scope.loading.clear()
     Page.setTemplates("header", "footer")
     Page.setUservoiceTabLoc("right")

@@ -50,13 +50,36 @@ ul {
 }
 
 form {
+
+   .form-control {
+      &:focus {
+         .drop-shadow(0, 0, 0, 0) !important;
+      }
+   }
+   .form-control:focus + .input-group-addon {
+      border-color:red;
+      background:red;
+      color:red;
+      border: 5px solid red;
+   }
+
    .form-group {
       label {
          font-size: 20px;
       }
    }
-   .input-group-addon {
-      border-width:  0;
+   div.input-group {
+      &:focus {
+         border:5px solid red;
+         input {
+            border-color:red;
+         }
+      }
+      border: red;
+      .input-group-addon {
+         border-width:  0;
+      }
+
    }
 
    div.help-block {
@@ -413,7 +436,7 @@ div.main-header {
                   border-left: 1px solid #aaa;
                }
                a {
-                  font-size: 16px;
+                  font-size: 15px;
                   &.signup {
                      font-weight: bold;
                      &:hover {color: darken(@linkColor, 10%)}
