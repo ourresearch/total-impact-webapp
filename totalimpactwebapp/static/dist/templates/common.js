@@ -41,14 +41,14 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\">\n" +
     "      <div class=\"form-group\" >\n" +
     "         <label class=\"sr-only\">E-mail</label>\n" +
-    "         <div class=\"controls input-group\" >\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-envelope-alt\"></i></span>\n" +
     "            <input name=\"login\" class=\"form-control\" type=\"username\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
     "         <label class=\"sr-only\">Password</label>\n" +
-    "         <div class=\"controls input-group\">\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
     "            <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
     "         </div>\n" +

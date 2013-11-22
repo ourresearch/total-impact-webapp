@@ -2467,6 +2467,20 @@ angular.module('directives.forms', [])
   }
 
 })
+.directive('hasFocus', function() {
+    return {
+      restrict: 'A',
+      link: function(scope, elem, attr, ctrl){
+        elem.find("input")
+          .bind("focus", function(){
+            elem.addClass("has-focus")
+          })
+          .bind("blur", function(){
+            elem.removeClass("has-focus")
+          })
+      }
+    }
+})
 
 
 .directive('requireUnique', function($http, $q, Loading) {
@@ -2611,6 +2625,7 @@ angular.module('security', [
 
 angular.module('security.login.form', [
     'services.localizedMessages',
+    'directives.forms',
     'services.page',
     'services.loading',
     'services.i18nNotifications',
@@ -2647,6 +2662,7 @@ angular.module('security.login.form', [
   $scope.user = {};
   $scope.notifications = i18nNotifications
   $scope.loading = Loading
+
 
 
   $scope.login = function () {
@@ -3709,6 +3725,9 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "         <h3>Supported by</h3>\n" +
     "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
     "            <img src=\"/static/img/sloan-logo.png\"  width=\"200\"/>\n" +
+    "         </a>\n" +
+    "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
+    "            <img src=\"/static/img/logos/nsf.png\"  width=\"200\"/>\n" +
     "         </a>\n" +
     "      </div>\n" +
     "\n" +
@@ -5104,14 +5123,14 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\">\n" +
     "      <div class=\"form-group\" >\n" +
     "         <label class=\"sr-only\">E-mail</label>\n" +
-    "         <div class=\"controls input-group\" >\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-envelope-alt\"></i></span>\n" +
     "            <input name=\"login\" class=\"form-control\" type=\"username\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
     "         <label class=\"sr-only\">Password</label>\n" +
-    "         <div class=\"controls input-group\">\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
     "            <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
     "         </div>\n" +

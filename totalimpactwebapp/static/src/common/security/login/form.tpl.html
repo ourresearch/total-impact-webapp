@@ -13,14 +13,14 @@
    <form name="loginForm" novalidate class="login-form form-inline">
       <div class="form-group" >
          <label class="sr-only">E-mail</label>
-         <div class="controls input-group" >
+         <div class="controls input-group" has-focus ng-class="{'has-success': loginForm.login.$valid}">
             <span class="input-group-addon"><i class="icon-envelope-alt"></i></span>
             <input name="login" class="form-control" type="username" ng-model="user.email" placeholder="email" required autofocus>
          </div>
       </div>
       <div class="form-group">
          <label class="sr-only">Password</label>
-         <div class="controls input-group">
+         <div class="controls input-group" has-focus ng-class="{'has-success': loginForm.login.$valid}">
             <span class="input-group-addon"><i class="icon-key"></i></span>
             <input name="pass" class="form-control" type="password" ng-model="user.password" placeholder="password" required>
          </div>

@@ -52,6 +52,9 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
     "            <img src=\"/static/img/sloan-logo.png\"  width=\"200\"/>\n" +
     "         </a>\n" +
+    "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
+    "            <img src=\"/static/img/logos/nsf.png\"  width=\"200\"/>\n" +
+    "         </a>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +

@@ -6213,23 +6213,20 @@ form .form-control:focus {
   -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
   box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
 }
-form .form-control:focus + .input-group-addon {
-  border-color: red;
-  background: red;
-  color: red;
-  border: 5px solid red;
-}
 form .form-group label {
   font-size: 20px;
 }
-form div.input-group {
-  border: red;
+form div.input-group i {
+  opacity: .7;
 }
-form div.input-group:focus {
-  border: 5px solid red;
+form div.input-group.has-focus .input-group-addon {
+  background: #18bc9c;
+  border-color: #18bc9c;
+  transition: none;
 }
-form div.input-group:focus input {
-  border-color: red;
+form div.input-group.has-focus input {
+  transition: none;
+  border-color: #18bc9c;
 }
 form div.input-group .input-group-addon {
   border-width: 0;
@@ -6759,6 +6756,9 @@ div#footer div.wrapper div.footer-col#footer-funders {
   border-right: none;
   padding-right: none;
 }
+div#footer div.wrapper div.footer-col#footer-funders a#footer-nsf-link img {
+  width: 150px;
+}
 div#footer div.wrapper div.footer-col#footer-follow img {
   float: right;
   height: 28px;
@@ -7246,6 +7246,9 @@ div.profile-subpage div.profile-subpage-header div.wrapper h2 {
   padding: 0;
   width: 70%;
   margin: 0 auto;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper h2.instr {
+  color: #fff;
 }
 div.profile-subpage.profile-add-products div.importers {
   top: 130px;

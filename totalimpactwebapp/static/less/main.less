@@ -56,12 +56,6 @@ form {
          .drop-shadow(0, 0, 0, 0) !important;
       }
    }
-   .form-control:focus + .input-group-addon {
-      border-color:red;
-      background:red;
-      color:red;
-      border: 5px solid red;
-   }
 
    .form-group {
       label {
@@ -69,13 +63,18 @@ form {
       }
    }
    div.input-group {
-      &:focus {
-         border:5px solid red;
+      i {opacity: .7;}
+      &.has-focus { // gets added by the forms.hasFocus directive.
+         .input-group-addon {
+            background: @alert-success-border;
+            border-color: @alert-success-border;
+            transition:none; // hard to get them to sync up...
+         }
          input {
-            border-color:red;
+            transition:none;
+            border-color: @alert-success-border;
          }
       }
-      border: red;
       .input-group-addon {
          border-width:  0;
       }
@@ -614,6 +613,11 @@ div#footer {
             width:  200px;
             border-right: none;
             padding-right: none;
+            a#footer-nsf-link {
+               img {
+                  width: 150px;
+               }
+            }
          }
 
          &#footer-about {
