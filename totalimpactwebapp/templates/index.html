@@ -1,31 +1,10 @@
 <!DOCTYPE html>
 <html ng-app="app" ng-controller="AppCtrl" lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-   <base href="/">
+   <base href="/"> <!-- needed for html5 pretty urls -->
    <meta charset="utf-8">
    <title>{% raw %}ImpactStory: {{ page.getTitle() }}{% endraw %}</title>
-   <meta name="description" content="ImpactStory">
-   <meta name="author" content="ImpactStory">
-   <meta name="google-site-verification" content="JWD8WcfINuKxjh31KejAnijd9Cx34IYEH1-bDMXVzjE" />
-   <meta name="google-site-verification" content="ItyBFNIMWtJdRaONjqSQHM8ro_fRjTl9HO3Fq9IsZpM" />
-
-
-
-
-   <!-- Include stuff that has to be at the very tippity-top of the page-->
-   <!-------------------------------------------------------------------------->
-   <!-- newrelic logging. -->
-   {{ g.newrelic_header|safe }}
-
-   <!-- errorception logging. -->
-{#   <script>#}
-{#       (function(_,e,rr,s){_errs=[s];var c=_.onerror;_.onerror=function(){var a=arguments;_errs.push(a);#}
-{#       c&&c.apply(this,a)};var b=function(){var c=e.createElement(rr),b=e.getElementsByTagName(rr)[0];#}
-{#       c.src="//beacon.errorception.com/"+s+".js";c.async=!0;b.parentNode.insertBefore(c,b)};#}
-{#       _.addEventListener?_.addEventListener("load",b,!1):_.attachEvent("onload",b)})#}
-{#       (window,document,"script","51ef3db2db2bef20770003e2");#}
-{#   </script>#}
-
+   <meta name="google-site-verification" content="eBr2vhkz1SYB5e6B7QDhFu7vazuGo_lI_mf3EaRdHZ8" />
 
 
 
@@ -47,11 +26,17 @@
 
    <!-- Load scripts -->
    <!-------------------------------------------------------------------------->
+   <!-- logging stuff -->
+   {{ g.newrelic_header|safe }} <!-- newrelic logging, needs server stuff in it -->
+   <script type="text/javascript" src="{{ url_for('static', filename='js/top-of-page.js') }}"></script>
+
+   <!-- external libs -->
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.string/2.3.3/underscore.string.min.js"></script>
    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script>
 
+   <!-- compiled scripts from our sources -->
    <script type="text/javascript" src="{{ url_for('static', filename='dist/bootstrap.js') }}"></script>
    <script type="text/javascript" src="{{ url_for('static', filename='dist/angular.js') }}"></script> <!-- extra Angular modules -->
    <script type="text/javascript" src="{{ url_for('static', filename='js/browser-fixes.js') }}"></script> <!-- get rid of this -->

@@ -51,6 +51,7 @@ angular.module('app').run(['security', function(security) {
 
 
 angular.module('app').controller('AppCtrl', function($scope,
+                                                     $window,
                                                      i18nNotifications,
                                                      localizedMessages,
                                                      UservoiceWidget,
@@ -74,7 +75,8 @@ angular.module('app').controller('AppCtrl', function($scope,
     RouteChangeErrorHandler.handle(event, current, previous, rejection)
   });
 
-  $scope.$on('$routeChangeSuccess', function(next, current){ // hacky...
+  $scope.$on('$routeChangeSuccess', function(next, current){
+    $window._gaq.push(['_trackPageview', $location.path()]);
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){

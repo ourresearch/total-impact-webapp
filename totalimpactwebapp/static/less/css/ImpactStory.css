@@ -6586,6 +6586,7 @@ div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.login:hov
   color: #333;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.logged-in-user a {
+  font-size: 16px;
   padding: 10px 10px 10px 0;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.logged-in-user a:hover {
@@ -6604,7 +6605,7 @@ div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown.open a.
   position: relative;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown.open a.dropdown-toggle i {
-  color: #333333;
+  color: #333;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown a.dropdown-toggle {
   border: 1px solid #fff;
@@ -6627,6 +6628,9 @@ div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown a.dropd
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   padding: 10px;
+}
+div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown a.dropdown-toggle i {
+  vertical-align: -1px;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown a.dropdown-toggle:hover {
   color: #cc3e00;

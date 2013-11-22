@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-21
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-22
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -56,6 +56,7 @@ angular.module('app').run(['security', function(security) {
 
 
 angular.module('app').controller('AppCtrl', function($scope,
+                                                     $window,
                                                      i18nNotifications,
                                                      localizedMessages,
                                                      UservoiceWidget,
@@ -79,7 +80,8 @@ angular.module('app').controller('AppCtrl', function($scope,
     RouteChangeErrorHandler.handle(event, current, previous, rejection)
   });
 
-  $scope.$on('$routeChangeSuccess', function(next, current){ // hacky...
+  $scope.$on('$routeChangeSuccess', function(next, current){
+    $window._gaq.push(['_trackPageview', $location.path()]);
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
@@ -5130,7 +5132,7 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
     "         <label class=\"sr-only\">Password</label>\n" +
-    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.pass.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
     "            <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
     "         </div>\n" +

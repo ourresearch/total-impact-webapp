@@ -48,7 +48,7 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
     "         <label class=\"sr-only\">Password</label>\n" +
-    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.pass.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
     "            <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
     "         </div>\n" +
