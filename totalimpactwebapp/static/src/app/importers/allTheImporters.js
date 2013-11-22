@@ -61,6 +61,7 @@ angular.module('importers.allTheImporters')
         help: "Your Twitter username is often written starting with @.",
         placeholder: "@username"
       }],
+      massageFunction: function() {console.log(this.userInput, '@' + this.userInput.replace('@', '')); return('@' + this.userInput.replace('@', ''))},
       endpoint: "twitter_account",
       url: "http://twitter.com",
       descr: "Twitter is a social networking site for sharing short messages."
@@ -104,7 +105,7 @@ angular.module('importers.allTheImporters')
       displayName: "WordPress",
       inputs: [{
         inputType: "idList",
-        inputNeeded: ".com  URLs",
+        inputNeeded: "WordPress.com  URLs",
         help: "Paste the URLs for WordPress.com blogs.  The URLs can be on custom domains (like http://blog.impactstory.org), as long as the blogs are hosted on WordPress.com.",
         placeholder: "http://retractionwatch.wordpress.com"
       }],
@@ -161,8 +162,6 @@ angular.module('importers.allTheImporters')
       inputs: [{
         inputType: "idList",
         inputNeeded: "DOIs",
-        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
-        placeholder: "doi:10.5061/dryad.example",
         help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
         placeholder: "http://doi.org/10.example/example"
       }],
@@ -176,8 +175,6 @@ angular.module('importers.allTheImporters')
       inputs: [{
         inputType: "idList",
         inputNeeded: "DOIs",
-        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
-        placeholder: "doi:10.5061/dryad.example",
         help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
         placeholder: "http://doi.org/10.example/example"
       }],
@@ -217,6 +214,19 @@ angular.module('importers.allTheImporters')
     return '/static/img/logos/' + urlStyleName + '.png';
   }
 
+  var makeLogoPath = function(displayName) {
+    var urlStyleName = displayName.toLowerCase().replace(" ", "-")
+    return '/static/img/logos/' + urlStyleName + '.png';
+  }
+
+  var makeMassageFunction = function(importer) {
+  if (inputObject.massageFunction) {
+    return inputObject.massageFunction
+  }
+  else {
+    return (function(x) return(x))
+  }
+
   var makeEndpoint = function(importer) {
     if (importer.endpoint) {
       return importer.endpoint
@@ -241,8 +251,8 @@ angular.module('importers.allTheImporters')
     // @todo: fix core /importer to support new obj inputs w 'primary' key.
 //    var defaultInputName = "primary"
     var defaultInputName = "input"
-
     inputObject.name || (inputObject.name = defaultInputName)
+
     return inputObject
   }
 

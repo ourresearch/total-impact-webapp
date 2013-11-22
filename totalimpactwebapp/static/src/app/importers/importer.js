@@ -135,8 +135,14 @@ angular.module('importers.importer')
       $scope.userInput
     )
 
+    var userInputAfterCleanup = $scope.importer.massageFunction()
 
-    Importer.saveProducts(slug, $scope.importer.endpoint, $scope.userInput)
+    console.log(
+      _.sprintf("/importer/%s updating '%s' with cleaned userInput:", $scope.importer.endpoint, slug),
+      userInputAfterCleanup
+    )
+
+    Importer.saveProducts(slug, $scope.importer.endpoint, userInputAfterCleanup)
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
                                   $scope.userInput,
