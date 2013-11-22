@@ -6839,7 +6839,7 @@ div.infopage.landing div#tagline div.wrapper h1 {
   letter-spacing: -2px;
   padding-bottom: 15px;
   font-family: 'rokkitt', 'georgia', serif;
-  font-weight: lighter;
+  font-weight: 400;
 }
 div.infopage.landing div#tagline div.wrapper p.subtagline {
   color: #fff;
