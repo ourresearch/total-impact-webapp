@@ -10,7 +10,7 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
-  'analytics',
+  'services.tiAnalytics',
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -64,7 +64,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      security,
-                                                     analytics,
+                                                     tiAnalytics,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
@@ -83,6 +83,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
 //    $window._gaq.push(['_trackPageview', $location.path()]);
+    tiAnalytics.pageload()
 
   })
 
@@ -2944,35 +2945,6 @@ angular.module('security.service', [
 
   return service;
 });
-var _gaq = _gaq || [];
-
-angular.module('analytics', []).run(['$http', function($http) {
-
-    // this is where you'd initialize GA, but segment.io is doing this for us.
-
-}])
-  .service('analytics', function($rootScope, $window, $location, $routeParams) {
-
-	$rootScope.$on('$viewContentLoaded', track);
-
-	var track = function() {
-		var path = convertPathToQueryString($location.path(), $routeParams)
-		$window._gaq.push(['_trackPageview', path]);
-	};
-	
-	var convertPathToQueryString = function(path, $routeParams) {
-		for (var key in $routeParams) {
-			var queryParam = '/' + $routeParams[key];
-			path = path.replace(queryParam, '');
-		}
-
-		var querystring = decodeURIComponent($.param($routeParams));
-
-		if (querystring === '') return path;
-
-		return path + "?" + querystring;
-	};
-});
 angular.module('services.breadcrumbs', []);
 angular.module('services.breadcrumbs').factory('breadcrumbs', ['$rootScope', '$location', function($rootScope, $location){
 
@@ -3647,6 +3619,85 @@ angular.module('services.slug')
 
 
 })
+var analytics = analytics || {};
+
+angular.module('services.tiAnalytics', [
+//    'services.page'
+  ])
+  .run(['$http', function($http) {
+
+    // this is where you'd initialize GA, but segment.io is doing this for us.
+
+}])
+  .factory('tiAnalytics', function($window, $location, $routeParams) {
+
+//	$rootScope.$on('$viewContentLoaded', track);
+
+
+
+    var getPageType = function(){
+      var myPageType = "profile"
+
+
+      var pageTypeLookupTable = {
+        account: [
+          "/settings",
+          "/reset-password"
+        ],
+        landing: [
+          "/"
+        ],
+        infopage: [
+          "/faq",
+          "/about"
+        ],
+        signup: [
+          "/signup"
+        ]
+      }
+
+      _.each(pageTypeLookupTable, function(urlStartsWithList, pageType){
+        var filtered = _.filter(urlStartsWithList, function(x){
+           return _($location.path()).startsWith(x)
+        })
+        if (filtered.length) {
+          myPageType = pageType
+          console.log("found something")
+        }
+
+      })
+      return myPageType
+    }
+
+
+    var trackPageLoad = function(){
+      analytics.page(getPageType(), $location.path(), {
+
+      })
+    }
+
+
+
+	
+	var convertPathToQueryString = function(path, $routeParams) {
+		for (var key in $routeParams) {
+			var queryParam = '/' + $routeParams[key];
+			path = path.replace(queryParam, '');
+		}
+
+		var querystring = decodeURIComponent($.param($routeParams));
+
+		if (querystring === '') return path;
+
+		return path + "?" + querystring;
+	};
+
+
+  return {
+    'pageload': trackPageLoad
+
+  }
+});
 angular.module("services.uservoiceWidget", [])
 angular.module("services.uservoiceWidget")
 .factory("UservoiceWidget", function(){

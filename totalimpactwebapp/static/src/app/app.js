@@ -5,7 +5,7 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
-  'analytics',
+  'services.tiAnalytics',
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -59,7 +59,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      security,
-                                                     analytics,
+                                                     tiAnalytics,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
@@ -78,6 +78,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
 //    $window._gaq.push(['_trackPageview', $location.path()]);
+    tiAnalytics.pageload()
 
   })
 
