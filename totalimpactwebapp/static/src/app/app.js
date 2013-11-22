@@ -5,7 +5,7 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
-
+  'analytics',
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -59,6 +59,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      security,
+                                                     analytics,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
@@ -76,7 +77,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   });
 
   $scope.$on('$routeChangeSuccess', function(next, current){
-    $window._gaq.push(['_trackPageview', $location.path()]);
+//    $window._gaq.push(['_trackPageview', $location.path()]);
+
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){

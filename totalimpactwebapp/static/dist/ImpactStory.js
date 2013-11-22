@@ -10,7 +10,7 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
-
+  'analytics',
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -64,6 +64,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      security,
+                                                     analytics,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
@@ -81,7 +82,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   });
 
   $scope.$on('$routeChangeSuccess', function(next, current){
-    $window._gaq.push(['_trackPageview', $location.path()]);
+//    $window._gaq.push(['_trackPageview', $location.path()]);
+
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
@@ -2941,6 +2943,35 @@ angular.module('security.service', [
   };
 
   return service;
+});
+var _gaq = _gaq || [];
+
+angular.module('analytics', []).run(['$http', function($http) {
+
+    // this is where you'd initialize GA, but segment.io is doing this for us.
+
+}])
+  .service('analytics', function($rootScope, $window, $location, $routeParams) {
+
+	$rootScope.$on('$viewContentLoaded', track);
+
+	var track = function() {
+		var path = convertPathToQueryString($location.path(), $routeParams)
+		$window._gaq.push(['_trackPageview', path]);
+	};
+	
+	var convertPathToQueryString = function(path, $routeParams) {
+		for (var key in $routeParams) {
+			var queryParam = '/' + $routeParams[key];
+			path = path.replace(queryParam, '');
+		}
+
+		var querystring = decodeURIComponent($.param($routeParams));
+
+		if (querystring === '') return path;
+
+		return path + "?" + querystring;
+	};
 });
 angular.module('services.breadcrumbs', []);
 angular.module('services.breadcrumbs').factory('breadcrumbs', ['$rootScope', '$location', function($rootScope, $location){
