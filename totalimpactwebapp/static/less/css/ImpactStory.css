@@ -6757,6 +6757,7 @@ div#footer div.wrapper div.footer-col#footer-funders {
   padding-right: none;
 }
 div#footer div.wrapper div.footer-col#footer-funders a#footer-nsf-link img {
+  margin-top: 10px;
   width: 150px;
 }
 div#footer div.wrapper div.footer-col#footer-follow img {
