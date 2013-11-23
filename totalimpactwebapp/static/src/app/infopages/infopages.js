@@ -27,6 +27,10 @@ angular.module( 'infopages', [
         templateUrl: 'infopages/collection.tpl.html',
         controller: 'collectionPageCtrl'
       })
+      .when('/item/*', {
+        templateUrl: 'infopages/collection.tpl.html',
+        controller: 'collectionPageCtrl'
+      })
   }])
 
   .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {

@@ -1,5 +1,6 @@
 angular.module('security.login.form', [
     'services.localizedMessages',
+    'directives.forms',
     'services.page',
     'services.loading',
     'services.i18nNotifications',
@@ -36,6 +37,7 @@ angular.module('security.login.form', [
   $scope.user = {};
   $scope.notifications = i18nNotifications
   $scope.loading = Loading
+
 
 
   $scope.login = function () {

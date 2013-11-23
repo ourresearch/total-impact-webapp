@@ -38,20 +38,28 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "      </li>\n" +
     "   </ul>\n" +
     "\n" +
-    "   <form name=\"form\" novalidate class=\"login-form form-inline\">\n" +
-    "      <div class=\"form-group\">\n" +
+    "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\">\n" +
+    "      <div class=\"form-group\" >\n" +
     "         <label class=\"sr-only\">E-mail</label>\n" +
-    "         <input name=\"login\" class=\"form-control\" type=\"email\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
+    "            <span class=\"input-group-addon\"><i class=\"icon-envelope-alt\"></i></span>\n" +
+    "            <input name=\"login\" class=\"form-control\" type=\"username\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
     "         <label class=\"sr-only\">Password</label>\n" +
-    "         <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.pass.$valid}\">\n" +
+    "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
+    "            <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
     "         <button class=\"btn btn-primary login\"\n" +
     "                 ng-click=\"login()\"\n" +
     "                 ng-hide=\"loading.is('login')\"\n" +
-    "                 ng-disabled='form.$invalid'>Sign in</button>\n" +
+    "                 ng-disabled='loginForm.$invalid'\n" +
+    "\n" +
+    "                 >Sign in</button>\n" +
     "         <div class=\"working\" ng-show=\"loading.is('login')\">\n" +
     "            <i class=\"icon-refresh icon-spin\"></i>\n" +
     "            <span class=\"text\">logging in...</span>\n" +
@@ -115,7 +123,8 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      </a>\n" +
     "      <ul class='preferences-actions dropdown-menu'>\n" +
     "         <li><a href=\"/settings/profile\" class=\"profile\"><i class=\"icon-cogs\"></i>Preferences</a></li>\n" +
-    "         <li><a href=\"/api-docs\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>\n" +
+    "         <!--<li><a href=\"/api-docs\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>-->\n" +
+    "         <li><a href=\"http://docs.impactstory.apiary.io/\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>\n" +
     "         <li class=\"divider\"></li>\n" +
     "         <li><a class=\"logout\" ng-click=\"logout()\"><i class=\"icon-off\"></i>Log out</a></li>\n" +
     "      </ul>\n" +

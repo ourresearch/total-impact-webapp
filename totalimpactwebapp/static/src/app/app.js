@@ -5,7 +5,7 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
-
+  'services.tiAnalytics',
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -51,6 +51,7 @@ angular.module('app').run(['security', function(security) {
 
 
 angular.module('app').controller('AppCtrl', function($scope,
+                                                     $window,
                                                      i18nNotifications,
                                                      localizedMessages,
                                                      UservoiceWidget,
@@ -58,6 +59,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      security,
+                                                     tiAnalytics,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
@@ -74,11 +76,13 @@ angular.module('app').controller('AppCtrl', function($scope,
     RouteChangeErrorHandler.handle(event, current, previous, rejection)
   });
 
-  $scope.$on('$routeChangeSuccess', function(next, current){ // hacky...
+  $scope.$on('$routeChangeSuccess', function(next, current){
+//    $window._gaq.push(['_trackPageview', $location.path()]);
+    tiAnalytics.pageload()
+
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    console.log("location change start", event, next, current)
     $scope.loading.clear()
     Page.setTemplates("header", "footer")
     Page.setUservoiceTabLoc("right")

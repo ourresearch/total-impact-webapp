@@ -10,7 +10,7 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
-
+  'services.tiAnalytics',
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -56,6 +56,7 @@ angular.module('app').run(['security', function(security) {
 
 
 angular.module('app').controller('AppCtrl', function($scope,
+                                                     $window,
                                                      i18nNotifications,
                                                      localizedMessages,
                                                      UservoiceWidget,
@@ -63,6 +64,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      security,
+                                                     tiAnalytics,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
@@ -79,11 +81,13 @@ angular.module('app').controller('AppCtrl', function($scope,
     RouteChangeErrorHandler.handle(event, current, previous, rejection)
   });
 
-  $scope.$on('$routeChangeSuccess', function(next, current){ // hacky...
+  $scope.$on('$routeChangeSuccess', function(next, current){
+//    $window._gaq.push(['_trackPageview', $location.path()]);
+    tiAnalytics.pageload()
+
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    console.log("location change start", event, next, current)
     $scope.loading.clear()
     Page.setTemplates("header", "footer")
     Page.setUservoiceTabLoc("right")
@@ -135,6 +139,7 @@ angular.module('importers.allTheImporters')
         name: "apiKey",
         help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
       }],
+      saveUsername: true,
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features."
     },
@@ -148,6 +153,7 @@ angular.module('importers.allTheImporters')
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
         help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
       }],
+      saveUsername: true,
       url: 'http://orcid.org',
       signupUrl: 'http://orcid.org/register',
       descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into ImpactStory.",
@@ -162,6 +168,7 @@ angular.module('importers.allTheImporters')
         inputNeeded: "username",
         help: "Your username is right after \"slideshare.net/\" in your profile's URL."
       }],
+      saveUsername: true,
       url:'http://slideshare.net',
       descr: "Slideshare is community for sharing presentations online."
     },
@@ -176,6 +183,7 @@ angular.module('importers.allTheImporters')
         placeholder: "@username",
         inputCleanupFunction: function(x) {return('@'+x.replace('@', ''))}
       }],
+      saveUsername: true,
       endpoint: "twitter_account",
       url: "http://twitter.com",
       descr: "Twitter is a social networking site for sharing short messages."
@@ -211,6 +219,7 @@ angular.module('importers.allTheImporters')
         placeholder: "http://figshare.com/authors/schamberlain/96554",
         inputCleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}        
       }],
+      saveUsername: true,
       url: "http://figshare.com",
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner."
     },
@@ -455,12 +464,14 @@ angular.module('importers.importer')
     )
   }
 
-  var saveExternalUsername = function(url_slug, importerName, userInput, importerType){
-    if (importerType != "username") {
+  var saveExternalUsername = function(url_slug, importerName, userInput, saveUsername){
+    if (!saveUsername) {
+      console.log("no username.")
       return false
     }
     var patchData = {about:{}}
     patchData.about[importerName + "_id"] = userInput
+    console.log("trying to save this patch data: ", patchData)
 
     start("saveExternalUsernames")
     console.log("saving usernames")
@@ -509,7 +520,8 @@ angular.module('importers.importer')
     }
   }
   $scope.products = []
-  $scope.userInput = {}
+  $scope.userInput = {
+  }
   $scope.importerHasRun = false
 
   $scope.onCancel = function(){
@@ -536,7 +548,7 @@ angular.module('importers.importer')
 
     // ok, let's do this
     console.log(
-      _.sprintf("/importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
+      _.sprintf("calling /importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
       $scope.userInput
     )
 
@@ -545,7 +557,8 @@ angular.module('importers.importer')
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
                                   cleanInputs,
-                                  $scope.importer.inputType)
+                                  $scope.userInput.input,
+                                  $scope.importer.saveUsername)
 
 
   }
@@ -593,6 +606,10 @@ angular.module( 'infopages', [
         controller: 'aboutPageCtrl'
       })
       .when('/collection/:cid', {
+        templateUrl: 'infopages/collection.tpl.html',
+        controller: 'collectionPageCtrl'
+      })
+      .when('/item/*', {
         templateUrl: 'infopages/collection.tpl.html',
         controller: 'collectionPageCtrl'
       })
@@ -1874,6 +1891,7 @@ angular.module( 'signup', [
         {newPassword: $scope.input.password},
         function(data){
           console.log("we set the password; showing the 'updating' modal.")
+          security.clearCachedUser()
           Update.showUpdate(url_slug, redirectCb)
         }
       )
@@ -2488,9 +2506,22 @@ angular.module('directives.forms', [])
         return formController.$valid;
       }
     }
-
   }
 
+})
+.directive('hasFocus', function() {
+    return {
+      restrict: 'A',
+      link: function(scope, elem, attr, ctrl){
+        elem.find("input")
+          .bind("focus", function(){
+            elem.addClass("has-focus")
+          })
+          .bind("blur", function(){
+            elem.removeClass("has-focus")
+          })
+      }
+    }
 })
 
 
@@ -2636,6 +2667,7 @@ angular.module('security', [
 
 angular.module('security.login.form', [
     'services.localizedMessages',
+    'directives.forms',
     'services.page',
     'services.loading',
     'services.i18nNotifications',
@@ -2672,6 +2704,7 @@ angular.module('security.login.form', [
   $scope.user = {};
   $scope.notifications = i18nNotifications
   $scope.loading = Loading
+
 
 
   $scope.login = function () {
@@ -2889,7 +2922,6 @@ angular.module('security.service', [
 
     logout: function(redirectTo) {
       currentUser = null;
-      console.log("logging out. and it's new!")
       $http.get('/user/logout').success(function(data, status, headers, config) {
         console.log("logout message: ", data)
         i18nNotifications.pushForCurrentRoute("logout.success", "success")
@@ -3624,6 +3656,84 @@ angular.module('services.slug')
 
 
 })
+var analytics = analytics || {};
+
+angular.module('services.tiAnalytics', [
+//    'services.page'
+  ])
+  .run(['$http', function($http) {
+
+    // this is where you'd initialize GA, but segment.io is doing this for us.
+
+}])
+  .factory('tiAnalytics', function($window, $location, $routeParams) {
+
+//	$rootScope.$on('$viewContentLoaded', track);
+
+
+
+    var getPageType = function(){
+      var myPageType = "profile"
+
+
+      var pageTypeLookupTable = {
+        account: [
+          "/settings",
+          "/reset-password"
+        ],
+        landing: [
+          "/"
+        ],
+        infopage: [
+          "/faq",
+          "/about"
+        ],
+        signup: [
+          "/signup"
+        ]
+      }
+
+      _.each(pageTypeLookupTable, function(urlStartsWithList, pageType){
+        var filtered = _.filter(urlStartsWithList, function(x){
+           return _($location.path()).startsWith(x)
+        })
+        if (filtered.length) {
+          myPageType = pageType
+        }
+
+      })
+      return myPageType
+    }
+
+
+    var trackPageLoad = function(){
+      analytics.page(getPageType(), $location.path(), {
+
+      })
+    }
+
+
+
+	
+	var convertPathToQueryString = function(path, $routeParams) {
+		for (var key in $routeParams) {
+			var queryParam = '/' + $routeParams[key];
+			path = path.replace(queryParam, '');
+		}
+
+		var querystring = decodeURIComponent($.param($routeParams));
+
+		if (querystring === '') return path;
+
+		return path + "?" + querystring;
+	};
+
+
+  return {
+    'pageload': trackPageLoad
+
+  }
+});
 angular.module("services.uservoiceWidget", [])
 angular.module("services.uservoiceWidget")
 .factory("UservoiceWidget", function(){
@@ -3732,6 +3842,9 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "         <h3>Supported by</h3>\n" +
     "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
     "            <img src=\"/static/img/sloan-logo.png\"  width=\"200\"/>\n" +
+    "         </a>\n" +
+    "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
+    "            <img src=\"/static/img/logos/nsf.png\"  width=\"200\"/>\n" +
     "         </a>\n" +
     "      </div>\n" +
     "\n" +
@@ -4327,7 +4440,7 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "<ul class=\"metric-details-list\">\n" +
     "   <li ng-repeat=\"metric in metrics | orderBy: ['-award.isHighly', '-award.audience']\" class=\"metric-detail\">\n" +
     "      <span class=\"badge-container\">\n" +
-    "         <a href=\"#\"\n" +
+    "         <span\n" +
     "               class=\"ti-badge lil-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
     "               ng-show=\"!metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
@@ -4338,9 +4451,9 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "               {{metric.award.engagementType}} by {{metric.award.displayAudience}}.\">\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "          </a>\n" +
+    "          </span>\n" +
     "\n" +
-    "         <a href=\"#\"\n" +
+    "         <span\n" +
     "               class=\"ti-badge big-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
     "               ng-show=\"metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
@@ -4354,12 +4467,13 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "            <span class=\"modifier\">highly</span>\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "         </a>\n" +
+    "         </span>\n" +
     "\n" +
     "      </span>\n" +
     "      <span class=\"text\">\n" +
     "         <a class=\"value-and-name\"\n" +
-    "            href=\"\"\n" +
+    "            href=\"{{ metric.provenance_url }}\"\n" +
+    "            target=\"_blank\"\n" +
     "            popover-trigger='mouseenter'\n" +
     "            popover-placement=\"bottom\"\n" +
     "            popover=\"{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.\">\n" +
@@ -5126,20 +5240,28 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "      </li>\n" +
     "   </ul>\n" +
     "\n" +
-    "   <form name=\"form\" novalidate class=\"login-form form-inline\">\n" +
-    "      <div class=\"form-group\">\n" +
+    "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\">\n" +
+    "      <div class=\"form-group\" >\n" +
     "         <label class=\"sr-only\">E-mail</label>\n" +
-    "         <input name=\"login\" class=\"form-control\" type=\"email\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
+    "            <span class=\"input-group-addon\"><i class=\"icon-envelope-alt\"></i></span>\n" +
+    "            <input name=\"login\" class=\"form-control\" type=\"username\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
     "         <label class=\"sr-only\">Password</label>\n" +
-    "         <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.pass.$valid}\">\n" +
+    "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
+    "            <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
     "         <button class=\"btn btn-primary login\"\n" +
     "                 ng-click=\"login()\"\n" +
     "                 ng-hide=\"loading.is('login')\"\n" +
-    "                 ng-disabled='form.$invalid'>Sign in</button>\n" +
+    "                 ng-disabled='loginForm.$invalid'\n" +
+    "\n" +
+    "                 >Sign in</button>\n" +
     "         <div class=\"working\" ng-show=\"loading.is('login')\">\n" +
     "            <i class=\"icon-refresh icon-spin\"></i>\n" +
     "            <span class=\"text\">logging in...</span>\n" +
@@ -5203,7 +5325,8 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      </a>\n" +
     "      <ul class='preferences-actions dropdown-menu'>\n" +
     "         <li><a href=\"/settings/profile\" class=\"profile\"><i class=\"icon-cogs\"></i>Preferences</a></li>\n" +
-    "         <li><a href=\"/api-docs\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>\n" +
+    "         <!--<li><a href=\"/api-docs\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>-->\n" +
+    "         <li><a href=\"http://docs.impactstory.apiary.io/\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>\n" +
     "         <li class=\"divider\"></li>\n" +
     "         <li><a class=\"logout\" ng-click=\"logout()\"><i class=\"icon-off\"></i>Log out</a></li>\n" +
     "      </ul>\n" +

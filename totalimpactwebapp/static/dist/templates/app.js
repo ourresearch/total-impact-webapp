@@ -52,6 +52,9 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
     "            <img src=\"/static/img/sloan-logo.png\"  width=\"200\"/>\n" +
     "         </a>\n" +
+    "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
+    "            <img src=\"/static/img/logos/nsf.png\"  width=\"200\"/>\n" +
+    "         </a>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
@@ -646,7 +649,7 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "<ul class=\"metric-details-list\">\n" +
     "   <li ng-repeat=\"metric in metrics | orderBy: ['-award.isHighly', '-award.audience']\" class=\"metric-detail\">\n" +
     "      <span class=\"badge-container\">\n" +
-    "         <a href=\"#\"\n" +
+    "         <span\n" +
     "               class=\"ti-badge lil-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
     "               ng-show=\"!metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
@@ -657,9 +660,9 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "               {{metric.award.engagementType}} by {{metric.award.displayAudience}}.\">\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "          </a>\n" +
+    "          </span>\n" +
     "\n" +
-    "         <a href=\"#\"\n" +
+    "         <span\n" +
     "               class=\"ti-badge big-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
     "               ng-show=\"metric.award.isHighly\"\n" +
     "               popover-trigger=\"mouseenter\"\n" +
@@ -673,12 +676,13 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "            <span class=\"modifier\">highly</span>\n" +
     "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
     "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "         </a>\n" +
+    "         </span>\n" +
     "\n" +
     "      </span>\n" +
     "      <span class=\"text\">\n" +
     "         <a class=\"value-and-name\"\n" +
-    "            href=\"\"\n" +
+    "            href=\"{{ metric.provenance_url }}\"\n" +
+    "            target=\"_blank\"\n" +
     "            popover-trigger='mouseenter'\n" +
     "            popover-placement=\"bottom\"\n" +
     "            popover=\"{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.\">\n" +

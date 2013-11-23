@@ -1,7 +1,7 @@
 <ul class="metric-details-list">
    <li ng-repeat="metric in metrics | orderBy: ['-award.isHighly', '-award.audience']" class="metric-detail">
       <span class="badge-container">
-         <a href="#"
+         <span
                class="ti-badge lil-badge {{metric.award.audience}} {{metric.award.engagementType}}"
                ng-show="!metric.award.isHighly"
                popover-trigger="mouseenter"
@@ -12,9 +12,9 @@
                {{metric.award.engagementType}} by {{metric.award.displayAudience}}.">
             <span class="engagement-type">{{metric.award.engagementType}}</span>
             <span class="audience">by {{metric.award.audience}}</span>
-          </a>
+          </span>
 
-         <a href="#"
+         <span
                class="ti-badge big-badge {{metric.award.audience}} {{metric.award.engagementType}}"
                ng-show="metric.award.isHighly"
                popover-trigger="mouseenter"
@@ -28,12 +28,13 @@
             <span class="modifier">highly</span>
             <span class="engagement-type">{{metric.award.engagementType}}</span>
             <span class="audience">by {{metric.award.audience}}</span>
-         </a>
+         </span>
 
       </span>
       <span class="text">
          <a class="value-and-name"
-            href=""
+            href="{{ metric.provenance_url }}"
+            target="_blank"
             popover-trigger='mouseenter'
             popover-placement="bottom"
             popover="{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.">

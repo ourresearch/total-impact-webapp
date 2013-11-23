@@ -43,9 +43,22 @@ angular.module('directives.forms', [])
         return formController.$valid;
       }
     }
-
   }
 
+})
+.directive('hasFocus', function() {
+    return {
+      restrict: 'A',
+      link: function(scope, elem, attr, ctrl){
+        elem.find("input")
+          .bind("focus", function(){
+            elem.addClass("has-focus")
+          })
+          .bind("blur", function(){
+            elem.removeClass("has-focus")
+          })
+      }
+    }
 })
 
 

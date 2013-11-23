@@ -6208,10 +6208,27 @@ ul {
 ul li {
   font-size: 18px;
 }
+form .form-control:focus {
+  -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
+  -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
+}
 form .form-group label {
   font-size: 20px;
 }
-form .input-group-addon {
+form div.input-group i {
+  opacity: .7;
+}
+form div.input-group.has-focus .input-group-addon {
+  background: #18bc9c;
+  border-color: #18bc9c;
+  transition: none;
+}
+form div.input-group.has-focus input {
+  transition: none;
+  border-color: #18bc9c;
+}
+form div.input-group .input-group-addon {
   border-width: 0;
 }
 form div.help-block {
@@ -6392,6 +6409,7 @@ div.modal div.modal-header {
   background: #fff;
   position: relative;
 }
+div.modal div.modal-header h3,
 div.modal div.modal-header h4 {
   border-bottom: none;
   font-weight: bolder;
@@ -6550,7 +6568,7 @@ div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup span.or {
   border-left: 1px solid #aaa;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a {
-  font-size: 16px;
+  font-size: 15px;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.signup {
   font-weight: bold;
@@ -6569,6 +6587,7 @@ div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.login:hov
   color: #333;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.logged-in-user a {
+  font-size: 16px;
   padding: 10px 10px 10px 0;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.logged-in-user a:hover {
@@ -6587,7 +6606,7 @@ div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown.open a.
   position: relative;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown.open a.dropdown-toggle i {
-  color: #333333;
+  color: #333;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown a.dropdown-toggle {
   border: 1px solid #fff;
@@ -6610,6 +6629,9 @@ div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown a.dropd
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   padding: 10px;
+}
+div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown a.dropdown-toggle i {
+  vertical-align: -1px;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.preferences.dropdown a.dropdown-toggle:hover {
   color: #cc3e00;
@@ -6739,6 +6761,10 @@ div#footer div.wrapper div.footer-col#footer-funders {
   border-right: none;
   padding-right: none;
 }
+div#footer div.wrapper div.footer-col#footer-funders a#footer-nsf-link img {
+  margin-top: 10px;
+  width: 150px;
+}
 div#footer div.wrapper div.footer-col#footer-follow img {
   float: right;
   height: 28px;
@@ -6814,7 +6840,7 @@ div.infopage.landing div#tagline div.wrapper h1 {
   letter-spacing: -2px;
   padding-bottom: 15px;
   font-family: 'rokkitt', 'georgia', serif;
-  font-weight: lighter;
+  font-weight: 400;
 }
 div.infopage.landing div#tagline div.wrapper p.subtagline {
   color: #fff;
@@ -7227,6 +7253,9 @@ div.profile-subpage div.profile-subpage-header div.wrapper h2 {
   width: 70%;
   margin: 0 auto;
 }
+div.profile-subpage div.profile-subpage-header div.wrapper h2.instr {
+  color: #fff;
+}
 div.profile-subpage.profile-add-products div.importers {
   top: 130px;
   margin-bottom: 0;
@@ -7281,7 +7310,7 @@ div.profile-header div.wrapper div.my-vitals h2.editable-name {
   font-size: 45px;
   color: #555;
   margin: 0;
-  padding-top: 30px;
+  padding-top: 0;
   float: left;
 }
 div.profile-header div.wrapper div.my-vitals div.external-usernames {
@@ -7590,7 +7619,7 @@ div.products div.products-without-metrics div.well a {
   /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 
 }
-.product a.ti-badge {
+.product .ti-badge {
   height: 24px;
   font-size: 12px;
   text-align: center;
@@ -7613,35 +7642,34 @@ div.products div.products-without-metrics div.well a {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  cursor: pointer;
   font-family: helvetica, arial, sans-serif;
   background: black;
   border: 1px solid black;
 }
-.product a.ti-badge span.audience {
+.product .ti-badge span.audience {
   display: none;
 }
-.product a.ti-badge:hover {
+.product .ti-badge:hover {
   text-decoration: none;
 }
-.product a.ti-badge.scholars {
+.product .ti-badge.scholars {
   background: #377eb8;
   border-color: #377eb8;
 }
-.product a.ti-badge.public {
+.product .ti-badge.public {
   background: #4daf4a;
   border-color: #4daf4a;
 }
-.product a.ti-badge.big-badge {
+.product .ti-badge.big-badge {
   color: #fff;
 }
-.product a.ti-badge.lil-badge {
+.product .ti-badge.lil-badge {
   background: #fff;
 }
-.product a.ti-badge.lil-badge.scholars {
+.product .ti-badge.lil-badge.scholars {
   color: #377eb8;
 }
-.product a.ti-badge.lil-badge.public {
+.product .ti-badge.lil-badge.public {
   color: #4daf4a;
 }
 .product div.popover {

@@ -124,7 +124,6 @@ angular.module('security.service', [
 
     logout: function(redirectTo) {
       currentUser = null;
-      console.log("logging out. and it's new!")
       $http.get('/user/logout').success(function(data, status, headers, config) {
         console.log("logout message: ", data)
         i18nNotifications.pushForCurrentRoute("logout.success", "success")
