@@ -41,7 +41,6 @@ angular.module('services.tiAnalytics', [
         })
         if (filtered.length) {
           myPageType = pageType
-          console.log("found something")
         }
 
       })

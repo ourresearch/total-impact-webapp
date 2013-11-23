@@ -56,12 +56,14 @@ angular.module('importers.importer')
     )
   }
 
-  var saveExternalUsername = function(url_slug, importerName, userInput, importerType){
-    if (importerType != "username") {
+  var saveExternalUsername = function(url_slug, importerName, userInput, saveUsername){
+    if (!saveUsername) {
+      console.log("no username.")
       return false
     }
     var patchData = {about:{}}
     patchData.about[importerName + "_id"] = userInput
+    console.log("trying to save this patch data: ", patchData)
 
     start("saveExternalUsernames")
     console.log("saving usernames.")
@@ -104,7 +106,8 @@ angular.module('importers.importer')
     }
   }
   $scope.products = []
-  $scope.userInput = {}
+  $scope.userInput = {
+  }
   $scope.importerHasRun = false
 
   $scope.onCancel = function(){
@@ -131,7 +134,7 @@ angular.module('importers.importer')
 
     // ok, let's do this
     console.log(
-      _.sprintf("/importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
+      _.sprintf("calling /importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
       $scope.userInput
     )
 
@@ -139,8 +142,8 @@ angular.module('importers.importer')
     Importer.saveProducts(slug, $scope.importer.endpoint, $scope.userInput)
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
-                                  $scope.userInput,
-                                  $scope.importer.inputType)
+                                  $scope.userInput.input,
+                                  $scope.importer.saveUsername)
 
 
   }

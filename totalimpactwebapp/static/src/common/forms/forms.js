@@ -43,7 +43,6 @@ angular.module('directives.forms', [])
         return formController.$valid;
       }
     }
-
   }
 
 })

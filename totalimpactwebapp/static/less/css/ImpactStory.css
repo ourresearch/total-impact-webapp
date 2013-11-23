@@ -6409,6 +6409,7 @@ div.modal div.modal-header {
   background: #fff;
   position: relative;
 }
+div.modal div.modal-header h3,
 div.modal div.modal-header h4 {
   border-bottom: none;
   font-weight: bolder;

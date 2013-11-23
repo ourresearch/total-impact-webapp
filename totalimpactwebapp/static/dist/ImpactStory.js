@@ -139,6 +139,7 @@ angular.module('importers.allTheImporters')
         name: "apiKey",
         help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
       }],
+      saveUsername: true,
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features."
     },
@@ -152,6 +153,7 @@ angular.module('importers.allTheImporters')
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
         help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
       }],
+      saveUsername: true,
       url: 'http://orcid.org',
       signupUrl: 'http://orcid.org/register',
       descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into ImpactStory.",
@@ -166,6 +168,7 @@ angular.module('importers.allTheImporters')
         inputNeeded: "username",
         help: "Your username is right after \"slideshare.net/\" in your profile's URL."
       }],
+      saveUsername: true,
       url:'http://slideshare.net',
       descr: "Slideshare is community for sharing presentations online."
     },
@@ -179,6 +182,7 @@ angular.module('importers.allTheImporters')
         help: "Your Twitter username is often written starting with @.",
         placeholder: "@username"
       }],
+      saveUsername: true,
       endpoint: "twitter_account",
       url: "http://twitter.com",
       descr: "Twitter is a social networking site for sharing short messages."
@@ -213,6 +217,7 @@ angular.module('importers.allTheImporters')
         help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
         placeholder: "http://figshare.com/authors/schamberlain/96554"
       }],
+      saveUsername: true,
       url: "http://figshare.com",
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner."
     },
@@ -441,12 +446,14 @@ angular.module('importers.importer')
     )
   }
 
-  var saveExternalUsername = function(url_slug, importerName, userInput, importerType){
-    if (importerType != "username") {
+  var saveExternalUsername = function(url_slug, importerName, userInput, saveUsername){
+    if (!saveUsername) {
+      console.log("no username.")
       return false
     }
     var patchData = {about:{}}
     patchData.about[importerName + "_id"] = userInput
+    console.log("trying to save this patch data: ", patchData)
 
     start("saveExternalUsernames")
     console.log("saving usernames.")
@@ -489,7 +496,8 @@ angular.module('importers.importer')
     }
   }
   $scope.products = []
-  $scope.userInput = {}
+  $scope.userInput = {
+  }
   $scope.importerHasRun = false
 
   $scope.onCancel = function(){
@@ -516,7 +524,7 @@ angular.module('importers.importer')
 
     // ok, let's do this
     console.log(
-      _.sprintf("/importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
+      _.sprintf("calling /importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
       $scope.userInput
     )
 
@@ -524,8 +532,8 @@ angular.module('importers.importer')
     Importer.saveProducts(slug, $scope.importer.endpoint, $scope.userInput)
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
-                                  $scope.userInput,
-                                  $scope.importer.inputType)
+                                  $scope.userInput.input,
+                                  $scope.importer.saveUsername)
 
 
   }
@@ -573,6 +581,10 @@ angular.module( 'infopages', [
         controller: 'aboutPageCtrl'
       })
       .when('/collection/:cid', {
+        templateUrl: 'infopages/collection.tpl.html',
+        controller: 'collectionPageCtrl'
+      })
+      .when('/item/*', {
         templateUrl: 'infopages/collection.tpl.html',
         controller: 'collectionPageCtrl'
       })
@@ -2468,7 +2480,6 @@ angular.module('directives.forms', [])
         return formController.$valid;
       }
     }
-
   }
 
 })
@@ -3662,7 +3673,6 @@ angular.module('services.tiAnalytics', [
         })
         if (filtered.length) {
           myPageType = pageType
-          console.log("found something")
         }
 
       })
