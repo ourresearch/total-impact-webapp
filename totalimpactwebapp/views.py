@@ -701,6 +701,11 @@ def embed_test_widget():
 @app.route("/embed/v1/impactstory.js")
 def impactstory_dot_js():
 
+
+    # makin' it easy?
+    return send_file("static/js/widget.js", mimetype="application/javascript")
+
+
     # not using render_template_custom() here, since this is a js page and is Special.
     badges_template = render_template("js-template-badges.html").replace("\n", "").replace("'", "&apos;")
 
@@ -723,7 +728,7 @@ def impactstory_dot_js():
     and http://www.ietf.org/rfc/rfc4329.txt
      """
     resp.headers["Content-Type"] = "application/javascript; charset=utf-8"
-    return resp
+
 
 
 @app.route("/widget-analytics", methods=['GET'])

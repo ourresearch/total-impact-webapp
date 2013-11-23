@@ -464,7 +464,8 @@ div.main-header {
                   padding-left: 1px;
                   a.dropdown-toggle {
                      i {color: #333;}
-                     border-color: #cccccc;
+//                     background: #fafafa;
+                     border-color: #ddd;
                      position:relative;
                   }
                }
@@ -476,18 +477,19 @@ div.main-header {
                   }
                   background: #fff;
                   z-index: 1000;
-                  .border-radius(3px, 0, 0, 3px);
-                  padding:10px;
+                  .border-radius(5px, 0, 0, 0px);
+                  padding:5px 10px 10px 10px;
                   &:hover{color: darken(@linkColor, 10%)}
                }
                ul.dropdown-menu {
                   top: 31px;
-                  border: 1px solid #cccccc;
+                  border: 1px solid #ddd;
+//                  background: #fafafa;
                   right: 0;
                   left: auto;
                   .drop-shadow(0, 0, 0, 0);
                   z-index: 10;
-                  .border-radius(0, 3px, 3px, 3px);
+                  .border-radius(0, 5px, 5px, 0);
                   min-width: 150px;
                   padding: 10px 0;
 
