@@ -556,8 +556,7 @@ angular.module('importers.importer')
     Importer.saveProducts(slug, $scope.importer.endpoint, cleanInputs)
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
-                                  cleanInputs,
-                                  $scope.userInput.input,
+                                  cleanInputs.input,
                                   $scope.importer.saveUsername)
 
 
