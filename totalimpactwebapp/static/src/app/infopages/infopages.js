@@ -2,8 +2,26 @@ angular.module( 'infopages', [
     'security',
     'services.page'
   ])
+  .factory("InfoPages", function ($http) {
+    var getProvidersInfo = function () {
+      return $http.get("/providers").then(
+        function (resp) {
+          return _.filter(resp.data, function (provider) {
+            // only show providers with a description
+            return !!provider.descr
+          })
+        },
+        function (resp) {
+          console.log("/providers failed.")
+        }
+      )
+    }
+    return {
+      'getProvidersInfo': getProvidersInfo
+    }
+  })
 
-  .config(['$routeProvider', function($routeProvider, security) {
+  .config(['$routeProvider', function($routeProvider, InfoPages, security) {
     $routeProvider
 
       .when('/', {
@@ -17,7 +35,12 @@ angular.module( 'infopages', [
       })
       .when('/faq', {
         templateUrl: 'infopages/faq.tpl.html',
-        controller: 'faqPageCtrl'
+        controller: 'faqPageCtrl',
+        resolve: {
+          providersInfo: function(InfoPages){
+            return InfoPages.getProvidersInfo()
+          }
+        }
       })
       .when('/about', {
         templateUrl: 'infopages/about.tpl.html',
@@ -37,18 +60,9 @@ angular.module( 'infopages', [
     Page.setTitle("Share the full story of your research impact.")
   })
 
-  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, $http ) {
+  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
     Page.setTitle("FAQ")
-    $http.get("/providers").then(
-      function(resp){
-        $scope.providers = _.filter(resp.data, function(provider){
-          // only show providers with a description
-          return !!provider.descr
-        })
-      },
-      function(resp){console.log("/providers failed.")}
-    )
-
+    $scope.providers = providersInfo
   })
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
@@ -59,6 +73,6 @@ angular.module( 'infopages', [
   .controller( 'collectionPageCtrl', function aboutPageCtrl ( $scope, Page ) {
     Page.setTitle("Collections are retired")
 
-  })
+  });
 
-;
+

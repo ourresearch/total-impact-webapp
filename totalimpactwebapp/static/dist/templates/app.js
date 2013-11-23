@@ -42,7 +42,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "            <li><a href=\"/api-docs\">API/embed</a></li>\n" +
     "            <li><a href=\"/faq\">FAQ</a></li>\n" +
     "            <!--<li><a href=\"/about#contact\">Contact us</a></li>-->\n" +
-    "            <li><a href=\"/faq#tos\">Terms of use</a></li>\n" +
+    "            <li><a href=\"/faq#tos\" target=\"_self\">Terms of use</a></li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
     "\n" +
@@ -287,7 +287,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <p><a href=\"http://altmetrics.org/manifesto/\">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">altmetrics library</a> on Mendeley for a growing list of relevant research.\n" +
     "\n" +
     "\n" +
-    "   <h3 id=\"whichartifacts\">which identifiers are supported?</h3>\n" +
+    "   <!--<h3 id=\"whichartifacts\">which identifiers are supported?</h3>\n" +
     "   <table class=\"permitted-artifact-ids\" border=1>\n" +
     "           <tr><th>artifact type</th><th>host</th><th>supported<br>ID format</th><th>example (id-type:id)</th><tr>\n" +
     "           <tr><td>published article</td><td>an article with a DOI</td><td>DOI</td><td><b>doi:</b>10.1371/journal.pcbi.1000361</td></tr>\n" +
@@ -296,7 +296,10 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "           <tr><td>software</td><td>GitHub</td><td>URL</td><td><b>url:</b>https://github.com/egonw/biostar-central</td></tr>\n" +
     "           <tr><td>slides</td><td>SlideShare</td><td>URL</td><td><b>url:</b>http://www.slideshare.net/phylogenomics/eisenall-hands</td></tr>\n" +
     "           <tr><td>generic</td><td>A conference paper, website resource, etc.</td><td>URL</td><td><b>url:</b>http://opensciencesummit.com/program/</td></tr>\n" +
-    "   </table>\n" +
+    "   </table>-->\n" +
+    "\n" +
+    "   <h3 id=\"tos\">terms of use</h3>\n" +
+    "   <p>Due to agreements we have made with data providers, you may not scrape this website.  Use our <a href=\"/api-docs\">JavaScript widget or API</a> instead.</p>\n" +
     "\n" +
     "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
@@ -425,9 +428,6 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <h3 id=\"suggestion\">I have a suggestion!</h3>\n" +
     "\n" +
     "   <p><b>We want to hear it.</b> Send it to us at <a href=\"http://twitter.com/#!/ImpactStory\">@ImpactStory</a> (or via email to team@impactstory.org).\n" +
-    "\n" +
-    "   <h3 id=\"tos\">terms of use</h3>\n" +
-    "   <p>Due to agreements we have made with data providers, you may not scrape this website.  Use our <a href=\"/api-docs\">JavaScript widget or API</a> instead.</p>\n" +
     "\n" +
     "\n" +
     "</div><!-- end wrapper -->\n" +
