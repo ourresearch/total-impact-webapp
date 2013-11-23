@@ -1,26 +1,18 @@
 (function () {
 
-    /*********************************
-    *
-    * insert global vars from server
-    *
-    *********************************/
-
-    //
-    //
-/******************************************************************************
- *
- *  Set static global js vars; can be used anywhere. This is STATIC vars...
- *  things that don't change once flask starts up (generally just env vars).
- *
- ******************************************************************************/
-
-
 // set various roots
 var api_root=setRoot('http://total-impact-core.herokuapp.com', true)
-var api_root_pretty=setRoot('http://api.impactstory.org')
+
+
 var webapp_root=setRoot('http://total-impact-webapp.herokuapp.com', true)
 var webapp_root_pretty=setRoot('http://impactstory.org')
+
+
+
+// FOR TESTING: COMMENT OUT IN PRODUCTION.
+var api_root=setRoot('http://total-impact-core-staging.herokuapp.com', true)
+var webapp_root=setRoot('http://localhost:5000', true)
+var webapp_root_pretty=setRoot('http://localhost:5000')
 
 
 // set other globals
@@ -3036,7 +3028,7 @@ function ItemController($){
         stylesheet.media = "all";
         document.getElementsByTagName("head")[0].appendChild(stylesheet);
     }
-    requestStylesheet(webapp_root + "/static/css/embed.css");
+    requestStylesheet(webapp_root + "/static/badge-embed.css");
 
 
     /*********************************

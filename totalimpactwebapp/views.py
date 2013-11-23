@@ -700,34 +700,14 @@ def embed_test_widget():
 @app.route("/embed/impactstory.js")
 @app.route("/embed/v1/impactstory.js")
 def impactstory_dot_js():
+    """
+    To use this in production, make sure the root vars at the top of widget.js
+    are pointing to the correct server. This must be done manually before
+    deploying, if you've been testing locally.
 
-
-    # makin' it easy?
+    """
     return send_file("static/js/widget.js", mimetype="application/javascript")
 
-
-    # not using render_template_custom() here, since this is a js page and is Special.
-    badges_template = render_template("js-template-badges.html").replace("\n", "").replace("'", "&apos;")
-
-    # First build the concatenated js file for the widget. Building makes a file.
-    # Then open the file and put it in the template to return.
-    js_widget.build() # always build this, whether dev in dev env or not
-    libs = open(os.path.dirname(__file__) + "/static/js/widget.js", "r").read()
-
-    # not using render_template_custom() here, since this is a js page and is Special.
-    rendered = render_template(
-        "embed/impactstory.js",
-        badges_template=badges_template,
-        libs=unicode(libs, "utf-8")
-    )
-    resp = make_response(rendered)
-    """
-    There is no standard way to indicate you're sending back javascript;
-    This seems the most recommended one, though. See
-    http://stackoverflow.com/questions/2706290/why-write-script-type-text-javascript-when-the-mime-type-is-set-by-the-serve
-    and http://www.ietf.org/rfc/rfc4329.txt
-     """
-    resp.headers["Content-Type"] = "application/javascript; charset=utf-8"
 
 
 
