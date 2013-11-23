@@ -112,9 +112,13 @@ angular.module("profile", [
      link: function($scope,el){
        var re = /^\/(\w+)\/\w+/
        var m = re.exec($location.path())
-       $scope.url_slug = null
-       if (m){
-          $scope.url_slug = m[1]
+       var slug = null
+
+       if (!m || m[1] == "embed"){
+         $scope.url_slug = null
+       }
+       else {
+         $scope.url_slug = m[1]
        }
      }
    }

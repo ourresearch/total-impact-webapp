@@ -23,6 +23,7 @@ from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
 from totalimpactwebapp.user import make_genre_heading_products
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
+from totalimpactwebapp import views_helpers
 
 import newrelic.agent
 
@@ -143,9 +144,6 @@ def get_user_for_response(id, request, include_products=True):
         abort(404, "That user doesn't exist.")
 
     return retrieved_user
-
-
-
 
 
 
@@ -413,6 +411,16 @@ def user_products_modify(id):
 @app.route("/user/<user_id>/product/<tiid>", methods=['GET'])
 def user_product(user_id, tiid):
 
+    # the fake "embed" user supports requests from the old badges widget.
+    embed_product = views_helpers.get_product_for_embed_user(
+        user_id,
+        tiid,
+        g.api_root,
+        os.getenv("API_ADMIN_KEY")
+    )
+    if embed_product is not None:
+        return json_resp_from_thing(embed_product)
+
     user = get_user_for_response(user_id, request)
     try:
         requested_product = [product for product in user.products if product["_id"] == tiid][0]
@@ -644,7 +652,21 @@ def images():
     return send_file(path)
 
 
-
+@app.route('/item/<namespace>/<path:nid>', methods=['GET'])
+def item_page(namespace, nid):
+    url = "{api_root}/v1/tiid/{namespace}/{nid}?api_admin_key={api_admin_key}".format(
+        api_root=g.api_root,
+        namespace=namespace,
+        nid=nid,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    print "making request with this url: ", url
+    r = requests.get(url)
+    try:
+        tiid = r.json()["tiid"]
+    except KeyError:
+        abort(404, "Sorry, we've got no record for that item.")
+    return redirect("/embed/product/" + tiid, 301)
 
 
 
