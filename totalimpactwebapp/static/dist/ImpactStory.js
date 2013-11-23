@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-21
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-22
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -173,9 +173,9 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "username",
         help: "Your Twitter username is often written starting with @.",
-        placeholder: "@username"
+        placeholder: "@username",
+        inputCleanupFunction: function(x) {return('@'+x.replace('@', ''))}
       }],
-      massageFunction: function() {console.log(this.userInput, '@' + this.userInput.replace('@', '')); return('@' + this.userInput.replace('@', ''))},
       endpoint: "twitter_account",
       url: "http://twitter.com",
       descr: "Twitter is a social networking site for sharing short messages."
@@ -208,7 +208,8 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "author page URL",
         help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
-        placeholder: "http://figshare.com/authors/schamberlain/96554"
+        placeholder: "http://figshare.com/authors/schamberlain/96554",
+        inputCleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}        
       }],
       url: "http://figshare.com",
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner."
@@ -333,13 +334,6 @@ angular.module('importers.allTheImporters')
     return '/static/img/logos/' + urlStyleName + '.png';
   }
 
-  var makeMassageFunction = function(importer) {
-  if (inputObject.massageFunction) {
-    return inputObject.massageFunction
-  }
-  else {
-    return (function(x) return(x))
-  }
 
   var makeEndpoint = function(importer) {
     if (importer.endpoint) {
@@ -469,7 +463,7 @@ angular.module('importers.importer')
     patchData.about[importerName + "_id"] = userInput
 
     start("saveExternalUsernames")
-    console.log("saving usernames.")
+    console.log("saving usernames")
     UsersAbout.patch(
       {id:url_slug},
       patchData,
@@ -477,14 +471,20 @@ angular.module('importers.importer')
         finish("saveExternalUsernames")
       }
     )
-
-
-
-
   }
 
+  var cleanInput = function(userInput, inputObjects){
+    var cleanedUserInput = _.map(userInput, function(userInputValue, inputName) {
+      var relevantInputObject = _.first(_.where(inputObjects, {name:inputName}))
+      var relevantFunction = relevantInputObject.inputCleanupFunction || function(x) {return(x)}
+      return(relevantFunction(userInputValue))
+    })
+    console.log(cleanedUserInput)
+    return(_.object(_.keys(userInput), cleanedUserInput))
+  }
 
   return {
+    'cleanInput': cleanInput,
     'saveProducts': saveProducts,
     'saveExternalUsername': saveExternalUsername,
     setOnImportCompletion: function(callback){
@@ -540,17 +540,11 @@ angular.module('importers.importer')
       $scope.userInput
     )
 
-    var userInputAfterCleanup = $scope.importer.massageFunction()
-
-    console.log(
-      _.sprintf("/importer/%s updating '%s' with cleaned userInput:", $scope.importer.endpoint, slug),
-      userInputAfterCleanup
-    )
-
-    Importer.saveProducts(slug, $scope.importer.endpoint, userInputAfterCleanup)
+    var cleanInputs = Importer.cleanInput($scope.userInput, $scope.importer.inputs)
+    Importer.saveProducts(slug, $scope.importer.endpoint, cleanInputs)
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
-                                  $scope.userInput,
+                                  cleanInputs,
                                   $scope.importer.inputType)
 
 

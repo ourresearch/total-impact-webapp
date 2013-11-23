@@ -59,9 +59,9 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "username",
         help: "Your Twitter username is often written starting with @.",
-        placeholder: "@username"
+        placeholder: "@username",
+        inputCleanupFunction: function(x) {return('@'+x.replace('@', ''))}
       }],
-      massageFunction: function() {console.log(this.userInput, '@' + this.userInput.replace('@', '')); return('@' + this.userInput.replace('@', ''))},
       endpoint: "twitter_account",
       url: "http://twitter.com",
       descr: "Twitter is a social networking site for sharing short messages."
@@ -94,7 +94,8 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "author page URL",
         help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
-        placeholder: "http://figshare.com/authors/schamberlain/96554"
+        placeholder: "http://figshare.com/authors/schamberlain/96554",
+        inputCleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}        
       }],
       url: "http://figshare.com",
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner."
@@ -219,13 +220,6 @@ angular.module('importers.allTheImporters')
     return '/static/img/logos/' + urlStyleName + '.png';
   }
 
-  var makeMassageFunction = function(importer) {
-  if (inputObject.massageFunction) {
-    return inputObject.massageFunction
-  }
-  else {
-    return (function(x) return(x))
-  }
 
   var makeEndpoint = function(importer) {
     if (importer.endpoint) {

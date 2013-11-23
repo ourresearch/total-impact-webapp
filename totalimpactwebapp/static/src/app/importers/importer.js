@@ -64,7 +64,7 @@ angular.module('importers.importer')
     patchData.about[importerName + "_id"] = userInput
 
     start("saveExternalUsernames")
-    console.log("saving usernames.")
+    console.log("saving usernames")
     UsersAbout.patch(
       {id:url_slug},
       patchData,
@@ -72,14 +72,20 @@ angular.module('importers.importer')
         finish("saveExternalUsernames")
       }
     )
-
-
-
-
   }
 
+  var cleanInput = function(userInput, inputObjects){
+    var cleanedUserInput = _.map(userInput, function(userInputValue, inputName) {
+      var relevantInputObject = _.first(_.where(inputObjects, {name:inputName}))
+      var relevantFunction = relevantInputObject.inputCleanupFunction || function(x) {return(x)}
+      return(relevantFunction(userInputValue))
+    })
+    console.log(cleanedUserInput)
+    return(_.object(_.keys(userInput), cleanedUserInput))
+  }
 
   return {
+    'cleanInput': cleanInput,
     'saveProducts': saveProducts,
     'saveExternalUsername': saveExternalUsername,
     setOnImportCompletion: function(callback){
@@ -135,17 +141,11 @@ angular.module('importers.importer')
       $scope.userInput
     )
 
-    var userInputAfterCleanup = $scope.importer.massageFunction()
-
-    console.log(
-      _.sprintf("/importer/%s updating '%s' with cleaned userInput:", $scope.importer.endpoint, slug),
-      userInputAfterCleanup
-    )
-
-    Importer.saveProducts(slug, $scope.importer.endpoint, userInputAfterCleanup)
+    var cleanInputs = Importer.cleanInput($scope.userInput, $scope.importer.inputs)
+    Importer.saveProducts(slug, $scope.importer.endpoint, cleanInputs)
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
-                                  $scope.userInput,
+                                  cleanInputs,
                                   $scope.importer.inputType)
 
 
