@@ -62,7 +62,8 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "username",
         help: "Your Twitter username is often written starting with @.",
-        placeholder: "@username"
+        placeholder: "@username",
+        inputCleanupFunction: function(x) {return('@'+x.replace('@', ''))}
       }],
       saveUsername: true,
       endpoint: "twitter_account",
@@ -97,7 +98,8 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "author page URL",
         help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
-        placeholder: "http://figshare.com/authors/schamberlain/96554"
+        placeholder: "http://figshare.com/authors/schamberlain/96554",
+        inputCleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}        
       }],
       saveUsername: true,
       url: "http://figshare.com",
@@ -106,11 +108,25 @@ angular.module('importers.allTheImporters')
 
 
     {
+      displayName: "WordPress",
+      inputs: [{
+        inputType: "idList",
+        inputNeeded: "WordPress.com  URLs",
+        help: "Paste the URLs for WordPress.com blogs.  The URLs can be on custom domains (like http://blog.impactstory.org), as long as the blogs are hosted on WordPress.com.",
+        placeholder: "http://retractionwatch.wordpress.com"
+      }],
+      endpoint: "wordpresscom",            
+      url: "http://wordpress.com",
+      descr: "WordPress.com is a blog hosting site."
+    },    
+
+
+    {
       displayName: "YouTube",
       inputs: [{
         inputType: "idList",
         inputNeeded: "URLs",
-        help: "Copy the URL for the video you want to add, then paste it here.",
+        help: "Copy the URLs for the videos you want to add, then paste them here.",
         placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
       }],
       endpoint: "urls",
@@ -152,8 +168,6 @@ angular.module('importers.allTheImporters')
       inputs: [{
         inputType: "idList",
         inputNeeded: "DOIs",
-        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
-        placeholder: "doi:10.5061/dryad.example",
         help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
         placeholder: "http://doi.org/10.example/example"
       }],
@@ -167,8 +181,6 @@ angular.module('importers.allTheImporters')
       inputs: [{
         inputType: "idList",
         inputNeeded: "DOIs",
-        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
-        placeholder: "doi:10.5061/dryad.example",
         help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
         placeholder: "http://doi.org/10.example/example"
       }],
@@ -208,6 +220,12 @@ angular.module('importers.allTheImporters')
     return '/static/img/logos/' + urlStyleName + '.png';
   }
 
+  var makeLogoPath = function(displayName) {
+    var urlStyleName = displayName.toLowerCase().replace(" ", "-")
+    return '/static/img/logos/' + urlStyleName + '.png';
+  }
+
+
   var makeEndpoint = function(importer) {
     if (importer.endpoint) {
       return importer.endpoint
@@ -232,8 +250,8 @@ angular.module('importers.allTheImporters')
     // @todo: fix core /importer to support new obj inputs w 'primary' key.
 //    var defaultInputName = "primary"
     var defaultInputName = "input"
-
     inputObject.name || (inputObject.name = defaultInputName)
+
     return inputObject
   }
 
