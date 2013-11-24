@@ -64,7 +64,7 @@ angular.module('settings', [
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
-          security.currentUser = resp.about; // update the current authenticated user.
+          security.setCurrentUser(resp.about) // update the current authenticated user.
           i18nNotifications.pushForNextRoute('settings.profile.change.success', 'success');
           $scope.home();
         }
@@ -109,7 +109,7 @@ angular.module('settings', [
         {id: $scope.user.id, idType:"userid"},
         {about: $scope.user},
         function(resp) {
-          security.currentUser = resp.about; // update the current authenticated user.
+          security.setCurrentUser(resp.about) // update the current authenticated user.
           i18nNotifications.pushForNextRoute('settings.url.change.success', 'success');
           $location.path('/' + resp.about.url_slug)
         }
@@ -127,7 +127,7 @@ angular.module('settings', [
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
-          security.currentUser = resp.about; // update the current authenticated user.
+          security.setCurrentUser(resp.about) // update the current authenticated user.
           i18nNotifications.pushForNextRoute(
             'settings.email.change.success',
             'success',

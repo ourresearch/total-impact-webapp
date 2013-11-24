@@ -171,6 +171,10 @@ angular.module('security.service', [
       return currentUser
     },
 
+    setCurrentUser: function(user){
+      currentUser = user
+    },
+
     // Is the current user authenticated?
     isAuthenticated: function(){
       return !!currentUser;
