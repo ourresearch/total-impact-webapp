@@ -20,6 +20,10 @@ angular.module("services.page")
      }
    }
 
+    var isInFrame = function(){
+      return window.self === window.top
+    }
+
 
 
    var headers = {
@@ -43,8 +47,12 @@ angular.module("services.page")
      getBodyClasses: function(){
         return {
           'show-tab-on-bottom': uservoiceTabLoc == "bottom",
-          'show-tab-on-right': uservoiceTabLoc == "right"
+          'show-tab-on-right': uservoiceTabLoc == "right",
+          'embedded': isInFrame()
         }
+     },
+     getBaseUrl: function(){
+       return window.location.origin
      },
 
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},

@@ -117,6 +117,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         tooltip=\"View your profile\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
     "         {{currentUser.given_name}}\n" +
+    "         {{currentUser.surname}}\n" +
     "      </a>\n" +
     "   </li>\n" +
     "\n" +
@@ -133,7 +134,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         ng-click=\"logout()\"\n" +
     "         tooltip=\"Log out\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
-    "         <i class=\"icon-off\"></i>\n" +
+    "         <i class=\"icon-signout\"></i>\n" +
     "      </a>\n" +
     "   </li>\n" +
     "\n" +
@@ -143,5 +144,6 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
     "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
     "   </li>\n" +
-    "</ul>");
+    "</ul>\n" +
+    "");
 }]);

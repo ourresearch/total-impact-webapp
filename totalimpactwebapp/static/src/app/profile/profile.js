@@ -68,7 +68,7 @@ angular.module("profile", [
 })
 
 
-.controller('ProfileCtrl', function ($scope, $routeParams, $http, UsersProducts, Product, UserProfile, Page)
+.controller('ProfileCtrl', function ($scope, $routeParams, $modal, $http, UsersProducts, Product, UserProfile, Page)
   {
 
     var userSlug = $routeParams.url_slug;
@@ -83,6 +83,17 @@ angular.module("profile", [
     $scope.user = UserProfile.loadUser($scope, userSlug);
     $scope.currentUserIsProfileOwner = UserProfile.slugIsCurrentUser(userSlug);
 
+    $scope.openProfileEmbedModal = function(){
+      $modal.open({
+        templateUrl: "profile/profile-embed-modal.tpl.html",
+        controller: "profileEmbedModalCtrl",
+        resolve: {
+          userSlug: function($q){ // pass the userSlug to modal controller.
+            return $q.when(userSlug)
+          }
+        }
+      })
+    }
 
 
     $scope.getSortScore = function(product) {
@@ -104,6 +115,12 @@ angular.module("profile", [
     );
 
 })
+  .controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
+    console.log("user slug is: ", userSlug)
+    $scope.userSlug = userSlug;
+    $scope.baseUrl = Page.getBaseUrl()
+  })
+
   .directive("backToProfile",function($location){
    return {
      restrict: 'A',

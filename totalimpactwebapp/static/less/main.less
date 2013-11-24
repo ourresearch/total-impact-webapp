@@ -186,6 +186,94 @@ div.modal {
    bottom: auto;
    left: 50%;
    margin: -250px 0 0 -300px;
+   padding-bottom: 20px;
+
+
+   div.modal-header {
+      background: #fafafa;
+      background: #fff;
+      position: relative;
+      h3, h4 {
+         border-bottom: none;
+         font-weight: bolder;
+         text-align:center;
+         color:  #555;
+      }
+      a.dismiss {
+         position: absolute;
+         top: 22px;
+         right: 30px;
+         color: #ddd;
+         font-size: 25px;
+      }
+
+   }
+   div.modal-body {
+      position: relative;
+      padding: 20px 50px;
+
+      textarea {
+         width: 100%;
+         font-size: 18px;
+         color: #555;
+         font-family: consolas, menlo, monaco, monospace;
+         padding: 10px;
+         border: 2px solid #999;
+         .border-radius(3px, 3px, 3px, 3px);
+         background: #fafafa;
+      }
+
+
+      ul.modal-notifications {
+         text-align: center;
+         li{
+            .border-radius(0, 0, 0, 0);
+            margin: 0 -10px;
+            padding: 0;
+            border: none;
+            background: #fff;
+            &.alert-danger {
+               color: @alert-danger-bg;
+            }
+            &.alert-success {
+               color: @alert-success-bg;
+            }
+         }
+      }
+   }
+
+   .modal-footer {
+      border:none;
+      text-align:center;
+      margin-top: 0;
+      button {
+         min-width: 150px;
+      }
+   }
+
+
+   // stuff for particular modals:
+
+   &.error {
+      div.modal-header {
+         background: #BD362F;
+         color: #fff;
+      }
+      border: 2px solid #BD362F;
+   }
+
+   &#edit-not-logged-in {
+      div.modal-body {
+         span.desc{
+            width: 24%;
+            float:left;
+         }
+         span.news {
+            float:left;
+            width:76%;
+         }
+      }
+   }
 
    &.creds {
       width:  400px;
@@ -228,66 +316,6 @@ div.modal {
             display:inline-block;
             color: #999;
             font-size: 14px;
-         }
-      }
-   }
-
-   div.modal-body {
-      position: relative;
-      ul.modal-notifications {
-         text-align: center;
-         li{
-            .border-radius(0, 0, 0, 0);
-            margin: 0 -10px;
-            padding: 0;
-            border: none;
-            background: #fff;
-            &.alert-danger {
-               color: @alert-danger-bg;
-            }
-            &.alert-success {
-               color: @alert-success-bg;
-            }
-         }
-      }
-   }
-   div.modal-header {
-      background: #fafafa;
-      background: #fff;
-      position: relative;
-      h3, h4 {
-         border-bottom: none;
-         font-weight: bolder;
-         text-align:center;
-         color:  #555;
-      }
-      a.dismiss {
-         position: absolute;
-         top: 22px;
-         right: 30px;
-         color: #ddd;
-         font-size: 25px;
-      }
-
-   }
-
-   &.error {
-      div.modal-header {
-         background: #BD362F;
-         color: #fff;
-      }
-      border: 2px solid #BD362F;
-   }
-
-   &#edit-not-logged-in {
-      div.modal-body {
-         span.desc{
-            width: 24%;
-            float:left;
-         }
-         span.news {
-            float:left;
-            width:76%;
          }
       }
    }
@@ -459,8 +487,8 @@ div.main-header {
             }
             &.preferences {
                a.preference {
-                  padding: 2px;
-                  margin: 0 5px;
+                  padding: 2px 0;
+                  margin: 0 2px;
                   font-size: 16px;
                   &.logout { font-size: 15px;}
                }
@@ -612,6 +640,7 @@ div.tooltip {
    div.tooltip-inner {
       padding-top:8px;
       padding-bottom:8px;
+      background: #333;
    }
    &.click-to-visit-profile {
       width: auto;

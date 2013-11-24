@@ -6,6 +6,7 @@
          tooltip="View your profile"
          tooltip-placement="bottom">
          {{currentUser.given_name}}
+         {{currentUser.surname}}
       </a>
    </li>
 
@@ -22,7 +23,7 @@
          ng-click="logout()"
          tooltip="Log out"
          tooltip-placement="bottom">
-         <i class="icon-off"></i>
+         <i class="icon-signout"></i>
       </a>
    </li>
 

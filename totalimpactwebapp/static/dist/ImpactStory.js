@@ -1473,7 +1473,7 @@ angular.module("profile", [
 })
 
 
-.controller('ProfileCtrl', function ($scope, $routeParams, $http, UsersProducts, Product, UserProfile, Page)
+.controller('ProfileCtrl', function ($scope, $routeParams, $modal, $http, UsersProducts, Product, UserProfile, Page)
   {
 
     var userSlug = $routeParams.url_slug;
@@ -1488,6 +1488,17 @@ angular.module("profile", [
     $scope.user = UserProfile.loadUser($scope, userSlug);
     $scope.currentUserIsProfileOwner = UserProfile.slugIsCurrentUser(userSlug);
 
+    $scope.openProfileEmbedModal = function(){
+      $modal.open({
+        templateUrl: "profile/profile-embed-modal.tpl.html",
+        controller: "profileEmbedModalCtrl",
+        resolve: {
+          userSlug: function($q){ // pass the userSlug to modal controller.
+            return $q.when(userSlug)
+          }
+        }
+      })
+    }
 
 
     $scope.getSortScore = function(product) {
@@ -1509,6 +1520,12 @@ angular.module("profile", [
     );
 
 })
+  .controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
+    console.log("user slug is: ", userSlug)
+    $scope.userSlug = userSlug;
+    $scope.baseUrl = Page.getBaseUrl()
+  })
+
   .directive("backToProfile",function($location){
    return {
      restrict: 'A',
@@ -3470,6 +3487,10 @@ angular.module("services.page")
      }
    }
 
+    var isInFrame = function(){
+      return window.self === window.top
+    }
+
 
 
    var headers = {
@@ -3493,8 +3514,12 @@ angular.module("services.page")
      getBodyClasses: function(){
         return {
           'show-tab-on-bottom': uservoiceTabLoc == "bottom",
-          'show-tab-on-right': uservoiceTabLoc == "right"
+          'show-tab-on-right': uservoiceTabLoc == "right",
+          'embedded': isInFrame()
         }
+     },
+     getBaseUrl: function(){
+       return window.location.origin
      },
 
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
@@ -3806,7 +3831,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -3847,7 +3872,6 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "            </li>\n" +
     "\n" +
     "\n" +
-    "            <li><a href=\"/api-docs\">API/embed</a></li>\n" +
     "            <li><a href=\"/faq\">FAQ</a></li>\n" +
     "            <!--<li><a href=\"/about#contact\">Contact us</a></li>-->\n" +
     "            <li><a href=\"/faq#tos\" target=\"_self\">Terms of use</a></li>\n" +
@@ -3973,7 +3997,7 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "      <p>ImpactStory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
     "      <ul>\n" +
-    "         <li><b>Open metrics</b>: Our <a href=\"http://impactstory.org/api-docs\">data</a> (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
+    "         <li><b>Open metrics</b>: Our data (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
     "         <li><b>With context</b>: To help researcher move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
     "         <li><b>Diverse products</b>: Datasets, software, slides, and other research products are presented as an integrated section of a comprehensive impact report, alongside articles&mdash;each genre a first-class citizen, each making its own kind of impact.</li>\n" +
     "      </ul>\n" +
@@ -4043,7 +4067,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <p>ImpactStory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
     "   <ul>\n" +
-    "      <li><b>Open metrics</b>: Our <a href=\"http://impactstory.org/api-docs\">data</a> (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
+    "      <li><b>Open metrics</b>: Our data (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
     "      <li><b>With context</b>: To help researcher move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
     "      <li><b>Diverse products</b>: Datasets, software, slides, and other research products are presented as an integrated section of a comprehensive impact report, alongside articles--each genre a first-class citizen, each making its own kind of impact.</li>\n" +
     "   </ul>\n" +
@@ -4107,7 +4131,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   </table>-->\n" +
     "\n" +
     "   <h3 id=\"tos\">terms of use</h3>\n" +
-    "   <p>Due to agreements we have made with data providers, you may not scrape this website.  Use our <a href=\"/api-docs\">JavaScript widget or API</a> instead.</p>\n" +
+    "   <p>Due to agreements we have made with data providers, you may not scrape this website -- use the embed or download funtionality instead.</p>\n" +
     "\n" +
     "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
@@ -4189,11 +4213,6 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <p>An option to restrict the displayed reports to Fully Open metrics — those suitable for commercial use — is on the To Do list.\n" +
     "   <p>The ImpactStory software itself is fully open source under an MIT license. <a href=\"https://github.com/total-impact\">GitHub</a>\n" +
     "\n" +
-    "   <h3 id=\"api\">does ImpactStory have an api?</h3>\n" +
-    "\n" +
-    "   <p>yes! ImpactStory is built on its own api, and others may build on it too.\n" +
-    "   <p>We also have javascript to make embedding ImpactStory data very easy.  We'll document it soon: contact us for details in the meantime.\n" +
-    "\n" +
     "\n" +
     "   <h3 id=\"who\">who developed ImpactStory?</h3>\n" +
     "\n" +
@@ -4266,7 +4285,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "         </li>\n" +
     "         <li class=\"middle\">\n" +
     "            <h3 id=\"embed-metrics-anywhere\"><i class=\"icon-suitcase icon-2x\"></i><span class=\"text\">Embed them anywhere</span></h3>\n" +
-    "            <p>Drop ImpactStory's embeddable <a href=\"/api-docs\">Javascript widget</a> into your own online CV or website to show the impacts of your projects.</p>\n" +
+    "            <p>Drop ImpactStory's embeddable code into your own online CV or website to show the impacts of your work.</p>\n" +
     "         </li>\n" +
     "         <li>\n" +
     "            <h3 id=\"its-open\"><i class=\"icon-wrench icon-2x\"></i><span class=\"text\">Open data,<br> open source.</span></h3>\n" +
@@ -4593,6 +4612,21 @@ angular.module("profile/profile-add-products.tpl.html", []).run(["$templateCache
     "</div>");
 }]);
 
+angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile/profile-embed-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Embed profile</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body\">\n" +
+    "   <p>To embed this profile, copy and paste the code snippet below into the source HTML of your page:</p>\n" +
+    "   <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl }}/{{ userSlug }}\" width=\"100%\" height=\"600\"&lt;/iframe&gt;</textarea>\n" +
+    "</div>\n" +
+    "<!--<div class=\"modal-footer\">\n" +
+    "   <button class=\"btn btn-primary ok\" ng-click=\"$close()\">OK</button>\n" +
+    "</div>-->");
+}]);
+
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile.tpl.html",
     "<div class=\"profile-header\" ng-show=\"userExists\">\n" +
@@ -4664,6 +4698,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
+    "         <a ng-click=\"openProfileEmbedModal()\"><i class=\"icon-suitcase\"></i>Embed</a>\n" +
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "            <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
@@ -5336,6 +5371,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         tooltip=\"View your profile\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
     "         {{currentUser.given_name}}\n" +
+    "         {{currentUser.surname}}\n" +
     "      </a>\n" +
     "   </li>\n" +
     "\n" +
@@ -5352,7 +5388,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         ng-click=\"logout()\"\n" +
     "         tooltip=\"Log out\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
-    "         <i class=\"icon-off\"></i>\n" +
+    "         <i class=\"icon-signout\"></i>\n" +
     "      </a>\n" +
     "   </li>\n" +
     "\n" +
@@ -5362,5 +5398,6 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
     "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
     "   </li>\n" +
-    "</ul>");
+    "</ul>\n" +
+    "");
 }]);
