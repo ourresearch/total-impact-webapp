@@ -56,13 +56,13 @@ angular.module('importers.importer')
     )
   }
 
-  var saveExternalUsername = function(url_slug, importerName, userInput, saveUsername){
+  var saveExternalUsername = function(url_slug, importerName, saveUsername){
     if (!saveUsername) {
       console.log("no username.")
       return false
     }
     var patchData = {about:{}}
-    patchData.about[importerName + "_id"] = userInput
+    patchData.about[importerName + "_id"] = saveUsername
     console.log("trying to save this patch data: ", patchData)
 
     start("saveExternalUsernames")
@@ -148,7 +148,7 @@ angular.module('importers.importer')
     Importer.saveProducts(slug, $scope.importer.endpoint, cleanInputs)
     Importer.saveExternalUsername(slug,
                                   $scope.importer.endpoint,
-                                  cleanInputs.input,
+                                  cleanInputs.primary,
                                   $scope.importer.saveUsername)
 
 
