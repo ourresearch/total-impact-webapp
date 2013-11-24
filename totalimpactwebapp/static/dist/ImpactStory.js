@@ -235,7 +235,7 @@ angular.module('importers.allTheImporters')
       }],
       endpoint: "wordpresscom",            
       url: "http://wordpress.com",
-      descr: "WordPress.com is a blog hosting site."
+      descr: "WordPress.com is site that provides web hosting for blogs, using the popular WordPress software."
     },    
 
 
