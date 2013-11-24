@@ -420,6 +420,7 @@ div.main-header {
          li.nav-item {
             display:block;
             float:left;
+            font-size: 15px;
             span.context {
                font-size: 14px;
                display:inline-block;
@@ -427,15 +428,16 @@ div.main-header {
                margin-right: 5px;
                font-weight: 300;
             }
+            span.or {
+               font-size: 70%;
+               margin:0 4px;
+               border-left: 1px solid #ddd;
+            }
+
             &.login-and-signup {
-               span.or {
-                  font-size: 70%;
-                  color: #cccccc;
-                  margin:0 10px;
-                  border-left: 1px solid #aaa;
-               }
                a {
-                  font-size: 15px;
+                  margin: 0 5px;
+
                   &.signup {
                      font-weight: bold;
                      &:hover {color: darken(@linkColor, 10%)}
@@ -450,71 +452,17 @@ div.main-header {
             }
             &.logged-in-user {
                a{
-                  font-size: 16px;
                   &:hover{color:darken(@linkColor, 10%);}
-                  padding: 10px 10px 10px 0;
+                  padding: 2px;
+                  margin: 0 3px;
                }
             }
-            &.preferences.dropdown {
-
-               position: relative;
-               border-left: 1px solid #dddddd;
-               &.open {
-                  border:none;
-                  padding-left: 1px;
-                  a.dropdown-toggle {
-                     i {color: #333;}
-//                     background: #fafafa;
-                     border-color: #ddd;
-                     position:relative;
-                  }
-               }
-               a.dropdown-toggle {
-                  border:1px solid #fff;
-                  border-bottom:none;
-                  i {
-                     vertical-align: -1px;
-                  }
-                  background: #fff;
-                  z-index: 1000;
-                  .border-radius(5px, 0, 0, 0px);
-                  padding:5px 10px 10px 10px;
-                  &:hover{color: darken(@linkColor, 10%)}
-               }
-               ul.dropdown-menu {
-                  top: 31px;
-                  border: 1px solid #ddd;
-//                  background: #fafafa;
-                  right: 0;
-                  left: auto;
-                  .drop-shadow(0, 0, 0, 0);
-                  z-index: 10;
-                  .border-radius(0, 5px, 5px, 0);
-                  min-width: 150px;
-                  padding: 10px 0;
-
-                  li{
-                     margin: 0;
-                     padding: 0;
-                     a {
-                        padding-top: 5px;
-                        padding-bottom: 5px;
-                        color: #555;
-                        font-size:  14px;
-                        i {
-                           margin-left: -5px;
-                           margin-right: 11px;
-                        }
-                        &:hover {
-                           background: @accentColor;
-                           color: #fff;
-                        }
-                     }
-                     &.divider {
-                        border-bottom: 1px solid #fff;
-                        background-color:#eee;
-                     }
-                  }
+            &.preferences {
+               a.preference {
+                  padding: 2px;
+                  margin: 0 5px;
+                  font-size: 16px;
+                  &.logout { font-size: 15px;}
                }
             }
          }
@@ -654,9 +602,10 @@ div#footer {
 
 
 div.tooltip {
-   font-size: 12px;
+   font-size: 13px;
    width:140px;
    line-height:1.5;
+   font-weight: 300;
    &.in {
       opacity: 1;
    }

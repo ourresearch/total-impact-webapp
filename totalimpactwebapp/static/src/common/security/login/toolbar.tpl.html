@@ -1,22 +1,29 @@
 <ul class="main-nav">
    <li ng-show="currentUser" class="logged-in-user nav-item">
-      <span class="context">Welcome back, </span>
-      <a class="current-user" href="/{{ currentUser.url_slug }}">{{currentUser.given_name}}</a>
+      <!--<span class="context">Welcome back, </span>-->
+      <a class="current-user"
+         href="/{{ currentUser.url_slug }}"
+         tooltip="View your profile"
+         tooltip-placement="bottom">
+         {{currentUser.given_name}}
+      </a>
    </li>
 
-   <li ng-show="currentUser" class="divider-vertical nav-item"></li>
-
-   <li ng-show="currentUser" class="logged-in preferences dropdown nav-item">
-      <a href="#" class="preferences dropdown-toggle" data-toggle="dropdown" title="Change URL and other preferences">
+   <li ng-show="currentUser" class="preferences nav-item">
+      <span ng-show="!page.isLandingPage()" class="or"></span>
+      <a class="profile preference"
+         href="/settings/profile"
+         tooltip="Change profile settings"
+         tooltip-placement="bottom">
          <i class="icon-cog"></i>
       </a>
-      <ul class='preferences-actions dropdown-menu'>
-         <li><a href="/settings/profile" class="profile"><i class="icon-cogs"></i>Preferences</a></li>
-         <!--<li><a href="/api-docs" class="profile"><i class="icon-suitcase"></i>Embed</a></li>-->
-         <li><a href="http://docs.impactstory.apiary.io/" class="profile"><i class="icon-suitcase"></i>Embed</a></li>
-         <li class="divider"></li>
-         <li><a class="logout" ng-click="logout()"><i class="icon-off"></i>Log out</a></li>
-      </ul>
+      <span ng-show="!page.isLandingPage()" class="or"></span>
+      <a class="logout preference"
+         ng-click="logout()"
+         tooltip="Log out"
+         tooltip-placement="bottom">
+         <i class="icon-off"></i>
+      </a>
    </li>
 
    <li ng-show="!currentUser" class="login-and-signup nav-item">

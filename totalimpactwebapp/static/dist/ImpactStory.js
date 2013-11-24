@@ -5330,23 +5330,30 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
   $templateCache.put("security/login/toolbar.tpl.html",
     "<ul class=\"main-nav\">\n" +
     "   <li ng-show=\"currentUser\" class=\"logged-in-user nav-item\">\n" +
-    "      <span class=\"context\">Welcome back, </span>\n" +
-    "      <a class=\"current-user\" href=\"/{{ currentUser.url_slug }}\">{{currentUser.given_name}}</a>\n" +
+    "      <!--<span class=\"context\">Welcome back, </span>-->\n" +
+    "      <a class=\"current-user\"\n" +
+    "         href=\"/{{ currentUser.url_slug }}\"\n" +
+    "         tooltip=\"View your profile\"\n" +
+    "         tooltip-placement=\"bottom\">\n" +
+    "         {{currentUser.given_name}}\n" +
+    "      </a>\n" +
     "   </li>\n" +
     "\n" +
-    "   <li ng-show=\"currentUser\" class=\"divider-vertical nav-item\"></li>\n" +
-    "\n" +
-    "   <li ng-show=\"currentUser\" class=\"logged-in preferences dropdown nav-item\">\n" +
-    "      <a href=\"#\" class=\"preferences dropdown-toggle\" data-toggle=\"dropdown\" title=\"Change URL and other preferences\">\n" +
+    "   <li ng-show=\"currentUser\" class=\"preferences nav-item\">\n" +
+    "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
+    "      <a class=\"profile preference\"\n" +
+    "         href=\"/settings/profile\"\n" +
+    "         tooltip=\"Change profile settings\"\n" +
+    "         tooltip-placement=\"bottom\">\n" +
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
-    "      <ul class='preferences-actions dropdown-menu'>\n" +
-    "         <li><a href=\"/settings/profile\" class=\"profile\"><i class=\"icon-cogs\"></i>Preferences</a></li>\n" +
-    "         <!--<li><a href=\"/api-docs\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>-->\n" +
-    "         <li><a href=\"http://docs.impactstory.apiary.io/\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>\n" +
-    "         <li class=\"divider\"></li>\n" +
-    "         <li><a class=\"logout\" ng-click=\"logout()\"><i class=\"icon-off\"></i>Log out</a></li>\n" +
-    "      </ul>\n" +
+    "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
+    "      <a class=\"logout preference\"\n" +
+    "         ng-click=\"logout()\"\n" +
+    "         tooltip=\"Log out\"\n" +
+    "         tooltip-placement=\"bottom\">\n" +
+    "         <i class=\"icon-off\"></i>\n" +
+    "      </a>\n" +
     "   </li>\n" +
     "\n" +
     "   <li ng-show=\"!currentUser\" class=\"login-and-signup nav-item\">\n" +
