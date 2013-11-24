@@ -383,26 +383,27 @@ def user_products_modify(id):
     logger.debug(u"got user {user}".format(
         user=user))
 
-    # Make sure the user is allowed to make these modifications:
-    if current_user is None:
-        abort_json(405, "You must be logged in to modify profiles.")
-    elif current_user.url_slug != user.url_slug:
-        abort_json(401, "Only profile owners can modify profiles.")
-
     if request.method == "POST":
-        # you can't add/create stuff here, just refresh extant products.
-        resp = user.refresh_products()
-
-    elif request.method == "PATCH":
-        tiids_to_add = request.json.get("tiids")
-        resp = {"products": user.add_products(tiids_to_add)}
-
-    elif request.method == "DELETE":
-        tiids_to_delete = request.json.get("tiids")
-        resp = user.delete_products(tiids_to_delete)
-
+        # anyone can refresh extant products.
+        tiids_being_refreshed = user.refresh_products()
+        resp = {"products": tiids_being_refreshed}
     else:
-        abort(405)  # method not supported.  We shouldn't get here.
+        # Make sure the user is allowed to make these modifications:
+        if current_user is None:
+            abort_json(405, "You must be logged in to modify profiles.")
+        elif current_user.url_slug != user.url_slug:
+            abort_json(401, "Only profile owners can modify profiles.")
+
+        if request.method == "PATCH":
+            tiids_to_add = request.json.get("tiids")
+            resp = {"products": user.add_products(tiids_to_add)}
+
+        elif request.method == "DELETE":
+            tiids_to_delete = request.json.get("tiids")
+            resp = user.delete_products(tiids_to_delete)
+
+        else:
+            abort(405)  # method not supported.  We shouldn't get here.
 
     response_to_send = json_resp_from_thing(resp)
     return response_to_send

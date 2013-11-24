@@ -180,8 +180,7 @@ class User(db.Model):
         return {"deleted_tiids": tiids_to_delete}
 
     def refresh_products(self):
-        raise NotImplementedError
-
+        return refresh_products_from_user(self.tiids)
 
 
     def __repr__(self):
@@ -282,17 +281,20 @@ def delete_products_from_user(user_id, tiids_to_delete, db):
 
 
 
-def make_collection_for_user(user, alias_tiids, prepped_request):
-    email = user.email.lower()
+def refresh_products_from_user(tiids):
+    if not tiids:
+        return None
 
-    prepped_request.headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-    prepped_request.data = {"aliases": alias_tiids, "title": email}
-    r = requests.Session.send(prepped_request)
+    query = u"{core_api_root}/v1/products/refresh?api_admin_key={api_admin_key}".format(
+        core_api_root=g.api_root,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
 
-    user.collection_id = r.json()["collection"]["_id"]
-    return user
+    r = requests.post(query,
+            data=json.dumps({"tiids": tiids}),
+            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-
+    return tiids
 
 
 
