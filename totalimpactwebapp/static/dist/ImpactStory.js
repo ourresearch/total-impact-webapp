@@ -131,14 +131,15 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "username",
         help: "Your GitHub account ID is at the top right of your screen when you're logged in."
-      },
-      {
-        inputType: "username",
-        inputNeeded: "API key",
-        placeholder: "This is just for testing.",
-        name: "apiKey",
-        help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
-      }],
+      }
+      // ,{
+      //   inputType: "username",
+      //   inputNeeded: "API key",
+      //   placeholder: "This is just for testing.",
+      //   name: "apiKey",
+      //   help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
+      // }
+      ],
       saveUsername: true,
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features."
