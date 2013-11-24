@@ -1120,7 +1120,7 @@ angular.module("settings/profile-settings.tpl.html", []).run(["$templateCache", 
     "      <div class=\"controls col-lg-5\">\n" +
     "         <div class=\"my-picture\">\n" +
     "            <a href=\"http://www.gravatar.com\" >\n" +
-    "               <img class=\"gravatar\" ng-src=\"http://www.gravatar.com/avatar/{{ currentUser.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "               <img class=\"gravatar\" ng-src=\"http://www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "            </a>\n" +
     "            <p>You can change your profile image at <a href=\"http://www.gravatar.com\">Gravatar.com</a></p>\n" +
     "         </div>\n" +
