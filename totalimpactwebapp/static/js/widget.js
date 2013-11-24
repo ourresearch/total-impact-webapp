@@ -10,10 +10,10 @@ var webapp_root_pretty=setRoot('http://impactstory.org')
 
 
 // FOR TESTING ON STAGING: COMMENT OUT IN PRODUCTION.
-var api_root=setRoot('http://total-impact-core-staging.herokuapp.com', true)
-var webapp_root=setRoot('http://total-impact-webapp-staging.herokuapp.com', true)
-var webapp_root_pretty=setRoot('http://staging-impactstory.org')
-
+//var api_root=setRoot('http://total-impact-core-staging.herokuapp.com', true)
+//var webapp_root=setRoot('http://total-impact-webapp-staging.herokuapp.com', true)
+//var webapp_root_pretty=setRoot('http://staging-impactstory.org')
+//
 
 
 // FOR TESTING LOCALLY: COMMENT OUT IN PRODUCTION.
