@@ -3847,7 +3847,6 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "            </li>\n" +
     "\n" +
     "\n" +
-    "            <li><a href=\"/api-docs\">API/embed</a></li>\n" +
     "            <li><a href=\"/faq\">FAQ</a></li>\n" +
     "            <!--<li><a href=\"/about#contact\">Contact us</a></li>-->\n" +
     "            <li><a href=\"/faq#tos\" target=\"_self\">Terms of use</a></li>\n" +
@@ -3973,7 +3972,7 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "      <p>ImpactStory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
     "      <ul>\n" +
-    "         <li><b>Open metrics</b>: Our <a href=\"http://impactstory.org/api-docs\">data</a> (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
+    "         <li><b>Open metrics</b>: Our data (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
     "         <li><b>With context</b>: To help researcher move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
     "         <li><b>Diverse products</b>: Datasets, software, slides, and other research products are presented as an integrated section of a comprehensive impact report, alongside articles&mdash;each genre a first-class citizen, each making its own kind of impact.</li>\n" +
     "      </ul>\n" +
@@ -4043,7 +4042,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <p>ImpactStory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
     "   <ul>\n" +
-    "      <li><b>Open metrics</b>: Our <a href=\"http://impactstory.org/api-docs\">data</a> (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
+    "      <li><b>Open metrics</b>: Our data (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
     "      <li><b>With context</b>: To help researcher move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
     "      <li><b>Diverse products</b>: Datasets, software, slides, and other research products are presented as an integrated section of a comprehensive impact report, alongside articles--each genre a first-class citizen, each making its own kind of impact.</li>\n" +
     "   </ul>\n" +
@@ -4107,7 +4106,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   </table>-->\n" +
     "\n" +
     "   <h3 id=\"tos\">terms of use</h3>\n" +
-    "   <p>Due to agreements we have made with data providers, you may not scrape this website.  Use our <a href=\"/api-docs\">JavaScript widget or API</a> instead.</p>\n" +
+    "   <p>Due to agreements we have made with data providers, you may not scrape this website -- use the embed or download funtionality instead.</p>\n" +
     "\n" +
     "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
@@ -4189,11 +4188,6 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <p>An option to restrict the displayed reports to Fully Open metrics — those suitable for commercial use — is on the To Do list.\n" +
     "   <p>The ImpactStory software itself is fully open source under an MIT license. <a href=\"https://github.com/total-impact\">GitHub</a>\n" +
     "\n" +
-    "   <h3 id=\"api\">does ImpactStory have an api?</h3>\n" +
-    "\n" +
-    "   <p>yes! ImpactStory is built on its own api, and others may build on it too.\n" +
-    "   <p>We also have javascript to make embedding ImpactStory data very easy.  We'll document it soon: contact us for details in the meantime.\n" +
-    "\n" +
     "\n" +
     "   <h3 id=\"who\">who developed ImpactStory?</h3>\n" +
     "\n" +
@@ -4266,7 +4260,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "         </li>\n" +
     "         <li class=\"middle\">\n" +
     "            <h3 id=\"embed-metrics-anywhere\"><i class=\"icon-suitcase icon-2x\"></i><span class=\"text\">Embed them anywhere</span></h3>\n" +
-    "            <p>Drop ImpactStory's embeddable <a href=\"/api-docs\">Javascript widget</a> into your own online CV or website to show the impacts of your projects.</p>\n" +
+    "            <p>Drop ImpactStory's embeddable code into your own online CV or website to show the impacts of your work.</p>\n" +
     "         </li>\n" +
     "         <li>\n" +
     "            <h3 id=\"its-open\"><i class=\"icon-wrench icon-2x\"></i><span class=\"text\">Open data,<br> open source.</span></h3>\n" +
@@ -5342,8 +5336,6 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      </a>\n" +
     "      <ul class='preferences-actions dropdown-menu'>\n" +
     "         <li><a href=\"/settings/profile\" class=\"profile\"><i class=\"icon-cogs\"></i>Preferences</a></li>\n" +
-    "         <!--<li><a href=\"/api-docs\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>-->\n" +
-    "         <li><a href=\"http://docs.impactstory.apiary.io/\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>\n" +
     "         <li class=\"divider\"></li>\n" +
     "         <li><a class=\"logout\" ng-click=\"logout()\"><i class=\"icon-off\"></i>Log out</a></li>\n" +
     "      </ul>\n" +

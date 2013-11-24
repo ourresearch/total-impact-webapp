@@ -2761,15 +2761,6 @@
       "outputAbbreviatedPath" : "\/static\/node_modules\/grunt-contrib-jshint\/node_modules\/jshint\/node_modules\/shelljs\/src\/to-ck.js",
       "fileType" : 64
     },
-    "\/templates\/api-docs.html" : {
-      "ignoreWasSetByUser" : 0,
-      "ignore" : 0,
-      "hidden" : 0,
-      "outputPathIsSetByUser" : 0,
-      "inputAbbreviatedPath" : "\/templates\/api-docs.html",
-      "outputAbbreviatedPath" : "No Output Path",
-      "fileType" : 2048
-    },
     "\/static\/vendor\/bootstrap\/alerts.less" : {
       "ieCompatibility" : 1,
       "inputAbbreviatedPath" : "\/static\/vendor\/bootstrap\/alerts.less",

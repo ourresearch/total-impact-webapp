@@ -631,10 +631,6 @@ def redirect_to_profile(dummy="index"):
 
 
 
-# @app.route('/api-docs')
-# def apidocs():
-#     return render_template_custom('api-docs.html')
-
 @app.route("/google6653442d2224e762.html")
 def google_verification():
     # needed for https://support.google.com/webmasters/answer/35179?hl=en

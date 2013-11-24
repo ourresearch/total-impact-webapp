@@ -123,8 +123,6 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      </a>\n" +
     "      <ul class='preferences-actions dropdown-menu'>\n" +
     "         <li><a href=\"/settings/profile\" class=\"profile\"><i class=\"icon-cogs\"></i>Preferences</a></li>\n" +
-    "         <!--<li><a href=\"/api-docs\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>-->\n" +
-    "         <li><a href=\"http://docs.impactstory.apiary.io/\" class=\"profile\"><i class=\"icon-suitcase\"></i>Embed</a></li>\n" +
     "         <li class=\"divider\"></li>\n" +
     "         <li><a class=\"logout\" ng-click=\"logout()\"><i class=\"icon-off\"></i>Log out</a></li>\n" +
     "      </ul>\n" +
