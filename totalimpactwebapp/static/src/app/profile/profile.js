@@ -7,6 +7,14 @@ angular.module("profile", [
   'profile.addProducts'
 ])
 
+.config(['$routeProvider', function ($routeProvider) {
+
+  $routeProvider.when("/embed/:url_slug", {
+    templateUrl:'profile/profile.tpl.html',
+    controller:'ProfileCtrl'
+  })
+
+}])
 
 .factory('UserProfile', function(UsersAbout, security, Slug, Page){
   var about = {}
@@ -71,6 +79,10 @@ angular.module("profile", [
 .controller('ProfileCtrl', function ($scope, $routeParams, $modal, $http, UsersProducts, Product, UserProfile, Page)
   {
 
+    if (Page.isEmbedded()){
+      // do embedded stuff.
+    }
+
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
     $scope.loadingProducts = function(){
@@ -115,6 +127,7 @@ angular.module("profile", [
     );
 
 })
+
   .controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
     console.log("user slug is: ", userSlug)
     $scope.userSlug = userSlug;

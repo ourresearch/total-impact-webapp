@@ -20,8 +20,8 @@ angular.module("services.page")
      }
    }
 
-    var isInFrame = function(){
-      return window.self === window.top
+    var isEmbedded = function(){
+       return $location.search().embed
     }
 
 
@@ -48,12 +48,13 @@ angular.module("services.page")
         return {
           'show-tab-on-bottom': uservoiceTabLoc == "bottom",
           'show-tab-on-right': uservoiceTabLoc == "right",
-          'embedded': isInFrame()
+          'embedded': isEmbedded()
         }
      },
      getBaseUrl: function(){
        return window.location.origin
      },
+     'isEmbedded': isEmbedded,
 
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
      getTitle: function() { return title; },

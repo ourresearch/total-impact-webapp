@@ -82,8 +82,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   });
 
   $scope.$on('$routeChangeSuccess', function(next, current){
-//    $window._gaq.push(['_trackPageview', $location.path()]);
-//    tiAnalytics.pageload()
+    tiAnalytics.pageload()
 
   })
 
@@ -1413,6 +1412,14 @@ angular.module("profile", [
   'profile.addProducts'
 ])
 
+.config(['$routeProvider', function ($routeProvider) {
+
+  $routeProvider.when("/embed/:url_slug", {
+    templateUrl:'profile/profile.tpl.html',
+    controller:'ProfileCtrl'
+  })
+
+}])
 
 .factory('UserProfile', function(UsersAbout, security, Slug, Page){
   var about = {}
@@ -1477,6 +1484,10 @@ angular.module("profile", [
 .controller('ProfileCtrl', function ($scope, $routeParams, $modal, $http, UsersProducts, Product, UserProfile, Page)
   {
 
+    if (Page.isEmbedded()){
+      // do embedded stuff.
+    }
+
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
     $scope.loadingProducts = function(){
@@ -1521,6 +1532,7 @@ angular.module("profile", [
     );
 
 })
+
   .controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
     console.log("user slug is: ", userSlug)
     $scope.userSlug = userSlug;
@@ -3492,8 +3504,8 @@ angular.module("services.page")
      }
    }
 
-    var isInFrame = function(){
-      return window.self === window.top
+    var isEmbedded = function(){
+       return $location.search().embed
     }
 
 
@@ -3520,12 +3532,13 @@ angular.module("services.page")
         return {
           'show-tab-on-bottom': uservoiceTabLoc == "bottom",
           'show-tab-on-right': uservoiceTabLoc == "right",
-          'embedded': isInFrame()
+          'embedded': isEmbedded()
         }
      },
      getBaseUrl: function(){
        return window.location.origin
      },
+     'isEmbedded': isEmbedded,
 
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
      getTitle: function() { return title; },
