@@ -82,8 +82,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   });
 
   $scope.$on('$routeChangeSuccess', function(next, current){
-//    $window._gaq.push(['_trackPageview', $location.path()]);
-//    tiAnalytics.pageload()
+    tiAnalytics.pageload()
 
   })
 

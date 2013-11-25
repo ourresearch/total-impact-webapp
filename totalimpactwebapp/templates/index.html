@@ -26,9 +26,7 @@
 
    <!-- Load scripts -->
    <!-------------------------------------------------------------------------->
-   <!-- logging stuff -->
-   {{ g.newrelic_header|safe }} <!-- newrelic logging, needs server stuff in it -->
-   <script type="text/javascript" src="{{ url_for('static', filename='js/top-of-page.js') }}"></script>
+   <script src="/top.js"></script>
 
    <!-- external libs -->
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
@@ -46,15 +44,12 @@
 </head>
 {% raw %}
 <body ng-class="page.getBodyClasses()">
-<div class="staging-warning"><div class="content"><span>staging, yo</span></div></div>
-<div ng-include="page.getTemplate('header')"></div>
-<div ng-view class="main-view"></div>
-<div ng-include="page.getTemplate('footer')"></div>
-{% endraw %}
+   <div class="staging-warning"><div class="content"><span>staging, yo</span></div></div>
+   <div ng-include="page.getTemplate('header')"></div>
+   <div ng-view class="main-view"></div>
+   <div ng-include="page.getTemplate('footer')"></div>
 
-
-
-<script src="{{ url_for('static', filename='js/bottom-of-page.js') }}" type="text/javascript"></script>
-{{ newrelic_footer|safe }}
+   <script src="/bottom.js"></script>
 </body>
+{% endraw %}
 </html>

@@ -4,7 +4,7 @@ import analytics
 from time import sleep
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
-from flask import render_template, flash
+from flask import render_template
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
 from sqlalchemy import func
@@ -29,24 +29,6 @@ import newrelic.agent
 
 logger = logging.getLogger("tiwebapp.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
-
-
-
-# i despise that we still have to have this :(
-from flask.ext.assets import Environment, Bundle
-assets = Environment(app)
-
-js_widget = Bundle(
-    'js/jquery-1.8.1.min.js',
-    'js/json3.min.js',
-    'js/icanhaz.js',
-    'js/bootstrap-tooltip-and-popover.js',
-    'js/underscore.js',
-    'js/ti-item.js',
-    # filters="yui_js", # comment this out if you want unminified version
-    output="js/widget.js",
-)
-assets.register('js_widget', js_widget)
 
 
 
@@ -121,19 +103,6 @@ def abort_json(status_code, msg):
     abort(resp)
 
 
-
-
-def render_template_custom(template_name, **kwargs):
-    kwargs["newrelic_footer"] = newrelic.agent.get_browser_timing_footer()
-    if os.getenv("STATUS_SLOW", False) in [True, "true", "True", 1]:
-        flash(
-            "<strong>Performance notice:</strong> our server is currently backed up. We're fixing it now; see our <a href='http://twitter.com/impactstory_now'>status feed</a> for updates.",
-            "error"
-        )
-
-    return render_template(template_name, **kwargs)
-
-
 def get_user_for_response(id, request, include_products=True):
     id_type = request.args.get("id_type", "userid")
 
@@ -146,8 +115,11 @@ def get_user_for_response(id, request, include_products=True):
     return retrieved_user
 
 
-
-
+def make_js_response(template_name, **kwargs):
+    rendered = render_template(template_name, **kwargs)
+    resp = make_response(rendered)
+    resp.headers["Content-Type"] = "application/javascript; charset=utf-8"
+    return resp
 
 
 
@@ -180,13 +152,8 @@ def setup_db_tables():
 @app.before_request
 def load_globals():
     g.user = current_user
-
     g.api_root = os.getenv("API_ROOT")
-    g.segmentio_key = os.getenv("SEGMENTIO_KEY")
-    g.mixpanel_token = os.getenv("MIXPANEL_TOKEN")
-
     g.api_key = os.getenv("API_KEY")
-    g.newrelic_header = newrelic.agent.get_browser_timing_header()
 
 
 
@@ -200,8 +167,6 @@ def log_ip_address():
                 url=to_unicode_or_bust(request.url)))
         except UnicodeDecodeError:
             logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
-
-
 
 
 @app.after_request
@@ -478,9 +443,6 @@ def user_password_modify(id):
 
 
 
-
-
-
 @app.route("/user/<id>/password", methods=["GET"])
 def get_password_reset_link(id):
     if request.args.get("id_type") != "email":
@@ -616,9 +578,9 @@ def redirect_to_profile(dummy="index"):
     EVERYTHING not explicitly routed to another view function will end up here.
     """
 
+    # first, serve pre-rendered pages to search engines:
     useragent = request.headers.get("User-Agent").lower()
     crawer_useragent_fragments = ["googlebot", "bingbot"]
-
     file_template = "static/rendered-pages/{page}.html"
     page = dummy.replace("/", "_")
 
@@ -626,10 +588,8 @@ def redirect_to_profile(dummy="index"):
         if useragent_fragment in useragent:
             return send_file(file_template.format(page=page))
 
-
-
-    return render_template_custom('index.html')
-
+    # then return the page.
+    return render_template('index.html')
 
 
 @app.route("/google6653442d2224e762.html")
@@ -666,10 +626,23 @@ def item_page(namespace, nid):
     return redirect("/embed/product/" + tiid, 301)
 
 
+@app.route("/top.js")
+def get_js_top():
+
+    return make_js_response(
+        "top.js",
+        segmentio_key=os.getenv("SEGMENTIO_KEY"),
+        mixpanel_token=os.getenv("MIXPANEL_TOKEN"),
+        newrelic_header=newrelic.agent.get_browser_timing_header()
+    )
 
 
-
-
+@app.route("/bottom.js")
+def get_js_bottom():
+    return make_js_response(
+        "bottom.js",
+        newrelic_footer=newrelic.agent.get_browser_timing_footer()
+    )
 
 
 
@@ -688,10 +661,6 @@ def item_page(namespace, nid):
 #
 ###############################################################################
 
-
-@app.route("/embed/test/widget")
-def embed_test_widget():
-    return render_template_custom("test-pages/sample-embed-internal-test.html")
 
 
 @app.route("/embed/impactstory.js")
@@ -753,10 +722,6 @@ def widget_analytics():
     return make_response(request.args.get("callback", "") + '({"status": "success"})', 200)
 
 
-
-@app.route('/admin/key')
-def generate_api_key():
-    return render_template_custom('generate-api.html')
 
 @app.route('/logo')
 def logo():
