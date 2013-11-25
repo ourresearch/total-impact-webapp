@@ -6605,7 +6605,7 @@ div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a {
   margin: 0 5px;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.signup {
-  font-weight: bold;
+  font-weight: 900;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.signup:hover {
   color: #cc3e00;
