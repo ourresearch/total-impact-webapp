@@ -628,20 +628,26 @@ def item_page(namespace, nid):
 
 @app.route("/top.js")
 def get_js_top():
-
+    newrelic_header = views_helpers.remove_script_tags(
+        newrelic.agent.get_browser_timing_header()
+    )
     return make_js_response(
         "top.js",
         segmentio_key=os.getenv("SEGMENTIO_KEY"),
         mixpanel_token=os.getenv("MIXPANEL_TOKEN"),
-        newrelic_header=newrelic.agent.get_browser_timing_header()
+        newrelic_header=newrelic.agent.get_browser_timing_header(),
+        newrelic_header=newrelic_header
     )
 
 
 @app.route("/bottom.js")
 def get_js_bottom():
+    newrelic_footer = views_helpers.remove_script_tags(
+        newrelic.agent.get_browser_timing_footer()
+    )
     return make_js_response(
         "bottom.js",
-        newrelic_footer=newrelic.agent.get_browser_timing_footer()
+        newrelic_footer=newrelic_footer
     )
 
 
