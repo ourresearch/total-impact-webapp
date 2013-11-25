@@ -984,7 +984,9 @@ angular.module('product.product')
       // values.raw holds an array of {name:<name>, value: <value>} objects.
       // this gets just ones where key_substring is a substring of <name>
       var re = new RegExp(key_substring, 'i');
-      var mendeleyRelevantKeys = metricDict.values.raw.filter(function(x) {return x["name"].match(re)})
+      var mendeleyRelevantKeys = _.filter(metricDict.values.raw, function(x) {
+        return x["name"].match(re)
+      })
       if (typeof mendeleyRelevantKeys[0] == "undefined") {
         // no students or developing countries or whatever
         return(0)
@@ -3467,7 +3469,7 @@ angular.module('services.notifications', []).factory('notifications', ['$rootSco
 
   notificationsService.remove = function(notification){
     angular.forEach(notifications, function (notificationsByType) {
-      var idx = notificationsByType.indexOf(notification);
+      var idx = _.indexOf(notificationsByType, (notification))
       if (idx>-1){
         notificationsByType.splice(idx,1);
       }
