@@ -12,7 +12,8 @@ angular.module('importers.allTheImporters')
       inputs: [{
         inputType: "username",
         inputNeeded: "username",
-        help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+        help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
+        saveUsername: true
       }
       // ,{
       //   inputType: "username",
@@ -22,7 +23,6 @@ angular.module('importers.allTheImporters')
       //   help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
       // }
       ],
-      saveUsername: true,
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features."
     },
@@ -34,9 +34,9 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "ID",
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
+        saveUsername: true,
         help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
       }],
-      saveUsername: true,
       url: 'http://orcid.org',
       signupUrl: 'http://orcid.org/register',
       descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into ImpactStory.",
@@ -49,9 +49,9 @@ angular.module('importers.allTheImporters')
       inputs: [{
         inputType: "username",
         inputNeeded: "username",
+        saveUsername: true,
         help: "Your username is right after \"slideshare.net/\" in your profile's URL."
       }],
-      saveUsername: true,
       url:'http://slideshare.net',
       descr: "Slideshare is community for sharing presentations online."
     },
@@ -64,9 +64,9 @@ angular.module('importers.allTheImporters')
         inputNeeded: "username",
         help: "Your Twitter username is often written starting with @.",
         placeholder: "@username",
-        inputCleanupFunction: function(x) {return('@'+x.replace('@', ''))}
+        saveUsername: true,
+        cleanupFunction: function(x) {return('@'+x.replace('@', ''))}
       }],
-      saveUsername: true,
       endpoint: "twitter_account",
       url: "http://twitter.com",
       descr: "Twitter is a social networking site for sharing short messages."
@@ -100,9 +100,9 @@ angular.module('importers.allTheImporters')
         inputNeeded: "author page URL",
         help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
         placeholder: "http://figshare.com/authors/schamberlain/96554",
-        inputCleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}        
+        saveUsername: true,
+        cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}
       }],
-      saveUsername: true,
       url: "http://figshare.com",
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner."
     },
@@ -256,6 +256,7 @@ angular.module('importers.allTheImporters')
   var prepInputObject = function(inputObject) {
     var defaultInputName = "primary"
     inputObject.name || (inputObject.name = defaultInputName)
+    inputObject.cleanupFunction = inputObject.cleanupFunction || function(x){return x}
 
     return inputObject
   }
