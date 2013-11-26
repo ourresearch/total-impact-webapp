@@ -93,7 +93,7 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "</div>\n" +
     "\n" +
     "<div class=\"overlay\"\n" +
-    "     ng-click=\"hideImportWindow()\"\n" +
+    "     ng-click=\"onCancel()\"\n" +
     "     ng-if=\"importWindowOpen\"\n" +
     "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
     "\n" +
