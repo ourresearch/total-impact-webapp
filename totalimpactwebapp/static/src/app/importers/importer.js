@@ -186,7 +186,7 @@ angular.module('importers.importer')
         el.bind("change", function(e){
           var reader = new FileReader()
           reader.onload = function(e){
-            $scope.value = reader.result
+            $scope.input.value = reader.result
           }
 
           var file = (e.srcElement || e.target).files[0];
