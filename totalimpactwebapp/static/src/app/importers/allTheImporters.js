@@ -121,7 +121,7 @@ angular.module('importers.allTheImporters')
           inputType: "username",
           inputNeeded: "API key",
           name: "apiKey",
-          help: "Your WordPress.com API key can be recovered through Akismet at <a href='http://akismet.com/resend/'>http://akismet.com/resend/</a>"
+          help: "Your WordPress.com API key can be discovered through Akismet at <a href='http://akismet.com/resend/'>http://akismet.com/resend/</a>"
         }],
       endpoint: "wordpresscom",            
       url: "http://wordpress.com",

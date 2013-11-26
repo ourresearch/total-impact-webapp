@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-25
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-26
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -238,7 +238,7 @@ angular.module('importers.allTheImporters')
           inputType: "username",
           inputNeeded: "API key",
           name: "apiKey",
-          help: "Your WordPress.com API key can be recovered through Akismet at <a href='http://akismet.com/resend/'>http://akismet.com/resend/</a>"
+          help: "Your WordPress.com API key can be discovered through Akismet at <a href='http://akismet.com/resend/'>http://akismet.com/resend/</a>"
         }],
       endpoint: "wordpresscom",            
       url: "http://wordpress.com",
