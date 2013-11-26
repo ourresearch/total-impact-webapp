@@ -40,13 +40,15 @@
             <div class="importer-input" ng-switch on="input.inputType">
                <input
                        class="form-control"
-                       ng-model="userInput[input.name]"
+                       ng-model="input.value"
                        type="text" ng-switch-when="username"
                        placeholder="{{ input.placeholder }}">
+
                <textarea placeholder="{{ input.placeholder }}"
                          class="form-control"
-                         ng-model="userInput[input.name]"
+                         ng-model="input.value"
                          ng-switch-when="idList"></textarea>
+
                <!-- you can only have ONE file input per importer, otherwise namespace collision -->
                <input type="file" ng-switch-when="file" size="300" ng-file-select="input.inputType">
 

@@ -120,13 +120,15 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "            <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
     "               <input\n" +
     "                       class=\"form-control\"\n" +
-    "                       ng-model=\"userInput[input.name]\"\n" +
+    "                       ng-model=\"input.value\"\n" +
     "                       type=\"text\" ng-switch-when=\"username\"\n" +
     "                       placeholder=\"{{ input.placeholder }}\">\n" +
+    "\n" +
     "               <textarea placeholder=\"{{ input.placeholder }}\"\n" +
     "                         class=\"form-control\"\n" +
-    "                         ng-model=\"userInput[input.name]\"\n" +
+    "                         ng-model=\"input.value\"\n" +
     "                         ng-switch-when=\"idList\"></textarea>\n" +
+    "\n" +
     "               <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
     "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +
     "\n" +

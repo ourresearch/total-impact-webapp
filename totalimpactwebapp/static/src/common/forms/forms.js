@@ -29,7 +29,6 @@ angular.module('directives.forms', [])
     require: "^form",
     restrict: "E",
     link:function(scope, elem, attr, formController){
-      console.log("attr: ", attr)
       if (attr.action) {
         scope.action = attr.action
         scope.actionGerund = attr.action + "ing"

@@ -129,7 +129,8 @@ angular.module('importers.allTheImporters')
       inputs: [{
         inputType: "username",
         inputNeeded: "username",
-        help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+        help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
+        saveUsername: true
       }
       // ,{
       //   inputType: "username",
@@ -139,7 +140,6 @@ angular.module('importers.allTheImporters')
       //   help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
       // }
       ],
-      saveUsername: true,
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features."
     },
@@ -151,9 +151,9 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "ID",
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
+        saveUsername: true,
         help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
       }],
-      saveUsername: true,
       url: 'http://orcid.org',
       signupUrl: 'http://orcid.org/register',
       descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into ImpactStory.",
@@ -166,9 +166,9 @@ angular.module('importers.allTheImporters')
       inputs: [{
         inputType: "username",
         inputNeeded: "username",
+        saveUsername: true,
         help: "Your username is right after \"slideshare.net/\" in your profile's URL."
       }],
-      saveUsername: true,
       url:'http://slideshare.net',
       descr: "Slideshare is community for sharing presentations online."
     },
@@ -181,9 +181,9 @@ angular.module('importers.allTheImporters')
         inputNeeded: "username",
         help: "Your Twitter username is often written starting with @.",
         placeholder: "@username",
-        inputCleanupFunction: function(x) {return('@'+x.replace('@', ''))}
+        saveUsername: true,
+        cleanupFunction: function(x) {return('@'+x.replace('@', ''))}
       }],
-      saveUsername: true,
       endpoint: "twitter_account",
       url: "http://twitter.com",
       descr: "Twitter is a social networking site for sharing short messages."
@@ -217,9 +217,9 @@ angular.module('importers.allTheImporters')
         inputNeeded: "author page URL",
         help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
         placeholder: "http://figshare.com/authors/schamberlain/96554",
-        inputCleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}        
+        saveUsername: true,
+        cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}
       }],
-      saveUsername: true,
       url: "http://figshare.com",
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner."
     },
@@ -369,6 +369,7 @@ angular.module('importers.allTheImporters')
 //    var defaultInputName = "primary"
     var defaultInputName = "input"
     inputObject.name || (inputObject.name = defaultInputName)
+    inputObject.cleanupFunction = inputObject.cleanupFunction || function(x){return x}
 
     return inputObject
   }
@@ -434,7 +435,35 @@ angular.module('importers.importer')
   }
 
 
+  var saveImporterInput = function(url_slug, importerObj) {
+
+    // clean the values
+    _.each(importerObj.inputs, function(input){
+      input.cleanedValue = input.cleanupFunction(input.value)
+    })
+
+    // save external usernames
+    _.each(importerObj.inputs, function(input){
+      if (input.saveUsername){
+        saveExternalUsername(url_slug, importerObj.endpoint, input.cleanedValue)
+      }
+    })
+
+    // to save products, we need a dict of name:cleanedValue pairs.
+    var allInputValues = {}
+    _.each(importerObj.inputs, function(input){
+      allInputValues[input.name] = input.cleanedValue
+    })
+
+    // finally, save products
+    saveProducts(url_slug, importerObj.endpoint, allInputValues)
+  }
+
+
   var saveProducts = function(url_slug, importerName, userInput){
+
+    console.log("saveProducts()", url_slug, importerName, userInput)
+
     start("saveProducts")
     Products.save(
       {'importerName': importerName}, // define the url
@@ -464,13 +493,11 @@ angular.module('importers.importer')
     )
   }
 
-  var saveExternalUsername = function(url_slug, importerName, userInput, saveUsername){
-    if (!saveUsername) {
-      console.log("no username.")
-      return false
-    }
+
+  var saveExternalUsername = function(url_slug, importerName, externalUsername){
+
     var patchData = {about:{}}
-    patchData.about[importerName + "_id"] = userInput
+    patchData.about[importerName + "_id"] = externalUsername
     console.log("trying to save this patch data: ", patchData)
 
     start("saveExternalUsernames")
@@ -486,23 +513,28 @@ angular.module('importers.importer')
 
   var cleanInput = function(userInput, inputObjects){
     var cleanedUserInput = _.map(userInput, function(userInputValue, inputName) {
+
       var relevantInputObject = _.first(_.where(inputObjects, {name:inputName}))
-      var relevantFunction = relevantInputObject.inputCleanupFunction || function(x) {return(x)}
-      return(relevantFunction(userInputValue))
+      if (!relevantInputObject){
+        return userInputValue  // change nothing.
+      }
+      else {
+        var relevantFunction = relevantInputObject.inputCleanupFunction || function(x) {return(x)}
+        return(relevantFunction(userInputValue))
+      }
+
     })
     console.log(cleanedUserInput)
     return(_.object(_.keys(userInput), cleanedUserInput))
   }
 
-  return {
-    'cleanInput': cleanInput,
-    'saveProducts': saveProducts,
-    'saveExternalUsername': saveExternalUsername,
-    setOnImportCompletion: function(callback){
-      onImportCompletion = callback
-    },
-    getTiids: function(){return tiidsAdded}
-  }
+    return {
+      'saveImporterInput': saveImporterInput,
+      setOnImportCompletion: function(callback){
+        onImportCompletion = callback
+      },
+      getTiids: function(){return tiidsAdded}
+    }
 })
 
 
@@ -549,19 +581,14 @@ angular.module('importers.importer')
     // ok, let's do this
     console.log(
       _.sprintf("calling /importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
-      $scope.userInput
+      $scope.importer
     )
 
-    var cleanInputs = Importer.cleanInput($scope.userInput, $scope.importer.inputs)
-    Importer.saveProducts(slug, $scope.importer.endpoint, cleanInputs)
-    Importer.saveExternalUsername(slug,
-                                  $scope.importer.endpoint,
-                                  cleanInputs.input,
-                                  $scope.importer.saveUsername)
-
-
+    Importer.saveImporterInput(slug, $scope.importer)
   }
 })
+
+
   .directive("ngFileSelect",function(){
     return {
       link: function($scope, el, attrs){
@@ -2541,7 +2568,6 @@ angular.module('directives.forms', [])
     require: "^form",
     restrict: "E",
     link:function(scope, elem, attr, formController){
-      console.log("attr: ", attr)
       if (attr.action) {
         scope.action = attr.action
         scope.actionGerund = attr.action + "ing"
@@ -3973,13 +3999,15 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "            <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
     "               <input\n" +
     "                       class=\"form-control\"\n" +
-    "                       ng-model=\"userInput[input.name]\"\n" +
+    "                       ng-model=\"input.value\"\n" +
     "                       type=\"text\" ng-switch-when=\"username\"\n" +
     "                       placeholder=\"{{ input.placeholder }}\">\n" +
+    "\n" +
     "               <textarea placeholder=\"{{ input.placeholder }}\"\n" +
     "                         class=\"form-control\"\n" +
-    "                         ng-model=\"userInput[input.name]\"\n" +
+    "                         ng-model=\"input.value\"\n" +
     "                         ng-switch-when=\"idList\"></textarea>\n" +
+    "\n" +
     "               <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
     "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +
     "\n" +

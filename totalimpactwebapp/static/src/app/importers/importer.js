@@ -26,7 +26,35 @@ angular.module('importers.importer')
   }
 
 
+  var saveImporterInput = function(url_slug, importerObj) {
+
+    // clean the values
+    _.each(importerObj.inputs, function(input){
+      input.cleanedValue = input.cleanupFunction(input.value)
+    })
+
+    // save external usernames
+    _.each(importerObj.inputs, function(input){
+      if (input.saveUsername){
+        saveExternalUsername(url_slug, importerObj.endpoint, input.cleanedValue)
+      }
+    })
+
+    // to save products, we need a dict of name:cleanedValue pairs.
+    var allInputValues = {}
+    _.each(importerObj.inputs, function(input){
+      allInputValues[input.name] = input.cleanedValue
+    })
+
+    // finally, save products
+    saveProducts(url_slug, importerObj.endpoint, allInputValues)
+  }
+
+
   var saveProducts = function(url_slug, importerName, userInput){
+
+    console.log("saveProducts()", url_slug, importerName, userInput)
+
     start("saveProducts")
     Products.save(
       {'importerName': importerName}, // define the url
@@ -56,13 +84,11 @@ angular.module('importers.importer')
     )
   }
 
-  var saveExternalUsername = function(url_slug, importerName, userInput, saveUsername){
-    if (!saveUsername) {
-      console.log("no username.")
-      return false
-    }
+
+  var saveExternalUsername = function(url_slug, importerName, externalUsername){
+
     var patchData = {about:{}}
-    patchData.about[importerName + "_id"] = userInput
+    patchData.about[importerName + "_id"] = externalUsername
     console.log("trying to save this patch data: ", patchData)
 
     start("saveExternalUsernames")
@@ -78,23 +104,28 @@ angular.module('importers.importer')
 
   var cleanInput = function(userInput, inputObjects){
     var cleanedUserInput = _.map(userInput, function(userInputValue, inputName) {
+
       var relevantInputObject = _.first(_.where(inputObjects, {name:inputName}))
-      var relevantFunction = relevantInputObject.inputCleanupFunction || function(x) {return(x)}
-      return(relevantFunction(userInputValue))
+      if (!relevantInputObject){
+        return userInputValue  // change nothing.
+      }
+      else {
+        var relevantFunction = relevantInputObject.inputCleanupFunction || function(x) {return(x)}
+        return(relevantFunction(userInputValue))
+      }
+
     })
     console.log(cleanedUserInput)
     return(_.object(_.keys(userInput), cleanedUserInput))
   }
 
-  return {
-    'cleanInput': cleanInput,
-    'saveProducts': saveProducts,
-    'saveExternalUsername': saveExternalUsername,
-    setOnImportCompletion: function(callback){
-      onImportCompletion = callback
-    },
-    getTiids: function(){return tiidsAdded}
-  }
+    return {
+      'saveImporterInput': saveImporterInput,
+      setOnImportCompletion: function(callback){
+        onImportCompletion = callback
+      },
+      getTiids: function(){return tiidsAdded}
+    }
 })
 
 
@@ -141,19 +172,14 @@ angular.module('importers.importer')
     // ok, let's do this
     console.log(
       _.sprintf("calling /importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
-      $scope.userInput
+      $scope.importer
     )
 
-    var cleanInputs = Importer.cleanInput($scope.userInput, $scope.importer.inputs)
-    Importer.saveProducts(slug, $scope.importer.endpoint, cleanInputs)
-    Importer.saveExternalUsername(slug,
-                                  $scope.importer.endpoint,
-                                  cleanInputs.input,
-                                  $scope.importer.saveUsername)
-
-
+    Importer.saveImporterInput(slug, $scope.importer)
   }
 })
+
+
   .directive("ngFileSelect",function(){
     return {
       link: function($scope, el, attrs){
