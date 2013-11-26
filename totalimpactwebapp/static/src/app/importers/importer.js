@@ -84,21 +84,11 @@ angular.module('importers.importer')
     )
   }
 
-<<<<<<< HEAD
-  var saveExternalUsername = function(url_slug, importerName, saveUsername){
-    if (!saveUsername) {
-      console.log("no username.")
-      return false
-    }
-    var patchData = {about:{}}
-    patchData.about[importerName + "_id"] = saveUsername
-=======
-
   var saveExternalUsername = function(url_slug, importerName, externalUsername){
 
     var patchData = {about:{}}
     patchData.about[importerName + "_id"] = externalUsername
->>>>>>> master
+
     console.log("trying to save this patch data: ", patchData)
 
     start("saveExternalUsernames")
