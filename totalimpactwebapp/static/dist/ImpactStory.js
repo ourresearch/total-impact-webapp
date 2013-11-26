@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-24
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-25
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -3902,7 +3902,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "      <div id=\"footer-funders\" class=\"footer-col\">\n" +
     "         <h3>Supported by</h3>\n" +
     "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
-    "            <img src=\"/static/img/sloan-logo.png\"  width=\"200\"/>\n" +
+    "            <img src=\"/static/img/logos/sloan.png\"  width=\"200\"/>\n" +
     "         </a>\n" +
     "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
     "            <img src=\"/static/img/logos/nsf.png\"  width=\"200\"/>\n" +
