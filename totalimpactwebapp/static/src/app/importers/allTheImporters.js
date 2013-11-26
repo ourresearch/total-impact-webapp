@@ -111,11 +111,18 @@ angular.module('importers.allTheImporters')
     {
       displayName: "WordPress",
       inputs: [{
-        inputType: "idList",
-        inputNeeded: "WordPress.com  URLs",
-        help: "Paste the URLs for WordPress.com blogs.  The URLs can be on custom domains (like http://blog.impactstory.org), as long as the blogs are hosted on WordPress.com.",
-        placeholder: "http://retractionwatch.wordpress.com"
-      }],
+          name: "blogUrl",
+          inputType: "username",
+          inputNeeded: "WordPress.com  URL",
+          help: "Paste the URL for a WordPress.com blog.  The URL can be on custom domains (like http://blog.impactstory.org), as long as the blog is hosted on WordPress.com.",
+          placeholder: "http://retractionwatch.wordpress.com"
+        },
+        {
+          inputType: "username",
+          inputNeeded: "API key",
+          name: "apiKey",
+          help: "Your WordPress.com API key can be recovered through Akismet at <a href='http://akismet.com/resend/'>http://akismet.com/resend/</a>"
+        }],
       endpoint: "wordpresscom",            
       url: "http://wordpress.com",
       descr: "WordPress.com is site that provides web hosting for blogs, using the popular WordPress software."
@@ -247,10 +254,7 @@ angular.module('importers.allTheImporters')
   }
 
   var prepInputObject = function(inputObject) {
-
-    // @todo: fix core /importer to support new obj inputs w 'primary' key.
-//    var defaultInputName = "primary"
-    var defaultInputName = "input"
+    var defaultInputName = "primary"
     inputObject.name || (inputObject.name = defaultInputName)
 
     return inputObject
