@@ -186,8 +186,7 @@ angular.module('importers.importer')
         el.bind("change", function(e){
           var reader = new FileReader()
           reader.onload = function(e){
-            // file input is always the primary one. sure, why not.
-            $scope.userInput.primary = reader.result
+            $scope.value = reader.result
           }
 
           var file = (e.srcElement || e.target).files[0];
