@@ -605,7 +605,7 @@ def google_verification():
 
 @app.route("/loading.gif")
 def images():
-    path = "static/img/loading-small.gif"
+    path = "static/img/spinner.gif"
     return send_file(path)
 
 
