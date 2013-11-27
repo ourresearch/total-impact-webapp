@@ -122,14 +122,14 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "\n" +
     "   <li ng-show=\"currentUser\" class=\"preferences nav-item\">\n" +
-    "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
+    "      <span class=\"or\"></span>\n" +
     "      <a class=\"profile preference\"\n" +
     "         href=\"/settings/profile\"\n" +
     "         tooltip=\"Change profile settings\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
-    "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
+    "      <span class=\"or\"></span>\n" +
     "      <a class=\"logout preference\"\n" +
     "         ng-click=\"logout()\"\n" +
     "         tooltip=\"Log out\"\n" +

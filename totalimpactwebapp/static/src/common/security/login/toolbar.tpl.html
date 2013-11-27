@@ -11,14 +11,14 @@
    </li>
 
    <li ng-show="currentUser" class="preferences nav-item">
-      <span ng-show="!page.isLandingPage()" class="or"></span>
+      <span class="or"></span>
       <a class="profile preference"
          href="/settings/profile"
          tooltip="Change profile settings"
          tooltip-placement="bottom">
          <i class="icon-cog"></i>
       </a>
-      <span ng-show="!page.isLandingPage()" class="or"></span>
+      <span class="or"></span>
       <a class="logout preference"
          ng-click="logout()"
          tooltip="Log out"

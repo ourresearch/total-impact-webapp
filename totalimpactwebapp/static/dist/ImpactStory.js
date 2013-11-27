@@ -1492,8 +1492,8 @@ angular.module("profile", [
       );
     },
     slugIsCurrentUser: function(slug){
-      if (!security.currentUser) return false;
-      return (security.currentUser.url_slug == slug);
+      if (!security.getCurrentUser()) return false;
+      return (security.getCurrentUser().url_slug == slug);
     },
     makeSlug: function(){
       about.url_slug = Slug.make(about.givenName, about.surname)
@@ -1531,7 +1531,9 @@ angular.module("profile", [
     $scope.filterProducts =  UserProfile.filterProducts;
 
     $scope.user = UserProfile.loadUser($scope, userSlug);
-    $scope.currentUserIsProfileOwner = UserProfile.slugIsCurrentUser(userSlug);
+    $scope.currentUserIsProfileOwner = function(){
+      return UserProfile.slugIsCurrentUser(userSlug);
+    }
 
     $scope.openProfileEmbedModal = function(){
       $modal.open({
@@ -1910,9 +1912,13 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupNameCtrl', function ( $scope, Signup, $location ) {
+  .controller( 'signupNameCtrl', function ( $scope, $location, Signup, Slug ) {
     $scope.nav.goToNextStep = function(){
-      $location.path("signup/" + $scope.input.givenName + "/" + $scope.input.surname + "/url")
+      $location.path(
+        "signup/"
+        + Slug.asciify($scope.input.givenName + "/" + $scope.input.surname)
+        + "/url"
+      )
     }
 
   })
@@ -3722,6 +3728,7 @@ angular.module('services.slug')
   }
 
   return {
+    asciify: removeDiacritics,
     make: function(givenName, surname) {
       var slug = removeDiacritics(givenName) + removeDiacritics(surname);
 
@@ -3976,7 +3983,7 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "</div>\n" +
     "\n" +
     "<div class=\"overlay\"\n" +
-    "     ng-click=\"hideImportWindow()\"\n" +
+    "     ng-click=\"onCancel()\"\n" +
     "     ng-if=\"importWindowOpen\"\n" +
     "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
     "\n" +
@@ -4746,7 +4753,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
     "            </a>\n" +
     "         </div>\n" +
-    "         <a href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-edit\"></i>Import products</a>\n" +
+    "         <a ng-show=\"currentUserIsProfileOwner()\" href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-edit\"></i>Import products</a>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
@@ -4754,8 +4761,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "            <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "               <li><a tabindex=\"-1\" href=\"http://impactstory.org/user/{{ user.about.id }}/products.csv\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "               <li><a tabindex=\"-1\" href=\"http://impactstory.org/user/{{ user.about.id }}/products\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.id }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.id }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "            </ul>\n" +
     "         </span>\n" +
     "      </div>\n" +
@@ -4776,15 +4783,22 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product._id }}\">\n" +
     "\n" +
     "            <h2 class=\"product-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
+    "                id=\"{{ product.headingValue }}\"\n" +
     "                ng-show=\"product.isHeading\">\n" +
-    "               <i class=\"icon-save software\"></i>\n" +
-    "               <i class=\"icon-file-text-alt article\"></i>\n" +
-    "               <i class=\"icon-table dataset\"></i>\n" +
-    "               <i class=\"icon-desktop slides\"></i>\n" +
-    "               <i class=\"icon-globe webpage\"></i>\n" +
-    "               <i class=\"icon-facetime-video video\"></i>\n" +
-    "               <i class=\"icon-edit-sign blog\"></i>                  \n" +
-    "               <i class=\"icon-comments account\"></i>               \n" +
+    "               <!--<a class=\"genre-anchor\"\n" +
+    "                  tooltip=\"permalink\"\n" +
+    "                  tooltip-placement=\"left\"\n" +
+    "                  href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
+    "                  <i class=\"icon-link\"></i>\n" +
+    "               </a>-->\n" +
+    "               <i class=\"icon-save software genre\"></i>\n" +
+    "               <i class=\"icon-file-text-alt article genre\"></i>\n" +
+    "               <i class=\"icon-table dataset genre\"></i>\n" +
+    "               <i class=\"icon-desktop slides genre\"></i>\n" +
+    "               <i class=\"icon-globe webpage genre\"></i>\n" +
+    "               <i class=\"icon-facetime-video video genre\"></i>\n" +
+    "               <i class=\"icon-edit-sign blog genre\"></i>\n" +
+    "               <i class=\"icon-comments account genre\"></i>\n" +
     "               {{ product.headingValue }}\n" +
     "            </h2>\n" +
     "            <div class=\"real-product\" ng-show=\"!product.isHeading\">\n" +
@@ -5428,14 +5442,14 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "\n" +
     "   <li ng-show=\"currentUser\" class=\"preferences nav-item\">\n" +
-    "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
+    "      <span class=\"or\"></span>\n" +
     "      <a class=\"profile preference\"\n" +
     "         href=\"/settings/profile\"\n" +
     "         tooltip=\"Change profile settings\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
-    "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
+    "      <span class=\"or\"></span>\n" +
     "      <a class=\"logout preference\"\n" +
     "         ng-click=\"logout()\"\n" +
     "         tooltip=\"Log out\"\n" +

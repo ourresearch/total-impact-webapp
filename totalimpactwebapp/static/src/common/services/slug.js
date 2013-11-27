@@ -100,6 +100,7 @@ angular.module('services.slug')
   }
 
   return {
+    asciify: removeDiacritics,
     make: function(givenName, surname) {
       var slug = removeDiacritics(givenName) + removeDiacritics(surname);
 

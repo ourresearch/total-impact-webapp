@@ -1,6 +1,6 @@
 div.loading {
    div.working {
-      color: #ddd;
+      color: #999999;
       font-size: 20px;
       font-family: Lato;
       font-weight: bolder;
@@ -123,26 +123,32 @@ div.product-controls {
    div.view-controls {
       float:right;
       margin: 0 30px 0 0;
-      ul.dropdown-menu {
-         border: none;
-         .drop-shadow(0, 0, 0, 0);
-         .border-radius(0, 3px, 3px, 0);
-         padding: 0;
-         background: #eee;
-         top: 22px;
-         min-width:  120px;
-         a {
-            margin: 0;
-            width: 100%;
+      span.dropdown {
+         ul.dropdown-menu {
+            border: none;
+            .drop-shadow(0, 0, 0, 0);
+            .border-radius(0, 3px, 3px, 0);
+            padding: 0;
+            background: #eee;
+            top: 22px;
+            min-width:  120px;
+            a {
+               margin: 0;
+               width: 100%;
+               &:hover {
+                  color: #fff;
+               }
+            }
+            i {
+               font-style: normal;
+               margin-right: 5px;
+            }
+            i.json {
+               font-weight: 900;
+               font-size: 14px;
+            }
          }
-         i {
-            font-style: normal;
-            margin-right: 5px;
-         }
-         i.json {
-            font-weight: 900;
-            font-size: 14px;
-         }
+
       }
    }
    div.edit-controls {

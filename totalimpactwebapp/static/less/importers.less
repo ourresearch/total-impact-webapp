@@ -17,6 +17,7 @@ div.importers {
       opacity: 1;
       transition: opacity 0.5s;
       -webkit-transition: opacity 0.5s;
+      cursor: pointer;
    }
    div.import-window {
       position: fixed;
@@ -131,13 +132,16 @@ div.importers {
    div.importer-tile {
       float:left;
       background: #fff;
-      width:  33.333%;
-      padding: 60px 2% 60px 3%;
+      width:  25%;
+      padding: 45px 1% 45px 2%;
       border-right: 1px solid #ccc;
       border-bottom: 1px solid #ccc;
       text-align: center;
       position: relative;
       cursor: pointer;
+      @media(max-width: 83em){
+         width:  33.333333%;
+      }
       @media(max-width: 65em){
          width:  50%;
       }
@@ -164,7 +168,7 @@ div.importers {
       }
       div.importer-name {
          img {
-            height: 50px;
+            height: 35px;
             background: #fff;
          }
       }
@@ -186,12 +190,4 @@ div.importers {
 
    }
 
-   div.more-importers-coming {
-      .clearfix();
-      text-align: center;
-      color: #ccc;
-      padding-top: 30px;
-      font-size: 26px;
-      font-weight: lighter;
-   }
 }

@@ -7153,7 +7153,7 @@ div#docs ul#required-attributes li {
 
 }
 div.loading div.working {
-  color: #ddd;
+  color: #999999;
   font-size: 20px;
   font-family: Lato;
   font-weight: bolder;
@@ -7313,7 +7313,7 @@ div.product-controls div.view-controls {
   float: right;
   margin: 0 30px 0 0;
 }
-div.product-controls div.view-controls ul.dropdown-menu {
+div.product-controls div.view-controls span.dropdown ul.dropdown-menu {
   border: none;
   -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
@@ -7338,15 +7338,18 @@ div.product-controls div.view-controls ul.dropdown-menu {
   top: 22px;
   min-width: 120px;
 }
-div.product-controls div.view-controls ul.dropdown-menu a {
+div.product-controls div.view-controls span.dropdown ul.dropdown-menu a {
   margin: 0;
   width: 100%;
 }
-div.product-controls div.view-controls ul.dropdown-menu i {
+div.product-controls div.view-controls span.dropdown ul.dropdown-menu a:hover {
+  color: #fff;
+}
+div.product-controls div.view-controls span.dropdown ul.dropdown-menu i {
   font-style: normal;
   margin-right: 5px;
 }
-div.product-controls div.view-controls ul.dropdown-menu i.json {
+div.product-controls div.view-controls span.dropdown ul.dropdown-menu i.json {
   font-weight: 900;
   font-size: 14px;
 }
@@ -7440,20 +7443,38 @@ div.products div.products-without-metrics div.well a {
   font-size: 14px;
 }
 .product h2.product-heading {
-  margin: 50px 0 -10px -39px;
+  margin: 50px 0 -10px -23px;
   font-weight: 900;
   text-transform: capitalize;
   font-size: 30px;
-  color: #ff4e00;
   color: #555;
 }
+.product h2.product-heading:hover a.genre-anchor i.icon-link {
+  color: #ff4e00;
+}
+.product h2.product-heading .tooltip.left {
+  width: 100px;
+}
+.product h2.product-heading .tooltip.left .tooltip-arrow {
+  border-left-color: #ff4e00;
+}
+.product h2.product-heading .tooltip.left .tooltip-inner {
+  padding: 2px;
+  background: #ff4e00;
+}
+.product h2.product-heading a.genre-anchor i.icon-link {
+  font-size: 16px;
+  margin: 0 2px 0 0;
+  color: #cccccc;
+}
 .product h2.product-heading i {
-  display: none;
-  font-size: 20px;
-  width: 30px;
-  margin-right: 4px;
   vertical-align: 2px;
+  font-size: 20px;
+  margin-right: 4px;
   text-align: right;
+}
+.product h2.product-heading i.genre {
+  display: none;
 }
 .product h2.product-heading.article i.article {
   display: inline-block;
@@ -7797,6 +7818,7 @@ div.product-page .product .biblio h5 a i:hover {
 div.product-page .product .biblio h5 a:hover {
   color: inherit;
   cursor: default;
+  color: #333;
 }
 div.product-page .product .biblio div.optional-biblio {
   font-size: 20px;
@@ -7980,10 +8002,6 @@ form.signup div.signup-input.signup-products div.intro {
 form.signup div.signup-input.signup-products div.importers {
   border-top: 1px solid #ddd;
   top: 250px;
-}
-form.signup div.signup-input.signup-products div.importers .importer-tile {
-  padding-top: 45px;
-  padding-bottom: 45px;
 }
 form.signup div.signup-input div.form-group input.form-control {
   font-size: 25px;
@@ -8239,6 +8257,7 @@ div.importers div.overlay {
   opacity: 1;
   transition: opacity 0.5s;
   -webkit-transition: opacity 0.5s;
+  cursor: pointer;
 }
 div.importers div.import-window {
   position: fixed;
@@ -8351,13 +8370,18 @@ div.importers div.import-window .content .extra code {
 div.importers div.importer-tile {
   float: left;
   background: #fff;
-  width: 33.333%;
-  padding: 60px 2% 60px 3%;
+  width: 25%;
+  padding: 45px 1% 45px 2%;
   border-right: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
   text-align: center;
   position: relative;
   cursor: pointer;
+}
+@media (max-width: 83em) {
+  div.importers div.importer-tile {
+    width: 33.333333%;
+  }
 }
 @media (max-width: 65em) {
   div.importers div.importer-tile {
@@ -8391,7 +8415,7 @@ div.importers div.importer-tile.has-run div.imported-products-count {
   display: block;
 }
 div.importers div.importer-tile div.importer-name img {
-  height: 50px;
+  height: 35px;
   background: #fff;
 }
 div.importers div.importer-tile div.imported-products-count {
@@ -8408,38 +8432,6 @@ div.importers div.importer-tile div.imported-products-count span.descr {
   width: 60px;
   display: inline-block;
   font-size: 12px;
-}
-div.importers div.more-importers-coming {
-  clear: both;
-  text-align: center;
-  color: #ccc;
-  padding-top: 30px;
-  font-size: 26px;
-  font-weight: lighter;
-}
-div.importers div.more-importers-coming:before,
-div.importers div.more-importers-coming:after {
-  content: " ";
-  /* 1 */
-
-  display: table;
-  /* 2 */
-
-}
-div.importers div.more-importers-coming:after {
-  clear: both;
-}
-div.importers div.more-importers-coming:before,
-div.importers div.more-importers-coming:after {
-  content: " ";
-  /* 1 */
-
-  display: table;
-  /* 2 */
-
-}
-div.importers div.more-importers-coming:after {
-  clear: both;
 }
 .modal-body.update div.intro {
   text-align: center;
@@ -8468,5 +8460,45 @@ div.importers div.more-importers-coming:after {
 }
 .modal-body.update div.products span.descr {
   font-size: 12px;
+  text-align: center;
+}
+div.password-reset-header {
+  background: #ff4e00;
+  height: 100px;
+  padding-top: 20px;
+}
+div.password-reset-header h1 {
+  text-align: center;
+  margin: 0;
+}
+div.password-reset-header h1 img {
+  height: 50px;
+  margin-top: 5px;
+}
+div.password-reset-header h1 span {
+  font-size: 25px;
+  font-weight: 300;
+  text-transform: uppercase;
+  color: #fff;
+}
+div.password-reset form.password-reset {
+  width: 500px;
+  margin: 200px auto 0;
+}
+div.password-reset form.password-reset div.new-password {
+  position: relative;
+}
+div.password-reset form.password-reset div.new-password input {
+  font-size: 30px;
+  width: 470px;
+}
+div.password-reset form.password-reset div.new-password div.show-password {
+  font-size: 30px;
+  position: absolute;
+  bottom: -7px;
+  right: -60px;
+  color: #999;
+}
+div.password-reset form.password-reset div.submit {
   text-align: center;
 }

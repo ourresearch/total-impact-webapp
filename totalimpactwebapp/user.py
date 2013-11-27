@@ -163,6 +163,16 @@ class User(db.Model):
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
+
+            # hack. only save lowercase emails.
+            if k == "email":
+                v = v.lower()
+
+            # convert all strings to unicode
+            if isinstance(v, basestring):
+                v = unicode(v)
+
+            # if this User has this property, overwrite it with the supplied val
             if hasattr(self, k):
                 try:
                     setattr(self, k, v)

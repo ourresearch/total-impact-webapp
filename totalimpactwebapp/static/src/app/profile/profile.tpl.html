@@ -63,7 +63,7 @@
                (hide <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> without metrics)
             </a>
          </div>
-         <a href="/{{ user.about.url_slug }}/products/add"><i class="icon-edit"></i>Import products</a>
+         <a ng-show="currentUserIsProfileOwner()" href="/{{ user.about.url_slug }}/products/add"><i class="icon-edit"></i>Import products</a>
       </div>
       <div class="view-controls">
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
@@ -71,8 +71,8 @@
          <span class="dropdown download">
             <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
-               <li><a tabindex="-1" href="http://impactstory.org/user/{{ user.about.id }}/products.csv"><i class="icon-table"></i>csv</a></li>
-               <li><a tabindex="-1" href="http://impactstory.org/user/{{ user.about.id }}/products"><i class="json">{&hellip;}</i>json</a></li>
+               <li><a tabindex="-1" href="{{ page.getBaseUrl }}/user/{{ user.about.id }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
+               <li><a tabindex="-1" href="{{ page.getBaseUrl }}/user/{{ user.about.id }}/products" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
             </ul>
          </span>
       </div>
@@ -93,15 +93,22 @@
              id="{{ product._id }}">
 
             <h2 class="product-heading {{ product.headingDimension }} {{ product.headingValue }}"
+                id="{{ product.headingValue }}"
                 ng-show="product.isHeading">
-               <i class="icon-save software"></i>
-               <i class="icon-file-text-alt article"></i>
-               <i class="icon-table dataset"></i>
-               <i class="icon-desktop slides"></i>
-               <i class="icon-globe webpage"></i>
-               <i class="icon-facetime-video video"></i>
-               <i class="icon-edit-sign blog"></i>                  
-               <i class="icon-comments account"></i>               
+               <!--<a class="genre-anchor"
+                  tooltip="permalink"
+                  tooltip-placement="left"
+                  href="{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}">
+                  <i class="icon-link"></i>
+               </a>-->
+               <i class="icon-save software genre"></i>
+               <i class="icon-file-text-alt article genre"></i>
+               <i class="icon-table dataset genre"></i>
+               <i class="icon-desktop slides genre"></i>
+               <i class="icon-globe webpage genre"></i>
+               <i class="icon-facetime-video video genre"></i>
+               <i class="icon-edit-sign blog genre"></i>
+               <i class="icon-comments account genre"></i>
                {{ product.headingValue }}
             </h2>
             <div class="real-product" ng-show="!product.isHeading">
