@@ -22,6 +22,7 @@
    }
 
 
+
    h2.product-heading {
       margin: 50px 0 -10px -23px;
       font-weight: 900;
@@ -33,7 +34,16 @@
             color: @linkColor
          }
       }
-
+      .tooltip.left {
+         width: 100px;
+         .tooltip-arrow{
+            border-left-color:@linkColor;
+         }
+         .tooltip-inner {
+            padding:2px;
+            background: @linkColor;
+         }
+      }
       a.genre-anchor {
          i.icon-link {
             font-size: 16px;

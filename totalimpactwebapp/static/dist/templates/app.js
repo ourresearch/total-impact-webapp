@@ -896,6 +896,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                id=\"{{ product.headingValue }}\"\n" +
     "                ng-show=\"product.isHeading\">\n" +
     "               <a class=\"genre-anchor\"\n" +
+    "                  tooltip=\"permalink\"\n" +
+    "                  tooltip-placement=\"left\"\n" +
     "                  href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
     "                  <i class=\"icon-link\"></i>\n" +
     "               </a>\n" +

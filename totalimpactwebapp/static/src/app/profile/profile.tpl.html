@@ -96,6 +96,8 @@
                 id="{{ product.headingValue }}"
                 ng-show="product.isHeading">
                <a class="genre-anchor"
+                  tooltip="permalink"
+                  tooltip-placement="left"
                   href="{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}">
                   <i class="icon-link"></i>
                </a>
