@@ -7313,7 +7313,7 @@ div.product-controls div.view-controls {
   float: right;
   margin: 0 30px 0 0;
 }
-div.product-controls div.view-controls ul.dropdown-menu {
+div.product-controls div.view-controls span.dropdown.open ul.dropdown-menu {
   border: none;
   -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
@@ -7338,15 +7338,18 @@ div.product-controls div.view-controls ul.dropdown-menu {
   top: 22px;
   min-width: 120px;
 }
-div.product-controls div.view-controls ul.dropdown-menu a {
+div.product-controls div.view-controls span.dropdown.open ul.dropdown-menu a {
   margin: 0;
   width: 100%;
 }
-div.product-controls div.view-controls ul.dropdown-menu i {
+div.product-controls div.view-controls span.dropdown.open ul.dropdown-menu a:hover {
+  color: #fff;
+}
+div.product-controls div.view-controls span.dropdown.open ul.dropdown-menu i {
   font-style: normal;
   margin-right: 5px;
 }
-div.product-controls div.view-controls ul.dropdown-menu i.json {
+div.product-controls div.view-controls span.dropdown.open ul.dropdown-menu i.json {
   font-weight: 900;
   font-size: 14px;
 }
@@ -8439,5 +8442,45 @@ div.importers div.importer-tile div.imported-products-count span.descr {
 }
 .modal-body.update div.products span.descr {
   font-size: 12px;
+  text-align: center;
+}
+div.password-reset-header {
+  background: #ff4e00;
+  height: 100px;
+  padding-top: 20px;
+}
+div.password-reset-header h1 {
+  text-align: center;
+  margin: 0;
+}
+div.password-reset-header h1 img {
+  height: 50px;
+  margin-top: 5px;
+}
+div.password-reset-header h1 span {
+  font-size: 25px;
+  font-weight: 300;
+  text-transform: uppercase;
+  color: #fff;
+}
+div.password-reset form.password-reset {
+  width: 500px;
+  margin: 200px auto 0;
+}
+div.password-reset form.password-reset div.new-password {
+  position: relative;
+}
+div.password-reset form.password-reset div.new-password input {
+  font-size: 30px;
+  width: 470px;
+}
+div.password-reset form.password-reset div.new-password div.show-password {
+  font-size: 30px;
+  position: absolute;
+  bottom: -7px;
+  right: -60px;
+  color: #999;
+}
+div.password-reset form.password-reset div.submit {
   text-align: center;
 }
