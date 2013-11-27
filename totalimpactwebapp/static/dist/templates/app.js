@@ -863,7 +863,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
     "            </a>\n" +
     "         </div>\n" +
-    "         <a href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-edit\"></i>Import products</a>\n" +
+    "         <a ng-show=\"currentUserIsProfileOwner()\" href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-edit\"></i>Import products</a>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +

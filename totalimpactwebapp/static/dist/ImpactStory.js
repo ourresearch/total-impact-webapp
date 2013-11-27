@@ -1487,8 +1487,8 @@ angular.module("profile", [
       );
     },
     slugIsCurrentUser: function(slug){
-      if (!security.currentUser) return false;
-      return (security.currentUser.url_slug == slug);
+      if (!security.getCurrentUser()) return false;
+      return (security.getCurrentUser().url_slug == slug);
     },
     makeSlug: function(){
       about.url_slug = Slug.make(about.givenName, about.surname)
@@ -1526,7 +1526,9 @@ angular.module("profile", [
     $scope.filterProducts =  UserProfile.filterProducts;
 
     $scope.user = UserProfile.loadUser($scope, userSlug);
-    $scope.currentUserIsProfileOwner = UserProfile.slugIsCurrentUser(userSlug);
+    $scope.currentUserIsProfileOwner = function(){
+      return UserProfile.slugIsCurrentUser(userSlug);
+    }
 
     $scope.openProfileEmbedModal = function(){
       $modal.open({
@@ -4741,7 +4743,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
     "            </a>\n" +
     "         </div>\n" +
-    "         <a href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-edit\"></i>Import products</a>\n" +
+    "         <a ng-show=\"currentUserIsProfileOwner()\" href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-edit\"></i>Import products</a>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +

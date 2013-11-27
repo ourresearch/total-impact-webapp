@@ -63,7 +63,7 @@
                (hide <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> without metrics)
             </a>
          </div>
-         <a href="/{{ user.about.url_slug }}/products/add"><i class="icon-edit"></i>Import products</a>
+         <a ng-show="currentUserIsProfileOwner()" href="/{{ user.about.url_slug }}/products/add"><i class="icon-edit"></i>Import products</a>
       </div>
       <div class="view-controls">
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
