@@ -893,15 +893,20 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product._id }}\">\n" +
     "\n" +
     "            <h2 class=\"product-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
+    "                id=\"{{ product.headingValue }}\"\n" +
     "                ng-show=\"product.isHeading\">\n" +
-    "               <i class=\"icon-save software\"></i>\n" +
-    "               <i class=\"icon-file-text-alt article\"></i>\n" +
-    "               <i class=\"icon-table dataset\"></i>\n" +
-    "               <i class=\"icon-desktop slides\"></i>\n" +
-    "               <i class=\"icon-globe webpage\"></i>\n" +
-    "               <i class=\"icon-facetime-video video\"></i>\n" +
-    "               <i class=\"icon-edit-sign blog\"></i>                  \n" +
-    "               <i class=\"icon-comments account\"></i>               \n" +
+    "               <a class=\"genre-anchor\"\n" +
+    "                  href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
+    "                  <i class=\"icon-link\"></i>\n" +
+    "               </a>\n" +
+    "               <i class=\"icon-save software genre\"></i>\n" +
+    "               <i class=\"icon-file-text-alt article genre\"></i>\n" +
+    "               <i class=\"icon-table dataset genre\"></i>\n" +
+    "               <i class=\"icon-desktop slides genre\"></i>\n" +
+    "               <i class=\"icon-globe webpage genre\"></i>\n" +
+    "               <i class=\"icon-facetime-video video genre\"></i>\n" +
+    "               <i class=\"icon-edit-sign blog genre\"></i>\n" +
+    "               <i class=\"icon-comments account genre\"></i>\n" +
     "               {{ product.headingValue }}\n" +
     "            </h2>\n" +
     "            <div class=\"real-product\" ng-show=\"!product.isHeading\">\n" +

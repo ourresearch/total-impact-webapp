@@ -23,18 +23,31 @@
 
 
    h2.product-heading {
-      margin: 50px 0 -10px -39px;
+      margin: 50px 0 -10px -23px;
       font-weight: 900;
       text-transform: capitalize;
       font-size: 30px;
-      color: @linkColor;
       color:  #555;
+      &:hover {
+         a.genre-anchor i.icon-link {
+            color: @linkColor
+         }
+      }
+
+      a.genre-anchor {
+         i.icon-link {
+            font-size: 16px;
+            margin:0 2px 0 0;
+            color: #cccccc;
+         }
+      }
       i {
-         display:none;
-         font-size: 20px;
-         width:  30px;
-         margin-right: 4px;
          vertical-align: 2px;
+         font-size: 20px;
+         margin-right: 4px;
+         &.genre{
+            display:none;
+         }
          text-align: right;
       }
       &.article{ i.article {display:inline-block;}}

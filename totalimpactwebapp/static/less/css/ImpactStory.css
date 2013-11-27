@@ -7443,20 +7443,28 @@ div.products div.products-without-metrics div.well a {
   font-size: 14px;
 }
 .product h2.product-heading {
-  margin: 50px 0 -10px -39px;
+  margin: 50px 0 -10px -23px;
   font-weight: 900;
   text-transform: capitalize;
   font-size: 30px;
-  color: #ff4e00;
   color: #555;
 }
+.product h2.product-heading:hover a.genre-anchor i.icon-link {
+  color: #ff4e00;
+}
+.product h2.product-heading a.genre-anchor i.icon-link {
+  font-size: 16px;
+  margin: 0 2px 0 0;
+  color: #cccccc;
+}
 .product h2.product-heading i {
-  display: none;
-  font-size: 20px;
-  width: 30px;
-  margin-right: 4px;
   vertical-align: 2px;
+  font-size: 20px;
+  margin-right: 4px;
   text-align: right;
+}
+.product h2.product-heading i.genre {
+  display: none;
 }
 .product h2.product-heading.article i.article {
   display: inline-block;
