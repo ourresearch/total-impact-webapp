@@ -7153,7 +7153,7 @@ div#docs ul#required-attributes li {
 
 }
 div.loading div.working {
-  color: #ddd;
+  color: #999999;
   font-size: 20px;
   font-family: Lato;
   font-weight: bolder;
