@@ -211,7 +211,7 @@ def extract_filename(s):
 
 @app.route("/user/current")
 def get_current_user():
-    sleep(1)
+    #sleep(1)
 
     try:
         return json_resp_from_thing({"user": g.user.as_dict()})
@@ -222,7 +222,7 @@ def get_current_user():
 
 @app.route('/user/logout', methods=["POST", "GET"])
 def logout():
-    sleep(1)
+    #sleep(1)
     logout_user()
     return json_resp_from_thing({"msg": "user logged out"})
 
@@ -231,7 +231,7 @@ def logout():
 def login():
 
     logger.debug(u"user trying to log in.")
-    sleep(1)
+    #sleep(1)
 
     email = unicode(request.json["email"]).lower()
     password = unicode(request.json["password"])
