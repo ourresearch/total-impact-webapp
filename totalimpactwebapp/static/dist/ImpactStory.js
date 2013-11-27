@@ -1907,9 +1907,13 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupNameCtrl', function ( $scope, Signup, $location ) {
+  .controller( 'signupNameCtrl', function ( $scope, $location, Signup, Slug ) {
     $scope.nav.goToNextStep = function(){
-      $location.path("signup/" + $scope.input.givenName + "/" + $scope.input.surname + "/url")
+      $location.path(
+        "signup/"
+        + Slug.asciify($scope.input.givenName + "/" + $scope.input.surname)
+        + "/url"
+      )
     }
 
   })
@@ -3719,6 +3723,7 @@ angular.module('services.slug')
   }
 
   return {
+    asciify: removeDiacritics,
     make: function(givenName, surname) {
       var slug = removeDiacritics(givenName) + removeDiacritics(surname);
 
