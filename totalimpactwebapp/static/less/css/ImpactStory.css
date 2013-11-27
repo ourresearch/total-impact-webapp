@@ -7797,6 +7797,7 @@ div.product-page .product .biblio h5 a i:hover {
 div.product-page .product .biblio h5 a:hover {
   color: inherit;
   cursor: default;
+  color: #333;
 }
 div.product-page .product .biblio div.optional-biblio {
   font-size: 20px;
