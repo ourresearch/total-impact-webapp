@@ -116,13 +116,14 @@ angular.module('importers.allTheImporters')
           inputNeeded: "WordPress.com  URL",
           help: "Paste the URL for a WordPress.com blog.  The URL can be on custom domains (like http://blog.impactstory.org), as long as the blog is hosted on WordPress.com.",
           placeholder: "http://retractionwatch.wordpress.com"
-        },
-        {
-          inputType: "username",
-          inputNeeded: "API key",
-          name: "apiKey",
-          help: "Your WordPress.com API key can be discovered through Akismet at <a href='http://akismet.com/resend/'>http://akismet.com/resend/</a>"
-        }],
+        }
+        // ,{
+        //   inputType: "username",
+        //   inputNeeded: "API key",
+        //   name: "apiKey",
+        //   help: "Your WordPress.com API key can be discovered through Akismet at <a href='http://akismet.com/resend/'>http://akismet.com/resend/</a>"
+        // }
+      ],
       endpoint: "wordpresscom",            
       url: "http://wordpress.com",
       descr: "WordPress.com is site that provides web hosting for blogs, using the popular WordPress software."
