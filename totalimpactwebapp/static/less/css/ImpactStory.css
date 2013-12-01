@@ -1415,13 +1415,13 @@ table th[class*="col-"] {
 .table > tbody > tr.danger > th,
 .table > tfoot > tr.danger > th {
   background-color: #e74c3c;
-  border-color: #e74c3c;
+  border-color: #d62c1a;
 }
 .table-hover > tbody > tr > td.danger:hover,
 .table-hover > tbody > tr > th.danger:hover,
 .table-hover > tbody > tr.danger:hover > td {
   background-color: #e43725;
-  border-color: #e43725;
+  border-color: #bf2718;
 }
 .table > thead > tr > td.warning,
 .table > tbody > tr > td.warning,
@@ -4456,11 +4456,11 @@ a.thumbnail:focus {
 }
 .alert-danger {
   background-color: #e74c3c;
-  border-color: #e74c3c;
+  border-color: #d62c1a;
   color: #ffffff;
 }
 .alert-danger hr {
-  border-top-color: #e43725;
+  border-top-color: #bf2718;
 }
 .alert-danger .alert-link {
   color: #e6e6e6;
@@ -4823,18 +4823,18 @@ a.list-group-item:focus {
   border-bottom-color: #f39c12;
 }
 .panel-danger {
-  border-color: #e74c3c;
+  border-color: #d62c1a;
 }
 .panel-danger > .panel-heading {
   color: #ffffff;
   background-color: #e74c3c;
-  border-color: #e74c3c;
+  border-color: #d62c1a;
 }
 .panel-danger > .panel-heading + .panel-collapse .panel-body {
-  border-top-color: #e74c3c;
+  border-top-color: #d62c1a;
 }
 .panel-danger > .panel-footer + .panel-collapse .panel-body {
-  border-bottom-color: #e74c3c;
+  border-bottom-color: #d62c1a;
 }
 .panel-info {
   border-color: #3498db;
@@ -6515,10 +6515,20 @@ ul.notifications li.alert {
   margin-bottom: -30px;
   padding-top: 15px;
   border-width: 2px;
-  border-left: none;
-  border-right: none;
-  border-top: 3px solid #fff;
+  border: none;
   text-align: center;
+  position: relative;
+  z-index: 10;
+  border-bottom: 2px solid #d62c1a;
+}
+ul.notifications li.alert a {
+  font-weight: bold;
+  text-decoration: underline;
+  font-size: 90%;
+  margin: 0 20px;
+}
+ul.notifications li.alert a:hover {
+  color: #fff;
 }
 /**
  * Extra large button extensions. Extends `.btn`.
@@ -7957,7 +7967,7 @@ div.signup-header h1 a.brand img {
 }
 div.signup-header ol.signup-steps {
   padding: 0;
-  margin: 23px auto;
+  margin: 23px auto 15px;
   padding-left: 60px;
   width: 500px;
 }

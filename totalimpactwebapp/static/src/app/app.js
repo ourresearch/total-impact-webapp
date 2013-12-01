@@ -11,6 +11,7 @@ angular.module('app', [
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
+  'services.browser',
   'security',
   'directives.crud',
   'templates.app',
@@ -43,11 +44,12 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
 }]);
 
 
-angular.module('app').run(['security', function(security) {
+angular.module('app').run(function(security, Browser) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
-}]);
+  Browser.warnOldIE()
+});
 
 
 angular.module('app').controller('AppCtrl', function($scope,

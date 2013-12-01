@@ -16,6 +16,7 @@ angular.module('app', [
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
+  'services.browser',
   'security',
   'directives.crud',
   'templates.app',
@@ -48,11 +49,12 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
 }]);
 
 
-angular.module('app').run(['security', function(security) {
+angular.module('app').run(function(security, Browser) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
-}]);
+  Browser.warnOldIE()
+});
 
 
 angular.module('app').controller('AppCtrl', function($scope,
@@ -3117,6 +3119,28 @@ angular.module('services.breadcrumbs').factory('breadcrumbs', ['$rootScope', '$l
 
   return breadcrumbsService;
 }]);
+angular.module('services.browser', [
+  'services.i18nNotifications'
+  ])
+
+// A simple directive to display a gravatar image given an email
+.factory('Browser', function(i18nNotifications){
+  if (typeof oldIE == "undefined") {
+    var oldIE = false
+  }
+
+  return {
+    warnOldIE: function(){
+      if (oldIE) {
+        console.log("old ie!")
+        i18nNotifications.pushSticky("browser.error.oldIE", "danger", {})
+      }
+      else {
+        console.log("not old ie!")
+      }
+    }
+  }
+})
 angular.module('services.crud', ['services.crudRouteProvider']);
 angular.module('services.crud').factory('crudEditMethods', function () {
 
@@ -3442,7 +3466,9 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'settings.url.change.success': "Your profile URL has been updated.",
     'settings.email.change.success': "Your email has been updated to {{email}}.",
     'passwordReset.error.invalidToken': "Looks like you've got an expired password reset token in the URL.",
-    'passwordReset.ready': "You're temporarily logged in. You should change your password now."
+    'passwordReset.ready': "You're temporarily logged in. You should change your password now.",
+
+    'browser.error.oldIE': "Warning: you're browsing using an out-of-date version of Internet Explorer. Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>"
 
   };
 
@@ -4403,9 +4429,8 @@ angular.module("notifications.tpl.html", []).run(["$templateCache", function($te
     "<ul class=\"notifications\">\n" +
     "   <li ng-class=\"['alert', 'alert-'+notification.type]\"\n" +
     "       ng-repeat=\"notification in notifications.getCurrent()\">\n" +
-    "\n" +
+    "       <span class=\"text\" ng-bind-html-unsafe=\"notification.message\"></span>\n" +
     "       <button class=\"close\" ng-click=\"removeNotification(notification)\">&times;</button>\n" +
-    "       {{notification.message}}\n" +
     "   </li>\n" +
     "</ul>\n" +
     "");
@@ -5120,7 +5145,9 @@ angular.module("signup/signup-header.tpl.html", []).run(["$templateCache", funct
     "         {{ stepName }}\n" +
     "      </li>\n" +
     "   </ol>\n" +
-    "</div>");
+    "   <div ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -5367,7 +5394,7 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "<div class=\"modal-body\">\n" +
     "   <ul class=\"modal-notifications\">\n" +
     "      <li ng-class=\"['alert', 'alert-'+notification.type]\" ng-repeat=\"notification in notifications.getCurrent()\">\n" +
-    "         {{notification.message}}\n" +
+    "         <span class=\"text\" ng-bind-html-unsafe=\"notification.message\"></span>\n" +
     "      </li>\n" +
     "   </ul>\n" +
     "\n" +

@@ -6,7 +6,7 @@
 <div class="modal-body">
    <ul class="modal-notifications">
       <li ng-class="['alert', 'alert-'+notification.type]" ng-repeat="notification in notifications.getCurrent()">
-         {{notification.message}}
+         <span class="text" ng-bind-html-unsafe="notification.message"></span>
       </li>
    </ul>
 

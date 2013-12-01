@@ -500,9 +500,8 @@ angular.module("notifications.tpl.html", []).run(["$templateCache", function($te
     "<ul class=\"notifications\">\n" +
     "   <li ng-class=\"['alert', 'alert-'+notification.type]\"\n" +
     "       ng-repeat=\"notification in notifications.getCurrent()\">\n" +
-    "\n" +
+    "       <span class=\"text\" ng-bind-html-unsafe=\"notification.message\"></span>\n" +
     "       <button class=\"close\" ng-click=\"removeNotification(notification)\">&times;</button>\n" +
-    "       {{notification.message}}\n" +
     "   </li>\n" +
     "</ul>\n" +
     "");
@@ -1217,7 +1216,9 @@ angular.module("signup/signup-header.tpl.html", []).run(["$templateCache", funct
     "         {{ stepName }}\n" +
     "      </li>\n" +
     "   </ol>\n" +
-    "</div>");
+    "   <div ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", function($templateCache) {

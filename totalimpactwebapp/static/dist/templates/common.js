@@ -34,7 +34,7 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "<div class=\"modal-body\">\n" +
     "   <ul class=\"modal-notifications\">\n" +
     "      <li ng-class=\"['alert', 'alert-'+notification.type]\" ng-repeat=\"notification in notifications.getCurrent()\">\n" +
-    "         {{notification.message}}\n" +
+    "         <span class=\"text\" ng-bind-html-unsafe=\"notification.message\"></span>\n" +
     "      </li>\n" +
     "   </ul>\n" +
     "\n" +

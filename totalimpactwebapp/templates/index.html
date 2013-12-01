@@ -10,10 +10,6 @@
 
    <!-- Load stylesheets -->
    <!-------------------------------------------------------------------------->
-   <!--[if lt IE 9]>
-   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-   <![endif]-->
-
    <link href='http://fonts.googleapis.com/css?family=Rokkitt:400' rel='stylesheet' type='text/css' />
    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
 
@@ -22,6 +18,13 @@
    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='img/favicon.ico') }}" />
 
 
+
+
+   <!-- IE conditional. temp hack. -->
+   <!-------------------------------------------------------------------------->
+   <!--[if lt IE 10]>
+   <script type="text/javascrip">var oldIE = true </script>
+   <![endif]-->
 
 
    <!-- Load scripts -->
