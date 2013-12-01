@@ -6856,6 +6856,7 @@ div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.seconda
   background: #555;
   font-size: 18px;
   vertical-align: bottom;
+  border: none;
   font-weight: normal;
   color: #eee;
 }
