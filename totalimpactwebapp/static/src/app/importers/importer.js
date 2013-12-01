@@ -84,11 +84,11 @@ angular.module('importers.importer')
     )
   }
 
-
   var saveExternalUsername = function(url_slug, importerName, externalUsername){
 
     var patchData = {about:{}}
     patchData.about[importerName + "_id"] = externalUsername
+
     console.log("trying to save this patch data: ", patchData)
 
     start("saveExternalUsernames")

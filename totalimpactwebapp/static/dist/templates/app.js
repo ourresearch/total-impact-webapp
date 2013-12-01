@@ -628,12 +628,11 @@ angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($t
     "</h5>\n" +
     "<div class=\"optional-biblio\">\n" +
     "   <span ng-if=\"biblio.year\" class=\"year\">({{ biblio.year }})</span>\n" +
-    "   <span ng-if=\"biblio.authors\" class=\"authors\">{{ biblio.authors }}.</span>\n" +
-    "   <span ng-if=\"biblio.repository\" class=\"repository\">{{ biblio.repository }}.</span>\n" +
+    "   <span ng-if=\"biblio.authors && !biblio.embed\" class=\"authors\">{{ biblio.authors }}.</span>\n" +
+    "   <span ng-if=\"biblio.repository && !biblio.embed\" class=\"repository\">{{ biblio.repository }}.</span>\n" +
     "   <span ng-if=\"biblio.journal\" class=\"journal\">{{ biblio.journal }}</span>\n" +
     "   <span ng-if=\"biblio.description\" class=\"description\">{{ biblio.description }}</span>\n" +
-    "\n" +
-    "\n" +
+    "   <span ng-if=\"biblio.embed\" class=\"embed\" ng-bind-html-unsafe=\"biblio.embed\"></span>\n" +
     "\n" +
     "\n" +
     "</div>\n" +

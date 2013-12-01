@@ -228,11 +228,19 @@ angular.module('importers.allTheImporters')
     {
       displayName: "WordPress",
       inputs: [{
-        inputType: "idList",
-        inputNeeded: "WordPress.com  URLs",
-        help: "Paste the URLs for WordPress.com blogs.  The URLs can be on custom domains (like http://blog.impactstory.org), as long as the blogs are hosted on WordPress.com.",
-        placeholder: "http://retractionwatch.wordpress.com"
-      }],
+          name: "blogUrl",
+          inputType: "username",
+          inputNeeded: "WordPress.com  URL",
+          help: "Paste the URL for a WordPress.com blog.  The URL can be on custom domains (like http://blog.impactstory.org), as long as the blog is hosted on WordPress.com.",
+          placeholder: "http://retractionwatch.wordpress.com"
+        }
+        // ,{
+        //   inputType: "username",
+        //   inputNeeded: "API key",
+        //   name: "apiKey",
+        //   help: "Your WordPress.com API key can be discovered through Akismet at <a href='http://akismet.com/resend/'>http://akismet.com/resend/</a>"
+        // }
+      ],
       endpoint: "wordpresscom",            
       url: "http://wordpress.com",
       descr: "WordPress.com is site that provides web hosting for blogs, using the popular WordPress software."
@@ -364,10 +372,7 @@ angular.module('importers.allTheImporters')
   }
 
   var prepInputObject = function(inputObject) {
-
-    // @todo: fix core /importer to support new obj inputs w 'primary' key.
-//    var defaultInputName = "primary"
-    var defaultInputName = "input"
+    var defaultInputName = "primary"
     inputObject.name || (inputObject.name = defaultInputName)
     inputObject.cleanupFunction = inputObject.cleanupFunction || function(x){return x}
 
@@ -493,11 +498,11 @@ angular.module('importers.importer')
     )
   }
 
-
   var saveExternalUsername = function(url_slug, importerName, externalUsername){
 
     var patchData = {about:{}}
     patchData.about[importerName + "_id"] = externalUsername
+
     console.log("trying to save this patch data: ", patchData)
 
     start("saveExternalUsernames")
@@ -893,6 +898,7 @@ angular.module('product.product')
             ["vimeo:comments", "public", "discussed", "badge", 3],
             ["wikipedia:mentions", "public", "cited", "badge", 3],            
             ["wordpresscom:subscribers", "public", "viewed", "badge", 3],
+            ["wordpresscom:views", "public", "viewed", "badge", 3],
             ["youtube:likes", "public", "recommended", "badge", 3],
             ["youtube:dislikes", "public", "discussed", "badge", 3],
             ["youtube:favorites", "public", "saved", "badge", 3],
@@ -4525,12 +4531,11 @@ angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($t
     "</h5>\n" +
     "<div class=\"optional-biblio\">\n" +
     "   <span ng-if=\"biblio.year\" class=\"year\">({{ biblio.year }})</span>\n" +
-    "   <span ng-if=\"biblio.authors\" class=\"authors\">{{ biblio.authors }}.</span>\n" +
-    "   <span ng-if=\"biblio.repository\" class=\"repository\">{{ biblio.repository }}.</span>\n" +
+    "   <span ng-if=\"biblio.authors && !biblio.embed\" class=\"authors\">{{ biblio.authors }}.</span>\n" +
+    "   <span ng-if=\"biblio.repository && !biblio.embed\" class=\"repository\">{{ biblio.repository }}.</span>\n" +
     "   <span ng-if=\"biblio.journal\" class=\"journal\">{{ biblio.journal }}</span>\n" +
     "   <span ng-if=\"biblio.description\" class=\"description\">{{ biblio.description }}</span>\n" +
-    "\n" +
-    "\n" +
+    "   <span ng-if=\"biblio.embed\" class=\"embed\" ng-bind-html-unsafe=\"biblio.embed\"></span>\n" +
     "\n" +
     "\n" +
     "</div>\n" +
