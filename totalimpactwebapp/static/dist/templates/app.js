@@ -878,7 +878,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"products\" ng-show=\"userExists\">\n" +
+    "<div class=\"products\" ng-show=\"userExists\" scrollwatch>\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"loading\" ng-show=\"loadingProducts()\">\n" +
     "         <div class=\"working products-loading\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading products...</span></div>\n" +
@@ -894,12 +894,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <h2 class=\"product-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
     "                id=\"{{ product.headingValue }}\"\n" +
     "                ng-show=\"product.isHeading\">\n" +
-    "               <!--<a class=\"genre-anchor\"\n" +
+    "               <a class=\"genre-anchor\"\n" +
     "                  tooltip=\"permalink\"\n" +
     "                  tooltip-placement=\"left\"\n" +
     "                  href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
     "                  <i class=\"icon-link\"></i>\n" +
-    "               </a>-->\n" +
+    "               </a>\n" +
     "               <i class=\"icon-save software genre\"></i>\n" +
     "               <i class=\"icon-file-text-alt article genre\"></i>\n" +
     "               <i class=\"icon-table dataset genre\"></i>\n" +

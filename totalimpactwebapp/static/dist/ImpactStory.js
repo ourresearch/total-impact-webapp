@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-11-29
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-01
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -1515,8 +1515,12 @@ angular.module("profile", [
 })
 
 
-.controller('ProfileCtrl', function ($scope, $routeParams, $modal, $http, UsersProducts, Product, UserProfile, Page)
+.controller('ProfileCtrl', function ($scope, $rootScope, $location, $routeParams, $modal, $timeout, $http, $anchorScroll, UsersProducts, Product, UserProfile, Page)
   {
+
+    $rootScope.$evalAsync(function(){
+      console.log("eval: async!")
+    })
 
     if (Page.isEmbedded()){
       // do embedded stuff.
@@ -1563,7 +1567,12 @@ angular.module("profile", [
       includeHeadingProducts: true,
       idType: "url_slug"
     },
-      function(resp){loadingProducts = false},
+      function(resp){
+        loadingProducts = false
+        // scroll to any hash-specified anchors on page. in a timeout because
+        // must happen after page is totally rendered.
+        $timeout($anchorScroll, 0)
+      },
       function(resp){loadingProducts = false}
     );
 
@@ -1594,6 +1603,16 @@ angular.module("profile", [
      }
    }
   })
+
+.directive("scrollwatch", function($location){
+  return {
+    restrict: 'A',
+    link: function($scope, el){
+      console.log("scrollwatch!", $location.hash())
+    }
+  }
+
+})
 
 
 
@@ -4769,7 +4788,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"products\" ng-show=\"userExists\">\n" +
+    "<div class=\"products\" ng-show=\"userExists\" scrollwatch>\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"loading\" ng-show=\"loadingProducts()\">\n" +
     "         <div class=\"working products-loading\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading products...</span></div>\n" +
@@ -4785,12 +4804,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <h2 class=\"product-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
     "                id=\"{{ product.headingValue }}\"\n" +
     "                ng-show=\"product.isHeading\">\n" +
-    "               <!--<a class=\"genre-anchor\"\n" +
+    "               <a class=\"genre-anchor\"\n" +
     "                  tooltip=\"permalink\"\n" +
     "                  tooltip-placement=\"left\"\n" +
     "                  href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
     "                  <i class=\"icon-link\"></i>\n" +
-    "               </a>-->\n" +
+    "               </a>\n" +
     "               <i class=\"icon-save software genre\"></i>\n" +
     "               <i class=\"icon-file-text-alt article genre\"></i>\n" +
     "               <i class=\"icon-table dataset genre\"></i>\n" +

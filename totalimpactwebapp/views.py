@@ -579,16 +579,21 @@ def redirect_to_profile(dummy="index"):
     """
 
     # first, serve pre-rendered pages to search engines:
-    useragent = request.headers.get("User-Agent").lower()
+    useragent = request.headers.get("User-Agent", "").lower()
     crawer_useragent_fragments = ["googlebot", "bingbot"]
-    file_template = "static/rendered-pages/{page}.html"
-    page = dummy.replace("/", "_")
 
     for useragent_fragment in crawer_useragent_fragments:
         if useragent_fragment in useragent:
-            return send_file(file_template.format(page=page))
+            page = dummy.replace("/", "_")
+            file_template = u"static/rendered-pages/{page}.html"
+            try:
+                return send_file(file_template.format(page=page))
+            except (IOError, UnicodeEncodeError):
+                # eventually, render the page on the fly
+                # for now, just return what the user sees
+                return render_template('index.html')  
 
-    # then return the page.
+    # not a search engine?  return the page.
     return render_template('index.html')
 
 

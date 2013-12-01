@@ -79,7 +79,7 @@
    </div>
 </div>
 
-<div class="products" ng-show="userExists">
+<div class="products" ng-show="userExists" scrollwatch>
    <div class="wrapper">
       <div class="loading" ng-show="loadingProducts()">
          <div class="working products-loading"><i class="icon-refresh icon-spin"></i><span class="text">Loading products...</span></div>
@@ -95,12 +95,12 @@
             <h2 class="product-heading {{ product.headingDimension }} {{ product.headingValue }}"
                 id="{{ product.headingValue }}"
                 ng-show="product.isHeading">
-               <!--<a class="genre-anchor"
+               <a class="genre-anchor"
                   tooltip="permalink"
                   tooltip-placement="left"
                   href="{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}">
                   <i class="icon-link"></i>
-               </a>-->
+               </a>
                <i class="icon-save software genre"></i>
                <i class="icon-file-text-alt article genre"></i>
                <i class="icon-table dataset genre"></i>
