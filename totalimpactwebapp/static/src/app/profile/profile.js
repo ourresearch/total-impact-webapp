@@ -76,8 +76,12 @@ angular.module("profile", [
 })
 
 
-.controller('ProfileCtrl', function ($scope, $routeParams, $modal, $http, UsersProducts, Product, UserProfile, Page)
+.controller('ProfileCtrl', function ($scope, $rootScope, $location, $routeParams, $modal, $timeout, $http, $anchorScroll, UsersProducts, Product, UserProfile, Page)
   {
+
+    $rootScope.$evalAsync(function(){
+      console.log("eval: async!")
+    })
 
     if (Page.isEmbedded()){
       // do embedded stuff.
@@ -124,7 +128,12 @@ angular.module("profile", [
       includeHeadingProducts: true,
       idType: "url_slug"
     },
-      function(resp){loadingProducts = false},
+      function(resp){
+        loadingProducts = false
+        // scroll to any hash-specified anchors on page. in a timeout because
+        // must happen after page is totally rendered.
+        $timeout($anchorScroll, 0)
+      },
       function(resp){loadingProducts = false}
     );
 
@@ -155,6 +164,16 @@ angular.module("profile", [
      }
    }
   })
+
+.directive("scrollwatch", function($location){
+  return {
+    restrict: 'A',
+    link: function($scope, el){
+      console.log("scrollwatch!", $location.hash())
+    }
+  }
+
+})
 
 
 

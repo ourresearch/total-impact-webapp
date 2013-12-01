@@ -6165,6 +6165,7 @@ Some of my own mixins
 -----------------------------------------------------*/
 body {
   color: #333;
+  min-width: 1159px;
 }
 body.show-tab-on-right .uv-tab.uv-slide-bottom {
   display: none !important;
@@ -7384,12 +7385,12 @@ div.product-controls a i {
 div.products {
   margin-top: 0;
 }
-div.products ul.products-list {
+div.products .wrapper ul.products-list {
   clear: both;
   margin-bottom: 70px;
 }
-div.products ul.products-list:before,
-div.products ul.products-list:after {
+div.products .wrapper ul.products-list:before,
+div.products .wrapper ul.products-list:after {
   content: " ";
   /* 1 */
 
@@ -7397,11 +7398,11 @@ div.products ul.products-list:after {
   /* 2 */
 
 }
-div.products ul.products-list:after {
+div.products .wrapper ul.products-list:after {
   clear: both;
 }
-div.products ul.products-list:before,
-div.products ul.products-list:after {
+div.products .wrapper ul.products-list:before,
+div.products .wrapper ul.products-list:after {
   content: " ";
   /* 1 */
 
@@ -7409,16 +7410,16 @@ div.products ul.products-list:after {
   /* 2 */
 
 }
-div.products ul.products-list:after {
+div.products .wrapper ul.products-list:after {
   clear: both;
 }
-div.products div.products-without-metrics div.well {
+div.products .wrapper div.products-without-metrics div.well {
   margin: 0 20px 70px;
   text-align: center;
   font-size: 16px;
   color: #777;
 }
-div.products div.products-without-metrics div.well a {
+div.products .wrapper div.products-without-metrics div.well a {
   font-size: 80%;
   margin-left: 8px;
 }
