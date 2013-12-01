@@ -6514,10 +6514,7 @@ ul.notifications li.alert {
   border-radius: 0;
   margin-bottom: -30px;
   padding-top: 15px;
-  border-width: 2px;
-  border-top: none;
-  border-left: none;
-  border-right: none;
+  border: none;
   text-align: center;
   position: relative;
   z-index: 10;
