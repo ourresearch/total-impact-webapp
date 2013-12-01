@@ -579,7 +579,7 @@ def redirect_to_profile(dummy="index"):
     """
 
     # first, serve pre-rendered pages to search engines:
-    useragent = request.headers.get("User-Agent").lower()
+    useragent = request.headers.get("User-Agent", "").lower()
     crawer_useragent_fragments = ["googlebot", "bingbot"]
     file_template = "static/rendered-pages/{page}.html"
     page = dummy.replace("/", "_")
