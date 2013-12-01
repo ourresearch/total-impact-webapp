@@ -898,7 +898,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <a class=\"genre-anchor\"\n" +
     "                  tooltip=\"permalink\"\n" +
     "                  tooltip-placement=\"left\"\n" +
-    "                  href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
+    "                  ng-click=\"move(product.headingValue)\"\n" +
+    "                       >\n" +
     "                  <i class=\"icon-link\"></i>\n" +
     "               </a>\n" +
     "               <i class=\"icon-save software genre\"></i>\n" +

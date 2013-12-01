@@ -98,7 +98,8 @@
                <a class="genre-anchor"
                   tooltip="permalink"
                   tooltip-placement="left"
-                  href="{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}">
+                  ng-click="move(product.headingValue)"
+                       >
                   <i class="icon-link"></i>
                </a>
                <i class="icon-save software genre"></i>

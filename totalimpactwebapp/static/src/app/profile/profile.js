@@ -79,9 +79,11 @@ angular.module("profile", [
 .controller('ProfileCtrl', function ($scope, $rootScope, $location, $routeParams, $modal, $timeout, $http, $anchorScroll, UsersProducts, Product, UserProfile, Page)
   {
 
-    $rootScope.$evalAsync(function(){
-      console.log("eval: async!")
-    })
+    $scope.move = function(id){
+      console.log("move!", id)
+      $location.hash(id)
+      $anchorScroll()
+    }
 
     if (Page.isEmbedded()){
       // do embedded stuff.
@@ -165,15 +167,6 @@ angular.module("profile", [
    }
   })
 
-.directive("scrollwatch", function($location){
-  return {
-    restrict: 'A',
-    link: function($scope, el){
-      console.log("scrollwatch!", $location.hash())
-    }
-  }
-
-})
 
 
 
