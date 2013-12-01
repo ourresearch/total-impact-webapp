@@ -585,10 +585,10 @@ def redirect_to_profile(dummy="index"):
     for useragent_fragment in crawer_useragent_fragments:
         if useragent_fragment in useragent:
             page = dummy.replace("/", "_")
-            file_template = "static/rendered-pages/{page}.html"
+            file_template = u"static/rendered-pages/{page}.html"
             try:
                 return send_file(file_template.format(page=page))
-            except IOError:
+            except (IOError, UnicodeEncodeError):
                 # eventually, render the page on the fly
                 # for now, just return what the user sees
                 return render_template('index.html')  
