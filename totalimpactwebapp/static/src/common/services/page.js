@@ -51,21 +51,6 @@ angular.module("services.page")
           'embedded': isEmbedded()
         }
      },
-     scrollToId: function(id, $rootScope){
-       console.log("scroll to id", id)
-
-       $rootScope.$watch("", function(){
-
-       })
-
-       scope.$evalAsync(
-         function(){
-           console.log("eval-ing async. id=", id)
-           if (!id) return false
-           return document.getElementById(id).scrollIntoView()
-         }
-       )
-     },
      getBaseUrl: function(){
        return window.location.origin
      },

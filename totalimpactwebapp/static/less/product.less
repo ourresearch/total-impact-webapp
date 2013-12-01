@@ -37,11 +37,14 @@
       .tooltip.left {
          width: 100px;
          .tooltip-arrow{
-            border-left-color:@linkColor;
+            border-left-color: transparent;
          }
          .tooltip-inner {
+            color: @linkColor;
+            text-align:right;
+            margin: 10px -5px 0 0;
             padding:2px;
-            background: @linkColor;
+            background: none;
          }
       }
       a.genre-anchor {

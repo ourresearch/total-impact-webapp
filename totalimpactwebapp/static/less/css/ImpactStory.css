@@ -7457,11 +7457,14 @@ div.products .wrapper div.products-without-metrics div.well a {
   width: 100px;
 }
 .product h2.product-heading .tooltip.left .tooltip-arrow {
-  border-left-color: #ff4e00;
+  border-left-color: transparent;
 }
 .product h2.product-heading .tooltip.left .tooltip-inner {
+  color: #ff4e00;
+  text-align: right;
+  margin: 10px -5px 0 0;
   padding: 2px;
-  background: #ff4e00;
+  background: none;
 }
 .product h2.product-heading a.genre-anchor i.icon-link {
   font-size: 16px;
