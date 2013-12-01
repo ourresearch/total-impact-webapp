@@ -17,7 +17,7 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'passwordReset.error.invalidToken': "Looks like you've got an expired password reset token in the URL.",
     'passwordReset.ready': "You're temporarily logged in. You should change your password now.",
 
-    'browser.error.oldIE': "Warning: you're browsing using an out-of-date version of Internet Explorer. Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>"
+    'browser.error.oldIE': "Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>"
 
   };
 

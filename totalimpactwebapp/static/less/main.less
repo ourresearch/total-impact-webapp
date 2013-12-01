@@ -225,11 +225,23 @@ div.modal {
             padding: 0;
             border: none;
             background: #fff;
+            a {
+               color: @linkColor;
+               font-size: 90%;
+               margin: 0 10px;
+               font-weight: bold;
+               &:hover{
+                  text-decoration: underline;
+               }
+            }
             &.alert-danger {
                color: @alert-danger-bg;
             }
             &.alert-success {
                color: @alert-success-bg;
+            }
+            &.alert-warning {
+               color: @alert-warning-border;
             }
          }
       }
@@ -366,6 +378,8 @@ ul.notifications {
       margin-bottom:-30px; // ?
       padding-top: 15px;
       border:none;
+      border-top: 1px solid #fff;
+      border-bottom: 1px solid #fff;
       text-align: center;
       position: relative; // make sure it's above stuff pulled up by neg margin.
       z-index: 10;
