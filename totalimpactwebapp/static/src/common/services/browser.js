@@ -7,11 +7,10 @@ angular.module('services.browser', [
   return {
     warnOldIE: function(){
       if ($.browser.msie && parseFloat($.browser.version) < 10) {
-        console.log("old ie!")
+        console.log("using old version of ie!")
         i18nNotifications.pushSticky("browser.error.oldIE", "danger", {})
       }
       else {
-        console.log("not old ie!")
       }
     }
   }

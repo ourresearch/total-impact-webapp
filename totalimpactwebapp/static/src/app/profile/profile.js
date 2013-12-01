@@ -151,17 +151,19 @@ angular.module("profile", [
    return {
      restrict: 'A',
      replace: true,
-     template:"<a ng-show='url_slug' class='back-to-profile' href='/{{ url_slug }}'><i class='icon-chevron-left'></i>back to profile</a>",
+     template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
      link: function($scope,el){
-       var re = /^\/(\w+)\/\w+/
+       var re = /^\/(\w+)\/product\/(\w+)/
        var m = re.exec($location.path())
-       var slug = null
+       $scope.returnLink = null
 
-       if (!m || m[1] == "embed"){
-         $scope.url_slug = null
-       }
-       else {
-         $scope.url_slug = m[1]
+       if (m) {
+         var url_slug = m[1]
+         var tiid = m[2]
+
+         if (url_slug != "embed") {
+           $scope.returnLink = url_slug + "#" + tiid
+         }
        }
      }
    }
