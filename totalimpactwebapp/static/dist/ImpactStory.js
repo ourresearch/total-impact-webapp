@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-01
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-02
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -2800,6 +2800,12 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+.factory("UsersProductsCache", function(UsersProducts){
+    var cache = []
+    return {
+      query: function(){}
+    }
+  })
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security', [
   'security.service',

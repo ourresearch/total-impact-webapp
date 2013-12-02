@@ -69,3 +69,10 @@ angular.module('resources.users',['ngResource'])
       {idType: "url_slug"}
     )
   })
+
+.factory("UsersProductsCache", function(UsersProducts){
+    var cache = []
+    return {
+      query: function(){}
+    }
+  })
