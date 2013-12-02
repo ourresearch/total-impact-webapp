@@ -63,6 +63,7 @@ angular.module( 'infopages', [
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
     Page.setTitle("FAQ")
     $scope.providers = providersInfo
+    console.log("faq page controller running")
   })
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {

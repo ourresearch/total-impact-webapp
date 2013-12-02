@@ -2,6 +2,7 @@ angular.module("profile", [
   'resources.users',
   'product.product',
   'services.page',
+  'directives.trackScrollPosition',
   'ui.bootstrap',
   'security',
   'profile.addProducts'
@@ -16,7 +17,7 @@ angular.module("profile", [
 
 }])
 
-.factory('UserProfile', function(UsersAbout, security, Slug, Page){
+.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page){
   var about = {}
 
   return {
@@ -35,6 +36,23 @@ angular.module("profile", [
       else {
         return productsWithMetrics.concat(productsWitoutMetrics);
       }
+    },
+    scrollToCorrectLocation: function(){
+      console.log("scroll!")
+      var anchorRegex = /\w#\w+$/
+
+      if ($location.hash()){
+        console.log("scrolling to anchor")
+        $anchorScroll()
+      }
+      else {
+        var lastScrollPos = Page.getLastScrollPosition($location.path())
+        console.log("scrolling to last pos: ", lastScrollPos)
+        $window.scrollTo(0, lastScrollPos)
+      }
+
+
+
     },
     loadUser: function($scope, slug) {
       return UsersAbout.get(
@@ -76,15 +94,8 @@ angular.module("profile", [
 })
 
 
-.controller('ProfileCtrl', function ($scope, $rootScope, $location, $routeParams, $modal, $timeout, $http, $anchorScroll, UsersProducts, Product, UserProfile, Page)
+.controller('ProfileCtrl', function ($scope, $rootScope, $location, $routeParams, $modal, $timeout, $http, $anchorScroll, $window, UsersProducts, Product, UserProfile, Page)
   {
-
-    $scope.move = function(id){
-      console.log("move!", id)
-      $location.hash(id)
-      $anchorScroll()
-    }
-
     if (Page.isEmbedded()){
       // do embedded stuff.
     }
@@ -134,7 +145,10 @@ angular.module("profile", [
         loadingProducts = false
         // scroll to any hash-specified anchors on page. in a timeout because
         // must happen after page is totally rendered.
-        $timeout($anchorScroll, 0)
+        $timeout(function(){
+          UserProfile.scrollToCorrectLocation()
+        }, 0)
+
       },
       function(resp){loadingProducts = false}
     );
@@ -159,10 +173,9 @@ angular.module("profile", [
 
        if (m) {
          var url_slug = m[1]
-         var tiid = m[2]
 
          if (url_slug != "embed") {
-           $scope.returnLink = url_slug + "#" + tiid
+           $scope.returnLink = url_slug
          }
        }
      }

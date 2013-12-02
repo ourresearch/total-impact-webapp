@@ -44,16 +44,24 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
 }]);
 
 
-angular.module('app').run(function(security, Browser) {
+angular.module('app').run(function(security, Browser, $window, Page, $location) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
   Browser.warnOldIE()
+
+  angular.element($window).bind("scroll", function(event) {
+    console.log("setting scrolltop: ", $(window).scrollTop())
+    Page.setLastScrollPosition($(window).scrollTop(), $location.path())
+  })
+
+
 });
 
 
 angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
+                                                     $route,
                                                      i18nNotifications,
                                                      localizedMessages,
                                                      UservoiceWidget,

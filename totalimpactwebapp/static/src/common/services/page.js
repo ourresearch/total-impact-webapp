@@ -2,10 +2,11 @@ angular.module("services.page", [
   'signup'
 ])
 angular.module("services.page")
-.factory("Page", function($location){
+.factory("Page", function($location, $window){
    var title = '';
    var notificationsLoc = "header"
    var uservoiceTabLoc = "right"
+   var lastScrollPosition = {}
    var frameTemplatePaths = {
      header: "",
      footer: ""
@@ -22,6 +23,24 @@ angular.module("services.page")
 
     var isEmbedded = function(){
        return $location.search().embed
+    }
+
+
+    var parseUrl = function(url){
+      var m = /(^.+\w)#(\w[\w]+$)/.exec(url)
+      var ret = {
+        pathAndSearch: null,
+        anchor: null
+      }
+      if (m) {
+        ret.pathAndSearch = m[1]
+        ret.anchor = m[2]
+      }
+      else {
+        ret.pathAndSearch = url
+      }
+      return ret
+
     }
 
 
@@ -62,6 +81,14 @@ angular.module("services.page")
 
      isLandingPage: function(){
        return ($location.path() == "/")
+     },
+     setLastScrollPosition: function(pos, path){
+       if (pos) {
+        lastScrollPosition[path] = pos
+       }
+     },
+     getLastScrollPosition: function(path){
+       return lastScrollPosition[path]
      }
 
    };

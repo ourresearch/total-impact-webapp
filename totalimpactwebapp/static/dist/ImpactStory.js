@@ -49,16 +49,24 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
 }]);
 
 
-angular.module('app').run(function(security, Browser) {
+angular.module('app').run(function(security, Browser, $window, Page, $location) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
   Browser.warnOldIE()
+
+  angular.element($window).bind("scroll", function(event) {
+    console.log("setting scrolltop: ", $(window).scrollTop())
+    Page.setLastScrollPosition($(window).scrollTop(), $location.path())
+  })
+
+
 });
 
 
 angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
+                                                     $route,
                                                      i18nNotifications,
                                                      localizedMessages,
                                                      UservoiceWidget,
@@ -677,6 +685,7 @@ angular.module( 'infopages', [
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
     Page.setTitle("FAQ")
     $scope.providers = providersInfo
+    console.log("faq page controller running")
   })
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
@@ -1443,6 +1452,7 @@ angular.module("profile", [
   'resources.users',
   'product.product',
   'services.page',
+  'directives.trackScrollPosition',
   'ui.bootstrap',
   'security',
   'profile.addProducts'
@@ -1457,7 +1467,7 @@ angular.module("profile", [
 
 }])
 
-.factory('UserProfile', function(UsersAbout, security, Slug, Page){
+.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page){
   var about = {}
 
   return {
@@ -1476,6 +1486,23 @@ angular.module("profile", [
       else {
         return productsWithMetrics.concat(productsWitoutMetrics);
       }
+    },
+    scrollToCorrectLocation: function(){
+      console.log("scroll!")
+      var anchorRegex = /\w#\w+$/
+
+      if ($location.hash()){
+        console.log("scrolling to anchor")
+        $anchorScroll()
+      }
+      else {
+        var lastScrollPos = Page.getLastScrollPosition($location.path())
+        console.log("scrolling to last pos: ", lastScrollPos)
+        $window.scrollTo(0, lastScrollPos)
+      }
+
+
+
     },
     loadUser: function($scope, slug) {
       return UsersAbout.get(
@@ -1517,15 +1544,8 @@ angular.module("profile", [
 })
 
 
-.controller('ProfileCtrl', function ($scope, $rootScope, $location, $routeParams, $modal, $timeout, $http, $anchorScroll, UsersProducts, Product, UserProfile, Page)
+.controller('ProfileCtrl', function ($scope, $rootScope, $location, $routeParams, $modal, $timeout, $http, $anchorScroll, $window, UsersProducts, Product, UserProfile, Page)
   {
-
-    $scope.move = function(id){
-      console.log("move!", id)
-      $location.hash(id)
-      $anchorScroll()
-    }
-
     if (Page.isEmbedded()){
       // do embedded stuff.
     }
@@ -1575,7 +1595,10 @@ angular.module("profile", [
         loadingProducts = false
         // scroll to any hash-specified anchors on page. in a timeout because
         // must happen after page is totally rendered.
-        $timeout($anchorScroll, 0)
+        $timeout(function(){
+          UserProfile.scrollToCorrectLocation()
+        }, 0)
+
       },
       function(resp){loadingProducts = false}
     );
@@ -1600,10 +1623,9 @@ angular.module("profile", [
 
        if (m) {
          var url_slug = m[1]
-         var tiid = m[2]
 
          if (url_slug != "embed") {
-           $scope.returnLink = url_slug + "#" + tiid
+           $scope.returnLink = url_slug
          }
        }
      }
@@ -2564,6 +2586,23 @@ angular.module("directives.spinner")
 
     }
     })
+angular.module("directives.trackScrollPosition", [
+  'services.page'
+])
+
+angular.module("directives.trackScrollPosition")
+.directive("trackScrollPosition", function($window, $location, $anchorScroll, Page){
+    return {
+      restrict: 'A',
+      link: function($scope, elem){
+        angular.element($window).bind("scroll", function(event) {
+          console.log("setting scrolltop: ", $(window).scrollTop())
+          Page.setLastScrollPosition($(window).scrollTop())
+        })
+      }
+    }
+
+  })
 angular.module('directives.forms', [])
 .directive('prettyCheckbox', function(){
   // mostly from http://jsfiddle.net/zy7Rg/6/
@@ -3560,10 +3599,11 @@ angular.module("services.page", [
   'signup'
 ])
 angular.module("services.page")
-.factory("Page", function($location){
+.factory("Page", function($location, $window){
    var title = '';
    var notificationsLoc = "header"
    var uservoiceTabLoc = "right"
+   var lastScrollPosition = {}
    var frameTemplatePaths = {
      header: "",
      footer: ""
@@ -3580,6 +3620,24 @@ angular.module("services.page")
 
     var isEmbedded = function(){
        return $location.search().embed
+    }
+
+
+    var parseUrl = function(url){
+      var m = /(^.+\w)#(\w[\w]+$)/.exec(url)
+      var ret = {
+        pathAndSearch: null,
+        anchor: null
+      }
+      if (m) {
+        ret.pathAndSearch = m[1]
+        ret.anchor = m[2]
+      }
+      else {
+        ret.pathAndSearch = url
+      }
+      return ret
+
     }
 
 
@@ -3620,6 +3678,14 @@ angular.module("services.page")
 
      isLandingPage: function(){
        return ($location.path() == "/")
+     },
+     setLastScrollPosition: function(pos, path){
+       if (pos) {
+        lastScrollPosition[path] = pos
+       }
+     },
+     getLastScrollPosition: function(path){
+       return lastScrollPosition[path]
      }
 
    };
@@ -4803,7 +4869,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"products\" ng-show=\"userExists\" scrollwatch>\n" +
+    "<div class=\"products\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"loading\" ng-show=\"loadingProducts()\">\n" +
     "         <div class=\"working products-loading\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading products...</span></div>\n" +
@@ -4822,8 +4888,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <a class=\"genre-anchor\"\n" +
     "                  tooltip=\"permalink\"\n" +
     "                  tooltip-placement=\"left\"\n" +
-    "                  ng-click=\"move(product.headingValue)\"\n" +
-    "                       >\n" +
+    "                  ng-href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
     "                  <i class=\"icon-link\"></i>\n" +
     "               </a>\n" +
     "               <i class=\"icon-save software genre\"></i>\n" +
