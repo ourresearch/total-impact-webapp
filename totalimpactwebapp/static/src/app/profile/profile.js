@@ -2,7 +2,6 @@ angular.module("profile", [
   'resources.users',
   'product.product',
   'services.page',
-  'directives.trackScrollPosition',
   'ui.bootstrap',
   'security',
   'profile.addProducts'
@@ -38,21 +37,13 @@ angular.module("profile", [
       }
     },
     scrollToCorrectLocation: function(){
-      console.log("scroll!")
-      var anchorRegex = /\w#\w+$/
-
       if ($location.hash()){
-        console.log("scrolling to anchor")
         $anchorScroll()
       }
       else {
         var lastScrollPos = Page.getLastScrollPosition($location.path())
-        console.log("scrolling to last pos: ", lastScrollPos)
         $window.scrollTo(0, lastScrollPos)
       }
-
-
-
     },
     loadUser: function($scope, slug) {
       return UsersAbout.get(
@@ -100,6 +91,7 @@ angular.module("profile", [
       // do embedded stuff.
     }
 
+
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
     $scope.loadingProducts = function(){
@@ -135,23 +127,28 @@ angular.module("profile", [
       return Product.getGenre(product);
     }
 
-
-    $scope.products = UsersProducts.query({
-      id: userSlug,
-      includeHeadingProducts: true,
-      idType: "url_slug"
-    },
-      function(resp){
-        loadingProducts = false
-        // scroll to any hash-specified anchors on page. in a timeout because
-        // must happen after page is totally rendered.
-        $timeout(function(){
-          UserProfile.scrollToCorrectLocation()
-        }, 0)
-
+    var renderProducts = function(){
+      $scope.products = UsersProducts.query({
+        id: userSlug,
+        includeHeadingProducts: true,
+        idType: "url_slug"
       },
-      function(resp){loadingProducts = false}
-    );
+        function(resp){
+          loadingProducts = false
+          console.log("got stuff back!")
+          // scroll to any hash-specified anchors on page. in a timeout because
+          // must happen after page is totally rendered.
+          $timeout(function(){
+            UserProfile.scrollToCorrectLocation()
+          }, 0)
+
+        },
+        function(resp){loadingProducts = false}
+      );
+    }
+
+    $timeout(renderProducts, 100)
+//    $scope.$evalAsync(doProducts)
 
 })
 

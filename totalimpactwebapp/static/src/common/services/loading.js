@@ -14,7 +14,7 @@ angular.module("services.loading")
 
       // loading.is() ... is ANY loading job set to True?
       if (!jobName) {
-        _.some(_.values(loadingJobs))
+        return _.some(_.values(loadingJobs))
       }
 
       // loading.is("jobname") ... is THIS job set to true?

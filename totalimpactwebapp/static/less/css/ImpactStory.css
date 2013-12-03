@@ -6335,6 +6335,7 @@ div.modal div.modal-header h4 {
   font-weight: bolder;
   text-align: center;
   color: #555;
+  margin: 8px;
 }
 div.modal div.modal-header a.dismiss {
   position: absolute;
@@ -6592,6 +6593,11 @@ div.main-header {
 }
 div.main-header div.wrapper {
   position: relative;
+}
+div.main-header div.wrapper a.brand i {
+  margin-right: 12px;
+  margin-left: -36px;
+  font-size: 25px;
 }
 div.main-header div.wrapper a.brand img {
   margin: 0 0 0 -10px;
@@ -8440,10 +8446,11 @@ div.importers div.importer-tile.has-run div.importer-name {
 }
 div.importers div.importer-tile.has-run div.imported-products-count {
   display: block;
+  margin-top: -10px;
+  margin-bottom: -10px;
 }
 div.importers div.importer-tile div.importer-name img {
   height: 35px;
-  background: #fff;
 }
 div.importers div.importer-tile div.imported-products-count {
   display: none;

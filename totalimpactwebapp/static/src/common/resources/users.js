@@ -28,6 +28,12 @@ angular.module('resources.users',['ngResource'])
         delete: {
           method: "DELETE",
           headers: {'Content-Type': 'application/json'}
+        },
+        query:{
+          method: "GET",
+          isArray: true,
+          cache: true
+
         }
       }
     )

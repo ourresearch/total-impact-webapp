@@ -51,7 +51,6 @@ angular.module('app').run(function(security, Browser, $window, Page, $location) 
   Browser.warnOldIE()
 
   angular.element($window).bind("scroll", function(event) {
-    console.log("setting scrolltop: ", $(window).scrollTop())
     Page.setLastScrollPosition($(window).scrollTop(), $location.path())
   })
 
@@ -92,7 +91,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    $scope.loading.clear()
     Page.setTemplates("header", "footer")
     Page.setUservoiceTabLoc("right")
   })

@@ -7,9 +7,11 @@ angular.module('importers.importer', [
   'profile'
 ])
 angular.module('importers.importer')
-.factory('Importer', function(Loading, Products, UsersProducts, UsersAbout){
+.factory('Importer', function($cacheFactory, Loading, Products, UsersProducts, UsersAbout){
   var waitingOn = {}
   var tiidsAdded = []
+  var $httpDefaultCache = $cacheFactory.get('$http')
+
   var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
 
   var finish = function(importJobName){
@@ -27,6 +29,9 @@ angular.module('importers.importer')
 
 
   var saveImporterInput = function(url_slug, importerObj) {
+
+    // clear the cache. this clear EVERYTHING, we can be smarter later.
+    $httpDefaultCache.removeAll()
 
     // clean the values
     _.each(importerObj.inputs, function(input){

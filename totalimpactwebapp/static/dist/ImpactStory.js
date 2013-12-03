@@ -56,7 +56,6 @@ angular.module('app').run(function(security, Browser, $window, Page, $location) 
   Browser.warnOldIE()
 
   angular.element($window).bind("scroll", function(event) {
-    console.log("setting scrolltop: ", $(window).scrollTop())
     Page.setLastScrollPosition($(window).scrollTop(), $location.path())
   })
 
@@ -97,7 +96,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    $scope.loading.clear()
     Page.setTemplates("header", "footer")
     Page.setUservoiceTabLoc("right")
   })
@@ -431,9 +429,11 @@ angular.module('importers.importer', [
   'profile'
 ])
 angular.module('importers.importer')
-.factory('Importer', function(Loading, Products, UsersProducts, UsersAbout){
+.factory('Importer', function($cacheFactory, Loading, Products, UsersProducts, UsersAbout){
   var waitingOn = {}
   var tiidsAdded = []
+  var $httpDefaultCache = $cacheFactory.get('$http')
+
   var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
 
   var finish = function(importJobName){
@@ -451,6 +451,9 @@ angular.module('importers.importer')
 
 
   var saveImporterInput = function(url_slug, importerObj) {
+
+    // clear the cache. this clear EVERYTHING, we can be smarter later.
+    $httpDefaultCache.removeAll()
 
     // clean the values
     _.each(importerObj.inputs, function(input){
@@ -1402,10 +1405,13 @@ angular.module("profileProduct", [
 
   }])
 
-  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $location, $modal, security, UsersProduct, UsersProducts, Product, Loading, Page) {
+  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $location, $modal, $cacheFactory, security, UsersProduct, UsersProducts, Product, Loading, Page) {
 
     var slug = $routeParams.url_slug
+    var $httpDefaultCache = $cacheFactory.get('$http')
+
     Loading.start('profileProduct')
+    Loading.clear()
 
     $scope.userSlug = slug
     $scope.loading = Loading
@@ -1415,7 +1421,9 @@ angular.module("profileProduct", [
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
     $scope.deleteProduct = function(){
+      $httpDefaultCache.removeAll()
       security.redirectToProfile()
+
 
       // do the deletion in the background, without a progress spinner...
       UsersProducts.delete(
@@ -1452,7 +1460,6 @@ angular.module("profile", [
   'resources.users',
   'product.product',
   'services.page',
-  'directives.trackScrollPosition',
   'ui.bootstrap',
   'security',
   'profile.addProducts'
@@ -1488,21 +1495,13 @@ angular.module("profile", [
       }
     },
     scrollToCorrectLocation: function(){
-      console.log("scroll!")
-      var anchorRegex = /\w#\w+$/
-
       if ($location.hash()){
-        console.log("scrolling to anchor")
         $anchorScroll()
       }
       else {
         var lastScrollPos = Page.getLastScrollPosition($location.path())
-        console.log("scrolling to last pos: ", lastScrollPos)
         $window.scrollTo(0, lastScrollPos)
       }
-
-
-
     },
     loadUser: function($scope, slug) {
       return UsersAbout.get(
@@ -1550,6 +1549,7 @@ angular.module("profile", [
       // do embedded stuff.
     }
 
+
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
     $scope.loadingProducts = function(){
@@ -1585,23 +1585,28 @@ angular.module("profile", [
       return Product.getGenre(product);
     }
 
-
-    $scope.products = UsersProducts.query({
-      id: userSlug,
-      includeHeadingProducts: true,
-      idType: "url_slug"
-    },
-      function(resp){
-        loadingProducts = false
-        // scroll to any hash-specified anchors on page. in a timeout because
-        // must happen after page is totally rendered.
-        $timeout(function(){
-          UserProfile.scrollToCorrectLocation()
-        }, 0)
-
+    var renderProducts = function(){
+      $scope.products = UsersProducts.query({
+        id: userSlug,
+        includeHeadingProducts: true,
+        idType: "url_slug"
       },
-      function(resp){loadingProducts = false}
-    );
+        function(resp){
+          loadingProducts = false
+          console.log("got stuff back!")
+          // scroll to any hash-specified anchors on page. in a timeout because
+          // must happen after page is totally rendered.
+          $timeout(function(){
+            UserProfile.scrollToCorrectLocation()
+          }, 0)
+
+        },
+        function(resp){loadingProducts = false}
+      );
+    }
+
+    $timeout(renderProducts, 100)
+//    $scope.$evalAsync(doProducts)
 
 })
 
@@ -2586,23 +2591,6 @@ angular.module("directives.spinner")
 
     }
     })
-angular.module("directives.trackScrollPosition", [
-  'services.page'
-])
-
-angular.module("directives.trackScrollPosition")
-.directive("trackScrollPosition", function($window, $location, $anchorScroll, Page){
-    return {
-      restrict: 'A',
-      link: function($scope, elem){
-        angular.element($window).bind("scroll", function(event) {
-          console.log("setting scrolltop: ", $(window).scrollTop())
-          Page.setLastScrollPosition($(window).scrollTop())
-        })
-      }
-    }
-
-  })
 angular.module('directives.forms', [])
 .directive('prettyCheckbox', function(){
   // mostly from http://jsfiddle.net/zy7Rg/6/
@@ -2758,6 +2746,12 @@ angular.module('resources.users',['ngResource'])
         delete: {
           method: "DELETE",
           headers: {'Content-Type': 'application/json'}
+        },
+        query:{
+          method: "GET",
+          isArray: true,
+          cache: true
+
         }
       }
     )
@@ -3462,7 +3456,7 @@ angular.module("services.loading")
 
       // loading.is() ... is ANY loading job set to True?
       if (!jobName) {
-        _.some(_.values(loadingJobs))
+        return _.some(_.values(loadingJobs))
       }
 
       // loading.is("jobname") ... is THIS job set to true?
