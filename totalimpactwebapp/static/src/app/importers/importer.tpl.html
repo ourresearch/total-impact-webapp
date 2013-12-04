@@ -17,53 +17,59 @@
      ng-if="importWindowOpen"
      ng-animate="{enter: 'animated fadeIn', leave: 'animated fadeOut'}"></div>
 
-<div class="import-window"
+<div class="import-window-wrapper"
      ng-if="importWindowOpen"
-     ng-animate="{enter: 'animated slideInRight', leave: 'animated slideOutRight'}">
-   <div class="content">
-      <h2 class="importer-name" ng-show="!importer.url"><img ng-src="{{ importer.logoPath }}" /> </h2>
-      <h2 class="importer-name" ng-show="importer.url">
-         <a class="logo" href="{{ importer.url }}" target="_blank"><img ng-src="{{ importer.logoPath }}" /></a>
-         <a class="visit" href="{{ importer.url }}" target="_blank">Visit<i class="icon-chevron-right"></i></a>
-      </h2>
+     ng-animate="{'leave': 'animated waitThenSlideRight'}"
+     ng-click="onCancel()"
+        >
+   <div class="import-window"
+        ng-if="importWindowOpen"
+        ng-animate="{enter: 'animated slideInRight', leave: 'animated slideOutRight'}">
+      <div class="content">
+         <h2 class="importer-name" ng-show="!importer.url"><img ng-src="{{ importer.logoPath }}" /> </h2>
+         <h2 class="importer-name" ng-show="importer.url">
+            <a class="logo" href="{{ importer.url }}" target="_blank"><img ng-src="{{ importer.logoPath }}" /></a>
+            <a class="visit" href="{{ importer.url }}" target="_blank">Visit<i class="icon-chevron-right"></i></a>
+         </h2>
 
-      <div class="descr">{{ importer.descr }}</div>
+         <div class="descr">{{ importer.descr }}</div>
 
-      <form name="{{ importer.name }}ImporterForm" novalidate class="form" ng-submit="onImport()">
+         <form name="{{ importer.name }}ImporterForm" novalidate class="form" ng-submit="onImport()">
 
-         <div class="form-group" ng-repeat="input in importer.inputs">
-            <label class="control-label">
-               {{ input.displayName }} {{ input.inputNeeded }}
-               <i class="icon-question-sign" ng-show="input.help" tooltip-html-unsafe="{{ input.help }}"></i>
-               <span class="one-per-line" ng-show="input.inputType=='idList'">(one per line)</span>
-            </label>
-            <div class="importer-input" ng-switch on="input.inputType">
-               <input
-                       class="form-control"
-                       ng-model="input.value"
-                       type="text" ng-switch-when="username"
-                       placeholder="{{ input.placeholder }}">
+            <div class="form-group" ng-repeat="input in importer.inputs">
+               <label class="control-label">
+                  {{ input.displayName }} {{ input.inputNeeded }}
+                  <i class="icon-question-sign" ng-show="input.help" tooltip-html-unsafe="{{ input.help }}"></i>
+                  <span class="one-per-line" ng-show="input.inputType=='idList'">(one per line)</span>
+               </label>
+               <div class="importer-input" ng-switch on="input.inputType">
+                  <input
+                          class="form-control"
+                          ng-model="input.value"
+                          type="text" ng-switch-when="username"
+                          placeholder="{{ input.placeholder }}">
 
-               <textarea placeholder="{{ input.placeholder }}"
-                         class="form-control"
-                         ng-model="input.value"
-                         ng-switch-when="idList"></textarea>
+                  <textarea placeholder="{{ input.placeholder }}"
+                            class="form-control"
+                            ng-model="input.value"
+                            ng-switch-when="idList"></textarea>
 
-               <!-- you can only have ONE file input per importer, otherwise namespace collision -->
-               <input type="file" ng-switch-when="file" size="300" ng-file-select="input.inputType">
+                  <!-- you can only have ONE file input per importer, otherwise namespace collision -->
+                  <input type="file" ng-switch-when="file" size="300" ng-file-select="input.inputType">
 
+               </div>
             </div>
-         </div>
 
 
-         <save-buttons action="Import"></save-buttons>
+            <save-buttons action="Import"></save-buttons>
 
 
-      </form>
+         </form>
 
-      <div class="extra" ng-show="importer.extra" ng-bind-html-unsafe="importer.extra"></div>
+         <div class="extra" ng-show="importer.extra" ng-bind-html-unsafe="importer.extra"></div>
 
 
+      </div>
    </div>
 </div>
 

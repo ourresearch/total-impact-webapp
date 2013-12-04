@@ -563,6 +563,10 @@ angular.module('importers.importer')
     var res = re.exec($location.path())
     return res[1]
   }
+
+
+
+
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
       $scope.importWindowOpen = true;
@@ -4089,53 +4093,59 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "     ng-if=\"importWindowOpen\"\n" +
     "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
     "\n" +
-    "<div class=\"import-window\"\n" +
+    "<div class=\"import-window-wrapper\"\n" +
     "     ng-if=\"importWindowOpen\"\n" +
-    "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
-    "   <div class=\"content\">\n" +
-    "      <h2 class=\"importer-name\" ng-show=\"!importer.url\"><img ng-src=\"{{ importer.logoPath }}\" /> </h2>\n" +
-    "      <h2 class=\"importer-name\" ng-show=\"importer.url\">\n" +
-    "         <a class=\"logo\" href=\"{{ importer.url }}\" target=\"_blank\"><img ng-src=\"{{ importer.logoPath }}\" /></a>\n" +
-    "         <a class=\"visit\" href=\"{{ importer.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
-    "      </h2>\n" +
+    "     ng-animate=\"{'leave': 'animated waitThenSlideRight'}\"\n" +
+    "     ng-click=\"onCancel()\"\n" +
+    "        >\n" +
+    "   <div class=\"import-window\"\n" +
+    "        ng-if=\"importWindowOpen\"\n" +
+    "        ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
+    "      <div class=\"content\">\n" +
+    "         <h2 class=\"importer-name\" ng-show=\"!importer.url\"><img ng-src=\"{{ importer.logoPath }}\" /> </h2>\n" +
+    "         <h2 class=\"importer-name\" ng-show=\"importer.url\">\n" +
+    "            <a class=\"logo\" href=\"{{ importer.url }}\" target=\"_blank\"><img ng-src=\"{{ importer.logoPath }}\" /></a>\n" +
+    "            <a class=\"visit\" href=\"{{ importer.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
+    "         </h2>\n" +
     "\n" +
-    "      <div class=\"descr\">{{ importer.descr }}</div>\n" +
+    "         <div class=\"descr\">{{ importer.descr }}</div>\n" +
     "\n" +
-    "      <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
+    "         <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
     "\n" +
-    "         <div class=\"form-group\" ng-repeat=\"input in importer.inputs\">\n" +
-    "            <label class=\"control-label\">\n" +
-    "               {{ input.displayName }} {{ input.inputNeeded }}\n" +
-    "               <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
-    "               <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
-    "            </label>\n" +
-    "            <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
-    "               <input\n" +
-    "                       class=\"form-control\"\n" +
-    "                       ng-model=\"input.value\"\n" +
-    "                       type=\"text\" ng-switch-when=\"username\"\n" +
-    "                       placeholder=\"{{ input.placeholder }}\">\n" +
+    "            <div class=\"form-group\" ng-repeat=\"input in importer.inputs\">\n" +
+    "               <label class=\"control-label\">\n" +
+    "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
+    "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
+    "                  <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
+    "               </label>\n" +
+    "               <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
+    "                  <input\n" +
+    "                          class=\"form-control\"\n" +
+    "                          ng-model=\"input.value\"\n" +
+    "                          type=\"text\" ng-switch-when=\"username\"\n" +
+    "                          placeholder=\"{{ input.placeholder }}\">\n" +
     "\n" +
-    "               <textarea placeholder=\"{{ input.placeholder }}\"\n" +
-    "                         class=\"form-control\"\n" +
-    "                         ng-model=\"input.value\"\n" +
-    "                         ng-switch-when=\"idList\"></textarea>\n" +
+    "                  <textarea placeholder=\"{{ input.placeholder }}\"\n" +
+    "                            class=\"form-control\"\n" +
+    "                            ng-model=\"input.value\"\n" +
+    "                            ng-switch-when=\"idList\"></textarea>\n" +
     "\n" +
-    "               <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
-    "               <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +
+    "                  <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
+    "                  <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +
     "\n" +
+    "               </div>\n" +
     "            </div>\n" +
-    "         </div>\n" +
     "\n" +
     "\n" +
-    "         <save-buttons action=\"Import\"></save-buttons>\n" +
+    "            <save-buttons action=\"Import\"></save-buttons>\n" +
     "\n" +
     "\n" +
-    "      </form>\n" +
+    "         </form>\n" +
     "\n" +
-    "      <div class=\"extra\" ng-show=\"importer.extra\" ng-bind-html-unsafe=\"importer.extra\"></div>\n" +
+    "         <div class=\"extra\" ng-show=\"importer.extra\" ng-bind-html-unsafe=\"importer.extra\"></div>\n" +
     "\n" +
     "\n" +
+    "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
     "\n" +

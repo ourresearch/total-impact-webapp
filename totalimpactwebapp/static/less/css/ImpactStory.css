@@ -8294,14 +8294,24 @@ div.importers div.overlay {
   -webkit-transition: opacity 0.5s;
   cursor: pointer;
 }
-div.importers div.import-window {
+div.importers div.import-window-wrapper {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1001;
   position: fixed;
+  overflow-y: hidden;
+  margin-right: -1em;
+}
+div.importers div.import-window-wrapper div.import-window {
+  position: absolute;
+  overflow-y: auto;
+  overflow-x: hidden;
   left: 38.19%;
   top: 0;
   bottom: 0;
-  min-height: 100%;
   right: 0;
-  z-index: 1001;
   background: #fff;
   padding: 50px;
   border-left: 1px solid #555;
@@ -8309,15 +8319,15 @@ div.importers div.import-window {
   -moz-box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
   box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
 }
-div.importers div.import-window h2 {
+div.importers div.import-window-wrapper div.import-window h2 {
   text-align: center;
   margin-bottom: 30px;
   position: relative;
 }
-div.importers div.import-window h2 img {
+div.importers div.import-window-wrapper div.import-window h2 img {
   height: 90px;
 }
-div.importers div.import-window h2 a.visit {
+div.importers div.import-window-wrapper div.import-window h2 a.visit {
   font-size: 16px;
   color: #999;
   position: absolute;
@@ -8325,81 +8335,81 @@ div.importers div.import-window h2 a.visit {
   right: 0;
   font-weight: normal;
 }
-div.importers div.import-window h2 a.visit i {
+div.importers div.import-window-wrapper div.import-window h2 a.visit i {
   margin-left: 5px;
   font-size: 70%;
 }
-div.importers div.import-window h2 a.visit:hover {
+div.importers div.import-window-wrapper div.import-window h2 a.visit:hover {
   text-decoration: none;
   color: #555;
 }
-div.importers div.import-window .content {
+div.importers div.import-window-wrapper div.import-window .content {
   width: 500px;
   margin: 0 auto;
 }
-div.importers div.import-window .content form {
+div.importers div.import-window-wrapper div.import-window .content form {
   margin-top: 50px;
 }
-div.importers div.import-window .content form .form-group {
+div.importers div.import-window-wrapper div.import-window .content form .form-group {
   margin-left: 0;
   margin-top: 20px;
 }
-div.importers div.import-window .content form .form-group label {
+div.importers div.import-window-wrapper div.import-window .content form .form-group label {
   color: #555;
   font-size: 25px;
   font-weight: bolder;
   margin-left: 10px;
 }
-div.importers div.import-window .content form .form-group label span.one-per-line {
+div.importers div.import-window-wrapper div.import-window .content form .form-group label span.one-per-line {
   font-size: 66%;
   font-weight: 500;
   margin-left: 9px;
 }
-div.importers div.import-window .content form .form-group label i {
+div.importers div.import-window-wrapper div.import-window .content form .form-group label i {
   color: #999;
   margin-left: 1px;
   font-size: 75%;
   vertical-align: 1px;
 }
-div.importers div.import-window .content form .form-group label i:hover {
+div.importers div.import-window-wrapper div.import-window .content form .form-group label i:hover {
   color: #000;
 }
-div.importers div.import-window .content form .form-group label .tooltip .tooltip-inner {
+div.importers div.import-window-wrapper div.import-window .content form .form-group label .tooltip .tooltip-inner {
   background: #333;
   font-weight: 300;
   font-size: 15px;
   min-width: 400px;
   padding: 20px;
 }
-div.importers div.import-window .content form .form-group textarea {
+div.importers div.import-window-wrapper div.import-window .content form .form-group textarea {
   height: 150px;
 }
-div.importers div.import-window .content form .form-group input {
+div.importers div.import-window-wrapper div.import-window .content form .form-group input {
   font-size: 30px;
   height: 60px;
 }
-div.importers div.import-window .content form .form-group .form-control {
+div.importers div.import-window-wrapper div.import-window .content form .form-group .form-control {
   margin-left: 0;
   width: 100%;
 }
-div.importers div.import-window .content form .buttons-group {
+div.importers div.import-window-wrapper div.import-window .content form .buttons-group {
   text-align: center;
   margin-top: 50px;
 }
-div.importers div.import-window .content .extra {
+div.importers div.import-window-wrapper div.import-window .content .extra {
   margin-top: 50px;
   font-size: 16px;
   color: #555;
   border-top: 3px solid #eee;
 }
-div.importers div.import-window .content .extra h3 {
+div.importers div.import-window-wrapper div.import-window .content .extra h3 {
   border-bottom: none;
   font-size: 20px;
   margin: 0 0 15px 0;
   padding-top: 15px;
   color: #333;
 }
-div.importers div.import-window .content .extra code {
+div.importers div.import-window-wrapper div.import-window .content .extra code {
   border: 1px solid #dddddd;
 }
 div.importers div.importer-tile {
