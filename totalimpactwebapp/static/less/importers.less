@@ -19,111 +19,129 @@ div.importers {
       -webkit-transition: opacity 0.5s;
       cursor: pointer;
    }
-   div.import-window {
-      position: fixed;
-      left: 38.19%;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      min-height: 100%;
-      right: 0;
+   div.import-window-wrapper {
+      top:0; right:0; bottom:0;
       z-index: 1001;
-      background: #fff;
-      padding: 50px;
-      border-left:  1px solid #555;
-      .drop-shadow(-5px, 0, 10px, .2);
-      h2 {
-         text-align: center;
-         margin-bottom: 30px;
-         position: relative;
-         img {
-            height: 90px;
-         }
-         a.visit {
-            font-size: 16px;
-            color: #999;
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            font-weight: normal;
-            i {
-               margin-left: 5px;
-               font-size: 70%;
-            }
-            &:hover {
-               text-decoration: none;
-               color: #555;
-            }
-         }
-      }
-      .content {
-         width: 500px;
-         margin: 0 auto;
-         form {
-            margin-top: 50px;
-            .form-group {
-               margin-left:0;
-               margin-top: 20px;
+      position: fixed;
+      overflow-y:hidden;
+      margin-right: -1em;
+      left: 38.19%;
 
-               label {
+      div.import-window {
+         position: absolute;
+         overflow-y: auto;
+         overflow-x:hidden;
+         top: 0;
+         bottom: 0;
+         right: 0;
+         left:0;
+
+         background: #fff;
+         padding: 50px;
+         border-left:  1px solid #555;
+         .drop-shadow(-5px, 0, 10px, .2);
+         h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            img {
+               height: 90px;
+            }
+            a.visit {
+               font-size: 16px;
+               color: #999;
+               position: absolute;
+               bottom: 0;
+               right: 0;
+               font-weight: normal;
+               i {
+                  margin-left: 5px;
+                  font-size: 70%;
+               }
+               &:hover {
+                  text-decoration: none;
                   color: #555;
-                  font-size: 25px;
-                  font-weight: bolder;
-                  margin-left:10px;
-                  span.one-per-line {
-                     font-size: 66%;
-                     font-weight: 500;
-//                     color:  #999;
-                     margin-left: 9px;
-                  }
-                  i {
-                     color: #999;
-                     margin-left: 1px;
-                     font-size: 75%;
-                     vertical-align: 1px;
-                     &:hover {color:  #000;}
-                  }
-                  .tooltip {
-                     .tooltip-inner {
-                        background: #333;
-                        font-weight: 300;
-                        font-size: 15px;
-                        min-width: 400px;
-                        padding: 20px;
+               }
+            }
+         }
+         .content {
+            width: 500px;
+            margin: 0 auto;
+            form {
+               margin-top: 50px;
+               .form-group {
+                  margin-left:0;
+                  margin-top: 20px;
+
+                  label {
+                     color: #555;
+                     font-size: 25px;
+                     font-weight: bolder;
+                     margin-left:10px;
+                     span.one-per-line {
+                        font-size: 66%;
+                        font-weight: 500;
+   //                     color:  #999;
+                        margin-left: 9px;
+                     }
+                     i {
+                        color: #999;
+                        margin-left: 1px;
+                        font-size: 75%;
+                        vertical-align: 1px;
+                        &:hover {color:  #000;}
+                     }
+                     .tooltip {
+                        .tooltip-inner {
+                           background: #333;
+                           font-weight: 300;
+                           font-size: 15px;
+                           min-width: 400px;
+                           padding: 20px;
+                        }
                      }
                   }
+                  .input-extra {
+                     color: #999;
+                     font-size: 15px;
+                     padding: 10px 20px 0;
+                     a {
+                        color: #555;
+                        &:hover{text-decoration: underline;}
+                     }
+                  }
+                  textarea {
+                     height: 150px;
+                  }
+                  input {
+                     font-size: 30px;
+                     height: 60px;
+                  }
+                  .form-control {
+                     margin-left:0;
+                     width:  100%;
+                  }
                }
-               textarea {
-                  height: 150px;
-               }
-               input {
-                  font-size: 30px;
-                  height: 60px;
-               }
-               .form-control {
-                  margin-left:0;
-                  width:  100%;
+               .buttons-group {
+                  text-align: center;
+                  margin-top: 50px;
                }
             }
-            .buttons-group {
-               text-align: center;
+            .extra {
                margin-top: 50px;
-            }
-         }
-         .extra {
-            margin-top: 50px;
-            font-size: 16px;
-            color: #555;
-            border-top: 3px solid #eee;
+               font-size: 16px;
+               color: #555;
+               border-top: 3px solid #eee;
 
-            h3 {
-               border-bottom: none;
-               font-size: 20px;
-               margin: 0 0 15px 0;
-               padding-top: 15px;
-               color:  #333;
+               h3 {
+                  border-bottom: none;
+                  font-size: 20px;
+                  margin: 0 0 15px 0;
+                  padding-top: 15px;
+                  color:  #333;
+               }
+               code {border:  1px solid #ddd}
             }
-            code {border:  1px solid #ddd}
          }
       }
    }

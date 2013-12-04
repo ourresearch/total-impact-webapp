@@ -376,3 +376,25 @@
     -o-animation-name: slideOutRight;
     animation-name: slideOutRight;
 }
+
+
+.waitThenSlideRight {
+    -webkit-animation-delay: .1s;
+    animation-delay: .1s;
+
+    -webkit-animation-name: slideOutRight;
+    -moz-animation-name: slideOutRight;
+    -o-animation-name: slideOutRight;
+    animation-name: slideOutRight;
+}
+
+
+
+
+
+
+
+
+
+
+

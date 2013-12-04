@@ -141,6 +141,10 @@ angular.module('importers.importer')
     var res = re.exec($location.path())
     return res[1]
   }
+
+
+
+
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
       $scope.importWindowOpen = true;
