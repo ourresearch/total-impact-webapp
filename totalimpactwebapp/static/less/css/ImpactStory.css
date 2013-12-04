@@ -7394,7 +7394,7 @@ div.product-controls div.edit-controls div.num-items span.val-plus-text {
   margin: 0;
 }
 div.product-controls div.edit-controls div.num-items span.val-plus-text span.value {
-  font-weight: normal;
+  font-weight: bold;
   margin-right: 3px;
 }
 div.product-controls div.edit-controls div.num-items a {
