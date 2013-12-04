@@ -21,7 +21,7 @@ div.profile-subpage {
       background:  @linkColor;
       color:  #fff;
       div.wrapper {
-         position: relative;
+         position: relatfive;
          a {
             top:  5px;
             color:  #fff;
@@ -113,12 +113,13 @@ div.profile-header {
 
 
 div.product-controls {
-   margin-top:0;
    font-size:  16px;
    border-bottom:  5px solid #eee;
+   color: #777;
+
    .clearfix();
    a {
-      &:hover {color: #555;}
+      &:hover {color: #333;}
    }
    div.view-controls {
       float:right;
@@ -155,7 +156,14 @@ div.product-controls {
       float:left;
       div.num-items {
          float:left;
-         span.val-plus-text {font-size: 20px; margin: 0; font-weight: bold }
+         span.val-plus-text {
+            font-weight: 300;
+            margin: 0;
+            span.value {
+               font-weight: normal;
+               margin-right: 3px;
+            }
+         }
          a {
             font-size: 14px;
             margin-left: 5px;
@@ -165,9 +173,8 @@ div.product-controls {
       }
    }
    a {
-      color: #777;
       margin-left: 15px;
-      margin-top: 6px;
+      color: #777;
       display:inline-block;
       i {
          margin-right:5px;

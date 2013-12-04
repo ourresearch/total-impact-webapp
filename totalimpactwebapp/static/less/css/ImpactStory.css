@@ -7201,7 +7201,7 @@ div.profile-subpage div.profile-subpage-header {
   color: #fff;
 }
 div.profile-subpage div.profile-subpage-header div.wrapper {
-  position: relative;
+  position: relatfive;
 }
 div.profile-subpage div.profile-subpage-header div.wrapper a {
   top: 5px;
@@ -7307,9 +7307,9 @@ div.profile-header div.wrapper div.my-vitals div.external-usernames li a img {
   margin-top: -3px;
 }
 div.product-controls {
-  margin-top: 0;
   font-size: 16px;
   border-bottom: 5px solid #eee;
+  color: #777;
   clear: both;
 }
 div.product-controls:before,
@@ -7337,7 +7337,7 @@ div.product-controls:after {
   clear: both;
 }
 div.product-controls a:hover {
-  color: #555;
+  color: #333;
 }
 div.product-controls div.view-controls {
   float: right;
@@ -7390,9 +7390,12 @@ div.product-controls div.edit-controls div.num-items {
   float: left;
 }
 div.product-controls div.edit-controls div.num-items span.val-plus-text {
-  font-size: 20px;
+  font-weight: 300;
   margin: 0;
-  font-weight: bold;
+}
+div.product-controls div.edit-controls div.num-items span.val-plus-text span.value {
+  font-weight: normal;
+  margin-right: 3px;
 }
 div.product-controls div.edit-controls div.num-items a {
   font-size: 14px;
@@ -7403,9 +7406,8 @@ div.product-controls div.edit-controls div.num-items a:hover {
   text-decoration: underline;
 }
 div.product-controls a {
-  color: #777;
   margin-left: 15px;
-  margin-top: 6px;
+  color: #777;
   display: inline-block;
 }
 div.product-controls a i {
