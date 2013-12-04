@@ -2040,6 +2040,7 @@ angular.module( 'signup', [
 
 ;
 
+angular.module("update.update",["resources.users"]).factory("Update",function(e,t,n,r,i){var s={},o=function(e,t){s.numNotDone>0||_.isNull(s.numNotDone)?n.query({id:e,idType:"url_slug"},function(n){s.numDone=u(n,!0);s.numNotDone=u(n,!1);s.percentComplete=s.numDone*100/(s.numDone+s.numNotDone);console.log("in keepPolling");console.log(s);r(function(){o(e,t)},500)}):t()},u=function(e,t){var n=_.filter(e,function(e){return!e.currently_updating});return t?n.length:e.length-n.length},a=function(e,t){s.numDone=null;s.numNotDone=null;s.percentComplete=null;var n=i.open({templateUrl:"update/update-progress.tpl.html",controller:"updateProgressModalCtrl",backdrop:"static",keyboard:!1});o(e,function(){n.close();t()})};return{showUpdate:a,updateStatus:s}}).controller("updateProgressModalCtrl",function(e,t){e.updateStatus=t.updateStatus});
 angular.module( 'update.update', [
     'resources.users'
   ])
@@ -2051,13 +2052,12 @@ angular.module( 'update.update', [
 
 
       if (updateStatus.numNotDone > 0 || _.isNull(updateStatus.numNotDone)) {
-        UsersProducts.query(
+        UsersProducts.poll(
           {id: url_slug, idType:"url_slug"},
           function(resp){
             updateStatus.numDone = numDone(resp, true)
             updateStatus.numNotDone = numDone(resp, false)
             updateStatus.percentComplete = updateStatus.numDone * 100 / (updateStatus.numDone + updateStatus.numNotDone)
-
             $timeout(function(){keepPolling(url_slug, onFinish)}, 500);
           })
       }
@@ -2716,6 +2716,7 @@ angular.module('resources.products',['ngResource'])
 })
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -2751,8 +2752,12 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: true
-
-        }
+        },
+        poll:{
+          method: "GET",
+          isArray: true,
+          cache: false
+        }        
       }
     )
   })

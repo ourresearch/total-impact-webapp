@@ -9,13 +9,12 @@ angular.module( 'update.update', [
 
 
       if (updateStatus.numNotDone > 0 || _.isNull(updateStatus.numNotDone)) {
-        UsersProducts.query(
+        UsersProducts.poll(
           {id: url_slug, idType:"url_slug"},
           function(resp){
             updateStatus.numDone = numDone(resp, true)
             updateStatus.numNotDone = numDone(resp, false)
             updateStatus.percentComplete = updateStatus.numDone * 100 / (updateStatus.numDone + updateStatus.numNotDone)
-
             $timeout(function(){keepPolling(url_slug, onFinish)}, 500);
           })
       }

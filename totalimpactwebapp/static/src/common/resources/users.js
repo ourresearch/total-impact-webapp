@@ -33,8 +33,12 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: true
-
-        }
+        },
+        poll:{
+          method: "GET",
+          isArray: true,
+          cache: false
+        }        
       }
     )
   })
