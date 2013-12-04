@@ -8381,6 +8381,17 @@ div.importers div.import-window-wrapper div.import-window .content form .form-gr
   min-width: 400px;
   padding: 20px;
 }
+div.importers div.import-window-wrapper div.import-window .content form .form-group .input-extra {
+  color: #999;
+  font-size: 15px;
+  padding: 10px 20px 0;
+}
+div.importers div.import-window-wrapper div.import-window .content form .form-group .input-extra a {
+  color: #555;
+}
+div.importers div.import-window-wrapper div.import-window .content form .form-group .input-extra a:hover {
+  text-decoration: underline;
+}
 div.importers div.import-window-wrapper div.import-window .content form .form-group textarea {
   height: 150px;
 }

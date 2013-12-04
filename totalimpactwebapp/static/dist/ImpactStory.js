@@ -242,12 +242,12 @@ angular.module('importers.allTheImporters')
           help: "Paste the URL for a WordPress.com blog.  The URL can be on custom domains (like http://blog.impactstory.org), as long as the blog is hosted on WordPress.com.",
           placeholder: "http://retractionwatch.wordpress.com"
         }
-        // ,{
-        //   inputType: "username",
-        //   inputNeeded: "API key",
-        //   name: "apiKey",
-        //   help: "Your WordPress.com API key can be discovered through Akismet at <a href='http://akismet.com/resend/'>http://akismet.com/resend/</a>"
-        // }
+//        ,{
+//           inputType: "username",
+//           inputNeeded: "API key",
+//           name: "apiKey",
+//           extra: "Your WordPress.com API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>"
+//        }
       ],
       endpoint: "wordpresscom",            
       url: "http://wordpress.com",
@@ -4133,6 +4133,7 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "                  <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
     "                  <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +
     "\n" +
+    "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +

@@ -137,6 +137,7 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "                  <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
     "                  <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +
     "\n" +
+    "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
