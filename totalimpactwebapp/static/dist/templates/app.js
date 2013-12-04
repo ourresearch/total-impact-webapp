@@ -99,12 +99,9 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "\n" +
     "<div class=\"import-window-wrapper\"\n" +
     "     ng-if=\"importWindowOpen\"\n" +
-    "     ng-animate=\"{'leave': 'animated waitThenSlideRight'}\"\n" +
-    "     ng-click=\"onCancel()\"\n" +
+    "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
     "        >\n" +
-    "   <div class=\"import-window\"\n" +
-    "        ng-if=\"importWindowOpen\"\n" +
-    "        ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
+    "   <div class=\"import-window\">\n" +
     "      <div class=\"content\">\n" +
     "         <h2 class=\"importer-name\" ng-show=\"!importer.url\"><img ng-src=\"{{ importer.logoPath }}\" /> </h2>\n" +
     "         <h2 class=\"importer-name\" ng-show=\"importer.url\">\n" +

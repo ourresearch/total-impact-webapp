@@ -8298,20 +8298,20 @@ div.importers div.import-window-wrapper {
   top: 0;
   right: 0;
   bottom: 0;
-  left: 0;
   z-index: 1001;
   position: fixed;
   overflow-y: hidden;
   margin-right: -1em;
+  left: 38.19%;
 }
 div.importers div.import-window-wrapper div.import-window {
   position: absolute;
   overflow-y: auto;
   overflow-x: hidden;
-  left: 38.19%;
   top: 0;
   bottom: 0;
   right: 0;
+  left: 0;
   background: #fff;
   padding: 50px;
   border-left: 1px solid #555;

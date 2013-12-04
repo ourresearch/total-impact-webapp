@@ -19,12 +19,9 @@
 
 <div class="import-window-wrapper"
      ng-if="importWindowOpen"
-     ng-animate="{'leave': 'animated waitThenSlideRight'}"
-     ng-click="onCancel()"
+     ng-animate="{enter: 'animated slideInRight', leave: 'animated slideOutRight'}">
         >
-   <div class="import-window"
-        ng-if="importWindowOpen"
-        ng-animate="{enter: 'animated slideInRight', leave: 'animated slideOutRight'}">
+   <div class="import-window">
       <div class="content">
          <h2 class="importer-name" ng-show="!importer.url"><img ng-src="{{ importer.logoPath }}" /> </h2>
          <h2 class="importer-name" ng-show="importer.url">
