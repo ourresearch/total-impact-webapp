@@ -160,6 +160,7 @@ angular.module('importers.allTheImporters')
         inputNeeded: "ID",
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
         saveUsername: true,
+        cleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
         help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
       }],
       url: 'http://orcid.org',
