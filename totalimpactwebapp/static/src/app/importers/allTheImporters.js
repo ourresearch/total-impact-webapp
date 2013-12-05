@@ -9,22 +9,30 @@ angular.module('importers.allTheImporters')
   var importers = [
     {
       displayName: "GitHub",
+      url: 'http://github.com',
+      descr: "GitHub is an online code repository emphasizing community collaboration features.",
+      tabs: [
+        {
+          label: "account"
+        },
+        {
+          label: "individual repositories"
+        }
+      ],
       inputs: [{
+        tab: 0,
         inputType: "username",
         inputNeeded: "username",
         help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
         saveUsername: true
-      }
-      // ,{
-      //   inputType: "username",
-      //   inputNeeded: "API key",
-      //   placeholder: "This is just for testing.",
-      //   name: "apiKey",
-      //   help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
-      // }
-      ],
-      url: 'http://github.com',
-      descr: "GitHub is an online code repository emphasizing community collaboration features."
+      },
+      {
+        tab:1,
+        inputType: "idList",
+        inputNeeded: "URLs",
+        help: "Past URLs for other github repos here.",
+        placeholder: "https://github.com/cboettig/knitcitations"
+      }]
     },
 
 
@@ -78,8 +86,7 @@ angular.module('importers.allTheImporters')
       displayName: "Google Scholar",
       inputs: [{
         inputType: "file",
-        inputNeeded: "BibTeX file",
-        help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+        inputNeeded: "BibTeX file"
       }],
       endpoint: "bibtex",
       url: 'http://scholar.google.com/citations',
@@ -99,7 +106,6 @@ angular.module('importers.allTheImporters')
       inputs: [{
         inputType: "username",
         inputNeeded: "author page URL",
-        help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
         placeholder: "http://figshare.com/authors/schamberlain/96554",
         saveUsername: true,
         cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}
@@ -224,6 +230,14 @@ angular.module('importers.allTheImporters')
     }
   ]
 
+  var defaultInputObj = {
+    name: "primary",
+    cleanupFunction: function(x){return x},
+    tab:0
+  }
+
+
+
 
   var makeLogoPath = function(displayName) {
     var urlStyleName = displayName.toLowerCase().replace(" ", "-")
@@ -255,14 +269,6 @@ angular.module('importers.allTheImporters')
 
   }
 
-  var prepInputObject = function(inputObject) {
-    var defaultInputName = "primary"
-    inputObject.name || (inputObject.name = defaultInputName)
-    inputObject.cleanupFunction = inputObject.cleanupFunction || function(x){return x}
-
-    return inputObject
-  }
-
 
 
   return {
@@ -278,7 +284,9 @@ angular.module('importers.allTheImporters')
         importer.logoPath = makeLogoPath(importer.displayName)
         importer.endpoint = makeEndpoint(importer)
 
-        importer.inputs = _.map(importer.inputs, prepInputObject)
+        importer.inputs = _.map(importer.inputs, function(inputObj){
+          return _.defaults(inputObj, defaultInputObj)
+        })
 
 
         return importer

@@ -141,20 +141,20 @@ angular.module('importers.importer')
     var res = re.exec($location.path())
     return res[1]
   }
-
-
-
-
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
       $scope.importWindowOpen = true;
       $scope.importer.userInput = null  // may have been used before; clear it.
     }
   }
+
   $scope.products = []
-  $scope.userInput = {
-  }
+  $scope.currentTab = 0;
+  $scope.userInput = {}
   $scope.importerHasRun = false
+
+
+  $scope.setCurrentTab = function(index){$scope.currentTab = index}
 
   $scope.onCancel = function(){
     $scope.importWindowOpen = false;

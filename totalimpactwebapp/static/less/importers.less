@@ -35,17 +35,38 @@ div.importers {
          bottom: 0;
          right: 0;
          left:0;
-
          background: #fff;
-         padding: 50px;
+         padding: 75px  50px 50px;
          border-left:  1px solid #555;
          .drop-shadow(-5px, 0, 10px, .2);
+
+         div.importer-tabs {
+            position: absolute;
+            top:0; left: 0; right:0;
+            text-align:center;
+            menu {
+               margin:0;
+               li {
+                  list-style-type: none;
+                  font-weight: bold;
+                  color: #999;
+                  display:inline-block;
+                  cursor: pointer;
+                  padding: 10px 20px;
+                  &.current {
+                     background: #eee;
+                     color: #555;
+                  }
+               }
+            }
+         }
+
          h2 {
             text-align: center;
             margin-bottom: 30px;
             position: relative;
             img {
-               height: 90px;
+               height: 70px;
             }
             a.visit {
                font-size: 16px;
@@ -75,7 +96,7 @@ div.importers {
 
                   label {
                      color: #555;
-                     font-size: 25px;
+                     font-size: 20px;
                      font-weight: bolder;
                      margin-left:10px;
                      span.one-per-line {

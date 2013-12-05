@@ -134,22 +134,30 @@ angular.module('importers.allTheImporters')
   var importers = [
     {
       displayName: "GitHub",
+      url: 'http://github.com',
+      descr: "GitHub is an online code repository emphasizing community collaboration features.",
+      tabs: [
+        {
+          label: "account"
+        },
+        {
+          label: "individual repositories"
+        }
+      ],
       inputs: [{
+        tab: 0,
         inputType: "username",
         inputNeeded: "username",
         help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
         saveUsername: true
-      }
-      // ,{
-      //   inputType: "username",
-      //   inputNeeded: "API key",
-      //   placeholder: "This is just for testing.",
-      //   name: "apiKey",
-      //   help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
-      // }
-      ],
-      url: 'http://github.com',
-      descr: "GitHub is an online code repository emphasizing community collaboration features."
+      },
+      {
+        tab:1,
+        inputType: "idList",
+        inputNeeded: "URLs",
+        help: "Past URLs for other github repos here.",
+        placeholder: "https://github.com/cboettig/knitcitations"
+      }]
     },
 
 
@@ -203,8 +211,7 @@ angular.module('importers.allTheImporters')
       displayName: "Google Scholar",
       inputs: [{
         inputType: "file",
-        inputNeeded: "BibTeX file",
-        help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+        inputNeeded: "BibTeX file"
       }],
       endpoint: "bibtex",
       url: 'http://scholar.google.com/citations',
@@ -224,7 +231,6 @@ angular.module('importers.allTheImporters')
       inputs: [{
         inputType: "username",
         inputNeeded: "author page URL",
-        help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
         placeholder: "http://figshare.com/authors/schamberlain/96554",
         saveUsername: true,
         cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}
@@ -349,6 +355,14 @@ angular.module('importers.allTheImporters')
     }
   ]
 
+  var defaultInputObj = {
+    name: "primary",
+    cleanupFunction: function(x){return x},
+    tab:0
+  }
+
+
+
 
   var makeLogoPath = function(displayName) {
     var urlStyleName = displayName.toLowerCase().replace(" ", "-")
@@ -380,14 +394,6 @@ angular.module('importers.allTheImporters')
 
   }
 
-  var prepInputObject = function(inputObject) {
-    var defaultInputName = "primary"
-    inputObject.name || (inputObject.name = defaultInputName)
-    inputObject.cleanupFunction = inputObject.cleanupFunction || function(x){return x}
-
-    return inputObject
-  }
-
 
 
   return {
@@ -403,7 +409,9 @@ angular.module('importers.allTheImporters')
         importer.logoPath = makeLogoPath(importer.displayName)
         importer.endpoint = makeEndpoint(importer)
 
-        importer.inputs = _.map(importer.inputs, prepInputObject)
+        importer.inputs = _.map(importer.inputs, function(inputObj){
+          return _.defaults(inputObj, defaultInputObj)
+        })
 
 
         return importer
@@ -564,20 +572,20 @@ angular.module('importers.importer')
     var res = re.exec($location.path())
     return res[1]
   }
-
-
-
-
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
       $scope.importWindowOpen = true;
       $scope.importer.userInput = null  // may have been used before; clear it.
     }
   }
+
   $scope.products = []
-  $scope.userInput = {
-  }
+  $scope.currentTab = 0;
+  $scope.userInput = {}
   $scope.importerHasRun = false
+
+
+  $scope.setCurrentTab = function(index){$scope.currentTab = index}
 
   $scope.onCancel = function(){
     $scope.importWindowOpen = false;
@@ -4102,6 +4110,16 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
     "        >\n" +
     "   <div class=\"import-window\">\n" +
+    "\n" +
+    "      <div class=\"importer-tabs\">\n" +
+    "         <menu class=\"importer-menu\">\n" +
+    "            <li class=\"tab\"\n" +
+    "                ng-click=\"setCurrentTab($index)\"\n" +
+    "                ng-class=\"{current: $index==currentTab}\"\n" +
+    "                ng-repeat=\"tab in importer.tabs\"> {{ tab.label }}</li>\n" +
+    "         </menu>\n" +
+    "      </div>\n" +
+    "\n" +
     "      <div class=\"content\">\n" +
     "         <h2 class=\"importer-name\" ng-show=\"!importer.url\"><img ng-src=\"{{ importer.logoPath }}\" /> </h2>\n" +
     "         <h2 class=\"importer-name\" ng-show=\"importer.url\">\n" +
@@ -4109,11 +4127,13 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "            <a class=\"visit\" href=\"{{ importer.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
     "         </h2>\n" +
     "\n" +
-    "         <div class=\"descr\">{{ importer.descr }}</div>\n" +
+    "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ importer.descr }}</div>\n" +
     "\n" +
     "         <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
     "\n" +
-    "            <div class=\"form-group\" ng-repeat=\"input in importer.inputs\">\n" +
+    "            <div class=\"form-group\"\n" +
+    "                 ng-show=\"$index==currentTab\"\n" +
+    "                 ng-repeat=\"input in importer.inputs\">\n" +
     "               <label class=\"control-label\">\n" +
     "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
     "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
