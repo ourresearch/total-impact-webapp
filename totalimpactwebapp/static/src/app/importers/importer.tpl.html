@@ -22,6 +22,16 @@
      ng-animate="{enter: 'animated slideInRight', leave: 'animated slideOutRight'}">
         >
    <div class="import-window">
+
+      <div class="importer-tabs">
+         <menu class="importer-menu">
+            <li class="tab"
+                ng-click="setCurrentTab($index)"
+                ng-class="{current: $index==currentTab}"
+                ng-repeat="tab in importer.tabs"> {{ tab.label }}</li>
+         </menu>
+      </div>
+
       <div class="content">
          <h2 class="importer-name" ng-show="!importer.url"><img ng-src="{{ importer.logoPath }}" /> </h2>
          <h2 class="importer-name" ng-show="importer.url">
@@ -29,11 +39,13 @@
             <a class="visit" href="{{ importer.url }}" target="_blank">Visit<i class="icon-chevron-right"></i></a>
          </h2>
 
-         <div class="descr">{{ importer.descr }}</div>
+         <div class="descr" ng-show="currentTab==0">{{ importer.descr }}</div>
 
          <form name="{{ importer.name }}ImporterForm" novalidate class="form" ng-submit="onImport()">
 
-            <div class="form-group" ng-repeat="input in importer.inputs">
+            <div class="form-group"
+                 ng-show="$index==currentTab"
+                 ng-repeat="input in importer.inputs">
                <label class="control-label">
                   {{ input.displayName }} {{ input.inputNeeded }}
                   <i class="icon-question-sign" ng-show="input.help" tooltip-html-unsafe="{{ input.help }}"></i>

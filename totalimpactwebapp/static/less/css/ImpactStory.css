@@ -8313,11 +8313,33 @@ div.importers div.import-window-wrapper div.import-window {
   right: 0;
   left: 0;
   background: #fff;
-  padding: 50px;
+  padding: 75px  50px 50px;
   border-left: 1px solid #555;
   -webkit-box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
   box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+}
+div.importers div.import-window-wrapper div.import-window div.importer-tabs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+div.importers div.import-window-wrapper div.import-window div.importer-tabs menu {
+  margin: 0;
+}
+div.importers div.import-window-wrapper div.import-window div.importer-tabs menu li {
+  list-style-type: none;
+  font-weight: bold;
+  color: #999;
+  display: inline-block;
+  cursor: pointer;
+  padding: 10px 20px;
+}
+div.importers div.import-window-wrapper div.import-window div.importer-tabs menu li.current {
+  background: #eee;
+  color: #555;
 }
 div.importers div.import-window-wrapper div.import-window h2 {
   text-align: center;
@@ -8325,7 +8347,7 @@ div.importers div.import-window-wrapper div.import-window h2 {
   position: relative;
 }
 div.importers div.import-window-wrapper div.import-window h2 img {
-  height: 90px;
+  height: 70px;
 }
 div.importers div.import-window-wrapper div.import-window h2 a.visit {
   font-size: 16px;
@@ -8356,7 +8378,7 @@ div.importers div.import-window-wrapper div.import-window .content form .form-gr
 }
 div.importers div.import-window-wrapper div.import-window .content form .form-group label {
   color: #555;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bolder;
   margin-left: 10px;
 }

@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-03
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-04
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -134,22 +134,30 @@ angular.module('importers.allTheImporters')
   var importers = [
     {
       displayName: "GitHub",
+      url: 'http://github.com',
+      descr: "GitHub is an online code repository emphasizing community collaboration features.",
+      tabs: [
+        {
+          label: "account"
+        },
+        {
+          label: "individual repositories"
+        }
+      ],
       inputs: [{
+        tab: 0,
         inputType: "username",
         inputNeeded: "username",
         help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
         saveUsername: true
-      }
-      // ,{
-      //   inputType: "username",
-      //   inputNeeded: "API key",
-      //   placeholder: "This is just for testing.",
-      //   name: "apiKey",
-      //   help: "Your GitHub API key is somewhere in GitHub. It's a mystery! Go find it!"
-      // }
-      ],
-      url: 'http://github.com',
-      descr: "GitHub is an online code repository emphasizing community collaboration features."
+      },
+      {
+        tab:1,
+        inputType: "idList",
+        inputNeeded: "URLs",
+        help: "Past URLs for other github repos here.",
+        placeholder: "https://github.com/cboettig/knitcitations"
+      }]
     },
 
 
@@ -203,8 +211,7 @@ angular.module('importers.allTheImporters')
       displayName: "Google Scholar",
       inputs: [{
         inputType: "file",
-        inputNeeded: "BibTeX file",
-        help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+        inputNeeded: "BibTeX file"
       }],
       endpoint: "bibtex",
       url: 'http://scholar.google.com/citations',
@@ -224,7 +231,6 @@ angular.module('importers.allTheImporters')
       inputs: [{
         inputType: "username",
         inputNeeded: "author page URL",
-        help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
         placeholder: "http://figshare.com/authors/schamberlain/96554",
         saveUsername: true,
         cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}
@@ -349,6 +355,14 @@ angular.module('importers.allTheImporters')
     }
   ]
 
+  var defaultInputObj = {
+    name: "primary",
+    cleanupFunction: function(x){return x},
+    tab:0
+  }
+
+
+
 
   var makeLogoPath = function(displayName) {
     var urlStyleName = displayName.toLowerCase().replace(" ", "-")
@@ -380,14 +394,6 @@ angular.module('importers.allTheImporters')
 
   }
 
-  var prepInputObject = function(inputObject) {
-    var defaultInputName = "primary"
-    inputObject.name || (inputObject.name = defaultInputName)
-    inputObject.cleanupFunction = inputObject.cleanupFunction || function(x){return x}
-
-    return inputObject
-  }
-
 
 
   return {
@@ -403,7 +409,9 @@ angular.module('importers.allTheImporters')
         importer.logoPath = makeLogoPath(importer.displayName)
         importer.endpoint = makeEndpoint(importer)
 
-        importer.inputs = _.map(importer.inputs, prepInputObject)
+        importer.inputs = _.map(importer.inputs, function(inputObj){
+          return _.defaults(inputObj, defaultInputObj)
+        })
 
 
         return importer
@@ -564,20 +572,20 @@ angular.module('importers.importer')
     var res = re.exec($location.path())
     return res[1]
   }
-
-
-
-
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
       $scope.importWindowOpen = true;
       $scope.importer.userInput = null  // may have been used before; clear it.
     }
   }
+
   $scope.products = []
-  $scope.userInput = {
-  }
+  $scope.currentTab = 0;
+  $scope.userInput = {}
   $scope.importerHasRun = false
+
+
+  $scope.setCurrentTab = function(index){$scope.currentTab = index}
 
   $scope.onCancel = function(){
     $scope.importWindowOpen = false;
@@ -2045,7 +2053,6 @@ angular.module( 'signup', [
 
 ;
 
-angular.module("update.update",["resources.users"]).factory("Update",function(e,t,n,r,i){var s={},o=function(e,t){s.numNotDone>0||_.isNull(s.numNotDone)?n.query({id:e,idType:"url_slug"},function(n){s.numDone=u(n,!0);s.numNotDone=u(n,!1);s.percentComplete=s.numDone*100/(s.numDone+s.numNotDone);console.log("in keepPolling");console.log(s);r(function(){o(e,t)},500)}):t()},u=function(e,t){var n=_.filter(e,function(e){return!e.currently_updating});return t?n.length:e.length-n.length},a=function(e,t){s.numDone=null;s.numNotDone=null;s.percentComplete=null;var n=i.open({templateUrl:"update/update-progress.tpl.html",controller:"updateProgressModalCtrl",backdrop:"static",keyboard:!1});o(e,function(){n.close();t()})};return{showUpdate:a,updateStatus:s}}).controller("updateProgressModalCtrl",function(e,t){e.updateStatus=t.updateStatus});
 angular.module( 'update.update', [
     'resources.users'
   ])
@@ -2721,7 +2728,6 @@ angular.module('resources.products',['ngResource'])
 })
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4104,6 +4110,16 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
     "        >\n" +
     "   <div class=\"import-window\">\n" +
+    "\n" +
+    "      <div class=\"importer-tabs\">\n" +
+    "         <menu class=\"importer-menu\">\n" +
+    "            <li class=\"tab\"\n" +
+    "                ng-click=\"setCurrentTab($index)\"\n" +
+    "                ng-class=\"{current: $index==currentTab}\"\n" +
+    "                ng-repeat=\"tab in importer.tabs\"> {{ tab.label }}</li>\n" +
+    "         </menu>\n" +
+    "      </div>\n" +
+    "\n" +
     "      <div class=\"content\">\n" +
     "         <h2 class=\"importer-name\" ng-show=\"!importer.url\"><img ng-src=\"{{ importer.logoPath }}\" /> </h2>\n" +
     "         <h2 class=\"importer-name\" ng-show=\"importer.url\">\n" +
@@ -4111,11 +4127,13 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "            <a class=\"visit\" href=\"{{ importer.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
     "         </h2>\n" +
     "\n" +
-    "         <div class=\"descr\">{{ importer.descr }}</div>\n" +
+    "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ importer.descr }}</div>\n" +
     "\n" +
     "         <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
     "\n" +
-    "            <div class=\"form-group\" ng-repeat=\"input in importer.inputs\">\n" +
+    "            <div class=\"form-group\"\n" +
+    "                 ng-show=\"$index==currentTab\"\n" +
+    "                 ng-repeat=\"input in importer.inputs\">\n" +
     "               <label class=\"control-label\">\n" +
     "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
     "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +

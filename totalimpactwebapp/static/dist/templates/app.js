@@ -102,6 +102,16 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
     "        >\n" +
     "   <div class=\"import-window\">\n" +
+    "\n" +
+    "      <div class=\"importer-tabs\">\n" +
+    "         <menu class=\"importer-menu\">\n" +
+    "            <li class=\"tab\"\n" +
+    "                ng-click=\"setCurrentTab($index)\"\n" +
+    "                ng-class=\"{current: $index==currentTab}\"\n" +
+    "                ng-repeat=\"tab in importer.tabs\"> {{ tab.label }}</li>\n" +
+    "         </menu>\n" +
+    "      </div>\n" +
+    "\n" +
     "      <div class=\"content\">\n" +
     "         <h2 class=\"importer-name\" ng-show=\"!importer.url\"><img ng-src=\"{{ importer.logoPath }}\" /> </h2>\n" +
     "         <h2 class=\"importer-name\" ng-show=\"importer.url\">\n" +
@@ -109,11 +119,13 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "            <a class=\"visit\" href=\"{{ importer.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
     "         </h2>\n" +
     "\n" +
-    "         <div class=\"descr\">{{ importer.descr }}</div>\n" +
+    "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ importer.descr }}</div>\n" +
     "\n" +
     "         <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
     "\n" +
-    "            <div class=\"form-group\" ng-repeat=\"input in importer.inputs\">\n" +
+    "            <div class=\"form-group\"\n" +
+    "                 ng-show=\"$index==currentTab\"\n" +
+    "                 ng-repeat=\"input in importer.inputs\">\n" +
     "               <label class=\"control-label\">\n" +
     "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
     "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
