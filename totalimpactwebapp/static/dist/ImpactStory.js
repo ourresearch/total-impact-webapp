@@ -161,11 +161,11 @@ angular.module('importers.allTheImporters')
             placeholder: "https://github.com/cboettig/knitcitations",
             cleanupFunction: function (fullString) {
               if (typeof fullString==="undefined") return fullString; 
-              _.map(fullString.split("\n"), function(line) {            
+              return _.map(fullString.split("\n"), function(line) {            
                 // make sure it starts with https and doesn't end with trailing slash
                 var working = line.replace(/https*:\/\//, ""); 
                 working = working.replace(/\/$/, ""); 
-                return "https://"+working})}
+                return "https://"+working}).join("\n")}
          }
       ]
     },
@@ -216,10 +216,10 @@ angular.module('importers.allTheImporters')
             placeholder: "http://www.slideshare.net/smith/conf-presentation",
             cleanupFunction: function (fullString) {
               if (typeof fullString==="undefined") return fullString; 
-              _.map(fullString.split("\n"), function(line) {            
+              return _.map(fullString.split("\n"), function(line) {            
                 // make sure it starts with http
                 var working = line.replace(/https*:\/\//, ""); 
-                return "http://"+working})}
+                return "http://"+working}).join("\n")}
          }
       ]
     },
