@@ -34,7 +34,13 @@ angular.module('importers.allTheImporters')
             inputNeeded: "URLs",
             help: "Paste URLs for other github repositories here.",
             placeholder: "https://github.com/cboettig/knitcitations",
-            cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}            
+            cleanupFunction: function (fullString) {
+              if (typeof fullString==="undefined") return fullString; 
+              _.map(fullString.split("\n"), function(line) {            
+                // make sure it starts with https and doesn't end with trailing slash
+                var working = line.replace(/https*:\/\//, ""); 
+                working = working.replace(/\/$/, ""); 
+                return "https://"+working})}
          }
       ]
     },
@@ -82,7 +88,13 @@ angular.module('importers.allTheImporters')
             inputType: "idList",
             inputNeeded: "URLs",
             help: "Paste URLs for other SlideShare products here.",
-            placeholder: "http://www.slideshare.net/smith/conf-presentation"
+            placeholder: "http://www.slideshare.net/smith/conf-presentation",
+            cleanupFunction: function (fullString) {
+              if (typeof fullString==="undefined") return fullString; 
+              _.map(fullString.split("\n"), function(line) {            
+                // make sure it starts with http
+                var working = line.replace(/https*:\/\//, ""); 
+                return "http://"+working})}
          }
       ]
     },
