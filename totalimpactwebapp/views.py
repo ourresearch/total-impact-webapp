@@ -54,7 +54,7 @@ def json_resp_from_jsonable_thing(jsonable_thing):
     json_str = json.dumps(jsonable_thing, sort_keys=True, indent=4)
     resp = make_response(json_str, 200)
     resp.mimetype = "application/json"
-    return resp
+    return views_helpers.bust_caches(resp)
 
 
 def json_resp_from_thing(thing):
@@ -220,7 +220,7 @@ def get_current_user():
     except AttributeError:  # anon user has no as_dict()
         ret = {"user": None}
 
-    return views_helpers.bust_caches(json_resp_from_thing(ret))
+    return json_resp_from_thing(ret)
 
 
 
@@ -228,8 +228,7 @@ def get_current_user():
 def logout():
     #sleep(1)
     logout_user()
-    ret = {"msg": "user logged out"}
-    return views_helpers.bust_caches(json_resp_from_thing(ret))
+    return json_resp_from_thing({"msg": "user logged out"})
 
 
 
@@ -323,7 +322,6 @@ def get_user_about(profile_id):
 
         db.session.commit()
 
-
     return json_resp_from_thing({"about": user.as_dict()})
 
 
@@ -343,7 +341,7 @@ def user_products_get(id):
     if request.args.get("include_heading_products") in [1, "true", "True"]:
         resp += make_genre_heading_products(resp)
 
-    return views_helpers.bust_caches(json_resp_from_thing(resp))
+    return json_resp_from_thing(resp)
 
 
 
