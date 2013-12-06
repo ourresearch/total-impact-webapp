@@ -850,7 +850,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <li ng-show=\"user.about.slideshare_id\">\n" +
     "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
     "                     <img src=\"http://www.slideshare.net/favicon.ico\" />\n" +
-    "                     <span class=\"service\">Slideshare</span>\n" +
+    "                     <span class=\"service\">SlideShare</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "               <li ng-show=\"user.about.figshare_id\">\n" +

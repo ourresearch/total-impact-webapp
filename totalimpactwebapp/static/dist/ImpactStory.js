@@ -140,7 +140,7 @@ angular.module('importers.allTheImporters')
          label: "account"
        },
        {
-         label: "individual repositories"
+         label: "additional repositories"
        }
      ],
       inputs: [{
@@ -153,11 +153,18 @@ angular.module('importers.allTheImporters')
           }
          ,{
             tab:1,
-            name: "repository_urls",                        
+            name: "standard_urls_input",                        
             inputType: "idList",
             inputNeeded: "URLs",
             help: "Paste URLs for other github repositories here.",
-            placeholder: "https://github.com/cboettig/knitcitations"
+            placeholder: "https://github.com/cboettig/knitcitations",
+            cleanupFunction: function (fullString) {
+              if (typeof fullString==="undefined") return fullString; 
+              return _.map(fullString.split("\n"), function(line) {            
+                // make sure it starts with https and doesn't end with trailing slash
+                var working = line.replace(/https*:\/\//, ""); 
+                working = working.replace(/\/$/, ""); 
+                return "https://"+working}).join("\n")}
          }
       ]
     },
@@ -179,19 +186,42 @@ angular.module('importers.allTheImporters')
       extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
     },
 
-
     {
-      displayName: "Slideshare",
-      inputs: [{
-        inputType: "username",
-        inputNeeded: "username",
-        saveUsername: true,
-        help: "Your username is right after \"slideshare.net/\" in your profile's URL."
-      }],
+      displayName: "SlideShare",
       url:'http://slideshare.net',
-      descr: "Slideshare is community for sharing presentations online."
+      descr: "SlideShare is community for sharing presentations online.",
+      tabs: [
+       {
+         label: "account"
+       },
+       {
+         label: "additional products"
+       }
+       ],
+      inputs: [{
+            tab: 0,
+            name: "account_name",            
+            inputType: "username",
+            inputNeeded: "username",
+            help: "Your username is right after \"slideshare.net/\" in your profile's URL.",            
+            saveUsername: true
+          }
+         ,{
+            tab:1,
+            name: "standard_urls_input",                        
+            inputType: "idList",
+            inputNeeded: "URLs",
+            help: "Paste URLs for other SlideShare products here.",
+            placeholder: "http://www.slideshare.net/smith/conf-presentation",
+            cleanupFunction: function (fullString) {
+              if (typeof fullString==="undefined") return fullString; 
+              return _.map(fullString.split("\n"), function(line) {            
+                // make sure it starts with http
+                var working = line.replace(/https*:\/\//, ""); 
+                return "http://"+working}).join("\n")}
+         }
+      ]
     },
-
 
     {
       displayName: "Twitter",
@@ -230,15 +260,34 @@ angular.module('importers.allTheImporters')
 
     {
       displayName: "figshare",
-      inputs: [{
-        inputType: "username",
-        inputNeeded: "author page URL",
-        placeholder: "http://figshare.com/authors/schamberlain/96554",
-        saveUsername: true,
-        cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}
-      }],
       url: "http://figshare.com",
-      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner."
+      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
+      tabs: [
+       {
+         label: "account"
+       },
+       {
+         label: "additional products"
+       }
+       ],
+      inputs: [{
+            tab: 0,
+            name: "account_name",            
+            inputType: "username",
+            inputNeeded: "author page URL",
+            placeholder: "http://figshare.com/authors/schamberlain/96554",            
+            cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))},            
+            saveUsername: true
+          }
+         ,{
+            tab:1,
+            name: "standard_dois_input",                        
+            inputType: "idList",
+            inputNeeded: "DOIs",
+            help: "Paste DOIs for other figshare products here.",
+            placeholder: "http://dx.doi.org/10.6084/m9.figshare.94090"
+         }
+      ]
     },
 
 
@@ -2060,6 +2109,7 @@ angular.module( 'signup', [
 
 ;
 
+angular.module("update.update",["resources.users"]).factory("Update",function(e,t,n,r,i){var s={},o=function(e,t){s.numNotDone>0||_.isNull(s.numNotDone)?n.query({id:e,idType:"url_slug"},function(n){s.numDone=u(n,!0);s.numNotDone=u(n,!1);s.percentComplete=s.numDone*100/(s.numDone+s.numNotDone);console.log("in keepPolling");console.log(s);r(function(){o(e,t)},500)}):t()},u=function(e,t){var n=_.filter(e,function(e){return!e.currently_updating});return t?n.length:e.length-n.length},a=function(e,t){s.numDone=null;s.numNotDone=null;s.percentComplete=null;var n=i.open({templateUrl:"update/update-progress.tpl.html",controller:"updateProgressModalCtrl",backdrop:"static",keyboard:!1});o(e,function(){n.close();t()})};return{showUpdate:a,updateStatus:s}}).controller("updateProgressModalCtrl",function(e,t){e.updateStatus=t.updateStatus});
 angular.module( 'update.update', [
     'resources.users'
   ])
@@ -2735,6 +2785,7 @@ angular.module('resources.products',['ngResource'])
 })
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4850,7 +4901,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <li ng-show=\"user.about.slideshare_id\">\n" +
     "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
     "                     <img src=\"http://www.slideshare.net/favicon.ico\" />\n" +
-    "                     <span class=\"service\">Slideshare</span>\n" +
+    "                     <span class=\"service\">SlideShare</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "               <li ng-show=\"user.about.figshare_id\">\n" +

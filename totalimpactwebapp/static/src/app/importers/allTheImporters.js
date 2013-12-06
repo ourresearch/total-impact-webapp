@@ -16,7 +16,7 @@ angular.module('importers.allTheImporters')
          label: "account"
        },
        {
-         label: "individual repositories"
+         label: "additional repositories"
        }
      ],
       inputs: [{
@@ -29,11 +29,18 @@ angular.module('importers.allTheImporters')
           }
          ,{
             tab:1,
-            name: "repository_urls",                        
+            name: "standard_urls_input",                        
             inputType: "idList",
             inputNeeded: "URLs",
             help: "Paste URLs for other github repositories here.",
-            placeholder: "https://github.com/cboettig/knitcitations"
+            placeholder: "https://github.com/cboettig/knitcitations",
+            cleanupFunction: function (fullString) {
+              if (typeof fullString==="undefined") return fullString; 
+              return _.map(fullString.split("\n"), function(line) {            
+                // make sure it starts with https and doesn't end with trailing slash
+                var working = line.replace(/https*:\/\//, ""); 
+                working = working.replace(/\/$/, ""); 
+                return "https://"+working}).join("\n")}
          }
       ]
     },
@@ -55,19 +62,42 @@ angular.module('importers.allTheImporters')
       extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
     },
 
-
     {
-      displayName: "Slideshare",
-      inputs: [{
-        inputType: "username",
-        inputNeeded: "username",
-        saveUsername: true,
-        help: "Your username is right after \"slideshare.net/\" in your profile's URL."
-      }],
+      displayName: "SlideShare",
       url:'http://slideshare.net',
-      descr: "Slideshare is community for sharing presentations online."
+      descr: "SlideShare is community for sharing presentations online.",
+      tabs: [
+       {
+         label: "account"
+       },
+       {
+         label: "additional products"
+       }
+       ],
+      inputs: [{
+            tab: 0,
+            name: "account_name",            
+            inputType: "username",
+            inputNeeded: "username",
+            help: "Your username is right after \"slideshare.net/\" in your profile's URL.",            
+            saveUsername: true
+          }
+         ,{
+            tab:1,
+            name: "standard_urls_input",                        
+            inputType: "idList",
+            inputNeeded: "URLs",
+            help: "Paste URLs for other SlideShare products here.",
+            placeholder: "http://www.slideshare.net/smith/conf-presentation",
+            cleanupFunction: function (fullString) {
+              if (typeof fullString==="undefined") return fullString; 
+              return _.map(fullString.split("\n"), function(line) {            
+                // make sure it starts with http
+                var working = line.replace(/https*:\/\//, ""); 
+                return "http://"+working}).join("\n")}
+         }
+      ]
     },
-
 
     {
       displayName: "Twitter",
@@ -106,15 +136,34 @@ angular.module('importers.allTheImporters')
 
     {
       displayName: "figshare",
-      inputs: [{
-        inputType: "username",
-        inputNeeded: "author page URL",
-        placeholder: "http://figshare.com/authors/schamberlain/96554",
-        saveUsername: true,
-        cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))}
-      }],
       url: "http://figshare.com",
-      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner."
+      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
+      tabs: [
+       {
+         label: "account"
+       },
+       {
+         label: "additional products"
+       }
+       ],
+      inputs: [{
+            tab: 0,
+            name: "account_name",            
+            inputType: "username",
+            inputNeeded: "author page URL",
+            placeholder: "http://figshare.com/authors/schamberlain/96554",            
+            cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))},            
+            saveUsername: true
+          }
+         ,{
+            tab:1,
+            name: "standard_dois_input",                        
+            inputType: "idList",
+            inputNeeded: "DOIs",
+            help: "Paste DOIs for other figshare products here.",
+            placeholder: "http://dx.doi.org/10.6084/m9.figshare.94090"
+         }
+      ]
     },
 
 
