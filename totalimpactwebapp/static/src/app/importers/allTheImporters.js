@@ -282,7 +282,11 @@ angular.module('importers.allTheImporters')
       return importedProducts
     },
     get: function(){
-      var importersWithAllData = _.map(importers, function(importer){
+
+      // this way no state is saved in the actual importers obj.
+      var importersConfig = angular.copy(importers)
+
+      var importersWithAllData = _.map(importersConfig, function(importer){
         importer.name = makeName(importer.displayName)
         importer.logoPath = makeLogoPath(importer.displayName)
         importer.endpoint = makeEndpoint(importer)

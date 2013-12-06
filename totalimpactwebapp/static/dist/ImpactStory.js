@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-05
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-06
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -406,7 +406,11 @@ angular.module('importers.allTheImporters')
       return importedProducts
     },
     get: function(){
-      var importersWithAllData = _.map(importers, function(importer){
+
+      // this way no state is saved in the actual importers obj.
+      var importersConfig = angular.copy(importers)
+
+      var importersWithAllData = _.map(importersConfig, function(importer){
         importer.name = makeName(importer.displayName)
         importer.logoPath = makeLogoPath(importer.displayName)
         importer.endpoint = makeEndpoint(importer)
