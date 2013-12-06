@@ -4,6 +4,14 @@
  * running.
  */
 
+
+// shim console.log for IE
+if (typeof console === "undefined"){
+    console={
+      log: function(){}
+    }
+}
+
 // errorception logging
        (function(_,e,rr,s){_errs=[s];var c=_.onerror;_.onerror=function(){var a=arguments;_errs.push(a);
        c&&c.apply(this,a)};var b=function(){var c=e.createElement(rr),b=e.getElementsByTagName(rr)[0];
