@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-04
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-05
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -53,7 +53,6 @@ angular.module('app').run(function(security, Browser, $window, Page, $location) 
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
-  Browser.warnOldIE()
 
   angular.element($window).bind("scroll", function(event) {
     Page.setLastScrollPosition($(window).scrollTop(), $location.path())
@@ -136,14 +135,14 @@ angular.module('importers.allTheImporters')
       displayName: "GitHub",
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features.",
-//      tabs: [
-//        {
-//          label: "account"
-//        },
-//        {
-//          label: "individual repositories"
-//        }
-//      ],
+      tabs: [
+        {
+          label: "account"
+        },
+        {
+          label: "individual repositories"
+        }
+      ],
       inputs: [{
         tab: 0,
         inputType: "username",
@@ -151,13 +150,13 @@ angular.module('importers.allTheImporters')
         help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
         saveUsername: true
       }
-//      ,{
-//        tab:1,
-//        inputType: "idList",
-//        inputNeeded: "URLs",
-//        help: "Past URLs for other github repos here.",
-//        placeholder: "https://github.com/cboettig/knitcitations"
-//      }
+      ,{
+        tab:1,
+        inputType: "idList",
+        inputNeeded: "URLs",
+        help: "Past URLs for other github repos here.",
+        placeholder: "https://github.com/cboettig/knitcitations"
+      }
       ]
     },
 
@@ -2769,7 +2768,7 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: false
-        }        
+        }
       }
     )
   })
@@ -3035,6 +3034,8 @@ angular.module('security.service', [
           return (user && user.url_slug && user.email)
         },
         ownsThisProfile: function(user){
+//          return true
+
           return (user && user.url_slug && user.url_slug == currentUrlSlug())
 
         }
@@ -3177,23 +3178,6 @@ angular.module('services.breadcrumbs').factory('breadcrumbs', ['$rootScope', '$l
 
   return breadcrumbsService;
 }]);
-angular.module('services.browser', [
-  'services.i18nNotifications'
-  ])
-
-// A simple directive to display a gravatar image given an email
-.factory('Browser', function(i18nNotifications){
-  return {
-    warnOldIE: function(){
-      if ($.browser.msie && parseFloat($.browser.version) < 10) {
-        console.log("using old version of ie!")
-        i18nNotifications.pushSticky("browser.error.oldIE", "danger", {})
-      }
-      else {
-      }
-    }
-  }
-})
 angular.module('services.crud', ['services.crudRouteProvider']);
 angular.module('services.crud').factory('crudEditMethods', function () {
 

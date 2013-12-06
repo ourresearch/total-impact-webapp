@@ -205,8 +205,9 @@ def extract_filename(s):
 ###############################################################################
 
 
-
 #------------------ /user/:actions -----------------
+
+
 
 
 @app.route("/user/current")
@@ -214,17 +215,22 @@ def get_current_user():
     #sleep(1)
 
     try:
-        return json_resp_from_thing({"user": g.user.as_dict()})
+        ret = {"user": g.user.as_dict()}
 
     except AttributeError:  # anon user has no as_dict()
-        return json_resp_from_thing({"user": None})
+        ret = {"user": None}
+
+    return views_helpers.bust_caches(json_resp_from_thing(ret))
+
 
 
 @app.route('/user/logout', methods=["POST", "GET"])
 def logout():
     #sleep(1)
     logout_user()
-    return json_resp_from_thing({"msg": "user logged out"})
+    ret = {"msg": "user logged out"}
+    return views_helpers.bust_caches(json_resp_from_thing(ret))
+
 
 
 @app.route("/user/login", methods=["POST"])
@@ -337,7 +343,8 @@ def user_products_get(id):
     if request.args.get("include_heading_products") in [1, "true", "True"]:
         resp += make_genre_heading_products(resp)
 
-    return  json_resp_from_thing(resp)
+    return views_helpers.bust_caches(json_resp_from_thing(resp))
+
 
 
 

@@ -11,14 +11,14 @@ angular.module('importers.allTheImporters')
       displayName: "GitHub",
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features.",
-//      tabs: [
-//        {
-//          label: "account"
-//        },
-//        {
-//          label: "individual repositories"
-//        }
-//      ],
+      tabs: [
+        {
+          label: "account"
+        },
+        {
+          label: "individual repositories"
+        }
+      ],
       inputs: [{
         tab: 0,
         inputType: "username",
@@ -26,13 +26,13 @@ angular.module('importers.allTheImporters')
         help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
         saveUsername: true
       }
-//      ,{
-//        tab:1,
-//        inputType: "idList",
-//        inputNeeded: "URLs",
-//        help: "Past URLs for other github repos here.",
-//        placeholder: "https://github.com/cboettig/knitcitations"
-//      }
+      ,{
+        tab:1,
+        inputType: "idList",
+        inputNeeded: "URLs",
+        help: "Past URLs for other github repos here.",
+        placeholder: "https://github.com/cboettig/knitcitations"
+      }
       ]
     },
 
