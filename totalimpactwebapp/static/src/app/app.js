@@ -11,7 +11,6 @@ angular.module('app', [
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
-  'services.browser',
   'security',
   'directives.crud',
   'templates.app',
@@ -44,11 +43,10 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
 }]);
 
 
-angular.module('app').run(function(security, Browser, $window, Page, $location) {
+angular.module('app').run(function(security, $window, Page, $location) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
-  Browser.warnOldIE()
 
   angular.element($window).bind("scroll", function(event) {
     Page.setLastScrollPosition($(window).scrollTop(), $location.path())
@@ -93,6 +91,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.$on('$locationChangeStart', function(event, next, current){
     Page.setTemplates("header", "footer")
     Page.setUservoiceTabLoc("right")
+    Loading.clear()
   })
 
 });

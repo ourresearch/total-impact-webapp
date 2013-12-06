@@ -38,7 +38,7 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: false
-        }        
+        }
       }
     )
   })

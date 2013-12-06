@@ -16,7 +16,6 @@ angular.module('app', [
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
-  'services.browser',
   'security',
   'directives.crud',
   'templates.app',
@@ -49,11 +48,10 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
 }]);
 
 
-angular.module('app').run(function(security, Browser, $window, Page, $location) {
+angular.module('app').run(function(security, $window, Page, $location) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
-  Browser.warnOldIE()
 
   angular.element($window).bind("scroll", function(event) {
     Page.setLastScrollPosition($(window).scrollTop(), $location.path())
@@ -98,6 +96,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.$on('$locationChangeStart', function(event, next, current){
     Page.setTemplates("header", "footer")
     Page.setUservoiceTabLoc("right")
+    Loading.clear()
   })
 
 });
@@ -481,6 +480,7 @@ angular.module('importers.allTheImporters')
 
 
 })
+
 angular.module('importers.importer', [
   'directives.forms',
   'services.loading',
@@ -2822,7 +2822,7 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: false
-        }        
+        }
       }
     )
   })
@@ -3088,6 +3088,8 @@ angular.module('security.service', [
           return (user && user.url_slug && user.email)
         },
         ownsThisProfile: function(user){
+//          return true
+
           return (user && user.url_slug && user.url_slug == currentUrlSlug())
 
         }
@@ -3230,23 +3232,6 @@ angular.module('services.breadcrumbs').factory('breadcrumbs', ['$rootScope', '$l
 
   return breadcrumbsService;
 }]);
-angular.module('services.browser', [
-  'services.i18nNotifications'
-  ])
-
-// A simple directive to display a gravatar image given an email
-.factory('Browser', function(i18nNotifications){
-  return {
-    warnOldIE: function(){
-      if ($.browser.msie && parseFloat($.browser.version) < 10) {
-        console.log("using old version of ie!")
-        i18nNotifications.pushSticky("browser.error.oldIE", "danger", {})
-      }
-      else {
-      }
-    }
-  }
-})
 angular.module('services.crud', ['services.crudRouteProvider']);
 angular.module('services.crud').factory('crudEditMethods', function () {
 

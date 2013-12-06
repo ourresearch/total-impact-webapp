@@ -32,6 +32,18 @@ def remove_script_tags(str):
         return ""
 
 
+def bust_caches(resp):
+    headers = {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": 0
+    }
+
+    for k, v in headers.iteritems():
+        resp.headers[k] = v
+
+    return resp
+
 
 
 
