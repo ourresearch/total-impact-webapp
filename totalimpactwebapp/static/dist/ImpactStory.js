@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-06
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-07
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -343,12 +343,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "YouTube",
       inputs: [{
+        name: "standard_urls_input",        
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URLs for the videos you want to add, then paste them here.",
         placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
       }],
-      endpoint: "urls",
       url: "http://youtube.com",
       descr: "YouTube is an online video-sharing site."
     },
@@ -357,12 +357,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Vimeo",
       inputs: [{
+        name: "standard_urls_input",        
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URL for the video you want to add, then paste it here.",
         placeholder: "http://vimeo.com/48605764"
       }],
-      endpoint: "urls",
       url: "http://vimeo.com",
       descr: "Vimeo is an online video-sharing site."
     },
@@ -371,12 +371,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dryad",
       inputs: [{
+        name: "standard_dois_input",
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
         placeholder: "doi:10.5061/dryad.example"
       }],
-      endpoint: "dois",
       url: 'http://datadryad.org',
       descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."
     },
@@ -385,12 +385,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dataset DOIs",
       inputs: [{
+        name: "standard_dois_input",        
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
         placeholder: "http://doi.org/10.example/example"
       }],
-      endpoint: "dois",
       descr: "Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."
     },
 
@@ -398,12 +398,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Article DOIs",
       inputs: [{
+        name: "standard_dois_input",                
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
         placeholder: "http://doi.org/10.example/example"
       }],
-      endpoint: "dois",
       descr: "Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."
     },
 
@@ -411,12 +411,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "PubMed IDs",
       inputs: [{
+        name: "standard_pmids_input",                
         inputType: "idList",
         inputNeeded: "IDs",
         placeholder: "123456789",
         help: "You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."
       }],
-      endpoint: "pmids",
       url:'http://www.ncbi.nlm.nih.gov/pubmed',
       descr: "PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."
     },
@@ -425,10 +425,10 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Webpages",
       inputs: [{
+        name: "standard_urls_input",                        
         inputType: "idList",
         inputNeeded: "URLs"
       }],
-      endpoint: "urls",
       descr: "You can import any webpages. If it has a DOI or PubMed ID, though, use those more specific importers instead of this one; you'll get better results."
     }
   ]
