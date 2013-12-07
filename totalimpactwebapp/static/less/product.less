@@ -21,57 +21,81 @@
       font-size:14px;
    }
 
+   div.product-heading {
+      h2 {
+         margin: 50px 0 -10px -23px;
+         font-weight: 900;
+         text-transform: capitalize;
+         font-size: 30px;
+         color:  #555;
+         span.genre{
+
+         }
+         span.account{
+            font-weight: 300;
+            margin-left:.2em;
+         }
 
 
-   h2.product-heading {
-      margin: 50px 0 -10px -23px;
-      font-weight: 900;
-      text-transform: capitalize;
-      font-size: 30px;
-      color:  #555;
-      &:hover {
-         a.genre-anchor i.icon-link {
-            color: @linkColor
+         &:hover {
+            a.genre-anchor {
+               color: @linkColor;
+            }
          }
-      }
-      .tooltip.left {
-         width: 100px;
-         .tooltip-arrow{
-            border-left-color: transparent;
-         }
-         .tooltip-inner {
-            color: @linkColor;
-            text-align:right;
-            margin: 10px -5px 0 0;
-            padding:2px;
-            background: none;
-         }
-      }
-      a.genre-anchor {
-         i.icon-link {
-            font-size: 16px;
-            margin:0 2px 0 0;
+         a.genre-anchor {
             color: #cccccc;
+            position:relative;
+            i.icon-link {
+               font-size: 16px;
+               margin:0 2px 0 0;
+            }
+            span.text {
+               width:80px;
+               margin-left: -86px;
+               padding: 5px 2px 5px;
+               display:none;
+               color: @linkColor;
+               font-size: 14px;
+               font-weight: normal;
+               text-transform: lowercase;
+               text-align: right;
+            }
+            &:hover {
+               span.text {
+                  display: inline-block;
+               }
+            }
+         }
+         &:hover {
+            a.genre-anchor {
+            }
+         }
+         .tooltip.left {
+            width: 100px;
+            .tooltip-arrow{
+               border-left-color: transparent;
+            }
+            .tooltip-inner {
+               color: @linkColor;
+               text-align:right;
+
+            }
+         }
+         a.genre-anchor {
+            i.icon-link {
+
+            }
+         }
+         i {
+            vertical-align: 2px;
+            margin-right: 4px;
+            font-size: 90%;
+            text-align: right;
          }
       }
-      i {
-         vertical-align: 2px;
-         font-size: 20px;
-         margin-right: 4px;
-         &.genre{
-            display:none;
-         }
-         text-align: right;
-      }
-      &.article{ i.article {display:inline-block;}}
-      &.software{ i.software {display:inline-block;}}
-      &.dataset{ i.dataset {display:inline-block;}}
-      &.slides{ i.slides {display:inline-block;}}
-      &.webpage{ i.webpage {display:inline-block;}}
-      &.video{ i.video {display:inline-block;}}
-      &.account{ i.account {display:inline-block;}}
-      &.blog{ i.blog {display:inline-block;}}
+
    }
+
 
    .biblio{
       float:left;

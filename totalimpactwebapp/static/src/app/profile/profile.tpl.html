@@ -93,25 +93,25 @@
              id="{{ product._id }}"
              on-repeat-finished>
 
-            <h2 class="product-heading {{ product.headingDimension }} {{ product.headingValue }}"
+            <div class="product-heading {{ product.headingDimension }} {{ product.headingValue }}"
                 id="{{ product.headingValue }}"
+                ng-controller="CategoryHeadingCtrl"
                 ng-show="product.isHeading">
-               <a class="genre-anchor"
-                  tooltip="permalink"
-                  tooltip-placement="left"
-                  ng-href="{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}">
-                  <i class="icon-link"></i>
-               </a>
-               <i class="icon-save software genre"></i>
-               <i class="icon-file-text-alt article genre"></i>
-               <i class="icon-table dataset genre"></i>
-               <i class="icon-desktop slides genre"></i>
-               <i class="icon-globe webpage genre"></i>
-               <i class="icon-facetime-video video genre"></i>
-               <i class="icon-edit-sign blog genre"></i>
-               <i class="icon-comments account genre"></i>
-               {{ product.headingValue }}
-            </h2>
+
+               <h2>
+                  <a class="genre-anchor"
+                     ng-href="{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}">
+                     <span class="text">permalink</span>
+                     <i class="icon-link"></i>
+                  </a>
+                  <i class="{{ genreIcon(product.genre) }} {{ product.genre }} genre"></i>
+                  <span class="genre">{{ product.genre }}</span>
+                  <span class="account">{{ product.account }}</span>
+
+               </h2>
+            </div>
+
+
             <div class="real-product" ng-show="!product.isHeading">
                <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
                <div class="badges" ng-include="'product/badges.tpl.html'"></div>

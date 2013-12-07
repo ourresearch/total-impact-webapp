@@ -20,7 +20,7 @@ from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
 from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
-from totalimpactwebapp.user import make_genre_heading_products
+from totalimpactwebapp.products import add_category_heading_products
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
@@ -337,9 +337,11 @@ def user_products_get(id):
 
     user = get_user_for_response(id, request)
 
-    resp = user.products
     if request.args.get("include_heading_products") in [1, "true", "True"]:
-        resp += make_genre_heading_products(resp)
+        resp = add_category_heading_products(user.products)
+    else:
+        resp = user.products
+
 
     return json_resp_from_thing(resp)
 

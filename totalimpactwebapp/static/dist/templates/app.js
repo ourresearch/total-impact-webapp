@@ -907,25 +907,25 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
-    "            <h2 class=\"product-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
+    "            <div class=\"product-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
     "                id=\"{{ product.headingValue }}\"\n" +
+    "                ng-controller=\"CategoryHeadingCtrl\"\n" +
     "                ng-show=\"product.isHeading\">\n" +
-    "               <a class=\"genre-anchor\"\n" +
-    "                  tooltip=\"permalink\"\n" +
-    "                  tooltip-placement=\"left\"\n" +
-    "                  ng-href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
-    "                  <i class=\"icon-link\"></i>\n" +
-    "               </a>\n" +
-    "               <i class=\"icon-save software genre\"></i>\n" +
-    "               <i class=\"icon-file-text-alt article genre\"></i>\n" +
-    "               <i class=\"icon-table dataset genre\"></i>\n" +
-    "               <i class=\"icon-desktop slides genre\"></i>\n" +
-    "               <i class=\"icon-globe webpage genre\"></i>\n" +
-    "               <i class=\"icon-facetime-video video genre\"></i>\n" +
-    "               <i class=\"icon-edit-sign blog genre\"></i>\n" +
-    "               <i class=\"icon-comments account genre\"></i>\n" +
-    "               {{ product.headingValue }}\n" +
-    "            </h2>\n" +
+    "\n" +
+    "               <h2>\n" +
+    "                  <a class=\"genre-anchor\"\n" +
+    "                     ng-href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
+    "                     <span class=\"text\">permalink</span>\n" +
+    "                     <i class=\"icon-link\"></i>\n" +
+    "                  </a>\n" +
+    "                  <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
+    "                  <span class=\"genre\">{{ product.genre }}</span>\n" +
+    "                  <span class=\"account\">{{ product.account }}</span>\n" +
+    "\n" +
+    "               </h2>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
     "            <div class=\"real-product\" ng-show=\"!product.isHeading\">\n" +
     "               <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
     "               <div class=\"badges\" ng-include=\"'product/badges.tpl.html'\"></div>\n" +

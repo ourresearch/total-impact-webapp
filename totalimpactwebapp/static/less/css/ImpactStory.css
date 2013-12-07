@@ -7463,6 +7463,9 @@ div.products .wrapper ul.products-list li.product.twitter:before {
 div.products .wrapper ul.products-list li.product.twitter h5 {
   display: none;
 }
+div.products .wrapper ul.products-list li.product.twitter span.year {
+  display: none;
+}
 div.products .wrapper ul.products-list li.product.twitter iframe {
   border: none !important;
   border-bottom: 1px solid #ddd !important;
@@ -7517,66 +7520,57 @@ div.products .wrapper div.products-without-metrics div.well a {
   line-height: 1;
   font-size: 14px;
 }
-.product h2.product-heading {
+.product div.product-heading h2 {
   margin: 50px 0 -10px -23px;
   font-weight: 900;
   text-transform: capitalize;
   font-size: 30px;
   color: #555;
 }
-.product h2.product-heading:hover a.genre-anchor i.icon-link {
+.product div.product-heading h2 span.account {
+  font-weight: 300;
+  margin-left: .2em;
+}
+.product div.product-heading h2:hover a.genre-anchor {
   color: #ff4e00;
 }
-.product h2.product-heading .tooltip.left {
-  width: 100px;
+.product div.product-heading h2 a.genre-anchor {
+  color: #cccccc;
+  position: relative;
 }
-.product h2.product-heading .tooltip.left .tooltip-arrow {
-  border-left-color: transparent;
-}
-.product h2.product-heading .tooltip.left .tooltip-inner {
-  color: #ff4e00;
-  text-align: right;
-  margin: 10px -5px 0 0;
-  padding: 2px;
-  background: none;
-}
-.product h2.product-heading a.genre-anchor i.icon-link {
+.product div.product-heading h2 a.genre-anchor i.icon-link {
   font-size: 16px;
   margin: 0 2px 0 0;
-  color: #cccccc;
 }
-.product h2.product-heading i {
-  vertical-align: 2px;
-  font-size: 20px;
-  margin-right: 4px;
+.product div.product-heading h2 a.genre-anchor span.text {
+  width: 80px;
+  margin-left: -86px;
+  padding: 5px 2px 5px;
+  display: none;
+  color: #ff4e00;
+  font-size: 14px;
+  font-weight: normal;
+  text-transform: lowercase;
   text-align: right;
 }
-.product h2.product-heading i.genre {
-  display: none;
-}
-.product h2.product-heading.article i.article {
+.product div.product-heading h2 a.genre-anchor:hover span.text {
   display: inline-block;
 }
-.product h2.product-heading.software i.software {
-  display: inline-block;
+.product div.product-heading h2 .tooltip.left {
+  width: 100px;
 }
-.product h2.product-heading.dataset i.dataset {
-  display: inline-block;
+.product div.product-heading h2 .tooltip.left .tooltip-arrow {
+  border-left-color: transparent;
 }
-.product h2.product-heading.slides i.slides {
-  display: inline-block;
+.product div.product-heading h2 .tooltip.left .tooltip-inner {
+  color: #ff4e00;
+  text-align: right;
 }
-.product h2.product-heading.webpage i.webpage {
-  display: inline-block;
-}
-.product h2.product-heading.video i.video {
-  display: inline-block;
-}
-.product h2.product-heading.account i.account {
-  display: inline-block;
-}
-.product h2.product-heading.blog i.blog {
-  display: inline-block;
+.product div.product-heading h2 i {
+  vertical-align: 2px;
+  margin-right: 4px;
+  font-size: 90%;
+  text-align: right;
 }
 .product .biblio {
   float: left;
