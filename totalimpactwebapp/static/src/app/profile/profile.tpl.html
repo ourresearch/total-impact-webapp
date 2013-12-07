@@ -86,11 +86,12 @@
       </div>
 
       <ul class="products-list">
-         <li class="product"
+         <li class="product {{ getGenre(product) }}"
              ng-repeat="product in products | orderBy:[getGenre, 'isHeading', getSortScore]"
              ng-controller="productCtrl"
              ng-show="hasMetrics() || showProductsWithoutMetrics || product.isHeading"
-             id="{{ product._id }}">
+             id="{{ product._id }}"
+             on-repeat-finished>
 
             <h2 class="product-heading {{ product.headingDimension }} {{ product.headingValue }}"
                 id="{{ product.headingValue }}"

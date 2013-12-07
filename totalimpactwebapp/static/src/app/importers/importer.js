@@ -1,5 +1,6 @@
 angular.module('importers.importer', [
   'directives.forms',
+  'directives.onRepeatFinished',
   'services.loading',
   'resources.users',
   'resources.products',

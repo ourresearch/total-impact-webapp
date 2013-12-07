@@ -88,8 +88,17 @@ angular.module("profile", [
 .controller('ProfileCtrl', function ($scope, $rootScope, $location, $routeParams, $modal, $timeout, $http, $anchorScroll, $window, UsersProducts, Product, UserProfile, Page)
   {
     if (Page.isEmbedded()){
-      // do embedded stuff.
+      // do embedded stuff. i don't think we're using this any more?
     }
+
+    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+      // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
+
+      // twttr is a GLOBAL VAR loaded by the twitter widget script called in
+      //    bottom.js. it will break in unit tests, so fix before then.
+      twttr.widgets.load()
+
+    });
 
 
     var userSlug = $routeParams.url_slug;
@@ -135,7 +144,6 @@ angular.module("profile", [
       },
         function(resp){
           loadingProducts = false
-          console.log("got stuff back!")
           // scroll to any hash-specified anchors on page. in a timeout because
           // must happen after page is totally rendered.
           $timeout(function(){

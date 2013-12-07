@@ -900,11 +900,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "\n" +
     "      <ul class=\"products-list\">\n" +
-    "         <li class=\"product\"\n" +
+    "         <li class=\"product {{ getGenre(product) }}\"\n" +
     "             ng-repeat=\"product in products | orderBy:[getGenre, 'isHeading', getSortScore]\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"hasMetrics() || showProductsWithoutMetrics || product.isHeading\"\n" +
-    "             id=\"{{ product._id }}\">\n" +
+    "             id=\"{{ product._id }}\"\n" +
+    "             on-repeat-finished>\n" +
     "\n" +
     "            <h2 class=\"product-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
     "                id=\"{{ product.headingValue }}\"\n" +

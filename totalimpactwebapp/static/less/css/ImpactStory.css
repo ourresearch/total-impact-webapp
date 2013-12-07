@@ -6350,7 +6350,7 @@ div.modal div.modal-body {
 }
 div.modal div.modal-body textarea {
   width: 100%;
-  font-size: 17px;
+  font-size: 15px;
   color: #555;
   font-family: consolas, menlo, monaco, monospace;
   padding: 10px;
@@ -7443,6 +7443,49 @@ div.products .wrapper ul.products-list:after {
 }
 div.products .wrapper ul.products-list:after {
   clear: both;
+}
+div.products .wrapper ul.products-list li.product {
+  position: relative;
+}
+div.products .wrapper ul.products-list li.product.twitter div.real-product .badges {
+  margin-top: 40px;
+}
+div.products .wrapper ul.products-list li.product.twitter:before {
+  width: 72px;
+  height: 25px;
+  background: #fff;
+  display: block;
+  content: "";
+  top: 49px;
+  left: 566px;
+  position: absolute;
+}
+div.products .wrapper ul.products-list li.product.twitter h5 {
+  display: none;
+}
+div.products .wrapper ul.products-list li.product.twitter iframe {
+  border: none !important;
+  border-bottom: 1px solid #ddd !important;
+  -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
+  -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
+  -webkit-border-top-right-radius: 0 !important;
+  -webkit-border-bottom-right-radius: 0 !important;
+  -webkit-border-bottom-left-radius: 0 !important;
+  -webkit-border-top-left-radius: 0 !important;
+  -moz-border-radius-topright: 0 !important;
+  -moz-border-radius-bottomright: 0 !important;
+  -moz-border-radius-bottomleft: 0 !important;
+  -moz-border-radius-topleft: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  -moz-background-clip: padding !important;
+  -webkit-background-clip: padding-box !important;
+  background-clip: padding-box !important;
+  width: 660px !important;
+  padding: 0 !important;
 }
 div.products .wrapper div.products-without-metrics div.well {
   margin: 0 20px 70px;

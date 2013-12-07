@@ -487,6 +487,7 @@ angular.module('importers.allTheImporters')
 
 angular.module('importers.importer', [
   'directives.forms',
+  'directives.onRepeatFinished',
   'services.loading',
   'resources.users',
   'resources.products',
@@ -1615,8 +1616,17 @@ angular.module("profile", [
 .controller('ProfileCtrl', function ($scope, $rootScope, $location, $routeParams, $modal, $timeout, $http, $anchorScroll, $window, UsersProducts, Product, UserProfile, Page)
   {
     if (Page.isEmbedded()){
-      // do embedded stuff.
+      // do embedded stuff. i don't think we're using this any more?
     }
+
+    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+      // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
+
+      // twttr is a GLOBAL VAR loaded by the twitter widget script called in
+      //    bottom.js. it will break in unit tests, so fix before then.
+      twttr.widgets.load()
+
+    });
 
 
     var userSlug = $routeParams.url_slug;
@@ -1662,7 +1672,6 @@ angular.module("profile", [
       },
         function(resp){
           loadingProducts = false
-          console.log("got stuff back!")
           // scroll to any hash-specified anchors on page. in a timeout because
           // must happen after page is totally rendered.
           $timeout(function(){
@@ -2619,6 +2628,23 @@ angular.module('directives.modal', []).directive('modal', ['$parse',function($pa
   };
 }]);
 
+// mostly copped from
+// http://stackoverflow.com/a/15208347/226013
+
+
+angular.module("directives.onRepeatFinished", [])
+  .directive('onRepeatFinished', function ($timeout) {
+    return {
+      restrict: 'A',
+      link: function (scope, element, attr) {
+        if (scope.$last === true) {
+          $timeout(function () {
+            scope.$emit('ngRepeatFinished');
+          });
+        }
+      }
+    }
+  });
 angular.module('directives.pwMatch', [])
   // from http://blog.brunoscopelliti.com/angularjs-directive-to-check-that-passwords-match
 
@@ -3992,6 +4018,21 @@ angular.module('services.tiAnalytics', [
 
   }
 });
+angular.module("services.twitterRender", [])
+.factory("TwitterRender", function(){
+
+    return {
+      run: 1
+    }
+
+
+
+
+
+
+
+
+  })
 angular.module("services.uservoiceWidget", [])
 angular.module("services.uservoiceWidget")
 .factory("UservoiceWidget", function(){
@@ -4949,11 +4990,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "\n" +
     "      <ul class=\"products-list\">\n" +
-    "         <li class=\"product\"\n" +
+    "         <li class=\"product {{ getGenre(product) }}\"\n" +
     "             ng-repeat=\"product in products | orderBy:[getGenre, 'isHeading', getSortScore]\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"hasMetrics() || showProductsWithoutMetrics || product.isHeading\"\n" +
-    "             id=\"{{ product._id }}\">\n" +
+    "             id=\"{{ product._id }}\"\n" +
+    "             on-repeat-finished>\n" +
     "\n" +
     "            <h2 class=\"product-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
     "                id=\"{{ product.headingValue }}\"\n" +
