@@ -26,7 +26,9 @@ def make_heading_product_for_category(genre, account, category_products):
         'genre': genre,
         'account': account,
         'headingDimension': 'category',
-        'numProducts': len(category_products)
+        'summary':{
+            'numProducts': len(category_products)
+        }
     }
 
     for product in category_products:
@@ -62,3 +64,18 @@ def categorize_products(products):
         categories.setdefault((genre, account), []).append(product)
 
     return categories
+
+
+def add_sort_keys(products):
+    for product in products:
+        try:
+            product["genre"] = product["biblio"]["genre"]
+        except KeyError:
+            product["genre"] = "unknown"
+
+        try:
+            product["account"] = product["biblio"]["account"]
+        except KeyError:
+            product["account"] = None
+
+    return products

@@ -21,6 +21,7 @@ from totalimpactwebapp.password_reset import PasswordResetError
 
 from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
 from totalimpactwebapp.products import add_category_heading_products
+from totalimpactwebapp.products import add_sort_keys
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
@@ -336,11 +337,12 @@ def user_products_get(id):
 
 
     user = get_user_for_response(id, request)
+    products = add_sort_keys(user.products)
 
     if request.args.get("include_heading_products") in [1, "true", "True"]:
-        resp = add_category_heading_products(user.products)
+        resp = add_category_heading_products(products)
     else:
-        resp = user.products
+        resp = products
 
 
     return json_resp_from_thing(resp)

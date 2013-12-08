@@ -1049,15 +1049,6 @@ angular.module('product.product')
       return metrics
     }
 
-    ,getGenre: function(itemData) {
-      if (itemData.biblio) {
-        return itemData.biblio.genre;
-      }
-      else if (itemData.headingValue) {
-        return itemData.headingValue;
-      }
-    }
-
     ,getSortScore: function(itemData) {
       var highlyAwardIsAsGoodAsThisManyRegularAwards = 3
       var score = 0;
@@ -1710,10 +1701,6 @@ angular.module("profile", [
 
     $scope.getSortScore = function(product) {
       return Product.getSortScore(product) * -1;
-    }
-
-    $scope.getGenre = function(product) {
-      return Product.getGenre(product);
     }
 
     var renderProducts = function(){
@@ -5039,14 +5026,15 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "\n" +
     "      <ul class=\"products-list\">\n" +
-    "         <li class=\"product {{ getGenre(product) }}\"\n" +
-    "             ng-repeat=\"product in products | orderBy:[getGenre, 'isHeading', getSortScore]\"\n" +
+    "         <li class=\"product {{ product.genre }}\"\n" +
+    "             ng-class=\"{'heading': product.isHeading, 'real-product': !product.isHeading}\"\n" +
+    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'isHeading', getSortScore]\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"hasMetrics() || showProductsWithoutMetrics || product.isHeading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
-    "            <div class=\"product-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
+    "            <div class=\"category-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
     "                id=\"{{ product.headingValue }}\"\n" +
     "                ng-controller=\"CategoryHeadingCtrl\"\n" +
     "                ng-show=\"product.isHeading\">\n" +
@@ -5062,6 +5050,39 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  <span class=\"account\">{{ product.account }}</span>\n" +
     "\n" +
     "               </h2>\n" +
+    "\n" +
+    "               <div class=\"category-metrics\">\n" +
+    "                  <ul class=\"account-metrics\">\n" +
+    "                     <li class=\"category-metric\"\n" +
+    "                         ng-repeat=\"metric in product.metrics\">\n" +
+    "\n" +
+    "                        <a href=\"{{ metric.provenance_url }}\"\n" +
+    "                           tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
+    "                           tooltip-placement=\"bottom\"\n" +
+    "                           class=\"value\">\n" +
+    "                           {{ metric.values.raw }}\n" +
+    "                        </a>\n" +
+    "                        <span class=\"metric-descr\"\n" +
+    "                              tooltip-placement=\"bottom\"\n" +
+    "                              tooltip=\"{{ metric.static_meta.description }}\">\n" +
+    "                           {{ metric.static_meta.provider }}\n" +
+    "                           {{ metric.static_meta.display_name }}\n" +
+    "                        </span>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "                         </li>\n" +
+    "\n" +
+    "                  </ul>\n" +
+    "                  <ul class=\"summary-metrics\">\n" +
+    "\n" +
+    "\n" +
+    "                  </ul>\n" +
+    "\n" +
+    "\n" +
+    "               </div>\n" +
+    "\n" +
+    "\n" +
     "            </div>\n" +
     "\n" +
     "\n" +

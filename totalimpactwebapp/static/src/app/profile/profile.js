@@ -152,10 +152,6 @@ angular.module("profile", [
       return Product.getSortScore(product) * -1;
     }
 
-    $scope.getGenre = function(product) {
-      return Product.getGenre(product);
-    }
-
     var renderProducts = function(){
       $scope.products = UsersProducts.query({
         id: userSlug,

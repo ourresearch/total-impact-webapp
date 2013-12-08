@@ -7447,10 +7447,36 @@ div.products .wrapper ul.products-list:after {
 div.products .wrapper ul.products-list li.product {
   position: relative;
 }
-div.products .wrapper ul.products-list li.product.twitter div.real-product .badges {
+div.products .wrapper div.products-without-metrics div.well {
+  margin: 0 20px 70px;
+  text-align: center;
+  font-size: 16px;
+  color: #777;
+}
+div.products .wrapper div.products-without-metrics div.well a {
+  font-size: 80%;
+  margin-left: 8px;
+}
+.product {
+  float: left;
+  clear: both;
+  padding: 25px 0 0;
+  position: relative;
+  width: 100%;
+}
+.product:hover div.product-controls {
+  display: block;
+}
+.product.heading {
+  margin-top: 50px;
+  margin-right: 50px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+}
+.product.twitter.real-product div.real-product .badges {
   margin-top: 40px;
 }
-div.products .wrapper ul.products-list li.product.twitter:before {
+.product.twitter.real-product:before {
   width: 72px;
   height: 25px;
   background: #fff;
@@ -7460,13 +7486,13 @@ div.products .wrapper ul.products-list li.product.twitter:before {
   left: 566px;
   position: absolute;
 }
-div.products .wrapper ul.products-list li.product.twitter h5 {
+.product.twitter.real-product h5 {
   display: none;
 }
-div.products .wrapper ul.products-list li.product.twitter span.year {
+.product.twitter.real-product span.year {
   display: none;
 }
-div.products .wrapper ul.products-list li.product.twitter iframe {
+.product.twitter.real-product iframe {
   border: none !important;
   border-bottom: 1px solid #ddd !important;
   -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
@@ -7490,25 +7516,6 @@ div.products .wrapper ul.products-list li.product.twitter iframe {
   width: 660px !important;
   padding: 0 !important;
 }
-div.products .wrapper div.products-without-metrics div.well {
-  margin: 0 20px 70px;
-  text-align: center;
-  font-size: 16px;
-  color: #777;
-}
-div.products .wrapper div.products-without-metrics div.well a {
-  font-size: 80%;
-  margin-left: 8px;
-}
-.product {
-  float: left;
-  clear: both;
-  padding: 25px 0 0;
-  position: relative;
-}
-.product:hover div.product-controls {
-  display: block;
-}
 .product div.product-controls {
   position: absolute;
   display: none;
@@ -7520,32 +7527,62 @@ div.products .wrapper div.products-without-metrics div.well a {
   line-height: 1;
   font-size: 14px;
 }
-.product div.product-heading h2 {
-  margin: 50px 0 -10px -23px;
+.product div.category-heading {
+  width: 100%;
+  padding-bottom: 20px;
+}
+.product div.category-heading h2 {
+  margin: 0 0 0 -23px;
   font-weight: 900;
   text-transform: capitalize;
   font-size: 30px;
   color: #555;
+  float: left;
+  clear: both;
 }
-.product div.product-heading h2 span.account {
+.product div.category-heading h2:before,
+.product div.category-heading h2:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+.product div.category-heading h2:after {
+  clear: both;
+}
+.product div.category-heading h2:before,
+.product div.category-heading h2:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+.product div.category-heading h2:after {
+  clear: both;
+}
+.product div.category-heading h2 span.account {
   font-weight: 300;
   margin-left: .2em;
 }
-.product div.product-heading h2:hover a.genre-anchor {
+.product div.category-heading h2:hover a.genre-anchor {
   color: #ff4e00;
 }
-.product div.product-heading h2 a.genre-anchor {
+.product div.category-heading h2 a.genre-anchor {
   color: #cccccc;
   position: relative;
 }
-.product div.product-heading h2 a.genre-anchor i.icon-link {
+.product div.category-heading h2 a.genre-anchor i.icon-link {
   font-size: 16px;
   margin: 0 2px 0 0;
 }
-.product div.product-heading h2 a.genre-anchor span.text {
+.product div.category-heading h2 a.genre-anchor span.text {
   width: 80px;
   margin-left: -86px;
-  padding: 5px 2px 5px;
+  padding: 5px 2px 0;
   display: none;
   color: #ff4e00;
   font-size: 14px;
@@ -7553,24 +7590,39 @@ div.products .wrapper div.products-without-metrics div.well a {
   text-transform: lowercase;
   text-align: right;
 }
-.product div.product-heading h2 a.genre-anchor:hover span.text {
+.product div.category-heading h2 a.genre-anchor:hover span.text {
   display: inline-block;
 }
-.product div.product-heading h2 .tooltip.left {
+.product div.category-heading h2 .tooltip.left {
   width: 100px;
 }
-.product div.product-heading h2 .tooltip.left .tooltip-arrow {
+.product div.category-heading h2 .tooltip.left .tooltip-arrow {
   border-left-color: transparent;
 }
-.product div.product-heading h2 .tooltip.left .tooltip-inner {
+.product div.category-heading h2 .tooltip.left .tooltip-inner {
   color: #ff4e00;
   text-align: right;
 }
-.product div.product-heading h2 i {
+.product div.category-heading h2 i {
   vertical-align: 2px;
   margin-right: 4px;
   font-size: 90%;
   text-align: right;
+}
+.product div.category-heading div.category-metrics {
+  margin-top: 10px;
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+.product div.category-heading div.category-metrics ul li.category-metric {
+  display: inline-block;
+  margin-right: 20px;
+}
+.product div.category-heading div.category-metrics ul li.category-metric .metric-descr {
+  font-size: 80%;
+  cursor: help;
 }
 .product .biblio {
   float: left;
@@ -7718,139 +7770,6 @@ div.products .wrapper div.products-without-metrics div.well a {
 }
 .product div.popover .popover-content {
   font-size: 14px;
-}
-div.zoom {
-  display: none;
-  float: left;
-  clear: left;
-  width: 725px;
-  position: relative;
-  margin: 5px 0 35px;
-  padding-bottom: 15px;
-  border-top: 1px solid #aaa;
-}
-div.zoom span.value {
-  font-weight: bold;
-}
-div.zoom a.item-help {
-  left: 787px;
-  top: 5px;
-  position: absolute;
-  width: 300px;
-  font-size: 14px;
-  color: #555;
-}
-div.zoom div.audience {
-  width: 330px;
-  float: left;
-  margin-left: 10px;
-}
-div.zoom div.audience.scholars {
-  margin-right: 40px;
-}
-div.zoom div.audience.scholars span.bar {
-  background: #377eb8;
-}
-div.zoom div.audience.scholars h6 {
-  color: #377eb8;
-}
-div.zoom div.audience.public span.bar {
-  background: #4daf4a;
-}
-div.zoom div.audience.public h6 {
-  color: #4daf4a;
-}
-div.zoom div.audience h5 {
-  margin-bottom: 0;
-  margin-left: 162px;
-  color: #555;
-}
-div.zoom div.audience h5:after {
-  content: " audience";
-}
-div.zoom div.audience ul.engagement-types li.engagement-type {
-  margin-bottom: 25px;
-  float: left;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type h6 {
-  font-weight: normal;
-  font-size: 13px;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type h6 span.engagement-type {
-  font-weight: bold;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li {
-  float: left;
-  width: 100%;
-  margin: 0 0 5px 0;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line {
-  width: 150px;
-  height: 16px;
-  margin-top: -6px;
-  border-bottom: 1px solid #bbb;
-  float: left;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.percentile-fail {
-  color: #999;
-  font-size: 11px;
-  margin-top: 6px;
-  background: #fff;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.percentile-fail span {
-  text-align: left;
-  padding: 0 4px;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range {
-  position: relative;
-  cursor: default;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range.estimate {
-  display: none;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.bar {
-  height: 5px;
-  margin-top: 12px;
-  display: block;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint {
-  font-size: 10px;
-  display: block;
-  position: absolute;
-  top: 2px;
-  color: #999;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
-  left: 0;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.start {
-  left: 0;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.line div.metric-perc-range span.endpoint.end {
-  right: 0;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta {
-  width: 100px;
-  margin-right: 10px;
-  float: left;
-  display: block;
-  text-align: right;
-  font-size: 11px;
-  color: #555;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta .value-and-name {
-  width: 130px;
-  display: inline-block;
-  width: 75px;
-  line-height: 1.3;
-  margin-right: 5px;
-  color: #999;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta a.value-and-name:hover {
-  color: #ff4e00;
-}
-div.zoom div.audience ul.engagement-types li.engagement-type ul.metrics li div.meta img {
-  float: right;
 }
 div.product-page {
   min-height: 500px;

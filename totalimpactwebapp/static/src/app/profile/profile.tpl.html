@@ -86,14 +86,15 @@
       </div>
 
       <ul class="products-list">
-         <li class="product {{ getGenre(product) }}"
-             ng-repeat="product in products | orderBy:[getGenre, 'isHeading', getSortScore]"
+         <li class="product {{ product.genre }}"
+             ng-class="{'heading': product.isHeading, 'real-product': !product.isHeading}"
+             ng-repeat="product in products | orderBy:['genre', 'account', 'isHeading', getSortScore]"
              ng-controller="productCtrl"
              ng-show="hasMetrics() || showProductsWithoutMetrics || product.isHeading"
              id="{{ product._id }}"
              on-repeat-finished>
 
-            <div class="product-heading {{ product.headingDimension }} {{ product.headingValue }}"
+            <div class="category-heading {{ product.headingDimension }} {{ product.headingValue }}"
                 id="{{ product.headingValue }}"
                 ng-controller="CategoryHeadingCtrl"
                 ng-show="product.isHeading">
@@ -109,6 +110,39 @@
                   <span class="account">{{ product.account }}</span>
 
                </h2>
+
+               <div class="category-metrics">
+                  <ul class="account-metrics">
+                     <li class="category-metric"
+                         ng-repeat="metric in product.metrics">
+
+                        <a href="{{ metric.provenance_url }}"
+                           tooltip="Visit {{ metric.static_meta.provider }} for more information"
+                           tooltip-placement="bottom"
+                           class="value">
+                           {{ metric.values.raw }}
+                        </a>
+                        <span class="metric-descr"
+                              tooltip-placement="bottom"
+                              tooltip="{{ metric.static_meta.description }}">
+                           {{ metric.static_meta.provider }}
+                           {{ metric.static_meta.display_name }}
+                        </span>
+
+
+
+                         </li>
+
+                  </ul>
+                  <ul class="summary-metrics">
+
+
+                  </ul>
+
+
+               </div>
+
+
             </div>
 
 

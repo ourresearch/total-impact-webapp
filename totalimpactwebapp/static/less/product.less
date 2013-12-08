@@ -3,12 +3,56 @@
    clear:both;
    padding:  25px 0 0;
    position:relative; // for positioning the item-controls
+   width:100%;
 
    &:hover {
       div.product-controls{
          display: block;
       }
    }
+
+   &.heading {
+      margin-top: 50px;
+      margin-right:50px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #eee;
+   }
+
+   &.twitter.real-product {
+      div.real-product {
+         .badges {
+            margin-top: 40px;
+         }
+      }
+
+      &:before {
+         width: 72px;
+         height: 25px;
+         background: #fff;
+         display: block;
+         content: "";
+         top: 49px;
+         left: 566px;
+         position: absolute;
+      }
+      h5 {display:none;}
+      span.year {display:none;}
+      iframe {
+         border: none !important;
+         border-bottom: 1px solid #ddd !important;
+         .drop-shadow(0, 0, 0, 0) !important;
+         .border-radius(0, 0, 0, 0) !important;
+         width: 660px !important;
+         padding:0 !important;
+      }
+
+   }
+
+
+
+
+
+
    div.product-controls {
       position: absolute;
       display:none;
@@ -21,13 +65,18 @@
       font-size:14px;
    }
 
-   div.product-heading {
+   div.category-heading {
+      width: 100%;
+      padding-bottom: 20px;
+
       h2 {
-         margin: 50px 0 -10px -23px;
+         margin: 0 0 0 -23px;
          font-weight: 900;
          text-transform: capitalize;
          font-size: 30px;
          color:  #555;
+         float:left;
+         .clearfix();
          span.genre{
 
          }
@@ -52,7 +101,7 @@
             span.text {
                width:80px;
                margin-left: -86px;
-               padding: 5px 2px 5px;
+               padding: 5px 2px 0;
                display:none;
                color: @linkColor;
                font-size: 14px;
@@ -94,7 +143,30 @@
          }
       }
 
+      div.category-metrics {
+         margin-top: 10px;
+         text-align: right;
+         position:absolute;
+         bottom:0;
+         right:0;
+
+         ul {
+            li.category-metric {
+               display:inline-block;
+               margin-right: 20px;
+               .metric-descr {
+                  font-size: 80%;
+                  cursor: help;
+               }
+            }
+         }
+      }
    }
+
+
+
+
+
 
 
    .biblio{
@@ -198,159 +270,14 @@
       h3 {font-size: 16px; font-family: helvetica, arial, sans-serif;}
       .popover-content {font-size: 14px;}
    }
+
+
+
+
+
+
+
+
+
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// storing this here for now...just cut-n-pasted from the old profile styles
-
-div.zoom {
-   display:none;
-   float:left;
-   clear:left;
-   width:725px;
-   position: relative;
-   margin: 5px 0 35px;
-   padding-bottom: 15px;
-   border-top: 1px solid #aaa;
-
-
-   span.value{ font-weight: bold;}
-
-
-   a.item-help {
-      left:787px;
-      top:5px;
-      position: absolute;
-      width:300px;
-      font-size: 14px;
-      color:#555;
-   }
-
-   div.audience {
-      &.scholars {
-         margin-right: 40px;
-         span.bar {background: @scholarsColor;}
-         h6 {color: @scholarsColor;}
-      }
-      &.public {
-         span.bar {background: @publicColor;}
-         h6 {color: @publicColor;}
-      }
-      width: 330px;
-      float:left;
-      margin-left:10px;
-
-
-      h5 {
-         margin-bottom: 0;
-         margin-left:162px;
-         color: #555;
-         &:after {content: " audience"}
-      //            width: 350px;
-      //            margin-left: 160px;
-      }
-
-      ul.engagement-types {
-         li.engagement-type {
-            margin-bottom: 25px;
-            float:left;
-            h6  {
-               font-weight: normal;
-               font-size: 13px;
-               span.engagement-type { font-weight: bold;}
-            }
-            ul.metrics {
-               li {
-                  float:left;
-                  width: 100%;
-                  margin: 0 0 5px 0;
-
-                  div.line {
-                     width: 150px;
-                     height: 16px;
-                     margin-top:-6px;
-                     border-bottom: 1px solid #bbb;
-                     float:left;
-
-                     div.percentile-fail {
-                        color: #999;
-                        font-size:11px;
-                        margin-top: 6px;
-                        background: #fff;
-                        span {
-                           text-align: left;
-                           padding:0 4px;
-                        }
-                     }
-
-                     div.metric-perc-range {
-                        position:relative;
-                        cursor:default;
-                        &.estimate {display:none;}
-
-                        span.bar{
-                           height:5px;
-                           margin-top:12px;
-                           display: block;
-                        }
-
-                        span.endpoint {
-                           font-size: 10px;
-                           display:block;
-                           position:absolute;
-                           top:2px;
-                           color: #999;
-                           &.start {left:0;}
-                           &.start {left:0;}
-                           &.end {right:0;}
-                        }
-                     }
-                  }
-
-                  div.meta {
-                     width: 100px;
-                     margin-right: 10px;
-                     float:left;
-                     display:block;
-                     text-align: right;
-                     font-size:11px;
-                     color: #555;
-
-                     .value-and-name  {
-                        width: 130px;
-                        display:inline-block;
-                        width: 75px;
-                        line-height: 1.3;
-                        margin-right: 5px;
-                        color: #999;
-                     }
-                     a.value-and-name {
-                        &:hover {color: @linkColor;}
-                     }
-                     img {
-                        float:right;
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-}
