@@ -223,6 +223,7 @@ angular.module('importers.allTheImporters')
       ]
     },
 
+
     {
       displayName: "Twitter",
       inputs: [{
@@ -237,7 +238,6 @@ angular.module('importers.allTheImporters')
       url: "http://twitter.com",
       descr: "Twitter is a social networking site for sharing short messages."
     },
-
 
     {
       displayName: "Google Scholar",
@@ -316,12 +316,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "YouTube",
       inputs: [{
+        name: "standard_urls_input",        
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URLs for the videos you want to add, then paste them here.",
         placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
       }],
-      endpoint: "urls",
       url: "http://youtube.com",
       descr: "YouTube is an online video-sharing site."
     },
@@ -330,12 +330,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Vimeo",
       inputs: [{
+        name: "standard_urls_input",        
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URL for the video you want to add, then paste it here.",
         placeholder: "http://vimeo.com/48605764"
       }],
-      endpoint: "urls",
       url: "http://vimeo.com",
       descr: "Vimeo is an online video-sharing site."
     },
@@ -344,12 +344,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dryad",
       inputs: [{
+        name: "standard_dois_input",
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
         placeholder: "doi:10.5061/dryad.example"
       }],
-      endpoint: "dois",
       url: 'http://datadryad.org',
       descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."
     },
@@ -358,12 +358,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dataset DOIs",
       inputs: [{
+        name: "standard_dois_input",        
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
         placeholder: "http://doi.org/10.example/example"
       }],
-      endpoint: "dois",
       descr: "Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."
     },
 
@@ -371,12 +371,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Article DOIs",
       inputs: [{
+        name: "standard_dois_input",                
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
         placeholder: "http://doi.org/10.example/example"
       }],
-      endpoint: "dois",
       descr: "Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."
     },
 
@@ -384,12 +384,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "PubMed IDs",
       inputs: [{
+        name: "standard_pmids_input",                
         inputType: "idList",
         inputNeeded: "IDs",
         placeholder: "123456789",
         help: "You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."
       }],
-      endpoint: "pmids",
       url:'http://www.ncbi.nlm.nih.gov/pubmed',
       descr: "PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."
     },
@@ -398,10 +398,10 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Webpages",
       inputs: [{
+        name: "standard_urls_input",                        
         inputType: "idList",
         inputNeeded: "URLs"
       }],
-      endpoint: "urls",
       descr: "You can import any webpages. If it has a DOI or PubMed ID, though, use those more specific importers instead of this one; you'll get better results."
     }
   ]
@@ -2169,6 +2169,7 @@ angular.module( 'signup', [
 
 ;
 
+angular.module("update.update",["resources.users"]).factory("Update",function(e,t,n,r,i){var s={},o=function(e,t){s.numNotDone>0||_.isNull(s.numNotDone)?n.query({id:e,idType:"url_slug"},function(n){s.numDone=u(n,!0);s.numNotDone=u(n,!1);s.percentComplete=s.numDone*100/(s.numDone+s.numNotDone);console.log("in keepPolling");console.log(s);r(function(){o(e,t)},500)}):t()},u=function(e,t){var n=_.filter(e,function(e){return!e.currently_updating});return t?n.length:e.length-n.length},a=function(e,t){s.numDone=null;s.numNotDone=null;s.percentComplete=null;var n=i.open({templateUrl:"update/update-progress.tpl.html",controller:"updateProgressModalCtrl",backdrop:"static",keyboard:!1});o(e,function(){n.close();t()})};return{showUpdate:a,updateStatus:s}}).controller("updateProgressModalCtrl",function(e,t){e.updateStatus=t.updateStatus});
 angular.module( 'update.update', [
     'resources.users'
   ])
@@ -2861,6 +2862,7 @@ angular.module('resources.products',['ngResource'])
 })
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
