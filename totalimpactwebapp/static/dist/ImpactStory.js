@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-07
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-08
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -162,7 +162,7 @@ angular.module('importers.allTheImporters')
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
                 // make sure it starts with https and doesn't end with trailing slash
-                var working = line.replace(/https*:\/\//, ""); 
+                var working = line.replace(/^https*:\/\//, ""); 
                 working = working.replace(/\/$/, ""); 
                 return "https://"+working}).join("\n")}
          }
@@ -217,7 +217,7 @@ angular.module('importers.allTheImporters')
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
                 // make sure it starts with http
-                var working = line.replace(/https*:\/\//, ""); 
+                var working = line.replace(/^https*:\/\//, ""); 
                 return "http://"+working}).join("\n")}
          }
       ]
@@ -314,7 +314,11 @@ angular.module('importers.allTheImporters')
             inputNeeded: "Blog URL",
             help: "The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",
             saveUsername: true,
-            placeholder: "http://retractionwatch.wordpress.com"
+            placeholder: "http://retractionwatch.wordpress.com",
+            cleanupFunction: function (x) {
+              if (typeof x==="undefined") return x; 
+              return "http://"+x.replace(/^https*:\/\//, ""); 
+              }
           }
          ,{
             tab:1,
@@ -327,7 +331,7 @@ angular.module('importers.allTheImporters')
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
                 // make sure it starts with http
-                var working = line.replace(/https*:\/\//, ""); 
+                var working = line.replace(/^https*:\/\//, ""); 
                 return "http://"+working}).join("\n")}
          }
          ,{
