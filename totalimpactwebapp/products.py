@@ -1,5 +1,4 @@
-import itertools
-
+import re
 
 def add_category_heading_products(products):
 
@@ -24,8 +23,15 @@ def add_category_heading_products(products):
 
 def make_heading_product_for_category(genre, account, category_products):
 
+    anchor = genre
+    if account:
+        anchor += "-" + re.sub(r"[^\w]", r"-", account)
+
+    anchor = anchor.replace("--", "-")
+
     heading_product = {
         'isHeading': True,
+        '_id': anchor,
         'genre': genre,
         'account': account,
         'headingDimension': 'category',

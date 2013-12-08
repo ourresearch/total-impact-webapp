@@ -23,8 +23,12 @@ angular.module("profile", [
 
   return {
 
-    getGenreIcon: function(){
-
+    makeAnchorLink: function(genre, account){
+      var anchor = genre
+      if (account) {
+        anchor += ":" + encodeURIComponent(account)
+      }
+      return $location.path() + "#" + anchor
     },
 
 
@@ -174,8 +178,11 @@ angular.module("profile", [
 })
 
 
-.controller("CategoryHeadingCtrl", function($scope, CategoryHeading){
+.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, UserProfile){
     $scope.genreIcon = CategoryHeading.getGenreIcon
+    $scope.makeAnchorLink = function(anchor){
+      return $location.path() + "#" + anchor
+    }
 
 })
 

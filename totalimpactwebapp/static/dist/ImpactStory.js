@@ -1574,8 +1574,12 @@ angular.module("profile", [
 
   return {
 
-    getGenreIcon: function(){
-
+    makeAnchorLink: function(genre, account){
+      var anchor = genre
+      if (account) {
+        anchor += ":" + encodeURIComponent(account)
+      }
+      return $location.path() + "#" + anchor
     },
 
 
@@ -1725,8 +1729,11 @@ angular.module("profile", [
 })
 
 
-.controller("CategoryHeadingCtrl", function($scope, CategoryHeading){
+.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, UserProfile){
     $scope.genreIcon = CategoryHeading.getGenreIcon
+    $scope.makeAnchorLink = function(anchor){
+      return $location.path() + "#" + anchor
+    }
 
 })
 
@@ -5042,7 +5049,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "               <h2>\n" +
     "                  <a class=\"genre-anchor\"\n" +
-    "                     ng-href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
+    "                     ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
     "                     <span class=\"text\">permalink</span>\n" +
     "                     <i class=\"icon-link\"></i>\n" +
     "                  </a>\n" +

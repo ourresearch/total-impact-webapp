@@ -916,7 +916,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "               <h2>\n" +
     "                  <a class=\"genre-anchor\"\n" +
-    "                     ng-href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
+    "                     ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
     "                     <span class=\"text\">permalink</span>\n" +
     "                     <i class=\"icon-link\"></i>\n" +
     "                  </a>\n" +
