@@ -4,7 +4,8 @@ angular.module("profile", [
   'services.page',
   'ui.bootstrap',
   'security',
-  'profile.addProducts'
+  'profile.addProducts',
+  'product.categoryHeading'
 ])
 
 .config(['$routeProvider', function ($routeProvider) {
@@ -19,7 +20,12 @@ angular.module("profile", [
 .factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page){
   var about = {}
 
+
   return {
+
+    getGenreIcon: function(){
+
+    },
 
 
     filterProducts: function(products, filterBy) {
@@ -84,9 +90,21 @@ angular.module("profile", [
   }
 })
 
-
-.controller('ProfileCtrl', function ($scope, $rootScope, $location, $routeParams, $modal, $timeout, $http, $anchorScroll, $window, UsersProducts, Product, UserProfile, Page)
-  {
+.controller('ProfileCtrl', function (
+    $scope,
+    $rootScope,
+    $location,
+    $routeParams,
+    $modal,
+    $timeout,
+    $http,
+    $anchorScroll,
+    $window,
+    UsersProducts,
+    Product,
+    UserProfile,
+    CategoryHeading,
+    Page) {
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
     }
@@ -97,6 +115,8 @@ angular.module("profile", [
       // twttr is a GLOBAL VAR loaded by the twitter widget script called in
       //    bottom.js. it will break in unit tests, so fix before then.
       twttr.widgets.load()
+
+      console.log("load!")
 
     });
 
@@ -132,10 +152,6 @@ angular.module("profile", [
       return Product.getSortScore(product) * -1;
     }
 
-    $scope.getGenre = function(product) {
-      return Product.getGenre(product);
-    }
-
     var renderProducts = function(){
       $scope.products = UsersProducts.query({
         id: userSlug,
@@ -154,38 +170,50 @@ angular.module("profile", [
         function(resp){loadingProducts = false}
       );
     }
-
     $timeout(renderProducts, 100)
-//    $scope.$evalAsync(doProducts)
+})
+
+
+.controller("CategoryHeadingCtrl", function($scope, CategoryHeading){
+    $scope.genreIcon = CategoryHeading.getGenreIcon
 
 })
 
-  .controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
-    console.log("user slug is: ", userSlug)
-    $scope.userSlug = userSlug;
-    $scope.baseUrl = Page.getBaseUrl()
-  })
 
-  .directive("backToProfile",function($location){
-   return {
-     restrict: 'A',
-     replace: true,
-     template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
-     link: function($scope,el){
-       var re = /^\/(\w+)\/product\/(\w+)/
-       var m = re.exec($location.path())
-       $scope.returnLink = null
 
-       if (m) {
-         var url_slug = m[1]
 
-         if (url_slug != "embed") {
-           $scope.returnLink = url_slug
-         }
+
+
+.controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
+  console.log("user slug is: ", userSlug)
+  $scope.userSlug = userSlug;
+  $scope.baseUrl = Page.getBaseUrl()
+})
+
+
+
+
+
+.directive("backToProfile",function($location){
+ return {
+   restrict: 'A',
+   replace: true,
+   template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
+   link: function($scope,el){
+     var re = /^\/(\w+)\/product\/(\w+)/
+     var m = re.exec($location.path())
+     $scope.returnLink = null
+
+     if (m) {
+       var url_slug = m[1]
+
+       if (url_slug != "embed") {
+         $scope.returnLink = url_slug
        }
      }
    }
-  })
+ }
+})
 
 
 

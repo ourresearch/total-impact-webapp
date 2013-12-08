@@ -899,6 +899,38 @@ angular.module('product.award').factory('Award', function() {
   }
 });
 
+angular.module('product.categoryHeading', [])
+  .factory("CategoryHeading", function(){
+
+    var genreIcons = {
+      software: "icon-save",
+      article: "icon-file-text-alt",
+      dataset: "icon-table",
+      slides: "icon-slides",
+      webpage: "icon-globe",
+      video: "icon-facetime-video",
+      blog: "icon-edit-sign",
+      twitter: "icon-twitter",
+      other: "icon-question-sign"
+    }
+
+    return {
+      getGenreIcon: function(genre){
+        if (genre in genreIcons){
+          return genreIcons[genre]
+        }
+        else {
+          return genreIcons.other
+        }
+      }
+    }
+
+
+
+
+
+  })
+
 angular.module('product.product', ['product.award'])
 angular.module('product.product')
 
@@ -1015,15 +1047,6 @@ angular.module('product.product')
       })
 
       return metrics
-    }
-
-    ,getGenre: function(itemData) {
-      if (itemData.biblio) {
-        return itemData.biblio.genre;
-      }
-      else if (itemData.headingValue) {
-        return itemData.headingValue;
-      }
     }
 
     ,getSortScore: function(itemData) {
@@ -1532,7 +1555,8 @@ angular.module("profile", [
   'services.page',
   'ui.bootstrap',
   'security',
-  'profile.addProducts'
+  'profile.addProducts',
+  'product.categoryHeading'
 ])
 
 .config(['$routeProvider', function ($routeProvider) {
@@ -1547,7 +1571,12 @@ angular.module("profile", [
 .factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page){
   var about = {}
 
+
   return {
+
+    getGenreIcon: function(){
+
+    },
 
 
     filterProducts: function(products, filterBy) {
@@ -1612,9 +1641,21 @@ angular.module("profile", [
   }
 })
 
-
-.controller('ProfileCtrl', function ($scope, $rootScope, $location, $routeParams, $modal, $timeout, $http, $anchorScroll, $window, UsersProducts, Product, UserProfile, Page)
-  {
+.controller('ProfileCtrl', function (
+    $scope,
+    $rootScope,
+    $location,
+    $routeParams,
+    $modal,
+    $timeout,
+    $http,
+    $anchorScroll,
+    $window,
+    UsersProducts,
+    Product,
+    UserProfile,
+    CategoryHeading,
+    Page) {
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
     }
@@ -1625,6 +1666,8 @@ angular.module("profile", [
       // twttr is a GLOBAL VAR loaded by the twitter widget script called in
       //    bottom.js. it will break in unit tests, so fix before then.
       twttr.widgets.load()
+
+      console.log("load!")
 
     });
 
@@ -1660,10 +1703,6 @@ angular.module("profile", [
       return Product.getSortScore(product) * -1;
     }
 
-    $scope.getGenre = function(product) {
-      return Product.getGenre(product);
-    }
-
     var renderProducts = function(){
       $scope.products = UsersProducts.query({
         id: userSlug,
@@ -1682,38 +1721,50 @@ angular.module("profile", [
         function(resp){loadingProducts = false}
       );
     }
-
     $timeout(renderProducts, 100)
-//    $scope.$evalAsync(doProducts)
+})
+
+
+.controller("CategoryHeadingCtrl", function($scope, CategoryHeading){
+    $scope.genreIcon = CategoryHeading.getGenreIcon
 
 })
 
-  .controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
-    console.log("user slug is: ", userSlug)
-    $scope.userSlug = userSlug;
-    $scope.baseUrl = Page.getBaseUrl()
-  })
 
-  .directive("backToProfile",function($location){
-   return {
-     restrict: 'A',
-     replace: true,
-     template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
-     link: function($scope,el){
-       var re = /^\/(\w+)\/product\/(\w+)/
-       var m = re.exec($location.path())
-       $scope.returnLink = null
 
-       if (m) {
-         var url_slug = m[1]
 
-         if (url_slug != "embed") {
-           $scope.returnLink = url_slug
-         }
+
+
+.controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
+  console.log("user slug is: ", userSlug)
+  $scope.userSlug = userSlug;
+  $scope.baseUrl = Page.getBaseUrl()
+})
+
+
+
+
+
+.directive("backToProfile",function($location){
+ return {
+   restrict: 'A',
+   replace: true,
+   template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
+   link: function($scope,el){
+     var re = /^\/(\w+)\/product\/(\w+)/
+     var m = re.exec($location.path())
+     $scope.returnLink = null
+
+     if (m) {
+       var url_slug = m[1]
+
+       if (url_slug != "embed") {
+         $scope.returnLink = url_slug
        }
      }
    }
-  })
+ }
+})
 
 
 
@@ -4018,21 +4069,6 @@ angular.module('services.tiAnalytics', [
 
   }
 });
-angular.module("services.twitterRender", [])
-.factory("TwitterRender", function(){
-
-    return {
-      run: 1
-    }
-
-
-
-
-
-
-
-
-  })
 angular.module("services.uservoiceWidget", [])
 angular.module("services.uservoiceWidget")
 .factory("UservoiceWidget", function(){
@@ -4990,32 +5026,65 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "\n" +
     "      <ul class=\"products-list\">\n" +
-    "         <li class=\"product {{ getGenre(product) }}\"\n" +
-    "             ng-repeat=\"product in products | orderBy:[getGenre, 'isHeading', getSortScore]\"\n" +
+    "         <li class=\"product {{ product.genre }}\"\n" +
+    "             ng-class=\"{'heading': product.isHeading, 'real-product': !product.isHeading, first: $first}\"\n" +
+    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'isHeading', getSortScore]\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"hasMetrics() || showProductsWithoutMetrics || product.isHeading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
-    "            <h2 class=\"product-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
+    "            <div class=\"category-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
     "                id=\"{{ product.headingValue }}\"\n" +
+    "                ng-controller=\"CategoryHeadingCtrl\"\n" +
     "                ng-show=\"product.isHeading\">\n" +
-    "               <a class=\"genre-anchor\"\n" +
-    "                  tooltip=\"permalink\"\n" +
-    "                  tooltip-placement=\"left\"\n" +
-    "                  ng-href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
-    "                  <i class=\"icon-link\"></i>\n" +
-    "               </a>\n" +
-    "               <i class=\"icon-save software genre\"></i>\n" +
-    "               <i class=\"icon-file-text-alt article genre\"></i>\n" +
-    "               <i class=\"icon-table dataset genre\"></i>\n" +
-    "               <i class=\"icon-desktop slides genre\"></i>\n" +
-    "               <i class=\"icon-globe webpage genre\"></i>\n" +
-    "               <i class=\"icon-facetime-video video genre\"></i>\n" +
-    "               <i class=\"icon-edit-sign blog genre\"></i>\n" +
-    "               <i class=\"icon-comments account genre\"></i>\n" +
-    "               {{ product.headingValue }}\n" +
-    "            </h2>\n" +
+    "\n" +
+    "               <h2>\n" +
+    "                  <a class=\"genre-anchor\"\n" +
+    "                     ng-href=\"{{ page.getBaseUrl() }}/{{ user.about.url_slug }}#{{ product.headingValue }}\">\n" +
+    "                     <span class=\"text\">permalink</span>\n" +
+    "                     <i class=\"icon-link\"></i>\n" +
+    "                  </a>\n" +
+    "                  <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
+    "                  <span class=\"genre\">{{ product.genre }}</span>\n" +
+    "                  <span class=\"account\" ng-if=\"product.account\">{{ product.account }}</span>\n" +
+    "\n" +
+    "               </h2>\n" +
+    "\n" +
+    "               <div class=\"category-metrics\">\n" +
+    "                  <ul class=\"account-metrics\">\n" +
+    "                     <li class=\"category-metric\"\n" +
+    "                         ng-repeat=\"metric in product.metrics\">\n" +
+    "\n" +
+    "                        <a href=\"{{ metric.provenance_url }}\"\n" +
+    "                           tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
+    "                           tooltip-placement=\"bottom\"\n" +
+    "                           class=\"value\">\n" +
+    "                           {{ metric.values.raw }}\n" +
+    "                        </a>\n" +
+    "                        <span class=\"metric-descr\"\n" +
+    "                              tooltip-placement=\"bottom\"\n" +
+    "                              tooltip=\"{{ metric.static_meta.description }}\">\n" +
+    "                           {{ metric.static_meta.display_name }}\n" +
+    "                        </span>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "                         </li>\n" +
+    "\n" +
+    "                  </ul>\n" +
+    "                  <ul class=\"summary-metrics\">\n" +
+    "\n" +
+    "\n" +
+    "                  </ul>\n" +
+    "\n" +
+    "\n" +
+    "               </div>\n" +
+    "\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
     "            <div class=\"real-product\" ng-show=\"!product.isHeading\">\n" +
     "               <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
     "               <div class=\"badges\" ng-include=\"'product/badges.tpl.html'\"></div>\n" +

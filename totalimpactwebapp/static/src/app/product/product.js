@@ -116,15 +116,6 @@ angular.module('product.product')
       return metrics
     }
 
-    ,getGenre: function(itemData) {
-      if (itemData.biblio) {
-        return itemData.biblio.genre;
-      }
-      else if (itemData.headingValue) {
-        return itemData.headingValue;
-      }
-    }
-
     ,getSortScore: function(itemData) {
       var highlyAwardIsAsGoodAsThisManyRegularAwards = 3
       var score = 0;
