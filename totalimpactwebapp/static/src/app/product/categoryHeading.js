@@ -5,7 +5,7 @@ angular.module('product.categoryHeading', [])
       software: "icon-save",
       article: "icon-file-text-alt",
       dataset: "icon-table",
-      slides: "icon-slides",
+      slides: "icon-desktop",
       webpage: "icon-globe",
       video: "icon-facetime-video",
       blog: "icon-edit-sign",
