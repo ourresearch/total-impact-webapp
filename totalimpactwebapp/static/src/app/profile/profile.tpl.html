@@ -107,7 +107,7 @@
                   </a>
                   <i class="{{ genreIcon(product.genre) }} {{ product.genre }} genre"></i>
                   <span class="genre">{{ product.genre }}</span>
-                  <span class="account">{{ product.account }}</span>
+                  <span class="account" ng-if="product.account">{{ product.account }}</span>
 
                </h2>
 

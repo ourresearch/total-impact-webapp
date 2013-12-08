@@ -921,7 +921,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "                  <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
     "                  <span class=\"genre\">{{ product.genre }}</span>\n" +
-    "                  <span class=\"account\">{{ product.account }}</span>\n" +
+    "                  <span class=\"account\" ng-if=\"product.account\">{{ product.account }}</span>\n" +
     "\n" +
     "               </h2>\n" +
     "\n" +

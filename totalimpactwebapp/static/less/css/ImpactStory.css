@@ -7468,8 +7468,8 @@ div.products .wrapper div.products-without-metrics div.well a {
   display: block;
 }
 .product.heading {
-  margin-top: 50px;
-  margin-right: 50px;
+  margin-top: 100px;
+  width: 95%;
   padding-bottom: 5px;
   border-bottom: 1px solid #eee;
 }
