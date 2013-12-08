@@ -5027,7 +5027,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product {{ product.genre }}\"\n" +
-    "             ng-class=\"{'heading': product.isHeading, 'real-product': !product.isHeading}\"\n" +
+    "             ng-class=\"{'heading': product.isHeading, 'real-product': !product.isHeading, first: $first}\"\n" +
     "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'isHeading', getSortScore]\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"hasMetrics() || showProductsWithoutMetrics || product.isHeading\"\n" +
@@ -5065,7 +5065,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                        <span class=\"metric-descr\"\n" +
     "                              tooltip-placement=\"bottom\"\n" +
     "                              tooltip=\"{{ metric.static_meta.description }}\">\n" +
-    "                           {{ metric.static_meta.provider }}\n" +
     "                           {{ metric.static_meta.display_name }}\n" +
     "                        </span>\n" +
     "\n" +

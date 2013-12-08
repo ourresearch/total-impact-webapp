@@ -7468,10 +7468,13 @@ div.products .wrapper div.products-without-metrics div.well a {
   display: block;
 }
 .product.heading {
-  margin-top: 100px;
+  margin-top: 130px;
   width: 95%;
   padding-bottom: 5px;
   border-bottom: 1px solid #eee;
+}
+.product.heading.first {
+  margin-top: 50px;
 }
 .product.twitter.real-product div.real-product .badges {
   margin-top: 40px;
@@ -7567,6 +7570,7 @@ div.products .wrapper div.products-without-metrics div.well a {
 .product div.category-heading h2 span.account {
   font-weight: 300;
   margin-left: .2em;
+  text-transform: lowercase;
 }
 .product div.category-heading h2:hover a.genre-anchor {
   color: #ff4e00;

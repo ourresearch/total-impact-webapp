@@ -87,7 +87,7 @@
 
       <ul class="products-list">
          <li class="product {{ product.genre }}"
-             ng-class="{'heading': product.isHeading, 'real-product': !product.isHeading}"
+             ng-class="{'heading': product.isHeading, 'real-product': !product.isHeading, first: $first}"
              ng-repeat="product in products | orderBy:['genre', 'account', 'isHeading', getSortScore]"
              ng-controller="productCtrl"
              ng-show="hasMetrics() || showProductsWithoutMetrics || product.isHeading"
@@ -125,7 +125,6 @@
                         <span class="metric-descr"
                               tooltip-placement="bottom"
                               tooltip="{{ metric.static_meta.description }}">
-                           {{ metric.static_meta.provider }}
                            {{ metric.static_meta.display_name }}
                         </span>
 
