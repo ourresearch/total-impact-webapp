@@ -908,6 +908,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
+    "\n" +
     "            <div class=\"category-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
     "                id=\"{{ product.headingValue }}\"\n" +
     "                ng-controller=\"CategoryHeadingCtrl\"\n" +

@@ -4,6 +4,9 @@ import itertools
 def add_category_heading_products(products):
 
     categories = categorize_products(products)
+
+
+
     heading_products_list = []
 
     for category_key, category_products in categories.iteritems():
@@ -56,7 +59,7 @@ def categorize_products(products):
     for product in products:
         genre = product["biblio"]["genre"]
         try:
-            account = product["biblio"]["account"]
+            account = product["biblio"]["account"].lower()
         except KeyError:
             account = None
 
