@@ -8,7 +8,7 @@ angular.module('product.categoryHeading', [])
       slides: "icon-desktop",
       webpage: "icon-globe",
       video: "icon-facetime-video",
-      blog: "icon-comment",
+      blog: "icon-comments",
       twitter: "icon-twitter",
       other: "icon-question-sign"
     }
