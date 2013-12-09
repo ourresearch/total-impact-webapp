@@ -215,7 +215,7 @@ angular.module('importers.allTheImporters')
             name: "apiKey",                        
             inputType: "username",
             inputNeeded: "WordPress.com API key",
-            help: "If your blog is hosted at WordPress.com, add your blog API key so we can access pageview data.",
+            help: "If your blog is hosted at WordPress.com, include your blog API key whenever you add your blog and additional posts so we can look up pageview data.",
             extra: "If your blog is hosted on WordPress.com your API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>"
          }         
       ]
