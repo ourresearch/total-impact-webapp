@@ -314,7 +314,7 @@ angular.module('importers.allTheImporters')
             inputNeeded: "Blog URL",
             help: "The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",
             saveUsername: true,
-            placeholder: "http://retractionwatch.wordpress.com",
+            placeholder: "yourblogname.com",
             cleanupFunction: function (x) {
               if (typeof x==="undefined") return x; 
               return "http://"+x.replace(/^https*:\/\//, ""); 
@@ -936,7 +936,7 @@ angular.module('product.categoryHeading', [])
       slides: "icon-desktop",
       webpage: "icon-globe",
       video: "icon-facetime-video",
-      blog: "icon-edit-sign",
+      blog: "icon-comment",
       twitter: "icon-twitter",
       other: "icon-question-sign"
     }
