@@ -322,7 +322,7 @@ angular.module('importers.allTheImporters')
           }
          ,{
             tab:1,
-            name: "standard_urls_input",                        
+            name: "blog_post_urls",                        
             inputType: "idList",
             inputNeeded: "Blog post URLs",
             help: "Paste URLs for individual blog posts here.",
