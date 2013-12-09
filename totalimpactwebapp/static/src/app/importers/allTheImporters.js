@@ -305,13 +305,13 @@ angular.module('importers.allTheImporters')
 
 
     {
-      displayName: "Webpages",
+      displayName: "Products by URL",
       inputs: [{
         inputType: "idList",
         inputNeeded: "URLs"
       }],
       endpoint: "urls",
-      descr: "You can import any webpages. If it has a DOI or PubMed ID, though, use those more specific importers instead of this one; you'll get better results."
+      descr: "Our service-specific importers (DOI, blogs, GitHub, etc) give the most comprehensive results. But if you've got a product not handled by any of those, you can import it here, via URL."
     }
   ]
 
@@ -325,13 +325,7 @@ angular.module('importers.allTheImporters')
 
 
   var makeLogoPath = function(displayName) {
-    var urlStyleName = displayName.toLowerCase().replace(" ", "-")
-    return '/static/img/logos/' + urlStyleName + '.png';
-  }
-
-  var makeLogoPath = function(displayName) {
-    var urlStyleName = displayName.toLowerCase().replace(" ", "-")
-    return '/static/img/logos/' + urlStyleName + '.png';
+    return '/static/img/logos/' + _(displayName.toLowerCase()).dasherize() + '.png';
   }
 
 
