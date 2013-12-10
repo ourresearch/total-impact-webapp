@@ -149,7 +149,7 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "username",
             help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
-            saveUsername: true
+            saveUsername: "github_id"
           }
          ,{
             tab:1,
@@ -176,7 +176,7 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "ID",
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
-        saveUsername: true,
+        saveUsername: "orcid_id",
         cleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
         help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
       }],
@@ -204,7 +204,7 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "username",
             help: "Your username is right after \"slideshare.net/\" in your profile's URL.",            
-            saveUsername: true
+            saveUsername: "slideshare_id"
           }
          ,{
             tab:1,
@@ -231,7 +231,7 @@ angular.module('importers.allTheImporters')
         inputNeeded: "username",
         help: "Your Twitter username is often written starting with @.",
         placeholder: "@username",
-        saveUsername: true,
+        saveUsername: "twitter_account_id",
         cleanupFunction: function(x) {return('@'+x.replace('@', ''))}
       }],
       endpoint: "twitter_account",
@@ -277,7 +277,7 @@ angular.module('importers.allTheImporters')
             inputNeeded: "author page URL",
             placeholder: "http://figshare.com/authors/your_username/12345",
             cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))},            
-            saveUsername: true
+            saveUsername: "figshare_id"
           }
          ,{
             tab:1,
@@ -313,7 +313,6 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "Blog URL",
             help: "The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",
-            saveUsername: true,
             placeholder: "yourblogname.com",
             cleanupFunction: function (x) {
               if (typeof x==="undefined") return x; 
@@ -340,7 +339,8 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "WordPress.com API key",
             help: "If your blog is hosted at WordPress.com, include your blog API key whenever you add your blog and additional posts so we can look up pageview data.",
-            extra: "If your blog is hosted on WordPress.com your API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>"
+            extra: "If your blog is hosted on WordPress.com your API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>",
+            saveUsername: "wordpress_api_key"            
          }         
       ]
     }, 
@@ -522,122 +522,106 @@ angular.module('importers.importer', [
   'profile'
 ])
 angular.module('importers.importer')
-.factory('Importer', function($cacheFactory, Loading, Products, UsersProducts, UsersAbout){
-  var waitingOn = {}
-  var tiidsAdded = []
-  var $httpDefaultCache = $cacheFactory.get('$http')
+.factory('Importer', function($cacheFactory, $q, Loading, Products, UsersProducts, UsersAbout){
+    var waitingOn = {}
+    var tiidsAdded = []
+    var $httpDefaultCache = $cacheFactory.get('$http')
 
-  var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
+    var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
 
-  var finish = function(importJobName){
-    waitingOn[importJobName] = false;
-    if (!_.some(_.values(waitingOn))) { // we're not waiting on anything...
-      Loading.finish('saveButton')
-      onImportCompletion()
+    var finish = function(importJobName){
+      waitingOn[importJobName] = false;
+      if (!_.some(_.values(waitingOn))) { // we're not waiting on anything...
+        Loading.finish('saveButton')
+        onImportCompletion()
+      }
     }
-  }
 
-  var start = function(importJobName){
-    Loading.start("saveButton")
-    waitingOn[importJobName] = true
-  }
-
-
-  var saveImporterInput = function(url_slug, importerObj) {
-
-    // clear the cache. this clear EVERYTHING, we can be smarter later.
-    $httpDefaultCache.removeAll()
-
-    // clean the values
-    _.each(importerObj.inputs, function(input){
-      input.cleanedValue = input.cleanupFunction(input.value)
-    })
-
-    // save external usernames
-    _.each(importerObj.inputs, function(input){
-      if (input.saveUsername){
-        saveExternalUsername(url_slug, importerObj.endpoint, input.cleanedValue)
-      }
-    })
-
-    // to save products, we need a dict of name:cleanedValue pairs.
-    var allInputValues = {}
-    _.each(importerObj.inputs, function(input){
-      allInputValues[input.name] = input.cleanedValue
-    })
-
-    // finally, save products
-    saveProducts(url_slug, importerObj.endpoint, allInputValues)
-  }
+    var start = function(importJobName){
+      Loading.start("saveButton")
+      waitingOn[importJobName] = true
+    }
 
 
-  var saveProducts = function(url_slug, importerName, userInput){
+    var saveImporterInput = function(url_slug, importerObj) {
+      // clear the cache. this clear EVERYTHING, we can be smarter later.
+      $httpDefaultCache.removeAll()
 
-    console.log("saveProducts()", url_slug, importerName, userInput)
+      // clean the values
+      _.each(importerObj.inputs, function(input){
+        input.cleanedValue = input.cleanupFunction(input.value)
+      })
 
-    start("saveProducts")
-    Products.save(
-      {'importerName': importerName}, // define the url
-      userInput, // the post data, from user input
-      function(resp, headers){  // run when the server gives us something back.
-        var tiids;
+      saveExternalUsernames(url_slug, importerObj.inputs)
+      saveProducts(url_slug, importerObj.endpoint, importerObj.inputs)
 
-        if (resp.error){
-          tiids = []
-        }
-        else {
-          tiids = _.keys(resp.products)
-        }
+    }
 
-        console.log("importer got us some tiids:", tiids);
-        tiidsAdded = tiids
 
-        // add the new products to the user's profile on the server
-        UsersProducts.patch(
-          {id: url_slug},  // the url
-          {"tiids": tiids},  // the POST data
-          function(){
-            finish("saveProducts")
+    var saveProducts = function(url_slug, importerName, userInputObjs){
+
+      // make a simple dict of cleaned input values.
+      var userInput = {}
+      _.each(userInputObjs, function(input){
+        userInput[input.name] = input.cleanedValue
+      })
+
+      console.log("saveProducts()", url_slug, importerName, userInput)
+      start("saveProducts")
+      Products.save(
+        {'importerName': importerName}, // define the url
+        userInput, // the post data, from user input
+        function(resp, headers){  // run when the server gives us something back.
+          var tiids;
+
+          if (resp.error){
+            tiids = []
           }
-        )
-      }
-    )
-  }
+          else {
+            tiids = _.keys(resp.products)
+          }
 
-  var saveExternalUsername = function(url_slug, importerName, externalUsername){
+          console.log("importer got us some tiids:", tiids);
+          tiidsAdded = tiids
 
-    var patchData = {about:{}}
-    patchData.about[importerName + "_id"] = externalUsername
+          // add the new products to the user's profile on the server
+          UsersProducts.patch(
+            {id: url_slug},  // the url
+            {"tiids": tiids},  // the POST data
+            function(){
+              finish("saveProducts")
+            }
+          )
+        }
+      )
+    }
 
-    console.log("trying to save this patch data: ", patchData)
 
-    start("saveExternalUsernames")
-    console.log("saving usernames")
-    UsersAbout.patch(
-      {id:url_slug},
-      patchData,
-      function(){
-        finish("saveExternalUsernames")
-      }
-    )
-  }
+    var saveExternalUsernames = function(url_slug, userInputObjs){
 
-  var cleanInput = function(userInput, inputObjects){
-    var cleanedUserInput = _.map(userInput, function(userInputValue, inputName) {
+      var about = {}
+      _.each(userInputObjs, function(input){
+        if (input.saveUsername){
+          about[input.saveUsername] = input.cleanedValue
+        }
+      })
 
-      var relevantInputObject = _.first(_.where(inputObjects, {name:inputName}))
-      if (!relevantInputObject){
-        return userInputValue  // change nothing.
-      }
-      else {
-        var relevantFunction = relevantInputObject.inputCleanupFunction || function(x) {return(x)}
-        return(relevantFunction(userInputValue))
-      }
+      var patchData = {about:{}}
+      console.log("trying to save this patch data: ", patchData)
 
-    })
-    console.log(cleanedUserInput)
-    return(_.object(_.keys(userInput), cleanedUserInput))
-  }
+      start("saveExternalUsernames")
+      console.log("saving usernames")
+      UsersAbout.patch(
+        {id:url_slug},
+        patchData,
+        function(resp){
+          finish("saveExternalUsernames")
+          console.log("done saving external usernames.")
+        }
+      )
+    }
+
+
 
     return {
       'saveImporterInput': saveImporterInput,
@@ -646,6 +630,7 @@ angular.module('importers.importer')
       },
       getTiids: function(){return tiidsAdded}
     }
+
 })
 
 
