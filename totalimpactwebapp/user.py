@@ -312,7 +312,7 @@ def refresh_products_from_user(tiids, analytics_credentials={}):
     )
 
     r = requests.post(query,
-            data=json.dumps({im
+            data=json.dumps({
                 "tiids": tiids,
                 "analytics_credentials": analytics_credentials
                 }),
