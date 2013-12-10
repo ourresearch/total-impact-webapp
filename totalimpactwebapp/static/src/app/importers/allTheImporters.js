@@ -25,7 +25,7 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "username",
             help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
-            saveUsername: true
+            saveUsername: "github_id"
           }
          ,{
             tab:1,
@@ -52,7 +52,7 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "ID",
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
-        saveUsername: true,
+        saveUsername: "orcid_id",
         cleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
         help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
       }],
@@ -80,7 +80,7 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "username",
             help: "Your username is right after \"slideshare.net/\" in your profile's URL.",            
-            saveUsername: true
+            saveUsername: "slideshare_id"
           }
          ,{
             tab:1,
@@ -107,7 +107,7 @@ angular.module('importers.allTheImporters')
         inputNeeded: "username",
         help: "Your Twitter username is often written starting with @.",
         placeholder: "@username",
-        saveUsername: true,
+        saveUsername: "twitter_account_id",
         cleanupFunction: function(x) {return('@'+x.replace('@', ''))}
       }],
       endpoint: "twitter_account",
@@ -153,7 +153,7 @@ angular.module('importers.allTheImporters')
             inputNeeded: "author page URL",
             placeholder: "http://figshare.com/authors/your_username/12345",
             cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))},            
-            saveUsername: true
+            saveUsername: "figshare_id"
           }
          ,{
             tab:1,
@@ -189,7 +189,6 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "Blog URL",
             help: "The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",
-            saveUsername: true,
             placeholder: "yourblogname.com",
             cleanupFunction: function (x) {
               if (typeof x==="undefined") return x; 
@@ -216,7 +215,8 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "WordPress.com API key",
             help: "If your blog is hosted at WordPress.com, include your blog API key whenever you add your blog and additional posts so we can look up pageview data.",
-            extra: "If your blog is hosted on WordPress.com your API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>"
+            extra: "If your blog is hosted on WordPress.com your API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>",
+            saveUsername: "wordpress_api_key"            
          }         
       ]
     }, 

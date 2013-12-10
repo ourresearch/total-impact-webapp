@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-09
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-10
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -149,7 +149,7 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "username",
             help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
-            saveUsername: true
+            saveUsername: "github_id"
           }
          ,{
             tab:1,
@@ -176,7 +176,7 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "ID",
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
-        saveUsername: true,
+        saveUsername: "orcid_id",
         cleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
         help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
       }],
@@ -204,7 +204,7 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "username",
             help: "Your username is right after \"slideshare.net/\" in your profile's URL.",            
-            saveUsername: true
+            saveUsername: "slideshare_id"
           }
          ,{
             tab:1,
@@ -231,7 +231,7 @@ angular.module('importers.allTheImporters')
         inputNeeded: "username",
         help: "Your Twitter username is often written starting with @.",
         placeholder: "@username",
-        saveUsername: true,
+        saveUsername: "twitter_account_id",
         cleanupFunction: function(x) {return('@'+x.replace('@', ''))}
       }],
       endpoint: "twitter_account",
@@ -277,7 +277,7 @@ angular.module('importers.allTheImporters')
             inputNeeded: "author page URL",
             placeholder: "http://figshare.com/authors/your_username/12345",
             cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))},            
-            saveUsername: true
+            saveUsername: "figshare_id"
           }
          ,{
             tab:1,
@@ -313,7 +313,6 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "Blog URL",
             help: "The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",
-            saveUsername: true,
             placeholder: "yourblogname.com",
             cleanupFunction: function (x) {
               if (typeof x==="undefined") return x; 
@@ -340,7 +339,8 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "WordPress.com API key",
             help: "If your blog is hosted at WordPress.com, include your blog API key whenever you add your blog and additional posts so we can look up pageview data.",
-            extra: "If your blog is hosted on WordPress.com your API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>"
+            extra: "If your blog is hosted on WordPress.com your API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>",
+            saveUsername: "wordpress_api_key"            
          }         
       ]
     }, 
@@ -556,7 +556,7 @@ angular.module('importers.importer')
     // save external usernames
     _.each(importerObj.inputs, function(input){
       if (input.saveUsername){
-        saveExternalUsername(url_slug, importerObj.endpoint, input.cleanedValue)
+        saveExternalUsername(url_slug, input.saveUsername, input.cleanedValue)
       }
     })
 
@@ -604,10 +604,10 @@ angular.module('importers.importer')
     )
   }
 
-  var saveExternalUsername = function(url_slug, importerName, externalUsername){
+  var saveExternalUsername = function(url_slug, usernameKey, externalUsername){
 
     var patchData = {about:{}}
-    patchData.about[importerName + "_id"] = externalUsername
+    patchData.about[usernameKey] = externalUsername
 
     console.log("trying to save this patch data: ", patchData)
 
@@ -2203,6 +2203,7 @@ angular.module( 'signup', [
 
 ;
 
+angular.module("update.update",["resources.users"]).factory("Update",function(e,t,n,r,i){var s={},o=function(e,t){s.numNotDone>0||_.isNull(s.numNotDone)?n.query({id:e,idType:"url_slug"},function(n){s.numDone=u(n,!0);s.numNotDone=u(n,!1);s.percentComplete=s.numDone*100/(s.numDone+s.numNotDone);console.log("in keepPolling");console.log(s);r(function(){o(e,t)},500)}):t()},u=function(e,t){var n=_.filter(e,function(e){return!e.currently_updating});return t?n.length:e.length-n.length},a=function(e,t){s.numDone=null;s.numNotDone=null;s.percentComplete=null;var n=i.open({templateUrl:"update/update-progress.tpl.html",controller:"updateProgressModalCtrl",backdrop:"static",keyboard:!1});o(e,function(){n.close();t()})};return{showUpdate:a,updateStatus:s}}).controller("updateProgressModalCtrl",function(e,t){e.updateStatus=t.updateStatus});
 angular.module( 'update.update', [
     'resources.users'
   ])
@@ -2895,6 +2896,7 @@ angular.module('resources.products',['ngResource'])
 })
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {

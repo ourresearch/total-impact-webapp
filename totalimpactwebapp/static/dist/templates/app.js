@@ -932,6 +932,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                         ng-repeat=\"metric in product.metrics\">\n" +
     "\n" +
     "                        <a href=\"{{ metric.provenance_url }}\"\n" +
+    "                           target=\"_blank\"\n" +
     "                           tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
     "                           class=\"value\">\n" +
