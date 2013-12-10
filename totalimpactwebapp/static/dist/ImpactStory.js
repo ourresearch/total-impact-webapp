@@ -157,7 +157,7 @@ angular.module('importers.allTheImporters')
             inputType: "idList",
             inputNeeded: "URLs",
             help: "Paste URLs for other github repositories here.",
-            placeholder: "https://github.com/cboettig/knitcitations",
+            placeholder: "https://github.com/your_username/your_repository",
             cleanupFunction: function (fullString) {
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
@@ -212,7 +212,7 @@ angular.module('importers.allTheImporters')
             inputType: "idList",
             inputNeeded: "URLs",
             help: "Paste URLs for other SlideShare products here.",
-            placeholder: "http://www.slideshare.net/smith/conf-presentation",
+            placeholder: "http://www.slideshare.net/your-username/your-presentation",
             cleanupFunction: function (fullString) {
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
@@ -275,7 +275,7 @@ angular.module('importers.allTheImporters')
             name: "account_name",            
             inputType: "username",
             inputNeeded: "author page URL",
-            placeholder: "http://figshare.com/authors/schamberlain/96554",            
+            placeholder: "http://figshare.com/authors/your_username/12345",
             cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))},            
             saveUsername: true
           }
@@ -285,7 +285,7 @@ angular.module('importers.allTheImporters')
             inputType: "idList",
             inputNeeded: "DOIs",
             help: "Paste DOIs for other figshare products here.",
-            placeholder: "http://dx.doi.org/10.6084/m9.figshare.94090"
+            placeholder: "http://dx.doi.org/10.6084/m9.figshare.12345"
          }
       ]
     },
@@ -326,7 +326,7 @@ angular.module('importers.allTheImporters')
             inputType: "idList",
             inputNeeded: "Blog post URLs",
             help: "Paste URLs for individual blog posts here.",
-            placeholder: "http://blog.impactstory.org/2013/06/17/sloan/",
+            placeholder: "http://yourblog.com/your-awesome-post",
             cleanupFunction: function (fullString) {
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
@@ -352,7 +352,7 @@ angular.module('importers.allTheImporters')
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URLs for the videos you want to add, then paste them here.",
-        placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
+        placeholder: "http://www.youtube.com/watch?v=12345"
       }],
       endpoint: "urls",
       url: "http://youtube.com",
@@ -366,7 +366,7 @@ angular.module('importers.allTheImporters')
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URL for the video you want to add, then paste it here.",
-        placeholder: "http://vimeo.com/48605764"
+        placeholder: "http://vimeo.com/12345"
       }],
       endpoint: "urls",
       url: "http://vimeo.com",
@@ -5092,6 +5092,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                         ng-repeat=\"metric in product.metrics\">\n" +
     "\n" +
     "                        <a href=\"{{ metric.provenance_url }}\"\n" +
+    "                           target=\"_blank\"\n" +
     "                           tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
     "                           class=\"value\">\n" +
