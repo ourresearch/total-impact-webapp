@@ -943,6 +943,7 @@ angular.module('product.categoryHeading', [])
       blog: "icon-comments",
       dataset: "icon-table",
       figure: "icon-bar-chart",
+      poster: "icon-picture",
       slides: "icon-desktop",
       software: "icon-save",
       twitter: "icon-twitter",
