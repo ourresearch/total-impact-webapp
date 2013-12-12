@@ -1588,7 +1588,7 @@ angular.module("profile", [
   'product.categoryHeading'
 ])
 
-.config(['$routeProvider', function ($routeProvider) {
+.config(['$routeProvider', function ($routeProvider, security) {
 
   $routeProvider.when("/embed/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
@@ -4190,28 +4190,32 @@ angular.module("tips", ['ngResource'])
     status: 'success'
   }
 
-  var tips = [
-    {
-      id: "how_we_found_these_blog_posts",
-      msg: 'we found your blog stuff, with magic.',
-    },
+  var getTips = function(url_slug){
+    return [
+      {
+        id: "how_we_found_these_blog_posts",
+        msg: 'we found your blog stuff, with magic.'
+      },
 
-    {
-      id: "how_we_found_these_tweets",
-      msg: 'we found your tweets!'
-    },
+      {
+        id: "how_we_found_these_tweets",
+        msg: "We’ve imported some of your most popular tweets. You can click their badges to remove tweets, or <a href='/user/"
+          + url_slug
+          + "/products/add'>import</a> to add more."
+      },
 
-    {
-      id: 'upload_wordpress_key',
-      msg: 'You should add your wordpress key there, sport.',
-      status: 'warning'
-    },
+      {
+        id: 'upload_wordpress_key',
+        msg: 'You should add your wordpress key there, sport.',
+        status: 'warning'
+      },
 
-    {
-      id: 'you_can_change_your_url',
-      msg: 'dude, have you seriously not changed you url yet?'
-    }
-  ]
+      {
+        id: 'you_can_change_your_url',
+        msg: 'dude, have you seriously not changed you url yet?'
+      }
+    ]
+  }
 
 
   return {
@@ -4219,6 +4223,7 @@ angular.module("tips", ['ngResource'])
 
       var ret
       if (_.contains(whitelist, key)){
+        var tips = getTips(url_slug)
         var tip = _.findWhere(tips, {id: key})
         var tipWithDefaults = _.defaults(tip, tipDefaults)
         ret = tipWithDefaults[tipProperty]
@@ -4232,11 +4237,11 @@ angular.module("tips", ['ngResource'])
     },
 
     keysStr: function(){
-      return _.pluck(tips, "id").join()
+      return _.pluck(getTips(url_slug), "id").join()
     },
 
     clear: function(){
-      tips.length = 0
+      whitelist.length = 0
     },
 
     load: function(url_slug_arg){
@@ -4264,10 +4269,10 @@ angular.module("tips", ['ngResource'])
   }
 })
 
-.directive("tips", function(TipsService, $parse){
+.directive("tip", function(TipsService, $parse){
 
     return {
-      templateUrl: 'tips/tips.tpl.html',
+      templateUrl: 'tips/tip.tpl.html',
       restrict: 'E',
       scope: {
         key: "=key" // linked to attr, evaluated in parent scope
@@ -5247,8 +5252,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </div>\n" +
     "               </div>\n" +
     "               <div class=\"category-heading-tips\">\n" +
-    "                  <tips key=\"how_we_found_these\" />\n" +
-    "                  <tips key=\"upload_wordpress_key\" />\n" +
+    "                  <tip key=\"how_we_found_these\" />\n" +
+    "                  <tip key=\"upload_wordpress_key\" />\n" +
     "               </div>\n" +
     "\n" +
     "            </div>\n" +
@@ -5773,7 +5778,7 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "<!--  58@e.com -->");
 }]);
 
-angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tips.tpl.html']);
+angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tip.tpl.html']);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
@@ -5923,11 +5928,10 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "");
 }]);
 
-angular.module("tips/tips.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("tips/tips.tpl.html",
+angular.module("tips/tip.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("tips/tip.tpl.html",
     "<div ng-if=\"getStatus()\" class=\"tip alert alert-{{ getStatus() }}\">\n" +
-    "   <span class=\"msg\">\n" +
-    "      {{ getMsg() }}\n" +
+    "   <span class=\"msg\" ng-bind-html-unsafe=\"getMsg()\">\n" +
     "   </span>\n" +
     "   <button ng-click=\"dismiss()\" class=\"close\">&times;</button>\n" +
     "</div>");

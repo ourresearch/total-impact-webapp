@@ -22,28 +22,32 @@ angular.module("tips", ['ngResource'])
     status: 'success'
   }
 
-  var tips = [
-    {
-      id: "how_we_found_these_blog_posts",
-      msg: 'we found your blog stuff, with magic.',
-    },
+  var getTips = function(url_slug){
+    return [
+      {
+        id: "how_we_found_these_blog_posts",
+        msg: 'we found your blog stuff, with magic.'
+      },
 
-    {
-      id: "how_we_found_these_tweets",
-      msg: 'we found your tweets!'
-    },
+      {
+        id: "how_we_found_these_tweets",
+        msg: "We’ve imported some of your most popular tweets. You can click their badges to remove tweets, or <a href='/user/"
+          + url_slug
+          + "/products/add'>import</a> to add more."
+      },
 
-    {
-      id: 'upload_wordpress_key',
-      msg: 'You should add your wordpress key there, sport.',
-      status: 'warning'
-    },
+      {
+        id: 'upload_wordpress_key',
+        msg: 'You should add your wordpress key there, sport.',
+        status: 'warning'
+      },
 
-    {
-      id: 'you_can_change_your_url',
-      msg: 'dude, have you seriously not changed you url yet?'
-    }
-  ]
+      {
+        id: 'you_can_change_your_url',
+        msg: 'dude, have you seriously not changed you url yet?'
+      }
+    ]
+  }
 
 
   return {
@@ -51,6 +55,7 @@ angular.module("tips", ['ngResource'])
 
       var ret
       if (_.contains(whitelist, key)){
+        var tips = getTips(url_slug)
         var tip = _.findWhere(tips, {id: key})
         var tipWithDefaults = _.defaults(tip, tipDefaults)
         ret = tipWithDefaults[tipProperty]
@@ -64,11 +69,11 @@ angular.module("tips", ['ngResource'])
     },
 
     keysStr: function(){
-      return _.pluck(tips, "id").join()
+      return _.pluck(getTips(url_slug), "id").join()
     },
 
     clear: function(){
-      tips.length = 0
+      whitelist.length = 0
     },
 
     load: function(url_slug_arg){
@@ -96,10 +101,10 @@ angular.module("tips", ['ngResource'])
   }
 })
 
-.directive("tips", function(TipsService, $parse){
+.directive("tip", function(TipsService, $parse){
 
     return {
-      templateUrl: 'tips/tips.tpl.html',
+      templateUrl: 'tips/tip.tpl.html',
       restrict: 'E',
       scope: {
         key: "=key" // linked to attr, evaluated in parent scope

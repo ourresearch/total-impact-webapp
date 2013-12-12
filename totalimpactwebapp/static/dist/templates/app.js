@@ -950,8 +950,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </div>\n" +
     "               </div>\n" +
     "               <div class=\"category-heading-tips\">\n" +
-    "                  <tips key=\"how_we_found_these\" />\n" +
-    "                  <tips key=\"upload_wordpress_key\" />\n" +
+    "                  <tip key=\"how_we_found_these\" />\n" +
+    "                  <tip key=\"upload_wordpress_key\" />\n" +
     "               </div>\n" +
     "\n" +
     "            </div>\n" +

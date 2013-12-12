@@ -9,7 +9,7 @@ angular.module("profile", [
   'product.categoryHeading'
 ])
 
-.config(['$routeProvider', function ($routeProvider) {
+.config(['$routeProvider', function ($routeProvider, security) {
 
   $routeProvider.when("/embed/:url_slug", {
     templateUrl:'profile/profile.tpl.html',

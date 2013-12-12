@@ -1,4 +1,4 @@
-angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tips.tpl.html']);
+angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tip.tpl.html']);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
@@ -148,11 +148,10 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "");
 }]);
 
-angular.module("tips/tips.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("tips/tips.tpl.html",
+angular.module("tips/tip.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("tips/tip.tpl.html",
     "<div ng-if=\"getStatus()\" class=\"tip alert alert-{{ getStatus() }}\">\n" +
-    "   <span class=\"msg\">\n" +
-    "      {{ getMsg() }}\n" +
+    "   <span class=\"msg\" ng-bind-html-unsafe=\"getMsg()\">\n" +
     "   </span>\n" +
     "   <button ng-click=\"dismiss()\" class=\"close\">&times;</button>\n" +
     "</div>");

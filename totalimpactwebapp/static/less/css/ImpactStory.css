@@ -7633,6 +7633,15 @@ div.products .wrapper div.products-without-metrics div.well a {
 .product div.category-heading div.category-heading-tips .alert {
   margin: 5px 0 0;
   padding: 10px 20px;
+  font-size: 17px;
+  font-weight: 300;
+}
+.product div.category-heading div.category-heading-tips .alert a {
+  font-weight: bold;
+  text-decoration: underline;
+}
+.product div.category-heading div.category-heading-tips .alert a:hover {
+  color: #fff;
 }
 .product .biblio {
   float: left;

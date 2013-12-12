@@ -1,6 +1,5 @@
 <div ng-if="getStatus()" class="tip alert alert-{{ getStatus() }}">
-   <span class="msg">
-      {{ getMsg() }}
+   <span class="msg" ng-bind-html-unsafe="getMsg()">
    </span>
    <button ng-click="dismiss()" class="close">&times;</button>
 </div>
