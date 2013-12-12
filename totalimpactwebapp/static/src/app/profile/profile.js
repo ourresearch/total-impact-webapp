@@ -119,7 +119,7 @@ angular.module("profile", [
 
       // twttr is a GLOBAL VAR loaded by the twitter widget script called in
       //    bottom.js. it will break in unit tests, so fix before then.
-      twttr.widgets.load()
+        twttr.widgets.load()
     });
 
 

@@ -150,9 +150,9 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
 
 angular.module("tips/tips.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("tips/tips.tpl.html",
-    "<div class=\"tip alert alert-success\" ng-repeat=\"tip in getTips()\">\n" +
+    "<div ng-if=\"getStatus()\" class=\"tip alert alert-{{ getStatus() }}\">\n" +
     "   <span class=\"msg\">\n" +
-    "      {{ tip.msg }}\n" +
+    "      {{ getMsg() }}\n" +
     "   </span>\n" +
     "   <button ng-click=\"dismiss()\" class=\"close\">&times;</button>\n" +
     "</div>");

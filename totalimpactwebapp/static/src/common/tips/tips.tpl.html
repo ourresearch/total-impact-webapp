@@ -1,6 +1,6 @@
-<div class="tip alert alert-success" ng-repeat="tip in getTips()">
+<div ng-if="getStatus()" class="tip alert alert-{{ getStatus() }}">
    <span class="msg">
-      {{ tip.msg }}
+      {{ getMsg() }}
    </span>
    <button ng-click="dismiss()" class="close">&times;</button>
 </div>

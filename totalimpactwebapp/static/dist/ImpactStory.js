@@ -1698,7 +1698,7 @@ angular.module("profile", [
 
       // twttr is a GLOBAL VAR loaded by the twitter widget script called in
       //    bottom.js. it will break in unit tests, so fix before then.
-      twttr.widgets.load()
+        twttr.widgets.load()
     });
 
 
@@ -4183,15 +4183,17 @@ angular.module("tips", ['ngResource'])
 
 .factory("TipsService", function($interpolate, TipsResource){
 
-  var tips = []
+  var whitelist = []
   var url_slug
 
+  var tipDefaults = {
+    status: 'success'
+  }
 
-
-  var tips_config = [
+  var tips = [
     {
       id: "how_we_found_these_blog_posts",
-      msg: 'we found your blog stuff, with magic.'
+      msg: 'we found your blog stuff, with magic.',
     },
 
     {
@@ -4201,7 +4203,8 @@ angular.module("tips", ['ngResource'])
 
     {
       id: 'upload_wordpress_key',
-      msg: 'You should add your wordpress key there, sport.'
+      msg: 'You should add your wordpress key there, sport.',
+      status: 'warning'
     },
 
     {
@@ -4211,16 +4214,25 @@ angular.module("tips", ['ngResource'])
   ]
 
 
-
   return {
-    'get': function(key){
-      return _.filter(tips, function(tip){
-        return tip.id === key
-      })
+    'get': function(key, tipProperty){
+
+      var ret
+      if (_.contains(whitelist, key)){
+        var tip = _.findWhere(tips, {id: key})
+        var tipWithDefaults = _.defaults(tip, tipDefaults)
+        ret = tipWithDefaults[tipProperty]
+      }
+      else {
+        ret = null
+      }
+
+      return ret
+
     },
 
     keysStr: function(){
-      return _.pluck(tips_config, "id").join()
+      return _.pluck(tips, "id").join()
     },
 
     clear: function(){
@@ -4233,18 +4245,13 @@ angular.module("tips", ['ngResource'])
       url_slug = url_slug_arg // set factory-level var
 
       TipsResource.get({slug: url_slug}, function(resp){
-
-        tips = _.filter(tips_config, function(tip){
-          return _.contains(resp.ids, tip.id)
-        })
+        whitelist = resp.ids
       })
     },
 
 
     remove: function(id){
-      tips = _.filter(tips, function(tip){
-        return tip.id !== id
-      })
+      whitelist = _.without(whitelist, id)
       TipsResource.delete(
         {slug: url_slug},
         {'id': id},
@@ -4267,9 +4274,14 @@ angular.module("tips", ['ngResource'])
       },
       link: function(scope, elem, attrs){
 
-        scope.getTips = function(){
-          return TipsService.get(scope.key)
+        scope.getStatus = function(){
+          return TipsService.get(scope.key, 'status')
         }
+
+        scope.getMsg = function(){
+          return TipsService.get(scope.key, 'msg')
+        }
+
 
         scope.dismiss = function() {
           console.log("dismissing tip", scope.key)
@@ -5913,9 +5925,9 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
 
 angular.module("tips/tips.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("tips/tips.tpl.html",
-    "<div class=\"tip alert alert-success\" ng-repeat=\"tip in getTips()\">\n" +
+    "<div ng-if=\"getStatus()\" class=\"tip alert alert-{{ getStatus() }}\">\n" +
     "   <span class=\"msg\">\n" +
-    "      {{ tip.msg }}\n" +
+    "      {{ getMsg() }}\n" +
     "   </span>\n" +
     "   <button ng-click=\"dismiss()\" class=\"close\">&times;</button>\n" +
     "</div>");
