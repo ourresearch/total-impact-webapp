@@ -7637,11 +7637,18 @@ div.products .wrapper div.products-without-metrics div.well a {
   font-weight: 300;
 }
 .product div.category-heading div.category-heading-tips .alert a {
-  font-weight: bold;
-  text-decoration: underline;
+  font-weight: 900;
+  margin: 0 5px;
 }
 .product div.category-heading div.category-heading-tips .alert a:hover {
+  text-decoration: underline;
   color: #fff;
+}
+.product div.category-heading div.category-heading-tips .alert a:hover i {
+  text-decoration: none;
+}
+.product div.category-heading div.category-heading-tips .alert a i {
+  margin-right: 2px;
 }
 .product .biblio {
   float: left;
