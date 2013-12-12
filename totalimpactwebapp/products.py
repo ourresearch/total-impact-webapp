@@ -37,12 +37,14 @@ def make_heading_product_for_category(genre, account, category_products):
         'headingDimension': 'category',
         'summary':{
             'numProducts': len(category_products)
-        }
+        },
     }
 
+    # extract relevant info from the account product
     for product in category_products:
         if "is_account" in product["biblio"].keys():
             heading_product["metrics"] = product["metrics"]
+            heading_product["account_biblio"] = product["biblio"]
 
     return heading_product
 
