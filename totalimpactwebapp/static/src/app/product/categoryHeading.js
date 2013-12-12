@@ -41,7 +41,7 @@ angular.module('product.categoryHeading', [])
     }
 
     $scope.upload_wordpress_key = false
-    if ($scope.product.account_biblio.hosting_platform == "wordpress.com"){
-      $scope.upload_wordpress_key =  "upload_wordpress_key"
-    }
+//    if ($scope.product.account_biblio.hosting_platform == "wordpress.com"){
+//      $scope.upload_wordpress_key =  "upload_wordpress_key"
+//    }
 })
