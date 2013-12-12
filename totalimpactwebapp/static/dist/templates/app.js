@@ -885,8 +885,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "            <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.id }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.id }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "            </ul>\n" +
     "         </span>\n" +
     "      </div>\n" +
@@ -912,50 +912,47 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <div class=\"category-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
     "                id=\"{{ product.headingValue }}\"\n" +
     "                ng-controller=\"CategoryHeadingCtrl\"\n" +
-    "                ng-show=\"product.isHeading\">\n" +
+    "                ng-if=\"product.isHeading\">\n" +
+    "               <div class=\"category-heading-main\">\n" +
+    "                  <h2>\n" +
+    "                     <a class=\"genre-anchor\"\n" +
+    "                        ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
+    "                        <span class=\"text\">permalink</span>\n" +
+    "                        <i class=\"icon-link\"></i>\n" +
+    "                     </a>\n" +
+    "                     <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
+    "                     <span class=\"genre\">{{ product.genre }}</span>\n" +
+    "                     <span class=\"account\" ng-if=\"product.account\">{{ product.account }}</span>\n" +
     "\n" +
-    "               <h2>\n" +
-    "                  <a class=\"genre-anchor\"\n" +
-    "                     ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
-    "                     <span class=\"text\">permalink</span>\n" +
-    "                     <i class=\"icon-link\"></i>\n" +
-    "                  </a>\n" +
-    "                  <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
-    "                  <span class=\"genre\">{{ product.genre }}</span>\n" +
-    "                  <span class=\"account\" ng-if=\"product.account\">{{ product.account }}</span>\n" +
+    "                  </h2>\n" +
+    "                  <div class=\"clearfix\"></div>\n" +
     "\n" +
-    "               </h2>\n" +
+    "                  <div class=\"category-metrics\">\n" +
+    "                     <ul class=\"account-metrics\">\n" +
+    "                        <li class=\"category-metric\"\n" +
+    "                            ng-repeat=\"metric in product.metrics\">\n" +
     "\n" +
-    "               <div class=\"category-metrics\">\n" +
-    "                  <ul class=\"account-metrics\">\n" +
-    "                     <li class=\"category-metric\"\n" +
-    "                         ng-repeat=\"metric in product.metrics\">\n" +
-    "\n" +
-    "                        <a href=\"{{ metric.provenance_url }}\"\n" +
-    "                           tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           class=\"value\">\n" +
-    "                           {{ metric.values.raw }}\n" +
-    "                        </a>\n" +
-    "                        <span class=\"metric-descr\"\n" +
+    "                           <a href=\"{{ metric.provenance_url }}\"\n" +
+    "                              target=\"_blank\"\n" +
+    "                              tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
     "                              tooltip-placement=\"bottom\"\n" +
-    "                              tooltip=\"{{ metric.static_meta.description }}\">\n" +
-    "                           {{ metric.static_meta.display_name }}\n" +
-    "                        </span>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
+    "                              class=\"value\">\n" +
+    "                              {{ metric.values.raw }}\n" +
+    "                           </a>\n" +
+    "                           <span class=\"metric-descr\"\n" +
+    "                                 tooltip-placement=\"bottom\"\n" +
+    "                                 tooltip=\"{{ metric.static_meta.description }}\">\n" +
+    "                              {{ metric.static_meta.display_name }}\n" +
+    "                           </span>\n" +
     "                         </li>\n" +
-    "\n" +
-    "                  </ul>\n" +
-    "                  <ul class=\"summary-metrics\">\n" +
-    "\n" +
-    "\n" +
-    "                  </ul>\n" +
-    "\n" +
-    "\n" +
+    "                     </ul>\n" +
+    "                     <ul class=\"summary-metrics\"><!-- fill this later--></ul>\n" +
+    "                  </div>\n" +
     "               </div>\n" +
-    "\n" +
+    "               <div class=\"category-heading-tips\">\n" +
+    "                  <tip key=\"how_we_found_these\" />\n" +
+    "                  <tip key=\"upload_wordpress_key\" />\n" +
+    "               </div>\n" +
     "\n" +
     "            </div>\n" +
     "\n" +

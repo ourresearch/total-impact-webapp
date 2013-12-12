@@ -75,6 +75,8 @@ class User(db.Model):
     slideshare_id = db.Column(db.String(64))
     twitter_account_id = db.Column(db.String(64))
     figshare_id = db.Column(db.String(64))
+    wordpress_api_key = db.Column(db.String(64))
+    tips = db.Column(db.String())  # ALTER TABLE "user" ADD tips text
 
     tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
@@ -117,6 +119,20 @@ class User(db.Model):
 
         return ascii_slug
 
+    def set_tips(self, tips):
+        self.tips = ",".join(tips)
+
+    def get_tips(self):
+        try:
+            return self.tips.split(",")
+        except AttributeError:
+            return []
+
+    def delete_tip(self, tip_to_delete):
+        filtered = [tip for tip in self.get_tips() if tip != tip_to_delete]
+        self.set_tips(filtered)
+        return filtered
+
 
     def uniqueify_slug(self):
         self.url_slug += str(random.randint(1000, 99999))
@@ -157,9 +173,27 @@ class User(db.Model):
     def get_id(self):
         return unicode(self.id)
 
+    def get_analytics_credentials(self):
+        creds = {}
+        if self.wordpress_api_key:
+            creds["wordpress_api_key"] = self.wordpress_api_key
+        return creds
+
     def get_products(self):
         products = get_products_from_core(self.tiids)
         return products
+
+    def add_products(self, tiids_to_add):
+        return add_products_to_user(self.id, tiids_to_add)
+
+    def delete_products(self, tiids_to_delete):
+        delete_products_from_user(self.id, tiids_to_delete)
+        return {"deleted_tiids": tiids_to_delete}
+
+    def refresh_products(self):
+        analytics_credentials = self.get_analytics_credentials()        
+        return refresh_products_from_user(self.tiids, analytics_credentials)
+
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -180,17 +214,6 @@ class User(db.Model):
                     pass
 
         return self
-
-
-    def add_products(self, tiids_to_add):
-        return add_products_to_user(self.id, tiids_to_add, db)
-
-    def delete_products(self, tiids_to_delete):
-        delete_products_from_user(self.id, tiids_to_delete, db)
-        return {"deleted_tiids": tiids_to_delete}
-
-    def refresh_products(self):
-        return refresh_products_from_user(self.tiids)
 
 
     def __repr__(self):
@@ -214,6 +237,7 @@ class User(db.Model):
             "slideshare_id",
             "twitter_account_id",
             "figshare_id"
+            # ,"wordpress_api_key"  # leave this out on purpose because it is confidential
         ]
 
         ret_dict = {}
@@ -243,7 +267,9 @@ def get_products_from_core(tiids):
         query=query))
 
     r = requests.post(query,
-            data=json.dumps({"tiids": tiids}),
+            data=json.dumps({
+                "tiids": tiids
+                }),
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
     products = r.json()["products"]
@@ -252,7 +278,7 @@ def get_products_from_core(tiids):
     return products_list
 
 
-def add_products_to_user(user_id, tiids, db):
+def add_products_to_user(user_id, tiids):
     user_object = User.query.get(user_id)
     db.session.merge(user_object)
 
@@ -271,7 +297,7 @@ def add_products_to_user(user_id, tiids, db):
     return tiids
 
 
-def delete_products_from_user(user_id, tiids_to_delete, db):
+def delete_products_from_user(user_id, tiids_to_delete):
     user_object = User.query.get(user_id)
     db.session.merge(user_object)
 
@@ -291,7 +317,7 @@ def delete_products_from_user(user_id, tiids_to_delete, db):
 
 
 
-def refresh_products_from_user(tiids):
+def refresh_products_from_user(tiids, analytics_credentials={}):
     if not tiids:
         return None
 
@@ -301,7 +327,10 @@ def refresh_products_from_user(tiids):
     )
 
     r = requests.post(query,
-            data=json.dumps({"tiids": tiids}),
+            data=json.dumps({
+                "tiids": tiids,
+                "analytics_credentials": analytics_credentials
+                }),
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
     return tiids

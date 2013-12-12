@@ -149,7 +149,7 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "username",
             help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
-            saveUsername: true
+            saveUsername: "github_id"
           }
          ,{
             tab:1,
@@ -157,12 +157,12 @@ angular.module('importers.allTheImporters')
             inputType: "idList",
             inputNeeded: "URLs",
             help: "Paste URLs for other github repositories here.",
-            placeholder: "https://github.com/cboettig/knitcitations",
+            placeholder: "https://github.com/your_username/your_repository",
             cleanupFunction: function (fullString) {
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
                 // make sure it starts with https and doesn't end with trailing slash
-                var working = line.replace(/https*:\/\//, ""); 
+                var working = line.replace(/^https*:\/\//, ""); 
                 working = working.replace(/\/$/, ""); 
                 return "https://"+working}).join("\n")}
          }
@@ -176,7 +176,7 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "ID",
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
-        saveUsername: true,
+        saveUsername: "orcid_id",
         cleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
         help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
       }],
@@ -204,7 +204,7 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "username",
             help: "Your username is right after \"slideshare.net/\" in your profile's URL.",            
-            saveUsername: true
+            saveUsername: "slideshare_id"
           }
          ,{
             tab:1,
@@ -212,12 +212,12 @@ angular.module('importers.allTheImporters')
             inputType: "idList",
             inputNeeded: "URLs",
             help: "Paste URLs for other SlideShare products here.",
-            placeholder: "http://www.slideshare.net/smith/conf-presentation",
+            placeholder: "http://www.slideshare.net/your-username/your-presentation",
             cleanupFunction: function (fullString) {
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
                 // make sure it starts with http
-                var working = line.replace(/https*:\/\//, ""); 
+                var working = line.replace(/^https*:\/\//, ""); 
                 return "http://"+working}).join("\n")}
          }
       ]
@@ -231,7 +231,7 @@ angular.module('importers.allTheImporters')
         inputNeeded: "username",
         help: "Your Twitter username is often written starting with @.",
         placeholder: "@username",
-        saveUsername: true,
+        saveUsername: "twitter_account_id",
         cleanupFunction: function(x) {return('@'+x.replace('@', ''))}
       }],
       endpoint: "twitter_account",
@@ -275,9 +275,9 @@ angular.module('importers.allTheImporters')
             name: "account_name",            
             inputType: "username",
             inputNeeded: "author page URL",
-            placeholder: "http://figshare.com/authors/schamberlain/96554",            
+            placeholder: "http://figshare.com/authors/your_username/12345",
             cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))},            
-            saveUsername: true
+            saveUsername: "figshare_id"
           }
          ,{
             tab:1,
@@ -285,43 +285,76 @@ angular.module('importers.allTheImporters')
             inputType: "idList",
             inputNeeded: "DOIs",
             help: "Paste DOIs for other figshare products here.",
-            placeholder: "http://dx.doi.org/10.6084/m9.figshare.94090"
+            placeholder: "http://dx.doi.org/10.6084/m9.figshare.12345"
          }
       ]
     },
 
 
+
     {
-      displayName: "WordPress",
+      displayName: "Blogs",
+      descr: "Blogs and websites",
+      endpoint: "wordpresscom",      
+      tabs: [
+       {
+         label: "blog url"
+       },
+       {
+         label: "additional posts"
+       },
+       {
+         label: "api key"
+       }
+       ],
       inputs: [{
-          name: "blogUrl",
-          inputType: "username",
-          inputNeeded: "WordPress.com  URL",
-          help: "Paste the URL for a WordPress.com blog.  The URL can be on custom domains (like http://blog.impactstory.org), as long as the blog is hosted on WordPress.com.",
-          placeholder: "http://retractionwatch.wordpress.com"
-        }
-//        ,{
-//           inputType: "username",
-//           inputNeeded: "API key",
-//           name: "apiKey",
-//           extra: "Your WordPress.com API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>"
-//        }
-      ],
-      endpoint: "wordpresscom",            
-      url: "http://wordpress.com",
-      descr: "WordPress.com is site that provides web hosting for blogs, using the popular WordPress software."
-    },    
+            tab: 0,
+            name: "blogUrl",            
+            inputType: "username",
+            inputNeeded: "Blog URL",
+            help: "The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",
+            placeholder: "yourblogname.com",
+            cleanupFunction: function (x) {
+              if (typeof x==="undefined") return x; 
+              return "http://"+x.replace(/^https*:\/\//, ""); 
+              }
+          }
+         ,{
+            tab:1,
+            name: "blog_post_urls",                        
+            inputType: "idList",
+            inputNeeded: "Blog post URLs",
+            help: "Paste URLs for individual blog posts here.",
+            placeholder: "http://yourblog.com/your-awesome-post",
+            cleanupFunction: function (fullString) {
+              if (typeof fullString==="undefined") return fullString; 
+              return _.map(fullString.split("\n"), function(line) {            
+                // make sure it starts with http
+                var working = line.replace(/^https*:\/\//, ""); 
+                return "http://"+working}).join("\n")}
+         }
+         ,{
+            tab:2,
+            name: "apiKey",                        
+            inputType: "username",
+            inputNeeded: "WordPress.com API key",
+            help: "If your blog is hosted at WordPress.com, include your blog API key whenever you add your blog and additional posts so we can look up pageview data.",
+            extra: "If your blog is hosted on WordPress.com your API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>",
+            saveUsername: "wordpress_api_key"            
+         }         
+      ]
+    }, 
 
 
     {
       displayName: "YouTube",
       inputs: [{
-        name: "standard_urls_input",        
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URLs for the videos you want to add, then paste them here.",
-        placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
+        placeholder: "http://www.youtube.com/watch?v=12345"
       }],
+      endpoint: "urls",
       url: "http://youtube.com",
       descr: "YouTube is an online video-sharing site."
     },
@@ -330,12 +363,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Vimeo",
       inputs: [{
-        name: "standard_urls_input",        
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URL for the video you want to add, then paste it here.",
-        placeholder: "http://vimeo.com/48605764"
+        placeholder: "http://vimeo.com/12345"
       }],
+      endpoint: "urls",
       url: "http://vimeo.com",
       descr: "Vimeo is an online video-sharing site."
     },
@@ -344,12 +377,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dryad",
       inputs: [{
-        name: "standard_dois_input",
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
         placeholder: "doi:10.5061/dryad.example"
       }],
+      endpoint: "dois",
       url: 'http://datadryad.org',
       descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."
     },
@@ -358,12 +391,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dataset DOIs",
       inputs: [{
-        name: "standard_dois_input",        
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
         placeholder: "http://doi.org/10.example/example"
       }],
+      endpoint: "dois",
       descr: "Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."
     },
 
@@ -371,12 +404,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Article DOIs",
       inputs: [{
-        name: "standard_dois_input",                
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
         placeholder: "http://doi.org/10.example/example"
       }],
+      endpoint: "dois",
       descr: "Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."
     },
 
@@ -384,25 +417,25 @@ angular.module('importers.allTheImporters')
     {
       displayName: "PubMed IDs",
       inputs: [{
-        name: "standard_pmids_input",                
         inputType: "idList",
         inputNeeded: "IDs",
         placeholder: "123456789",
         help: "You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."
       }],
+      endpoint: "pmids",
       url:'http://www.ncbi.nlm.nih.gov/pubmed',
       descr: "PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."
     },
 
 
     {
-      displayName: "Webpages",
+      displayName: "Products by URL",
       inputs: [{
-        name: "standard_urls_input",                        
         inputType: "idList",
         inputNeeded: "URLs"
       }],
-      descr: "You can import any webpages. If it has a DOI or PubMed ID, though, use those more specific importers instead of this one; you'll get better results."
+      endpoint: "urls",
+      descr: "Our service-specific importers (DOI, blogs, GitHub, etc) give the most comprehensive results. But if you've got a product not handled by any of those, you can import it here, via URL."
     }
   ]
 
@@ -416,13 +449,7 @@ angular.module('importers.allTheImporters')
 
 
   var makeLogoPath = function(displayName) {
-    var urlStyleName = displayName.toLowerCase().replace(" ", "-")
-    return '/static/img/logos/' + urlStyleName + '.png';
-  }
-
-  var makeLogoPath = function(displayName) {
-    var urlStyleName = displayName.toLowerCase().replace(" ", "-")
-    return '/static/img/logos/' + urlStyleName + '.png';
+    return '/static/img/logos/' + _(displayName.toLowerCase()).dasherize() + '.png';
   }
 
 
@@ -495,122 +522,106 @@ angular.module('importers.importer', [
   'profile'
 ])
 angular.module('importers.importer')
-.factory('Importer', function($cacheFactory, Loading, Products, UsersProducts, UsersAbout){
-  var waitingOn = {}
-  var tiidsAdded = []
-  var $httpDefaultCache = $cacheFactory.get('$http')
+.factory('Importer', function($cacheFactory, $q, Loading, Products, UsersProducts, UsersAbout){
+    var waitingOn = {}
+    var tiidsAdded = []
+    var $httpDefaultCache = $cacheFactory.get('$http')
 
-  var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
+    var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
 
-  var finish = function(importJobName){
-    waitingOn[importJobName] = false;
-    if (!_.some(_.values(waitingOn))) { // we're not waiting on anything...
-      Loading.finish('saveButton')
-      onImportCompletion()
+    var finish = function(importJobName){
+      waitingOn[importJobName] = false;
+      if (!_.some(_.values(waitingOn))) { // we're not waiting on anything...
+        Loading.finish('saveButton')
+        onImportCompletion()
+      }
     }
-  }
 
-  var start = function(importJobName){
-    Loading.start("saveButton")
-    waitingOn[importJobName] = true
-  }
-
-
-  var saveImporterInput = function(url_slug, importerObj) {
-
-    // clear the cache. this clear EVERYTHING, we can be smarter later.
-    $httpDefaultCache.removeAll()
-
-    // clean the values
-    _.each(importerObj.inputs, function(input){
-      input.cleanedValue = input.cleanupFunction(input.value)
-    })
-
-    // save external usernames
-    _.each(importerObj.inputs, function(input){
-      if (input.saveUsername){
-        saveExternalUsername(url_slug, importerObj.endpoint, input.cleanedValue)
-      }
-    })
-
-    // to save products, we need a dict of name:cleanedValue pairs.
-    var allInputValues = {}
-    _.each(importerObj.inputs, function(input){
-      allInputValues[input.name] = input.cleanedValue
-    })
-
-    // finally, save products
-    saveProducts(url_slug, importerObj.endpoint, allInputValues)
-  }
+    var start = function(importJobName){
+      Loading.start("saveButton")
+      waitingOn[importJobName] = true
+    }
 
 
-  var saveProducts = function(url_slug, importerName, userInput){
+    var saveImporterInput = function(url_slug, importerObj) {
+      // clear the cache. this clear EVERYTHING, we can be smarter later.
+      $httpDefaultCache.removeAll()
 
-    console.log("saveProducts()", url_slug, importerName, userInput)
+      // clean the values
+      _.each(importerObj.inputs, function(input){
+        input.cleanedValue = input.cleanupFunction(input.value)
+      })
 
-    start("saveProducts")
-    Products.save(
-      {'importerName': importerName}, // define the url
-      userInput, // the post data, from user input
-      function(resp, headers){  // run when the server gives us something back.
-        var tiids;
+      saveExternalUsernames(url_slug, importerObj.inputs)
+      saveProducts(url_slug, importerObj.endpoint, importerObj.inputs)
 
-        if (resp.error){
-          tiids = []
-        }
-        else {
-          tiids = _.keys(resp.products)
-        }
+    }
 
-        console.log("importer got us some tiids:", tiids);
-        tiidsAdded = tiids
 
-        // add the new products to the user's profile on the server
-        UsersProducts.patch(
-          {id: url_slug},  // the url
-          {"tiids": tiids},  // the POST data
-          function(){
-            finish("saveProducts")
+    var saveProducts = function(url_slug, importerName, userInputObjs){
+
+      // make a simple dict of cleaned input values.
+      var userInput = {}
+      _.each(userInputObjs, function(input){
+        userInput[input.name] = input.cleanedValue
+      })
+
+      console.log("saveProducts()", url_slug, importerName, userInput)
+      start("saveProducts")
+      Products.save(
+        {'importerName': importerName}, // define the url
+        userInput, // the post data, from user input
+        function(resp, headers){  // run when the server gives us something back.
+          var tiids;
+
+          if (resp.error){
+            tiids = []
           }
-        )
-      }
-    )
-  }
+          else {
+            tiids = _.keys(resp.products)
+          }
 
-  var saveExternalUsername = function(url_slug, importerName, externalUsername){
+          console.log("importer got us some tiids:", tiids);
+          tiidsAdded = tiids
 
-    var patchData = {about:{}}
-    patchData.about[importerName + "_id"] = externalUsername
+          // add the new products to the user's profile on the server
+          UsersProducts.patch(
+            {id: url_slug},  // the url
+            {"tiids": tiids},  // the POST data
+            function(){
+              finish("saveProducts")
+            }
+          )
+        }
+      )
+    }
 
-    console.log("trying to save this patch data: ", patchData)
 
-    start("saveExternalUsernames")
-    console.log("saving usernames")
-    UsersAbout.patch(
-      {id:url_slug},
-      patchData,
-      function(){
-        finish("saveExternalUsernames")
-      }
-    )
-  }
+    var saveExternalUsernames = function(url_slug, userInputObjs){
 
-  var cleanInput = function(userInput, inputObjects){
-    var cleanedUserInput = _.map(userInput, function(userInputValue, inputName) {
+      var about = {}
+      _.each(userInputObjs, function(input){
+        if (input.saveUsername){
+          about[input.saveUsername] = input.cleanedValue
+        }
+      })
 
-      var relevantInputObject = _.first(_.where(inputObjects, {name:inputName}))
-      if (!relevantInputObject){
-        return userInputValue  // change nothing.
-      }
-      else {
-        var relevantFunction = relevantInputObject.inputCleanupFunction || function(x) {return(x)}
-        return(relevantFunction(userInputValue))
-      }
+      var patchData = {'about': about}
+      console.log("trying to save this patch data: ", patchData)
 
-    })
-    console.log(cleanedUserInput)
-    return(_.object(_.keys(userInput), cleanedUserInput))
-  }
+      start("saveExternalUsernames")
+      console.log("saving usernames")
+      UsersAbout.patch(
+        {id:url_slug},
+        patchData,
+        function(resp){
+          finish("saveExternalUsernames")
+          console.log("done saving external usernames.")
+        }
+      )
+    }
+
+
 
     return {
       'saveImporterInput': saveImporterInput,
@@ -619,6 +630,7 @@ angular.module('importers.importer')
       },
       getTiids: function(){return tiidsAdded}
     }
+
 })
 
 
@@ -906,10 +918,10 @@ angular.module('product.categoryHeading', [])
       software: "icon-save",
       article: "icon-file-text-alt",
       dataset: "icon-table",
-      slides: "icon-slides",
+      slides: "icon-desktop",
       webpage: "icon-globe",
       video: "icon-facetime-video",
-      blog: "icon-edit-sign",
+      blog: "icon-comments",
       twitter: "icon-twitter",
       other: "icon-question-sign"
     }
@@ -925,11 +937,27 @@ angular.module('product.categoryHeading', [])
       }
     }
 
-
-
-
-
   })
+.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, UserProfile){
+    $scope.genreIcon = CategoryHeading.getGenreIcon
+    $scope.makeAnchorLink = function(anchor){
+      return $location.path() + "#" + anchor
+    }
+
+
+    if ($scope.product.genre == "blog"){
+      $scope.how_we_found_these = "how_we_found_these_blog_posts"
+    }
+
+    if ($scope.product.genre == "twitter"){
+      $scope.how_we_found_these = "how_we_found_these_tweets"
+    }
+
+    $scope.upload_wordpress_key = false
+//    if ($scope.product.account_biblio.hosting_platform == "wordpress.com"){
+//      $scope.upload_wordpress_key =  "upload_wordpress_key"
+//    }
+})
 
 angular.module('product.product', ['product.award'])
 angular.module('product.product')
@@ -1555,11 +1583,12 @@ angular.module("profile", [
   'services.page',
   'ui.bootstrap',
   'security',
+  'tips',
   'profile.addProducts',
   'product.categoryHeading'
 ])
 
-.config(['$routeProvider', function ($routeProvider) {
+.config(['$routeProvider', function ($routeProvider, security) {
 
   $routeProvider.when("/embed/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
@@ -1669,10 +1698,7 @@ angular.module("profile", [
 
       // twttr is a GLOBAL VAR loaded by the twitter widget script called in
       //    bottom.js. it will break in unit tests, so fix before then.
-      twttr.widgets.load()
-
-      console.log("load!")
-
+        twttr.widgets.load()
     });
 
 
@@ -1729,13 +1755,6 @@ angular.module("profile", [
 })
 
 
-.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, UserProfile){
-    $scope.genreIcon = CategoryHeading.getGenreIcon
-    $scope.makeAnchorLink = function(anchor){
-      return $location.path() + "#" + anchor
-    }
-
-})
 
 
 
@@ -1990,6 +2009,7 @@ angular.module( 'signup', [
     'resources.users',
     'update.update',
     'security.service',
+    'tips',
     'importers.allTheImporters',
     'importers.importer'
     ])
@@ -2103,7 +2123,7 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, Slug, $location, security) {
+  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {
     var  nameRegex = /\/(\w+)\/(\w+)\/url/
     var res = nameRegex.exec($location.path())
 
@@ -2116,7 +2136,8 @@ angular.module( 'signup', [
         {
           givenName: res[1],
           surname: res[2],
-          url_slug: $scope.input.url_slug
+          url_slug: $scope.input.url_slug,
+          tips: TipsService.keysStr()
         },
         function(resp, headers){
           console.log("got response back from save user", resp)
@@ -3096,11 +3117,12 @@ angular.module('security.login.toolbar', [
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
   'services.i18nNotifications',
+  'tips',
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', function($http, $q, $location, $modal, i18nNotifications) {
+.factory('security', function($http, $q, $location, $modal, i18nNotifications, TipsService) {
   var useCachedUser = false
   var currentUser
 
@@ -3145,6 +3167,7 @@ angular.module('security.service', [
         .success(function(data, status) {
             console.log("success in security.login()")
             currentUser = data.user;
+          TipsService.load(data.user.url_slug)
         })
     },
 
@@ -3214,6 +3237,8 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
+          TipsService.load(service.getCurrentUserSlug())
+
         })
         .then(function(){return currentUser})
     },
@@ -3224,6 +3249,7 @@ angular.module('security.service', [
       $http.get('/user/logout').success(function(data, status, headers, config) {
         console.log("logout message: ", data)
         i18nNotifications.pushForCurrentRoute("logout.success", "success")
+        TipsService.clear()
 //        redirect(redirectTo);
       });
     },
@@ -3266,6 +3292,15 @@ angular.module('security.service', [
 
     getCurrentUser: function(){
       return currentUser
+    },
+
+    getCurrentUserSlug: function() {
+      if (currentUser) {
+        return currentUser.url_slug
+      }
+      else {
+        return null
+      }
     },
 
     setCurrentUser: function(user){
@@ -4129,6 +4164,142 @@ angular.module("services.uservoiceWidget")
 
   }
 
+
+})
+angular.module("tips", ['ngResource'])
+.factory("TipsResource", function($resource){
+
+    return $resource(
+      '/user/:slug/tips',
+      {},
+      {
+        delete: {
+          method: "DELETE",
+          headers: {'Content-Type': 'application/json'}
+        }
+      }
+    )
+})
+
+.factory("TipsService", function($interpolate, TipsResource){
+
+  var whitelist = []
+  var url_slug
+
+  var tipDefaults = {
+    status: 'success'
+  }
+
+  var getTips = function(url_slug){
+    return [
+      {
+        id: "how_we_found_these_blog_posts",
+        msg: "We’ve imported some of your most-tweeted posts. You can click a post to remove it, or click <a href='/user/"
+          + url_slug
+          + "/products/add'><i class='icon-upload'></i>import</a> to add more."
+      },
+
+      {
+        id: "how_we_found_these_tweets",
+        msg: "We’ve imported some of your most popular tweets. You can click their badges to remove tweets, or <a href='/user/"
+          + url_slug
+          + "/products/add'><i class='icon-upload'></i>import</a> to add more."
+      },
+
+      {
+        id: 'upload_wordpress_key',
+        msg: 'You should add your wordpress key there, sport.',
+        status: 'warning'
+      },
+
+      {
+        id: 'you_can_change_your_url',
+        msg: 'dude, have you seriously not changed you url yet?'
+      }
+    ]
+  }
+
+
+  return {
+    'get': function(key, tipProperty){
+
+      var ret
+      if (_.contains(whitelist, key)){
+        var tips = getTips(url_slug)
+        var tip = _.findWhere(tips, {id: key})
+        var tipWithDefaults = _.defaults(tip, tipDefaults)
+        ret = tipWithDefaults[tipProperty]
+      }
+      else {
+        ret = null
+      }
+
+      return ret
+
+    },
+
+    keysStr: function(){
+      return _.pluck(getTips(url_slug), "id").join()
+    },
+
+    clear: function(){
+      whitelist.length = 0
+    },
+
+    load: function(url_slug_arg){
+      if (!url_slug_arg) return false // user is probably mid-login
+
+      url_slug = url_slug_arg // set factory-level var
+
+      TipsResource.get({slug: url_slug}, function(resp){
+        whitelist = resp.ids
+      })
+    },
+
+
+    remove: function(id){
+      whitelist = _.without(whitelist, id)
+      TipsResource.delete(
+        {slug: url_slug},
+        {'id': id},
+        function(resp){
+          console.log("we deleted a thing!", resp)
+        }
+
+      )
+    }
+  }
+})
+
+.directive("tip", function(TipsService, $parse){
+
+    return {
+      templateUrl: 'tips/tip.tpl.html',
+      restrict: 'E',
+      scope: {
+        key: "=key" // linked to attr, evaluated in parent scope
+      },
+      link: function(scope, elem, attrs){
+
+        scope.getStatus = function(){
+          return TipsService.get(scope.key, 'status')
+        }
+
+        scope.getMsg = function(){
+          return TipsService.get(scope.key, 'msg')
+        }
+
+
+        scope.dismiss = function() {
+          console.log("dismissing tip", scope.key)
+          return TipsService.remove(scope.key)
+        }
+
+
+
+
+      }
+    }
 
 })
 angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
@@ -5018,8 +5189,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "            <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.id }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.id }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "            </ul>\n" +
     "         </span>\n" +
     "      </div>\n" +
@@ -5045,50 +5216,47 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <div class=\"category-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
     "                id=\"{{ product.headingValue }}\"\n" +
     "                ng-controller=\"CategoryHeadingCtrl\"\n" +
-    "                ng-show=\"product.isHeading\">\n" +
+    "                ng-if=\"product.isHeading\">\n" +
+    "               <div class=\"category-heading-main\">\n" +
+    "                  <h2>\n" +
+    "                     <a class=\"genre-anchor\"\n" +
+    "                        ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
+    "                        <span class=\"text\">permalink</span>\n" +
+    "                        <i class=\"icon-link\"></i>\n" +
+    "                     </a>\n" +
+    "                     <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
+    "                     <span class=\"genre\">{{ product.genre }}</span>\n" +
+    "                     <span class=\"account\" ng-if=\"product.account\">{{ product.account }}</span>\n" +
     "\n" +
-    "               <h2>\n" +
-    "                  <a class=\"genre-anchor\"\n" +
-    "                     ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
-    "                     <span class=\"text\">permalink</span>\n" +
-    "                     <i class=\"icon-link\"></i>\n" +
-    "                  </a>\n" +
-    "                  <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
-    "                  <span class=\"genre\">{{ product.genre }}</span>\n" +
-    "                  <span class=\"account\" ng-if=\"product.account\">{{ product.account }}</span>\n" +
+    "                  </h2>\n" +
+    "                  <div class=\"clearfix\"></div>\n" +
     "\n" +
-    "               </h2>\n" +
+    "                  <div class=\"category-metrics\">\n" +
+    "                     <ul class=\"account-metrics\">\n" +
+    "                        <li class=\"category-metric\"\n" +
+    "                            ng-repeat=\"metric in product.metrics\">\n" +
     "\n" +
-    "               <div class=\"category-metrics\">\n" +
-    "                  <ul class=\"account-metrics\">\n" +
-    "                     <li class=\"category-metric\"\n" +
-    "                         ng-repeat=\"metric in product.metrics\">\n" +
-    "\n" +
-    "                        <a href=\"{{ metric.provenance_url }}\"\n" +
-    "                           tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           class=\"value\">\n" +
-    "                           {{ metric.values.raw }}\n" +
-    "                        </a>\n" +
-    "                        <span class=\"metric-descr\"\n" +
+    "                           <a href=\"{{ metric.provenance_url }}\"\n" +
+    "                              target=\"_blank\"\n" +
+    "                              tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
     "                              tooltip-placement=\"bottom\"\n" +
-    "                              tooltip=\"{{ metric.static_meta.description }}\">\n" +
-    "                           {{ metric.static_meta.display_name }}\n" +
-    "                        </span>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
+    "                              class=\"value\">\n" +
+    "                              {{ metric.values.raw }}\n" +
+    "                           </a>\n" +
+    "                           <span class=\"metric-descr\"\n" +
+    "                                 tooltip-placement=\"bottom\"\n" +
+    "                                 tooltip=\"{{ metric.static_meta.description }}\">\n" +
+    "                              {{ metric.static_meta.display_name }}\n" +
+    "                           </span>\n" +
     "                         </li>\n" +
-    "\n" +
-    "                  </ul>\n" +
-    "                  <ul class=\"summary-metrics\">\n" +
-    "\n" +
-    "\n" +
-    "                  </ul>\n" +
-    "\n" +
-    "\n" +
+    "                     </ul>\n" +
+    "                     <ul class=\"summary-metrics\"><!-- fill this later--></ul>\n" +
+    "                  </div>\n" +
     "               </div>\n" +
-    "\n" +
+    "               <div class=\"category-heading-tips\">\n" +
+    "                  <tip key=\"how_we_found_these\" />\n" +
+    "                  <tip key=\"upload_wordpress_key\" />\n" +
+    "               </div>\n" +
     "\n" +
     "            </div>\n" +
     "\n" +
@@ -5612,7 +5780,7 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "<!--  58@e.com -->");
 }]);
 
-angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html']);
+angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tip.tpl.html']);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
@@ -5760,4 +5928,13 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "</ul>\n" +
     "");
+}]);
+
+angular.module("tips/tip.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("tips/tip.tpl.html",
+    "<div ng-if=\"getStatus()\" class=\"tip alert alert-{{ getStatus() }}\">\n" +
+    "   <span class=\"msg\" ng-bind-html-unsafe=\"getMsg()\">\n" +
+    "   </span>\n" +
+    "   <button ng-click=\"dismiss()\" class=\"close\">&times;</button>\n" +
+    "</div>");
 }]);

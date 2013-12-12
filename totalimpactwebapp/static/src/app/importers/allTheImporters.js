@@ -25,7 +25,7 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "username",
             help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
-            saveUsername: true
+            saveUsername: "github_id"
           }
          ,{
             tab:1,
@@ -33,12 +33,12 @@ angular.module('importers.allTheImporters')
             inputType: "idList",
             inputNeeded: "URLs",
             help: "Paste URLs for other github repositories here.",
-            placeholder: "https://github.com/cboettig/knitcitations",
+            placeholder: "https://github.com/your_username/your_repository",
             cleanupFunction: function (fullString) {
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
                 // make sure it starts with https and doesn't end with trailing slash
-                var working = line.replace(/https*:\/\//, ""); 
+                var working = line.replace(/^https*:\/\//, ""); 
                 working = working.replace(/\/$/, ""); 
                 return "https://"+working}).join("\n")}
          }
@@ -52,7 +52,7 @@ angular.module('importers.allTheImporters')
         inputType: "username",
         inputNeeded: "ID",
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
-        saveUsername: true,
+        saveUsername: "orcid_id",
         cleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
         help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
       }],
@@ -80,7 +80,7 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "username",
             help: "Your username is right after \"slideshare.net/\" in your profile's URL.",            
-            saveUsername: true
+            saveUsername: "slideshare_id"
           }
          ,{
             tab:1,
@@ -88,12 +88,12 @@ angular.module('importers.allTheImporters')
             inputType: "idList",
             inputNeeded: "URLs",
             help: "Paste URLs for other SlideShare products here.",
-            placeholder: "http://www.slideshare.net/smith/conf-presentation",
+            placeholder: "http://www.slideshare.net/your-username/your-presentation",
             cleanupFunction: function (fullString) {
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
                 // make sure it starts with http
-                var working = line.replace(/https*:\/\//, ""); 
+                var working = line.replace(/^https*:\/\//, ""); 
                 return "http://"+working}).join("\n")}
          }
       ]
@@ -107,7 +107,7 @@ angular.module('importers.allTheImporters')
         inputNeeded: "username",
         help: "Your Twitter username is often written starting with @.",
         placeholder: "@username",
-        saveUsername: true,
+        saveUsername: "twitter_account_id",
         cleanupFunction: function(x) {return('@'+x.replace('@', ''))}
       }],
       endpoint: "twitter_account",
@@ -151,9 +151,9 @@ angular.module('importers.allTheImporters')
             name: "account_name",            
             inputType: "username",
             inputNeeded: "author page URL",
-            placeholder: "http://figshare.com/authors/schamberlain/96554",            
+            placeholder: "http://figshare.com/authors/your_username/12345",
             cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))},            
-            saveUsername: true
+            saveUsername: "figshare_id"
           }
          ,{
             tab:1,
@@ -161,43 +161,76 @@ angular.module('importers.allTheImporters')
             inputType: "idList",
             inputNeeded: "DOIs",
             help: "Paste DOIs for other figshare products here.",
-            placeholder: "http://dx.doi.org/10.6084/m9.figshare.94090"
+            placeholder: "http://dx.doi.org/10.6084/m9.figshare.12345"
          }
       ]
     },
 
 
+
     {
-      displayName: "WordPress",
+      displayName: "Blogs",
+      descr: "Blogs and websites",
+      endpoint: "wordpresscom",      
+      tabs: [
+       {
+         label: "blog url"
+       },
+       {
+         label: "additional posts"
+       },
+       {
+         label: "api key"
+       }
+       ],
       inputs: [{
-          name: "blogUrl",
-          inputType: "username",
-          inputNeeded: "WordPress.com  URL",
-          help: "Paste the URL for a WordPress.com blog.  The URL can be on custom domains (like http://blog.impactstory.org), as long as the blog is hosted on WordPress.com.",
-          placeholder: "http://retractionwatch.wordpress.com"
-        }
-//        ,{
-//           inputType: "username",
-//           inputNeeded: "API key",
-//           name: "apiKey",
-//           extra: "Your WordPress.com API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>"
-//        }
-      ],
-      endpoint: "wordpresscom",            
-      url: "http://wordpress.com",
-      descr: "WordPress.com is site that provides web hosting for blogs, using the popular WordPress software."
-    },    
+            tab: 0,
+            name: "blogUrl",            
+            inputType: "username",
+            inputNeeded: "Blog URL",
+            help: "The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",
+            placeholder: "yourblogname.com",
+            cleanupFunction: function (x) {
+              if (typeof x==="undefined") return x; 
+              return "http://"+x.replace(/^https*:\/\//, ""); 
+              }
+          }
+         ,{
+            tab:1,
+            name: "blog_post_urls",                        
+            inputType: "idList",
+            inputNeeded: "Blog post URLs",
+            help: "Paste URLs for individual blog posts here.",
+            placeholder: "http://yourblog.com/your-awesome-post",
+            cleanupFunction: function (fullString) {
+              if (typeof fullString==="undefined") return fullString; 
+              return _.map(fullString.split("\n"), function(line) {            
+                // make sure it starts with http
+                var working = line.replace(/^https*:\/\//, ""); 
+                return "http://"+working}).join("\n")}
+         }
+         ,{
+            tab:2,
+            name: "apiKey",                        
+            inputType: "username",
+            inputNeeded: "WordPress.com API key",
+            help: "If your blog is hosted at WordPress.com, include your blog API key whenever you add your blog and additional posts so we can look up pageview data.",
+            extra: "If your blog is hosted on WordPress.com your API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>",
+            saveUsername: "wordpress_api_key"            
+         }         
+      ]
+    }, 
 
 
     {
       displayName: "YouTube",
       inputs: [{
-        name: "standard_urls_input",        
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URLs for the videos you want to add, then paste them here.",
-        placeholder: "http://www.youtube.com/watch?v=2eNZcU4aVnQ"
+        placeholder: "http://www.youtube.com/watch?v=12345"
       }],
+      endpoint: "urls",
       url: "http://youtube.com",
       descr: "YouTube is an online video-sharing site."
     },
@@ -206,12 +239,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Vimeo",
       inputs: [{
-        name: "standard_urls_input",        
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URL for the video you want to add, then paste it here.",
-        placeholder: "http://vimeo.com/48605764"
+        placeholder: "http://vimeo.com/12345"
       }],
+      endpoint: "urls",
       url: "http://vimeo.com",
       descr: "Vimeo is an online video-sharing site."
     },
@@ -220,12 +253,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dryad",
       inputs: [{
-        name: "standard_dois_input",
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
         placeholder: "doi:10.5061/dryad.example"
       }],
+      endpoint: "dois",
       url: 'http://datadryad.org',
       descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."
     },
@@ -234,12 +267,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dataset DOIs",
       inputs: [{
-        name: "standard_dois_input",        
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
         placeholder: "http://doi.org/10.example/example"
       }],
+      endpoint: "dois",
       descr: "Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."
     },
 
@@ -247,12 +280,12 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Article DOIs",
       inputs: [{
-        name: "standard_dois_input",                
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
         placeholder: "http://doi.org/10.example/example"
       }],
+      endpoint: "dois",
       descr: "Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."
     },
 
@@ -260,25 +293,25 @@ angular.module('importers.allTheImporters')
     {
       displayName: "PubMed IDs",
       inputs: [{
-        name: "standard_pmids_input",                
         inputType: "idList",
         inputNeeded: "IDs",
         placeholder: "123456789",
         help: "You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."
       }],
+      endpoint: "pmids",
       url:'http://www.ncbi.nlm.nih.gov/pubmed',
       descr: "PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."
     },
 
 
     {
-      displayName: "Webpages",
+      displayName: "Products by URL",
       inputs: [{
-        name: "standard_urls_input",                        
         inputType: "idList",
         inputNeeded: "URLs"
       }],
-      descr: "You can import any webpages. If it has a DOI or PubMed ID, though, use those more specific importers instead of this one; you'll get better results."
+      endpoint: "urls",
+      descr: "Our service-specific importers (DOI, blogs, GitHub, etc) give the most comprehensive results. But if you've got a product not handled by any of those, you can import it here, via URL."
     }
   ]
 
@@ -292,13 +325,7 @@ angular.module('importers.allTheImporters')
 
 
   var makeLogoPath = function(displayName) {
-    var urlStyleName = displayName.toLowerCase().replace(" ", "-")
-    return '/static/img/logos/' + urlStyleName + '.png';
-  }
-
-  var makeLogoPath = function(displayName) {
-    var urlStyleName = displayName.toLowerCase().replace(" ", "-")
-    return '/static/img/logos/' + urlStyleName + '.png';
+    return '/static/img/logos/' + _(displayName.toLowerCase()).dasherize() + '.png';
   }
 
 

@@ -17,8 +17,7 @@
          margin-top: 50px;
       }
       width: 95%;
-      padding-bottom: 5px;
-      border-bottom: 1px solid #eee;
+
    }
 
    &.twitter.real-product {
@@ -70,99 +69,114 @@
 
    div.category-heading {
       width: 100%;
-      padding-bottom: 20px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #eee;
 
-      h2 {
-         margin: 0 0 0 -23px;
-         font-weight: 900;
-         text-transform: capitalize;
-         font-size: 30px;
-         color:  #555;
-         float:left;
-         .clearfix();
-         span.genre{
+      div.category-heading-main {
+         position: relative;
 
-         }
-         span.account{
-            font-weight: 300;
-            margin-left:.2em;
-            text-transform: lowercase;
-         }
-
-
-         &:hover {
-            a.genre-anchor {
-               color: @linkColor;
-            }
-         }
-         a.genre-anchor {
-            color: #cccccc;
-            position:relative;
-            i.icon-link {
-               font-size: 16px;
-               margin:0 2px 0 0;
-            }
-            span.text {
-               width:80px;
-               margin-left: -86px;
-               padding: 5px 2px 0;
-               display:none;
-               color: @linkColor;
-               font-size: 14px;
-               font-weight: normal;
+         h2 {
+            .clearfix();
+            margin: 0 0 0 -23px;
+            font-weight: 900;
+            text-transform: capitalize;
+            font-size: 30px;
+            color:  #555;
+            float:left;
+            span.account{
+               font-weight: 300;
+               margin-left:.2em;
                text-transform: lowercase;
-               text-align: right;
             }
+
+
             &:hover {
-               span.text {
-                  display: inline-block;
+               a.genre-anchor {
+                  color: @linkColor;
                }
             }
-         }
-         &:hover {
             a.genre-anchor {
+               color: #cccccc;
+               position:relative;
+               i.icon-link {
+                  font-size: 16px;
+                  margin:0 2px 0 0;
+               }
+               span.text {
+                  width:80px;
+                  margin-left: -86px;
+                  padding: 5px 2px 0;
+                  display:none;
+                  color: @linkColor;
+                  font-size: 14px;
+                  font-weight: normal;
+                  text-transform: lowercase;
+                  text-align: right;
+               }
+               &:hover {
+                  span.text {
+                     display: inline-block;
+                  }
+               }
             }
-         }
-         .tooltip.left {
-            width: 100px;
-            .tooltip-arrow{
-               border-left-color: transparent;
-            }
-            .tooltip-inner {
-               color: @linkColor;
-               text-align:right;
+            .tooltip.left {
+               width: 100px;
+               .tooltip-arrow{
+                  border-left-color: transparent;
+               }
+               .tooltip-inner {
+                  color: @linkColor;
+                  text-align:right;
 
+               }
+            }
+            i {
+               vertical-align: 2px;
+               margin-right: 4px;
+               font-size: 90%;
+               text-align: right;
             }
          }
-         a.genre-anchor {
-            i.icon-link {
 
-            }
-         }
-         i {
-            vertical-align: 2px;
-            margin-right: 4px;
-            font-size: 90%;
+         div.category-metrics {
+            margin-top: 10px;
             text-align: right;
+            position:absolute;
+            bottom:0;
+            right:0;
+
+            ul {
+               li.category-metric {
+                  display:inline-block;
+                  margin-right: 20px;
+                  .metric-descr {
+                     font-size: 80%;
+                     cursor: help;
+                  }
+               }
+            }
          }
       }
 
-      div.category-metrics {
-         margin-top: 10px;
-         text-align: right;
-         position:absolute;
-         bottom:0;
-         right:0;
-
-         ul {
-            li.category-metric {
-               display:inline-block;
-               margin-right: 20px;
-               .metric-descr {
-                  font-size: 80%;
-                  cursor: help;
+      div.category-heading-tips {
+         .alert {
+            margin: 5px 0 0;
+            padding: 10px 20px;
+            font-size: 17px;
+            font-weight: 300;
+            a {
+               font-weight: 900;
+               margin:0 3px;
+               &:hover {
+                  text-decoration: underline;
+                  color: #fff;
+                  i {text-decoration:none;}
+               }
+               i {
+                  margin-right: 2px;
                }
             }
+
          }
       }
    }

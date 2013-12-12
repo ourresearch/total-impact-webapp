@@ -4,11 +4,12 @@ angular.module("profile", [
   'services.page',
   'ui.bootstrap',
   'security',
+  'tips',
   'profile.addProducts',
   'product.categoryHeading'
 ])
 
-.config(['$routeProvider', function ($routeProvider) {
+.config(['$routeProvider', function ($routeProvider, security) {
 
   $routeProvider.when("/embed/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
@@ -118,10 +119,7 @@ angular.module("profile", [
 
       // twttr is a GLOBAL VAR loaded by the twitter widget script called in
       //    bottom.js. it will break in unit tests, so fix before then.
-      twttr.widgets.load()
-
-      console.log("load!")
-
+        twttr.widgets.load()
     });
 
 
@@ -178,13 +176,6 @@ angular.module("profile", [
 })
 
 
-.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, UserProfile){
-    $scope.genreIcon = CategoryHeading.getGenreIcon
-    $scope.makeAnchorLink = function(anchor){
-      return $location.path() + "#" + anchor
-    }
-
-})
 
 
 

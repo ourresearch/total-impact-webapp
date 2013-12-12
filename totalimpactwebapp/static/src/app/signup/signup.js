@@ -4,6 +4,7 @@ angular.module( 'signup', [
     'resources.users',
     'update.update',
     'security.service',
+    'tips',
     'importers.allTheImporters',
     'importers.importer'
     ])
@@ -117,7 +118,7 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, Slug, $location, security) {
+  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {
     var  nameRegex = /\/(\w+)\/(\w+)\/url/
     var res = nameRegex.exec($location.path())
 
@@ -130,7 +131,8 @@ angular.module( 'signup', [
         {
           givenName: res[1],
           surname: res[2],
-          url_slug: $scope.input.url_slug
+          url_slug: $scope.input.url_slug,
+          tips: TipsService.keysStr()
         },
         function(resp, headers){
           console.log("got response back from save user", resp)
