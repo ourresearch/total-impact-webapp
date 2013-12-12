@@ -123,7 +123,10 @@ class User(db.Model):
         self.tips = ",".join(tips)
 
     def get_tips(self):
-        return self.tips.split(",")
+        try:
+            return self.tips.split(",")
+        except AttributeError:
+            return []
 
     def delete_tip(self, tip_to_delete):
         filtered = [tip for tip in self.get_tips() if tip != tip_to_delete]
