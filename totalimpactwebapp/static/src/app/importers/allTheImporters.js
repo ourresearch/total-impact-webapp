@@ -99,20 +99,46 @@ angular.module('importers.allTheImporters')
       ]
     },
 
-
     {
       displayName: "Twitter",
-      inputs: [{
-        inputType: "username",
-        inputNeeded: "username",
-        help: "Your Twitter username is often written starting with @.",
-        placeholder: "@username",
-        saveUsername: "twitter_account_id",
-        cleanupFunction: function(x) {return('@'+x.replace('@', ''))}
-      }],
-      endpoint: "twitter_account",
       url: "http://twitter.com",
-      descr: "Twitter is a social networking site for sharing short messages."
+      descr: "Twitter is a social networking site for sharing short messages.",
+      endpoint: "twitter_account",      
+      tabs: [
+       {
+         label: "account"
+       },
+       {
+         label: "additional tweets"
+       }
+       ],
+      inputs: [{
+            tab: 0,
+            name: "account_name",            
+            inputType: "username",
+            inputNeeded: "username",
+            help: "Your Twitter username is often written starting with @.",
+            saveUsername: "twitter_account_id",
+            placeholder: "@username",            
+            cleanupFunction: function(x) {
+              if (typeof x==="undefined") return x; 
+              return('@'+x.replace('@', ''))}
+          }
+         ,{
+            tab:1,
+            name: "standard_urls_input",                        
+            inputType: "idList",
+            inputNeeded: "URLs",
+            help: "Paste URLs for other Tweets here.",
+            placeholder: "https://twitter.com/username/status/123456",
+            cleanupFunction: function (fullString) {
+              if (typeof fullString==="undefined") return fullString; 
+              return _.map(fullString.split("\n"), function(line) {            
+                // make sure it starts with http
+                var working = line.replace(/https*:\/\//, ""); 
+                return "http://"+working}).join("\n")}
+         }
+      ]
     },
 
     {
@@ -178,10 +204,7 @@ angular.module('importers.allTheImporters')
        },
        {
          label: "additional posts"
-       },
-       {
-         label: "api key"
-       }
+       }       
        ],
       inputs: [{
             tab: 0,
@@ -190,9 +213,11 @@ angular.module('importers.allTheImporters')
             inputNeeded: "Blog URL",
             help: "The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",
             placeholder: "yourblogname.com",
-            cleanupFunction: function (x) {
-              if (typeof x==="undefined") return x; 
-              return "http://"+x.replace(/^https*:\/\//, ""); 
+            cleanupFunction: function (line) {
+              if (typeof line==="undefined") return line; 
+              var working = line.replace(/^https*:\/\//, ""); 
+              working = working.replace(/\/$/, ""); 
+              return "http://"+working; 
               }
           }
          ,{
@@ -205,19 +230,11 @@ angular.module('importers.allTheImporters')
             cleanupFunction: function (fullString) {
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
-                // make sure it starts with http
+                // make sure it starts with http and ends without trailing slash
                 var working = line.replace(/^https*:\/\//, ""); 
+                 working = working.replace(/\/$/, ""); 
                 return "http://"+working}).join("\n")}
-         }
-         ,{
-            tab:2,
-            name: "apiKey",                        
-            inputType: "username",
-            inputNeeded: "WordPress.com API key",
-            help: "If your blog is hosted at WordPress.com, include your blog API key whenever you add your blog and additional posts so we can look up pageview data.",
-            extra: "If your blog is hosted on WordPress.com your API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>",
-            saveUsername: "wordpress_api_key"            
-         }         
+         }     
       ]
     }, 
 
@@ -225,6 +242,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "YouTube",
       inputs: [{
+        name: "standard_urls_input",
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URLs for the videos you want to add, then paste them here.",
@@ -239,6 +257,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Vimeo",
       inputs: [{
+        name: "standard_urls_input",        
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URL for the video you want to add, then paste it here.",
@@ -253,6 +272,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dryad",
       inputs: [{
+        name: "standard_dois_input",        
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
@@ -267,6 +287,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dataset DOIs",
       inputs: [{
+        name: "standard_dois_input",                
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
@@ -280,6 +301,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Article DOIs",
       inputs: [{
+        name: "standard_dois_input",                
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
@@ -293,6 +315,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "PubMed IDs",
       inputs: [{
+        name: "standard_pmids_input",                
         inputType: "idList",
         inputNeeded: "IDs",
         placeholder: "123456789",
@@ -307,6 +330,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Products by URL",
       inputs: [{
+        name: "standard_urls_input",                
         inputType: "idList",
         inputNeeded: "URLs"
       }],

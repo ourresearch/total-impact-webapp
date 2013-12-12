@@ -223,20 +223,46 @@ angular.module('importers.allTheImporters')
       ]
     },
 
-
     {
       displayName: "Twitter",
-      inputs: [{
-        inputType: "username",
-        inputNeeded: "username",
-        help: "Your Twitter username is often written starting with @.",
-        placeholder: "@username",
-        saveUsername: "twitter_account_id",
-        cleanupFunction: function(x) {return('@'+x.replace('@', ''))}
-      }],
-      endpoint: "twitter_account",
       url: "http://twitter.com",
-      descr: "Twitter is a social networking site for sharing short messages."
+      descr: "Twitter is a social networking site for sharing short messages.",
+      endpoint: "twitter_account",      
+      tabs: [
+       {
+         label: "account"
+       },
+       {
+         label: "additional tweets"
+       }
+       ],
+      inputs: [{
+            tab: 0,
+            name: "account_name",            
+            inputType: "username",
+            inputNeeded: "username",
+            help: "Your Twitter username is often written starting with @.",
+            saveUsername: "twitter_account_id",
+            placeholder: "@username",            
+            cleanupFunction: function(x) {
+              if (typeof x==="undefined") return x; 
+              return('@'+x.replace('@', ''))}
+          }
+         ,{
+            tab:1,
+            name: "standard_urls_input",                        
+            inputType: "idList",
+            inputNeeded: "URLs",
+            help: "Paste URLs for other Tweets here.",
+            placeholder: "https://twitter.com/username/status/123456",
+            cleanupFunction: function (fullString) {
+              if (typeof fullString==="undefined") return fullString; 
+              return _.map(fullString.split("\n"), function(line) {            
+                // make sure it starts with http
+                var working = line.replace(/https*:\/\//, ""); 
+                return "http://"+working}).join("\n")}
+         }
+      ]
     },
 
     {
@@ -302,10 +328,7 @@ angular.module('importers.allTheImporters')
        },
        {
          label: "additional posts"
-       },
-       {
-         label: "api key"
-       }
+       }       
        ],
       inputs: [{
             tab: 0,
@@ -314,9 +337,11 @@ angular.module('importers.allTheImporters')
             inputNeeded: "Blog URL",
             help: "The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",
             placeholder: "yourblogname.com",
-            cleanupFunction: function (x) {
-              if (typeof x==="undefined") return x; 
-              return "http://"+x.replace(/^https*:\/\//, ""); 
+            cleanupFunction: function (line) {
+              if (typeof line==="undefined") return line; 
+              var working = line.replace(/^https*:\/\//, ""); 
+              working = working.replace(/\/$/, ""); 
+              return "http://"+working; 
               }
           }
          ,{
@@ -329,19 +354,11 @@ angular.module('importers.allTheImporters')
             cleanupFunction: function (fullString) {
               if (typeof fullString==="undefined") return fullString; 
               return _.map(fullString.split("\n"), function(line) {            
-                // make sure it starts with http
+                // make sure it starts with http and ends without trailing slash
                 var working = line.replace(/^https*:\/\//, ""); 
+                 working = working.replace(/\/$/, ""); 
                 return "http://"+working}).join("\n")}
-         }
-         ,{
-            tab:2,
-            name: "apiKey",                        
-            inputType: "username",
-            inputNeeded: "WordPress.com API key",
-            help: "If your blog is hosted at WordPress.com, include your blog API key whenever you add your blog and additional posts so we can look up pageview data.",
-            extra: "If your blog is hosted on WordPress.com your API key can be discovered through Akismet at <a href='http://akismet.com/resend/' target='_blank'>http://akismet.com/resend/</a>",
-            saveUsername: "wordpress_api_key"            
-         }         
+         }     
       ]
     }, 
 
@@ -349,6 +366,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "YouTube",
       inputs: [{
+        name: "standard_urls_input",
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URLs for the videos you want to add, then paste them here.",
@@ -363,6 +381,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Vimeo",
       inputs: [{
+        name: "standard_urls_input",        
         inputType: "idList",
         inputNeeded: "URLs",
         help: "Copy the URL for the video you want to add, then paste it here.",
@@ -377,6 +396,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dryad",
       inputs: [{
+        name: "standard_dois_input",        
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
@@ -391,6 +411,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Dataset DOIs",
       inputs: [{
+        name: "standard_dois_input",                
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
@@ -404,6 +425,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Article DOIs",
       inputs: [{
+        name: "standard_dois_input",                
         inputType: "idList",
         inputNeeded: "DOIs",
         help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
@@ -417,6 +439,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "PubMed IDs",
       inputs: [{
+        name: "standard_pmids_input",                
         inputType: "idList",
         inputNeeded: "IDs",
         placeholder: "123456789",
@@ -431,6 +454,7 @@ angular.module('importers.allTheImporters')
     {
       displayName: "Products by URL",
       inputs: [{
+        name: "standard_urls_input",                
         inputType: "idList",
         inputNeeded: "URLs"
       }],
@@ -915,14 +939,16 @@ angular.module('product.categoryHeading', [])
   .factory("CategoryHeading", function(){
 
     var genreIcons = {
-      software: "icon-save",
       article: "icon-file-text-alt",
-      dataset: "icon-table",
-      slides: "icon-desktop",
-      webpage: "icon-globe",
-      video: "icon-facetime-video",
       blog: "icon-comments",
+      dataset: "icon-table",
+      figure: "icon-bar-chart",
+      poster: "icon-picture",
+      slides: "icon-desktop",
+      software: "icon-save",
       twitter: "icon-twitter",
+      video: "icon-facetime-video",
+      webpage: "icon-globe",
       other: "icon-question-sign"
     }
 
@@ -1041,6 +1067,7 @@ angular.module('product.product')
             ["vimeo:likes", "public", "recommended", "badge", 3],
             ["vimeo:comments", "public", "discussed", "badge", 3],
             ["wikipedia:mentions", "public", "cited", "badge", 3],            
+            ["wordpresscom:comments", "public", "discussed", "badge", 3],
             ["wordpresscom:subscribers", "public", "viewed", "badge", 3],
             ["wordpresscom:views", "public", "viewed", "badge", 3],
             ["youtube:likes", "public", "recommended", "badge", 3],
@@ -2197,6 +2224,7 @@ angular.module( 'signup', [
 
 ;
 
+angular.module("update.update",["resources.users"]).factory("Update",function(e,t,n,r,i){var s={},o=function(e,t){s.numNotDone>0||_.isNull(s.numNotDone)?n.query({id:e,idType:"url_slug"},function(n){s.numDone=u(n,!0);s.numNotDone=u(n,!1);s.percentComplete=s.numDone*100/(s.numDone+s.numNotDone);console.log("in keepPolling");console.log(s);r(function(){o(e,t)},500)}):t()},u=function(e,t){var n=_.filter(e,function(e){return!e.currently_updating});return t?n.length:e.length-n.length},a=function(e,t){s.numDone=null;s.numNotDone=null;s.percentComplete=null;var n=i.open({templateUrl:"update/update-progress.tpl.html",controller:"updateProgressModalCtrl",backdrop:"static",keyboard:!1});o(e,function(){n.close();t()})};return{showUpdate:a,updateStatus:s}}).controller("updateProgressModalCtrl",function(e,t){e.updateStatus=t.updateStatus});
 angular.module( 'update.update', [
     'resources.users'
   ])
@@ -2889,6 +2917,7 @@ angular.module('resources.products',['ngResource'])
 })
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
