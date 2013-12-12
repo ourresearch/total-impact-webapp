@@ -347,13 +347,18 @@ def user_tips(profile_id):
     return json_resp_from_thing({'ids': resp})
 
 
+@app.route("/user/<id>/products/duplicates", methods=["GET"])
+def user_products_get_duplicates(id):
+    user = get_user_for_response(id, request)
+    resp = user.get_duplicates_list()
+    return json_resp_from_thing(resp)
+
 
 
 #------------------ user/:userId/products -----------------
 
 @app.route("/user/<id>/products", methods=["GET"])
 def user_products_get(id):
-
 
     user = get_user_for_response(id, request)
     products = add_sort_keys(user.products)
@@ -369,7 +374,7 @@ def user_products_get(id):
 
 
 
-@app.route("/user/<id>/products", methods=["GET", "POST", "DELETE", "PATCH"])
+@app.route("/user/<id>/products", methods=["POST", "DELETE", "PATCH"])
 def user_products_modify(id):
 
     user = get_user_for_response(id, request)

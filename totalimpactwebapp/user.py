@@ -194,6 +194,9 @@ class User(db.Model):
         analytics_credentials = self.get_analytics_credentials()        
         return refresh_products_from_user(self.tiids, analytics_credentials)
 
+    def get_duplicates_list(self):
+        duplicates_list = get_duplicates_list_from_user(self.tiids)
+        return duplicates_list
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -335,6 +338,23 @@ def refresh_products_from_user(tiids, analytics_credentials={}):
 
     return tiids
 
+
+def get_duplicates_list_from_user(tiids):
+    if not tiids:
+        return None
+
+    query = u"{core_api_root}/v1/products/duplicates?api_admin_key={api_admin_key}".format(
+        core_api_root=g.api_root,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+
+    r = requests.post(query,
+            data=json.dumps({
+                "tiids": tiids
+                }),
+            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+
+    return r.json()
 
 
 def create_user_from_slug(url_slug, user_request_dict, api_root, db):
