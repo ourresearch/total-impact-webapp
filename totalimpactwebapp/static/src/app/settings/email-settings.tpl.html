@@ -9,7 +9,7 @@
   ng-class="{ 'has-error':  userEmailForm.email.$invalid && userEmailForm.email.$dirty && !loading.is(),
                     'has-success': userEmailForm.email.$valid && userEmailForm.email.$dirty && !loading.is()}">
 
-    <div class="controls input-group col-lg-7">
+    <div class="controls input-group col-sm-9">
       <span class="input-group-addon"><i class="icon-envelope-alt"></i></span>
       <input ng-model="user.email"
       name="email"
@@ -19,31 +19,33 @@
       />
 
     </div>
+    <div class="feedback col-sm-3">
+       <spinner msg="Checking"></spinner>
 
-    <spinner msg="Checking"></spinner>
+       <div class="help-block error"
+       ng-show="userEmailForm.email.$error.requireUnique
+               && userEmailForm.email.$dirty
+               && !loading.is()">
+       Address is already in use.
+       </div>
+       <div class="help-block success one-line"
+       ng-show="userEmailForm.email.$valid
+               && userEmailForm.email.$dirty
+               && !loading.is()">
+       Looks good!
+       </div>
+       <div class="help-block"
+       ng-show="userEmailForm.email.$pristine
+               && !loading.is()">
+       This is your current email.
+       </div>
+    </div>
 
-    <div class="help-block error"
-    ng-show="userEmailForm.email.$error.requireUnique
-            && userEmailForm.email.$dirty
-            && !loading.is()">
-    That email address is already in use.
-    </div>
-    <div class="help-block success"
-    ng-show="userEmailForm.email.$valid
-            && userEmailForm.email.$dirty
-            && !loading.is()">
-    Looks good!
-    </div>
-    <div class="help-block"
-    ng-show="userEmailForm.email.$pristine
-            && !loading.is()">
-    This is your currently registered email.
-    </div>
 
   </div>
 
   <div class="form-group submit">
-  <div class=" col-lg-10">
+  <div class=" col-xs-10">
     <save-buttons valid="userEmailForm.$valid"></save-buttons>
   </div>
   </div>

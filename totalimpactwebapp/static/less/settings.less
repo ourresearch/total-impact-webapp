@@ -2,12 +2,13 @@ div.settings {
    div.settings-header {
       margin: 0 0 70px 20px;
       padding: 0 0 0 30px;
-      border-bottom: 5px solid #fafafa;
       width: 600px;
       h1 {
-         padding-top:10px;
          font-weight: bolder;
-         font-size: 30px;
+         font-size: 40px;
+         color: #555;
+         padding:0;
+         margin:0;
       }
       p {
          font-size: 18px;
@@ -50,13 +51,20 @@ div.settings {
    div.settings-input {
       margin-left: 250px;
       margin-top: 50px;
-      form{
+
+      float:left;
+      margin: 0  0 0 50px;
+
+      form.form-horizontal {
          padding: 0;
          margin:0;
+         width: 600px;
          &.custom-url {
             padding-left: 50px;
          }
          .form-group {
+            clear:none;
+//            height: 70px; // i have no earthly clue what or why this does.
             label {
                color: #555;
             }
@@ -71,7 +79,7 @@ div.settings {
             }
 
             &.photo {
-               margin-bottom: 100px;
+               margin-bottom: 60px;
                div.my-picture {
                   position: relative;
                   p {
@@ -104,7 +112,7 @@ div.settings {
 
             }
             &.submit {
-               margin-top: 40px;
+               margin-top: 10px;
             }
          }
       }

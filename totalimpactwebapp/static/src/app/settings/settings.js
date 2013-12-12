@@ -138,3 +138,23 @@ angular.module('settings', [
       )
     };
   })
+
+
+
+  .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+
+     $scope.onSave = function() {
+      Loading.start('saveButton')
+      UsersAbout.patch(
+        {id: $scope.user.id, idType:"userid"},
+        {about: $scope.user},
+        function(resp) {
+          security.setCurrentUser(resp.about) // update the current authenticated user.
+          i18nNotifications.pushForNextRoute('settings.url.change.success', 'success');
+          $location.path('/' + resp.about.url_slug)
+        }
+      )
+    };
+  })
+
+
