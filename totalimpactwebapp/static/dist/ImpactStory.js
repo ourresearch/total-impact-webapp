@@ -4194,7 +4194,9 @@ angular.module("tips", ['ngResource'])
     return [
       {
         id: "how_we_found_these_blog_posts",
-        msg: 'we found your blog stuff, with magic.'
+        msg: "We’ve imported some of your most-tweeted posts. You can click a post to remove it, or click<a href='/user/"
+          + url_slug
+          + "/products/add'>import</a> to add more."
       },
 
       {
