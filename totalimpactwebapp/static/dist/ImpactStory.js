@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-11
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-12
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -939,14 +939,15 @@ angular.module('product.categoryHeading', [])
   .factory("CategoryHeading", function(){
 
     var genreIcons = {
-      software: "icon-save",
       article: "icon-file-text-alt",
-      dataset: "icon-table",
-      slides: "icon-desktop",
-      webpage: "icon-globe",
-      video: "icon-facetime-video",
       blog: "icon-comments",
+      dataset: "icon-table",
+      figure: "icon-bar-chart",
+      slides: "icon-desktop",
+      software: "icon-save",
       twitter: "icon-twitter",
+      video: "icon-facetime-video",
+      webpage: "icon-globe",
       other: "icon-question-sign"
     }
 
