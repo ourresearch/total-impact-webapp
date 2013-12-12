@@ -92,7 +92,7 @@ angular.module('importers.importer')
         }
       })
 
-      var patchData = {about:{}}
+      var patchData = {'about': about}
       console.log("trying to save this patch data: ", patchData)
 
       start("saveExternalUsernames")

@@ -105,7 +105,7 @@ def abort_json(status_code, msg):
 
 
 def get_user_for_response(id, request, include_products=True):
-    id_type = request.args.get("id_type", "userid")
+    id_type = request.args.get("id_type", "url_slug")
 
     retrieved_user = get_user_from_id(id, id_type, include_products)
     if retrieved_user is None:
@@ -326,6 +326,25 @@ def get_user_about(profile_id):
     return json_resp_from_thing({"about": user.as_dict()})
 
 
+
+
+@app.route("/user/<profile_id>/tips", methods=['GET', 'DELETE'])
+def user_tips(profile_id):
+    user = get_user_for_response(
+        profile_id,
+        request,
+        include_products=False  # returns faster this way.
+    )
+
+    if request.method == "GET":
+        resp = user.get_tips()
+
+    elif request.method == "DELETE":
+        resp = user.delete_tip(request.json.get("id"))
+
+    db.session.commit()
+
+    return json_resp_from_thing({'ids': resp})
 
 
 

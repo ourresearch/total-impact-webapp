@@ -4,6 +4,7 @@ angular.module("profile", [
   'services.page',
   'ui.bootstrap',
   'security',
+  'tips',
   'profile.addProducts',
   'product.categoryHeading'
 ])
@@ -119,9 +120,6 @@ angular.module("profile", [
       // twttr is a GLOBAL VAR loaded by the twitter widget script called in
       //    bottom.js. it will break in unit tests, so fix before then.
       twttr.widgets.load()
-
-      console.log("load!")
-
     });
 
 
@@ -178,13 +176,6 @@ angular.module("profile", [
 })
 
 
-.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, UserProfile){
-    $scope.genreIcon = CategoryHeading.getGenreIcon
-    $scope.makeAnchorLink = function(anchor){
-      return $location.path() + "#" + anchor
-    }
-
-})
 
 
 

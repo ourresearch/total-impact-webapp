@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-10
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-11
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -606,7 +606,7 @@ angular.module('importers.importer')
         }
       })
 
-      var patchData = {about:{}}
+      var patchData = {'about': about}
       console.log("trying to save this patch data: ", patchData)
 
       start("saveExternalUsernames")
@@ -937,11 +937,27 @@ angular.module('product.categoryHeading', [])
       }
     }
 
-
-
-
-
   })
+.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, UserProfile){
+    $scope.genreIcon = CategoryHeading.getGenreIcon
+    $scope.makeAnchorLink = function(anchor){
+      return $location.path() + "#" + anchor
+    }
+
+
+    if ($scope.product.genre == "blog"){
+      $scope.how_we_found_these = "how_we_found_these_blog_posts"
+    }
+
+    if ($scope.product.genre == "twitter"){
+      $scope.how_we_found_these = "how_we_found_these_tweets"
+    }
+
+    $scope.upload_wordpress_key = false
+    if ($scope.product.account_biblio.hosting_platform == "wordpress.com"){
+      $scope.upload_wordpress_key =  "upload_wordpress_key"
+    }
+})
 
 angular.module('product.product', ['product.award'])
 angular.module('product.product')
@@ -1567,6 +1583,7 @@ angular.module("profile", [
   'services.page',
   'ui.bootstrap',
   'security',
+  'tips',
   'profile.addProducts',
   'product.categoryHeading'
 ])
@@ -1682,9 +1699,6 @@ angular.module("profile", [
       // twttr is a GLOBAL VAR loaded by the twitter widget script called in
       //    bottom.js. it will break in unit tests, so fix before then.
       twttr.widgets.load()
-
-      console.log("load!")
-
     });
 
 
@@ -1741,13 +1755,6 @@ angular.module("profile", [
 })
 
 
-.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, UserProfile){
-    $scope.genreIcon = CategoryHeading.getGenreIcon
-    $scope.makeAnchorLink = function(anchor){
-      return $location.path() + "#" + anchor
-    }
-
-})
 
 
 
@@ -2002,6 +2009,7 @@ angular.module( 'signup', [
     'resources.users',
     'update.update',
     'security.service',
+    'tips',
     'importers.allTheImporters',
     'importers.importer'
     ])
@@ -2115,7 +2123,7 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, Slug, $location, security) {
+  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {
     var  nameRegex = /\/(\w+)\/(\w+)\/url/
     var res = nameRegex.exec($location.path())
 
@@ -2128,7 +2136,8 @@ angular.module( 'signup', [
         {
           givenName: res[1],
           surname: res[2],
-          url_slug: $scope.input.url_slug
+          url_slug: $scope.input.url_slug,
+          tips: TipsService.keysStr()
         },
         function(resp, headers){
           console.log("got response back from save user", resp)
@@ -3108,11 +3117,12 @@ angular.module('security.login.toolbar', [
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
   'services.i18nNotifications',
+  'tips',
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', function($http, $q, $location, $modal, i18nNotifications) {
+.factory('security', function($http, $q, $location, $modal, i18nNotifications, TipsService) {
   var useCachedUser = false
   var currentUser
 
@@ -3157,6 +3167,7 @@ angular.module('security.service', [
         .success(function(data, status) {
             console.log("success in security.login()")
             currentUser = data.user;
+          TipsService.load(data.user.url_slug)
         })
     },
 
@@ -3226,6 +3237,8 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
+          TipsService.load(service.getCurrentUserSlug())
+
         })
         .then(function(){return currentUser})
     },
@@ -3236,6 +3249,7 @@ angular.module('security.service', [
       $http.get('/user/logout').success(function(data, status, headers, config) {
         console.log("logout message: ", data)
         i18nNotifications.pushForCurrentRoute("logout.success", "success")
+        TipsService.clear()
 //        redirect(redirectTo);
       });
     },
@@ -3278,6 +3292,15 @@ angular.module('security.service', [
 
     getCurrentUser: function(){
       return currentUser
+    },
+
+    getCurrentUserSlug: function() {
+      if (currentUser) {
+        return currentUser.url_slug
+      }
+      else {
+        return null
+      }
     },
 
     setCurrentUser: function(user){
@@ -4141,6 +4164,123 @@ angular.module("services.uservoiceWidget")
 
   }
 
+
+})
+angular.module("tips", ['ngResource'])
+.factory("TipsResource", function($resource){
+
+    return $resource(
+      '/user/:slug/tips',
+      {},
+      {
+        delete: {
+          method: "DELETE",
+          headers: {'Content-Type': 'application/json'}
+        }
+      }
+    )
+})
+
+.factory("TipsService", function($interpolate, TipsResource){
+
+  var tips = []
+  var url_slug
+
+
+
+  var tips_config = [
+    {
+      id: "how_we_found_these_blog_posts",
+      msg: 'we found your blog stuff, with magic.'
+    },
+
+    {
+      id: "how_we_found_these_tweets",
+      msg: 'we found your tweets!'
+    },
+
+    {
+      id: 'upload_wordpress_key',
+      msg: 'You should add your wordpress key there, sport.'
+    },
+
+    {
+      id: 'you_can_change_your_url',
+      msg: 'dude, have you seriously not changed you url yet?'
+    }
+  ]
+
+
+
+  return {
+    'get': function(key){
+      return _.filter(tips, function(tip){
+        return tip.id === key
+      })
+    },
+
+    keysStr: function(){
+      return _.pluck(tips_config, "id").join()
+    },
+
+    clear: function(){
+      tips.length = 0
+    },
+
+    load: function(url_slug_arg){
+      if (!url_slug_arg) return false // user is probably mid-login
+
+      url_slug = url_slug_arg // set factory-level var
+
+      TipsResource.get({slug: url_slug}, function(resp){
+
+        tips = _.filter(tips_config, function(tip){
+          return _.contains(resp.ids, tip.id)
+        })
+      })
+    },
+
+
+    remove: function(id){
+      tips = _.filter(tips, function(tip){
+        return tip.id !== id
+      })
+      TipsResource.delete(
+        {slug: url_slug},
+        {'id': id},
+        function(resp){
+          console.log("we deleted a thing!", resp)
+        }
+
+      )
+    }
+  }
+})
+
+.directive("tips", function(TipsService, $parse){
+
+    return {
+      templateUrl: 'tips/tips.tpl.html',
+      restrict: 'E',
+      scope: {
+        key: "=key" // linked to attr, evaluated in parent scope
+      },
+      link: function(scope, elem, attrs){
+
+        scope.getTips = function(){
+          return TipsService.get(scope.key)
+        }
+
+        scope.dismiss = function() {
+          console.log("dismissing tip", scope.key)
+          return TipsService.remove(scope.key)
+        }
+
+
+
+
+      }
+    }
 
 })
 angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
@@ -5030,8 +5170,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "            <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.id }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.id }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "            </ul>\n" +
     "         </span>\n" +
     "      </div>\n" +
@@ -5057,51 +5197,47 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <div class=\"category-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
     "                id=\"{{ product.headingValue }}\"\n" +
     "                ng-controller=\"CategoryHeadingCtrl\"\n" +
-    "                ng-show=\"product.isHeading\">\n" +
+    "                ng-if=\"product.isHeading\">\n" +
+    "               <div class=\"category-heading-main\">\n" +
+    "                  <h2>\n" +
+    "                     <a class=\"genre-anchor\"\n" +
+    "                        ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
+    "                        <span class=\"text\">permalink</span>\n" +
+    "                        <i class=\"icon-link\"></i>\n" +
+    "                     </a>\n" +
+    "                     <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
+    "                     <span class=\"genre\">{{ product.genre }}</span>\n" +
+    "                     <span class=\"account\" ng-if=\"product.account\">{{ product.account }}</span>\n" +
     "\n" +
-    "               <h2>\n" +
-    "                  <a class=\"genre-anchor\"\n" +
-    "                     ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
-    "                     <span class=\"text\">permalink</span>\n" +
-    "                     <i class=\"icon-link\"></i>\n" +
-    "                  </a>\n" +
-    "                  <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
-    "                  <span class=\"genre\">{{ product.genre }}</span>\n" +
-    "                  <span class=\"account\" ng-if=\"product.account\">{{ product.account }}</span>\n" +
+    "                  </h2>\n" +
+    "                  <div class=\"clearfix\"></div>\n" +
     "\n" +
-    "               </h2>\n" +
+    "                  <div class=\"category-metrics\">\n" +
+    "                     <ul class=\"account-metrics\">\n" +
+    "                        <li class=\"category-metric\"\n" +
+    "                            ng-repeat=\"metric in product.metrics\">\n" +
     "\n" +
-    "               <div class=\"category-metrics\">\n" +
-    "                  <ul class=\"account-metrics\">\n" +
-    "                     <li class=\"category-metric\"\n" +
-    "                         ng-repeat=\"metric in product.metrics\">\n" +
-    "\n" +
-    "                        <a href=\"{{ metric.provenance_url }}\"\n" +
-    "                           target=\"_blank\"\n" +
-    "                           tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           class=\"value\">\n" +
-    "                           {{ metric.values.raw }}\n" +
-    "                        </a>\n" +
-    "                        <span class=\"metric-descr\"\n" +
+    "                           <a href=\"{{ metric.provenance_url }}\"\n" +
+    "                              target=\"_blank\"\n" +
+    "                              tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
     "                              tooltip-placement=\"bottom\"\n" +
-    "                              tooltip=\"{{ metric.static_meta.description }}\">\n" +
-    "                           {{ metric.static_meta.display_name }}\n" +
-    "                        </span>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
+    "                              class=\"value\">\n" +
+    "                              {{ metric.values.raw }}\n" +
+    "                           </a>\n" +
+    "                           <span class=\"metric-descr\"\n" +
+    "                                 tooltip-placement=\"bottom\"\n" +
+    "                                 tooltip=\"{{ metric.static_meta.description }}\">\n" +
+    "                              {{ metric.static_meta.display_name }}\n" +
+    "                           </span>\n" +
     "                         </li>\n" +
-    "\n" +
-    "                  </ul>\n" +
-    "                  <ul class=\"summary-metrics\">\n" +
-    "\n" +
-    "\n" +
-    "                  </ul>\n" +
-    "\n" +
-    "\n" +
+    "                     </ul>\n" +
+    "                     <ul class=\"summary-metrics\"><!-- fill this later--></ul>\n" +
+    "                  </div>\n" +
     "               </div>\n" +
-    "\n" +
+    "               <div class=\"category-heading-tips\">\n" +
+    "                  <tips key=\"how_we_found_these\" />\n" +
+    "                  <tips key=\"upload_wordpress_key\" />\n" +
+    "               </div>\n" +
     "\n" +
     "            </div>\n" +
     "\n" +
@@ -5625,7 +5761,7 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "<!--  58@e.com -->");
 }]);
 
-angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html']);
+angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tips.tpl.html']);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
@@ -5773,4 +5909,14 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "</ul>\n" +
     "");
+}]);
+
+angular.module("tips/tips.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("tips/tips.tpl.html",
+    "<div class=\"tip alert alert-success\" ng-repeat=\"tip in getTips()\">\n" +
+    "   <span class=\"msg\">\n" +
+    "      {{ tip.msg }}\n" +
+    "   </span>\n" +
+    "   <button ng-click=\"dismiss()\" class=\"close\">&times;</button>\n" +
+    "</div>");
 }]);

@@ -7470,8 +7470,6 @@ div.products .wrapper div.products-without-metrics div.well a {
 .product.heading {
   margin-top: 130px;
   width: 95%;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #eee;
 }
 .product.heading.first {
   margin-top: 50px;
@@ -7532,19 +7530,23 @@ div.products .wrapper div.products-without-metrics div.well a {
 }
 .product div.category-heading {
   width: 100%;
-  padding-bottom: 20px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
 }
-.product div.category-heading h2 {
+.product div.category-heading div.category-heading-main {
+  position: relative;
+}
+.product div.category-heading div.category-heading-main h2 {
+  clear: both;
   margin: 0 0 0 -23px;
   font-weight: 900;
   text-transform: capitalize;
   font-size: 30px;
   color: #555;
   float: left;
-  clear: both;
 }
-.product div.category-heading h2:before,
-.product div.category-heading h2:after {
+.product div.category-heading div.category-heading-main h2:before,
+.product div.category-heading div.category-heading-main h2:after {
   content: " ";
   /* 1 */
 
@@ -7552,11 +7554,11 @@ div.products .wrapper div.products-without-metrics div.well a {
   /* 2 */
 
 }
-.product div.category-heading h2:after {
+.product div.category-heading div.category-heading-main h2:after {
   clear: both;
 }
-.product div.category-heading h2:before,
-.product div.category-heading h2:after {
+.product div.category-heading div.category-heading-main h2:before,
+.product div.category-heading div.category-heading-main h2:after {
   content: " ";
   /* 1 */
 
@@ -7564,26 +7566,26 @@ div.products .wrapper div.products-without-metrics div.well a {
   /* 2 */
 
 }
-.product div.category-heading h2:after {
+.product div.category-heading div.category-heading-main h2:after {
   clear: both;
 }
-.product div.category-heading h2 span.account {
+.product div.category-heading div.category-heading-main h2 span.account {
   font-weight: 300;
   margin-left: .2em;
   text-transform: lowercase;
 }
-.product div.category-heading h2:hover a.genre-anchor {
+.product div.category-heading div.category-heading-main h2:hover a.genre-anchor {
   color: #ff4e00;
 }
-.product div.category-heading h2 a.genre-anchor {
+.product div.category-heading div.category-heading-main h2 a.genre-anchor {
   color: #cccccc;
   position: relative;
 }
-.product div.category-heading h2 a.genre-anchor i.icon-link {
+.product div.category-heading div.category-heading-main h2 a.genre-anchor i.icon-link {
   font-size: 16px;
   margin: 0 2px 0 0;
 }
-.product div.category-heading h2 a.genre-anchor span.text {
+.product div.category-heading div.category-heading-main h2 a.genre-anchor span.text {
   width: 80px;
   margin-left: -86px;
   padding: 5px 2px 0;
@@ -7594,39 +7596,43 @@ div.products .wrapper div.products-without-metrics div.well a {
   text-transform: lowercase;
   text-align: right;
 }
-.product div.category-heading h2 a.genre-anchor:hover span.text {
+.product div.category-heading div.category-heading-main h2 a.genre-anchor:hover span.text {
   display: inline-block;
 }
-.product div.category-heading h2 .tooltip.left {
+.product div.category-heading div.category-heading-main h2 .tooltip.left {
   width: 100px;
 }
-.product div.category-heading h2 .tooltip.left .tooltip-arrow {
+.product div.category-heading div.category-heading-main h2 .tooltip.left .tooltip-arrow {
   border-left-color: transparent;
 }
-.product div.category-heading h2 .tooltip.left .tooltip-inner {
+.product div.category-heading div.category-heading-main h2 .tooltip.left .tooltip-inner {
   color: #ff4e00;
   text-align: right;
 }
-.product div.category-heading h2 i {
+.product div.category-heading div.category-heading-main h2 i {
   vertical-align: 2px;
   margin-right: 4px;
   font-size: 90%;
   text-align: right;
 }
-.product div.category-heading div.category-metrics {
+.product div.category-heading div.category-heading-main div.category-metrics {
   margin-top: 10px;
   text-align: right;
   position: absolute;
   bottom: 0;
   right: 0;
 }
-.product div.category-heading div.category-metrics ul li.category-metric {
+.product div.category-heading div.category-heading-main div.category-metrics ul li.category-metric {
   display: inline-block;
   margin-right: 20px;
 }
-.product div.category-heading div.category-metrics ul li.category-metric .metric-descr {
+.product div.category-heading div.category-heading-main div.category-metrics ul li.category-metric .metric-descr {
   font-size: 80%;
   cursor: help;
+}
+.product div.category-heading div.category-heading-tips .alert {
+  margin: 5px 0 0;
+  padding: 10px 20px;
 }
 .product .biblio {
   float: left;

@@ -1,0 +1,117 @@
+angular.module("tips", ['ngResource'])
+.factory("TipsResource", function($resource){
+
+    return $resource(
+      '/user/:slug/tips',
+      {},
+      {
+        delete: {
+          method: "DELETE",
+          headers: {'Content-Type': 'application/json'}
+        }
+      }
+    )
+})
+
+.factory("TipsService", function($interpolate, TipsResource){
+
+  var tips = []
+  var url_slug
+
+
+
+  var tips_config = [
+    {
+      id: "how_we_found_these_blog_posts",
+      msg: 'we found your blog stuff, with magic.'
+    },
+
+    {
+      id: "how_we_found_these_tweets",
+      msg: 'we found your tweets!'
+    },
+
+    {
+      id: 'upload_wordpress_key',
+      msg: 'You should add your wordpress key there, sport.'
+    },
+
+    {
+      id: 'you_can_change_your_url',
+      msg: 'dude, have you seriously not changed you url yet?'
+    }
+  ]
+
+
+
+  return {
+    'get': function(key){
+      return _.filter(tips, function(tip){
+        return tip.id === key
+      })
+    },
+
+    keysStr: function(){
+      return _.pluck(tips_config, "id").join()
+    },
+
+    clear: function(){
+      tips.length = 0
+    },
+
+    load: function(url_slug_arg){
+      if (!url_slug_arg) return false // user is probably mid-login
+
+      url_slug = url_slug_arg // set factory-level var
+
+      TipsResource.get({slug: url_slug}, function(resp){
+
+        tips = _.filter(tips_config, function(tip){
+          return _.contains(resp.ids, tip.id)
+        })
+      })
+    },
+
+
+    remove: function(id){
+      tips = _.filter(tips, function(tip){
+        return tip.id !== id
+      })
+      TipsResource.delete(
+        {slug: url_slug},
+        {'id': id},
+        function(resp){
+          console.log("we deleted a thing!", resp)
+        }
+
+      )
+    }
+  }
+})
+
+.directive("tips", function(TipsService, $parse){
+
+    return {
+      templateUrl: 'tips/tips.tpl.html',
+      restrict: 'E',
+      scope: {
+        key: "=key" // linked to attr, evaluated in parent scope
+      },
+      link: function(scope, elem, attrs){
+
+        scope.getTips = function(){
+          return TipsService.get(scope.key)
+        }
+
+        scope.dismiss = function() {
+          console.log("dismissing tip", scope.key)
+          return TipsService.remove(scope.key)
+        }
+
+
+
+
+      }
+    }
+
+})

@@ -76,6 +76,7 @@ class User(db.Model):
     twitter_account_id = db.Column(db.String(64))
     figshare_id = db.Column(db.String(64))
     wordpress_api_key = db.Column(db.String(64))
+    tips = db.Column(db.String())  # ALTER TABLE "user" ADD tips text
 
     tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
@@ -117,6 +118,17 @@ class User(db.Model):
             ascii_slug = "user" + str(random.randint(1000, 999999))
 
         return ascii_slug
+
+    def set_tips(self, tips):
+        self.tips = ",".join(tips)
+
+    def get_tips(self):
+        return self.tips.split(",")
+
+    def delete_tip(self, tip_to_delete):
+        filtered = [tip for tip in self.get_tips() if tip != tip_to_delete]
+        self.set_tips(filtered)
+        return filtered
 
 
     def uniqueify_slug(self):

@@ -1,4 +1,4 @@
-angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html']);
+angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tips.tpl.html']);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
@@ -146,4 +146,14 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "</ul>\n" +
     "");
+}]);
+
+angular.module("tips/tips.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("tips/tips.tpl.html",
+    "<div class=\"tip alert alert-success\" ng-repeat=\"tip in getTips()\">\n" +
+    "   <span class=\"msg\">\n" +
+    "      {{ tip.msg }}\n" +
+    "   </span>\n" +
+    "   <button ng-click=\"dismiss()\" class=\"close\">&times;</button>\n" +
+    "</div>");
 }]);
