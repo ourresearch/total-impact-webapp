@@ -8169,7 +8169,6 @@ div.settings div.settings-nav {
   width: 200px;
 }
 div.settings div.settings-nav ul li a {
-  text-transform: capitalize;
   padding: 10px;
   font-size: 18px;
   display: block;
@@ -8190,6 +8189,9 @@ div.settings div.settings-nav ul li a {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+}
+div.settings div.settings-nav ul li a:first-letter {
+  text-transform: capitalize;
 }
 div.settings div.settings-nav ul li a.selected {
   background: #0053b0;
