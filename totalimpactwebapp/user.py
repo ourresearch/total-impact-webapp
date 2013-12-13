@@ -305,9 +305,11 @@ def delete_products_from_user(user_id, tiids_to_delete):
     user_object = User.query.get(user_id)
     db.session.merge(user_object)
 
+    number_deleted = 0
     for user_tiid_obj in user_object.tiid_links:
         if user_tiid_obj.tiid in tiids_to_delete:
-            user_object.tiid_links.remove(user_tiid_obj)
+            number_deleted += 1
+            db.session.delete(user_tiid_obj)
 
     try:
         db.session.commit()
@@ -364,11 +366,16 @@ def remove_duplicates_from_user(user_id):
 
     duplicates_list = get_duplicates_list_from_tiids(user.tiids)
     tiids_to_remove = []
+
     for duplicate_group in duplicates_list:
         # don't remove the 0th one!  just from the first one on
         tiids_to_remove += duplicate_group[1:]
 
     user.delete_products(tiids_to_remove) 
+
+    # important to keep this logging in so we can recover if necessary
+    logger.debug(u"removed duplicate tiids from {user_id}: {tiids_to_remove}".format(
+        user_id=user_id, tiids_to_remove=tiids_to_remove))
 
     return tiids_to_remove
 

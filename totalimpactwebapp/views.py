@@ -358,13 +358,6 @@ def user_tips(profile_id):
 
 
 
-@app.route("/user/<id>/products/duplicates/deduplicate", methods=["POST"])
-def user_products_get_duplicates(id):
-    user = get_user_for_response(id, request)
-
-
-    return json_resp_from_thing(resp)
-
 
 
 #------------------ user/:userId/products -----------------
