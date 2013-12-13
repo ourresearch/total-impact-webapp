@@ -7636,7 +7636,7 @@ div.products .wrapper div.products-without-metrics div.well a {
   text-align: right;
   position: absolute;
   bottom: 0;
-  right: 0;
+  right: -15px;
 }
 .product div.category-heading div.category-heading-main div.category-metrics ul li.category-metric {
   display: inline-block;
