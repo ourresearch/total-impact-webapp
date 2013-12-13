@@ -881,7 +881,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <a ng-show=\"currentUserIsProfileOwner()\" href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-upload\"></i>Import</a>\n" +
-    "         <a ng-show=\"currentUserIsProfileOwner()\" ng-click=\"openProfileEmbedModal()\"><i class=\"icon-copy\"></i>Remove duplicates</a>\n" +
+    "         <a ng-show=\"currentUserIsProfileOwner()\" ng-click=\"dedup()\"><i class=\"icon-copy\"></i>Remove duplicates</a>\n" +
     "         <a ng-click=\"openProfileEmbedModal()\"><i class=\"icon-suitcase\"></i>Embed</a>\n" +
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +

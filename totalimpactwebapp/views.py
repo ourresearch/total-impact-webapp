@@ -20,6 +20,7 @@ from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
 from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
+from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.products import add_category_heading_products
 from totalimpactwebapp.products import add_sort_keys
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
@@ -390,27 +391,29 @@ def user_products_get(id):
 def user_products_modify(id):
 
     action = request.args.get("action", "refresh")
-
     user = get_user_for_response(id, request)
     logger.debug(u"got user {user}".format(
         user=user))
 
-    if request.method == "POST" and (action=="refresh"):
+    if request.method == "POST" and (action == "refresh"):
         # anyone can refresh extant products.
         tiids_being_refreshed = user.refresh_products()
         resp = {"products": tiids_being_refreshed}
+
     else:
-        Make sure the user is allowed to make these modifications:
-        if (current_user is None) or (current_user.is_anonymous):
+        # Actions that require authentication
+
+        if current_user is None:
             abort_json(405, "You must be logged in to modify profiles.")
         elif current_user.url_slug != user.url_slug:
             abort_json(401, "Only profile owners can modify profiles.")
 
-        if (request.method=="POST") and (action=="deduplicate"):
-            deleted_tiids = user.remove_duplicates()   
+        # actions, depending on what http method was used:
+        if request.method == "POST" and action == "deduplicate":
+            deleted_tiids = remove_duplicates_from_user(user.id)
             resp = {"deleted_tiids": deleted_tiids}
 
-        if request.method == "PATCH":
+        elif request.method == "PATCH":
             tiids_to_add = request.json.get("tiids")
             resp = {"products": user.add_products(tiids_to_add)}
 
@@ -421,8 +424,7 @@ def user_products_modify(id):
         else:
             abort(405)  # method not supported.  We shouldn't get here.
 
-    response_to_send = json_resp_from_thing(resp)
-    return response_to_send
+    return json_resp_from_thing(resp)
 
 
 @app.route("/user/<user_id>/product/<tiid>", methods=['GET'])

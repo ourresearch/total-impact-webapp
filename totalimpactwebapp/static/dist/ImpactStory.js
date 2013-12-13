@@ -980,7 +980,7 @@ angular.module('product.categoryHeading', ["security"])
     }
 
     $scope.upload_wordpress_key = function(){
-      var wpHeading =  $scope.product.account_biblio.hosting_platform == "wordpress.com"
+      var wpHeading =  ($scope.product.account_biblio && $scope.product.account_biblio.hosting_platform == "wordpress.com")
       var wpKeySet = security.getCurrentUser("wordpress_api_key")
       if (wpHeading && !wpKeySet){
         return "upload_wordpress_key"
@@ -1764,6 +1764,12 @@ angular.module("profile", [
 
     $scope.getSortScore = function(product) {
       return Product.getSortScore(product) * -1;
+    }
+
+    $scope.dedup = function(){
+      UsersProducts.dedup({id: userSlug}, {}, function(resp){
+        console.log("deduped!", resp)
+      })
     }
 
     var renderProducts = function(){
@@ -2967,10 +2973,9 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersProducts', function ($resource) {
 
     return $resource(
-      "/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",
+      "/user/:id/products",
       {
-        idType: "url_slug",
-        includeHeadingProducts: false
+        // default params go here
       },
       {
         update:{
@@ -2988,7 +2993,8 @@ angular.module('resources.users',['ngResource'])
         query:{
           method: "GET",
           isArray: true,
-          cache: true
+          cache: true,
+          params: {include_heading_products: true}
         },
         poll:{
           method: "GET",
@@ -2997,6 +3003,10 @@ angular.module('resources.users',['ngResource'])
         },
         refresh: {
           method: "POST"
+        },
+        dedup: {
+          method: "POST",
+          params: {action: "deduplicate"}
         }
       }
     )
@@ -5260,7 +5270,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <a ng-show=\"currentUserIsProfileOwner()\" href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-upload\"></i>Import</a>\n" +
-    "         <a ng-show=\"currentUserIsProfileOwner()\" ng-click=\"openProfileEmbedModal()\"><i class=\"icon-copy\"></i>Remove duplicates</a>\n" +
+    "         <a ng-show=\"currentUserIsProfileOwner()\" ng-click=\"dedup()\"><i class=\"icon-copy\"></i>Remove duplicates</a>\n" +
     "         <a ng-click=\"openProfileEmbedModal()\"><i class=\"icon-suitcase\"></i>Embed</a>\n" +
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +

@@ -11,10 +11,9 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersProducts', function ($resource) {
 
     return $resource(
-      "/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",
+      "/user/:id/products",
       {
-        idType: "url_slug",
-        includeHeadingProducts: false
+        // default params go here
       },
       {
         update:{
@@ -32,7 +31,8 @@ angular.module('resources.users',['ngResource'])
         query:{
           method: "GET",
           isArray: true,
-          cache: true
+          cache: true,
+          params: {include_heading_products: true}
         },
         poll:{
           method: "GET",
@@ -41,6 +41,10 @@ angular.module('resources.users',['ngResource'])
         },
         refresh: {
           method: "POST"
+        },
+        dedup: {
+          method: "POST",
+          params: {action: "deduplicate"}
         }
       }
     )

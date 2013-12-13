@@ -154,6 +154,12 @@ angular.module("profile", [
       return Product.getSortScore(product) * -1;
     }
 
+    $scope.dedup = function(){
+      UsersProducts.dedup({id: userSlug}, {}, function(resp){
+        console.log("deduped!", resp)
+      })
+    }
+
     var renderProducts = function(){
       $scope.products = UsersProducts.query({
         id: userSlug,

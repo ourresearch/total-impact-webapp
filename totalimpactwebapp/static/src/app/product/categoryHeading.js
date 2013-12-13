@@ -43,7 +43,7 @@ angular.module('product.categoryHeading', ["security"])
     }
 
     $scope.upload_wordpress_key = function(){
-      var wpHeading =  $scope.product.account_biblio.hosting_platform == "wordpress.com"
+      var wpHeading =  ($scope.product.account_biblio && $scope.product.account_biblio.hosting_platform == "wordpress.com")
       var wpKeySet = security.getCurrentUser("wordpress_api_key")
       if (wpHeading && !wpKeySet){
         return "upload_wordpress_key"

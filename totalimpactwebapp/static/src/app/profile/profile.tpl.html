@@ -67,7 +67,7 @@
       <div class="view-controls">
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
          <a ng-show="currentUserIsProfileOwner()" href="/{{ user.about.url_slug }}/products/add"><i class="icon-upload"></i>Import</a>
-         <a ng-show="currentUserIsProfileOwner()" ng-click="openProfileEmbedModal()"><i class="icon-copy"></i>Remove duplicates</a>
+         <a ng-show="currentUserIsProfileOwner()" ng-click="dedup()"><i class="icon-copy"></i>Remove duplicates</a>
          <a ng-click="openProfileEmbedModal()"><i class="icon-suitcase"></i>Embed</a>
          <span class="dropdown download">
             <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>

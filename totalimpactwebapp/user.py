@@ -198,13 +198,6 @@ class User(db.Model):
         duplicates_list = get_duplicates_list_from_tiids(self.tiids)
         return duplicates_list
 
-    def remove_duplicates(self):
-        deleted_tiids = remove_duplicates_from_user(self.id)
-        
-        # important to keep this logging in so we can recover if necessary
-        logger.debug(u"removed duplicate tiids from {id}: {deleted_tiids}".format(
-            id=self.id, deleted_tiids=deleted_tiids))
-        return deleted_tiids
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -362,7 +355,7 @@ def get_duplicates_list_from_tiids(tiids):
                 }),
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-    return r.json()
+    return r.json()["duplicates_list"]
 
 
 def remove_duplicates_from_user(user_id):
