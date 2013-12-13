@@ -5,9 +5,11 @@ angular.module("profile", [
   'update.update',
   'ui.bootstrap',
   'security',
+  'services.loading',
   'tips',
   'profile.addProducts',
-  'product.categoryHeading'
+  'product.categoryHeading',
+  'services.i18nNotifications'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
@@ -105,16 +107,22 @@ angular.module("profile", [
     $timeout,
     $http,
     $anchorScroll,
+    $cacheFactory,
     $window,
     UsersProducts,
     Product,
     UserProfile,
     CategoryHeading,
+    i18nNotifications,
     Update,
+    Loading,
     Page) {
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
     }
+
+    var $httpDefaultCache = $cacheFactory.get('$http')
+
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
@@ -157,19 +165,28 @@ angular.module("profile", [
     }
 
     $scope.dedup = function(){
-      Update.setUpdateStarted(false)
-      Update.showUpdate(userSlug, function(){
-        console.log("done with update!")
-        renderProducts()
-      })
+      Loading.start("dedup")
+
 
       UsersProducts.dedup({id: userSlug}, {}, function(resp){
         console.log("deduped!", resp)
-        Update.setUpdateStarted(true)
+        Loading.finish("dedup")
+        i18nNotifications.removeAll()
+        i18nNotifications.pushForCurrentRoute(
+          "dedup.success",
+          "success",
+          {numDuplicates: resp.deleted_tiids.length}
+        )
+        renderProducts(true)
       })
     }
 
-    var renderProducts = function(){
+    var renderProducts = function(fresh){
+
+      if (fresh){
+        $httpDefaultCache.removeAll()
+      }
+
       console.log("rendering profile products")
       $scope.products = UsersProducts.query({
         id: userSlug,

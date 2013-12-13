@@ -881,7 +881,19 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <a ng-show=\"currentUserIsProfileOwner()\" href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-upload\"></i>Import</a>\n" +
-    "         <a ng-show=\"currentUserIsProfileOwner()\" ng-click=\"dedup()\"><i class=\"icon-copy\"></i>Remove duplicates</a>\n" +
+    "         <a ng-show=\"currentUserIsProfileOwner()\"\n" +
+    "            ng-click=\"dedup()\"\n" +
+    "            ng-class=\"{working: loading.is('dedup')}\"\n" +
+    "            class=\"dedup-button\">\n" +
+    "            <span class=\"content ready\" ng-show=\"!loading.is('dedup')\">\n" +
+    "               <i class=\"icon-copy\"></i>\n" +
+    "               <span class=\"text\">Merge duplicates</span>\n" +
+    "            </span>\n" +
+    "            <span class=\"content working\" ng-show=\"loading.is('dedup')\">\n" +
+    "               <i class=\"icon-refresh icon-spin\" ng-show=\"loading.is('dedup')\"></i>\n" +
+    "               <span class=\"text\">Merging duplicates</span>\n" +
+    "            </span>\n" +
+    "         </a>\n" +
     "         <a ng-click=\"openProfileEmbedModal()\"><i class=\"icon-suitcase\"></i>Embed</a>\n" +
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +

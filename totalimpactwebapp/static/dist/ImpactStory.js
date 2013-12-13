@@ -1614,9 +1614,11 @@ angular.module("profile", [
   'update.update',
   'ui.bootstrap',
   'security',
+  'services.loading',
   'tips',
   'profile.addProducts',
-  'product.categoryHeading'
+  'product.categoryHeading',
+  'services.i18nNotifications'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
@@ -1714,16 +1716,22 @@ angular.module("profile", [
     $timeout,
     $http,
     $anchorScroll,
+    $cacheFactory,
     $window,
     UsersProducts,
     Product,
     UserProfile,
     CategoryHeading,
+    i18nNotifications,
     Update,
+    Loading,
     Page) {
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
     }
+
+    var $httpDefaultCache = $cacheFactory.get('$http')
+
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
@@ -1766,19 +1774,28 @@ angular.module("profile", [
     }
 
     $scope.dedup = function(){
-      Update.setUpdateStarted(false)
-      Update.showUpdate(userSlug, function(){
-        console.log("done with update!")
-        renderProducts()
-      })
+      Loading.start("dedup")
+
 
       UsersProducts.dedup({id: userSlug}, {}, function(resp){
         console.log("deduped!", resp)
-        Update.setUpdateStarted(true)
+        Loading.finish("dedup")
+        i18nNotifications.removeAll()
+        i18nNotifications.pushForCurrentRoute(
+          "dedup.success",
+          "success",
+          {numDuplicates: resp.deleted_tiids.length}
+        )
+        renderProducts(true)
       })
     }
 
-    var renderProducts = function(){
+    var renderProducts = function(fresh){
+
+      if (fresh){
+        $httpDefaultCache.removeAll()
+      }
+
       console.log("rendering profile products")
       $scope.products = UsersProducts.query({
         id: userSlug,
@@ -3796,7 +3813,8 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'passwordReset.error.invalidToken': "Looks like you've got an expired password reset token in the URL.",
     'passwordReset.ready': "You're temporarily logged in. You should change your password now.",
 
-    'browser.error.oldIE': "Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>"
+    'browser.error.oldIE': "Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>",
+    'dedup.success': "We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products."
 
   };
 
@@ -5301,7 +5319,19 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <a ng-show=\"currentUserIsProfileOwner()\" href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-upload\"></i>Import</a>\n" +
-    "         <a ng-show=\"currentUserIsProfileOwner()\" ng-click=\"dedup()\"><i class=\"icon-copy\"></i>Remove duplicates</a>\n" +
+    "         <a ng-show=\"currentUserIsProfileOwner()\"\n" +
+    "            ng-click=\"dedup()\"\n" +
+    "            ng-class=\"{working: loading.is('dedup')}\"\n" +
+    "            class=\"dedup-button\">\n" +
+    "            <span class=\"content ready\" ng-show=\"!loading.is('dedup')\">\n" +
+    "               <i class=\"icon-copy\"></i>\n" +
+    "               <span class=\"text\">Merge duplicates</span>\n" +
+    "            </span>\n" +
+    "            <span class=\"content working\" ng-show=\"loading.is('dedup')\">\n" +
+    "               <i class=\"icon-refresh icon-spin\" ng-show=\"loading.is('dedup')\"></i>\n" +
+    "               <span class=\"text\">Merging duplicates</span>\n" +
+    "            </span>\n" +
+    "         </a>\n" +
     "         <a ng-click=\"openProfileEmbedModal()\"><i class=\"icon-suitcase\"></i>Embed</a>\n" +
     "         <span class=\"dropdown download\">\n" +
     "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +

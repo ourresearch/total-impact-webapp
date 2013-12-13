@@ -120,6 +120,12 @@ div.product-controls {
    .clearfix();
    a {
       &:hover {color: #333;}
+
+      &.dedup-button {
+         &.working {color: @linkColor;}
+         i {margin-right: 0;}
+         i.icon-refresh {margin-right: 2px;}
+      }
    }
    div.view-controls {
       float:right;

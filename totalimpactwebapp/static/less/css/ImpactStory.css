@@ -6546,6 +6546,10 @@ ul.notifications li.alert a {
 ul.notifications li.alert a:hover {
   color: #fff;
 }
+ul.notifications li.alert span.count {
+  font-weight: 900;
+  margin: 0 2px;
+}
 /**
  * Extra large button extensions. Extends `.btn`.
  */
@@ -7341,6 +7345,15 @@ div.product-controls:after {
 }
 div.product-controls a:hover {
   color: #333;
+}
+div.product-controls a.dedup-button.working {
+  color: #ff4e00;
+}
+div.product-controls a.dedup-button i {
+  margin-right: 0;
+}
+div.product-controls a.dedup-button i.icon-refresh {
+  margin-right: 2px;
 }
 div.product-controls div.view-controls {
   float: right;
