@@ -52,6 +52,15 @@ ul {
 
 form {
 
+   &.form-horizontal {
+      .control-label {
+         &.two-lines {
+            margin-top: -.3em;
+            padding-top: 0;
+         }
+      }
+   }
+
    .form-control {
       &:focus {
          .drop-shadow(0, 0, 0, 0) !important;

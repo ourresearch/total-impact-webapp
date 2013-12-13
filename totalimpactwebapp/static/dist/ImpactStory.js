@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-12
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-13
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -5494,19 +5494,32 @@ angular.module("settings/email-settings.tpl.html", []).run(["$templateCache", fu
 angular.module("settings/linked-accounts-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("settings/linked-accounts-settings.tpl.html",
     "<div class=\"settings-header\">\n" +
-    "   <h1>Profile</h1>\n" +
-    "   <p>Modify what's displayed in your profile.</p>\n" +
+    "   <h1>Linked accounts</h1>\n" +
+    "   <p>Pull in products and metrics from elsewhere</p>\n" +
     "</div>\n" +
     "\n" +
     "\n" +
-    "<form novalidate name=\"userProfileForm\" class=\"form-horizontal\" ng-submit=\"onSave()\" ng-controller=\"linkedAccountsSettingsCtrl\">\n" +
+    "<form novalidate name=\"userProfileForm\"\n" +
+    "      class=\"form-horizontal linked-accounts-settings\"\n" +
+    "      ng-submit=\"onSave()\"\n" +
+    "      ng-controller=\"linkedAccountsSettingsCtrl\">\n" +
     "\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <label class=\"control-label col-sm-3\">Wordpress.com API key</label>\n" +
+    "   <div class=\"form-group linked-account\">\n" +
+    "      <label class=\"control-label col-sm-3 two-lines\">Wordpress.com API key</label>\n" +
     "      <div class=\"controls col-sm-7\">\n" +
     "         <input ng-model=\"user.wordpress_api_key\" name=\"wordpress_api_key\" class=\"form-control\">\n" +
     "      </div>\n" +
     "   </div>\n" +
+    "\n" +
+    "   <!--\n" +
+    "   <div class=\"form-group linked-account\">\n" +
+    "      <label class=\"control-label col-sm-3\">Twitter</label>\n" +
+    "      <div class=\"is-linked col-sm-9\" ng-if=\"user.twitter_account_id\">\n" +
+    "         <span class=\"account-id\">{{ user.twitter_account_id }}</span>\n" +
+    "         <a class=\"remove-account\"><i class=\"icon-trash\">remove</i></a>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "   -->\n" +
     "\n" +
     "   <div class=\"form-group submit\">\n" +
     "      <div class=\" col-sm-offset-3 col-sm-7\">\n" +
