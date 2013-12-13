@@ -935,7 +935,7 @@ angular.module('product.award').factory('Award', function() {
   }
 });
 
-angular.module('product.categoryHeading', [])
+angular.module('product.categoryHeading', ["security"])
   .factory("CategoryHeading", function(){
 
     var genreIcons = {
@@ -964,7 +964,7 @@ angular.module('product.categoryHeading', [])
     }
 
   })
-.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, UserProfile){
+.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, security){
     $scope.genreIcon = CategoryHeading.getGenreIcon
     $scope.makeAnchorLink = function(anchor){
       return $location.path() + "#" + anchor
@@ -979,10 +979,16 @@ angular.module('product.categoryHeading', [])
       $scope.how_we_found_these = "how_we_found_these_tweets"
     }
 
-    $scope.upload_wordpress_key = false
-//    if ($scope.product.account_biblio.hosting_platform == "wordpress.com"){
-//      $scope.upload_wordpress_key =  "upload_wordpress_key"
-//    }
+    $scope.upload_wordpress_key = function(){
+      var wpHeading =  $scope.product.account_biblio.hosting_platform == "wordpress.com"
+      var wpKeySet = security.getCurrentUser("wordpress_api_key")
+      if (wpHeading && !wpKeySet){
+        return "upload_wordpress_key"
+      }
+      else {
+        return null
+      }
+    }
 })
 
 angular.module('product.product', ['product.award'])
@@ -3352,8 +3358,14 @@ angular.module('security.service', [
     },
 
 
-    getCurrentUser: function(){
-      return currentUser
+    getCurrentUser: function(attr){
+      if (currentUser && attr) {
+        return currentUser[attr]
+      }
+      else {
+        return currentUser
+      }
+
     },
 
     getCurrentUserSlug: function() {
@@ -3739,7 +3751,7 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'settings.profile.change.success': "Your profile's been updated.",
     'settings.url.change.success': "Your profile URL has been updated.",
     'settings.email.change.success': "Your email has been updated to {{email}}.",
-    'settings.wordpress_api_key.add.success': "We're now using your API key to get more metrics on your wordpress.com blogs!",
+    'settings.wordpress_api_key.add.success': "Congrats, you've linked to wordpress.com. Check out your new blog post stats!",
     'passwordReset.error.invalidToken': "Looks like you've got an expired password reset token in the URL.",
     'passwordReset.ready': "You're temporarily logged in. You should change your password now.",
 
@@ -4271,7 +4283,7 @@ angular.module("tips", ['ngResource'])
 
       {
         id: 'upload_wordpress_key',
-        msg: 'You should add your wordpress key there, sport.',
+        msg: '<a href="/settings/linked-accounts">Link your wordpress.com account</a> to see view and comment metrics for this blog!',
         status: 'warning'
       },
 
@@ -5318,7 +5330,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </div>\n" +
     "               <div class=\"category-heading-tips\">\n" +
     "                  <tip key=\"how_we_found_these\" />\n" +
-    "                  <tip key=\"upload_wordpress_key\" />\n" +
+    "                  <tip key=\"upload_wordpress_key()\" />\n" +
     "               </div>\n" +
     "\n" +
     "            </div>\n" +

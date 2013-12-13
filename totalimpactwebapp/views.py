@@ -105,15 +105,24 @@ def abort_json(status_code, msg):
 
 
 def get_user_for_response(id, request, include_products=True):
-    id_type = request.args.get("id_type", "url_slug")
+    id_type = unicode(request.args.get("id_type", "url_slug"))
 
-    retrieved_user = get_user_from_id(id, id_type, include_products)
+    try:
+        logged_in = unicode(getattr(current_user, id_type)) == id
+    except AttributeError:
+        logged_in = False
+
+    retrieved_user = get_user_from_id(id, id_type, logged_in, include_products)
+
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
             id=id))
         abort(404, "That user doesn't exist.")
 
     return retrieved_user
+
+
+
 
 
 def make_js_response(template_name, **kwargs):

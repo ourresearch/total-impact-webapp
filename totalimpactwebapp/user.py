@@ -236,8 +236,8 @@ class User(db.Model):
             "github_id",
             "slideshare_id",
             "twitter_account_id",
-            "figshare_id"
-            # ,"wordpress_api_key"  # leave this out on purpose because it is confidential
+            "figshare_id",
+            "wordpress_api_key"
         ]
 
         ret_dict = {}
@@ -370,8 +370,8 @@ def create_user_from_slug(url_slug, user_request_dict, api_root, db):
     return user
 
 
-def get_user_from_id(id, id_type="userid", include_items=True):
-    if id_type == "userid":
+def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=True):
+    if id_type == "id":
         try:
             user = User.query.get(id)
         except DataError:  # id has to be an int
@@ -385,8 +385,23 @@ def get_user_from_id(id, id_type="userid", include_items=True):
     elif id_type == "url_slug":
         user = User.query.filter_by(url_slug=id).first()
 
+    if not show_secrets:
+        user = hide_user_secrets(user)
+
     return user
 
+
+def hide_user_secrets(user):
+    secrets = [
+        "wordpress_api_key"
+    ]
+    try:
+        for key in secrets:
+            delattr(user, key)
+    except AttributeError:
+        pass
+
+    return user
 
 
 

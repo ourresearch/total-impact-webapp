@@ -40,7 +40,7 @@ angular.module("tips", ['ngResource'])
 
       {
         id: 'upload_wordpress_key',
-        msg: 'You should add your wordpress key there, sport.',
+        msg: '<a href="/settings/linked-accounts">Link your wordpress.com account</a> to see view and comment metrics for this blog!',
         status: 'warning'
       },
 

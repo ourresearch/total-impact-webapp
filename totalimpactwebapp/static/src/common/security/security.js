@@ -174,8 +174,14 @@ angular.module('security.service', [
     },
 
 
-    getCurrentUser: function(){
-      return currentUser
+    getCurrentUser: function(attr){
+      if (currentUser && attr) {
+        return currentUser[attr]
+      }
+      else {
+        return currentUser
+      }
+
     },
 
     getCurrentUserSlug: function() {
