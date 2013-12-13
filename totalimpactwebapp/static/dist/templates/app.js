@@ -1120,32 +1120,12 @@ angular.module("settings/linked-accounts-settings.tpl.html", []).run(["$template
     "</div>\n" +
     "\n" +
     "\n" +
-    "<form novalidate name=\"userProfileForm\" class=\"form-horizontal\" ng-submit=\"onSave()\" ng-controller=\"profileSettingsCtrl\">\n" +
-    "\n" +
-    "   <div class=\"form-group photo\">\n" +
-    "      <label class=\"control-label col-sm-3\">Photo</label>\n" +
-    "      <div class=\"controls col-sm-7\">\n" +
-    "         <div class=\"my-picture\">\n" +
-    "            <a href=\"http://www.gravatar.com\" >\n" +
-    "               <img class=\"gravatar\" ng-src=\"http://www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
-    "            </a>\n" +
-    "            <p>You can change your profile image at <a href=\"http://www.gravatar.com\">Gravatar.com</a></p>\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
+    "<form novalidate name=\"userProfileForm\" class=\"form-horizontal\" ng-submit=\"onSave()\" ng-controller=\"linkedAccountsSettingsCtrl\">\n" +
     "\n" +
     "   <div class=\"form-group\">\n" +
-    "      <label class=\"control-label col-sm-3\">First name</label>\n" +
+    "      <label class=\"control-label col-sm-3\">Wordpress.com API key</label>\n" +
     "      <div class=\"controls col-sm-7\">\n" +
-    "         <input ng-model=\"user.given_name\" name=\"givenname\" class=\"form-control\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <label class=\"control-label col-sm-3\">Surname</label>\n" +
-    "      <div class=\"controls col-sm-7\">\n" +
-    "         <input ng-model=\"user.surname\" name=\"surname\" class=\"form-control\">\n" +
+    "         <input ng-model=\"user.wordpress_api_key\" name=\"wordpress_api_key\" class=\"form-control\">\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +

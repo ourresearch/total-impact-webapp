@@ -14,6 +14,7 @@ angular.module('services.localizedMessages', []).factory('localizedMessages', fu
     'settings.profile.change.success': "Your profile's been updated.",
     'settings.url.change.success': "Your profile URL has been updated.",
     'settings.email.change.success': "Your email has been updated to {{email}}.",
+    'settings.wordpress_api_key.add.success': "We're now using your API key to get more metrics on your wordpress.com blogs!",
     'passwordReset.error.invalidToken': "Looks like you've got an expired password reset token in the URL.",
     'passwordReset.ready': "You're temporarily logged in. You should change your password now.",
 

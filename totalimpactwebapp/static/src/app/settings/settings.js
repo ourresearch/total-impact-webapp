@@ -143,15 +143,19 @@ angular.module('settings', [
 
   .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
 
-     $scope.onSave = function() {
+    $scope.onSave = function() {
+
+      console.log("saving linked account info. sending this: ", $scope.user)
       Loading.start('saveButton')
       UsersAbout.patch(
-        {id: $scope.user.id, idType:"userid"},
+        {id: security.getCurrentUserSlug()},
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute('settings.url.change.success', 'success');
+          i18nNotifications.pushForNextRoute('settings.wordpress_api_key.add.success', 'success');
           $location.path('/' + resp.about.url_slug)
+
+          console.log("got this back from server: ", resp)
         }
       )
     };
