@@ -347,10 +347,12 @@ def user_tips(profile_id):
     return json_resp_from_thing({'ids': resp})
 
 
-@app.route("/user/<id>/products/duplicates", methods=["GET"])
+
+@app.route("/user/<id>/products/duplicates/deduplicate", methods=["POST"])
 def user_products_get_duplicates(id):
     user = get_user_for_response(id, request)
-    resp = user.get_duplicates_list()
+
+
     return json_resp_from_thing(resp)
 
 
@@ -361,36 +363,43 @@ def user_products_get_duplicates(id):
 def user_products_get(id):
 
     user = get_user_for_response(id, request)
-    products = add_sort_keys(user.products)
 
-    if request.args.get("include_heading_products") in [1, "true", "True"]:
-        resp = add_category_heading_products(products)
-    else:
-        resp = products
-
+    if request.args.get("group_by")=="duplicates":
+        user = get_user_for_response(id, request)
+        resp = user.get_duplicates_list()
+    else:        
+        products = add_sort_keys(user.products)
+        if request.args.get("include_heading_products") in [1, "true", "True"]:
+            resp = add_category_heading_products(products)
+        else:
+            resp = products
 
     return json_resp_from_thing(resp)
-
-
 
 
 @app.route("/user/<id>/products", methods=["POST", "DELETE", "PATCH"])
 def user_products_modify(id):
 
+    action = request.args.get("action", "refresh")
+
     user = get_user_for_response(id, request)
     logger.debug(u"got user {user}".format(
         user=user))
 
-    if request.method == "POST":
+    if request.method == "POST" and (action=="refresh"):
         # anyone can refresh extant products.
         tiids_being_refreshed = user.refresh_products()
         resp = {"products": tiids_being_refreshed}
     else:
-        # Make sure the user is allowed to make these modifications:
-        if current_user is None:
+        Make sure the user is allowed to make these modifications:
+        if (current_user is None) or (current_user.is_anonymous):
             abort_json(405, "You must be logged in to modify profiles.")
         elif current_user.url_slug != user.url_slug:
             abort_json(401, "Only profile owners can modify profiles.")
+
+        if (request.method=="POST") and (action=="deduplicate"):
+            deleted_tiids = user.remove_duplicates()   
+            resp = {"deleted_tiids": deleted_tiids}
 
         if request.method == "PATCH":
             tiids_to_add = request.json.get("tiids")

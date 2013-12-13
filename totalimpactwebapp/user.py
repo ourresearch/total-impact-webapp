@@ -195,8 +195,16 @@ class User(db.Model):
         return refresh_products_from_user(self.tiids, analytics_credentials)
 
     def get_duplicates_list(self):
-        duplicates_list = get_duplicates_list_from_user(self.tiids)
+        duplicates_list = get_duplicates_list_from_tiids(self.tiids)
         return duplicates_list
+
+    def remove_duplicates(self):
+        deleted_tiids = remove_duplicates_from_user(self.id)
+        
+        # important to keep this logging in so we can recover if necessary
+        logger.debug(u"removed duplicate tiids from {id}: {deleted_tiids}".format(
+            id=self.id, deleted_tiids=deleted_tiids))
+        return deleted_tiids
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -339,7 +347,7 @@ def refresh_products_from_user(tiids, analytics_credentials={}):
     return tiids
 
 
-def get_duplicates_list_from_user(tiids):
+def get_duplicates_list_from_tiids(tiids):
     if not tiids:
         return None
 
@@ -355,6 +363,21 @@ def get_duplicates_list_from_user(tiids):
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
     return r.json()
+
+
+def remove_duplicates_from_user(user_id):
+    user = User.query.get(user_id)
+    db.session.merge(user)
+
+    duplicates_list = get_duplicates_list_from_tiids(user.tiids)
+    tiids_to_remove = []
+    for duplicate_group in duplicates_list:
+        # don't remove the 0th one!  just from the first one on
+        tiids_to_remove += duplicate_group[1:]
+
+    user.delete_products(tiids_to_remove) 
+
+    return tiids_to_remove
 
 
 def create_user_from_slug(url_slug, user_request_dict, api_root, db):
