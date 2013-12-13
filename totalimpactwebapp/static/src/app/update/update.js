@@ -4,6 +4,7 @@ angular.module( 'update.update', [
   .factory("Update", function($rootScope, $cacheFactory, $location, UsersProducts, $timeout, $modal){
 
     var updateStatus = {}
+    var updateStarted = true
     var $httpDefaultCache = $cacheFactory.get('$http')
 
 
@@ -31,6 +32,10 @@ angular.module( 'update.update', [
          return !product.currently_updating
        })
 
+       if (!updateStarted){  // global var from above
+         productsDone = []
+       }
+
        if (completedStatus) {
          return productsDone.length
        }
@@ -47,6 +52,7 @@ angular.module( 'update.update', [
 
       // clear the cache. right now wiping out *everything*. be smart later.
       $httpDefaultCache.removeAll()
+      console.log("clearing the cache")
 
 
       var modal = $modal.open({
@@ -66,7 +72,10 @@ angular.module( 'update.update', [
 
     return {
       showUpdate: update,
-      'updateStatus': updateStatus
+      'updateStatus': updateStatus,
+      'setUpdateStarted': function(started){
+        updateStarted = !!started
+      }
     }
   })
   .controller("updateProgressModalCtrl", function($scope, Update){

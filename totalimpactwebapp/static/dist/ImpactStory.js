@@ -546,10 +546,9 @@ angular.module('importers.importer', [
   'profile'
 ])
 angular.module('importers.importer')
-.factory('Importer', function($cacheFactory, $q, Loading, Products, UsersProducts, UsersAbout){
+.factory('Importer', function($q, Loading, Products, UsersProducts, UsersAbout){
     var waitingOn = {}
     var tiidsAdded = []
-    var $httpDefaultCache = $cacheFactory.get('$http')
 
     var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
 
@@ -568,8 +567,6 @@ angular.module('importers.importer')
 
 
     var saveImporterInput = function(url_slug, importerObj) {
-      // clear the cache. this clear EVERYTHING, we can be smarter later.
-      $httpDefaultCache.removeAll()
 
       // clean the values
       _.each(importerObj.inputs, function(input){
@@ -1769,16 +1766,15 @@ angular.module("profile", [
     }
 
     $scope.dedup = function(){
+      Update.setUpdateStarted(false)
+      Update.showUpdate(userSlug, function(){
+        console.log("done with update!")
+        renderProducts()
+      })
+
       UsersProducts.dedup({id: userSlug}, {}, function(resp){
         console.log("deduped!", resp)
-
-        $timeout(function(){
-          Update.showUpdate(userSlug, function(){
-            console.log("done with update!")
-            renderProducts()
-          })
-
-        }, 1000)
+        Update.setUpdateStarted(true)
       })
     }
 
@@ -2073,10 +2069,13 @@ angular.module('settings', [
           security.setCurrentUser(resp.about) // update the current authenticated user.
           i18nNotifications.pushForNextRoute('settings.wordpress_api_key.add.success', 'success');
 
+          Update.setUpdateStarted(false)
+          Update.showUpdate(url_slug, function(){
+            $location.path("/" + url_slug)
+          })
+
           UsersProducts.refresh({id: url_slug}, {}, function(){
-            Update.showUpdate(url_slug, function(){
-              $location.path("/" + url_slug)
-            })
+            Update.setUpdateStarted(true)
           })
         }
       )
@@ -2286,6 +2285,7 @@ angular.module( 'update.update', [
   .factory("Update", function($rootScope, $cacheFactory, $location, UsersProducts, $timeout, $modal){
 
     var updateStatus = {}
+    var updateStarted = true
     var $httpDefaultCache = $cacheFactory.get('$http')
 
 
@@ -2313,6 +2313,10 @@ angular.module( 'update.update', [
          return !product.currently_updating
        })
 
+       if (!updateStarted){  // global var from above
+         productsDone = []
+       }
+
        if (completedStatus) {
          return productsDone.length
        }
@@ -2329,6 +2333,7 @@ angular.module( 'update.update', [
 
       // clear the cache. right now wiping out *everything*. be smart later.
       $httpDefaultCache.removeAll()
+      console.log("clearing the cache")
 
 
       var modal = $modal.open({
@@ -2348,7 +2353,10 @@ angular.module( 'update.update', [
 
     return {
       showUpdate: update,
-      'updateStatus': updateStatus
+      'updateStatus': updateStatus,
+      'setUpdateStarted': function(started){
+        updateStarted = !!started
+      }
     }
   })
   .controller("updateProgressModalCtrl", function($scope, Update){
@@ -3013,6 +3021,12 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: true,
+          params: {include_heading_products: true}
+        },
+        queryFresh: {
+          method: "GET",
+          isArray: true,
+          cache: false,
           params: {include_heading_products: true}
         },
         poll:{
@@ -5915,9 +5929,7 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "</div>\n" +
-    "\n" +
-    "<!--  58@e.com -->");
+    "</div>");
 }]);
 
 angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tip.tpl.html']);

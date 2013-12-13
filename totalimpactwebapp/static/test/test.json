@@ -1,0 +1,342 @@
+[
+    {
+        "_id": "figure", 
+        "account": null, 
+        "genre": "figure", 
+        "headingDimension": "category", 
+        "isHeading": true, 
+        "summary": {
+            "numProducts": 2
+        }
+    }, 
+    {
+        "_id": "lngmuao00p9bk8hbhfm6wpbf", 
+        "account": null, 
+        "aliases": {
+            "biblio": [
+                {
+                    "genre": "figure", 
+                    "published_date": "20:32, Dec 16, 2012", 
+                    "repository": "figshare", 
+                    "title": "Prevalence and use of Twitter among scholars", 
+                    "year": 2012
+                }
+            ], 
+            "doi": [
+                "10.6084/m9.figshare.104629"
+            ], 
+            "url": [
+                "http://figshare.com/articles/Prevalence_and_use_of_Twitter_among_scholars/104629"
+            ]
+        }, 
+        "biblio": {
+            "genre": "figure", 
+            "published_date": "20:32, Dec 16, 2012", 
+            "repository": "figshare", 
+            "title": "Prevalence and use of Twitter among scholars", 
+            "year": 2012
+        }, 
+        "created": "2013-12-13T14:48:37.956625", 
+        "currently_updating": false, 
+        "genre": "figure", 
+        "last_modified": "2013-12-13T14:48:39.298905", 
+        "metrics": {
+            "delicious:bookmarks": {
+                "provenance_url": "http://delicious.com/link/42835da5f29e005f0ddc95b40b0e99b8", 
+                "static_meta": {
+                    "description": "The number of bookmarks to this artifact (maximum=100).", 
+                    "display_name": "bookmarks", 
+                    "icon": "http://g.etfv.co/http://delicious.com", 
+                    "provider": "Delicious", 
+                    "provider_url": "http://www.delicious.com/"
+                }, 
+                "values": {
+                    "raw": 22
+                }
+            }, 
+            "figshare:downloads": {
+                "provenance_url": "http://dx.doi.org/10.6084/m9.figshare.104629", 
+                "static_meta": {
+                    "description": "The number of times this has been downloaded", 
+                    "display_name": "downloads", 
+                    "icon": "http://figshare.com/static/img/favicon.png", 
+                    "provider": "figshare", 
+                    "provider_url": "http://figshare.com"
+                }, 
+                "values": {
+                    "raw": 62
+                }
+            }, 
+            "figshare:shares": {
+                "provenance_url": "http://dx.doi.org/10.6084/m9.figshare.104629", 
+                "static_meta": {
+                    "description": "The number of times this has been shared", 
+                    "display_name": "shares", 
+                    "icon": "http://figshare.com/static/img/favicon.png", 
+                    "provider": "figshare", 
+                    "provider_url": "http://figshare.com"
+                }, 
+                "values": {
+                    "raw": 83
+                }
+            }, 
+            "figshare:views": {
+                "provenance_url": "http://dx.doi.org/10.6084/m9.figshare.104629", 
+                "static_meta": {
+                    "description": "The number of times this item has been viewed", 
+                    "display_name": "views", 
+                    "icon": "http://figshare.com/static/img/favicon.png", 
+                    "provider": "figshare", 
+                    "provider_url": "http://figshare.com"
+                }, 
+                "values": {
+                    "raw": 11959
+                }
+            }, 
+            "mendeley:career_stage": {
+                "provenance_url": "http://www.mendeley.com/research/prevalence-twitter-among-scholars/", 
+                "static_meta": {
+                    "description": "Percent of readers by career stage, for top three career stages (csv, api only)", 
+                    "display_name": "career stage, top 3 percentages", 
+                    "icon": "http://www.mendeley.com/favicon.ico", 
+                    "provider": "Mendeley", 
+                    "provider_url": "http://www.mendeley.com/"
+                }, 
+                "values": {
+                    "raw": "[{\"name\": \"Student (Master)\", \"value\": 36}, {\"name\": \"Ph.D. Student\", \"value\": 21}, {\"name\": \"Librarian\", \"value\": 21}]"
+                }
+            }, 
+            "mendeley:country": {
+                "provenance_url": "http://www.mendeley.com/research/prevalence-twitter-among-scholars/", 
+                "static_meta": {
+                    "description": "Percent of readers by country, for top three countries (csv, api only)", 
+                    "display_name": "country, top 3 percentages", 
+                    "icon": "http://www.mendeley.com/favicon.ico", 
+                    "provider": "Mendeley", 
+                    "provider_url": "http://www.mendeley.com/"
+                }, 
+                "values": {
+                    "raw": "[{\"name\": \"United States\", \"value\": 29}, {\"name\": \"Germany\", \"value\": 21}, {\"name\": \"United Kingdom\", \"value\": 14}]"
+                }
+            }, 
+            "mendeley:discipline": {
+                "provenance_url": "http://www.mendeley.com/research/prevalence-twitter-among-scholars/", 
+                "static_meta": {
+                    "description": "Percent of readers by discipline, for top three disciplines (csv, api only)", 
+                    "display_name": "discipline, top 3 percentages", 
+                    "icon": "http://www.mendeley.com/favicon.ico", 
+                    "provider": "Mendeley", 
+                    "provider_url": "http://www.mendeley.com/"
+                }, 
+                "values": {
+                    "raw": "[{\"id\": 6, \"value\": 64, \"name\": \"Computer and Information Science\"}, {\"id\": 23, \"value\": 14, \"name\": \"Social Sciences\"}, {\"id\": 25, \"value\": 7, \"name\": \"Design\"}]"
+                }
+            }, 
+            "mendeley:readers": {
+                "provenance_url": "http://www.mendeley.com/research/prevalence-twitter-among-scholars/", 
+                "static_meta": {
+                    "description": "The number of readers who have added the article to their libraries", 
+                    "display_name": "readers", 
+                    "icon": "http://www.mendeley.com/favicon.ico", 
+                    "provider": "Mendeley", 
+                    "provider_url": "http://www.mendeley.com/"
+                }, 
+                "values": {
+                    "raw": 14
+                }
+            }, 
+            "topsy:influential_tweets": {
+                "provenance_url": "http://topsy.com/trackback?url=http%3A//figshare.com/articles/Prevalence_and_use_of_Twitter_among_scholars/104629&window=a", 
+                "static_meta": {
+                    "description": "Number of times the item has been tweeted by influential tweeters", 
+                    "display_name": "influential tweets", 
+                    "icon": "http://twitter.com/phoenix/favicon.ico", 
+                    "provider": "Topsy", 
+                    "provider_url": "http://www.topsy.com/"
+                }, 
+                "values": {
+                    "raw": 15
+                }
+            }, 
+            "topsy:tweets": {
+                "provenance_url": "http://topsy.com/trackback?url=http%3A//figshare.com/articles/Prevalence_and_use_of_Twitter_among_scholars/104629&window=a", 
+                "static_meta": {
+                    "description": "Number of times the item has been tweeted", 
+                    "display_name": "tweets", 
+                    "icon": "http://twitter.com/phoenix/favicon.ico", 
+                    "provider": "Topsy", 
+                    "provider_url": "http://www.topsy.com/"
+                }, 
+                "values": {
+                    "raw": 286
+                }
+            }
+        }, 
+        "type": "item"
+    }, 
+    {
+        "_id": "wbgstkj2wsa4jzu65ciy31c3", 
+        "account": null, 
+        "aliases": {
+            "biblio": [
+                {
+                    "genre": "figure", 
+                    "published_date": "20:32, Dec 16, 2012", 
+                    "repository": "figshare", 
+                    "title": "Prevalence and use of Twitter among scholars", 
+                    "year": 2012
+                }
+            ], 
+            "doi": [
+                "10.6084/m9.figshare.104629"
+            ], 
+            "url": [
+                "http://figshare.com/articles/Prevalence_and_use_of_Twitter_among_scholars/104629"
+            ]
+        }, 
+        "biblio": {
+            "genre": "figure", 
+            "published_date": "20:32, Dec 16, 2012", 
+            "repository": "figshare", 
+            "title": "Prevalence and use of Twitter among scholars", 
+            "year": 2012
+        }, 
+        "created": "2013-12-13T17:21:51.626680", 
+        "currently_updating": false, 
+        "genre": "figure", 
+        "last_modified": "2013-12-13T17:21:58.142849", 
+        "metrics": {
+            "delicious:bookmarks": {
+                "provenance_url": "http://delicious.com/link/42835da5f29e005f0ddc95b40b0e99b8", 
+                "static_meta": {
+                    "description": "The number of bookmarks to this artifact (maximum=100).", 
+                    "display_name": "bookmarks", 
+                    "icon": "http://g.etfv.co/http://delicious.com", 
+                    "provider": "Delicious", 
+                    "provider_url": "http://www.delicious.com/"
+                }, 
+                "values": {
+                    "raw": 22
+                }
+            }, 
+            "figshare:downloads": {
+                "provenance_url": "http://dx.doi.org/10.6084/m9.figshare.104629", 
+                "static_meta": {
+                    "description": "The number of times this has been downloaded", 
+                    "display_name": "downloads", 
+                    "icon": "http://figshare.com/static/img/favicon.png", 
+                    "provider": "figshare", 
+                    "provider_url": "http://figshare.com"
+                }, 
+                "values": {
+                    "raw": 62
+                }
+            }, 
+            "figshare:shares": {
+                "provenance_url": "http://dx.doi.org/10.6084/m9.figshare.104629", 
+                "static_meta": {
+                    "description": "The number of times this has been shared", 
+                    "display_name": "shares", 
+                    "icon": "http://figshare.com/static/img/favicon.png", 
+                    "provider": "figshare", 
+                    "provider_url": "http://figshare.com"
+                }, 
+                "values": {
+                    "raw": 83
+                }
+            }, 
+            "figshare:views": {
+                "provenance_url": "http://dx.doi.org/10.6084/m9.figshare.104629", 
+                "static_meta": {
+                    "description": "The number of times this item has been viewed", 
+                    "display_name": "views", 
+                    "icon": "http://figshare.com/static/img/favicon.png", 
+                    "provider": "figshare", 
+                    "provider_url": "http://figshare.com"
+                }, 
+                "values": {
+                    "raw": 11959
+                }
+            }, 
+            "mendeley:career_stage": {
+                "provenance_url": "http://www.mendeley.com/research/prevalence-twitter-among-scholars/", 
+                "static_meta": {
+                    "description": "Percent of readers by career stage, for top three career stages (csv, api only)", 
+                    "display_name": "career stage, top 3 percentages", 
+                    "icon": "http://www.mendeley.com/favicon.ico", 
+                    "provider": "Mendeley", 
+                    "provider_url": "http://www.mendeley.com/"
+                }, 
+                "values": {
+                    "raw": "[{\"name\": \"Student (Master)\", \"value\": 36}, {\"name\": \"Ph.D. Student\", \"value\": 21}, {\"name\": \"Librarian\", \"value\": 21}]"
+                }
+            }, 
+            "mendeley:country": {
+                "provenance_url": "http://www.mendeley.com/research/prevalence-twitter-among-scholars/", 
+                "static_meta": {
+                    "description": "Percent of readers by country, for top three countries (csv, api only)", 
+                    "display_name": "country, top 3 percentages", 
+                    "icon": "http://www.mendeley.com/favicon.ico", 
+                    "provider": "Mendeley", 
+                    "provider_url": "http://www.mendeley.com/"
+                }, 
+                "values": {
+                    "raw": "[{\"name\": \"United States\", \"value\": 29}, {\"name\": \"Germany\", \"value\": 21}, {\"name\": \"United Kingdom\", \"value\": 14}]"
+                }
+            }, 
+            "mendeley:discipline": {
+                "provenance_url": "http://www.mendeley.com/research/prevalence-twitter-among-scholars/", 
+                "static_meta": {
+                    "description": "Percent of readers by discipline, for top three disciplines (csv, api only)", 
+                    "display_name": "discipline, top 3 percentages", 
+                    "icon": "http://www.mendeley.com/favicon.ico", 
+                    "provider": "Mendeley", 
+                    "provider_url": "http://www.mendeley.com/"
+                }, 
+                "values": {
+                    "raw": "[{\"id\": 6, \"value\": 64, \"name\": \"Computer and Information Science\"}, {\"id\": 23, \"value\": 14, \"name\": \"Social Sciences\"}, {\"id\": 25, \"value\": 7, \"name\": \"Design\"}]"
+                }
+            }, 
+            "mendeley:readers": {
+                "provenance_url": "http://www.mendeley.com/research/prevalence-twitter-among-scholars/", 
+                "static_meta": {
+                    "description": "The number of readers who have added the article to their libraries", 
+                    "display_name": "readers", 
+                    "icon": "http://www.mendeley.com/favicon.ico", 
+                    "provider": "Mendeley", 
+                    "provider_url": "http://www.mendeley.com/"
+                }, 
+                "values": {
+                    "raw": 14
+                }
+            }, 
+            "topsy:influential_tweets": {
+                "provenance_url": "http://topsy.com/trackback?url=http%3A//figshare.com/articles/Prevalence_and_use_of_Twitter_among_scholars/104629&window=a", 
+                "static_meta": {
+                    "description": "Number of times the item has been tweeted by influential tweeters", 
+                    "display_name": "influential tweets", 
+                    "icon": "http://twitter.com/phoenix/favicon.ico", 
+                    "provider": "Topsy", 
+                    "provider_url": "http://www.topsy.com/"
+                }, 
+                "values": {
+                    "raw": 15
+                }
+            }, 
+            "topsy:tweets": {
+                "provenance_url": "http://topsy.com/trackback?url=http%3A//figshare.com/articles/Prevalence_and_use_of_Twitter_among_scholars/104629&window=a", 
+                "static_meta": {
+                    "description": "Number of times the item has been tweeted", 
+                    "display_name": "tweets", 
+                    "icon": "http://twitter.com/phoenix/favicon.ico", 
+                    "provider": "Topsy", 
+                    "provider_url": "http://www.topsy.com/"
+                }, 
+                "values": {
+                    "raw": 286
+                }
+            }
+        }, 
+        "type": "item"
+    }
+]
