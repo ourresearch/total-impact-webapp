@@ -2,6 +2,7 @@ angular.module("profile", [
   'resources.users',
   'product.product',
   'services.page',
+  'update.update',
   'ui.bootstrap',
   'security',
   'tips',
@@ -109,6 +110,7 @@ angular.module("profile", [
     Product,
     UserProfile,
     CategoryHeading,
+    Update,
     Page) {
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
@@ -157,10 +159,19 @@ angular.module("profile", [
     $scope.dedup = function(){
       UsersProducts.dedup({id: userSlug}, {}, function(resp){
         console.log("deduped!", resp)
+
+        $timeout(function(){
+          Update.showUpdate(userSlug, function(){
+            console.log("done with update!")
+            renderProducts()
+          })
+
+        }, 1000)
       })
     }
 
     var renderProducts = function(){
+      console.log("rendering profile products")
       $scope.products = UsersProducts.query({
         id: userSlug,
         includeHeadingProducts: true,

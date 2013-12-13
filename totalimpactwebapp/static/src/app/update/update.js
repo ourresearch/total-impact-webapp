@@ -1,9 +1,11 @@
 angular.module( 'update.update', [
     'resources.users'
   ])
-  .factory("Update", function($rootScope, $location, UsersProducts, $timeout, $modal){
+  .factory("Update", function($rootScope, $cacheFactory, $location, UsersProducts, $timeout, $modal){
 
     var updateStatus = {}
+    var $httpDefaultCache = $cacheFactory.get('$http')
+
 
     var keepPolling = function(url_slug, onFinish){
 
@@ -42,6 +44,10 @@ angular.module( 'update.update', [
       updateStatus.numDone = null
       updateStatus.numNotDone = null
       updateStatus.percentComplete = null
+
+      // clear the cache. right now wiping out *everything*. be smart later.
+      $httpDefaultCache.removeAll()
+
 
       var modal = $modal.open({
         templateUrl: 'update/update-progress.tpl.html',
