@@ -401,14 +401,9 @@ def user_products_modify(id):
         resp = {"products": tiids_being_refreshed}
 
     else:
-<<<<<<< HEAD
         # Actions that require authentication
 
         if current_user is None:
-=======
-        # Make sure the user is allowed to make these modifications:
-        if (current_user is None) or (current_user.is_anonymous):
->>>>>>> ae34675de6aae0b6c63db7825d01b177dfd9129e
             abort_json(405, "You must be logged in to modify profiles.")
         elif current_user.url_slug != user.url_slug:
             abort_json(401, "Only profile owners can modify profiles.")
