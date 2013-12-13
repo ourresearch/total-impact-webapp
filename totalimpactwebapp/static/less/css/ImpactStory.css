@@ -8228,8 +8228,6 @@ div.settings div.settings-nav ul li a i {
   margin-top: 4px;
 }
 div.settings div.settings-input {
-  margin-left: 250px;
-  margin-top: 50px;
   float: left;
   margin: 0  0 0 50px;
 }
@@ -8244,8 +8242,15 @@ div.settings div.settings-input form.form-horizontal.custom-url {
 div.settings div.settings-input form.form-horizontal .form-group {
   clear: none;
 }
+div.settings div.settings-input form.form-horizontal .form-group p {
+  color: #777;
+  font-size: 15px;
+}
 div.settings div.settings-input form.form-horizontal .form-group label {
   color: #555;
+}
+div.settings div.settings-input form.form-horizontal .form-group label.two-lines {
+  padding-top: 0;
 }
 div.settings div.settings-input form.form-horizontal .form-group .working i {
   margin-right: 5px;
@@ -8267,7 +8272,6 @@ div.settings div.settings-input form.form-horizontal .form-group.photo div.my-pi
   bottom: 0;
   margin-bottom: 0;
   left: 120px;
-  color: #777;
 }
 div.settings div.settings-input form.form-horizontal .form-group.current-password div.controls.show-password div.checkmark-and-text {
   margin: 19px 0 0 -18px;

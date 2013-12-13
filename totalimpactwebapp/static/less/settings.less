@@ -51,8 +51,6 @@ div.settings {
    }
 
    div.settings-input {
-      margin-left: 250px;
-      margin-top: 50px;
 
       float:left;
       margin: 0  0 0 50px;
@@ -65,10 +63,17 @@ div.settings {
             padding-left: 50px;
          }
          .form-group {
+            p {
+               color: #777;
+               font-size: 15px;
+            }
             clear:none;
 //            height: 70px; // i have no earthly clue what or why this does.
             label {
                color: #555;
+               &.two-lines {
+                  padding-top: 0;
+               }
             }
             .working {
                i {margin-right: 5px;}
@@ -89,7 +94,6 @@ div.settings {
                      bottom: 0;
                      margin-bottom: 0;
                      left: 120px;
-                     color: #777;
                   }
                }
             }
