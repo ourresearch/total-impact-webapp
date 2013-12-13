@@ -47,6 +47,7 @@ angular.module( 'update.update', [
 
       // clear the cache. right now wiping out *everything*. be smart later.
       $httpDefaultCache.removeAll()
+      console.log("clearing the cache")
 
 
       var modal = $modal.open({

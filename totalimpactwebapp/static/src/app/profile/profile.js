@@ -160,13 +160,11 @@ angular.module("profile", [
       UsersProducts.dedup({id: userSlug}, {}, function(resp){
         console.log("deduped!", resp)
 
-        $timeout(function(){
-          Update.showUpdate(userSlug, function(){
-            console.log("done with update!")
-            renderProducts()
-          })
+        Update.showUpdate(userSlug, function(){
+          console.log("done with update!")
+          renderProducts()
+        })
 
-        }, 1000)
       })
     }
 
