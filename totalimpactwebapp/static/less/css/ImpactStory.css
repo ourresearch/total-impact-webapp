@@ -7485,10 +7485,15 @@ div.products .wrapper div.products-without-metrics div.well a {
 }
 .product.heading {
   margin-top: 130px;
-  width: 95%;
 }
 .product.heading.first {
   margin-top: 50px;
+}
+.product.blog.heading .category-heading {
+  width: 99%;
+}
+.product.blog.heading .category-heading div.category-metrics {
+  right: -15px;
 }
 .product.twitter.real-product div.real-product .badges {
   margin-top: 40px;
@@ -7545,7 +7550,7 @@ div.products .wrapper div.products-without-metrics div.well a {
   font-size: 14px;
 }
 .product div.category-heading {
-  width: 100%;
+  width: 95%;
   padding-bottom: 5px;
   border-bottom: 1px solid #eee;
 }
@@ -7636,7 +7641,7 @@ div.products .wrapper div.products-without-metrics div.well a {
   text-align: right;
   position: absolute;
   bottom: 0;
-  right: -15px;
+  right: 0px;
 }
 .product div.category-heading div.category-heading-main div.category-metrics ul li.category-metric {
   display: inline-block;
