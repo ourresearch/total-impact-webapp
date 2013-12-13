@@ -400,7 +400,7 @@ def user_products_modify(id):
         tiids_being_refreshed = user.refresh_products()
         resp = {"products": tiids_being_refreshed}
     else:
-        Make sure the user is allowed to make these modifications:
+        # Make sure the user is allowed to make these modifications:
         if (current_user is None) or (current_user.is_anonymous):
             abort_json(405, "You must be logged in to modify profiles.")
         elif current_user.url_slug != user.url_slug:
