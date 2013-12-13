@@ -4326,7 +4326,7 @@ angular.module("tips", ['ngResource'])
 
       {
         id: 'upload_wordpress_key',
-        msg: '<a href="/settings/linked-accounts">Link your wordpress.com account</a> to see view and comment metrics for this blog!',
+        msg: '<a href="/settings/linked-accounts">Link your wordpress.com account</a> to see page view metrics for this blog!',
         status: 'warning'
       },
 
@@ -5549,6 +5549,7 @@ angular.module("settings/linked-accounts-settings.tpl.html", []).run(["$template
     "      <label class=\"control-label col-sm-3\">Wordpress.com API key</label>\n" +
     "      <div class=\"controls col-sm-7\">\n" +
     "         <input ng-model=\"user.wordpress_api_key\" name=\"wordpress_api_key\" class=\"form-control\">\n" +
+    "         <p>You can find your WordPress.com API key <a href='http://akismet.com/resend/' target='_blank'>through Akismet</a>.</p>         \n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
