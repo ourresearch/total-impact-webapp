@@ -101,7 +101,7 @@
       <ul class="products-list">
          <li class="product {{ product.genre }}"
              ng-class="{'heading': product.isHeading, 'real-product': !product.isHeading, first: $first}"
-             ng-repeat="product in products | orderBy:['genre', 'account', 'isHeading', getSortScore]"
+             ng-repeat="product in products | orderBy:['genre', 'account', 'isHeading', getSortScore, getMetricSum]"
              ng-controller="productCtrl"
              ng-show="hasMetrics() || showProductsWithoutMetrics || product.isHeading"
              id="{{ product._id }}"

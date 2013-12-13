@@ -117,6 +117,16 @@ angular.module('product.product')
       return metrics
     }
 
+    ,getMetricSum: function(itemData) {
+      var sum = 0
+      if (itemData.metrics){
+        _.each(itemData.metrics, function(metric){
+          sum += metric.values.raw
+        })
+      }
+      return sum
+    }
+
     ,getSortScore: function(itemData) {
       var highlyAwardIsAsGoodAsThisManyRegularAwards = 3
       var score = 0;

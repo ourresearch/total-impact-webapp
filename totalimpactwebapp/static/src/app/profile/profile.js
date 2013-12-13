@@ -164,6 +164,10 @@ angular.module("profile", [
       return Product.getSortScore(product) * -1;
     }
 
+    $scope.getMetricSum = function(product) {
+      return Product.getMetricSum(product) * -1;
+    }
+
     $scope.dedup = function(){
       Loading.start("dedup")
 

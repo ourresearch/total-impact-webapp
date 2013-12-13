@@ -915,7 +915,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product {{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.isHeading, 'real-product': !product.isHeading, first: $first}\"\n" +
-    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'isHeading', getSortScore]\"\n" +
+    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'isHeading', getSortScore, getMetricSum]\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"hasMetrics() || showProductsWithoutMetrics || product.isHeading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
@@ -1142,8 +1142,8 @@ angular.module("settings/linked-accounts-settings.tpl.html", []).run(["$template
     "      <label class=\"control-label col-sm-3 two-lines\">Wordpress.com API key</label>\n" +
     "      <div class=\"controls col-sm-7\">\n" +
     "         <input ng-model=\"user.wordpress_api_key\" name=\"wordpress_api_key\" class=\"form-control\">\n" +
-    "         <p>If you've already imported a <a href=\"http://wordpress.com\">Wordpress.com</a> blog, this key lets us display your readership counts.\n" +
-    "            You can find your WordPress.com API key <a href='http://akismet.com/resend/' target='_blank'>here, via Akismet.</a>\n" +
+    "         <p>If you've already imported a <a href=\"http://wordpress.com\">Wordpress.com</a> blog, this key lets us display your readership counts.</p>\n" +
+    "         <p>You can find your WordPress.com API key <a href='http://akismet.com/resend/' target='_blank'>here, via Akismet.</a></p>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +

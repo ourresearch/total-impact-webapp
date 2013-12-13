@@ -8249,12 +8249,11 @@ div.settings div.settings-input form.form-horizontal .form-group {
 div.settings div.settings-input form.form-horizontal .form-group p {
   color: #777;
   font-size: 15px;
+  margin-bottom: 0;
+  margin-top: 10px;
 }
 div.settings div.settings-input form.form-horizontal .form-group label {
   color: #555;
-}
-div.settings div.settings-input form.form-horizontal .form-group label.two-lines {
-  padding-top: 0;
 }
 div.settings div.settings-input form.form-horizontal .form-group .working i {
   margin-right: 5px;
