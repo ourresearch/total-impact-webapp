@@ -1,4 +1,4 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -952,7 +952,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </div>\n" +
     "               <div class=\"category-heading-tips\">\n" +
     "                  <tip key=\"how_we_found_these\" />\n" +
-    "                  <tip key=\"upload_wordpress_key\" />\n" +
+    "                  <tip key=\"upload_wordpress_key()\" />\n" +
     "               </div>\n" +
     "\n" +
     "            </div>\n" +
@@ -998,8 +998,8 @@ angular.module("settings/custom-url-settings.tpl.html", []).run(["$templateCache
     "        ng-class=\"{ 'has-error':  userUrlForm.url_slug.$invalid && userUrlForm.url_slug.$dirty && !loading.is(),\n" +
     "                    'has-success': userUrlForm.url_slug.$valid && userUrlForm.url_slug.$dirty && !loading.is() }\">\n" +
     "\n" +
-    "      <div class=\"controls input-group col-lg-7\">\n" +
-    "         <span class=\"input-group-addon\">http://impactstory.org/</span>\n" +
+    "      <div class=\"controls input-group col-sm-9\">\n" +
+    "         <span class=\"input-group-addon\">impactstory.org/</span>\n" +
     "         <input ng-model=\"user.url_slug\"\n" +
     "                name=\"url_slug\"\n" +
     "                class=\"form-control\"\n" +
@@ -1010,37 +1010,43 @@ angular.module("settings/custom-url-settings.tpl.html", []).run(["$templateCache
     "\n" +
     "      </div>\n" +
     "\n" +
-    "      <spinner msg=\"Checking\"></spinner>\n" +
     "\n" +
-    "      <div class=\"help-block error\"\n" +
-    "            ng-show=\"userUrlForm.url_slug.$error.pattern\n" +
-    "            && userUrlForm.url_slug.$dirty\n" +
-    "            && !loading.is()\">\n" +
-    "         This URL has invalid characters.\n" +
-    "      </div>\n" +
+    "      <div class=\"feedback col-sm-3\">\n" +
     "\n" +
-    "      <div class=\"help-block error\"\n" +
-    "            ng-show=\"userUrlForm.url_slug.$error.requireUnique\n" +
-    "            && userUrlForm.url_slug.$dirty\n" +
-    "            && !loading.is()\">\n" +
-    "         Someone else is using that URL.\n" +
-    "      </div>\n" +
-    "      <div class=\"help-block success\"\n" +
-    "            ng-show=\"userUrlForm.url_slug.$valid\n" +
-    "            && userUrlForm.url_slug.$dirty\n" +
-    "            && !loading.is()\">\n" +
-    "         Looks good!\n" +
-    "      </div>\n" +
-    "      <div class=\"help-block\"\n" +
-    "            ng-show=\"userUrlForm.url_slug.$pristine\n" +
-    "            && !loading.is()\">\n" +
-    "         This is your current URL.\n" +
+    "         <spinner msg=\"Checking\"></spinner>\n" +
+    "\n" +
+    "         <div class=\"help-block error\"\n" +
+    "               ng-show=\"userUrlForm.url_slug.$error.pattern\n" +
+    "               && userUrlForm.url_slug.$dirty\n" +
+    "               && !loading.is()\">\n" +
+    "            This URL has invalid characters.\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"help-block error\"\n" +
+    "               ng-show=\"userUrlForm.url_slug.$error.requireUnique\n" +
+    "               && userUrlForm.url_slug.$dirty\n" +
+    "               && !loading.is()\">\n" +
+    "            Someone else is using that URL.\n" +
+    "         </div>\n" +
+    "         <div class=\"help-block success one-line\"\n" +
+    "               ng-show=\"userUrlForm.url_slug.$valid\n" +
+    "               && userUrlForm.url_slug.$dirty\n" +
+    "               && !loading.is()\">\n" +
+    "            Looks good!\n" +
+    "         </div>\n" +
+    "         <div class=\"help-block\"\n" +
+    "               ng-show=\"userUrlForm.url_slug.$pristine\n" +
+    "               && !loading.is()\">\n" +
+    "            This is your current URL.\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"form-group submit\">\n" +
-    "      <div class=\" col-lg-10\">\n" +
+    "      <div class=\" col-sm-10\">\n" +
     "         <save-buttons valid=\"userUrlForm.$valid\"></save-buttons>\n" +
     "      </div>\n" +
     "   </div>\n" +
@@ -1062,7 +1068,7 @@ angular.module("settings/email-settings.tpl.html", []).run(["$templateCache", fu
     "  ng-class=\"{ 'has-error':  userEmailForm.email.$invalid && userEmailForm.email.$dirty && !loading.is(),\n" +
     "                    'has-success': userEmailForm.email.$valid && userEmailForm.email.$dirty && !loading.is()}\">\n" +
     "\n" +
-    "    <div class=\"controls input-group col-lg-7\">\n" +
+    "    <div class=\"controls input-group col-sm-9\">\n" +
     "      <span class=\"input-group-addon\"><i class=\"icon-envelope-alt\"></i></span>\n" +
     "      <input ng-model=\"user.email\"\n" +
     "      name=\"email\"\n" +
@@ -1072,34 +1078,63 @@ angular.module("settings/email-settings.tpl.html", []).run(["$templateCache", fu
     "      />\n" +
     "\n" +
     "    </div>\n" +
+    "    <div class=\"feedback col-sm-3\">\n" +
+    "       <spinner msg=\"Checking\"></spinner>\n" +
     "\n" +
-    "    <spinner msg=\"Checking\"></spinner>\n" +
+    "       <div class=\"help-block error\"\n" +
+    "       ng-show=\"userEmailForm.email.$error.requireUnique\n" +
+    "               && userEmailForm.email.$dirty\n" +
+    "               && !loading.is()\">\n" +
+    "       Address is already in use.\n" +
+    "       </div>\n" +
+    "       <div class=\"help-block success one-line\"\n" +
+    "       ng-show=\"userEmailForm.email.$valid\n" +
+    "               && userEmailForm.email.$dirty\n" +
+    "               && !loading.is()\">\n" +
+    "       Looks good!\n" +
+    "       </div>\n" +
+    "       <div class=\"help-block\"\n" +
+    "       ng-show=\"userEmailForm.email.$pristine\n" +
+    "               && !loading.is()\">\n" +
+    "       This is your current email.\n" +
+    "       </div>\n" +
+    "    </div>\n" +
     "\n" +
-    "    <div class=\"help-block error\"\n" +
-    "    ng-show=\"userEmailForm.email.$error.requireUnique\n" +
-    "            && userEmailForm.email.$dirty\n" +
-    "            && !loading.is()\">\n" +
-    "    That email address is already in use.\n" +
-    "    </div>\n" +
-    "    <div class=\"help-block success\"\n" +
-    "    ng-show=\"userEmailForm.email.$valid\n" +
-    "            && userEmailForm.email.$dirty\n" +
-    "            && !loading.is()\">\n" +
-    "    Looks good!\n" +
-    "    </div>\n" +
-    "    <div class=\"help-block\"\n" +
-    "    ng-show=\"userEmailForm.email.$pristine\n" +
-    "            && !loading.is()\">\n" +
-    "    This is your currently registered email.\n" +
-    "    </div>\n" +
     "\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"form-group submit\">\n" +
-    "  <div class=\" col-lg-10\">\n" +
+    "  <div class=\" col-xs-10\">\n" +
     "    <save-buttons valid=\"userEmailForm.$valid\"></save-buttons>\n" +
     "  </div>\n" +
     "  </div>\n" +
+    "\n" +
+    "</form>\n" +
+    "");
+}]);
+
+angular.module("settings/linked-accounts-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/linked-accounts-settings.tpl.html",
+    "<div class=\"settings-header\">\n" +
+    "   <h1>Profile</h1>\n" +
+    "   <p>Modify what's displayed in your profile.</p>\n" +
+    "</div>\n" +
+    "\n" +
+    "\n" +
+    "<form novalidate name=\"userProfileForm\" class=\"form-horizontal\" ng-submit=\"onSave()\" ng-controller=\"linkedAccountsSettingsCtrl\">\n" +
+    "\n" +
+    "   <div class=\"form-group\">\n" +
+    "      <label class=\"control-label col-sm-3\">Wordpress.com API key</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
+    "         <input ng-model=\"user.wordpress_api_key\" name=\"wordpress_api_key\" class=\"form-control\">\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"form-group submit\">\n" +
+    "      <div class=\" col-sm-offset-3 col-sm-7\">\n" +
+    "         <save-buttons valid=\"userProfileForm.$valid\"></save-buttons>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
     "\n" +
     "</form>\n" +
     "");
@@ -1115,25 +1150,25 @@ angular.module("settings/password-settings.tpl.html", []).run(["$templateCache",
     "\n" +
     "<form novalidate\n" +
     "      name=\"userPasswordForm\"\n" +
-    "      class=\"form-horizontal change-password\"\n" +
+    "      class=\"change-password form-horizontal\"\n" +
     "      ng-submit=\"onSave()\"\n" +
     "      ng-controller=\"passwordSettingsCtrl\"\n" +
     "      >\n" +
     "\n" +
     "   <div class=\"form-group current-password\" ng-class=\"{'has-error': wrongPassword}\">\n" +
-    "      <label class=\"control-label col-lg-3\">Current password</label>\n" +
-    "      <div class=\"controls col-lg-4\">\n" +
+    "      <label class=\"control-label col-sm-4\">Current password</label>\n" +
+    "      <div class=\"controls col-sm-6\">\n" +
     "         <input ng-model=\"user.currentPassword\" name=\"currentPassword\" type=\"password\" class=\"form-control\" required ng-show=\"!showPassword\">\n" +
     "         <input ng-model=\"user.currentPassword\" name=\"currentPassword\" type=\"text\" class=\"form-control\" required ng-show=\"showPassword\">\n" +
     "      </div>\n" +
-    "      <div class=\"controls col-lg-4 show-password\">\n" +
+    "      <div class=\"controls col-sm-2 show-password\">\n" +
     "         <pretty-checkbox value=\"showPassword\" text=\"Show\"></pretty-checkbox>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"form-group new-password\">\n" +
-    "      <label class=\"control-label col-lg-3\">New password</label>\n" +
-    "      <div class=\"controls col-lg-4\">\n" +
+    "      <label class=\"control-label col-sm-4\">New password</label>\n" +
+    "      <div class=\"controls col-sm-6\">\n" +
     "         <input ng-model=\"user.newPassword\"\n" +
     "                name=\"newPassword\"\n" +
     "                type=\"password\"\n" +
@@ -1152,7 +1187,7 @@ angular.module("settings/password-settings.tpl.html", []).run(["$templateCache",
     "\n" +
     "\n" +
     "   <div class=\"form-group submit\">\n" +
-    "      <div class=\" col-lg-offset-4 col-lg-4\">\n" +
+    "      <div class=\" col-sm-offset-4 col-sm-6\">\n" +
     "         <save-buttons></save-buttons>\n" +
     "      </div>\n" +
     "   </div>\n" +
@@ -1172,8 +1207,8 @@ angular.module("settings/profile-settings.tpl.html", []).run(["$templateCache", 
     "<form novalidate name=\"userProfileForm\" class=\"form-horizontal\" ng-submit=\"onSave()\" ng-controller=\"profileSettingsCtrl\">\n" +
     "\n" +
     "   <div class=\"form-group photo\">\n" +
-    "      <label class=\"control-label col-lg-3\">Photo</label>\n" +
-    "      <div class=\"controls col-lg-5\">\n" +
+    "      <label class=\"control-label col-sm-3\">Photo</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
     "         <div class=\"my-picture\">\n" +
     "            <a href=\"http://www.gravatar.com\" >\n" +
     "               <img class=\"gravatar\" ng-src=\"http://www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
@@ -1184,22 +1219,22 @@ angular.module("settings/profile-settings.tpl.html", []).run(["$templateCache", 
     "   </div>\n" +
     "\n" +
     "   <div class=\"form-group\">\n" +
-    "      <label class=\"control-label col-lg-3\">First name</label>\n" +
-    "      <div class=\"controls col-lg-5\">\n" +
+    "      <label class=\"control-label col-sm-3\">First name</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
     "         <input ng-model=\"user.given_name\" name=\"givenname\" class=\"form-control\">\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"form-group\">\n" +
-    "      <label class=\"control-label col-lg-3\">Surname</label>\n" +
-    "      <div class=\"controls col-lg-5\">\n" +
+    "      <label class=\"control-label col-sm-3\">Surname</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
     "         <input ng-model=\"user.surname\" name=\"surname\" class=\"form-control\">\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"form-group submit\">\n" +
-    "      <div class=\" col-lg-offset-3 col-lg-9\">\n" +
+    "      <div class=\" col-sm-offset-3 col-sm-7\">\n" +
     "         <save-buttons valid=\"userProfileForm.$valid\"></save-buttons>\n" +
     "      </div>\n" +
     "   </div>\n" +

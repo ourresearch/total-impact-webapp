@@ -1,0 +1,22 @@
+<div class="settings-header">
+   <h1>Profile</h1>
+   <p>Modify what's displayed in your profile.</p>
+</div>
+
+
+<form novalidate name="userProfileForm" class="form-horizontal" ng-submit="onSave()" ng-controller="linkedAccountsSettingsCtrl">
+
+   <div class="form-group">
+      <label class="control-label col-sm-3">Wordpress.com API key</label>
+      <div class="controls col-sm-7">
+         <input ng-model="user.wordpress_api_key" name="wordpress_api_key" class="form-control">
+      </div>
+   </div>
+
+   <div class="form-group submit">
+      <div class=" col-sm-offset-3 col-sm-7">
+         <save-buttons valid="userProfileForm.$valid"></save-buttons>
+      </div>
+   </div>
+
+</form>

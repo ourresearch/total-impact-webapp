@@ -1,4 +1,4 @@
-angular.module('product.categoryHeading', [])
+angular.module('product.categoryHeading', ["security"])
   .factory("CategoryHeading", function(){
 
     var genreIcons = {
@@ -27,7 +27,7 @@ angular.module('product.categoryHeading', [])
     }
 
   })
-.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, UserProfile){
+.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, security){
     $scope.genreIcon = CategoryHeading.getGenreIcon
     $scope.makeAnchorLink = function(anchor){
       return $location.path() + "#" + anchor
@@ -42,8 +42,14 @@ angular.module('product.categoryHeading', [])
       $scope.how_we_found_these = "how_we_found_these_tweets"
     }
 
-    $scope.upload_wordpress_key = false
-//    if ($scope.product.account_biblio.hosting_platform == "wordpress.com"){
-//      $scope.upload_wordpress_key =  "upload_wordpress_key"
-//    }
+    $scope.upload_wordpress_key = function(){
+      var wpHeading =  $scope.product.account_biblio.hosting_platform == "wordpress.com"
+      var wpKeySet = security.getCurrentUser("wordpress_api_key")
+      if (wpHeading && !wpKeySet){
+        return "upload_wordpress_key"
+      }
+      else {
+        return null
+      }
+    }
 })

@@ -1,6 +1,7 @@
 angular.module('settings', [
     'resources.users',
     'services.loading',
+    'update.update',
     'directives.spinner',
     'settings.pageDescriptions',
     'services.i18nNotifications',
@@ -138,3 +139,33 @@ angular.module('settings', [
       )
     };
   })
+
+
+
+  .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading, Update, UsersProducts) {
+
+
+    $scope.onSave = function() {
+      var url_slug = security.getCurrentUserSlug()
+
+      console.log("saving linked account info. sending this: ", $scope.user)
+      Loading.start('saveButton')
+
+      UsersAbout.patch(
+        {id: url_slug},
+        {about: $scope.user},
+        function(resp) {
+          security.setCurrentUser(resp.about) // update the current authenticated user.
+          i18nNotifications.pushForNextRoute('settings.wordpress_api_key.add.success', 'success');
+
+          UsersProducts.refresh({id: url_slug}, {}, function(){})
+
+          Update.showUpdate(url_slug, function(){
+            $location.path("/" + url_slug)
+          })
+        }
+      )
+    };
+  })
+
+

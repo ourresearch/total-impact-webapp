@@ -6234,10 +6234,13 @@ form div.input-group .input-group-addon {
 }
 form div.help-block {
   font-size: 16px;
-  margin-top: 12px;
+  margin-top: 0;
   display: block;
   color: #999;
   float: left;
+}
+form div.help-block.one-line {
+  margin-top: 12px;
 }
 form div.working i {
   margin-right: 5px;
@@ -7632,13 +7635,14 @@ div.products .wrapper div.products-without-metrics div.well a {
 }
 .product div.category-heading div.category-heading-tips .alert {
   margin: 5px 0 0;
-  padding: 10px 20px;
+  padding: 15px 20px;
   font-size: 17px;
+  text-align: center;
   font-weight: 300;
 }
 .product div.category-heading div.category-heading-tips .alert a {
   font-weight: 900;
-  margin: 0 5px;
+  margin: 0 2px;
 }
 .product div.category-heading div.category-heading-tips .alert a:hover {
   text-decoration: underline;
@@ -8148,13 +8152,14 @@ form.signup button.next-button.enabled:hover {
 div.settings div.settings-header {
   margin: 0 0 70px 20px;
   padding: 0 0 0 30px;
-  border-bottom: 5px solid #fafafa;
   width: 600px;
 }
 div.settings div.settings-header h1 {
-  padding-top: 10px;
   font-weight: bolder;
-  font-size: 30px;
+  font-size: 40px;
+  color: #555;
+  padding: 0;
+  margin: 0;
 }
 div.settings div.settings-header p {
   font-size: 18px;
@@ -8165,7 +8170,6 @@ div.settings div.settings-nav {
   width: 200px;
 }
 div.settings div.settings-nav ul li a {
-  text-transform: capitalize;
   padding: 10px;
   font-size: 18px;
   display: block;
@@ -8187,6 +8191,9 @@ div.settings div.settings-nav ul li a {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
+div.settings div.settings-nav ul li a:first-letter {
+  text-transform: capitalize;
+}
 div.settings div.settings-nav ul li a.selected {
   background: #0053b0;
   color: #fff;
@@ -8205,54 +8212,60 @@ div.settings div.settings-nav ul li a i {
 div.settings div.settings-input {
   margin-left: 250px;
   margin-top: 50px;
+  float: left;
+  margin: 0  0 0 50px;
 }
-div.settings div.settings-input form {
+div.settings div.settings-input form.form-horizontal {
   padding: 0;
   margin: 0;
+  width: 600px;
 }
-div.settings div.settings-input form.custom-url {
+div.settings div.settings-input form.form-horizontal.custom-url {
   padding-left: 50px;
 }
-div.settings div.settings-input form .form-group label {
+div.settings div.settings-input form.form-horizontal .form-group {
+  clear: none;
+}
+div.settings div.settings-input form.form-horizontal .form-group label {
   color: #555;
 }
-div.settings div.settings-input form .form-group .working i {
+div.settings div.settings-input form.form-horizontal .form-group .working i {
   margin-right: 5px;
 }
-div.settings div.settings-input form .form-group.disabled {
+div.settings div.settings-input form.form-horizontal .form-group.disabled {
   transition: 1s linear all;
 }
-div.settings div.settings-input form .form-group.disabled label {
+div.settings div.settings-input form.form-horizontal .form-group.disabled label {
   color: #aaa;
 }
-div.settings div.settings-input form .form-group.photo {
-  margin-bottom: 100px;
+div.settings div.settings-input form.form-horizontal .form-group.photo {
+  margin-bottom: 60px;
 }
-div.settings div.settings-input form .form-group.photo div.my-picture {
+div.settings div.settings-input form.form-horizontal .form-group.photo div.my-picture {
   position: relative;
 }
-div.settings div.settings-input form .form-group.photo div.my-picture p {
+div.settings div.settings-input form.form-horizontal .form-group.photo div.my-picture p {
   position: absolute;
   bottom: 0;
   margin-bottom: 0;
   left: 120px;
   color: #777;
 }
-div.settings div.settings-input form .form-group.current-password div.controls.show-password div.checkmark-and-text {
+div.settings div.settings-input form.form-horizontal .form-group.current-password div.controls.show-password div.checkmark-and-text {
   margin: 19px 0 0 -18px;
   color: #555;
   cursor: pointer;
 }
-div.settings div.settings-input form .form-group.current-password div.controls.show-password div.checkmark-and-text span.text {
+div.settings div.settings-input form.form-horizontal .form-group.current-password div.controls.show-password div.checkmark-and-text span.text {
   font-size: 16px;
   margin-left: 5px;
 }
-div.settings div.settings-input form .form-group.current-password div.controls.show-password div.checkmark-and-text i {
+div.settings div.settings-input form.form-horizontal .form-group.current-password div.controls.show-password div.checkmark-and-text i {
   font-size: 24px;
   vertical-align: -1px;
 }
-div.settings div.settings-input form .form-group.submit {
-  margin-top: 40px;
+div.settings div.settings-input form.form-horizontal .form-group.submit {
+  margin-top: 10px;
 }
 div.importers {
   position: absolute;

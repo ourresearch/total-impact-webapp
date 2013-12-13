@@ -7,8 +7,8 @@
 <form novalidate name="userProfileForm" class="form-horizontal" ng-submit="onSave()" ng-controller="profileSettingsCtrl">
 
    <div class="form-group photo">
-      <label class="control-label col-lg-3">Photo</label>
-      <div class="controls col-lg-5">
+      <label class="control-label col-sm-3">Photo</label>
+      <div class="controls col-sm-7">
          <div class="my-picture">
             <a href="http://www.gravatar.com" >
                <img class="gravatar" ng-src="http://www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
@@ -19,22 +19,22 @@
    </div>
 
    <div class="form-group">
-      <label class="control-label col-lg-3">First name</label>
-      <div class="controls col-lg-5">
+      <label class="control-label col-sm-3">First name</label>
+      <div class="controls col-sm-7">
          <input ng-model="user.given_name" name="givenname" class="form-control">
       </div>
 
    </div>
 
    <div class="form-group">
-      <label class="control-label col-lg-3">Surname</label>
-      <div class="controls col-lg-5">
+      <label class="control-label col-sm-3">Surname</label>
+      <div class="controls col-sm-7">
          <input ng-model="user.surname" name="surname" class="form-control">
       </div>
    </div>
 
    <div class="form-group submit">
-      <div class=" col-lg-offset-3 col-lg-9">
+      <div class=" col-sm-offset-3 col-sm-7">
          <save-buttons valid="userProfileForm.$valid"></save-buttons>
       </div>
    </div>

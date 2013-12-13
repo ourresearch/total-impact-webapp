@@ -7,7 +7,6 @@ now, until we understand better what organization we need.
 import requests
 import re
 
-
 def get_product_for_embed_user(userid, tiid, api_root, admin_key):
     product = None
 

@@ -10,8 +10,8 @@
         ng-class="{ 'has-error':  userUrlForm.url_slug.$invalid && userUrlForm.url_slug.$dirty && !loading.is(),
                     'has-success': userUrlForm.url_slug.$valid && userUrlForm.url_slug.$dirty && !loading.is() }">
 
-      <div class="controls input-group col-lg-7">
-         <span class="input-group-addon">http://impactstory.org/</span>
+      <div class="controls input-group col-sm-9">
+         <span class="input-group-addon">impactstory.org/</span>
          <input ng-model="user.url_slug"
                 name="url_slug"
                 class="form-control"
@@ -22,37 +22,43 @@
 
       </div>
 
-      <spinner msg="Checking"></spinner>
 
-      <div class="help-block error"
-            ng-show="userUrlForm.url_slug.$error.pattern
-            && userUrlForm.url_slug.$dirty
-            && !loading.is()">
-         This URL has invalid characters.
-      </div>
+      <div class="feedback col-sm-3">
 
-      <div class="help-block error"
-            ng-show="userUrlForm.url_slug.$error.requireUnique
-            && userUrlForm.url_slug.$dirty
-            && !loading.is()">
-         Someone else is using that URL.
-      </div>
-      <div class="help-block success"
-            ng-show="userUrlForm.url_slug.$valid
-            && userUrlForm.url_slug.$dirty
-            && !loading.is()">
-         Looks good!
-      </div>
-      <div class="help-block"
-            ng-show="userUrlForm.url_slug.$pristine
-            && !loading.is()">
-         This is your current URL.
+         <spinner msg="Checking"></spinner>
+
+         <div class="help-block error"
+               ng-show="userUrlForm.url_slug.$error.pattern
+               && userUrlForm.url_slug.$dirty
+               && !loading.is()">
+            This URL has invalid characters.
+         </div>
+
+         <div class="help-block error"
+               ng-show="userUrlForm.url_slug.$error.requireUnique
+               && userUrlForm.url_slug.$dirty
+               && !loading.is()">
+            Someone else is using that URL.
+         </div>
+         <div class="help-block success one-line"
+               ng-show="userUrlForm.url_slug.$valid
+               && userUrlForm.url_slug.$dirty
+               && !loading.is()">
+            Looks good!
+         </div>
+         <div class="help-block"
+               ng-show="userUrlForm.url_slug.$pristine
+               && !loading.is()">
+            This is your current URL.
+         </div>
+
+
       </div>
 
    </div>
 
    <div class="form-group submit">
-      <div class=" col-lg-10">
+      <div class=" col-sm-10">
          <save-buttons valid="userUrlForm.$valid"></save-buttons>
       </div>
    </div>
