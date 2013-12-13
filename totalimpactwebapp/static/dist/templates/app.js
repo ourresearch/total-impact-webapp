@@ -1507,7 +1507,5 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "</div>\n" +
-    "\n" +
-    "<!--  58@e.com -->");
+    "</div>");
 }]);

@@ -158,10 +158,13 @@ angular.module('settings', [
           security.setCurrentUser(resp.about) // update the current authenticated user.
           i18nNotifications.pushForNextRoute('settings.wordpress_api_key.add.success', 'success');
 
+          Update.setUpdateStarted(false)
+          Update.showUpdate(url_slug, function(){
+            $location.path("/" + url_slug)
+          })
+
           UsersProducts.refresh({id: url_slug}, {}, function(){
-            Update.showUpdate(url_slug, function(){
-              $location.path("/" + url_slug)
-            })
+            Update.setUpdateStarted(true)
           })
         }
       )

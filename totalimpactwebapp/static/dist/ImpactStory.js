@@ -2068,10 +2068,13 @@ angular.module('settings', [
           security.setCurrentUser(resp.about) // update the current authenticated user.
           i18nNotifications.pushForNextRoute('settings.wordpress_api_key.add.success', 'success');
 
+          Update.setUpdateStarted(false)
+          Update.showUpdate(url_slug, function(){
+            $location.path("/" + url_slug)
+          })
+
           UsersProducts.refresh({id: url_slug}, {}, function(){
-            Update.showUpdate(url_slug, function(){
-              $location.path("/" + url_slug)
-            })
+            Update.setUpdateStarted(true)
           })
         }
       )
@@ -2280,6 +2283,7 @@ angular.module( 'update.update', [
   .factory("Update", function($rootScope, $cacheFactory, $location, UsersProducts, $timeout, $modal){
 
     var updateStatus = {}
+    var updateStarted = true
     var $httpDefaultCache = $cacheFactory.get('$http')
 
 
@@ -2306,6 +2310,10 @@ angular.module( 'update.update', [
        var productsDone =  _.filter(products, function(product){
          return !product.currently_updating
        })
+
+       if (!updateStarted){  // global var from above
+         productsDone = []
+       }
 
        if (completedStatus) {
          return productsDone.length
@@ -2343,7 +2351,10 @@ angular.module( 'update.update', [
 
     return {
       showUpdate: update,
-      'updateStatus': updateStatus
+      'updateStatus': updateStatus,
+      'setUpdateStarted': function(started){
+        updateStarted = !!started
+      }
     }
   })
   .controller("updateProgressModalCtrl", function($scope, Update){
@@ -5915,9 +5926,7 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "</div>\n" +
-    "\n" +
-    "<!--  58@e.com -->");
+    "</div>");
 }]);
 
 angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tip.tpl.html']);

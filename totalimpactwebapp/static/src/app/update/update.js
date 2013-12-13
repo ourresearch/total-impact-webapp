@@ -4,6 +4,7 @@ angular.module( 'update.update', [
   .factory("Update", function($rootScope, $cacheFactory, $location, UsersProducts, $timeout, $modal){
 
     var updateStatus = {}
+    var updateStarted = true
     var $httpDefaultCache = $cacheFactory.get('$http')
 
 
@@ -30,6 +31,10 @@ angular.module( 'update.update', [
        var productsDone =  _.filter(products, function(product){
          return !product.currently_updating
        })
+
+       if (!updateStarted){  // global var from above
+         productsDone = []
+       }
 
        if (completedStatus) {
          return productsDone.length
@@ -67,7 +72,10 @@ angular.module( 'update.update', [
 
     return {
       showUpdate: update,
-      'updateStatus': updateStatus
+      'updateStatus': updateStatus,
+      'setUpdateStarted': function(started){
+        updateStarted = !!started
+      }
     }
   })
   .controller("updateProgressModalCtrl", function($scope, Update){
