@@ -1766,14 +1766,15 @@ angular.module("profile", [
     }
 
     $scope.dedup = function(){
+      Update.setUpdateStarted(false)
+      Update.showUpdate(userSlug, function(){
+        console.log("done with update!")
+        renderProducts()
+      })
+
       UsersProducts.dedup({id: userSlug}, {}, function(resp){
         console.log("deduped!", resp)
-
-        Update.showUpdate(userSlug, function(){
-          console.log("done with update!")
-          renderProducts()
-        })
-
+        Update.setUpdateStarted(true)
       })
     }
 
