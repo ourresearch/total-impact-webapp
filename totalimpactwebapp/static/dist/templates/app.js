@@ -692,7 +692,9 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
 angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product/biblio.tpl.html",
     "<h5 class=\"title\" xmlns=\"http://www.w3.org/1999/html\">\n" +
-    "   <a class=\"title-text\" href=\"{{ getProductPageUrl() }}\">{{biblio.title}}</a>\n" +
+    "   <a ng-if=\"page.isEmbedded()\" target=\"_blank\" class=\"title-text\" href=\"{{ getProductPageUrl() }}\">{{biblio.title}}</a>\n" +
+    "   <a ng-if=\"!page.isEmbedded()\" class=\"title-text\" href=\"{{ getProductPageUrl() }}\">{{biblio.title}}</a>\n" +
+    "\n" +
     "   <a ng-if=\"biblio.url\" class=\"linkout url title\" target=\"_blank\" href=\"{{ biblio.url }}\">\n" +
     "      <i class=\"icon-external-link-sign\"></i>\n" +
     "   </a>\n" +
@@ -704,7 +706,6 @@ angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($t
     "   <span ng-if=\"biblio.journal\" class=\"journal\">{{ biblio.journal }}</span>\n" +
     "   <span ng-if=\"biblio.description\" class=\"description\">{{ biblio.description }}</span>\n" +
     "   <span ng-if=\"biblio.embed\" class=\"embed\" ng-bind-html-unsafe=\"biblio.embed\"></span>\n" +
-    "\n" +
     "\n" +
     "</div>\n" +
     "");
@@ -936,28 +937,34 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
-    "         <a ng-show=\"currentUserIsProfileOwner()\" href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-upload\"></i>Import</a>\n" +
-    "         <a ng-show=\"currentUserIsProfileOwner()\"\n" +
-    "            ng-click=\"dedup()\"\n" +
-    "            ng-class=\"{working: loading.is('dedup')}\"\n" +
-    "            class=\"dedup-button\">\n" +
-    "            <span class=\"content ready\" ng-show=\"!loading.is('dedup')\">\n" +
-    "               <i class=\"icon-copy\"></i>\n" +
-    "               <span class=\"text\">Merge duplicates</span>\n" +
+    "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
+    "            <a href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-upload\"></i>Import</a>\n" +
+    "            <a ng-click=\"dedup()\"\n" +
+    "               ng-class=\"{working: loading.is('dedup')}\"\n" +
+    "               class=\"dedup-button\">\n" +
+    "               <span class=\"content ready\" ng-show=\"!loading.is('dedup')\">\n" +
+    "                  <i class=\"icon-copy\"></i>\n" +
+    "                  <span class=\"text\">Merge duplicates</span>\n" +
+    "               </span>\n" +
+    "               <span class=\"content working\" ng-show=\"loading.is('dedup')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\" ng-show=\"loading.is('dedup')\"></i>\n" +
+    "                  <span class=\"text\">Merging duplicates</span>\n" +
+    "               </span>\n" +
+    "            </a>\n" +
+    "         </div>\n" +
+    "         <div class=\"everyone-controls\">\n" +
+    "            <a ng-click=\"openProfileEmbedModal()\" ng-show=\"!page.isEmbedded()\">\n" +
+    "               <i class=\"icon-suitcase\"></i>\n" +
+    "               Embed\n" +
+    "            </a>\n" +
+    "            <span class=\"dropdown download\">\n" +
+    "               <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
+    "               <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
+    "                  <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "               </ul>\n" +
     "            </span>\n" +
-    "            <span class=\"content working\" ng-show=\"loading.is('dedup')\">\n" +
-    "               <i class=\"icon-refresh icon-spin\" ng-show=\"loading.is('dedup')\"></i>\n" +
-    "               <span class=\"text\">Merging duplicates</span>\n" +
-    "            </span>\n" +
-    "         </a>\n" +
-    "         <a ng-click=\"openProfileEmbedModal()\"><i class=\"icon-suitcase\"></i>Embed</a>\n" +
-    "         <span class=\"dropdown download\">\n" +
-    "            <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
-    "            <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "               <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
-    "            </ul>\n" +
-    "         </span>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +

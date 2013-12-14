@@ -1,5 +1,7 @@
 <h5 class="title" xmlns="http://www.w3.org/1999/html">
-   <a class="title-text" href="{{ getProductPageUrl() }}">{{biblio.title}}</a>
+   <a ng-if="page.isEmbedded()" target="_blank" class="title-text" href="{{ getProductPageUrl() }}">{{biblio.title}}</a>
+   <a ng-if="!page.isEmbedded()" class="title-text" href="{{ getProductPageUrl() }}">{{biblio.title}}</a>
+
    <a ng-if="biblio.url" class="linkout url title" target="_blank" href="{{ biblio.url }}">
       <i class="icon-external-link-sign"></i>
    </a>
@@ -11,6 +13,5 @@
    <span ng-if="biblio.journal" class="journal">{{ biblio.journal }}</span>
    <span ng-if="biblio.description" class="description">{{ biblio.description }}</span>
    <span ng-if="biblio.embed" class="embed" ng-bind-html-unsafe="biblio.embed"></span>
-
 
 </div>

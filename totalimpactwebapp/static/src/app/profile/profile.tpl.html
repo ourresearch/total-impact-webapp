@@ -66,28 +66,34 @@
       </div>
       <div class="view-controls">
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
-         <a ng-show="currentUserIsProfileOwner()" href="/{{ user.about.url_slug }}/products/add"><i class="icon-upload"></i>Import</a>
-         <a ng-show="currentUserIsProfileOwner()"
-            ng-click="dedup()"
-            ng-class="{working: loading.is('dedup')}"
-            class="dedup-button">
-            <span class="content ready" ng-show="!loading.is('dedup')">
-               <i class="icon-copy"></i>
-               <span class="text">Merge duplicates</span>
+         <div class="admin-controls" ng-show="currentUserIsProfileOwner() && !page.isEmbedded()">
+            <a href="/{{ user.about.url_slug }}/products/add"><i class="icon-upload"></i>Import</a>
+            <a ng-click="dedup()"
+               ng-class="{working: loading.is('dedup')}"
+               class="dedup-button">
+               <span class="content ready" ng-show="!loading.is('dedup')">
+                  <i class="icon-copy"></i>
+                  <span class="text">Merge duplicates</span>
+               </span>
+               <span class="content working" ng-show="loading.is('dedup')">
+                  <i class="icon-refresh icon-spin" ng-show="loading.is('dedup')"></i>
+                  <span class="text">Merging duplicates</span>
+               </span>
+            </a>
+         </div>
+         <div class="everyone-controls">
+            <a ng-click="openProfileEmbedModal()" ng-show="!page.isEmbedded()">
+               <i class="icon-suitcase"></i>
+               Embed
+            </a>
+            <span class="dropdown download">
+               <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>
+               <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
+                  <li><a tabindex="-1" href="{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
+                  <li><a tabindex="-1" href="{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
+               </ul>
             </span>
-            <span class="content working" ng-show="loading.is('dedup')">
-               <i class="icon-refresh icon-spin" ng-show="loading.is('dedup')"></i>
-               <span class="text">Merging duplicates</span>
-            </span>
-         </a>
-         <a ng-click="openProfileEmbedModal()"><i class="icon-suitcase"></i>Embed</a>
-         <span class="dropdown download">
-            <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
-               <li><a tabindex="-1" href="{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
-               <li><a tabindex="-1" href="{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
-            </ul>
-         </span>
+         </div>
       </div>
    </div>
 </div>

@@ -359,7 +359,7 @@ angular.module('product.product')
   };
 })
 
-  .controller('productCtrl', function ($scope, Product, $location, security) {
+  .controller('productCtrl', function ($scope, Product, Page, $location, security) {
 
       if (!$scope.product.isHeading){ // deal with hacky "heading products" that aren't real products.
         $scope.biblio = Product.makeBiblio($scope.product)
@@ -371,7 +371,9 @@ angular.module('product.product')
         return _.size($scope.metrics);
       }
       $scope.getProductPageUrl = function(){
-        return $location.path() + "/product/" + $scope.product._id
+        var path = $location.path()
+        var noEmbedPath = path.replace("/embed/", "/")
+        return noEmbedPath+ "/product/" + $scope.product._id
       }
 
   })

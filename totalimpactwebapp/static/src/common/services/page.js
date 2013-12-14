@@ -7,6 +7,8 @@ angular.module("services.page")
    var notificationsLoc = "header"
    var uservoiceTabLoc = "right"
    var lastScrollPosition = {}
+   var isEmbedded =  _($location.path()).startsWith("/embed/")
+
    var frameTemplatePaths = {
      header: "",
      footer: ""
@@ -21,27 +23,6 @@ angular.module("services.page")
      }
    }
 
-    var isEmbedded = function(){
-       return $location.search().embed
-    }
-
-
-    var parseUrl = function(url){
-      var m = /(^.+\w)#(\w[\w]+$)/.exec(url)
-      var ret = {
-        pathAndSearch: null,
-        anchor: null
-      }
-      if (m) {
-        ret.pathAndSearch = m[1]
-        ret.anchor = m[2]
-      }
-      else {
-        ret.pathAndSearch = url
-      }
-      return ret
-
-    }
 
 
 
@@ -67,14 +48,15 @@ angular.module("services.page")
         return {
           'show-tab-on-bottom': uservoiceTabLoc == "bottom",
           'show-tab-on-right': uservoiceTabLoc == "right",
-          'embedded': isEmbedded()
+          'embedded': isEmbedded
         }
      },
      getBaseUrl: function(){
        return window.location.origin
      },
-     'isEmbedded': isEmbedded,
-
+     'isEmbedded': function(){
+       return isEmbedded
+     } ,
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
      getTitle: function() { return title; },
      setTitle: function(newTitle) { title = newTitle },
