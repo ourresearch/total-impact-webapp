@@ -1,4 +1,55 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['category-heading/category-heading.tpl.html', 'footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+
+angular.module("category-heading/category-heading.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("category-heading/category-heading.tpl.html",
+    "<div class=\"category-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
+    "    id=\"{{ product.headingValue }}\"\n" +
+    "    ng-controller=\"CategoryHeadingCtrl\"\n" +
+    "    ng-if=\"product.isHeading\">\n" +
+    "\n" +
+    "   <div class=\"category-heading-main\">\n" +
+    "      <h2>\n" +
+    "         <a class=\"genre-anchor\"\n" +
+    "            ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
+    "            <span class=\"text\">permalink</span>\n" +
+    "            <i class=\"icon-link\"></i>\n" +
+    "         </a>\n" +
+    "         <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
+    "         <span class=\"genre\">{{ product.genre }}</span>\n" +
+    "         <span class=\"account\" ng-if=\"product.account\">{{ product.account }}</span>\n" +
+    "\n" +
+    "      </h2>\n" +
+    "      <div class=\"clearfix\"></div>\n" +
+    "\n" +
+    "      <div class=\"category-metrics\">\n" +
+    "         <ul class=\"account-metrics\">\n" +
+    "            <li class=\"category-metric\"\n" +
+    "                ng-repeat=\"metric in product.metrics\">\n" +
+    "\n" +
+    "               <a href=\"{{ metric.provenance_url }}\"\n" +
+    "                  target=\"_blank\"\n" +
+    "                  tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
+    "                  tooltip-placement=\"bottom\"\n" +
+    "                  class=\"value\">\n" +
+    "                  {{ metric.values.raw }}\n" +
+    "               </a>\n" +
+    "               <span class=\"metric-descr\"\n" +
+    "                     tooltip-placement=\"bottom\"\n" +
+    "                     tooltip=\"{{ metric.static_meta.description }}\">\n" +
+    "                  {{ metric.static_meta.display_name }}\n" +
+    "               </span>\n" +
+    "             </li>\n" +
+    "         </ul>\n" +
+    "         <ul class=\"summary-metrics\"><!-- fill this later--></ul>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "   <div class=\"category-heading-tips\">\n" +
+    "      <tip key=\"how_we_found_these\" />\n" +
+    "      <tip key=\"upload_wordpress_key()\" />\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>");
+}]);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -921,54 +972,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
-    "\n" +
-    "            <div class=\"category-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
-    "                id=\"{{ product.headingValue }}\"\n" +
-    "                ng-controller=\"CategoryHeadingCtrl\"\n" +
-    "                ng-if=\"product.isHeading\">\n" +
-    "               <div class=\"category-heading-main\">\n" +
-    "                  <h2>\n" +
-    "                     <a class=\"genre-anchor\"\n" +
-    "                        ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
-    "                        <span class=\"text\">permalink</span>\n" +
-    "                        <i class=\"icon-link\"></i>\n" +
-    "                     </a>\n" +
-    "                     <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
-    "                     <span class=\"genre\">{{ product.genre }}</span>\n" +
-    "                     <span class=\"account\" ng-if=\"product.account\">{{ product.account }}</span>\n" +
-    "\n" +
-    "                  </h2>\n" +
-    "                  <div class=\"clearfix\"></div>\n" +
-    "\n" +
-    "                  <div class=\"category-metrics\">\n" +
-    "                     <ul class=\"account-metrics\">\n" +
-    "                        <li class=\"category-metric\"\n" +
-    "                            ng-repeat=\"metric in product.metrics\">\n" +
-    "\n" +
-    "                           <a href=\"{{ metric.provenance_url }}\"\n" +
-    "                              target=\"_blank\"\n" +
-    "                              tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
-    "                              tooltip-placement=\"bottom\"\n" +
-    "                              class=\"value\">\n" +
-    "                              {{ metric.values.raw }}\n" +
-    "                           </a>\n" +
-    "                           <span class=\"metric-descr\"\n" +
-    "                                 tooltip-placement=\"bottom\"\n" +
-    "                                 tooltip=\"{{ metric.static_meta.description }}\">\n" +
-    "                              {{ metric.static_meta.display_name }}\n" +
-    "                           </span>\n" +
-    "                         </li>\n" +
-    "                     </ul>\n" +
-    "                     <ul class=\"summary-metrics\"><!-- fill this later--></ul>\n" +
-    "                  </div>\n" +
-    "               </div>\n" +
-    "               <div class=\"category-heading-tips\">\n" +
-    "                  <tip key=\"how_we_found_these\" />\n" +
-    "                  <tip key=\"upload_wordpress_key()\" />\n" +
-    "               </div>\n" +
-    "\n" +
-    "            </div>\n" +
-    "\n" +
+    "            <div ng-include=\"'category-heading/category-heading.tpl.html'\"></div>\n" +
     "\n" +
     "            <div class=\"real-product\" ng-show=\"!product.isHeading\">\n" +
     "               <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
