@@ -9,15 +9,20 @@ angular.module("category-heading/category-heading.tpl.html", []).run(["$template
     "\n" +
     "   <div class=\"category-heading-main\">\n" +
     "      <h2>\n" +
-    "         <a class=\"genre-anchor\"\n" +
-    "            ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
-    "            <span class=\"text\">permalink</span>\n" +
-    "            <i class=\"icon-link\"></i>\n" +
+    "         <span class=\"genre-and-icons\">\n" +
+    "            <a class=\"genre-anchor\"\n" +
+    "               ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
+    "               <span class=\"text\">permalink</span>\n" +
+    "               <i class=\"icon-link\"></i>\n" +
+    "            </a>\n" +
+    "            <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
+    "            <span class=\"genre\">{{ product.genre }}</span>\n" +
+    "         </span>\n" +
+    "         <a class=\"account\" ng-if=\"product.account && getUrl()\" ng-href=\"{{ getUrl() }}\">\n" +
+    "            {{ product.account }}\n" +
+    "            <i class=\"icon-external-link-sign\"></i>\n" +
     "         </a>\n" +
-    "         <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
-    "         <span class=\"genre\">{{ product.genre }}</span>\n" +
-    "         <span class=\"account\" ng-if=\"product.account\">{{ product.account }}</span>\n" +
-    "\n" +
+    "         <span class=\"account\" ng-if=\"product.account && !getUrl()\">{{ product.account }}</span>\n" +
     "      </h2>\n" +
     "      <div class=\"clearfix\"></div>\n" +
     "\n" +

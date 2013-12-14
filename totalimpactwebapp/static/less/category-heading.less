@@ -32,59 +32,65 @@
             font-size: 30px;
             color:  #555;
             float:left;
-            span.account{
-               font-weight: 300;
-               margin-left:.2em;
-               text-transform: lowercase;
-            }
 
 
-            &:hover {
-               a.genre-anchor {
-                  color: @linkColor;
-               }
-            }
-            a.genre-anchor {
-               color: #cccccc;
-               position:relative;
-               i.icon-link {
-                  font-size: 16px;
-                  margin:0 2px 0 0;
-               }
-               span.text {
-                  width:80px;
-                  margin-left: -86px;
-                  padding: 5px 2px 0;
-                  display:none;
-                  color: @linkColor;
-                  font-size: 14px;
-                  font-weight: normal;
-                  text-transform: lowercase;
+            .genre-and-icons {
+               i {
+                  vertical-align: 2px;
+                  margin-right: 4px;
+                  font-size: 90%;
                   text-align: right;
                }
                &:hover {
+                  a.genre-anchor {
+                     color: @linkColor;
+                  }
+               }
+               a.genre-anchor {
+                  color: #cccccc;
+                  position:relative;
+                  i.icon-link {
+                     font-size: 16px;
+                     margin:0 2px 0 0;
+                  }
                   span.text {
-                     display: inline-block;
+                     width:80px;
+                     margin-left: -86px;
+                     padding: 5px 2px 0;
+                     display:none;
+                     color: @linkColor;
+                     font-size: 14px;
+                     font-weight: normal;
+                     text-transform: lowercase;
+                     text-align: right;
+                  }
+                  &:hover {
+                     span.text {
+                        display: inline-block;
+                     }
                   }
                }
             }
-            .tooltip.left {
-               width: 100px;
-               .tooltip-arrow{
-                  border-left-color: transparent;
-               }
-               .tooltip-inner {
-                  color: @linkColor;
-                  text-align:right;
 
+            .account{
+               font-weight: 300;
+               margin-left:.2em;
+               text-transform: lowercase;
+               color: #555;
+            }
+            a.account {
+               i {
+                  display:none;
+                  font-size: 50%;
+                  vertical-align: top;
+               }
+               &:hover {
+                  color: @linkColor;
+                  i {display: inline;}
                }
             }
-            i {
-               vertical-align: 2px;
-               margin-right: 4px;
-               font-size: 90%;
-               text-align: right;
-            }
+
+
          }
 
          div.category-metrics {

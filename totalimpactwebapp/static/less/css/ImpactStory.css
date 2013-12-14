@@ -8529,23 +8529,24 @@ div.password-reset form.password-reset div.submit {
 .product.heading div.category-heading div.category-heading-main h2:after {
   clear: both;
 }
-.product.heading div.category-heading div.category-heading-main h2 span.account {
-  font-weight: 300;
-  margin-left: .2em;
-  text-transform: lowercase;
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons i {
+  vertical-align: 2px;
+  margin-right: 4px;
+  font-size: 90%;
+  text-align: right;
 }
-.product.heading div.category-heading div.category-heading-main h2:hover a.genre-anchor {
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons:hover a.genre-anchor {
   color: #ff4e00;
 }
-.product.heading div.category-heading div.category-heading-main h2 a.genre-anchor {
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor {
   color: #cccccc;
   position: relative;
 }
-.product.heading div.category-heading div.category-heading-main h2 a.genre-anchor i.icon-link {
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor i.icon-link {
   font-size: 16px;
   margin: 0 2px 0 0;
 }
-.product.heading div.category-heading div.category-heading-main h2 a.genre-anchor span.text {
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor span.text {
   width: 80px;
   margin-left: -86px;
   padding: 5px 2px 0;
@@ -8556,24 +8557,25 @@ div.password-reset form.password-reset div.submit {
   text-transform: lowercase;
   text-align: right;
 }
-.product.heading div.category-heading div.category-heading-main h2 a.genre-anchor:hover span.text {
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor:hover span.text {
   display: inline-block;
 }
-.product.heading div.category-heading div.category-heading-main h2 .tooltip.left {
-  width: 100px;
+.product.heading div.category-heading div.category-heading-main h2 .account {
+  font-weight: 300;
+  margin-left: .2em;
+  text-transform: lowercase;
+  color: #555;
 }
-.product.heading div.category-heading div.category-heading-main h2 .tooltip.left .tooltip-arrow {
-  border-left-color: transparent;
+.product.heading div.category-heading div.category-heading-main h2 a.account i {
+  display: none;
+  font-size: 50%;
+  vertical-align: top;
 }
-.product.heading div.category-heading div.category-heading-main h2 .tooltip.left .tooltip-inner {
+.product.heading div.category-heading div.category-heading-main h2 a.account:hover {
   color: #ff4e00;
-  text-align: right;
 }
-.product.heading div.category-heading div.category-heading-main h2 i {
-  vertical-align: 2px;
-  margin-right: 4px;
-  font-size: 90%;
-  text-align: right;
+.product.heading div.category-heading div.category-heading-main h2 a.account:hover i {
+  display: inline;
 }
 .product.heading div.category-heading div.category-heading-main div.category-metrics {
   margin-top: 10px;

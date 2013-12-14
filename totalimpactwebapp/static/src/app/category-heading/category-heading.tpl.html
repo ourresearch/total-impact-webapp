@@ -5,15 +5,20 @@
 
    <div class="category-heading-main">
       <h2>
-         <a class="genre-anchor"
-            ng-href="{{ makeAnchorLink(product._id) }}">
-            <span class="text">permalink</span>
-            <i class="icon-link"></i>
+         <span class="genre-and-icons">
+            <a class="genre-anchor"
+               ng-href="{{ makeAnchorLink(product._id) }}">
+               <span class="text">permalink</span>
+               <i class="icon-link"></i>
+            </a>
+            <i class="{{ genreIcon(product.genre) }} {{ product.genre }} genre"></i>
+            <span class="genre">{{ product.genre }}</span>
+         </span>
+         <a class="account" ng-if="product.account && getUrl()" ng-href="{{ getUrl() }}">
+            {{ product.account }}
+            <i class="icon-external-link-sign"></i>
          </a>
-         <i class="{{ genreIcon(product.genre) }} {{ product.genre }} genre"></i>
-         <span class="genre">{{ product.genre }}</span>
-         <span class="account" ng-if="product.account">{{ product.account }}</span>
-
+         <span class="account" ng-if="product.account && !getUrl()">{{ product.account }}</span>
       </h2>
       <div class="clearfix"></div>
 

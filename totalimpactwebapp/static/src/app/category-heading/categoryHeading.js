@@ -33,6 +33,14 @@ angular.module('product.categoryHeading', ["security"])
       return $location.path() + "#" + anchor
     }
 
+    $scope.getUrl= function(){
+      if ($scope.product.account_biblio) {
+        return $scope.product.account_biblio.url
+      }
+      else {
+        return false
+      }
+    }
 
     if ($scope.product.genre == "blog"){
       $scope.how_we_found_these = "how_we_found_these_blog_posts"
@@ -41,6 +49,7 @@ angular.module('product.categoryHeading', ["security"])
     if ($scope.product.genre == "twitter"){
       $scope.how_we_found_these = "how_we_found_these_tweets"
     }
+
 
     $scope.upload_wordpress_key = function(){
       var wpHeading =  ($scope.product.account_biblio && $scope.product.account_biblio.hosting_platform == "wordpress.com")
