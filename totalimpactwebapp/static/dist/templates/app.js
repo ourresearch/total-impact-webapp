@@ -652,10 +652,8 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "      <a href=\"{{ getProductPageUrl() }}\"\n" +
     "            class=\"ti-badge lil-badge {{award.audience}} {{award.engagementType}}\"\n" +
     "            ng-show=\"!award.isHighly\"\n" +
-    "            popover-trigger=\"mouseenter\"\n" +
-    "            popover-placement=\"bottom\"\n" +
-    "            popover-title=\"{{award.engagementType}} by {{award.displayAudience}}\"\n" +
-    "            popover=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
+    "            data-original-title=\"{{award.engagementType}} by <span class='{{award.displayAudience}}'>{{award.displayAudience}}</span>\"\n" +
+    "            data-content=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
     "            {{award.topMetric.displayInteraction}}, suggesting it's been\n" +
     "            {{award.engagementType}} by {{award.displayAudience}}.\n" +
     "            Click to learn more.\">\n" +
@@ -666,10 +664,8 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "      <a href=\"{{ getProductPageUrl() }}\"\n" +
     "            class=\"ti-badge big-badge {{award.audience}} {{award.engagementType}}\"\n" +
     "            ng-show=\"award.isHighly\"\n" +
-    "            popover-trigger=\"mouseenter\"\n" +
-    "            popover-placement=\"bottom\"\n" +
-    "            popover-title=\"Highly {{award.engagementType}} by {{award.displayAudience}}\"\n" +
-    "            popover=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
+    "            data-original-title=\"Highly {{award.engagementType}} by {{award.displayAudience}}\"\n" +
+    "            data-content=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
     "            {{award.topMetric.displayInteraction}}. That's better than\n" +
     "            {{award.topMetric.percentiles.CI95_lower}}% of items\n" +
     "            {{award.topMetric.referenceSetStorageVerb}} {{award.topMetric.refSet}} in {{award.topMetric.referenceSetYear}},\n" +
@@ -969,7 +965,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"products\" ng-show=\"userExists\">\n" +
+    "<div class=\"products\" ng-show=\"userExists\" jq-popover>\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"loading\" ng-show=\"loadingProducts()\">\n" +
     "         <div class=\"working products-loading\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading products...</span></div>\n" +

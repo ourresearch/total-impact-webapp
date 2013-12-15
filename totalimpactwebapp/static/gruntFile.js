@@ -93,8 +93,8 @@ module.exports = function (grunt) {
         dest: '<%= distdir %>/bootstrap.js'
       },
       jquery: {
-        src:['vendor/jquery/*.js'],
-        dest: '<%= distdir %>/jquery.js'
+        src:['vendor/jquery-plugins/*.js'],
+        dest: '<%= distdir %>/jquery-plugins.js'
       }
     },
     uglify: {

@@ -6773,6 +6773,12 @@ div#footer div.wrapper div.footer-col#footer-follow img {
   float: right;
   margin-top: -30px;
 }
+div.popover h3.popover-title span.scholars {
+  color: #377eb8;
+}
+div.popover h3.popover-title span.public {
+  color: #4daf4a;
+}
 div.tooltip {
   font-size: 13px;
   width: 140px;
