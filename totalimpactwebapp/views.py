@@ -514,10 +514,12 @@ def import_products(importer_name):
         importer_name=importer_name,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
+    analytics_credentials = current_user.get_analytics_credentials()
+    data_dict = json.loads(request.data)
+    data_dict["analytics_credentials"] = analytics_credentials
     r = requests.post(
         query,
-        # data=json.dumps({"input", request.json["input"]}),
-        data=request.data,
+        data=json.dumps(data_dict),
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
 
