@@ -30,7 +30,7 @@ class UserTiid(db.Model):
         super(UserTiid, self).__init__(**kwargs)
 
     def __repr__(self):
-        return '<UserTiid {user_id} {tiid}>'.format(
+        return u'<UserTiid {user_id} {tiid}>'.format(
             user_id=self.user_id, 
             tiid=self.tiid)
 
@@ -221,7 +221,7 @@ class User(db.Model):
 
 
     def __repr__(self):
-        return '<User {name}>'.format(name=self.full_name)
+        return u'<User {name}>'.format(name=self.full_name)
 
 
     def as_dict(self):

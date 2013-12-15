@@ -452,7 +452,7 @@ def user_products_csv(id):
     user = get_user_for_response(id, request)
     tiids = user.tiids
 
-    url = "{api_root}/v1/products.csv/{tiids_string}?key={api_key}".format(
+    url = u"{api_root}/v1/products.csv/{tiids_string}?key={api_key}".format(
         api_key=g.api_key,
         api_root=g.api_root,
         tiids_string=",".join(tiids))
@@ -510,7 +510,7 @@ def get_password_reset_link(id):
 @app.route("/importer/<importer_name>", methods=["POST"])
 def import_products(importer_name):
 
-    query = "{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
+    query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,
         importer_name=importer_name,
         api_admin_key=os.getenv("API_ADMIN_KEY")
@@ -560,7 +560,7 @@ def delete_test_user():
             db.session.delete(user)
 
         db.session.commit()
-        return make_response("deleted {num_users} users.".format(
+        return make_response(u"deleted {num_users} users.".format(
             num_users=len(retrieved_users)))
     else:
         return make_response("these endpoint only supports deleting for now.")
@@ -582,7 +582,7 @@ def test_user_cids():
 @app.route('/providers', methods=["GET"])
 def providers():
     try:
-        url = "{api_root}/v1/provider?key={api_key}".format(
+        url = u"{api_root}/v1/provider?key={api_key}".format(
             api_key=g.api_key,
             api_root=g.api_root)
         r = requests.get(url)
@@ -667,7 +667,7 @@ def images():
 
 @app.route('/item/<namespace>/<path:nid>', methods=['GET'])
 def item_page(namespace, nid):
-    url = "{api_root}/v1/tiid/{namespace}/{nid}?api_admin_key={api_admin_key}".format(
+    url = u"{api_root}/v1/tiid/{namespace}/{nid}?api_admin_key={api_admin_key}".format(
         api_root=g.api_root,
         namespace=namespace,
         nid=nid,
