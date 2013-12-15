@@ -392,7 +392,8 @@ def user_products_modify(id):
 
     if request.method == "POST" and (action == "refresh"):
         # anyone can refresh extant products.
-        tiids_being_refreshed = user.refresh_products()
+        source = request.args.get("source", "webapp")
+        tiids_being_refreshed = user.refresh_products(source)
         resp = {"products": tiids_being_refreshed}
 
     else:
