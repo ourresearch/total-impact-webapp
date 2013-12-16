@@ -1,4 +1,5 @@
 from totalimpactwebapp import db
+from totalimpactwebapp import products_list
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
@@ -194,11 +195,6 @@ class User(db.Model):
         analytics_credentials = self.get_analytics_credentials()        
         return refresh_products_from_user(self.tiids, analytics_credentials)
 
-    def get_duplicates_list(self):
-        duplicates_list = get_duplicates_list_from_tiids(self.tiids)
-        return duplicates_list
-
-
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
 
@@ -342,29 +338,14 @@ def refresh_products_from_user(tiids, analytics_credentials={}):
     return tiids
 
 
-def get_duplicates_list_from_tiids(tiids):
-    if not tiids:
-        return None
 
-    query = u"{core_api_root}/v1/products/duplicates?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-
-    r = requests.post(query,
-            data=json.dumps({
-                "tiids": tiids
-                }),
-            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-
-    return r.json()["duplicates_list"]
 
 
 def remove_duplicates_from_user(user_id):
     user = User.query.get(user_id)
     db.session.merge(user)
 
-    duplicates_list = get_duplicates_list_from_tiids(user.tiids)
+    duplicates_list = products_list.get_duplicates_list_from_tiids(user.tiids)
     tiids_to_remove = []
 
     for duplicate_group in duplicates_list:

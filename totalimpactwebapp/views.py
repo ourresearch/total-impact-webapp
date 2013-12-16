@@ -12,7 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from itsdangerous import TimestampSigner
 
 
-from totalimpactwebapp import app, db, login_manager
+from totalimpactwebapp import app, db, login_manager, products_list
 
 from totalimpactwebapp.password_reset import send_reset_token
 from totalimpactwebapp.password_reset import reset_password_from_token
@@ -21,8 +21,6 @@ from totalimpactwebapp.password_reset import PasswordResetError
 
 from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
 from totalimpactwebapp.user import remove_duplicates_from_user
-from totalimpactwebapp.products import add_category_heading_products
-from totalimpactwebapp.products import add_sort_keys
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
@@ -367,15 +365,13 @@ def user_products_get(id):
 
     user = get_user_for_response(id, request)
 
-    if request.args.get("group_by")=="duplicates":
-        user = get_user_for_response(id, request)
-        resp = user.get_duplicates_list()
-    else:        
-        products = add_sort_keys(user.products)
-        if request.args.get("include_heading_products") in [1, "true", "True"]:
-            resp = add_category_heading_products(products)
-        else:
-            resp = products
+    if request.args.get("group_by") == "duplicates":
+        resp = products_list.get_duplicates_list_from_tiids(user.tiids)
+
+    else:
+        include_headings = request.args.get("include_heading_products") in [1, "true", "True"]
+        include_markup = True
+        resp = products_list.prep(user.products, include_headings, include_markup)
 
     return json_resp_from_thing(resp)
 

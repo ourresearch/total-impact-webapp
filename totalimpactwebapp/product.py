@@ -1,12 +1,15 @@
-class Product():
-
-    def __init__(self, dict):
-        self.dict = dict
-
-    def as_html(self):
-        pass
+from flask import render_template
 
 
 
-class ProductAward():
-    pass
+
+
+
+
+def markup(product_dict):
+
+    print "product dict:", product_dict
+    return  render_template(
+        "product.html",
+        biblio=product_dict['biblio']
+    )

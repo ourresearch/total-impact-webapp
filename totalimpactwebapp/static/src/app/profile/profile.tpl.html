@@ -105,20 +105,16 @@
       </div>
 
       <ul class="products-list">
-         <li class="product {{ product.genre }}"
+         <li class="product-container {{ product.genre }}"
              ng-class="{'heading': product.isHeading, 'real-product': !product.isHeading, first: $first}"
              ng-repeat="product in products | orderBy:['genre', 'account', 'isHeading', getSortScore, getMetricSum]"
              ng-controller="productCtrl"
              ng-show="hasMetrics() || showProductsWithoutMetrics || product.isHeading"
              id="{{ product._id }}"
+             ng-bind-html-unsafe="product.markup"
              on-repeat-finished>
 
-            <div ng-include="'category-heading/category-heading.tpl.html'"></div>
 
-            <div class="real-product" ng-show="!product.isHeading">
-               <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
-               <div class="badges" ng-include="'product/badges.tpl.html'"></div>
-            </div>
          </li>
       </ul>
    </div>

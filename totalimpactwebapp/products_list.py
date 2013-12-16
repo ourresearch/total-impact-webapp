@@ -1,4 +1,6 @@
 import re
+import requests
+from totalimpactwebapp import product
 
 def add_category_heading_products(products):
 
@@ -90,3 +92,49 @@ def add_sort_keys(products):
             product["account"] = None
 
     return products
+
+
+def add_markup_to_products(products):
+    for product_dict in products:
+        product_dict['markup'] = product.markup(product_dict)
+
+    return products
+
+
+def prep(products_dict, include_headings=False, include_markup=False):
+    products = add_sort_keys(products_dict)
+
+    if include_markup:
+        products = add_markup_to_products(products)
+
+    if include_headings:
+        products = add_category_heading_products(products)
+
+
+    return products
+
+
+
+
+
+def get_duplicates_list_from_tiids(tiids):
+    if not tiids:
+        return None
+
+    query = u"{core_api_root}/v1/products/duplicates?api_admin_key={api_admin_key}".format(
+        core_api_root=g.api_root,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+
+    r = requests.post(query,
+        data=json.dumps({
+            "tiids": tiids
+            }),
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+
+    return r.json()["duplicates_list"]
+
+
+
+
+

@@ -972,20 +972,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "\n" +
     "      <ul class=\"products-list\">\n" +
-    "         <li class=\"product {{ product.genre }}\"\n" +
+    "         <li class=\"product-container {{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.isHeading, 'real-product': !product.isHeading, first: $first}\"\n" +
     "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'isHeading', getSortScore, getMetricSum]\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"hasMetrics() || showProductsWithoutMetrics || product.isHeading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
+    "             ng-bind-html-unsafe=\"product.markup\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
-    "            <div ng-include=\"'category-heading/category-heading.tpl.html'\"></div>\n" +
     "\n" +
-    "            <div class=\"real-product\" ng-show=\"!product.isHeading\">\n" +
-    "               <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
-    "               <div class=\"badges\" ng-include=\"'product/badges.tpl.html'\"></div>\n" +
-    "            </div>\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
