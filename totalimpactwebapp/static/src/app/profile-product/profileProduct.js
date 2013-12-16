@@ -34,8 +34,6 @@ angular.module("profileProduct", [
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
     $scope.deleteProduct = function(){
-      $httpDefaultCache.removeAll()
-      security.redirectToProfile()
 
 
       // do the deletion in the background, without a progress spinner...
@@ -44,6 +42,8 @@ angular.module("profileProduct", [
         {"tiids": [$routeParams.tiid]},  // the body data
         function(){
           console.log("finished deleting", $routeParams.tiid)
+          $httpDefaultCache.removeAll()
+          security.redirectToProfile()
         }
       )
     }
