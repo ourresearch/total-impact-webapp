@@ -26,7 +26,6 @@ angular.module("profileProduct", [
     Loading.start('profileProduct')
     Loading.clear()
 
-
     $scope.userSlug = slug
     $scope.loading = Loading
     $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")

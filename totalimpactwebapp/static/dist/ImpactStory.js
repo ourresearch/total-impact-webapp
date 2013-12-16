@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-14
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-16
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -1593,8 +1593,6 @@ angular.module("profileProduct", [
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
     $scope.deleteProduct = function(){
-      $httpDefaultCache.removeAll()
-      security.redirectToProfile()
 
 
       // do the deletion in the background, without a progress spinner...
@@ -1603,6 +1601,8 @@ angular.module("profileProduct", [
         {"tiids": [$routeParams.tiid]},  // the body data
         function(){
           console.log("finished deleting", $routeParams.tiid)
+          $httpDefaultCache.removeAll()
+          security.redirectToProfile()
         }
       )
     }
@@ -1631,6 +1631,7 @@ angular.module("profileProduct", [
 angular.module("profile", [
   'resources.users',
   'product.product',
+  'directives.jQueryPopover',
   'services.page',
   'update.update',
   'ui.bootstrap',
@@ -2320,7 +2321,6 @@ angular.module( 'signup', [
 
 ;
 
-angular.module("update.update",["resources.users"]).factory("Update",function(e,t,n,r,i){var s={},o=function(e,t){s.numNotDone>0||_.isNull(s.numNotDone)?n.query({id:e,idType:"url_slug"},function(n){s.numDone=u(n,!0);s.numNotDone=u(n,!1);s.percentComplete=s.numDone*100/(s.numDone+s.numNotDone);console.log("in keepPolling");console.log(s);r(function(){o(e,t)},500)}):t()},u=function(e,t){var n=_.filter(e,function(e){return!e.currently_updating});return t?n.length:e.length-n.length},a=function(e,t){s.numDone=null;s.numNotDone=null;s.percentComplete=null;var n=i.open({templateUrl:"update/update-progress.tpl.html",controller:"updateProgressModalCtrl",backdrop:"static",keyboard:!1});o(e,function(){n.close();t()})};return{showUpdate:a,updateStatus:s}}).controller("updateProgressModalCtrl",function(e,t){e.updateStatus=t.updateStatus});
 angular.module( 'update.update', [
     'resources.users'
   ])
@@ -2770,6 +2770,24 @@ angular.module('directives.gravatar', [])
 
   return md5;
 });
+angular.module("directives.jQueryPopover", [])
+  .directive('jqPopover', function () {
+    console.log("jq-popovers loading")
+    return {
+      restrict: 'A',
+      link: function (scope, element, attr) {
+        console.log("popovers!")
+
+        scope.$on("ngRepeatFinished", function(){
+          $("[data-content]").popover({
+            html:true,
+            trigger:'hover',
+            placement:'bottom'
+          })
+        })
+      }
+    }
+  });
 angular.module('directives.modal', []).directive('modal', ['$parse',function($parse) {
   var backdropEl;
   var body = angular.element(document.getElementsByTagName('body')[0]);
@@ -3028,7 +3046,6 @@ angular.module('resources.products',['ngResource'])
 })
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -5099,10 +5116,8 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "      <a href=\"{{ getProductPageUrl() }}\"\n" +
     "            class=\"ti-badge lil-badge {{award.audience}} {{award.engagementType}}\"\n" +
     "            ng-show=\"!award.isHighly\"\n" +
-    "            popover-trigger=\"mouseenter\"\n" +
-    "            popover-placement=\"bottom\"\n" +
-    "            popover-title=\"{{award.engagementType}} by {{award.displayAudience}}\"\n" +
-    "            popover=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
+    "            data-original-title=\"{{award.engagementType}} by <span class='{{award.displayAudience}}'>{{award.displayAudience}}</span>\"\n" +
+    "            data-content=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
     "            {{award.topMetric.displayInteraction}}, suggesting it's been\n" +
     "            {{award.engagementType}} by {{award.displayAudience}}.\n" +
     "            Click to learn more.\">\n" +
@@ -5113,10 +5128,8 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "      <a href=\"{{ getProductPageUrl() }}\"\n" +
     "            class=\"ti-badge big-badge {{award.audience}} {{award.engagementType}}\"\n" +
     "            ng-show=\"award.isHighly\"\n" +
-    "            popover-trigger=\"mouseenter\"\n" +
-    "            popover-placement=\"bottom\"\n" +
-    "            popover-title=\"Highly {{award.engagementType}} by {{award.displayAudience}}\"\n" +
-    "            popover=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
+    "            data-original-title=\"Highly {{award.engagementType}} by {{award.displayAudience}}\"\n" +
+    "            data-content=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
     "            {{award.topMetric.displayInteraction}}. That's better than\n" +
     "            {{award.topMetric.percentiles.CI95_lower}}% of items\n" +
     "            {{award.topMetric.referenceSetStorageVerb}} {{award.topMetric.refSet}} in {{award.topMetric.referenceSetYear}},\n" +
@@ -5416,7 +5429,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"products\" ng-show=\"userExists\">\n" +
+    "<div class=\"products\" ng-show=\"userExists\" jq-popover>\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"loading\" ng-show=\"loadingProducts()\">\n" +
     "         <div class=\"working products-loading\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading products...</span></div>\n" +
