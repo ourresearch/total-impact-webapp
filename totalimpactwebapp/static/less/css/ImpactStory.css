@@ -7719,6 +7719,8 @@ div.product-page {
 div.product-page div.header a.delete-product {
   position: absolute;
   right: 16px;
+  text-align: left;
+  min-width: 130px;
 }
 div.product-page .product {
   width: 100%;

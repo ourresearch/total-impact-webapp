@@ -1577,7 +1577,18 @@ angular.module("profileProduct", [
 
   }])
 
-  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $location, $modal, $cacheFactory, security, UsersProduct, UsersProducts, Product, Loading, Page) {
+  .controller('ProfileProductPageCtrl', function (
+    $scope,
+    $routeParams,
+    $location,
+    $modal,
+    $cacheFactory,
+    security,
+    UsersProduct, 
+    UsersProducts,
+    Product,
+    Loading,
+    Page) {
 
     var slug = $routeParams.url_slug
     var $httpDefaultCache = $cacheFactory.get('$http')
@@ -1603,7 +1614,7 @@ angular.module("profileProduct", [
         function(){
           console.log("finished deleting", $routeParams.tiid)
           $httpDefaultCache.removeAll()
-          security.redirectToProfile()
+//          security.redirectToProfile()
         }
       )
     }
@@ -5273,8 +5284,14 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "            ng-show=\"userOwnsThisProfile\"\n" +
     "            tooltip=\"Remove this product from your profile.\"\n" +
     "            tooltip-placement=\"bottom\">\n" +
-    "            <i class=\"icon-trash\"></i>\n" +
-    "            Delete product\n" +
+    "            <span class=\"ready\" ng-show=\"!loading.is()\">\n" +
+    "               <i class=\"icon-trash\"></i>\n" +
+    "               Remove product\n" +
+    "            </span>\n" +
+    "            <span class=\"working\" ng-show=\"loading.is('deleteProduct')\">\n" +
+    "               <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "               Removing...\n" +
+    "            </span>\n" +
     "         </a>\n" +
     "      </div>\n" +
     "   </div>\n" +

@@ -7,8 +7,14 @@
             ng-show="userOwnsThisProfile"
             tooltip="Remove this product from your profile."
             tooltip-placement="bottom">
-            <i class="icon-trash"></i>
-            Delete product
+            <span class="ready" ng-show="!loading.is()">
+               <i class="icon-trash"></i>
+               Remove product
+            </span>
+            <span class="working" ng-show="loading.is('deleteProduct')">
+               <i class="icon-refresh icon-spin"></i>
+               Removing...
+            </span>
          </a>
       </div>
    </div>

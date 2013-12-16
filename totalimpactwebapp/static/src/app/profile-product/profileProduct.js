@@ -18,7 +18,18 @@ angular.module("profileProduct", [
 
   }])
 
-  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $location, $modal, $cacheFactory, security, UsersProduct, UsersProducts, Product, Loading, Page) {
+  .controller('ProfileProductPageCtrl', function (
+    $scope,
+    $routeParams,
+    $location,
+    $modal,
+    $cacheFactory,
+    security,
+    UsersProduct,
+    UsersProducts,
+    Product,
+    Loading,
+    Page) {
 
     var slug = $routeParams.url_slug
     var $httpDefaultCache = $cacheFactory.get('$http')
@@ -44,7 +55,7 @@ angular.module("profileProduct", [
         function(){
           console.log("finished deleting", $routeParams.tiid)
           $httpDefaultCache.removeAll()
-          security.redirectToProfile()
+//          security.redirectToProfile()
         }
       )
     }
