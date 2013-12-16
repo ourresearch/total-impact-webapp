@@ -35,7 +35,6 @@ angular.module("profileProduct", [
     var $httpDefaultCache = $cacheFactory.get('$http')
 
     Loading.start('profileProduct')
-    Loading.clear()
 
     $scope.userSlug = slug
     $scope.loading = Loading
@@ -55,7 +54,7 @@ angular.module("profileProduct", [
         function(){
           console.log("finished deleting", $routeParams.tiid)
           $httpDefaultCache.removeAll()
-//          security.redirectToProfile()
+          security.redirectToProfile()
         }
       )
     }

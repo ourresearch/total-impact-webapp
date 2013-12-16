@@ -821,7 +821,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "   </div>\n" +
     "   <div class=\"product\">\n" +
     "      <div class=\"wrapper\">\n" +
-    "         <div class=\"working\" ng-show=\"loading.is()\">\n" +
+    "         <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
     "            <i class=\"icon-refresh icon-spin\"></i>\n" +
     "            <span class=\"text\">Loading product...</span>\n" +
     "         </div>\n" +

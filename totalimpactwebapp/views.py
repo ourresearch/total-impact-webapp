@@ -426,6 +426,8 @@ def user_products_modify(id):
 @app.route("/user/<user_id>/product/<tiid>", methods=['GET'])
 def user_product(user_id, tiid):
 
+    sleep(3)
+
     # the fake "embed" user supports requests from the old badges widget.
     embed_product = views_helpers.get_product_for_embed_user(
         user_id,
