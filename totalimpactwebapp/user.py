@@ -78,7 +78,7 @@ class User(db.Model):
     wordpress_api_key = db.Column(db.String(64))
 
     tips = db.Column(db.String())  # ALTER TABLE "user" ADD tips text
-    last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
+    # last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
 
     tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
@@ -109,7 +109,7 @@ class User(db.Model):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         self.created = now_in_utc()
-        self.last_refreshed = now_in_utc()
+        # self.last_refreshed = now_in_utc()
         self.given_name = self.given_name or u"Anonymous"
         self.surname = self.surname or u"User"
         self.password_hash = None
@@ -190,7 +190,7 @@ class User(db.Model):
         return {"deleted_tiids": tiids_to_delete}
 
     def refresh_products(self, source="webapp"):
-        set_last_refreshed_timestamp(self.id)
+        # set_last_refreshed_timestamp(self.id)
         analytics_credentials = self.get_analytics_credentials()        
         return refresh_products_from_tiids(self.tiids, analytics_credentials, source)
 
