@@ -1777,6 +1777,7 @@ angular.module("profile", [
 
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
+
     $scope.loadingProducts = function(){
       return loadingProducts
     }
@@ -1829,6 +1830,7 @@ angular.module("profile", [
 
     var renderProducts = function(fresh){
 
+      loadingProducts = true
       if (fresh){
         $httpDefaultCache.removeAll()
       }
@@ -5139,7 +5141,7 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "      <a href=\"{{ getProductPageUrl() }}\"\n" +
     "            class=\"ti-badge big-badge {{award.audience}} {{award.engagementType}}\"\n" +
     "            ng-show=\"award.isHighly\"\n" +
-    "            data-original-title=\"Highly {{award.engagementType}} by {{award.displayAudience}}\"\n" +
+    "            data-original-title=\"Highly {{award.engagementType}} by <span class='{{award.displayAudience}}'>{{award.displayAudience}}</span>\"\n" +
     "            data-content=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
     "            {{award.topMetric.displayInteraction}}. That's better than\n" +
     "            {{award.topMetric.percentiles.CI95_lower}}% of items\n" +
