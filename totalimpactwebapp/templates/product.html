@@ -2,11 +2,10 @@
 
    <div class="biblio">
       <h5 class="title">
-         <!-- there are two links here, and we control which shows with CSS, depending
-         on whether there's a .embedded class on the body. ugly hack. -->
          <a class="title-text target-blank"
 
-            {% if "host" in request.url %}
+            <!-- if embedded, open product page in a new tab -->
+            {% if request.args.get('embedded') in ['true', 'True', 1] %}
             target="_blank"
             {% endif %}
 
