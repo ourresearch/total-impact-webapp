@@ -1,47 +1,49 @@
 <div class="product">
 
 
+   <div class="biblio">
+      <h5 class="title">
+         <a target="_blank" class="title-text" href="http://impactstory.org">{{biblio.title}}</a>
+         <!--
+         <a                 class="title-text" href="http://impactstory.org">{{biblio.title}}</a>
+         -->
 
-   <h5 class="title">
-      <a target="_blank" class="title-text" href="http://impactstory.org">{{biblio.title}}</a>
-      <!--
-      <a                 class="title-text" href="http://impactstory.org">{{biblio.title}}</a>
-      -->
+         {% if biblio.url %}
+         <a class="linkout url title" target="_blank" href="{{ biblio.url }}">
+            <i class="icon-external-link-sign"></i>
+         </a>
+         {% endif %}
+      </h5>
+      <div class="optional-biblio">
+         {% if biblio.year %}
+         <span class="year">({{ biblio.year }})</span>
+         {% endif %}
 
-      {% if biblio.url %}
-      <a class="linkout url title" target="_blank" href="{{ biblio.url }}">
-         <i class="icon-external-link-sign"></i>
-      </a>
-      {% endif %}
-   </h5>
-   <div class="optional-biblio">
-      {% if biblio.year %}
-      <span class="year">({{ biblio.year }})</span>
-      {% endif %}
-
-      {% if biblio.authors and not biblio.embed %}
-      <span class="authors">{{ biblio.authors }}.</span>
-      {% endif %}
-
-
-      {% if biblio.repository and not biblio.embed %}
-      <span class="repository">{{ biblio.repository }}.</span>
-      {% endif %}
+         {% if biblio.authors and not biblio.embed %}
+         <span class="authors">{{ biblio.authors }}.</span>
+         {% endif %}
 
 
-      {% if biblio.journal %}
-      <span class="journal">{{ biblio.journal }}</span>
-      {% endif %}
-
-      {% if biblio.description %}
-      <span ng-if="biblio.description" class="description">{{ biblio.description }}</span>
-      {% endif %}
+         {% if biblio.repository and not biblio.embed %}
+         <span class="repository">{{ biblio.repository }}.</span>
+         {% endif %}
 
 
-      {% if biblio.embed %}
-      <!-- this is a temp method for embedding tweets -->
-      <span ng-if="biblio.embed" class="embed" ng-bind-html-unsafe="biblio.embed"></span>
-      {% endif %}
+         {% if biblio.journal %}
+         <span class="journal">{{ biblio.journal }}</span>
+         {% endif %}
+
+         {% if biblio.description %}
+         <span ng-if="biblio.description" class="description">{{ biblio.description }}</span>
+         {% endif %}
+
+
+         {% if biblio.embed %}
+         <!-- this is a temp method for embedding tweets -->
+         <span ng-if="biblio.embed" class="embed" ng-bind-html-unsafe="biblio.embed"></span>
+         {% endif %}
+
+      </div>
 
    </div>
 
