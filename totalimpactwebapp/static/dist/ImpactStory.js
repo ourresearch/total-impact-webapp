@@ -1594,6 +1594,7 @@ angular.module("profileProduct", [
     }
     $scope.deleteProduct = function(){
 
+      Loading.start("deleteProduct")
 
       // do the deletion in the background, without a progress spinner...
       UsersProducts.delete(
