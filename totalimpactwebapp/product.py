@@ -6,10 +6,10 @@ from flask import render_template
 
 
 
-def markup(product_dict):
+def markup(product_dict, url_slug):
 
-    print "product dict:", product_dict
-    return  render_template(
+    return render_template(
         "product.html",
-        biblio=product_dict['biblio']
+        url_slug=url_slug,
+        product=product_dict
     )

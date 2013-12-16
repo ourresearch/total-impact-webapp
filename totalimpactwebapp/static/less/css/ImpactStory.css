@@ -6173,12 +6173,24 @@ body.show-tab-on-right .uv-tab.uv-slide-bottom {
 body.show-tab-on-bottom .uv-tab.uv-slide-right {
   display: none !important;
 }
+body .biblio h5 a.title-text.target-blank {
+  display: none;
+}
+body .biblio h5 a.title-text.target-self {
+  display: inline;
+}
 body.embedded {
   border: 8px solid #777;
   overflow-y: scroll;
 }
 body.embedded .uv-tab {
   display: none !important;
+}
+body.embedded .biblio h5 a.title-text.target-blank {
+  display: inline;
+}
+body.embedded .biblio h5 a.title-text.target-self {
+  display: none;
 }
 body.embedded #page-footer {
   display: none;

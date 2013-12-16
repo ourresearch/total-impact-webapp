@@ -29,7 +29,7 @@ angular.module('app').constant('TEST', {
 });
 
 
-angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+angular.module('app').config(function ($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
 
   // want to make sure the user profile route loads last, because it's super greedy.
@@ -40,7 +40,10 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
   });
-}]);
+
+
+
+});
 
 
 angular.module('app').run(function(security, $window, Page, $location) {

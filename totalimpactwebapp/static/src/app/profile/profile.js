@@ -196,6 +196,7 @@ angular.module("profile", [
       $scope.products = UsersProducts.query({
         id: userSlug,
         includeHeadingProducts: true,
+        embedded: Page.isEmbedded(),
         idType: "url_slug"
       },
         function(resp){

@@ -12,11 +12,23 @@ body {
          display:none !important;
       }
    }
+
+   // styles for when not embedded. ugly hack
+   .biblio h5 a.title-text {
+      &.target-blank {display: none;}
+      &.target-self {display: inline;}
+   }
+
+   // styles for when embedded
    &.embedded {
       border: 8px solid #777;
       overflow-y: scroll;
       .uv-tab {
          display:none !important;
+      }
+      .biblio h5 a.title-text {
+         &.target-blank {display: inline;}
+         &.target-self {display: none;}
       }
       #page-footer { display: none;}
       #page-header { display: none;}

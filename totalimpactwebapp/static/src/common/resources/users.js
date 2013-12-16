@@ -32,13 +32,7 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: true,
-          params: {include_heading_products: true}
-        },
-        queryFresh: {
-          method: "GET",
-          isArray: true,
-          cache: false,
-          params: {include_heading_products: true}
+          params: {include_heading_products: true, embedded: "@"}
         },
         poll:{
           method: "GET",

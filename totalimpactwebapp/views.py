@@ -371,7 +371,12 @@ def user_products_get(id):
     else:
         include_headings = request.args.get("include_heading_products") in [1, "true", "True"]
         include_markup = True
-        resp = products_list.prep(user.products, include_headings, include_markup)
+        resp = products_list.prep(
+            user.products,
+            user.url_slug,
+            include_headings,
+            include_markup
+        )
 
     return json_resp_from_thing(resp)
 

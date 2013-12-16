@@ -1,6 +1,10 @@
 import re
+import os
 import requests
+import json
 from totalimpactwebapp import product
+from flask import g
+
 
 def add_category_heading_products(products):
 
@@ -94,18 +98,19 @@ def add_sort_keys(products):
     return products
 
 
-def add_markup_to_products(products):
+def add_markup_to_products(products, url_slug):
     for product_dict in products:
-        product_dict['markup'] = product.markup(product_dict)
+        product_dict['markup'] = product.markup(product_dict, url_slug)
 
     return products
 
 
-def prep(products_dict, include_headings=False, include_markup=False):
+def prep(products_dict, url_slug, include_headings=False, include_markup=False):
     products = add_sort_keys(products_dict)
 
     if include_markup:
-        products = add_markup_to_products(products)
+        for product_dict in products:
+            product_dict['markup'] = product.markup(product_dict, url_slug)
 
     if include_headings:
         products = add_category_heading_products(products)

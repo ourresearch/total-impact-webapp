@@ -1,50 +1,56 @@
 <div class="product">
 
-
    <div class="biblio">
       <h5 class="title">
-         <a target="_blank" class="title-text" href="http://impactstory.org">{{biblio.title}}</a>
-         <!--
-         <a                 class="title-text" href="http://impactstory.org">{{biblio.title}}</a>
-         -->
+         <!-- there are two links here, and we control which shows with CSS, depending
+         on whether there's a .embedded class on the body. ugly hack. -->
+         <a class="title-text target-blank"
 
-         {% if biblio.url %}
-         <a class="linkout url title" target="_blank" href="{{ biblio.url }}">
+            {% if "host" in request.url %}
+            target="_blank"
+            {% endif %}
+
+            href="{{ request.url_root }}{{ url_slug }}/product/{{ product._id }}">
+            {{product.biblio.title}}
+            {{ request.url }}
+         </a>
+
+
+         {% if product.biblio.url %}
+         <a class="linkout url title" target="_blank" href="{{ product.biblio.url }}">
             <i class="icon-external-link-sign"></i>
          </a>
          {% endif %}
       </h5>
       <div class="optional-biblio">
-         {% if biblio.year %}
-         <span class="year">({{ biblio.year }})</span>
+         {% if product.biblio.year %}
+         <span class="year">({{ product.biblio.year }})</span>
          {% endif %}
 
-         {% if biblio.authors and not biblio.embed %}
-         <span class="authors">{{ biblio.authors }}.</span>
-         {% endif %}
-
-
-         {% if biblio.repository and not biblio.embed %}
-         <span class="repository">{{ biblio.repository }}.</span>
+         {% if product.biblio.authors and not product.biblio.embed %}
+         <span class="authors">{{ product.biblio.authors }}.</span>
          {% endif %}
 
 
-         {% if biblio.journal %}
-         <span class="journal">{{ biblio.journal }}</span>
-         {% endif %}
-
-         {% if biblio.description %}
-         <span ng-if="biblio.description" class="description">{{ biblio.description }}</span>
+         {% if product.biblio.repository and not product.biblio.embed %}
+         <span class="repository">{{ product.biblio.repository }}.</span>
          {% endif %}
 
 
-         {% if biblio.embed %}
+         {% if product.biblio.journal %}
+         <span class="journal">{{ product.biblio.journal }}</span>
+         {% endif %}
+
+         {% if product.biblio.description %}
+         <span ng-if="product.biblio.description" class="description">{{ product.biblio.description }}</span>
+         {% endif %}
+
+
+         {% if product.biblio.embed %}
          <!-- this is a temp method for embedding tweets -->
-         <span ng-if="biblio.embed" class="embed" ng-bind-html-unsafe="biblio.embed"></span>
+         <span ng-if="product.biblio.embed" class="embed" ng-bind-html-unsafe="product.biblio.embed"></span>
          {% endif %}
-
       </div>
-
    </div>
 
 </div>
