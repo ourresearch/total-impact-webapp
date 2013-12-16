@@ -2,16 +2,16 @@
 
    <div class="biblio">
       <h5 class="title">
+         <!-- if embedded, open product page in a new tab -->
          <a class="title-text target-blank"
 
-            <!-- if embedded, open product page in a new tab -->
             {% if request.args.get('embedded') in ['true', 'True', 1] %}
             target="_blank"
             {% endif %}
 
             href="{{ request.url_root }}{{ url_slug }}/product/{{ product._id }}">
+
             {{product.biblio.title}}
-            {{ request.url }}
          </a>
 
 
