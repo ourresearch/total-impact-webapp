@@ -2251,11 +2251,10 @@ angular.module( 'signup', [
 
   .controller( 'signupNameCtrl', function ( $scope, $location, Signup, Slug ) {
     $scope.nav.goToNextStep = function(){
-      $location.path(
-        "signup/"
-        + Slug.asciify($scope.input.givenName + "/" + $scope.input.surname)
-        + "/url"
-      )
+
+      var slug = Slug.asciify($scope.input.givenName + "/" + $scope.input.surname).replace(/\s/g, "_")
+
+      $location.path("signup/" + slug + "/url")
     }
 
   })
