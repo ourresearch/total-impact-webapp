@@ -147,6 +147,7 @@ angular.module('product.product')
     ,makeBiblio: function(itemData) {
       var biblio = itemData.biblio
       biblio.url = (itemData.aliases.url) ?  itemData.aliases.url[0] : false
+
       biblio.title = biblio.title || "no title"
       if (biblio.authors) {
         // screws up names w/ commas in them

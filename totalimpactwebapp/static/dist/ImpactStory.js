@@ -34,11 +34,7 @@ angular.module('app').constant('TEST', {
 });
 
 
-<<<<<<< HEAD
 angular.module('app').config(function ($routeProvider, $locationProvider) {
-=======
-angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
->>>>>>> master
   $locationProvider.html5Mode(true);
 
   // want to make sure the user profile route loads last, because it's super greedy.
@@ -49,14 +45,10 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
   });
-<<<<<<< HEAD
 
 
 
 });
-=======
-}]);
->>>>>>> master
 
 
 angular.module('app').run(function(security, $window, Page, $location) {
@@ -1157,6 +1149,7 @@ angular.module('product.product')
     ,makeBiblio: function(itemData) {
       var biblio = itemData.biblio
       biblio.url = (itemData.aliases.url) ?  itemData.aliases.url[0] : false
+
       biblio.title = biblio.title || "no title"
       if (biblio.authors) {
         // screws up names w/ commas in them
@@ -1588,9 +1581,6 @@ angular.module("profileProduct", [
 
   }])
 
-<<<<<<< HEAD
-  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $location, $modal, $cacheFactory, security, UsersProduct, UsersProducts, Product, Loading, Page) {
-=======
   .controller('ProfileProductPageCtrl', function (
     $scope,
     $routeParams,
@@ -1603,16 +1593,11 @@ angular.module("profileProduct", [
     Product,
     Loading,
     Page) {
->>>>>>> master
 
     var slug = $routeParams.url_slug
     var $httpDefaultCache = $cacheFactory.get('$http')
 
     Loading.start('profileProduct')
-<<<<<<< HEAD
-    Loading.clear()
-=======
->>>>>>> master
 
     $scope.userSlug = slug
     $scope.loading = Loading
@@ -1622,14 +1607,8 @@ angular.module("profileProduct", [
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
     $scope.deleteProduct = function(){
-<<<<<<< HEAD
-      $httpDefaultCache.removeAll()
-      security.redirectToProfile()
-
-=======
 
       Loading.start("deleteProduct")
->>>>>>> master
 
       // do the deletion in the background, without a progress spinner...
       UsersProducts.delete(
@@ -1637,11 +1616,8 @@ angular.module("profileProduct", [
         {"tiids": [$routeParams.tiid]},  // the body data
         function(){
           console.log("finished deleting", $routeParams.tiid)
-<<<<<<< HEAD
-=======
           $httpDefaultCache.removeAll()
           security.redirectToProfile()
->>>>>>> master
         }
       )
     }
@@ -1805,10 +1781,7 @@ angular.module("profile", [
 
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
-<<<<<<< HEAD
-=======
 
->>>>>>> master
     $scope.loadingProducts = function(){
       return loadingProducts
     }
@@ -1861,10 +1834,7 @@ angular.module("profile", [
 
     var renderProducts = function(fresh){
 
-<<<<<<< HEAD
-=======
       loadingProducts = true
->>>>>>> master
       if (fresh){
         $httpDefaultCache.removeAll()
       }
@@ -1873,10 +1843,7 @@ angular.module("profile", [
       $scope.products = UsersProducts.query({
         id: userSlug,
         includeHeadingProducts: true,
-<<<<<<< HEAD
         embedded: Page.isEmbedded(),
-=======
->>>>>>> master
         idType: "url_slug"
       },
         function(resp){
@@ -2289,18 +2256,10 @@ angular.module( 'signup', [
 
   .controller( 'signupNameCtrl', function ( $scope, $location, Signup, Slug ) {
     $scope.nav.goToNextStep = function(){
-<<<<<<< HEAD
-      $location.path(
-        "signup/"
-        + Slug.asciify($scope.input.givenName + "/" + $scope.input.surname)
-        + "/url"
-      )
-=======
 
       var slug = Slug.asciify($scope.input.givenName + "/" + $scope.input.surname).replace(/\s/g, "_")
 
       $location.path("signup/" + slug + "/url")
->>>>>>> master
     }
 
   })
@@ -3138,17 +3097,7 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: true,
-<<<<<<< HEAD
           params: {include_heading_products: true, embedded: "@"}
-=======
-          params: {include_heading_products: true}
-        },
-        queryFresh: {
-          method: "GET",
-          isArray: true,
-          cache: false,
-          params: {include_heading_products: true}
->>>>>>> master
         },
         poll:{
           method: "GET",
@@ -4088,7 +4037,6 @@ angular.module("services.page")
 
    };
 })
-<<<<<<< HEAD
 
 
 
@@ -4102,8 +4050,6 @@ angular.module("services.page")
 
 
 
-=======
->>>>>>> master
 angular.module('services.routeChangeErrorHandler', [
   'security'
 ])
@@ -5206,11 +5152,7 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "      <a href=\"{{ getProductPageUrl() }}\"\n" +
     "            class=\"ti-badge big-badge {{award.audience}} {{award.engagementType}}\"\n" +
     "            ng-show=\"award.isHighly\"\n" +
-<<<<<<< HEAD
-    "            data-original-title=\"Highly {{award.engagementType}} by {{award.displayAudience}}\"\n" +
-=======
     "            data-original-title=\"Highly {{award.engagementType}} by <span class='{{award.displayAudience}}'>{{award.displayAudience}}</span>\"\n" +
->>>>>>> master
     "            data-content=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
     "            {{award.topMetric.displayInteraction}}. That's better than\n" +
     "            {{award.topMetric.percentiles.CI95_lower}}% of items\n" +
@@ -5354,10 +5296,6 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "            ng-show=\"userOwnsThisProfile\"\n" +
     "            tooltip=\"Remove this product from your profile.\"\n" +
     "            tooltip-placement=\"bottom\">\n" +
-<<<<<<< HEAD
-    "            <i class=\"icon-trash\"></i>\n" +
-    "            Delete product\n" +
-=======
     "            <span class=\"ready\" ng-show=\"!loading.is()\">\n" +
     "               <i class=\"icon-trash\"></i>\n" +
     "               Remove product\n" +
@@ -5366,17 +5304,12 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "               <i class=\"icon-refresh icon-spin\"></i>\n" +
     "               Removing...\n" +
     "            </span>\n" +
->>>>>>> master
     "         </a>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "   <div class=\"product\">\n" +
     "      <div class=\"wrapper\">\n" +
-<<<<<<< HEAD
-    "         <div class=\"working\" ng-show=\"loading.is()\">\n" +
-=======
     "         <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
->>>>>>> master
     "            <i class=\"icon-refresh icon-spin\"></i>\n" +
     "            <span class=\"text\">Loading product...</span>\n" +
     "         </div>\n" +
@@ -5533,31 +5466,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "\n" +
     "      <ul class=\"products-list\">\n" +
-<<<<<<< HEAD
     "         <li class=\"product-container {{ product.genre }}\"\n" +
-=======
-    "         <li class=\"product {{ product.genre }}\"\n" +
->>>>>>> master
     "             ng-class=\"{'heading': product.isHeading, 'real-product': !product.isHeading, first: $first}\"\n" +
     "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'isHeading', getSortScore, getMetricSum]\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"hasMetrics() || showProductsWithoutMetrics || product.isHeading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
-<<<<<<< HEAD
     "             ng-bind-html-unsafe=\"product.markup\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
     "\n" +
-=======
-    "             on-repeat-finished>\n" +
-    "\n" +
-    "            <div ng-include=\"'category-heading/category-heading.tpl.html'\"></div>\n" +
-    "\n" +
-    "            <div class=\"real-product\" ng-show=\"!product.isHeading\">\n" +
-    "               <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
-    "               <div class=\"badges\" ng-include=\"'product/badges.tpl.html'\"></div>\n" +
-    "            </div>\n" +
->>>>>>> master
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
