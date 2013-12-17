@@ -18,13 +18,23 @@ angular.module("profileProduct", [
 
   }])
 
-  .controller('ProfileProductPageCtrl', function ($scope, $routeParams, $location, $modal, $cacheFactory, security, UsersProduct, UsersProducts, Product, Loading, Page) {
+  .controller('ProfileProductPageCtrl', function (
+    $scope,
+    $routeParams,
+    $location,
+    $modal,
+    $cacheFactory,
+    security,
+    UsersProduct,
+    UsersProducts,
+    Product,
+    Loading,
+    Page) {
 
     var slug = $routeParams.url_slug
     var $httpDefaultCache = $cacheFactory.get('$http')
 
     Loading.start('profileProduct')
-    Loading.clear()
 
     $scope.userSlug = slug
     $scope.loading = Loading
@@ -34,9 +44,8 @@ angular.module("profileProduct", [
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
     $scope.deleteProduct = function(){
-      $httpDefaultCache.removeAll()
-      security.redirectToProfile()
 
+      Loading.start("deleteProduct")
 
       // do the deletion in the background, without a progress spinner...
       UsersProducts.delete(
@@ -44,6 +53,8 @@ angular.module("profileProduct", [
         {"tiids": [$routeParams.tiid]},  // the body data
         function(){
           console.log("finished deleting", $routeParams.tiid)
+          $httpDefaultCache.removeAll()
+          security.redirectToProfile()
         }
       )
     }

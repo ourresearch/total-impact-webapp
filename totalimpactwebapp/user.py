@@ -31,7 +31,7 @@ class UserTiid(db.Model):
         super(UserTiid, self).__init__(**kwargs)
 
     def __repr__(self):
-        return '<UserTiid {user_id} {tiid}>'.format(
+        return u'<UserTiid {user_id} {tiid}>'.format(
             user_id=self.user_id, 
             tiid=self.tiid)
 
@@ -77,7 +77,9 @@ class User(db.Model):
     twitter_account_id = db.Column(db.String(64))
     figshare_id = db.Column(db.String(64))
     wordpress_api_key = db.Column(db.String(64))
+
     tips = db.Column(db.String())  # ALTER TABLE "user" ADD tips text
+    # last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
 
     tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
@@ -108,6 +110,7 @@ class User(db.Model):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         self.created = now_in_utc()
+        # self.last_refreshed = now_in_utc()
         self.given_name = self.given_name or u"Anonymous"
         self.surname = self.surname or u"User"
         self.password_hash = None
@@ -138,10 +141,6 @@ class User(db.Model):
     def uniqueify_slug(self):
         self.url_slug += str(random.randint(1000, 99999))
         return self.url_slug
-
-
-    def set_last_viewed_profile(self):
-        self.last_viewed_profile = now_in_utc()
 
 
     def set_password(self, password):
@@ -191,9 +190,10 @@ class User(db.Model):
         delete_products_from_user(self.id, tiids_to_delete)
         return {"deleted_tiids": tiids_to_delete}
 
-    def refresh_products(self):
+    def refresh_products(self, source="webapp"):
+        # set_last_refreshed_timestamp(self.id)
         analytics_credentials = self.get_analytics_credentials()        
-        return refresh_products_from_user(self.tiids, analytics_credentials)
+        return refresh_products_from_tiids(self.tiids, analytics_credentials, source)
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -217,7 +217,7 @@ class User(db.Model):
 
 
     def __repr__(self):
-        return '<User {name}>'.format(name=self.full_name)
+        return u'<User {name}>'.format(name=self.full_name)
 
 
     def as_dict(self):
@@ -319,9 +319,13 @@ def delete_products_from_user(user_id, tiids_to_delete):
 
 
 
-def refresh_products_from_user(tiids, analytics_credentials={}):
+def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"):
     if not tiids:
         return None
+
+    priority = "high"
+    if source=="scheduled":
+        priority = "low"
 
     query = u"{core_api_root}/v1/products/refresh?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,
@@ -331,7 +335,8 @@ def refresh_products_from_user(tiids, analytics_credentials={}):
     r = requests.post(query,
             data=json.dumps({
                 "tiids": tiids,
-                "analytics_credentials": analytics_credentials
+                "analytics_credentials": analytics_credentials,
+                "priority": priority
                 }),
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
@@ -359,6 +364,23 @@ def remove_duplicates_from_user(user_id):
         user_id=user_id, tiids_to_remove=tiids_to_remove))
 
     return tiids_to_remove
+
+
+def set_last_refreshed_timestamp(user_id):
+    logger.debug(u"In set_last_refreshed_timestamp with user {user_id}".format(
+        user_id=user_id))
+
+    user = User.query.get(user_id)
+    db.session.merge(user)
+    user.last_refreshed = now_in_utc()
+    try:
+        db.session.commit()
+    except (IntegrityError, FlushError) as e:
+        db.session.rollback()
+        logger.warning(u"Fails Integrity check in set_last_refreshed_from_user for {user_id}, rolling back.  Message: {message}".format(
+            user_id=user_id,
+            message=e.message))
+    return True
 
 
 def create_user_from_slug(url_slug, user_request_dict, api_root, db):

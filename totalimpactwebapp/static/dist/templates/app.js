@@ -664,7 +664,7 @@ angular.module("product/badges.tpl.html", []).run(["$templateCache", function($t
     "      <a href=\"{{ getProductPageUrl() }}\"\n" +
     "            class=\"ti-badge big-badge {{award.audience}} {{award.engagementType}}\"\n" +
     "            ng-show=\"award.isHighly\"\n" +
-    "            data-original-title=\"Highly {{award.engagementType}} by {{award.displayAudience}}\"\n" +
+    "            data-original-title=\"Highly {{award.engagementType}} by <span class='{{award.displayAudience}}'>{{award.displayAudience}}</span>\"\n" +
     "            data-content=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
     "            {{award.topMetric.displayInteraction}}. That's better than\n" +
     "            {{award.topMetric.percentiles.CI95_lower}}% of items\n" +
@@ -808,14 +808,20 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "            ng-show=\"userOwnsThisProfile\"\n" +
     "            tooltip=\"Remove this product from your profile.\"\n" +
     "            tooltip-placement=\"bottom\">\n" +
-    "            <i class=\"icon-trash\"></i>\n" +
-    "            Delete product\n" +
+    "            <span class=\"ready\" ng-show=\"!loading.is()\">\n" +
+    "               <i class=\"icon-trash\"></i>\n" +
+    "               Remove product\n" +
+    "            </span>\n" +
+    "            <span class=\"working\" ng-show=\"loading.is('deleteProduct')\">\n" +
+    "               <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "               Removing...\n" +
+    "            </span>\n" +
     "         </a>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "   <div class=\"product\">\n" +
     "      <div class=\"wrapper\">\n" +
-    "         <div class=\"working\" ng-show=\"loading.is()\">\n" +
+    "         <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
     "            <i class=\"icon-refresh icon-spin\"></i>\n" +
     "            <span class=\"text\">Loading product...</span>\n" +
     "         </div>\n" +

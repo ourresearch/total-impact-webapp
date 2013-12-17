@@ -136,6 +136,7 @@ angular.module("profile", [
 
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
+
     $scope.loadingProducts = function(){
       return loadingProducts
     }
@@ -188,6 +189,7 @@ angular.module("profile", [
 
     var renderProducts = function(fresh){
 
+      loadingProducts = true
       if (fresh){
         $httpDefaultCache.removeAll()
       }
