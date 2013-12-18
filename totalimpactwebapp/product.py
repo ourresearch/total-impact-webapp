@@ -44,8 +44,18 @@ def make_biblio(product_dict):
 def make_metrics(product_dict):
     metrics = product_dict["metrics"]
     configs = product_configs.get_configs()
+    try:
+        year = product_dict["biblio"]["year"]
+    except KeyError:
+        year = None
 
     metrics = add_config_info_to_metrics(metrics, configs)
+
+    # remove metrics that have no audience set
+    metrics = {name: metric for name, metric in metrics.iteritems()
+               if metric["audience"] is not None}
+
+    metrics = expand_metric_metadata(metrics, year)
 
     return metrics
 
@@ -59,6 +69,7 @@ def add_config_info_to_metrics(metrics, configs):
     return metrics
 
 
-
+def expand_metric_metadata(metrics, year):
+    return metrics
 
 
