@@ -74,13 +74,11 @@ configs = [
 
 
 def get_configs():
-    ret = []
+    ret = {}
     for config_values in configs:
         config_dict = dict(map(None, config_keys, config_values))
 
-        config_tuple_thingy = (config_values[0], config_dict)
-
-        ret.append(config_tuple_thingy)
+        ret[config_values[0]] = config_dict
 
     return ret
 

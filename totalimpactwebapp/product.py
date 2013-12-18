@@ -45,10 +45,18 @@ def make_metrics(product_dict):
     metrics = product_dict["metrics"]
     configs = product_configs.get_configs()
 
-    print configs
+    metrics = add_config_info_to_metrics(metrics, configs)
 
     return metrics
 
+
+def add_config_info_to_metrics(metrics, configs):
+    for metric_name, metric in metrics.iteritems():
+        config_for_this_metric = configs[metric_name]
+
+        metric.update(config_for_this_metric)
+
+    return metrics
 
 
 
