@@ -106,6 +106,7 @@ def add_markup_to_products(products, url_slug):
 
 
 def prep(products_dict, url_slug, include_headings=False, include_markup=False):
+
     products = add_sort_keys(products_dict)
 
     if include_markup:
