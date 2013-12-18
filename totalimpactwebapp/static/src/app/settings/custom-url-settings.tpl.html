@@ -25,7 +25,10 @@
 
       <div class="feedback col-sm-3">
 
-         <spinner msg="Checking"></spinner>
+         <div class="help-block checking one-line" ng-show="loading.is('requireUnique')">
+            <i class="icon-refresh icon-spin"></i>
+            <span class="text">Checking...</span>
+         </div>
 
          <div class="help-block error"
                ng-show="userUrlForm.url_slug.$error.pattern

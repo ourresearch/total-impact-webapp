@@ -31,6 +31,7 @@ angular.module('settings', [
     $scope.resetUser = function(){
       $scope.user = angular.copy(authenticatedUser)
     }
+    $scope.loading = Loading
     $scope.home = function(){
       $location.path('/' + authenticatedUser.url_slug);
     }
@@ -107,7 +108,7 @@ angular.module('settings', [
      $scope.onSave = function() {
       Loading.start('saveButton')
       UsersAbout.patch(
-        {id: $scope.user.id, idType:"userid"},
+        {id: $scope.user.id, idType:"id"},
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.

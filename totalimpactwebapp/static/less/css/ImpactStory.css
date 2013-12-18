@@ -6252,6 +6252,7 @@ form div.input-group .input-group-addon {
 form div.help-block {
   font-size: 16px;
   margin-top: 0;
+  margin-bottom: 0;
   display: block;
   color: #999;
   float: left;

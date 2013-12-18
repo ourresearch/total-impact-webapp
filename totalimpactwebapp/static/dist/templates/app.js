@@ -1044,7 +1044,10 @@ angular.module("settings/custom-url-settings.tpl.html", []).run(["$templateCache
     "\n" +
     "      <div class=\"feedback col-sm-3\">\n" +
     "\n" +
-    "         <spinner msg=\"Checking\"></spinner>\n" +
+    "         <div class=\"help-block checking one-line\" ng-show=\"loading.is('requireUnique')\">\n" +
+    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "            <span class=\"text\">Checking...</span>\n" +
+    "         </div>\n" +
     "\n" +
     "         <div class=\"help-block error\"\n" +
     "               ng-show=\"userUrlForm.url_slug.$error.pattern\n" +
