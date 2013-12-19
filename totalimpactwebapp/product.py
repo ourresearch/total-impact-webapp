@@ -70,6 +70,37 @@ def add_config_info_to_metrics(metrics, configs):
 
 
 def expand_metric_metadata(metrics, year):
+    interaction_display_names = {
+        "f1000": "recommendations",
+        "pmc_citations": "citations"
+    }
+    for metric_name, metric in metrics.iteritems():
+        print metric
+
+        raw_count = metric["values"]["raw"]
+        metric["display_count"] = raw_count
+
+        # deal with F1000's troublesome "count" of "Yes." Can add others later.
+        try:
+            metric["actual_count"] = raw_count.replace("Yes", 1)
+        except AttributeError:
+            metric["actual_count"] = raw_count
+
+        metric["environment"] = metric["static_meta"]["provider"]
+        interaction = metric["name"].split(":")[1].replace("_", " ")
+
+        try:
+            interaction = interaction_display_names[interaction]
+        except KeyError:
+            pass
+
+        if metric["actual_count"] <= 1:
+            metric["display_interaction"] = interaction[:-1]  # de-pluralize
+        else:
+            metric["display_interaction"] = interaction
+
+        metric["reference_set_year"] = year
+
     return metrics
 
 
