@@ -56,6 +56,7 @@ def make_metrics(product_dict):
                if metric["audience"] is not None}
 
     metrics = expand_metric_metadata(metrics, year)
+    metrics = add_metric_percentiles(metrics)
 
     return metrics
 
@@ -103,4 +104,29 @@ def expand_metric_metadata(metrics, year):
 
     return metrics
 
+
+def add_metric_percentiles(metrics):
+
+    refsets_config = {
+        "WoS": ["Web of Science", "indexed by"],
+        "dryad": ["Dryad", "added to"],
+        "figshare": ["figshare", "added to"],
+        "github": ["GitHub", "added to"]
+    }
+
+    for metric_name, metric in metrics.iteritems():
+        for refset_key, normalized_values in metric["values"].iteritems():
+            if refset_key == "raw":
+                continue
+            else:
+                # This will arbitrarily pick on percentile reference set and
+                # make it be the only one that counts. Works fine as long as
+                # there is just one.
+
+                metric["percentiles"] = normalized_values
+                metric["top_percent"] = 100 - normalized_values["CI95_lower"]
+                metric["refset"] = refsets_config[refset_key][0]
+                metric["refset_storage_verb"] = refsets_config[refset_key][1]
+
+    return metrics
 
