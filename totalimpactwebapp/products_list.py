@@ -6,11 +6,37 @@ from totalimpactwebapp import product
 from flask import g
 
 
+
+
+
+def prep(products_dict, url_slug, include_headings=False):
+
+    prepped_products = []
+
+    for product_dict in products_dict:
+        prepped_products.append(
+            product.prep_product(product_dict, url_slug)
+        )
+
+    if include_headings:
+        prepped_products = add_category_heading_products(prepped_products)
+
+    return prepped_products
+
+
+
+
+
+
+
+
+"""
+Category Heading stuff
+"""
+
 def add_category_heading_products(products):
 
     categories = categorize_products(products)
-
-
 
     heading_products_list = []
 
@@ -83,43 +109,14 @@ def categorize_products(products):
     return categories
 
 
-def add_sort_keys(products):
-    for product in products:
-        try:
-            product["genre"] = product["biblio"]["genre"]
-        except KeyError:
-            product["genre"] = "unknown"
-
-        try:
-            product["account"] = product["biblio"]["account"]
-        except KeyError:
-            product["account"] = None
-
-    return products
 
 
-def add_markup_to_products(products, url_slug):
-    for product_dict in products:
-        product_dict['markup'] = product.markup(product_dict, url_slug)
-
-    return products
 
 
-def prep(products_dict, url_slug, include_headings=False, include_markup=False):
 
-    products = add_sort_keys(products_dict)
-
-    if include_markup:
-        for product_dict in products:
-            product_dict['markup'] = product.markup(product_dict, url_slug)
-
-    if include_headings:
-        products = add_category_heading_products(products)
-
-
-    return products
-
-
+"""
+duplicates stuff
+"""
 
 
 

@@ -3,20 +3,22 @@ from totalimpactwebapp import product_configs
 
 
 
+def prep_product(product, url_slug):
+
+    product["biblio"] = make_biblio(product)
+    product["metrics"] = make_metrics(product)
+    product["awards"] = make_awards(product)
+    product["markup"] = make_markup(product, url_slug)
+    product = add_sort_keys(product)
+
+    return product
 
 
 
-def markup(product_dict, url_slug):
 
-    product_dict["biblio"] = make_biblio(product_dict)
-    product_dict["metrics"] = make_metrics(product_dict)
-
-
-    return render_template(
-        "product.html",
-        url_slug=url_slug,
-        product=product_dict
-    )
+"""
+biblio stuff
+"""
 
 def make_biblio(product_dict):
     biblio = product_dict["biblio"]
@@ -41,6 +43,12 @@ def make_biblio(product_dict):
     return biblio
 
 
+
+
+"""
+Metrics stuff
+"""
+
 def make_metrics(product_dict):
     metrics = product_dict["metrics"]
     configs = product_configs.get_configs()
@@ -57,6 +65,9 @@ def make_metrics(product_dict):
 
     metrics = expand_metric_metadata(metrics, year)
     metrics = add_metric_percentiles(metrics)
+
+    # on the client, we were making the awards for each metric here. we don't
+    # need it for the profile page, though, so skipping for now.
 
     return metrics
 
@@ -76,7 +87,6 @@ def expand_metric_metadata(metrics, year):
         "pmc_citations": "citations"
     }
     for metric_name, metric in metrics.iteritems():
-        print metric
 
         raw_count = metric["values"]["raw"]
         metric["display_count"] = raw_count
@@ -129,4 +139,71 @@ def add_metric_percentiles(metrics):
                 metric["refset_storage_verb"] = refsets_config[refset_key][1]
 
     return metrics
+
+
+
+
+"""
+Awards stuff
+"""
+
+def make_awards(product):
+    return []
+
+
+
+
+
+"""
+Sorting stuff
+"""
+
+def add_sort_keys(product):
+    try:
+        product["genre"] = product["biblio"]["genre"]
+    except KeyError:
+        product["genre"] = "unknown"
+
+    try:
+        product["account"] = product["biblio"]["account"]
+    except KeyError:
+        product["account"] = None
+
+    product["metric_raw_sum"] = sum_metric_raw_values(product)
+    product["awardedness_score"] = get_awardedness_score(product)
+
+    return product
+
+
+def get_awardedness_score(product):
+    return 5
+
+
+def sum_metric_raw_values(product):
+    raw_values_sum = 0
+    try:
+        for metric_name, metric in product["metrics"].iteritems():
+            raw_values_sum += metric["values"]["raw"]
+    except KeyError:
+        pass
+
+    return raw_values_sum
+
+
+
+
+
+"""
+Markup stuff
+"""
+
+def make_markup(product_dict, url_slug):
+    return render_template(
+        "product.html",
+        url_slug=url_slug,
+        product=product_dict
+    )
+
+
+
 
