@@ -355,7 +355,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <h3 id=\"meaning\">what do these number actually mean?</h3>\n" +
     "\n" +
-    "   <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sited: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like ImpactStory, can be found in the nascent scholarly literature on “altmetrics.”\n" +
+    "   <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sighted: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like ImpactStory, can be found in the nascent scholarly literature on “altmetrics.”\n" +
     "\n" +
     "   <p><a href=\"http://altmetrics.org/manifesto/\">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">altmetrics library</a> on Mendeley for a growing list of relevant research.\n" +
     "\n" +
