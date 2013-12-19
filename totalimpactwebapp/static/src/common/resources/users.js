@@ -4,7 +4,7 @@ angular.module('resources.users',['ngResource'])
 
     return $resource(
       "/user/:id?id_type=:idType",
-      {idType: "userid"}
+      {idType: "id"}
     )
   })
 

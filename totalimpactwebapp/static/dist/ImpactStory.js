@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-17
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-16
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -458,6 +458,20 @@ angular.module('importers.allTheImporters')
       endpoint: "urls",
       url: "http://vimeo.com",
       descr: "Vimeo is an online video-sharing site."
+    },
+
+    {
+      displayName: "arXiv",
+      inputs: [{
+        name: "arxiv_id_input",
+        inputType: "idList",
+        inputNeeded: "arXiv IDs",
+        help: "A typical arXiv ID looks like this: 1305.3328",
+        placeholder: "arXiv:1234.5678"       
+      }],
+      endpoint: "arxiv",
+      url: "http://arXiv.org",
+      descr: "arXiv is an e-print service in the fields of physics, mathematics, computer science, quantitative biology, quantitative finance and statistics."
     },
 
 
@@ -2003,6 +2017,7 @@ angular.module('settings', [
     $scope.resetUser = function(){
       $scope.user = angular.copy(authenticatedUser)
     }
+    $scope.loading = Loading
     $scope.home = function(){
       $location.path('/' + authenticatedUser.url_slug);
     }
@@ -2079,7 +2094,7 @@ angular.module('settings', [
      $scope.onSave = function() {
       Loading.start('saveButton')
       UsersAbout.patch(
-        {id: $scope.user.id, idType:"userid"},
+        {id: $scope.user.id, idType:"id"},
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
@@ -3069,7 +3084,7 @@ angular.module('resources.users',['ngResource'])
 
     return $resource(
       "/user/:id?id_type=:idType",
-      {idType: "userid"}
+      {idType: "id"}
     )
   })
 
@@ -4841,9 +4856,9 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   </ul>\n" +
     "\n" +
-    "   <h3 id=\"meaning\">what do these number actually mean?</h3>\n" +
+    "   <h3 id=\"meaning\">what do these number actually mean?</h3> \n" +
     "\n" +
-    "   <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sited: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like ImpactStory, can be found in the nascent scholarly literature on “altmetrics.”\n" +
+    "   <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sighted: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like ImpactStory, can be found in the nascent scholarly literature on “altmetrics.”\n" +
     "\n" +
     "   <p><a href=\"http://altmetrics.org/manifesto/\">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">altmetrics library</a> on Mendeley for a growing list of relevant research.\n" +
     "\n" +
@@ -5028,6 +5043,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "      <div class=\"wrapper\">\n" +
     "         <h2>Uncover your impacts from all across the Web: </h2>\n" +
     "         <ul id=\"source-logos\">\n" +
+    "            <li><img src=\"/static/img/logos/arxiv.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/citeulike.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/delicious.jpg\" /></li>\n" +
@@ -5527,7 +5543,10 @@ angular.module("settings/custom-url-settings.tpl.html", []).run(["$templateCache
     "\n" +
     "      <div class=\"feedback col-sm-3\">\n" +
     "\n" +
-    "         <spinner msg=\"Checking\"></spinner>\n" +
+    "         <div class=\"help-block checking one-line\" ng-show=\"loading.is('requireUnique')\">\n" +
+    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "            <span class=\"text\">Checking...</span>\n" +
+    "         </div>\n" +
     "\n" +
     "         <div class=\"help-block error\"\n" +
     "               ng-show=\"userUrlForm.url_slug.$error.pattern\n" +

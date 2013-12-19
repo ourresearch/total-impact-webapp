@@ -268,6 +268,20 @@ angular.module('importers.allTheImporters')
       descr: "Vimeo is an online video-sharing site."
     },
 
+    {
+      displayName: "arXiv",
+      inputs: [{
+        name: "arxiv_id_input",
+        inputType: "idList",
+        inputNeeded: "arXiv IDs",
+        help: "A typical arXiv ID looks like this: 1305.3328",
+        placeholder: "arXiv:1234.5678"       
+      }],
+      endpoint: "arxiv",
+      url: "http://arXiv.org",
+      descr: "arXiv is an e-print service in the fields of physics, mathematics, computer science, quantitative biology, quantitative finance and statistics."
+    },
+
 
     {
       displayName: "Dryad",

@@ -382,8 +382,6 @@ def user_products_get(id):
 @app.route("/user/<id>/products", methods=["POST", "DELETE", "PATCH"])
 def user_products_modify(id):
 
-    sleep(2)
-
     action = request.args.get("action", "refresh")
     user = get_user_for_response(id, request)
     logger.debug(u"got user {user}".format(
