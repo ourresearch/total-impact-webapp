@@ -14,11 +14,12 @@ logger.setLevel(logging.DEBUG)
 
 
 
-def update_by_url_slugs(url_slugs):
+def update_by_url_slugs(url_slugs, webapp_api_endpoint):
     QUEUE_DELAY_IN_SECONDS = 0.25
     for url_slug in url_slugs:
-        url = u"http://localhost:5000/user/{url_slug}/products?action=refresh&source=scheduled".format(
+        url = webapp_api_endpoint + u"/user/{url_slug}/products?action=refresh&source=scheduled".format(
             url_slug=url_slug)
+        print "going to post to this url", url
         requests.post(url)
         time.sleep(QUEUE_DELAY_IN_SECONDS)
     return url_slugs
@@ -40,10 +41,10 @@ def get_profiles_not_updated_since(number_to_update, now=datetime.datetime.utcno
     return url_slugs
 
 
-def by_profile(number_to_update, now=datetime.datetime.utcnow()):
+def by_profile(number_to_update, webapp_api_endpoint, now=datetime.datetime.utcnow()):
     url_slugs = get_profiles_not_updated_since(number_to_update, now)
     print "got", len(url_slugs), url_slugs
-    update_by_url_slugs(url_slugs)
+    update_by_url_slugs(url_slugs, webapp_api_endpoint)
     return url_slugs
 
 
@@ -54,7 +55,8 @@ def main(action_type, number_to_update=3, specific_publisher=None):
 
     try:
         if action_type == "by_profile":
-            by_profile(number_to_update)
+            webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "http://localhost:5000")
+            by_profile(number_to_update, webapp_api_endpoint)
     except (KeyboardInterrupt, SystemExit): 
         # this approach is per http://stackoverflow.com/questions/2564137/python-how-to-terminate-a-thread-when-main-program-ends
         sys.exit()
