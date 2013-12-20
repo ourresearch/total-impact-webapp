@@ -1,3 +1,5 @@
+from itertools import groupby
+
 from flask import render_template
 from totalimpactwebapp import product_configs
 
@@ -51,7 +53,7 @@ Metrics stuff
 
 def make_metrics(product_dict):
     metrics = product_dict["metrics"]
-    configs = product_configs.get_configs()
+    configs = product_configs.get_metric_configs()
     try:
         year = product_dict["biblio"]["year"]
     except KeyError:
@@ -65,9 +67,17 @@ def make_metrics(product_dict):
 
     metrics = expand_metric_metadata(metrics, year)
     metrics = add_metric_percentiles(metrics)
+    metrics = add_award_to_metrics(metrics)
 
     # on the client, we were making the awards for each metric here. we don't
     # need it for the profile page, though, so skipping for now.
+
+    return metrics
+
+
+def add_award_to_metrics(metrics):
+    for metric_name, metric in metrics.iteritems():
+        metric["award"] = make_award_for_single_metric(metric)
 
     return metrics
 
@@ -143,12 +153,93 @@ def add_metric_percentiles(metrics):
 
 
 
+
+
+
+
+
 """
 Awards stuff
 """
 
 def make_awards(product):
-    return []
+    metrics = product["metrics"]
+    awards_dict = {}
+
+    for metric_name, metric in metrics.iteritems():
+        this_award = metric["award"]
+        del metric["award"]
+        this_award["metrics"] = [metric]
+        this_award_key = (this_award["audience"], this_award["engagement_type"])
+        this_award["top_metric"] = None
+
+        if this_award_key in awards_dict:
+            # we've got this award. add to its metrics
+            awards_dict[this_award_key]["metrics"].append(metric)
+
+        else:
+            awards_dict[this_award_key] = this_award
+
+    for k, award in awards_dict.iteritems():
+        award["top_metric"] = get_top_metric(award["metrics"])
+
+    return awards_dict.values()
+
+
+def get_top_metric(metrics):
+
+    max_actual_count = max([m["actual_count"] for m in metrics])
+
+    def sort_key(m):
+        raw_count_contribution = m["actual_count"] / max_actual_count
+        raw_count_contribution -= .0001  # always <1
+
+        try:
+            return m["percentiles"]["CI95_lower"] + raw_count_contribution
+        except KeyError:
+            return raw_count_contribution
+
+    sorted_by_metric_percentile_then_raw_counts = sorted(
+        metrics,
+        key=sort_key,
+        reverse=True
+    )
+    return sorted_by_metric_percentile_then_raw_counts[0]
+
+
+
+def make_award_for_single_metric(metric):
+    config = product_configs.award_configs
+    return {
+        "engagement_type_noun": config[metric["engagement_type"]][0],
+        "engagement_type": metric["engagement_type"],
+        "audience": metric["audience"],
+        "display_order": config[metric["engagement_type"]][1],
+        "is_highly": calculate_is_highly(metric),
+        "display_audience": metric["audience"].replace("public", "the public")
+    }
+
+
+def calculate_is_highly(metric):
+    try:
+        percentile_high_enough = metric["percentiles"]["CI95_lower"] > 75
+        raw_high_enough = metric["actual_count"] >= metric["min_for_award"]
+
+        if percentile_high_enough and raw_high_enough:
+            return True
+        else:
+            return False
+
+    except KeyError:  # no percentiles listed
+        return False
+
+
+
+
+
+
+
+
 
 
 
@@ -171,6 +262,7 @@ def add_sort_keys(product):
 
     product["metric_raw_sum"] = sum_metric_raw_values(product)
     product["awardedness_score"] = get_awardedness_score(product)
+    product["has_metrics"] = bool(product["metrics"])
 
     return product
 

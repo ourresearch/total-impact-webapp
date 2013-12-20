@@ -1,6 +1,27 @@
 import itertools
 
-config_keys = ["name", "audience", "engagementType", "display", "minForAward"]
+
+
+"""
+Award Configs
+"""
+
+award_configs = {
+    "viewed":["views", 1],
+    "discussed": ["discussion", 2],
+    "saved": ["saves", 3],
+    "cited": ["citation", 4],
+    "recommended": ["recommendation", 5]
+}
+
+
+
+
+"""
+Metric Configs
+"""
+
+config_keys = ["name", "audience", "engagement_type", "display", "min_for_award"]
 configs = [
     ["citeulike:bookmarks", "scholars", "saved", "badge", 3],
     ["crossref:citations", "scholars", "cited", "badge", 3],
@@ -73,7 +94,7 @@ configs = [
 ]
 
 
-def get_configs():
+def get_metric_configs():
     ret = {}
     for config_values in configs:
         config_dict = dict(map(None, config_keys, config_values))
