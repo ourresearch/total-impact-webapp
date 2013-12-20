@@ -2,6 +2,7 @@ import requests, os, json, logging, re, datetime
 import mandrill
 import analytics
 from time import sleep
+from util import local_sleep
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
 from flask import render_template
@@ -112,6 +113,8 @@ def get_user_for_response(id, request, include_products=True):
         logged_in = False
 
     retrieved_user = get_user_from_id(id, id_type, logged_in, include_products)
+    if include_products:
+        local_sleep(2)
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -196,9 +199,10 @@ def extract_filename(s):
         return res[0].split(".")[0]
     return None
 
-
-
-
+#@app.after_request
+#def local_sleep_a_bit_for_everything(resp):
+#    local_sleep(.8)
+#    return resp
 
 
 
@@ -245,7 +249,7 @@ def logout():
 def login():
 
     logger.debug(u"user trying to log in.")
-    #sleep(1)
+
 
     email = unicode(request.json["email"]).lower()
     password = unicode(request.json["password"])
@@ -423,8 +427,6 @@ def user_products_modify(id):
 @app.route("/user/<user_id>/product/<tiid>", methods=['GET'])
 def user_product(user_id, tiid):
 
-    sleep(3)
-
     # the fake "embed" user supports requests from the old badges widget.
     embed_product = views_helpers.get_product_for_embed_user(
         user_id,
@@ -523,6 +525,7 @@ def import_products(importer_name):
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
 
+    local_sleep(1)
     return json_resp_from_thing(r.json())
 
 

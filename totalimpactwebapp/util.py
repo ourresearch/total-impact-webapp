@@ -2,6 +2,7 @@ from functools import wraps
 from flask import request, current_app
 import random, math
 import re
+from time import sleep
 
 
 # a slow decorator for tests, so can exclude them when necessary
@@ -57,6 +58,17 @@ def camel_to_snake_case(s):
     subbed = _underscorer1.sub(r'\1_\2', s)
     return _underscorer2.sub(r'\1_\2', subbed).lower()
 
+
+def local_sleep(interval, fuzz_proportion=.2):
+    """
+    Add some sleep to simulate running on a server.
+    """
+    if fuzz_proportion:
+        max_fuzz_distance = interval * fuzz_proportion
+        interval += random.uniform(-max_fuzz_distance, max_fuzz_distance)
+
+    if "localhost:5000" in request.url_root:
+        sleep(interval)
 
 
 class HTTPMethodOverrideMiddleware(object):
