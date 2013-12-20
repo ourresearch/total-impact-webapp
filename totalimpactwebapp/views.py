@@ -2,6 +2,7 @@ import requests, os, json, logging, re, datetime
 import mandrill
 import analytics
 from time import sleep
+from util import local_sleep
 
 from flask import request, send_file, abort, make_response, g, redirect, url_for
 from flask import render_template
@@ -247,7 +248,7 @@ def logout():
 def login():
 
     logger.debug(u"user trying to log in.")
-    #sleep(1)
+
 
     email = unicode(request.json["email"]).lower()
     password = unicode(request.json["password"])
@@ -376,6 +377,8 @@ def user_products_get(id):
             resp = add_category_heading_products(products)
         else:
             resp = products
+
+    local_sleep(1)
 
     return json_resp_from_thing(resp)
 
