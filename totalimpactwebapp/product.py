@@ -135,7 +135,7 @@ def expand_metric_metadata(metrics, year):
         else:
             metric["display_interaction"] = interaction
 
-        metric["reference_set_year"] = year
+        metric["refset_year"] = year
 
     return metrics
 

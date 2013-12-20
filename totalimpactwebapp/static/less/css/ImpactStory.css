@@ -7600,19 +7600,19 @@ div.products .wrapper div.products-without-metrics div.well a {
 .product-container .biblio div.optional-biblio span.repository {
   font-style: italic;
 }
-.product-container .badges {
+.product-container .awards {
   width: 360px;
   margin-left: 20px;
   float: left;
 }
-.product-container .badges ul.ti-badges {
+.product-container .awards ul.awards-list {
   float: left;
 }
-.product-container .badges ul.ti-badges .award {
+.product-container .awards ul.awards-list .award {
   margin: 0 4px 4px 0;
   float: left;
 }
-.product-container .badges ul.ti-badges .award span.metrics {
+.product-container .awards ul.awards-list .award span.metrics {
   display: none;
   float: left;
   border: 1px solid #333;
@@ -7635,7 +7635,7 @@ div.products .wrapper div.products-without-metrics div.well a {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-.product-container .badges ul.ti-badges .award span.metrics img {
+.product-container .awards ul.awards-list .award span.metrics img {
   height: 16px;
   margin-left: 5px;
   vertical-align: top;
@@ -7691,16 +7691,16 @@ div.products .wrapper div.products-without-metrics div.well a {
   background: #4daf4a;
   border-color: #4daf4a;
 }
-.product-container .ti-badge.big-badge {
+.product-container .ti-badge.is-highly {
   color: #fff;
 }
-.product-container .ti-badge.lil-badge {
+.product-container .ti-badge.is-not-highly {
   background: #fff;
 }
-.product-container .ti-badge.lil-badge.scholars {
+.product-container .ti-badge.is-not-highly.scholars {
   color: #377eb8;
 }
-.product-container .ti-badge.lil-badge.public {
+.product-container .ti-badge.is-not-highly.public {
   color: #4daf4a;
 }
 .product-container div.popover {
