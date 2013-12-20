@@ -378,7 +378,7 @@ def user_products_get(id):
         else:
             resp = products
 
-    local_sleep(10)
+    local_sleep(2)
 
     return json_resp_from_thing(resp)
 
@@ -421,13 +421,12 @@ def user_products_modify(id):
         else:
             abort(405)  # method not supported.  We shouldn't get here.
 
+    local_sleep(2)
     return json_resp_from_thing(resp)
 
 
 @app.route("/user/<user_id>/product/<tiid>", methods=['GET'])
 def user_product(user_id, tiid):
-
-    sleep(3)
 
     # the fake "embed" user supports requests from the old badges widget.
     embed_product = views_helpers.get_product_for_embed_user(
@@ -445,6 +444,7 @@ def user_product(user_id, tiid):
     except IndexError:
         abort_json(404, "That product doesn't exist.")
 
+    local_sleep(2)
     return json_resp_from_thing(requested_product)
 
 
@@ -468,6 +468,7 @@ def user_products_csv(id):
                      "attachment; filename=impactstory.csv")
     resp.headers.add("Content-Encoding", "UTF-8")
 
+    local_sleep(2)
     return resp
 
 
@@ -527,6 +528,7 @@ def import_products(importer_name):
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
 
+    local_sleep(1)
     return json_resp_from_thing(r.json())
 
 
