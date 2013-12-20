@@ -378,7 +378,7 @@ def user_products_get(id):
         else:
             resp = products
 
-    local_sleep(1)
+    local_sleep(10)
 
     return json_resp_from_thing(resp)
 
