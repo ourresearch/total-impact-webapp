@@ -115,6 +115,8 @@ def get_user_for_response(id, request, include_products=True):
         logged_in = False
 
     retrieved_user = get_user_from_id(id, id_type, logged_in, include_products)
+    if include_products:
+        local_sleep(2)
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -199,9 +201,10 @@ def extract_filename(s):
         return res[0].split(".")[0]
     return None
 
-
-
-
+#@app.after_request
+#def local_sleep_a_bit_for_everything(resp):
+#    local_sleep(.8)
+#    return resp
 
 
 
@@ -378,8 +381,6 @@ def user_products_get(id):
         else:
             resp = products
 
-    local_sleep(2)
-
     return json_resp_from_thing(resp)
 
 
@@ -421,7 +422,6 @@ def user_products_modify(id):
         else:
             abort(405)  # method not supported.  We shouldn't get here.
 
-    local_sleep(2)
     return json_resp_from_thing(resp)
 
 
@@ -444,7 +444,6 @@ def user_product(user_id, tiid):
     except IndexError:
         abort_json(404, "That product doesn't exist.")
 
-    local_sleep(2)
     return json_resp_from_thing(requested_product)
 
 
@@ -468,7 +467,6 @@ def user_products_csv(id):
                      "attachment; filename=impactstory.csv")
     resp.headers.add("Content-Encoding", "UTF-8")
 
-    local_sleep(2)
     return resp
 
 
