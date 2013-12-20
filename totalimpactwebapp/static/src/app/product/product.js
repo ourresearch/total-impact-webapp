@@ -16,6 +16,7 @@ angular.module('product.product')
    *      "mendeley:groups": {name: "mendeley:groups", audience: "scholars",...},
    *      ...
    *  }
+   *  }
    */
   var metricInfoKeys = ["name", "audience", "engagementType", "display", "minForAward"]
   var metricInfo = _.object(

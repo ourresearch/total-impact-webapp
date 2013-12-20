@@ -18,6 +18,14 @@ def prep_product(product, url_slug):
 
 
 
+
+
+
+
+
+
+
+
 """
 biblio stuff
 """
@@ -43,6 +51,13 @@ def make_biblio(product_dict):
         pass
 
     return biblio
+
+
+
+
+
+
+
 
 
 
@@ -149,6 +164,8 @@ def add_metric_percentiles(metrics):
                 metric["refset_storage_verb"] = refsets_config[refset_key][1]
 
     return metrics
+
+
 
 
 
@@ -268,7 +285,16 @@ def add_sort_keys(product):
 
 
 def get_awardedness_score(product):
-    return 5
+    one_highly_award_is_as_good_as_this_many_regular_awards = 3
+    score = 0
+
+    for award in product["awards"]:
+        if award["is_highly"]:
+            score += one_highly_award_is_as_good_as_this_many_regular_awards
+        else:
+            score += 1
+
+    return score
 
 
 def sum_metric_raw_values(product):
@@ -280,6 +306,12 @@ def sum_metric_raw_values(product):
         pass
 
     return raw_values_sum
+
+
+
+
+
+
 
 
 
