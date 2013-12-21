@@ -52,7 +52,7 @@ angular.module("services.page")
         }
      },
      getBaseUrl: function(){
-       return window.location.origin
+       return "http://" + window.location.host
      },
      'isEmbedded': function(){
        return isEmbedded

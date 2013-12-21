@@ -1880,7 +1880,7 @@ angular.module("profile", [
 .controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
   console.log("user slug is: ", userSlug)
   $scope.userSlug = userSlug;
-  $scope.baseUrl = Page.getBaseUrl()
+  $scope.baseUrl = Page.getBaseUrl
 })
 
 
@@ -4030,7 +4030,7 @@ angular.module("services.page")
         }
      },
      getBaseUrl: function(){
-       return window.location.origin
+       return "http://" + window.location.host
      },
      'isEmbedded': function(){
        return isEmbedded
@@ -5354,7 +5354,7 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "   <p>To embed this profile, copy and paste the code snippet below into the source HTML of your page:</p>\n" +
-    "   <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&lt;/iframe&gt;</textarea>\n" +
+    "   <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&lt;/iframe&gt;</textarea>\n" +
     "</div>\n" +
     "<!--<div class=\"modal-footer\">\n" +
     "   <button class=\"btn btn-primary ok\" ng-click=\"$close()\">OK</button>\n" +
