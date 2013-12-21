@@ -227,12 +227,22 @@ def get_top_metric(metrics):
 
 def make_award_for_single_metric(metric):
     config = product_configs.award_configs
+    display_order = config[metric["engagement_type"]][1]
+    is_highly = calculate_is_highly(metric)
+
+    if metric["audience"] == "scholars":
+        display_order += 10
+
+    if is_highly:
+        display_order += 100
+
+
     return {
         "engagement_type_noun": config[metric["engagement_type"]][0],
         "engagement_type": metric["engagement_type"],
         "audience": metric["audience"],
-        "display_order": config[metric["engagement_type"]][1],
-        "is_highly": calculate_is_highly(metric),
+        "display_order": display_order,
+        "is_highly": is_highly,
         "display_audience": metric["audience"].replace("public", "the public")
     }
 

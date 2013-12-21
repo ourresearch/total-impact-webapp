@@ -54,7 +54,7 @@
 
    <div class="awards">
       <ul class="awards-list">
-         {% for award in product.awards %}
+         {% for award in product.awards | sort(reverse=True, attribute='display_order') %}
             <li class="award">
                {% if award.is_highly %}
                
