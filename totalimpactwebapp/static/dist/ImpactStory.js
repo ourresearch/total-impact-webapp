@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-16
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-21
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -1032,6 +1032,7 @@ angular.module('product.product')
    *      "mendeley:groups": {name: "mendeley:groups", audience: "scholars",...},
    *      ...
    *  }
+   *  }
    */
   var metricInfoKeys = ["name", "audience", "engagementType", "display", "minForAward"]
   var metricInfo = _.object(
@@ -1429,150 +1430,6 @@ angular.module('product.product')
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-function ItemView($) {
-
-  this.sortByMetricValueDesc = function(metric1, metric2){
-    if (typeof metric1.value != "number")
-      return 1
-    if (typeof metric2.value != "number")
-      return -1
-    if (metric1.value < metric2.value)
-      return 1;
-    if (metric1.value > metric2.value)
-      return -1;
-    return 0;
-  }
-
-
-
-  this.findBarLabelOffsets = function(start, end) {
-    var minWidth = 27
-    if (end == 100) {
-      minWidth = 32
-    }
-
-    var width = end - start
-    if (width < minWidth) {
-      var widthToAdd = width - minWidth
-      var offset = widthToAdd / 2
-    }
-    else {
-      var offset = 0
-    }
-
-    return offset
-  }
-
-  this.findBarMargins = function(CIstart, CIend) {
-    var minWidth = 7
-    var leftMargin = CIstart
-    var rightMargin = 100 - CIend
-
-    var amountLessThanMinWidth = minWidth - (CIend - CIstart)
-    if (amountLessThanMinWidth > 0) {
-      leftMargin -= amountLessThanMinWidth / 2
-      rightMargin -= amountLessThanMinWidth / 2
-    }
-
-
-    return [leftMargin, rightMargin]
-  }
-
-
-  this.renderZoom = function(awards) {
-    // first make this into a 2-D array
-    var engagementTable = {}
-    engagementTable.audiences = _.chain(awards)
-      .groupBy("audience")
-      .map(function(awards, audienceName) {
-             return {
-               audience: audienceName,
-               cells:_.sortBy(awards, function(x){ return x.displayOrder})
-             }
-           })
-      .sortBy(function(x){ return x.audience})
-      .reverse()
-      .value()
-
-    var zoom$ = $(ich.zoomTable(engagementTable, true))
-
-    var thisThing = this
-    zoom$.find("div.metric-perc-range.ci").each(function(){
-
-      // where does the bar go?
-      var ciStartValue = $(this).find("span.endpoint.start span.value").text()
-      var ciEndValue = $(this).find("span.endpoint.end span.value").text()
-
-      var offset = thisThing.findBarLabelOffsets(ciStartValue, ciEndValue)
-
-      var margins = thisThing.findBarMargins(ciStartValue, ciEndValue)
-
-      $(this).css(
-        {
-          "margin-left":margins[0]+"%",
-          "margin-right":margins[1]+"%"
-        })
-        .find("span.endpoint.start").css("left", offset+"px")
-        .end()
-        .find("span.endpoint.end").css("right", offset+"px")
-    })
-    zoom$.find("ul.metrics div.meta img").tooltip()
-    zoom$.find("ul.metrics div.metric-perc-range").tooltip()
-    return zoom$
-  }
-
-  this.renderBadges = function(awards) {
-
-    awards = _.sortBy(awards, "audience").reverse()
-    var awardsForRendering = _(awards).groupBy("isHighly")
-    var badges$ = $(ich.badges({
-                                 big: awardsForRendering["true"],
-                                 any:awardsForRendering["false"]
-                               }), true)
-    badges$.find(".ti-badge").popover({
-                                        trigger:"hover",
-                                        placement:"bottom",
-                                        html:"true"
-                                      })
-    return badges$
-  }
-
-  this.render = function(item){
-    var item$ = ich.displayItem(item)
-
-    var url = (item.aliases.url) ?  item.aliases.url[0] : false
-    var biblio$ = this.renderBiblio(item.biblio, url)
-    item$.find("div.biblio").append(biblio$)
-
-    if (item.awards.length > 0) {
-      var zoom$ = this.renderZoom(item.awards, true)
-      item$.find("div.zoom").append(zoom$)
-
-      var badges$ = this.renderBadges(item.awards)
-      item$.find("div.badges").append(badges$)
-    }
-    else {
-      item$.find("div.zoom").append(
-        "<span>We weren't able to find any impact data for this item</span>")
-      item$.addClass("no-data")
-
-    }
-
-    return item$
-  }
-}
 
 
 angular.module("profileProduct", [
@@ -4856,7 +4713,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   </ul>\n" +
     "\n" +
-    "   <h3 id=\"meaning\">what do these number actually mean?</h3> \n" +
+    "   <h3 id=\"meaning\">what do these number actually mean?</h3>\n" +
     "\n" +
     "   <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sighted: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like ImpactStory, can be found in the nascent scholarly literature on “altmetrics.”\n" +
     "\n" +
