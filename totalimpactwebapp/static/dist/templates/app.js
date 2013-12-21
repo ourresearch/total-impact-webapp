@@ -77,9 +77,9 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "         <h3>Follow</h3>\n" +
     "         <ul>\n" +
     "            <li><a href=\"http://twitter.com/#!/ImpactStory\">Twitter</a></li>\n" +
-    "            <li><a href=\"http://twitter.com/#!/ImpactStory_now\">Site status</a></li>\n" +
     "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
-    "            <li><a href=\"https://groups.google.com/forum/?fromgroups#!forum/total-impact\">Newsgroup</a></li>\n" +
+    "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen ImpactStory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Stickers!</a></li>\n" +
+    "            <li><a href=\"http://twitter.com/#!/ImpactStory_now\">Site status</a></li>\n" +
     "            <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
     "\n" +
     "         </ul>\n" +
