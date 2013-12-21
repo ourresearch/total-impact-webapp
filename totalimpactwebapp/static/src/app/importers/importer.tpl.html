@@ -64,7 +64,7 @@
                             ng-switch-when="idList"></textarea>
 
                   <!-- you can only have ONE file input per importer, otherwise namespace collision -->
-                  <input type="file" ng-switch-when="file" size="300" ng-file-select="input.inputType">
+                  <input type="file" ng-switch-when="file" ng-file-select="input.inputType">
 
                   <div class="input-extra" ng-show="input.extra" ng-bind-html-unsafe="input.extra"></div>
                </div>

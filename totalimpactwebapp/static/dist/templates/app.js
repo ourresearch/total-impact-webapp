@@ -200,7 +200,7 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "                            ng-switch-when=\"idList\"></textarea>\n" +
     "\n" +
     "                  <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
-    "                  <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +
+    "                  <input type=\"file\" ng-switch-when=\"file\" ng-file-select=\"input.inputType\">\n" +
     "\n" +
     "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
     "               </div>\n" +
@@ -353,7 +353,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   </ul>\n" +
     "\n" +
-    "   <h3 id=\"meaning\">what do these number actually mean?</h3> \n" +
+    "   <h3 id=\"meaning\">what do these number actually mean?</h3>\n" +
     "\n" +
     "   <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sighted: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like ImpactStory, can be found in the nascent scholarly literature on “altmetrics.”\n" +
     "\n" +
