@@ -6944,8 +6944,8 @@ div#selling-points ul li.middle {
   margin-right: 5%;
 }
 div#sources {
-  background: #fff;
   width: 100%;
+  background: #fff;
   float: left;
   padding: 30px 0 40px;
   border-top: 5px solid #f3f3f3;
@@ -6954,7 +6954,7 @@ div#sources {
 }
 div#sources div.wrapper {
   padding-top: 15px;
-  width: 971px;
+  width: 1000px;
   margin: 0 auto;
   background: #fff;
 }
