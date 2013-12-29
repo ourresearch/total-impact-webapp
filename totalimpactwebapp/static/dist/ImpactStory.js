@@ -1742,7 +1742,7 @@ angular.module("profile", [
 .controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
   console.log("user slug is: ", userSlug)
   $scope.userSlug = userSlug;
-  $scope.baseUrl = Page.getBaseUrl()
+  $scope.baseUrl = Page.getBaseUrl
 })
 
 
@@ -3886,7 +3886,7 @@ angular.module("services.page")
         }
      },
      getBaseUrl: function(){
-       return window.location.origin
+       return "http://" + window.location.host
      },
      'isEmbedded': function(){
        return isEmbedded
@@ -4250,7 +4250,8 @@ angular.module("tips", ['ngResource'])
     return [
       {
         id: "how_we_found_these_blog_posts",
-        msg: "We’ve imported some of your most-tweeted posts. You can click a post to remove it, or click <a href='/user/"
+        msg: "We’ve imported some of your most-tweeted posts. You can click a post to remove it, or click "
+          + "<a href='/"
           + url_slug
           + "/products/add'><i class='icon-upload'></i>import</a> to add more."
       },
@@ -4437,9 +4438,9 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "         <h3>Follow</h3>\n" +
     "         <ul>\n" +
     "            <li><a href=\"http://twitter.com/#!/ImpactStory\">Twitter</a></li>\n" +
-    "            <li><a href=\"http://twitter.com/#!/ImpactStory_now\">Site status</a></li>\n" +
     "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
-    "            <li><a href=\"https://groups.google.com/forum/?fromgroups#!forum/total-impact\">Newsgroup</a></li>\n" +
+    "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen ImpactStory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Stickers!</a></li>\n" +
+    "            <li><a href=\"http://twitter.com/#!/ImpactStory_now\">Site status</a></li>\n" +
     "            <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
     "\n" +
     "         </ul>\n" +
@@ -4560,7 +4561,7 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
     "                            ng-switch-when=\"idList\"></textarea>\n" +
     "\n" +
     "                  <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
-    "                  <input type=\"file\" ng-switch-when=\"file\" size=\"300\" ng-file-select=\"input.inputType\">\n" +
+    "                  <input type=\"file\" ng-switch-when=\"file\" ng-file-select=\"input.inputType\">\n" +
     "\n" +
     "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
     "               </div>\n" +
@@ -5223,7 +5224,7 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "   <p>To embed this profile, copy and paste the code snippet below into the source HTML of your page:</p>\n" +
-    "   <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&lt;/iframe&gt;</textarea>\n" +
+    "   <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&lt;/iframe&gt;</textarea>\n" +
     "</div>\n" +
     "<!--<div class=\"modal-footer\">\n" +
     "   <button class=\"btn btn-primary ok\" ng-click=\"$close()\">OK</button>\n" +
