@@ -1523,6 +1523,7 @@ angular.module("profile", [
   'ui.bootstrap',
   'security',
   'services.loading',
+  'services.timer',
   'tips',
   'profile.addProducts',
   'product.categoryHeading',
@@ -1633,6 +1634,7 @@ angular.module("profile", [
     i18nNotifications,
     Update,
     Loading,
+    Timer,
     Page) {
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
@@ -1643,6 +1645,12 @@ angular.module("profile", [
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
+
+      console.log(
+        "finished rendering products in "
+          + Timer.elapsed("renderProducts")
+          + "ms"
+      )
 
       // twttr is a GLOBAL VAR loaded by the twitter widget script called in
       //    bottom.js. it will break in unit tests, so fix before then.
@@ -1704,13 +1712,12 @@ angular.module("profile", [
     }
 
     var renderProducts = function(fresh){
-
+      Timer.start("getProducts")
       loadingProducts = true
       if (fresh){
         $httpDefaultCache.removeAll()
       }
 
-      console.log("rendering profile products")
       $scope.products = UsersProducts.query({
         id: userSlug,
         includeHeadingProducts: true,
@@ -1718,6 +1725,9 @@ angular.module("profile", [
         idType: "url_slug"
       },
         function(resp){
+          console.log("loaded products in " + Timer.elapsed("getProducts") + "ms")
+
+          Timer.start("renderProducts")
           loadingProducts = false
           // scroll to any hash-specified anchors on page. in a timeout because
           // must happen after page is totally rendered.
@@ -4167,6 +4177,19 @@ angular.module('services.tiAnalytics', [
 
   }
 });
+angular.module("services.timer", [])
+.factory("Timer", function(){
+    var jobs = []
+    return {
+      start: function(jobName){
+        jobs[jobName] = Date.now()
+      },
+      elapsed: function(jobName){
+        return Date.now() - jobs[jobName]
+      }
+    }
+
+  })
 angular.module("services.uservoiceWidget", [])
 angular.module("services.uservoiceWidget")
 .factory("UservoiceWidget", function(){
