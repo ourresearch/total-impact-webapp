@@ -3,6 +3,7 @@ import os
 import requests
 import json
 from totalimpactwebapp import product
+from totalimpactwebapp import heading_product
 from flask import g
 
 
@@ -19,9 +20,15 @@ def prep(products_dict, url_slug, include_headings=False):
         )
 
     if include_headings:
-        prepped_products = add_category_heading_products(prepped_products)
+        prepped_products += make_heading_products(prepped_products)
+        #prepped_products = remove_account_products(prepped_products)
 
     return prepped_products
+
+
+
+
+
 
 
 
@@ -34,7 +41,7 @@ def prep(products_dict, url_slug, include_headings=False):
 Category Heading stuff
 """
 
-def add_category_heading_products(products):
+def make_heading_products(products):
 
     categories = categorize_products(products)
 
@@ -42,43 +49,16 @@ def add_category_heading_products(products):
 
     for category_key, category_products in categories.iteritems():
 
-        heading_product = make_heading_product_for_category(
+        my_heading_product = heading_product.make_for_category(
             category_key[0],  # genre
             category_key[1],  # account
             category_products
         )
 
-        heading_products_list.append(heading_product)
+        heading_products_list.append(my_heading_product)
 
-    return heading_products_list + remove_account_products(products)
+    return heading_products_list
 
-
-def make_heading_product_for_category(genre, account, category_products):
-
-    anchor = genre
-    if account:
-        anchor += "-" + re.sub(r"[^\w]", r"-", account)
-
-    anchor = anchor.replace("--", "-")
-
-    heading_product = {
-        'isHeading': True,
-        '_id': anchor,
-        'genre': genre,
-        'account': account,
-        'headingDimension': 'category',
-        'summary':{
-            'numProducts': len(category_products)
-        },
-    }
-
-    # extract relevant info from the account product
-    for product in category_products:
-        if "is_account" in product["biblio"].keys():
-            heading_product["metrics"] = product["metrics"]
-            heading_product["account_biblio"] = product["biblio"]
-
-    return heading_product
 
 
 def remove_account_products(products):
@@ -107,6 +87,10 @@ def categorize_products(products):
         categories.setdefault((genre, account), []).append(product)
 
     return categories
+
+
+
+
 
 
 

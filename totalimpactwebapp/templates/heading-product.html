@@ -1,9 +1,52 @@
-<!DOCTYPE html>
-<html>
-<head>
-   <title></title>
-</head>
-<body>
+<div class="category-heading {{ product.headingDimension }} {{ product.headingValue }}"
+    id="{{ product.headingValue }}"
+    ng-controller="CategoryHeadingCtrl"
+    ng-if="product.isHeading">
 
-</body>
-</html>
+   <div class="category-heading-main">
+      <h2>
+         <span class="genre-and-icons">
+            <a class="genre-anchor"
+               ng-href="{{ makeAnchorLink(product._id) }}">
+               <span class="text">permalink</span>
+               <i class="icon-link"></i>
+            </a>
+            <i class="{{ genreIcon(product.genre) }} {{ product.genre }} genre"></i>
+            <span class="genre">{{ product.genre }}</span>
+         </span>
+         <a class="account" ng-if="product.account && getUrl()" ng-href="{{ getUrl() }}">
+            {{ product.account }}
+            <i class="icon-external-link-sign"></i>
+         </a>
+         <span class="account" ng-if="product.account && !getUrl()">{{ product.account }}</span>
+      </h2>
+      <div class="clearfix"></div>
+
+      <div class="category-metrics">
+         <ul class="account-metrics">
+            <li class="category-metric"
+                ng-repeat="metric in product.metrics">
+
+               <a href="{{ metric.provenance_url }}"
+                  target="_blank"
+                  tooltip="Visit {{ metric.static_meta.provider }} for more information"
+                  tooltip-placement="bottom"
+                  class="value">
+                  {{ metric.values.raw }}
+               </a>
+               <span class="metric-descr"
+                     tooltip-placement="bottom"
+                     tooltip="{{ metric.static_meta.description }}">
+                  {{ metric.static_meta.display_name }}
+               </span>
+             </li>
+         </ul>
+         <ul class="summary-metrics"><!-- fill this later--></ul>
+      </div>
+   </div>
+   <div class="category-heading-tips">
+      <tip key="how_we_found_these" />
+      <tip key="upload_wordpress_key()" />
+   </div>
+
+</div>
