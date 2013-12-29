@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-21
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-29
  * http://impactstory.org
  * Copyright (c) 2013 ImpactStory;
  * Licensed MIT
@@ -4381,7 +4381,8 @@ angular.module("tips", ['ngResource'])
     return [
       {
         id: "how_we_found_these_blog_posts",
-        msg: "We’ve imported some of your most-tweeted posts. You can click a post to remove it, or click <a href='/user/"
+        msg: "We’ve imported some of your most-tweeted posts. You can click a post to remove it, or click "
+          + "<a href='/"
           + url_slug
           + "/products/add'><i class='icon-upload'></i>import</a> to add more."
       },
