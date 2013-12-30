@@ -5,12 +5,12 @@ from totalimpactwebapp import product_configs
 
 
 
-def prep_product(product, url_slug):
+def prep_product(product):
 
     product["biblio"] = make_biblio(product)
     product["metrics"] = make_metrics(product)
     product["awards"] = make_awards(product)
-    product["markup"] = make_markup(product, url_slug)
+    product["markup"] = make_markup(product)
     product = add_sort_keys(product)
 
     return product
@@ -331,10 +331,9 @@ def sum_metric_raw_values(product):
 Markup stuff
 """
 
-def make_markup(product_dict, url_slug):
+def make_markup(product_dict):
     return render_template(
         "product.html",
-        url_slug=url_slug,
         product=product_dict
     )
 

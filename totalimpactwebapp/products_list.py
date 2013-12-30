@@ -10,13 +10,13 @@ from flask import g
 
 
 
-def prep(products_dict, url_slug, include_headings=False):
+def prep(products_dict, include_headings=False):
 
     prepped_products = []
 
     for product_dict in products_dict:
         prepped_products.append(
-            product.prep_product(product_dict, url_slug)
+            product.prep_product(product_dict)
         )
 
     if include_headings:

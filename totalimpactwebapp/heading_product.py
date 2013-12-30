@@ -16,6 +16,7 @@ def make_for_category(genre, account, category_products):
     heading_product = {
         'isHeading': True,
         '_id': anchor,
+        'anchor': anchor,
         'genre': genre,
         'icon': product_configs.genre_icons[genre],
         'account': account,

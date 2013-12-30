@@ -1,9 +1,9 @@
-<div class="category-heading {{ product.headingDimension }}" id="{{ product.headingValue }}">
+<div class="category-heading {{ product.headingDimension }}" id="{{ product.anchor }}">
 
    <div class="category-heading-main">
       <h2>
          <span class="genre-and-icons">
-            <a class="genre-anchor" href="http://google.com">
+            <a class="genre-anchor" href="{{ g.profile_slug }}#{{ product.anchor }}">
                <span class="text">permalink</span>
                <i class="icon-link"></i>
             </a>
@@ -13,7 +13,7 @@
          {% if product.account %}
 
             {% if product.account_url %}
-               <a class="account" href="http://google.com">
+               <a class="account" href="{{ product.account_url }}">
                   {{ product.account }}
                   <i class="icon-external-link-sign"></i>
                </a>

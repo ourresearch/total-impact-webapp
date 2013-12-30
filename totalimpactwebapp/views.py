@@ -113,8 +113,9 @@ def get_user_for_response(id, request, include_products=True):
         logged_in = False
 
     retrieved_user = get_user_from_id(id, id_type, logged_in, include_products)
+    g.profile_slug = retrieved_user.url_slug
     if include_products:
-        local_sleep(2)
+        local_sleep(1)
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -376,7 +377,6 @@ def user_products_get(id):
         include_headings = request.args.get("include_heading_products") in [1, "true", "True"]
         resp = products_list.prep(
             user.products,
-            user.url_slug,
             include_headings
         )
 
