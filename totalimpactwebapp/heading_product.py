@@ -1,5 +1,7 @@
 import re
 from flask import render_template
+from totalimpactwebapp import product_configs
+
 
 
 
@@ -15,6 +17,7 @@ def make_for_category(genre, account, category_products):
         'isHeading': True,
         '_id': anchor,
         'genre': genre,
+        'icon': product_configs.genre_icons[genre],
         'account': account,
         'headingDimension': 'category',
         'summary': {

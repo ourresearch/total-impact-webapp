@@ -18,6 +18,27 @@ award_configs = {
 
 
 """
+Genre icons
+"""
+genre_icons = {
+    'article': "icon-file-text-alt",
+    'blog': "icon-comments",
+    'dataset': "icon-table",
+    'figure': "icon-bar-chart",
+    'poster': "icon-picture",
+    'slides': "icon-desktop",
+    'software': "icon-save",
+    'twitter': "icon-twitter",
+    'video': "icon-facetime-video",
+    'webpage': "icon-globe",
+    'other': "icon-question-sign",
+    'unknown': "icon-question-sign"
+}
+
+
+
+
+"""
 Metric Configs
 """
 
