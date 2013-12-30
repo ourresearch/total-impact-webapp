@@ -8510,27 +8510,27 @@ div.password-reset form.password-reset div.new-password div.show-password {
 div.password-reset form.password-reset div.submit {
   text-align: center;
 }
-.product.heading {
+.product-container.heading {
   margin-top: 130px;
 }
-.product.heading.first {
+.product-container.heading.first {
   margin-top: 30px;
 }
-.product.heading.blog .category-heading {
+.product-container.heading.blog .category-heading {
   width: 99%;
 }
-.product.heading.blog .category-heading div.category-metrics {
+.product-container.heading.blog .category-heading div.category-metrics {
   right: -15px;
 }
-.product.heading div.category-heading {
+.product-container.heading div.category-heading {
   width: 95%;
   padding-bottom: 5px;
   border-bottom: 1px solid #eee;
 }
-.product.heading div.category-heading div.category-heading-main {
+.product-container.heading div.category-heading div.category-heading-main {
   position: relative;
 }
-.product.heading div.category-heading div.category-heading-main h2 {
+.product-container.heading div.category-heading div.category-heading-main h2 {
   clear: both;
   margin: 0 0 0 -23px;
   font-weight: 900;
@@ -8539,8 +8539,8 @@ div.password-reset form.password-reset div.submit {
   color: #555;
   float: left;
 }
-.product.heading div.category-heading div.category-heading-main h2:before,
-.product.heading div.category-heading div.category-heading-main h2:after {
+.product-container.heading div.category-heading div.category-heading-main h2:before,
+.product-container.heading div.category-heading div.category-heading-main h2:after {
   content: " ";
   /* 1 */
 
@@ -8548,11 +8548,11 @@ div.password-reset form.password-reset div.submit {
   /* 2 */
 
 }
-.product.heading div.category-heading div.category-heading-main h2:after {
+.product-container.heading div.category-heading div.category-heading-main h2:after {
   clear: both;
 }
-.product.heading div.category-heading div.category-heading-main h2:before,
-.product.heading div.category-heading div.category-heading-main h2:after {
+.product-container.heading div.category-heading div.category-heading-main h2:before,
+.product-container.heading div.category-heading div.category-heading-main h2:after {
   content: " ";
   /* 1 */
 
@@ -8560,27 +8560,27 @@ div.password-reset form.password-reset div.submit {
   /* 2 */
 
 }
-.product.heading div.category-heading div.category-heading-main h2:after {
+.product-container.heading div.category-heading div.category-heading-main h2:after {
   clear: both;
 }
-.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons i {
+.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons i {
   vertical-align: 2px;
   margin-right: 4px;
   font-size: 90%;
   text-align: right;
 }
-.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons:hover a.genre-anchor {
+.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons:hover a.genre-anchor {
   color: #ff4e00;
 }
-.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor {
+.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor {
   color: #cccccc;
   position: relative;
 }
-.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor i.icon-link {
+.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor i.icon-link {
   font-size: 16px;
   margin: 0 2px 0 0;
 }
-.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor span.text {
+.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor span.text {
   width: 80px;
   margin-left: -86px;
   padding: 5px 2px 0;
@@ -8591,59 +8591,59 @@ div.password-reset form.password-reset div.submit {
   text-transform: lowercase;
   text-align: right;
 }
-.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor:hover span.text {
+.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor:hover span.text {
   display: inline-block;
 }
-.product.heading div.category-heading div.category-heading-main h2 .account {
+.product-container.heading div.category-heading div.category-heading-main h2 .account {
   font-weight: 300;
   margin-left: .2em;
   text-transform: lowercase;
   color: #555;
 }
-.product.heading div.category-heading div.category-heading-main h2 a.account i {
+.product-container.heading div.category-heading div.category-heading-main h2 a.account i {
   display: none;
   font-size: 50%;
   vertical-align: top;
 }
-.product.heading div.category-heading div.category-heading-main h2 a.account:hover {
+.product-container.heading div.category-heading div.category-heading-main h2 a.account:hover {
   color: #ff4e00;
 }
-.product.heading div.category-heading div.category-heading-main h2 a.account:hover i {
+.product-container.heading div.category-heading div.category-heading-main h2 a.account:hover i {
   display: inline;
 }
-.product.heading div.category-heading div.category-heading-main div.category-metrics {
+.product-container.heading div.category-heading div.category-heading-main div.category-metrics {
   margin-top: 10px;
   text-align: right;
   position: absolute;
   bottom: 0;
   right: 0px;
 }
-.product.heading div.category-heading div.category-heading-main div.category-metrics ul li.category-metric {
+.product-container.heading div.category-heading div.category-heading-main div.category-metrics ul li.category-metric {
   display: inline-block;
   margin-right: 20px;
 }
-.product.heading div.category-heading div.category-heading-main div.category-metrics ul li.category-metric .metric-descr {
+.product-container.heading div.category-heading div.category-heading-main div.category-metrics ul li.category-metric .metric-descr {
   font-size: 80%;
   cursor: help;
 }
-.product.heading div.category-heading div.category-heading-tips .alert {
+.product-container.heading div.category-heading div.category-heading-tips .alert {
   margin: 5px 0 0;
   padding: 15px 20px;
   font-size: 17px;
   text-align: center;
   font-weight: 300;
 }
-.product.heading div.category-heading div.category-heading-tips .alert a {
+.product-container.heading div.category-heading div.category-heading-tips .alert a {
   font-weight: 900;
   margin: 0 2px;
 }
-.product.heading div.category-heading div.category-heading-tips .alert a:hover {
+.product-container.heading div.category-heading div.category-heading-tips .alert a:hover {
   text-decoration: underline;
   color: #fff;
 }
-.product.heading div.category-heading div.category-heading-tips .alert a:hover i {
+.product-container.heading div.category-heading div.category-heading-tips .alert a:hover i {
   text-decoration: none;
 }
-.product.heading div.category-heading div.category-heading-tips .alert a i {
+.product-container.heading div.category-heading div.category-heading-tips .alert a i {
   margin-right: 2px;
 }

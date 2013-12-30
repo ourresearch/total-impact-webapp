@@ -1,4 +1,6 @@
 import re
+from flask import render_template
+
 
 
 def make_for_category(genre, account, category_products):
@@ -20,13 +22,19 @@ def make_for_category(genre, account, category_products):
         }
     }
 
-    heading_product["markup"] = make_markup(heading_product)
-
     # extract relevant info from the account product
     for product in category_products:
         if "is_account" in product["biblio"].keys():
             heading_product["metrics"] = product["metrics"]
             heading_product["account_biblio"] = product["biblio"]
+
+    try:
+        heading_product["account_url"] = heading_product["account_biblio"]["url"]
+    except KeyError:
+        heading_product["account_url"] = None
+
+    heading_product["markup"] = make_markup(heading_product)
+
 
     return heading_product
 
@@ -36,4 +44,7 @@ def make_for_category(genre, account, category_products):
 
 
 def make_markup(heading_product):
-    return "<h1>heading!</h1>"
+    return render_template(
+        "heading-product.html",
+        product=heading_product
+    )
