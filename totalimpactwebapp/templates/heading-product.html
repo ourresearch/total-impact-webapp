@@ -25,27 +25,32 @@
       </h2>
       <div class="clearfix"></div>
 
-{#      <div class="category-metrics">#}
-{#         <ul class="account-metrics">#}
-{#            <li class="category-metric"#}
-{#                ng-repeat="metric in product.metrics">#}
-{##}
-{#               <a href="{{ metric.provenance_url }}"#}
-{#                  target="_blank"#}
-{#                  tooltip="Visit {{ metric.static_meta.provider }} for more information"#}
-{#                  tooltip-placement="bottom"#}
-{#                  class="value">#}
-{#                  {{ metric.values.raw }}#}
-{#               </a>#}
-{#               <span class="metric-descr"#}
-{#                     tooltip-placement="bottom"#}
-{#                     tooltip="{{ metric.static_meta.description }}">#}
-{#                  {{ metric.static_meta.display_name }}#}
-{#               </span>#}
-{#             </li>#}
-{#         </ul>#}
-{#         <ul class="summary-metrics"><!-- fill this later--></ul>#}
-{#      </div>#}
+      <div class="category-metrics">
+         <ul class="account-metrics">
+
+            {% for metric in product.metrics %}
+
+            <li class="category-metric">
+
+               <a href="{{ metric.provenance_url }}"
+                  target="_blank"
+                  data-toggle="tooltip"
+                  title="Visit {{ metric.static_meta.provider }} for more information"
+                  class="value">
+                  {{ metric.display_count }}
+               </a>
+               <span class="metric-descr"
+                     data-toggle="tooltip"
+                     title="{{ metric.static_meta.description }}">
+                  {{ metric.static_meta.display_name }}
+               </span>
+             </li>
+
+            {% endfor %}
+
+         </ul>
+         <ul class="summary-metrics"><!-- fill this later--></ul>
+      </div>
 
    </div>
 

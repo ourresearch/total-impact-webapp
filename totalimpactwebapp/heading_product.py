@@ -22,11 +22,12 @@ def make_for_category(genre, account, category_products):
         }
     }
 
-    # extract relevant info from the account product
+    # extract relevant info from the account product, if there is one.
     for product in category_products:
         if "is_account" in product["biblio"].keys():
-            heading_product["metrics"] = product["metrics"]
+            heading_product["metrics"] = product["metrics"].values()
             heading_product["account_biblio"] = product["biblio"]
+            break
 
     try:
         heading_product["account_url"] = heading_product["account_biblio"]["url"]
@@ -34,7 +35,6 @@ def make_for_category(genre, account, category_products):
         heading_product["account_url"] = None
 
     heading_product["markup"] = make_markup(heading_product)
-
 
     return heading_product
 

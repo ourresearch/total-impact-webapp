@@ -1517,7 +1517,7 @@ angular.module("profileProduct", [
 angular.module("profile", [
   'resources.users',
   'product.product',
-  'directives.jQueryPopover',
+  'directives.jQueryTools',
   'services.page',
   'update.update',
   'ui.bootstrap',
@@ -1655,6 +1655,7 @@ angular.module("profile", [
       // twttr is a GLOBAL VAR loaded by the twitter widget script called in
       //    bottom.js. it will break in unit tests, so fix before then.
         twttr.widgets.load()
+
     });
 
 
@@ -2669,18 +2670,32 @@ angular.module('directives.gravatar', [])
 
   return md5;
 });
-angular.module("directives.jQueryPopover", [])
+// only have to use this once per page. could be on the main view i think?
+
+angular.module("directives.jQueryTools", [])
   .directive('jqPopover', function () {
-    console.log("jq-popovers loading")
     return {
       restrict: 'A',
       link: function (scope, element, attr) {
-        console.log("popovers!")
 
         scope.$on("ngRepeatFinished", function(){
           $("[data-content]").popover({
             html:true,
             trigger:'hover',
+            placement:'bottom'
+          })
+        })
+      }
+    }
+  })
+
+  .directive('jqPopover', function () {
+    return {
+      restrict: 'A',
+      link: function (scope, element, attr) {
+
+        scope.$on("ngRepeatFinished", function(){
+          $("[data-toggle='tooltip']").tooltip({
             placement:'bottom'
           })
         })
@@ -5356,7 +5371,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"products\" ng-show=\"userExists\" jq-popover>\n" +
+    "<div class=\"products\" ng-show=\"userExists\" jq-popover jq-tooltip>\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"loading\" ng-show=\"loadingProducts()\">\n" +
     "         <div class=\"working products-loading\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading products...</span></div>\n" +
