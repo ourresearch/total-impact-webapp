@@ -14,7 +14,7 @@ def make_for_category(genre, account, category_products):
     anchor = anchor.replace("--", "-")
 
     heading_product = {
-        'isHeading': True,
+        'is_heading': True,
         '_id': anchor,
         'anchor': anchor,
         'genre': genre,

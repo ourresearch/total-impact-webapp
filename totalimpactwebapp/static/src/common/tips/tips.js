@@ -109,6 +109,7 @@ angular.module("tips", ['ngResource'])
     return {
       templateUrl: 'tips/tip.tpl.html',
       restrict: 'E',
+      transclude: true,
       scope: {
         key: "=key" // linked to attr, evaluated in parent scope
       },
@@ -119,6 +120,7 @@ angular.module("tips", ['ngResource'])
         }
 
         scope.getMsg = function(){
+          console.log("getting message")
           return TipsService.get(scope.key, 'msg')
         }
 

@@ -10,7 +10,6 @@ angular.module("profile", [
   'services.timer',
   'tips',
   'profile.addProducts',
-  'product.categoryHeading',
   'services.i18nNotifications'
 ])
 
@@ -114,7 +113,6 @@ angular.module("profile", [
     UsersProducts,
     Product,
     UserProfile,
-    CategoryHeading,
     i18nNotifications,
     Update,
     Loading,

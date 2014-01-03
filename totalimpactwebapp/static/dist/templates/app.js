@@ -1,60 +1,4 @@
-angular.module('templates.app', ['category-heading/category-heading.tpl.html', 'footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
-
-angular.module("category-heading/category-heading.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("category-heading/category-heading.tpl.html",
-    "<div class=\"category-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
-    "    id=\"{{ product.headingValue }}\"\n" +
-    "    ng-controller=\"CategoryHeadingCtrl\"\n" +
-    "    ng-if=\"product.isHeading\">\n" +
-    "\n" +
-    "   <div class=\"category-heading-main\">\n" +
-    "      <h2>\n" +
-    "         <span class=\"genre-and-icons\">\n" +
-    "            <a class=\"genre-anchor\"\n" +
-    "               ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
-    "               <span class=\"text\">permalink</span>\n" +
-    "               <i class=\"icon-link\"></i>\n" +
-    "            </a>\n" +
-    "            <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
-    "            <span class=\"genre\">{{ product.genre }}</span>\n" +
-    "         </span>\n" +
-    "         <a class=\"account\" ng-if=\"product.account && getUrl()\" ng-href=\"{{ getUrl() }}\">\n" +
-    "            {{ product.account }}\n" +
-    "            <i class=\"icon-external-link-sign\"></i>\n" +
-    "         </a>\n" +
-    "         <span class=\"account\" ng-if=\"product.account && !getUrl()\">{{ product.account }}</span>\n" +
-    "      </h2>\n" +
-    "      <div class=\"clearfix\"></div>\n" +
-    "\n" +
-    "      <div class=\"category-metrics\">\n" +
-    "         <ul class=\"account-metrics\">\n" +
-    "            <li class=\"category-metric\"\n" +
-    "                ng-repeat=\"metric in product.metrics\">\n" +
-    "\n" +
-    "               <a href=\"{{ metric.provenance_url }}\"\n" +
-    "                  target=\"_blank\"\n" +
-    "                  tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
-    "                  tooltip-placement=\"bottom\"\n" +
-    "                  class=\"value\">\n" +
-    "                  {{ metric.values.raw }}\n" +
-    "               </a>\n" +
-    "               <span class=\"metric-descr\"\n" +
-    "                     tooltip-placement=\"bottom\"\n" +
-    "                     tooltip=\"{{ metric.static_meta.description }}\">\n" +
-    "                  {{ metric.static_meta.display_name }}\n" +
-    "               </span>\n" +
-    "             </li>\n" +
-    "         </ul>\n" +
-    "         <ul class=\"summary-metrics\"><!-- fill this later--></ul>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "   <div class=\"category-heading-tips\">\n" +
-    "      <tip key=\"how_we_found_these\" />\n" +
-    "      <tip key=\"upload_wordpress_key()\" />\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>");
-}]);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -641,73 +585,6 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
     "</div>");
 }]);
 
-angular.module("product/badges.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product/badges.tpl.html",
-    "<ul class=\"ti-badges\">\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "   <li ng-repeat=\"award in awards | orderBy:['!isHighly', 'displayOrder']\" class=\"award\">\n" +
-    "\n" +
-    "      <a href=\"{{ getProductPageUrl() }}\"\n" +
-    "            class=\"ti-badge lil-badge {{award.audience}} {{award.engagementType}}\"\n" +
-    "            ng-show=\"!award.isHighly\"\n" +
-    "            data-original-title=\"{{award.engagementType}} by <span class='{{award.displayAudience}}'>{{award.displayAudience}}</span>\"\n" +
-    "            data-content=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
-    "            {{award.topMetric.displayInteraction}}, suggesting it's been\n" +
-    "            {{award.engagementType}} by {{award.displayAudience}}.\n" +
-    "            Click to learn more.\">\n" +
-    "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
-    "         <span class=\"audience\">by {{award.audience}}</span>\n" +
-    "       </a>\n" +
-    "\n" +
-    "      <a href=\"{{ getProductPageUrl() }}\"\n" +
-    "            class=\"ti-badge big-badge {{award.audience}} {{award.engagementType}}\"\n" +
-    "            ng-show=\"award.isHighly\"\n" +
-    "            data-original-title=\"Highly {{award.engagementType}} by <span class='{{award.displayAudience}}'>{{award.displayAudience}}</span>\"\n" +
-    "            data-content=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
-    "            {{award.topMetric.displayInteraction}}. That's better than\n" +
-    "            {{award.topMetric.percentiles.CI95_lower}}% of items\n" +
-    "            {{award.topMetric.referenceSetStorageVerb}} {{award.topMetric.refSet}} in {{award.topMetric.referenceSetYear}},\n" +
-    "            suggesting it's highly {{award.engagementType}} by {{award.displayAudience }}.\n" +
-    "            Click to learn more.\">\n" +
-    "\n" +
-    "         <span class=\"modifier\">highly</span>\n" +
-    "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
-    "         <span class=\"audience\">by {{award.audience}}</span>\n" +
-    "      </a>\n" +
-    "\n" +
-    "      <span class=\"metrics\">\n" +
-    "         <img ng-repeat=\"metric in award.metrics\" ng-src=\"{{ metric.static_meta.icon }}\">\n" +
-    "      </span>\n" +
-    "\n" +
-    "   </li>\n" +
-    "</ul>");
-}]);
-
-angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product/biblio.tpl.html",
-    "<h5 class=\"title\" xmlns=\"http://www.w3.org/1999/html\">\n" +
-    "   <a ng-if=\"page.isEmbedded()\" target=\"_blank\" class=\"title-text\" href=\"{{ getProductPageUrl() }}\">{{biblio.title}}</a>\n" +
-    "   <a ng-if=\"!page.isEmbedded()\" class=\"title-text\" href=\"{{ getProductPageUrl() }}\">{{biblio.title}}</a>\n" +
-    "\n" +
-    "   <a ng-if=\"biblio.url\" class=\"linkout url title\" target=\"_blank\" href=\"{{ biblio.url }}\">\n" +
-    "      <i class=\"icon-external-link-sign\"></i>\n" +
-    "   </a>\n" +
-    "</h5>\n" +
-    "<div class=\"optional-biblio\">\n" +
-    "   <span ng-if=\"biblio.year\" class=\"year\">({{ biblio.year }})</span>\n" +
-    "   <span ng-if=\"biblio.authors && !biblio.embed\" class=\"authors\">{{ biblio.authors }}.</span>\n" +
-    "   <span ng-if=\"biblio.repository && !biblio.embed\" class=\"repository\">{{ biblio.repository }}.</span>\n" +
-    "   <span ng-if=\"biblio.journal\" class=\"journal\">{{ biblio.journal }}</span>\n" +
-    "   <span ng-if=\"biblio.description\" class=\"description\">{{ biblio.description }}</span>\n" +
-    "   <span ng-if=\"biblio.embed\" class=\"embed\" ng-bind-html-unsafe=\"biblio.embed\"></span>\n" +
-    "\n" +
-    "</div>\n" +
-    "");
-}]);
-
 angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product/metrics-table.tpl.html",
     "<ul class=\"metric-details-list\">\n" +
@@ -980,13 +857,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product-container {{ product.genre }}\"\n" +
-    "             ng-class=\"{'heading': product.isHeading, 'real-product': !product.isHeading, first: $first}\"\n" +
-    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'isHeading', getSortScore, getMetricSum]\"\n" +
+    "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
+    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', 'metric_raw_sum']\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
-    "             ng-show=\"hasMetrics() || showProductsWithoutMetrics || product.isHeading\"\n" +
+    "             ng-show=\"product.has_metrics || showProductsWithoutMetrics || product.is_heading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
     "             ng-bind-html-unsafe=\"product.markup\"\n" +
     "             on-repeat-finished>\n" +
+    "\n" +
+    "\n" +
+    "            <h1>i'm inside a product li !</h1>\n" +
     "\n" +
     "\n" +
     "         </li>\n" +

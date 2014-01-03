@@ -1,6 +1,6 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2013-12-30
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-02
  * http://impactstory.org
- * Copyright (c) 2013 ImpactStory;
+ * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
  */
 // setup libs outside angular-land. this may break some unit tests at some point...#problemForLater
@@ -124,71 +124,6 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
     return httpRequestTracker.hasPendingRequests();
   };
 }]);
-
-angular.module('product.categoryHeading', ["security"])
-  .factory("CategoryHeading", function(){
-
-    var genreIcons = {
-      article: "icon-file-text-alt",
-      blog: "icon-comments",
-      dataset: "icon-table",
-      figure: "icon-bar-chart",
-      poster: "icon-picture",
-      slides: "icon-desktop",
-      software: "icon-save",
-      twitter: "icon-twitter",
-      video: "icon-facetime-video",
-      webpage: "icon-globe",
-      other: "icon-question-sign"
-    }
-
-    return {
-      getGenreIcon: function(genre){
-        if (genre in genreIcons){
-          return genreIcons[genre]
-        }
-        else {
-          return genreIcons.other
-        }
-      }
-    }
-
-  })
-.controller("CategoryHeadingCtrl", function($scope, CategoryHeading, $location, security){
-    $scope.genreIcon = CategoryHeading.getGenreIcon
-    $scope.makeAnchorLink = function(anchor){
-      return $location.path() + "#" + anchor
-    }
-
-    $scope.getUrl= function(){
-      if ($scope.product.account_biblio) {
-        return $scope.product.account_biblio.url
-      }
-      else {
-        return false
-      }
-    }
-
-    if ($scope.product.genre == "blog"){
-      $scope.how_we_found_these = "how_we_found_these_blog_posts"
-    }
-
-    if ($scope.product.genre == "twitter"){
-      $scope.how_we_found_these = "how_we_found_these_tweets"
-    }
-
-
-    $scope.upload_wordpress_key = function(){
-      var wpHeading =  ($scope.product.account_biblio && $scope.product.account_biblio.hosting_platform == "wordpress.com")
-      var wpKeySet = security.getCurrentUser("wordpress_api_key")
-      if (wpHeading && !wpKeySet){
-        return "upload_wordpress_key"
-      }
-      else {
-        return null
-      }
-    }
-})
 
 angular.module('importers.allTheImporters', [
   'importers.importer'
@@ -933,480 +868,42 @@ angular.module('passwordReset', [
     $location.path("/")
   }
 })
-angular.module('product.award', []);
-angular.module('product.award').factory('Award', function() {
-
-  return {
-
-    // [noun_form, display_order]
-    config: {
-      "viewed":["views", 1],
-      "discussed": ["discussion", 2],
-      "saved": ["saves", 3],
-      "cited": ["citation", 4],
-      "recommended": ["recommendation", 5]
-    }
-
-
-    ,make: function(audience, engagementType, metrics){
-
-      return {
-        engagementTypeNoun: this.config[engagementType][0]
-        ,engagementType: engagementType
-        ,audience: audience
-        ,displayOrder: this.config[engagementType][1]
-        ,topMetric: this.getTopMetric(metrics)
-        ,isHighly: this.calculateIsHighly(metrics)
-        ,displayAudience: audience.replace("public", "the public")
-        ,metrics: metrics
-      }
-    }
-
-    ,makeForSingleMetric: function(audience, engagementType, metric){
-      return {
-        engagementTypeNoun: this.config[engagementType][0]
-        ,engagementType: engagementType
-        ,audience: audience
-        ,displayOrder: this.config[engagementType][1]
-        ,isHighly: this.calculateIsHighly([metric])
-        ,displayAudience: audience.replace("public", "the public")
-      }
-
-    }
-
-
-    ,calculateIsHighly: function(metrics){
-
-      return _.some(metrics, function(metric){
-        if (typeof metric.percentiles === "undefined") {
-          return false
-        }
-        else if (metric.percentiles.CI95_lower >= 75 && metric.actualCount >= metric.minForAward) {
-          return true
-        }
-        else {
-          return false
-        }
-      })
-    }
-
-
-    ,getTopMetric: function(metrics) {
-      // sort by CI95, then by the raw count if CI95 is tied
-
-      var maxCount = _.max(metrics, function(x) {
-        return x.actualCount;
-      }).actualCount;
-
-      var topMetric = _.max(metrics, function(x){
-
-        var rawCountContribution =  (x.actualCount / maxCount - .0001) // always < 1
-        if (typeof x.percentiles == "undefined") {
-          return rawCountContribution;
-        }
-        else {
-          return x.percentiles.CI95_lower + rawCountContribution;
-        }
-      });
-
-      return topMetric
-    }
-  }
-});
-
-angular.module('product.product', ['product.award'])
+angular.module('product.product', ["tips"])
 angular.module('product.product')
 
 
 
-  .factory('Product', function(Award) {
-
-
-  var itemOmitUndefinedv = function(obj) { return _.omit(obj, "undefined")}
-
-
-  /* the metricInfo keys are mapped to the metricInfo array to save space;
-   *  the finished dict looks like this:
-   *  {
-   *      "topsy:tweets": {name: "topsy:tweets", audience: "public", ... },
-   *      "mendeley:groups": {name: "mendeley:groups", audience: "scholars",...},
-   *      ...
-   *  }
-   *  }
-   */
-  var metricInfoKeys = ["name", "audience", "engagementType", "display", "minForAward"]
-  var metricInfo = _.object(
-    _.map([
-            ["citeulike:bookmarks", "scholars", "saved", "badge", 3],
-            ["crossref:citations", "scholars", "cited", "badge", 3],
-            ["delicious:bookmarks", "public", "saved", "badge", 3],
-            ["dryad:most_downloaded_file"],
-            ["dryad:package_views", "scholars", "viewed", "badge", 3],
-            ["dryad:total_downloads", "scholars", "viewed", "badge", 3],
-            ["figshare:views", "scholars", "viewed", "badge", 3],
-            ["figshare:downloads", "scholars", "viewed", "badge", 3],
-            ["figshare:shares", "scholars", "discussed", "badge", 3],
-            ["facebook:shares", "public", "discussed", "badge", 3],
-            ["facebook:comments", "public", "discussed", "badge", 3],
-            ["facebook:likes", "public", "discussed", "badge", 3],
-            ["facebook:clicks", "public", "discussed", "badge", 3],
-            ["github:forks", "public", "cited", "badge", 3],
-            ["github:stars", "public", "recommended", "badge", 3],
-            ["github:watchers", "public", "saved", "badge", 3],  // depricate this later
-            ["mendeley:career_stage"],
-            ["mendeley:country"],
-            ["mendeley:discipline"],
-            ["mendeley:student_readers"], // display later
-            ["mendeley:developing_countries"], // display later
-            ["mendeley:groups"],
-            ["mendeley:readers", "scholars", "saved", "badge", 3],
-            ["pmc:pdf_downloads"],
-            ["pmc:abstract_views"],
-            ["pmc:fulltext_views"],
-            ["pmc:unique_ip_views"],
-            ["pmc:figure_views"],
-            ["pmc:suppdata_views"],
-            ["plosalm:crossref" ],                    // figure it out
-            ["plosalm:html_views", "public", "viewed", "badge", 3],
-            ["plosalm:pdf_views", "scholars", "viewed", "badge", 3],
-            ["plosalm:pmc_abstract"],
-            ["plosalm:pmc_figure"],
-            ["plosalm:pmc_full-text"],
-            ["plosalm:pmc_pdf"],
-            ["plosalm:pmc_supp-data"],
-            ["plosalm:pmc_unique-ip"],
-            ["plosalm:pubmed_central"],
-            ["plosalm:scopus"],                      // figure it out
-            ["plossearch:mentions", "scholars", "cited", "badge", 3],
-            ["pubmed:f1000", "scholars", "recommended", "badge", 1],
-            ["pubmed:pmc_citations", "scholars", "cited", "badge", 3],
-            ["pubmed:pmc_citations_editorials"],
-            ["pubmed:pmc_citations_reviews"],
-            ["scienceseeker:blog_posts", "scholars", "discussed", "badge", 3],
-            ["scopus:citations", "scholars", "cited", "badge", 3],
-            ["researchblogging:blogs", "scholars", "discussed"],
-            ["slideshare:comments", "public", "discussed", "badge", 3],
-            ["slideshare:downloads", "public", "viewed", "badge", 3],
-            ["slideshare:favorites", "public", "recommended", "badge", 3],
-            ["slideshare:views", "public", "viewed", "badge", 3],
-            ["topsy:influential_tweets", "public", "discussed", "zoom", 0],
-            ["topsy:tweets", "public", "discussed", "badge", 3],
-            ["twitter_account:followers", "public", "recommended", "badge", 3],
-            ["twitter_account:lists", "public", "saved", "badge", 3],            
-            ["vimeo:plays", "public", "viewed", "badge", 3],
-            ["vimeo:likes", "public", "recommended", "badge", 3],
-            ["vimeo:comments", "public", "discussed", "badge", 3],
-            ["wikipedia:mentions", "public", "cited", "badge", 3],            
-            ["wordpresscom:comments", "public", "discussed", "badge", 3],
-            ["wordpresscom:subscribers", "public", "viewed", "badge", 3],
-            ["wordpresscom:views", "public", "viewed", "badge", 3],
-            ["youtube:likes", "public", "recommended", "badge", 3],
-            ["youtube:dislikes", "public", "discussed", "badge", 3],
-            ["youtube:favorites", "public", "saved", "badge", 3],
-            ["youtube:comments", "public", "discussed", "badge", 3],
-            ["youtube:views", "public", "viewed", "badge", 3]
-          ],
-          function(metric){ // second arg in map() call
-            return[ metric[0], _.object(metricInfoKeys, metric )]
-          })
-  )
-
-
-
-
-
-
-  return {
-
-    makeMetrics: function(itemData){
-      var metrics = itemData.metrics
-      metrics = this.addMetricsInfoDataToMetrics(metrics)
-      metrics = _.filter(metrics, function(metric){
-        return typeof metric.audience !== "undefined"
-      })
-      metrics = this.expandMetricMetadta(metrics, itemData.biblio.year)
-      metrics = this.getMetricPercentiles(metrics)
-
-      _.each(metrics, function(metric){
-        metric.award = Award.makeForSingleMetric(metric.audience, metric.engagementType, metric)
-      })
-
-      return metrics
+  .factory('Product', function() {
+    return {
+      test: function foo(){}
     }
 
-    ,getMetricSum: function(itemData) {
-      var sum = 0
-      if (itemData.metrics){
-        _.each(itemData.metrics, function(metric){
-          sum += metric.values.raw
-        })
-      }
-      return sum
-    }
-
-    ,getSortScore: function(itemData) {
-      var highlyAwardIsAsGoodAsThisManyRegularAwards = 3
-      var score = 0;
-      if (itemData.biblio) {
-        var awards = this.makeAwards(itemData)
-        _.each(awards, function(award){
-          if (award.isHighly) {
-            score += highlyAwardIsAsGoodAsThisManyRegularAwards
-          }
-          else {
-            score += 1
-          }
-        })
-      }
-      return score;
-    }
-
-    ,makeBiblio: function(itemData) {
-      var biblio = itemData.biblio
-      biblio.url = (itemData.aliases.url) ?  itemData.aliases.url[0] : false
-
-      biblio.title = biblio.title || "no title"
-      if (biblio.authors) {
-        // screws up names w/ commas in them
-        var auths = biblio.authors.split(",", 3).join(",") // first 3 authors
-        if (auths.length < biblio.authors.length) auths += " et al."
-        biblio.authors = auths
-      }
-
-      return biblio
-    }
-
-  ,makeAwards: function(itemData) {
-
-      var metrics = this.makeMetrics(itemData)
-      
-      var awards = []
-      var audiencesObj = itemOmitUndefinedv(_.groupBy(metrics, "audience"))
-      _.each(audiencesObj, function(audienceMetrics, audienceName) {
-
-        var engagementTypesObj = itemOmitUndefinedv(_.groupBy(audienceMetrics, "engagementType"))
-        _.each(engagementTypesObj, function(engagementType, engagementTypeName) {
-          var awardDict = Award.make(audienceName, engagementTypeName, engagementType)
-          awards.push(awardDict)
-        })
-      })
-
-      return awards
-    }
-
-
-
-
-
-    // developing countries as per IMF 2012, plus Cuba and North Korea (not IMF members)
-    // see http://www.imf.org/external/pubs/ft/weo/2012/01/pdf/text.pdf
-    ,developing_countries: "Afghanistan|Albania|Algeria|Angola|Antigua and Barbuda|Argentina|Armenia|Azerbaijan|Bahamas|Bahrain|Bangladesh|Barbados|Belarus|Belize|Benin|Bhutan|Bolivia|Bosnia and Herzegovina|Botswana|Brazil|Brunei|Bulgaria|Burkina Faso|Burma|Burundi|Cambodia|Cameroon|Cape Verde|Central African Republic|Chad|Chile|China|Colombia|Comoros|Cuba|Democratic Republic of the Congo|Republic of the Congo|Costa Rica|C\u00F4te d Ivoire|Croatia|Djibouti|Dominica|Dominican Republic|Ecuador|Egypt|El Salvador|Equatorial Guinea|Eritrea|Ethiopia|Fiji|Gabon|The Gambia|Georgia|Ghana|Grenada|Guatemala|Guinea|Guinea-Bissau|Guyana|Haiti|Honduras|Hungary|India|Indonesia|Iran|Iraq|Jamaica|Jordan|Kazakhstan|Kenya|Kiribati|Kuwait|Kyrgyzstan|Laos|Latvia|Lebanon|Lesotho|Liberia|Libya|Lithuania|Macedonia|Madagascar|Malawi|Malaysia|Maldives|Mali|Marshall Islands|Mauritania|Mauritius|Mexico|Federated States of Micronesia|Moldova|Mongolia|Montenegro|Morocco|Mozambique|Namibia|Nauru|Nepal|Nicaragua|Niger|Nigeria|North Korea|Oman|Pakistan|Palau|Panama|Papua New Guinea|Paraguay|Peru|Philippines|Poland|Qatar|Romania|Russia|Rwanda|Saint Kitts and Nevis|Saint Lucia|Saint Vincent and the Grenadines|Samoa|S\u00E3o Tom\u00E9 and Pr\u00EDncipe|Saudi Arabia|Senegal|Serbia|Seychelles|Sierra Leone|Solomon Islands|Somalia|South Africa|South Sudan|Sri Lanka|Sudan|Suriname|Swaziland|Syria|Tajikistan|Tanzania|Thailand|Timor-Leste|Togo|Tonga|Trinidad and Tobago|Tunisia|Turkey|Turkmenistan|Tuvalu|Uganda|Ukraine|United Arab Emirates|Uruguay|Uzbekistan|Vanuatu|Venezuela|Vietnam|Yemen|Zambia|Zimbabwe"
-
-
-    ,addMetricsInfoDataToMetrics: function(metrics) {
-      _.map(metrics, function(metric, metricName){
-        _.extend(metric, metricInfo[metricName])
-      })
-      return metrics
-    }
-
-    ,get_mendeley_percent: function(metricDict, key_substring) {
-
-      if (metricDict == undefined) {
-        return 0
-      }
-
-      // values.raw holds an array of {name:<name>, value: <value>} objects.
-      // this gets just ones where key_substring is a substring of <name>
-      var re = new RegExp(key_substring, 'i');
-      var mendeleyRelevantKeys = _.filter(metricDict.values.raw, function(x) {
-        return x["name"].match(re)
-      })
-      if (typeof mendeleyRelevantKeys[0] == "undefined") {
-        // no students or developing countries or whatever
-        return(0)
-      }
-
-      // list the percent scores for values whose names match our substring
-      var mendeleyPercentages = mendeleyRelevantKeys.map(function(x) {return x["value"]})
-      if (typeof mendeleyPercentages[0] == "undefined") {  // not sure if this needs to be here?
-        return(0)
-      }
-
-      sum = eval(mendeleyPercentages.join("+")) // dangerous, replace
-      return(sum)
-    }
-
-
-    ,mendeley_reader_subset_count: function(metricsDict, subset_type){
-      var percent
-
-      // given all the metrics, gets the count of a certain subset of readers by type
-      if (typeof metricsDict["mendeley:readers"] == "undefined") {
-        // can't get a subset of readers if there are no readers
-        return(0)
-      }
-
-      if (subset_type == "student") {
-        percent = this.get_mendeley_percent(
-          metricsDict["mendeley:career_stage"],
-          "student"
-        )
-      }
-      if (subset_type == "developing_countries") {
-        percent = this.get_mendeley_percent(
-          metricsDict["mendeley:country"],
-          this.developing_countries
-        )
-      }
-
-      total_mendeley_readers = metricsDict["mendeley:readers"].values.raw
-
-      // here we figure actual number from percentage
-      total = Math.round(total_mendeley_readers * percent / 100)
-
-      return(total)
-    }
-
-
-    ,update_metric: function(metric, display_name, value) {
-      metric["static_meta"]["display_name"] = display_name
-      metric["values"] = {}
-      metric["values"]['raw'] = value
-      return(metric)
-    }
-
-
-    ,add_derived_metrics: function(metricsDict) {
-      var templateMetric
-      var newMetric
-
-      // mendeley student readers
-      var total = this.mendeley_reader_subset_count(metricsDict, "student")
-      if (total > 0) {
-        templateMetric = $.extend(true, {}, metricsDict["mendeley:readers"])
-        newMetric = this.update_metric(templateMetric,
-                                           "readers: students",
-                                           total)
-        metricsDict["mendeley:student_readers"] = newMetric
-      }
-
-      // mendeley developing countries
-      var total = this.mendeley_reader_subset_count(metricsDict, "developing_countries")
-      if (total > 0) {
-        templateMetric = $.extend(true, [], metricsDict["mendeley:readers"])
-        newMetric = this.update_metric(templateMetric,
-                                           "readers: developing countries",
-                                           total)
-        metricsDict["mendeley:developing_countries"] = newMetric
-      }
-
-      return(metricsDict)
-    }
-
-
-    ,getMetricPercentiles: function(metricsDict) {
-      for (var metricName in metricsDict) {
-        for (var normRefSetName in metricsDict[metricName].values) {
-          if (normRefSetName.indexOf("raw") == -1) {
-            metricsDict[metricName].percentiles = metricsDict[metricName].values[normRefSetName]
-            metricsDict[metricName].topPercent =
-              100 - metricsDict[metricName].percentiles.CI95_lower
-
-            // hacky short-term way to determine which reference set was used
-            var refSet
-            if (normRefSetName == "WoS") {
-              refSet = "Web of Science"
-              storageVerb = "indexed by"
-            }
-            else if (normRefSetName == "dryad"){
-              refSet = "Dryad"
-              storageVerb = "added to"
-            }
-            else if (normRefSetName == "figshare"){
-              refSet = "figshare"
-              storageVerb = "added to"
-            }
-            else if (normRefSetName == "github"){
-              refSet = "GitHub"
-              storageVerb = "added to"
-            }
-            metricsDict[metricName].refSet = refSet
-            metricsDict[metricName].referenceSetStorageVerb = storageVerb
-          }
-        }
-      }
-      return metricsDict
-    }
-
-
-    ,expandMetricMetadta: function(metrics, year) {
-      var interactionDisplayNames = {
-        "f1000": "recommendations",
-        "pmc_citations": "citations"
-      }
-
-      _.map(metrics, function(metric) {
-        metric.displayCount = metric.values.raw
-
-        // deal with F1000's troublesome "count" of "Yes." Can add others later.
-        metric.actualCount = (metric.values.raw == "Yes") ? 1 : metric.values.raw
-
-        var plural = metric.actualCount > 1
-
-        // add the environment and what's the user did:
-        metric.environment = metric.static_meta.provider
-        var interaction = metric.name.split(":")[1].replace("_", " ")
-        if (interactionDisplayNames[interaction]){
-          interaction = interactionDisplayNames[interaction]
-        }
-
-        metric.displayInteraction = (plural) ? interaction : interaction.slice(0, -1)
-
-
-        // other things
-        metric.referenceSetYear = year
-      })
-
-
-      return metrics
-    }
-
-
-
-  };
 })
 
-  .controller('productCtrl', function ($scope, Product, Page, $location, security) {
+  .controller('productCtrl', function ($scope, Product) {
 
-      if (!$scope.product.isHeading){ // deal with hacky "heading products" that aren't real products.
-        $scope.biblio = Product.makeBiblio($scope.product)
-        $scope.metrics = Product.makeMetrics($scope.product)
-        $scope.awards = Product.makeAwards($scope.product)
-      }
+    if ($scope.product.genre == "blog"){
+      $scope.how_we_found_these = "how_we_found_these_blog_posts"
+    }
 
-      $scope.hasMetrics = function(){
-        return _.size($scope.metrics);
-      }
-      $scope.getProductPageUrl = function(){
-        var path = $location.path()
-        var noEmbedPath = path.replace("/embed/", "/")
-        return noEmbedPath+ "/product/" + $scope.product._id
-      }
-
-  })
-
-
-  .directive('productBiblio', function(Product) {
-    return {
-      restrict: 'A',
-      link: function(scope, elem, atts) {
-
-      }
+    if ($scope.product.genre == "twitter"){
+      $scope.how_we_found_these = "how_we_found_these_tweets"
     }
 
 
+//    $scope.upload_wordpress_key = function(){
+//      var wpHeading =  ($scope.product.account_biblio && $scope.product.account_biblio.hosting_platform == "wordpress.com")
+//      var wpKeySet = security.getCurrentUser("wordpress_api_key")
+//      if (wpHeading && !wpKeySet){
+//        return "upload_wordpress_key"
+//      }
+//      else {
+//        return null
+//      }
+//    }
+
   })
+
 
 
 
@@ -1526,7 +1023,6 @@ angular.module("profile", [
   'services.timer',
   'tips',
   'profile.addProducts',
-  'product.categoryHeading',
   'services.i18nNotifications'
 ])
 
@@ -1630,7 +1126,6 @@ angular.module("profile", [
     UsersProducts,
     Product,
     UserProfile,
-    CategoryHeading,
     i18nNotifications,
     Update,
     Loading,
@@ -4371,6 +3866,7 @@ angular.module("tips", ['ngResource'])
     return {
       templateUrl: 'tips/tip.tpl.html',
       restrict: 'E',
+      transclude: true,
       scope: {
         key: "=key" // linked to attr, evaluated in parent scope
       },
@@ -4381,6 +3877,7 @@ angular.module("tips", ['ngResource'])
         }
 
         scope.getMsg = function(){
+          console.log("getting message")
           return TipsService.get(scope.key, 'msg')
         }
 
@@ -4397,63 +3894,7 @@ angular.module("tips", ['ngResource'])
     }
 
 })
-angular.module('templates.app', ['category-heading/category-heading.tpl.html', 'footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/badges.tpl.html', 'product/biblio.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
-
-angular.module("category-heading/category-heading.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("category-heading/category-heading.tpl.html",
-    "<div class=\"category-heading {{ product.headingDimension }} {{ product.headingValue }}\"\n" +
-    "    id=\"{{ product.headingValue }}\"\n" +
-    "    ng-controller=\"CategoryHeadingCtrl\"\n" +
-    "    ng-if=\"product.isHeading\">\n" +
-    "\n" +
-    "   <div class=\"category-heading-main\">\n" +
-    "      <h2>\n" +
-    "         <span class=\"genre-and-icons\">\n" +
-    "            <a class=\"genre-anchor\"\n" +
-    "               ng-href=\"{{ makeAnchorLink(product._id) }}\">\n" +
-    "               <span class=\"text\">permalink</span>\n" +
-    "               <i class=\"icon-link\"></i>\n" +
-    "            </a>\n" +
-    "            <i class=\"{{ genreIcon(product.genre) }} {{ product.genre }} genre\"></i>\n" +
-    "            <span class=\"genre\">{{ product.genre }}</span>\n" +
-    "         </span>\n" +
-    "         <a class=\"account\" ng-if=\"product.account && getUrl()\" ng-href=\"{{ getUrl() }}\">\n" +
-    "            {{ product.account }}\n" +
-    "            <i class=\"icon-external-link-sign\"></i>\n" +
-    "         </a>\n" +
-    "         <span class=\"account\" ng-if=\"product.account && !getUrl()\">{{ product.account }}</span>\n" +
-    "      </h2>\n" +
-    "      <div class=\"clearfix\"></div>\n" +
-    "\n" +
-    "      <div class=\"category-metrics\">\n" +
-    "         <ul class=\"account-metrics\">\n" +
-    "            <li class=\"category-metric\"\n" +
-    "                ng-repeat=\"metric in product.metrics\">\n" +
-    "\n" +
-    "               <a href=\"{{ metric.provenance_url }}\"\n" +
-    "                  target=\"_blank\"\n" +
-    "                  tooltip=\"Visit {{ metric.static_meta.provider }} for more information\"\n" +
-    "                  tooltip-placement=\"bottom\"\n" +
-    "                  class=\"value\">\n" +
-    "                  {{ metric.values.raw }}\n" +
-    "               </a>\n" +
-    "               <span class=\"metric-descr\"\n" +
-    "                     tooltip-placement=\"bottom\"\n" +
-    "                     tooltip=\"{{ metric.static_meta.description }}\">\n" +
-    "                  {{ metric.static_meta.display_name }}\n" +
-    "               </span>\n" +
-    "             </li>\n" +
-    "         </ul>\n" +
-    "         <ul class=\"summary-metrics\"><!-- fill this later--></ul>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "   <div class=\"category-heading-tips\">\n" +
-    "      <tip key=\"how_we_found_these\" />\n" +
-    "      <tip key=\"upload_wordpress_key()\" />\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>");
-}]);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -5040,73 +4481,6 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
     "</div>");
 }]);
 
-angular.module("product/badges.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product/badges.tpl.html",
-    "<ul class=\"ti-badges\">\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "   <li ng-repeat=\"award in awards | orderBy:['!isHighly', 'displayOrder']\" class=\"award\">\n" +
-    "\n" +
-    "      <a href=\"{{ getProductPageUrl() }}\"\n" +
-    "            class=\"ti-badge lil-badge {{award.audience}} {{award.engagementType}}\"\n" +
-    "            ng-show=\"!award.isHighly\"\n" +
-    "            data-original-title=\"{{award.engagementType}} by <span class='{{award.displayAudience}}'>{{award.displayAudience}}</span>\"\n" +
-    "            data-content=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
-    "            {{award.topMetric.displayInteraction}}, suggesting it's been\n" +
-    "            {{award.engagementType}} by {{award.displayAudience}}.\n" +
-    "            Click to learn more.\">\n" +
-    "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
-    "         <span class=\"audience\">by {{award.audience}}</span>\n" +
-    "       </a>\n" +
-    "\n" +
-    "      <a href=\"{{ getProductPageUrl() }}\"\n" +
-    "            class=\"ti-badge big-badge {{award.audience}} {{award.engagementType}}\"\n" +
-    "            ng-show=\"award.isHighly\"\n" +
-    "            data-original-title=\"Highly {{award.engagementType}} by <span class='{{award.displayAudience}}'>{{award.displayAudience}}</span>\"\n" +
-    "            data-content=\"This item has {{award.topMetric.actualCount}} {{award.topMetric.environment}}\n" +
-    "            {{award.topMetric.displayInteraction}}. That's better than\n" +
-    "            {{award.topMetric.percentiles.CI95_lower}}% of items\n" +
-    "            {{award.topMetric.referenceSetStorageVerb}} {{award.topMetric.refSet}} in {{award.topMetric.referenceSetYear}},\n" +
-    "            suggesting it's highly {{award.engagementType}} by {{award.displayAudience }}.\n" +
-    "            Click to learn more.\">\n" +
-    "\n" +
-    "         <span class=\"modifier\">highly</span>\n" +
-    "         <span class=\"engagement-type\">{{award.engagementType}}</span>\n" +
-    "         <span class=\"audience\">by {{award.audience}}</span>\n" +
-    "      </a>\n" +
-    "\n" +
-    "      <span class=\"metrics\">\n" +
-    "         <img ng-repeat=\"metric in award.metrics\" ng-src=\"{{ metric.static_meta.icon }}\">\n" +
-    "      </span>\n" +
-    "\n" +
-    "   </li>\n" +
-    "</ul>");
-}]);
-
-angular.module("product/biblio.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product/biblio.tpl.html",
-    "<h5 class=\"title\" xmlns=\"http://www.w3.org/1999/html\">\n" +
-    "   <a ng-if=\"page.isEmbedded()\" target=\"_blank\" class=\"title-text\" href=\"{{ getProductPageUrl() }}\">{{biblio.title}}</a>\n" +
-    "   <a ng-if=\"!page.isEmbedded()\" class=\"title-text\" href=\"{{ getProductPageUrl() }}\">{{biblio.title}}</a>\n" +
-    "\n" +
-    "   <a ng-if=\"biblio.url\" class=\"linkout url title\" target=\"_blank\" href=\"{{ biblio.url }}\">\n" +
-    "      <i class=\"icon-external-link-sign\"></i>\n" +
-    "   </a>\n" +
-    "</h5>\n" +
-    "<div class=\"optional-biblio\">\n" +
-    "   <span ng-if=\"biblio.year\" class=\"year\">({{ biblio.year }})</span>\n" +
-    "   <span ng-if=\"biblio.authors && !biblio.embed\" class=\"authors\">{{ biblio.authors }}.</span>\n" +
-    "   <span ng-if=\"biblio.repository && !biblio.embed\" class=\"repository\">{{ biblio.repository }}.</span>\n" +
-    "   <span ng-if=\"biblio.journal\" class=\"journal\">{{ biblio.journal }}</span>\n" +
-    "   <span ng-if=\"biblio.description\" class=\"description\">{{ biblio.description }}</span>\n" +
-    "   <span ng-if=\"biblio.embed\" class=\"embed\" ng-bind-html-unsafe=\"biblio.embed\"></span>\n" +
-    "\n" +
-    "</div>\n" +
-    "");
-}]);
-
 angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product/metrics-table.tpl.html",
     "<ul class=\"metric-details-list\">\n" +
@@ -5379,13 +4753,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product-container {{ product.genre }}\"\n" +
-    "             ng-class=\"{'heading': product.isHeading, 'real-product': !product.isHeading, first: $first}\"\n" +
-    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'isHeading', getSortScore, getMetricSum]\"\n" +
+    "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
+    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', 'metric_raw_sum']\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
-    "             ng-show=\"hasMetrics() || showProductsWithoutMetrics || product.isHeading\"\n" +
+    "             ng-show=\"product.has_metrics || showProductsWithoutMetrics || product.is_heading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
     "             ng-bind-html-unsafe=\"product.markup\"\n" +
     "             on-repeat-finished>\n" +
+    "\n" +
+    "\n" +
+    "            <h1>i'm inside a product li !</h1>\n" +
     "\n" +
     "\n" +
     "         </li>\n" +
