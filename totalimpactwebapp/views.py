@@ -1,16 +1,13 @@
 import requests, os, json, logging, re, datetime
-import mandrill
 import analytics
-from time import sleep
 from util import local_sleep
 
-from flask import request, send_file, abort, make_response, g, redirect, url_for
+from flask import request, send_file, abort, make_response, g, redirect
 from flask import render_template
+from flask import render_template_string
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
-from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
-from itsdangerous import TimestampSigner
 
 
 from totalimpactwebapp import app, db, login_manager
@@ -707,6 +704,21 @@ def get_js_bottom():
         "bottom.js",
         newrelic_footer=newrelic_footer
     )
+
+
+
+@app.route("/2013")
+def get_2013_year_in_review():
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+
+    with open(current_dir + "/standalone/2013.html", "r") as f:
+        template_str = f.read()
+
+    return render_template_string(
+        template_str
+    )
+
+
 
 
 
