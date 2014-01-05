@@ -706,19 +706,19 @@ def get_js_bottom():
     )
 
 
+def render_standalone(filename, **kwargs):
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    path = current_dir + "/standalone/" + filename
+
+    with open(path, "r") as f:
+        template_str = f.read()
+
+    return render_template_string(template_str, **kwargs)
+
 
 @app.route("/2013")
 def get_2013_year_in_review():
-    current_dir = os.path.dirname(os.path.realpath(__file__))
-
-    with open(current_dir + "/standalone/2013.html", "r") as f:
-        template_str = f.read()
-
-    return render_template_string(
-        template_str
-    )
-
-
+    return render_template("2013.html")
 
 
 
