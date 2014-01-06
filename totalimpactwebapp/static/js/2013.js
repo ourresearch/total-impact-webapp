@@ -140,6 +140,9 @@ $(function(){
   $("div.header").css({
     height: windowHeight+"px"
   })
+  $("div.footer").css({
+    height: windowHeight+"px"
+  })
 
 
   $("li.fact").css({

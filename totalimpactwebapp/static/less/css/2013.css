@@ -105,6 +105,15 @@ div.content ul#facts li.fact section {
   font-weight: 100;
   font-size: 30px;
 }
+div.content ul#facts li.fact section div.clear {
+  clear: both;
+}
+div.content ul#facts li.fact section li {
+  list-style-type: disc;
+}
+div.content ul#facts li.fact section ul.cities {
+  float: left;
+}
 div.content ul#facts li.fact section div.tweets div.tweet {
   font-size: 18px;
   font-weight: 300;
@@ -120,10 +129,20 @@ div.content ul#facts li.fact section div.tweets div.tweet div.author a {
   font-weight: 900;
 }
 div.footer {
-  padding: 100px 0 400px 0;
   background: red;
   text-align: center;
 }
+div.footer a.brand {
+  padding: 200px 0 0;
+  display: block;
+  margin-bottom: 50px;
+}
 div.footer a.brand img {
-  width: 400px;
+  width: 500px;
+}
+div.footer a.call-to-action {
+  font-family: Lato;
+  font-weight: 100;
+  font-size: 30px;
+  margin-top: 50px;
 }

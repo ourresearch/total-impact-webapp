@@ -12,7 +12,12 @@
    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='less/css/2013.css') }}" />
 
 
-   <!-- @todo put google analytics here! -->
+   <script type="text/javascript">
+      window.analytics||(window.analytics=[]),window.analytics.methods=["identify","track","trackLink","trackForm","trackClick","trackSubmit","page","pageview","ab","alias","ready","group","on","once","off"],window.analytics.factory=function(t){return function(){var a=Array.prototype.slice.call(arguments);return a.unshift(t),window.analytics.push(a),window.analytics}};for(var i=0;i<window.analytics.methods.length;i++){var method=window.analytics.methods[i];window.analytics[method]=window.analytics.factory(method)}window.analytics.load=function(t){var a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=("https:"===document.location.protocol?"https://":"http://")+"d2dq2ahtl5zl1z.cloudfront.net/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n)},window.analytics.SNIPPET_VERSION="2.0.8",
+      window.analytics.load("na1r5jvuym");
+      window.analytics.page();
+   </script>
+
 
 </head>
 <body>
@@ -47,7 +52,16 @@
 
       <li data-count="7" class="fact">
          <h2>published<br>papers <i class="fa fa-file-text"></i></h2>
-         <section>We authored or co-authored: <a href="http://researchremix.wordpress.com/2013/07/12/full-text-value-all-research-products/">two</a> <a href="http://www.nature.com/nature/journal/v495/n7442/full/495437a.html">articles</a> published in Nature, <a href="http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar.pdf">two</a> <a href="http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.pdf">articles</a> in the ASIS&T Bulletin, <a href="https://peerj.com/articles/175/">one</a> in PeerJ, <a href="http://crln.acrl.org/content/74/6/292.long">one</a> in the College & Research Libraries newsletter, and <a href="http://arxiv.org/abs/1304.7300">one</a> conference paper at ISSI.
+         <section>We authored or co-authored:
+            <ul class="papers">
+               <li><a href="http://researchremix.wordpress.com/2013/07/12/full-text-value-all-research-products/">two</a> <a href="http://www.nature.com/nature/journal/v495/n7442/full/495437a.html">articles</a> published in Nature, </li>
+               <li><a href="http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar.pdf">two</a> <a href="http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.pdf">articles</a> in the ASIS&T Bulletin, </li>
+               <li><a href="https://peerj.com/articles/175/">one</a> in PeerJ,</li>
+               <li><a href="http://crln.acrl.org/content/74/6/292.long">one</a> in the College & Research Libraries newsletter, and</li>
+               <li><a href="http://arxiv.org/abs/1304.7300">one</a> conference paper at ISSI.</li>
+
+            </ul>
+
          </section>
       </li>
 
@@ -59,13 +73,40 @@
 
       <li data-count="22" class="fact">
          <h2>visited cities <i class="fa fa-plane"></i></h2>
-         <section>We made 41 trips to conferences, talks, and meetups, traveling to:  Amsterdam, Arlington (twice), Austin, Bethesda, Boston (four times), Carrboro, Chicago, Columbus (twice), Denver, DC (five times), Fairfax, Indianapolis, Leiden, Philadelphia, Raleigh (twice), Salt Lake City, San Diego, San Francisco (three times), Seattle (twice), Singapore, Tokyo, and Vancouver (six times).
+         <section>We made 41 trips to conferences, talks, and meetups, traveling to:
+            <ul class="cities">
+               <li>Amsterdam</li>
+               <li>Arlington</li>
+               <li>Austin</li>
+               <li>Bethesda</li>
+               <li>Boston</li>
+               <li>Carrboro</li>
+               <li>Chicago</li>
+               <li>Columbus</li>
+               <li>Denver</li>
+               <li>Washington DC</li>
+               <li>Fairfax</li>
+            </ul>
+            <ul class="cities">
+               <li>Indianapolis</li>
+               <li>Leiden</li>
+               <li>Philadelphia</li>
+               <li>Raleigh</li>
+               <li>Salt Lake City</li>
+               <li>San Diego</li>
+               <li>San Francisco</li>
+               <li>Seattle</li>
+               <li>Singapore</li>
+               <li>Tokyo</li>
+               <li>Vancouver</li>
+            </ul>
+            <div class="clear"></div>
          </section>
       </li>
 
       <li data-count="89" class="fact">
          <h2>feedback forum suggestions <i class="fa fa-bullhorn"></i></h2>
-         <section>Our users suggested great product enhancements-- and we implemented 28 of them this year.  Got a suggestion of your own? <a href=”http://feedback.impactstory.org/forums/166950-general”>post or vote</a> on the forum!
+         <section>Our users suggested great product enhancements-- and we implemented 28 of them this year.  Got a suggestion of your own? <a href=”http://feedback.impactstory.org/forums/166950-general”>Post or vote</a> on the forum!
          </section>
       </li>
 
@@ -89,7 +130,7 @@
 
       <li data-count="2128" class="fact">
          <h2>mentions on Twitter<i class="fa fa-twitter"></i></h2>
-         <section>We're really happy about the positive comments we've gotten this year -- here's a smattering.
+         <section>We're thrilled with the positive comments we've gotten this year -- here's a sample:
             <div class="tweets">
                <div class="tweet">
                   <div class="text">The @ImpactStory page design and import process are so well done. Super impressed. <a href="http://impactstory.org/trvrb">http://impactstory.org/trvrb</a>
@@ -157,13 +198,13 @@
 
       <li data-count="500000" class="fact">
          <h2>dollars awarded by <br> the Sloan Foundation <i class="fa fa-money"></i></h2>
-         <section>The <a href="http://blog.impactstory.org/2013/06/17/sloan/">Alfred P. Sloan Foundation awarded $500,000</a> to "support the scaling and further development to sustainability of ImpactStory".
+         <section>The <a href="http://blog.impactstory.org/2013/06/17/sloan/">Alfred P. Sloan Foundation awarded $500,000</a> to "support the scaling and further development to sustainability of ImpactStory."
          </section>
       </li>
 
       <li data-count="6800000" class="fact">
          <h2>scientists with an ImpactStory profile <i class="fa fa-flask"></i></h2>
-         <section>Put on your seatbelts, because we're going to make use of each of the 31,536,000 seconds in 2014 to get closer to our goal of an ImpactStory profile for <a href="http://www.richardprice.io/post/12855561694/the-number-of-academics-and-graduate-students-in-the">every scientist</a>!
+         <section>Or in other words, <a href="http://www.richardprice.io/post/12855561694/the-number-of-academics-and-graduate-students-in-the">all of them</a>. That's our goal. And we'll be using all 31,536,000 seconds in 2014 to get there. Get ready :)
          </section>
       </li>
    </ul>
@@ -173,6 +214,7 @@
    <a class="brand" href="/">
       <img src="/static/img/impactstory-logo-white.png" alt="ImpactStory" />
    </a>
+   <a class="call-to-action" href="http://impactstory.org/signup">click make <em>your</em> impact profile</a>
 
 </div>
 
