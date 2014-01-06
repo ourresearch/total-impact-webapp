@@ -66,7 +66,7 @@ $(function(){
       var viewportOffset =  $(this).viewportOffset().top
 
 
-      var halfwayOffset =  viewportOffset - (windowCenter + 40)
+      var halfwayOffset =  viewportOffset - (windowCenter + 50)
       var active = halfwayOffset < 0 && halfwayOffset > -$(this).height()
 
 
