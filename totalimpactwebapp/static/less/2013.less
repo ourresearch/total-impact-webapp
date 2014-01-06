@@ -9,6 +9,22 @@ body {
    margin:0;
    padding:0;
    position:relative;
+   &.active {
+      background: #ff3000;
+      #number{
+         #number-value {
+            opacity: 1;
+         }
+      }
+   }
+   a {
+      color: #fff;
+      font-weight: 900;
+      text-decoration: none;
+      &:hover {
+         text-decoration: underline;
+      }
+   }
 }
 html{
    margin:0;
@@ -22,7 +38,7 @@ div.header {
    position:relative;
    margin-bottom: 230px;
    a.brand {
-      padding-top: 30px;
+      padding-top: 50px;
       img {
          width: 500px;
       }
@@ -70,9 +86,6 @@ div#number {
    }
    #number-value {
       opacity: .5;
-      &.active {
-         opacity: 1;
-      }
    }
 
 }
@@ -87,7 +100,7 @@ div.content {
    ul#facts {
       padding:0;
       margin-left: @numberWidth + 40px;
-      margin-right: 400px;
+      width: 500px;
       li.fact {
          list-style-type: none;
          h2 {
@@ -101,8 +114,8 @@ div.content {
          }
          section{
             font-family:Lato;
-            font-weight: 300;
-            font-size:20px;
+            font-weight: 100;
+            font-size:30px;
          }
       }
    }
@@ -110,5 +123,12 @@ div.content {
 }
 
 div.footer {
-
+   padding: 100px 0 400px 0;
+   background: red;
+   text-align: center;
+   a.brand {
+      img {
+         width: 400px;
+      }
+   }
 }

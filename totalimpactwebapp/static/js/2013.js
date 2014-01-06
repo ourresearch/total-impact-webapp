@@ -31,7 +31,7 @@
 
 
 $(function(){
-  var windowCenter = $(window).height() / 3;
+  var windowCenter = $(window).height() / 4;
 
 
 
@@ -58,13 +58,15 @@ $(function(){
   function changeNumber(){
     var facts = []
     var numberVal = $("#number-value")
-    numberVal.removeClass("active")
+    $("body").removeClass("active")
+    numberVal.show()
+
 
     $("li.fact").each(function(i){
       var viewportOffset =  $(this).viewportOffset().top
 
 
-      var halfwayOffset =  viewportOffset - (windowCenter + 70)
+      var halfwayOffset =  viewportOffset - (windowCenter + 40)
       var active = halfwayOffset < 0 && halfwayOffset > -$(this).height()
 
 
@@ -93,6 +95,7 @@ $(function(){
     if (activeFact){
       count = activeFact.count
       numberVal.addClass("active")
+      $("body").addClass("active")
     }
 
     else if (!factsAboveCenter.length){
@@ -101,6 +104,7 @@ $(function(){
 
     else if (!factsBelowCenter.length) {
       count = _.last(facts).count
+      numberVal.hide()
 
     }
 
@@ -139,7 +143,7 @@ $(function(){
 
 
   $("li.fact").css({
-    "margin-bottom": windowHeight/2 + "px"
+    "padding-bottom": windowHeight *.6 + "px"
   })
 
 
