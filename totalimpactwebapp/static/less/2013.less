@@ -1,6 +1,7 @@
 @import url("//fonts.googleapis.com/css?family=Lato:100,300,400,700,900");
 @import url("//fonts.googleapis.com/css?family=Oswald:700");
 
+@numberWidth: 500px;
 
 body {
    background: #FF4E00;
@@ -19,6 +20,7 @@ div.header {
    text-align: center;
    height: 600px;
    position:relative;
+   margin-bottom: 230px;
    a.brand {
       padding-top: 30px;
       img {
@@ -53,14 +55,24 @@ div.header {
 
 
 div#number {
-   margin:0 0 0 50px;
-   font-size: 100px;
-   position: static;
+   margin:0;
+   font-size: 125px;
+   position: absolute;
+   width: @numberWidth;
+   text-align: right;
+   top:0;
+   left:0;
    font-family: Oswald, sans-serif;
 
    &.fixed {
       position:fixed;
       left:0;
+   }
+   #number-value {
+      opacity: .5;
+      &.active {
+         opacity: 1;
+      }
    }
 
 }
@@ -70,13 +82,33 @@ div.content {
    margin:0;
    padding:0;
    position: relative;
-   min-height: 2000px;
+   min-height: 1500px;
 
    ul#facts {
-      padding:0; margin:0;
-      li {
+      padding:0;
+      margin-left: @numberWidth + 40px;
+      margin-right: 400px;
+      li.fact {
          list-style-type: none;
+         h2 {
+            font-family: Oswald;
+            text-transform: uppercase;
+            font-size: 70px;
+            margin:0;
+            padding:0;
+            line-height: 1;
+            margin-bottom: 20px;
+         }
+         section{
+            font-family:Lato;
+            font-weight: 300;
+            font-size:20px;
+         }
       }
    }
+
+}
+
+div.footer {
 
 }
