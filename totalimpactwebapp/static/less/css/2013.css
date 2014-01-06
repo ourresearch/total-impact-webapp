@@ -1,0 +1,115 @@
+@import url("//fonts.googleapis.com/css?family=Lato:100,300,400,700,900");
+
+@import url("//fonts.googleapis.com/css?family=Oswald:700");
+body {
+  background: #FF4E00;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+body.active {
+  background: #ff3000;
+}
+body.active #number #number-value {
+  opacity: 1;
+}
+body a {
+  color: #fff;
+  font-weight: 900;
+  text-decoration: none;
+}
+body a:hover {
+  text-decoration: underline;
+}
+html {
+  margin: 0;
+  padding: 0;
+}
+div.header {
+  font-family: Oswald, sans-serif;
+  text-align: center;
+  height: 600px;
+  position: relative;
+  margin-bottom: 230px;
+}
+div.header a.brand {
+  padding-top: 50px;
+  width: 550px;
+  display: inline-block;
+  border-bottom: 5px solid #fff;
+}
+div.header a.brand img {
+  width: 500px;
+}
+div.header h1 span.date {
+  font-size: 300px;
+  display: block;
+  line-height: 1;
+}
+div.header h1 span.text {
+  text-transform: uppercase;
+  font-size: 80px;
+}
+div.header div.instr {
+  font-size: 30px;
+  font-family: Lato;
+  font-weight: 100;
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+div#number {
+  margin: 0;
+  font-size: 125px;
+  position: absolute;
+  width: 500px;
+  text-align: right;
+  top: 0;
+  left: 0;
+  font-family: Oswald, sans-serif;
+}
+div#number.fixed {
+  position: fixed;
+  left: 0;
+}
+div#number #number-value {
+  opacity: .5;
+}
+div.content {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  min-height: 1500px;
+}
+div.content ul#facts {
+  padding: 0;
+  margin-left: 540px;
+  width: 500px;
+}
+div.content ul#facts li.fact {
+  list-style-type: none;
+}
+div.content ul#facts li.fact h2 {
+  font-family: Oswald;
+  text-transform: uppercase;
+  font-size: 70px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+div.content ul#facts li.fact section {
+  font-family: Lato;
+  font-weight: 100;
+  font-size: 30px;
+}
+div.footer {
+  padding: 100px 0 400px 0;
+  background: red;
+  text-align: center;
+}
+div.footer a.brand img {
+  width: 400px;
+}
