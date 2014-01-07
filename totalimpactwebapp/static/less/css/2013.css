@@ -1,6 +1,23 @@
 @import url("//fonts.googleapis.com/css?family=Lato:100,300,400,700,900");
 
 @import url("//fonts.googleapis.com/css?family=Oswald:700");
+/* ---------------------------------------------
+
+Some of my own mixins
+
+-------------------------------------------------*/
+/*---------------------------------------------------
+    LESS Elements 0.6
+  ---------------------------------------------------
+    A set of useful LESS mixins by Dmitry Fadeyev
+    Special thanks for mixin suggestions to:
+      Kris Van Herzeele,
+      Benoit Adam,
+      Portenart Emile-Victor,
+      Ryan Faerman
+
+    More info at: http://lesselements.com
+-----------------------------------------------------*/
 body {
   background: #FF4E00;
   color: #fff;
@@ -140,9 +157,39 @@ div.footer a.brand {
 div.footer a.brand img {
   width: 500px;
 }
-div.footer a.call-to-action {
+div.footer div.links a.call-to-action {
   font-family: Lato;
-  font-weight: 100;
-  font-size: 30px;
-  margin-top: 50px;
+  display: inline-block;
+  font-weight: 900;
+  font-size: 16px;
+  background: #eee;
+  color: #444;
+  text-decoration: none;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  vertical-align: 8px;
+  padding: 7px 12px 5px 12px;
+  margin-right: 20px;
+  border: 1px solid ccc;
+}
+div.footer div.links a.call-to-action i {
+  margin-right: 6px;
+  color: #0053b0;
+  font-size: 120%;
+}
+div.footer div.links iframe {
+  display: inline;
 }

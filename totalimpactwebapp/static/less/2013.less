@@ -1,5 +1,8 @@
 @import url("//fonts.googleapis.com/css?family=Lato:100,300,400,700,900");
 @import url("//fonts.googleapis.com/css?family=Oswald:700");
+@import "elements";
+
+
 
 @numberWidth: 500px;
 
@@ -160,10 +163,29 @@ div.footer {
          width: 500px;
       }
    }
-   a.call-to-action {
-      font-family: Lato;
-      font-weight: 100;
-      font-size: 30px;
-      margin-top: 50px;
+   div.links {
+      a.call-to-action {
+         font-family: Lato;
+         display: inline-block;
+         font-weight: 900;
+         font-size: 16px;
+         background: #eee;
+         color: #444;
+         text-decoration: none;
+         .border-radius(3px, 3px, 3px, 3px);
+         vertical-align: 8px;
+         padding: 7px 12px 5px 12px;
+         margin-right: 20px;
+         border:1px solid ccc;
+         i {
+            margin-right: 6px;
+            color: #0053b0;
+            font-size: 120%;
+         }
+      }
+      iframe {
+         display:inline;
+      }
+
    }
 }
