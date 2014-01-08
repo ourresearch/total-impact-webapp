@@ -178,7 +178,9 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "author page URL",
             placeholder: "http://figshare.com/authors/your_username/12345",
-            cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))},            
+            cleanupFunction: function(x) {
+              if (typeof x==="undefined") return x; 
+              return('http://'+x.replace('http://', ''))},
             saveUsername: "figshare_id"
           }
          ,{
