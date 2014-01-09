@@ -325,8 +325,13 @@ def get_user_about(profile_id):
         pass
 
     elif request.method == "PATCH":
-        logger.debug(u"got patch request for user {profile_id} {json}".format(
-            profile_id=profile_id, json=request.json))
+        logger.debug(
+            u"got patch request for user {profile_id} (PK {pk}): '{log}'. {json}".format(
+            profile_id=profile_id,
+            pk=user.id,
+            log=request.args.get("log", "").replace("+", " "),
+            json=request.json)
+        )
 
         user.patch(request.json["about"])
         logger.debug(u"patched the user: {user} ".format(
