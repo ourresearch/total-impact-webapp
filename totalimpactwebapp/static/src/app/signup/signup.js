@@ -110,7 +110,7 @@ angular.module( 'signup', [
   .controller( 'signupNameCtrl', function ( $scope, $location, Signup, Slug ) {
     $scope.nav.goToNextStep = function(){
 
-      var slug = Slug.asciify($scope.input.givenName + "/" + $scope.input.surname).replace(/\s/g, "_")
+      var slug = Slug.make($scope.input.givenName, $scope.input.surname)
 
       $location.path("signup/" + slug + "/url")
     }
@@ -118,11 +118,10 @@ angular.module( 'signup', [
   })
 
   .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {
-    var  nameRegex = /\/(\w+)\/(\w+)\/url/
-    var res = nameRegex.exec($location.path())
+    var  nameRegex = /\/signup\/(.+?)\/url/
+    var slug = nameRegex.exec($location.path())[1]
 
-    $scope.givenName = res[1]
-    $scope.input.url_slug = Slug.make(res[1], res[2])
+    $scope.input.url_slug = slug
 
     $scope.nav.goToNextStep = function(){
       var logMsg = "saving user for the first time"
@@ -144,7 +143,7 @@ angular.module( 'signup', [
     }
   })
 
-  .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporters, security ) {
+  .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporrity ) {
     var m = /\/signup\/(\w+)\//.exec($location.path())
 
     $scope.importers = AllTheImporters.get()

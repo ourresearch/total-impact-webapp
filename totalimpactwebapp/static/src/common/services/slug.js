@@ -99,16 +99,22 @@ angular.module('services.slug')
 
   }
 
+  var cleanName = function(name){
+    var re = /[^-\w]/g
+    return removeDiacritics(name).replace(re, "")
+  }
+
   return {
     asciify: removeDiacritics,
     make: function(givenName, surname) {
-      var slug = removeDiacritics(givenName) + removeDiacritics(surname);
 
-      if (/^\w+$/.test(slug)) { // our slug is an ASCII string
+      var slug = cleanName(givenName) + "" + cleanName(surname);
+
+      if (/^[-\w\.]+$/.test(slug)) { // we can match an ascii string
         return slug;
       }
       else {
-        // we failed to find an ASCII slug that could sorta represent the user's name.
+        // looks like failed to make an ASCII slug that could even sorta represent the user's name.
         // so we make a random one, instead.
         var randomInt = (Math.random() + "").substr(2, 5)
         return "user" +  randomInt

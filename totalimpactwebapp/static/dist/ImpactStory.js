@@ -2269,7 +2269,7 @@ angular.module( 'signup', [
   .controller( 'signupNameCtrl', function ( $scope, $location, Signup, Slug ) {
     $scope.nav.goToNextStep = function(){
 
-      var slug = Slug.asciify($scope.input.givenName + "/" + $scope.input.surname).replace(/\s/g, "_")
+      var slug = Slug.make($scope.input.givenName, $scope.input.surname)
 
       $location.path("signup/" + slug + "/url")
     }
@@ -2277,11 +2277,10 @@ angular.module( 'signup', [
   })
 
   .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {
-    var  nameRegex = /\/(\w+)\/(\w+)\/url/
-    var res = nameRegex.exec($location.path())
+    var  nameRegex = /\/signup\/(.+?)\/url/
+    var slug = nameRegex.exec($location.path())[1]
 
-    $scope.givenName = res[1]
-    $scope.input.url_slug = Slug.make(res[1], res[2])
+    $scope.input.url_slug = slug
 
     $scope.nav.goToNextStep = function(){
       var logMsg = "saving user for the first time"
@@ -2303,7 +2302,7 @@ angular.module( 'signup', [
     }
   })
 
-  .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporters, security ) {
+  .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporrity ) {
     var m = /\/signup\/(\w+)\//.exec($location.path())
 
     $scope.importers = AllTheImporters.get()
@@ -4200,16 +4199,22 @@ angular.module('services.slug')
 
   }
 
+  var cleanName = function(name){
+    var re = /[^-\w]/g
+    return removeDiacritics(name).replace(re, "")
+  }
+
   return {
     asciify: removeDiacritics,
     make: function(givenName, surname) {
-      var slug = removeDiacritics(givenName) + removeDiacritics(surname);
 
-      if (/^\w+$/.test(slug)) { // our slug is an ASCII string
+      var slug = cleanName(givenName) + "" + cleanName(surname);
+
+      if (/^[-\w\.]+$/.test(slug)) { // we can match an ascii string
         return slug;
       }
       else {
-        // we failed to find an ASCII slug that could sorta represent the user's name.
+        // looks like failed to make an ASCII slug that could even sorta represent the user's name.
         // so we make a random one, instead.
         var randomInt = (Math.random() + "").substr(2, 5)
         return "user" +  randomInt
@@ -5536,7 +5541,7 @@ angular.module("settings/custom-url-settings.tpl.html", []).run(["$templateCache
     "                class=\"form-control\"\n" +
     "                required\n" +
     "                data-require-unique\n" +
-    "                ng-pattern=\"/^\\w+$/\"\n" +
+    "                ng-pattern=\"/^[\\w-]+$/\"\n" +
     "                 />\n" +
     "\n" +
     "      </div>\n" +
@@ -5963,7 +5968,7 @@ angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", fun
 angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-url.tpl.html",
     "<div class=\"signup-input url\" ng-controller=\"signupUrlCtrl\">\n" +
-    "   <div class=\"intro\"><br>Great, {{ givenName }}, your next step is to pick your profile's custom URL. <br><span class=\"paren\">(you can always change this later)</span></div>\n" +
+    "   <div class=\"intro\"><br>Your next step is to pick your profile's custom URL. <br><span class=\"paren\">(you can always change this later)</span></div>\n" +
     "   \n" +
     "   <div class=\"form-group custom-url\"\n" +
     "        ng-model=\"profileAbout.url_slug\"\n" +
@@ -5978,7 +5983,7 @@ angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function
     "                required\n" +
     "                data-require-unique\n" +
     "                data-check-initial-value=\"true\"\n" +
-    "                ng-pattern=\"/^\\w+$/\"\n" +
+    "                ng-pattern=\"/^[\\w-]+$/\"\n" +
     "                 />\n" +
     "\n" +
     "      </div>\n" +
@@ -5989,7 +5994,7 @@ angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function
     "              ng-show=\"signupForm.url_slug.$error.pattern\n" +
     "               && signupForm.url_slug.$dirty\n" +
     "               && !loading.is()\">\n" +
-    "            Sorry, this URL has invalid characters.<br> You can only use numbers or Latin letters (without diacritics).\n" +
+    "            Sorry, this URL has invalid characters.<br> You can only use hyphens, numbers or Latin-alphabet letters.\n" +
     "         </div>\n" +
     "\n" +
     "         <div class=\"help-block error\"\n" +

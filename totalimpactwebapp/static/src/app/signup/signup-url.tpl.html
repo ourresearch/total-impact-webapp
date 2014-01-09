@@ -1,5 +1,5 @@
 <div class="signup-input url" ng-controller="signupUrlCtrl">
-   <div class="intro"><br>Great, {{ givenName }}, your next step is to pick your profile's custom URL. <br><span class="paren">(you can always change this later)</span></div>
+   <div class="intro"><br>Your next step is to pick your profile's custom URL. <br><span class="paren">(you can always change this later)</span></div>
    
    <div class="form-group custom-url"
         ng-model="profileAbout.url_slug"
@@ -14,7 +14,7 @@
                 required
                 data-require-unique
                 data-check-initial-value="true"
-                ng-pattern="/^\w+$/"
+                ng-pattern="/^[\w-]+$/"
                  />
 
       </div>
@@ -25,7 +25,7 @@
               ng-show="signupForm.url_slug.$error.pattern
                && signupForm.url_slug.$dirty
                && !loading.is()">
-            Sorry, this URL has invalid characters.<br> You can only use numbers or Latin letters (without diacritics).
+            Sorry, this URL has invalid characters.<br> You can only use hyphens, numbers or Latin-alphabet letters.
          </div>
 
          <div class="help-block error"
