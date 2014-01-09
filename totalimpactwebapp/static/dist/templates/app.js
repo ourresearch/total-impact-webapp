@@ -1036,7 +1036,7 @@ angular.module("settings/custom-url-settings.tpl.html", []).run(["$templateCache
     "                class=\"form-control\"\n" +
     "                required\n" +
     "                data-require-unique\n" +
-    "                ng-pattern=\"/^[\\w-]+$/\"\n" +
+    "                ng-pattern=\"/^[-\\w\\.]+$/\"\n" +
     "                 />\n" +
     "\n" +
     "      </div>\n" +

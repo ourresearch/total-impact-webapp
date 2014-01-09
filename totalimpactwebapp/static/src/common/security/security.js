@@ -32,7 +32,7 @@ angular.module('security.service', [
 
 
   var currentUrlSlug = function(){
-    var m = /^(\/signup)?\/(\w+)\//.exec($location.path())
+    var m = /^(\/signup)?\/([-\w\.]+)\//.exec($location.path())
     var current_slug = (m) ? m[2] : false;
     console.log("current slug is", current_slug)
     return current_slug
