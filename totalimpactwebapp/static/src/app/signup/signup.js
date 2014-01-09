@@ -111,25 +111,32 @@ angular.module( 'signup', [
     $scope.nav.goToNextStep = function(){
 
       var slug = Slug.make($scope.input.givenName, $scope.input.surname)
+      $scope.givenName = $scope.input.givenName
+      $scope.surname = $scope.input.surname
 
       $location.path("signup/" + slug + "/url")
+        .search("givenName", $scope.input.givenName)
+        .search("surname", $scope.input.surname)
     }
 
   })
 
   .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {
-    var  nameRegex = /\/signup\/(.+?)\/url/
+    var nameRegex = /\/signup\/(.+?)\/url/
     var slug = nameRegex.exec($location.path())[1]
 
     $scope.input.url_slug = slug
 
     $scope.nav.goToNextStep = function(){
       var logMsg = "saving user for the first time"
+      var givenName = $location.search()["givenName"]
+      var surname = $location.search()["surname"]
+
       Users.save(
         {id: $scope.input.url_slug, idType: "url_slug", log:logMsg},
         {
-          givenName: res[1],
-          surname: res[2],
+          givenName: givenName,
+          surname: surname,
           url_slug: $scope.input.url_slug,
           tips: TipsService.keysStr()
         },
@@ -137,14 +144,14 @@ angular.module( 'signup', [
           console.log("got response back from save user", resp)
           security.clearCachedUser()
           $location.path("signup/" + $scope.input.url_slug + "/products/add")
-
+          $location.search("")  /// clear the names from the url
         }
       )
     }
   })
 
-  .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporrity ) {
-    var m = /\/signup\/(\w+)\//.exec($location.path())
+  .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporters, security ) {
+    var m = /\/signup\/([-\w\.]+)\//.exec($location.path())
 
     $scope.importers = AllTheImporters.get()
     $scope.nav.goToNextStep = function(){
@@ -153,7 +160,7 @@ angular.module( 'signup', [
   })
 
   .controller( 'signupPasswordCtrl', function ($scope, $location, security, UsersAbout, UsersPassword, Update) {
-    var url_slug = /\/signup\/(\w+)\//.exec($location.path())[1]
+    var url_slug = /\/signup\/([-\w\.]+)\//.exec($location.path())[1]
     var redirectCb = function(){
       $location.path("/" + url_slug)
       security.requestCurrentUser()

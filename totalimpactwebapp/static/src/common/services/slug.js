@@ -100,7 +100,7 @@ angular.module('services.slug')
   }
 
   var cleanName = function(name){
-    var re = /[^-\w]/g
+    var re = /[^-\w\.]/g
     return removeDiacritics(name).replace(re, "")
   }
 

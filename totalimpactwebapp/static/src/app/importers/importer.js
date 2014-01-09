@@ -120,7 +120,7 @@ angular.module('importers.importer')
 .controller('importerCtrl', function($scope, $location, Products, UserProfile, UsersProducts, Importer, Loading, Update){
 
   var getUserSlug = function(){
-    var re = /\/(\w+)\/products/
+    var re = /\/([-\w\.]+)\/products/
     var res = re.exec($location.path())
     return res[1]
   }
