@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-05
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-08
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -2107,7 +2107,7 @@ angular.module('settings', [
      $scope.onSave = function() {
       Loading.start('saveButton')
       UsersAbout.patch(
-        {id: $scope.user.url_slug},
+        {id: $scope.user.url_slug, log:"changing email from settings"},
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
@@ -2282,8 +2282,9 @@ angular.module( 'signup', [
     $scope.input.url_slug = Slug.make(res[1], res[2])
 
     $scope.nav.goToNextStep = function(){
+      var logMsg = "saving user for the first time"
       Users.save(
-        {id: $scope.input.url_slug, idType: "url_slug"}, // url
+        {id: $scope.input.url_slug, idType: "url_slug", log:logMsg},
         {
           givenName: res[1],
           surname: res[2],
@@ -2317,22 +2318,27 @@ angular.module( 'signup', [
     }
 
     $scope.nav.goToNextStep = function(){
+      var emailLogMsg = "saving the email on signup"
+      var pwLogMsg = "saving the password on signup"
+
       UsersAbout.patch(
-        {"id": url_slug, idType:"url_slug"},
+        {"id": url_slug, idType:"url_slug", log: emailLogMsg},
         {about: {email: $scope.input.email}},
         function(resp) {
           console.log("we set the email", resp)
         }
       )
+
       UsersPassword.save(
         {"id": url_slug, idType:"url_slug"},
-        {newPassword: $scope.input.password},
+        {newPassword: $scope.input.password, log: pwLogMsg},
         function(data){
           console.log("we set the password; showing the 'updating' modal.")
           security.clearCachedUser()
           Update.showUpdate(url_slug, redirectCb)
         }
       )
+
     }
   })
 
