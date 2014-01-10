@@ -3,6 +3,7 @@ from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import DataError
+from sqlalchemy import func
 
 import requests
 import json
@@ -445,10 +446,10 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
             user = None
 
     elif id_type == "email":
-        user = User.query.filter_by(email=id).first()
+        user = User.query.filter(func.lower(User.email) == func.lower(id)).first()
 
     elif id_type == "url_slug":
-        user = User.query.filter_by(url_slug=id).first()
+        user = User.query.filter(func.lower(User.url_slug) == func.lower(id)).first()
 
     if not show_secrets:
         user = hide_user_secrets(user)
