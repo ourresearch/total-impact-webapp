@@ -19,7 +19,10 @@ def update_by_url_slugs(url_slugs, webapp_api_endpoint):
     for url_slug in url_slugs:
         url = webapp_api_endpoint + u"/user/{url_slug}/products?action=refresh&source=scheduled".format(
             url_slug=url_slug)
-        print u"going to post to this url", url
+        try:
+            print u"going to post to this url", url
+        except UnicodeEncodeError:
+            print "UnicodeEncodeError when trying to print url"
         requests.post(url)
         time.sleep(QUEUE_DELAY_IN_SECONDS)
     return url_slugs
@@ -36,14 +39,16 @@ def get_profiles_not_updated_since(number_to_update, now=datetime.datetime.utcno
         "number_to_update": number_to_update
         })
     url_slugs = [row["url_slug"] for row in result]
-    print url_slugs
 
     return url_slugs
 
 
 def by_profile(number_to_update, webapp_api_endpoint, now=datetime.datetime.utcnow()):
     url_slugs = get_profiles_not_updated_since(number_to_update, now)
-    print u"got", len(url_slugs), url_slugs
+    try:    
+        print u"got", len(url_slugs), url_slugs
+    except UnicodeEncodeError:
+        print "UnicodeEncodeError in by_profile"
     update_by_url_slugs(url_slugs, webapp_api_endpoint)
     return url_slugs
 
