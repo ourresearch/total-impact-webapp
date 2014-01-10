@@ -19,7 +19,7 @@ def update_by_url_slugs(url_slugs, webapp_api_endpoint):
     for url_slug in url_slugs:
         url = webapp_api_endpoint + u"/user/{url_slug}/products?action=refresh&source=scheduled".format(
             url_slug=url_slug)
-        print "going to post to this url", url
+        print u"going to post to this url", url
         requests.post(url)
         time.sleep(QUEUE_DELAY_IN_SECONDS)
     return url_slugs
@@ -43,7 +43,7 @@ def get_profiles_not_updated_since(number_to_update, now=datetime.datetime.utcno
 
 def by_profile(number_to_update, webapp_api_endpoint, now=datetime.datetime.utcnow()):
     url_slugs = get_profiles_not_updated_since(number_to_update, now)
-    print "got", len(url_slugs), url_slugs
+    print u"got", len(url_slugs), url_slugs
     update_by_url_slugs(url_slugs, webapp_api_endpoint)
     return url_slugs
 
@@ -51,7 +51,7 @@ def by_profile(number_to_update, webapp_api_endpoint, now=datetime.datetime.utcn
 def main(action_type, number_to_update=3, specific_publisher=None):
     #35 every 10 minutes is 35*6perhour*24hours=5040 per day
 
-    print "running " + action_type
+    print u"running " + action_type
 
     try:
         if action_type == "by_profile":
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     parser.add_argument('--number_to_update', default='3', type=int, help="Number to update.")
     args = vars(parser.parse_args())
     print args
-    print "updater.py starting."
+    print u"updater.py starting."
     main(action_type, args["number_to_update"])
 
 
