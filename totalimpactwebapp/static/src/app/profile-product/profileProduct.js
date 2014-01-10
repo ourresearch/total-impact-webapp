@@ -66,8 +66,6 @@ angular.module("profileProduct", [
     },
     function(data){
       console.log("data", data)
-      $scope.biblio = Product.makeBiblio(data)
-      $scope.metrics = Product.makeMetrics(data)
       Loading.finish('profileProduct')
       Page.setTitle(data.biblio.title)
 
@@ -77,5 +75,3 @@ angular.module("profileProduct", [
     }
     )
   })
-
-  .controller('modalCtrl')

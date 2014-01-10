@@ -13,7 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from itsdangerous import TimestampSigner
 
 
-from totalimpactwebapp import app, db, login_manager, products_list
+from totalimpactwebapp import app, db, login_manager, products_list, product
 
 from totalimpactwebapp.password_reset import send_reset_token
 from totalimpactwebapp.password_reset import reset_password_from_token
@@ -435,15 +435,18 @@ def user_product(user_id, tiid):
         os.getenv("API_ADMIN_KEY")
     )
     if embed_product is not None:
-        return json_resp_from_thing(embed_product)
+        requested_product = embed_product
 
-    user = get_user_for_response(user_id, request)
-    try:
-        requested_product = [product for product in user.products if product["_id"] == tiid][0]
-    except IndexError:
-        abort_json(404, "That product doesn't exist.")
+    else:
+        user = get_user_for_response(user_id, request)
+        try:
+            requested_product = [p for p in user.products if p["_id"] == tiid][0]
+        except IndexError:
+            abort_json(404, "That product doesn't exist.")
 
-    return json_resp_from_thing(requested_product)
+    prepped = product.prep_product(requested_product, True)
+
+    return json_resp_from_thing(prepped)
 
 
 

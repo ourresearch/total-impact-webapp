@@ -9,7 +9,8 @@ award_configs = {
     "discussed": ["discussion", 2],
     "saved": ["saves", 3],
     "cited": ["citation", 4],
-    "recommended": ["recommendation", 5]
+    "recommended": ["recommendation", 5],
+    "unknown": ["interactions", 6]
 }
 
 

@@ -18,15 +18,16 @@
          </a>
       </div>
    </div>
-   <div class="product">
-      <div class="wrapper">
-         <div class="working" ng-show="loading.is('profileProduct')">
-            <i class="icon-refresh icon-spin"></i>
-            <span class="text">Loading product...</span>
-         </div>
-
-         <div class="biblio" ng-include="'product/biblio.tpl.html'"></div>
-         <div class="metric-details" ng-include="'product/metrics-table.tpl.html'"></div>
+   <div class="content wrapper">
+      <div class="working" ng-show="loading.is('profileProduct')">
+         <i class="icon-refresh icon-spin"></i>
+         <span class="text">Loading product...</span>
       </div>
+
+      <div  class="product-container"
+            ng-bind-html-unsafe="product.markup">
+
+      </div>
+
    </div>
 </div>

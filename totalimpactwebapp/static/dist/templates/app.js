@@ -697,16 +697,17 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         </a>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "   <div class=\"product\">\n" +
-    "      <div class=\"wrapper\">\n" +
-    "         <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
-    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "            <span class=\"text\">Loading product...</span>\n" +
-    "         </div>\n" +
-    "\n" +
-    "         <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
-    "         <div class=\"metric-details\" ng-include=\"'product/metrics-table.tpl.html'\"></div>\n" +
+    "   <div class=\"content wrapper\">\n" +
+    "      <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
+    "         <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "         <span class=\"text\">Loading product...</span>\n" +
     "      </div>\n" +
+    "\n" +
+    "      <div  class=\"product-container\"\n" +
+    "            ng-bind-html-unsafe=\"product.markup\">\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
     "   </div>\n" +
     "</div>");
 }]);
@@ -864,10 +865,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product._id }}\"\n" +
     "             ng-bind-html-unsafe=\"product.markup\"\n" +
     "             on-repeat-finished>\n" +
-    "\n" +
-    "\n" +
-    "            <h1>i'm inside a product li !</h1>\n" +
-    "\n" +
     "\n" +
     "         </li>\n" +
     "      </ul>\n" +

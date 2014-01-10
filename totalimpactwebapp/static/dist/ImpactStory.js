@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-04
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-10
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -882,13 +882,13 @@ angular.module('product.product')
 
   .controller('productCtrl', function ($scope, Product) {
 
-    if ($scope.product.genre == "blog"){
-      $scope.how_we_found_these = "how_we_found_these_blog_posts"
-    }
-
-    if ($scope.product.genre == "twitter"){
-      $scope.how_we_found_these = "how_we_found_these_tweets"
-    }
+//    if ($scope.product.genre == "blog"){
+//      $scope.how_we_found_these = "how_we_found_these_blog_posts"
+//    }
+//
+//    if ($scope.product.genre == "twitter"){
+//      $scope.how_we_found_these = "how_we_found_these_tweets"
+//    }
 
 
 //    $scope.upload_wordpress_key = function(){
@@ -997,8 +997,6 @@ angular.module("profileProduct", [
     },
     function(data){
       console.log("data", data)
-      $scope.biblio = Product.makeBiblio(data)
-      $scope.metrics = Product.makeMetrics(data)
       Loading.finish('profileProduct')
       Page.setTitle(data.biblio.title)
 
@@ -1008,8 +1006,6 @@ angular.module("profileProduct", [
     }
     )
   })
-
-  .controller('modalCtrl')
 
 angular.module("profile", [
   'resources.users',
@@ -4593,16 +4589,17 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         </a>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "   <div class=\"product\">\n" +
-    "      <div class=\"wrapper\">\n" +
-    "         <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
-    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "            <span class=\"text\">Loading product...</span>\n" +
-    "         </div>\n" +
-    "\n" +
-    "         <div class=\"biblio\" ng-include=\"'product/biblio.tpl.html'\"></div>\n" +
-    "         <div class=\"metric-details\" ng-include=\"'product/metrics-table.tpl.html'\"></div>\n" +
+    "   <div class=\"content wrapper\">\n" +
+    "      <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
+    "         <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "         <span class=\"text\">Loading product...</span>\n" +
     "      </div>\n" +
+    "\n" +
+    "      <div  class=\"product-container\"\n" +
+    "            ng-bind-html-unsafe=\"product.markup\">\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
     "   </div>\n" +
     "</div>");
 }]);
@@ -4760,10 +4757,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product._id }}\"\n" +
     "             ng-bind-html-unsafe=\"product.markup\"\n" +
     "             on-repeat-finished>\n" +
-    "\n" +
-    "\n" +
-    "            <h1>i'm inside a product li !</h1>\n" +
-    "\n" +
     "\n" +
     "         </li>\n" +
     "      </ul>\n" +

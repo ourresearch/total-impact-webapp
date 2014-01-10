@@ -5,12 +5,12 @@ from totalimpactwebapp import product_configs
 
 
 
-def prep_product(product):
+def prep_product(product, verbose=False):
 
     product["biblio"] = make_biblio(product)
     product["metrics"] = make_metrics(product)
     product["awards"] = make_awards(product)
-    product["markup"] = make_markup(product)
+    product["markup"] = make_markup(product, verbose)
     product = add_sort_keys(product)
 
     return product
@@ -68,80 +68,64 @@ Metrics stuff
 
 def make_metrics(product_dict):
     metrics = product_dict["metrics"]
-    configs = product_configs.get_metric_configs()
+    config_dict = product_configs.get_metric_configs()
+
     try:
         year = product_dict["biblio"]["year"]
     except KeyError:
         year = None
 
-    metrics = add_config_info_to_metrics(metrics, configs)
-
-    # remove metrics that have no audience set
-    metrics = {name: metric for name, metric in metrics.iteritems()
-               if metric["audience"] is not None}
-
-    metrics = expand_metric_metadata(metrics, year)
-    metrics = add_metric_percentiles(metrics)
-    metrics = add_award_to_metrics(metrics)
-
-    # on the client, we were making the awards for each metric here. we don't
-    # need it for the profile page, though, so skipping for now.
-
-    return metrics
-
-
-def add_award_to_metrics(metrics):
+    ret = {}
     for metric_name, metric in metrics.iteritems():
-        metric["award"] = make_award_for_single_metric(metric)
+        audience = config_dict[metric_name]["audience"]
 
-    return metrics
+        if audience is not None:
+            metric.update(config_dict[metric_name])
+            metric.update(metric_metadata(metric, year))
+            metric.update(metric_percentiles(metric))
+            metric["award"] = make_award_for_single_metric(metric)
+            ret[metric_name] = metric
 
-
-def add_config_info_to_metrics(metrics, configs):
-    for metric_name, metric in metrics.iteritems():
-        config_for_this_metric = configs[metric_name]
-
-        metric.update(config_for_this_metric)
-
-    return metrics
+    return ret
 
 
-def expand_metric_metadata(metrics, year):
+def metric_metadata(metric, year):
     interaction_display_names = {
         "f1000": "recommendations",
         "pmc_citations": "citations"
     }
-    for metric_name, metric in metrics.iteritems():
 
-        raw_count = metric["values"]["raw"]
-        metric["display_count"] = raw_count
+    ret = {}
 
-        # deal with F1000's troublesome "count" of "Yes." Can add others later.
-        try:
-            metric["actual_count"] = raw_count.replace("Yes", 1)
-        except AttributeError:
-            metric["actual_count"] = raw_count
+    raw_count = metric["values"]["raw"]
+    ret["display_count"] = raw_count
 
-        metric["environment"] = metric["static_meta"]["provider"]
-        interaction = metric["name"].split(":")[1].replace("_", " ")
+    # deal with F1000's troublesome "count" of "Yes." Can add others later.
+    try:
+        ret["actual_count"] = raw_count.replace("Yes", 1)
+    except AttributeError:
+        ret["actual_count"] = raw_count
 
-        try:
-            interaction = interaction_display_names[interaction]
-        except KeyError:
-            pass
+    ret["environment"] = metric["static_meta"]["provider"]
+    interaction = metric["name"].split(":")[1].replace("_", " ")
 
-        if metric["actual_count"] <= 1:
-            metric["display_interaction"] = interaction[:-1]  # de-pluralize
-        else:
-            metric["display_interaction"] = interaction
+    try:
+        interaction = interaction_display_names[interaction]
+    except KeyError:
+        pass
 
-        metric["refset_year"] = year
+    if ret["actual_count"] <= 1:
+        ret["display_interaction"] = interaction[:-1]  # de-pluralize
+    else:
+        ret["display_interaction"] = interaction
 
-    return metrics
+    ret["refset_year"] = year
+
+    return ret
 
 
-def add_metric_percentiles(metrics):
-
+def metric_percentiles(metric):
+    ret = {}
     refsets_config = {
         "WoS": ["Web of Science", "indexed by"],
         "dryad": ["Dryad", "added to"],
@@ -149,21 +133,20 @@ def add_metric_percentiles(metrics):
         "github": ["GitHub", "added to"]
     }
 
-    for metric_name, metric in metrics.iteritems():
-        for refset_key, normalized_values in metric["values"].iteritems():
-            if refset_key == "raw":
-                continue
-            else:
-                # This will arbitrarily pick on percentile reference set and
-                # make it be the only one that counts. Works fine as long as
-                # there is just one.
+    for refset_key, normalized_values in metric["values"].iteritems():
+        if refset_key == "raw":
+            continue
+        else:
+            # This will arbitrarily pick on percentile reference set and
+            # make it be the only one that counts. Works fine as long as
+            # there is just one.
 
-                metric["percentiles"] = normalized_values
-                metric["top_percent"] = 100 - normalized_values["CI95_lower"]
-                metric["refset"] = refsets_config[refset_key][0]
-                metric["refset_storage_verb"] = refsets_config[refset_key][1]
+            ret["percentiles"] = normalized_values
+            ret["top_percent"] = 100 - normalized_values["CI95_lower"]
+            ret["refset"] = refsets_config[refset_key][0]
+            ret["refset_storage_verb"] = refsets_config[refset_key][1]
 
-    return metrics
+    return ret
 
 
 
@@ -227,6 +210,7 @@ def get_top_metric(metrics):
 
 def make_award_for_single_metric(metric):
     config = product_configs.award_configs
+
     display_order = config[metric["engagement_type"]][1]
     is_highly = calculate_is_highly(metric)
 
@@ -331,9 +315,13 @@ def sum_metric_raw_values(product):
 Markup stuff
 """
 
-def make_markup(product_dict):
+def make_markup(product_dict, verbose):
+    template_root = "product"
+    if verbose:
+        template_root += "-verbose"
+
     return render_template(
-        "product.html",
+        template_root + ".html",
         product=product_dict
     )
 

@@ -12,13 +12,13 @@ angular.module('product.product')
 
   .controller('productCtrl', function ($scope, Product) {
 
-    if ($scope.product.genre == "blog"){
-      $scope.how_we_found_these = "how_we_found_these_blog_posts"
-    }
-
-    if ($scope.product.genre == "twitter"){
-      $scope.how_we_found_these = "how_we_found_these_tweets"
-    }
+//    if ($scope.product.genre == "blog"){
+//      $scope.how_we_found_these = "how_we_found_these_blog_posts"
+//    }
+//
+//    if ($scope.product.genre == "twitter"){
+//      $scope.how_we_found_these = "how_we_found_these_tweets"
+//    }
 
 
 //    $scope.upload_wordpress_key = function(){

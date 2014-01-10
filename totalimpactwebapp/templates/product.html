@@ -1,56 +1,6 @@
 <div class="product">
 
-   <div class="biblio">
-      <h5 class="title">
-         <!-- if embedded, open product page in a new tab -->
-         <a class="title-text target-blank"
-
-            {% if request.args.get('embedded') in ['true', 'True', 1] %}
-            target="_blank"
-            {% endif %}
-
-            href="{{ request.url_root }}{{ g.profile_slug }}/product/{{ product._id }}">
-
-            {{product.biblio.title}}
-         </a>
-
-
-         {% if product.biblio.url %}
-         <a class="linkout url title" target="_blank" href="{{ product.biblio.url }}">
-            <i class="icon-external-link-sign"></i>
-         </a>
-         {% endif %}
-      </h5>
-      <div class="optional-biblio">
-         {% if product.biblio.year %}
-         <span class="year">({{ product.biblio.year }})</span>
-         {% endif %}
-
-         {% if product.biblio.authors and not product.biblio.embed %}
-         <span class="authors">{{ product.biblio.authors }}.</span>
-         {% endif %}
-
-
-         {% if product.biblio.repository and not product.biblio.embed %}
-         <span class="repository">{{ product.biblio.repository }}.</span>
-         {% endif %}
-
-
-         {% if product.biblio.journal %}
-         <span class="journal">{{ product.biblio.journal }}</span>
-         {% endif %}
-
-         {% if product.biblio.description %}
-         <span ng-if="product.biblio.description" class="description">{{ product.biblio.description }}</span>
-         {% endif %}
-
-
-         {% if product.biblio.embed %}
-         <!-- this is a temp method for embedding tweets -->
-         <span ng-if="product.biblio.embed" class="embed" ng-bind-html-unsafe="product.biblio.embed"></span>
-         {% endif %}
-      </div>
-   </div>
+   {% include 'biblio.html' %}
 
    <div class="awards">
       <ul class="awards-list">
