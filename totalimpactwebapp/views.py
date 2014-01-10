@@ -373,6 +373,9 @@ def user_products_get(id):
 
     user = get_user_for_response(id, request)
 
+    if current_user and current_user.url_slug == user.url_slug:
+        user.update_last_viewed_profile()
+
     if request.args.get("group_by")=="duplicates":
         user = get_user_for_response(id, request)
         resp = user.get_duplicates_list()
