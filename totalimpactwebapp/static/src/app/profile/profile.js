@@ -1,7 +1,6 @@
 angular.module("profile", [
   'resources.users',
   'product.product',
-  'directives.jQueryTools',
   'services.page',
   'update.update',
   'ui.bootstrap',

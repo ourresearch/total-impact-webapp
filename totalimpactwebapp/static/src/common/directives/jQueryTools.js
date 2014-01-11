@@ -5,27 +5,23 @@ angular.module("directives.jQueryTools", [])
     return {
       restrict: 'A',
       link: function (scope, element, attr) {
-
-        scope.$on("ngRepeatFinished", function(){
-          $("[data-content]").popover({
-            html:true,
-            trigger:'hover',
-            placement:'bottom'
-          })
+        $("body").popover({
+          html:true,
+          trigger:'hover',
+          placement:'bottom',
+          selector: "[data-content]"
         })
       }
     }
   })
 
-  .directive('jqPopover', function () {
+  .directive('jqTooltip', function () {
     return {
       restrict: 'A',
       link: function (scope, element, attr) {
-
-        scope.$on("ngRepeatFinished", function(){
-          $("[data-toggle='tooltip']").tooltip({
-            placement:'bottom'
-          })
+        $("body").tooltip({
+          placement:'bottom',
+          selector: "[data-toggle='tooltip']"
         })
       }
     }

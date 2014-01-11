@@ -1,5 +1,4 @@
-from itertools import groupby
-
+from copy import deepcopy
 from flask import render_template
 from totalimpactwebapp import product_configs
 
@@ -167,8 +166,7 @@ def make_awards(product):
     awards_dict = {}
 
     for metric_name, metric in metrics.iteritems():
-        this_award = metric["award"]
-        del metric["award"]
+        this_award = deepcopy(metric["award"])
         this_award["metrics"] = [metric]
         this_award_key = (this_award["audience"], this_award["engagement_type"])
         this_award["top_metric"] = None

@@ -13,6 +13,7 @@ angular.module('app', [
   'services.page',
   'security',
   'directives.crud',
+  'directives.jQueryTools',
   'templates.app',
   'templates.common',
   'infopages',

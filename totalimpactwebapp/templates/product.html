@@ -7,7 +7,7 @@
          {% for award in product.awards | sort(reverse=True, attribute='display_order') %}
             <li class="award">
                {% if award.is_highly %}
-               
+
                <a href="{{ request.url_root }}{{ g.profile_slug }}/product/{{ product._id }}"
                      class="ti-badge is-highly {{award.audience}} {{award.engagement_type}}"
                      data-original-title="Highly {{award.engagement_type}} by <span class='{{award.display_audience}}'>{{award.display_audience}}</span>"
@@ -17,14 +17,14 @@
                      {{award.top_metric.refset_storage_verb}} {{award.top_metric.refset}} in {{award.top_metric.refset_year}},
                      suggesting it's highly {{award.engagement_type}} by {{award.display_audience }}.
                      Click to learn more.">
-         
+
                   <span class="modifier">highly</span>
                   <span class="engagement-type">{{award.engagement_type}}</span>
                   <span class="audience">by {{award.audience}}</span>
-               </a>            
-                     
+               </a>
+
                {% else %}
-                  
+
                <a href="{{ request.url_root }}{{ g.profile_slug }}/product/{{ product._id }}"
                   class="ti-badge is-not-highly {{award.audience}} {{award.engagement_type}}"
                   data-original-title="{{award.engagement_type}} by <span class='{{award.display_audience}}'>{{award.display_audience}}</span>"
@@ -34,8 +34,8 @@
                   Click to learn more.">
                   <span class="engagement-type">{{award.engagement_type}}</span>
                   <span class="audience">by {{award.audience}}</span>
-               </a>                  
-            
+               </a>
+
                {% endif %}
 
             </li>

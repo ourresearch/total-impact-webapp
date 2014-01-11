@@ -3,53 +3,49 @@
    {% include 'biblio.html' %}
 
    <ul class="metric-details-list">
-      {% for metric in product.metrics %}
+      {% for metric in product.metrics.values() | sort(attribute="award.display_order") %}
 {#         @todo "orderBy: ['-award.isHighly', '-award.audience']" #}
 {#         @todo make popovers work via jquery #}
 
       <li class="metric-detail">
          <span class="badge-container">
+            {% if metric.award.is_highly %}
             <span
-                  class="ti-badge lil-badge {{metric.award.audience}} {{metric.award.engagementType}}"
+                  class="ti-badge is-not-highly {{metric.award.audience}} {{metric.award.engagement_type}}"
                   ng-show="!metric.award.isHighly"
-                  popover-trigger="mouseenter"
-                  popover-placement="bottom"
-                  popover-title="{{metric.award.engagementType}} by {{metric.award.displayAudience}}"
-                  popover="This item has {{metric.actualCount}} {{metric.environment}}
-                  {{metric.displayInteraction}}, suggesting it's been
-                  {{metric.award.engagementType}} by {{metric.award.displayAudience}}.">
-               <span class="engagement-type">{{metric.award.engagementType}}</span>
+                  data-original-title="{{metric.award.engagement_type}} by {{metric.award.display_audience}}"
+                  data-content="This item has {{metric.actual_count}} {{metric.environment}}
+                  {{metric.display_interaction}}, suggesting it's been
+                  {{metric.award.engagement_type}} by {{metric.award.display_audience}}.">
+               <span class="engagement-type">{{metric.award.engagement_type}}</span>
                <span class="audience">by {{metric.award.audience}}</span>
              </span>
 
+            {% else %}
             <span
-                  class="ti-badge big-badge {{metric.award.audience}} {{metric.award.engagementType}}"
-                  ng-show="metric.award.isHighly"
-                  popover-trigger="mouseenter"
-                  popover-placement="bottom"
-                  popover-title="Highly {{metric.award.engagementType}} by {{metric.award.displayAudience}}"
-                  popover="This item has {{metric.actualCount}} {{metric.environment}}
-                  {{metric.displayInteraction}}. That's better than
+                  class="ti-badge is-highly {{metric.award.audience}} {{metric.award.engagement_type}}"
+                  data-original-title="Highly {{metric.award.engagement_type}} by {{metric.award.display_audience}}"
+                  data-content="This item has {{metric.actual_count}} {{metric.environment}}
+                  {{metric.display_interaction}}. That's better than
                   {{metric.percentiles.CI95_lower}}% of items
-                  {{metric.referenceSetStorageVerb}} {{metric.refSet}} in {{metric.referenceSetYear}},
-                  suggesting it's highly {{metric.award.engagementType}} by {{metric.award.displayAudience }}.">
+                  {{metric.refset_storage_verb}} {{metric.refSet}} in {{metric.refset_year}},
+                  suggesting it's highly {{metric.award.engagement_type}} by {{metric.award.display_audience }}.">
                <span class="modifier">highly</span>
-               <span class="engagement-type">{{metric.award.engagementType}}</span>
+               <span class="engagement-type">{{metric.award.engagement_type}}</span>
                <span class="audience">by {{metric.award.audience}}</span>
             </span>
+            {% endif %}
 
          </span>
          <span class="text">
             <a class="value-and-name"
                href="{{ metric.provenance_url }}"
                target="_blank"
-               popover-trigger='mouseenter'
-               popover-placement="bottom"
-               popover="{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.">
-               <img ng-src="{{ metric.static_meta.icon }}">
-               <span class="raw-value">{{ metric.actualCount }}</span>
+               data-content="{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.">
+               <img src="{{ metric.static_meta.icon }}">
+               <span class="raw-value">{{ metric.actual_count }}</span>
                <span class="environment">{{ metric.environment }}</span>
-               <span class="interaction">{{ metric.displayInteraction }}</span>
+               <span class="interaction">{{ metric.display_interaction }}</span>
                <i class="icon-external-link-sign"></i>
             </a>
 
@@ -65,7 +61,7 @@
 
                   <i class="icon-info-sign"></i>
                </span>
-               <span class="descr">of {{ biblio.genre }}s published in {{ biblio.year }}</span>
+               <span class="descr">of {{ product.biblio.genre }}s published in {{ product.biblio.year }}</span>
             </span>
             {% endif %}
 

@@ -7759,16 +7759,16 @@ div.product-page .product .biblio h5 a:hover {
 div.product-page .product .biblio div.optional-biblio {
   font-size: 20px;
 }
-div.product-page .product .metric-details {
+div.product-page .product ul.metric-details-list {
   margin-top: 40px;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail {
+div.product-page .product ul.metric-details-list li.metric-detail {
   font-size: 15px;
   margin-bottom: 20px;
   clear: both;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail:before,
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail:after {
+div.product-page .product ul.metric-details-list li.metric-detail:before,
+div.product-page .product ul.metric-details-list li.metric-detail:after {
   content: " ";
   /* 1 */
 
@@ -7776,11 +7776,11 @@ div.product-page .product .metric-details ul.metric-details-list li.metric-detai
   /* 2 */
 
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail:after {
+div.product-page .product ul.metric-details-list li.metric-detail:after {
   clear: both;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail:before,
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail:after {
+div.product-page .product ul.metric-details-list li.metric-detail:before,
+div.product-page .product ul.metric-details-list li.metric-detail:after {
   content: " ";
   /* 1 */
 
@@ -7788,73 +7788,73 @@ div.product-page .product .metric-details ul.metric-details-list li.metric-detai
   /* 2 */
 
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail:after {
+div.product-page .product ul.metric-details-list li.metric-detail:after {
   clear: both;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail .badge-container {
+div.product-page .product ul.metric-details-list li.metric-detail .badge-container {
   width: 250px;
   float: left;
   margin-top: 8px;
   display: inline-block;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail .badge-container .ti-badge {
+div.product-page .product ul.metric-details-list li.metric-detail .badge-container .ti-badge {
   float: right;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail .badge-container .ti-badge span.audience {
+div.product-page .product ul.metric-details-list li.metric-detail .badge-container .ti-badge span.audience {
   display: inline;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text {
+div.product-page .product ul.metric-details-list li.metric-detail span.text {
   float: left;
   margin-left: 10px;
   padding-top: 5px;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text a.value-and-name {
+div.product-page .product ul.metric-details-list li.metric-detail span.text a.value-and-name {
   color: #333;
   display: inline-block;
   vertical-align: 8px;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text a.value-and-name:hover {
+div.product-page .product ul.metric-details-list li.metric-detail span.text a.value-and-name:hover {
   text-decoration: none;
   color: #ff4e00;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text a.value-and-name:hover i {
+div.product-page .product ul.metric-details-list li.metric-detail span.text a.value-and-name:hover i {
   color: #ff4e00;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text a.value-and-name span.raw-value {
+div.product-page .product ul.metric-details-list li.metric-detail span.text a.value-and-name span.raw-value {
   margin-left: 5px;
   display: inline-block;
   text-align: right;
   font-weight: bold;
   font-size: 16px;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text a.value-and-name img {
+div.product-page .product ul.metric-details-list li.metric-detail span.text a.value-and-name img {
   height: 16px;
   margin: 0 3px 0 3px;
   vertical-align: middle;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text a.value-and-name i {
+div.product-page .product ul.metric-details-list li.metric-detail span.text a.value-and-name i {
   color: #ddd;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text span.percentile {
+div.product-page .product ul.metric-details-list li.metric-detail span.text span.percentile {
   display: block;
   float: left;
   border-bottom: 1px solid #eee;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text span.percentile span.values {
+div.product-page .product ul.metric-details-list li.metric-detail span.text span.percentile span.values {
   font-weight: bold;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text span.percentile span.values span.upper,
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text span.percentile span.values span.lower {
+div.product-page .product ul.metric-details-list li.metric-detail span.text span.percentile span.values span.upper,
+div.product-page .product ul.metric-details-list li.metric-detail span.text span.percentile span.values span.lower {
   font-size: 16px;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text span.percentile span.values i {
+div.product-page .product ul.metric-details-list li.metric-detail span.text span.percentile span.values i {
   opacity: .5;
   cursor: pointer;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text span.percentile span.values i:hover {
+div.product-page .product ul.metric-details-list li.metric-detail span.text span.percentile span.values i:hover {
   opacity: .8;
 }
-div.product-page .product .metric-details ul.metric-details-list li.metric-detail span.text span.percentile span.descr {
+div.product-page .product ul.metric-details-list li.metric-detail span.text span.percentile span.descr {
   color: #aaa;
   font-size: 80%;
 }

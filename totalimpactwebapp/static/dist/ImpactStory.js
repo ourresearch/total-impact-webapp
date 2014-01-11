@@ -18,6 +18,7 @@ angular.module('app', [
   'services.page',
   'security',
   'directives.crud',
+  'directives.jQueryTools',
   'templates.app',
   'templates.common',
   'infopages',
@@ -1010,7 +1011,6 @@ angular.module("profileProduct", [
 angular.module("profile", [
   'resources.users',
   'product.product',
-  'directives.jQueryTools',
   'services.page',
   'update.update',
   'ui.bootstrap',
@@ -2168,27 +2168,23 @@ angular.module("directives.jQueryTools", [])
     return {
       restrict: 'A',
       link: function (scope, element, attr) {
-
-        scope.$on("ngRepeatFinished", function(){
-          $("[data-content]").popover({
-            html:true,
-            trigger:'hover',
-            placement:'bottom'
-          })
+        $("body").popover({
+          html:true,
+          trigger:'hover',
+          placement:'bottom',
+          selector: "[data-content]"
         })
       }
     }
   })
 
-  .directive('jqPopover', function () {
+  .directive('jqTooltip', function () {
     return {
       restrict: 'A',
       link: function (scope, element, attr) {
-
-        scope.$on("ngRepeatFinished", function(){
-          $("[data-toggle='tooltip']").tooltip({
-            placement:'bottom'
-          })
+        $("body").tooltip({
+          placement:'bottom',
+          selector: "[data-toggle='tooltip']"
         })
       }
     }
@@ -4742,7 +4738,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"products\" ng-show=\"userExists\" jq-popover jq-tooltip>\n" +
+    "<div class=\"products\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"loading\" ng-show=\"loadingProducts()\">\n" +
     "         <div class=\"working products-loading\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading products...</span></div>\n" +
