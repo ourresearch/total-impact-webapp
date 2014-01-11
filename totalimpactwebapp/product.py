@@ -272,6 +272,7 @@ def add_sort_keys(product):
     product["metric_raw_sum"] = sum_metric_raw_values(product)
     product["awardedness_score"] = get_awardedness_score(product)
     product["has_metrics"] = bool(product["metrics"])
+    product["has_percentiles"] = has_percentiles(product)
 
     return product
 
@@ -299,8 +300,17 @@ def sum_metric_raw_values(product):
 
     return raw_values_sum
 
+def has_percentiles(product):
+    for metric_name, metric in product["metrics"].iteritems():
 
+        for refset_value in metric["values"].values():
+            try:
+                if "CI95_lower" in refset_value.keys():
+                    return True
+            except AttributeError:
+                pass
 
+    return False
 
 
 

@@ -1032,7 +1032,7 @@ angular.module("profile", [
 }])
 
 .factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page){
-  var about = {}
+  var about = {} 
 
 
   return {
