@@ -1,16 +1,13 @@
 import requests, os, json, logging, re, datetime
-import mandrill
 import analytics
-from time import sleep
 from util import local_sleep
 
-from flask import request, send_file, abort, make_response, g, redirect, url_for
+from flask import request, send_file, abort, make_response, g, redirect
 from flask import render_template
+from flask import render_template_string
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
-from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
-from itsdangerous import TimestampSigner
 
 
 from totalimpactwebapp import app, db, login_manager, products_list, product
@@ -327,8 +324,13 @@ def get_user_about(profile_id):
         pass
 
     elif request.method == "PATCH":
-        logger.debug(u"got patch request for user {profile_id} {json}".format(
-            profile_id=profile_id, json=request.json))
+        logger.debug(
+            u"got patch request for user {profile_id} (PK {pk}): '{log}'. {json}".format(
+            profile_id=profile_id,
+            pk=user.id,
+            log=request.args.get("log", "").replace("+", " "),
+            json=request.json)
+        )
 
         user.patch(request.json["about"])
         logger.debug(u"patched the user: {user} ".format(
@@ -709,6 +711,21 @@ def get_js_bottom():
         "bottom.js",
         newrelic_footer=newrelic_footer
     )
+
+
+def render_standalone(filename, **kwargs):
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    path = current_dir + "/standalone/" + filename
+
+    with open(path, "r") as f:
+        template_str = f.read()
+
+    return render_template_string(template_str, **kwargs)
+
+
+@app.route("/2013")
+def get_2013_year_in_review():
+    return render_template("2013.html")
 
 
 

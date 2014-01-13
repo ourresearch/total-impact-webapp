@@ -306,7 +306,9 @@ angular.module('importers.allTheImporters')
             inputType: "username",
             inputNeeded: "author page URL",
             placeholder: "http://figshare.com/authors/your_username/12345",
-            cleanupFunction: function(x) {return('http://'+x.replace('http://', ''))},            
+            cleanupFunction: function(x) {
+              if (typeof x==="undefined") return x; 
+              return('http://'+x.replace('http://', ''))},
             saveUsername: "figshare_id"
           }
          ,{
@@ -676,7 +678,7 @@ angular.module('importers.importer')
 .controller('importerCtrl', function($scope, $location, Products, UserProfile, UsersProducts, Importer, Loading, Update){
 
   var getUserSlug = function(){
-    var re = /\/(\w+)\/products/
+    var re = /\/([-\w\.]+)\/products/
     var res = re.exec($location.path())
     return res[1]
   }
@@ -1257,7 +1259,7 @@ angular.module("profile", [
    replace: true,
    template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
    link: function($scope,el){
-     var re = /^\/(\w+)\/product\/(\w+)/
+     var re = /^\/([-\w\.]+)\/product\/(\w+)/
      var m = re.exec($location.path())
      $scope.returnLink = null
 
@@ -1471,7 +1473,7 @@ angular.module('settings', [
      $scope.onSave = function() {
       Loading.start('saveButton')
       UsersAbout.patch(
-        {id: $scope.user.url_slug},
+        {id: $scope.user.url_slug, log:"changing email from settings"},
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
@@ -1631,26 +1633,33 @@ angular.module( 'signup', [
   .controller( 'signupNameCtrl', function ( $scope, $location, Signup, Slug ) {
     $scope.nav.goToNextStep = function(){
 
-      var slug = Slug.asciify($scope.input.givenName + "/" + $scope.input.surname).replace(/\s/g, "_")
+      var slug = Slug.make($scope.input.givenName, $scope.input.surname)
+      $scope.givenName = $scope.input.givenName
+      $scope.surname = $scope.input.surname
 
       $location.path("signup/" + slug + "/url")
+        .search("givenName", $scope.input.givenName)
+        .search("surname", $scope.input.surname)
     }
 
   })
 
   .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {
-    var  nameRegex = /\/(\w+)\/(\w+)\/url/
-    var res = nameRegex.exec($location.path())
+    var nameRegex = /\/signup\/(.+?)\/url/
+    var slug = nameRegex.exec($location.path())[1]
 
-    $scope.givenName = res[1]
-    $scope.input.url_slug = Slug.make(res[1], res[2])
+    $scope.input.url_slug = slug
 
     $scope.nav.goToNextStep = function(){
+      var logMsg = "saving user for the first time"
+      var givenName = $location.search()["givenName"]
+      var surname = $location.search()["surname"]
+
       Users.save(
-        {id: $scope.input.url_slug, idType: "url_slug"}, // url
+        {id: $scope.input.url_slug, idType: "url_slug", log:logMsg},
         {
-          givenName: res[1],
-          surname: res[2],
+          givenName: givenName,
+          surname: surname,
           url_slug: $scope.input.url_slug,
           tips: TipsService.keysStr()
         },
@@ -1658,14 +1667,14 @@ angular.module( 'signup', [
           console.log("got response back from save user", resp)
           security.clearCachedUser()
           $location.path("signup/" + $scope.input.url_slug + "/products/add")
-
+          $location.search("")  /// clear the names from the url
         }
       )
     }
   })
 
   .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporters, security ) {
-    var m = /\/signup\/(\w+)\//.exec($location.path())
+    var m = /\/signup\/([-\w\.]+)\//.exec($location.path())
 
     $scope.importers = AllTheImporters.get()
     $scope.nav.goToNextStep = function(){
@@ -1674,29 +1683,34 @@ angular.module( 'signup', [
   })
 
   .controller( 'signupPasswordCtrl', function ($scope, $location, security, UsersAbout, UsersPassword, Update) {
-    var url_slug = /\/signup\/(\w+)\//.exec($location.path())[1]
+    var url_slug = /\/signup\/([-\w\.]+)\//.exec($location.path())[1]
     var redirectCb = function(){
       $location.path("/" + url_slug)
       security.requestCurrentUser()
     }
 
     $scope.nav.goToNextStep = function(){
+      var emailLogMsg = "saving the email on signup"
+      var pwLogMsg = "saving the password on signup"
+
       UsersAbout.patch(
-        {"id": url_slug, idType:"url_slug"},
+        {"id": url_slug, idType:"url_slug", log: emailLogMsg},
         {about: {email: $scope.input.email}},
         function(resp) {
           console.log("we set the email", resp)
         }
       )
+
       UsersPassword.save(
         {"id": url_slug, idType:"url_slug"},
-        {newPassword: $scope.input.password},
+        {newPassword: $scope.input.password, log: pwLogMsg},
         function(data){
           console.log("we set the password; showing the 'updating' modal.")
           security.clearCachedUser()
           Update.showUpdate(url_slug, redirectCb)
         }
       )
+
     }
   })
 
@@ -2713,7 +2727,7 @@ angular.module('security.service', [
 
 
   var currentUrlSlug = function(){
-    var m = /^(\/signup)?\/(\w+)\//.exec($location.path())
+    var m = /^(\/signup)?\/([-\w\.]+)\//.exec($location.path())
     var current_slug = (m) ? m[2] : false;
     console.log("current slug is", current_slug)
     return current_slug
@@ -3573,16 +3587,22 @@ angular.module('services.slug')
 
   }
 
+  var cleanName = function(name){
+    var re = /[^-\w\.]/g
+    return removeDiacritics(name).replace(re, "")
+  }
+
   return {
     asciify: removeDiacritics,
     make: function(givenName, surname) {
-      var slug = removeDiacritics(givenName) + removeDiacritics(surname);
 
-      if (/^\w+$/.test(slug)) { // our slug is an ASCII string
+      var slug = cleanName(givenName) + "" + cleanName(surname);
+
+      if (/^[-\w\.]+$/.test(slug)) { // we can match an ascii string
         return slug;
       }
       else {
-        // we failed to find an ASCII slug that could sorta represent the user's name.
+        // looks like failed to make an ASCII slug that could even sorta represent the user's name.
         // so we make a random one, instead.
         var randomInt = (Math.random() + "").substr(2, 5)
         return "user" +  randomInt
@@ -4800,7 +4820,7 @@ angular.module("settings/custom-url-settings.tpl.html", []).run(["$templateCache
     "                class=\"form-control\"\n" +
     "                required\n" +
     "                data-require-unique\n" +
-    "                ng-pattern=\"/^\\w+$/\"\n" +
+    "                ng-pattern=\"/^[-\\w\\.]+$/\"\n" +
     "                 />\n" +
     "\n" +
     "      </div>\n" +
@@ -5227,7 +5247,7 @@ angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", fun
 angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-url.tpl.html",
     "<div class=\"signup-input url\" ng-controller=\"signupUrlCtrl\">\n" +
-    "   <div class=\"intro\"><br>Great, {{ givenName }}, your next step is to pick your profile's custom URL. <br><span class=\"paren\">(you can always change this later)</span></div>\n" +
+    "   <div class=\"intro\"><br>Your next step is to pick your profile's custom URL. <br><span class=\"paren\">(you can always change this later)</span></div>\n" +
     "   \n" +
     "   <div class=\"form-group custom-url\"\n" +
     "        ng-model=\"profileAbout.url_slug\"\n" +
@@ -5242,7 +5262,7 @@ angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function
     "                required\n" +
     "                data-require-unique\n" +
     "                data-check-initial-value=\"true\"\n" +
-    "                ng-pattern=\"/^\\w+$/\"\n" +
+    "                ng-pattern=\"/^[\\w-]+$/\"\n" +
     "                 />\n" +
     "\n" +
     "      </div>\n" +
@@ -5253,7 +5273,7 @@ angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function
     "              ng-show=\"signupForm.url_slug.$error.pattern\n" +
     "               && signupForm.url_slug.$dirty\n" +
     "               && !loading.is()\">\n" +
-    "            Sorry, this URL has invalid characters.<br> You can only use numbers or Latin letters (without diacritics).\n" +
+    "            Sorry, this URL has invalid characters.<br> You can only use hyphens, numbers or Latin-alphabet letters.\n" +
     "         </div>\n" +
     "\n" +
     "         <div class=\"help-block error\"\n" +

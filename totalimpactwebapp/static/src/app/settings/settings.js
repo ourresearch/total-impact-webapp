@@ -126,7 +126,7 @@ angular.module('settings', [
      $scope.onSave = function() {
       Loading.start('saveButton')
       UsersAbout.patch(
-        {id: $scope.user.url_slug},
+        {id: $scope.user.url_slug, log:"changing email from settings"},
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.

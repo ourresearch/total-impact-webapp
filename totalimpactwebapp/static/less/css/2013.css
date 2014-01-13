@@ -1,0 +1,195 @@
+@import url("//fonts.googleapis.com/css?family=Lato:100,300,400,700,900");
+
+@import url("//fonts.googleapis.com/css?family=Oswald:700");
+/* ---------------------------------------------
+
+Some of my own mixins
+
+-------------------------------------------------*/
+/*---------------------------------------------------
+    LESS Elements 0.6
+  ---------------------------------------------------
+    A set of useful LESS mixins by Dmitry Fadeyev
+    Special thanks for mixin suggestions to:
+      Kris Van Herzeele,
+      Benoit Adam,
+      Portenart Emile-Victor,
+      Ryan Faerman
+
+    More info at: http://lesselements.com
+-----------------------------------------------------*/
+body {
+  background: #FF4E00;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+body.active {
+  background: #ff3000;
+}
+body.active #number #number-value {
+  opacity: 1;
+}
+body a {
+  color: #fff;
+  font-weight: 900;
+  text-decoration: none;
+}
+body a:hover {
+  text-decoration: underline;
+}
+html {
+  margin: 0;
+  padding: 0;
+}
+div.header {
+  font-family: Oswald, sans-serif;
+  text-align: center;
+  height: 600px;
+  position: relative;
+  margin-bottom: 230px;
+}
+div.header a.brand {
+  padding-top: 50px;
+  width: 550px;
+  display: inline-block;
+  border-bottom: 5px solid #fff;
+}
+div.header a.brand img {
+  width: 500px;
+}
+div.header h1 span.date {
+  font-size: 300px;
+  display: block;
+  line-height: 1;
+}
+div.header h1 span.text {
+  text-transform: uppercase;
+  font-size: 80px;
+}
+div.header div.instr {
+  font-size: 30px;
+  font-family: Lato;
+  font-weight: 100;
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+div#number {
+  margin: 0;
+  font-size: 125px;
+  position: absolute;
+  width: 500px;
+  text-align: right;
+  top: 0;
+  left: 0;
+  font-family: Oswald, sans-serif;
+}
+div#number.fixed {
+  position: fixed;
+  left: 0;
+}
+div#number #number-value {
+  opacity: .5;
+}
+div.content {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  min-height: 1500px;
+}
+div.content ul#facts {
+  padding: 0;
+  margin-left: 540px;
+  width: 500px;
+}
+div.content ul#facts li.fact {
+  list-style-type: none;
+}
+div.content ul#facts li.fact h2 {
+  font-family: Oswald;
+  text-transform: uppercase;
+  font-size: 70px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+div.content ul#facts li.fact section {
+  font-family: Lato;
+  font-weight: 100;
+  font-size: 30px;
+}
+div.content ul#facts li.fact section div.clear {
+  clear: both;
+}
+div.content ul#facts li.fact section li {
+  list-style-type: disc;
+}
+div.content ul#facts li.fact section ul.cities {
+  float: left;
+}
+div.content ul#facts li.fact section div.tweets div.tweet {
+  font-size: 18px;
+  font-weight: 300;
+  margin: 30px 0 0 30px;
+}
+div.content ul#facts li.fact section div.tweets div.tweet a {
+  font-weight: 300;
+}
+div.content ul#facts li.fact section div.tweets div.tweet div.author {
+  margin-left: 10px;
+}
+div.content ul#facts li.fact section div.tweets div.tweet div.author a {
+  font-weight: 900;
+}
+div.footer {
+  background: red;
+  text-align: center;
+}
+div.footer a.brand {
+  padding: 200px 0 0;
+  display: block;
+  margin-bottom: 50px;
+}
+div.footer a.brand img {
+  width: 500px;
+}
+div.footer div.links a.call-to-action {
+  font-family: Lato;
+  display: inline-block;
+  font-weight: 900;
+  font-size: 19px;
+  background: #eee;
+  color: #444;
+  text-decoration: none;
+  -webkit-border-top-right-radius: 4px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 4px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  vertical-align: 8px;
+  padding: 10px 16px 9px 16px;
+  margin-right: 20px;
+  border: 1px solid ccc;
+}
+div.footer div.links a.call-to-action i {
+  margin-right: 6px;
+  color: #0053b0;
+  font-size: 120%;
+}
+div.footer div.links iframe {
+  display: inline;
+}

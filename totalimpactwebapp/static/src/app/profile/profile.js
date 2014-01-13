@@ -247,7 +247,7 @@ angular.module("profile", [
    replace: true,
    template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
    link: function($scope,el){
-     var re = /^\/(\w+)\/product\/(\w+)/
+     var re = /^\/([-\w\.]+)\/product\/(\w+)/
      var m = re.exec($location.path())
      $scope.returnLink = null
 

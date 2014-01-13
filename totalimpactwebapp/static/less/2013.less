@@ -1,0 +1,191 @@
+@import url("//fonts.googleapis.com/css?family=Lato:100,300,400,700,900");
+@import url("//fonts.googleapis.com/css?family=Oswald:700");
+@import "elements";
+
+
+
+@numberWidth: 500px;
+
+body {
+   background: #FF4E00;
+   color: #fff;
+   margin:0;
+   padding:0;
+   position:relative;
+   &.active {
+      background: #ff3000;
+      #number{
+         #number-value {
+            opacity: 1;
+         }
+      }
+   }
+   a {
+      color: #fff;
+      font-weight: 900;
+      text-decoration: none;
+      &:hover {
+         text-decoration: underline;
+      }
+   }
+}
+html{
+   margin:0;
+   padding:0;
+}
+
+div.header {
+   font-family: Oswald, sans-serif;
+   text-align: center;
+   height: 600px;
+   position:relative;
+   margin-bottom: 230px;
+   a.brand {
+      padding-top: 50px;
+      img {
+         width: 500px;
+      }
+      width: 550px;
+      display:inline-block;
+      border-bottom: 5px solid #fff;
+   }
+   h1 {
+      span.date {
+         font-size: 300px;
+         display:block;
+         line-height: 1;
+      }
+      span.text {
+         text-transform: uppercase;
+         font-size: 80px;
+      }
+   }
+   div.instr {
+      font-size: 30px;
+      font-family:Lato;
+      font-weight: 100;
+      position:absolute;
+      bottom:20px;
+      width:100%;
+      text-align:center;
+   }
+
+}
+
+
+div#number {
+   margin:0;
+   font-size: 125px;
+   position: absolute;
+   width: @numberWidth;
+   text-align: right;
+   top:0;
+   left:0;
+   font-family: Oswald, sans-serif;
+
+   &.fixed {
+      position:fixed;
+      left:0;
+   }
+   #number-value {
+      opacity: .5;
+   }
+
+}
+
+
+div.content {
+   margin:0;
+   padding:0;
+   position: relative;
+   min-height: 1500px;
+
+   ul#facts {
+      padding:0;
+      margin-left: @numberWidth + 40px;
+      width: 500px;
+      li.fact {
+         list-style-type: none;
+         h2 {
+            font-family: Oswald;
+            text-transform: uppercase;
+            font-size: 70px;
+            margin:0;
+            padding:0;
+            line-height: 1;
+            margin-bottom: 20px;
+         }
+         section{
+            font-family:Lato;
+            font-weight: 100;
+            font-size:30px;
+            div.clear { clear:both;}
+
+            li {
+               list-style-type: disc;
+            }
+
+            ul.cities {
+               float:left;
+               li {
+               }
+            }
+
+            div.tweets {
+               div.tweet {
+                  font-size: 18px;
+                  font-weight: 300;
+                  margin: 30px 0 0 30px;
+                  a {
+                     font-weight: 300;
+                  }
+                  div.author {
+                     a {font-weight: 900}
+                     margin-left: 10px;
+                  }
+               }
+            }
+
+         }
+      }
+   }
+
+}
+
+div.footer {
+   background: red;
+   text-align: center;
+   a.brand {
+      padding: 200px 0 0;
+      display: block;
+      margin-bottom: 50px;
+      img {
+         width: 500px;
+      }
+   }
+   div.links {
+      a.call-to-action {
+         font-family: Lato;
+         display: inline-block;
+         font-weight: 900;
+         font-size: 19px;
+         background: #eee;
+         color: #444;
+         text-decoration: none;
+         .border-radius(4px, 3px, 3px, 3px);
+         vertical-align: 8px;
+         padding: 10px 16px 9px 16px;
+         margin-right: 20px;
+         border:1px solid ccc;
+         i {
+            margin-right: 6px;
+            color: #0053b0;
+            font-size: 120%;
+         }
+      }
+      iframe {
+         display:inline;
+      }
+
+   }
+}
