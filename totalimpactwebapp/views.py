@@ -372,10 +372,15 @@ def user_products_get(id):
 
     user = get_user_for_response(id, request)
 
-    if request.args.get("group_by") == "duplicates":
-        resp = products_list.get_duplicates_list_from_tiids(user.tiids)
+    try:
+        if current_user.url_slug == user.url_slug:
+            user.update_last_viewed_profile()
+    except AttributeError:   #AnonymousUser
+        pass
 
-    else:
+    if request.args.get("group_by")=="duplicates":
+        resp = products_list.get_duplicates_list_from_tiids(user.tiids)
+    else:        
         include_headings = request.args.get("include_heading_products") in [1, "true", "True"]
         resp = products_list.prep(
             user.products,
@@ -401,11 +406,11 @@ def user_products_modify(id):
 
     else:
         # Actions that require authentication
-
-        if current_user is None:
+        try:
+            if current_user.url_slug != user.url_slug:
+                abort_json(401, "Only profile owners can modify profiles.")
+        except AttributeError:
             abort_json(405, "You must be logged in to modify profiles.")
-        elif current_user.url_slug != user.url_slug:
-            abort_json(401, "Only profile owners can modify profiles.")
 
         # actions, depending on what http method was used:
         if request.method == "POST" and action == "deduplicate":

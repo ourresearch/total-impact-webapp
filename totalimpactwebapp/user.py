@@ -4,6 +4,7 @@ from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import DataError
+from sqlalchemy import func
 
 import requests
 import json
@@ -159,6 +160,9 @@ class User(db.Model):
                     return True
         return False
 
+    def update_last_viewed_profile(self):
+        save_user_last_viewed_profile_timestamp(self.id)
+        return True
 
     def is_authenticated(self):
         # this gets overriden by Flask-login
@@ -191,7 +195,7 @@ class User(db.Model):
         return {"deleted_tiids": tiids_to_delete}
 
     def refresh_products(self, source="webapp"):
-        set_last_refreshed_timestamp(self.id)
+        save_user_last_refreshed_timestamp(self.id)
         analytics_credentials = self.get_analytics_credentials()        
         return refresh_products_from_tiids(self.tiids, analytics_credentials, source)
 
@@ -232,6 +236,7 @@ class User(db.Model):
             "collection_id",
             "created",
             "last_viewed_profile",
+            "last_refreshed",
             "orcid_id",
             "github_id",
             "slideshare_id",
@@ -366,22 +371,41 @@ def remove_duplicates_from_user(user_id):
     return tiids_to_remove
 
 
-def set_last_refreshed_timestamp(user_id):
-    logger.debug(u"In set_last_refreshed_timestamp with user {user_id}".format(
+def save_user_last_refreshed_timestamp(user_id, timestamp=None):
+    logger.debug(u"In save_user_last_refreshed_timestamp with user {user_id}".format(
         user_id=user_id))
 
     user = User.query.get(user_id)
     db.session.merge(user)
-    user.last_refreshed = now_in_utc()
+    if not timestamp:
+        timestamp = now_in_utc()
+    user.last_refreshed = timestamp
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in set_last_refreshed_from_user for {user_id}, rolling back.  Message: {message}".format(
+        logger.warning(u"Fails Integrity check in save_user_last_refreshed_timestamp for {user_id}, rolling back.  Message: {message}".format(
             user_id=user_id,
             message=e.message))
     return True
 
+def save_user_last_viewed_profile_timestamp(user_id, timestamp=None):
+    logger.debug(u"In save_user_last_viewed_profile_timestamp with user {user_id}".format(
+        user_id=user_id))
+
+    user = User.query.get(user_id)
+    db.session.merge(user)
+    if not timestamp:
+        timestamp = now_in_utc()    
+    user.last_viewed_profile = timestamp
+    try:
+        db.session.commit()
+    except (IntegrityError, FlushError) as e:
+        db.session.rollback()
+        logger.warning(u"Fails Integrity check in save_user_last_viewed_profile_timestamp for {user_id}, rolling back.  Message: {message}".format(
+            user_id=user_id,
+            message=e.message))
+    return True
 
 def create_user_from_slug(url_slug, user_request_dict, api_root, db):
     logger.debug(u"Creating new user {url_slug} with unicode_request_dict {user_request_dict}".format(
@@ -426,10 +450,10 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
             user = None
 
     elif id_type == "email":
-        user = User.query.filter_by(email=id).first()
+        user = User.query.filter(func.lower(User.email) == func.lower(id)).first()
 
     elif id_type == "url_slug":
-        user = User.query.filter_by(url_slug=id).first()
+        user = User.query.filter(func.lower(User.url_slug) == func.lower(id)).first()
 
     if not show_secrets:
         user = hide_user_secrets(user)
