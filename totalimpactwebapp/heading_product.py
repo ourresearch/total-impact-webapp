@@ -12,13 +12,17 @@ def make_for_category(genre, account, category_products):
         anchor += "-" + re.sub(r"[^\w]", r"-", account)
 
     anchor = anchor.replace("--", "-")
+    try:
+        icon = product_configs.genre_icons[genre]
+    except KeyError:
+        icon = product_configs.genre_icons["unknown"]
 
     heading_product = {
         'is_heading': True,
         '_id': anchor,
         'anchor': anchor,
         'genre': genre,
-        'icon': product_configs.genre_icons[genre],
+        'icon': icon,
         'account': account,
         'headingDimension': 'category',
         'summary': {
