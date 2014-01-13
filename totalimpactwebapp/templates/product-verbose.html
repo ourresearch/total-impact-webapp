@@ -3,9 +3,7 @@
    {% include 'biblio.html' %}
 
    <ul class="metric-details-list">
-      {% for metric in product.metrics.values() | sort(attribute="award.display_order") %}
-{#         @todo "orderBy: ['-award.isHighly', '-award.audience']" #}
-{#         @todo make popovers work via jquery #}
+      {% for metric in product.metrics.values() | sort(reverse=True, attribute="award.display_order") %}
 
       <li class="metric-detail">
          <span class="badge-container">

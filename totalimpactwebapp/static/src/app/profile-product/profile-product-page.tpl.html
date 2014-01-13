@@ -24,10 +24,13 @@
          <span class="text">Loading product...</span>
       </div>
 
-      <div  class="product-container"
-            ng-bind-html-unsafe="product.markup">
+      <div  class="product-container" ng-bind-html-unsafe="product.markup"></div>
 
-      </div>
+      <a class="percentile-info" ng-click="openInfoModal()"
+         ng-show="!loading.is('profileProduct') && product.has_percentiles">
+         <icon class="icon-question-sign"></icon>
+         Where do these percentiles come from?
+      </a>
 
    </div>
 </div>

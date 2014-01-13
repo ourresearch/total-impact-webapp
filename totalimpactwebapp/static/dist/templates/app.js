@@ -703,10 +703,13 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         <span class=\"text\">Loading product...</span>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div  class=\"product-container\"\n" +
-    "            ng-bind-html-unsafe=\"product.markup\">\n" +
+    "      <div  class=\"product-container\" ng-bind-html-unsafe=\"product.markup\"></div>\n" +
     "\n" +
-    "      </div>\n" +
+    "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
+    "         ng-show=\"!loading.is('profileProduct') && product.has_percentiles\">\n" +
+    "         <icon class=\"icon-question-sign\"></icon>\n" +
+    "         Where do these percentiles come from?\n" +
+    "      </a>\n" +
     "\n" +
     "   </div>\n" +
     "</div>");

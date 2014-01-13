@@ -8,13 +8,8 @@ div.product-page {
          min-width: 130px;
       }
    }
-
-   .product { // overrides the main .product styles
-//      margin-left:200px;
-      width:  100%;
-      margin-top: 50px;
+   .content {
       margin-bottom: 100px;
-
       div.working {
          color: #ddd;
          font-size: 30px;
@@ -22,106 +17,125 @@ div.product-page {
          font-weight: bolder;
          text-align: center;
          span.text { margin-left: 10px;}
+         padding-top: 100px;
       }
 
-      .biblio {
-         float:none;
+      a.percentile-info {
+         border-top: 1px solid #bbb;
+         color: #555;
+         font-size: 15px;
+         margin-left: 265px;
+         padding-top: 5px;
+         padding: 5px;
+         &:hover {
+            color: #333;
+         }
+      }
+
+      .product { // overrides the main .product styles
+   //      margin-left:200px;
          width:  100%;
-         h5 {
-            a {
-               font-size: 30px;
-               i {
-                  font-size:  15px;
-                  &:hover {cursor: pointer;}
-               }
-               &:hover { // hacky way to say: pretend you're not a link.
-                  color:  inherit;
-                  cursor: default;
-                  color:#333;
+         margin-top: 50px;
+         margin-bottom: 30px;
+
+
+         .biblio {
+            float:none;
+            width:  100%;
+            h5 {
+               a {
+                  font-size: 30px;
+                  i {
+                     font-size:  15px;
+                     &:hover {cursor: pointer;}
+                  }
+                  &:hover { // hacky way to say: pretend you're not a link.
+                     color:  inherit;
+                     cursor: default;
+                     color:#333;
+                  }
                }
             }
-         }
-         div.optional-biblio {
-            font-size: 20px;
-         }
-      }
-      ul.metric-details-list {
-         margin-top: 40px;
-         li.metric-detail {
-            font-size:  15px;
-            margin-bottom: 20px;
-            clear:both;
-            .clearfix;
-            .badge-container {
-               width: 250px;
-               float:left;
-               margin-top: 8px;
-               display:inline-block;
-               .ti-badge {
-                  float:right;
-                  span.audience {display:inline;} // override
-               }
+            div.optional-biblio {
+               font-size: 20px;
             }
-            span.text {
-               float:left;
-               margin-left: 10px;
-               padding-top: 5px;
-               a.value-and-name {
-
-                  color:  #333;
-//                  min-width: 200px;
-                  display: inline-block;
-                  vertical-align: 8px;
-                  &:hover {
-                     text-decoration: none;
-                     color:  @linkColor;
-                     i {color:  @linkColor;}
-                  }
-                  span.raw-value {
-                     margin-left:5px;
-                     display: inline-block;
-                     text-align: right;
-                     font-weight: bold;
-                     font-size:  16px;
-                  }
-                  span.environment {
-                  }
-                  span.interaction {
-                  }
-                  img {
-                     height: 16px;
-                     margin: 0 3px 0 3px;
-                     vertical-align: middle;
-//                     .grayscale(.75);
-                  }
-                  i {color:  #ddd;}
-
-               }
-
-               span.percentile {
-                  display:block;
+         }
+         ul.metric-details-list {
+            margin-top: 40px;
+            li.metric-detail {
+               font-size:  15px;
+               margin-bottom: 20px;
+               clear:both;
+               .clearfix;
+               .badge-container {
+                  width: 250px;
                   float:left;
-                  border-bottom: 1px solid #eee;
-                  span.values {
-                     font-weight: bold;
-                     span.upper, span.lower {
+                  margin-top: 8px;
+                  display:inline-block;
+                  .ti-badge {
+                     float:right;
+                     span.audience {display:inline;} // override
+                  }
+               }
+               span.text {
+                  float:left;
+                  margin-left: 10px;
+                  padding-top: 5px;
+                  a.value-and-name {
+
+                     color:  #333;
+   //                  min-width: 200px;
+                     display: inline-block;
+                     vertical-align: 8px;
+                     &:hover {
+                        text-decoration: none;
+                        color:  @linkColor;
+                        i {color:  @linkColor;}
+                     }
+                     span.raw-value {
+                        margin-left:5px;
+                        display: inline-block;
+                        text-align: right;
+                        font-weight: bold;
                         font-size:  16px;
                      }
-                     i {
-                        opacity: .5;
-                        cursor: pointer;
-                        &:hover {opacity: .8;}
+                     span.environment {
                      }
+                     span.interaction {
+                     }
+                     img {
+                        height: 16px;
+                        margin: 0 3px 0 3px;
+                        vertical-align: middle;
+   //                     .grayscale(.75);
+                     }
+                     i {color:  #ddd;}
+
                   }
-                  span.descr {
-                     color:  #aaa;
-                     font-size: 80%;
+
+                  span.percentile {
+                     display:block;
+                     float:left;
+                     border-bottom: 1px solid #eee;
+                     span.values {
+                        font-weight: bold;
+                        span.upper, span.lower {
+                           font-size:  16px;
+                        }
+                        i {
+                           opacity: .5;
+                           cursor: pointer;
+                           &:hover {opacity: .8;}
+                        }
+                     }
+                     span.descr {
+                        color:  #aaa;
+                        font-size: 80%;
+                     }
                   }
                }
             }
          }
       }
    }
-
-
 }
