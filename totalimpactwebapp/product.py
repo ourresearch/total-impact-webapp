@@ -100,9 +100,9 @@ def metric_metadata(metric, year):
     ret["display_count"] = raw_count
 
     # deal with F1000's troublesome "count" of "Yes." Can add others later.
-    try:
-        ret["actual_count"] = raw_count.replace("Yes", 1)
-    except AttributeError:
+    if raw_count == "Yes":
+        ret["actual_count"] = 1
+    else:
         ret["actual_count"] = raw_count
 
     ret["environment"] = metric["static_meta"]["provider"]
