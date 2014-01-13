@@ -105,10 +105,6 @@ def metric_metadata(metric, year):
     else:
         ret["actual_count"] = raw_count
 
-
-
-
-
     ret["environment"] = metric["static_meta"]["provider"]
     interaction = metric["name"].split(":")[1].replace("_", " ")
 
@@ -298,7 +294,7 @@ def sum_metric_raw_values(product):
     raw_values_sum = 0
     try:
         for metric_name, metric in product["metrics"].iteritems():
-            raw_values_sum += metric["values"]["raw"]
+            raw_values_sum += metric["actual_count"]
     except KeyError:
         pass
 
