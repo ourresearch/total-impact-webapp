@@ -100,6 +100,7 @@ def metric_metadata(metric, year):
     ret["display_count"] = raw_count
 
     # deal with F1000's troublesome "count" of "Yes." Can add others later.
+    print "RAW COUNT", raw_count
     if raw_count == "Yes":
         ret["actual_count"] = 1
     else:
