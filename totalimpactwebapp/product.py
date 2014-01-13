@@ -100,11 +100,14 @@ def metric_metadata(metric, year):
     ret["display_count"] = raw_count
 
     # deal with F1000's troublesome "count" of "Yes." Can add others later.
-    print "RAW COUNT", raw_count
-    if "Yes" in raw_count:
+    if isinstance(raw_count, basestring):
         ret["actual_count"] = 1
     else:
         ret["actual_count"] = raw_count
+
+
+
+
 
     ret["environment"] = metric["static_meta"]["provider"]
     interaction = metric["name"].split(":")[1].replace("_", " ")
