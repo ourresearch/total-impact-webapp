@@ -110,7 +110,6 @@ def get_user_for_response(id, request, include_products=True):
         logged_in = False
 
     retrieved_user = get_user_from_id(id, id_type, logged_in, include_products)
-    g.profile_slug = retrieved_user.url_slug
     if include_products:
         local_sleep(1)
 
@@ -118,6 +117,8 @@ def get_user_for_response(id, request, include_products=True):
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
             id=id))
         abort(404, "That user doesn't exist.")
+
+    g.profile_slug = retrieved_user.url_slug
 
     return retrieved_user
 
