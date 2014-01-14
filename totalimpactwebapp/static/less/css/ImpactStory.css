@@ -7556,6 +7556,9 @@ div.products .wrapper div.products-without-metrics div.well a {
   width: 660px !important;
   padding: 0 !important;
 }
+.product-container.twitter.real-product .awards {
+  margin-top: 40px;
+}
 .product-container div.product-controls {
   position: absolute;
   display: none;
