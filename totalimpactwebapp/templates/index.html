@@ -5,7 +5,7 @@
 <head>
    <base href="/"> <!-- needed for html5 pretty urls -->
    <meta charset="utf-8">
-   <title>{% raw %}ImpactStory: {{ page.getTitle() }}{% endraw %}</title>
+   <title ng-bind="page.getTitle()">ImpactStory</title>
    <meta name="google-site-verification" content="eBr2vhkz1SYB5e6B7QDhFu7vazuGo_lI_mf3EaRdHZ8" /><!-- verification for production GA -->
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 

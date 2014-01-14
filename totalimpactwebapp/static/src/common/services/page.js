@@ -59,7 +59,7 @@ angular.module("services.page")
      } ,
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
      getTitle: function() { return title; },
-     setTitle: function(newTitle) { title = newTitle },
+     setTitle: function(newTitle) { title = "ImpactStory: " + newTitle },
 
      isLandingPage: function(){
        return ($location.path() == "/")
