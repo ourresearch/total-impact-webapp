@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-13
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-14
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1247,6 +1247,9 @@ angular.module("profile", [
   console.log("user slug is: ", userSlug)
   $scope.userSlug = userSlug;
   $scope.baseUrl = Page.getBaseUrl
+  $scope.embed = {}
+  $scope.embed.type = "badge"
+
 })
 
 

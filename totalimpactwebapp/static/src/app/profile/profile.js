@@ -235,6 +235,9 @@ angular.module("profile", [
   console.log("user slug is: ", userSlug)
   $scope.userSlug = userSlug;
   $scope.baseUrl = Page.getBaseUrl
+  $scope.embed = {}
+  $scope.embed.type = "badge"
+
 })
 
 
