@@ -39,13 +39,13 @@
       {% endif %}
 
       {% if product.biblio.description %}
-      <span ng-if="product.biblio.description" class="description">{{ product.biblio.description }}</span>
+      <span class="description">{{ product.biblio.description }}</span>
       {% endif %}
 
 
       {% if product.biblio.embed %}
       <!-- this is a temp method for embedding tweets -->
-      <span ng-if="product.biblio.embed" class="embed" ng-bind-html-unsafe="product.biblio.embed"></span>
+      <span class="embed">{{ product.biblio.embed | safe}}</span>
       {% endif %}
    </div>
 </div>
