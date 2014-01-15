@@ -484,6 +484,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "      <div class=\"wrapper\">\n" +
     "         <h2>Uncover your impacts from all across the Web: </h2>\n" +
     "         <ul id=\"source-logos\">\n" +
+    "            <li><img src=\"/static/img/logos/altmetric-com.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/arxiv.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/citeulike.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +

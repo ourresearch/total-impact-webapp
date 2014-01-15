@@ -43,6 +43,7 @@ Metric Configs
 
 config_keys = ["name", "audience", "engagement_type", "display", "min_for_award"]
 configs = [
+    ["altmetric_com:tweets", "public", "discussed", "badge", 3],
     ["citeulike:bookmarks", "scholars", "saved", "badge", 3],
     ["crossref:citations", "scholars", "cited", "badge", 3],
     ["delicious:bookmarks", "public", "saved", "badge", 3],
