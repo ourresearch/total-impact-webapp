@@ -3,9 +3,36 @@
    <a class="dismiss" ng-click="$close()">&times;</a>
 </div>
 <div class="modal-body">
-   <p>To embed this profile, copy and paste the code snippet below into the source HTML of your page:</p>
-   <textarea rows="3">&lt;iframe src="{{ baseUrl() }}/embed/{{ userSlug }}" width="100%" height="600"&lt;/iframe&gt;</textarea>
+
+   <label>
+        <input type="radio" name="embed-type"
+               value="link" ng-model="embed.type" />
+        Embed a link to this profile
+    </label>
+
+   <label>
+        <input type="radio" name="embed-type"
+               value="profile" ng-model="embed.type" />
+        Embed this whole profile
+    </label>
+
+
+   <div class="code">
+      <p>Paste this code to embed:</p>
+
+      <textarea class="embed-profile" ng-show="embed.type=='profile'" rows="3">&lt;iframe src="{{ baseUrl() }}/embed/{{ userSlug }}" width="100%" height="600"&lt;/iframe&gt;</textarea>
+      <textarea class="embed-link"  ng-show="embed.type=='link'"  rows="3">embed yer link!</textarea>
+   </div>
+
+
+
 </div>
+
+
+
+
+
+
 <!--<div class="modal-footer">
    <button class="btn btn-primary ok" ng-click="$close()">OK</button>
 </div>-->

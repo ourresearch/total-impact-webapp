@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-14
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-15
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -4654,9 +4654,36 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
-    "   <p>To embed this profile, copy and paste the code snippet below into the source HTML of your page:</p>\n" +
-    "   <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&lt;/iframe&gt;</textarea>\n" +
+    "\n" +
+    "   <label>\n" +
+    "        <input type=\"radio\" name=\"embed-type\"\n" +
+    "               value=\"link\" ng-model=\"embed.type\" />\n" +
+    "        Embed a link to this profile\n" +
+    "    </label>\n" +
+    "\n" +
+    "   <label>\n" +
+    "        <input type=\"radio\" name=\"embed-type\"\n" +
+    "               value=\"profile\" ng-model=\"embed.type\" />\n" +
+    "        Embed this whole profile\n" +
+    "    </label>\n" +
+    "\n" +
+    "\n" +
+    "   <div class=\"code\">\n" +
+    "      <p>Paste this code to embed:</p>\n" +
+    "\n" +
+    "      <textarea class=\"embed-profile\" ng-show=\"embed.type=='profile'\" rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&lt;/iframe&gt;</textarea>\n" +
+    "      <textarea class=\"embed-link\"  ng-show=\"embed.type=='link'\"  rows=\"3\">embed yer link!</textarea>\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "</div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "<!--<div class=\"modal-footer\">\n" +
     "   <button class=\"btn btn-primary ok\" ng-click=\"$close()\">OK</button>\n" +
     "</div>-->");
