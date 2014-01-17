@@ -181,6 +181,11 @@ def make_awards(product):
 
     for k, award in awards_dict.iteritems():
         award["top_metric"] = get_top_metric(award["metrics"])
+        if award["top_metric"]["is_highly"]:
+            award["is_highly"] = True
+        else:
+            award["is_highly"] = False
+
 
     return awards_dict.values()
 
