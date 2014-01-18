@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-16
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-18
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -4658,21 +4658,28 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "   <label>\n" +
     "        <input type=\"radio\" name=\"embed-type\"\n" +
     "               value=\"link\" ng-model=\"embed.type\" />\n" +
-    "        Embed a link to this profile\n" +
+    "      <span class=\"text\">Embed a <strong>link to this profile</strong></span>\n" +
+    "      <img src=\"static/img/impactstory-logo.png\" alt=\"Impactstory logo\"/>\n" +
     "    </label>\n" +
     "\n" +
     "   <label>\n" +
     "        <input type=\"radio\" name=\"embed-type\"\n" +
     "               value=\"profile\" ng-model=\"embed.type\" />\n" +
-    "        Embed this whole profile\n" +
+    "      <span class=\"text\">Embed a this <strong>whole profile</strong></span>\n" +
+    "      <img src=\"static/img/embedded-profile-example.png\" alt=\"Impactstory profile\"/>\n" +
     "    </label>\n" +
     "\n" +
     "\n" +
     "   <div class=\"code\">\n" +
-    "      <p>Paste this code to embed:</p>\n" +
+    "      <div class=\"embed-profile\" ng-show=\"embed.type=='profile'\">\n" +
+    "         <h3>Paste this code in your page source HTML:</h3>\n" +
+    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&lt;/iframe&gt;</textarea>\n" +
+    "      </div>\n" +
+    "      <div class=\"embed-link\" ng-show=\"embed.type=='link'\">\n" +
+    "         <h3>Paste this code in your page source HTML:</h3>\n" +
+    "         <textarea rows=\"3\">embed yer link!</textarea>\n" +
+    "      </div>\n" +
     "\n" +
-    "      <textarea class=\"embed-profile\" ng-show=\"embed.type=='profile'\" rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&lt;/iframe&gt;</textarea>\n" +
-    "      <textarea class=\"embed-link\"  ng-show=\"embed.type=='link'\"  rows=\"3\">embed yer link!</textarea>\n" +
     "   </div>\n" +
     "\n" +
     "\n" +

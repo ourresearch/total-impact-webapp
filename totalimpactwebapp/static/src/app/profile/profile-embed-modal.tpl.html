@@ -7,21 +7,28 @@
    <label>
         <input type="radio" name="embed-type"
                value="link" ng-model="embed.type" />
-        Embed a link to this profile
+      <span class="text">Embed a <strong>link to this profile</strong></span>
+      <img src="static/img/impactstory-logo.png" alt="Impactstory logo"/>
     </label>
 
    <label>
         <input type="radio" name="embed-type"
                value="profile" ng-model="embed.type" />
-        Embed this whole profile
+      <span class="text">Embed a this <strong>whole profile</strong></span>
+      <img src="static/img/embedded-profile-example.png" alt="Impactstory profile"/>
     </label>
 
 
    <div class="code">
-      <p>Paste this code to embed:</p>
+      <div class="embed-profile" ng-show="embed.type=='profile'">
+         <h3>Paste this code in your page source HTML:</h3>
+         <textarea rows="3">&lt;iframe src="{{ baseUrl() }}/embed/{{ userSlug }}" width="100%" height="600"&lt;/iframe&gt;</textarea>
+      </div>
+      <div class="embed-link" ng-show="embed.type=='link'">
+         <h3>Paste this code in your page source HTML:</h3>
+         <textarea rows="3">embed yer link!</textarea>
+      </div>
 
-      <textarea class="embed-profile" ng-show="embed.type=='profile'" rows="3">&lt;iframe src="{{ baseUrl() }}/embed/{{ userSlug }}" width="100%" height="600"&lt;/iframe&gt;</textarea>
-      <textarea class="embed-link"  ng-show="embed.type=='link'"  rows="3">embed yer link!</textarea>
    </div>
 
 
