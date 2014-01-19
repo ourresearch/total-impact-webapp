@@ -742,19 +742,19 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "   <h4>Embed profile</h4>\n" +
     "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
     "</div>\n" +
-    "<div class=\"modal-body\">\n" +
+    "<div class=\"modal-body embed\">\n" +
     "\n" +
     "   <label>\n" +
     "        <input type=\"radio\" name=\"embed-type\"\n" +
     "               value=\"link\" ng-model=\"embed.type\" />\n" +
-    "      <span class=\"text\">Embed a <strong>link to this profile</strong></span>\n" +
+    "      <span class=\"text\">Embed a <br><strong>link to this profile</strong></span>\n" +
     "      <img src=\"static/img/impactstory-logo.png\" alt=\"Impactstory logo\"/>\n" +
     "    </label>\n" +
     "\n" +
     "   <label>\n" +
     "        <input type=\"radio\" name=\"embed-type\"\n" +
     "               value=\"profile\" ng-model=\"embed.type\" />\n" +
-    "      <span class=\"text\">Embed a this <strong>whole profile</strong></span>\n" +
+    "      <span class=\"text\">Embed this <br><strong>whole profile at full size</strong></span>\n" +
     "      <img src=\"static/img/embedded-profile-example.png\" alt=\"Impactstory profile\"/>\n" +
     "    </label>\n" +
     "\n" +
@@ -762,11 +762,11 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "   <div class=\"code\">\n" +
     "      <div class=\"embed-profile\" ng-show=\"embed.type=='profile'\">\n" +
     "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&lt;/iframe&gt;</textarea>\n" +
+    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</textarea>\n" +
     "      </div>\n" +
     "      <div class=\"embed-link\" ng-show=\"embed.type=='link'\">\n" +
     "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">embed yer link!</textarea>\n" +
+    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl() }}/embed/{{ userSlug }}\"&gt;&lt;img src=\"{{ baseUrl() }}/logo/small\" /&gt;&lt;/a&gt;</textarea>\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
