@@ -743,7 +743,6 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
     "</div>\n" +
     "<div class=\"modal-body embed\">\n" +
-    "\n" +
     "   <label>\n" +
     "        <input type=\"radio\" name=\"embed-type\"\n" +
     "               value=\"link\" ng-model=\"embed.type\" />\n" +
@@ -766,7 +765,7 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "      </div>\n" +
     "      <div class=\"embed-link\" ng-show=\"embed.type=='link'\">\n" +
     "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl() }}/embed/{{ userSlug }}\"&gt;&lt;img src=\"{{ baseUrl() }}/logo/small\" /&gt;&lt;/a&gt;</textarea>\n" +
+    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl() }}/{{ userSlug }}\"&gt;&lt;img src=\"{{ baseUrl() }}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</textarea>\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
@@ -775,14 +774,7 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "\n" +
     "</div>\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "<!--<div class=\"modal-footer\">\n" +
-    "   <button class=\"btn btn-primary ok\" ng-click=\"$close()\">OK</button>\n" +
-    "</div>-->");
+    "");
 }]);
 
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {

@@ -3,7 +3,6 @@
    <a class="dismiss" ng-click="$close()">&times;</a>
 </div>
 <div class="modal-body embed">
-
    <label>
         <input type="radio" name="embed-type"
                value="link" ng-model="embed.type" />
@@ -26,7 +25,7 @@
       </div>
       <div class="embed-link" ng-show="embed.type=='link'">
          <h3>Paste this code in your page source HTML:</h3>
-         <textarea rows="3">&lt;a href="{{ baseUrl() }}/embed/{{ userSlug }}"&gt;&lt;img src="{{ baseUrl() }}/logo/small" /&gt;&lt;/a&gt;</textarea>
+         <textarea rows="3">&lt;a href="{{ baseUrl() }}/{{ userSlug }}"&gt;&lt;img src="{{ baseUrl() }}/logo/small" width="200" /&gt;&lt;/a&gt;</textarea>
       </div>
 
    </div>
@@ -35,11 +34,3 @@
 
 </div>
 
-
-
-
-
-
-<!--<div class="modal-footer">
-   <button class="btn btn-primary ok" ng-click="$close()">OK</button>
-</div>-->
