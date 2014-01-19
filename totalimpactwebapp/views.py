@@ -817,4 +817,9 @@ def logo():
     filename = "static/img/logos/impactstory-logo-big.png"
     return send_file(filename, mimetype='image/png')
 
+@app.route('/logo/small')
+def logo_small():
+    filename = "static/img/impactstory-logo.png"
+    return send_file(filename, mimetype='image/png')
+
 
