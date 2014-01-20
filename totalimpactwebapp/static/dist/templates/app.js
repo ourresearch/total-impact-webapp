@@ -662,7 +662,11 @@ angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$te
     "         <strong>Nice!</strong>\n" +
     "      </p>\n" +
     "\n" +
-    "      <form name=\"freeFulltextUrlForm\" novalidate>\n" +
+    "      <form\n" +
+    "              name=\"freeFulltextUrlForm\"\n" +
+    "              novalidate\n" +
+    "              ng-submit=\"onSave()\"\n" +
+    "              ng-controller=\"freeFulltextUrlFormCtrl\">\n" +
     "         <div class=\"input-group\">\n" +
     "            <span class=\"input-group-addon icon-globe\"></span>\n" +
     "            <input\n" +

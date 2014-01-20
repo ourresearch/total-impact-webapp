@@ -68,7 +68,6 @@ angular.module("profileProduct", [
       tiid: $routeParams.tiid
     },
     function(data){
-      console.log("data", data)
       Loading.finish('profileProduct')
       Page.setTitle(data.biblio.title)
 
@@ -81,8 +80,19 @@ angular.module("profileProduct", [
 
 
 .controller("fulltextLocationModalCtrl", function(){
-
   })
+
+
+.controller("freeFulltextUrlFormCtrl", function($scope, Loading){
+
+  $scope.onSave = function() {
+    Loading.start("saveButton")
+    console.log("saving...")
+
+
+
+  }
+})
 
 
 

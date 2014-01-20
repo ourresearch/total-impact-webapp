@@ -1,4 +1,4 @@
-angular.module('directives.forms', [])
+angular.module('directives.forms', ["services.loading"])
 .directive('prettyCheckbox', function(){
   // mostly from http://jsfiddle.net/zy7Rg/6/
   return {
@@ -21,7 +21,7 @@ angular.module('directives.forms', [])
   }
 })
 
-.directive('saveButtons', function(){
+.directive('saveButtons', function(Loading){
   return {
     templateUrl: 'forms/save-buttons.tpl.html',
     replace: true,
@@ -29,6 +29,7 @@ angular.module('directives.forms', [])
     require: "^form",
     restrict: "E",
     link:function(scope, elem, attr, formController){
+      scope.loading = Loading
       if (attr.action) {
         scope.action = attr.action
         scope.actionGerund = attr.action + "ing"

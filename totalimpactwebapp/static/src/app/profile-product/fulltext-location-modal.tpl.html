@@ -9,7 +9,11 @@
          <strong>Nice!</strong>
       </p>
 
-      <form name="freeFulltextUrlForm" novalidate>
+      <form
+              name="freeFulltextUrlForm"
+              novalidate
+              ng-submit="onSave()"
+              ng-controller="freeFulltextUrlFormCtrl">
          <div class="input-group">
             <span class="input-group-addon icon-globe"></span>
             <input

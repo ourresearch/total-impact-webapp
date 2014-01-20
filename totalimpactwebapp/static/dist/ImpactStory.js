@@ -1002,7 +1002,6 @@ angular.module("profileProduct", [
       tiid: $routeParams.tiid
     },
     function(data){
-      console.log("data", data)
       Loading.finish('profileProduct')
       Page.setTitle(data.biblio.title)
 
@@ -1015,8 +1014,19 @@ angular.module("profileProduct", [
 
 
 .controller("fulltextLocationModalCtrl", function(){
-
   })
+
+
+.controller("freeFulltextUrlFormCtrl", function($scope, Loading){
+
+  $scope.onSave = function() {
+    Loading.start("saveButton")
+    console.log("saving...")
+
+
+
+  }
+})
 
 
 
@@ -2366,7 +2376,7 @@ angular.module("directives.spinner")
 
     }
     })
-angular.module('directives.forms', [])
+angular.module('directives.forms', ["services.loading"])
 .directive('prettyCheckbox', function(){
   // mostly from http://jsfiddle.net/zy7Rg/6/
   return {
@@ -2389,7 +2399,7 @@ angular.module('directives.forms', [])
   }
 })
 
-.directive('saveButtons', function(){
+.directive('saveButtons', function(Loading){
   return {
     templateUrl: 'forms/save-buttons.tpl.html',
     replace: true,
@@ -2397,6 +2407,7 @@ angular.module('directives.forms', [])
     require: "^form",
     restrict: "E",
     link:function(scope, elem, attr, formController){
+      scope.loading = Loading
       if (attr.action) {
         scope.action = attr.action
         scope.actionGerund = attr.action + "ing"
@@ -4600,7 +4611,11 @@ angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$te
     "         <strong>Nice!</strong>\n" +
     "      </p>\n" +
     "\n" +
-    "      <form name=\"freeFulltextUrlForm\" novalidate>\n" +
+    "      <form\n" +
+    "              name=\"freeFulltextUrlForm\"\n" +
+    "              novalidate\n" +
+    "              ng-submit=\"onSave()\"\n" +
+    "              ng-controller=\"freeFulltextUrlFormCtrl\">\n" +
     "         <div class=\"input-group\">\n" +
     "            <span class=\"input-group-addon icon-globe\"></span>\n" +
     "            <input\n" +
