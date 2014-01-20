@@ -7771,6 +7771,28 @@ div.products .wrapper div.products-without-metrics div.well a {
 .product-container div.popover .popover-content {
   font-size: 14px;
 }
+div.modal-body.free-fulltext-url div.add-link div.buttons {
+  margin: 20px;
+  text-align: center;
+}
+div.modal-body.free-fulltext-url div.add-link div.buttons .btn-default {
+  display: none;
+}
+div.modal-body.free-fulltext-url div.add-link div.buttons .btn-primary {
+  width: 14em;
+}
+div.modal-body.free-fulltext-url div.archive-this {
+  margin-top: 50px;
+}
+div.modal-body.free-fulltext-url div.archive-this a.btn {
+  display: block;
+  text-align: center;
+  width: 14em;
+  margin: 20px auto 0;
+}
+div.modal-body.free-fulltext-url div.archive-this a.btn span {
+  margin-right: 5px;
+}
 div.product-page {
   min-height: 500px;
 }

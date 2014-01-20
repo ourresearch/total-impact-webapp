@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-19
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-20
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -977,6 +977,9 @@ angular.module("profileProduct", [
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
+    $scope.openFulltextLocationModal = function(){
+      $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
+    }
     $scope.deleteProduct = function(){
 
       Loading.start("deleteProduct")
@@ -1009,6 +1012,30 @@ angular.module("profileProduct", [
     }
     )
   })
+
+
+.controller("fulltextLocationModalCtrl", function(){
+
+  })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 angular.module("profile", [
   'resources.users',
@@ -3909,7 +3936,7 @@ angular.module("tips", ['ngResource'])
     }
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -4560,6 +4587,48 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "</ul>");
 }]);
 
+angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-product/fulltext-location-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <h3>Add link to free fulltext</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body free-fulltext-url\">\n" +
+    "\n" +
+    "   <div class=\"add-link\">\n" +
+    "      <p>Is there a free version of this article, outside any paywalls?\n" +
+    "         <strong>Nice!</strong>\n" +
+    "      </p>\n" +
+    "\n" +
+    "      <form name=\"freeFulltextUrlForm\" novalidate>\n" +
+    "         <div class=\"input-group\">\n" +
+    "            <span class=\"input-group-addon icon-globe\"></span>\n" +
+    "            <input\n" +
+    "                    class=\"free-fulltext-url form-control\"\n" +
+    "                    type=\"url\"\n" +
+    "                    name=\"freeFulltextUrl\"\n" +
+    "                    required\n" +
+    "                    placeholder=\"Paste the link here\"\n" +
+    "                    ng-model=\"userAbout.free_fulltext_url\" />\n" +
+    "         </div>\n" +
+    "         <save-buttons ng-show=\"freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty\"\n" +
+    "                       valid=\"freeFulltextUrlForm.$valid\"></save-buttons>\n" +
+    "\n" +
+    "      </form>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"archive-this\">\n" +
+    "      Is your work hidden behind a paywall? We can fix that!\n" +
+    "      Upload a version to figshare, where everyone can read it for free:\n" +
+    "      <a class=\"btn btn-success\" href=\"http://figshare.com\" target=\"_blank\">\n" +
+    "         <span class=\"icon-unlock-alt\"></span>\n" +
+    "         upload a free version\n" +
+    "      </a>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>");
+}]);
+
 angular.module("profile-product/percentilesInfoModal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/percentilesInfoModal.tpl.html",
     "<div class=\"modal-header\">\n" +
@@ -4614,7 +4683,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "            <span class=\"text\">\n" +
     "               <span class=\"icon-warning-sign\"></span>\n" +
     "               This article has no free fulltext available.\n" +
-    "               <a class=\"action btn btn-primary\">Fix this</a>\n" +
+    "               <a class=\"action btn btn-primary\" ng-click=\"openFulltextLocationModal()\">Fix this</a>\n" +
     "            </span>\n" +
     "         </div>\n" +
     "\n" +

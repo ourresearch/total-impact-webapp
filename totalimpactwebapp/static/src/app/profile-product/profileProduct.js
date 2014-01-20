@@ -43,6 +43,9 @@ angular.module("profileProduct", [
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
+    $scope.openFulltextLocationModal = function(){
+      $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
+    }
     $scope.deleteProduct = function(){
 
       Loading.start("deleteProduct")
@@ -75,3 +78,27 @@ angular.module("profileProduct", [
     }
     )
   })
+
+
+.controller("fulltextLocationModalCtrl", function(){
+
+  })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
