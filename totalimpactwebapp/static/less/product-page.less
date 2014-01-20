@@ -8,8 +8,10 @@ div.product-page {
          min-width: 130px;
       }
    }
+
    .content {
       margin-bottom: 100px;
+      padding-top: 50px;
       div.working {
          color: #ddd;
          font-size: 30px;
@@ -18,6 +20,26 @@ div.product-page {
          text-align: center;
          span.text { margin-left: 10px;}
          padding-top: 100px;
+      }
+
+      div.info {
+         .alert {
+            text-align:center;
+            background: #ddd;
+            color: #555;
+            font-weight: bold;
+            border: none;
+            font-size: 18px;
+            a.action {
+               font-weight: 900;
+               font-size: 17px;
+//               border:none;
+//               background: #555;
+               margin-left: 1em;
+               text-decoration: none;
+               &:hover{color: #fff;}
+            }
+         }
       }
 
       a.percentile-info {
@@ -35,7 +57,6 @@ div.product-page {
       .product { // overrides the main .product styles
    //      margin-left:200px;
          width:  100%;
-         margin-top: 50px;
          margin-bottom: 30px;
 
 
@@ -46,8 +67,8 @@ div.product-page {
                a {
                   font-size: 30px;
                   i {
-                     font-size:  15px;
-                     &:hover {cursor: pointer;}
+                     font-size: 80%;
+                     &:hover {cursor: pointer; color: @linkColor;}
                   }
                   &:hover { // hacky way to say: pretend you're not a link.
                      color:  inherit;

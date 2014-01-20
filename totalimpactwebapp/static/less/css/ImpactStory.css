@@ -7782,6 +7782,7 @@ div.product-page div.header a.delete-product {
 }
 div.product-page .content {
   margin-bottom: 100px;
+  padding-top: 50px;
 }
 div.product-page .content div.working {
   color: #ddd;
@@ -7793,6 +7794,23 @@ div.product-page .content div.working {
 }
 div.product-page .content div.working span.text {
   margin-left: 10px;
+}
+div.product-page .content div.info .alert {
+  text-align: center;
+  background: #ddd;
+  color: #555;
+  font-weight: bold;
+  border: none;
+  font-size: 18px;
+}
+div.product-page .content div.info .alert a.action {
+  font-weight: 900;
+  font-size: 17px;
+  margin-left: 1em;
+  text-decoration: none;
+}
+div.product-page .content div.info .alert a.action:hover {
+  color: #fff;
 }
 div.product-page .content a.percentile-info {
   border-top: 1px solid #bbb;
@@ -7807,7 +7825,6 @@ div.product-page .content a.percentile-info:hover {
 }
 div.product-page .content .product {
   width: 100%;
-  margin-top: 50px;
   margin-bottom: 30px;
 }
 div.product-page .content .product .biblio {
@@ -7818,10 +7835,11 @@ div.product-page .content .product .biblio h5 a {
   font-size: 30px;
 }
 div.product-page .content .product .biblio h5 a i {
-  font-size: 15px;
+  font-size: 80%;
 }
 div.product-page .content .product .biblio h5 a i:hover {
   cursor: pointer;
+  color: #ff4e00;
 }
 div.product-page .content .product .biblio h5 a:hover {
   color: inherit;

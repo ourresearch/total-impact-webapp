@@ -698,6 +698,16 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "      </div>\n" +
     "   </div>\n" +
     "   <div class=\"content wrapper\">\n" +
+    "      <div class=\"info\">\n" +
+    "         <div class=\"alert alert-info\">\n" +
+    "            <span class=\"text\">\n" +
+    "               <span class=\"icon-warning-sign\"></span>\n" +
+    "               This article has no free fulltext available.\n" +
+    "               <a class=\"action btn btn-primary\">Fix this</a>\n" +
+    "            </span>\n" +
+    "         </div>\n" +
+    "\n" +
+    "      </div>\n" +
     "      <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
     "         <i class=\"icon-refresh icon-spin\"></i>\n" +
     "         <span class=\"text\">Loading product...</span>\n" +
