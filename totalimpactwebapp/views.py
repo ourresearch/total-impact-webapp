@@ -308,7 +308,7 @@ def user_profile(profile_id):
 
 
 @app.route("/user/<profile_id>/about", methods=['GET', 'PATCH'])
-def get_user_about(profile_id):
+def user_about(profile_id):
 
     logger.debug(u"got request for user {profile_id}".format(
         profile_id=profile_id))
@@ -389,6 +389,28 @@ def user_products_get(id):
         )
 
     return json_resp_from_thing(resp)
+
+
+@app.route("/product/<tiid>/biblio", methods=["PATCH"])
+def product_biblio_modify(tiid):
+
+    # TODO:  check this user has permission to make this change
+
+    query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
+        core_api_root=g.api_root,
+        tiid=tiid,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    data_dict = json.loads(request.data)
+    r = requests.patch(
+        query,
+        data=json.dumps(data_dict),
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
+    )
+
+    local_sleep(1)
+    
+    return json_resp_from_thing(r.json())
 
 
 @app.route("/user/<id>/products", methods=["POST", "DELETE", "PATCH"])
