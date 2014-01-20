@@ -684,7 +684,7 @@ angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$te
     "   </div>\n" +
     "\n" +
     "   <div class=\"archive-this\">\n" +
-    "      Is your work hidden behind a paywall? We can fix that!\n" +
+    "      Is your work hidden behind a paywall? Let's fix that!\n" +
     "      Upload a version to figshare, where everyone can read it for free:\n" +
     "      <a class=\"btn btn-success\" href=\"http://figshare.com\" target=\"_blank\">\n" +
     "         <span class=\"icon-unlock-alt\"></span>\n" +

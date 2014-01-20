@@ -83,11 +83,13 @@ angular.module("profileProduct", [
   })
 
 
-.controller("freeFulltextUrlFormCtrl", function($scope, Loading){
+.controller("freeFulltextUrlFormCtrl", function($scope, $location, Loading){
+  var slug = $location.path().substr(1).match(/^[^\/]+/)[0]
 
   $scope.onSave = function() {
     Loading.start("saveButton")
-    console.log("saving...")
+    console.log("saving...", slug)
+
 
 
 
