@@ -1,7 +1,8 @@
-from copy import deepcopy
+from copy import deepcopy, logging
 from flask import render_template
 from totalimpactwebapp import product_configs
 
+logger = logging.getLogger("tiwebapp.product")
 
 
 def prep_product(product, verbose=False):
@@ -76,7 +77,12 @@ def make_metrics(product_dict):
 
     ret = {}
     for metric_name, metric in metrics.iteritems():
-        audience = config_dict[metric_name]["audience"]
+        try:
+            audience = config_dict[metric_name]["audience"]
+        except KeyError:
+            logger.warning("couldn't find audience for {metric_name}".format
+                (metric_name=metric_name))
+            return ret
 
         if audience is not None:
             metric.update(config_dict[metric_name])
