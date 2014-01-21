@@ -4921,14 +4921,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "\n" +
     "      <ul class=\"products-list\">\n" +
-    "         <li class=\"product-container {{ product.genre }}\"\n" +
+    "         <li class=\"product {{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
     "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum']\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"product.has_metrics || showProductsWithoutMetrics || product.is_heading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
-    "             ng-bind-html-unsafe=\"product.markup\"\n" +
     "             on-repeat-finished>\n" +
+    "\n" +
+    "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
+    "            <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
     "\n" +
     "         </li>\n" +
     "      </ul>\n" +
