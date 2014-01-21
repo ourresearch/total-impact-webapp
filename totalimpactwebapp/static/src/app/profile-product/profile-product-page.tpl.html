@@ -19,22 +19,26 @@
       </div>
    </div>
    <div class="content wrapper">
-      <div class="info">
-         <div class="alert alert-info">
-            <span class="text">
-               <span class="icon-warning-sign"></span>
-               This article has no free fulltext available.
-               <a class="action btn btn-primary" ng-click="openFulltextLocationModal()">Fix this</a>
-            </span>
-         </div>
-
-      </div>
       <div class="working" ng-show="loading.is('profileProduct')">
          <i class="icon-refresh icon-spin"></i>
          <span class="text">Loading product...</span>
       </div>
 
-      <div  class="product-container" ng-bind-html-unsafe="product.markup"></div>
+      <div  class="product">
+         <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
+
+         <div class="info" ng-show="!loading.is('profileProduct')">
+            <div class="alert alert-info">
+               <span class="text">
+                  <span class="icon-warning-sign"></span>
+                  This article has no free fulltext available.
+                  <a class="action btn btn-primary" ng-click="openFulltextLocationModal()">Fix this</a>
+               </span>
+            </div>
+         </div>
+
+         <div class="metrics-container" ng-bind-html-unsafe="product.markup.metrics"></div>
+      </div>
 
       <a class="percentile-info" ng-click="openInfoModal()"
          ng-show="!loading.is('profileProduct') && product.has_percentiles">

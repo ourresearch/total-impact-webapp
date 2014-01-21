@@ -8,3 +8,17 @@ angular.module('resources.products',['ngResource'])
   )
 })
 
+.factory('ProductBiblio', function ($resource) {
+
+  return $resource(
+    "/product/:tiid/biblio",
+    {},
+    {
+      patch:{
+        method: "POST",
+        headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'}
+      }
+    }
+  )
+})
+

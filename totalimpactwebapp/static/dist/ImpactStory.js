@@ -934,6 +934,7 @@ angular.module('product.product')
 
 angular.module("profileProduct", [
     'resources.users',
+    'resources.products',
     'services.page',
     'product.product',
     'services.loading',
@@ -1017,12 +1018,21 @@ angular.module("profileProduct", [
   })
 
 
-.controller("freeFulltextUrlFormCtrl", function($scope, $location, Loading){
-  var slug = $location.path().substr(1).match(/^[^\/]+/)[0]
+.controller("freeFulltextUrlFormCtrl", function($scope, $location, Loading, ProductBiblio){
+  var tiid = $location.path().match(/\/product\/(.+)$/)[1]
 
+  $scope.free_fulltext_url = ""
   $scope.onSave = function() {
     Loading.start("saveButton")
-    console.log("saving...", slug)
+    console.log("saving...", tiid)
+    ProductBiblio.patch(
+      {'tiid': tiid},
+      {free_fulltext_url: $scope.free_fulltext_url},
+      function(resp){
+        console.log("we got back this resp: ", resp)
+        Loading.finish("saveButton")
+      }
+    )
 
 
 
@@ -2500,6 +2510,20 @@ angular.module('resources.products',['ngResource'])
   return $resource(
    "/importer/:importerName",
    {}
+  )
+})
+
+.factory('ProductBiblio', function ($resource) {
+
+  return $resource(
+    "/product/:tiid/biblio",
+    {},
+    {
+      patch:{
+        method: "POST",
+        headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'}
+      }
+    }
   )
 })
 
@@ -4626,7 +4650,7 @@ angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$te
     "                    name=\"freeFulltextUrl\"\n" +
     "                    required\n" +
     "                    placeholder=\"Paste the link here\"\n" +
-    "                    ng-model=\"userAbout.free_fulltext_url\" />\n" +
+    "                    ng-model=\"free_fulltext_url\" />\n" +
     "         </div>\n" +
     "         <save-buttons ng-show=\"freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty\"\n" +
     "                       valid=\"freeFulltextUrlForm.$valid\"></save-buttons>\n" +
@@ -4695,22 +4719,26 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "      </div>\n" +
     "   </div>\n" +
     "   <div class=\"content wrapper\">\n" +
-    "      <div class=\"info\">\n" +
-    "         <div class=\"alert alert-info\">\n" +
-    "            <span class=\"text\">\n" +
-    "               <span class=\"icon-warning-sign\"></span>\n" +
-    "               This article has no free fulltext available.\n" +
-    "               <a class=\"action btn btn-primary\" ng-click=\"openFulltextLocationModal()\">Fix this</a>\n" +
-    "            </span>\n" +
-    "         </div>\n" +
-    "\n" +
-    "      </div>\n" +
     "      <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
     "         <i class=\"icon-refresh icon-spin\"></i>\n" +
     "         <span class=\"text\">Loading product...</span>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div  class=\"product-container\" ng-bind-html-unsafe=\"product.markup\"></div>\n" +
+    "      <div  class=\"product\">\n" +
+    "         <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
+    "\n" +
+    "         <div class=\"info\" ng-show=\"!loading.is('profileProduct')\">\n" +
+    "            <div class=\"alert alert-info\">\n" +
+    "               <span class=\"text\">\n" +
+    "                  <span class=\"icon-warning-sign\"></span>\n" +
+    "                  This article has no free fulltext available.\n" +
+    "                  <a class=\"action btn btn-primary\" ng-click=\"openFulltextLocationModal()\">Fix this</a>\n" +
+    "               </span>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
+    "      </div>\n" +
     "\n" +
     "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
     "         ng-show=\"!loading.is('profileProduct') && product.has_percentiles\">\n" +

@@ -1,5 +1,6 @@
 angular.module("profileProduct", [
     'resources.users',
+    'resources.products',
     'services.page',
     'product.product',
     'services.loading',
@@ -83,12 +84,21 @@ angular.module("profileProduct", [
   })
 
 
-.controller("freeFulltextUrlFormCtrl", function($scope, $location, Loading){
-  var slug = $location.path().substr(1).match(/^[^\/]+/)[0]
+.controller("freeFulltextUrlFormCtrl", function($scope, $location, Loading, ProductBiblio){
+  var tiid = $location.path().match(/\/product\/(.+)$/)[1]
 
+  $scope.free_fulltext_url = ""
   $scope.onSave = function() {
     Loading.start("saveButton")
-    console.log("saving...", slug)
+    console.log("saving...", tiid)
+    ProductBiblio.patch(
+      {'tiid': tiid},
+      {free_fulltext_url: $scope.free_fulltext_url},
+      function(resp){
+        console.log("we got back this resp: ", resp)
+        Loading.finish("saveButton")
+      }
+    )
 
 
 

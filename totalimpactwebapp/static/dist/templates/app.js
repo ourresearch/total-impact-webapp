@@ -675,7 +675,7 @@ angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$te
     "                    name=\"freeFulltextUrl\"\n" +
     "                    required\n" +
     "                    placeholder=\"Paste the link here\"\n" +
-    "                    ng-model=\"userAbout.free_fulltext_url\" />\n" +
+    "                    ng-model=\"free_fulltext_url\" />\n" +
     "         </div>\n" +
     "         <save-buttons ng-show=\"freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty\"\n" +
     "                       valid=\"freeFulltextUrlForm.$valid\"></save-buttons>\n" +
@@ -744,22 +744,26 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "      </div>\n" +
     "   </div>\n" +
     "   <div class=\"content wrapper\">\n" +
-    "      <div class=\"info\">\n" +
-    "         <div class=\"alert alert-info\">\n" +
-    "            <span class=\"text\">\n" +
-    "               <span class=\"icon-warning-sign\"></span>\n" +
-    "               This article has no free fulltext available.\n" +
-    "               <a class=\"action btn btn-primary\" ng-click=\"openFulltextLocationModal()\">Fix this</a>\n" +
-    "            </span>\n" +
-    "         </div>\n" +
-    "\n" +
-    "      </div>\n" +
     "      <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
     "         <i class=\"icon-refresh icon-spin\"></i>\n" +
     "         <span class=\"text\">Loading product...</span>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div  class=\"product-container\" ng-bind-html-unsafe=\"product.markup\"></div>\n" +
+    "      <div  class=\"product\">\n" +
+    "         <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
+    "\n" +
+    "         <div class=\"info\" ng-show=\"!loading.is('profileProduct')\">\n" +
+    "            <div class=\"alert alert-info\">\n" +
+    "               <span class=\"text\">\n" +
+    "                  <span class=\"icon-warning-sign\"></span>\n" +
+    "                  This article has no free fulltext available.\n" +
+    "                  <a class=\"action btn btn-primary\" ng-click=\"openFulltextLocationModal()\">Fix this</a>\n" +
+    "               </span>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
+    "      </div>\n" +
     "\n" +
     "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
     "         ng-show=\"!loading.is('profileProduct') && product.has_percentiles\">\n" +
