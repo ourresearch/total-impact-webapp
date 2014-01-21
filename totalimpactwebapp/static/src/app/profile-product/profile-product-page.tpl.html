@@ -35,11 +35,11 @@
             </div>
             <div class="has-free-fulltext-url" ng-show="product.biblio.free_fulltext_url">
                <i class="icon-unlock-alt leader"></i>
-               Free fulltext available from
-               <a href="{{ product.biblio.free_fulltext_url }}">
-                  url
+               Free fulltext available at
+               <a href="{{ product.biblio.free_fulltext_url }}" target="_blank">
+                  {{ getDomain(product.biblio.free_fulltext_url) }}
+                  <i class="icon-external-link-sign"></i>
                </a>
-               <i class="icon-external-link-sign"></i>
             </div>
          </div>
 

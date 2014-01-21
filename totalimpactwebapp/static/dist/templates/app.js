@@ -760,11 +760,11 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "            </div>\n" +
     "            <div class=\"has-free-fulltext-url\" ng-show=\"product.biblio.free_fulltext_url\">\n" +
     "               <i class=\"icon-unlock-alt leader\"></i>\n" +
-    "               Free fulltext available from\n" +
-    "               <a href=\"{{ product.biblio.free_fulltext_url }}\">\n" +
-    "                  url\n" +
+    "               Free fulltext available at\n" +
+    "               <a href=\"{{ product.biblio.free_fulltext_url }}\" target=\"_blank\">\n" +
+    "                  {{ getDomain(product.biblio.free_fulltext_url) }}\n" +
+    "                  <i class=\"icon-external-link-sign\"></i>\n" +
     "               </a>\n" +
-    "               <i class=\"icon-external-link-sign\"></i>\n" +
     "            </div>\n" +
     "         </div>\n" +
     "\n" +

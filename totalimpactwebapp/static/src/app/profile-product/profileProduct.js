@@ -47,6 +47,12 @@ angular.module("profileProduct", [
     $scope.openFulltextLocationModal = function(){
       $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
     }
+
+    $scope.getDomain = function(fullUri){
+      var uri = new URI(fullUri);
+      return uri.domain()
+    }
+
     $scope.deleteProduct = function(){
 
       Loading.start("deleteProduct")
@@ -97,6 +103,7 @@ angular.module("profileProduct", [
       function(resp){
         console.log("we got back this resp: ", resp)
         Loading.finish("saveButton")
+        $scope.$close()
       }
     )
 

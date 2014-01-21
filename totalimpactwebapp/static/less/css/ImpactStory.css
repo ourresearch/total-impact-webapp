@@ -7864,19 +7864,22 @@ div.product-page .content .product div.well.free-fulltext-url i.leader {
   margin-right: 5px;
 }
 div.product-page .content .product div.well.free-fulltext-url i.icon-external-link-sign {
-  font-size: 60%;
+  font-size: 80%;
+  opacity: .5;
 }
 div.product-page .content .product div.well.free-fulltext-url a.action {
   margin: -5px 0 0 25px;
   text-decoration: none;
+  background: #777;
+  border: none;
   padding: 3px 10px;
 }
 div.product-page .content .product div.well.free-fulltext-url a.action:hover {
-  color: #fff;
+  background: #555;
 }
 div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a {
   color: #333;
-  font-weight: 900;
+  font-weight: normal;
 }
 div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a:hover {
   text-decoration: underline;

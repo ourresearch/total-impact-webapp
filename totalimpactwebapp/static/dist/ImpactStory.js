@@ -981,6 +981,12 @@ angular.module("profileProduct", [
     $scope.openFulltextLocationModal = function(){
       $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
     }
+
+    $scope.getDomain = function(fullUri){
+      var uri = new URI(fullUri);
+      return uri.domain()
+    }
+
     $scope.deleteProduct = function(){
 
       Loading.start("deleteProduct")
@@ -1031,6 +1037,7 @@ angular.module("profileProduct", [
       function(resp){
         console.log("we got back this resp: ", resp)
         Loading.finish("saveButton")
+        $scope.$close()
       }
     )
 
@@ -4735,11 +4742,11 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "            </div>\n" +
     "            <div class=\"has-free-fulltext-url\" ng-show=\"product.biblio.free_fulltext_url\">\n" +
     "               <i class=\"icon-unlock-alt leader\"></i>\n" +
-    "               Free fulltext available from\n" +
-    "               <a href=\"{{ product.biblio.free_fulltext_url }}\">\n" +
-    "                  url\n" +
+    "               Free fulltext available at\n" +
+    "               <a href=\"{{ product.biblio.free_fulltext_url }}\" target=\"_blank\">\n" +
+    "                  {{ getDomain(product.biblio.free_fulltext_url) }}\n" +
+    "                  <i class=\"icon-external-link-sign\"></i>\n" +
     "               </a>\n" +
-    "               <i class=\"icon-external-link-sign\"></i>\n" +
     "            </div>\n" +
     "         </div>\n" +
     "\n" +
