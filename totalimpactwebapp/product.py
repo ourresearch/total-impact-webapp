@@ -1,4 +1,5 @@
-from copy import deepcopy, logging
+from copy import deepcopy
+import logging
 from flask import render_template
 from totalimpactwebapp import product_configs
 
@@ -80,8 +81,8 @@ def make_metrics(product_dict):
         try:
             audience = config_dict[metric_name]["audience"]
         except KeyError:
-            logger.warning("couldn't find audience for {metric_name}".format
-                (metric_name=metric_name))
+            logger.warning("couldn't find audience for {metric_name}".format(
+                metric_name=metric_name))
             return ret
 
         if audience is not None:
