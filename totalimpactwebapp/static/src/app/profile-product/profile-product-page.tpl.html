@@ -27,13 +27,19 @@
       <div  class="product">
          <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
 
-         <div class="info" ng-show="!loading.is('profileProduct')">
-            <div class="alert alert-info">
-               <span class="text">
-                  <span class="icon-warning-sign"></span>
-                  This article has no free fulltext available.
-                  <a class="action btn btn-primary" ng-click="openFulltextLocationModal()">Fix this</a>
-               </span>
+         <div class="free-fulltext-url well" ng-show="!loading.is('profileProduct')">
+            <div class="no-free-fulltext-url" ng-show="!product.biblio.free_fulltext_url">
+               <i class="icon-warning-sign leader"></i>
+               This article has no free fulltext available.
+               <a class="action btn btn-danger btn-xs" ng-click="openFulltextLocationModal()">Fix this</a>
+            </div>
+            <div class="has-free-fulltext-url" ng-show="product.biblio.free_fulltext_url">
+               <i class="icon-unlock-alt leader"></i>
+               Free fulltext available from
+               <a href="{{ product.biblio.free_fulltext_url }}">
+                  url
+               </a>
+               <i class="icon-external-link-sign"></i>
             </div>
          </div>
 

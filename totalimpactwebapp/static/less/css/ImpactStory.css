@@ -7818,23 +7818,6 @@ div.product-page .content div.working {
 div.product-page .content div.working span.text {
   margin-left: 10px;
 }
-div.product-page .content div.info .alert {
-  text-align: center;
-  background: #ddd;
-  color: #555;
-  font-weight: bold;
-  border: none;
-  font-size: 18px;
-}
-div.product-page .content div.info .alert a.action {
-  font-weight: 900;
-  font-size: 17px;
-  margin-left: 1em;
-  text-decoration: none;
-}
-div.product-page .content div.info .alert a.action:hover {
-  color: #fff;
-}
 div.product-page .content a.percentile-info {
   border-top: 1px solid #bbb;
   color: #555;
@@ -7871,6 +7854,32 @@ div.product-page .content .product .biblio h5 a:hover {
 }
 div.product-page .content .product .biblio div.optional-biblio {
   font-size: 20px;
+}
+div.product-page .content .product div.well.free-fulltext-url {
+  margin-top: 20px;
+  margin-left: -15px;
+}
+div.product-page .content .product div.well.free-fulltext-url i.leader {
+  font-size: 110%;
+  margin-right: 5px;
+}
+div.product-page .content .product div.well.free-fulltext-url i.icon-external-link-sign {
+  font-size: 60%;
+}
+div.product-page .content .product div.well.free-fulltext-url a.action {
+  margin: -5px 0 0 25px;
+  text-decoration: none;
+  padding: 3px 10px;
+}
+div.product-page .content .product div.well.free-fulltext-url a.action:hover {
+  color: #fff;
+}
+div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a {
+  color: #333;
+  font-weight: 900;
+}
+div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a:hover {
+  text-decoration: underline;
 }
 div.product-page .content .product ul.metric-details-list {
   margin-top: 40px;
