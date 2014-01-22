@@ -78,7 +78,6 @@ def make_metrics(product_dict):
 
     ret = {}
     for metric_name, metric in metrics.iteritems():
-        audience = config_dict[metric_name]["audience"]
         try:
             audience = config_dict[metric_name]["audience"]
         except KeyError:
