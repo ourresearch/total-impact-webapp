@@ -69,6 +69,18 @@ angular.module("profileProduct", [
       )
     }
 
+    $scope.editProduct = function(){
+      $modal.open({
+        templateUrl: "profile-product/edit-product-modal.tpl.html",
+        controller: "editProductModalCtrl",
+        resolve: {
+          product: function(){
+            return $scope.product
+          }
+        }
+      })
+    }
+
 
     $scope.product = UsersProduct.get({
       id: slug,
@@ -86,7 +98,10 @@ angular.module("profileProduct", [
   })
 
 
-.controller("fulltextLocationModalCtrl", function(){
+.controller("editProductModalCtrl", function($scope, $modalInstance, product){
+    $scope.product = product
+    console.log("i edit product controller ran")
+
   })
 
 

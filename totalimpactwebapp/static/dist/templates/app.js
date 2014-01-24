@@ -1,4 +1,4 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -649,6 +649,50 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "</ul>");
 }]);
 
+angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-product/edit-product-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <h3>Edit product</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body edit-product\">\n" +
+    "   <form\n" +
+    "           name=\"editProductForm\"\n" +
+    "           novalidate\n" +
+    "           ng-submit=\"onSave()\"\n" +
+    "           ng-controller=\"freeFulltextUrlFormCtrl\">\n" +
+    "\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label>Title</label>\n" +
+    "         <textarea\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productTitle\"\n" +
+    "           ng-model=\"product.biblio.title\"></textarea>\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"from-group\">\n" +
+    "         <label>Authors</label>\n" +
+    "         <textarea\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productAuthors\"\n" +
+    "           ng-model=\"product.biblio.authors\"></textarea>\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "      <save-buttons ng-show=\"freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty\"\n" +
+    "                    valid=\"freeFulltextUrlForm.$valid\"></save-buttons>\n" +
+    "\n" +
+    "   </form>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/fulltext-location-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
@@ -727,20 +771,30 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "   <div class=\"header profile-subpage-header product-page-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
-    "         <a class=\"delete-product\"\n" +
-    "            ng-click=\"deleteProduct()\"\n" +
-    "            ng-show=\"userOwnsThisProfile\"\n" +
-    "            tooltip=\"Remove this product from your profile.\"\n" +
-    "            tooltip-placement=\"bottom\">\n" +
-    "            <span class=\"ready\" ng-show=\"!loading.is()\">\n" +
-    "               <i class=\"icon-trash\"></i>\n" +
-    "               Remove product\n" +
-    "            </span>\n" +
-    "            <span class=\"working\" ng-show=\"loading.is('deleteProduct')\">\n" +
-    "               <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "               Removing...\n" +
-    "            </span>\n" +
-    "         </a>\n" +
+    "         <div class=\"product-page-controls\" ng-show=\"userOwnsThisProfile\">\n" +
+    "            <a class=\"edit-product\"\n" +
+    "               ng-click=\"editProduct()\"\n" +
+    "               tooltip=\"Make changes to this product's title or authors\"\n" +
+    "               tooltip-placement=\"bottom\">\n" +
+    "               <span class=\"ready\" ng-show=\"!loading.is()\">\n" +
+    "                  <i class=\"icon-edit\"></i>\n" +
+    "                  Edit\n" +
+    "               </span>\n" +
+    "               <span class=\"working\" ng-show=\"loading.is('deleteProduct')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  Removing...\n" +
+    "               </span>\n" +
+    "            </a>\n" +
+    "            <a class=\"delete-product\"\n" +
+    "               ng-click=\"deleteProduct()\"\n" +
+    "               tooltip=\"Remove this product from your profile.\"\n" +
+    "               tooltip-placement=\"bottom\">\n" +
+    "               <span class=\"ready\">\n" +
+    "                  <i class=\"icon-trash\"></i>\n" +
+    "                  Remove\n" +
+    "               </span>\n" +
+    "            </a>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "   <div class=\"content wrapper\">\n" +
@@ -755,7 +809,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         <div class=\"free-fulltext-url well\" ng-show=\"!loading.is('profileProduct')\">\n" +
     "            <div class=\"no-free-fulltext-url\" ng-show=\"!product.biblio.free_fulltext_url\">\n" +
     "               <i class=\"icon-warning-sign leader\"></i>\n" +
-    "               This article has no free fulltext available.\n" +
+    "               Your article has no free fulltext available.\n" +
     "               <a class=\"action btn btn-danger btn-xs\" ng-click=\"openFulltextLocationModal()\">Fix this</a>\n" +
     "            </div>\n" +
     "            <div class=\"has-free-fulltext-url\" ng-show=\"product.biblio.free_fulltext_url\">\n" +

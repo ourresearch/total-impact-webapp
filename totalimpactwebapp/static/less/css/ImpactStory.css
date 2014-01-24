@@ -7797,11 +7797,13 @@ div.modal-body.free-fulltext-url div.archive-this a.btn span {
 div.product-page {
   min-height: 500px;
 }
-div.product-page div.header a.delete-product {
-  position: absolute;
-  right: 16px;
-  text-align: left;
-  min-width: 130px;
+div.product-page div.header div.product-page-controls {
+  float: right;
+}
+div.product-page div.header div.product-page-controls a {
+  margin-left: 20px;
+  font-weight: 700;
+  font-size: 20px;
 }
 div.product-page .content {
   margin-bottom: 100px;
