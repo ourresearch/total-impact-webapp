@@ -4811,7 +4811,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "               tooltip-placement=\"bottom\">\n" +
     "               <span class=\"ready\">\n" +
     "                  <i class=\"icon-trash\"></i>\n" +
-    "                  Remove\n" +
+    "                  Remove \n" +
     "               </span>\n" +
     "            </a>\n" +
     "         </div>\n" +
