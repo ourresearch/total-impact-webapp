@@ -7,12 +7,13 @@
            name="editProductForm"
            novalidate
            ng-submit="onSave()"
-           ng-controller="freeFulltextUrlFormCtrl">
+           ng-controller="editProductFormCtrl">
 
       <div class="form-group">
          <label>Title</label>
          <textarea
            class="form-control"
+           required
            name="productTitle"
            ng-model="product.biblio.title"></textarea>
 
@@ -22,6 +23,7 @@
          <label>Authors</label>
          <textarea
            class="form-control"
+           required
            name="productAuthors"
            ng-model="product.biblio.authors"></textarea>
 
@@ -29,11 +31,8 @@
       </div>
 
 
-
-
-
-      <save-buttons ng-show="freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty"
-                    valid="freeFulltextUrlForm.$valid"></save-buttons>
+      <save-buttons ng-show="editProductForm.$valid && editProductForm.$dirty"
+                    valid="editProductForm.$valid"></save-buttons>
 
    </form>
 </div>

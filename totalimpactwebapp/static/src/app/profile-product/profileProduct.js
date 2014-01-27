@@ -98,9 +98,31 @@ angular.module("profileProduct", [
   })
 
 
-.controller("editProductModalCtrl", function($scope, $modalInstance, product){
+.controller("editProductModalCtrl", function($scope, $location, $modalInstance, Loading, product, ProductBiblio){
+
+    // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
+
     $scope.product = product
-    console.log("i edit product controller ran")
+    var tiid = $location.path().match(/\/product\/(.+)$/)[1]
+
+    $scope.onSave = function() {
+      Loading.start("saveButton")
+      console.log("saving...", tiid)
+      ProductBiblio.patch(
+        {'tiid': tiid},
+        {
+          title: $scope.product.biblio.title,
+          authors: $scope.product.biblio.authors
+        },
+        function(resp){
+          Loading.finish("saveButton")
+          $scope.$close()
+
+          // this is overkill, but works for now.
+          location.reload()
+        }
+      )
+    }
 
   })
 
@@ -121,11 +143,13 @@ angular.module("profileProduct", [
         $scope.$close()
       }
     )
-
-
-
-
   }
+})
+
+
+
+
+.controller("editProductFormCtrl", function(){
 })
 
 

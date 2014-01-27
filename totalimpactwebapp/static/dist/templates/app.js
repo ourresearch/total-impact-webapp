@@ -660,12 +660,13 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
     "           name=\"editProductForm\"\n" +
     "           novalidate\n" +
     "           ng-submit=\"onSave()\"\n" +
-    "           ng-controller=\"freeFulltextUrlFormCtrl\">\n" +
+    "           ng-controller=\"editProductFormCtrl\">\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
     "         <label>Title</label>\n" +
     "         <textarea\n" +
     "           class=\"form-control\"\n" +
+    "           required\n" +
     "           name=\"productTitle\"\n" +
     "           ng-model=\"product.biblio.title\"></textarea>\n" +
     "\n" +
@@ -675,6 +676,7 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
     "         <label>Authors</label>\n" +
     "         <textarea\n" +
     "           class=\"form-control\"\n" +
+    "           required\n" +
     "           name=\"productAuthors\"\n" +
     "           ng-model=\"product.biblio.authors\"></textarea>\n" +
     "\n" +
@@ -682,11 +684,8 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
     "      </div>\n" +
     "\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "      <save-buttons ng-show=\"freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty\"\n" +
-    "                    valid=\"freeFulltextUrlForm.$valid\"></save-buttons>\n" +
+    "      <save-buttons ng-show=\"editProductForm.$valid && editProductForm.$dirty\"\n" +
+    "                    valid=\"editProductForm.$valid\"></save-buttons>\n" +
     "\n" +
     "   </form>\n" +
     "</div>\n" +

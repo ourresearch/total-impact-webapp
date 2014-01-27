@@ -7794,6 +7794,14 @@ div.modal-body.free-fulltext-url div.archive-this a.btn {
 div.modal-body.free-fulltext-url div.archive-this a.btn span {
   margin-right: 5px;
 }
+div.modal-body.edit-product div.buttons-group {
+  height: 40px;
+  margin: 20px;
+  text-align: center;
+}
+div.modal-body.edit-product div.buttons-group .btn {
+  width: 8em;
+}
 div.product-page {
   min-height: 500px;
 }
@@ -7858,12 +7866,16 @@ div.product-page .content .product .biblio div.optional-biblio {
   font-size: 20px;
 }
 div.product-page .content .product div.well.free-fulltext-url {
+  display: none;
   margin-top: 20px;
   margin-left: -15px;
 }
 div.product-page .content .product div.well.free-fulltext-url i.leader {
   font-size: 110%;
   margin-right: 5px;
+}
+div.product-page .content .product div.well.free-fulltext-url i.leader.icon-unlock-alt {
+  color: #4daf4a;
 }
 div.product-page .content .product div.well.free-fulltext-url i.icon-external-link-sign {
   font-size: 80%;

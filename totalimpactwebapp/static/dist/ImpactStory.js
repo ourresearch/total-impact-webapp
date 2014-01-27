@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-23
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-27
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1032,9 +1032,31 @@ angular.module("profileProduct", [
   })
 
 
-.controller("editProductModalCtrl", function($scope, $modalInstance, product){
+.controller("editProductModalCtrl", function($scope, $location, $modalInstance, Loading, product, ProductBiblio){
+
+    // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
+
     $scope.product = product
-    console.log("i edit product controller ran")
+    var tiid = $location.path().match(/\/product\/(.+)$/)[1]
+
+    $scope.onSave = function() {
+      Loading.start("saveButton")
+      console.log("saving...", tiid)
+      ProductBiblio.patch(
+        {'tiid': tiid},
+        {
+          title: $scope.product.biblio.title,
+          authors: $scope.product.biblio.authors
+        },
+        function(resp){
+          Loading.finish("saveButton")
+          $scope.$close()
+
+          // this is overkill, but works for now.
+          location.reload()
+        }
+      )
+    }
 
   })
 
@@ -1055,11 +1077,13 @@ angular.module("profileProduct", [
         $scope.$close()
       }
     )
-
-
-
-
   }
+})
+
+
+
+
+.controller("editProductFormCtrl", function(){
 })
 
 
@@ -4657,12 +4681,13 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
     "           name=\"editProductForm\"\n" +
     "           novalidate\n" +
     "           ng-submit=\"onSave()\"\n" +
-    "           ng-controller=\"freeFulltextUrlFormCtrl\">\n" +
+    "           ng-controller=\"editProductFormCtrl\">\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
     "         <label>Title</label>\n" +
     "         <textarea\n" +
     "           class=\"form-control\"\n" +
+    "           required\n" +
     "           name=\"productTitle\"\n" +
     "           ng-model=\"product.biblio.title\"></textarea>\n" +
     "\n" +
@@ -4672,6 +4697,7 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
     "         <label>Authors</label>\n" +
     "         <textarea\n" +
     "           class=\"form-control\"\n" +
+    "           required\n" +
     "           name=\"productAuthors\"\n" +
     "           ng-model=\"product.biblio.authors\"></textarea>\n" +
     "\n" +
@@ -4679,11 +4705,8 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
     "      </div>\n" +
     "\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "      <save-buttons ng-show=\"freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty\"\n" +
-    "                    valid=\"freeFulltextUrlForm.$valid\"></save-buttons>\n" +
+    "      <save-buttons ng-show=\"editProductForm.$valid && editProductForm.$dirty\"\n" +
+    "                    valid=\"editProductForm.$valid\"></save-buttons>\n" +
     "\n" +
     "   </form>\n" +
     "</div>\n" +

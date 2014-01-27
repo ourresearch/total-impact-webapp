@@ -20,9 +20,17 @@ div.modal-body.free-fulltext-url {
          span {margin-right: 5px;}
       }
    }
-
 }
 
+div.modal-body.edit-product {
+   div.buttons-group {
+      // duplicates same declaration block used above for other modal; fix.
+      height: 40px;
+      margin: 20px;
+      text-align:center;
+      .btn {width: 8em;}
+   }
+}
 
 
 div.product-page {
@@ -97,11 +105,18 @@ div.product-page {
          }
 
          div.well.free-fulltext-url {
+
+            // hiding this till rest of OA Badge feature comes out...
+            display:none;
+
             margin-top: 20px;
             margin-left: -15px;
             i.leader {
                font-size: 110%;
                margin-right: 5px;
+               &.icon-unlock-alt {
+                  color: @publicColor;
+               }
             }
             i.icon-external-link-sign {
                font-size: 80%;
