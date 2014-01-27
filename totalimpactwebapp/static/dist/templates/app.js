@@ -1359,7 +1359,6 @@ angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "\n" +
     "\n" +
-    "\n" +
     "</div>");
 }]);
 

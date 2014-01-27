@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-17
-=======
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-18
->>>>>>> master
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-27
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -5278,7 +5274,6 @@ angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", fun
     "           >\n" +
     "      </div>\n" +
     "  </div>\n" +
-    "\n" +
     "\n" +
     "\n" +
     "\n" +
