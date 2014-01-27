@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-17
+=======
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-18
+>>>>>>> master
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -4661,13 +4665,39 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "   <h4>Embed profile</h4>\n" +
     "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
     "</div>\n" +
-    "<div class=\"modal-body\">\n" +
-    "   <p>To embed this profile, copy and paste the code snippet below into the source HTML of your page:</p>\n" +
-    "   <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&lt;/iframe&gt;</textarea>\n" +
+    "<div class=\"modal-body embed\">\n" +
+    "   <label>\n" +
+    "        <input type=\"radio\" name=\"embed-type\"\n" +
+    "               value=\"link\" ng-model=\"embed.type\" />\n" +
+    "      <span class=\"text\">Embed a <br><strong>link to this profile</strong></span>\n" +
+    "      <img src=\"static/img/impactstory-logo.png\" alt=\"Impactstory logo\"/>\n" +
+    "    </label>\n" +
+    "\n" +
+    "   <label>\n" +
+    "        <input type=\"radio\" name=\"embed-type\"\n" +
+    "               value=\"profile\" ng-model=\"embed.type\" />\n" +
+    "      <span class=\"text\">Embed this <br><strong>whole profile at full size</strong></span>\n" +
+    "      <img src=\"static/img/embedded-profile-example.png\" alt=\"Impactstory profile\"/>\n" +
+    "    </label>\n" +
+    "\n" +
+    "\n" +
+    "   <div class=\"code\">\n" +
+    "      <div class=\"embed-profile\" ng-show=\"embed.type=='profile'\">\n" +
+    "         <h3>Paste this code in your page source HTML:</h3>\n" +
+    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</textarea>\n" +
+    "      </div>\n" +
+    "      <div class=\"embed-link\" ng-show=\"embed.type=='link'\">\n" +
+    "         <h3>Paste this code in your page source HTML:</h3>\n" +
+    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl() }}/{{ userSlug }}\"&gt;&lt;img src=\"{{ baseUrl() }}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</textarea>\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "</div>\n" +
-    "<!--<div class=\"modal-footer\">\n" +
-    "   <button class=\"btn btn-primary ok\" ng-click=\"$close()\">OK</button>\n" +
-    "</div>-->");
+    "\n" +
+    "");
 }]);
 
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {

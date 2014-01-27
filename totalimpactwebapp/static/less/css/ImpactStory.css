@@ -7337,6 +7337,60 @@ div.profile-header div.wrapper div.my-vitals div.external-usernames li a img {
   height: 16px;
   margin-top: -3px;
 }
+div.modal-body.embed label {
+  float: left;
+  width: 250px;
+  font-weight: normal;
+  text-align: center;
+}
+div.modal-body.embed label:first-child img {
+  margin-top: 50px;
+}
+div.modal-body.embed label strong {
+  font-weight: 900;
+}
+div.modal-body.embed label span.text {
+  width: 200px;
+  margin: 0 auto;
+  display: inline-block;
+}
+div.modal-body.embed label img {
+  width: 180px;
+  margin: 20px 0 0 20px;
+}
+div.modal-body.embed div.code {
+  clear: both;
+}
+div.modal-body.embed div.code:before,
+div.modal-body.embed div.code:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+div.modal-body.embed div.code:after {
+  clear: both;
+}
+div.modal-body.embed div.code:before,
+div.modal-body.embed div.code:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+div.modal-body.embed div.code:after {
+  clear: both;
+}
+div.modal-body.embed div.code h3 {
+  font-weight: normal;
+  font-size: 16px;
+  margin-top: 30px;
+  text-align: center;
+}
 div.product-controls {
   font-size: 16px;
   border-bottom: 5px solid #eee;

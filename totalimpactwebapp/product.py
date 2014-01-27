@@ -189,6 +189,16 @@ def make_awards(product):
     for k, award in awards_dict.iteritems():
         award["top_metric"] = get_top_metric(award["metrics"])
 
+
+        # this is a horrible hack on top of more horrible hacks. i understand
+        # neither why we need it nor how it works...this whole awards/metric
+        # logic is ghastly.
+        if award["top_metric"]["award"]["is_highly"]:
+            award["is_highly"] = True
+        else:
+            award["is_highly"] = False
+
+
     return awards_dict.values()
 
 
