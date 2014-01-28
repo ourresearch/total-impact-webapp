@@ -37,7 +37,7 @@
             data-content="{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.">
             <img src="{{ metric.static_meta.icon }}">
             <span class="raw-value">{{ metric.actual_count }}</span>
-            <span class="environment">{{ metric.environment }}</span>
+            <span class="environment">{{ metric.environment | replace("Altmetric.com", '') }}</span>
             <span class="interaction">{{ metric.display_interaction }}</span>
             <i class="icon-external-link-sign"></i>
          </a>
