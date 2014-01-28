@@ -29,7 +29,7 @@
       {% endif %}
 
 
-      {% if product.biblio.repository and not product.biblio.embed %}
+      {% if product.biblio.repository and not product.biblio.embed and not product.biblio.journal %}
       <span class="repository">{{ product.biblio.repository }}.</span>
       {% endif %}
 

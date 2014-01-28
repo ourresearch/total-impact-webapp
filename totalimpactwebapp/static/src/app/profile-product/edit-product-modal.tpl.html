@@ -1,0 +1,38 @@
+<div class="modal-header">
+   <button type="button" class="close" ng-click="$close()">&times;</button>
+   <h3>Edit product</h3>
+</div>
+<div class="modal-body edit-product">
+   <form
+           name="editProductForm"
+           novalidate
+           ng-submit="onSave()"
+           ng-controller="editProductFormCtrl">
+
+      <div class="form-group">
+         <label>Title</label>
+         <textarea
+           class="form-control"
+           required
+           name="productTitle"
+           ng-model="product.biblio.title"></textarea>
+
+      </div>
+
+      <div class="from-group">
+         <label>Authors</label>
+         <textarea
+           class="form-control"
+           required
+           name="productAuthors"
+           ng-model="product.biblio.authors"></textarea>
+
+
+      </div>
+
+
+      <save-buttons ng-show="editProductForm.$valid && editProductForm.$dirty"
+                    valid="editProductForm.$valid"></save-buttons>
+
+   </form>
+</div>

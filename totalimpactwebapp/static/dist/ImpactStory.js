@@ -936,6 +936,7 @@ angular.module('product.product')
 angular.module("profileProduct",["resources.users","services.page","product.product","services.loading","ui.bootstrap","security"]).config(["$routeProvider",function(e){e.when("/:url_slug/product/:tiid",{templateUrl:"profile-product/profile-product-page.tpl.html",controller:"ProfileProductPageCtrl"})}]).controller("ProfileProductPageCtrl",function(e,t,n,r,i,s,o,u,a,f,l){var c=t.url_slug,h=i.get("$http");f.start("profileProduct");e.userSlug=c;e.loading=f;e.userOwnsThisProfile=s.testUserAuthenticationLevel("ownsThisProfile");e.openInfoModal=function(){r.open({templateUrl:"profile-product/percentilesInfoModal.tpl.html"})};e.deleteProduct=function(){f.start("deleteProduct");u.delete({id:c,idType:"url_slug"},{tiids:[t.tiid]},function(){console.log("finished deleting",t.tiid);h.removeAll();s.redirectToProfile()})};e.product=o.get({id:c,tiid:t.tiid},function(t){console.log("data",t);e.biblio=a.makeBiblio(t);e.metrics=a.makeMetrics(t);f.finish("profileProduct");l.setTitle(t.biblio.title)},function(e){n.path("/"+c)})}).controller("modalCtrl");
 angular.module("profileProduct", [
     'resources.users',
+    'resources.products',
     'services.page',
     'product.product',
     'services.loading',
@@ -979,6 +980,15 @@ angular.module("profileProduct", [
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
+    $scope.openFulltextLocationModal = function(){
+      $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
+    }
+
+    $scope.getDomain = function(fullUri){
+      var uri = new URI(fullUri);
+      return uri.domain()
+    }
+
     $scope.deleteProduct = function(){
 
       Loading.start("deleteProduct")
@@ -995,13 +1005,24 @@ angular.module("profileProduct", [
       )
     }
 
+    $scope.editProduct = function(){
+      $modal.open({
+        templateUrl: "profile-product/edit-product-modal.tpl.html",
+        controller: "editProductModalCtrl",
+        resolve: {
+          product: function(){
+            return $scope.product
+          }
+        }
+      })
+    }
+
 
     $scope.product = UsersProduct.get({
       id: slug,
       tiid: $routeParams.tiid
     },
     function(data){
-      console.log("data", data)
       Loading.finish('profileProduct')
       Page.setTitle(data.biblio.title)
 
@@ -1012,7 +1033,6 @@ angular.module("profileProduct", [
     )
   })
 
-angular.module("profile",["resources.users","product.product","services.page","update.update","ui.bootstrap","security","services.loading","services.timer","tips","profile.addProducts","services.i18nNotifications"]).config(["$routeProvider",function(e,t){e.when("/embed/:url_slug",{templateUrl:"profile/profile.tpl.html",controller:"ProfileCtrl"})}]).factory("UserProfile",function(e,t,n,r,i,s,o){var u={};return{makeAnchorLink:function(e,t){var r=e;t&&(r+=":"+encodeURIComponent(t));return n.path()+"#"+r},filterProducts:function(e,t){var n=_.filter(e,function(e){return _.size(e.metrics)}),r=_.filter(e,function(e){return e.metrics&&_.size(e.metrics)==0});return t=="withMetrics"?n:t==="withoutMetrics"?r:n.concat(r)},scrollToCorrectLocation:function(){if(n.hash())t();else{var r=o.getLastScrollPosition(n.path());e.scrollTo(0,r)}},loadUser:function(e,t){return r.get({id:t,idType:"url_slug"},function(e){o.setTitle(e.about.given_name+" "+e.about.surname)},function(n){if(n.status==404){e.userExists=!1;e.slug=t}})},slugIsCurrentUser:function(e){return i.getCurrentUser()?i.getCurrentUser().url_slug==e:!1},makeSlug:function(){u.url_slug=s.make(u.givenName,u.surname)},readyToCreateOnServer:function(){return u.url_slug&&!id},reset:function(){u={}},setId:function(e){id=e},getId:function(){return id},getSlug:function(){return u.url_slug},about:u}}).controller("ProfileCtrl",function(e,t,n,r,i,s,o,u,a,f,l,c,h,p,d,v,m,g){g.isEmbedded();var y=a.get("$http");e.$on("ngRepeatFinished",function(e){console.log("finished rendering products in "+m.elapsed("renderProducts")+"ms");twttr.widgets.load()});var b=r.url_slug,w=!0;e.loadingProducts=function(){return w};e.userExists=!0;e.showProductsWithoutMetrics=!1;e.filterProducts=h.filterProducts;e.user=h.loadUser(e,b);e.currentUserIsProfileOwner=function(){return h.slugIsCurrentUser(b)};e.openProfileEmbedModal=function(){i.open({templateUrl:"profile/profile-embed-modal.tpl.html",controller:"profileEmbedModalCtrl",resolve:{userSlug:function(e){return e.when(b)}}})};e.getSortScore=function(e){return c.getSortScore(e)*-1};e.getMetricSum=function(e){return c.getMetricSum(e)*-1};e.dedup=function(){v.start("dedup");l.dedup({id:b},{},function(e){console.log("deduped!",e);v.finish("dedup");p.removeAll();p.pushForCurrentRoute("dedup.success","success",{numDuplicates:e.deleted_tiids.length});E(!0)})};var E=function(t){m.start("getProducts");w=!0;t&&y.removeAll();e.products=l.query({id:b,includeHeadingProducts:!0,embedded:g.isEmbedded(),idType:"url_slug"},function(e){console.log("loaded products in "+m.elapsed("getProducts")+"ms");m.start("renderProducts");w=!1;s(function(){h.scrollToCorrectLocation()},0)},function(e){w=!1})};s(E,100)}).controller("profileEmbedModalCtrl",function(e,t,n){console.log("user slug is: ",n);e.userSlug=n;e.baseUrl=t.getBaseUrl;e.embed={};e.embed.type="badge"}).directive("backToProfile",function(e){return{restrict:"A",replace:!0,template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",link:function(t,n){var r=/^\/([-\w\.]+)\/product\/(\w+)/,i=r.exec(e.path());t.returnLink=null;if(i){var s=i[1];s!="embed"&&(t.returnLink=s)}}}});
 angular.module("profile", [
   'resources.users',
   'product.product',
@@ -2344,7 +2364,7 @@ angular.module("directives.spinner")
 
     }
     })
-angular.module('directives.forms', [])
+angular.module('directives.forms', ["services.loading"])
 .directive('prettyCheckbox', function(){
   // mostly from http://jsfiddle.net/zy7Rg/6/
   return {
@@ -2367,7 +2387,7 @@ angular.module('directives.forms', [])
   }
 })
 
-.directive('saveButtons', function(){
+.directive('saveButtons', function(Loading){
   return {
     templateUrl: 'forms/save-buttons.tpl.html',
     replace: true,
@@ -2375,6 +2395,7 @@ angular.module('directives.forms', [])
     require: "^form",
     restrict: "E",
     link:function(scope, elem, attr, formController){
+      scope.loading = Loading
       if (attr.action) {
         scope.action = attr.action
         scope.actionGerund = attr.action + "ing"
@@ -2465,6 +2486,20 @@ angular.module('resources.products',['ngResource'])
   return $resource(
    "/importer/:importerName",
    {}
+  )
+})
+
+.factory('ProductBiblio', function ($resource) {
+
+  return $resource(
+    "/product/:tiid/biblio",
+    {},
+    {
+      patch:{
+        method: "POST",
+        headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'}
+      }
+    }
   )
 })
 
@@ -3916,7 +3951,7 @@ angular.module("tips", ['ngResource'])
     }
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -4568,6 +4603,95 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "</ul>");
 }]);
 
+angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-product/edit-product-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <h3>Edit product</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body edit-product\">\n" +
+    "   <form\n" +
+    "           name=\"editProductForm\"\n" +
+    "           novalidate\n" +
+    "           ng-submit=\"onSave()\"\n" +
+    "           ng-controller=\"editProductFormCtrl\">\n" +
+    "\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label>Title</label>\n" +
+    "         <textarea\n" +
+    "           class=\"form-control\"\n" +
+    "           required\n" +
+    "           name=\"productTitle\"\n" +
+    "           ng-model=\"product.biblio.title\"></textarea>\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"from-group\">\n" +
+    "         <label>Authors</label>\n" +
+    "         <textarea\n" +
+    "           class=\"form-control\"\n" +
+    "           required\n" +
+    "           name=\"productAuthors\"\n" +
+    "           ng-model=\"product.biblio.authors\"></textarea>\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <save-buttons ng-show=\"editProductForm.$valid && editProductForm.$dirty\"\n" +
+    "                    valid=\"editProductForm.$valid\"></save-buttons>\n" +
+    "\n" +
+    "   </form>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-product/fulltext-location-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <h3>Add link to free fulltext</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body free-fulltext-url\">\n" +
+    "\n" +
+    "   <div class=\"add-link\">\n" +
+    "      <p>Is there a free version of this article, outside any paywalls?\n" +
+    "         <strong>Nice!</strong>\n" +
+    "      </p>\n" +
+    "\n" +
+    "      <form\n" +
+    "              name=\"freeFulltextUrlForm\"\n" +
+    "              novalidate\n" +
+    "              ng-submit=\"onSave()\"\n" +
+    "              ng-controller=\"freeFulltextUrlFormCtrl\">\n" +
+    "         <div class=\"input-group\">\n" +
+    "            <span class=\"input-group-addon icon-globe\"></span>\n" +
+    "            <input\n" +
+    "                    class=\"free-fulltext-url form-control\"\n" +
+    "                    type=\"url\"\n" +
+    "                    name=\"freeFulltextUrl\"\n" +
+    "                    required\n" +
+    "                    placeholder=\"Paste the link here\"\n" +
+    "                    ng-model=\"free_fulltext_url\" />\n" +
+    "         </div>\n" +
+    "         <save-buttons ng-show=\"freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty\"\n" +
+    "                       valid=\"freeFulltextUrlForm.$valid\"></save-buttons>\n" +
+    "\n" +
+    "      </form>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"archive-this\">\n" +
+    "      Is your work hidden behind a paywall? Let's fix that!\n" +
+    "      Upload a version to figshare, where everyone can read it for free:\n" +
+    "      <a class=\"btn btn-success\" href=\"http://figshare.com\" target=\"_blank\">\n" +
+    "         <span class=\"icon-unlock-alt\"></span>\n" +
+    "         upload a free version\n" +
+    "      </a>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>");
+}]);
+
 angular.module("profile-product/percentilesInfoModal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/percentilesInfoModal.tpl.html",
     "<div class=\"modal-header\">\n" +
@@ -4600,20 +4724,30 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "   <div class=\"header profile-subpage-header product-page-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
-    "         <a class=\"delete-product\"\n" +
-    "            ng-click=\"deleteProduct()\"\n" +
-    "            ng-show=\"userOwnsThisProfile\"\n" +
-    "            tooltip=\"Remove this product from your profile.\"\n" +
-    "            tooltip-placement=\"bottom\">\n" +
-    "            <span class=\"ready\" ng-show=\"!loading.is()\">\n" +
-    "               <i class=\"icon-trash\"></i>\n" +
-    "               Remove product\n" +
-    "            </span>\n" +
-    "            <span class=\"working\" ng-show=\"loading.is('deleteProduct')\">\n" +
-    "               <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "               Removing...\n" +
-    "            </span>\n" +
-    "         </a>\n" +
+    "         <div class=\"product-page-controls\" ng-show=\"userOwnsThisProfile\">\n" +
+    "            <a class=\"edit-product\"\n" +
+    "               ng-click=\"editProduct()\"\n" +
+    "               tooltip=\"Make changes to this product's title or authors\"\n" +
+    "               tooltip-placement=\"bottom\">\n" +
+    "               <span class=\"ready\" ng-show=\"!loading.is()\">\n" +
+    "                  <i class=\"icon-edit\"></i>\n" +
+    "                  Edit\n" +
+    "               </span>\n" +
+    "               <span class=\"working\" ng-show=\"loading.is('deleteProduct')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  Removing...\n" +
+    "               </span>\n" +
+    "            </a>\n" +
+    "            <a class=\"delete-product\"\n" +
+    "               ng-click=\"deleteProduct()\"\n" +
+    "               tooltip=\"Remove this product from your profile.\"\n" +
+    "               tooltip-placement=\"bottom\">\n" +
+    "               <span class=\"ready\">\n" +
+    "                  <i class=\"icon-trash\"></i>\n" +
+    "                  Remove \n" +
+    "               </span>\n" +
+    "            </a>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "   <div class=\"content wrapper\">\n" +
@@ -4622,7 +4756,27 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         <span class=\"text\">Loading product...</span>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div  class=\"product-container\" ng-bind-html-unsafe=\"product.markup\"></div>\n" +
+    "      <div  class=\"product\">\n" +
+    "         <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
+    "\n" +
+    "         <div class=\"free-fulltext-url well\" ng-show=\"!loading.is('profileProduct')\">\n" +
+    "            <div class=\"no-free-fulltext-url\" ng-show=\"!product.biblio.free_fulltext_url\">\n" +
+    "               <i class=\"icon-warning-sign leader\"></i>\n" +
+    "               Your article has no free fulltext available.\n" +
+    "               <a class=\"action btn btn-danger btn-xs\" ng-click=\"openFulltextLocationModal()\">Fix this</a>\n" +
+    "            </div>\n" +
+    "            <div class=\"has-free-fulltext-url\" ng-show=\"product.biblio.free_fulltext_url\">\n" +
+    "               <i class=\"icon-unlock-alt leader\"></i>\n" +
+    "               Free fulltext available at\n" +
+    "               <a href=\"{{ product.biblio.free_fulltext_url }}\" target=\"_blank\">\n" +
+    "                  {{ getDomain(product.biblio.free_fulltext_url) }}\n" +
+    "                  <i class=\"icon-external-link-sign\"></i>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
+    "      </div>\n" +
     "\n" +
     "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
     "         ng-show=\"!loading.is('profileProduct') && product.has_percentiles\">\n" +
@@ -4805,14 +4959,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "\n" +
     "      <ul class=\"products-list\">\n" +
-    "         <li class=\"product-container {{ product.genre }}\"\n" +
+    "         <li class=\"product {{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
     "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum']\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"product.has_metrics || showProductsWithoutMetrics || product.is_heading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
-    "             ng-bind-html-unsafe=\"product.markup\"\n" +
     "             on-repeat-finished>\n" +
+    "\n" +
+    "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
+    "            <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
     "\n" +
     "         </li>\n" +
     "      </ul>\n" +

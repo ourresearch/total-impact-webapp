@@ -2,20 +2,30 @@
    <div class="header profile-subpage-header product-page-header">
       <div class="wrapper">
          <a back-to-profile></a>
-         <a class="delete-product"
-            ng-click="deleteProduct()"
-            ng-show="userOwnsThisProfile"
-            tooltip="Remove this product from your profile."
-            tooltip-placement="bottom">
-            <span class="ready" ng-show="!loading.is()">
-               <i class="icon-trash"></i>
-               Remove product
-            </span>
-            <span class="working" ng-show="loading.is('deleteProduct')">
-               <i class="icon-refresh icon-spin"></i>
-               Removing...
-            </span>
-         </a>
+         <div class="product-page-controls" ng-show="userOwnsThisProfile">
+            <a class="edit-product"
+               ng-click="editProduct()"
+               tooltip="Make changes to this product's title or authors"
+               tooltip-placement="bottom">
+               <span class="ready" ng-show="!loading.is()">
+                  <i class="icon-edit"></i>
+                  Edit
+               </span>
+               <span class="working" ng-show="loading.is('deleteProduct')">
+                  <i class="icon-refresh icon-spin"></i>
+                  Removing...
+               </span>
+            </a>
+            <a class="delete-product"
+               ng-click="deleteProduct()"
+               tooltip="Remove this product from your profile."
+               tooltip-placement="bottom">
+               <span class="ready">
+                  <i class="icon-trash"></i>
+                  Remove
+               </span>
+            </a>
+         </div>
       </div>
    </div>
    <div class="content wrapper">
@@ -24,7 +34,27 @@
          <span class="text">Loading product...</span>
       </div>
 
-      <div  class="product-container" ng-bind-html-unsafe="product.markup"></div>
+      <div  class="product">
+         <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
+
+         <div class="free-fulltext-url well" ng-show="!loading.is('profileProduct')">
+            <div class="no-free-fulltext-url" ng-show="!product.biblio.free_fulltext_url">
+               <i class="icon-warning-sign leader"></i>
+               Your article has no free fulltext available.
+               <a class="action btn btn-danger btn-xs" ng-click="openFulltextLocationModal()">Fix this</a>
+            </div>
+            <div class="has-free-fulltext-url" ng-show="product.biblio.free_fulltext_url">
+               <i class="icon-unlock-alt leader"></i>
+               Free fulltext available at
+               <a href="{{ product.biblio.free_fulltext_url }}" target="_blank">
+                  {{ getDomain(product.biblio.free_fulltext_url) }}
+                  <i class="icon-external-link-sign"></i>
+               </a>
+            </div>
+         </div>
+
+         <div class="metrics-container" ng-bind-html-unsafe="product.markup.metrics"></div>
+      </div>
 
       <a class="percentile-info" ng-click="openInfoModal()"
          ng-show="!loading.is('profileProduct') && product.has_percentiles">

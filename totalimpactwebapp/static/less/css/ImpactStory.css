@@ -7557,20 +7557,20 @@ div.products .wrapper div.products-without-metrics div.well a {
   font-size: 80%;
   margin-left: 8px;
 }
-.product-container {
+.product {
   float: left;
   clear: both;
   padding: 25px 0 0;
   position: relative;
   width: 100%;
 }
-.product-container:hover div.product-controls {
+.product:hover div.product-controls {
   display: block;
 }
-.product-container.twitter.real-product div.real-product .badges {
+.product.twitter.real-product div.real-product .badges {
   margin-top: 40px;
 }
-.product-container.twitter.real-product:before {
+.product.twitter.real-product:before {
   width: 72px;
   height: 25px;
   background: #fff;
@@ -7580,13 +7580,13 @@ div.products .wrapper div.products-without-metrics div.well a {
   left: 566px;
   position: absolute;
 }
-.product-container.twitter.real-product h5 {
+.product.twitter.real-product h5 {
   display: none;
 }
-.product-container.twitter.real-product span.year {
+.product.twitter.real-product span.year {
   display: none;
 }
-.product-container.twitter.real-product iframe {
+.product.twitter.real-product iframe {
   border: none !important;
   border-bottom: 1px solid #ddd !important;
   -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
@@ -7610,10 +7610,10 @@ div.products .wrapper div.products-without-metrics div.well a {
   width: 660px !important;
   padding: 0 !important;
 }
-.product-container.twitter.real-product .awards {
+.product.twitter.real-product .awards {
   margin-top: 40px;
 }
-.product-container div.product-controls {
+.product div.product-controls {
   position: absolute;
   display: none;
   left: -100px;
@@ -7624,52 +7624,55 @@ div.products .wrapper div.products-without-metrics div.well a {
   line-height: 1;
   font-size: 14px;
 }
-.product-container .biblio {
+.product .biblio {
   float: left;
   width: 700px;
 }
-.product-container .biblio h5 {
+.product .biblio h5 {
   margin-top: 0;
 }
-.product-container .biblio h5 a.title-text {
+.product .biblio h5 a.title-text {
   font-size: 16px;
   color: #333;
   margin: 0 0 -3px 0;
   padding: 0 5px 10px 0;
 }
-.product-container .biblio h5 a.title-text:hover {
+.product .biblio h5 a.title-text:hover {
   color: #ff4e00;
   text-decoration: none;
 }
-.product-container .biblio h5 a.linkout {
+.product .biblio h5 a.linkout {
   color: #ddd;
 }
-.product-container .biblio h5 a.linkout:hover {
+.product .biblio h5 a.linkout:hover {
   color: #ff4e00;
   text-decoration: none;
 }
-.product-container .biblio div.optional-biblio {
+.product .biblio div.optional-biblio {
   clear: both;
   font-size: 13px;
   color: #888;
   line-height: 1.3;
 }
-.product-container .biblio div.optional-biblio span.repository {
+.product .biblio div.optional-biblio span.repository {
   font-style: italic;
 }
-.product-container .awards {
+.product .biblio div.optional-biblio span.journal {
+  font-style: italic;
+}
+.product .awards {
   width: 360px;
   margin-left: 20px;
   float: left;
 }
-.product-container .awards ul.awards-list {
+.product .awards ul.awards-list {
   float: left;
 }
-.product-container .awards ul.awards-list .award {
+.product .awards ul.awards-list .award {
   margin: 0 4px 4px 0;
   float: left;
 }
-.product-container .awards ul.awards-list .award span.metrics {
+.product .awards ul.awards-list .award span.metrics {
   display: none;
   float: left;
   border: 1px solid #333;
@@ -7692,7 +7695,7 @@ div.products .wrapper div.products-without-metrics div.well a {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-.product-container .awards ul.awards-list .award span.metrics img {
+.product .awards ul.awards-list .award span.metrics img {
   height: 16px;
   margin-left: 5px;
   vertical-align: top;
@@ -7707,7 +7710,7 @@ div.products .wrapper div.products-without-metrics div.well a {
   /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 
 }
-.product-container .ti-badge {
+.product .ti-badge {
   height: 24px;
   font-size: 12px;
   text-align: center;
@@ -7734,54 +7737,88 @@ div.products .wrapper div.products-without-metrics div.well a {
   background: black;
   border: 1px solid black;
 }
-.product-container .ti-badge span.audience {
+.product .ti-badge span.audience {
   display: none;
 }
-.product-container .ti-badge:hover {
+.product .ti-badge:hover {
   text-decoration: none;
 }
-.product-container .ti-badge.scholars {
+.product .ti-badge.scholars {
   background: #377eb8;
   border-color: #377eb8;
 }
-.product-container .ti-badge.public {
+.product .ti-badge.public {
   background: #4daf4a;
   border-color: #4daf4a;
 }
-.product-container .ti-badge.is-highly {
+.product .ti-badge.is-highly {
   color: #fff;
 }
-.product-container .ti-badge.is-not-highly {
+.product .ti-badge.is-not-highly {
   background: #fff;
 }
-.product-container .ti-badge.is-not-highly.scholars {
+.product .ti-badge.is-not-highly.scholars {
   color: #377eb8;
 }
-.product-container .ti-badge.is-not-highly.public {
+.product .ti-badge.is-not-highly.public {
   color: #4daf4a;
 }
-.product-container div.popover {
+.product div.popover {
   font-family: helvetica, arial, sans-serif;
   max-width: 230px;
 }
-.product-container div.popover h3 {
+.product div.popover h3 {
   font-size: 16px;
   font-family: helvetica, arial, sans-serif;
 }
-.product-container div.popover .popover-content {
+.product div.popover .popover-content {
   font-size: 14px;
+}
+div.modal-body.free-fulltext-url div.add-link div.buttons-group {
+  height: 40px;
+  margin: 20px;
+  text-align: center;
+}
+div.modal-body.free-fulltext-url div.add-link div.buttons-group .btn-default {
+  display: none;
+}
+div.modal-body.free-fulltext-url div.add-link div.buttons-group .btn-primary {
+  width: 14em;
+}
+div.modal-body.free-fulltext-url div.archive-this {
+  margin-top: 50px;
+}
+div.modal-body.free-fulltext-url div.archive-this a.btn {
+  display: block;
+  text-align: center;
+  width: 14em;
+  margin: 20px auto 0;
+}
+div.modal-body.free-fulltext-url div.archive-this a.btn span {
+  margin-right: 5px;
+}
+div.modal-body.edit-product div.buttons-group {
+  height: 40px;
+  margin: 20px;
+  text-align: center;
+}
+div.modal-body.edit-product div.buttons-group .btn {
+  width: 8em;
 }
 div.product-page {
   min-height: 500px;
 }
-div.product-page div.header a.delete-product {
-  position: absolute;
-  right: 16px;
-  text-align: left;
-  min-width: 130px;
+div.product-page div.header div.product-page-controls {
+  float: right;
+}
+div.product-page div.header div.product-page-controls a {
+  margin-left: 20px;
+  font-weight: 700;
+  font-size: 20px;
 }
 div.product-page .content {
   margin-bottom: 100px;
+  padding-top: 50px;
 }
 div.product-page .content div.working {
   color: #ddd;
@@ -7807,7 +7844,6 @@ div.product-page .content a.percentile-info:hover {
 }
 div.product-page .content .product {
   width: 100%;
-  margin-top: 50px;
   margin-bottom: 30px;
 }
 div.product-page .content .product .biblio {
@@ -7818,10 +7854,11 @@ div.product-page .content .product .biblio h5 a {
   font-size: 30px;
 }
 div.product-page .content .product .biblio h5 a i {
-  font-size: 15px;
+  font-size: 80%;
 }
 div.product-page .content .product .biblio h5 a i:hover {
   cursor: pointer;
+  color: #ff4e00;
 }
 div.product-page .content .product .biblio h5 a:hover {
   color: inherit;
@@ -7830,6 +7867,39 @@ div.product-page .content .product .biblio h5 a:hover {
 }
 div.product-page .content .product .biblio div.optional-biblio {
   font-size: 20px;
+}
+div.product-page .content .product div.well.free-fulltext-url {
+  display: none;
+  margin-top: 20px;
+  margin-left: -15px;
+}
+div.product-page .content .product div.well.free-fulltext-url i.leader {
+  font-size: 110%;
+  margin-right: 5px;
+}
+div.product-page .content .product div.well.free-fulltext-url i.leader.icon-unlock-alt {
+  color: #4daf4a;
+}
+div.product-page .content .product div.well.free-fulltext-url i.icon-external-link-sign {
+  font-size: 80%;
+  opacity: .5;
+}
+div.product-page .content .product div.well.free-fulltext-url a.action {
+  margin: -5px 0 0 25px;
+  text-decoration: none;
+  background: #777;
+  border: none;
+  padding: 3px 10px;
+}
+div.product-page .content .product div.well.free-fulltext-url a.action:hover {
+  background: #555;
+}
+div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a {
+  color: #333;
+  font-weight: normal;
+}
+div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a:hover {
+  text-decoration: underline;
 }
 div.product-page .content .product ul.metric-details-list {
   margin-top: 40px;
@@ -8582,27 +8652,27 @@ div.password-reset form.password-reset div.new-password div.show-password {
 div.password-reset form.password-reset div.submit {
   text-align: center;
 }
-.product-container.heading {
+.product.heading {
   margin-top: 130px;
 }
-.product-container.heading.first {
+.product.heading.first {
   margin-top: 30px;
 }
-.product-container.heading.blog .category-heading {
+.product.heading.blog .category-heading {
   width: 99%;
 }
-.product-container.heading.blog .category-heading div.category-metrics {
+.product.heading.blog .category-heading div.category-metrics {
   right: -15px;
 }
-.product-container.heading div.category-heading {
+.product.heading div.category-heading {
   width: 95%;
   padding-bottom: 5px;
   border-bottom: 1px solid #eee;
 }
-.product-container.heading div.category-heading div.category-heading-main {
+.product.heading div.category-heading div.category-heading-main {
   position: relative;
 }
-.product-container.heading div.category-heading div.category-heading-main h2 {
+.product.heading div.category-heading div.category-heading-main h2 {
   clear: both;
   margin: 0 0 0 -23px;
   font-weight: 900;
@@ -8611,8 +8681,8 @@ div.password-reset form.password-reset div.submit {
   color: #555;
   float: left;
 }
-.product-container.heading div.category-heading div.category-heading-main h2:before,
-.product-container.heading div.category-heading div.category-heading-main h2:after {
+.product.heading div.category-heading div.category-heading-main h2:before,
+.product.heading div.category-heading div.category-heading-main h2:after {
   content: " ";
   /* 1 */
 
@@ -8620,11 +8690,11 @@ div.password-reset form.password-reset div.submit {
   /* 2 */
 
 }
-.product-container.heading div.category-heading div.category-heading-main h2:after {
+.product.heading div.category-heading div.category-heading-main h2:after {
   clear: both;
 }
-.product-container.heading div.category-heading div.category-heading-main h2:before,
-.product-container.heading div.category-heading div.category-heading-main h2:after {
+.product.heading div.category-heading div.category-heading-main h2:before,
+.product.heading div.category-heading div.category-heading-main h2:after {
   content: " ";
   /* 1 */
 
@@ -8632,27 +8702,27 @@ div.password-reset form.password-reset div.submit {
   /* 2 */
 
 }
-.product-container.heading div.category-heading div.category-heading-main h2:after {
+.product.heading div.category-heading div.category-heading-main h2:after {
   clear: both;
 }
-.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons i {
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons i {
   vertical-align: 2px;
   margin-right: 4px;
   font-size: 90%;
   text-align: right;
 }
-.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons:hover a.genre-anchor {
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons:hover a.genre-anchor {
   color: #ff4e00;
 }
-.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor {
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor {
   color: #cccccc;
   position: relative;
 }
-.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor i.icon-link {
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor i.icon-link {
   font-size: 16px;
   margin: 0 2px 0 0;
 }
-.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor span.text {
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor span.text {
   width: 80px;
   margin-left: -86px;
   padding: 5px 2px 0;
@@ -8663,59 +8733,59 @@ div.password-reset form.password-reset div.submit {
   text-transform: lowercase;
   text-align: right;
 }
-.product-container.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor:hover span.text {
+.product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor:hover span.text {
   display: inline-block;
 }
-.product-container.heading div.category-heading div.category-heading-main h2 .account {
+.product.heading div.category-heading div.category-heading-main h2 .account {
   font-weight: 300;
   margin-left: .2em;
   text-transform: lowercase;
   color: #555;
 }
-.product-container.heading div.category-heading div.category-heading-main h2 a.account i {
+.product.heading div.category-heading div.category-heading-main h2 a.account i {
   display: none;
   font-size: 50%;
   vertical-align: top;
 }
-.product-container.heading div.category-heading div.category-heading-main h2 a.account:hover {
+.product.heading div.category-heading div.category-heading-main h2 a.account:hover {
   color: #ff4e00;
 }
-.product-container.heading div.category-heading div.category-heading-main h2 a.account:hover i {
+.product.heading div.category-heading div.category-heading-main h2 a.account:hover i {
   display: inline;
 }
-.product-container.heading div.category-heading div.category-heading-main div.category-metrics {
+.product.heading div.category-heading div.category-heading-main div.category-metrics {
   margin-top: 10px;
   text-align: right;
   position: absolute;
   bottom: 0;
   right: 0px;
 }
-.product-container.heading div.category-heading div.category-heading-main div.category-metrics ul li.category-metric {
+.product.heading div.category-heading div.category-heading-main div.category-metrics ul li.category-metric {
   display: inline-block;
   margin-right: 20px;
 }
-.product-container.heading div.category-heading div.category-heading-main div.category-metrics ul li.category-metric .metric-descr {
+.product.heading div.category-heading div.category-heading-main div.category-metrics ul li.category-metric .metric-descr {
   font-size: 80%;
   cursor: help;
 }
-.product-container.heading div.category-heading div.category-heading-tips .alert {
+.product.heading div.category-heading div.category-heading-tips .alert {
   margin: 5px 0 0;
   padding: 15px 20px;
   font-size: 17px;
   text-align: center;
   font-weight: 300;
 }
-.product-container.heading div.category-heading div.category-heading-tips .alert a {
+.product.heading div.category-heading div.category-heading-tips .alert a {
   font-weight: 900;
   margin: 0 2px;
 }
-.product-container.heading div.category-heading div.category-heading-tips .alert a:hover {
+.product.heading div.category-heading div.category-heading-tips .alert a:hover {
   text-decoration: underline;
   color: #fff;
 }
-.product-container.heading div.category-heading div.category-heading-tips .alert a:hover i {
+.product.heading div.category-heading div.category-heading-tips .alert a:hover i {
   text-decoration: none;
 }
-.product-container.heading div.category-heading div.category-heading-tips .alert a i {
+.product.heading div.category-heading div.category-heading-tips .alert a i {
   margin-right: 2px;
 }

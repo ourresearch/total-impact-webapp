@@ -1,15 +1,58 @@
+div.modal-body.free-fulltext-url {
+
+   div.add-link {
+      div.buttons-group {
+         height: 40px;
+         margin: 20px;
+         text-align:center;
+         .btn-default {display:none;}
+         .btn-primary { width: 14em;}
+      }
+   }
+
+   div.archive-this {
+      margin-top: 50px;
+      a.btn {
+         display: block;
+         text-align: center;
+         width: 14em;
+         margin:20px auto 0;
+         span {margin-right: 5px;}
+      }
+   }
+}
+
+div.modal-body.edit-product {
+   div.buttons-group {
+      // duplicates same declaration block used above for other modal; fix.
+      height: 40px;
+      margin: 20px;
+      text-align:center;
+      .btn {width: 8em;}
+   }
+}
+
+
 div.product-page {
    min-height: 500px;
    div.header {
-      a.delete-product {
-         position: absolute;
-         right:  16px;
-         text-align:left;
-         min-width: 130px;
+      div.product-page-controls {
+         float:right;
+         a {
+            margin-left: 20px;
+            font-weight: 700;
+            font-size: 20px;
+            &.delete-product {
+
+            }
+         }
+
       }
    }
+
    .content {
       margin-bottom: 100px;
+      padding-top: 50px;
       div.working {
          color: #ddd;
          font-size: 30px;
@@ -19,6 +62,7 @@ div.product-page {
          span.text { margin-left: 10px;}
          padding-top: 100px;
       }
+
 
       a.percentile-info {
          border-top: 1px solid #bbb;
@@ -35,7 +79,6 @@ div.product-page {
       .product { // overrides the main .product styles
    //      margin-left:200px;
          width:  100%;
-         margin-top: 50px;
          margin-bottom: 30px;
 
 
@@ -46,8 +89,8 @@ div.product-page {
                a {
                   font-size: 30px;
                   i {
-                     font-size:  15px;
-                     &:hover {cursor: pointer;}
+                     font-size: 80%;
+                     &:hover {cursor: pointer; color: @linkColor;}
                   }
                   &:hover { // hacky way to say: pretend you're not a link.
                      color:  inherit;
@@ -60,6 +103,47 @@ div.product-page {
                font-size: 20px;
             }
          }
+
+         div.well.free-fulltext-url {
+
+            // hiding this till rest of OA Badge feature comes out...
+            display:none;
+
+            margin-top: 20px;
+            margin-left: -15px;
+            i.leader {
+               font-size: 110%;
+               margin-right: 5px;
+               &.icon-unlock-alt {
+                  color: @publicColor;
+               }
+            }
+            i.icon-external-link-sign {
+               font-size: 80%;
+               opacity: .5;
+            }
+
+            a.action {
+               margin: -5px 0 0 25px;
+               text-decoration: none;
+               background: #777;
+               border: none;
+               padding: 3px 10px;
+               &:hover{background: #555;}
+            }
+            div.has-free-fulltext-url {
+               a {
+                  color: #333;
+                  font-weight: normal;
+                  &:hover {text-decoration: underline;}
+               }
+            }
+         }
+
+
+
+
+
          ul.metric-details-list {
             margin-top: 40px;
             li.metric-detail {

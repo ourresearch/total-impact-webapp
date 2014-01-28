@@ -346,10 +346,18 @@ def make_markup(product_dict, verbose):
     if verbose:
         template_root += "-verbose"
 
-    return render_template(
-        template_root + ".html",
-        product=product_dict
-    )
+    ret = {
+        "biblio": render_template(
+            "biblio.html",
+            product=product_dict
+        ),
+        "metrics": render_template(
+            template_root + ".html",
+            product=product_dict
+        )
+    }
+
+    return ret
 
 
 

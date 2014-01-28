@@ -42,7 +42,9 @@ def make_for_category(genre, account, category_products):
     except KeyError:
         heading_product["account_url"] = None
 
-    heading_product["markup"] = make_markup(heading_product)
+    heading_product["markup"] = {
+        "biblio": make_markup(heading_product)
+    }
 
     return heading_product
 

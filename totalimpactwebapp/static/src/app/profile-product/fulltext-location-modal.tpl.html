@@ -1,0 +1,42 @@
+<div class="modal-header">
+   <button type="button" class="close" ng-click="$close()">&times;</button>
+   <h3>Add link to free fulltext</h3>
+</div>
+<div class="modal-body free-fulltext-url">
+
+   <div class="add-link">
+      <p>Is there a free version of this article, outside any paywalls?
+         <strong>Nice!</strong>
+      </p>
+
+      <form
+              name="freeFulltextUrlForm"
+              novalidate
+              ng-submit="onSave()"
+              ng-controller="freeFulltextUrlFormCtrl">
+         <div class="input-group">
+            <span class="input-group-addon icon-globe"></span>
+            <input
+                    class="free-fulltext-url form-control"
+                    type="url"
+                    name="freeFulltextUrl"
+                    required
+                    placeholder="Paste the link here"
+                    ng-model="free_fulltext_url" />
+         </div>
+         <save-buttons ng-show="freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty"
+                       valid="freeFulltextUrlForm.$valid"></save-buttons>
+
+      </form>
+   </div>
+
+   <div class="archive-this">
+      Is your work hidden behind a paywall? Let's fix that!
+      Upload a version to figshare, where everyone can read it for free:
+      <a class="btn btn-success" href="http://figshare.com" target="_blank">
+         <span class="icon-unlock-alt"></span>
+         upload a free version
+      </a>
+   </div>
+
+</div>
