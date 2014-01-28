@@ -85,7 +85,6 @@ def make_metrics(product_dict):
                 metric_name=metric_name))
             return ret
 
-
         if audience is not None:
             metric.update(config_dict[metric_name])
             metric.update(metric_metadata(metric, year))
