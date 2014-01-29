@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-27
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-28
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -4811,7 +4811,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "               tooltip-placement=\"bottom\">\n" +
     "               <span class=\"ready\">\n" +
     "                  <i class=\"icon-trash\"></i>\n" +
-    "                  Remove \n" +
+    "                  Remove\n" +
     "               </span>\n" +
     "            </a>\n" +
     "         </div>\n" +
