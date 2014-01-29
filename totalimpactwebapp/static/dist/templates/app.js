@@ -64,7 +64,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header header\" ng-class=\"{big: page.isLandingPage()}\">\n" +
+    "<div class=\"main-header header\" ng-class=\"{landing: page.isLandingPage(), profile: page.isProfile()}\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <a class=\"brand\" href=\"/\">\n" +
     "         <img src=\"/static/img/impactstory-logo-no-type.png\" alt=\"ImpactStory\" />\n" +
@@ -1362,7 +1362,7 @@ angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", fun
 angular.module("signup/signup-header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-header.tpl.html",
     "<div class=\"signup-header header\" ng-controller=\"signupHeaderCtrl\">\n" +
-    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-reverse-no-text.png\" alt=\"ImpactStory\" /></a>\n" +
     "      <span class=\"text\">signup</span>\n" +
     "   </h1>\n" +
     "   <ol class=\"signup-steps\">\n" +

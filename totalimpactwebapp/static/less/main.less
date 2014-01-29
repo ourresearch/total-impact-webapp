@@ -466,27 +466,42 @@ div.no-page {
 
 
 div.main-header {
+
+   &.landing {
+      height: 220px;
+      text-align:center;
+      div.wrapper {
+         a.brand {
+            img { height: 150px;}
+         }
+      }
+   }
+
+   &.profile {
+      text-align: left;
+      div.wrapper {
+         a.brand {
+            margin-left: 10px;
+            img {
+               height: 50px;
+            }
+         }
+      }
+   }
+
+
    padding: 15px 0 20px;
-   height: 220px;
-//   &.big {
-//      height: 90px;
-//      padding-top: 24px;
-//      .wrapper{
-//         a.brand{img{height: 45px}}
-//         ul.main-nav{top: 10px;}
-//      }
-//   }
+   height: 140px;
+   text-align: center;
+
    div.wrapper {
       position:relative;
       margin-top:0;
       margin-bottom:0;
-      text-align:center;
       a.brand {
-         margin-left: 50px;
          margin-top: 10px;
-         display:block;
          img {
-            height: 150px;
+            height: 100px;
          }
       }
 

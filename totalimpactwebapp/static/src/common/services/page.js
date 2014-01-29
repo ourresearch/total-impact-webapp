@@ -64,6 +64,12 @@ angular.module("services.page")
      isLandingPage: function(){
        return ($location.path() == "/")
      },
+
+     isProfile:function(){
+       var path = $location.path()
+       return (path != "/") && (path != "/faq") && (path != "/about")
+     },
+
      setLastScrollPosition: function(pos, path){
        if (pos) {
         lastScrollPosition[path] = pos

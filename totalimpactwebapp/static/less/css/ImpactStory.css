@@ -6614,21 +6614,35 @@ div.no-page p span.slug {
 *****************************************************************************/
 div.main-header {
   padding: 15px 0 20px;
+  height: 140px;
+  text-align: center;
+}
+div.main-header.landing {
   height: 220px;
+  text-align: center;
+}
+div.main-header.landing div.wrapper a.brand img {
+  height: 150px;
+}
+div.main-header.profile {
+  text-align: left;
+}
+div.main-header.profile div.wrapper a.brand {
+  margin-left: 10px;
+}
+div.main-header.profile div.wrapper a.brand img {
+  height: 50px;
 }
 div.main-header div.wrapper {
   position: relative;
   margin-top: 0;
   margin-bottom: 0;
-  text-align: center;
 }
 div.main-header div.wrapper a.brand {
-  margin-left: 50px;
   margin-top: 10px;
-  display: block;
 }
 div.main-header div.wrapper a.brand img {
-  height: 150px;
+  height: 100px;
 }
 div.main-header div.wrapper ul.main-nav {
   position: absolute;
@@ -6821,9 +6835,6 @@ code {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div.infopage {
-  padding-top: 50px;
-}
 div.infopage h2.infopage-heading {
   font-size: 50px;
 }
@@ -7283,8 +7294,8 @@ div.profile-subpage.profile-add-products div.importers {
   background: #fff;
 }
 div.profile-header {
-  margin-top: 50px;
   margin-bottom: 35px;
+  margin-top: -20px;
   height: 110px;
   clear: both;
 }
@@ -8037,6 +8048,7 @@ div.signup-header h1 span.text {
 }
 div.signup-header h1 a.brand {
   float: left;
+  margin-right: 20px;
 }
 div.signup-header h1 a.brand img {
   height: 45px;
