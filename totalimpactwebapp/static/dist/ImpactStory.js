@@ -4094,7 +4094,8 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "<div class=\"main-header header\" ng-class=\"{landing: page.isLandingPage(), profile: page.isProfile()}\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <a class=\"brand\" href=\"/\">\n" +
-    "         <img src=\"/static/img/impactstory-logo-no-type.png\" alt=\"ImpactStory\" />\n" +
+    "         <img ng-if=\"!page.isProfile()\"  src=\"/static/img/impactstory-logo-no-type.png\" alt=\"ImpactStory\" />\n" +
+    "         <img ng-if=\"page.isProfile()\" src=\"/static/img/impactstory-logo-sideways.png\" alt=\"ImpactStory\" />\n" +
     "      </a>\n" +
     "      <login-toolbar></login-toolbar>\n" +
     "   </div>\n" +
