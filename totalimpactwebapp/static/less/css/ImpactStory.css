@@ -6853,7 +6853,7 @@ div.infopage.landing div#tagline div.wrapper {
 div.infopage.landing div#tagline div.wrapper h1 {
   color: #fff;
   font-size: 70px;
-  line-height: .9;
+  line-height: 1;
   padding-bottom: 15px;
   font-family: 'lato', helvetica, arial, sans-serif;
   font-weight: 900;

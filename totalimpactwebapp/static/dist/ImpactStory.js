@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-28
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-29
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -4088,7 +4088,7 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "<div class=\"main-header header\" ng-class=\"{big: page.isLandingPage()}\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <a class=\"brand\" href=\"/\">\n" +
-    "         <img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" />\n" +
+    "         <img src=\"/static/img/impactstory-logo-no-type.png\" alt=\"ImpactStory\" />\n" +
     "      </a>\n" +
     "      <login-toolbar></login-toolbar>\n" +
     "   </div>\n" +
