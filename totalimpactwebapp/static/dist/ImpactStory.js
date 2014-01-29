@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-29
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-27
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1105,6 +1105,7 @@ angular.module("profileProduct", [
 
 
 
+>>>>>>> Temporary merge branch 2
 angular.module("profile", [
   'resources.users',
   'product.product',
