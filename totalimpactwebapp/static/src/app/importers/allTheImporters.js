@@ -58,7 +58,7 @@ angular.module('importers.allTheImporters')
       }],
       url: 'http://orcid.org',
       signupUrl: 'http://orcid.org/register',
-      descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into ImpactStory.",
+      descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",
       extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
     },
 
@@ -155,7 +155,7 @@ angular.module('importers.allTheImporters')
           + '<li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li>'
           + '<li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>'
           + '<li>Click <code>Export all my articles</code>, then save the BibTex file.</li>'
-          + '<li>Return to ImpactStory. Click "upload" in this window, select your previously saved file, and upload.'
+          + '<li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.'
         + '</ol>'
     },
 
