@@ -6195,7 +6195,7 @@ body div#namechange {
   padding: 10px 0;
 }
 body div#namechange strong {
-  color: #ff4e00;
+  color: #ff4000;
 }
 body div#namechange a.dismiss {
   float: right;
@@ -6300,12 +6300,12 @@ h6 {
   color: #777;
 }
 a {
-  color: #ff4e00;
+  color: #ff4000;
   cursor: pointer;
   text-decoration: none;
 }
 a:hover {
-  color: #cc3e00;
+  color: #cc3300;
   text-decoration: none;
 }
 p,
@@ -6418,7 +6418,7 @@ div.modal div.modal-body ul.modal-notifications li {
   background: #fff;
 }
 div.modal div.modal-body ul.modal-notifications li a {
-  color: #ff4e00;
+  color: #ff4000;
   font-size: 90%;
   margin: 0 10px;
   font-weight: bold;
@@ -6614,23 +6614,25 @@ div.no-page p span.slug {
 *****************************************************************************/
 div.main-header {
   padding: 15px 0 20px;
-  height: 70px;
+  height: 220px;
 }
 div.main-header div.wrapper {
   position: relative;
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: center;
 }
-div.main-header div.wrapper a.brand i {
-  margin-right: 12px;
-  margin-left: -36px;
-  font-size: 25px;
+div.main-header div.wrapper a.brand {
+  margin-left: 50px;
+  margin-top: 10px;
+  display: block;
 }
 div.main-header div.wrapper a.brand img {
-  margin: 0 0 0 -10px;
-  height: 40px;
+  height: 150px;
 }
 div.main-header div.wrapper ul.main-nav {
   position: absolute;
-  top: 8px;
+  bottom: -7px;
   right: 10px;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item {
@@ -6657,7 +6659,7 @@ div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.signup {
   font-weight: 900;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.signup:hover {
-  color: #cc3e00;
+  color: #cc3300;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.login {
   color: #777;
@@ -6674,7 +6676,7 @@ div.main-header div.wrapper ul.main-nav li.nav-item.logged-in-user a {
   margin: 0 3px;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.logged-in-user a:hover {
-  color: #cc3e00;
+  color: #cc3300;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.preferences a.preference {
   padding: 2px 0;
@@ -6831,7 +6833,7 @@ div.infopage p {
 *****************************************************************************
 *****************************************************************************/
 div.infopage.landing {
-  background: #ff4e00;
+  background: #ff4000;
 }
 div.infopage.landing div#tagline {
   padding: 1px;
@@ -6842,22 +6844,23 @@ div.infopage.landing div#tagline div.wrapper {
 }
 div.infopage.landing div#tagline div.wrapper h1 {
   color: #fff;
-  font-size: 80px;
-  line-height: .8;
-  letter-spacing: -2px;
+  font-size: 70px;
+  line-height: .9;
   padding-bottom: 15px;
-  font-family: 'rokkitt', 'georgia', serif;
-  font-weight: 400;
+  font-family: 'lato', helvetica, arial, sans-serif;
+  font-weight: 900;
+  margin: 30px auto 30px;
 }
 div.infopage.landing div#tagline div.wrapper p.subtagline {
   color: #fff;
-  font-size: 20px;
+  font-size: 28px;
   padding: 5px 0 10px;
-  margin-bottom: 40px;
-  font-weight: normal;
+  font-weight: 300;
+  width: 750px;
+  margin: 0 auto 40px;
 }
 div.infopage.landing div#tagline div.wrapper #call-to-action {
-  margin-bottom: 50px;
+  margin: 70px auto 130px;
 }
 div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large {
   padding: 13px 29px;
@@ -6878,20 +6881,20 @@ div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   color: #eee;
-  font-family: 'rokkitt', 'georgia', serif;
   font-family: Lato, Helvetica, Arial, sans-serif;
 }
 div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.primary-action {
   background: #0053b0;
   font-weight: bold;
   margin-right: 20px;
+  font-size: 28px;
 }
 div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.primary-action:hover {
   background: #004797;
 }
 div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.secondary-action {
   background: #555;
-  font-size: 18px;
+  font-size: 22px;
   vertical-align: bottom;
   border: none;
   font-weight: normal;
@@ -6904,16 +6907,16 @@ div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.seconda
 *************************************************/
 div#selling-points {
   background-color: #fff;
-  min-height: 330px;
+  min-height: 30px;
   padding-top: 50px;
   background-position: bottom;
   background-repeat: repeat-x;
 }
 div#selling-points h3 {
   color: #666;
-  font-family: rokkitt, georgia, serif;
-  font-weight: normal;
-  font-size: 26px;
+  font-family: Lato, Helvetica, arial, sans-serif;
+  font-weight: 900;
+  font-size: 22px;
   padding-bottom: 15px;
   line-height: 1;
   margin-top: 0px;
@@ -6960,9 +6963,9 @@ div#sources div.wrapper {
 }
 div#sources div.wrapper h2 {
   color: #ccc;
-  font-size: 20px;
-  font-family: Rokkitt, serif;
-  font-weight: normal;
+  font-size: 16px;
+  font-family: Lato, Helvetica, arial, sans-serif;
+  font-weight: bold;
   margin: -59px auto 30px;
   background: #fff;
   display: block;
@@ -7228,7 +7231,7 @@ div.profile-subpage div.profile-subpage-header {
   height: 70px;
   padding-top: 24px;
   background: #555;
-  background: #ff4e00;
+  background: #ff4000;
   color: #fff;
 }
 div.profile-subpage div.profile-subpage-header div.wrapper {
@@ -7425,7 +7428,7 @@ div.product-controls a:hover {
   color: #333;
 }
 div.product-controls a.dedup-button.working {
-  color: #ff4e00;
+  color: #ff4000;
 }
 div.product-controls a.dedup-button i {
   margin-right: 0;
@@ -7500,7 +7503,7 @@ div.product-controls div.edit-controls div.num-items span.val-plus-text span.val
 div.product-controls div.edit-controls div.num-items a {
   font-size: 14px;
   margin-left: 5px;
-  color: #ff4e00;
+  color: #ff4000;
 }
 div.product-controls div.edit-controls div.num-items a:hover {
   text-decoration: underline;
@@ -7638,14 +7641,14 @@ div.products .wrapper div.products-without-metrics div.well a {
   padding: 0 5px 10px 0;
 }
 .product .biblio h5 a.title-text:hover {
-  color: #ff4e00;
+  color: #ff4000;
   text-decoration: none;
 }
 .product .biblio h5 a.linkout {
   color: #ddd;
 }
 .product .biblio h5 a.linkout:hover {
-  color: #ff4e00;
+  color: #ff4000;
   text-decoration: none;
 }
 .product .biblio div.optional-biblio {
@@ -7858,7 +7861,7 @@ div.product-page .content .product .biblio h5 a i {
 }
 div.product-page .content .product .biblio h5 a i:hover {
   cursor: pointer;
-  color: #ff4e00;
+  color: #ff4000;
 }
 div.product-page .content .product .biblio h5 a:hover {
   color: inherit;
@@ -7957,10 +7960,10 @@ div.product-page .content .product ul.metric-details-list li.metric-detail span.
 }
 div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name:hover {
   text-decoration: none;
-  color: #ff4e00;
+  color: #ff4000;
 }
 div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name:hover i {
-  color: #ff4e00;
+  color: #ff4000;
 }
 div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name span.raw-value {
   margin-left: 5px;
@@ -8002,12 +8005,12 @@ div.product-page .content .product ul.metric-details-list li.metric-detail span.
 }
 div.signup-header {
   background: #fff;
-  border-bottom: 4px solid #ff4e00;
+  border-bottom: 4px solid #ff4000;
   position: absolute;
   height: 80px;
   top: 0;
   width: 100%;
-  background: #ff4e00;
+  background: #ff4000;
 }
 div.signup-header h1 {
   position: absolute;
@@ -8200,7 +8203,7 @@ form.signup button.next-button {
   -webkit-transition: width .2s;
 }
 form.signup button.next-button.enabled {
-  background: #ff4e00;
+  background: #ff4000;
 }
 form.signup button.next-button.enabled:hover {
   width: 110px;
@@ -8613,7 +8616,7 @@ div.importers div.importer-tile div.imported-products-count span.descr {
   text-align: center;
 }
 div.password-reset-header {
-  background: #ff4e00;
+  background: #ff4000;
   height: 100px;
   padding-top: 20px;
 }
@@ -8712,7 +8715,7 @@ div.password-reset form.password-reset div.submit {
   text-align: right;
 }
 .product.heading div.category-heading div.category-heading-main h2 .genre-and-icons:hover a.genre-anchor {
-  color: #ff4e00;
+  color: #ff4000;
 }
 .product.heading div.category-heading div.category-heading-main h2 .genre-and-icons a.genre-anchor {
   color: #cccccc;
@@ -8727,7 +8730,7 @@ div.password-reset form.password-reset div.submit {
   margin-left: -86px;
   padding: 5px 2px 0;
   display: none;
-  color: #ff4e00;
+  color: #ff4000;
   font-size: 14px;
   font-weight: normal;
   text-transform: lowercase;
@@ -8748,7 +8751,7 @@ div.password-reset form.password-reset div.submit {
   vertical-align: top;
 }
 .product.heading div.category-heading div.category-heading-main h2 a.account:hover {
-  color: #ff4e00;
+  color: #ff4000;
 }
 .product.heading div.category-heading div.category-heading-main h2 a.account:hover i {
   display: inline;
