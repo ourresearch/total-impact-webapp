@@ -6627,9 +6627,6 @@ div.main-header.landing div.wrapper a.brand img {
 div.main-header.profile {
   text-align: left;
 }
-div.main-header.profile div.wrapper a.brand {
-  margin-left: 10px;
-}
 div.main-header.profile div.wrapper a.brand img {
   height: 50px;
 }
