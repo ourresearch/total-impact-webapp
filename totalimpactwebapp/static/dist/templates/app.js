@@ -5,7 +5,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "<div id=\"footer\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
-    "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
+    "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"Impactstory\" /></a>\n" +
     "\n" +
     "         <p class=\"descr\">We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>\n" +
     "         <p class=\"license\">\n" +
@@ -20,10 +20,10 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "      <div id=\"footer-follow\" class=\"footer-col\">\n" +
     "         <h3>Follow</h3>\n" +
     "         <ul>\n" +
-    "            <li><a href=\"http://twitter.com/#!/ImpactStory\">Twitter</a></li>\n" +
+    "            <li><a href=\"http://twitter.com/#!/Impactstory\">Twitter</a></li>\n" +
     "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
-    "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen ImpactStory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Stickers!</a></li>\n" +
-    "            <li><a href=\"http://twitter.com/#!/ImpactStory_now\">Site status</a></li>\n" +
+    "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Stickers!</a></li>\n" +
+    "            <li><a href=\"http://twitter.com/#!/Impactstory_now\">Site status</a></li>\n" +
     "            <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
     "\n" +
     "         </ul>\n" +
@@ -67,8 +67,8 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "<div class=\"main-header header\" ng-class=\"{landing: page.isLandingPage(), profile: page.isProfile()}\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <a class=\"brand\" href=\"/\">\n" +
-    "         <img ng-if=\"!page.isProfile()\"  src=\"/static/img/impactstory-logo-no-type.png\" alt=\"ImpactStory\" />\n" +
-    "         <img ng-if=\"page.isProfile()\" src=\"/static/img/impactstory-logo-sideways.png\" alt=\"ImpactStory\" />\n" +
+    "         <img ng-if=\"!page.isProfile()\"  src=\"/static/img/impactstory-logo-no-type.png\" alt=\"Impactstory\" />\n" +
+    "         <img ng-if=\"page.isProfile()\" src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory\" />\n" +
     "      </a>\n" +
     "      <login-toolbar></login-toolbar>\n" +
     "   </div>\n" +
@@ -179,9 +179,9 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "      <h2 class=\"infopage-heading\">About</h2>\n" +
     "\n" +
     "\n" +
-    "      <p>ImpactStory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.\n" +
+    "      <p>Impactstory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.\n" +
     "\n" +
-    "      <p>ImpactStory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
+    "      <p>Impactstory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
     "      <ul>\n" +
     "         <li><b>Open metrics</b>: Our data (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
     "         <li><b>With context</b>: To help researcher move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
@@ -191,14 +191,14 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "      <h3 id=\"team\">team</h3>\n" +
     "      <div class=\"team-member first\">\n" +
     "         <img src=\"/static/img/hat.jpg\" height=100/>\n" +
-    "         <p><strong>Jason Priem</strong> is a cofounder of ImpactStory and a doctoral student in information science at the University of North Carolina-Chapel Hill. Since <a href=\"https://twitter.com/jasonpriem/status/25844968813\">coining the term \"altmetrics,\"</a> he's remained active in the field, organizing the annual <a href=\"http:altmetrics.org/altmetrics12\">altmetrics workshops</a>, giving <a href=\"http://jasonpriem.org/cv/#invited\">invited talks</a>, and publishing <a href=\"http://jasonpriem.org/cv/#refereed\">peer-reviewed altmetrics research.</a></p>\n" +
+    "         <p><strong>Jason Priem</strong> is a cofounder of Impactstory and a doctoral student in information science at the University of North Carolina-Chapel Hill. Since <a href=\"https://twitter.com/jasonpriem/status/25844968813\">coining the term \"altmetrics,\"</a> he's remained active in the field, organizing the annual <a href=\"http:altmetrics.org/altmetrics12\">altmetrics workshops</a>, giving <a href=\"http://jasonpriem.org/cv/#invited\">invited talks</a>, and publishing <a href=\"http://jasonpriem.org/cv/#refereed\">peer-reviewed altmetrics research.</a></p>\n" +
     "\n" +
     "         <p>Jason has contributed to and created several open-source software projects, including <a href=\"http://www.zotero.org\">Zotero</a> and <a href=\"http://feedvis.com\">Feedvis</a>, and has experience and training in art, design, and information visualisation.  Sometimes he writes on a <a href=\"http://jasonpriem.org/blog\">blog</a> and <a href=\"https://twitter.com/#!/jasonpriem\">tweets</a>.</p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"team-member second\">\n" +
     "         <img src=\"/static/img/heather.jpg\" height=100/>\n" +
-    "         <p><strong>Heather Piwowar</strong> is a cofounder of ImpactStory and a leading researcher in the area of research data availability and data reuse. She wrote one of the first papers to measure the <a href=\"http://www.plosone.org/article/info:doi/10.1371/journal.pone.0000308\">citation benefit of publicly available research data</a> and has studied  <a href=\"http://www.plosone.org/article/info:doi/10.1371/journal.pone.0018657\">patterns in public deposition of datasets</a>, <a href=\"https://peerj.com/preprints/1/\">patterns of data reuse</a>, and the <a href=\"http://researchremix.wordpress.com/2010/10/12/journalpolicyproposal\">impact of journal data sharing policies</a>.</p>\n" +
+    "         <p><strong>Heather Piwowar</strong> is a cofounder of Impactstory and a leading researcher in the area of research data availability and data reuse. She wrote one of the first papers to measure the <a href=\"http://www.plosone.org/article/info:doi/10.1371/journal.pone.0000308\">citation benefit of publicly available research data</a> and has studied  <a href=\"http://www.plosone.org/article/info:doi/10.1371/journal.pone.0018657\">patterns in public deposition of datasets</a>, <a href=\"https://peerj.com/preprints/1/\">patterns of data reuse</a>, and the <a href=\"http://researchremix.wordpress.com/2010/10/12/journalpolicyproposal\">impact of journal data sharing policies</a>.</p>\n" +
     "\n" +
     "         <p>Heather has a bachelor’s and master’s degree from MIT in electrical engineering, 10 years of experience as a software engineer in small companies, and a Ph.D. in Biomedical Informatics from the University of Pittsburgh.  She is an <a href=\"http://www.slideshare.net/hpiwowar\">frequent speaker</a> on research data archiving, writes a well-respected <a href=\"http://researchremix.wordpress.com\">research blog</a>, and is active on twitter (<a href=\"http://twitter.com/researchremix\">@researchremix</a>). </p>\n" +
     "      </div>\n" +
@@ -206,9 +206,9 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "      <h3 id=\"history\">history</h3>\n" +
-    "      <p>ImpactStory began life as total-impact, a hackathon project at the Beyond Impact workshop in 2011. As the hackathon ended, a few of us migrated into a hotel hallway to continue working, eventually completing a 24-hour coding marathon to finish a prototype. Months of spare-time development followed, then funding.  We’ve got the same excitement for ImpactStory today.</p>\n" +
+    "      <p>Impactstory began life as total-impact, a hackathon project at the Beyond Impact workshop in 2011. As the hackathon ended, a few of us migrated into a hotel hallway to continue working, eventually completing a 24-hour coding marathon to finish a prototype. Months of spare-time development followed, then funding.  We’ve got the same excitement for Impactstory today.</p>\n" +
     "\n" +
-    "      <p>In early 2012, ImpactStory was given £17,000 through the <a href=\"http://beyond-impact.org/\">Beyond Impact project</a> from the <a href=\"http://www.soros.org/\">Open Society Foundation</a>.  Today ImpactStory is funded by the <a href=\"http://sloan.org/\">Alfred P. Sloan Foundation</a>, first through <a href=\"http://blog.impactstory.org/2012/03/29/20131290500/\">a $125,000 grant</a> in mid 2012 and then <a href=\"http://blog.impactstory.org/2013/06/17/sloan/\">a two-year grant for $500,000</a> starting in 2013.</p>\n" +
+    "      <p>In early 2012, Impactstory was given £17,000 through the <a href=\"http://beyond-impact.org/\">Beyond Impact project</a> from the <a href=\"http://www.soros.org/\">Open Society Foundation</a>.  Today Impactstory is funded by the <a href=\"http://sloan.org/\">Alfred P. Sloan Foundation</a>, first through <a href=\"http://blog.impactstory.org/2012/03/29/20131290500/\">a $125,000 grant</a> in mid 2012 and then <a href=\"http://blog.impactstory.org/2013/06/17/sloan/\">a two-year grant for $500,000</a> starting in 2013.</p>\n" +
     "\n" +
     "      <h3 id=\"why\">philosophy</h3>\n" +
     "      <p>As a philanthropically-funded not-for-profit, we're in this because we believe open altmetrics are key for building the coming era of Web-native science. We're committed to:</p> <ul>\n" +
@@ -219,7 +219,7 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "      <div id=\"contact\">\n" +
     "         <h3>Contact and FAQ</h3>\n" +
-    "         <p>We'd love to hear your feedback, ideas, or just chat! Reach us at <a href=\"mailto:team@impactstory.org\">team@impactstory.org</a>, on <a href=\"http://twitter.com/#!/ImpactStory\">Twitter</a>, or via our <a href=\"http://feedback.impactstory.org\">help forum.</a> Or if you've got questions, check out our <a href=\"/faq\">FAQ</a>.</p>\n" +
+    "         <p>We'd love to hear your feedback, ideas, or just chat! Reach us at <a href=\"mailto:team@impactstory.org\">team@impactstory.org</a>, on <a href=\"http://twitter.com/#!/Impactstory\">Twitter</a>, or via our <a href=\"http://feedback.impactstory.org\">help forum.</a> Or if you've got questions, check out our <a href=\"/faq\">FAQ</a>.</p>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
@@ -247,11 +247,11 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "<div class=\"main infopage\" id=\"faq\"><div class=\"wrapper\">\n" +
     "   <h2 class=\"infopage-heading\">FAQ</h2>\n" +
     "\n" +
-    "   <h3 id=\"what\" class=\"first\">what is ImpactStory?</h3>\n" +
+    "   <h3 id=\"what\" class=\"first\">what is Impactstory?</h3>\n" +
     "\n" +
-    "   <p>ImpactStory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.\n" +
+    "   <p>Impactstory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.\n" +
     "\n" +
-    "   <p>ImpactStory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
+    "   <p>Impactstory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
     "   <ul>\n" +
     "      <li><b>Open metrics</b>: Our data (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
     "      <li><b>With context</b>: To help researcher move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
@@ -270,7 +270,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <h3 id=\"uses\">how should it be used?</h3>\n" +
     "\n" +
-    "   <p>ImpactStory data can be:</p>\n" +
+    "   <p>Impactstory data can be:</p>\n" +
     "   <ul>\n" +
     "      <li>highlighted as indications of the <em>minimum</em> impact a research product has made on the community\n" +
     "      <li>explored more deeply to see who is citing, bookmarking, and otherwise using your work\n" +
@@ -281,14 +281,14 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <h3 id=\"pooruses\">how <em>shouldn’t</em> it be used?</h3>\n" +
     "\n" +
-    "   <p>Some of these issues relate to the early-development phase of ImpactStory, some reflect our <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">early-understanding of altmetrics</a>, and some are just common sense.  ImpactStory reports shouldn't be used:\n" +
+    "   <p>Some of these issues relate to the early-development phase of Impactstory, some reflect our <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">early-understanding of altmetrics</a>, and some are just common sense.  Impactstory reports shouldn't be used:\n" +
     "\n" +
     "   <ul>\n" +
     "      <li><b>as indication of comprehensive impact</b>\n" +
-    "         <p>ImpactStory is in early development. See <a href=\"#limitations\">limitations</a> and take it all with a grain of salt.\n" +
+    "         <p>Impactstory is in early development. See <a href=\"#limitations\">limitations</a> and take it all with a grain of salt.\n" +
     "\n" +
     "            <li><b>for serious comparison</b>\n" +
-    "               <p>ImpactStory is currently better at collecting comprehensive metrics for some products than others, in ways that are not clear in the report. Extreme care should be taken in comparisons. Numbers should be considered minimums. Even more care should be taken in comparing collections of products, since some ImpactStory is currently better at identifying products identified in some ways than others. Finally, some of these metrics can be easily gamed. This is one reason we believe having many metrics is valuable.\n" +
+    "               <p>Impactstory is currently better at collecting comprehensive metrics for some products than others, in ways that are not clear in the report. Extreme care should be taken in comparisons. Numbers should be considered minimums. Even more care should be taken in comparing collections of products, since some Impactstory is currently better at identifying products identified in some ways than others. Finally, some of these metrics can be easily gamed. This is one reason we believe having many metrics is valuable.\n" +
     "\n" +
     "                  <li><b>as if we knew exactly what it all means</b>\n" +
     "                     <p>The meaning of these metrics are not yet well understood; see <a href=\"#meaning\">section</a> below.\n" +
@@ -300,12 +300,12 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <h3 id=\"meaning\">what do these number actually mean?</h3>\n" +
     "\n" +
-    "   <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sighted: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like ImpactStory, can be found in the nascent scholarly literature on “altmetrics.”\n" +
+    "   <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sighted: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like Impactstory, can be found in the nascent scholarly literature on “altmetrics.”\n" +
     "\n" +
     "   <p><a href=\"http://altmetrics.org/manifesto/\">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">altmetrics library</a> on Mendeley for a growing list of relevant research.\n" +
     "\n" +
     "   <h3 id=\"you-are-not-geting-all-my-citations\">you're not getting all my citations!</h3>\n" +
-    "   <p>We'd love to display citation information from Google Scholar and Thomson Reuter's Web of Science in ImpactStory, but sadly neither Google Scholar nor Web of Science allow us to do this. We're really pleased that Scopus has been more open with their data, allowing us to display their citation data on our website.  PubMed and Crossref are exemplars of open data: we display their citation counts on our website, in ImpactStory widgets, and through our API.  As more citation databases open up, we'll include their data as fully as we can.</p>\n" +
+    "   <p>We'd love to display citation information from Google Scholar and Thomson Reuter's Web of Science in Impactstory, but sadly neither Google Scholar nor Web of Science allow us to do this. We're really pleased that Scopus has been more open with their data, allowing us to display their citation data on our website.  PubMed and Crossref are exemplars of open data: we display their citation counts on our website, in Impactstory widgets, and through our API.  As more citation databases open up, we'll include their data as fully as we can.</p>\n" +
     "\n" +
     "   <p>Each source of citation data gathers citations in its own ways, with their own strengths and limitations.  Web of Science gets  citation counts by manually gathering citations from a relatively small set of \"core\" journals.  Scopus and Google Scholar crawl a much more expansive set of publisher webpages, and Google also examines papers hosted elsewhere on the web.  PubMed looks at the reference sections of papers in PubMed Central, and CrossRef by looking at the reference lists that they see.  Google Scholar's scraping techniques and citation criteria are the most inclusive; the number of citations found by Google Scholar is typically the highest, though the least curated. A lot of folks have looked into the differences between citation counts from different providers, comparing Google Scholar, Scopus, and Web of Science and finding many differences; if you'd like to learn more, you might start with <a href=\"http://eprints.rclis.org/8605/\">this article.</a></p>\n" +
     "\n" +
@@ -349,13 +349,13 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <h3 id=\"whereisif\">where is the journal impact factor?</h3>\n" +
     "\n" +
-    "   <p>We do not include the Journal Impact Factor (or any similar proxy) on purpose. As has been <a href=\"https://www.zotero.org/groups/impact_factor_problems/items\">repeatedly shown</a>, the Impact Factor is not appropriate for judging the quality of individual research products. Individual article citations reflect much more about how useful papers actually were. Better yet are article-level metrics, as initiated by PLoS, in which we examine traces of impact beyond citation. ImpactStory broadens this approach to reflect <b>product-level metrics</b>, by inclusion of preprints, datasets, presentation slides, and other research output formats.\n" +
+    "   <p>We do not include the Journal Impact Factor (or any similar proxy) on purpose. As has been <a href=\"https://www.zotero.org/groups/impact_factor_problems/items\">repeatedly shown</a>, the Impact Factor is not appropriate for judging the quality of individual research products. Individual article citations reflect much more about how useful papers actually were. Better yet are article-level metrics, as initiated by PLoS, in which we examine traces of impact beyond citation. Impactstory broadens this approach to reflect <b>product-level metrics</b>, by inclusion of preprints, datasets, presentation slides, and other research output formats.\n" +
     "\n" +
     "   <h3 id=\"similar\">where is my other favourite metric?</h3>\n" +
     "\n" +
     "   <p>We only include open metrics here, and so far only a selection of those. We welcome contributions of plugins. Write your own and tell us about it.\n" +
     "\n" +
-    "   <p>Not sure ImpactStory is your cup of tea?  Check out these similar tools:\n" +
+    "   <p>Not sure Impactstory is your cup of tea?  Check out these similar tools:\n" +
     "   <ul>\n" +
     "      <li><a href=\"http://altmetric.com\">altmetric.com</a>\n" +
     "      <li><a href=\"http://www.plumanalytics.com/\">Plum Analytics</a>\n" +
@@ -368,7 +368,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <h3 id=\"limitations\">what are the current limitations of the system?</h3>\n" +
     "\n" +
-    "   <p>ImpactStory is in early development and has many limitations. Some of the ones we know about:\n" +
+    "   <p>Impactstory is in early development and has many limitations. Some of the ones we know about:\n" +
     "\n" +
     "   <h4>gathering IDs sometimes misses products</h4>\n" +
     "   <ul>\n" +
@@ -383,7 +383,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <h4>metrics sometimes have values that are too low</h4>\n" +
     "   <ul>\n" +
-    "      <li>some sources have multiple records for a given product. ImpactStory only identifies one copy and so only reports the impact metrics for that record. It makes no current attempt to aggregate across duplications within a source.\n" +
+    "      <li>some sources have multiple records for a given product. Impactstory only identifies one copy and so only reports the impact metrics for that record. It makes no current attempt to aggregate across duplications within a source.\n" +
     "   </ul>\n" +
     "\n" +
     "   <h4>other</h4>\n" +
@@ -391,24 +391,24 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "      <li>the number of items on a report is currently limited.\n" +
     "   </ul>\n" +
     "\n" +
-    "   Tell us about bugs! <a href=\"http://twitter.com/#!/ImpactStory\">@ImpactStory</a> (or via email to team@impactstory.org)\n" +
+    "   Tell us about bugs! <a href=\"http://twitter.com/#!/Impactstory\">@Impactstory</a> (or via email to team@impactstory.org)\n" +
     "\n" +
     "   <h3 id=\"isitopen\">is this data Open?</h3>\n" +
     "\n" +
-    "   <p>We’d like to make all of the data displayed by ImpactStory available under CC0. Unfortunately, the terms-of-use of most of the data sources don’t allow that. We're trying to figure out how to handle this.\n" +
+    "   <p>We’d like to make all of the data displayed by Impactstory available under CC0. Unfortunately, the terms-of-use of most of the data sources don’t allow that. We're trying to figure out how to handle this.\n" +
     "   <p>An option to restrict the displayed reports to Fully Open metrics — those suitable for commercial use — is on the To Do list.\n" +
-    "   <p>The ImpactStory software itself is fully open source under an MIT license. <a href=\"https://github.com/total-impact\">GitHub</a>\n" +
+    "   <p>The Impactstory software itself is fully open source under an MIT license. <a href=\"https://github.com/total-impact\">GitHub</a>\n" +
     "\n" +
     "\n" +
-    "   <h3 id=\"who\">who developed ImpactStory?</h3>\n" +
+    "   <h3 id=\"who\">who developed Impactstory?</h3>\n" +
     "\n" +
     "   <p>Concept originally hacked at the <a href=\"http://beyond-impact.org/\">Beyond Impact Workshop</a>, part of the Beyond Impact project funded by the Open Society Foundations <a href=\"https://github.com/mhahnel/Total-Impact/contributors\">(initial contributors)</a>.  Here's the <a href=\"/about\">current team</a>.\n" +
     "\n" +
-    "   <h3 id=\"funding\">who funds ImpactStory?</h3>\n" +
+    "   <h3 id=\"funding\">who funds Impactstory?</h3>\n" +
     "\n" +
     "   <p>Early development was done on personal time, plus some discretionary time while funded through <a href=\"http://dataone.org\">DataONE</a> (Heather Piwowar) and a <a href=\"http://gradschool.unc.edu/programs/royster\">UNC Royster Fellowship</a> (Jason Priem).\n" +
     "\n" +
-    "   <p>In early 2012, ImpactStory was given £17,000 through the <a href=\"http://beyond-impact.org/\">Beyond Impact project</a> from the <a href=\"http://www.soros.org/\">Open Society Foundation</a>.  As of May 2012, ImpactStory is funded through a $125k grant from the <a href=\"http://sloan.org/\">Alfred P. Sloan Foundation. </a>\n" +
+    "   <p>In early 2012, Impactstory was given £17,000 through the <a href=\"http://beyond-impact.org/\">Beyond Impact project</a> from the <a href=\"http://www.soros.org/\">Open Society Foundation</a>.  As of May 2012, Impactstory is funded through a $125k grant from the <a href=\"http://sloan.org/\">Alfred P. Sloan Foundation. </a>\n" +
     "\n" +
     "   <h3 id=\"learned\">what have you learned?</h3>\n" +
     "\n" +
@@ -425,7 +425,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <ul>\n" +
     "      <li><b>do you have data?</b> If it is already available in some public format, let us know so we can add it. If it isn’t, either please open it up or contact us to work out some mutually beneficial way we can work together.\n" +
     "      <li><b>do you have money?</b> We need money :) We need to fund future development of the system and are actively looking for appropriate opportunities.\n" +
-    "      <li><b>do you have ideas?</b> Maybe enhancements to ImpactStory would fit in with a grant you are writing, or maybe you want to make it work extra-well for your institution’s research outputs. We’re interested: please get in touch (see bottom).\n" +
+    "      <li><b>do you have ideas?</b> Maybe enhancements to Impactstory would fit in with a grant you are writing, or maybe you want to make it work extra-well for your institution’s research outputs. We’re interested: please get in touch (see bottom).\n" +
     "      <li><b>do you have energy?</b> We need better “see what it does” documentation, better lists of collections, etc. Make some and tell us, please!\n" +
     "      <li><b>do you have anger that your favourite data source is missing?</b> After you confirm that its data isn't available for open purposes like this, write to them and ask them to open it up... it might work. If the data is open but isn't included here, let us know to help us prioritize.\n" +
     "      <li><b>can you email, blog, post, tweet, or walk down the hall to tell a friend?</b> See the <a href=\"#cool\">this is so cool</a> section for your vital role....\n" +
@@ -434,13 +434,13 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <h3 id=\"cool\">this is so cool.</h3>\n" +
     "\n" +
     "   <p>Thanks! We agree :)\n" +
-    "   <p>You can help us.  Demonstrating the value of ImpactStory is key to receiving future funding.\n" +
-    "   <p>Buzz and testimonials will help. Tweet your reports. Blog, send email, and show off ImpactStory at your next group meeting to help spread the word.\n" +
-    "   <p>Tell us how cool it is at <a href=\"http://twitter.com/#!/ImpactStory\">@ImpactStory</a> (or via email to team@impactstory.org) so we can consolidate the feedback.\n" +
+    "   <p>You can help us.  Demonstrating the value of Impactstory is key to receiving future funding.\n" +
+    "   <p>Buzz and testimonials will help. Tweet your reports. Blog, send email, and show off Impactstory at your next group meeting to help spread the word.\n" +
+    "   <p>Tell us how cool it is at <a href=\"http://twitter.com/#!/Impactstory\">@Impactstory</a> (or via email to team@impactstory.org) so we can consolidate the feedback.\n" +
     "\n" +
     "   <h3 id=\"suggestion\">I have a suggestion!</h3>\n" +
     "\n" +
-    "   <p><b>We want to hear it.</b> Send it to us at <a href=\"http://twitter.com/#!/ImpactStory\">@ImpactStory</a> (or via email to team@impactstory.org).\n" +
+    "   <p><b>We want to hear it.</b> Send it to us at <a href=\"http://twitter.com/#!/Impactstory\">@Impactstory</a> (or via email to team@impactstory.org).\n" +
     "\n" +
     "\n" +
     "</div><!-- end wrapper -->\n" +
@@ -454,7 +454,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "   <div id=\"tagline\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <h1>Share the full story of your <br>research impact.</h1>\n" +
-    "         <p class=\"subtagline\">ImpactStory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>\n" +
+    "         <p class=\"subtagline\">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>\n" +
     "         <div id=\"call-to-action\">\n" +
     "            <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">Make my impact profile</a>\n" +
     "            <a href=\"/CarlBoettiger\" class=\"btn btn-large btn-primary secondary-action\" id=\"view-sample-collection\">View a sample profile</a>\n" +
@@ -471,7 +471,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "         </li>\n" +
     "         <li class=\"middle\">\n" +
     "            <h3 id=\"embed-metrics-anywhere\"><i class=\"icon-suitcase icon-2x\"></i><span class=\"text\">Embed them anywhere</span></h3>\n" +
-    "            <p>Drop ImpactStory's embeddable code into your own online CV or website to show the impacts of your work.</p>\n" +
+    "            <p>Drop Impactstory's embeddable code into your own online CV or website to show the impacts of your work.</p>\n" +
     "         </li>\n" +
     "         <li>\n" +
     "            <h3 id=\"its-open\"><i class=\"icon-wrench icon-2x\"></i><span class=\"text\">Open data,<br> open source.</span></h3>\n" +
@@ -530,7 +530,7 @@ angular.module("password-reset/password-reset-header.tpl.html", []).run(["$templ
   $templateCache.put("password-reset/password-reset-header.tpl.html",
     "<div class=\"password-reset-header\">\n" +
     "   <h1><a class=\"brand\" href=\"/\">\n" +
-    "      <img src=\"/static/img/impactstory-logo-white.png\" alt=\"ImpactStory\" /></a>\n" +
+    "      <img src=\"/static/img/impactstory-logo-white.png\" alt=\"Impactstory\" /></a>\n" +
     "      <span class=\"text\">password reset</span>\n" +
     "   </h1>\n" +
     "</div>\n" +
@@ -747,7 +747,7 @@ angular.module("profile-product/percentilesInfoModal.tpl.html", []).run(["$templ
     "   <h3>What do these numbers mean?</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
-    "   <p>ImpactStory classifies metrics along two dimensions: <strong>audience</strong> (<em>scholars</em> or the <em>public</em>) and <strong>type of engagement</strong> with research (<em>view</em>, <em>discuss</em>, <em>save</em>, <em>cite</em>, and <em>recommend</em>).</p>\n" +
+    "   <p>Impactstory classifies metrics along two dimensions: <strong>audience</strong> (<em>scholars</em> or the <em>public</em>) and <strong>type of engagement</strong> with research (<em>view</em>, <em>discuss</em>, <em>save</em>, <em>cite</em>, and <em>recommend</em>).</p>\n" +
     "\n" +
     "   <p>For each metric, the coloured bar shows its percentile relative to all articles indexed in the Web of Science that year.  The bars show a range, representing the 95% confidence interval around your percentile (and also accounting for ties).  Along with ranges, we show “Highly” badges for metrics above the 75th percentile that exceed a minimum frequency.</p>\n" +
     "\n" +
@@ -1363,7 +1363,7 @@ angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", fun
 angular.module("signup/signup-header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup-header.tpl.html",
     "<div class=\"signup-header header\" ng-controller=\"signupHeaderCtrl\">\n" +
-    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-reverse-no-text.png\" alt=\"ImpactStory\" /></a>\n" +
+    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-reverse-no-text.png\" alt=\"Impactstory\" /></a>\n" +
     "      <span class=\"text\">signup</span>\n" +
     "   </h1>\n" +
     "   <ol class=\"signup-steps\">\n" +

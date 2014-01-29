@@ -6850,6 +6850,7 @@ div.infopage p {
 *****************************************************************************/
 div.infopage.landing {
   background: #ff4000;
+  padding-top: 30px;
 }
 div.infopage.landing div#tagline {
   padding: 1px;
@@ -6876,7 +6877,7 @@ div.infopage.landing div#tagline div.wrapper p.subtagline {
   margin: 0 auto 40px;
 }
 div.infopage.landing div#tagline div.wrapper #call-to-action {
-  margin: 70px auto 130px;
+  margin: 70px auto 150px;
 }
 div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large {
   padding: 13px 29px;
