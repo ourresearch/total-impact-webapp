@@ -4028,7 +4028,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></a>\n" +
     "\n" +
-    "         <p>We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>\n" +
+    "         <p class=\"descr\">We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>\n" +
     "         <p class=\"license\">\n" +
     "            <!--<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\"><img alt=\"Creative Commons License\" style=\"border-width:0\" src=\"http://i.creativecommons.org/l/by/2.0/80x15.png\" /></a>-->\n" +
     "            <span class=\"text\">Except where otherwise noted, content on this site is licensed under the\n" +
