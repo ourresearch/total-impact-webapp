@@ -207,7 +207,7 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "      <h3 id=\"history\">history</h3>\n" +
     "      <p>ImpactStory began life as total-impact, a hackathon project at the Beyond Impact workshop in 2011. As the hackathon ended, a few of us migrated into a hotel hallway to continue working, eventually completing a 24-hour coding marathon to finish a prototype. Months of spare-time development followed, then funding.  We’ve got the same excitement for ImpactStory today.</p>\n" +
     "\n" +
-    "      <p>In early 2012, ImpactStory was given £17,000 through the <a href=\"http://www.beyond-impact.org/\">Beyond Impact project</a> from the <a href=\"http://www.soros.org/\">Open Society Foundation</a>.  Today ImpactStory is funded by the <a href=\"http://sloan.org/\">Alfred P. Sloan Foundation</a>, first through <a href=\"http://blog.impactstory.org/2012/03/29/20131290500/\">a $125,000 grant</a> in mid 2012 and then <a href=\"http://blog.impactstory.org/2013/06/17/sloan/\">a two-year grant for $500,000</a> starting in 2013.</p>\n" +
+    "      <p>In early 2012, ImpactStory was given £17,000 through the <a href=\"http://beyond-impact.org/\">Beyond Impact project</a> from the <a href=\"http://www.soros.org/\">Open Society Foundation</a>.  Today ImpactStory is funded by the <a href=\"http://sloan.org/\">Alfred P. Sloan Foundation</a>, first through <a href=\"http://blog.impactstory.org/2012/03/29/20131290500/\">a $125,000 grant</a> in mid 2012 and then <a href=\"http://blog.impactstory.org/2013/06/17/sloan/\">a two-year grant for $500,000</a> starting in 2013.</p>\n" +
     "\n" +
     "      <h3 id=\"why\">philosophy</h3>\n" +
     "      <p>As a philanthropically-funded not-for-profit, we're in this because we believe open altmetrics are key for building the coming era of Web-native science. We're committed to:</p> <ul>\n" +
@@ -358,7 +358,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <ul>\n" +
     "      <li><a href=\"http://altmetric.com\">altmetric.com</a>\n" +
     "      <li><a href=\"http://www.plumanalytics.com/\">Plum Analytics</a>\n" +
-    "      <li><a href=\"http://code.google.com/p/alt-metrics/\">PLoS Article-Level Metrics application</a>\n" +
+    "      <li><a href=\"http://article-level-metrics.plos.org/\">PLoS Article-Level Metrics application</a>\n" +
     "      <li><a href=\"http://sciencecard.org/\">Science Card</a>\n" +
     "      <li><a href=\"http://citedin.org/\">CitedIn</a>\n" +
     "      <li><a href=\"http://readermeter.org/\">ReaderMeter</a>\n" +
@@ -401,13 +401,13 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <h3 id=\"who\">who developed ImpactStory?</h3>\n" +
     "\n" +
-    "   <p>Concept originally hacked at the <a href=\"http://www.beyond-impact.org/\">Beyond Impact Workshop</a>, part of the Beyond Impact project funded by the Open Society Foundations <a href=\"https://github.com/mhahnel/Total-Impact/contributors\">(initial contributors)</a>.  Here's the <a href=\"/about\">current team</a>.\n" +
+    "   <p>Concept originally hacked at the <a href=\"http://beyond-impact.org/\">Beyond Impact Workshop</a>, part of the Beyond Impact project funded by the Open Society Foundations <a href=\"https://github.com/mhahnel/Total-Impact/contributors\">(initial contributors)</a>.  Here's the <a href=\"/about\">current team</a>.\n" +
     "\n" +
     "   <h3 id=\"funding\">who funds ImpactStory?</h3>\n" +
     "\n" +
     "   <p>Early development was done on personal time, plus some discretionary time while funded through <a href=\"http://dataone.org\">DataONE</a> (Heather Piwowar) and a <a href=\"http://gradschool.unc.edu/programs/royster\">UNC Royster Fellowship</a> (Jason Priem).\n" +
     "\n" +
-    "   <p>In early 2012, ImpactStory was given £17,000 through the <a href=\"http://www.beyond-impact.org/\">Beyond Impact project</a> from the <a href=\"http://www.soros.org/\">Open Society Foundation</a>.  As of May 2012, ImpactStory is funded through a $125k grant from the <a href=\"http://sloan.org/\">Alfred P. Sloan Foundation. </a>\n" +
+    "   <p>In early 2012, ImpactStory was given £17,000 through the <a href=\"http://beyond-impact.org/\">Beyond Impact project</a> from the <a href=\"http://www.soros.org/\">Open Society Foundation</a>.  As of May 2012, ImpactStory is funded through a $125k grant from the <a href=\"http://sloan.org/\">Alfred P. Sloan Foundation. </a>\n" +
     "\n" +
     "   <h3 id=\"learned\">what have you learned?</h3>\n" +
     "\n" +
@@ -484,6 +484,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "      <div class=\"wrapper\">\n" +
     "         <h2>Uncover your impacts from all across the Web: </h2>\n" +
     "         <ul id=\"source-logos\">\n" +
+    "            <li><img src=\"/static/img/logos/altmetric-com.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/arxiv.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/citeulike.png\" /></li>\n" +
     "            <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
@@ -1476,7 +1477,6 @@ angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", fun
     "           >\n" +
     "      </div>\n" +
     "  </div>\n" +
-    "\n" +
     "\n" +
     "\n" +
     "\n" +
