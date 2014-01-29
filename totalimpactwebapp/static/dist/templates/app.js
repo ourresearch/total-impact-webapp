@@ -74,6 +74,7 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "   </div>\n" +
     "</div>\n" +
     "<div ng-show=\"page.showNotificationsIn('header')\" ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
+    "\n" +
     "");
 }]);
 

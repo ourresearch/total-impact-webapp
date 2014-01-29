@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-27
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-29
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1105,7 +1105,6 @@ angular.module("profileProduct", [
 
 
 
->>>>>>> Temporary merge branch 2
 angular.module("profile", [
   'resources.users',
   'product.product',
@@ -4102,6 +4101,7 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "   </div>\n" +
     "</div>\n" +
     "<div ng-show=\"page.showNotificationsIn('header')\" ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
+    "\n" +
     "");
 }]);
 
