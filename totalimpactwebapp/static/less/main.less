@@ -713,15 +713,16 @@ div.popover {
 
 
 
-
-
-
-
 div.tooltip {
    font-size: 13px;
    width:140px;
    line-height:1.5;
    font-weight: 300;
+   &.bottom {
+      .tooltip-arrow {
+         border-bottom-color: #333;
+      }
+   }
    &.in {
       opacity: 1;
    }

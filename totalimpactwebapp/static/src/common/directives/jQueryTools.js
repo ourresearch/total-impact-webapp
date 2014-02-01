@@ -8,7 +8,7 @@ angular.module("directives.jQueryTools", [])
         $("body").popover({
           html:true,
           trigger:'hover',
-          placement:'bottom',
+          placement:'bottom auto',
           selector: "[data-content]"
         })
       }
@@ -20,7 +20,7 @@ angular.module("directives.jQueryTools", [])
       restrict: 'A',
       link: function (scope, element, attr) {
         $("body").tooltip({
-          placement:'bottom',
+          placement:'bottom auto',
           selector: "[data-toggle='tooltip']"
         })
       }

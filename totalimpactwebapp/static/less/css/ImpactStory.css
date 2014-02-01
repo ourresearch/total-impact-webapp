@@ -6807,6 +6807,9 @@ div.tooltip {
   line-height: 1.5;
   font-weight: 300;
 }
+div.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: #333;
+}
 div.tooltip.in {
   opacity: 1;
 }
@@ -7656,17 +7659,18 @@ div.products .wrapper div.products-without-metrics div.well a {
   font-size: 16px;
   color: #333;
   margin: 0 0 -3px 0;
-  padding: 0 5px 10px 0;
+  padding: 0 5px 0 0;
 }
 .product .biblio h5 a.title-text:hover {
-  color: #ff4000;
-  text-decoration: none;
+  color: #000;
+  text-decoration: underline;
 }
 .product .biblio h5 a.linkout {
   color: #ddd;
+  margin-right: 5px;
 }
 .product .biblio h5 a.linkout:hover {
-  color: #ff4000;
+  color: #000;
   text-decoration: none;
 }
 .product .biblio div.optional-biblio {

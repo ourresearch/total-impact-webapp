@@ -6,6 +6,8 @@
          {% if request.args.get('embedded') in ['true', 'True', 1] %}
          target="_blank"
          {% endif %}
+         title="Click to view impact details"
+         data-toggle='tooltip'
 
          href="{{ request.url_root }}{{ g.profile_slug }}/product/{{ product._id }}">
 
@@ -14,8 +16,22 @@
 
 
       {% if product.biblio.url %}
-      <a class="linkout url title" target="_blank" href="{{ product.biblio.url }}">
+      <a class="linkout url title"
+         target="_blank"
+         title="Click to view on publisher site"
+         data-toggle='tooltip'
+         href="{{ product.biblio.url }}">
          <i class="icon-external-link-sign"></i>
+      </a>
+      {% endif %}
+
+      {% if product.biblio.free_fulltext_url %}
+      <a class="linkout free-fulltext-url"
+         target="_blank"
+         title="Free fulltext available; click to view."
+         data-toggle='tooltip'
+         href="{{ product.biblio.free_fulltext_url }}">
+         <i class="icon-unlock-alt"></i>
       </a>
       {% endif %}
    </h5>
