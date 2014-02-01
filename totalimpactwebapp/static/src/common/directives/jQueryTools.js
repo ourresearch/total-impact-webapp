@@ -21,6 +21,7 @@ angular.module("directives.jQueryTools", [])
       link: function (scope, element, attr) {
         $("body").tooltip({
           placement:'bottom auto',
+          html:true,
           selector: "[data-toggle='tooltip']"
         })
       }
