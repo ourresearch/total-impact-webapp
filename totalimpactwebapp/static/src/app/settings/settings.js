@@ -142,7 +142,7 @@ angular.module('settings', [
   })
 
 
-
+  // not currently using this...LinkedAccounts page is hidden.
   .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading, Update, UsersProducts) {
 
 

@@ -6,8 +6,8 @@ angular.module('settings.pageDescriptions')
     "Profile",
     "Custom URL",
     "Email",
-    "Password",
-    "Linked accounts"
+    "Password"
+//    ,"Linked accounts"
   ]
 
   var urlPathFromDisplayName = function(displayName){

@@ -6,7 +6,19 @@ from totalimpactwebapp import product_configs
 logger = logging.getLogger("tiwebapp.product")
 
 
+deprecated_genres = ["twitter", "blog"]
+
+
+class GenreDeprecatedError(Exception):
+    pass
+
+
 def prep_product(product, verbose=False):
+
+    if product["biblio"]["genre"] in deprecated_genres:
+        raise GenreDeprecatedError
+
+
 
     product["biblio"] = make_biblio(product)
     product["metrics"] = make_metrics(product)
