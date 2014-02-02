@@ -15,9 +15,11 @@ def prep(products_dict, include_headings=False):
     prepped_products = []
 
     for product_dict in products_dict:
-        prepped_products.append(
-            product.prep_product(product_dict)
-        )
+
+        try:
+            prepped_products.append(product.prep_product(product_dict))
+        except product.GenreDeprecatedError:
+            pass
 
     if include_headings:
         prepped_products += make_heading_products(prepped_products)
