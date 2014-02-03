@@ -397,12 +397,12 @@ LeySander""".split()
 
 
 # for testing
-
-slugs = """DavidJayHarris
-jeromyanglim
-MichaelHsieh
-MarcRobinson-Rechavi
-LeySander""".split()
+#
+#slugs = """DavidJayHarris
+#jeromyanglim
+#MichaelHsieh
+#MarcRobinson-Rechavi
+#LeySander""".split()
 
 rows = []
 for slug in slugs:
