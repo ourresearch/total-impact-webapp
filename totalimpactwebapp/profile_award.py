@@ -83,7 +83,7 @@ class OAAward(ProfileAward):
 
         # needed for next level
         try:
-            next_level_cutoff = self.bins[level+1]
+            next_level_cutoff = self.bins[level]
             oa_articles_in_next_level = int(math.ceil(next_level_cutoff * len(products)))
             fulltext_urls_needed = oa_articles_in_next_level - len(oa_articles)
 
