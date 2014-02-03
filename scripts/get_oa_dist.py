@@ -394,11 +394,19 @@ MichaelHsieh
 MarcRobinson-Rechavi
 LeySander""".split()
 
-print slugs
+
+"""DavidJayHarris
+jeromyanglim
+MichaelHsieh
+MarcRobinson-Rechavi
+LeySander""".split()
+
 
 for slug in slugs:
-    url = "http://impactstory.org/user/{slug}/awards".format(
+    url = "http://staging-impactstory.org/user/{slug}/awards".format(
         slug=slug
     )
+    print "requesting this url: ", url
     resp = requests.get(url)
+    print resp.json()
 

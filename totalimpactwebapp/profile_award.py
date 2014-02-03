@@ -55,8 +55,12 @@ class OAAward(ProfileAward):
 
         oa_articles = [p for p in article_products if "free_fulltext_url" in p["biblio"]]
         self.extra["oa_articles_count"] = len(oa_articles)
-        
-        oa_proportion = len(oa_articles) / len(article_products)
+
+        try:
+            oa_proportion = len(oa_articles) / len(article_products)
+        except ZeroDivisionError:
+            oa_proportion = 0
+
         self.extra["oa_articles_proportion"] = oa_proportion
         
         # calculate level
