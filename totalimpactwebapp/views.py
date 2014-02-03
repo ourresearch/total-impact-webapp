@@ -443,7 +443,7 @@ def user_products_modify(id):
         deleted_tiids = remove_duplicates_from_user(user.id)
         resp = {"deleted_tiids": deleted_tiids}
 
-    if request.method == "POST" and (action == "refresh"):
+    elif request.method == "POST" and (action == "refresh"):
         # anyone can refresh extant products.
         source = request.args.get("source", "webapp")
         tiids_being_refreshed = user.refresh_products(source)
