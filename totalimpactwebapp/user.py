@@ -1,5 +1,6 @@
 from totalimpactwebapp import db
 from totalimpactwebapp import products_list
+from totalimpactwebapp import profile_award
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
@@ -79,6 +80,8 @@ class User(db.Model):
     figshare_id = db.Column(db.String(64))
     wordpress_api_key = db.Column(db.String(64))
 
+    #awards = []
+
     tips = db.Column(db.String())  # ALTER TABLE "user" ADD tips text
     last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
 
@@ -100,6 +103,15 @@ class User(db.Model):
         if not products:
             products = []
         return products
+
+
+    @property
+    def profile_awards_dicts(self):
+        awards = []
+        for award_obj in self.profile_awards:
+            awards.append(award_obj.as_dict())
+
+        return awards
 
     @property
     def email_hash(self):
@@ -458,6 +470,8 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
     if not show_secrets:
         user = hide_user_secrets(user)
 
+
+    user.profile_awards = profile_award.make_awards_list(user)
     return user
 
 

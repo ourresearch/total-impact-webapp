@@ -22,6 +22,7 @@ from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
+from totalimpactwebapp import profile_award
 
 import newrelic.agent
 
@@ -340,6 +341,22 @@ def user_about(profile_id):
         db.session.commit()
 
     return json_resp_from_thing({"about": user.as_dict()})
+
+
+
+
+@app.route("/user/<profile_id>/awards", methods=['GET'])
+def user_profile_awards(profile_id):
+    user = get_user_for_response(
+        profile_id,
+        request
+    )
+
+    #db.session.commit()
+
+    return json_resp_from_thing({'awards': user.profile_awards_dicts})
+
+
 
 
 
