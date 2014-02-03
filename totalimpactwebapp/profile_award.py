@@ -51,13 +51,15 @@ class OAAward(ProfileAward):
 
     def calculate(self, about, products):
         article_products = [p for p in products if p["biblio"]["genre"] == "article"]
-        self.extra["articles_count"] = len(article_products)
+        article_count = len(article_products)
+        self.extra["articles_count"] = article_count
 
         oa_articles = [p for p in article_products if "free_fulltext_url" in p["biblio"]]
-        self.extra["oa_articles_count"] = len(oa_articles)
+        oa_article_count = len(oa_articles)
+        self.extra["oa_articles_count"] = oa_article_count
 
         try:
-            oa_proportion = len(oa_articles) / len(article_products)
+            oa_proportion = oa_article_count / article_count
         except ZeroDivisionError:
             oa_proportion = 0
 
@@ -75,17 +77,17 @@ class OAAward(ProfileAward):
 
 
         # justification
-        self.level_justification = "{num_oa} of your {articles_count} articles have free fulltext available.".format(
-            num_oa=len(oa_articles),
-            num_products=len(products)
+        self.level_justification = "{num_oa} of your {article_count} articles have free fulltext available.".format(
+            num_oa=oa_article_count,
+            article_count=article_count
         )
 
 
         # needed for next level
         try:
             next_level_cutoff = self.bins[level]
-            oa_articles_in_next_level = int(math.ceil(next_level_cutoff * len(products)))
-            fulltext_urls_needed = oa_articles_in_next_level - len(oa_articles)
+            oa_articles_in_next_level = int(math.ceil(next_level_cutoff * article_count))
+            fulltext_urls_needed = oa_articles_in_next_level - oa_article_count
 
             self.needed_for_next_level = "add {needed} more Free Fulltext " \
                                          "links to your articles. Click " \
