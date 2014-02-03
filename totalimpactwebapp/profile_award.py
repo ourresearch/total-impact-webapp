@@ -82,9 +82,7 @@ class OAAward(ProfileAward):
 
 
         # needed for next level
-        if self.level == top_level:
-            self.needed_for_next_level = None
-        else:
+        try:
             next_level_cutoff = self.bins[level+1]
             oa_articles_in_next_level = int(math.ceil(next_level_cutoff * len(products)))
             fulltext_urls_needed = oa_articles_in_next_level - len(oa_articles)
@@ -93,3 +91,6 @@ class OAAward(ProfileAward):
                                          "links to your articles. Click " \
                                          "any article without the unlocked " \
                                          "icon to get started!".format(needed=fulltext_urls_needed)
+
+        except IndexError:
+            self.needed_for_next_level = None
