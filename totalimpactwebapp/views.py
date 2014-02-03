@@ -438,6 +438,11 @@ def user_products_modify(id):
     logger.debug(u"got user {user}".format(
         user=user))
 
+    # ADDING THIS HERE TEMPORARILY
+    if request.method == "POST" and action == "deduplicate":
+        deleted_tiids = remove_duplicates_from_user(user.id)
+        resp = {"deleted_tiids": deleted_tiids}
+
     if request.method == "POST" and (action == "refresh"):
         # anyone can refresh extant products.
         source = request.args.get("source", "webapp")
