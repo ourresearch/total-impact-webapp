@@ -4719,11 +4719,16 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-award/profile-award.tpl.html",
-    "<div class=\"profile-award\" ng-controller=\"ProfileAwardCtrl\">\n" +
+    "<div class=\"profile-award\"\n" +
+    "     ng-controller=\"ProfileAwardCtrl\"\n" +
+    "     popover=\"{{ profileAward.level_justification }}\"\n" +
+    "     popover-trigger=\"hover\"\n" +
+    "     popover-placement=\"bottom\"\n" +
+    "     ng-show=\"profileAward.level>0\">\n" +
     "   <span class=\"icon level-{{ profileAward.level }}\">\n" +
     "      <i class=\"icon-unlock-alt\"></i>\n" +
     "   </span>\n" +
-    "   <span class=\"text\">open access scholar</span>\n" +
+    "   <span class=\"text\">{{ profileAward.name }}</span>\n" +
     "</div>");
 }]);
 

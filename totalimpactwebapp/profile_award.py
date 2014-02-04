@@ -21,6 +21,7 @@ def make_awards_list(user):
 class ProfileAward(object):
     def __init__(self):
         self.level = 0
+        self.name = "generic award"
         self.level_justification = "we said so"
         self.needed_for_next_level = None
         self.timestamp = int(time.time())
@@ -28,7 +29,9 @@ class ProfileAward(object):
 
     def as_dict(self):
         return {
+            "name": self.name,
             "level": self.level,
+            "level_name": self.level_name(self.level),
             "level_justification": self.level_justification,
             "needed_for_next_level": self.needed_for_next_level,
             "timestamp": self.timestamp,
@@ -37,6 +40,9 @@ class ProfileAward(object):
 
     def calculate(self, about, products):
         raise NotImplementedError  # override in children
+
+    def level_name(self, level):
+        return ["none", "bronze", "silver", "gold"][level]
 
 
 
@@ -47,6 +53,11 @@ class ProfileAward(object):
 
 class OAAward(ProfileAward):
     bins = [.40, .60, .80]
+
+    def __init__(self):
+        ProfileAward.__init__(self)
+        self.name = "Open access scholar"
+
 
 
     def calculate(self, about, products):
@@ -71,9 +82,9 @@ class OAAward(ProfileAward):
 
 
         # justification
-        self.level_justification = "{num_oa} of your {num_products} have free fulltext available.".format(
+        self.level_justification = "{num_oa} of this profile's {articles_count} articles have free fulltext available.".format(
             num_oa=len(oa_articles),
-            num_products=len(products)
+            articles_count=articles_count
         )
 
 
