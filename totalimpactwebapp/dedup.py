@@ -28,7 +28,7 @@ def update_by_url_slugs(url_slugs, webapp_api_endpoint):
         print "REALLY POSTING"
         r = requests.post(url)
         print r.text
-        print "n=", count, "of", len(url_slugs), (0.0+count)/len(url_slugs), "%"
+        print "n=", count, "of", len(url_slugs), "which is", (100.0*count)/len(url_slugs), "%"
         time.sleep(QUEUE_DELAY_IN_SECONDS)
     print "that was n=", len(url_slugs), "url slugs"
     return url_slugs
@@ -36,7 +36,7 @@ def update_by_url_slugs(url_slugs, webapp_api_endpoint):
 
 def get_profiles_not_updated_since(number_to_update, max_days_since_updated, now=datetime.datetime.utcnow()):
     raw_sql = text(u"""SELECT url_slug FROM "user" u
-                        WHERE last_refreshed <= now()::date - :max_days_since_updated
+                        where email is not null
                         ORDER BY url_slug asc
                         LIMIT :number_to_update""")
 
