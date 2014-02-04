@@ -58,7 +58,8 @@ class OAAward(ProfileAward):
         ProfileAward.__init__(self)
         self.name = "Open access scholar"
 
-
+    def level_name(self, level):
+        return ["none", "bronze", "silver", "platinum"][level]
 
     def calculate(self, about, products):
         article_products = [p for p in products if p["biblio"]["genre"] == "article"]
@@ -88,7 +89,7 @@ class OAAward(ProfileAward):
 
 
         # justification
-        self.level_justification = "{num_oa} of your {article_count} articles have free fulltext available.".format(
+        self.level_justification = "{num_oa} of this profile's {article_count} articles have free fulltext available.".format(
             num_oa=oa_article_count,
             article_count=article_count
         )

@@ -7400,10 +7400,10 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-
   background: #CD7F32;
 }
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.icon.level-2 {
-  background: #aaa;
+  background: silver;
 }
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.icon.level-3 {
-  background: lightsteelblue;
+  background: gold;
 }
 div.modal-body.embed label {
   float: left;
@@ -7941,7 +7941,6 @@ div.product-page .content .product .biblio div.optional-biblio {
   font-size: 20px;
 }
 div.product-page .content .product div.well.free-fulltext-url {
-  display: none;
   margin-top: 20px;
   margin-left: -15px;
 }
