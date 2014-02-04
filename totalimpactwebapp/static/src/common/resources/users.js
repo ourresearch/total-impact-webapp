@@ -79,6 +79,7 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+
   .factory('UsersPassword', function ($resource) {
 
     return $resource(
@@ -87,9 +88,20 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
-.factory("UsersProductsCache", function(UsersProducts){
-    var cache = []
-    return {
-      query: function(){}
-    }
+  .factory("UsersProductsCache", function(UsersProducts){
+      var cache = []
+      return {
+        query: function(){}
+      }
+    })
+
+
+
+  .factory('ProfileAwards', function ($resource) {
+
+    return $resource(
+      "/user/:id/awards",
+      {},
+      {}
+    )
   })

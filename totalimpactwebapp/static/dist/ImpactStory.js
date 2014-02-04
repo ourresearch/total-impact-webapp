@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-29
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-03
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -932,6 +932,21 @@ angular.module('product.product')
 
 
 
+angular.module('profileAward.profileAward', [])
+
+  .factory('ProfileAward', function() {
+    return {
+      test: function foo(){}
+    }
+
+})
+
+  .controller('ProfileAwardCtrl', function ($scope, ProfileAward) {
+    console.log("controller ran")
+
+  })
+
+
 angular.module("profileProduct", [
     'resources.users',
     'resources.products',
@@ -1108,6 +1123,7 @@ angular.module("profileProduct", [
 angular.module("profile", [
   'resources.users',
   'product.product',
+  'profileAward.profileAward',
   'services.page',
   'update.update',
   'ui.bootstrap',
@@ -1219,6 +1235,7 @@ angular.module("profile", [
     UsersProducts,
     Product,
     UserProfile,
+    ProfileAwards,
     i18nNotifications,
     Update,
     Loading,
@@ -1258,6 +1275,14 @@ angular.module("profile", [
     $scope.filterProducts =  UserProfile.filterProducts;
 
     $scope.user = UserProfile.loadUser($scope, userSlug);
+
+    $scope.profileAwards = ProfileAwards.query(
+      {id:userSlug},
+      function(resp){
+        console.log("loaded awards!", resp)
+      }
+    )
+
     $scope.currentUserIsProfileOwner = function(){
       return UserProfile.slugIsCurrentUser(userSlug);
     }
@@ -2283,7 +2308,7 @@ angular.module("directives.jQueryTools", [])
         $("body").popover({
           html:true,
           trigger:'hover',
-          placement:'bottom',
+          placement:'bottom auto',
           selector: "[data-content]"
         })
       }
@@ -2295,7 +2320,8 @@ angular.module("directives.jQueryTools", [])
       restrict: 'A',
       link: function (scope, element, attr) {
         $("body").tooltip({
-          placement:'bottom',
+          placement:'bottom auto',
+          html:true,
           selector: "[data-toggle='tooltip']"
         })
       }
@@ -2655,6 +2681,7 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+
   .factory('UsersPassword', function ($resource) {
 
     return $resource(
@@ -2663,11 +2690,22 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
-.factory("UsersProductsCache", function(UsersProducts){
-    var cache = []
-    return {
-      query: function(){}
-    }
+  .factory("UsersProductsCache", function(UsersProducts){
+      var cache = []
+      return {
+        query: function(){}
+      }
+    })
+
+
+
+  .factory('ProfileAwards', function ($resource) {
+
+    return $resource(
+      "/user/:id/awards",
+      {},
+      {}
+    )
   })
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security', [
@@ -4025,7 +4063,7 @@ angular.module("tips", ['ngResource'])
     }
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -4679,6 +4717,16 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "</ul>");
 }]);
 
+angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-award/profile-award.tpl.html",
+    "<div class=\"profile-award\" ng-controller=\"ProfileAwardCtrl\">\n" +
+    "   <span class=\"icon level-{{ profileAward.level }}\">\n" +
+    "      <i class=\"icon-unlock-alt\"></i>\n" +
+    "   </span>\n" +
+    "   <span class=\"text\">open access scholar</span>\n" +
+    "</div>");
+}]);
+
 angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/edit-product-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
@@ -4978,7 +5026,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            </ul>\n" +
     "         </div>\n" +
     "      </div>\n" +
-    "      <div class=\"my-metrics\"></div> <!-- profile-level stats go here -->\n" +
+    "      <div class=\"my-metrics\">\n" +
+    "         <ul class=\"profile-award-list\">\n" +
+    "            <li class=\"profile-award-container\"\n" +
+    "                ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +
+    "                ng-repeat=\"profileAward in profileAwards\">\n" +
+    "            </li>\n" +
+    "         </ul>\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
     "\n" +

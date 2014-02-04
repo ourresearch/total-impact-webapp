@@ -108,6 +108,33 @@ div.profile-header {
          }
 
       }
+      div.my-metrics {
+         float:left;
+         ul.profile-award-list {
+            div.profile-award {
+               color: #fff;
+               font-size: 14px;
+               font-weight: normal;
+
+               span.text {
+                  .border-radius(3px, 3px, 0px, 0px);
+                  padding: 5px 10px;
+                  background: #555;
+               }
+
+               span.icon {
+                  .border-radius(0px, 0px, 3px, 3px);
+                  padding: 5px 10px;
+                  background: red;
+                  &.level-1 {background: #CD7F32;}
+                  &.level-2 {background: #aaa;}
+                  &.level-3 {background: lightsteelblue;}
+               }
+
+            }
+         }
+      }
+
    }
 }
 

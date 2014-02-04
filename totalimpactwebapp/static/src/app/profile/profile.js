@@ -1,6 +1,7 @@
 angular.module("profile", [
   'resources.users',
   'product.product',
+  'profileAward.profileAward',
   'services.page',
   'update.update',
   'ui.bootstrap',
@@ -112,6 +113,7 @@ angular.module("profile", [
     UsersProducts,
     Product,
     UserProfile,
+    ProfileAwards,
     i18nNotifications,
     Update,
     Loading,
@@ -151,6 +153,14 @@ angular.module("profile", [
     $scope.filterProducts =  UserProfile.filterProducts;
 
     $scope.user = UserProfile.loadUser($scope, userSlug);
+
+    $scope.profileAwards = ProfileAwards.query(
+      {id:userSlug},
+      function(resp){
+        console.log("loaded awards!", resp)
+      }
+    )
+
     $scope.currentUserIsProfileOwner = function(){
       return UserProfile.slugIsCurrentUser(userSlug);
     }

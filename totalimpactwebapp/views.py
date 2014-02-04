@@ -352,9 +352,7 @@ def user_profile_awards(profile_id):
         request
     )
 
-    #db.session.commit()
-
-    return json_resp_from_thing({'awards': user.profile_awards_dicts})
+    return json_resp_from_thing(user.profile_awards_dicts)
 
 
 

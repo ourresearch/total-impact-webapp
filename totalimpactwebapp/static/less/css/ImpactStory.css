@@ -7349,6 +7349,61 @@ div.profile-header div.wrapper div.my-vitals div.external-usernames li a img {
   height: 16px;
   margin-top: -3px;
 }
+div.profile-header div.wrapper div.my-metrics {
+  float: left;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award {
+  color: #fff;
+  font-size: 14px;
+  font-weight: normal;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.text {
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 0px;
+  -webkit-border-top-left-radius: 0px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 0px;
+  -moz-border-radius-topleft: 0px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  padding: 5px 10px;
+  background: #555;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.icon {
+  -webkit-border-top-right-radius: 0px;
+  -webkit-border-bottom-right-radius: 0px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 0px;
+  -moz-border-radius-bottomright: 0px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  padding: 5px 10px;
+  background: red;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.icon.level-1 {
+  background: #CD7F32;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.icon.level-2 {
+  background: #aaa;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.icon.level-3 {
+  background: lightsteelblue;
+}
 div.modal-body.embed label {
   float: left;
   width: 250px;
