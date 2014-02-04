@@ -7356,6 +7356,7 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-
   color: #fff;
   font-size: 14px;
   font-weight: normal;
+  cursor: default;
 }
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.text {
   -webkit-border-top-right-radius: 3px;

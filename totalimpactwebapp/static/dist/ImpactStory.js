@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-29
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-03
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -848,8 +848,7 @@ angular.module('product.product')
 
 
 
-angular.module('profileAward', [])
-
+angular.module('profileAward.profileAward', [])
   .factory('ProfileAward', function() {
     return {
       test: function foo(){}
@@ -2236,7 +2235,8 @@ angular.module("directives.jQueryTools", [])
       restrict: 'A',
       link: function (scope, element, attr) {
         $("body").tooltip({
-          placement:'bottom',
+          placement:'bottom auto',
+          html:true,
           selector: "[data-toggle='tooltip']"
         })
       }
@@ -4634,9 +4634,18 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-award/profile-award.tpl.html",
-    "<div class=\"profile-award\" ng-controller=\"ProfileAwardCtrl\">\n" +
-    "   <div class=\"icon\"></div>\n" +
-    "   <div class=\"text\">award time!</div>\n" +
+    "<div class=\"profile-award\"\n" +
+    "     ng-controller=\"ProfileAwardCtrl\"\n" +
+    "     popover=\"{{ profileAward.level_justification }}\"\n" +
+    "     popover-trigger=\"hover\"\n" +
+    "     popover-placement=\"bottom\"\n" +
+    "     ng-show=\"profileAward.level>0\">\n" +
+    "\n" +
+    "   <span class=\"icon level-{{ profileAward.level }}\">\n" +
+    "      <i class=\"icon-unlock-alt\"></i>\n" +
+    "   </span>\n" +
+    "   <span class=\"text\">{{ profileAward.name }}</span>\n" +
+    "\n" +
     "</div>");
 }]);
 
