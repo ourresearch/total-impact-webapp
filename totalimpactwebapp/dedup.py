@@ -36,7 +36,7 @@ def update_by_url_slugs(url_slugs, webapp_api_endpoint):
 
 def get_profiles_not_updated_since(number_to_update, max_days_since_updated, now=datetime.datetime.utcnow()):
     raw_sql = text(u"""SELECT url_slug FROM "user" u
-                        WHERE last_refreshed <= now()::date - :max_days_since_updated
+                        where email is not null
                         ORDER BY url_slug asc
                         LIMIT :number_to_update""")
 
