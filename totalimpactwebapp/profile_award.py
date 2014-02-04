@@ -62,12 +62,18 @@ class OAAward(ProfileAward):
 
     def calculate(self, about, products):
         article_products = [p for p in products if p["biblio"]["genre"] == "article"]
-        self.extra["articles_count"] = len(article_products)
+        article_count = len(article_products)
+        self.extra["articles_count"] = article_count
 
         oa_articles = [p for p in article_products if "free_fulltext_url" in p["biblio"]]
-        self.extra["oa_articles_count"] = len(oa_articles)
-        
-        oa_proportion = len(oa_articles) / len(article_products)
+        oa_article_count = len(oa_articles)
+        self.extra["oa_articles_count"] = oa_article_count
+
+        try:
+            oa_proportion = oa_article_count / article_count
+        except ZeroDivisionError:
+            oa_proportion = 0
+
         self.extra["oa_articles_proportion"] = oa_proportion
         
         # calculate level
@@ -82,21 +88,22 @@ class OAAward(ProfileAward):
 
 
         # justification
-        self.level_justification = "{num_oa} of this profile's {articles_count} articles have free fulltext available.".format(
+        self.level_justification = "{num_oa} of your {num_products} have free fulltext available.".format(
             num_oa=len(oa_articles),
-            articles_count=articles_count
+            num_products=len(products)
         )
 
 
         # needed for next level
-        if self.level == top_level:
-            self.needed_for_next_level = None
-        else:
-            next_level_cutoff = self.bins[level+1]
-            oa_articles_in_next_level = int(math.ceil(next_level_cutoff * len(products)))
-            fulltext_urls_needed = oa_articles_in_next_level - len(oa_articles)
+        try:
+            next_level_cutoff = self.bins[level]
+            oa_articles_in_next_level = int(math.ceil(next_level_cutoff * article_count))
+            fulltext_urls_needed = oa_articles_in_next_level - oa_article_count
 
             self.needed_for_next_level = "add {needed} more Free Fulltext " \
                                          "links to your articles. Click " \
                                          "any article without the unlocked " \
                                          "icon to get started!".format(needed=fulltext_urls_needed)
+
+        except IndexError:
+            self.needed_for_next_level = None

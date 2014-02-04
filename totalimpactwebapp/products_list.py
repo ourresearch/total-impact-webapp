@@ -15,9 +15,11 @@ def prep(products_dict, include_headings=False):
     prepped_products = []
 
     for product_dict in products_dict:
-        prepped_products.append(
-            product.prep_product(product_dict)
-        )
+
+        try:
+            prepped_products.append(product.prep_product(product_dict))
+        except product.GenreDeprecatedError:
+            pass
 
     if include_headings:
         prepped_products += make_heading_products(prepped_products)
@@ -106,7 +108,7 @@ duplicates stuff
 
 def get_duplicates_list_from_tiids(tiids):
     if not tiids:
-        return None
+        return []
 
     query = u"{core_api_root}/v1/products/duplicates?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,

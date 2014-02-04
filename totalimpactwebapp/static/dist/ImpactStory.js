@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-03
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-01-29
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1351,8 +1351,8 @@ angular.module('settings.pageDescriptions')
     "Profile",
     "Custom URL",
     "Email",
-    "Password",
-    "Linked accounts"
+    "Password"
+//    ,"Linked accounts"
   ]
 
   var urlPathFromDisplayName = function(displayName){
@@ -1528,7 +1528,7 @@ angular.module('settings', [
   })
 
 
-
+  // not currently using this...LinkedAccounts page is hidden.
   .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading, Update, UsersProducts) {
 
 
@@ -2236,8 +2236,7 @@ angular.module("directives.jQueryTools", [])
       restrict: 'A',
       link: function (scope, element, attr) {
         $("body").tooltip({
-          placement:'bottom auto',
-          html:true,
+          placement:'bottom',
           selector: "[data-toggle='tooltip']"
         })
       }

@@ -7708,6 +7708,9 @@ div.products .wrapper div.products-without-metrics div.well a {
   color: #000;
   text-decoration: underline;
 }
+.product .biblio h5 a.free-fulltext-url {
+  display: none;
+}
 .product .biblio h5 a.linkout {
   color: #ddd;
   margin-right: 5px;

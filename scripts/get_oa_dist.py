@@ -404,21 +404,22 @@ LeySander""".split()
 #MarcRobinson-Rechavi
 #LeySander""".split()
 
+rows = []
+for slug in slugs:
+    url = "http://impactstory.org/user/{slug}/awards".format(
+        slug=slug
+    )
+    print "requesting this url: ", url
+    resp = requests.get(url)
 
+    vals_list = [slug] + resp.json()["awards"][0]["extra"].values()
+
+    rows.append(vals_list)
 
 
 # write the new file as CSV
 with open('oa_dist.csv', 'wb') as csvfile:
     newCsv = csv.writer(csvfile, delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    for i, slug in enumerate(slugs):
-        url = "http://impactstory.org/user/{slug}/awards".format(
-            slug=slug
-        )
-        print "requesting this url: ", url
-        resp = requests.get(url)
-
-        vals_list = [slug] + resp.json()["awards"][0]["extra"].values()
-        print "writing this row ({i} of {total}: ".format(i=i, total=len(slugs)), vals_list
-
-        newCsv.writerow(vals_list)
+    for row in rows:
+        newCsv.writerow(row)

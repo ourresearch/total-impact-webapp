@@ -470,8 +470,12 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
     if not show_secrets:
         user = hide_user_secrets(user)
 
+    try:
+        user.profile_awards = profile_award.make_awards_list(user)
+    except AttributeError:
+        # there ain't no user
+        pass
 
-    user.profile_awards = profile_award.make_awards_list(user)
     return user
 
 

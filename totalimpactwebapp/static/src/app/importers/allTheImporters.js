@@ -99,47 +99,6 @@ angular.module('importers.allTheImporters')
       ]
     },
 
-    {
-      displayName: "Twitter",
-      url: "http://twitter.com",
-      descr: "Twitter is a social networking site for sharing short messages.",
-      endpoint: "twitter_account",      
-      tabs: [
-       {
-         label: "account"
-       },
-       {
-         label: "additional tweets"
-       }
-       ],
-      inputs: [{
-            tab: 0,
-            name: "account_name",            
-            inputType: "username",
-            inputNeeded: "username",
-            help: "Your Twitter username is often written starting with @.",
-            saveUsername: "twitter_account_id",
-            placeholder: "@username",            
-            cleanupFunction: function(x) {
-              if (typeof x==="undefined") return x; 
-              return('@'+x.replace('@', ''))}
-          }
-         ,{
-            tab:1,
-            name: "standard_urls_input",                        
-            inputType: "idList",
-            inputNeeded: "URLs",
-            help: "Paste URLs for other Tweets here.",
-            placeholder: "https://twitter.com/username/status/123456",
-            cleanupFunction: function (fullString) {
-              if (typeof fullString==="undefined") return fullString; 
-              return _.map(fullString.split("\n"), function(line) {            
-                // make sure it starts with http
-                var working = line.replace(/https*:\/\//, ""); 
-                return "http://"+working}).join("\n")}
-         }
-      ]
-    },
 
     {
       displayName: "Google Scholar",
@@ -196,49 +155,6 @@ angular.module('importers.allTheImporters')
 
 
 
-    {
-      displayName: "Blogs",
-      descr: "Blogs and websites",
-      endpoint: "wordpresscom",      
-      tabs: [
-       {
-         label: "blog url"
-       },
-       {
-         label: "additional posts"
-       }       
-       ],
-      inputs: [{
-            tab: 0,
-            name: "blogUrl",            
-            inputType: "username",
-            inputNeeded: "Blog URL",
-            help: "The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",
-            placeholder: "yourblogname.com",
-            cleanupFunction: function (line) {
-              if (typeof line==="undefined") return line; 
-              var working = line.replace(/^https*:\/\//, ""); 
-              working = working.replace(/\/$/, ""); 
-              return "http://"+working; 
-              }
-          }
-         ,{
-            tab:1,
-            name: "blog_post_urls",                        
-            inputType: "idList",
-            inputNeeded: "Blog post URLs",
-            help: "Paste URLs for individual blog posts here.",
-            placeholder: "http://yourblog.com/your-awesome-post",
-            cleanupFunction: function (fullString) {
-              if (typeof fullString==="undefined") return fullString; 
-              return _.map(fullString.split("\n"), function(line) {            
-                // make sure it starts with http and ends without trailing slash
-                var working = line.replace(/^https*:\/\//, ""); 
-                 working = working.replace(/\/$/, ""); 
-                return "http://"+working}).join("\n")}
-         }     
-      ]
-    }, 
 
 
     {

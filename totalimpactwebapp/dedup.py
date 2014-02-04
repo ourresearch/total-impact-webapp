@@ -15,24 +15,32 @@ logger.setLevel(logging.DEBUG)
 
 
 def update_by_url_slugs(url_slugs, webapp_api_endpoint):
-    QUEUE_DELAY_IN_SECONDS = 0.25
+    QUEUE_DELAY_IN_SECONDS = 0
+    count = 0
     for url_slug in url_slugs:
-        url = webapp_api_endpoint + u"/user/{url_slug}/products?action=refresh&source=scheduled".format(
+        count += 1
+        url = webapp_api_endpoint + u"/user/{url_slug}/products?action=deduplicate&source=scheduled".format(
             url_slug=url_slug)
         try:
             print u"going to post to this url", url
         except UnicodeEncodeError:
             print "UnicodeEncodeError when trying to print url"
-        requests.post(url)
+        print "REALLY POSTING"
+        r = requests.post(url)
+        print r.text
+        print "n=", count, "of", len(url_slugs), "which is", (100.0*count)/len(url_slugs), "%"
         time.sleep(QUEUE_DELAY_IN_SECONDS)
+    print "that was n=", len(url_slugs), "url slugs"
     return url_slugs
 
 
 def get_profiles_not_updated_since(number_to_update, max_days_since_updated, now=datetime.datetime.utcnow()):
     raw_sql = text(u"""SELECT url_slug FROM "user" u
-                        WHERE last_refreshed < now()::date - :max_days_since_updated
-                        ORDER BY last_refreshed ASC, url_slug
+                        where email is not null
+                        ORDER BY url_slug asc
                         LIMIT :number_to_update""")
+
+    # ORDER BY last_refreshed ASC, url_slug
 
     result = db.session.execute(raw_sql, params={
         "max_days_since_updated": max_days_since_updated, 
@@ -61,7 +69,7 @@ def main(action_type, number_to_update=3, max_days_since_updated=7):
 
     try:
         if action_type == "by_profile":
-            webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "http://localhost:5000")
+            webapp_api_endpoint = "http://impactstory.org"
             by_profile(number_to_update, webapp_api_endpoint, max_days_since_updated)
     except (KeyboardInterrupt, SystemExit): 
         # this approach is per http://stackoverflow.com/questions/2564137/python-how-to-terminate-a-thread-when-main-program-ends
@@ -72,34 +80,13 @@ if __name__ == "__main__":
     # get args from the command line:
     parser = argparse.ArgumentParser(description="Run periodic metrics updating from the command line")
     action_type = "by_profile"
-    parser.add_argument('--number_to_update', default='3', type=int, help="Number to update.")
-    parser.add_argument('--max_days_since_updated', default='7', type=int, help="Update if hasn't been updated in this many days.")
+    parser.add_argument('--number_to_update', default='5000', type=int, help="Number to update.")
+    parser.add_argument('--max_days_since_updated', default='0', type=int, help="Update if hasn't been updated in this many days.")
     args = vars(parser.parse_args())
     print args
     print u"updater.py starting."
     main(action_type, args["number_to_update"], args["max_days_since_updated"])
 
-
-
-# (WITH max_collect AS 
-#     (SELECT tiid, provider, metric_name, max(collected_date) AS collected_date
-#         FROM metric
-#         WHERE tiid in ('000f5d8btzu1ytmgidsa7kae', '00097c5mm59qiht6tyoa4h5c')
-#         GROUP BY tiid, provider, metric_name)
-# SELECT 'max' as q, max_collect.*,m.raw_value, m.drilldown_url
-#     FROM metric m
-#     NATURAL JOIN max_collect)
-# UNION ALL
-# (WITH min_collect AS 
-#     (SELECT tiid, provider, metric_name, max(collected_date) AS collected_date
-#         FROM metric
-#         WHERE tiid in ('000f5d8btzu1ytmgidsa7kae', '00097c5mm59qiht6tyoa4h5c')
-#         AND collected_date < now()::date - 7
-#         GROUP BY tiid, provider, metric_name)
-# SELECT 'min' as q, min_collect.*,m.raw_value, m.drilldown_url
-#     FROM metric m
-#     NATURAL JOIN min_collect )
-# order by tiid, provider, metric_name, q
 
 
 
