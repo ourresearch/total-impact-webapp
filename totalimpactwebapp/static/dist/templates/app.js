@@ -652,6 +652,14 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
     "</ul>");
 }]);
 
+angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-award/profile-award.tpl.html",
+    "<div class=\"profile-award\" ng-controller=\"ProfileAwardCtrl\">\n" +
+    "   <div class=\"icon\"></div>\n" +
+    "   <div class=\"text\">award time!</div>\n" +
+    "</div>");
+}]);
+
 angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/edit-product-modal.tpl.html",
     "<div class=\"modal-header\">\n" +

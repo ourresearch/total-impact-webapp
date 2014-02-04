@@ -1,5 +1,13 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 angular.module('profileAward.profileAward', [])
+=======
+angular.module('profileAward', [])
+>>>>>>> Stashed changes
+=======
+angular.module('profileAward', [])
+>>>>>>> Stashed changes
 =======
 angular.module('profileAward', [])
 >>>>>>> Stashed changes
