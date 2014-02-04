@@ -88,9 +88,9 @@ class OAAward(ProfileAward):
 
 
         # justification
-        self.level_justification = "{num_oa} of your {num_products} have free fulltext available.".format(
-            num_oa=len(oa_articles),
-            num_products=len(products)
+        self.level_justification = "{num_oa} of your {article_count} articles have free fulltext available.".format(
+            num_oa=oa_article_count,
+            article_count=article_count
         )
 
 
