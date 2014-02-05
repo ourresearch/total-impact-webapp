@@ -145,6 +145,7 @@ angular.module("profile", [
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
 
+    $scope.url_slug = userSlug
     $scope.loadingProducts = function(){
       return loadingProducts
     }

@@ -1182,6 +1182,7 @@ angular.module("profile", [
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
 
+    $scope.url_slug = userSlug
     $scope.loadingProducts = function(){
       return loadingProducts
     }
@@ -4646,8 +4647,9 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "      <i class=\"icon-unlock-alt\"></i>\n" +
     "   </span>\n" +
     "   <span class=\"text\">{{ profileAward.name }}</span>\n" +
+    "\n" +
     "</span>\n" +
-    "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"http://impactstory.org/{{ slug }}\" data-text=\"My profile got a badge!\" data-via=\"impactstory\">Tweet</a>\n" +
+    "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"http://impactstory.org/{{ url_slug }}\" data-text=\"I got a new badge on my Impactstory profile: {{ profileAward.level_name }} Level {{ profileAward.name }}!\" data-via=\"impactstory\"></a>\n" +
     "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>\n" +
     "\n" +
     "\n" +

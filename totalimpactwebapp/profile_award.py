@@ -61,7 +61,7 @@ class OAAward(ProfileAward):
 
     def __init__(self):
         ProfileAward.__init__(self)
-        self.name = "Open access"
+        self.name = "Open Access"
 
 
     def calculate(self, about, products):
