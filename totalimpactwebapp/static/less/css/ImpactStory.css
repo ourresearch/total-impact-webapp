@@ -7352,6 +7352,14 @@ div.profile-header div.wrapper div.my-vitals div.external-usernames li a img {
 div.profile-header div.wrapper div.my-metrics {
   float: left;
 }
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container:hover iframe {
+  display: inline;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container iframe {
+  vertical-align: -4px;
+  padding-left: 5px;
+  display: none;
+}
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover {
   font-size: 14px;
   font-weight: 400;
@@ -7363,13 +7371,13 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-a
   font-family: Lato;
   font-weight: normal;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.profile-award {
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award {
   color: #fff;
   font-size: 14px;
   font-weight: normal;
   cursor: default;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.profile-award span.text {
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award span.text {
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
   -webkit-border-bottom-left-radius: 0px;

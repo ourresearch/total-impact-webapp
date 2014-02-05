@@ -114,6 +114,18 @@ div.profile-header {
 
             li.profile-award-container {
 
+               &:hover {
+                  iframe {display:inline;}
+               }
+
+
+               // stuff that shows up on hover
+               iframe {
+                  vertical-align: -4px;
+                  padding-left: 5px;
+                  display:none;
+               }
+
                div.popover {
                   font-size: 14px;
                   font-weight: 400;
@@ -126,7 +138,8 @@ div.profile-header {
                   }
                }
 
-               div.profile-award {
+               // the profile award proper
+               span.profile-award {
                   color: #fff;
                   font-size: 14px;
                   font-weight: normal;

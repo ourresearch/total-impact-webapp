@@ -4634,10 +4634,11 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-award/profile-award.tpl.html",
-    "<div class=\"profile-award\"\n" +
+    "<span class=\"profile-award\"\n" +
     "     ng-controller=\"ProfileAwardCtrl\"\n" +
     "     popover=\"{{ profileAward.level_justification }}\"\n" +
     "     popover-title=\"{{ profileAward.level_name }} level award\"\n" +
+    "     popover-trigger=\"hover\"\n" +
     "     popover-placement=\"bottom\"\n" +
     "     ng-show=\"profileAward.level>0\">\n" +
     "\n" +
@@ -4645,8 +4646,12 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "      <i class=\"icon-unlock-alt\"></i>\n" +
     "   </span>\n" +
     "   <span class=\"text\">{{ profileAward.name }}</span>\n" +
+    "</span>\n" +
+    "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"http://impactstory.org/{{ slug }}\" data-text=\"My profile got a badge!\" data-via=\"impactstory\">Tweet</a>\n" +
+    "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>\n" +
     "\n" +
-    "</div>");
+    "\n" +
+    "");
 }]);
 
 angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
