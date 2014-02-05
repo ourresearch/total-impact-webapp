@@ -42,7 +42,7 @@ class ProfileAward(object):
         raise NotImplementedError  # override in children
 
     def level_name(self, level):
-        return ["none", "bronze", "silver", "gold"][level]
+        return ["Gold", "Silver", "Bronze", "Basic", "None"][level-1]
 
 
 
@@ -52,14 +52,17 @@ class ProfileAward(object):
 
 
 class OAAward(ProfileAward):
-    bins = [.40, .60, .80]
+    bins = [
+        .80,  # ~10% users
+        .50,  # 15%
+        .30,  # 25%
+        .10   # 50%
+    ]
 
     def __init__(self):
         ProfileAward.__init__(self)
-        self.name = "Open access scholar"
+        self.name = "Open access"
 
-    def level_name(self, level):
-        return ["none", "bronze", "silver", "platinum"][level]
 
     def calculate(self, about, products):
         article_products = [p for p in products if p["biblio"]["genre"] == "article"]
@@ -78,11 +81,11 @@ class OAAward(ProfileAward):
         self.extra["oa_articles_proportion"] = oa_proportion
         
         # calculate level
-        top_level = len(self.bins)
-        level = top_level
+        bottom_level = len(self.bins) + 1
+        level = bottom_level
         for i, bin_edge_val in enumerate(self.bins):
-            if oa_proportion < bin_edge_val:
-                level = i
+            if oa_proportion > bin_edge_val:
+                level = i + 1  # levels start with 1
                 break
 
         self.level = level

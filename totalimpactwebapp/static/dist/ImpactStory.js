@@ -4637,8 +4637,7 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "<div class=\"profile-award\"\n" +
     "     ng-controller=\"ProfileAwardCtrl\"\n" +
     "     popover=\"{{ profileAward.level_justification }}\"\n" +
-    "     popover-title=\"{{ profileAward.level_name }} level\"\n" +
-    "     popover-trigger=\"hover\"\n" +
+    "     popover-title=\"{{ profileAward.level_name }} level award\"\n" +
     "     popover-placement=\"bottom\"\n" +
     "     ng-show=\"profileAward.level>0\">\n" +
     "\n" +
@@ -4951,7 +4950,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "      <div class=\"my-metrics\">\n" +
     "         <ul class=\"profile-award-list\">\n" +
-    "            <li class=\"profile-award-container\"\n" +
+    "            <li class=\"profile-award-container level-{{ profileAward.level }}\"\n" +
     "                ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +
     "                ng-repeat=\"profileAward in profileAwards\">\n" +
     "            </li>\n" +

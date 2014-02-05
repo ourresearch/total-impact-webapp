@@ -7352,13 +7352,24 @@ div.profile-header div.wrapper div.my-vitals div.external-usernames li a img {
 div.profile-header div.wrapper div.my-metrics {
   float: left;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award {
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover {
+  font-size: 14px;
+  font-weight: 400;
+  font-family: helvetica, arial, sans-serif;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover h3 {
+  color: #fff;
+  text-align: center;
+  font-family: Lato;
+  font-weight: normal;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.profile-award {
   color: #fff;
   font-size: 14px;
   font-weight: normal;
   cursor: default;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.text {
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.profile-award span.text {
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
   -webkit-border-bottom-left-radius: 0px;
@@ -7374,10 +7385,11 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  padding: 5px 10px;
+  padding: 4px 9px;
   background: #555;
+  border: 1px solid #555;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.icon {
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.icon {
   -webkit-border-top-right-radius: 0px;
   -webkit-border-bottom-right-radius: 0px;
   -webkit-border-bottom-left-radius: 3px;
@@ -7393,17 +7405,37 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  padding: 5px 10px;
-  background: red;
+  padding: 4px 9px;
+  border: 1px solid;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.icon.level-1 {
-  background: #CD7F32;
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-1 span.icon {
+  background: gold;
+  border-color: gold;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.icon.level-2 {
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-1 div.popover h3 {
+  background: gold;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-2 span.icon {
+  background: silver;
+  border-color: silver;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-2 div.popover h3 {
   background: silver;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list div.profile-award span.icon.level-3 {
-  background: gold;
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-3 span.icon {
+  background: #CD7F32;
+  border-color: #CD7F32;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-3 div.popover h3 {
+  background: #CD7F32;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-4 span.icon {
+  background: #fff;
+  border-color: #555;
+  color: #555;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-4 div.popover h3 {
+  display: none;
 }
 div.modal-body.embed label {
   float: left;
