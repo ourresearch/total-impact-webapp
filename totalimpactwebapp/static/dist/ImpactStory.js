@@ -4637,7 +4637,7 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
   $templateCache.put("profile-award/profile-award.tpl.html",
     "<span class=\"profile-award\"\n" +
     "     ng-controller=\"ProfileAwardCtrl\"\n" +
-    "     popover=\"{{ profileAward.level_justification }}\"\n" +
+    "     popover=\"<pre>{{ profileAward.level_justification }}</pre>\"\n" +
     "     popover-title=\"{{ profileAward.level_name }} level award\"\n" +
     "     popover-trigger=\"hover\"\n" +
     "     popover-placement=\"bottom\"\n" +
