@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-04
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-05
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1002,9 +1002,9 @@ angular.module("profileProduct", [
       {'tiid': tiid},
       {free_fulltext_url: $scope.free_fulltext_url},
       function(resp){
-        console.log("we got back this resp: ", resp)
         Loading.finish("saveButton")
         $scope.$close()
+        location.reload() // hack to make the linkout icon appear right away.
       }
     )
   }
@@ -4649,9 +4649,8 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "   <span class=\"text\">{{ profileAward.name }}</span>\n" +
     "\n" +
     "</span>\n" +
-    "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"http://impactstory.org/{{ url_slug }}\" data-text=\"I got a new badge on my Impactstory profile: {{ profileAward.level_name }} Level {{ profileAward.name }}!\" data-via=\"impactstory\"></a>\n" +
+    "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"http://impactstory.org/{{ url_slug }}\" data-text=\"I got a new badge on my Impactstory profile: {{ profileAward.level_name }} Level {{ profileAward.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
     "<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>\n" +
-    "\n" +
     "\n" +
     "");
 }]);

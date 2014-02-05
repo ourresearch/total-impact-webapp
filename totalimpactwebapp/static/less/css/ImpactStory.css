@@ -7357,7 +7357,6 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-a
 }
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container iframe {
   vertical-align: -4px;
-  padding-left: 5px;
   display: none;
 }
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover {
@@ -7376,6 +7375,7 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-a
   font-size: 14px;
   font-weight: normal;
   cursor: default;
+  margin-right: 5px;
 }
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award span.text {
   -webkit-border-top-right-radius: 3px;

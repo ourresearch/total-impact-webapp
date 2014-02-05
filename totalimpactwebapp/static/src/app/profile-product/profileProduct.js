@@ -138,9 +138,9 @@ angular.module("profileProduct", [
       {'tiid': tiid},
       {free_fulltext_url: $scope.free_fulltext_url},
       function(resp){
-        console.log("we got back this resp: ", resp)
         Loading.finish("saveButton")
         $scope.$close()
+        location.reload() // hack to make the linkout icon appear right away.
       }
     )
   }
