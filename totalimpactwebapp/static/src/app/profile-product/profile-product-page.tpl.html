@@ -39,9 +39,20 @@
 
          <div class="free-fulltext-url well" ng-show="!loading.is('profileProduct')">
             <div class="no-free-fulltext-url" ng-show="!product.biblio.free_fulltext_url">
-               <i class="icon-warning-sign leader"></i>
-               Your article has no free fulltext available.
-               <a class="action btn btn-danger btn-xs" ng-click="openFulltextLocationModal()">Fix this</a>
+               <div class="info">
+                  <i class="icon-warning-sign leader"></i>
+                  <div class="no-fulltext">
+                     Your article has no free fulltext available.
+                  </div>
+                  <div class="encouragement">
+                     <!-- @TODO FIX THIS. we can't depend on the OA award being first in awards list -->
+                     {{ profileAwards[0].extra.needed_for_next_level_product_page }}
+                  </div>
+               </div>
+               <div class="action">
+                  <a class="action btn btn-danger btn-xs" ng-click="openFulltextLocationModal()">Link to free fulltext</a>
+               </div>
+
             </div>
             <div class="has-free-fulltext-url" ng-show="product.biblio.free_fulltext_url">
                <i class="icon-unlock-alt leader"></i>

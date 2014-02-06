@@ -108,6 +108,118 @@ div.profile-header {
          }
 
       }
+      div.my-metrics {
+         float:left;
+         ul.profile-award-list {
+
+            li.profile-award-container {
+
+               &:hover {
+                  iframe {display:inline;}
+               }
+
+
+               // stuff that shows up on hover
+               iframe {
+                  vertical-align: -4px;
+                  display:none;
+               }
+
+               div.popover {
+                  font-size: 15px;
+                  font-weight: 400;
+                  h3 {
+                     color: #fff;
+                     text-align: center;
+                     font-family: Lato;
+                     font-weight: normal;
+                  }
+                  div.call-to-action {
+                     font-style: italic;
+                     margin-top: 20px;
+                  }
+               }
+
+               // the profile award proper
+               span.profile-award {
+                  color: #fff;
+                  font-size: 14px;
+                  font-weight: normal;
+                  cursor: default;
+                  margin-right: 5px;
+
+                  span.text {
+                     .border-radius(3px, 3px, 0px, 0px);
+                     padding: 4px 9px;
+                     background: #555;
+                     border: 1px solid #555;
+                  }
+
+               }
+
+
+               // this should be inside the div.profile-award. here because
+               // easier to override for levels this way.
+               span.icon {
+                  .border-radius(0px, 0px, 3px, 3px);
+                  padding: 4px 9px;
+                  border: 1px solid;
+               }
+
+
+               // level colors
+               &.level-1 {
+                  span.icon {
+                     background: gold;
+                     border-color: gold;
+                  }
+                  div.popover {
+                     h3 {
+                        background: gold;
+//                        color: #333;
+                     }
+                  }
+               }
+               &.level-2 {
+                  span.icon {
+                     background: silver;
+                     border-color: silver;
+                  }
+                  div.popover {
+                     h3 {
+                        background: silver;
+                     }
+                  }
+               }
+
+               &.level-3 {
+                  span.icon {
+                     background: #CD7F32;
+                     border-color: #CD7F32;
+                  }
+                  div.popover {
+                     h3 {
+                        background: #CD7F32;
+                     }
+                  }
+               }
+               &.level-4 {
+                  span.icon {
+                     background: #fff;
+                     border-color: #555;
+                     color: #555;
+                  }
+                  div.popover {
+                     h3 {
+                        display:none;
+                     }
+                  }
+               }
+
+            }
+         }
+      }
+
    }
 }
 

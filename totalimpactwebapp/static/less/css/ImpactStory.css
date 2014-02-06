@@ -7349,6 +7349,105 @@ div.profile-header div.wrapper div.my-vitals div.external-usernames li a img {
   height: 16px;
   margin-top: -3px;
 }
+div.profile-header div.wrapper div.my-metrics {
+  float: left;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container:hover iframe {
+  display: inline;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container iframe {
+  vertical-align: -4px;
+  display: none;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover {
+  font-size: 15px;
+  font-weight: 400;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover h3 {
+  color: #fff;
+  text-align: center;
+  font-family: Lato;
+  font-weight: normal;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover div.call-to-action {
+  font-style: italic;
+  margin-top: 20px;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award {
+  color: #fff;
+  font-size: 14px;
+  font-weight: normal;
+  cursor: default;
+  margin-right: 5px;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award span.text {
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 0px;
+  -webkit-border-top-left-radius: 0px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 0px;
+  -moz-border-radius-topleft: 0px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  padding: 4px 9px;
+  background: #555;
+  border: 1px solid #555;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.icon {
+  -webkit-border-top-right-radius: 0px;
+  -webkit-border-bottom-right-radius: 0px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 0px;
+  -moz-border-radius-bottomright: 0px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  padding: 4px 9px;
+  border: 1px solid;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-1 span.icon {
+  background: gold;
+  border-color: gold;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-1 div.popover h3 {
+  background: gold;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-2 span.icon {
+  background: silver;
+  border-color: silver;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-2 div.popover h3 {
+  background: silver;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-3 span.icon {
+  background: #CD7F32;
+  border-color: #CD7F32;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-3 div.popover h3 {
+  background: #CD7F32;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-4 span.icon {
+  background: #fff;
+  border-color: #555;
+  color: #555;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-4 div.popover h3 {
+  display: none;
+}
 div.modal-body.embed label {
   float: left;
   width: 250px;
@@ -7653,9 +7752,6 @@ div.products .wrapper div.products-without-metrics div.well a {
   color: #000;
   text-decoration: underline;
 }
-.product .biblio h5 a.free-fulltext-url {
-  display: none;
-}
 .product .biblio h5 a.linkout {
   color: #ddd;
   margin-right: 5px;
@@ -7885,26 +7981,62 @@ div.product-page .content .product .biblio div.optional-biblio {
   font-size: 20px;
 }
 div.product-page .content .product div.well.free-fulltext-url {
-  display: none;
   margin-top: 20px;
   margin-left: -15px;
+}
+div.product-page .content .product div.well.free-fulltext-url:before,
+div.product-page .content .product div.well.free-fulltext-url:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+div.product-page .content .product div.well.free-fulltext-url:after {
+  clear: both;
+}
+div.product-page .content .product div.well.free-fulltext-url:before,
+div.product-page .content .product div.well.free-fulltext-url:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+div.product-page .content .product div.well.free-fulltext-url:after {
+  clear: both;
 }
 div.product-page .content .product div.well.free-fulltext-url i.leader {
   font-size: 110%;
   margin-right: 5px;
+  float: left;
 }
 div.product-page .content .product div.well.free-fulltext-url i.icon-external-link-sign {
   font-size: 80%;
   opacity: .5;
 }
-div.product-page .content .product div.well.free-fulltext-url a.action {
+div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info {
+  width: 400px;
+  float: left;
+}
+div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info div.no-fulltext {
+  font-weight: bold;
+}
+div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info div.encouragement {
+  margin-top: 5px;
+  font-style: italic;
+  font-size: 90%;
+}
+div.product-page .content .product div.well.free-fulltext-url div.action a.action {
   margin: -5px 0 0 25px;
   text-decoration: none;
   background: #777;
   border: none;
   padding: 3px 10px;
 }
-div.product-page .content .product div.well.free-fulltext-url a.action:hover {
+div.product-page .content .product div.well.free-fulltext-url div.action a.action:hover {
   background: #555;
 }
 div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a {

@@ -1,6 +1,7 @@
 angular.module("profileProduct", [
     'resources.users',
     'resources.products',
+    'profileAward.profileAward',
     'services.page',
     'product.product',
     'services.loading',
@@ -28,6 +29,7 @@ angular.module("profileProduct", [
     security,
     UsersProduct,
     UsersProducts,
+    ProfileAwards,
     Product,
     Loading,
     Page) {
@@ -52,6 +54,13 @@ angular.module("profileProduct", [
       var uri = new URI(fullUri);
       return uri.domain()
     }
+
+    $scope.profileAwards = ProfileAwards.query(
+      {id:slug},
+      function(resp){
+        console.log("loaded awards!", resp)
+      }
+    )
 
     $scope.deleteProduct = function(){
 
@@ -138,9 +147,9 @@ angular.module("profileProduct", [
       {'tiid': tiid},
       {free_fulltext_url: $scope.free_fulltext_url},
       function(resp){
-        console.log("we got back this resp: ", resp)
         Loading.finish("saveButton")
         $scope.$close()
+        location.reload() // hack to make the linkout icon appear right away.
       }
     )
   }
