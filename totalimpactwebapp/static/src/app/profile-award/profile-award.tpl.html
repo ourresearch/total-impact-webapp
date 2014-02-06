@@ -1,7 +1,7 @@
-<div class="award-container" ng-show="!currentUserIsProfileOwner()">
+<div class="award-container" ng-show="!currentUserIsProfileOwner() && profileAward.level>0">
    <span class="profile-award"
         ng-controller="ProfileAwardCtrl"
-        popover="{{ profileAbout.given_name }} has made {{ profileAward.level_justification }}"
+        popover="{{ user.about.given_name }} has made {{ profileAward.level_justification }}"
         popover-title="{{ profileAward.level_name }} level award"
         popover-trigger="hover"
         popover-placement="bottom"
@@ -15,10 +15,10 @@
    </span>
 </div>
 
-<div class="award-container" ng-show="currentUserIsProfileOwner()">
+<div class="award-container" ng-show="currentUserIsProfileOwner() && profileAward.level>0">
    <span class="profile-award"
         ng-controller="ProfileAwardCtrl"
-        popover="You've made {{ profileAward.level_justification }}Nice work! <div class='call-to-action'>{{ profileAward.needed_for_next_level }} {{ profileAward.call_to_action }}</div>"
+        popover="You've made {{ profileAward.level_justification }} Nice work! <div class='call-to-action'>{{ profileAward.needed_for_next_level }} {{ profileAward.call_to_action }}</div>"
         popover-title="{{ profileAward.level_name }} level award"
         popover-trigger="hover"
         popover-placement="bottom"
