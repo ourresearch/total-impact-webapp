@@ -122,7 +122,7 @@ class OAAward(ProfileAward):
 
 
         # justification
-        self.level_justification = "{oa_perc}% of {article_count} listed articles freely readable online.".format(
+        self.level_justification = "{oa_perc}% of {article_count} listed articles free for anyone to read.".format(
             oa_perc=int(round(oa_proportion*100)),
             article_count=article_count
         )
