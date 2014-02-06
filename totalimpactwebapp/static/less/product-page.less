@@ -105,29 +105,47 @@ div.product-page {
          }
 
          div.well.free-fulltext-url {
-
-            // hide for now till releasing oa badges
-//            display:none;
-
+            .clearfix();
             margin-top: 20px;
             margin-left: -15px;
             i.leader {
                font-size: 110%;
                margin-right: 5px;
+               float:left;
             }
             i.icon-external-link-sign {
                font-size: 80%;
                opacity: .5;
             }
+            div.no-free-fulltext-url {
+               div.info{
+                  width: 400px;
+                  float:left;
 
-            a.action {
-               margin: -5px 0 0 25px;
-               text-decoration: none;
-               background: #777;
-               border: none;
-               padding: 3px 10px;
-               &:hover{background: #555;}
+                  div.no-fulltext{
+                     font-weight: bold;
+                  }
+                  div.encouragement {
+                     margin-top: 5px;
+                     font-style: italic;
+                     font-size: 90%;
+                  }
+               }
+
+
             }
+
+            div.action{
+               a.action {
+                  margin: -5px 0 0 25px;
+                  text-decoration: none;
+                  background: #777;
+                  border: none;
+                  padding: 3px 10px;
+                  &:hover{background: #555;}
+               }
+            }
+
             div.has-free-fulltext-url {
                a {
                   color: #333;

@@ -7360,15 +7360,18 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-a
   display: none;
 }
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
-  font-family: helvetica, arial, sans-serif;
 }
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover h3 {
   color: #fff;
   text-align: center;
   font-family: Lato;
   font-weight: normal;
+}
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover div.call-to-action {
+  font-style: italic;
+  margin-top: 20px;
 }
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award {
   color: #fff;
@@ -7978,25 +7981,63 @@ div.product-page .content .product .biblio div.optional-biblio {
   font-size: 20px;
 }
 div.product-page .content .product div.well.free-fulltext-url {
+  clear: both;
   margin-top: 20px;
   margin-left: -15px;
+}
+div.product-page .content .product div.well.free-fulltext-url:before,
+div.product-page .content .product div.well.free-fulltext-url:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+div.product-page .content .product div.well.free-fulltext-url:after {
+  clear: both;
+}
+div.product-page .content .product div.well.free-fulltext-url:before,
+div.product-page .content .product div.well.free-fulltext-url:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+div.product-page .content .product div.well.free-fulltext-url:after {
+  clear: both;
 }
 div.product-page .content .product div.well.free-fulltext-url i.leader {
   font-size: 110%;
   margin-right: 5px;
+  float: left;
 }
 div.product-page .content .product div.well.free-fulltext-url i.icon-external-link-sign {
   font-size: 80%;
   opacity: .5;
 }
-div.product-page .content .product div.well.free-fulltext-url a.action {
+div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info {
+  width: 400px;
+  float: left;
+}
+div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info div.no-fulltext {
+  font-weight: bold;
+}
+div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info div.encouragement {
+  margin-top: 5px;
+  font-style: italic;
+  font-size: 90%;
+}
+div.product-page .content .product div.well.free-fulltext-url div.action a.action {
   margin: -5px 0 0 25px;
   text-decoration: none;
   background: #777;
   border: none;
   padding: 3px 10px;
 }
-div.product-page .content .product div.well.free-fulltext-url a.action:hover {
+div.product-page .content .product div.well.free-fulltext-url div.action a.action:hover {
   background: #555;
 }
 div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a {

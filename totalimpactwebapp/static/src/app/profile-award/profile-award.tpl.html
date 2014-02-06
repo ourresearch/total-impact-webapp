@@ -1,17 +1,34 @@
-<span class="profile-award"
-     ng-controller="ProfileAwardCtrl"
-     popover="<pre>{{ profileAward.level_justification }}</pre>"
-     popover-title="{{ profileAward.level_name }} level award"
-     popover-trigger="hover"
-     popover-placement="bottom"
-     ng-show="profileAward.level>0">
+<div class="award-container" ng-show="!currentUserIsProfileOwner()">
+   <span class="profile-award"
+        ng-controller="ProfileAwardCtrl"
+        popover="{{ profileAbout.given_name }} has made {{ profileAward.level_justification }}"
+        popover-title="{{ profileAward.level_name }} level award"
+        popover-trigger="hover"
+        popover-placement="bottom"
+        ng-show="profileAward.level>0">
 
-   <span class="icon level-{{ profileAward.level }}">
-      <i class="icon-unlock-alt"></i>
+      <span class="icon level-{{ profileAward.level }}">
+         <i class="icon-unlock-alt"></i>
+      </span>
+      <span class="text">{{ profileAward.name }}</span>
+
    </span>
-   <span class="text">{{ profileAward.name }}</span>
+</div>
 
-</span>
-<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://impactstory.org/{{ url_slug }}" data-text="I got a new badge on my Impactstory profile: {{ profileAward.level_name }} Level {{ profileAward.name }}!" data-via="impactstory" data-count="none"></a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+<div class="award-container" ng-show="currentUserIsProfileOwner()">
+   <span class="profile-award"
+        ng-controller="ProfileAwardCtrl"
+        popover="You've made {{ profileAward.level_justification }}Nice work! <div class='call-to-action'>{{ profileAward.needed_for_next_level }} {{ profileAward.call_to_action }}</div>"
+        popover-title="{{ profileAward.level_name }} level award"
+        popover-trigger="hover"
+        popover-placement="bottom"
+        ng-show="profileAward.level>0">
 
+      <span class="icon level-{{ profileAward.level }}">
+         <i class="icon-unlock-alt"></i>
+      </span>
+      <span class="text">{{ profileAward.name }}</span>
+
+   </span>
+   <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://impactstory.org/{{ url_slug }}" data-text="I got a new badge on my Impactstory profile: {{ profileAward.level_name }}-level {{ profileAward.name }}!" data-via="impactstory" data-count="none"></a>
+</div>
