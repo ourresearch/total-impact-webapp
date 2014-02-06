@@ -21,6 +21,7 @@ def make_awards_list(user):
 class ProfileAward(object):
     def __init__(self):
         self.level = 0
+        self.level_names = ["Gold", "Silver", "Bronze", "Basic", "None"]
         self.name = "generic award"
         self.level_justification = "we said so"
         self.needed_for_next_level = None
@@ -34,6 +35,7 @@ class ProfileAward(object):
             "name": self.name,
             "level": self.level,
             "award_badge": not self.is_bottom_level(),
+            "is_perfect": self.is_perfect(),
             "level_name": self.level_name(),
             "level_justification": self.level_justification,
             "needed_for_next_level": self.needed_for_next_level,
@@ -46,28 +48,36 @@ class ProfileAward(object):
         raise NotImplementedError  # override in children
 
     def level_name(self):
-        return ["Gold", "Silver", "Bronze", "Basic", "None"][self.level-1]
+        return self._value_for_level(self.level_names)
 
     def next_level_name(self):
-        try:
-            return ["Gold", "Silver", "Bronze", "Basic", "None"][self.level - 2]
-        except AttributeError:
-            return None
+        return self._value_for_level(self.level_names, True)
 
     def level_cutoff(self):
-        return self.bins[self.level - 1]  # -1 for index-to-level conversion
+        return self._value_for_level(self.bins)
 
     def next_level_cutoff(self):
-        try:
-            return self.bins[self.level - 2]  # -1 for index-to-level conversion, -1 again for better level
-        except IndexError:
-            return None
+        return self._value_for_level(self.bins, True)
 
     def bottom_level(self):
         return len(self.bins) + 1
 
     def is_bottom_level(self):
         return self.level == self.bottom_level()
+
+    def _value_for_level(self, values, next_level=False):
+        if next_level:
+            i = self.level - 2
+        else:
+            i = self.level - 1
+
+        if i < 0:
+            return None
+
+        try:
+            return values[i]
+        except IndexError:
+            return None
 
 
 
@@ -89,6 +99,8 @@ class OAAward(ProfileAward):
             .10   # 50%
         ]
 
+    def is_perfect(self):
+        return self.extra["oa_articles_proportion"] == 1
 
     def calculate(self, about, products):
         article_products = [p for p in products if p["biblio"]["genre"] == "article"]
@@ -129,6 +141,8 @@ class OAAward(ProfileAward):
 
 
         # needed for next level
+        print "next level cutoff", self.next_level_cutoff()
+
         if self.next_level_cutoff() is not None:
             oa_articles_in_next_level = int(
                 math.ceil(self.next_level_cutoff() * article_count))
@@ -155,7 +169,7 @@ class OAAward(ProfileAward):
             self.call_to_action = "To add more, click any article missing the <i class='icon-unlock-alt'></i> icon and add links to free fulltext."
 
         else:
-            self.needed_for_next_level = "Congrats, that's the highest level we've got--you're one of the elite!"
+            self.needed_for_next_level = "Congrats, that's the highest level we've got--you're one of the OA elite!"
 
 
 
