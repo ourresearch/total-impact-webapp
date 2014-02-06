@@ -4644,7 +4644,7 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-award/profile-award.tpl.html",
-    "<div class=\"award-container\" ng-show=\"!currentUserIsProfileOwner() && profileAward.level>0\">\n" +
+    "<div class=\"award-container\" ng-show=\"!currentUserIsProfileOwner() && profileAward.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
     "        ng-controller=\"ProfileAwardCtrl\"\n" +
     "        popover=\"{{ user.about.given_name }} has made {{ profileAward.level_justification }}\"\n" +
@@ -4661,7 +4661,7 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "   </span>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"award-container\" ng-show=\"currentUserIsProfileOwner() && profileAward.level>0\">\n" +
+    "<div class=\"award-container\" ng-show=\"currentUserIsProfileOwner() && profileAward.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
     "        ng-controller=\"ProfileAwardCtrl\"\n" +
     "        popover=\"You've made {{ profileAward.level_justification }} Nice work! <div class='call-to-action'>{{ profileAward.needed_for_next_level }} {{ profileAward.call_to_action }}</div>\"\n" +

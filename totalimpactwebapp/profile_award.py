@@ -33,6 +33,7 @@ class ProfileAward(object):
         return {
             "name": self.name,
             "level": self.level,
+            "award_badge": not self.is_bottom_level(),
             "level_name": self.level_name(),
             "level_justification": self.level_justification,
             "needed_for_next_level": self.needed_for_next_level,
