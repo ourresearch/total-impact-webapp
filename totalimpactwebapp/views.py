@@ -477,22 +477,14 @@ def user_products_modify(id):
 @app.route("/user/<user_id>/product/<tiid>", methods=['GET'])
 def user_product(user_id, tiid):
 
-    # the fake "embed" user supports requests from the old badges widget.
-    embed_product = views_helpers.get_product_for_embed_user(
-        user_id,
-        tiid,
-        g.api_root,
-        os.getenv("API_ADMIN_KEY")
-    )
-    if embed_product is not None:
-        requested_product = embed_product
+    if userid == "embed":
+        abort(410)
 
-    else:
-        user = get_user_for_response(user_id, request)
-        try:
-            requested_product = [p for p in user.products if p["_id"] == tiid][0]
-        except IndexError:
-            abort_json(404, "That product doesn't exist.")
+    user = get_user_for_response(user_id, request)
+    try:
+        requested_product = [p for p in user.products if p["_id"] == tiid][0]
+    except IndexError:
+        abort_json(404, "That product doesn't exist.")
 
     prepped = product.prep_product(requested_product, True)
 
@@ -797,60 +789,7 @@ def get_2013_year_in_review():
 @app.route("/embed/impactstory.js")
 @app.route("/embed/v1/impactstory.js")
 def impactstory_dot_js():
-    """
-    To use this in production, make sure the root vars at the top of widget.js
-    are pointing to the correct server. This must be done manually before
-    deploying, if you've been testing locally.
-
-    """
-    return send_file("static/js/widget.js", mimetype="application/javascript")
-
-
-
-
-@app.route("/widget-analytics", methods=['GET'])
-def widget_analytics():
-    d = {}
-    for k, v in request.args.iteritems():
-        d[k] = v
-
-    try:
-        d["hostname"] = d['url'].split("/")[2]
-        d["domain"] = ".".join(d['hostname'].split(".")[-2:])  # like "impactstory.org"
-    except KeyError:
-        #nevermind then
-        pass
-
-    try:
-        api_key = d["api-key"]
-    except KeyError:
-        api_key = "unknown"
-
-    logger.info(u"got widget analytics data: {data}".format(
-        data=d))
-
-    try:
-        # later look stuff up here from db, based on api-key; send along w identify() call...
-        analytics.identify(user_id=api_key)
-    except IndexError:
-        logger.debug(u"IndexError when doing analytics.identify in widget_analytics")
-
-    try:
-        analytics.track(
-            user_id=api_key,
-            event="Served a page with embedded widget",
-            properties=d
-        )
-    except IndexError:
-        logger.debug(u"IndexError when doing analytics.track in widget_analytics")
-
-    try:
-        analytics.flush(async=False)  # make sure all the data gets sent to segment.io
-    except IndexError:
-        # sometimes the data was already flushed and we get an error popping from an empty queue
-        logger.debug(u"IndexError when doing analytics.flush in widget_analytics")
-
-    return make_response(request.args.get("callback", "") + '({"status": "success"})', 200)
+    abort(410)
 
 
 
