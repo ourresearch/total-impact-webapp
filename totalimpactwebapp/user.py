@@ -361,6 +361,19 @@ def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"
 
 
 
+def tiids_to_remove_from_duplicates_list(duplicates_list):
+    tiids_to_remove = []    
+    for duplicate_group in duplicates_list:
+        tiid_to_keep = None
+        for tiid_dict in duplicate_group:
+            if (tiid_to_keep==None) and tiid_dict["has_user_provided_biblio"]:
+                tiid_to_keep = tiid_dict["tiid"]
+            else:
+                tiids_to_remove += [tiid_dict["tiid"]]
+        if not tiid_to_keep:
+            # don't delete last tiid added even if it had user supplied stuff, because multiple do
+            tiids_to_remove.pop() 
+    return tiids_to_remove
 
 
 def remove_duplicates_from_user(user_id):
@@ -368,12 +381,7 @@ def remove_duplicates_from_user(user_id):
     db.session.merge(user)
 
     duplicates_list = products_list.get_duplicates_list_from_tiids(user.tiids)
-    tiids_to_remove = []
-
-    for duplicate_group in duplicates_list:
-        # don't remove the 0th one!  just from the first one on
-        tiids_to_remove += duplicate_group[1:]
-
+    tiids_to_remove = tiids_to_remove_from_duplicates_list(duplicates_list)
     user.delete_products(tiids_to_remove) 
 
     # important to keep this logging in so we can recover if necessary
