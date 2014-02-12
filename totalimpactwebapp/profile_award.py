@@ -121,12 +121,12 @@ class OAAward(ProfileAward):
         # calculate level
         self.level = self.bottom_level()
 
-        print "starting level check"
+        # print "starting level check"
 
         for i, bin_edge_val in enumerate(self.bins):
             this_level = i+1  # levels start with 1
 
-            print "checking level ", this_level, " (", bin_edge_val, ") against oa proportion of ", oa_proportion
+            # print "checking level ", this_level, " (", bin_edge_val, ") against oa proportion of ", oa_proportion
             if oa_proportion >= bin_edge_val:
                 self.level = this_level
                 break
@@ -141,7 +141,7 @@ class OAAward(ProfileAward):
 
 
         # needed for next level
-        print "next level cutoff", self.next_level_cutoff()
+        # print "next level cutoff", self.next_level_cutoff()
 
         if self.next_level_cutoff() is not None:
             oa_articles_in_next_level = int(
