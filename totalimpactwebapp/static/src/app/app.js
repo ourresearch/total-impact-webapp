@@ -88,7 +88,9 @@ angular.module('app').controller('AppCtrl', function($scope,
   });
 
   $scope.$on('$routeChangeSuccess', function(next, current){
-    tiAnalytics.pageload()
+    security.requestCurrentUser().then(function(currentUser){
+      tiAnalytics.pageload()
+    })
 
   })
 
