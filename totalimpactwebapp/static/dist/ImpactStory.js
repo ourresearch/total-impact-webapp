@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-06
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-11
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -4958,31 +4958,31 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <div class=\"external-usernames\">\n" +
     "            <ul>\n" +
     "               <li ng-show=\"user.about.twitter_account_id\">\n" +
-    "                  <a href=\"https://twitter.com/{{ user.about.twitter_account_id }}\">\n" +
+    "                  <a href=\"https://twitter.com/{{ user.about.twitter_account_id }}\" target=\"_blank\">\n" +
     "                     <img src=\"https://twitter.com/favicon.ico\" />\n" +
     "                     <span class=\"service\">Twitter</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "               <li ng-show=\"user.about.github_id\">\n" +
-    "                  <a href=\"https://github.com/{{ user.about.github_id }}\">\n" +
+    "                  <a href=\"https://github.com/{{ user.about.github_id }}\" target=\"_blank\">\n" +
     "                     <img src=\"https://github.com/fluidicon.png\" />\n" +
     "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "               <li ng-show=\"user.about.orcid_id\">\n" +
-    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\">\n" +
+    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\" target=\"_blank\">\n" +
     "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\" />\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "               <li ng-show=\"user.about.slideshare_id\">\n" +
-    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
+    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\" target=\"_blank\">\n" +
     "                     <img src=\"http://www.slideshare.net/favicon.ico\" />\n" +
     "                     <span class=\"service\">SlideShare</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "               <li ng-show=\"user.about.figshare_id\">\n" +
-    "                  <a href=\"{{ user.about.figshare_id }}\">\n" +
+    "                  <a href=\"{{ user.about.figshare_id }}\" target=\"_blank\">\n" +
     "                     <img src=\"http://figshare.com/static/img/favicon.png\" />\n" +
     "                     <span class=\"service\">figshare</span>\n" +
     "                  </a>\n" +
