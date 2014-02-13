@@ -477,7 +477,7 @@ def user_products_modify(id):
 @app.route("/user/<user_id>/product/<tiid>", methods=['GET'])
 def user_product(user_id, tiid):
 
-    if userid == "embed":
+    if user_id == "embed":
         abort(410)
 
     user = get_user_for_response(user_id, request)
