@@ -23,6 +23,37 @@ angular.module("services.page")
      }
    }
 
+    var getPageType = function(){
+      var myPageType = "profile"
+
+
+      var pageTypeLookupTable = {
+        account: [
+          "/settings",
+          "/reset-password"
+        ],
+        landing: [
+          "/"
+        ],
+        infopage: [
+          "/faq",
+          "/about"
+        ],
+        signup: [
+          "/signup"
+        ]
+      }
+
+      _.each(pageTypeLookupTable, function(urlStartsWithList, pageType){
+        var filtered = _.filter(urlStartsWithList, function(x){
+           return _($location.path()).startsWith(x)
+        })
+        if (filtered.length) {
+          myPageType = pageType
+        }
+
+      })
+    }
 
 
 
@@ -43,6 +74,9 @@ angular.module("services.page")
      },
      showNotificationsIn: function(loc){
        return notificationsLoc == loc
+     },
+     setVersion: function(versionName){
+       version = versionName;
      },
      getBodyClasses: function(){
         return {
@@ -77,8 +111,18 @@ angular.module("services.page")
      },
      getLastScrollPosition: function(path){
        return lastScrollPosition[path]
-     }
+     },
+     sendPageloadToSegmentio: function(){
 
+       analytics.page(
+         getPageType(),
+         $location.path(),
+         {
+           "version": (Math.random() > .5) ? "A" : "B",
+           "width": $(window).width()
+         }
+       )
+     }
    };
 })
 

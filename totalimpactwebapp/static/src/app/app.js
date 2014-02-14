@@ -5,7 +5,6 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
-  'services.tiAnalytics',
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -70,13 +69,14 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      security,
-                                                     tiAnalytics,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
+
+  console.log("app controller")
 
 
   $scope.removeNotification = function (notification) {
@@ -89,7 +89,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     security.requestCurrentUser().then(function(currentUser){
-      tiAnalytics.pageload()
+      Page.sendPageloadToSegmentio()
     })
 
   })
@@ -108,6 +108,7 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
 
   $scope.location = $location;
   $scope.isAuthenticated = security.isAuthenticated;
+
 
   $scope.home = function () {
     console.log("home!")

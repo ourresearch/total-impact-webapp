@@ -158,7 +158,6 @@ angular.module("profile", [
     $scope.profileAwards = ProfileAwards.query(
       {id:userSlug},
       function(resp){
-        console.log("loaded awards!", resp)
       }
     )
 

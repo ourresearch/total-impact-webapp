@@ -7,7 +7,6 @@ angular.module('profileAward.profileAward', [])
 })
 
   .controller('ProfileAwardCtrl', function ($scope, ProfileAward) {
-    console.log("controller ran")
 
   })
 

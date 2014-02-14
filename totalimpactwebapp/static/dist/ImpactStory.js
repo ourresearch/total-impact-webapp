@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-11
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-13
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -10,7 +10,6 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
-  'services.tiAnalytics',
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -75,13 +74,14 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      security,
-                                                     tiAnalytics,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
+
+  console.log("app controller")
 
 
   $scope.removeNotification = function (notification) {
@@ -94,7 +94,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     security.requestCurrentUser().then(function(currentUser){
-      tiAnalytics.pageload()
+      Page.sendPageloadToSegmentio()
     })
 
   })
@@ -113,6 +113,7 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
 
   $scope.location = $location;
   $scope.isAuthenticated = security.isAuthenticated;
+
 
   $scope.home = function () {
     console.log("home!")
@@ -859,7 +860,6 @@ angular.module('profileAward.profileAward', [])
 })
 
   .controller('ProfileAwardCtrl', function ($scope, ProfileAward) {
-    console.log("controller ran")
 
   })
 
@@ -924,7 +924,6 @@ angular.module("profileProduct", [
     $scope.profileAwards = ProfileAwards.query(
       {id:slug},
       function(resp){
-        console.log("loaded awards!", resp)
       }
     )
 
@@ -1206,7 +1205,6 @@ angular.module("profile", [
     $scope.profileAwards = ProfileAwards.query(
       {id:userSlug},
       function(resp){
-        console.log("loaded awards!", resp)
       }
     )
 
@@ -3463,6 +3461,37 @@ angular.module("services.page")
      }
    }
 
+    var getPageType = function(){
+      var myPageType = "profile"
+
+
+      var pageTypeLookupTable = {
+        account: [
+          "/settings",
+          "/reset-password"
+        ],
+        landing: [
+          "/"
+        ],
+        infopage: [
+          "/faq",
+          "/about"
+        ],
+        signup: [
+          "/signup"
+        ]
+      }
+
+      _.each(pageTypeLookupTable, function(urlStartsWithList, pageType){
+        var filtered = _.filter(urlStartsWithList, function(x){
+           return _($location.path()).startsWith(x)
+        })
+        if (filtered.length) {
+          myPageType = pageType
+        }
+
+      })
+    }
 
 
 
@@ -3483,6 +3512,9 @@ angular.module("services.page")
      },
      showNotificationsIn: function(loc){
        return notificationsLoc == loc
+     },
+     setVersion: function(versionName){
+       version = versionName;
      },
      getBodyClasses: function(){
         return {
@@ -3517,8 +3549,18 @@ angular.module("services.page")
      },
      getLastScrollPosition: function(path){
        return lastScrollPosition[path]
-     }
+     },
+     sendPageloadToSegmentio: function(){
 
+       analytics.page(
+         getPageType(),
+         $location.path(),
+         {
+           "version": (Math.random() > .5) ? "A" : "B",
+           "width": $(window).width()
+         }
+       )
+     }
    };
 })
 
