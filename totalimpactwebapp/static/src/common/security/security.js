@@ -52,7 +52,6 @@ angular.module('security.service', [
             console.log("success in security.login()")
             currentUser = data.user;
           TipsService.load(data.user.url_slug)
-          analytics.identify(currentUser.id, currentUser);
         })
     },
 
@@ -122,7 +121,6 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
-          analytics.identify(currentUser.id, currentUser);
           TipsService.load(service.getCurrentUserSlug())
 
         })

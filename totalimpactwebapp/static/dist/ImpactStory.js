@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-13
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-15
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -94,6 +94,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     security.requestCurrentUser().then(function(currentUser){
+      analytics.identify(currentUser.id, currentUser);
       Page.sendPageloadToSegmentio()
     })
 
@@ -1715,7 +1716,11 @@ angular.module( 'signup', [
           console.log("got response back from save user", resp)
           security.clearCachedUser()
           $location.path("signup/" + $scope.input.url_slug + "/products/add")
-          $location.search("")  /// clear the names from the url
+          $location.search("")  // clear the names from the url
+
+          // so mixpanel will start tracking this user via her userid from here
+          // on out.
+          analytics.alias(resp.user.id)
         }
       )
     }
@@ -1734,12 +1739,14 @@ angular.module( 'signup', [
     var url_slug = /\/signup\/([-\w\.]+)\//.exec($location.path())[1]
     var redirectCb = function(){
       $location.path("/" + url_slug)
-      security.requestCurrentUser()
+      analytics.track("First profile view")
     }
 
     $scope.nav.goToNextStep = function(){
       var emailLogMsg = "saving the email on signup"
       var pwLogMsg = "saving the password on signup"
+
+      analytics.track("Completed signup")
 
       UsersAbout.patch(
         {"id": url_slug, idType:"url_slug", log: emailLogMsg},
@@ -2823,7 +2830,6 @@ angular.module('security.service', [
             console.log("success in security.login()")
             currentUser = data.user;
           TipsService.load(data.user.url_slug)
-          analytics.identify(currentUser.id, currentUser);
         })
     },
 
@@ -2893,7 +2899,6 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
-          analytics.identify(currentUser.id, currentUser);
           TipsService.load(service.getCurrentUserSlug())
 
         })

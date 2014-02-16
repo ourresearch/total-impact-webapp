@@ -144,7 +144,11 @@ angular.module( 'signup', [
           console.log("got response back from save user", resp)
           security.clearCachedUser()
           $location.path("signup/" + $scope.input.url_slug + "/products/add")
-          $location.search("")  /// clear the names from the url
+          $location.search("")  // clear the names from the url
+
+          // so mixpanel will start tracking this user via her userid from here
+          // on out.
+          analytics.alias(resp.user.id)
         }
       )
     }
@@ -163,12 +167,14 @@ angular.module( 'signup', [
     var url_slug = /\/signup\/([-\w\.]+)\//.exec($location.path())[1]
     var redirectCb = function(){
       $location.path("/" + url_slug)
-      security.requestCurrentUser()
+      analytics.track("First profile view")
     }
 
     $scope.nav.goToNextStep = function(){
       var emailLogMsg = "saving the email on signup"
       var pwLogMsg = "saving the password on signup"
+
+      analytics.track("Completed signup")
 
       UsersAbout.patch(
         {"id": url_slug, idType:"url_slug", log: emailLogMsg},
