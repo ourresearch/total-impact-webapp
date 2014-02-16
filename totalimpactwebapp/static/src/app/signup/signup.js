@@ -108,6 +108,7 @@ angular.module( 'signup', [
   })
 
   .controller( 'signupNameCtrl', function ( $scope, $location, Signup, Slug ) {
+    analytics.track("Signup: name")
     $scope.nav.goToNextStep = function(){
 
       var slug = Slug.make($scope.input.givenName, $scope.input.surname)
@@ -126,6 +127,8 @@ angular.module( 'signup', [
     var slug = nameRegex.exec($location.path())[1]
 
     $scope.input.url_slug = slug
+    analytics.track("Signup: url")
+
 
     $scope.nav.goToNextStep = function(){
       var logMsg = "saving user for the first time"
@@ -156,6 +159,7 @@ angular.module( 'signup', [
 
   .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporters, security ) {
     var m = /\/signup\/([-\w\.]+)\//.exec($location.path())
+    analytics.track("Signup: products")
 
     $scope.importers = AllTheImporters.get()
     $scope.nav.goToNextStep = function(){
@@ -165,6 +169,8 @@ angular.module( 'signup', [
 
   .controller( 'signupPasswordCtrl', function ($scope, $location, security, UsersAbout, UsersPassword, Update) {
     var url_slug = /\/signup\/([-\w\.]+)\//.exec($location.path())[1]
+    analytics.track("Signup: password")
+
     var redirectCb = function(){
       $location.path("/" + url_slug)
       analytics.track("First profile view")
