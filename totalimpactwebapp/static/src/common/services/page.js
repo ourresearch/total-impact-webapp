@@ -119,7 +119,8 @@ angular.module("services.page")
          $location.path(),
          {
            "version": (Math.random() > .5) ? "A" : "B",
-           "viewport width": $(window).width()
+           "viewport width": $(window).width(),
+           "page_type": getPageType()
          }
        )
      }
