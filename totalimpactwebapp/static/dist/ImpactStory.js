@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-16
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-17
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -5823,7 +5823,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      <span class=\"or\"></span>\n" +
     "      <a class=\"logout preference\"\n" +
     "         ng-click=\"logout()\"\n" +
-    "         tooltip=\"Log out\"\n" +
+    "         tooltip=\"Log out\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
     "         <i class=\"icon-signout\"></i>\n" +
     "      </a>\n" +

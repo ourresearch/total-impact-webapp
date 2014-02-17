@@ -132,7 +132,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      <span class=\"or\"></span>\n" +
     "      <a class=\"logout preference\"\n" +
     "         ng-click=\"logout()\"\n" +
-    "         tooltip=\"Log out\"\n" +
+    "         tooltip=\"Log out\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
     "         <i class=\"icon-signout\"></i>\n" +
     "      </a>\n" +
