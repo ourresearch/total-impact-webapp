@@ -89,8 +89,12 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     security.requestCurrentUser().then(function(currentUser){
-      var idToSend = currentUser ? currentUser.id : null
-      analytics.identify(idToSend, currentUser);
+      if (currentUser){
+        analytics.identify(currentUser.id, currentUser);
+        if (currentUser.url_slug){
+
+        }
+      }
       Page.sendPageloadToSegmentio()
     })
 

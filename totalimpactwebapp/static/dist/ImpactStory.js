@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-17
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-18
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -94,8 +94,12 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     security.requestCurrentUser().then(function(currentUser){
-      var idToSend = currentUser ? currentUser.id : null
-      analytics.identify(idToSend, currentUser);
+      if (currentUser){
+        analytics.identify(currentUser.id, currentUser);
+        if (currentUser.url_slug){
+
+        }
+      }
       Page.sendPageloadToSegmentio()
     })
 
@@ -5749,7 +5753,6 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "         <button class=\"btn btn-primary login\"\n" +
     "                 ng-click=\"login()\"\n" +
     "                 ng-hide=\"loading.is('login')\"\n" +
-    "                 ng-disabled='loginForm.$invalid'\n" +
     "\n" +
     "                 >Sign in</button>\n" +
     "         <div class=\"working\" ng-show=\"loading.is('login')\">\n" +

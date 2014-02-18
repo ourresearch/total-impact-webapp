@@ -57,7 +57,6 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "         <button class=\"btn btn-primary login\"\n" +
     "                 ng-click=\"login()\"\n" +
     "                 ng-hide=\"loading.is('login')\"\n" +
-    "                 ng-disabled='loginForm.$invalid'\n" +
     "\n" +
     "                 >Sign in</button>\n" +
     "         <div class=\"working\" ng-show=\"loading.is('login')\">\n" +
