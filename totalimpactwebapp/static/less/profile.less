@@ -11,6 +11,41 @@ div.loading {
 }
 
 
+div.signup-banner {
+   position:fixed;
+   bottom:0;
+   right: 0;
+   left: 0;
+   height: 90px;
+   padding-top: 25px;
+   border-top: 1px solid #ccc;
+   background: rgba(220, 220, 220, 0.95);
+   color: #444;
+   font-weight: normal;
+   font-size: 17px;
+   text-align: center;
+   a.signup-button{
+      background: @linkColor;
+      border:none;
+      margin-left: 30px;
+      &:hover {
+         background: darken(@linkColor, 5%);
+      }
+   }
+   a.close-link {
+      color: #aaa;
+      font-size: 30px;
+      padding: 5px;
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      &:hover {
+         color: #888;
+      }
+   }
+
+}
+
 
 
 div.profile-subpage {

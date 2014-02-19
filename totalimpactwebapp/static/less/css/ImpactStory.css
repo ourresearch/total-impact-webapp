@@ -7237,6 +7237,39 @@ div.loading div.working {
 div.loading div.working span.text {
   margin-left: 10px;
 }
+div.signup-banner {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 90px;
+  padding-top: 25px;
+  border-top: 1px solid #ccc;
+  background: rgba(220, 220, 220, 0.95);
+  color: #444;
+  font-weight: normal;
+  font-size: 17px;
+  text-align: center;
+}
+div.signup-banner a.signup-button {
+  background: #ff4000;
+  border: none;
+  margin-left: 30px;
+}
+div.signup-banner a.signup-button:hover {
+  background: #e63a00;
+}
+div.signup-banner a.close-link {
+  color: #aaa;
+  font-size: 30px;
+  padding: 5px;
+  position: absolute;
+  right: 20px;
+  top: 15px;
+}
+div.signup-banner a.close-link:hover {
+  color: #888;
+}
 div.profile-subpage div.profile-subpage-header {
   height: 70px;
   padding-top: 24px;

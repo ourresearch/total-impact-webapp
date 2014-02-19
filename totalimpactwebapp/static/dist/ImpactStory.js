@@ -80,8 +80,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
+  $scope.isAuthenticated =  security.isAuthenticated
 
-  console.log("app controller")
 
 
   $scope.removeNotification = function (notification) {
@@ -118,7 +118,6 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   function ($scope, $location, $route, security, httpRequestTracker) {
 
   $scope.location = $location;
-  $scope.isAuthenticated = security.isAuthenticated;
 
 
   $scope.home = function () {
@@ -1205,6 +1204,11 @@ angular.module("profile", [
     $scope.userExists = true;
     $scope.showProductsWithoutMetrics = false;
     $scope.filterProducts =  UserProfile.filterProducts;
+
+    $scope.hideSignupBannerNow = function(){
+      $scope.hideSignupBanner = true
+
+    }
 
     $scope.user = UserProfile.loadUser($scope, userSlug);
 
@@ -2988,6 +2992,7 @@ angular.module('security.service', [
 
     // Is the current user authenticated?
     isAuthenticated: function(){
+      console.log("called get current user", currentUser)
       return !!currentUser;
     },
     
@@ -5148,6 +5153,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <h2>Whoops!</h2>\n" +
     "   <p>We don't have a user account for <span class=\"slug\">'{{ slug }}.'</span><br> Would you like to <a href=\"/signup\">make one?</a></p>\n" +
     "\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"signup-banner\"\n" +
+    "     ng-show=\"userExists && !isAuthenticated()\"\n" +
+    "     ng-if=\"!hideSignupBanner\"\n" +
+    "     ng-animate=\"{leave: 'animated fadeOutDown'}\">\n" +
+    "\n" +
+    "   <span class=\"msg\">Join {{ user.about.given_name }} and thousands of other scientists on Impactstory!</span>\n" +
+    "   <a class=\"signup-button btn btn-primary btn-sm\" href=\"/signup\">Make your free profile</a>\n" +
+    "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>");
 }]);
 

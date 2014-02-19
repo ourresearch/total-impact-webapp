@@ -153,6 +153,11 @@ angular.module("profile", [
     $scope.showProductsWithoutMetrics = false;
     $scope.filterProducts =  UserProfile.filterProducts;
 
+    $scope.hideSignupBannerNow = function(){
+      $scope.hideSignupBanner = true
+
+    }
+
     $scope.user = UserProfile.loadUser($scope, userSlug);
 
     $scope.profileAwards = ProfileAwards.query(

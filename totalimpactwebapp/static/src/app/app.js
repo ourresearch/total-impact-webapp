@@ -75,8 +75,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
+  $scope.isAuthenticated =  security.isAuthenticated
 
-  console.log("app controller")
 
 
   $scope.removeNotification = function (notification) {
@@ -113,7 +113,6 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   function ($scope, $location, $route, security, httpRequestTracker) {
 
   $scope.location = $location;
-  $scope.isAuthenticated = security.isAuthenticated;
 
 
   $scope.home = function () {
