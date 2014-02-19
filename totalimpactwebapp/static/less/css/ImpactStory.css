@@ -6176,6 +6176,7 @@ body.show-tab-on-bottom .uv-tab.uv-slide-right {
 body.embedded {
   border: 8px solid #777;
   overflow-y: scroll;
+  padding-top: 100px;
 }
 body.embedded .uv-tab {
   display: none !important;
@@ -7981,6 +7982,7 @@ div.product-page .content .product .biblio div.optional-biblio {
   font-size: 20px;
 }
 div.product-page .content .product div.well.free-fulltext-url {
+  clear: both;
   margin-top: 20px;
   margin-left: -15px;
 }
