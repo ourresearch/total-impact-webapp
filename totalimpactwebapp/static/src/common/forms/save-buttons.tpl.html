@@ -1,13 +1,13 @@
 <div class="buttons-group save">
    <div class="buttons" ng-show="!loading.is('saveButton')">
       <button
-              class="btn btn-primary"
+              class="btn btn-primary action"
               ng-disabled="!isValid()"
               type="submit">
          {{ action }}
       </button>
       <a
-              class="btn btn-default"
+              class="btn btn-default cancel"
               ng-click="onCancel()">
          Cancel
       </a>

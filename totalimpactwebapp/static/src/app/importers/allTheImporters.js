@@ -305,6 +305,11 @@ angular.module('importers.allTheImporters')
   }
 
 
+  var makeCSSName = function(importerName) {
+    return importerName.replace(/ /g, '-').toLowerCase()
+
+  }
+
 
   return {
     addProducts: function(products) {
@@ -320,6 +325,7 @@ angular.module('importers.allTheImporters')
 
       var importersWithAllData = _.map(importersConfig, function(importer){
         importer.name = makeName(importer.displayName)
+        importer.CSSname = makeCSSName(importer.displayName)
         importer.logoPath = makeLogoPath(importer.displayName)
         importer.endpoint = makeEndpoint(importer)
 
