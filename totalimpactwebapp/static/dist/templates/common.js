@@ -5,13 +5,13 @@ angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", functio
     "<div class=\"buttons-group save\">\n" +
     "   <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
     "      <button\n" +
-    "              class=\"btn btn-primary\"\n" +
+    "              class=\"btn btn-primary action\"\n" +
     "              ng-disabled=\"!isValid()\"\n" +
     "              type=\"submit\">\n" +
     "         {{ action }}\n" +
     "      </button>\n" +
     "      <a\n" +
-    "              class=\"btn btn-default\"\n" +
+    "              class=\"btn btn-default cancel\"\n" +
     "              ng-click=\"onCancel()\">\n" +
     "         Cancel\n" +
     "      </a>\n" +
