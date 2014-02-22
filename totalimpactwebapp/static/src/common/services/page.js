@@ -25,35 +25,33 @@ angular.module("services.page")
 
     var getPageType = function(){
       var myPageType = "profile"
-      var pageTypeLookupTable = {
-        account: [
+      var path = $location.path()
+
+      var accountPages = [
           "/settings",
           "/reset-password"
-        ],
-        landing: [
-          "/"
-        ],
-        infopage: [
+      ]
+
+      var infopages = [
           "/faq",
           "/about"
-        ],
-        signup: [
-          "/signup"
-        ],
-        demoProfile: [
-          "/CarlBoettiger"
         ]
+
+      if (path === "/"){
+        myPageType = "landing"
       }
-
-      _.each(pageTypeLookupTable, function(urlStartsWithList, pageType){
-        var filtered = _.filter(urlStartsWithList, function(x){
-           return _($location.path()).startsWith(x)
-        })
-        if (filtered.length) {
-          myPageType = pageType
-        }
-
-      })
+      else if (path === "/CarlBoettiger") {
+        myPageType = "demoProfile"
+      }
+      else if (_(path).startsWith("/signup")) {
+        myPageType = "signup"
+      }
+      else if (_.contains(infopages, path)){
+        myPageType = "infopages"
+      }
+      else if (_.contains(accountPages, path)) {
+        myPageType = "account"
+      }
 
       return myPageType
     }
