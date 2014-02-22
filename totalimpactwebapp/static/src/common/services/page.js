@@ -24,6 +24,9 @@ angular.module("services.page")
    }
 
     var getPageType = function(){
+
+      return "profile"
+
       var myPageType = "profile"
       var path = $location.path()
 
@@ -97,7 +100,7 @@ angular.module("services.page")
      setTitle: function(newTitle) { title = "ImpactStory: " + newTitle },
 
      isLandingPage: function(){
-       return ($location.path() == "/")
+       return ($location.path() === "/")
      },
 
      isProfile:function(){
