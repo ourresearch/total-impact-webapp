@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-20
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-22
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -3573,15 +3573,15 @@ angular.module("services.page")
      },
      sendPageloadToSegmentio: function(){
 
-       analytics.page(
-         getPageType(),
-         $location.path(),
-         {
-           "version": (Math.random() > .5) ? "A" : "B",
-           "viewport width": $(window).width(),
-           "page_type": getPageType()
-         }
-       )
+//       analytics.page(
+//         getPageType(),
+//         $location.path(),
+//         {
+//           "version": (Math.random() > .5) ? "A" : "B",
+//           "viewport width": $(window).width(),
+//           "page_type": getPageType()
+//         }
+//       )
      }
    };
 })
