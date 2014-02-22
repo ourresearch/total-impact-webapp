@@ -25,8 +25,6 @@ angular.module("services.page")
 
     var getPageType = function(){
       var myPageType = "profile"
-
-
       var pageTypeLookupTable = {
         account: [
           "/settings",
@@ -41,6 +39,9 @@ angular.module("services.page")
         ],
         signup: [
           "/signup"
+        ],
+        demoProfile: [
+          "/CarlBoettiger"
         ]
       }
 
@@ -53,6 +54,8 @@ angular.module("services.page")
         }
 
       })
+
+      return myPageType
     }
 
 
@@ -114,15 +117,15 @@ angular.module("services.page")
      },
      sendPageloadToSegmentio: function(){
 
-//       analytics.page(
-//         getPageType(),
-//         $location.path(),
-//         {
-//           "version": (Math.random() > .5) ? "A" : "B",
-//           "viewport width": $(window).width(),
-//           "page_type": getPageType()
-//         }
-//       )
+       analytics.page(
+         getPageType(),
+         $location.path(),
+         {
+           "version": (Math.random() > .5) ? "A" : "B",
+           "viewport width": $(window).width(),
+           "page_type": getPageType()
+         }
+       )
      }
    };
 })
