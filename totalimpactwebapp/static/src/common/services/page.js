@@ -24,9 +24,6 @@ angular.module("services.page")
    }
 
     var getPageType = function(){
-
-      return "profile"
-
       var myPageType = "profile"
       var path = $location.path()
 
@@ -118,15 +115,15 @@ angular.module("services.page")
      },
      sendPageloadToSegmentio: function(){
 
-//       analytics.page(
-//         getPageType(),
-//         $location.path(),
-//         {
-//           "version": (Math.random() > .5) ? "A" : "B",
-//           "viewport width": $(window).width(),
-//           "page_type": getPageType()
-//         }
-//       )
+       analytics.page(
+         getPageType(),
+         $location.path(),
+         {
+           "version": (Math.random() > .5) ? "A" : "B",
+           "viewport width": $(window).width(),
+           "page_type": getPageType()
+         }
+       )
      }
    };
 })
