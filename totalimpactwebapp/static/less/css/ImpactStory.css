@@ -6173,6 +6173,9 @@ body.show-tab-on-right .uv-tab.uv-slide-bottom {
 body.show-tab-on-bottom .uv-tab.uv-slide-right {
   display: none !important;
 }
+body.hide-tab .uv-tab {
+  display: none !important;
+}
 body.embedded {
   border: 8px solid #777;
   overflow-y: scroll;
@@ -6828,26 +6831,26 @@ div.infopage p {
 *****************************************************************************
 *****************************************************************************/
 div.infopage.landing {
-  background: #ff4000;
-  padding-top: 30px;
+  padding-top: 80px;
 }
 div.infopage.landing div#tagline {
-  padding: 1px;
-}
-div.infopage.landing div#tagline div.wrapper {
   width: 900px;
+  margin-bottom: 120px;
   text-align: center;
 }
-div.infopage.landing div#tagline div.wrapper h1 {
-  color: #fff;
-  font-size: 70px;
+div.infopage.landing div#tagline img.big-logo {
+  height: 150px;
+}
+div.infopage.landing div#tagline h1 {
+  color: #ff4000;
+  font-size: 80px;
   line-height: 1;
   padding-bottom: 15px;
   font-family: 'lato', helvetica, arial, sans-serif;
   font-weight: 900;
   margin: 30px auto 30px;
 }
-div.infopage.landing div#tagline div.wrapper p.subtagline {
+div.infopage.landing div#tagline p.subtagline {
   color: #fff;
   font-size: 28px;
   padding: 5px 0 10px;
@@ -6855,10 +6858,10 @@ div.infopage.landing div#tagline div.wrapper p.subtagline {
   width: 750px;
   margin: 0 auto 40px;
 }
-div.infopage.landing div#tagline div.wrapper #call-to-action {
-  margin: 70px auto 150px;
+div.infopage.landing div#tagline #call-to-action {
+  margin: 50px auto;
 }
-div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large {
+div.infopage.landing div#tagline #call-to-action a.btn-large {
   padding: 13px 29px;
   font-size: 25px;
   -webkit-border-top-right-radius: 10px;
@@ -6879,25 +6882,44 @@ div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large {
   color: #eee;
   font-family: Lato, Helvetica, Arial, sans-serif;
 }
-div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.primary-action {
+div.infopage.landing div#tagline #call-to-action a.btn-large.primary-action {
   background: #0053b0;
   font-weight: bold;
   margin-right: 20px;
   font-size: 28px;
 }
-div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.primary-action:hover {
+div.infopage.landing div#tagline #call-to-action a.btn-large.primary-action:hover {
   background: #004797;
 }
-div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.secondary-action {
-  background: #555;
-  font-size: 22px;
-  vertical-align: bottom;
-  border: none;
-  font-weight: normal;
-  color: #eee;
+div.infopage.landing div#tagline #call-to-action a.btn-large.secondary-action {
+  background: #fff;
+  border: 1px solid #999;
+  color: #999;
 }
-div.infopage.landing div#tagline div.wrapper #call-to-action a.btn-large.secondary-action:hover {
+div.infopage.landing div#tagline #call-to-action a.btn-large.secondary-action:hover {
   background: #444;
+}
+div.infopage.landing div.featured-and-supported {
+  text-align: center;
+}
+div.infopage.landing div.featured-and-supported h3 {
+  margin: 0 0 20px;
+  font-weight: 300;
+  font-size: 18px;
+}
+div.infopage.landing div.featured-and-supported img {
+  height: 50px;
+  margin: 0 10px;
+  opacity: .7;
+}
+div.infopage.landing div.featured-and-supported span.divider {
+  height: 50px;
+  width: 1px;
+  padding-right: 1px;
+  background: #999;
+  margin: 0 30px;
+  vertical-align: -16px;
+  display: inline-block;
 }
 /* the "selling points" section
 *************************************************/

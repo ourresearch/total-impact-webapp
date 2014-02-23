@@ -57,6 +57,8 @@ angular.module( 'infopages', [
   }])
 
   .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {
+    Page.showHeader(false)
+    Page.setUservoiceTabLoc("hidden")
     Page.setTitle("Share the full story of your research impact.")
   })
 

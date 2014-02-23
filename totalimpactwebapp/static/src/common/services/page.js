@@ -62,8 +62,6 @@ angular.module("services.page")
 
    return {
      showHeader: function(showHeaderArg){
-       return true
-
        // read current value
        if (typeof showHeaderArg === "undefined"){
          return showHeaderNow
@@ -103,6 +101,7 @@ angular.module("services.page")
         return {
           'show-tab-on-bottom': uservoiceTabLoc == "bottom",
           'show-tab-on-right': uservoiceTabLoc == "right",
+          'hide-tab': uservoiceTabLoc == "hidden",
           'embedded': isEmbedded
         }
      },
