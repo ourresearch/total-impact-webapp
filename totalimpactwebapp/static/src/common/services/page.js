@@ -9,6 +9,9 @@ angular.module("services.page")
    var lastScrollPosition = {}
    var isEmbedded =  _($location.path()).startsWith("/embed/")
 
+   var showHeaderNow = true
+   var showFooterNow = true
+
    var frameTemplatePaths = {
      header: "",
      footer: ""
@@ -63,13 +66,34 @@ angular.module("services.page")
    }
 
    return {
-     setTemplates: function(headerPathRoot, footerPathRoot){
-       frameTemplatePaths.header = addTplHtml(headerPathRoot)
-       frameTemplatePaths.footer = addTplHtml(footerPathRoot)
+     showHeader: function(showHeaderArg){
+
+       // read current value
+       if (typeof showHeaderArg === "undefined"){
+         return showHeaderNow
+       }
+
+       // set value
+       else {
+         showHeaderNow = !!showHeaderArg
+         return showHeaderNow
+       }
      },
-     getTemplate: function(templateName){
-       return frameTemplatePaths[templateName]
+     showFooter: function(showFooterArg){
+
+       // read current value
+       if (typeof showFooterArg === "undefined"){
+         return showFooterNow
+       }
+
+       // set value
+       else {
+         showFooterNow = !!showFooterArg
+         return showFooterNow
+       }
      },
+
+
      'setNotificationsLoc': function(loc){
          notificationsLoc = loc;
      },

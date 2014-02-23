@@ -2,7 +2,7 @@ angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importer
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
-    "<div id=\"footer\">\n" +
+    "<div id=\"footer\" ng-show=\"page.showFooter()\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"Impactstory\" /></a>\n" +
@@ -64,11 +64,10 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header header\" ng-class=\"{landing: page.isLandingPage(), profile: page.isProfile()}\">\n" +
+    "<div class=\"main-header header\" ng-show=\"page.showHeader()\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <a class=\"brand\" href=\"/\">\n" +
-    "         <img ng-if=\"!page.isProfile()\"  src=\"/static/img/impactstory-logo-no-type.png\" alt=\"Impactstory\" />\n" +
-    "         <img ng-if=\"page.isProfile()\" src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory\" />\n" +
+    "         <img src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory\" />\n" +
     "      </a>\n" +
     "      <login-toolbar></login-toolbar>\n" +
     "   </div>\n" +

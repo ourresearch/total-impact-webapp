@@ -93,8 +93,9 @@ angular.module( 'signup', [
 
   .controller('signupCtrl', function($scope, Signup, Page, security){
     Page.setUservoiceTabLoc("bottom")
-    Page.setTemplates("signup/signup-header", "")
-//    security.logout()
+    Page.showHeader(false)
+    Page.showFooter(false)
+
     $scope.input = {}
 
     $scope.include =  Signup.getTemplatePath();

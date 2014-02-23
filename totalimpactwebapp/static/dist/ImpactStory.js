@@ -106,7 +106,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.setTemplates("header", "footer")
+    Page.showHeader()
+    Page.showFooter()
     Page.setUservoiceTabLoc("right")
     Loading.clear()
   })
@@ -769,7 +770,6 @@ angular.module('passwordReset', [
 })
 
 .controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, i18nNotifications, security){
-  Page.setTemplates('password-reset/password-reset-header', false)
   console.log("reset token", $routeParams.resetToken)
 
   $scope.password = ""
@@ -1358,7 +1358,7 @@ angular.module('profile.addProducts')
 
   }])
   .controller("addProductsCtrl", function($scope, Page, $routeParams, AllTheImporters){
-    Page.setTemplates("header", false)
+    Page.showHeader(false)
     $scope.redirectAfterImport = true
     $scope.importers = AllTheImporters.get()
   })
@@ -1674,8 +1674,9 @@ angular.module( 'signup', [
 
   .controller('signupCtrl', function($scope, Signup, Page, security){
     Page.setUservoiceTabLoc("bottom")
-    Page.setTemplates("signup/signup-header", "")
-//    security.logout()
+    Page.showHeader(false)
+    Page.showFooter(false)
+
     $scope.input = {}
 
     $scope.include =  Signup.getTemplatePath();
@@ -3468,6 +3469,9 @@ angular.module("services.page")
    var lastScrollPosition = {}
    var isEmbedded =  _($location.path()).startsWith("/embed/")
 
+   var showHeaderNow = true
+   var showFooterNow = true
+
    var frameTemplatePaths = {
      header: "",
      footer: ""
@@ -3522,13 +3526,34 @@ angular.module("services.page")
    }
 
    return {
-     setTemplates: function(headerPathRoot, footerPathRoot){
-       frameTemplatePaths.header = addTplHtml(headerPathRoot)
-       frameTemplatePaths.footer = addTplHtml(footerPathRoot)
+     showHeader: function(showHeaderArg){
+
+       // read current value
+       if (typeof showHeaderArg === "undefined"){
+         return showHeaderNow
+       }
+
+       // set value
+       else {
+         showHeaderNow = !!showHeaderArg
+         return showHeaderNow
+       }
      },
-     getTemplate: function(templateName){
-       return frameTemplatePaths[templateName]
+     showFooter: function(showFooterArg){
+
+       // read current value
+       if (typeof showFooterArg === "undefined"){
+         return showFooterNow
+       }
+
+       // set value
+       else {
+         showFooterNow = !!showFooterArg
+         return showFooterNow
+       }
      },
+
+
      'setNotificationsLoc': function(loc){
          notificationsLoc = loc;
      },
@@ -3983,7 +4008,7 @@ angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importer
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
-    "<div id=\"footer\">\n" +
+    "<div id=\"footer\" ng-show=\"page.showFooter()\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
     "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"Impactstory\" /></a>\n" +
@@ -4045,11 +4070,10 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header header\" ng-class=\"{landing: page.isLandingPage(), profile: page.isProfile()}\">\n" +
+    "<div class=\"main-header header\" ng-show=\"page.showHeader()\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <a class=\"brand\" href=\"/\">\n" +
-    "         <img ng-if=\"!page.isProfile()\"  src=\"/static/img/impactstory-logo-no-type.png\" alt=\"Impactstory\" />\n" +
-    "         <img ng-if=\"page.isProfile()\" src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory\" />\n" +
+    "         <img src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory\" />\n" +
     "      </a>\n" +
     "      <login-toolbar></login-toolbar>\n" +
     "   </div>\n" +

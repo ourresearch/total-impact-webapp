@@ -20,7 +20,7 @@ angular.module('profile.addProducts')
 
   }])
   .controller("addProductsCtrl", function($scope, Page, $routeParams, AllTheImporters){
-    Page.setTemplates("header", false)
+    Page.showHeader(false)
     $scope.redirectAfterImport = true
     $scope.importers = AllTheImporters.get()
   })
