@@ -199,7 +199,6 @@ angular.module('security.service', [
 
     // Is the current user authenticated?
     isAuthenticated: function(){
-      console.log("called get current user", currentUser)
       return !!currentUser;
     },
     

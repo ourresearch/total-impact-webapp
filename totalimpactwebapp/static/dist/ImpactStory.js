@@ -2993,7 +2993,6 @@ angular.module('security.service', [
 
     // Is the current user authenticated?
     isAuthenticated: function(){
-      console.log("called get current user", currentUser)
       return !!currentUser;
     },
     
@@ -3520,13 +3519,9 @@ angular.module("services.page")
     }
 
 
-
-   var headers = {
-     signup: "signup/signup-header.tpl.html"
-   }
-
    return {
      showHeader: function(showHeaderArg){
+       return true
 
        // read current value
        if (typeof showHeaderArg === "undefined"){
@@ -4070,7 +4065,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header header\" ng-show=\"page.showHeader()\">\n" +
+    "<div class=\"main-header header\" ng-show=\"true\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <a class=\"brand\" href=\"/\">\n" +
     "         <img src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory\" />\n" +

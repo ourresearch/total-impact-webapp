@@ -60,13 +60,9 @@ angular.module("services.page")
     }
 
 
-
-   var headers = {
-     signup: "signup/signup-header.tpl.html"
-   }
-
    return {
      showHeader: function(showHeaderArg){
+       return true
 
        // read current value
        if (typeof showHeaderArg === "undefined"){

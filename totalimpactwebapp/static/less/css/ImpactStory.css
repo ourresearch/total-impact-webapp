@@ -6614,22 +6614,9 @@ div.no-page p span.slug {
 *****************************************************************************
 *****************************************************************************/
 div.main-header {
+  text-align: left;
   padding: 15px 0 20px;
   height: 140px;
-  text-align: center;
-}
-div.main-header.landing {
-  height: 220px;
-  text-align: center;
-}
-div.main-header.landing div.wrapper a.brand img {
-  height: 150px;
-}
-div.main-header.profile {
-  text-align: left;
-}
-div.main-header.profile div.wrapper a.brand img {
-  height: 50px;
 }
 div.main-header div.wrapper {
   position: relative;
@@ -6640,7 +6627,7 @@ div.main-header div.wrapper a.brand {
   margin-top: 10px;
 }
 div.main-header div.wrapper a.brand img {
-  height: 100px;
+  height: 50px;
 }
 div.main-header div.wrapper ul.main-nav {
   position: absolute;
