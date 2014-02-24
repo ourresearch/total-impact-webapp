@@ -40,11 +40,11 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "\n" +
     "      <div id=\"footer-funders\" class=\"footer-col\">\n" +
     "         <h3>Supported by</h3>\n" +
-    "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
-    "            <img src=\"/static/img/logos/sloan.png\" />\n" +
-    "         </a>\n" +
     "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
-    "            <img src=\"/static/img/logos/nsf.png\" />\n" +
+    "            <img src=\"/static/img/logos/nsf-seal.png\" />\n" +
+    "         </a>\n" +
+    "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
+    "            <img src=\"/static/img/logos/sloan-seal.png\" />\n" +
     "         </a>\n" +
     "         <a href=\"http://nsf.gov\" id=\"footer-jisc-link\">\n" +
     "            <img src=\"/static/img/logos/jisc.png\" />\n" +

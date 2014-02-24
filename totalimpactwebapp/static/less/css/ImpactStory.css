@@ -6702,11 +6702,11 @@ div#footer {
   background: #ddd;
   float: left;
   margin-top: 100px;
+  font-size: 16px;
 }
 div#footer p {
   margin: 6px 0 0 0;
   line-height: 1.4;
-  font-size: 16px;
 }
 div#footer a {
   color: #777;
@@ -6727,9 +6727,9 @@ div#footer div.wrapper div.footer-col {
   min-height: 150px;
 }
 div#footer div.wrapper div.footer-col h3 {
-  font-size: 18px;
   font-weight: bolder;
   margin-top: 0;
+  font-size: 16px;
   color: #777;
 }
 div#footer div.wrapper div.footer-col ul li {
@@ -6746,12 +6746,21 @@ div#footer div.wrapper div.footer-col#footer-funders {
   border-right: none;
   padding-right: none;
   float: right;
+  text-align: right;
+}
+div#footer div.wrapper div.footer-col#footer-funders h3 {
+  margin: 0 20px 20px 40px;
+  text-align: left;
+  font-weight: 300;
 }
 div#footer div.wrapper div.footer-col#footer-funders img {
-  margin-top: 10px;
-  padding: 5px;
+  margin: 0 5px;
+  height: 35px;
+  opacity: .6;
+}
+div#footer div.wrapper div.footer-col#footer-funders #footer-nsf-link img {
   height: 40px;
-  display: block;
+  margin-top: -2px;
 }
 #footer-powered-by img {
   height: 30px;
