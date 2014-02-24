@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-22
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-23
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -4006,44 +4006,36 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
   $templateCache.put("footer.tpl.html",
     "<div id=\"footer\" ng-show=\"page.showFooter()\">\n" +
     "   <div class=\"wrapper\">\n" +
-    "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
-    "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"Impactstory\" /></a>\n" +
-    "\n" +
-    "         <p class=\"descr\">We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>\n" +
-    "         <p class=\"license\">\n" +
-    "            <!--<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\"><img alt=\"Creative Commons License\" style=\"border-width:0\" src=\"http://i.creativecommons.org/l/by/2.0/80x15.png\" /></a>-->\n" +
-    "            <span class=\"text\">Except where otherwise noted, content on this site is licensed under the\n" +
-    "               <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\">CC-BY license</a>.\n" +
-    "            </span>\n" +
-    "         </p>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "      <div id=\"footer-follow\" class=\"footer-col\">\n" +
-    "         <h3>Follow</h3>\n" +
-    "         <ul>\n" +
-    "            <li><a href=\"http://twitter.com/#!/Impactstory\">Twitter</a></li>\n" +
-    "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
-    "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Stickers!</a></li>\n" +
-    "            <li><a href=\"http://twitter.com/#!/Impactstory_now\">Site status</a></li>\n" +
-    "            <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
-    "\n" +
-    "         </ul>\n" +
-    "      </div>\n" +
     "\n" +
     "      <div id=\"footer-about\" class=\"footer-col\">\n" +
     "         <h3>About</h3>\n" +
     "         <ul>\n" +
     "            <li><a href=\"/about\">About us</a></li>\n" +
-    "            <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Feedback</a></li>\n" +
-    "            <li>\n" +
-    "               <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Support</a>\n" +
-    "            </li>\n" +
-    "\n" +
-    "\n" +
-    "            <li><a href=\"/faq\">FAQ</a></li>\n" +
-    "            <!--<li><a href=\"/about#contact\">Contact us</a></li>-->\n" +
     "            <li><a href=\"/faq#tos\" target=\"_self\">Terms of use</a></li>\n" +
+    "            <li><a href=\"/faq#copyright\" target=\"_self\">Copyright</a></li>\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div id=\"footer-follow\" class=\"footer-col\">\n" +
+    "         <h3>Community</h3>\n" +
+    "         <ul>\n" +
+    "            <li><a href=\"http://twitter.com/#!/Impactstory\">Twitter</a></li>\n" +
+    "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
+    "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Free stickers!</a></li>\n" +
+    "            <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
+    "            <!--<li><a href=\"http://twitter.com/#!/Impactstory_now\">Site status</a></li>-->\n" +
+    "\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div id=\"footer-help\" class=\"footer-col\">\n" +
+    "         <h3>Help</h3>\n" +
+    "         <ul>\n" +
+    "            <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Suggestions</a></li>\n" +
+    "            <li>\n" +
+    "               <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Report bug</a>\n" +
+    "            </li>\n" +
+    "            <li><a href=\"/faq\">FAQ</a></li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
     "\n" +
@@ -4051,10 +4043,13 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "      <div id=\"footer-funders\" class=\"footer-col\">\n" +
     "         <h3>Supported by</h3>\n" +
     "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
-    "            <img src=\"/static/img/logos/sloan.png\"  width=\"200\"/>\n" +
+    "            <img src=\"/static/img/logos/sloan.png\" />\n" +
     "         </a>\n" +
     "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
-    "            <img src=\"/static/img/logos/nsf.png\"  width=\"200\"/>\n" +
+    "            <img src=\"/static/img/logos/nsf.png\" />\n" +
+    "         </a>\n" +
+    "         <a href=\"http://nsf.gov\" id=\"footer-jisc-link\">\n" +
+    "            <img src=\"/static/img/logos/jisc.png\" />\n" +
     "         </a>\n" +
     "      </div>\n" +
     "\n" +
@@ -4453,6 +4448,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
 angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("infopages/landing.tpl.html",
     "<div class=\"main infopage landing\">\n" +
+    "   <div class=\"top-screen\">\n" +
     "      <div id=\"tagline\" class=\"wrapper\">\n" +
     "         <div>\n" +
     "            <img class=\"big-logo\" src=\"/static/img/impactstory-logo-no-type.png\" alt=\"\"/>\n" +
@@ -4465,7 +4461,8 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"featured-and-supported\">\n" +
+    "      <div class=\"bottom-of-top-screen\">\n" +
+    "         <div class=\"featured-and-supported\">\n" +
     "            <h3>featured in and supported by</h3>\n" +
     "            <img src=\"/static/img/logos/bbc.png\" />\n" +
     "            <img src=\"/static/img/logos/nature.png\" />\n" +
@@ -4476,8 +4473,55 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            <img src=\"/static/img/logos/jisc.png\" />\n" +
     "            <img src=\"/static/img/logos/sloan.png\" />\n" +
     "            <img src=\"/static/img/logos/nsf.png\" />\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"ask-for-more\">\n" +
+    "            <span>more <i class=\"icon-chevron-down\"></i></span>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
     "      </div>\n" +
     "\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "   <div id=\"selling-points\">\n" +
+    "      <ul class=\"wrapper\">\n" +
+    "         <li>\n" +
+    "            <h3><i class=\"icon-bar-chart icon-3x\"></i><span class=\"text\">Citations and more</span></h3>\n" +
+    "            <p>Find out where your work has been cited, viewed, downloaded, tweeted, and more.</p>\n" +
+    "         </li>\n" +
+    "         <li class=\"middle\">\n" +
+    "            <h3><i class=\"icon-globe icon-3x\"></i><span class=\"text\">All your outputs</span></h3>\n" +
+    "            <p>Discover and share the impacts of your articles, slides, datasets, and software.</p>\n" +
+    "         </li>\n" +
+    "         <li>\n" +
+    "            <h3 id=\"its-open\"><i class=\"icon-unlock-alt icon-3x\"></i><span class=\"text\">Open and free</span></h3>\n" +
+    "            <p>Your profile is free, the data behind it is open, and our code is open-source.</p>\n" +
+    "         </li>\n" +
+    "      </ul>\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "   <div id=\"testimonials\">\n" +
+    "      <ul class=\"wrapper\">\n" +
+    "         <li>\n" +
+    "            <img src=\"/static/img/people/luo.png\"/>\n" +
+    "            <q class=\"text\">I don't need my CV now, Impactstory tells my story!</q>\n" +
+    "            <cite>Ruibang Luo, Hong Kong University</cite>\n" +
+    "         </li>\n" +
+    "\n" +
+    "         <li>\n" +
+    "            <img src=\"/static/img/people/graziotin.jpeg\"/>\n" +
+    "            <q class=\"text\">Every time I look at my Impactstory profile, I see that I did some good things and somebody actually noticed them. There is so much besides the number of citations. </q>\n" +
+    "            <cite>Daniel Graziotin, Free University of Bozen-Bolzano</cite>\n" +
+    "         </li>\n" +
+    "\n" +
+    "\n" +
+    "      </ul>\n" +
+    "\n" +
+    "   </div>\n" +
     "\n" +
     "\n" +
     "</div>\n" +

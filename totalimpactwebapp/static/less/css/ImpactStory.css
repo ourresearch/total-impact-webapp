@@ -6726,9 +6726,6 @@ div#footer div.wrapper div.footer-col {
   border-right: 1px solid #ccc;
   min-height: 150px;
 }
-div#footer div.wrapper div.footer-col#footer-branding {
-  margin-top: -5px;
-}
 div#footer div.wrapper div.footer-col h3 {
   font-size: 18px;
   font-weight: bolder;
@@ -6741,44 +6738,20 @@ div#footer div.wrapper div.footer-col ul li {
 div#footer div.wrapper div.footer-col ul a {
   font-size: 15px;
 }
-div#footer div.wrapper div.footer-col#footer-branding {
-  width: 500px;
-  margin-left: 0;
-  padding-right: 22px;
-}
-div#footer div.wrapper div.footer-col#footer-branding a.brand {
-  float: left;
-  margin-right: 40px;
-  padding-bottom: 80px;
-  padding-top: 15px;
-}
-div#footer div.wrapper div.footer-col#footer-branding a.brand img {
-  height: 150px;
-}
-div#footer div.wrapper div.footer-col#footer-branding p.descr {
-  padding-top: 0px;
-}
-div#footer div.wrapper div.footer-col#footer-branding p.license {
-  font-size: 13px;
-  color: #777;
-  line-height: 1.5;
-  margin-top: 25px;
-}
-div#footer div.wrapper div.footer-col#footer-branding p.license a {
-  text-decoration: underline;
+div#footer div.wrapper div.footer-col#footer-help {
+  border-right: none;
 }
 div#footer div.wrapper div.footer-col#footer-funders {
   width: 200px;
   border-right: none;
   padding-right: none;
-}
-div#footer div.wrapper div.footer-col#footer-funders a#footer-nsf-link img {
-  margin-top: 10px;
-  width: 150px;
-}
-div#footer div.wrapper div.footer-col#footer-follow img {
   float: right;
-  height: 28px;
+}
+div#footer div.wrapper div.footer-col#footer-funders img {
+  margin-top: 10px;
+  padding: 5px;
+  height: 40px;
+  display: block;
 }
 #footer-powered-by img {
   height: 30px;
@@ -6830,18 +6803,21 @@ div.infopage p {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div.infopage.landing {
+div.infopage.landing div.top-screen {
   padding-top: 80px;
+  border-bottom: 1px solid #999;
+  position: relative;
+  height: 820px;
 }
-div.infopage.landing div#tagline {
+div.infopage.landing div.top-screen div#tagline {
   width: 900px;
   margin-bottom: 120px;
   text-align: center;
 }
-div.infopage.landing div#tagline img.big-logo {
+div.infopage.landing div.top-screen div#tagline img.big-logo {
   height: 150px;
 }
-div.infopage.landing div#tagline h1 {
+div.infopage.landing div.top-screen div#tagline h1 {
   color: #ff4000;
   font-size: 80px;
   line-height: 1;
@@ -6850,7 +6826,7 @@ div.infopage.landing div#tagline h1 {
   font-weight: 900;
   margin: 30px auto 30px;
 }
-div.infopage.landing div#tagline p.subtagline {
+div.infopage.landing div.top-screen div#tagline p.subtagline {
   color: #fff;
   font-size: 28px;
   padding: 5px 0 10px;
@@ -6858,10 +6834,10 @@ div.infopage.landing div#tagline p.subtagline {
   width: 750px;
   margin: 0 auto 40px;
 }
-div.infopage.landing div#tagline #call-to-action {
+div.infopage.landing div.top-screen div#tagline #call-to-action {
   margin: 50px auto;
 }
-div.infopage.landing div#tagline #call-to-action a.btn-large {
+div.infopage.landing div.top-screen div#tagline #call-to-action a.btn-large {
   padding: 13px 29px;
   font-size: 25px;
   -webkit-border-top-right-radius: 10px;
@@ -6882,37 +6858,44 @@ div.infopage.landing div#tagline #call-to-action a.btn-large {
   color: #eee;
   font-family: Lato, Helvetica, Arial, sans-serif;
 }
-div.infopage.landing div#tagline #call-to-action a.btn-large.primary-action {
+div.infopage.landing div.top-screen div#tagline #call-to-action a.btn-large.primary-action {
   background: #0053b0;
   font-weight: bold;
   margin-right: 20px;
   font-size: 28px;
 }
-div.infopage.landing div#tagline #call-to-action a.btn-large.primary-action:hover {
+div.infopage.landing div.top-screen div#tagline #call-to-action a.btn-large.primary-action:hover {
   background: #004797;
 }
-div.infopage.landing div#tagline #call-to-action a.btn-large.secondary-action {
+div.infopage.landing div.top-screen div#tagline #call-to-action a.btn-large.secondary-action {
   background: #fff;
   border: 1px solid #999;
   color: #999;
 }
-div.infopage.landing div#tagline #call-to-action a.btn-large.secondary-action:hover {
+div.infopage.landing div.top-screen div#tagline #call-to-action a.btn-large.secondary-action:hover {
   background: #444;
 }
-div.infopage.landing div.featured-and-supported {
-  text-align: center;
+div.infopage.landing div.top-screen div.bottom-of-top-screen {
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
 }
-div.infopage.landing div.featured-and-supported h3 {
+div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported {
+  text-align: center;
+  padding-bottom: 40px;
+}
+div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported h3 {
   margin: 0 0 20px;
   font-weight: 300;
   font-size: 18px;
 }
-div.infopage.landing div.featured-and-supported img {
+div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported img {
   height: 50px;
   margin: 0 10px;
   opacity: .7;
 }
-div.infopage.landing div.featured-and-supported span.divider {
+div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported span.divider {
   height: 50px;
   width: 1px;
   padding-right: 1px;
@@ -6921,32 +6904,44 @@ div.infopage.landing div.featured-and-supported span.divider {
   vertical-align: -16px;
   display: inline-block;
 }
-/* the "selling points" section
-*************************************************/
+div.infopage.landing div.top-screen div.bottom-of-top-screen div.ask-for-more {
+  display: none;
+  text-align: center;
+  margin: 15px 0 10px;
+  font-size: 14px;
+  color: #999;
+  font-weight: 300;
+}
+div.infopage.landing div.top-screen div.bottom-of-top-screen div.ask-for-more i {
+  font-size: 10px;
+}
 div#selling-points {
-  background-color: #fff;
-  min-height: 30px;
-  padding-top: 100px;
-  background-position: bottom;
-  background-repeat: repeat-x;
+  clear: both;
+  margin-top: 20px;
 }
-div#selling-points h3 {
-  color: #666;
-  font-family: Lato, Helvetica, arial, sans-serif;
-  font-weight: 900;
-  font-size: 22px;
-  padding-bottom: 15px;
-  line-height: 1;
-  margin-top: 0px;
-  border-bottom: none;
+div#selling-points:before,
+div#selling-points:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
 }
-div#selling-points h3 i {
-  float: left;
+div#selling-points:after {
+  clear: both;
 }
-div#selling-points h3 span.text {
-  margin-left: 18px;
-  display: inline-block;
-  width: 165px;
+div#selling-points:before,
+div#selling-points:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+div#selling-points:after {
+  clear: both;
 }
 div#selling-points p {
   margin-top: 0;
@@ -6958,11 +6953,68 @@ div#selling-points ul li {
   float: left;
   width: 30%;
   list-style-type: none;
+  text-align: center;
   min-height: 270px;
 }
 div#selling-points ul li.middle {
   margin-left: 5%;
   margin-right: 5%;
+}
+div#selling-points ul li h3 {
+  color: #666;
+  font-weight: 900;
+  font-size: 26px;
+}
+div#selling-points ul li h3 i {
+  font-size: 100px;
+  display: block;
+  margin-bottom: 20px;
+}
+div#testimonials {
+  border-top: 1px solid #999;
+  margin-top: 100px;
+  padding-top: 50px;
+  display: none;
+}
+div#testimonials li img {
+  margin: 0 20px;
+  width: 100px;
+  -webkit-border-top-right-radius: 50px;
+  -webkit-border-bottom-right-radius: 50px;
+  -webkit-border-bottom-left-radius: 50px;
+  -webkit-border-top-left-radius: 50px;
+  -moz-border-radius-topright: 50px;
+  -moz-border-radius-bottomright: 50px;
+  -moz-border-radius-bottomleft: 50px;
+  -moz-border-radius-topleft: 50px;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+  border-bottom-left-radius: 50px;
+  border-top-left-radius: 50px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid #eee;
+}
+div#testimonials li q {
+  font-size: 22px;
+  color: #555;
+  padding-top: 33.333333333333336px;
+  display: block;
+}
+div#testimonials li cite {
+  display: block;
+  font-size: 70%;
+  font-weight: 300;
+}
+div#testimonials li:nth-child(odd) img {
+  float: left;
+}
+div#testimonials li:nth-child(even) {
+  text-align: right;
+}
+div#testimonials li:nth-child(even) img {
+  float: right;
 }
 div#sources {
   width: 100%;
