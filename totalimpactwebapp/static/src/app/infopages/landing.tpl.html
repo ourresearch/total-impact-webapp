@@ -1,13 +1,38 @@
 <div class="main infopage landing">
-   <div class="top-screen">
-      <div id="tagline" class="wrapper">
-         <div>
+   <div class="toolbar-container">
+      <div class="wrapper">
+         <login-toolbar></login-toolbar>
+      </div>
+   </div>
+   <div class="top-screen"> <!-- this needs to be set to the viewport height-->
+
+      <div id="tagline">
+         <div class="wrapper">
             <img class="big-logo" src="/static/img/impactstory-logo-no-type.png" alt=""/>
-            <h1>Discover the full impact of your research.</h1>
+            <h1>Discover the full impact<br> of your research.</h1>
             <!--<p class="subtagline">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>-->
             <div id="call-to-action">
-               <a href="/signup" class="btn btn-large btn-primary primary-action" id="create-collection">What's my impact?</a>
-               <!--<a href="/CarlBoettiger" class="btn btn-large btn-primary secondary-action" id="view-sample-collection">View a sample profile</a>-->
+               <form novalidate name="signupForm" class="form-horizontal">
+                  <div class="inputs">
+                     <div class="form-group">
+                        <input type="text" placeholder="first name" class="form-control" />
+                     </div>
+
+                     <div class="form-group">
+                        <input type="text" placeholder="last name" class="form-control" />
+                     </div>
+
+                     <div class="form-group">
+                        <input type="text" placeholder="email" class="form-control" />
+                     </div>
+
+                     <div class="form-group">
+                        <input type="text" placeholder="password" class="form-control" />
+                     </div>
+                  </div>
+                  <a href="/signup" class="btn btn-xlarge btn-primary primary-action" id="signup-button">What's my impact?</a>
+               </form>
+
             </div>
          </div>
       </div>
@@ -74,5 +99,11 @@
 
    </div>
 
+   <div class="bottom-cta">
+      <div id="call-to-action">
+         <a href="/signup" class="btn btn-large btn-primary primary-action" id="create-collection">What's my impact?</a>
+         <!--<a href="/CarlBoettiger" class="btn btn-large btn-primary secondary-action" id="view-sample-collection">Show me a sample profile</a>-->
+      </div>
+   </div>
 
 </div>

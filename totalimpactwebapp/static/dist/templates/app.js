@@ -320,6 +320,14 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <p>Due to agreements we have made with data providers, you may not scrape this website -- use the embed or download funtionality instead.</p>\n" +
     "\n" +
     "\n" +
+    "\n" +
+    "   <h3 id=\"copyright\">copyright</h3>\n" +
+    "   <span class=\"text\">Except where otherwise noted, content on this site is licensed under the\n" +
+    "      <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\">CC-BY license</a>.\n" +
+    "   </span>\n" +
+    "\n" +
+    "   \n" +
+    "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
     "\n" +
     "   <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>\n" +
@@ -446,15 +454,40 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
 angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("infopages/landing.tpl.html",
     "<div class=\"main infopage landing\">\n" +
-    "   <div class=\"top-screen\">\n" +
-    "      <div id=\"tagline\" class=\"wrapper\">\n" +
-    "         <div>\n" +
+    "   <div class=\"toolbar-container\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <login-toolbar></login-toolbar>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "   <div class=\"top-screen\"> <!-- this needs to be set to the viewport height-->\n" +
+    "\n" +
+    "      <div id=\"tagline\">\n" +
+    "         <div class=\"wrapper\">\n" +
     "            <img class=\"big-logo\" src=\"/static/img/impactstory-logo-no-type.png\" alt=\"\"/>\n" +
-    "            <h1>Discover the full impact of your research.</h1>\n" +
+    "            <h1>Discover the full impact<br> of your research.</h1>\n" +
     "            <!--<p class=\"subtagline\">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>-->\n" +
     "            <div id=\"call-to-action\">\n" +
-    "               <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">What's my impact?</a>\n" +
-    "               <!--<a href=\"/CarlBoettiger\" class=\"btn btn-large btn-primary secondary-action\" id=\"view-sample-collection\">View a sample profile</a>-->\n" +
+    "               <form novalidate name=\"signupForm\" class=\"form-horizontal\">\n" +
+    "                  <div class=\"inputs\">\n" +
+    "                     <div class=\"form-group\">\n" +
+    "                        <input type=\"text\" placeholder=\"first name\" class=\"form-control\" />\n" +
+    "                     </div>\n" +
+    "\n" +
+    "                     <div class=\"form-group\">\n" +
+    "                        <input type=\"text\" placeholder=\"last name\" class=\"form-control\" />\n" +
+    "                     </div>\n" +
+    "\n" +
+    "                     <div class=\"form-group\">\n" +
+    "                        <input type=\"text\" placeholder=\"email\" class=\"form-control\" />\n" +
+    "                     </div>\n" +
+    "\n" +
+    "                     <div class=\"form-group\">\n" +
+    "                        <input type=\"text\" placeholder=\"password\" class=\"form-control\" />\n" +
+    "                     </div>\n" +
+    "                  </div>\n" +
+    "                  <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
+    "               </form>\n" +
+    "\n" +
     "            </div>\n" +
     "         </div>\n" +
     "      </div>\n" +
@@ -521,6 +554,12 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "   </div>\n" +
     "\n" +
+    "   <div class=\"bottom-cta\">\n" +
+    "      <div id=\"call-to-action\">\n" +
+    "         <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">What's my impact?</a>\n" +
+    "         <!--<a href=\"/CarlBoettiger\" class=\"btn btn-large btn-primary secondary-action\" id=\"view-sample-collection\">Show me a sample profile</a>-->\n" +
+    "      </div>\n" +
+    "   </div>\n" +
     "\n" +
     "</div>\n" +
     "");

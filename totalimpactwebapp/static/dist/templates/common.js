@@ -138,7 +138,6 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "\n" +
     "   <li ng-show=\"!currentUser\" class=\"login-and-signup nav-item\">\n" +
-    "      <span ng-show=\"page.isLandingPage()\" class=\"context\">Already have a profile?</span>\n" +
     "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup/name\">Sign up</a>\n" +
     "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
     "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
