@@ -57,9 +57,11 @@ angular.module( 'infopages', [
   }])
 
   .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {
+    var signupFormShowing = false
     Page.showHeader(false)
     Page.setUservoiceTabLoc("hidden")
     Page.setTitle("Share the full story of your research impact.")
+
   })
 
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {

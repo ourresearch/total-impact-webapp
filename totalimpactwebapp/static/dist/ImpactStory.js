@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-24
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-25
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -106,8 +106,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.showHeader()
-    Page.showFooter()
+    Page.showHeader(true)
+    Page.showFooter(true)
     Page.setUservoiceTabLoc("right")
     Loading.clear()
   })
@@ -730,9 +730,11 @@ angular.module( 'infopages', [
   }])
 
   .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {
+    var signupFormShowing = false
     Page.showHeader(false)
     Page.setUservoiceTabLoc("hidden")
     Page.setTitle("Share the full story of your research impact.")
+
   })
 
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
@@ -1586,81 +1588,13 @@ angular.module( 'signup', [
     'services.page',
     'resources.users',
     'update.update',
-    'security.service',
-    'tips',
-    'importers.allTheImporters',
-    'importers.importer'
+    'security.service'
     ])
-  .factory("Signup", function($location){
-
-    var signupSteps = [
-      "name",
-      "url",
-      "products",
-      "password"
-    ]
-
-
-    var getCurrentStep = function(capitalize){
-      var ret = "name"
-      _.each(signupSteps, function(stepName){
-
-        if ($location.path().indexOf("/"+stepName) > 0){
-          ret = stepName
-        }
-      })
-
-      if (capitalize){
-        ret = ret.charAt(0).toUpperCase() + ret.slice(1)
-      }
-
-      return ret
-
-    }
-    var getIndexOfCurrentStep = function(){
-       return _.indexOf(signupSteps, getCurrentStep())
-    }
-
-    return {
-      signupSteps: function(){
-        return signupSteps;
-      },
-      onSignupStep: function(step){
-        return step == getCurrentStep()
-        return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
-      },
-      isBeforeCurrentSignupStep: function(stepToCheck) {
-        var indexOfStepToCheck = _.indexOf(signupSteps, stepToCheck)
-        return getIndexOfCurrentStep() > -1 && indexOfStepToCheck < getIndexOfCurrentStep()
-      },
-      getTemplatePath: function(){
-        return "signup/signup-" + getCurrentStep() + '.tpl.html';
-      }
-    }
-  })
 
 .config(['$routeProvider', function($routeProvider) {
 
   $routeProvider
-    .when('/signup/:url_slug/products/add', {
-              templateUrl: 'signup/signup.tpl.html',
-              controller: 'signupCtrl',
-              resolve:{
-              userOwnsThisProfile: function(security){
-                return security.testUserAuthenticationLevel("ownsThisProfile")
-              }
-            }
-          })
-    .when('/signup/:url_slug/password', {
-            templateUrl: 'signup/signup.tpl.html',
-            controller: 'signupCtrl',
-            resolve:{
-              userOwnsThisProfile: function(security){
-                return security.testUserAuthenticationLevel("ownsThisProfile")
-              }
-            }
-          })
-    .when("/signup/*rest", {
+    .when("/signup", {
       templateUrl: 'signup/signup.tpl.html',
       controller: 'signupCtrl',
       resolve:{
@@ -1669,24 +1603,16 @@ angular.module( 'signup', [
         }
       }
     })
-    .when('/signup', {redirectTo: '/signup/name'})
-
-
 }])
 
-  .controller('signupCtrl', function($scope, Signup, Page, security){
+  .controller('signupCtrl', function($scope, Page, security){
+
+    console.log("signup controller!")
+
     Page.setUservoiceTabLoc("bottom")
     Page.showHeader(false)
     Page.showFooter(false)
 
-    $scope.input = {}
-
-    $scope.include =  Signup.getTemplatePath();
-    $scope.nav = { // defined as an object so that controllers in child scopes can override...
-      goToNextStep: function(){
-        console.log("we should be overriding me.")
-      }
-    }
 
 
   })
@@ -1786,18 +1712,6 @@ angular.module( 'signup', [
 
     }
   })
-
-.controller("signupHeaderCtrl", function($scope, Signup, Page) {
-
-  Page.setTitle("signup")
-
-  $scope.signupSteps = Signup.signupSteps();
-  $scope.isStepCurrent = Signup.onSignupStep;
-  $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
-
-})
-
-;
 
 angular.module( 'update.update', [
     'resources.users'
@@ -4483,27 +4397,8 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            <h1>Discover the full impact<br> of your research.</h1>\n" +
     "            <!--<p class=\"subtagline\">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>-->\n" +
     "            <div id=\"call-to-action\">\n" +
-    "               <form novalidate name=\"signupForm\" class=\"form-horizontal\">\n" +
-    "                  <div class=\"inputs\">\n" +
-    "                     <div class=\"form-group\">\n" +
-    "                        <input type=\"text\" placeholder=\"first name\" class=\"form-control\" />\n" +
-    "                     </div>\n" +
-    "\n" +
-    "                     <div class=\"form-group\">\n" +
-    "                        <input type=\"text\" placeholder=\"last name\" class=\"form-control\" />\n" +
-    "                     </div>\n" +
-    "\n" +
-    "                     <div class=\"form-group\">\n" +
-    "                        <input type=\"text\" placeholder=\"email\" class=\"form-control\" />\n" +
-    "                     </div>\n" +
-    "\n" +
-    "                     <div class=\"form-group\">\n" +
-    "                        <input type=\"text\" placeholder=\"password\" class=\"form-control\" />\n" +
-    "                     </div>\n" +
-    "                  </div>\n" +
-    "                  <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
-    "               </form>\n" +
-    "\n" +
+    "               <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
+    "               <a href=\"/CarlBoettiger\" class=\"btn btn-xlarge btn-default\" id=\"secondary-cta-button\">See an example</a>\n" +
     "            </div>\n" +
     "         </div>\n" +
     "      </div>\n" +
@@ -5673,19 +5568,63 @@ angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function
 
 angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup.tpl.html",
+    "<div class=\"signup-page\">\n" +
+    "   <div class=\"signup-main-page\">\n" +
+    "      <div class=\"form-container\">\n" +
+    "         <h1>Reveal your full scholarly impact.</h1>\n" +
+    "         <h2>Signup for your <strong>free</strong> Impactstory profile:</h2>\n" +
+    "         <form novalidate\n" +
+    "               name=\"signupForm\"\n" +
+    "               ng-submit=\"signup()\"\n" +
+    "               id=\"main-signup-form\"\n" +
+    "               class=\"form-horizontal signup-form\">\n" +
     "\n" +
-    "<form class=\"signup name form-horizontal\" name=\"signupForm\">\n" +
-    "   <div ng-include=\"include\"></div>\n" +
+    "            <div class=\"inputs\">\n" +
+    "               <div class=\"form-group\">\n" +
+    "                  <input type=\"text\" placeholder=\"First name\" class=\"form-control input-lg\" />\n" +
+    "               </div>\n" +
     "\n" +
-    "   <button type=\"submit\"\n" +
-    "           class=\"next-button\"\n" +
-    "           ng-click=\"nav.goToNextStep()\"\n" +
-    "           ng-class=\"{'next-button': true, enabled: signupForm.$valid}\"\n" +
-    "           ng-disabled=\"signupForm.$invalid\">\n" +
-    "      <span class=\"text\">Next</span>\n" +
-    "      <i class=\"icon-arrow-right\"></i>\n" +
-    "   </button>\n" +
-    "</form>\n" +
+    "               <div class=\"form-group\">\n" +
+    "                  <input type=\"text\" placeholder=\"Last name\" class=\"form-control input-lg\" />\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"form-group\">\n" +
+    "                  <input type=\"text\" placeholder=\"Email\" class=\"form-control input-lg\" />\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"form-group\">\n" +
+    "                  <input type=\"password\" placeholder=\"Password\" class=\"form-control input-lg\" />\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <button class=\"btn btn-primary btn-xlarge\">Uncover my impact<i class=\"icon-arrow-right\"></i></button>\n" +
+    "         </form>\n" +
+    "\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "   <div class=\"signup-sidebar\">\n" +
+    "      <div class=\"testimonials-container\">\n" +
+    "         <div class=\"testimonial\">\n" +
+    "            <img src=\"/static/img/people/luo.png\"/>\n" +
+    "            <q class=\"text\">I don't need my CV now, Impactstory tells my story!</q>\n" +
+    "            <cite>\n" +
+    "               <span class=\"name\">Ruibang Luo,</span>\n" +
+    "               <span class=\"inst\">Hong Kong University</span>\n" +
+    "            </cite>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "</div>\n" +
     "\n" +
     "\n" +
     "");

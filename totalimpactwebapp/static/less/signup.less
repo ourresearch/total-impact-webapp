@@ -1,208 +1,94 @@
-div.signup-header {
-   background: #fff;
-   border-bottom: 4px solid @linkColor;
-   position:  absolute;
-   height: 80px;
+div.signup-page {
+
+   position: fixed;
    top: 0;
-   width:  100%;
-   background: @linkColor;
-   h1 {
-      position: absolute;
-      left: 30px;
-      top: 10px;
-      margin: 0;
+   left:0;
+   bottom:0;
+   width: 100%;
 
-      span.text {
-         color:  #fff;
-         font-size: 25px;
-         margin-left: 4px;
-         text-transform: uppercase;
-         vertical-align: 3px;
-         font-weight: 300;
-      }
-      a.brand {
-         float:left;
-         margin-right: 20px;
-         img {
-            height:  45px;
+   div.signup-main-page {
+      width: 70%;
+      div.form-container {
+         width: 400px;
+         margin: 70px auto;
+         h1 {
+            margin-bottom:0;
+            font-size: 45px;
          }
-
-      }
-
-   }
-
-   ol.signup-steps {
-      padding: 0;
-      margin: 23px auto 15px; // hackish, to push notifications below header.
-      padding-left: 60px;
-      width: 500px;
-
-      li {
-         display:inline-block;
-         list-style-type: none;
-         padding: 5px 20px;
-         font-size: 16px;
-         color:  #fff;
-         &.creating {display: none;}
-         &.current {
-//            text-transform: uppercase;
-//            background:  #fff;
-//            color: @linkColor;
-//            .border-radius(10px, 10px, 10px, 10px);
-         }
-         &.completed {
-//            text-decoration: line-through;
-//            opacity:.5;
-            opacity: .4;
-         }
-      }
-   }
-
-}
-
-form.signup {
-   background: transparent;
-   width:  750px;
-   margin: 200px auto 0;
-   div.intro {
-      margin-bottom: 50px;
-      color:  #999;
-      line-height: 1.8;
-      font-size: 26px;
-      text-align: center;
-      span.paren {font-weight: 300; font-size:  85%;}
-   }
-   div.signup-input {
-      &.signup-products{
-         div.intro {
-            position: absolute;
-            top:  0px;
-            left: 0;
-            right: 0;
-            height: 160px;
-            background: #fff;
-            margin-top:80px;
-            color:  #999;
-            text-align: center;
+         h2{
+            margin: 10px 0 40px;
+            font-size: 20px;
             font-weight: normal;
-            padding-top: 30px;
-         }
-         div.importers {
-            border-top: 1px solid #ddd;
-            top:  250px;
-         }
-      }
-      div.form-group {
-         input.form-control {
-            font-size: 25px;
-            line-height: 1;
-            height: 55px;
-            padding-top: 15px;
-            width: 400px;
-            margin: 0 auto;
-         }
-         div.input-group {
-            margin: 0 auto;
-            width:  400px + 50px;
-         }
-         a.btn {
-            margin-top: 20px;
-            width: 45%;
-            &.next {
-               float:right;
+            strong {
+               font-weight: 900;
             }
          }
-
-         &.password, &.email {
-//            width:  400px + 130px;
-//            margin:  20px auto;
-            margin-left: 100px;
-            position: relative;
-            .input-group {
-               float:left;
-               margin-right: 10px;
-               i {
-                  min-width: 20px;
-                  display:inline-block;
-                  color: #000;
-                  opacity: .4;
+         #main-signup-form {
+            div.form-group {
+               margin-left:0;
+               margin-right: 0;
+               input.input-lg {
+                  background: #fafafa;
+                  border:none;
+                  height: 2.5em;
                }
             }
-            .checkmark-and-text {
-               color: #777;
-               cursor:pointer;
-               margin-top: 30px;
-            }
-            .help-info {
-               width: 140px;
-               margin-top: 5px;
-               float:left;
-               .help-block.tall {
-                  margin-top: 0;
-               }
-            }
-         }
-
-         &.custom-url {
-            margin-top: 75px;
-            .input-group {
-               margin-right: 15px;
-               width:  300px;
-               margin: 0 auto;
-               input.form-control{
-                  width: 300px;
-               }
-               .input-group-addon {
-                  padding-top: 15px;
-               }
-               input.form-control {
-                  padding-top: 10px;
-               }
-            }
-            .help-info {
+            button {
+               font-weight: 900;
+               padding: 15px 20px;
                margin-top: 20px;
-               i {margin-right: 10px;}
-               text-align: center;
-               .help-block {
-                  font-size: 18px;
-                  clear:both;
-                  margin: 0 auto;
-                  float: none;
+               i {
+                  margin-left: 10px;
                }
+            }
+         }
+      }
+
+
+   }
+
+   div.signup-sidebar{
+      width: 30%;
+      position:absolute;
+      top: 0;
+      display:table;
+      height:100%;
+      right: 0;
+      background: #fafafa;
+      div.testimonials-container {
+         display:table-cell;
+         vertical-align: middle;
+         height:100%;
+         div.testimonial {
+            margin: -100px auto 0;
+
+            @imgWidth: 120px;
+            width: 300px;
+            text-align: center;
+
+            img {
+               margin: 0 20px;
+               width: @imgWidth;
+               .border-radius(@imgWidth/2, @imgWidth/2, @imgWidth/2, @imgWidth/2);
+               border: 1px solid #eee;
+            }
+            q {
+               font-size: 24px;
+               color: #555;
+               padding-top: 20px;
+               display:block;
+            }
+            cite {
+               display:block;
+               font-size: 80%;
+               font-weight: 300;
+               margin-top: 10px;
             }
          }
       }
    }
 
-   button.next-button {
-      @next-button-size: 100px;
-      z-index: 500;
-      position: fixed;
-      height: @next-button-size;
-      width: @next-button-size + 5px;
-      .border-radius(0, 0, @next-button-size / 2, @next-button-size / 2);
-      border: none;
-      background: #eee;
-      text-transform: uppercase;
-      text-align: left;
-      font-size: @next-button-size / 6;
-      font-weight: bold;
-      top: 50%;
-      margin-top: @next-button-size / -2;
-      right:  0;
-      color: #fff;
-      padding-top: 7px;
-      padding-left: @next-button-size / 3.5;
-//      .drop-shadow(-1px, 2px, 5px, .2);
-      cursor: pointer;
-      transition: width .2s;
-      -webkit-transition: width .2s;
-      &.enabled {
-         &:hover {
-            width:  @next-button-size + 10px;
-            text-decoration: none;
-         }
-         background:  @linkColor;
-      }
-   }
+
+
+
 }

@@ -6075,6 +6075,12 @@ body div#namechange a.dismiss {
 body p {
   font-size: 18px;
 }
+body q:before {
+  content: "\201C";
+}
+body q:after {
+  content: "\201D";
+}
 ol {
   padding-left: 2em;
 }
@@ -6138,9 +6144,6 @@ form div.buttons-group.save div.working {
 }
 form i.icon-check-empty {
   padding-right: 3px;
-}
-.btn-primary {
-  background: #0053b0;
 }
 legend {
   border-bottom: none;
@@ -6727,20 +6730,14 @@ div.infopage.landing div.top-screen div#tagline div.wrapper p.subtagline {
   margin: 0 auto 40px;
 }
 div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action {
-  margin: 20px auto;
+  margin: 40px auto;
 }
-div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action form {
-  margin: 0 auto;
-  width: 265px;
-}
-div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action form div.inputs {
-  display: none;
-}
-div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action form div.inputs .form-group {
-  margin-left: 0;
-}
-div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action form #signup-button {
+div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action #signup-button {
   font-weight: bold;
+}
+div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action #secondary-cta-button {
+  margin-left: 30px;
+  color: #777;
 }
 div.infopage.landing div.top-screen div.bottom-of-top-screen {
   position: absolute;
@@ -6887,19 +6884,6 @@ div.bottom-cta {
   display: none;
   text-align: center;
   margin-top: 100px;
-}
-div.bottom-cta a.btn-large {
-  padding: 13px 29px;
-  font-size: 28px;
-  color: #eee;
-}
-div.bottom-cta a.btn-large.primary-action {
-  background: #0053b0;
-  font-weight: bold;
-  margin-right: 20px;
-}
-div.bottom-cta a.btn-large.primary-action:hover {
-  background: #004797;
 }
 div#sources {
   width: 100%;
@@ -8126,212 +8110,99 @@ div.product-page .content .product ul.metric-details-list li.metric-detail span.
   color: #aaa;
   font-size: 80%;
 }
-div.signup-header {
-  background: #fff;
-  border-bottom: 4px solid #ff4000;
-  position: absolute;
-  height: 80px;
-  top: 0;
-  width: 100%;
-  background: #ff4000;
-}
-div.signup-header h1 {
-  position: absolute;
-  left: 30px;
-  top: 10px;
-  margin: 0;
-}
-div.signup-header h1 span.text {
-  color: #fff;
-  font-size: 25px;
-  margin-left: 4px;
-  text-transform: uppercase;
-  vertical-align: 3px;
-  font-weight: 300;
-}
-div.signup-header h1 a.brand {
-  float: left;
-  margin-right: 20px;
-}
-div.signup-header h1 a.brand img {
-  height: 45px;
-}
-div.signup-header ol.signup-steps {
-  padding: 0;
-  margin: 23px auto 15px;
-  padding-left: 60px;
-  width: 500px;
-}
-div.signup-header ol.signup-steps li {
-  display: inline-block;
-  list-style-type: none;
-  padding: 5px 20px;
-  font-size: 16px;
-  color: #fff;
-}
-div.signup-header ol.signup-steps li.creating {
-  display: none;
-}
-div.signup-header ol.signup-steps li.completed {
-  opacity: .4;
-}
-form.signup {
-  background: transparent;
-  width: 750px;
-  margin: 200px auto 0;
-}
-form.signup div.intro {
-  margin-bottom: 50px;
-  color: #999;
-  line-height: 1.8;
-  font-size: 26px;
-  text-align: center;
-}
-form.signup div.intro span.paren {
-  font-weight: 300;
-  font-size: 85%;
-}
-form.signup div.signup-input.signup-products div.intro {
-  position: absolute;
-  top: 0px;
-  left: 0;
-  right: 0;
-  height: 160px;
-  background: #fff;
-  margin-top: 80px;
-  color: #999;
-  text-align: center;
-  font-weight: normal;
-  padding-top: 30px;
-}
-form.signup div.signup-input.signup-products div.importers {
-  border-top: 1px solid #ddd;
-  top: 250px;
-}
-form.signup div.signup-input div.form-group input.form-control {
-  font-size: 25px;
-  line-height: 1;
-  height: 55px;
-  padding-top: 15px;
-  width: 400px;
-  margin: 0 auto;
-}
-form.signup div.signup-input div.form-group div.input-group {
-  margin: 0 auto;
-  width: 450px;
-}
-form.signup div.signup-input div.form-group a.btn {
-  margin-top: 20px;
-  width: 45%;
-}
-form.signup div.signup-input div.form-group a.btn.next {
-  float: right;
-}
-form.signup div.signup-input div.form-group.password,
-form.signup div.signup-input div.form-group.email {
-  margin-left: 100px;
-  position: relative;
-}
-form.signup div.signup-input div.form-group.password .input-group,
-form.signup div.signup-input div.form-group.email .input-group {
-  float: left;
-  margin-right: 10px;
-}
-form.signup div.signup-input div.form-group.password .input-group i,
-form.signup div.signup-input div.form-group.email .input-group i {
-  min-width: 20px;
-  display: inline-block;
-  color: #000;
-  opacity: .4;
-}
-form.signup div.signup-input div.form-group.password .checkmark-and-text,
-form.signup div.signup-input div.form-group.email .checkmark-and-text {
-  color: #777;
-  cursor: pointer;
-  margin-top: 30px;
-}
-form.signup div.signup-input div.form-group.password .help-info,
-form.signup div.signup-input div.form-group.email .help-info {
-  width: 140px;
-  margin-top: 5px;
-  float: left;
-}
-form.signup div.signup-input div.form-group.password .help-info .help-block.tall,
-form.signup div.signup-input div.form-group.email .help-info .help-block.tall {
-  margin-top: 0;
-}
-form.signup div.signup-input div.form-group.custom-url {
-  margin-top: 75px;
-}
-form.signup div.signup-input div.form-group.custom-url .input-group {
-  margin-right: 15px;
-  width: 300px;
-  margin: 0 auto;
-}
-form.signup div.signup-input div.form-group.custom-url .input-group input.form-control {
-  width: 300px;
-}
-form.signup div.signup-input div.form-group.custom-url .input-group .input-group-addon {
-  padding-top: 15px;
-}
-form.signup div.signup-input div.form-group.custom-url .input-group input.form-control {
-  padding-top: 10px;
-}
-form.signup div.signup-input div.form-group.custom-url .help-info {
-  margin-top: 20px;
-  text-align: center;
-}
-form.signup div.signup-input div.form-group.custom-url .help-info i {
-  margin-right: 10px;
-}
-form.signup div.signup-input div.form-group.custom-url .help-info .help-block {
-  font-size: 18px;
-  clear: both;
-  margin: 0 auto;
-  float: none;
-}
-form.signup button.next-button {
-  z-index: 500;
+div.signup-page {
   position: fixed;
-  height: 100px;
-  width: 105px;
-  -webkit-border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 0;
-  -webkit-border-bottom-left-radius: 50px;
-  -webkit-border-top-left-radius: 50px;
-  -moz-border-radius-topright: 0;
-  -moz-border-radius-bottomright: 0;
-  -moz-border-radius-bottomleft: 50px;
-  -moz-border-radius-topleft: 50px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 50px;
-  border-top-left-radius: 50px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+div.signup-page div.signup-main-page {
+  width: 70%;
+}
+div.signup-page div.signup-main-page div.form-container {
+  width: 400px;
+  margin: 70px auto;
+}
+div.signup-page div.signup-main-page div.form-container h1 {
+  margin-bottom: 0;
+  font-size: 45px;
+}
+div.signup-page div.signup-main-page div.form-container h2 {
+  margin: 10px 0 40px;
+  font-size: 20px;
+  font-weight: normal;
+}
+div.signup-page div.signup-main-page div.form-container h2 strong {
+  font-weight: 900;
+}
+div.signup-page div.signup-main-page div.form-container #main-signup-form div.form-group {
+  margin-left: 0;
+  margin-right: 0;
+}
+div.signup-page div.signup-main-page div.form-container #main-signup-form div.form-group input.input-lg {
+  background: #fafafa;
+  border: none;
+  height: 2.5em;
+}
+div.signup-page div.signup-main-page div.form-container #main-signup-form button {
+  font-weight: 900;
+  padding: 15px 20px;
+  margin-top: 20px;
+}
+div.signup-page div.signup-main-page div.form-container #main-signup-form button i {
+  margin-left: 10px;
+}
+div.signup-page div.signup-sidebar {
+  width: 30%;
+  position: absolute;
+  top: 0;
+  display: table;
+  height: 100%;
+  right: 0;
+  background: #fafafa;
+}
+div.signup-page div.signup-sidebar div.testimonials-container {
+  display: table-cell;
+  vertical-align: middle;
+  height: 100%;
+}
+div.signup-page div.signup-sidebar div.testimonials-container div.testimonial {
+  margin: -100px auto 0;
+  width: 300px;
+  text-align: center;
+}
+div.signup-page div.signup-sidebar div.testimonials-container div.testimonial img {
+  margin: 0 20px;
+  width: 120px;
+  -webkit-border-top-right-radius: 60px;
+  -webkit-border-bottom-right-radius: 60px;
+  -webkit-border-bottom-left-radius: 60px;
+  -webkit-border-top-left-radius: 60px;
+  -moz-border-radius-topright: 60px;
+  -moz-border-radius-bottomright: 60px;
+  -moz-border-radius-bottomleft: 60px;
+  -moz-border-radius-topleft: 60px;
+  border-top-right-radius: 60px;
+  border-bottom-right-radius: 60px;
+  border-bottom-left-radius: 60px;
+  border-top-left-radius: 60px;
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  border: none;
-  background: #eee;
-  text-transform: uppercase;
-  text-align: left;
-  font-size: 16.666666666666668px;
-  font-weight: bold;
-  top: 50%;
-  margin-top: -50px;
-  right: 0;
-  color: #fff;
-  padding-top: 7px;
-  padding-left: 28.571428571428573px;
-  cursor: pointer;
-  transition: width .2s;
-  -webkit-transition: width .2s;
+  border: 1px solid #eee;
 }
-form.signup button.next-button.enabled {
-  background: #ff4000;
+div.signup-page div.signup-sidebar div.testimonials-container div.testimonial q {
+  font-size: 24px;
+  color: #555;
+  padding-top: 20px;
+  display: block;
 }
-form.signup button.next-button.enabled:hover {
-  width: 110px;
-  text-decoration: none;
+div.signup-page div.signup-sidebar div.testimonials-container div.testimonial cite {
+  display: block;
+  font-size: 80%;
+  font-weight: 300;
+  margin-top: 10px;
 }
 div.settings div.settings-header {
   margin: 0 0 70px 20px;

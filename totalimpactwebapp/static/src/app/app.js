@@ -101,8 +101,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.showHeader()
-    Page.showFooter()
+    Page.showHeader(true)
+    Page.showFooter(true)
     Page.setUservoiceTabLoc("right")
     Loading.clear()
   })

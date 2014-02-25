@@ -87,20 +87,13 @@ div.infopage.landing {
             }
 
             #call-to-action {
-               margin: 20px auto;
-               form {
-                  margin: 0 auto;
-                  width: 265px;
-                  div.inputs {
-                     display: none;
-                     .form-group {
-                           margin-left: 0;
-                     }
-                  }
-                  #signup-button {
-                     font-weight: bold;
-                  }
-
+               margin: 40px auto;
+               #signup-button {
+                  font-weight: bold;
+               }
+               #secondary-cta-button {
+                  margin-left: 30px;
+                  color: #777;
                }
             }
          }
@@ -239,20 +232,6 @@ div.bottom-cta {
    display:none;
    text-align: center;
    margin-top: 100px;
-   a.btn-large { // pasted from above, ick
-      padding: 13px 29px;
-      font-size: 28px;
-      color:  #eee;
-
-      &.primary-action{
-         background: @accentColor;
-         font-weight: bold;
-         margin-right: 20px;
-         &:hover {
-            background: @accentColorHover;
-         }
-      }
-   }
 }
 
 

@@ -3,81 +3,13 @@ angular.module( 'signup', [
     'services.page',
     'resources.users',
     'update.update',
-    'security.service',
-    'tips',
-    'importers.allTheImporters',
-    'importers.importer'
+    'security.service'
     ])
-  .factory("Signup", function($location){
-
-    var signupSteps = [
-      "name",
-      "url",
-      "products",
-      "password"
-    ]
-
-
-    var getCurrentStep = function(capitalize){
-      var ret = "name"
-      _.each(signupSteps, function(stepName){
-
-        if ($location.path().indexOf("/"+stepName) > 0){
-          ret = stepName
-        }
-      })
-
-      if (capitalize){
-        ret = ret.charAt(0).toUpperCase() + ret.slice(1)
-      }
-
-      return ret
-
-    }
-    var getIndexOfCurrentStep = function(){
-       return _.indexOf(signupSteps, getCurrentStep())
-    }
-
-    return {
-      signupSteps: function(){
-        return signupSteps;
-      },
-      onSignupStep: function(step){
-        return step == getCurrentStep()
-        return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
-      },
-      isBeforeCurrentSignupStep: function(stepToCheck) {
-        var indexOfStepToCheck = _.indexOf(signupSteps, stepToCheck)
-        return getIndexOfCurrentStep() > -1 && indexOfStepToCheck < getIndexOfCurrentStep()
-      },
-      getTemplatePath: function(){
-        return "signup/signup-" + getCurrentStep() + '.tpl.html';
-      }
-    }
-  })
 
 .config(['$routeProvider', function($routeProvider) {
 
   $routeProvider
-    .when('/signup/:url_slug/products/add', {
-              templateUrl: 'signup/signup.tpl.html',
-              controller: 'signupCtrl',
-              resolve:{
-              userOwnsThisProfile: function(security){
-                return security.testUserAuthenticationLevel("ownsThisProfile")
-              }
-            }
-          })
-    .when('/signup/:url_slug/password', {
-            templateUrl: 'signup/signup.tpl.html',
-            controller: 'signupCtrl',
-            resolve:{
-              userOwnsThisProfile: function(security){
-                return security.testUserAuthenticationLevel("ownsThisProfile")
-              }
-            }
-          })
-    .when("/signup/*rest", {
+    .when("/signup", {
       templateUrl: 'signup/signup.tpl.html',
       controller: 'signupCtrl',
       resolve:{
@@ -86,24 +18,16 @@ angular.module( 'signup', [
         }
       }
     })
-    .when('/signup', {redirectTo: '/signup/name'})
-
-
 }])
 
-  .controller('signupCtrl', function($scope, Signup, Page, security){
+  .controller('signupCtrl', function($scope, Page, security){
+
+    console.log("signup controller!")
+
     Page.setUservoiceTabLoc("bottom")
     Page.showHeader(false)
     Page.showFooter(false)
 
-    $scope.input = {}
-
-    $scope.include =  Signup.getTemplatePath();
-    $scope.nav = { // defined as an object so that controllers in child scopes can override...
-      goToNextStep: function(){
-        console.log("we should be overriding me.")
-      }
-    }
 
 
   })
@@ -203,15 +127,3 @@ angular.module( 'signup', [
 
     }
   })
-
-.controller("signupHeaderCtrl", function($scope, Signup, Page) {
-
-  Page.setTitle("signup")
-
-  $scope.signupSteps = Signup.signupSteps();
-  $scope.isStepCurrent = Signup.onSignupStep;
-  $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
-
-})
-
-;
