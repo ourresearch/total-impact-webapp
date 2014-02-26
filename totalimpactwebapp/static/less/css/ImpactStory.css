@@ -8145,12 +8145,15 @@ div.signup-page div.signup-main-page div.form-container #main-signup-form div.fo
   border: none;
   height: 2.5em;
 }
-div.signup-page div.signup-main-page div.form-container #main-signup-form button {
+div.signup-page div.signup-main-page div.form-container #main-signup-form button.btn {
   font-weight: 900;
   padding: 15px 20px;
   margin-top: 20px;
 }
-div.signup-page div.signup-main-page div.form-container #main-signup-form button i {
+div.signup-page div.signup-main-page div.form-container #main-signup-form button.btn[disabled] {
+  opacity: 1;
+}
+div.signup-page div.signup-main-page div.form-container #main-signup-form button.btn i {
   margin-left: 10px;
 }
 div.signup-page div.signup-sidebar {

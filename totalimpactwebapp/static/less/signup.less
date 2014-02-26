@@ -33,7 +33,10 @@ div.signup-page {
                   height: 2.5em;
                }
             }
-            button {
+            button.btn {
+               &[disabled] {
+                  opacity: 1;
+               }
                font-weight: 900;
                padding: 15px 20px;
                margin-top: 20px;

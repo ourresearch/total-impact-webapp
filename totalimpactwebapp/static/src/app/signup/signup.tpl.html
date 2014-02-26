@@ -12,23 +12,50 @@
 
             <div class="inputs">
                <div class="form-group">
-                  <input ng-model="newUser.given_name" type="text" placeholder="First name" class="form-control input-lg" />
+                  <label class="sr-only" for="signup-given-name">First name</label>
+                  <input ng-model="newUser.given_name"
+                         placeholder="First name"
+                         type="text"
+                         id="signup-given-name"
+                         class="form-control input-lg"
+                         autofocus="autofocus"
+                         required />
                </div>
 
                <div class="form-group">
-                  <input ng-model="newUser.surname" type="text" placeholder="Last name" class="form-control input-lg" />
+                  <label class="sr-only" for="signup-surname">Last name</label>
+                  <input ng-model="newUser.surname"
+                         placeholder="Last name"
+                         id="signup-surname"
+                         type="text"
+                         class="form-control input-lg"
+                         required />
                </div>
 
                <div class="form-group">
-                  <input ng-model="newUser.email" type="text" placeholder="Email" class="form-control input-lg" />
+                  <label class="sr-only" for="signup-email">Email</label>
+                  <input ng-model="newUser.email"
+                         placeholder="Email"
+                         id="signup-email"
+                         type="email"
+                         class="form-control input-lg"
+                         required />
                </div>
 
                <div class="form-group">
-                  <input ng-model="newUser.password" type="password" placeholder="Password" class="form-control input-lg" />
+                  <label class="sr-only" for="signup-password">Password</label>
+                  <input ng-model="newUser.password"
+                         placeholder="Password"
+                         id="signup-password"
+                         type="password"
+                         class="form-control input-lg"
+                         required />
                </div>
             </div>
 
-            <button class="btn btn-primary btn-xlarge">Uncover my impact<i class="icon-arrow-right"></i></button>
+            <button ng-disabled="signupForm.$invalid" class="btn btn-primary btn-xlarge">
+               Uncover my impact<i class="icon-arrow-right"></i>
+            </button>
          </form>
 
       </div>

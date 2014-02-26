@@ -1,4 +1,4 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -1438,204 +1438,6 @@ angular.module("settings/settings.tpl.html", []).run(["$templateCache", function
     "");
 }]);
 
-angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-creating.tpl.html",
-    "<div class=\"signup-input creating\" ng-controller=\"signupCreatingCtrl\">\n" +
-    "   <div class=\"intro\"><br>We're creating your profile now! Right now, we're scouring the web, finding the ways your products have made an impact...</div>\n" +
-    "\n" +
-    "   <div class=\"update-progress\" ng-show=\"numNotDone\">\n" +
-    "      <div class=\"products not-done\">\n" +
-    "         <span class=\"count still-working\">{{ numNotDone }}</span>\n" +
-    "         <span class=\"descr\">now updating</span>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"products done\">\n" +
-    "         <span class=\"count finished\">{{ numDone}}</span>\n" +
-    "         <span class=\"descr\">done updating</span>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "");
-}]);
-
-angular.module("signup/signup-header.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-header.tpl.html",
-    "<div class=\"signup-header header\" ng-controller=\"signupHeaderCtrl\">\n" +
-    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-reverse-no-text.png\" alt=\"Impactstory\" /></a>\n" +
-    "      <span class=\"text\">signup</span>\n" +
-    "   </h1>\n" +
-    "   <ol class=\"signup-steps\">\n" +
-    "      <li ng-repeat=\"stepName in signupSteps\"\n" +
-    "          class=\"{{ stepName }}\"\n" +
-    "          ng-class=\"{current: isStepCurrent(stepName), completed: isStepCompleted(stepName)}\">\n" +
-    "         {{ stepName }}\n" +
-    "      </li>\n" +
-    "   </ol>\n" +
-    "   <div ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-name.tpl.html",
-    "<div class=\"signup-input url\" ng-controller=\"signupNameCtrl\">\n" +
-    "   <div class=\"intro\">Making a profile takes less than 5 minutes--let’s get started!</div>\n" +
-    "\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <input required class=\"form-control\" type=\"text\" ng-model=\"input.givenName\" placeholder=\"First name\">\n" +
-    "   </div>\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <input required class=\"input-large form-control\" type=\"text\" ng-model=\"input.surname\" placeholder=\"Last name\">\n" +
-    "   </div>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-password.tpl.html",
-    "<div class=\"signup-input email-and-password\" ng-controller=\"signupPasswordCtrl\">\n" +
-    "   <div class=\"intro\"><br>Last step! Enter your email and pick a password:<br><span class=\"paren\">(Don't worry, we never share your email)</span></div>\n" +
-    "\n" +
-    "   <div class=\"form-group email\"\n" +
-    "        ng-class=\"{ 'has-error':  signupForm.email.$invalid && signupForm.email.$dirty && !loading.is(),\n" +
-    "                 'has-success': signupForm.email.$valid && signupForm.email.$dirty && !loading.is()}\">\n" +
-    "\n" +
-    "      <div class=\"controls input-group\">\n" +
-    "         <span class=\"input-group-addon\"><i class=\"icon-envelope\"></i></span>\n" +
-    "         <input ng-model=\"input.email\"\n" +
-    "                placeholder=\"email\"\n" +
-    "                name=\"email\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required\n" +
-    "                data-require-unique\n" +
-    "                 />\n" +
-    "\n" +
-    "      </div>\n" +
-    "      <div class=\"help-info\">\n" +
-    "\n" +
-    "         <spinner msg=\"Checking\"></spinner>\n" +
-    "\n" +
-    "         <div class=\"help-block error tall\"\n" +
-    "              ng-show=\"signupForm.email.$error.requireUnique\n" +
-    "            && signupForm.email.$dirty\n" +
-    "            && !loading.is()\">\n" +
-    "            That email address is already in use.\n" +
-    "         </div>\n" +
-    "         <div class=\"help-block success\"\n" +
-    "              ng-show=\"signupForm.email.$valid\n" +
-    "            && signupForm.email.$dirty\n" +
-    "            && !loading.is()\">\n" +
-    "            Looks good!\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group password\"\n" +
-    "         ng-class=\"{'has-success': signupForm.password.$valid && !loading.is()}\">\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "      <div class=\"controls input-group\">\n" +
-    "         <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
-    "\n" +
-    "         <input ng-model=\"input.password\"\n" +
-    "                name=\"password\"\n" +
-    "                type=\"password\"\n" +
-    "                placeholder=\"password\"\n" +
-    "                ng-show=\"!showPassword\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required>\n" +
-    "\n" +
-    "         <input ng-model=\"input.password\"\n" +
-    "                name=\"password\"\n" +
-    "                type=\"text\"\n" +
-    "                placeholder=\"password\"\n" +
-    "                ng-show=\"showPassword\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required>\n" +
-    "      </div>\n" +
-    "      <pretty-checkbox value=\"showPassword\" text=\"Show\"></pretty-checkbox>\n" +
-    "\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-products.tpl.html",
-    "<div class=\"signup-input signup-products\" ng-controller=\"signupProductsCtrl\">\n" +
-    "   <div class=\"intro\">Next, let's import a few of your products from these sources <br><span class=\"paren\">(you can more add more later, too)</span></div>\n" +
-    "\n" +
-    "\n" +
-    "   <div class=\"importers signup-importers\">\n" +
-    "      <div class=\"importer\"\n" +
-    "           ng-repeat=\"importer in importers\"\n" +
-    "           ng-controller=\"importerCtrl\"\n" +
-    "           ng-include=\"'importers/importer.tpl.html'\"\n" +
-    "           >\n" +
-    "      </div>\n" +
-    "  </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "</div>");
-}]);
-
-angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-url.tpl.html",
-    "<div class=\"signup-input url\" ng-controller=\"signupUrlCtrl\">\n" +
-    "   <div class=\"intro\"><br>Your next step is to pick your profile's custom URL. <br><span class=\"paren\">(you can always change this later)</span></div>\n" +
-    "   \n" +
-    "   <div class=\"form-group custom-url\"\n" +
-    "        ng-model=\"profileAbout.url_slug\"\n" +
-    "        ng-class=\"{ 'has-error':  signupForm.url_slug.$invalid && signupForm.url_slug.$dirty && !loading.is(),\n" +
-    "                    'has-success': signupForm.url_slug.$valid && !loading.is()}\">\n" +
-    "\n" +
-    "      <div class=\"controls input-group\">\n" +
-    "         <span class=\"input-group-addon\">http://impactstory.org/</span>\n" +
-    "         <input ng-model=\"input.url_slug\"\n" +
-    "                name=\"url_slug\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required\n" +
-    "                data-require-unique\n" +
-    "                data-check-initial-value=\"true\"\n" +
-    "                ng-pattern=\"/^[\\w-]+$/\"\n" +
-    "                 />\n" +
-    "\n" +
-    "      </div>\n" +
-    "      <div class=\"help-info\">\n" +
-    "         <spinner msg=\"Checking\"></spinner>\n" +
-    "\n" +
-    "         <div class=\"help-block error\"\n" +
-    "              ng-show=\"signupForm.url_slug.$error.pattern\n" +
-    "               && signupForm.url_slug.$dirty\n" +
-    "               && !loading.is()\">\n" +
-    "            Sorry, this URL has invalid characters.<br> You can only use hyphens, numbers or Latin-alphabet letters.\n" +
-    "         </div>\n" +
-    "\n" +
-    "         <div class=\"help-block error\"\n" +
-    "              ng-show=\"signupForm.url_slug.$error.requireUnique\n" +
-    "               && signupForm.url_slug.$dirty\n" +
-    "               && !loading.is()\">\n" +
-    "            Sorry, someone else is using that URL.<br>Try changing it to make it more unique.\n" +
-    "         </div>\n" +
-    "         <div class=\"help-block success\"\n" +
-    "              ng-show=\"signupForm.url_slug.$valid\n" +
-    "               && signupForm.url_slug.$dirty\n" +
-    "               && !loading.is()\">\n" +
-    "            This URL looks good!\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "   </div>\n" +
-    "</div>");
-}]);
-
 angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup.tpl.html",
     "<div class=\"signup-page\">\n" +
@@ -1652,23 +1454,50 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "            <div class=\"inputs\">\n" +
     "               <div class=\"form-group\">\n" +
-    "                  <input ng-model=\"newUser.given_name\" type=\"text\" placeholder=\"First name\" class=\"form-control input-lg\" />\n" +
+    "                  <label class=\"sr-only\" for=\"signup-given-name\">First name</label>\n" +
+    "                  <input ng-model=\"newUser.given_name\"\n" +
+    "                         placeholder=\"First name\"\n" +
+    "                         type=\"text\"\n" +
+    "                         id=\"signup-given-name\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         autofocus=\"autofocus\"\n" +
+    "                         required />\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"form-group\">\n" +
-    "                  <input ng-model=\"newUser.surname\" type=\"text\" placeholder=\"Last name\" class=\"form-control input-lg\" />\n" +
+    "                  <label class=\"sr-only\" for=\"signup-surname\">Last name</label>\n" +
+    "                  <input ng-model=\"newUser.surname\"\n" +
+    "                         placeholder=\"Last name\"\n" +
+    "                         id=\"signup-surname\"\n" +
+    "                         type=\"text\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         required />\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"form-group\">\n" +
-    "                  <input ng-model=\"newUser.email\" type=\"text\" placeholder=\"Email\" class=\"form-control input-lg\" />\n" +
+    "                  <label class=\"sr-only\" for=\"signup-email\">Email</label>\n" +
+    "                  <input ng-model=\"newUser.email\"\n" +
+    "                         placeholder=\"Email\"\n" +
+    "                         id=\"signup-email\"\n" +
+    "                         type=\"email\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         required />\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"form-group\">\n" +
-    "                  <input ng-model=\"newUser.password\" type=\"password\" placeholder=\"Password\" class=\"form-control input-lg\" />\n" +
+    "                  <label class=\"sr-only\" for=\"signup-password\">Password</label>\n" +
+    "                  <input ng-model=\"newUser.password\"\n" +
+    "                         placeholder=\"Password\"\n" +
+    "                         id=\"signup-password\"\n" +
+    "                         type=\"password\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         required />\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <button class=\"btn btn-primary btn-xlarge\">Uncover my impact<i class=\"icon-arrow-right\"></i></button>\n" +
+    "            <button ng-disabled=\"signupForm.$invalid\" class=\"btn btn-primary btn-xlarge\">\n" +
+    "               Uncover my impact<i class=\"icon-arrow-right\"></i>\n" +
+    "            </button>\n" +
     "         </form>\n" +
     "\n" +
     "      </div>\n" +
