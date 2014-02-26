@@ -5,25 +5,26 @@
          <h2>Signup for your <strong>free</strong> Impactstory profile:</h2>
          <form novalidate
                name="signupForm"
+               ng-controller="signupFormCtrl"
                ng-submit="signup()"
                id="main-signup-form"
                class="form-horizontal signup-form">
 
             <div class="inputs">
                <div class="form-group">
-                  <input type="text" placeholder="First name" class="form-control input-lg" />
+                  <input ng-model="newUser.given_name" type="text" placeholder="First name" class="form-control input-lg" />
                </div>
 
                <div class="form-group">
-                  <input type="text" placeholder="Last name" class="form-control input-lg" />
+                  <input ng-model="newUser.surname" type="text" placeholder="Last name" class="form-control input-lg" />
                </div>
 
                <div class="form-group">
-                  <input type="text" placeholder="Email" class="form-control input-lg" />
+                  <input ng-model="newUser.email" type="text" placeholder="Email" class="form-control input-lg" />
                </div>
 
                <div class="form-group">
-                  <input type="password" placeholder="Password" class="form-control input-lg" />
+                  <input ng-model="newUser.password" type="password" placeholder="Password" class="form-control input-lg" />
                </div>
             </div>
 

@@ -22,29 +22,38 @@ angular.module( 'signup', [
 
   .controller('signupCtrl', function($scope, Page, security){
 
-    console.log("signup controller!")
-
     Page.setUservoiceTabLoc("bottom")
     Page.showHeader(false)
     Page.showFooter(false)
 
-
-
   })
 
-  .controller( 'signupNameCtrl', function ( $scope, $location, Signup, Slug ) {
-    analytics.track("Signup: name")
-    $scope.nav.goToNextStep = function(){
+  .controller( 'signupFormCtrl', function ( $scope, Slug, Users ) {
+    $scope.newUser = {}
+    $scope.signup = function(){
+      console.log("sign me up!")
+      var slug = Slug.make($scope.newUser.given_name, $scope.newUser.surname)
+      Users.save(
+        {id: $scope.input.url_slug, idType: "url_slug", log:logMsg},
+        {
+          givenName: givenName,
+          surname: surname,
+          url_slug: $scope.input.url_slug,
+          tips: TipsService.keysStr()
+        },
+        function(resp, headers){
+          console.log("got response back from save user", resp)
+          security.clearCachedUser()
+          $location.path("signup/" + $scope.input.url_slug + "/products/add")
+          $location.search("")  // clear the names from the url
 
-      var slug = Slug.make($scope.input.givenName, $scope.input.surname)
-      $scope.givenName = $scope.input.givenName
-      $scope.surname = $scope.input.surname
+          // so mixpanel will start tracking this user via her userid from here
+          // on out.
+          analytics.alias(resp.user.id)
+        }
+      )
 
-      $location.path("signup/" + slug + "/url")
-        .search("givenName", $scope.input.givenName)
-        .search("surname", $scope.input.surname)
     }
-
   })
 
   .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {

@@ -1645,25 +1645,26 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "         <h2>Signup for your <strong>free</strong> Impactstory profile:</h2>\n" +
     "         <form novalidate\n" +
     "               name=\"signupForm\"\n" +
+    "               ng-controller=\"signupFormCtrl\"\n" +
     "               ng-submit=\"signup()\"\n" +
     "               id=\"main-signup-form\"\n" +
     "               class=\"form-horizontal signup-form\">\n" +
     "\n" +
     "            <div class=\"inputs\">\n" +
     "               <div class=\"form-group\">\n" +
-    "                  <input type=\"text\" placeholder=\"First name\" class=\"form-control input-lg\" />\n" +
+    "                  <input ng-model=\"newUser.given_name\" type=\"text\" placeholder=\"First name\" class=\"form-control input-lg\" />\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"form-group\">\n" +
-    "                  <input type=\"text\" placeholder=\"Last name\" class=\"form-control input-lg\" />\n" +
+    "                  <input ng-model=\"newUser.surname\" type=\"text\" placeholder=\"Last name\" class=\"form-control input-lg\" />\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"form-group\">\n" +
-    "                  <input type=\"text\" placeholder=\"Email\" class=\"form-control input-lg\" />\n" +
+    "                  <input ng-model=\"newUser.email\" type=\"text\" placeholder=\"Email\" class=\"form-control input-lg\" />\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"form-group\">\n" +
-    "                  <input type=\"password\" placeholder=\"Password\" class=\"form-control input-lg\" />\n" +
+    "                  <input ng-model=\"newUser.password\" type=\"password\" placeholder=\"Password\" class=\"form-control input-lg\" />\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
