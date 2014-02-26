@@ -10,27 +10,37 @@
       </li>
    </ul>
 
-   <form name="loginForm" novalidate class="login-form form-inline">
+   <form name="loginForm" novalidate class="login-form form-inline" autocomplete="off">
       <div class="form-group" >
          <label class="sr-only">E-mail</label>
          <div class="controls input-group" has-focus ng-class="{'has-success': loginForm.login.$valid}">
             <span class="input-group-addon"><i class="icon-envelope-alt"></i></span>
-            <input name="login" class="form-control" type="username" ng-model="user.email" placeholder="email" required autofocus>
+            <input name="login" required autofocus
+                   autocomplete="off"
+                   class="form-control"
+                   type="username"
+                   ng-model="user.email"
+                   placeholder="email" >
          </div>
       </div>
       <div class="form-group">
          <label class="sr-only">Password</label>
          <div class="controls input-group" has-focus ng-class="{'has-success': loginForm.pass.$valid}">
             <span class="input-group-addon"><i class="icon-key"></i></span>
-            <input name="pass" class="form-control" type="password" ng-model="user.password" placeholder="password" required>
+            <input name="pass" required
+                   autocomplete="off"
+                   class="form-control"
+                   type="password"
+                   ng-model="user.password"
+                   placeholder="password">
          </div>
       </div>
       <div class="modal-footer">
          <button class="btn btn-primary login"
-                 ng-click="login()"
-                 ng-hide="loading.is('login')"
+            ng-disabled='loginForm.$invalid'
+            ng-click="login()"
+            ng-hide="loading.is('login')">Sign in</button>
 
-                 >Sign in</button>
          <div class="working" ng-show="loading.is('login')">
             <i class="icon-refresh icon-spin"></i>
             <span class="text">logging in...</span>
