@@ -8146,12 +8146,14 @@ div.signup-page div.signup-main-page div.form-container #main-signup-form div.fo
   height: 2.5em;
 }
 div.signup-page div.signup-main-page div.form-container #main-signup-form button.btn {
+  background: #ff4000;
+  border: none;
   font-weight: 900;
   padding: 15px 20px;
   margin-top: 20px;
 }
 div.signup-page div.signup-main-page div.form-container #main-signup-form button.btn[disabled] {
-  opacity: 1;
+  opacity: .8;
 }
 div.signup-page div.signup-main-page div.form-container #main-signup-form button.btn i {
   margin-left: 10px;

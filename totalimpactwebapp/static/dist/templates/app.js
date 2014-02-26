@@ -1455,7 +1455,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "            <div class=\"inputs\">\n" +
     "               <div class=\"form-group\">\n" +
     "                  <label class=\"sr-only\" for=\"signup-given-name\">First name</label>\n" +
-    "                  <input ng-model=\"newUser.given_name\"\n" +
+    "                  <input ng-model=\"newUser.givenName\"\n" +
     "                         placeholder=\"First name\"\n" +
     "                         type=\"text\"\n" +
     "                         id=\"signup-given-name\"\n" +

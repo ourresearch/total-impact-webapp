@@ -272,35 +272,34 @@ def login():
 #------------------ /user/:id   -----------------
 
 
-@app.route("/user/<profile_id>", methods=['GET', 'POST'])
+@app.route("/user/<profile_id>", methods=['GET'])
 def user_profile(profile_id):
-    if request.method == "GET":
-        user = get_user_for_response(
-            profile_id,
-            request,
-            include_products=False  # returns faster this way.
-        )
-        return json_resp_from_thing(user)
-
-    elif request.method == "POST":
-        if request.args.get("id_type") != "url_slug":
-            abort_json(400, "You can only create new users from a url slug for now.")
-
-        userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
-        try:
-            user = create_user_from_slug(profile_id, userdict, g.api_root, db)
-
-        except IntegrityError:
-            abort_json(409, "Your user_slug isn't unique.")
-
-        logger.debug(u"logging in user {user}".format(
-            user=user.as_dict()))
-
-        login_user(user)
-
-        return json_resp_from_thing({"user": user.as_dict()})
+    user = get_user_for_response(
+        profile_id,
+        request,
+        include_products=False  # returns faster this way.
+    )
+    return json_resp_from_thing(user)
 
 
+@app.route("/user/<slug>", methods=["POST"])
+def create_new_user_profile(slug):
+    userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
+    user = create_user_from_slug(slug, userdict, db)
+
+
+    #try:
+    #    user = create_user_from_slug(userdict["url_slug"], userdict, db)
+    #
+    #except IntegrityError:
+    #    abort_json(409, "Your user_slug isn't unique.")
+
+    logger.debug(u"logging in user {user}".format(
+        user=user.as_dict()))
+
+    login_user(user)
+
+    return json_resp_from_thing({"user": user.as_dict()})
 
 
 

@@ -1613,28 +1613,29 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupFormCtrl', function ( $scope, Slug, Users ) {
+  .controller( 'signupFormCtrl', function ( $scope, $location, security, Slug, Users) {
     $scope.newUser = {}
     $scope.signup = function(){
-      console.log("sign me up!")
-      var slug = Slug.make($scope.newUser.given_name, $scope.newUser.surname)
+      var slug = Slug.make($scope.newUser.givenName, $scope.newUser.surname)
       Users.save(
-        {id: $scope.input.url_slug, idType: "url_slug", log:logMsg},
+        {id: slug},
         {
-          givenName: givenName,
-          surname: surname,
-          url_slug: $scope.input.url_slug,
-          tips: TipsService.keysStr()
+          givenName: $scope.newUser.givenName,
+          surname: $scope.newUser.surname,
+          email: $scope.newUser.email,
+          password: $scope.newUser.password
         },
         function(resp, headers){
           console.log("got response back from save user", resp)
           security.clearCachedUser()
-          $location.path("signup/" + $scope.input.url_slug + "/products/add")
-          $location.search("")  // clear the names from the url
+          $location.path(resp.user.url_slug)
 
           // so mixpanel will start tracking this user via her userid from here
           // on out.
           analytics.alias(resp.user.id)
+        },
+        function(resp){
+          console.log("error on signup!", resp)
         }
       )
 
@@ -2492,8 +2493,7 @@ angular.module('resources.users',['ngResource'])
   .factory('Users', function ($resource) {
 
     return $resource(
-      "/user/:id?id_type=:idType",
-      {idType: "id"}
+      "/user/:id"
     )
   })
 
@@ -5394,7 +5394,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "            <div class=\"inputs\">\n" +
     "               <div class=\"form-group\">\n" +
     "                  <label class=\"sr-only\" for=\"signup-given-name\">First name</label>\n" +
-    "                  <input ng-model=\"newUser.given_name\"\n" +
+    "                  <input ng-model=\"newUser.givenName\"\n" +
     "                         placeholder=\"First name\"\n" +
     "                         type=\"text\"\n" +
     "                         id=\"signup-given-name\"\n" +
