@@ -6681,6 +6681,7 @@ div.infopage.landing div.toolbar-container {
   width: 100%;
   text-align: right;
   margin-top: 30px;
+  z-index: 100;
 }
 div.infopage.landing div.toolbar-container a.login {
   margin-right: 60px;
