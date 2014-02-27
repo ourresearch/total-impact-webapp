@@ -95,6 +95,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
         }
       }
+      Page.pickTestVersion()
       Page.sendPageloadToSegmentio()
     })
 

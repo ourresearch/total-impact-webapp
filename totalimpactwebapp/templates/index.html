@@ -46,7 +46,7 @@
 
 </head>
 {% raw %}
-<body ng-class="page.getBodyClasses()" jq-popover jq-tooltip>
+<body class="{{ page.getBodyClasses() }}" jq-popover jq-tooltip>
    <div ng-include="'header.tpl.html'" id="page-header"></div>
    <div ng-view class="main-view"></div>
    <div ng-include="'footer.tpl.html'" id="page-footer"></div>

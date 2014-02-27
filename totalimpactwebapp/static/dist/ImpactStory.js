@@ -100,6 +100,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
         }
       }
+      Page.pickTestVersion()
       Page.sendPageloadToSegmentio()
     })
 
@@ -3427,6 +3428,7 @@ angular.module("services.page")
    var uservoiceTabLoc = "right"
    var lastScrollPosition = {}
    var isEmbedded =  _($location.path()).startsWith("/embed/")
+   var testVersion
 
    var showHeaderNow = true
    var showFooterNow = true
@@ -3517,12 +3519,25 @@ angular.module("services.page")
        version = versionName;
      },
      getBodyClasses: function(){
-        return {
+        var conditionalClasses = {
           'show-tab-on-bottom': uservoiceTabLoc == "bottom",
           'show-tab-on-right': uservoiceTabLoc == "right",
           'hide-tab': uservoiceTabLoc == "hidden",
           'embedded': isEmbedded
         }
+
+       var classes = [
+         'test-version-' + testVersion
+       ]
+
+       _.each(conditionalClasses, function(v, k){
+         if (v) classes.push(k)
+       })
+
+       return classes.join(" ")
+
+
+
      },
      getBaseUrl: function(){
        return "http://" + window.location.host
@@ -3531,8 +3546,15 @@ angular.module("services.page")
        return isEmbedded
      } ,
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
+
      getTitle: function() { return title; },
      setTitle: function(newTitle) { title = "ImpactStory: " + newTitle },
+
+     pickTestVersion: function(){testVersion = (Math.random() > .5) ? "a" : "b"},
+     isTestVersion: function(versionLetter){
+       return testVersion === versionLetter
+     },
+
 
      isLandingPage: function(){
        return ($location.path() === "/")
@@ -3557,7 +3579,7 @@ angular.module("services.page")
          getPageType(),
          $location.path(),
          {
-           "version": (Math.random() > .5) ? "A" : "B",
+           "version": testVersion,
            "viewport width": $(window).width(),
            "page_type": getPageType()
          }
