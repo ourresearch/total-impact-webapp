@@ -763,7 +763,7 @@ def get_2013_year_in_review():
 
 @app.route("/create")
 def create_page():
-    return redirect("signup/name", 301)
+    return redirect("signup", 301)
 
 
 

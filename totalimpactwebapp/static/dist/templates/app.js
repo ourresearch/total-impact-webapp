@@ -1060,16 +1060,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
-    "            <span class=\"add-products-container tour-container\">\n" +
-    "               <a href=\"/{{ user.about.url_slug }}/products/add\"\n" +
-    "                  data-placement=\"top\"\n" +
-    "                  data-content=\"Click here to get started!\"\n" +
-    "                  class=\"tour tour-step-1\"\n" +
-    "                  data-trigger=\"manual\"\n" +
-    "                  data-toggle=\"popover\">\n" +
-    "                  <i class=\"icon-upload\"></i>Import\n" +
-    "               </a>\n" +
-    "            </span>\n" +
+    "            <a href=\"/{{ user.about.url_slug }}/products/add\">\n" +
+    "               <i class=\"icon-upload\"></i>Import\n" +
+    "            </a>\n" +
     "            <a ng-click=\"dedup()\"\n" +
     "               ng-class=\"{working: loading.is('dedup')}\"\n" +
     "               class=\"dedup-button\">\n" +
@@ -1153,22 +1146,25 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
 angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/tour-start-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
-    "   <h4>Welcome to your Impactstory profile!</h4>\n" +
+    "   <h4>Welcome to Impactstory, {{ userAbout.given_name }}!</h4>\n" +
     "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
     "</div>\n" +
     "<div class=\"modal-body tour-start\">\n" +
     "   <p>\n" +
-    "      We've filled in your name and set your custom profile URL to make it\n" +
-    "      easy to share your impact data.\n" +
+    "      Here's your Impactstory profile page, where you can explore, edit, and share\n" +
+    "      your impact data. It's always accessible at\n" +
+    "      <span class=\"url\">impactstory.org/{{ userAbout.url_slug }}</span>\n" +
     "   </p>\n" +
     "\n" +
     "   <p>\n" +
-    "     First, though, you'll want to import some of your research products;\n" +
-    "     that'll take you less than two minutes.\n" +
+    "     Before you share, though, you'll want to import some of your research products:\n" +
     "   </p>\n" +
     "\n" +
-    "   <a class=\"btn btn-primary\" ng-click=\"$close()\">\n" +
-    "      Let's find that impact!\n" +
+    "   <a class=\"btn btn-primary\"\n" +
+    "      ng-click=\"$close()\"\n" +
+    "      href=\"/{{ userAbout.url_slug }}/products/add\">\n" +
+    "      Import my products\n" +
+    "      <i class=\"icon-cloud-upload left\"></i>\n" +
     "   </a>\n" +
     "\n" +
     "</div>\n" +

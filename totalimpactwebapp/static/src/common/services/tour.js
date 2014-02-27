@@ -1,14 +1,15 @@
 angular.module('services.tour', [])
   .factory("Tour", function($modal){
     return {
-      start: function(userAboutDict){
+      start: function(userAbout){
         console.log("start tour!")
         $(".tour").popover({trigger: "click"}).popover("show")
 
         $modal.open({
           templateUrl: "profile/tour-start-modal.tpl.html",
+          controller: "profileTourStartModalCtrl",
           resolve: {
-            userAbout: function($q){ // pass the userSlug to modal controller.
+            userAbout: function($q){
               return $q.when(userAbout)
             }
           }

@@ -6190,11 +6190,8 @@ ul li,
 ol li {
   line-height: 1.5;
 }
-i.success {
-  color: #468847;
-}
-i.error {
-  color: #b94a48;
+i.left {
+  margin-left: .3em;
 }
 div.main-view {
   min-height: 500px;
@@ -7200,26 +7197,18 @@ div.signup-banner a.close-link {
 div.signup-banner a.close-link:hover {
   color: #888;
 }
-.tour-container .popover {
-  opacity: .9;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  background: #ff4000;
-}
-.tour-container .popover .arrow:after {
-  border-top-color: #ff4000;
-}
-.tour-container .popover .popover-content {
-  background: #ff4000;
-  color: #fff;
-  font-size: 20px;
-}
 .modal-body.tour-start a.btn {
   text-align: center;
   width: 50%;
   display: block;
   margin: 30px auto 0;
+  font-weight: bold;
+}
+.modal-body.tour-start span.url {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  font-weight: bold;
 }
 div.profile-subpage div.profile-subpage-header {
   height: 70px;
