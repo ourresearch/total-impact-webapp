@@ -468,7 +468,10 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            <!--<p class=\"subtagline\">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>-->\n" +
     "            <div id=\"call-to-action\">\n" +
     "               <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
-    "               <a href=\"/CarlBoettiger\" class=\"btn btn-xlarge btn-default\" id=\"secondary-cta-button\">See an example</a>\n" +
+    "               <a href=\"/CarlBoettiger\"\n" +
+    "                  ng-show=\"page.isTestVersion('b')\"\n" +
+    "                  class=\"btn btn-xlarge btn-default\"\n" +
+    "                  id=\"secondary-cta-button\">See an example</a>\n" +
     "            </div>\n" +
     "         </div>\n" +
     "      </div>\n" +
