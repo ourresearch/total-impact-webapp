@@ -27,11 +27,29 @@ div.signup-page {
             div.form-group {
                margin-left:0;
                margin-right: 0;
-               input.input-lg {
+               position:relative;
+               input{
                   background: #fafafa;
-                  border:none;
                   height: 2.5em;
+                  border:none;
                }
+               &:not(.has-error) {
+               }
+               &.has-error {
+                  input {
+                     background: @alert-danger-bg;
+                     color: @alert-danger-text;
+                  }
+               }
+
+               div.help-block {
+                  font-size: 18px;
+                  position:absolute;
+                  top:5px;
+                  right:-130px;
+                  width: 120px;
+               }
+
             }
             button.btn {
                background: @linkColor;

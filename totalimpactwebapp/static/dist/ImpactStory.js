@@ -1614,7 +1614,13 @@ angular.module( 'signup', [
   })
 
   .controller( 'signupFormCtrl', function ( $scope, $location, security, Slug, Users) {
+    var emailThatIsAlreadyTaken = "aaaaaaaaaaaa@foo.com"
+
     $scope.newUser = {}
+    $scope.emailTaken = function(){
+      return $scope.newUser.email === emailThatIsAlreadyTaken
+    }
+
     $scope.signup = function(){
       var slug = Slug.make($scope.newUser.givenName, $scope.newUser.surname)
       Users.save(
@@ -1635,7 +1641,11 @@ angular.module( 'signup', [
           analytics.alias(resp.user.id)
         },
         function(resp){
-          console.log("error on signup!", resp)
+          if (resp.status === 409) {
+            emailThatIsAlreadyTaken = angular.copy($scope.newUser.email)
+            console.log("oops, email already taken...")
+            console.log("resp", resp)
+          }
         }
       )
 
@@ -5413,14 +5423,16 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "                         required />\n" +
     "               </div>\n" +
     "\n" +
-    "               <div class=\"form-group\">\n" +
+    "\n" +
+    "               <div class=\"form-group\" ng-class=\"{'has-error': emailTaken()}\">\n" +
     "                  <label class=\"sr-only\" for=\"signup-email\">Email</label>\n" +
     "                  <input ng-model=\"newUser.email\"\n" +
     "                         placeholder=\"Email\"\n" +
     "                         id=\"signup-email\"\n" +
-    "                         type=\"email\"\n" +
+    "                         type=\"text\"\n" +
     "                         class=\"form-control input-lg\"\n" +
     "                         required />\n" +
+    "                  <div class=\"help-block\" ng-show=\"emailTaken()\">Sorry, that email is taken.</div>\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"form-group\">\n" +

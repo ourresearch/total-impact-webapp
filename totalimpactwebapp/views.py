@@ -19,6 +19,7 @@ from totalimpactwebapp.password_reset import PasswordResetError
 
 from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
 from totalimpactwebapp.user import remove_duplicates_from_user
+from totalimpactwebapp.user import EmailExistsError
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
@@ -285,14 +286,12 @@ def user_profile(profile_id):
 @app.route("/user/<slug>", methods=["POST"])
 def create_new_user_profile(slug):
     userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
-    user = create_user_from_slug(slug, userdict, db)
 
+    try:
+        user = create_user_from_slug(slug, userdict, db)
 
-    #try:
-    #    user = create_user_from_slug(userdict["url_slug"], userdict, db)
-    #
-    #except IntegrityError:
-    #    abort_json(409, "Your user_slug isn't unique.")
+    except EmailExistsError:
+        abort_json(409, "That email already exists.")
 
     logger.debug(u"logging in user {user}".format(
         user=user.as_dict()))

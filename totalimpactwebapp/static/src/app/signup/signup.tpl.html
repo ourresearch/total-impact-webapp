@@ -32,14 +32,16 @@
                          required />
                </div>
 
-               <div class="form-group">
+
+               <div class="form-group" ng-class="{'has-error': emailTaken()}">
                   <label class="sr-only" for="signup-email">Email</label>
                   <input ng-model="newUser.email"
                          placeholder="Email"
                          id="signup-email"
-                         type="email"
+                         type="text"
                          class="form-control input-lg"
                          required />
+                  <div class="help-block" ng-show="emailTaken()">Sorry, that email is taken.</div>
                </div>
 
                <div class="form-group">

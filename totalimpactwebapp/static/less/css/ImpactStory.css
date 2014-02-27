@@ -8139,11 +8139,23 @@ div.signup-page div.signup-main-page div.form-container h2 strong {
 div.signup-page div.signup-main-page div.form-container #main-signup-form div.form-group {
   margin-left: 0;
   margin-right: 0;
+  position: relative;
 }
-div.signup-page div.signup-main-page div.form-container #main-signup-form div.form-group input.input-lg {
+div.signup-page div.signup-main-page div.form-container #main-signup-form div.form-group input {
   background: #fafafa;
-  border: none;
   height: 2.5em;
+  border: none;
+}
+div.signup-page div.signup-main-page div.form-container #main-signup-form div.form-group.has-error input {
+  background: #f2dede;
+  color: #b94a48;
+}
+div.signup-page div.signup-main-page div.form-container #main-signup-form div.form-group div.help-block {
+  font-size: 18px;
+  position: absolute;
+  top: 5px;
+  right: -130px;
+  width: 120px;
 }
 div.signup-page div.signup-main-page div.form-container #main-signup-form button.btn {
   background: #ff4000;
