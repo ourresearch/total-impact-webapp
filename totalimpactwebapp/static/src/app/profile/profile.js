@@ -10,7 +10,8 @@ angular.module("profile", [
   'services.timer',
   'tips',
   'profile.addProducts',
-  'services.i18nNotifications'
+  'services.i18nNotifications',
+  'directives.jQueryTools'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {

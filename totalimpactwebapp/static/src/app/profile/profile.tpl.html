@@ -76,7 +76,9 @@
       <div class="view-controls">
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
          <div class="admin-controls" ng-show="currentUserIsProfileOwner() && !page.isEmbedded()">
-            <a href="/{{ user.about.url_slug }}/products/add"><i class="icon-upload"></i>Import</a>
+            <a href="/{{ user.about.url_slug }}/products/add" pointer>
+               <i class="icon-upload"></i>Import
+            </a>
             <a ng-click="dedup()"
                ng-class="{working: loading.is('dedup')}"
                class="dedup-button">

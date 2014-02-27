@@ -459,7 +459,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "         <login-toolbar></login-toolbar>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "   <div class=\"top-screen\"> <!-- this needs to be set to the viewport height-->\n" +
+    "   <div class=\"top-screen\" fullscreen> <!-- this needs to be set to the viewport height-->\n" +
     "\n" +
     "      <div id=\"tagline\">\n" +
     "         <div class=\"wrapper\">\n" +
@@ -1060,7 +1060,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
-    "            <a href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-upload\"></i>Import</a>\n" +
+    "            <a href=\"/{{ user.about.url_slug }}/products/add\" pointer>\n" +
+    "               <i class=\"icon-upload\"></i>Import\n" +
+    "            </a>\n" +
     "            <a ng-click=\"dedup()\"\n" +
     "               ng-class=\"{working: loading.is('dedup')}\"\n" +
     "               class=\"dedup-button\">\n" +

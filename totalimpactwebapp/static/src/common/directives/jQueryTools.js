@@ -26,4 +26,19 @@ angular.module("directives.jQueryTools", [])
         })
       }
     }
-  });
+  })
+
+
+  .directive('pointer', function () {
+    return {
+      restrict: 'A',
+      link: function (scope, element, attr) {
+        $("body").popover({
+          html:true,
+          trigger:'hover',
+          placement:'bottom auto',
+          selector: "[data-content]"
+        })
+      }
+    }
+  })

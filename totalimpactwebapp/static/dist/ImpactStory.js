@@ -673,7 +673,8 @@ angular.module('importers.importer')
 
 angular.module( 'infopages', [
     'security',
-    'services.page'
+    'services.page',
+    'directives.fullscreen'
   ])
   .factory("InfoPages", function ($http) {
     var getProvidersInfo = function () {
@@ -1066,7 +1067,8 @@ angular.module("profile", [
   'services.timer',
   'tips',
   'profile.addProducts',
-  'services.i18nNotifications'
+  'services.i18nNotifications',
+  'directives.jQueryTools'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
@@ -1952,6 +1954,17 @@ angular.module("directives.external", [])
 	};
 });
 
+angular.module("directives.fullscreen", [])
+  .directive('fullscreen', function () {
+    return {
+      restrict: 'A',
+      link: function (scope, elem, attr) {
+        var viewportHeight = $(window).height()
+        $(elem).height(viewportHeight)
+
+      }
+    }
+  })
 angular.module('directives.gravatar', [])
 
 // A simple directive to display a gravatar image given an email
@@ -2224,7 +2237,23 @@ angular.module("directives.jQueryTools", [])
         })
       }
     }
-  });
+  })
+
+
+  .directive('pointer', function () {
+    return {
+      restrict: 'A',
+      link: function (scope, element, attr) {
+        $("body").popover({
+          html:true,
+          trigger:'hover',
+          placement:'bottom auto',
+          selector: "[data-content]"
+        })
+      }
+    }
+  })
+
 angular.module('directives.modal', []).directive('modal', ['$parse',function($parse) {
   var backdropEl;
   var body = angular.element(document.getElementsByTagName('body')[0]);
@@ -4408,7 +4437,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "         <login-toolbar></login-toolbar>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "   <div class=\"top-screen\"> <!-- this needs to be set to the viewport height-->\n" +
+    "   <div class=\"top-screen\" fullscreen> <!-- this needs to be set to the viewport height-->\n" +
     "\n" +
     "      <div id=\"tagline\">\n" +
     "         <div class=\"wrapper\">\n" +
@@ -5009,7 +5038,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
-    "            <a href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-upload\"></i>Import</a>\n" +
+    "            <a href=\"/{{ user.about.url_slug }}/products/add\" pointer>\n" +
+    "               <i class=\"icon-upload\"></i>Import\n" +
+    "            </a>\n" +
     "            <a ng-click=\"dedup()\"\n" +
     "               ng-class=\"{working: loading.is('dedup')}\"\n" +
     "               class=\"dedup-button\">\n" +

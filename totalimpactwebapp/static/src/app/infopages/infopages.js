@@ -1,6 +1,7 @@
 angular.module( 'infopages', [
     'security',
-    'services.page'
+    'services.page',
+    'directives.fullscreen'
   ])
   .factory("InfoPages", function ($http) {
     var getProvidersInfo = function () {
