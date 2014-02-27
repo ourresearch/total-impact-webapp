@@ -238,7 +238,7 @@ class User(db.Model):
         return u'<User {name}>'.format(name=self.full_name)
 
 
-    def as_dict(self):
+    def dict_about(self):
 
         properties_to_return = [
             "id",

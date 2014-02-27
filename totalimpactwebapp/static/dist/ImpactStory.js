@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-26
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-27
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -3782,6 +3782,17 @@ angular.module("services.timer", [])
     }
 
   })
+angular.module('services.tour', [])
+  .factory("tour", function(){
+
+
+
+
+
+
+
+  })
+
 angular.module("services.uservoiceWidget", [])
 angular.module("services.uservoiceWidget")
 .factory("UservoiceWidget", function(){

@@ -72,7 +72,7 @@ def json_resp_from_thing(thing):
         pass
 
     try:
-        return json_resp_from_jsonable_thing(thing.as_dict())
+        return json_resp_from_jsonable_thing(thing.dict_about())
     except AttributeError:
         pass
 
@@ -229,7 +229,7 @@ def get_current_user():
     #sleep(1)
 
     try:
-        ret = {"user": g.user.as_dict()}
+        ret = {"user": g.user.dict_about()}
 
     except AttributeError:  # anon user has no as_dict()
         ret = {"user": None}
@@ -265,7 +265,7 @@ def login():
         # Yay, no errors! Log the user in.
         login_user(user)
 
-    return json_resp_from_thing({"user": user.as_dict()})
+    return json_resp_from_thing({"user": user.dict_about()})
 
 
 
@@ -294,11 +294,11 @@ def create_new_user_profile(slug):
         abort_json(409, "That email already exists.")
 
     logger.debug(u"logging in user {user}".format(
-        user=user.as_dict()))
+        user=user.dict_about()))
 
     login_user(user)
 
-    return json_resp_from_thing({"user": user.as_dict()})
+    return json_resp_from_thing({"user": user.dict_about()})
 
 
 
@@ -318,7 +318,7 @@ def user_about(profile_id):
         include_products=False  # returns faster this way.
     )
     logger.debug(u"got the user out: {user}".format(
-        user=user.as_dict()))
+        user=user.dict_about()))
 
     if request.method == "GET":
         pass
@@ -334,11 +334,11 @@ def user_about(profile_id):
 
         user.patch(request.json["about"])
         logger.debug(u"patched the user: {user} ".format(
-            user=user.as_dict()))
+            user=user.dict_about()))
 
         db.session.commit()
 
-    return json_resp_from_thing({"about": user.as_dict()})
+    return json_resp_from_thing({"about": user.dict_about()})
 
 
 
@@ -532,7 +532,7 @@ def user_password_modify(id):
         abort_json(403, e.message)
 
     db.session.commit()
-    return json_resp_from_thing({"about": user.as_dict()})
+    return json_resp_from_thing({"about": user.dict_about()})
 
 
 
