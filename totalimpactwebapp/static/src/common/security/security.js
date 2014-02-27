@@ -1,12 +1,11 @@
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
   'services.i18nNotifications',
-  'tips',
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', function($http, $q, $location, $modal, i18nNotifications, TipsService) {
+.factory('security', function($http, $q, $location, $modal, i18nNotifications) {
   var useCachedUser = false
   var currentUser
 
@@ -51,7 +50,6 @@ angular.module('security.service', [
         .success(function(data, status) {
             console.log("success in security.login()")
             currentUser = data.user;
-          TipsService.load(data.user.url_slug)
         })
     },
 
@@ -121,7 +119,6 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
-          TipsService.load(service.getCurrentUserSlug())
 
         })
         .then(function(){return currentUser})
@@ -133,7 +130,6 @@ angular.module('security.service', [
       $http.get('/user/logout').success(function(data, status, headers, config) {
         console.log("logout message: ", data)
         i18nNotifications.pushForCurrentRoute("logout.success", "success")
-        TipsService.clear()
 //        redirect(redirectTo);
       });
     },

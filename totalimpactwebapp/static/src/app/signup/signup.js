@@ -85,8 +85,7 @@ angular.module( 'signup', [
         {
           givenName: givenName,
           surname: surname,
-          url_slug: $scope.input.url_slug,
-          tips: TipsService.keysStr()
+          url_slug: $scope.input.url_slug
         },
         function(resp, headers){
           console.log("got response back from save user", resp)

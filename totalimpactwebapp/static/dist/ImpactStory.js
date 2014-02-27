@@ -800,10 +800,7 @@ angular.module('passwordReset', [
     $location.path("/")
   }
 })
-angular.module('product.product', ["tips"])
-angular.module('product.product')
-
-
+angular.module('product.product', [])
 
   .factory('Product', function() {
     return {
@@ -1065,7 +1062,6 @@ angular.module("profile", [
   'security',
   'services.loading',
   'services.timer',
-  'tips',
   'profile.addProducts',
   'services.i18nNotifications',
   'directives.jQueryTools'
@@ -1672,8 +1668,7 @@ angular.module( 'signup', [
         {
           givenName: givenName,
           surname: surname,
-          url_slug: $scope.input.url_slug,
-          tips: TipsService.keysStr()
+          url_slug: $scope.input.url_slug
         },
         function(resp, headers){
           console.log("got response back from save user", resp)
@@ -2773,12 +2768,11 @@ angular.module('security.login.toolbar', [
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
   'services.i18nNotifications',
-  'tips',
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', function($http, $q, $location, $modal, i18nNotifications, TipsService) {
+.factory('security', function($http, $q, $location, $modal, i18nNotifications) {
   var useCachedUser = false
   var currentUser
 
@@ -2823,7 +2817,6 @@ angular.module('security.service', [
         .success(function(data, status) {
             console.log("success in security.login()")
             currentUser = data.user;
-          TipsService.load(data.user.url_slug)
         })
     },
 
@@ -2893,7 +2886,6 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
-          TipsService.load(service.getCurrentUserSlug())
 
         })
         .then(function(){return currentUser})
@@ -2905,7 +2897,6 @@ angular.module('security.service', [
       $http.get('/user/logout').success(function(data, status, headers, config) {
         console.log("logout message: ", data)
         i18nNotifications.pushForCurrentRoute("logout.success", "success")
-        TipsService.clear()
 //        redirect(redirectTo);
       });
     },
@@ -3846,145 +3837,6 @@ angular.module("services.uservoiceWidget")
 
   }
 
-
-})
-angular.module("tips", ['ngResource'])
-.factory("TipsResource", function($resource){
-
-    return $resource(
-      '/user/:slug/tips',
-      {},
-      {
-        delete: {
-          method: "DELETE",
-          headers: {'Content-Type': 'application/json'}
-        }
-      }
-    )
-})
-
-.factory("TipsService", function($interpolate, TipsResource){
-
-  var whitelist = []
-  var url_slug
-
-  var tipDefaults = {
-    status: 'success'
-  }
-
-  var getTips = function(url_slug){
-    return [
-      {
-        id: "how_we_found_these_blog_posts",
-        msg: "We’ve imported some of your most-tweeted posts. You can click a post to remove it, or click "
-          + "<a href='/"
-          + url_slug
-          + "/products/add'><i class='icon-upload'></i>import</a> to add more."
-      },
-
-      {
-        id: "how_we_found_these_tweets",
-        msg: "We’ve imported some of your most popular tweets. You can click their badges to remove tweets, or <a href='/user/"
-          + url_slug
-          + "/products/add'><i class='icon-upload'></i>import</a> to add more."
-      },
-
-      {
-        id: 'upload_wordpress_key',
-        msg: '<a href="/settings/linked-accounts">Link your wordpress.com account</a> to see page view metrics for this blog!',
-        status: 'warning'
-      },
-
-      {
-        id: 'you_can_change_your_url',
-        msg: 'dude, have you seriously not changed you url yet?'
-      }
-    ]
-  }
-
-
-  return {
-    'get': function(key, tipProperty){
-
-      var ret
-      if (_.contains(whitelist, key)){
-        var tips = getTips(url_slug)
-        var tip = _.findWhere(tips, {id: key})
-        var tipWithDefaults = _.defaults(tip, tipDefaults)
-        ret = tipWithDefaults[tipProperty]
-      }
-      else {
-        ret = null
-      }
-
-      return ret
-
-    },
-
-    keysStr: function(){
-      return _.pluck(getTips(url_slug), "id").join()
-    },
-
-    clear: function(){
-      whitelist.length = 0
-    },
-
-    load: function(url_slug_arg){
-      if (!url_slug_arg) return false // user is probably mid-login
-
-      url_slug = url_slug_arg // set factory-level var
-
-      TipsResource.get({slug: url_slug}, function(resp){
-        whitelist = resp.ids
-      })
-    },
-
-
-    remove: function(id){
-      whitelist = _.without(whitelist, id)
-      TipsResource.delete(
-        {slug: url_slug},
-        {'id': id},
-        function(resp){
-          console.log("we deleted a thing!", resp)
-        }
-
-      )
-    }
-  }
-})
-
-.directive("tip", function(TipsService, $parse){
-
-    return {
-      templateUrl: 'tips/tip.tpl.html',
-      restrict: 'E',
-      transclude: true,
-      scope: {
-        key: "=key" // linked to attr, evaluated in parent scope
-      },
-      link: function(scope, elem, attrs){
-
-        scope.getStatus = function(){
-          return TipsService.get(scope.key, 'status')
-        }
-
-        scope.getMsg = function(){
-          console.log("getting message")
-          return TipsService.get(scope.key, 'msg')
-        }
-
-
-        scope.dismiss = function() {
-          console.log("dismissing tip", scope.key)
-          return TipsService.remove(scope.key)
-        }
-
-
-
-
-      }
-    }
 
 })
 angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
@@ -5551,7 +5403,7 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "</div>");
 }]);
 
-angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tip.tpl.html']);
+angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html']);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
@@ -5697,13 +5549,4 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "</ul>\n" +
     "");
-}]);
-
-angular.module("tips/tip.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("tips/tip.tpl.html",
-    "<div ng-if=\"getStatus()\" class=\"tip alert alert-{{ getStatus() }}\">\n" +
-    "   <span class=\"msg\" ng-bind-html-unsafe=\"getMsg()\">\n" +
-    "   </span>\n" +
-    "   <button ng-click=\"dismiss()\" class=\"close\">&times;</button>\n" +
-    "</div>");
 }]);

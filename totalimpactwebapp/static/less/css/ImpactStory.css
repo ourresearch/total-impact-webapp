@@ -8783,24 +8783,3 @@ div.password-reset form.password-reset div.submit {
   font-size: 80%;
   cursor: help;
 }
-.product.heading div.category-heading div.category-heading-tips .alert {
-  margin: 5px 0 0;
-  padding: 15px 20px;
-  font-size: 17px;
-  text-align: center;
-  font-weight: 300;
-}
-.product.heading div.category-heading div.category-heading-tips .alert a {
-  font-weight: 900;
-  margin: 0 2px;
-}
-.product.heading div.category-heading div.category-heading-tips .alert a:hover {
-  text-decoration: underline;
-  color: #fff;
-}
-.product.heading div.category-heading div.category-heading-tips .alert a:hover i {
-  text-decoration: none;
-}
-.product.heading div.category-heading div.category-heading-tips .alert a i {
-  margin-right: 2px;
-}

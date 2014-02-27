@@ -8,7 +8,6 @@ angular.module("profile", [
   'security',
   'services.loading',
   'services.timer',
-  'tips',
   'profile.addProducts',
   'services.i18nNotifications',
   'directives.jQueryTools'
