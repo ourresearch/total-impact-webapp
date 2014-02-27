@@ -72,7 +72,7 @@ def json_resp_from_thing(thing):
         pass
 
     try:
-        return json_resp_from_jsonable_thing(thing.dict_about())
+        return json_resp_from_jsonable_thing(thing.as_dict())
     except AttributeError:
         pass
 
@@ -103,7 +103,7 @@ def abort_json(status_code, msg):
     abort(resp)
 
 
-def get_user_for_response(id, request, include_products=True):
+def get_user_for_response(id, request):
     id_type = unicode(request.args.get("id_type", "url_slug"))
 
     try:
@@ -111,9 +111,7 @@ def get_user_for_response(id, request, include_products=True):
     except AttributeError:
         logged_in = False
 
-    retrieved_user = get_user_from_id(id, id_type, logged_in, include_products)
-    if include_products:
-        local_sleep(1)
+    retrieved_user = get_user_from_id(id, id_type, logged_in)
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -277,8 +275,7 @@ def login():
 def user_profile(profile_id):
     user = get_user_for_response(
         profile_id,
-        request,
-        include_products=False  # returns faster this way.
+        request
     )
     return json_resp_from_thing(user)
 
@@ -314,8 +311,7 @@ def user_about(profile_id):
 
     user = get_user_for_response(
         profile_id,
-        request,
-        include_products=False  # returns faster this way.
+        request
     )
     logger.debug(u"got the user out: {user}".format(
         user=user.dict_about()))
@@ -357,23 +353,22 @@ def user_profile_awards(profile_id):
 
 
 
-@app.route("/user/<profile_id>/tips", methods=['GET', 'DELETE'])
-def user_tips(profile_id):
-    user = get_user_for_response(
-        profile_id,
-        request,
-        include_products=False  # returns faster this way.
-    )
-
-    if request.method == "GET":
-        resp = user.get_tips()
-
-    elif request.method == "DELETE":
-        resp = user.delete_tip(request.json.get("id"))
-
-    db.session.commit()
-
-    return json_resp_from_thing({'ids': resp})
+#@app.route("/user/<profile_id>/tips", methods=['GET', 'DELETE'])
+#def user_tips(profile_id):
+#    user = get_user_for_response(
+#        profile_id,
+#        request
+#    )
+#
+#    if request.method == "GET":
+#        resp = user.get_tips()
+#
+#    elif request.method == "DELETE":
+#        resp = user.delete_tip(request.json.get("id"))
+#
+#    db.session.commit()
+#
+#    return json_resp_from_thing({'ids': resp})
 
 
 

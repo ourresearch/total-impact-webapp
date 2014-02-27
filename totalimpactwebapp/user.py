@@ -270,6 +270,8 @@ class User(db.Model):
 
             ret_dict[property] = val
 
+        ret_dict["products_count"] = len(self.products)
+
         return ret_dict
 
 
