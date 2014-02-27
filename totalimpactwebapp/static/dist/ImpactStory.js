@@ -610,6 +610,11 @@ angular.module('importers.importer')
   }
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
+
+      analytics.track("Opened an importer", {
+        "Importer name": Importer.displayName
+      })
+
       $scope.importWindowOpen = true;
       $scope.importer.userInput = null  // may have been used before; clear it.
     }
@@ -637,10 +642,16 @@ angular.module('importers.importer')
         $scope.importWindowOpen = false;
         $scope.products = Importer.getTiids();
 
-        // redirectAfterImport or not (inherits this from parent scope)
-        if ($scope.redirectAfterImport) { // inherited from parent scope
-          Update.showUpdate(slug, function(){$location.path("/"+slug)})
-        }
+        Update.showUpdate(slug, function(){
+          $location.path("/"+slug)
+          analytics.track(
+            "Imported products",
+            {
+              "Importer name": Importer.displayName,
+              "Number of products": $scope.products.length
+            }
+          )
+        })
         $scope.importerHasRun = true
       }
     )
@@ -3461,13 +3472,14 @@ angular.module("services.page")
           "/about"
         ]
 
+
       if (path === "/"){
         myPageType = "landing"
       }
       else if (path === "/CarlBoettiger") {
         myPageType = "demoProfile"
       }
-      else if (_(path).startsWith("/signup")) {
+      else if (path === "/signup") {
         myPageType = "signup"
       }
       else if (_.contains(infopages, path)){
@@ -3475,6 +3487,9 @@ angular.module("services.page")
       }
       else if (_.contains(accountPages, path)) {
         myPageType = "account"
+      }
+      else if (path.indexOf("products/add") > -1) {
+        myPageType = "import"
       }
 
       return myPageType
@@ -5017,7 +5032,7 @@ angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", f
     "</div>\n" +
     "<div class=\"modal-body tour-start\">\n" +
     "   <p>\n" +
-    "      Here's your Impactstory profile page, where you can explore, edit, and share\n" +
+    "      This is your Impactstory profile page, where you can explore, edit, and share\n" +
     "      your impact data. It's always accessible at\n" +
     "      <span class=\"url\">impactstory.org/{{ userAbout.url_slug }}</span>\n" +
     "   </p>\n" +

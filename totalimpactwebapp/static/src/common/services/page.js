@@ -41,13 +41,14 @@ angular.module("services.page")
           "/about"
         ]
 
+
       if (path === "/"){
         myPageType = "landing"
       }
       else if (path === "/CarlBoettiger") {
         myPageType = "demoProfile"
       }
-      else if (_(path).startsWith("/signup")) {
+      else if (path === "/signup") {
         myPageType = "signup"
       }
       else if (_.contains(infopages, path)){
@@ -55,6 +56,9 @@ angular.module("services.page")
       }
       else if (_.contains(accountPages, path)) {
         myPageType = "account"
+      }
+      else if (path.indexOf("products/add") > -1) {
+        myPageType = "import"
       }
 
       return myPageType

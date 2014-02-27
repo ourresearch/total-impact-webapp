@@ -1154,7 +1154,7 @@ angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", f
     "</div>\n" +
     "<div class=\"modal-body tour-start\">\n" +
     "   <p>\n" +
-    "      Here's your Impactstory profile page, where you can explore, edit, and share\n" +
+    "      This is your Impactstory profile page, where you can explore, edit, and share\n" +
     "      your impact data. It's always accessible at\n" +
     "      <span class=\"url\">impactstory.org/{{ userAbout.url_slug }}</span>\n" +
     "   </p>\n" +
