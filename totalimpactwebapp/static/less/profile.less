@@ -46,7 +46,30 @@ div.signup-banner {
 
 }
 
+.tour-container {
+   .popover {
+      opacity: .9;
+      .box-shadow(none);
+      background: @linkColor;
+      .arrow {
+         &:after {border-top-color: @linkColor;}
+      }
+      .popover-content {
+         background: @linkColor;
+         color: #fff;
+         font-size: 20px;
+      }
+   }
+}
 
+.modal-body.tour-start {
+   a.btn {
+      text-align: center;
+      width: 50%;
+      display:block;
+      margin: 30px auto 0;
+   }
+}
 
 div.profile-subpage {
    div.profile-subpage-header {

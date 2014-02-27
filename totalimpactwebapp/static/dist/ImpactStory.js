@@ -1064,6 +1064,7 @@ angular.module("profile", [
   'services.timer',
   'profile.addProducts',
   'services.i18nNotifications',
+  'services.tour',
   'directives.jQueryTools'
 ])
 
@@ -1076,9 +1077,12 @@ angular.module("profile", [
 
 }])
 
-.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page){
+.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page, Tour){
   var about = {}
-
+  var slugIsCurrentUser = function(slug){
+    if (!security.getCurrentUser()) return false;
+    return (security.getCurrentUser().url_slug == slug);
+  }
 
   return {
 
@@ -1122,6 +1126,10 @@ angular.module("profile", [
         },
         function(resp) { // success
           Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+          about = resp.about
+          if (!about.products_count && slugIsCurrentUser(about.url_slug)){
+            Tour.start(about)
+          }
         },
         function(resp) { // fail
           if (resp.status == 404) {
@@ -1131,10 +1139,7 @@ angular.module("profile", [
         }
       );
     },
-    slugIsCurrentUser: function(slug){
-      if (!security.getCurrentUser()) return false;
-      return (security.getCurrentUser().url_slug == slug);
-    },
+    'slugIsCurrentUser': slugIsCurrentUser,
     makeSlug: function(){
       about.url_slug = Slug.make(about.givenName, about.surname)
     },
@@ -2211,9 +2216,10 @@ angular.module("directives.jQueryTools", [])
     return {
       restrict: 'A',
       link: function (scope, element, attr) {
-        $("body").popover({
+        $("body")
+          .not(".tour") // the tours use their own funky popovers
+          .popover({
           html:true,
-          trigger:'hover',
           placement:'bottom auto',
           selector: "[data-content]"
         })
@@ -2229,21 +2235,6 @@ angular.module("directives.jQueryTools", [])
           placement:'bottom auto',
           html:true,
           selector: "[data-toggle='tooltip']"
-        })
-      }
-    }
-  })
-
-
-  .directive('pointer', function () {
-    return {
-      restrict: 'A',
-      link: function (scope, element, attr) {
-        $("body").popover({
-          html:true,
-          trigger:'hover',
-          placement:'bottom auto',
-          selector: "[data-content]"
         })
       }
     }
@@ -3774,14 +3765,25 @@ angular.module("services.timer", [])
 
   })
 angular.module('services.tour', [])
-  .factory("tour", function(){
+  .factory("Tour", function($modal){
+    return {
+      start: function(userAboutDict){
+        console.log("start tour!")
+        $(".tour").popover({trigger: "click"}).popover("show")
 
-
-
-
-
-
-
+        $modal.open({
+          templateUrl: "profile/tour-start-modal.tpl.html",
+          resolve: {
+            userAbout: function($q){ // pass the userSlug to modal controller.
+              return $q.when(userAbout)
+            }
+          }
+        })
+      }
+    }
+  })
+  .controller("profileTourStartModalCtrl", function($scope, userAbout){
+    $scope.userAbout = userAbout
   })
 
 angular.module("services.uservoiceWidget", [])
@@ -3839,7 +3841,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -4901,9 +4903,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
-    "            <a href=\"/{{ user.about.url_slug }}/products/add\" pointer>\n" +
-    "               <i class=\"icon-upload\"></i>Import\n" +
-    "            </a>\n" +
+    "            <span class=\"add-products-container tour-container\">\n" +
+    "               <a href=\"/{{ user.about.url_slug }}/products/add\"\n" +
+    "                  data-placement=\"top\"\n" +
+    "                  data-content=\"Click here to get started!\"\n" +
+    "                  class=\"tour tour-step-1\"\n" +
+    "                  data-trigger=\"manual\"\n" +
+    "                  data-toggle=\"popover\">\n" +
+    "                  <i class=\"icon-upload\"></i>Import\n" +
+    "               </a>\n" +
+    "            </span>\n" +
     "            <a ng-click=\"dedup()\"\n" +
     "               ng-class=\"{working: loading.is('dedup')}\"\n" +
     "               class=\"dedup-button\">\n" +
@@ -4982,6 +4991,32 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <a class=\"signup-button btn btn-primary btn-sm\" href=\"/signup\">Make your free profile</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>");
+}]);
+
+angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile/tour-start-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Welcome to your Impactstory profile!</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body tour-start\">\n" +
+    "   <p>\n" +
+    "      We've filled in your name and set your custom profile URL to make it\n" +
+    "      easy to share your impact data.\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <p>\n" +
+    "     First, though, you'll want to import some of your research products;\n" +
+    "     that'll take you less than two minutes.\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <a class=\"btn btn-primary\" ng-click=\"$close()\">\n" +
+    "      Let's find that impact!\n" +
+    "   </a>\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "");
 }]);
 
 angular.module("settings/custom-url-settings.tpl.html", []).run(["$templateCache", function($templateCache) {

@@ -7200,6 +7200,27 @@ div.signup-banner a.close-link {
 div.signup-banner a.close-link:hover {
   color: #888;
 }
+.tour-container .popover {
+  opacity: .9;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  background: #ff4000;
+}
+.tour-container .popover .arrow:after {
+  border-top-color: #ff4000;
+}
+.tour-container .popover .popover-content {
+  background: #ff4000;
+  color: #fff;
+  font-size: 20px;
+}
+.modal-body.tour-start a.btn {
+  text-align: center;
+  width: 50%;
+  display: block;
+  margin: 30px auto 0;
+}
 div.profile-subpage div.profile-subpage-header {
   height: 70px;
   padding-top: 24px;
