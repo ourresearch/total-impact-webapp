@@ -3,7 +3,7 @@ angular.module('services.tour', [])
     return {
       start: function(userAbout){
         console.log("start tour!")
-        $(".tour").popover({trigger: "click"}).popover("show")
+//        $(".tour").popover({trigger: "click"}).popover("show")
 
         $modal.open({
           templateUrl: "profile/tour-start-modal.tpl.html",

@@ -5,11 +5,10 @@ angular.module("directives.jQueryTools", [])
     return {
       restrict: 'A',
       link: function (scope, element, attr) {
-        $("body")
-          .not(".tour") // the tours use their own funky popovers
-          .popover({
+        $("body").popover({
           html:true,
-          placement:'bottom auto',
+          trigger:'hover',
+          placement:'auto',
           selector: "[data-content]"
         })
       }
@@ -28,3 +27,4 @@ angular.module("directives.jQueryTools", [])
       }
     }
   })
+

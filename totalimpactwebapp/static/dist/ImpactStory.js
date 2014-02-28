@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-22
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-28
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -2228,11 +2228,10 @@ angular.module("directives.jQueryTools", [])
     return {
       restrict: 'A',
       link: function (scope, element, attr) {
-        $("body")
-          .not(".tour") // the tours use their own funky popovers
-          .popover({
+        $("body").popover({
           html:true,
-          placement:'bottom auto',
+          trigger:'hover',
+          placement:'auto',
           selector: "[data-content]"
         })
       }
@@ -2251,6 +2250,7 @@ angular.module("directives.jQueryTools", [])
       }
     }
   })
+
 
 angular.module('directives.modal', []).directive('modal', ['$parse',function($parse) {
   var backdropEl;
@@ -3803,7 +3803,7 @@ angular.module('services.tour', [])
     return {
       start: function(userAbout){
         console.log("start tour!")
-        $(".tour").popover({trigger: "click"}).popover("show")
+//        $(".tour").popover({trigger: "click"}).popover("show")
 
         $modal.open({
           templateUrl: "profile/tour-start-modal.tpl.html",
