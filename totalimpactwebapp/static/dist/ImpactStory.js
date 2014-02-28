@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-27
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-28
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -3924,7 +3924,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
     "            <img src=\"/static/img/logos/sloan-seal.png\" />\n" +
     "         </a>\n" +
-    "         <a href=\"http://nsf.gov\" id=\"footer-jisc-link\">\n" +
+    "         <a href=\"http://www.jisc.ac.uk/\" id=\"footer-jisc-link\"> \n" +
     "            <img src=\"/static/img/logos/jisc.png\" />\n" +
     "         </a>\n" +
     "      </div>\n" +

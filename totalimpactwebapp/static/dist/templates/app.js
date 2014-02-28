@@ -46,7 +46,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
     "            <img src=\"/static/img/logos/sloan-seal.png\" />\n" +
     "         </a>\n" +
-    "         <a href=\"http://nsf.gov\" id=\"footer-jisc-link\">\n" +
+    "         <a href=\"http://www.jisc.ac.uk/\" id=\"footer-jisc-link\"> \n" +
     "            <img src=\"/static/img/logos/jisc.png\" />\n" +
     "         </a>\n" +
     "      </div>\n" +
