@@ -1,59 +1,93 @@
 <div class="main infopage landing">
-   <div id="tagline">
+   <div class="toolbar-container">
       <div class="wrapper">
-         <h1>Share the full story of your <br>research impact.</h1>
-         <p class="subtagline">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>
-         <div id="call-to-action">
-            <a href="/signup" class="btn btn-large btn-primary primary-action" id="create-collection">Make my impact profile</a>
-            <a href="/CarlBoettiger" class="btn btn-large btn-primary secondary-action" id="view-sample-collection">View a sample profile</a>
+         <login-toolbar></login-toolbar>
+      </div>
+   </div>
+   <div class="top-screen" fullscreen> <!-- this needs to be set to the viewport height-->
+
+      <div id="tagline">
+         <div class="wrapper">
+            <img class="big-logo" src="/static/img/impactstory-logo-no-type.png" alt=""/>
+            <h1>Discover the full impact<br> of your research.</h1>
+            <!--<p class="subtagline">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>-->
+            <div id="call-to-action">
+               <a href="/signup" class="btn btn-xlarge btn-primary primary-action" id="signup-button">What's my impact?</a>
+               <a href="/CarlBoettiger"
+                  ng-show="page.isTestVersion('b')"
+                  class="btn btn-xlarge btn-default"
+                  id="secondary-cta-button">See an example</a>
+            </div>
          </div>
+      </div>
+
+      <div class="bottom-of-top-screen">
+         <div class="featured-and-supported">
+            <h3>featured in and supported by</h3>
+            <img src="/static/img/logos/bbc.png" />
+            <img src="/static/img/logos/nature.png" />
+            <img src="/static/img/logos/chronicle.png"/>
+
+            <span class="divider"></span>
+
+            <img src="/static/img/logos/jisc.png" />
+            <img src="/static/img/logos/sloan.png" />
+            <img src="/static/img/logos/nsf.png" />
+         </div>
+
+         <div class="ask-for-more">
+            <span>more <i class="icon-chevron-down"></i></span>
+         </div>
+
+
       </div>
 
    </div>
 
+
+
    <div id="selling-points">
-      <ul class="wrapper" >
+      <ul class="wrapper">
          <li>
-            <h3 id="metrics-in-seconds"><i class="icon-time icon-2x"></i><span class="text">View metrics in seconds</span></h3>
-            <p>Point us to your slides, code, datasets, and articles. In a few seconds, you'll have a report detailing your impacts: citations, bookmarks, downloads, tweets, and more.</p>
+            <h3><i class="icon-bar-chart icon-3x"></i><span class="text">Citations and more</span></h3>
+            <p>Find out where your work has been cited, viewed, downloaded, tweeted, and more.</p>
          </li>
          <li class="middle">
-            <h3 id="embed-metrics-anywhere"><i class="icon-suitcase icon-2x"></i><span class="text">Embed them anywhere</span></h3>
-            <p>Drop Impactstory's embeddable code into your own online CV or website to show the impacts of your work.</p>
+            <h3><i class="icon-globe icon-3x"></i><span class="text">All your outputs</span></h3>
+            <p>Discover and share the impacts of your articles, slides, datasets, and software.</p>
          </li>
          <li>
-            <h3 id="its-open"><i class="icon-wrench icon-2x"></i><span class="text">Open data,<br> open source.</span></h3>
-            <p>Our data, like our <a href="http://github.com/total-impact">source code</a>, is wide open.  As a non-profit, we're built around supporting open tools to nurture Web-native scholarship.</p>
+            <h3 id="its-open"><i class="icon-unlock-alt icon-3x"></i><span class="text">Open and free</span></h3>
+            <p>Your profile is free, the data behind it is open, and our code is open-source.</p>
          </li>
       </ul>
    </div>
 
 
-   <div id="sources">
-      <div class="wrapper">
-         <h2>Uncover your impacts from all across the Web: </h2>
-         <ul id="source-logos">
-            <li><img src="/static/img/logos/altmetric-com.png" /></li>
-            <li><img src="/static/img/logos/arxiv.png" /></li>
-            <li><img src="/static/img/logos/citeulike.png" /></li>
-            <li><img src="/static/img/logos/crossref.jpg" /></li>
-            <li><img src="/static/img/logos/delicious.jpg" /></li>
-            <li><img src="/static/img/logos/dryad.png" /></li>
-            <li><img src="/static/img/logos/f1000.png" /></li>
-            <li><img src="/static/img/logos/figshare.png" /></li>
-            <li><img src="/static/img/logos/github.png" /></li>
-            <li><img src="/static/img/logos/mendeley.png" /></li>
-            <li><img src="/static/img/logos/orcid.png" /></li>
-            <li><img src="/static/img/logos/plos.png" /></li>
-            <li><img src="/static/img/logos/pmc.gif" /></li>
-            <li><img src="/static/img/logos/pubmed.png" /></li>
-            <li><img src="/static/img/logos/scopus.jpg" /></li>
-            <li><img src="/static/img/logos/slideshare.png" /></li>
-            <li><img src="/static/img/logos/twitter.png" /></li>
-            <li><img src="/static/img/logos/vimeo.png" /></li>
-            <li><img src="/static/img/logos/wikipedia.png" /></li>
-            <li><img src="/static/img/logos/youtube.png" /></li>
-         </ul>
+   <div id="testimonials">
+      <ul class="wrapper">
+         <li>
+            <img src="/static/img/people/luo.png"/>
+            <q class="text">I don't need my CV now, Impactstory tells my story!</q>
+            <cite>Ruibang Luo, Hong Kong University</cite>
+         </li>
+
+         <li>
+            <img src="/static/img/people/graziotin.jpeg"/>
+            <q class="text">Every time I look at my Impactstory profile, I see that I did some good things and somebody actually noticed them. There is so much besides the number of citations. </q>
+            <cite>Daniel Graziotin, Free University of Bozen-Bolzano</cite>
+         </li>
+
+
+      </ul>
+
+   </div>
+
+   <div class="bottom-cta">
+      <div id="call-to-action">
+         <a href="/signup" class="btn btn-large btn-primary primary-action" id="create-collection">What's my impact?</a>
+         <!--<a href="/CarlBoettiger" class="btn btn-large btn-primary secondary-action" id="view-sample-collection">Show me a sample profile</a>-->
       </div>
    </div>
+
 </div>

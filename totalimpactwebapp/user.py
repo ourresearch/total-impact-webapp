@@ -23,6 +23,13 @@ def now_in_utc():
     return datetime.datetime.utcnow()
 
 
+class EmailExistsError(Exception):
+    pass
+
+class UrlSlugExistsError(Exception):
+    pass
+
+
 class UserTiid(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     tiid = db.Column(db.Text, primary_key=True)
@@ -151,11 +158,6 @@ class User(db.Model):
         return filtered
 
 
-    def uniqueify_slug(self):
-        self.url_slug += str(random.randint(1000, 99999))
-        return self.url_slug
-
-
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -236,7 +238,7 @@ class User(db.Model):
         return u'<User {name}>'.format(name=self.full_name)
 
 
-    def as_dict(self):
+    def dict_about(self):
 
         properties_to_return = [
             "id",
@@ -267,6 +269,8 @@ class User(db.Model):
                 pass
 
             ret_dict[property] = val
+
+        ret_dict["products_count"] = len(self.products)
 
         return ret_dict
 
@@ -427,7 +431,7 @@ def save_user_last_viewed_profile_timestamp(user_id, timestamp=None):
             message=e.message))
     return True
 
-def create_user_from_slug(url_slug, user_request_dict, api_root, db):
+def create_user_from_slug(url_slug, user_request_dict, db):
     logger.debug(u"Creating new user {url_slug} with unicode_request_dict {user_request_dict}".format(
         url_slug=url_slug, user_request_dict=user_request_dict))
 
@@ -446,11 +450,26 @@ def create_user_from_slug(url_slug, user_request_dict, api_root, db):
     if password:
         user.set_password(password)
 
-    if "tiids" in unicode_request_dict:
-        tiids = unicode_request_dict["tiids"]
-        user.tiid_links = [UserTiid(user_id=user.id, tiid=tiid) for tiid in tiids]
+    try:
+        db.session.commit()
+    except IntegrityError as e:
 
-    db.session.commit()
+        if "user_email_key" in e.message:
+            # we can't fix this. it's the caller's problem now.
+            raise EmailExistsError
+
+        elif "url_slug" in e.message:
+            # we can fix this.
+            db.session.rollback()
+            db.session.add(user)
+
+            user.url_slug += str(random.randint(1, 9999))
+
+            print "commiting fixed user: "
+            print dir(user)
+
+            db.session.commit()
+
 
     logger.debug(u"Finished creating user {id} with slug '{slug}'".format(
         id=user.id,

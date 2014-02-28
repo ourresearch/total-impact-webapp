@@ -3,81 +3,13 @@ angular.module( 'signup', [
     'services.page',
     'resources.users',
     'update.update',
-    'security.service',
-    'tips',
-    'importers.allTheImporters',
-    'importers.importer'
+    'security.service'
     ])
-  .factory("Signup", function($location){
-
-    var signupSteps = [
-      "name",
-      "url",
-      "products",
-      "password"
-    ]
-
-
-    var getCurrentStep = function(capitalize){
-      var ret = "name"
-      _.each(signupSteps, function(stepName){
-
-        if ($location.path().indexOf("/"+stepName) > 0){
-          ret = stepName
-        }
-      })
-
-      if (capitalize){
-        ret = ret.charAt(0).toUpperCase() + ret.slice(1)
-      }
-
-      return ret
-
-    }
-    var getIndexOfCurrentStep = function(){
-       return _.indexOf(signupSteps, getCurrentStep())
-    }
-
-    return {
-      signupSteps: function(){
-        return signupSteps;
-      },
-      onSignupStep: function(step){
-        return step == getCurrentStep()
-        return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
-      },
-      isBeforeCurrentSignupStep: function(stepToCheck) {
-        var indexOfStepToCheck = _.indexOf(signupSteps, stepToCheck)
-        return getIndexOfCurrentStep() > -1 && indexOfStepToCheck < getIndexOfCurrentStep()
-      },
-      getTemplatePath: function(){
-        return "signup/signup-" + getCurrentStep() + '.tpl.html';
-      }
-    }
-  })
 
 .config(['$routeProvider', function($routeProvider) {
 
   $routeProvider
-    .when('/signup/:url_slug/products/add', {
-              templateUrl: 'signup/signup.tpl.html',
-              controller: 'signupCtrl',
-              resolve:{
-              userOwnsThisProfile: function(security){
-                return security.testUserAuthenticationLevel("ownsThisProfile")
-              }
-            }
-          })
-    .when('/signup/:url_slug/password', {
-            templateUrl: 'signup/signup.tpl.html',
-            controller: 'signupCtrl',
-            resolve:{
-              userOwnsThisProfile: function(security){
-                return security.testUserAuthenticationLevel("ownsThisProfile")
-              }
-            }
-          })
-    .when("/signup/*rest", {
+    .when("/signup", {
       templateUrl: 'signup/signup.tpl.html',
       controller: 'signupCtrl',
       resolve:{
@@ -86,40 +18,53 @@ angular.module( 'signup', [
         }
       }
     })
-    .when('/signup', {redirectTo: '/signup/name'})
-
-
 }])
 
-  .controller('signupCtrl', function($scope, Signup, Page, security){
+  .controller('signupCtrl', function($scope, Page, security){
+
     Page.setUservoiceTabLoc("bottom")
-    Page.setTemplates("signup/signup-header", "")
-//    security.logout()
-    $scope.input = {}
-
-    $scope.include =  Signup.getTemplatePath();
-    $scope.nav = { // defined as an object so that controllers in child scopes can override...
-      goToNextStep: function(){
-        console.log("we should be overriding me.")
-      }
-    }
-
+    Page.showHeader(false)
+    Page.showFooter(false)
 
   })
 
-  .controller( 'signupNameCtrl', function ( $scope, $location, Signup, Slug ) {
-    analytics.track("Signup: name")
-    $scope.nav.goToNextStep = function(){
+  .controller( 'signupFormCtrl', function ( $scope, $location, security, Slug, Users) {
+    var emailThatIsAlreadyTaken = "aaaaaaaaaaaa@foo.com"
 
-      var slug = Slug.make($scope.input.givenName, $scope.input.surname)
-      $scope.givenName = $scope.input.givenName
-      $scope.surname = $scope.input.surname
-
-      $location.path("signup/" + slug + "/url")
-        .search("givenName", $scope.input.givenName)
-        .search("surname", $scope.input.surname)
+    $scope.newUser = {}
+    $scope.emailTaken = function(){
+      return $scope.newUser.email === emailThatIsAlreadyTaken
     }
 
+    $scope.signup = function(){
+      var slug = Slug.make($scope.newUser.givenName, $scope.newUser.surname)
+      Users.save(
+        {id: slug},
+        {
+          givenName: $scope.newUser.givenName,
+          surname: $scope.newUser.surname,
+          email: $scope.newUser.email,
+          password: $scope.newUser.password
+        },
+        function(resp, headers){
+          console.log("got response back from save user", resp)
+          security.clearCachedUser()
+          $location.path(resp.user.url_slug)
+
+          // so mixpanel will start tracking this user via her userid from here
+          // on out.
+          analytics.alias(resp.user.id)
+        },
+        function(resp){
+          if (resp.status === 409) {
+            emailThatIsAlreadyTaken = angular.copy($scope.newUser.email)
+            console.log("oops, email already taken...")
+            console.log("resp", resp)
+          }
+        }
+      )
+
+    }
   })
 
   .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {
@@ -140,8 +85,7 @@ angular.module( 'signup', [
         {
           givenName: givenName,
           surname: surname,
-          url_slug: $scope.input.url_slug,
-          tips: TipsService.keysStr()
+          url_slug: $scope.input.url_slug
         },
         function(resp, headers){
           console.log("got response back from save user", resp)
@@ -202,15 +146,3 @@ angular.module( 'signup', [
 
     }
   })
-
-.controller("signupHeaderCtrl", function($scope, Signup, Page) {
-
-  Page.setTitle("signup")
-
-  $scope.signupSteps = Signup.signupSteps();
-  $scope.isStepCurrent = Signup.onSignupStep;
-  $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
-
-})
-
-;

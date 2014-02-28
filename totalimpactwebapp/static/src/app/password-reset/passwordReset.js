@@ -17,7 +17,6 @@ angular.module('passwordReset', [
 })
 
 .controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, i18nNotifications, security){
-  Page.setTemplates('password-reset/password-reset-header', false)
   console.log("reset token", $routeParams.resetToken)
 
   $scope.password = ""

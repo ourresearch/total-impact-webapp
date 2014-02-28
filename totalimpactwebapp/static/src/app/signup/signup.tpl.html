@@ -1,15 +1,89 @@
+<div class="signup-page">
+   <div class="signup-main-page">
+      <div class="form-container">
+         <h1>Reveal your full scholarly impact.</h1>
+         <h2>Signup for your <strong>free</strong> Impactstory profile:</h2>
+         <form novalidate
+               name="signupForm"
+               ng-controller="signupFormCtrl"
+               ng-submit="signup()"
+               id="main-signup-form"
+               class="form-horizontal signup-form">
 
-<form class="signup name form-horizontal" name="signupForm">
-   <div ng-include="include"></div>
+            <div class="inputs">
+               <div class="form-group">
+                  <label class="sr-only" for="signup-given-name">First name</label>
+                  <input ng-model="newUser.givenName"
+                         placeholder="First name"
+                         type="text"
+                         id="signup-given-name"
+                         class="form-control input-lg"
+                         autofocus="autofocus"
+                         required />
+               </div>
 
-   <button type="submit"
-           class="next-button"
-           ng-click="nav.goToNextStep()"
-           ng-class="{'next-button': true, enabled: signupForm.$valid}"
-           ng-disabled="signupForm.$invalid">
-      <span class="text">Next</span>
-      <i class="icon-arrow-right"></i>
-   </button>
-</form>
+               <div class="form-group">
+                  <label class="sr-only" for="signup-surname">Last name</label>
+                  <input ng-model="newUser.surname"
+                         placeholder="Last name"
+                         id="signup-surname"
+                         type="text"
+                         class="form-control input-lg"
+                         required />
+               </div>
+
+
+               <div class="form-group" ng-class="{'has-error': emailTaken()}">
+                  <label class="sr-only" for="signup-email">Email</label>
+                  <input ng-model="newUser.email"
+                         placeholder="Email"
+                         id="signup-email"
+                         type="email"
+                         class="form-control input-lg"
+                         required />
+                  <div class="help-block" ng-show="emailTaken()">Sorry, that email is taken.</div>
+               </div>
+
+               <div class="form-group">
+                  <label class="sr-only" for="signup-password">Password</label>
+                  <input ng-model="newUser.password"
+                         placeholder="Password"
+                         id="signup-password"
+                         type="password"
+                         class="form-control input-lg"
+                         required />
+               </div>
+            </div>
+
+            <button ng-disabled="signupForm.$invalid" class="btn btn-primary btn-xlarge">
+               Uncover my impact<i class="icon-arrow-right"></i>
+            </button>
+         </form>
+
+      </div>
+   </div>
+
+
+   <div class="signup-sidebar">
+      <div class="testimonials-container">
+         <div class="testimonial">
+            <img src="/static/img/people/luo.png"/>
+            <q class="text">I don't need my CV now, Impactstory tells my story!</q>
+            <cite>
+               <span class="name">Ruibang Luo,</span>
+               <span class="inst">Hong Kong University</span>
+            </cite>
+         </div>
+
+
+      </div>
+
+
+
+   </div>
+
+
+
+</div>
 
 

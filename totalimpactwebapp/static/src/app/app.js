@@ -95,13 +95,15 @@ angular.module('app').controller('AppCtrl', function($scope,
 
         }
       }
+      Page.pickTestVersion()
       Page.sendPageloadToSegmentio()
     })
 
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.setTemplates("header", "footer")
+    Page.showHeader(true)
+    Page.showFooter(true)
     Page.setUservoiceTabLoc("right")
     Loading.clear()
   })

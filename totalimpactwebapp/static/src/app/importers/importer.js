@@ -126,6 +126,11 @@ angular.module('importers.importer')
   }
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
+
+      analytics.track("Opened an importer", {
+        "Importer name": Importer.displayName
+      })
+
       $scope.importWindowOpen = true;
       $scope.importer.userInput = null  // may have been used before; clear it.
     }
@@ -153,10 +158,16 @@ angular.module('importers.importer')
         $scope.importWindowOpen = false;
         $scope.products = Importer.getTiids();
 
-        // redirectAfterImport or not (inherits this from parent scope)
-        if ($scope.redirectAfterImport) { // inherited from parent scope
-          Update.showUpdate(slug, function(){$location.path("/"+slug)})
-        }
+        Update.showUpdate(slug, function(){
+          $location.path("/"+slug)
+          analytics.track(
+            "Imported products",
+            {
+              "Importer name": Importer.displayName,
+              "Number of products": $scope.products.length
+            }
+          )
+        })
         $scope.importerHasRun = true
       }
     )
