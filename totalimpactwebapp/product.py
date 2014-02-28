@@ -50,8 +50,9 @@ def make_biblio(product_dict):
     try:
         biblio["url"] = product_dict["aliases"]["url"][0]
     except KeyError:
-        biblio["url"] = False
-
+        if not "url" in biblio:
+            biblio["url"] = False  
+            
     if "title" not in biblio.keys():
         biblio["title"] = "no title"
 
