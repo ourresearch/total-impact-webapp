@@ -46,7 +46,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
     "            <img src=\"/static/img/logos/sloan-seal.png\" />\n" +
     "         </a>\n" +
-    "         <a href=\"http://www.jisc.ac.uk/\" id=\"footer-jisc-link\"> \n" +
+    "         <a href=\"http://www.jisc.ac.uk/\" id=\"footer-jisc-link\">\n" +
     "            <img src=\"/static/img/logos/jisc.png\" />\n" +
     "         </a>\n" +
     "      </div>\n" +
@@ -1514,7 +1514,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "                  <input ng-model=\"newUser.email\"\n" +
     "                         placeholder=\"Email\"\n" +
     "                         id=\"signup-email\"\n" +
-    "                         type=\"text\"\n" +
+    "                         type=\"email\"\n" +
     "                         class=\"form-control input-lg\"\n" +
     "                         required />\n" +
     "                  <div class=\"help-block\" ng-show=\"emailTaken()\">Sorry, that email is taken.</div>\n" +
