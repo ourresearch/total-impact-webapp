@@ -1,4 +1,4 @@
-angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tip.tpl.html']);
+angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html']);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
@@ -38,27 +38,37 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "      </li>\n" +
     "   </ul>\n" +
     "\n" +
-    "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\">\n" +
+    "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\" autocomplete=\"off\">\n" +
     "      <div class=\"form-group\" >\n" +
     "         <label class=\"sr-only\">E-mail</label>\n" +
     "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-envelope-alt\"></i></span>\n" +
-    "            <input name=\"login\" class=\"form-control\" type=\"username\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
+    "            <input name=\"login\" required autofocus\n" +
+    "                   autocomplete=\"off\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   type=\"username\"\n" +
+    "                   ng-model=\"user.email\"\n" +
+    "                   placeholder=\"email\" >\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
     "         <label class=\"sr-only\">Password</label>\n" +
     "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.pass.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
-    "            <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
+    "            <input name=\"pass\" required\n" +
+    "                   autocomplete=\"off\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   type=\"password\"\n" +
+    "                   ng-model=\"user.password\"\n" +
+    "                   placeholder=\"password\">\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
     "         <button class=\"btn btn-primary login\"\n" +
-    "                 ng-click=\"login()\"\n" +
-    "                 ng-hide=\"loading.is('login')\"\n" +
+    "            ng-disabled='loginForm.$invalid'\n" +
+    "            ng-click=\"login()\"\n" +
+    "            ng-hide=\"loading.is('login')\">Sign in</button>\n" +
     "\n" +
-    "                 >Sign in</button>\n" +
     "         <div class=\"working\" ng-show=\"loading.is('login')\">\n" +
     "            <i class=\"icon-refresh icon-spin\"></i>\n" +
     "            <span class=\"text\">logging in...</span>\n" +
@@ -138,20 +148,10 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "\n" +
     "   <li ng-show=\"!currentUser\" class=\"login-and-signup nav-item\">\n" +
-    "      <span ng-show=\"page.isLandingPage()\" class=\"context\">Already have a profile?</span>\n" +
-    "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup/name\">Sign up</a>\n" +
+    "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup\">Sign up</a>\n" +
     "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
     "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
     "   </li>\n" +
     "</ul>\n" +
     "");
-}]);
-
-angular.module("tips/tip.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("tips/tip.tpl.html",
-    "<div ng-if=\"getStatus()\" class=\"tip alert alert-{{ getStatus() }}\">\n" +
-    "   <span class=\"msg\" ng-bind-html-unsafe=\"getMsg()\">\n" +
-    "   </span>\n" +
-    "   <button ng-click=\"dismiss()\" class=\"close\">&times;</button>\n" +
-    "</div>");
 }]);

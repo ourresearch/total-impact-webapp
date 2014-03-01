@@ -1,7 +1,4 @@
-angular.module('product.product', ["tips"])
-angular.module('product.product')
-
-
+angular.module('product.product', [])
 
   .factory('Product', function() {
     return {

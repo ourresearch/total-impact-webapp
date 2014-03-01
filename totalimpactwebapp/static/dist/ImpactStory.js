@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-02-19
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-01
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -100,13 +100,15 @@ angular.module('app').controller('AppCtrl', function($scope,
 
         }
       }
+      Page.pickTestVersion()
       Page.sendPageloadToSegmentio()
     })
 
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.setTemplates("header", "footer")
+    Page.showHeader(true)
+    Page.showFooter(true)
     Page.setUservoiceTabLoc("right")
     Loading.clear()
   })
@@ -615,6 +617,11 @@ angular.module('importers.importer')
   }
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
+
+      analytics.track("Opened an importer", {
+        "Importer name": Importer.displayName
+      })
+
       $scope.importWindowOpen = true;
       $scope.importer.userInput = null  // may have been used before; clear it.
     }
@@ -642,10 +649,16 @@ angular.module('importers.importer')
         $scope.importWindowOpen = false;
         $scope.products = Importer.getTiids();
 
-        // redirectAfterImport or not (inherits this from parent scope)
-        if ($scope.redirectAfterImport) { // inherited from parent scope
-          Update.showUpdate(slug, function(){$location.path("/"+slug)})
-        }
+        Update.showUpdate(slug, function(){
+          $location.path("/"+slug)
+          analytics.track(
+            "Imported products",
+            {
+              "Importer name": Importer.displayName,
+              "Number of products": $scope.products.length
+            }
+          )
+        })
         $scope.importerHasRun = true
       }
     )
@@ -679,7 +692,8 @@ angular.module('importers.importer')
 
 angular.module( 'infopages', [
     'security',
-    'services.page'
+    'services.page',
+    'directives.fullscreen'
   ])
   .factory("InfoPages", function ($http) {
     var getProvidersInfo = function () {
@@ -736,7 +750,11 @@ angular.module( 'infopages', [
   }])
 
   .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {
+    var signupFormShowing = false
+    Page.showHeader(false)
+    Page.setUservoiceTabLoc("hidden")
     Page.setTitle("Share the full story of your research impact.")
+
   })
 
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
@@ -776,7 +794,6 @@ angular.module('passwordReset', [
 })
 
 .controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, i18nNotifications, security){
-  Page.setTemplates('password-reset/password-reset-header', false)
   console.log("reset token", $routeParams.resetToken)
 
   $scope.password = ""
@@ -802,10 +819,7 @@ angular.module('passwordReset', [
     $location.path("/")
   }
 })
-angular.module('product.product', ["tips"])
-angular.module('product.product')
-
-
+angular.module('product.product', [])
 
   .factory('Product', function() {
     return {
@@ -1069,9 +1083,10 @@ angular.module("profile", [
   'security',
   'services.loading',
   'services.timer',
-  'tips',
   'profile.addProducts',
-  'services.i18nNotifications'
+  'services.i18nNotifications',
+  'services.tour',
+  'directives.jQueryTools'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
@@ -1083,9 +1098,12 @@ angular.module("profile", [
 
 }])
 
-.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page){
+.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page, Tour){
   var about = {}
-
+  var slugIsCurrentUser = function(slug){
+    if (!security.getCurrentUser()) return false;
+    return (security.getCurrentUser().url_slug == slug);
+  }
 
   return {
 
@@ -1129,6 +1147,10 @@ angular.module("profile", [
         },
         function(resp) { // success
           Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+          about = resp.about
+          if (!about.products_count && slugIsCurrentUser(about.url_slug)){
+            Tour.start(about)
+          }
         },
         function(resp) { // fail
           if (resp.status == 404) {
@@ -1138,10 +1160,7 @@ angular.module("profile", [
         }
       );
     },
-    slugIsCurrentUser: function(slug){
-      if (!security.getCurrentUser()) return false;
-      return (security.getCurrentUser().url_slug == slug);
-    },
+    'slugIsCurrentUser': slugIsCurrentUser,
     makeSlug: function(){
       about.url_slug = Slug.make(about.givenName, about.surname)
     },
@@ -1367,7 +1386,7 @@ angular.module('profile.addProducts')
 
   }])
   .controller("addProductsCtrl", function($scope, Page, $routeParams, AllTheImporters){
-    Page.setTemplates("header", false)
+    Page.showHeader(false)
     $scope.redirectAfterImport = true
     $scope.importers = AllTheImporters.get()
   })
@@ -1594,81 +1613,13 @@ angular.module( 'signup', [
     'services.page',
     'resources.users',
     'update.update',
-    'security.service',
-    'tips',
-    'importers.allTheImporters',
-    'importers.importer'
+    'security.service'
     ])
-  .factory("Signup", function($location){
-
-    var signupSteps = [
-      "name",
-      "url",
-      "products",
-      "password"
-    ]
-
-
-    var getCurrentStep = function(capitalize){
-      var ret = "name"
-      _.each(signupSteps, function(stepName){
-
-        if ($location.path().indexOf("/"+stepName) > 0){
-          ret = stepName
-        }
-      })
-
-      if (capitalize){
-        ret = ret.charAt(0).toUpperCase() + ret.slice(1)
-      }
-
-      return ret
-
-    }
-    var getIndexOfCurrentStep = function(){
-       return _.indexOf(signupSteps, getCurrentStep())
-    }
-
-    return {
-      signupSteps: function(){
-        return signupSteps;
-      },
-      onSignupStep: function(step){
-        return step == getCurrentStep()
-        return $location.path().indexOf("/signup/"+step.toLowerCase()) === 0;
-      },
-      isBeforeCurrentSignupStep: function(stepToCheck) {
-        var indexOfStepToCheck = _.indexOf(signupSteps, stepToCheck)
-        return getIndexOfCurrentStep() > -1 && indexOfStepToCheck < getIndexOfCurrentStep()
-      },
-      getTemplatePath: function(){
-        return "signup/signup-" + getCurrentStep() + '.tpl.html';
-      }
-    }
-  })
 
 .config(['$routeProvider', function($routeProvider) {
 
   $routeProvider
-    .when('/signup/:url_slug/products/add', {
-              templateUrl: 'signup/signup.tpl.html',
-              controller: 'signupCtrl',
-              resolve:{
-              userOwnsThisProfile: function(security){
-                return security.testUserAuthenticationLevel("ownsThisProfile")
-              }
-            }
-          })
-    .when('/signup/:url_slug/password', {
-            templateUrl: 'signup/signup.tpl.html',
-            controller: 'signupCtrl',
-            resolve:{
-              userOwnsThisProfile: function(security){
-                return security.testUserAuthenticationLevel("ownsThisProfile")
-              }
-            }
-          })
-    .when("/signup/*rest", {
+    .when("/signup", {
       templateUrl: 'signup/signup.tpl.html',
       controller: 'signupCtrl',
       resolve:{
@@ -1677,40 +1628,53 @@ angular.module( 'signup', [
         }
       }
     })
-    .when('/signup', {redirectTo: '/signup/name'})
-
-
 }])
 
-  .controller('signupCtrl', function($scope, Signup, Page, security){
+  .controller('signupCtrl', function($scope, Page, security){
+
     Page.setUservoiceTabLoc("bottom")
-    Page.setTemplates("signup/signup-header", "")
-//    security.logout()
-    $scope.input = {}
-
-    $scope.include =  Signup.getTemplatePath();
-    $scope.nav = { // defined as an object so that controllers in child scopes can override...
-      goToNextStep: function(){
-        console.log("we should be overriding me.")
-      }
-    }
-
+    Page.showHeader(false)
+    Page.showFooter(false)
 
   })
 
-  .controller( 'signupNameCtrl', function ( $scope, $location, Signup, Slug ) {
-    analytics.track("Signup: name")
-    $scope.nav.goToNextStep = function(){
+  .controller( 'signupFormCtrl', function ( $scope, $location, security, Slug, Users) {
+    var emailThatIsAlreadyTaken = "aaaaaaaaaaaa@foo.com"
 
-      var slug = Slug.make($scope.input.givenName, $scope.input.surname)
-      $scope.givenName = $scope.input.givenName
-      $scope.surname = $scope.input.surname
-
-      $location.path("signup/" + slug + "/url")
-        .search("givenName", $scope.input.givenName)
-        .search("surname", $scope.input.surname)
+    $scope.newUser = {}
+    $scope.emailTaken = function(){
+      return $scope.newUser.email === emailThatIsAlreadyTaken
     }
 
+    $scope.signup = function(){
+      var slug = Slug.make($scope.newUser.givenName, $scope.newUser.surname)
+      Users.save(
+        {id: slug},
+        {
+          givenName: $scope.newUser.givenName,
+          surname: $scope.newUser.surname,
+          email: $scope.newUser.email,
+          password: $scope.newUser.password
+        },
+        function(resp, headers){
+          console.log("got response back from save user", resp)
+          security.clearCachedUser()
+          $location.path(resp.user.url_slug)
+
+          // so mixpanel will start tracking this user via her userid from here
+          // on out.
+          analytics.alias(resp.user.id)
+        },
+        function(resp){
+          if (resp.status === 409) {
+            emailThatIsAlreadyTaken = angular.copy($scope.newUser.email)
+            console.log("oops, email already taken...")
+            console.log("resp", resp)
+          }
+        }
+      )
+
+    }
   })
 
   .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {
@@ -1731,8 +1695,7 @@ angular.module( 'signup', [
         {
           givenName: givenName,
           surname: surname,
-          url_slug: $scope.input.url_slug,
-          tips: TipsService.keysStr()
+          url_slug: $scope.input.url_slug
         },
         function(resp, headers){
           console.log("got response back from save user", resp)
@@ -1793,18 +1756,6 @@ angular.module( 'signup', [
 
     }
   })
-
-.controller("signupHeaderCtrl", function($scope, Signup, Page) {
-
-  Page.setTitle("signup")
-
-  $scope.signupSteps = Signup.signupSteps();
-  $scope.isStepCurrent = Signup.onSignupStep;
-  $scope.isStepCompleted = Signup.isBeforeCurrentSignupStep;
-
-})
-
-;
 
 angular.module("update.update",["resources.users"]).factory("Update",function(e,t,n,r,i){var s={},o=function(e,t){s.numNotDone>0||_.isNull(s.numNotDone)?n.query({id:e,idType:"url_slug"},function(n){s.numDone=u(n,!0);s.numNotDone=u(n,!1);s.percentComplete=s.numDone*100/(s.numDone+s.numNotDone);console.log("in keepPolling");console.log(s);r(function(){o(e,t)},500)}):t()},u=function(e,t){var n=_.filter(e,function(e){return!e.currently_updating});return t?n.length:e.length-n.length},a=function(e,t){s.numDone=null;s.numNotDone=null;s.percentComplete=null;var n=i.open({templateUrl:"update/update-progress.tpl.html",controller:"updateProgressModalCtrl",backdrop:"static",keyboard:!1});o(e,function(){n.close();t()})};return{showUpdate:a,updateStatus:s}}).controller("updateProgressModalCtrl",function(e,t){e.updateStatus=t.updateStatus});
 angular.module( 'update.update', [
@@ -2012,6 +1963,31 @@ angular.module('directives.crud.edit', [])
     }
   };
 }]);
+angular.module("directives.external", [])
+
+/*https://github.com/iameugenejo/angular-centered/angular-centered.js*/
+.directive("centered", function() {
+  return {
+		restrict : "ECA",
+		transclude : true,
+		template : "<div class=\"angular-center-container\">\
+						<div class=\"angular-centered\" ng-transclude>\
+						</div>\
+					</div>"
+	};
+});
+
+angular.module("directives.fullscreen", [])
+  .directive('fullscreen', function () {
+    return {
+      restrict: 'A',
+      link: function (scope, elem, attr) {
+        var viewportHeight = $(window).height()
+        $(elem).height(viewportHeight)
+
+      }
+    }
+  })
 angular.module('directives.gravatar', [])
 
 // A simple directive to display a gravatar image given an email
@@ -2266,7 +2242,7 @@ angular.module("directives.jQueryTools", [])
         $("body").popover({
           html:true,
           trigger:'hover',
-          placement:'bottom auto',
+          placement:'auto',
           selector: "[data-content]"
         })
       }
@@ -2284,7 +2260,9 @@ angular.module("directives.jQueryTools", [])
         })
       }
     }
-  });
+  })
+
+
 angular.module('directives.modal', []).directive('modal', ['$parse',function($parse) {
   var backdropEl;
   var body = angular.element(document.getElementsByTagName('body')[0]);
@@ -2564,8 +2542,7 @@ angular.module('resources.users',['ngResource'])
   .factory('Users', function ($resource) {
 
     return $resource(
-      "/user/:id?id_type=:idType",
-      {idType: "id"}
+      "/user/:id"
     )
   })
 
@@ -2806,12 +2783,11 @@ angular.module('security.login.toolbar', [
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
   'services.i18nNotifications',
-  'tips',
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', function($http, $q, $location, $modal, i18nNotifications, TipsService) {
+.factory('security', function($http, $q, $location, $modal, i18nNotifications) {
   var useCachedUser = false
   var currentUser
 
@@ -2856,7 +2832,6 @@ angular.module('security.service', [
         .success(function(data, status) {
             console.log("success in security.login()")
             currentUser = data.user;
-          TipsService.load(data.user.url_slug)
         })
     },
 
@@ -2926,7 +2901,6 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
-          TipsService.load(service.getCurrentUserSlug())
 
         })
         .then(function(){return currentUser})
@@ -2938,7 +2912,6 @@ angular.module('security.service', [
       $http.get('/user/logout').success(function(data, status, headers, config) {
         console.log("logout message: ", data)
         i18nNotifications.pushForCurrentRoute("logout.success", "success")
-        TipsService.clear()
 //        redirect(redirectTo);
       });
     },
@@ -3004,7 +2977,6 @@ angular.module('security.service', [
 
     // Is the current user authenticated?
     isAuthenticated: function(){
-      console.log("called get current user", currentUser)
       return !!currentUser;
     },
     
@@ -3480,6 +3452,10 @@ angular.module("services.page")
    var uservoiceTabLoc = "right"
    var lastScrollPosition = {}
    var isEmbedded =  _($location.path()).startsWith("/embed/")
+   var testVersion
+
+   var showHeaderNow = true
+   var showFooterNow = true
 
    var frameTemplatePaths = {
      header: "",
@@ -3497,50 +3473,70 @@ angular.module("services.page")
 
     var getPageType = function(){
       var myPageType = "profile"
+      var path = $location.path()
 
-
-      var pageTypeLookupTable = {
-        account: [
+      var accountPages = [
           "/settings",
           "/reset-password"
-        ],
-        landing: [
-          "/"
-        ],
-        infopage: [
+      ]
+
+      var infopages = [
           "/faq",
           "/about"
-        ],
-        signup: [
-          "/signup"
         ]
+
+
+      if (path === "/"){
+        myPageType = "landing"
+      }
+      else if (path === "/CarlBoettiger") {
+        myPageType = "demoProfile"
+      }
+      else if (path === "/signup") {
+        myPageType = "signup"
+      }
+      else if (_.contains(infopages, path)){
+        myPageType = "infopages"
+      }
+      else if (_.contains(accountPages, path)) {
+        myPageType = "account"
+      }
+      else if (path.indexOf("products/add") > -1) {
+        myPageType = "import"
       }
 
-      _.each(pageTypeLookupTable, function(urlStartsWithList, pageType){
-        var filtered = _.filter(urlStartsWithList, function(x){
-           return _($location.path()).startsWith(x)
-        })
-        if (filtered.length) {
-          myPageType = pageType
-        }
-
-      })
+      return myPageType
     }
 
 
-
-   var headers = {
-     signup: "signup/signup-header.tpl.html"
-   }
-
    return {
-     setTemplates: function(headerPathRoot, footerPathRoot){
-       frameTemplatePaths.header = addTplHtml(headerPathRoot)
-       frameTemplatePaths.footer = addTplHtml(footerPathRoot)
+     showHeader: function(showHeaderArg){
+       // read current value
+       if (typeof showHeaderArg === "undefined"){
+         return showHeaderNow
+       }
+
+       // set value
+       else {
+         showHeaderNow = !!showHeaderArg
+         return showHeaderNow
+       }
      },
-     getTemplate: function(templateName){
-       return frameTemplatePaths[templateName]
+     showFooter: function(showFooterArg){
+
+       // read current value
+       if (typeof showFooterArg === "undefined"){
+         return showFooterNow
+       }
+
+       // set value
+       else {
+         showFooterNow = !!showFooterArg
+         return showFooterNow
+       }
      },
+
+
      'setNotificationsLoc': function(loc){
          notificationsLoc = loc;
      },
@@ -3551,11 +3547,25 @@ angular.module("services.page")
        version = versionName;
      },
      getBodyClasses: function(){
-        return {
+        var conditionalClasses = {
           'show-tab-on-bottom': uservoiceTabLoc == "bottom",
           'show-tab-on-right': uservoiceTabLoc == "right",
+          'hide-tab': uservoiceTabLoc == "hidden",
           'embedded': isEmbedded
         }
+
+       var classes = [
+         'test-version-' + testVersion
+       ]
+
+       _.each(conditionalClasses, function(v, k){
+         if (v) classes.push(k)
+       })
+
+       return classes.join(" ")
+
+
+
      },
      getBaseUrl: function(){
        return "http://" + window.location.host
@@ -3564,11 +3574,18 @@ angular.module("services.page")
        return isEmbedded
      } ,
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
+
      getTitle: function() { return title; },
      setTitle: function(newTitle) { title = "ImpactStory: " + newTitle },
 
+     pickTestVersion: function(){testVersion = (Math.random() > .5) ? "a" : "b"},
+     isTestVersion: function(versionLetter){
+       return testVersion === versionLetter
+     },
+
+
      isLandingPage: function(){
-       return ($location.path() == "/")
+       return ($location.path() === "/")
      },
 
      isProfile:function(){
@@ -3590,7 +3607,7 @@ angular.module("services.page")
          getPageType(),
          $location.path(),
          {
-           "version": (Math.random() > .5) ? "A" : "B",
+           "version": testVersion,
            "viewport width": $(window).width(),
            "page_type": getPageType()
          }
@@ -3627,10 +3644,7 @@ angular.module('services.routeChangeErrorHandler', [
     var handle = function(event, current, previous, rejection){
       console.log("handling route change error.", event, current, previous, rejection)
       var path = $location.path()
-      if (rejection == "signupFlowOutOfOrder") {
-        $location.path("/signup/name")
-      }
-      else if (rejection == "notLoggedIn"){
+      if (rejection == "notLoggedIn"){
         // do something more useful later...popup login dialog, maybe.
         $location.path("/")
       }
@@ -3784,84 +3798,6 @@ angular.module('services.slug')
 
 
 })
-var analytics = analytics || {};
-
-angular.module('services.tiAnalytics', [
-//    'services.page'
-  ])
-  .run(['$http', function($http) {
-
-    // this is where you'd initialize GA, but segment.io is doing this for us.
-
-}])
-  .factory('tiAnalytics', function($window, $location, $routeParams) {
-
-//	$rootScope.$on('$viewContentLoaded', track);
-
-
-
-    var getPageType = function(){
-      var myPageType = "profile"
-
-
-      var pageTypeLookupTable = {
-        account: [
-          "/settings",
-          "/reset-password"
-        ],
-        landing: [
-          "/"
-        ],
-        infopage: [
-          "/faq",
-          "/about"
-        ],
-        signup: [
-          "/signup"
-        ]
-      }
-
-      _.each(pageTypeLookupTable, function(urlStartsWithList, pageType){
-        var filtered = _.filter(urlStartsWithList, function(x){
-           return _($location.path()).startsWith(x)
-        })
-        if (filtered.length) {
-          myPageType = pageType
-        }
-
-      })
-      return myPageType
-    }
-
-
-    var trackPageLoad = function(){
-      analytics.page(getPageType(), $location.path(), {
-
-      })
-    }
-
-
-
-	
-	var convertPathToQueryString = function(path, $routeParams) {
-		for (var key in $routeParams) {
-			var queryParam = '/' + $routeParams[key];
-			path = path.replace(queryParam, '');
-		}
-
-		var querystring = decodeURIComponent($.param($routeParams));
-
-		if (querystring === '') return path;
-
-		return path + "?" + querystring;
-	};
-
-
-  return {
-    'pageload': trackPageLoad
-
-  }
-});
 angular.module("services.timer", [])
 .factory("Timer", function(){
     var jobs = []
@@ -3875,6 +3811,29 @@ angular.module("services.timer", [])
     }
 
   })
+angular.module('services.tour', [])
+  .factory("Tour", function($modal){
+    return {
+      start: function(userAbout){
+        console.log("start tour!")
+//        $(".tour").popover({trigger: "click"}).popover("show")
+
+        $modal.open({
+          templateUrl: "profile/tour-start-modal.tpl.html",
+          controller: "profileTourStartModalCtrl",
+          resolve: {
+            userAbout: function($q){
+              return $q.when(userAbout)
+            }
+          }
+        })
+      }
+    }
+  })
+  .controller("profileTourStartModalCtrl", function($scope, userAbout){
+    $scope.userAbout = userAbout
+  })
+
 angular.module("services.uservoiceWidget", [])
 angular.module("services.uservoiceWidget")
 .factory("UservoiceWidget", function(){
@@ -3930,200 +3889,56 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module("tips", ['ngResource'])
-.factory("TipsResource", function($resource){
-
-    return $resource(
-      '/user/:slug/tips',
-      {},
-      {
-        delete: {
-          method: "DELETE",
-          headers: {'Content-Type': 'application/json'}
-        }
-      }
-    )
-})
-
-.factory("TipsService", function($interpolate, TipsResource){
-
-  var whitelist = []
-  var url_slug
-
-  var tipDefaults = {
-    status: 'success'
-  }
-
-  var getTips = function(url_slug){
-    return [
-      {
-        id: "how_we_found_these_blog_posts",
-        msg: "We’ve imported some of your most-tweeted posts. You can click a post to remove it, or click "
-          + "<a href='/"
-          + url_slug
-          + "/products/add'><i class='icon-upload'></i>import</a> to add more."
-      },
-
-      {
-        id: "how_we_found_these_tweets",
-        msg: "We’ve imported some of your most popular tweets. You can click their badges to remove tweets, or <a href='/user/"
-          + url_slug
-          + "/products/add'><i class='icon-upload'></i>import</a> to add more."
-      },
-
-      {
-        id: 'upload_wordpress_key',
-        msg: '<a href="/settings/linked-accounts">Link your wordpress.com account</a> to see page view metrics for this blog!',
-        status: 'warning'
-      },
-
-      {
-        id: 'you_can_change_your_url',
-        msg: 'dude, have you seriously not changed you url yet?'
-      }
-    ]
-  }
-
-
-  return {
-    'get': function(key, tipProperty){
-
-      var ret
-      if (_.contains(whitelist, key)){
-        var tips = getTips(url_slug)
-        var tip = _.findWhere(tips, {id: key})
-        var tipWithDefaults = _.defaults(tip, tipDefaults)
-        ret = tipWithDefaults[tipProperty]
-      }
-      else {
-        ret = null
-      }
-
-      return ret
-
-    },
-
-    keysStr: function(){
-      return _.pluck(getTips(url_slug), "id").join()
-    },
-
-    clear: function(){
-      whitelist.length = 0
-    },
-
-    load: function(url_slug_arg){
-      if (!url_slug_arg) return false // user is probably mid-login
-
-      url_slug = url_slug_arg // set factory-level var
-
-      TipsResource.get({slug: url_slug}, function(resp){
-        whitelist = resp.ids
-      })
-    },
-
-
-    remove: function(id){
-      whitelist = _.without(whitelist, id)
-      TipsResource.delete(
-        {slug: url_slug},
-        {'id': id},
-        function(resp){
-          console.log("we deleted a thing!", resp)
-        }
-
-      )
-    }
-  }
-})
-
-.directive("tip", function(TipsService, $parse){
-
-    return {
-      templateUrl: 'tips/tip.tpl.html',
-      restrict: 'E',
-      transclude: true,
-      scope: {
-        key: "=key" // linked to attr, evaluated in parent scope
-      },
-      link: function(scope, elem, attrs){
-
-        scope.getStatus = function(){
-          return TipsService.get(scope.key, 'status')
-        }
-
-        scope.getMsg = function(){
-          console.log("getting message")
-          return TipsService.get(scope.key, 'msg')
-        }
-
-
-        scope.dismiss = function() {
-          console.log("dismissing tip", scope.key)
-          return TipsService.remove(scope.key)
-        }
-
-
-
-
-      }
-    }
-
-})
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
-    "<div id=\"footer\">\n" +
+    "<div id=\"footer\" ng-show=\"page.showFooter()\">\n" +
     "   <div class=\"wrapper\">\n" +
-    "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
-    "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"Impactstory\" /></a>\n" +
-    "\n" +
-    "         <p class=\"descr\">We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>\n" +
-    "         <p class=\"license\">\n" +
-    "            <!--<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\"><img alt=\"Creative Commons License\" style=\"border-width:0\" src=\"http://i.creativecommons.org/l/by/2.0/80x15.png\" /></a>-->\n" +
-    "            <span class=\"text\">Except where otherwise noted, content on this site is licensed under the\n" +
-    "               <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\">CC-BY license</a>.\n" +
-    "            </span>\n" +
-    "         </p>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "      <div id=\"footer-follow\" class=\"footer-col\">\n" +
-    "         <h3>Follow</h3>\n" +
-    "         <ul>\n" +
-    "            <li><a href=\"http://twitter.com/#!/Impactstory\">Twitter</a></li>\n" +
-    "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
-    "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Stickers!</a></li>\n" +
-    "            <li><a href=\"http://twitter.com/#!/Impactstory_now\">Site status</a></li>\n" +
-    "            <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
-    "\n" +
-    "         </ul>\n" +
-    "      </div>\n" +
     "\n" +
     "      <div id=\"footer-about\" class=\"footer-col\">\n" +
     "         <h3>About</h3>\n" +
     "         <ul>\n" +
     "            <li><a href=\"/about\">About us</a></li>\n" +
-    "            <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Feedback</a></li>\n" +
-    "            <li>\n" +
-    "               <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Support</a>\n" +
-    "            </li>\n" +
-    "\n" +
-    "\n" +
-    "            <li><a href=\"/faq\">FAQ</a></li>\n" +
-    "            <!--<li><a href=\"/about#contact\">Contact us</a></li>-->\n" +
     "            <li><a href=\"/faq#tos\" target=\"_self\">Terms of use</a></li>\n" +
+    "            <li><a href=\"/faq#copyright\" target=\"_self\">Copyright</a></li>\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div id=\"footer-follow\" class=\"footer-col\">\n" +
+    "         <h3>Community</h3>\n" +
+    "         <ul>\n" +
+    "            <li><a href=\"http://twitter.com/#!/Impactstory\">Twitter</a></li>\n" +
+    "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
+    "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Free stickers!</a></li>\n" +
+    "            <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
+    "            <!--<li><a href=\"http://twitter.com/#!/Impactstory_now\">Site status</a></li>-->\n" +
+    "\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div id=\"footer-help\" class=\"footer-col\">\n" +
+    "         <h3>Help</h3>\n" +
+    "         <ul>\n" +
+    "            <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Suggestions</a></li>\n" +
+    "            <li>\n" +
+    "               <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Report bug</a>\n" +
+    "            </li>\n" +
+    "            <li><a href=\"/faq\">FAQ</a></li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
     "      <div id=\"footer-funders\" class=\"footer-col\">\n" +
     "         <h3>Supported by</h3>\n" +
-    "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
-    "            <img src=\"/static/img/logos/sloan.png\"  width=\"200\"/>\n" +
-    "         </a>\n" +
     "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
-    "            <img src=\"/static/img/logos/nsf.png\"  width=\"200\"/>\n" +
+    "            <img src=\"/static/img/logos/nsf-seal.png\" />\n" +
+    "         </a>\n" +
+    "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
+    "            <img src=\"/static/img/logos/sloan-seal.png\" />\n" +
+    "         </a>\n" +
+    "         <a href=\"http://www.jisc.ac.uk/\" id=\"footer-jisc-link\">\n" +
+    "            <img src=\"/static/img/logos/jisc.png\" />\n" +
     "         </a>\n" +
     "      </div>\n" +
     "\n" +
@@ -4135,11 +3950,10 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header header\" ng-class=\"{landing: page.isLandingPage(), profile: page.isProfile()}\">\n" +
+    "<div class=\"main-header header\" ng-show=\"page.showHeader()\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <a class=\"brand\" href=\"/\">\n" +
-    "         <img ng-if=\"!page.isProfile()\"  src=\"/static/img/impactstory-logo-no-type.png\" alt=\"Impactstory\" />\n" +
-    "         <img ng-if=\"page.isProfile()\" src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory\" />\n" +
+    "         <img src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory\" />\n" +
     "      </a>\n" +
     "      <login-toolbar></login-toolbar>\n" +
     "   </div>\n" +
@@ -4397,6 +4211,14 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <p>Due to agreements we have made with data providers, you may not scrape this website -- use the embed or download funtionality instead.</p>\n" +
     "\n" +
     "\n" +
+    "\n" +
+    "   <h3 id=\"copyright\">copyright</h3>\n" +
+    "   <span class=\"text\">Except where otherwise noted, content on this site is licensed under the\n" +
+    "      <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\">CC-BY license</a>.\n" +
+    "   </span>\n" +
+    "\n" +
+    "   \n" +
+    "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
     "\n" +
     "   <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>\n" +
@@ -4523,63 +4345,97 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
 angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("infopages/landing.tpl.html",
     "<div class=\"main infopage landing\">\n" +
-    "   <div id=\"tagline\">\n" +
+    "   <div class=\"toolbar-container\">\n" +
     "      <div class=\"wrapper\">\n" +
-    "         <h1>Share the full story of your <br>research impact.</h1>\n" +
-    "         <p class=\"subtagline\">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>\n" +
-    "         <div id=\"call-to-action\">\n" +
-    "            <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">Make my impact profile</a>\n" +
-    "            <a href=\"/CarlBoettiger\" class=\"btn btn-large btn-primary secondary-action\" id=\"view-sample-collection\">View a sample profile</a>\n" +
+    "         <login-toolbar></login-toolbar>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "   <div class=\"top-screen\" fullscreen> <!-- this needs to be set to the viewport height-->\n" +
+    "\n" +
+    "      <div id=\"tagline\">\n" +
+    "         <div class=\"wrapper\">\n" +
+    "            <img class=\"big-logo\" src=\"/static/img/impactstory-logo-no-type.png\" alt=\"\"/>\n" +
+    "            <h1>Discover the full impact<br> of your research.</h1>\n" +
+    "            <!--<p class=\"subtagline\">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>-->\n" +
+    "            <div id=\"call-to-action\">\n" +
+    "               <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
+    "               <a href=\"/CarlBoettiger\"\n" +
+    "                  ng-show=\"page.isTestVersion('b')\"\n" +
+    "                  class=\"btn btn-xlarge btn-default\"\n" +
+    "                  id=\"secondary-cta-button\">See an example</a>\n" +
+    "            </div>\n" +
     "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"bottom-of-top-screen\">\n" +
+    "         <div class=\"featured-and-supported\">\n" +
+    "            <h3>featured in and supported by</h3>\n" +
+    "            <img src=\"/static/img/logos/bbc.png\" />\n" +
+    "            <img src=\"/static/img/logos/nature.png\" />\n" +
+    "            <img src=\"/static/img/logos/chronicle.png\"/>\n" +
+    "\n" +
+    "            <span class=\"divider\"></span>\n" +
+    "\n" +
+    "            <img src=\"/static/img/logos/jisc.png\" />\n" +
+    "            <img src=\"/static/img/logos/sloan.png\" />\n" +
+    "            <img src=\"/static/img/logos/nsf.png\" />\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"ask-for-more\">\n" +
+    "            <span>more <i class=\"icon-chevron-down\"></i></span>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
     "\n" +
+    "\n" +
+    "\n" +
     "   <div id=\"selling-points\">\n" +
-    "      <ul class=\"wrapper\" >\n" +
+    "      <ul class=\"wrapper\">\n" +
     "         <li>\n" +
-    "            <h3 id=\"metrics-in-seconds\"><i class=\"icon-time icon-2x\"></i><span class=\"text\">View metrics in seconds</span></h3>\n" +
-    "            <p>Point us to your slides, code, datasets, and articles. In a few seconds, you'll have a report detailing your impacts: citations, bookmarks, downloads, tweets, and more.</p>\n" +
+    "            <h3><i class=\"icon-bar-chart icon-3x\"></i><span class=\"text\">Citations and more</span></h3>\n" +
+    "            <p>Find out where your work has been cited, viewed, downloaded, tweeted, and more.</p>\n" +
     "         </li>\n" +
     "         <li class=\"middle\">\n" +
-    "            <h3 id=\"embed-metrics-anywhere\"><i class=\"icon-suitcase icon-2x\"></i><span class=\"text\">Embed them anywhere</span></h3>\n" +
-    "            <p>Drop Impactstory's embeddable code into your own online CV or website to show the impacts of your work.</p>\n" +
+    "            <h3><i class=\"icon-globe icon-3x\"></i><span class=\"text\">All your outputs</span></h3>\n" +
+    "            <p>Discover and share the impacts of your articles, slides, datasets, and software.</p>\n" +
     "         </li>\n" +
     "         <li>\n" +
-    "            <h3 id=\"its-open\"><i class=\"icon-wrench icon-2x\"></i><span class=\"text\">Open data,<br> open source.</span></h3>\n" +
-    "            <p>Our data, like our <a href=\"http://github.com/total-impact\">source code</a>, is wide open.  As a non-profit, we're built around supporting open tools to nurture Web-native scholarship.</p>\n" +
+    "            <h3 id=\"its-open\"><i class=\"icon-unlock-alt icon-3x\"></i><span class=\"text\">Open and free</span></h3>\n" +
+    "            <p>Your profile is free, the data behind it is open, and our code is open-source.</p>\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
     "\n" +
     "\n" +
-    "   <div id=\"sources\">\n" +
-    "      <div class=\"wrapper\">\n" +
-    "         <h2>Uncover your impacts from all across the Web: </h2>\n" +
-    "         <ul id=\"source-logos\">\n" +
-    "            <li><img src=\"/static/img/logos/altmetric-com.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/arxiv.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/citeulike.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/delicious.jpg\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/dryad.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/f1000.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/github.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/mendeley.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/orcid.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/plos.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/pmc.gif\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/scopus.jpg\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/vimeo.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
-    "         </ul>\n" +
+    "   <div id=\"testimonials\">\n" +
+    "      <ul class=\"wrapper\">\n" +
+    "         <li>\n" +
+    "            <img src=\"/static/img/people/luo.png\"/>\n" +
+    "            <q class=\"text\">I don't need my CV now, Impactstory tells my story!</q>\n" +
+    "            <cite>Ruibang Luo, Hong Kong University</cite>\n" +
+    "         </li>\n" +
+    "\n" +
+    "         <li>\n" +
+    "            <img src=\"/static/img/people/graziotin.jpeg\"/>\n" +
+    "            <q class=\"text\">Every time I look at my Impactstory profile, I see that I did some good things and somebody actually noticed them. There is so much besides the number of citations. </q>\n" +
+    "            <cite>Daniel Graziotin, Free University of Bozen-Bolzano</cite>\n" +
+    "         </li>\n" +
+    "\n" +
+    "\n" +
+    "      </ul>\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"bottom-cta\">\n" +
+    "      <div id=\"call-to-action\">\n" +
+    "         <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">What's my impact?</a>\n" +
+    "         <!--<a href=\"/CarlBoettiger\" class=\"btn btn-large btn-primary secondary-action\" id=\"view-sample-collection\">Show me a sample profile</a>-->\n" +
     "      </div>\n" +
     "   </div>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);
@@ -5098,7 +4954,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
-    "            <a href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-upload\"></i>Import</a>\n" +
+    "            <a href=\"/{{ user.about.url_slug }}/products/add\">\n" +
+    "               <i class=\"icon-upload\"></i>Import\n" +
+    "            </a>\n" +
     "            <a ng-click=\"dedup()\"\n" +
     "               ng-class=\"{working: loading.is('dedup')}\"\n" +
     "               class=\"dedup-button\">\n" +
@@ -5177,6 +5035,35 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <a class=\"signup-button btn btn-primary btn-sm\" href=\"/signup\">Make your free profile</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>");
+}]);
+
+angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile/tour-start-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Welcome to Impactstory, {{ userAbout.given_name }}!</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body tour-start\">\n" +
+    "   <p>\n" +
+    "      This is your Impactstory profile page, where you can explore, edit, and share\n" +
+    "      your impact data. It's always accessible at\n" +
+    "      <span class=\"url\">impactstory.org/{{ userAbout.url_slug }}</span>\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <p>\n" +
+    "     Before you share, though, you'll want to import some of your research products:\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <a class=\"btn btn-primary\"\n" +
+    "      ng-click=\"$close()\"\n" +
+    "      href=\"/{{ userAbout.url_slug }}/products/add\">\n" +
+    "      Import my products\n" +
+    "      <i class=\"icon-cloud-upload left\"></i>\n" +
+    "   </a>\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "");
 }]);
 
 angular.module("settings/custom-url-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -5476,219 +5363,95 @@ angular.module("settings/settings.tpl.html", []).run(["$templateCache", function
     "");
 }]);
 
-angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-creating.tpl.html",
-    "<div class=\"signup-input creating\" ng-controller=\"signupCreatingCtrl\">\n" +
-    "   <div class=\"intro\"><br>We're creating your profile now! Right now, we're scouring the web, finding the ways your products have made an impact...</div>\n" +
-    "\n" +
-    "   <div class=\"update-progress\" ng-show=\"numNotDone\">\n" +
-    "      <div class=\"products not-done\">\n" +
-    "         <span class=\"count still-working\">{{ numNotDone }}</span>\n" +
-    "         <span class=\"descr\">now updating</span>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"products done\">\n" +
-    "         <span class=\"count finished\">{{ numDone}}</span>\n" +
-    "         <span class=\"descr\">done updating</span>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "");
-}]);
-
-angular.module("signup/signup-header.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-header.tpl.html",
-    "<div class=\"signup-header header\" ng-controller=\"signupHeaderCtrl\">\n" +
-    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-reverse-no-text.png\" alt=\"Impactstory\" /></a>\n" +
-    "      <span class=\"text\">signup</span>\n" +
-    "   </h1>\n" +
-    "   <ol class=\"signup-steps\">\n" +
-    "      <li ng-repeat=\"stepName in signupSteps\"\n" +
-    "          class=\"{{ stepName }}\"\n" +
-    "          ng-class=\"{current: isStepCurrent(stepName), completed: isStepCompleted(stepName)}\">\n" +
-    "         {{ stepName }}\n" +
-    "      </li>\n" +
-    "   </ol>\n" +
-    "   <div ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-name.tpl.html",
-    "<div class=\"signup-input url\" ng-controller=\"signupNameCtrl\">\n" +
-    "   <div class=\"intro\">Making a profile takes less than 5 minutes--let’s get started!</div>\n" +
-    "\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <input required class=\"form-control\" type=\"text\" ng-model=\"input.givenName\" placeholder=\"First name\">\n" +
-    "   </div>\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <input required class=\"input-large form-control\" type=\"text\" ng-model=\"input.surname\" placeholder=\"Last name\">\n" +
-    "   </div>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-password.tpl.html",
-    "<div class=\"signup-input email-and-password\" ng-controller=\"signupPasswordCtrl\">\n" +
-    "   <div class=\"intro\"><br>Last step! Enter your email and pick a password:<br><span class=\"paren\">(Don't worry, we never share your email)</span></div>\n" +
-    "\n" +
-    "   <div class=\"form-group email\"\n" +
-    "        ng-class=\"{ 'has-error':  signupForm.email.$invalid && signupForm.email.$dirty && !loading.is(),\n" +
-    "                 'has-success': signupForm.email.$valid && signupForm.email.$dirty && !loading.is()}\">\n" +
-    "\n" +
-    "      <div class=\"controls input-group\">\n" +
-    "         <span class=\"input-group-addon\"><i class=\"icon-envelope\"></i></span>\n" +
-    "         <input ng-model=\"input.email\"\n" +
-    "                placeholder=\"email\"\n" +
-    "                name=\"email\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required\n" +
-    "                data-require-unique\n" +
-    "                 />\n" +
-    "\n" +
-    "      </div>\n" +
-    "      <div class=\"help-info\">\n" +
-    "\n" +
-    "         <spinner msg=\"Checking\"></spinner>\n" +
-    "\n" +
-    "         <div class=\"help-block error tall\"\n" +
-    "              ng-show=\"signupForm.email.$error.requireUnique\n" +
-    "            && signupForm.email.$dirty\n" +
-    "            && !loading.is()\">\n" +
-    "            That email address is already in use.\n" +
-    "         </div>\n" +
-    "         <div class=\"help-block success\"\n" +
-    "              ng-show=\"signupForm.email.$valid\n" +
-    "            && signupForm.email.$dirty\n" +
-    "            && !loading.is()\">\n" +
-    "            Looks good!\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group password\"\n" +
-    "         ng-class=\"{'has-success': signupForm.password.$valid && !loading.is()}\">\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "      <div class=\"controls input-group\">\n" +
-    "         <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
-    "\n" +
-    "         <input ng-model=\"input.password\"\n" +
-    "                name=\"password\"\n" +
-    "                type=\"password\"\n" +
-    "                placeholder=\"password\"\n" +
-    "                ng-show=\"!showPassword\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required>\n" +
-    "\n" +
-    "         <input ng-model=\"input.password\"\n" +
-    "                name=\"password\"\n" +
-    "                type=\"text\"\n" +
-    "                placeholder=\"password\"\n" +
-    "                ng-show=\"showPassword\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required>\n" +
-    "      </div>\n" +
-    "      <pretty-checkbox value=\"showPassword\" text=\"Show\"></pretty-checkbox>\n" +
-    "\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-products.tpl.html",
-    "<div class=\"signup-input signup-products\" ng-controller=\"signupProductsCtrl\">\n" +
-    "   <div class=\"intro\">Next, let's import a few of your products from these sources <br><span class=\"paren\">(you can more add more later, too)</span></div>\n" +
-    "\n" +
-    "\n" +
-    "   <div class=\"importers signup-importers\">\n" +
-    "      <div class=\"importer\"\n" +
-    "           ng-repeat=\"importer in importers\"\n" +
-    "           ng-controller=\"importerCtrl\"\n" +
-    "           ng-include=\"'importers/importer.tpl.html'\"\n" +
-    "           >\n" +
-    "      </div>\n" +
-    "  </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "</div>");
-}]);
-
-angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-url.tpl.html",
-    "<div class=\"signup-input url\" ng-controller=\"signupUrlCtrl\">\n" +
-    "   <div class=\"intro\"><br>Your next step is to pick your profile's custom URL. <br><span class=\"paren\">(you can always change this later)</span></div>\n" +
-    "   \n" +
-    "   <div class=\"form-group custom-url\"\n" +
-    "        ng-model=\"profileAbout.url_slug\"\n" +
-    "        ng-class=\"{ 'has-error':  signupForm.url_slug.$invalid && signupForm.url_slug.$dirty && !loading.is(),\n" +
-    "                    'has-success': signupForm.url_slug.$valid && !loading.is()}\">\n" +
-    "\n" +
-    "      <div class=\"controls input-group\">\n" +
-    "         <span class=\"input-group-addon\">http://impactstory.org/</span>\n" +
-    "         <input ng-model=\"input.url_slug\"\n" +
-    "                name=\"url_slug\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required\n" +
-    "                data-require-unique\n" +
-    "                data-check-initial-value=\"true\"\n" +
-    "                ng-pattern=\"/^[\\w-]+$/\"\n" +
-    "                 />\n" +
-    "\n" +
-    "      </div>\n" +
-    "      <div class=\"help-info\">\n" +
-    "         <spinner msg=\"Checking\"></spinner>\n" +
-    "\n" +
-    "         <div class=\"help-block error\"\n" +
-    "              ng-show=\"signupForm.url_slug.$error.pattern\n" +
-    "               && signupForm.url_slug.$dirty\n" +
-    "               && !loading.is()\">\n" +
-    "            Sorry, this URL has invalid characters.<br> You can only use hyphens, numbers or Latin-alphabet letters.\n" +
-    "         </div>\n" +
-    "\n" +
-    "         <div class=\"help-block error\"\n" +
-    "              ng-show=\"signupForm.url_slug.$error.requireUnique\n" +
-    "               && signupForm.url_slug.$dirty\n" +
-    "               && !loading.is()\">\n" +
-    "            Sorry, someone else is using that URL.<br>Try changing it to make it more unique.\n" +
-    "         </div>\n" +
-    "         <div class=\"help-block success\"\n" +
-    "              ng-show=\"signupForm.url_slug.$valid\n" +
-    "               && signupForm.url_slug.$dirty\n" +
-    "               && !loading.is()\">\n" +
-    "            This URL looks good!\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "   </div>\n" +
-    "</div>");
-}]);
-
 angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup.tpl.html",
+    "<div class=\"signup-page\">\n" +
+    "   <div class=\"signup-main-page\">\n" +
+    "      <div class=\"form-container\">\n" +
+    "         <h1>Reveal your full scholarly impact.</h1>\n" +
+    "         <h2>Signup for your <strong>free</strong> Impactstory profile:</h2>\n" +
+    "         <form novalidate\n" +
+    "               name=\"signupForm\"\n" +
+    "               ng-controller=\"signupFormCtrl\"\n" +
+    "               ng-submit=\"signup()\"\n" +
+    "               id=\"main-signup-form\"\n" +
+    "               class=\"form-horizontal signup-form\">\n" +
     "\n" +
-    "<form class=\"signup name form-horizontal\" name=\"signupForm\">\n" +
-    "   <div ng-include=\"include\"></div>\n" +
+    "            <div class=\"inputs\">\n" +
+    "               <div class=\"form-group\">\n" +
+    "                  <label class=\"sr-only\" for=\"signup-given-name\">First name</label>\n" +
+    "                  <input ng-model=\"newUser.givenName\"\n" +
+    "                         placeholder=\"First name\"\n" +
+    "                         type=\"text\"\n" +
+    "                         id=\"signup-given-name\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         autofocus=\"autofocus\"\n" +
+    "                         required />\n" +
+    "               </div>\n" +
     "\n" +
-    "   <button type=\"submit\"\n" +
-    "           class=\"next-button\"\n" +
-    "           ng-click=\"nav.goToNextStep()\"\n" +
-    "           ng-class=\"{'next-button': true, enabled: signupForm.$valid}\"\n" +
-    "           ng-disabled=\"signupForm.$invalid\">\n" +
-    "      <span class=\"text\">Next</span>\n" +
-    "      <i class=\"icon-arrow-right\"></i>\n" +
-    "   </button>\n" +
-    "</form>\n" +
+    "               <div class=\"form-group\">\n" +
+    "                  <label class=\"sr-only\" for=\"signup-surname\">Last name</label>\n" +
+    "                  <input ng-model=\"newUser.surname\"\n" +
+    "                         placeholder=\"Last name\"\n" +
+    "                         id=\"signup-surname\"\n" +
+    "                         type=\"text\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         required />\n" +
+    "               </div>\n" +
+    "\n" +
+    "\n" +
+    "               <div class=\"form-group\" ng-class=\"{'has-error': emailTaken()}\">\n" +
+    "                  <label class=\"sr-only\" for=\"signup-email\">Email</label>\n" +
+    "                  <input ng-model=\"newUser.email\"\n" +
+    "                         placeholder=\"Email\"\n" +
+    "                         id=\"signup-email\"\n" +
+    "                         type=\"email\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         required />\n" +
+    "                  <div class=\"help-block\" ng-show=\"emailTaken()\">Sorry, that email is taken.</div>\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"form-group\">\n" +
+    "                  <label class=\"sr-only\" for=\"signup-password\">Password</label>\n" +
+    "                  <input ng-model=\"newUser.password\"\n" +
+    "                         placeholder=\"Password\"\n" +
+    "                         id=\"signup-password\"\n" +
+    "                         type=\"password\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         required />\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <button ng-disabled=\"signupForm.$invalid\" class=\"btn btn-primary btn-xlarge\">\n" +
+    "               Uncover my impact<i class=\"icon-arrow-right\"></i>\n" +
+    "            </button>\n" +
+    "         </form>\n" +
+    "\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "   <div class=\"signup-sidebar\">\n" +
+    "      <div class=\"testimonials-container\">\n" +
+    "         <div class=\"testimonial\">\n" +
+    "            <img src=\"/static/img/people/luo.png\"/>\n" +
+    "            <q class=\"text\">I don't need my CV now, Impactstory tells my story!</q>\n" +
+    "            <cite>\n" +
+    "               <span class=\"name\">Ruibang Luo,</span>\n" +
+    "               <span class=\"inst\">Hong Kong University</span>\n" +
+    "            </cite>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "</div>\n" +
     "\n" +
     "\n" +
     "");
@@ -5722,7 +5485,7 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "</div>");
 }]);
 
-angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'tips/tip.tpl.html']);
+angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html']);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
@@ -5762,27 +5525,37 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "      </li>\n" +
     "   </ul>\n" +
     "\n" +
-    "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\">\n" +
+    "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\" autocomplete=\"off\">\n" +
     "      <div class=\"form-group\" >\n" +
     "         <label class=\"sr-only\">E-mail</label>\n" +
     "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-envelope-alt\"></i></span>\n" +
-    "            <input name=\"login\" class=\"form-control\" type=\"username\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
+    "            <input name=\"login\" required autofocus\n" +
+    "                   autocomplete=\"off\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   type=\"username\"\n" +
+    "                   ng-model=\"user.email\"\n" +
+    "                   placeholder=\"email\" >\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
     "         <label class=\"sr-only\">Password</label>\n" +
     "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.pass.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
-    "            <input name=\"pass\" class=\"form-control\" type=\"password\" ng-model=\"user.password\" placeholder=\"password\" required>\n" +
+    "            <input name=\"pass\" required\n" +
+    "                   autocomplete=\"off\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   type=\"password\"\n" +
+    "                   ng-model=\"user.password\"\n" +
+    "                   placeholder=\"password\">\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
     "         <button class=\"btn btn-primary login\"\n" +
-    "                 ng-click=\"login()\"\n" +
-    "                 ng-hide=\"loading.is('login')\"\n" +
+    "            ng-disabled='loginForm.$invalid'\n" +
+    "            ng-click=\"login()\"\n" +
+    "            ng-hide=\"loading.is('login')\">Sign in</button>\n" +
     "\n" +
-    "                 >Sign in</button>\n" +
     "         <div class=\"working\" ng-show=\"loading.is('login')\">\n" +
     "            <i class=\"icon-refresh icon-spin\"></i>\n" +
     "            <span class=\"text\">logging in...</span>\n" +
@@ -5862,20 +5635,10 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "\n" +
     "   <li ng-show=\"!currentUser\" class=\"login-and-signup nav-item\">\n" +
-    "      <span ng-show=\"page.isLandingPage()\" class=\"context\">Already have a profile?</span>\n" +
-    "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup/name\">Sign up</a>\n" +
+    "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup\">Sign up</a>\n" +
     "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
     "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
     "   </li>\n" +
     "</ul>\n" +
     "");
-}]);
-
-angular.module("tips/tip.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("tips/tip.tpl.html",
-    "<div ng-if=\"getStatus()\" class=\"tip alert alert-{{ getStatus() }}\">\n" +
-    "   <span class=\"msg\" ng-bind-html-unsafe=\"getMsg()\">\n" +
-    "   </span>\n" +
-    "   <button ng-click=\"dismiss()\" class=\"close\">&times;</button>\n" +
-    "</div>");
 }]);

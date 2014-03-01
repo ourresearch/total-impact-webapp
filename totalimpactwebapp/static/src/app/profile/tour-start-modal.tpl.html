@@ -1,0 +1,24 @@
+<div class="modal-header">
+   <h4>Welcome to Impactstory, {{ userAbout.given_name }}!</h4>
+   <a class="dismiss" ng-click="$close()">&times;</a>
+</div>
+<div class="modal-body tour-start">
+   <p>
+      This is your Impactstory profile page, where you can explore, edit, and share
+      your impact data. It's always accessible at
+      <span class="url">impactstory.org/{{ userAbout.url_slug }}</span>
+   </p>
+
+   <p>
+     Before you share, though, you'll want to import some of your research products:
+   </p>
+
+   <a class="btn btn-primary"
+      ng-click="$close()"
+      href="/{{ userAbout.url_slug }}/products/add">
+      Import my products
+      <i class="icon-cloud-upload left"></i>
+   </a>
+
+</div>
+

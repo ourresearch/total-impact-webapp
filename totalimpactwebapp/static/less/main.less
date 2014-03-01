@@ -1,6 +1,8 @@
 body {
    color:  #333;
    min-width:1159px;
+   font-family: Lato, Helvetica, Arial, sans-serif;
+   font-size: 18px;
 
    &.show-tab-on-right {
       .uv-tab.uv-slide-bottom {
@@ -9,6 +11,11 @@ body {
    }
    &.show-tab-on-bottom {
       .uv-tab.uv-slide-right {
+         display:none !important;
+      }
+   }
+   &.hide-tab {
+      .uv-tab {
          display:none !important;
       }
    }
@@ -45,6 +52,16 @@ body {
    p {
       font-size: 18px;
    }
+
+   q:before {
+      content: "\201C";
+   }
+
+   q:after {
+      content: "\201D";
+   }
+
+
 
 }
 ol {
@@ -131,10 +148,6 @@ form {
    }
 }
 
-.btn-primary {
-   background: @accentColor;
-}
-
 
 legend {
    border-bottom: none;
@@ -177,8 +190,10 @@ p, ul, ol {
 }
 
 i {
-   &.success {color: #468847;}
-   &.error {color:  #b94a48;}
+   &.left {
+      margin-left: .3em;
+   }
+
 }
 
 
@@ -468,32 +483,9 @@ div.no-page {
 
 
 div.main-header {
-
-   &.landing {
-      height: 220px;
-      text-align:center;
-      div.wrapper {
-         a.brand {
-            img { height: 150px;}
-         }
-      }
-   }
-
-   &.profile {
-      text-align: left;
-      div.wrapper {
-         a.brand {
-            img {
-               height: 50px;
-            }
-         }
-      }
-   }
-
-
+   text-align: left;
    padding: 15px 0 20px;
    height: 140px;
-   text-align: center;
 
    div.wrapper {
       position:relative;
@@ -502,7 +494,7 @@ div.main-header {
       a.brand {
          margin-top: 10px;
          img {
-            height: 100px;
+            height: 50px;
          }
       }
 
@@ -584,11 +576,11 @@ div#footer {
    background: #ddd;
    float:left;
    margin-top: 100px;
+   font-size: 16px;
 
    p {
       margin:6px 0 0 0;
       line-height: 1.4;
-      font-size: 16px;
    }
 
    a {
@@ -603,22 +595,19 @@ div#footer {
 
 
       div.footer-col {
-         &#footer-branding {
-            margin-top: -5px;
-         }
          float:left;
          width: 125px;
          padding-right: 0;
          margin-left: 32px;
          border-right: 1px solid #ccc;
          min-height: 150px;
+         font-weight: 300;
 
 
          h3 {
-            font-size: 18px;
-            font-weight: bolder;
+            font-weight: 500;
             margin-top: 0;
-
+            font-size: 16px;
             color: #777;
          }
 
@@ -631,71 +620,37 @@ div#footer {
             }
          }
 
-         &#footer-branding {
-            width: 500px;
-            margin-left:0;
-            padding-right: 22px;
-            a.brand {
-               float:left;
-               margin-right: 40px;
-               padding-bottom: 80px;
-               padding-top: 15px;
-               img {
-                  height:  150px; // smaller than header logo
-               }
-            }
-            p.descr {
-               padding-top: 0px;
-            }
-
-            p.license {
-               font-size: 13px;
-               color: #777;
-               line-height: 1.5;
-
-               margin-top: 25px;
-
-               a {
-                  text-decoration: underline;
-               }
-            }
-
+         &#footer-help {
+            border-right: none;
          }
+
 
          &#footer-funders {
             width:  200px;
             border-right: none;
             padding-right: none;
-            a#footer-nsf-link {
-
-               img {
-                  margin-top: 10px;
-                  width: 150px;
-               }
+            float:right;
+            text-align: right;
+            h3 {
+               margin: 0 20px 15px 40px;
+               text-align: left;
+               font-size: 14px;
             }
-         }
-
-         &#footer-about {
-         }
-
-         &#footer-follow {
             img {
-               float: right;
-               height: 28px;
+               margin: 0 5px;
+               height: 35px;
+               opacity: .6;
+            }
+            #footer-nsf-link {
+               img {height: 40px; margin-top: -2px;}
+            }
+            #footer-jisc-link {
             }
          }
+
       }
    }
 }
-#footer-powered-by {
-   img {
-      height: 30px;
-      margin-bottom: 30px;
-      float:right;
-      margin-top: -30px;
-   }
-}
-
 
 
 
@@ -742,6 +697,27 @@ code {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+//.vertical-centered-container {
+//  position: fixed;
+//	top:0;
+//	left:0;
+//	height:100%;
+//	width:100%;
+//	display:table;
+//	pointer-events: none;
+//    z-index:9999;
+//}
 
 
 

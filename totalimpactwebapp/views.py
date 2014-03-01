@@ -19,6 +19,7 @@ from totalimpactwebapp.password_reset import PasswordResetError
 
 from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
 from totalimpactwebapp.user import remove_duplicates_from_user
+from totalimpactwebapp.user import EmailExistsError
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
@@ -102,7 +103,7 @@ def abort_json(status_code, msg):
     abort(resp)
 
 
-def get_user_for_response(id, request, include_products=True):
+def get_user_for_response(id, request):
     id_type = unicode(request.args.get("id_type", "url_slug"))
 
     try:
@@ -110,9 +111,7 @@ def get_user_for_response(id, request, include_products=True):
     except AttributeError:
         logged_in = False
 
-    retrieved_user = get_user_from_id(id, id_type, logged_in, include_products)
-    if include_products:
-        local_sleep(1)
+    retrieved_user = get_user_from_id(id, id_type, logged_in)
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -228,7 +227,7 @@ def get_current_user():
     #sleep(1)
 
     try:
-        ret = {"user": g.user.as_dict()}
+        ret = {"user": g.user.dict_about()}
 
     except AttributeError:  # anon user has no as_dict()
         ret = {"user": None}
@@ -264,7 +263,7 @@ def login():
         # Yay, no errors! Log the user in.
         login_user(user)
 
-    return json_resp_from_thing({"user": user.as_dict()})
+    return json_resp_from_thing({"user": user.dict_about()})
 
 
 
@@ -272,35 +271,31 @@ def login():
 #------------------ /user/:id   -----------------
 
 
-@app.route("/user/<profile_id>", methods=['GET', 'POST'])
+@app.route("/user/<profile_id>", methods=['GET'])
 def user_profile(profile_id):
-    if request.method == "GET":
-        user = get_user_for_response(
-            profile_id,
-            request,
-            include_products=False  # returns faster this way.
-        )
-        return json_resp_from_thing(user)
-
-    elif request.method == "POST":
-        if request.args.get("id_type") != "url_slug":
-            abort_json(400, "You can only create new users from a url slug for now.")
-
-        userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
-        try:
-            user = create_user_from_slug(profile_id, userdict, g.api_root, db)
-
-        except IntegrityError:
-            abort_json(409, "Your user_slug isn't unique.")
-
-        logger.debug(u"logging in user {user}".format(
-            user=user.as_dict()))
-
-        login_user(user)
-
-        return json_resp_from_thing({"user": user.as_dict()})
+    user = get_user_for_response(
+        profile_id,
+        request
+    )
+    return json_resp_from_thing(user)
 
 
+@app.route("/user/<slug>", methods=["POST"])
+def create_new_user_profile(slug):
+    userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
+
+    try:
+        user = create_user_from_slug(slug, userdict, db)
+
+    except EmailExistsError:
+        abort_json(409, "That email already exists.")
+
+    logger.debug(u"logging in user {user}".format(
+        user=user.dict_about()))
+
+    login_user(user)
+
+    return json_resp_from_thing({"user": user.dict_about()})
 
 
 
@@ -316,11 +311,10 @@ def user_about(profile_id):
 
     user = get_user_for_response(
         profile_id,
-        request,
-        include_products=False  # returns faster this way.
+        request
     )
     logger.debug(u"got the user out: {user}".format(
-        user=user.as_dict()))
+        user=user.dict_about()))
 
     if request.method == "GET":
         pass
@@ -336,11 +330,11 @@ def user_about(profile_id):
 
         user.patch(request.json["about"])
         logger.debug(u"patched the user: {user} ".format(
-            user=user.as_dict()))
+            user=user.dict_about()))
 
         db.session.commit()
 
-    return json_resp_from_thing({"about": user.as_dict()})
+    return json_resp_from_thing({"about": user.dict_about()})
 
 
 
@@ -359,23 +353,22 @@ def user_profile_awards(profile_id):
 
 
 
-@app.route("/user/<profile_id>/tips", methods=['GET', 'DELETE'])
-def user_tips(profile_id):
-    user = get_user_for_response(
-        profile_id,
-        request,
-        include_products=False  # returns faster this way.
-    )
-
-    if request.method == "GET":
-        resp = user.get_tips()
-
-    elif request.method == "DELETE":
-        resp = user.delete_tip(request.json.get("id"))
-
-    db.session.commit()
-
-    return json_resp_from_thing({'ids': resp})
+#@app.route("/user/<profile_id>/tips", methods=['GET', 'DELETE'])
+#def user_tips(profile_id):
+#    user = get_user_for_response(
+#        profile_id,
+#        request
+#    )
+#
+#    if request.method == "GET":
+#        resp = user.get_tips()
+#
+#    elif request.method == "DELETE":
+#        resp = user.delete_tip(request.json.get("id"))
+#
+#    db.session.commit()
+#
+#    return json_resp_from_thing({'ids': resp})
 
 
 
@@ -534,7 +527,7 @@ def user_password_modify(id):
         abort_json(403, e.message)
 
     db.session.commit()
-    return json_resp_from_thing({"about": user.as_dict()})
+    return json_resp_from_thing({"about": user.dict_about()})
 
 
 
@@ -770,7 +763,7 @@ def get_2013_year_in_review():
 
 @app.route("/create")
 def create_page():
-    return redirect("signup/name", 301)
+    return redirect("signup", 301)
 
 
 

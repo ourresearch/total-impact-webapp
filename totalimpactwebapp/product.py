@@ -52,7 +52,6 @@ def make_biblio(product_dict):
     except KeyError:
         if not "url" in biblio:
             biblio["url"] = False    
-
     if "title" not in biblio.keys():
         biblio["title"] = "no title"
 

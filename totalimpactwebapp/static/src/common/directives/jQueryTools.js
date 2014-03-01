@@ -8,7 +8,7 @@ angular.module("directives.jQueryTools", [])
         $("body").popover({
           html:true,
           trigger:'hover',
-          placement:'bottom auto',
+          placement:'auto',
           selector: "[data-content]"
         })
       }
@@ -26,4 +26,5 @@ angular.module("directives.jQueryTools", [])
         })
       }
     }
-  });
+  })
+

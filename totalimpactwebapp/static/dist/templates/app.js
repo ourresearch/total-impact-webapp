@@ -1,58 +1,53 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup-creating.tpl.html', 'signup/signup-header.tpl.html', 'signup/signup-name.tpl.html', 'signup/signup-password.tpl.html', 'signup/signup-products.tpl.html', 'signup/signup-url.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
-    "<div id=\"footer\">\n" +
+    "<div id=\"footer\" ng-show=\"page.showFooter()\">\n" +
     "   <div class=\"wrapper\">\n" +
-    "      <div id=\"footer-branding\" class=\"footer-col\">\n" +
-    "         <a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo.png\" alt=\"Impactstory\" /></a>\n" +
-    "\n" +
-    "         <p class=\"descr\">We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>\n" +
-    "         <p class=\"license\">\n" +
-    "            <!--<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\"><img alt=\"Creative Commons License\" style=\"border-width:0\" src=\"http://i.creativecommons.org/l/by/2.0/80x15.png\" /></a>-->\n" +
-    "            <span class=\"text\">Except where otherwise noted, content on this site is licensed under the\n" +
-    "               <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\">CC-BY license</a>.\n" +
-    "            </span>\n" +
-    "         </p>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "      <div id=\"footer-follow\" class=\"footer-col\">\n" +
-    "         <h3>Follow</h3>\n" +
-    "         <ul>\n" +
-    "            <li><a href=\"http://twitter.com/#!/Impactstory\">Twitter</a></li>\n" +
-    "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
-    "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Stickers!</a></li>\n" +
-    "            <li><a href=\"http://twitter.com/#!/Impactstory_now\">Site status</a></li>\n" +
-    "            <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
-    "\n" +
-    "         </ul>\n" +
-    "      </div>\n" +
     "\n" +
     "      <div id=\"footer-about\" class=\"footer-col\">\n" +
     "         <h3>About</h3>\n" +
     "         <ul>\n" +
     "            <li><a href=\"/about\">About us</a></li>\n" +
-    "            <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Feedback</a></li>\n" +
-    "            <li>\n" +
-    "               <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Support</a>\n" +
-    "            </li>\n" +
-    "\n" +
-    "\n" +
-    "            <li><a href=\"/faq\">FAQ</a></li>\n" +
-    "            <!--<li><a href=\"/about#contact\">Contact us</a></li>-->\n" +
     "            <li><a href=\"/faq#tos\" target=\"_self\">Terms of use</a></li>\n" +
+    "            <li><a href=\"/faq#copyright\" target=\"_self\">Copyright</a></li>\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div id=\"footer-follow\" class=\"footer-col\">\n" +
+    "         <h3>Community</h3>\n" +
+    "         <ul>\n" +
+    "            <li><a href=\"http://twitter.com/#!/Impactstory\">Twitter</a></li>\n" +
+    "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
+    "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Free stickers!</a></li>\n" +
+    "            <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
+    "            <!--<li><a href=\"http://twitter.com/#!/Impactstory_now\">Site status</a></li>-->\n" +
+    "\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div id=\"footer-help\" class=\"footer-col\">\n" +
+    "         <h3>Help</h3>\n" +
+    "         <ul>\n" +
+    "            <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Suggestions</a></li>\n" +
+    "            <li>\n" +
+    "               <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Report bug</a>\n" +
+    "            </li>\n" +
+    "            <li><a href=\"/faq\">FAQ</a></li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
     "      <div id=\"footer-funders\" class=\"footer-col\">\n" +
     "         <h3>Supported by</h3>\n" +
-    "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
-    "            <img src=\"/static/img/logos/sloan.png\"  width=\"200\"/>\n" +
-    "         </a>\n" +
     "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
-    "            <img src=\"/static/img/logos/nsf.png\"  width=\"200\"/>\n" +
+    "            <img src=\"/static/img/logos/nsf-seal.png\" />\n" +
+    "         </a>\n" +
+    "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
+    "            <img src=\"/static/img/logos/sloan-seal.png\" />\n" +
+    "         </a>\n" +
+    "         <a href=\"http://www.jisc.ac.uk/\" id=\"footer-jisc-link\">\n" +
+    "            <img src=\"/static/img/logos/jisc.png\" />\n" +
     "         </a>\n" +
     "      </div>\n" +
     "\n" +
@@ -64,11 +59,10 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
-    "<div class=\"main-header header\" ng-class=\"{landing: page.isLandingPage(), profile: page.isProfile()}\">\n" +
+    "<div class=\"main-header header\" ng-show=\"page.showHeader()\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <a class=\"brand\" href=\"/\">\n" +
-    "         <img ng-if=\"!page.isProfile()\"  src=\"/static/img/impactstory-logo-no-type.png\" alt=\"Impactstory\" />\n" +
-    "         <img ng-if=\"page.isProfile()\" src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory\" />\n" +
+    "         <img src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory\" />\n" +
     "      </a>\n" +
     "      <login-toolbar></login-toolbar>\n" +
     "   </div>\n" +
@@ -326,6 +320,14 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <p>Due to agreements we have made with data providers, you may not scrape this website -- use the embed or download funtionality instead.</p>\n" +
     "\n" +
     "\n" +
+    "\n" +
+    "   <h3 id=\"copyright\">copyright</h3>\n" +
+    "   <span class=\"text\">Except where otherwise noted, content on this site is licensed under the\n" +
+    "      <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\">CC-BY license</a>.\n" +
+    "   </span>\n" +
+    "\n" +
+    "   \n" +
+    "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
     "\n" +
     "   <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>\n" +
@@ -452,63 +454,97 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
 angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("infopages/landing.tpl.html",
     "<div class=\"main infopage landing\">\n" +
-    "   <div id=\"tagline\">\n" +
+    "   <div class=\"toolbar-container\">\n" +
     "      <div class=\"wrapper\">\n" +
-    "         <h1>Share the full story of your <br>research impact.</h1>\n" +
-    "         <p class=\"subtagline\">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>\n" +
-    "         <div id=\"call-to-action\">\n" +
-    "            <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">Make my impact profile</a>\n" +
-    "            <a href=\"/CarlBoettiger\" class=\"btn btn-large btn-primary secondary-action\" id=\"view-sample-collection\">View a sample profile</a>\n" +
+    "         <login-toolbar></login-toolbar>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "   <div class=\"top-screen\" fullscreen> <!-- this needs to be set to the viewport height-->\n" +
+    "\n" +
+    "      <div id=\"tagline\">\n" +
+    "         <div class=\"wrapper\">\n" +
+    "            <img class=\"big-logo\" src=\"/static/img/impactstory-logo-no-type.png\" alt=\"\"/>\n" +
+    "            <h1>Discover the full impact<br> of your research.</h1>\n" +
+    "            <!--<p class=\"subtagline\">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>-->\n" +
+    "            <div id=\"call-to-action\">\n" +
+    "               <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
+    "               <a href=\"/CarlBoettiger\"\n" +
+    "                  ng-show=\"page.isTestVersion('b')\"\n" +
+    "                  class=\"btn btn-xlarge btn-default\"\n" +
+    "                  id=\"secondary-cta-button\">See an example</a>\n" +
+    "            </div>\n" +
     "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"bottom-of-top-screen\">\n" +
+    "         <div class=\"featured-and-supported\">\n" +
+    "            <h3>featured in and supported by</h3>\n" +
+    "            <img src=\"/static/img/logos/bbc.png\" />\n" +
+    "            <img src=\"/static/img/logos/nature.png\" />\n" +
+    "            <img src=\"/static/img/logos/chronicle.png\"/>\n" +
+    "\n" +
+    "            <span class=\"divider\"></span>\n" +
+    "\n" +
+    "            <img src=\"/static/img/logos/jisc.png\" />\n" +
+    "            <img src=\"/static/img/logos/sloan.png\" />\n" +
+    "            <img src=\"/static/img/logos/nsf.png\" />\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"ask-for-more\">\n" +
+    "            <span>more <i class=\"icon-chevron-down\"></i></span>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
     "\n" +
+    "\n" +
+    "\n" +
     "   <div id=\"selling-points\">\n" +
-    "      <ul class=\"wrapper\" >\n" +
+    "      <ul class=\"wrapper\">\n" +
     "         <li>\n" +
-    "            <h3 id=\"metrics-in-seconds\"><i class=\"icon-time icon-2x\"></i><span class=\"text\">View metrics in seconds</span></h3>\n" +
-    "            <p>Point us to your slides, code, datasets, and articles. In a few seconds, you'll have a report detailing your impacts: citations, bookmarks, downloads, tweets, and more.</p>\n" +
+    "            <h3><i class=\"icon-bar-chart icon-3x\"></i><span class=\"text\">Citations and more</span></h3>\n" +
+    "            <p>Find out where your work has been cited, viewed, downloaded, tweeted, and more.</p>\n" +
     "         </li>\n" +
     "         <li class=\"middle\">\n" +
-    "            <h3 id=\"embed-metrics-anywhere\"><i class=\"icon-suitcase icon-2x\"></i><span class=\"text\">Embed them anywhere</span></h3>\n" +
-    "            <p>Drop Impactstory's embeddable code into your own online CV or website to show the impacts of your work.</p>\n" +
+    "            <h3><i class=\"icon-globe icon-3x\"></i><span class=\"text\">All your outputs</span></h3>\n" +
+    "            <p>Discover and share the impacts of your articles, slides, datasets, and software.</p>\n" +
     "         </li>\n" +
     "         <li>\n" +
-    "            <h3 id=\"its-open\"><i class=\"icon-wrench icon-2x\"></i><span class=\"text\">Open data,<br> open source.</span></h3>\n" +
-    "            <p>Our data, like our <a href=\"http://github.com/total-impact\">source code</a>, is wide open.  As a non-profit, we're built around supporting open tools to nurture Web-native scholarship.</p>\n" +
+    "            <h3 id=\"its-open\"><i class=\"icon-unlock-alt icon-3x\"></i><span class=\"text\">Open and free</span></h3>\n" +
+    "            <p>Your profile is free, the data behind it is open, and our code is open-source.</p>\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
     "\n" +
     "\n" +
-    "   <div id=\"sources\">\n" +
-    "      <div class=\"wrapper\">\n" +
-    "         <h2>Uncover your impacts from all across the Web: </h2>\n" +
-    "         <ul id=\"source-logos\">\n" +
-    "            <li><img src=\"/static/img/logos/altmetric-com.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/arxiv.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/citeulike.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/delicious.jpg\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/dryad.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/f1000.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/github.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/mendeley.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/orcid.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/plos.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/pmc.gif\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/scopus.jpg\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/vimeo.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
-    "            <li><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
-    "         </ul>\n" +
+    "   <div id=\"testimonials\">\n" +
+    "      <ul class=\"wrapper\">\n" +
+    "         <li>\n" +
+    "            <img src=\"/static/img/people/luo.png\"/>\n" +
+    "            <q class=\"text\">I don't need my CV now, Impactstory tells my story!</q>\n" +
+    "            <cite>Ruibang Luo, Hong Kong University</cite>\n" +
+    "         </li>\n" +
+    "\n" +
+    "         <li>\n" +
+    "            <img src=\"/static/img/people/graziotin.jpeg\"/>\n" +
+    "            <q class=\"text\">Every time I look at my Impactstory profile, I see that I did some good things and somebody actually noticed them. There is so much besides the number of citations. </q>\n" +
+    "            <cite>Daniel Graziotin, Free University of Bozen-Bolzano</cite>\n" +
+    "         </li>\n" +
+    "\n" +
+    "\n" +
+    "      </ul>\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"bottom-cta\">\n" +
+    "      <div id=\"call-to-action\">\n" +
+    "         <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">What's my impact?</a>\n" +
+    "         <!--<a href=\"/CarlBoettiger\" class=\"btn btn-large btn-primary secondary-action\" id=\"view-sample-collection\">Show me a sample profile</a>-->\n" +
     "      </div>\n" +
     "   </div>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);
@@ -1027,7 +1063,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
-    "            <a href=\"/{{ user.about.url_slug }}/products/add\"><i class=\"icon-upload\"></i>Import</a>\n" +
+    "            <a href=\"/{{ user.about.url_slug }}/products/add\">\n" +
+    "               <i class=\"icon-upload\"></i>Import\n" +
+    "            </a>\n" +
     "            <a ng-click=\"dedup()\"\n" +
     "               ng-class=\"{working: loading.is('dedup')}\"\n" +
     "               class=\"dedup-button\">\n" +
@@ -1106,6 +1144,35 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <a class=\"signup-button btn btn-primary btn-sm\" href=\"/signup\">Make your free profile</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>");
+}]);
+
+angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile/tour-start-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Welcome to Impactstory, {{ userAbout.given_name }}!</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body tour-start\">\n" +
+    "   <p>\n" +
+    "      This is your Impactstory profile page, where you can explore, edit, and share\n" +
+    "      your impact data. It's always accessible at\n" +
+    "      <span class=\"url\">impactstory.org/{{ userAbout.url_slug }}</span>\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <p>\n" +
+    "     Before you share, though, you'll want to import some of your research products:\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <a class=\"btn btn-primary\"\n" +
+    "      ng-click=\"$close()\"\n" +
+    "      href=\"/{{ userAbout.url_slug }}/products/add\">\n" +
+    "      Import my products\n" +
+    "      <i class=\"icon-cloud-upload left\"></i>\n" +
+    "   </a>\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "");
 }]);
 
 angular.module("settings/custom-url-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -1405,219 +1472,95 @@ angular.module("settings/settings.tpl.html", []).run(["$templateCache", function
     "");
 }]);
 
-angular.module("signup/signup-creating.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-creating.tpl.html",
-    "<div class=\"signup-input creating\" ng-controller=\"signupCreatingCtrl\">\n" +
-    "   <div class=\"intro\"><br>We're creating your profile now! Right now, we're scouring the web, finding the ways your products have made an impact...</div>\n" +
-    "\n" +
-    "   <div class=\"update-progress\" ng-show=\"numNotDone\">\n" +
-    "      <div class=\"products not-done\">\n" +
-    "         <span class=\"count still-working\">{{ numNotDone }}</span>\n" +
-    "         <span class=\"descr\">now updating</span>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"products done\">\n" +
-    "         <span class=\"count finished\">{{ numDone}}</span>\n" +
-    "         <span class=\"descr\">done updating</span>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "");
-}]);
-
-angular.module("signup/signup-header.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-header.tpl.html",
-    "<div class=\"signup-header header\" ng-controller=\"signupHeaderCtrl\">\n" +
-    "   <h1><a class=\"brand\" href=\"/\"><img src=\"/static/img/impactstory-logo-reverse-no-text.png\" alt=\"Impactstory\" /></a>\n" +
-    "      <span class=\"text\">signup</span>\n" +
-    "   </h1>\n" +
-    "   <ol class=\"signup-steps\">\n" +
-    "      <li ng-repeat=\"stepName in signupSteps\"\n" +
-    "          class=\"{{ stepName }}\"\n" +
-    "          ng-class=\"{current: isStepCurrent(stepName), completed: isStepCompleted(stepName)}\">\n" +
-    "         {{ stepName }}\n" +
-    "      </li>\n" +
-    "   </ol>\n" +
-    "   <div ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("signup/signup-name.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-name.tpl.html",
-    "<div class=\"signup-input url\" ng-controller=\"signupNameCtrl\">\n" +
-    "   <div class=\"intro\">Making a profile takes less than 5 minutes--let’s get started!</div>\n" +
-    "\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <input required class=\"form-control\" type=\"text\" ng-model=\"input.givenName\" placeholder=\"First name\">\n" +
-    "   </div>\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <input required class=\"input-large form-control\" type=\"text\" ng-model=\"input.surname\" placeholder=\"Last name\">\n" +
-    "   </div>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("signup/signup-password.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-password.tpl.html",
-    "<div class=\"signup-input email-and-password\" ng-controller=\"signupPasswordCtrl\">\n" +
-    "   <div class=\"intro\"><br>Last step! Enter your email and pick a password:<br><span class=\"paren\">(Don't worry, we never share your email)</span></div>\n" +
-    "\n" +
-    "   <div class=\"form-group email\"\n" +
-    "        ng-class=\"{ 'has-error':  signupForm.email.$invalid && signupForm.email.$dirty && !loading.is(),\n" +
-    "                 'has-success': signupForm.email.$valid && signupForm.email.$dirty && !loading.is()}\">\n" +
-    "\n" +
-    "      <div class=\"controls input-group\">\n" +
-    "         <span class=\"input-group-addon\"><i class=\"icon-envelope\"></i></span>\n" +
-    "         <input ng-model=\"input.email\"\n" +
-    "                placeholder=\"email\"\n" +
-    "                name=\"email\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required\n" +
-    "                data-require-unique\n" +
-    "                 />\n" +
-    "\n" +
-    "      </div>\n" +
-    "      <div class=\"help-info\">\n" +
-    "\n" +
-    "         <spinner msg=\"Checking\"></spinner>\n" +
-    "\n" +
-    "         <div class=\"help-block error tall\"\n" +
-    "              ng-show=\"signupForm.email.$error.requireUnique\n" +
-    "            && signupForm.email.$dirty\n" +
-    "            && !loading.is()\">\n" +
-    "            That email address is already in use.\n" +
-    "         </div>\n" +
-    "         <div class=\"help-block success\"\n" +
-    "              ng-show=\"signupForm.email.$valid\n" +
-    "            && signupForm.email.$dirty\n" +
-    "            && !loading.is()\">\n" +
-    "            Looks good!\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group password\"\n" +
-    "         ng-class=\"{'has-success': signupForm.password.$valid && !loading.is()}\">\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "      <div class=\"controls input-group\">\n" +
-    "         <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
-    "\n" +
-    "         <input ng-model=\"input.password\"\n" +
-    "                name=\"password\"\n" +
-    "                type=\"password\"\n" +
-    "                placeholder=\"password\"\n" +
-    "                ng-show=\"!showPassword\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required>\n" +
-    "\n" +
-    "         <input ng-model=\"input.password\"\n" +
-    "                name=\"password\"\n" +
-    "                type=\"text\"\n" +
-    "                placeholder=\"password\"\n" +
-    "                ng-show=\"showPassword\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required>\n" +
-    "      </div>\n" +
-    "      <pretty-checkbox value=\"showPassword\" text=\"Show\"></pretty-checkbox>\n" +
-    "\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("signup/signup-products.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-products.tpl.html",
-    "<div class=\"signup-input signup-products\" ng-controller=\"signupProductsCtrl\">\n" +
-    "   <div class=\"intro\">Next, let's import a few of your products from these sources <br><span class=\"paren\">(you can more add more later, too)</span></div>\n" +
-    "\n" +
-    "\n" +
-    "   <div class=\"importers signup-importers\">\n" +
-    "      <div class=\"importer\"\n" +
-    "           ng-repeat=\"importer in importers\"\n" +
-    "           ng-controller=\"importerCtrl\"\n" +
-    "           ng-include=\"'importers/importer.tpl.html'\"\n" +
-    "           >\n" +
-    "      </div>\n" +
-    "  </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "</div>");
-}]);
-
-angular.module("signup/signup-url.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("signup/signup-url.tpl.html",
-    "<div class=\"signup-input url\" ng-controller=\"signupUrlCtrl\">\n" +
-    "   <div class=\"intro\"><br>Your next step is to pick your profile's custom URL. <br><span class=\"paren\">(you can always change this later)</span></div>\n" +
-    "   \n" +
-    "   <div class=\"form-group custom-url\"\n" +
-    "        ng-model=\"profileAbout.url_slug\"\n" +
-    "        ng-class=\"{ 'has-error':  signupForm.url_slug.$invalid && signupForm.url_slug.$dirty && !loading.is(),\n" +
-    "                    'has-success': signupForm.url_slug.$valid && !loading.is()}\">\n" +
-    "\n" +
-    "      <div class=\"controls input-group\">\n" +
-    "         <span class=\"input-group-addon\">http://impactstory.org/</span>\n" +
-    "         <input ng-model=\"input.url_slug\"\n" +
-    "                name=\"url_slug\"\n" +
-    "                class=\"form-control\"\n" +
-    "                required\n" +
-    "                data-require-unique\n" +
-    "                data-check-initial-value=\"true\"\n" +
-    "                ng-pattern=\"/^[\\w-]+$/\"\n" +
-    "                 />\n" +
-    "\n" +
-    "      </div>\n" +
-    "      <div class=\"help-info\">\n" +
-    "         <spinner msg=\"Checking\"></spinner>\n" +
-    "\n" +
-    "         <div class=\"help-block error\"\n" +
-    "              ng-show=\"signupForm.url_slug.$error.pattern\n" +
-    "               && signupForm.url_slug.$dirty\n" +
-    "               && !loading.is()\">\n" +
-    "            Sorry, this URL has invalid characters.<br> You can only use hyphens, numbers or Latin-alphabet letters.\n" +
-    "         </div>\n" +
-    "\n" +
-    "         <div class=\"help-block error\"\n" +
-    "              ng-show=\"signupForm.url_slug.$error.requireUnique\n" +
-    "               && signupForm.url_slug.$dirty\n" +
-    "               && !loading.is()\">\n" +
-    "            Sorry, someone else is using that URL.<br>Try changing it to make it more unique.\n" +
-    "         </div>\n" +
-    "         <div class=\"help-block success\"\n" +
-    "              ng-show=\"signupForm.url_slug.$valid\n" +
-    "               && signupForm.url_slug.$dirty\n" +
-    "               && !loading.is()\">\n" +
-    "            This URL looks good!\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "   </div>\n" +
-    "</div>");
-}]);
-
 angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup.tpl.html",
+    "<div class=\"signup-page\">\n" +
+    "   <div class=\"signup-main-page\">\n" +
+    "      <div class=\"form-container\">\n" +
+    "         <h1>Reveal your full scholarly impact.</h1>\n" +
+    "         <h2>Signup for your <strong>free</strong> Impactstory profile:</h2>\n" +
+    "         <form novalidate\n" +
+    "               name=\"signupForm\"\n" +
+    "               ng-controller=\"signupFormCtrl\"\n" +
+    "               ng-submit=\"signup()\"\n" +
+    "               id=\"main-signup-form\"\n" +
+    "               class=\"form-horizontal signup-form\">\n" +
     "\n" +
-    "<form class=\"signup name form-horizontal\" name=\"signupForm\">\n" +
-    "   <div ng-include=\"include\"></div>\n" +
+    "            <div class=\"inputs\">\n" +
+    "               <div class=\"form-group\">\n" +
+    "                  <label class=\"sr-only\" for=\"signup-given-name\">First name</label>\n" +
+    "                  <input ng-model=\"newUser.givenName\"\n" +
+    "                         placeholder=\"First name\"\n" +
+    "                         type=\"text\"\n" +
+    "                         id=\"signup-given-name\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         autofocus=\"autofocus\"\n" +
+    "                         required />\n" +
+    "               </div>\n" +
     "\n" +
-    "   <button type=\"submit\"\n" +
-    "           class=\"next-button\"\n" +
-    "           ng-click=\"nav.goToNextStep()\"\n" +
-    "           ng-class=\"{'next-button': true, enabled: signupForm.$valid}\"\n" +
-    "           ng-disabled=\"signupForm.$invalid\">\n" +
-    "      <span class=\"text\">Next</span>\n" +
-    "      <i class=\"icon-arrow-right\"></i>\n" +
-    "   </button>\n" +
-    "</form>\n" +
+    "               <div class=\"form-group\">\n" +
+    "                  <label class=\"sr-only\" for=\"signup-surname\">Last name</label>\n" +
+    "                  <input ng-model=\"newUser.surname\"\n" +
+    "                         placeholder=\"Last name\"\n" +
+    "                         id=\"signup-surname\"\n" +
+    "                         type=\"text\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         required />\n" +
+    "               </div>\n" +
+    "\n" +
+    "\n" +
+    "               <div class=\"form-group\" ng-class=\"{'has-error': emailTaken()}\">\n" +
+    "                  <label class=\"sr-only\" for=\"signup-email\">Email</label>\n" +
+    "                  <input ng-model=\"newUser.email\"\n" +
+    "                         placeholder=\"Email\"\n" +
+    "                         id=\"signup-email\"\n" +
+    "                         type=\"email\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         required />\n" +
+    "                  <div class=\"help-block\" ng-show=\"emailTaken()\">Sorry, that email is taken.</div>\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"form-group\">\n" +
+    "                  <label class=\"sr-only\" for=\"signup-password\">Password</label>\n" +
+    "                  <input ng-model=\"newUser.password\"\n" +
+    "                         placeholder=\"Password\"\n" +
+    "                         id=\"signup-password\"\n" +
+    "                         type=\"password\"\n" +
+    "                         class=\"form-control input-lg\"\n" +
+    "                         required />\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <button ng-disabled=\"signupForm.$invalid\" class=\"btn btn-primary btn-xlarge\">\n" +
+    "               Uncover my impact<i class=\"icon-arrow-right\"></i>\n" +
+    "            </button>\n" +
+    "         </form>\n" +
+    "\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "   <div class=\"signup-sidebar\">\n" +
+    "      <div class=\"testimonials-container\">\n" +
+    "         <div class=\"testimonial\">\n" +
+    "            <img src=\"/static/img/people/luo.png\"/>\n" +
+    "            <q class=\"text\">I don't need my CV now, Impactstory tells my story!</q>\n" +
+    "            <cite>\n" +
+    "               <span class=\"name\">Ruibang Luo,</span>\n" +
+    "               <span class=\"inst\">Hong Kong University</span>\n" +
+    "            </cite>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "</div>\n" +
     "\n" +
     "\n" +
     "");

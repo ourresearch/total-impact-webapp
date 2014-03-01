@@ -8,9 +8,10 @@ angular.module("profile", [
   'security',
   'services.loading',
   'services.timer',
-  'tips',
   'profile.addProducts',
-  'services.i18nNotifications'
+  'services.i18nNotifications',
+  'services.tour',
+  'directives.jQueryTools'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
@@ -22,9 +23,12 @@ angular.module("profile", [
 
 }])
 
-.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page){
+.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page, Tour){
   var about = {}
-
+  var slugIsCurrentUser = function(slug){
+    if (!security.getCurrentUser()) return false;
+    return (security.getCurrentUser().url_slug == slug);
+  }
 
   return {
 
@@ -68,6 +72,10 @@ angular.module("profile", [
         },
         function(resp) { // success
           Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+          about = resp.about
+          if (!about.products_count && slugIsCurrentUser(about.url_slug)){
+            Tour.start(about)
+          }
         },
         function(resp) { // fail
           if (resp.status == 404) {
@@ -77,10 +85,7 @@ angular.module("profile", [
         }
       );
     },
-    slugIsCurrentUser: function(slug){
-      if (!security.getCurrentUser()) return false;
-      return (security.getCurrentUser().url_slug == slug);
-    },
+    'slugIsCurrentUser': slugIsCurrentUser,
     makeSlug: function(){
       about.url_slug = Slug.make(about.givenName, about.surname)
     },
