@@ -1,12 +1,12 @@
 
 
-<div class="importer-tile" id="{{ importer.CSSname }}-tile"
+<div class="importer-tile" id="{{ importer.CSSname }}-import-tile"
      ng-click="showImporterWindow()"
      ng-class="{'has-run': importerHasRun, 'not-run': !importerHasRun}">
 
    <div class="importer-name"><img ng-src="{{ importer.logoPath }}"></div>
    <div class="imported-products-count">
-      <span class="count" id="{{ importer.CSSname }}-count">{{ products.length }}</span>
+      <span class="count" id="{{ importer.CSSname }}-import-count">{{ products.length }}</span>
       <span class="descr">products imported</span>
    </div>
 
