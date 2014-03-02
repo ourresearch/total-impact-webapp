@@ -46,6 +46,12 @@
                   </a>
                </li>
             </ul>
+            <div class="add-linked-account" ng-show="currentUserIsProfileOwner()">
+               <a href="/{{ user.about.url_slug }}/accounts">
+                  <i class="icon-edit left"></i>
+                  Edd or edit accounts
+               </a>
+            </div>
          </div>
       </div>
       <div class="my-metrics">

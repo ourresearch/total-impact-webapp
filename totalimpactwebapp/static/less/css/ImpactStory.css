@@ -7312,6 +7312,16 @@ div.profile-header div.wrapper div.my-vitals div.external-usernames {
   float: left;
   clear: left;
 }
+div.profile-header div.wrapper div.my-vitals div.external-usernames div.add-linked-account a {
+  color: #999;
+  font-size: 14px;
+}
+div.profile-header div.wrapper div.my-vitals div.external-usernames div.add-linked-account a i {
+  vertical-align: -2px;
+}
+div.profile-header div.wrapper div.my-vitals div.external-usernames div.add-linked-account a:hover {
+  color: #555;
+}
 div.profile-header div.wrapper div.my-vitals div.external-usernames li {
   float: left;
   margin: 0 10px 0 2px;

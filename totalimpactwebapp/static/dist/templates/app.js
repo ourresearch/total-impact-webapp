@@ -1033,6 +1033,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </li>\n" +
     "            </ul>\n" +
+    "            <div class=\"add-linked-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
+    "               <a href=\"/{{ user.about.url_slug }}/accounts\">\n" +
+    "                  <i class=\"icon-edit left\"></i>\n" +
+    "                  Edd or edit accounts\n" +
+    "               </a>\n" +
+    "            </div>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"my-metrics\">\n" +
