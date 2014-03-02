@@ -269,7 +269,7 @@ angular.module("profile", [
  return {
    restrict: 'A',
    replace: true,
-   template:"<a ng-show='returnLink' class='back-to-profile' href='{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
+   template:"<a ng-show='returnLink' class='back-to-profile' href='{{ returnLink }}'><i class='icon-chevron-left left'></i>back to profile</a>",
    link: function($scope,el){
 
      if ($scope.returnLink === "/embed") {
