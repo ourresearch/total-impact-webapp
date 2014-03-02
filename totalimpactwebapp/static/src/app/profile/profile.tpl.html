@@ -9,7 +9,7 @@
          </a>
       </div>
       <div class="my-vitals">
-         <h2 class='page-title editable-name'>
+         <h2 class='page-title editable-name' id="profile-owner-name">
             <span class="given-name editable" data-name="given_name">{{ user.about.given_name }}</span>
             <span class="surname editable" data-name="surname">{{ user.about.surname }}</span>
          </h2>
@@ -72,7 +72,7 @@
       <div class="edit-controls btn-group">
          <div class="num-items">
             <span ng-hide="loadingProducts()" class="val-plus-text">
-               <span class="value">{{ filterProducts(products).length }}</span> research products
+               <span class="value" id="number-products">{{ filterProducts(products).length }}</span> research products
             </span>
             <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics" ng-show="showProductsWithoutMetrics">
                (hide <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> without metrics)

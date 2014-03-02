@@ -213,6 +213,20 @@ class User(db.Model):
         analytics_credentials = self.get_analytics_credentials()        
         return refresh_products_from_tiids(self.tiids, analytics_credentials, source)
 
+    def update_products_from_linked_account(self, account):
+        account_value = getattr(self, account+"_id")
+        tiids = []        
+        if account_value:
+            try:
+                analytics_credentials = self.get_analytics_credentials()
+            except AttributeError:
+                # AnonymousUser doesn't have method
+                analytics_credentials = {}
+            import_response = make_products_for_linked_account(account, account_value, analytics_credentials)
+            tiids = import_response["products"].keys()
+            resp = self.add_products(tiids)
+        return tiids
+
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
 
@@ -384,6 +398,8 @@ def remove_duplicates_from_user(user_id):
     user = User.query.get(user_id)
     db.session.merge(user)
 
+    print "TTIDS", user.tiids
+
     duplicates_list = products_list.get_duplicates_list_from_tiids(user.tiids)
     tiids_to_remove = tiids_to_remove_from_duplicates_list(duplicates_list)
     user.delete_products(tiids_to_remove) 
@@ -504,6 +520,25 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
         pass
 
     return user
+
+
+def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}):
+    query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
+        core_api_root=g.api_root,
+        importer_name=importer_name,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    data_dict = {
+        "account_name": importer_value, 
+        "analytics_credentials": analytics_credentials
+        }
+
+    r = requests.post(
+        query,
+        data=json.dumps(data_dict),
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
+    )
+    return r.json()
 
 
 def hide_user_secrets(user):

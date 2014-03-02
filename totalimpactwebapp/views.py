@@ -543,32 +543,15 @@ def get_password_reset_link(id):
 
 
 
-
 #------------------ importers/:importer -----------------
 
-@app.route("/importer/<importer_name>", methods=["POST"])
-def import_products(importer_name):
-
-    query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
-        importer_name=importer_name,
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    analytics_credentials = current_user.get_analytics_credentials()
-    data_dict = json.loads(request.data)
-    data_dict["analytics_credentials"] = analytics_credentials
-    r = requests.post(
-        query,
-        data=json.dumps(data_dict),
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
-    )
-
-    local_sleep(1)
-    return json_resp_from_thing(r.json())
 
 
-
-
+@app.route("/user/<id>/linked-accounts/<account>", methods=["POST"])
+def user_linked_accounts_update(id, account):
+    user = get_user_for_response(id, request)
+    tiids = user.update_products_from_linked_account(account)
+    return json_resp_from_thing({"products": tiids})
 
 
 

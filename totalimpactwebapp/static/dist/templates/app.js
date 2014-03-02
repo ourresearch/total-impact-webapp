@@ -76,13 +76,13 @@ angular.module("importers/importer.tpl.html", []).run(["$templateCache", functio
   $templateCache.put("importers/importer.tpl.html",
     "\n" +
     "\n" +
-    "<div class=\"importer-tile\"\n" +
+    "<div class=\"importer-tile\" id=\"{{ importer.CSSname }}-import-tile\"\n" +
     "     ng-click=\"showImporterWindow()\"\n" +
     "     ng-class=\"{'has-run': importerHasRun, 'not-run': !importerHasRun}\">\n" +
     "\n" +
     "   <div class=\"importer-name\"><img ng-src=\"{{ importer.logoPath }}\"></div>\n" +
     "   <div class=\"imported-products-count\">\n" +
-    "      <span class=\"count\">{{ products.length }}</span>\n" +
+    "      <span class=\"count\" id=\"{{ importer.CSSname }}-import-count\">{{ products.length }}</span>\n" +
     "      <span class=\"descr\">products imported</span>\n" +
     "   </div>\n" +
     "\n" +
@@ -1003,7 +1003,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </a>\n" +
     "      </div>\n" +
     "      <div class=\"my-vitals\">\n" +
-    "         <h2 class='page-title editable-name'>\n" +
+    "         <h2 class='page-title editable-name' id=\"profile-owner-name\">\n" +
     "            <span class=\"given-name editable\" data-name=\"given_name\">{{ user.about.given_name }}</span>\n" +
     "            <span class=\"surname editable\" data-name=\"surname\">{{ user.about.surname }}</span>\n" +
     "         </h2>\n" +
@@ -1066,7 +1066,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"edit-controls btn-group\">\n" +
     "         <div class=\"num-items\">\n" +
     "            <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
-    "               <span class=\"value\">{{ filterProducts(products).length }}</span> research products\n" +
+    "               <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
     "            </span>\n" +
     "            <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
     "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
