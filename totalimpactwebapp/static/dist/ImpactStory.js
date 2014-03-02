@@ -893,8 +893,8 @@ angular.module('profileLinkedAccounts', [
 
     $routeProvider
       .when("/:url_slug/accounts", {
-        templateUrl: 'profile/profile-add-products.tpl.html',
-        controller: 'addProductsCtrl',
+        templateUrl: 'profile-linked-accounts/profile-linked-accounts.tpl.html',
+        controller: 'profileLinkedAccountsCtrl',
         resolve:{
           userOwnsThisProfile: function(security){
             return security.testUserAuthenticationLevel("ownsThisProfile")
@@ -903,11 +903,14 @@ angular.module('profileLinkedAccounts', [
       })
 
   }])
-//  .controller("addProductsCtrl", function($scope, Page, $routeParams, AllTheImporters){
-//    Page.showHeader(false)
-//    $scope.redirectAfterImport = true
-//    $scope.importers = AllTheImporters.get()
-//  })
+  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheImporters){
+
+    console.log("controller done ran!")
+
+    Page.showHeader(false)
+    Page.showFooter(false)
+    $scope.importers = AllTheImporters.get()
+  })
 angular.module("profileProduct", [
     'resources.users',
     'resources.products',
@@ -4635,7 +4638,7 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"importers\" ng-controller=\"addProductsCtrl\">\n" +
+    "   <div class=\"importers\">\n" +
     "      <div class=\"importer\"\n" +
     "           ng-repeat=\"importer in importers\"\n" +
     "           ng-controller=\"importerCtrl\"\n" +

@@ -734,7 +734,7 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"importers\" ng-controller=\"addProductsCtrl\">\n" +
+    "   <div class=\"importers\">\n" +
     "      <div class=\"importer\"\n" +
     "           ng-repeat=\"importer in importers\"\n" +
     "           ng-controller=\"importerCtrl\"\n" +

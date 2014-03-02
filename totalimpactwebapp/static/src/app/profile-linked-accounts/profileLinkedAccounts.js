@@ -8,8 +8,8 @@ angular.module('profileLinkedAccounts', [
 
     $routeProvider
       .when("/:url_slug/accounts", {
-        templateUrl: 'profile/profile-add-products.tpl.html',
-        controller: 'addProductsCtrl',
+        templateUrl: 'profile-linked-accounts/profile-linked-accounts.tpl.html',
+        controller: 'profileLinkedAccountsCtrl',
         resolve:{
           userOwnsThisProfile: function(security){
             return security.testUserAuthenticationLevel("ownsThisProfile")
@@ -18,8 +18,11 @@ angular.module('profileLinkedAccounts', [
       })
 
   }])
-//  .controller("addProductsCtrl", function($scope, Page, $routeParams, AllTheImporters){
-//    Page.showHeader(false)
-//    $scope.redirectAfterImport = true
-//    $scope.importers = AllTheImporters.get()
-//  })
+  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheImporters){
+
+    console.log("controller done ran!")
+
+    Page.showHeader(false)
+    Page.showFooter(false)
+    $scope.importers = AllTheImporters.get()
+  })
