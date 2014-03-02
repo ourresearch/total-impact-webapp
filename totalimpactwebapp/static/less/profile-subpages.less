@@ -1,50 +1,84 @@
-div.profile-subpage {
-   div.profile-subpage-header {
-      height:  70px;
-      padding-top: 24px;
-      background: #999;
-      color:  #fff;
-      div.wrapper {
-         position: relative;
-         a {
-            top:  5px;
-            color:  #fff;
-            font-size: 15px;
-            i {margin-right: 5px;}
-            &:hover {
-               text-decoration: none;
-            }
-            &.back-to-profile {
-               position: absolute;
-               left:  0px;
-               float:left;
-               font-weight: lighter;
-               i { font-size: 80%;}
-            }
+div.profile-linked-accounts {
+   position: fixed;
+   top:0;
+   bottom:0;
+   left:0;
+   width: 100%;
+   background: #eee;
+   .profile-accounts-header {
+      background: #fff;
+      .wrapper {
+         position:relative;
+         text-align: center;
+         a.back-to-profile {
+            position:absolute;
+            bottom: 20px;
+            left:0;
          }
          h1 {
-            color: #fff;
+            margin-top: 0;
+            padding-top: 20px;
          }
          h2 {
-            text-align: center;
-            font-size: 24px;
-            padding:  0;
-            width: 70%;
-            margin: 0 auto;
-            &.instr {
-               color: #fff;
-            }
+            margin: 0;
+            font-size: 20px;
+            font-weight: 300;
+            padding-bottom: 20px;
          }
+
       }
    }
-   &.profile-add-products {
-
-      div.importers {
-         top:  130px; // override the top margin used in the /signup flow
-         margin-bottom: 0;
-         padding-bottom: 0;
-         background: #fff;
-      }
-   }
-
 }
+
+
+//
+//div.profile-subpage {
+//   div.profile-subpage-header {
+//      height:  70px;
+//      padding-top: 24px;
+//      background: #999;
+//      color:  #fff;
+//      div.wrapper {
+//         position: relative;
+//         a {
+//            top:  5px;
+//            color:  #fff;
+//            font-size: 15px;
+//            i {margin-right: 5px;}
+//            &:hover {
+//               text-decoration: none;
+//            }
+//            &.back-to-profile {
+//               position: absolute;
+//               left:  0px;
+//               float:left;
+//               font-weight: lighter;
+//               i { font-size: 80%;}
+//            }
+//         }
+//         h1 {
+//            color: #fff;
+//         }
+//         h2 {
+//            text-align: center;
+//            font-size: 24px;
+//            padding:  0;
+//            width: 70%;
+//            margin: 0 auto;
+//            &.instr {
+//               color: #fff;
+//            }
+//         }
+//      }
+//   }
+//   &.profile-add-products {
+//
+//      div.importers {
+//         top:  130px; // override the top margin used in the /signup flow
+//         margin-bottom: 0;
+//         padding-bottom: 0;
+//         background: #fff;
+//      }
+//   }
+//
+//}
