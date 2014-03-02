@@ -543,28 +543,49 @@ def get_password_reset_link(id):
 
 
 
-
 #------------------ importers/:importer -----------------
 
-@app.route("/importer/<importer_name>", methods=["POST"])
-def import_products(importer_name):
 
+
+@app.route("/user/<id>/linked-accounts/<account>", methods=["POST"])
+def user_linked_accounts_update(id, account):
+    user = get_user_for_response(id, request)
+    account_value = getattr(user, account+"_id")
+    if account_value:
+        import_response = import_products_inner(account, {"account_name": account_value})
+        tiids = import_response["products"].keys()
+        resp = user.add_products(tiids)
+    else:
+        resp = {}
+    return json_resp_from_thing(resp)
+
+
+def import_products_inner(importer_name, data_dict):
     query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,
         importer_name=importer_name,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
-    analytics_credentials = current_user.get_analytics_credentials()
-    data_dict = json.loads(request.data)
+    try:
+        analytics_credentials = current_user.get_analytics_credentials()
+    except AttributeError:
+        # AnonymousUser doesn't have method
+        analytics_credentials = {}
     data_dict["analytics_credentials"] = analytics_credentials
+
     r = requests.post(
         query,
         data=json.dumps(data_dict),
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
+    return r.json()
 
+
+@app.route("/importer/<importer_name>", methods=["POST"])
+def import_products(importer_name, account_value=None):
+    response = import_products_inner(importer_name, json.loads(request.data))
     local_sleep(1)
-    return json_resp_from_thing(r.json())
+    return json_resp_from_thing(response)
 
 
 

@@ -384,6 +384,8 @@ def remove_duplicates_from_user(user_id):
     user = User.query.get(user_id)
     db.session.merge(user)
 
+    print "TTIDS", user.tiids
+
     duplicates_list = products_list.get_duplicates_list_from_tiids(user.tiids)
     tiids_to_remove = tiids_to_remove_from_duplicates_list(duplicates_list)
     user.delete_products(tiids_to_remove) 
