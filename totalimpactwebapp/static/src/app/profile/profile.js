@@ -269,18 +269,11 @@ angular.module("profile", [
  return {
    restrict: 'A',
    replace: true,
-   template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
+   template:"<a ng-show='returnLink' class='back-to-profile' href='{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
    link: function($scope,el){
-     var re = /^\/([-\w\.]+)\/product\/(\w+)/
-     var m = re.exec($location.path())
-     $scope.returnLink = null
 
-     if (m) {
-       var url_slug = m[1]
-
-       if (url_slug != "embed") {
-         $scope.returnLink = url_slug
-       }
+     if ($scope.returnLink === "/embed") {
+       $scope.returnLink = null
      }
    }
  }

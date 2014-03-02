@@ -7211,52 +7211,6 @@ div.signup-banner a.close-link:hover {
   margin-top: 10px;
   font-weight: bold;
 }
-div.profile-subpage div.profile-subpage-header {
-  height: 70px;
-  padding-top: 24px;
-  background: #555;
-  background: #ff4000;
-  color: #fff;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper {
-  position: relative;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper a {
-  top: 5px;
-  color: #fff;
-  font-size: 15px;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper a i {
-  margin-right: 5px;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper a:hover {
-  text-decoration: none;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper a.back-to-profile {
-  position: absolute;
-  left: 0px;
-  float: left;
-  font-weight: lighter;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper a.back-to-profile i {
-  font-size: 80%;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper h2 {
-  text-align: center;
-  font-size: 24px;
-  padding: 0;
-  width: 70%;
-  margin: 0 auto;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper h2.instr {
-  color: #fff;
-}
-div.profile-subpage.profile-add-products div.importers {
-  top: 130px;
-  margin-bottom: 0;
-  padding-bottom: 0;
-  background: #fff;
-}
 div.profile-header {
   margin-bottom: 35px;
   margin-top: -20px;
@@ -7652,6 +7606,54 @@ div.products .wrapper div.products-without-metrics div.well {
 div.products .wrapper div.products-without-metrics div.well a {
   font-size: 80%;
   margin-left: 8px;
+}
+div.profile-subpage div.profile-subpage-header {
+  height: 70px;
+  padding-top: 24px;
+  background: #999;
+  color: #fff;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper {
+  position: relative;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper a {
+  top: 5px;
+  color: #fff;
+  font-size: 15px;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper a i {
+  margin-right: 5px;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper a:hover {
+  text-decoration: none;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper a.back-to-profile {
+  position: absolute;
+  left: 0px;
+  float: left;
+  font-weight: lighter;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper a.back-to-profile i {
+  font-size: 80%;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper h1 {
+  color: #fff;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper h2 {
+  text-align: center;
+  font-size: 24px;
+  padding: 0;
+  width: 70%;
+  margin: 0 auto;
+}
+div.profile-subpage div.profile-subpage-header div.wrapper h2.instr {
+  color: #fff;
+}
+div.profile-subpage.profile-add-products div.importers {
+  top: 130px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  background: #fff;
 }
 .product {
   float: left;

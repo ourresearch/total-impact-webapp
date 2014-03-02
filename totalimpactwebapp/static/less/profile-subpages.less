@@ -1,0 +1,50 @@
+div.profile-subpage {
+   div.profile-subpage-header {
+      height:  70px;
+      padding-top: 24px;
+      background: #999;
+      color:  #fff;
+      div.wrapper {
+         position: relative;
+         a {
+            top:  5px;
+            color:  #fff;
+            font-size: 15px;
+            i {margin-right: 5px;}
+            &:hover {
+               text-decoration: none;
+            }
+            &.back-to-profile {
+               position: absolute;
+               left:  0px;
+               float:left;
+               font-weight: lighter;
+               i { font-size: 80%;}
+            }
+         }
+         h1 {
+            color: #fff;
+         }
+         h2 {
+            text-align: center;
+            font-size: 24px;
+            padding:  0;
+            width: 70%;
+            margin: 0 auto;
+            &.instr {
+               color: #fff;
+            }
+         }
+      }
+   }
+   &.profile-add-products {
+
+      div.importers {
+         top:  130px; // override the top margin used in the /signup flow
+         margin-bottom: 0;
+         padding-bottom: 0;
+         background: #fff;
+      }
+   }
+
+}

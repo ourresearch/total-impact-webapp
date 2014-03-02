@@ -906,10 +906,12 @@ angular.module('profileLinkedAccounts', [
   .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheImporters){
 
     console.log("controller done ran!")
+    console.log("route params: ", $routeParams.url_slug)
 
     Page.showHeader(false)
     Page.showFooter(false)
     $scope.importers = AllTheImporters.get()
+    $scope.returnLink = "/"+$routeParams.url_slug
   })
 angular.module("profileProduct", [
     'resources.users',
@@ -1386,18 +1388,11 @@ angular.module("profile", [
  return {
    restrict: 'A',
    replace: true,
-   template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
+   template:"<a ng-show='returnLink' class='back-to-profile' href='{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
    link: function($scope,el){
-     var re = /^\/([-\w\.]+)\/product\/(\w+)/
-     var m = re.exec($location.path())
-     $scope.returnLink = null
 
-     if (m) {
-       var url_slug = m[1]
-
-       if (url_slug != "embed") {
-         $scope.returnLink = url_slug
-       }
+     if ($scope.returnLink === "/embed") {
+       $scope.returnLink = null
      }
    }
  }
@@ -4630,11 +4625,13 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
 
 angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-linked-accounts/profile-linked-accounts.tpl.html",
-    "<div class=\"profile-add-products profile-subpage\" >\n" +
-    "   <div class=\"add-products-header profile-subpage-header\">\n" +
+    "<div class=\"profile-accounts profile-subpage\" >\n" +
+    "   <div class=\"profile-accounts-header profile-subpage-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
-    "         <h2 class=\"instr\">Select a source to import from</h2>\n" +
+    "         <h1 class=\"instr\">Link to other accounts</h1>\n" +
+    "         <h2>We'll pull in your products in real time, keeping your Impactstory\n" +
+    "         profile up to date.</h2>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
