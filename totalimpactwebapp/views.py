@@ -696,7 +696,6 @@ def item_page(namespace, nid):
         nid=nid,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
-    print "making request with this url: ", url
     r = requests.get(url)
     try:
         tiid = r.json()["tiid"]
