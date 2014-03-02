@@ -1,14 +1,13 @@
-angular.module('profile.addProducts', [
+angular.module('profileLinkedAccounts', [
   'importers.allTheImporters',
   'services.page',
   'importers.importer'
 ])
-angular.module('profile.addProducts')
 
   .config(['$routeProvider', function($routeProvider) {
 
     $routeProvider
-      .when("/:url_slug/products/add", {
+      .when("/:url_slug/accounts", {
         templateUrl: 'profile/profile-add-products.tpl.html',
         controller: 'addProductsCtrl',
         resolve:{
@@ -19,8 +18,8 @@ angular.module('profile.addProducts')
       })
 
   }])
-  .controller("addProductsCtrl", function($scope, Page, $routeParams, AllTheImporters){
-    Page.showHeader(false)
-    $scope.redirectAfterImport = true
-    $scope.importers = AllTheImporters.get()
-  })
+//  .controller("addProductsCtrl", function($scope, Page, $routeParams, AllTheImporters){
+//    Page.showHeader(false)
+//    $scope.redirectAfterImport = true
+//    $scope.importers = AllTheImporters.get()
+//  })

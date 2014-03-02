@@ -1,4 +1,4 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -724,6 +724,27 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "</div>");
 }]);
 
+angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-linked-accounts/profile-linked-accounts.tpl.html",
+    "<div class=\"profile-add-products profile-subpage\" >\n" +
+    "   <div class=\"add-products-header profile-subpage-header\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <a back-to-profile></a>\n" +
+    "         <h2 class=\"instr\">Select a source to import from</h2>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"importers\" ng-controller=\"addProductsCtrl\">\n" +
+    "      <div class=\"importer\"\n" +
+    "           ng-repeat=\"importer in importers\"\n" +
+    "           ng-controller=\"importerCtrl\"\n" +
+    "           ng-include=\"'importers/importer.tpl.html'\">\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>");
+}]);
+
 angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/edit-product-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
@@ -921,25 +942,9 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "</div>");
 }]);
 
-angular.module("profile/profile-add-products.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile/profile-add-products.tpl.html",
-    "<div class=\"profile-add-products profile-subpage\" >\n" +
-    "   <div class=\"add-products-header profile-subpage-header\">\n" +
-    "      <div class=\"wrapper\">\n" +
-    "         <a back-to-profile></a>\n" +
-    "         <h2 class=\"instr\">Select a source to import from</h2>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"importers\" ng-controller=\"addProductsCtrl\">\n" +
-    "      <div class=\"importer\"\n" +
-    "           ng-repeat=\"importer in importers\"\n" +
-    "           ng-controller=\"importerCtrl\"\n" +
-    "           ng-include=\"'importers/importer.tpl.html'\">\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>");
+angular.module("profile-single-products/profile-single-products.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-single-products/profile-single-products.tpl.html",
+    "<h1>profile single products, y'all!</h1>");
 }]);
 
 angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache", function($templateCache) {

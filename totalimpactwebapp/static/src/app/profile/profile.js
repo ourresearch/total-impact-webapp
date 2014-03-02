@@ -8,7 +8,8 @@ angular.module("profile", [
   'security',
   'services.loading',
   'services.timer',
-  'profile.addProducts',
+  'profileSingleProducts',
+  'profileLinkedAccounts',
   'services.i18nNotifications',
   'services.tour',
   'directives.jQueryTools'
