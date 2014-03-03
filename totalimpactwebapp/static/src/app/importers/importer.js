@@ -8,7 +8,14 @@ angular.module('importers.importer', [
   'profile'
 ])
 angular.module('importers.importer')
-.factory('Importer', function($q, Loading, Products, UsersProducts, UsersAbout){
+.factory('Importer', function(
+    $q,
+    Loading,
+    Products,
+    UsersProducts,
+    UsersLinkedAccounts,
+    UsersAbout){
+
     var waitingOn = {}
     var tiidsAdded = []
 
@@ -30,14 +37,40 @@ angular.module('importers.importer')
 
     var saveImporterInput = function(url_slug, importerObj) {
 
-      // clean the values
-      _.each(importerObj.inputs, function(input){
-        input.cleanedValue = input.cleanupFunction(input.value)
+
+      var usernameInput = _.find(importerObj.inputs, function(input){
+        return input.saveUsername
       })
 
-      saveExternalUsernames(url_slug, importerObj.inputs)
-      saveProducts(url_slug, importerObj.endpoint, importerObj.inputs)
+      var about = {}
+      about[usernameInput.saveUsername] = usernameInput.cleanupFunction(usernameInput.value)
 
+      // hack to use the api endpoint
+      var accountType = usernameInput.saveUsername.replace("_id", "")
+
+      var patchData = {'about': about}
+      console.log("trying to save this patch data: ", patchData)
+
+      start("saveExternalUsernames")
+      console.log("saving usernames")
+      UsersAbout.patch(
+        {id:url_slug},
+        patchData,
+        function(resp){
+          finish("saveExternalUsernames")
+          console.log("done saving external usernames.")
+
+          console.log("telling webapp to update " + accountType)
+          UsersLinkedAccounts.update(
+            {id: url_slug, account: accountType},
+            {},
+            function(resp){
+              console.log("update started for " + accountType + ". ", resp)
+            }
+
+          )
+        }
+      )
     }
 
 
@@ -80,30 +113,6 @@ angular.module('importers.importer')
     }
 
 
-    var saveExternalUsernames = function(url_slug, userInputObjs){
-
-      var about = {}
-      _.each(userInputObjs, function(input){
-        if (input.saveUsername){
-          about[input.saveUsername] = input.cleanedValue
-        }
-      })
-
-      var patchData = {'about': about}
-      console.log("trying to save this patch data: ", patchData)
-
-      start("saveExternalUsernames")
-      console.log("saving usernames")
-      UsersAbout.patch(
-        {id:url_slug},
-        patchData,
-        function(resp){
-          finish("saveExternalUsernames")
-          console.log("done saving external usernames.")
-        }
-      )
-    }
-
 
 
     return {
@@ -117,13 +126,44 @@ angular.module('importers.importer')
 })
 
 
-.controller('importerCtrl', function($scope, $location, Products, UserProfile, UsersProducts, Importer, Loading, Update){
+.controller('importerCtrl', function(
+    $scope,
+    $routeParams,
+    $location,
+    Products,
+    UserProfile,
+    UsersProducts,
+    Importer,
+    Loading,
+    Update){
 
-  var getUserSlug = function(){
-    var re = /\/([-\w\.]+)\/products/
-    var res = re.exec($location.path())
-    return res[1]
+
+  var importCompleteCallback = function(){
+
+    // define vars
+    var slug = getUserSlug()
+    Importer.setOnImportCompletion(
+      function(){
+        // close the window
+        $scope.importWindowOpen = false;
+        $scope.products = Importer.getTiids();
+
+        Update.showUpdate(slug, function(){
+          $location.path("/"+slug)
+          analytics.track(
+            "Imported products",
+            {
+              "Importer name": Importer.displayName,
+              "Number of products": $scope.products.length
+            }
+          )
+        })
+        $scope.importerHasRun = true
+      }
+    )
   }
+
+
   $scope.showImporterWindow = function(){
     if (!$scope.importerHasRun) { // only allow one import for this importer.
 
@@ -149,36 +189,14 @@ angular.module('importers.importer')
   }
 
   $scope.onImport = function(){
-
-    // define vars
-    var slug = getUserSlug()
-    Importer.setOnImportCompletion(
-      function(){
-        // close the window
-        $scope.importWindowOpen = false;
-        $scope.products = Importer.getTiids();
-
-        Update.showUpdate(slug, function(){
-          $location.path("/"+slug)
-          analytics.track(
-            "Imported products",
-            {
-              "Importer name": Importer.displayName,
-              "Number of products": $scope.products.length
-            }
-          )
-        })
-        $scope.importerHasRun = true
-      }
-    )
-
-    // ok, let's do this
     console.log(
-      _.sprintf("calling /importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
+      _.sprintf("calling /importer/%s updating '%s' with userInput:",
+        $scope.importer.endpoint,
+        $routeParams.url_slug),
       $scope.importer
     )
 
-    Importer.saveImporterInput(slug, $scope.importer)
+    Importer.saveImporterInput($routeParams.url_slug, $scope.importer)
   }
 })
 
