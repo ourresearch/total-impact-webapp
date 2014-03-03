@@ -549,6 +549,10 @@ def hide_user_secrets(user):
     return user
 
 
+def delete_user(user):
+    db.session.delete(user)
+    db.session.commit()  
+
 
 def _make_id(len=6):
     '''Make an id string.
