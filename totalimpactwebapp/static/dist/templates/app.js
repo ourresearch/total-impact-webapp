@@ -726,7 +726,7 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
 
 angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-linked-accounts/profile-linked-accounts.tpl.html",
-    "<div class=\"profile-accounts profile-subpage\" >\n" +
+    "<div class=\"profile-linked-accounts profile-subpage\" >\n" +
     "   <div class=\"profile-accounts-header profile-subpage-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +

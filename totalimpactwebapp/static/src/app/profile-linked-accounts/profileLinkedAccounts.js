@@ -20,11 +20,12 @@ angular.module('profileLinkedAccounts', [
   }])
   .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheImporters){
 
-    console.log("controller done ran!")
-    console.log("route params: ", $routeParams.url_slug)
 
     Page.showHeader(false)
     Page.showFooter(false)
     $scope.importers = AllTheImporters.get()
     $scope.returnLink = "/"+$routeParams.url_slug
+
+
+
   })

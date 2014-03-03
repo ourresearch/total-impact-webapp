@@ -6191,6 +6191,9 @@ ol li {
   line-height: 1.5;
 }
 i.left {
+  margin-right: .3em;
+}
+i.right {
   margin-left: .3em;
 }
 div.main-view {
@@ -7607,53 +7610,40 @@ div.products .wrapper div.products-without-metrics div.well a {
   font-size: 80%;
   margin-left: 8px;
 }
-div.profile-subpage div.profile-subpage-header {
-  height: 70px;
-  padding-top: 24px;
-  background: #999;
+div.profile-linked-accounts {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #eee;
+}
+div.profile-linked-accounts .profile-accounts-header {
+  background: #555;
   color: #fff;
 }
-div.profile-subpage div.profile-subpage-header div.wrapper {
+div.profile-linked-accounts .profile-accounts-header .wrapper {
   position: relative;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper a {
-  top: 5px;
-  color: #fff;
-  font-size: 15px;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper a i {
-  margin-right: 5px;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper a:hover {
-  text-decoration: none;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper a.back-to-profile {
-  position: absolute;
-  left: 0px;
-  float: left;
-  font-weight: lighter;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper a.back-to-profile i {
-  font-size: 80%;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper h1 {
-  color: #fff;
-}
-div.profile-subpage div.profile-subpage-header div.wrapper h2 {
   text-align: center;
-  font-size: 24px;
-  padding: 0;
-  width: 70%;
-  margin: 0 auto;
 }
-div.profile-subpage div.profile-subpage-header div.wrapper h2.instr {
+div.profile-linked-accounts .profile-accounts-header .wrapper a.back-to-profile {
+  position: absolute;
+  bottom: 47px;
+  left: 0;
+  color: #999999;
+  font-weight: 300;
+}
+div.profile-linked-accounts .profile-accounts-header .wrapper h1 {
+  margin-top: 0;
+  padding-top: 60px;
   color: #fff;
 }
-div.profile-subpage.profile-add-products div.importers {
-  top: 130px;
-  margin-bottom: 0;
-  padding-bottom: 0;
-  background: #fff;
+div.profile-linked-accounts .profile-accounts-header .wrapper h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 300;
+  padding-bottom: 50px;
+  color: #fff;
 }
 .product {
   float: left;
@@ -8376,13 +8366,9 @@ div.settings div.settings-input form.form-horizontal.linked-accounts-settings .s
   margin-top: 50px;
 }
 div.importers {
-  position: absolute;
-  top: 80px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #eee;
+  width: 100%;
   float: left;
+  border-top: 2px solid #ddd;
 }
 div.importers div.overlay {
   position: fixed;
@@ -8557,8 +8543,8 @@ div.importers div.import-window-wrapper div.import-window .content .extra code {
 div.importers div.importer-tile {
   float: left;
   background: #fff;
-  width: 25%;
-  padding: 45px 1% 45px 2%;
+  width: 50%;
+  padding: 65px 1% 65px 2%;
   border-right: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
   text-align: center;
@@ -8604,7 +8590,7 @@ div.importers div.importer-tile.has-run div.imported-products-count {
   margin-bottom: -10px;
 }
 div.importers div.importer-tile div.importer-name img {
-  height: 35px;
+  height: 45px;
 }
 div.importers div.importer-tile div.imported-products-count {
   display: none;

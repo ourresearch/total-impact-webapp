@@ -295,119 +295,6 @@ angular.module('importers.allTheImporters')
 
 
 
-
-    {
-      displayName: "YouTube",
-      inputs: [{
-        name: "standard_urls_input",
-        inputType: "idList",
-        inputNeeded: "URLs",
-        help: "Copy the URLs for the videos you want to add, then paste them here.",
-        placeholder: "http://www.youtube.com/watch?v=12345"
-      }],
-      endpoint: "urls",
-      url: "http://youtube.com",
-      descr: "YouTube is an online video-sharing site."
-    },
-
-
-    {
-      displayName: "Vimeo",
-      inputs: [{
-        name: "standard_urls_input",        
-        inputType: "idList",
-        inputNeeded: "URLs",
-        help: "Copy the URL for the video you want to add, then paste it here.",
-        placeholder: "http://vimeo.com/12345"
-      }],
-      endpoint: "urls",
-      url: "http://vimeo.com",
-      descr: "Vimeo is an online video-sharing site."
-    },
-
-    {
-      displayName: "arXiv",
-      inputs: [{
-        name: "arxiv_id_input",
-        inputType: "idList",
-        inputNeeded: "arXiv IDs",
-        help: "A typical arXiv ID looks like this: 1305.3328",
-        placeholder: "arXiv:1234.5678"       
-      }],
-      endpoint: "arxiv",
-      url: "http://arXiv.org",
-      descr: "arXiv is an e-print service in the fields of physics, mathematics, computer science, quantitative biology, quantitative finance and statistics."
-    },
-
-
-    {
-      displayName: "Dryad",
-      inputs: [{
-        name: "standard_dois_input",        
-        inputType: "idList",
-        inputNeeded: "DOIs",
-        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
-        placeholder: "doi:10.5061/dryad.example"
-      }],
-      endpoint: "dois",
-      url: 'http://datadryad.org',
-      descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."
-    },
-
-
-    {
-      displayName: "Dataset DOIs",
-      inputs: [{
-        name: "standard_dois_input",                
-        inputType: "idList",
-        inputNeeded: "DOIs",
-        help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
-        placeholder: "http://doi.org/10.example/example"
-      }],
-      endpoint: "dois",
-      descr: "Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."
-    },
-
-
-    {
-      displayName: "Article DOIs",
-      inputs: [{
-        name: "standard_dois_input",                
-        inputType: "idList",
-        inputNeeded: "DOIs",
-        help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
-        placeholder: "http://doi.org/10.example/example"
-      }],
-      endpoint: "dois",
-      descr: "Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."
-    },
-
-
-    {
-      displayName: "PubMed IDs",
-      inputs: [{
-        name: "standard_pmids_input",                
-        inputType: "idList",
-        inputNeeded: "IDs",
-        placeholder: "123456789",
-        help: "You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."
-      }],
-      endpoint: "pmids",
-      url:'http://www.ncbi.nlm.nih.gov/pubmed',
-      descr: "PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."
-    },
-
-
-    {
-      displayName: "Products by URL",
-      inputs: [{
-        name: "standard_urls_input",                
-        inputType: "idList",
-        inputNeeded: "URLs"
-      }],
-      endpoint: "urls",
-      descr: "Our service-specific importers (DOI, blogs, GitHub, etc) give the most comprehensive results. But if you've got a product not handled by any of those, you can import it here, via URL."
-    }
   ]
 
   var defaultInputObj = {
@@ -912,13 +799,14 @@ angular.module('profileLinkedAccounts', [
   }])
   .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheImporters){
 
-    console.log("controller done ran!")
-    console.log("route params: ", $routeParams.url_slug)
 
     Page.showHeader(false)
     Page.showFooter(false)
     $scope.importers = AllTheImporters.get()
     $scope.returnLink = "/"+$routeParams.url_slug
+
+
+
   })
 angular.module("profileProduct",["resources.users","services.page","product.product","services.loading","ui.bootstrap","security"]).config(["$routeProvider",function(e){e.when("/:url_slug/product/:tiid",{templateUrl:"profile-product/profile-product-page.tpl.html",controller:"ProfileProductPageCtrl"})}]).controller("ProfileProductPageCtrl",function(e,t,n,r,i,s,o,u,a,f,l){var c=t.url_slug,h=i.get("$http");f.start("profileProduct");e.userSlug=c;e.loading=f;e.userOwnsThisProfile=s.testUserAuthenticationLevel("ownsThisProfile");e.openInfoModal=function(){r.open({templateUrl:"profile-product/percentilesInfoModal.tpl.html"})};e.deleteProduct=function(){f.start("deleteProduct");u.delete({id:c,idType:"url_slug"},{tiids:[t.tiid]},function(){console.log("finished deleting",t.tiid);h.removeAll();s.redirectToProfile()})};e.product=o.get({id:c,tiid:t.tiid},function(t){console.log("data",t);e.biblio=a.makeBiblio(t);e.metrics=a.makeMetrics(t);f.finish("profileProduct");l.setTitle(t.biblio.title)},function(e){n.path("/"+c)})}).controller("modalCtrl");
 angular.module("profileProduct", [
@@ -1397,7 +1285,7 @@ angular.module("profile", [
  return {
    restrict: 'A',
    replace: true,
-   template:"<a ng-show='returnLink' class='back-to-profile' href='{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
+   template:"<a ng-show='returnLink' class='back-to-profile' href='{{ returnLink }}'><i class='icon-chevron-left left'></i>back to profile</a>",
    link: function($scope,el){
 
      if ($scope.returnLink === "/embed") {
@@ -4638,7 +4526,7 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
 
 angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-linked-accounts/profile-linked-accounts.tpl.html",
-    "<div class=\"profile-accounts profile-subpage\" >\n" +
+    "<div class=\"profile-linked-accounts profile-subpage\" >\n" +
     "   <div class=\"profile-accounts-header profile-subpage-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
