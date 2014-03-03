@@ -75,6 +75,14 @@ angular.module('importers.importer')
               finish("saveProducts")
             }
           )
+        },
+        function(resp){ // if there's a failure
+          console.log("importer failure!")
+          finish("saveProducts")
+          alert("Oops! Sorry, we seem to have run into an error. We weren't able to import your " +
+            importerName + " products, but we've logged this error and will get straight to work " +
+            "on fixing it.")
+
         }
       )
     }
