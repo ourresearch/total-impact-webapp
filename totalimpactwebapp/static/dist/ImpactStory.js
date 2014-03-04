@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-03
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-04
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -4773,7 +4773,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "\n" +
     "         <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
     "\n" +
-    "         <div class=\"free-fulltext-url well\" ng-show=\"!loading.is('profileProduct') && product.genre=='article'\">\n" +
+    "         <div class=\"free-fulltext-url well\" ng-show=\"!loading.is('profileProduct') && (product.genre=='article' || product.genre=='report'\">\n" +
     "            <div class=\"no-free-fulltext-url\" ng-show=\"!product.biblio.free_fulltext_url\">\n" +
     "               <div class=\"info\">\n" +
     "                  <i class=\"icon-warning-sign leader\"></i>\n" +
