@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-03
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-04
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -414,6 +414,7 @@ angular.module('importers.importer')
 
     var saveImporterInput = function(url_slug, importerObj) {
 
+      var deferred = $q.defer()
 
       var usernameInput = _.find(importerObj.inputs, function(input){
         return input.saveUsername
@@ -426,68 +427,46 @@ angular.module('importers.importer')
       var accountType = usernameInput.saveUsername.replace("_id", "")
 
       var patchData = {'about': about}
-      console.log("trying to save this patch data: ", patchData)
 
       start("saveExternalUsernames")
-      console.log("saving usernames")
+      console.log("saving usernames", patchData)
       UsersAbout.patch(
         {id:url_slug},
         patchData,
         function(resp){
           finish("saveExternalUsernames")
-          console.log("done saving external usernames.")
 
           console.log("telling webapp to update " + accountType)
           UsersLinkedAccounts.update(
             {id: url_slug, account: accountType},
             {},
             function(resp){
+              // we've kicked off a slurp for this account type. we'll add
+              // as many products we find in that account, then dedup.
+              // we'll return the list of new tiids
               console.log("update started for " + accountType + ". ", resp)
+              deferred.resolve(resp)
+            },
+            function(updateResp){
+              deferred.reject({
+                msg: "attempt to slurp in products from linked account failed",
+                resp: updateResp
+              })
             }
 
           )
+        },
+        function(patchResp){
+          deferred.reject({
+            failure: "PATCH to add external account failed; didn't even try slurping.",
+            resp: patchResp
+          })
         }
       )
+      return deferred.promise
     }
 
 
-    var saveProducts = function(url_slug, importerName, userInputObjs){
-
-      // make a simple dict of cleaned input values.
-      var userInput = {}
-      _.each(userInputObjs, function(input){
-        userInput[input.name] = input.cleanedValue
-      })
-
-      console.log("saveProducts()", url_slug, importerName, userInput)
-      start("saveProducts")
-      Products.save(
-        {'importerName': importerName}, // define the url
-        userInput, // the post data, from user input
-        function(resp, headers){  // run when the server gives us something back.
-          var tiids;
-
-          if (resp.error){
-            tiids = []
-          }
-          else {
-            tiids = _.keys(resp.products)
-          }
-
-          console.log("importer got us some tiids:", tiids);
-          tiidsAdded = tiids
-
-          // add the new products to the user's profile on the server
-          UsersProducts.patch(
-            {id: url_slug},  // the url
-            {"tiids": tiids},  // the POST data
-            function(){
-              finish("saveProducts")
-            }
-          )
-        }
-      )
-    }
 
 
 
@@ -573,7 +552,14 @@ angular.module('importers.importer')
       $scope.importer
     )
 
-    Importer.saveImporterInput($routeParams.url_slug, $scope.importer)
+    Importer.saveImporterInput($routeParams.url_slug, $scope.importer).then(
+      function(resp){
+        console.log("success at saving inputs!", resp)
+      },
+      function(resp){
+        console.log("failure at saving inputs :(", resp)
+      }
+    )
   }
 })
 
