@@ -7610,7 +7610,7 @@ div.products .wrapper div.products-without-metrics div.well a {
   font-size: 80%;
   margin-left: 8px;
 }
-div.profile-linked-accounts {
+div.profile-subpage {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -7618,27 +7618,27 @@ div.profile-linked-accounts {
   width: 100%;
   background: #eee;
 }
-div.profile-linked-accounts .profile-accounts-header {
+div.profile-subpage .profile-subpage-header {
   background: #555;
   color: #fff;
 }
-div.profile-linked-accounts .profile-accounts-header .wrapper {
+div.profile-subpage .profile-subpage-header .wrapper {
   position: relative;
   text-align: center;
 }
-div.profile-linked-accounts .profile-accounts-header .wrapper a.back-to-profile {
+div.profile-subpage .profile-subpage-header .wrapper a.back-to-profile {
   position: absolute;
   bottom: 47px;
   left: 0;
   color: #999999;
   font-weight: 300;
 }
-div.profile-linked-accounts .profile-accounts-header .wrapper h1 {
+div.profile-subpage .profile-subpage-header .wrapper h1 {
   margin-top: 0;
   padding-top: 60px;
   color: #fff;
 }
-div.profile-linked-accounts .profile-accounts-header .wrapper h2 {
+div.profile-subpage .profile-subpage-header .wrapper h2 {
   margin: 0;
   font-size: 20px;
   font-weight: 300;

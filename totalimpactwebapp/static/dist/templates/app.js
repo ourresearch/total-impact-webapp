@@ -961,7 +961,26 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
 
 angular.module("profile-single-products/profile-single-products.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-single-products/profile-single-products.tpl.html",
-    "<h1>profile single products, y'all!</h1>");
+    "<div class=\"profile-single-products profile-subpage\" >\n" +
+    "   <div class=\"profile-single-products-header profile-subpage-header\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <a back-to-profile></a>\n" +
+    "         <h1 class=\"instr\">Import individual products</h1>\n" +
+    "         <h2>Paste unique product IDs and we'll add them to your Impactstory profile.</h2>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"profile-single-products-body\">\n" +
+    "      <form>\n" +
+    "         <textarea name=\"single-produts\" id=\"single-products-importer\"></textarea>\n" +
+    "         <submit-button action=\"Import\"></submit-button>\n" +
+    "      </form>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>");
 }]);
 
 angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
