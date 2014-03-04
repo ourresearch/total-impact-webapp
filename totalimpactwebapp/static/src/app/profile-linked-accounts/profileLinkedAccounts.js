@@ -1,7 +1,7 @@
 angular.module('profileLinkedAccounts', [
-  'importers.allTheImporters',
+  'accounts.allTheAccounts',
   'services.page',
-  'importers.importer'
+  'accounts.account'
 ])
 
   .config(['$routeProvider', function($routeProvider) {
@@ -18,12 +18,12 @@ angular.module('profileLinkedAccounts', [
       })
 
   }])
-  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheImporters){
+  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheAccounts){
 
 
     Page.showHeader(false)
     Page.showFooter(false)
-    $scope.importers = AllTheImporters.get()
+    $scope.accounts = AllTheAccounts.get()
     $scope.returnLink = "/"+$routeParams.url_slug
 
 

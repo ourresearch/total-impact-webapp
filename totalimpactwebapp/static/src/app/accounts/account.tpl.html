@@ -1,0 +1,104 @@
+
+
+<div class="account-tile" id="{{ account.CSSname }}-account-tile"
+     ng-click="showAccountWindow()"
+     ng-class="{'has-run': accountHasRun, 'not-run': !accountHasRun}">
+
+   <div class="account-name"><img ng-src="{{ account.logoPath }}"></div>
+   <div class="account-products-count">
+      <span class="count" id="{{ account.CSSname }}-account-count">{{ products.length }}</span>
+      <span class="descr">products in account</span>
+   </div>
+
+</div>
+
+<div class="overlay"
+     ng-click="onCancel()"
+     ng-if="accountWindowOpen"
+     ng-animate="{enter: 'animated fadeIn', leave: 'animated fadeOut'}"></div>
+
+<div class="account-window-wrapper"
+     ng-if="accountWindowOpen"
+     ng-animate="{enter: 'animated slideInRight', leave: 'animated slideOutRight'}">
+        >
+   <div class="account-window">
+
+      <div class="account-tabs">
+         <menu class="account-menu">
+            <li class="tab"
+                ng-click="setCurrentTab($index)"
+                ng-class="{current: $index==currentTab}"
+                ng-repeat="tab in account.tabs"> {{ tab.label }}</li>
+         </menu>
+      </div>
+
+      <div class="content">
+         <h2 class="account-name" ng-show="!account.url"><img ng-src="{{ account.logoPath }}" /> </h2>
+         <h2 class="account-name" ng-show="account.url">
+            <a class="logo" href="{{ account.url }}" target="_blank"><img ng-src="{{ account.logoPath }}" /></a>
+            <a class="visit" href="{{ account.url }}" target="_blank">Visit<i class="icon-chevron-right"></i></a>
+         </h2>
+
+         <div class="descr" ng-show="currentTab==0">{{ account.descr }}</div>
+
+         <form name="{{ account.name }}accountForm" novalidate class="form" ng-submit="onLink()">
+
+            <div class="form-group"
+                 ng-show="$index==currentTab"
+                 ng-repeat="input in account.inputs">
+               <label class="control-label">
+                  {{ input.displayName }} {{ input.inputNeeded }}
+                  <i class="icon-question-sign" ng-show="input.help" tooltip-html-unsafe="{{ input.help }}"></i>
+                  <span class="one-per-line" ng-show="input.inputType=='idList'">(one per line)</span>
+               </label>
+               <div class="account-input" ng-switch on="input.inputType">
+                  <input
+                          class="form-control"
+                          ng-model="input.value"
+                          type="text" ng-switch-when="username"
+                          placeholder="{{ input.placeholder }}">
+
+                  <textarea placeholder="{{ input.placeholder }}"
+                            class="form-control"
+                            ng-model="input.value"
+                            ng-switch-when="idList"></textarea>
+
+                  <!-- you can only have ONE file input per account, otherwise namespace collision -->
+                  <input type="file" ng-switch-when="file" ng-file-select="input.inputType">
+
+                  <div class="input-extra" ng-show="input.extra" ng-bind-html-unsafe="input.extra"></div>
+               </div>
+            </div>
+
+
+            <div class="buttons-group save">
+               <div class="buttons" ng-show="!loading.is('saveButton')">
+                  <button ng-show="false" type="submit" class="btn btn-primary">Link</button>
+                  <a ng-show="true" class="btn btn-danger">Unlink</a>
+
+                  <a class="btn btn-default cancel" ng-click="onCancel()">Cancel</a>
+
+
+               </div>
+
+               <div class="working" ng-show="loading.is('saveButton')">
+                  <i class="icon-refresh icon-spin"></i>
+                  <span class="text">Unlinking...</span>
+               </div>
+
+            </div>
+
+
+         </form>
+
+         <div class="extra" ng-show="account.extra" ng-bind-html-unsafe="account.extra"></div>
+
+
+      </div>
+   </div>
+</div>
+
+
+
+
+

@@ -3,6 +3,344 @@
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
  */
+angular.module('accounts.account', [
+  'directives.forms',
+  'directives.onRepeatFinished',
+  'services.loading',
+  'resources.users',
+  'resources.products',
+  'update.update',
+  'profile'
+])
+.factory('Account', function(
+    $q,
+    Loading,
+    Products,
+    UsersProducts,
+    UsersLinkedAccounts,
+    UsersAbout){
+
+    var tiidsAdded = []
+
+    var saveAccountInput = function(url_slug, accountObj) {
+
+      var deferred = $q.defer()
+
+      var usernameInput = _.find(accountObj.inputs, function(input){
+        return input.saveUsername
+      })
+
+      var about = {}
+      about[usernameInput.saveUsername] = usernameInput.cleanupFunction(usernameInput.value)
+
+      // hack to use the api endpoint
+      var accountType = usernameInput.saveUsername.replace("_id", "")
+
+      var patchData = {'about': about}
+
+      Loading.start("saveButton")
+      console.log("saving usernames", patchData)
+      UsersAbout.patch(
+        {id:url_slug},
+        patchData,
+        function(resp){
+
+          console.log("telling webapp to update " + accountType)
+          UsersLinkedAccounts.update(
+            {id: url_slug, account: accountType},
+            {},
+            function(resp){
+              // we've kicked off a slurp for this account type. we'll add
+              // as many products we find in that account, then dedup.
+              // we'll return the list of new tiids
+              console.log("update started for " + accountType + ". ", resp)
+              Loading.finish("saveButton")
+              deferred.resolve(resp)
+            },
+            function(updateResp){
+              deferred.reject({
+                msg: "attempt to slurp in products from linked account failed",
+                resp: updateResp
+              })
+            }
+
+          )
+        },
+        function(patchResp){
+          deferred.reject({
+            failure: "PATCH to add external account failed; didn't even try slurping.",
+            resp: patchResp
+          })
+        }
+      )
+      return deferred.promise
+    }
+
+
+
+
+
+
+    return {
+      'saveAccountInput': saveAccountInput,
+      getTiids: function(){return tiidsAdded}
+    }
+
+})
+
+
+.controller('accountCtrl', function(
+    $scope,
+    $routeParams,
+    $location,
+    Products,
+    UserProfile,
+    UsersProducts,
+    Account,
+    Loading,
+    Update){
+
+
+
+  $scope.showAccountWindow = function(){
+    analytics.track("Opened an account window", {
+      "Account name": Account.displayName
+    })
+
+    $scope.accountWindowOpen = true;
+    $scope.account.userInput = null  // may have been used before; clear it.
+  }
+
+  $scope.products = []
+  $scope.currentTab = 0;
+  $scope.userInput = {}
+  $scope.accountHasRun = false
+
+
+  $scope.setCurrentTab = function(index){$scope.currentTab = index}
+
+  $scope.onCancel = function(){
+    $scope.accountWindowOpen = false;
+  }
+
+  $scope.onLink = function(){
+    console.log(
+      _.sprintf("calling /importer/%s updating '%s' with userInput:",
+        $scope.account.endpoint,
+        $routeParams.url_slug),
+      $scope.account
+    )
+
+    Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
+
+      // linked this account successfully
+      function(resp){
+        console.log("successfully saved linked account", resp)
+
+
+
+
+      },
+      function(resp){
+        console.log("failure at saving inputs :(", resp)
+      }
+    )
+  }
+})
+
+
+  .directive("ngFileSelect",function(){
+    return {
+      link: function($scope, el, attrs){
+        el.bind("change", function(e){
+          var reader = new FileReader()
+          reader.onload = function(e){
+            $scope.input.value = reader.result
+          }
+
+          var file = (e.srcElement || e.target).files[0];
+          reader.readAsText(file)
+        })
+      }
+    }
+  })
+
+angular.module('accounts.allTheAccounts', [
+  'accounts.account'
+])
+
+.factory('AllTheAccounts', function(){
+
+  var importedProducts = []
+  var accounts = [
+    {
+      displayName: "GitHub",
+      url: 'http://github.com',
+      descr: "GitHub is an online code repository emphasizing community collaboration features.",
+//     tabs: [
+//       {
+//         label: "account"
+//       },
+//       {
+//         label: "additional repositories"
+//       }
+//     ],
+      inputs: [{
+//            tab: 0,
+            name: "account_name",
+            inputType: "username",
+            inputNeeded: "username",
+            help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
+            saveUsername: "github_id"
+          }]
+    },
+
+
+    {
+      displayName: "ORCID",
+      inputs: [{
+        inputType: "username",
+        inputNeeded: "ID",
+        placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
+        saveUsername: "orcid_id",
+        cleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
+        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
+      }],
+      url: 'http://orcid.org',
+      signupUrl: 'http://orcid.org/register',
+      descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",
+      extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
+    },
+
+    {
+      displayName: "SlideShare",
+      url:'http://slideshare.net',
+      descr: "SlideShare is community for sharing presentations online.",
+      inputs: [{
+            name: "account_name",
+            inputType: "username",
+            inputNeeded: "username",
+            help: "Your username is right after \"slideshare.net/\" in your profile's URL.",            
+            saveUsername: "slideshare_id"
+          }]
+    },
+
+
+    {
+      displayName: "Google Scholar",
+      inputs: [{
+        inputType: "file",
+        inputNeeded: "BibTeX file"
+      }],
+      endpoint: "bibtex",
+      url: 'http://scholar.google.com/citations',
+      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
+      extra: '<h3>How to import your Google Scholar profile:</h3>'
+        + '<ol>'
+          + '<li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li>'
+          + '<li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>'
+          + '<li>Click <code>Export all my articles</code>, then save the BibTex file.</li>'
+          + '<li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.'
+        + '</ol>'
+    },
+
+
+    {
+      displayName: "figshare",
+      url: "http://figshare.com",
+      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
+      inputs: [{
+            name: "account_name",
+            inputType: "username",
+            inputNeeded: "author page URL",
+            placeholder: "http://figshare.com/authors/your_username/12345",
+            cleanupFunction: function(x) {
+              if (typeof x==="undefined") return x; 
+              return('http://'+x.replace('http://', ''))},
+            saveUsername: "figshare_id"
+          }]
+    }
+  ]
+
+  var defaultInputObj = {
+    name: "primary",
+    cleanupFunction: function(x){return x},
+    tab:0
+  }
+
+
+
+
+  var makeLogoPath = function(displayName) {
+    return '/static/img/logos/' + _(displayName.toLowerCase()).dasherize() + '.png';
+  }
+
+
+  var makeEndpoint = function(account) {
+    if (account.endpoint) {
+      return account.endpoint
+    }
+    else {
+      return makeName(account.displayName)
+    }
+  }
+          
+  var makeName = function(accountName) {
+    var words = accountName.split(" ");
+    var capitalizedWords = _.map(words, function(word){
+      return word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)
+    })
+    capitalizedWords[0] = capitalizedWords[0].toLowerCase()
+    return capitalizedWords.join("");
+
+  }
+
+
+  var makeCSSName = function(accountName) {
+    return accountName.replace(/ /g, '-').toLowerCase()
+
+  }
+
+
+  return {
+    addProducts: function(products) {
+      importedProducts = importedProducts.concat(products)
+}   ,
+    getProducts: function(){
+      return importedProducts
+    },
+    get: function(){
+
+      // this way no state is saved in the actual accounts obj.
+      var accountsConfig = angular.copy(accounts)
+
+      var accountsWithAllData = _.map(accountsConfig, function(account){
+        account.name = makeName(account.displayName)
+        account.CSSname = makeCSSName(account.displayName)
+        account.logoPath = makeLogoPath(account.displayName)
+        account.endpoint = makeEndpoint(account)
+
+        account.inputs = _.map(account.inputs, function(inputObj){
+          return _.defaults(inputObj, defaultInputObj)
+        })
+
+
+        return account
+      })
+
+      return _.sortBy(accountsWithAllData, function(account){
+        return account.displayName.toLocaleLowerCase();
+      })
+
+    }
+
+
+  }
+
+
+
+})
+
 // setup libs outside angular-land. this may break some unit tests at some point...#problemForLater
 // Underscore string functions: https://github.com/epeli/underscore.string
 _.mixin(_.str.exports());
@@ -135,450 +473,6 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
     return httpRequestTracker.hasPendingRequests();
   };
 }]);
-
-angular.module('importers.allTheImporters', [
-  'importers.importer'
-])
-
-angular.module('importers.allTheImporters')
-.factory('AllTheImporters', function(){
-
-  var importedProducts = []
-  var importers = [
-    {
-      displayName: "GitHub",
-      url: 'http://github.com',
-      descr: "GitHub is an online code repository emphasizing community collaboration features.",
-     tabs: [
-       {
-         label: "account"
-       },
-       {
-         label: "additional repositories"
-       }
-     ],
-      inputs: [{
-            tab: 0,
-            name: "account_name",            
-            inputType: "username",
-            inputNeeded: "username",
-            help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
-            saveUsername: "github_id"
-          }
-         ,{
-            tab:1,
-            name: "standard_urls_input",                        
-            inputType: "idList",
-            inputNeeded: "URLs",
-            help: "Paste URLs for other github repositories here.",
-            placeholder: "https://github.com/your_username/your_repository",
-            cleanupFunction: function (fullString) {
-              if (typeof fullString==="undefined") return fullString; 
-              return _.map(fullString.split("\n"), function(line) {            
-                // make sure it starts with https and doesn't end with trailing slash
-                var working = line.replace(/^https*:\/\//, ""); 
-                working = working.replace(/\/$/, ""); 
-                return "https://"+working}).join("\n")}
-         }
-      ]
-    },
-
-
-    {
-      displayName: "ORCID",
-      inputs: [{
-        inputType: "username",
-        inputNeeded: "ID",
-        placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
-        saveUsername: "orcid_id",
-        cleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
-        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
-      }],
-      url: 'http://orcid.org',
-      signupUrl: 'http://orcid.org/register',
-      descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",
-      extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
-    },
-
-    {
-      displayName: "SlideShare",
-      url:'http://slideshare.net',
-      descr: "SlideShare is community for sharing presentations online.",
-      tabs: [
-       {
-         label: "account"
-       },
-       {
-         label: "additional products"
-       }
-       ],
-      inputs: [{
-            tab: 0,
-            name: "account_name",            
-            inputType: "username",
-            inputNeeded: "username",
-            help: "Your username is right after \"slideshare.net/\" in your profile's URL.",            
-            saveUsername: "slideshare_id"
-          }
-         ,{
-            tab:1,
-            name: "standard_urls_input",                        
-            inputType: "idList",
-            inputNeeded: "URLs",
-            help: "Paste URLs for other SlideShare products here.",
-            placeholder: "http://www.slideshare.net/your-username/your-presentation",
-            cleanupFunction: function (fullString) {
-              if (typeof fullString==="undefined") return fullString; 
-              return _.map(fullString.split("\n"), function(line) {            
-                // make sure it starts with http
-                var working = line.replace(/^https*:\/\//, ""); 
-                return "http://"+working}).join("\n")}
-         }
-      ]
-    },
-
-
-    {
-      displayName: "Google Scholar",
-      inputs: [{
-        inputType: "file",
-        inputNeeded: "BibTeX file"
-      }],
-      endpoint: "bibtex",
-      url: 'http://scholar.google.com/citations',
-      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
-      extra: '<h3>How to import your Google Scholar profile:</h3>'
-        + '<ol>'
-          + '<li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li>'
-          + '<li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>'
-          + '<li>Click <code>Export all my articles</code>, then save the BibTex file.</li>'
-          + '<li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.'
-        + '</ol>'
-    },
-
-
-    {
-      displayName: "figshare",
-      url: "http://figshare.com",
-      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
-      tabs: [
-       {
-         label: "account"
-       },
-       {
-         label: "additional products"
-       }
-       ],
-      inputs: [{
-            tab: 0,
-            name: "account_name",            
-            inputType: "username",
-            inputNeeded: "author page URL",
-            placeholder: "http://figshare.com/authors/your_username/12345",
-            cleanupFunction: function(x) {
-              if (typeof x==="undefined") return x; 
-              return('http://'+x.replace('http://', ''))},
-            saveUsername: "figshare_id"
-          }
-         ,{
-            tab:1,
-            name: "standard_dois_input",                        
-            inputType: "idList",
-            inputNeeded: "DOIs",
-            help: "Paste DOIs for other figshare products here.",
-            placeholder: "http://dx.doi.org/10.6084/m9.figshare.12345"
-         }
-      ]
-    },
-
-
-
-
-  ]
-
-  var defaultInputObj = {
-    name: "primary",
-    cleanupFunction: function(x){return x},
-    tab:0
-  }
-
-
-
-
-  var makeLogoPath = function(displayName) {
-    return '/static/img/logos/' + _(displayName.toLowerCase()).dasherize() + '.png';
-  }
-
-
-  var makeEndpoint = function(importer) {
-    if (importer.endpoint) {
-      return importer.endpoint
-    }
-    else {
-      return makeName(importer.displayName)
-    }
-  }
-          
-  var makeName = function(importerName) {
-    var words = importerName.split(" ");
-    var capitalizedWords = _.map(words, function(word){
-      return word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)
-    })
-    capitalizedWords[0] = capitalizedWords[0].toLowerCase()
-    return capitalizedWords.join("");
-
-  }
-
-
-  var makeCSSName = function(importerName) {
-    return importerName.replace(/ /g, '-').toLowerCase()
-
-  }
-
-
-  return {
-    addProducts: function(products) {
-      importedProducts = importedProducts.concat(products)
-}   ,
-    getProducts: function(){
-      return importedProducts
-    },
-    get: function(){
-
-      // this way no state is saved in the actual importers obj.
-      var importersConfig = angular.copy(importers)
-
-      var importersWithAllData = _.map(importersConfig, function(importer){
-        importer.name = makeName(importer.displayName)
-        importer.CSSname = makeCSSName(importer.displayName)
-        importer.logoPath = makeLogoPath(importer.displayName)
-        importer.endpoint = makeEndpoint(importer)
-
-        importer.inputs = _.map(importer.inputs, function(inputObj){
-          return _.defaults(inputObj, defaultInputObj)
-        })
-
-
-        return importer
-      })
-
-      return _.sortBy(importersWithAllData, function(importer){
-        return importer.displayName.toLocaleLowerCase();
-      })
-
-    }
-
-
-  }
-
-
-
-})
-
-angular.module('importers.importer', [
-  'directives.forms',
-  'directives.onRepeatFinished',
-  'services.loading',
-  'resources.users',
-  'resources.products',
-  'update.update',
-  'profile'
-])
-angular.module('importers.importer')
-.factory('Importer', function(
-    $q,
-    Loading,
-    Products,
-    UsersProducts,
-    UsersLinkedAccounts,
-    UsersAbout){
-
-    var waitingOn = {}
-    var tiidsAdded = []
-
-    var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
-
-    var finish = function(importJobName){
-      waitingOn[importJobName] = false;
-      if (!_.some(_.values(waitingOn))) { // we're not waiting on anything...
-        Loading.finish('saveButton')
-        onImportCompletion()
-      }
-    }
-
-    var start = function(importJobName){
-      Loading.start("saveButton")
-      waitingOn[importJobName] = true
-    }
-
-
-    var saveImporterInput = function(url_slug, importerObj) {
-
-      var deferred = $q.defer()
-
-      var usernameInput = _.find(importerObj.inputs, function(input){
-        return input.saveUsername
-      })
-
-      var about = {}
-      about[usernameInput.saveUsername] = usernameInput.cleanupFunction(usernameInput.value)
-
-      // hack to use the api endpoint
-      var accountType = usernameInput.saveUsername.replace("_id", "")
-
-      var patchData = {'about': about}
-
-      start("saveExternalUsernames")
-      console.log("saving usernames", patchData)
-      UsersAbout.patch(
-        {id:url_slug},
-        patchData,
-        function(resp){
-          finish("saveExternalUsernames")
-
-          console.log("telling webapp to update " + accountType)
-          UsersLinkedAccounts.update(
-            {id: url_slug, account: accountType},
-            {},
-            function(resp){
-              // we've kicked off a slurp for this account type. we'll add
-              // as many products we find in that account, then dedup.
-              // we'll return the list of new tiids
-              console.log("update started for " + accountType + ". ", resp)
-              deferred.resolve(resp)
-            },
-            function(updateResp){
-              deferred.reject({
-                msg: "attempt to slurp in products from linked account failed",
-                resp: updateResp
-              })
-            }
-
-          )
-        },
-        function(patchResp){
-          deferred.reject({
-            failure: "PATCH to add external account failed; didn't even try slurping.",
-            resp: patchResp
-          })
-        }
-      )
-      return deferred.promise
-    }
-
-
-
-
-
-
-    return {
-      'saveImporterInput': saveImporterInput,
-      setOnImportCompletion: function(callback){
-        onImportCompletion = callback
-      },
-      getTiids: function(){return tiidsAdded}
-    }
-
-})
-
-
-.controller('importerCtrl', function(
-    $scope,
-    $routeParams,
-    $location,
-    Products,
-    UserProfile,
-    UsersProducts,
-    Importer,
-    Loading,
-    Update){
-
-
-  var importCompleteCallback = function(){
-
-    // define vars
-    var slug = getUserSlug()
-    Importer.setOnImportCompletion(
-      function(){
-        // close the window
-        $scope.importWindowOpen = false;
-        $scope.products = Importer.getTiids();
-
-        Update.showUpdate(slug, function(){
-          $location.path("/"+slug)
-          analytics.track(
-            "Imported products",
-            {
-              "Importer name": Importer.displayName,
-              "Number of products": $scope.products.length
-            }
-          )
-        })
-        $scope.importerHasRun = true
-      }
-    )
-  }
-
-
-  $scope.showImporterWindow = function(){
-    if (!$scope.importerHasRun) { // only allow one import for this importer.
-
-      analytics.track("Opened an importer", {
-        "Importer name": Importer.displayName
-      })
-
-      $scope.importWindowOpen = true;
-      $scope.importer.userInput = null  // may have been used before; clear it.
-    }
-  }
-
-  $scope.products = []
-  $scope.currentTab = 0;
-  $scope.userInput = {}
-  $scope.importerHasRun = false
-
-
-  $scope.setCurrentTab = function(index){$scope.currentTab = index}
-
-  $scope.onCancel = function(){
-    $scope.importWindowOpen = false;
-  }
-
-  $scope.onImport = function(){
-    console.log(
-      _.sprintf("calling /importer/%s updating '%s' with userInput:",
-        $scope.importer.endpoint,
-        $routeParams.url_slug),
-      $scope.importer
-    )
-
-    Importer.saveImporterInput($routeParams.url_slug, $scope.importer).then(
-      function(resp){
-        console.log("success at saving inputs!", resp)
-      },
-      function(resp){
-        console.log("failure at saving inputs :(", resp)
-      }
-    )
-  }
-})
-
-
-  .directive("ngFileSelect",function(){
-    return {
-      link: function($scope, el, attrs){
-        el.bind("change", function(e){
-          var reader = new FileReader()
-          reader.onload = function(e){
-            $scope.input.value = reader.result
-          }
-
-          var file = (e.srcElement || e.target).files[0];
-          reader.readAsText(file)
-        })
-      }
-    }
-  })
 
 angular.module( 'infopages', [
     'security',
@@ -781,9 +675,9 @@ angular.module('profileAward.profileAward', [])
 
 
 angular.module('profileLinkedAccounts', [
-  'importers.allTheImporters',
+  'accounts.allTheAccounts',
   'services.page',
-  'importers.importer'
+  'accounts.account'
 ])
 
   .config(['$routeProvider', function($routeProvider) {
@@ -800,12 +694,12 @@ angular.module('profileLinkedAccounts', [
       })
 
   }])
-  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheImporters){
+  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheAccounts){
 
 
     Page.showHeader(false)
     Page.showFooter(false)
-    $scope.importers = AllTheImporters.get()
+    $scope.accounts = AllTheAccounts.get()
     $scope.returnLink = "/"+$routeParams.url_slug
 
 
@@ -1580,86 +1474,6 @@ angular.module( 'signup', [
             console.log("oops, email already taken...")
             console.log("resp", resp)
           }
-        }
-      )
-
-    }
-  })
-
-  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {
-    var nameRegex = /\/signup\/(.+?)\/url/
-    var slug = nameRegex.exec($location.path())[1]
-
-    $scope.input.url_slug = slug
-    analytics.track("Signup: url")
-
-
-    $scope.nav.goToNextStep = function(){
-      var logMsg = "saving user for the first time"
-      var givenName = $location.search()["givenName"]
-      var surname = $location.search()["surname"]
-
-      Users.save(
-        {id: $scope.input.url_slug, idType: "url_slug", log:logMsg},
-        {
-          givenName: givenName,
-          surname: surname,
-          url_slug: $scope.input.url_slug
-        },
-        function(resp, headers){
-          console.log("got response back from save user", resp)
-          security.clearCachedUser()
-          $location.path("signup/" + $scope.input.url_slug + "/products/add")
-          $location.search("")  // clear the names from the url
-
-          // so mixpanel will start tracking this user via her userid from here
-          // on out.
-          analytics.alias(resp.user.id)
-        }
-      )
-    }
-  })
-
-  .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporters, security ) {
-    var m = /\/signup\/([-\w\.]+)\//.exec($location.path())
-    analytics.track("Signup: products")
-
-    $scope.importers = AllTheImporters.get()
-    $scope.nav.goToNextStep = function(){
-      $location.path("signup/" + m[1] + "/password")
-    }
-  })
-
-  .controller( 'signupPasswordCtrl', function ($scope, $location, security, UsersAbout, UsersPassword, Update) {
-    var url_slug = /\/signup\/([-\w\.]+)\//.exec($location.path())[1]
-    analytics.track("Signup: password")
-
-    var redirectCb = function(){
-      $location.path("/" + url_slug)
-      analytics.track("First profile view")
-    }
-
-    $scope.nav.goToNextStep = function(){
-      var emailLogMsg = "saving the email on signup"
-      var pwLogMsg = "saving the password on signup"
-
-      analytics.track("Completed signup")
-
-      UsersAbout.patch(
-        {"id": url_slug, idType:"url_slug", log: emailLogMsg},
-        {about: {email: $scope.input.email}},
-        function(resp) {
-          console.log("we set the email", resp)
-        }
-      )
-
-      UsersPassword.save(
-        {"id": url_slug, idType:"url_slug"},
-        {newPassword: $scope.input.password, log: pwLogMsg},
-        function(data){
-          console.log("we set the password; showing the 'updating' modal.")
-          security.clearCachedUser()
-          Update.showUpdate(url_slug, redirectCb)
         }
       )
 
@@ -3811,7 +3625,116 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+
+angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("accounts/account.tpl.html",
+    "\n" +
+    "\n" +
+    "<div class=\"account-tile\" id=\"{{ account.CSSname }}-account-tile\"\n" +
+    "     ng-click=\"showAccountWindow()\"\n" +
+    "     ng-class=\"{'has-run': accountHasRun, 'not-run': !accountHasRun}\">\n" +
+    "\n" +
+    "   <div class=\"account-name\"><img ng-src=\"{{ account.logoPath }}\"></div>\n" +
+    "   <div class=\"account-products-count\">\n" +
+    "      <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ products.length }}</span>\n" +
+    "      <span class=\"descr\">products in account</span>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"overlay\"\n" +
+    "     ng-click=\"onCancel()\"\n" +
+    "     ng-if=\"accountWindowOpen\"\n" +
+    "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
+    "\n" +
+    "<div class=\"account-window-wrapper\"\n" +
+    "     ng-if=\"accountWindowOpen\"\n" +
+    "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
+    "        >\n" +
+    "   <div class=\"account-window\">\n" +
+    "\n" +
+    "      <div class=\"account-tabs\">\n" +
+    "         <menu class=\"account-menu\">\n" +
+    "            <li class=\"tab\"\n" +
+    "                ng-click=\"setCurrentTab($index)\"\n" +
+    "                ng-class=\"{current: $index==currentTab}\"\n" +
+    "                ng-repeat=\"tab in account.tabs\"> {{ tab.label }}</li>\n" +
+    "         </menu>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"content\">\n" +
+    "         <h2 class=\"account-name\" ng-show=\"!account.url\"><img ng-src=\"{{ account.logoPath }}\" /> </h2>\n" +
+    "         <h2 class=\"account-name\" ng-show=\"account.url\">\n" +
+    "            <a class=\"logo\" href=\"{{ account.url }}\" target=\"_blank\"><img ng-src=\"{{ account.logoPath }}\" /></a>\n" +
+    "            <a class=\"visit\" href=\"{{ account.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
+    "         </h2>\n" +
+    "\n" +
+    "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ account.descr }}</div>\n" +
+    "\n" +
+    "         <form name=\"{{ account.name }}accountForm\" novalidate class=\"form\" ng-submit=\"onLink()\">\n" +
+    "\n" +
+    "            <div class=\"form-group\"\n" +
+    "                 ng-show=\"$index==currentTab\"\n" +
+    "                 ng-repeat=\"input in account.inputs\">\n" +
+    "               <label class=\"control-label\">\n" +
+    "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
+    "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
+    "                  <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
+    "               </label>\n" +
+    "               <div class=\"account-input\" ng-switch on=\"input.inputType\">\n" +
+    "                  <input\n" +
+    "                          class=\"form-control\"\n" +
+    "                          ng-model=\"input.value\"\n" +
+    "                          type=\"text\" ng-switch-when=\"username\"\n" +
+    "                          placeholder=\"{{ input.placeholder }}\">\n" +
+    "\n" +
+    "                  <textarea placeholder=\"{{ input.placeholder }}\"\n" +
+    "                            class=\"form-control\"\n" +
+    "                            ng-model=\"input.value\"\n" +
+    "                            ng-switch-when=\"idList\"></textarea>\n" +
+    "\n" +
+    "                  <!-- you can only have ONE file input per account, otherwise namespace collision -->\n" +
+    "                  <input type=\"file\" ng-switch-when=\"file\" ng-file-select=\"input.inputType\">\n" +
+    "\n" +
+    "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"buttons-group save\">\n" +
+    "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
+    "                  <button ng-show=\"false\" type=\"submit\" class=\"btn btn-primary\">Link</button>\n" +
+    "                  <a ng-show=\"true\" class=\"btn btn-danger\">Unlink</a>\n" +
+    "\n" +
+    "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
+    "\n" +
+    "\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"working\" ng-show=\"loading.is('saveButton')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  <span class=\"text\">Unlinking...</span>\n" +
+    "               </div>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "         </form>\n" +
+    "\n" +
+    "         <div class=\"extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "");
+}]);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -3881,100 +3804,6 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "   </div>\n" +
     "</div>\n" +
     "<div ng-show=\"page.showNotificationsIn('header')\" ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
-    "\n" +
-    "");
-}]);
-
-angular.module("importers/importer.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("importers/importer.tpl.html",
-    "\n" +
-    "\n" +
-    "<div class=\"importer-tile\" id=\"{{ importer.CSSname }}-import-tile\"\n" +
-    "     ng-click=\"showImporterWindow()\"\n" +
-    "     ng-class=\"{'has-run': importerHasRun, 'not-run': !importerHasRun}\">\n" +
-    "\n" +
-    "   <div class=\"importer-name\"><img ng-src=\"{{ importer.logoPath }}\"></div>\n" +
-    "   <div class=\"imported-products-count\">\n" +
-    "      <span class=\"count\" id=\"{{ importer.CSSname }}-import-count\">{{ products.length }}</span>\n" +
-    "      <span class=\"descr\">products imported</span>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"overlay\"\n" +
-    "     ng-click=\"onCancel()\"\n" +
-    "     ng-if=\"importWindowOpen\"\n" +
-    "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
-    "\n" +
-    "<div class=\"import-window-wrapper\"\n" +
-    "     ng-if=\"importWindowOpen\"\n" +
-    "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
-    "        >\n" +
-    "   <div class=\"import-window\">\n" +
-    "\n" +
-    "      <div class=\"importer-tabs\">\n" +
-    "         <menu class=\"importer-menu\">\n" +
-    "            <li class=\"tab\"\n" +
-    "                ng-click=\"setCurrentTab($index)\"\n" +
-    "                ng-class=\"{current: $index==currentTab}\"\n" +
-    "                ng-repeat=\"tab in importer.tabs\"> {{ tab.label }}</li>\n" +
-    "         </menu>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"content\">\n" +
-    "         <h2 class=\"importer-name\" ng-show=\"!importer.url\"><img ng-src=\"{{ importer.logoPath }}\" /> </h2>\n" +
-    "         <h2 class=\"importer-name\" ng-show=\"importer.url\">\n" +
-    "            <a class=\"logo\" href=\"{{ importer.url }}\" target=\"_blank\"><img ng-src=\"{{ importer.logoPath }}\" /></a>\n" +
-    "            <a class=\"visit\" href=\"{{ importer.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
-    "         </h2>\n" +
-    "\n" +
-    "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ importer.descr }}</div>\n" +
-    "\n" +
-    "         <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
-    "\n" +
-    "            <div class=\"form-group\"\n" +
-    "                 ng-show=\"$index==currentTab\"\n" +
-    "                 ng-repeat=\"input in importer.inputs\">\n" +
-    "               <label class=\"control-label\">\n" +
-    "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
-    "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
-    "                  <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
-    "               </label>\n" +
-    "               <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
-    "                  <input\n" +
-    "                          class=\"form-control\"\n" +
-    "                          ng-model=\"input.value\"\n" +
-    "                          type=\"text\" ng-switch-when=\"username\"\n" +
-    "                          placeholder=\"{{ input.placeholder }}\">\n" +
-    "\n" +
-    "                  <textarea placeholder=\"{{ input.placeholder }}\"\n" +
-    "                            class=\"form-control\"\n" +
-    "                            ng-model=\"input.value\"\n" +
-    "                            ng-switch-when=\"idList\"></textarea>\n" +
-    "\n" +
-    "                  <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
-    "                  <input type=\"file\" ng-switch-when=\"file\" ng-file-select=\"input.inputType\">\n" +
-    "\n" +
-    "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
-    "               </div>\n" +
-    "            </div>\n" +
-    "\n" +
-    "\n" +
-    "            <save-buttons action=\"Import\"></save-buttons>\n" +
-    "\n" +
-    "\n" +
-    "         </form>\n" +
-    "\n" +
-    "         <div class=\"extra\" ng-show=\"importer.extra\" ng-bind-html-unsafe=\"importer.extra\"></div>\n" +
-    "\n" +
-    "\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "\n" +
     "");
 }]);
@@ -4549,11 +4378,11 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"importers\">\n" +
-    "      <div class=\"importer\"\n" +
-    "           ng-repeat=\"importer in importers\"\n" +
-    "           ng-controller=\"importerCtrl\"\n" +
-    "           ng-include=\"'importers/importer.tpl.html'\">\n" +
+    "   <div class=\"accounts\">\n" +
+    "      <div class=\"account\"\n" +
+    "           ng-repeat=\"account in accounts\"\n" +
+    "           ng-controller=\"accountCtrl\"\n" +
+    "           ng-include=\"'accounts/account.tpl.html'\">\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +

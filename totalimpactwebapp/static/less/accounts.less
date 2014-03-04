@@ -1,4 +1,4 @@
-div.importers {
+div.accounts {
    width: 100%;
    float:left;
    border-top: 2px solid #ddd;
@@ -15,7 +15,7 @@ div.importers {
       -webkit-transition: opacity 0.5s;
       cursor: pointer;
    }
-   div.import-window-wrapper {
+   div.account-window-wrapper {
       top:0; right:0; bottom:0;
       z-index: 1001;
       position: fixed;
@@ -23,7 +23,7 @@ div.importers {
       margin-right: -1em;
       left: 38.19%;
 
-      div.import-window {
+      div.account-window {
          position: absolute;
          overflow-y: auto;
          overflow-x:hidden;
@@ -36,7 +36,7 @@ div.importers {
          border-left:  1px solid #555;
          .drop-shadow(-5px, 0, 10px, .2);
 
-         div.importer-tabs {
+         div.account-tabs {
             position: absolute;
             top:0; left: 0; right:0;
             text-align:center;
@@ -171,7 +171,7 @@ div.importers {
    }
 
 
-   div.importer-tile {
+   div.account-tile {
       float:left;
       background: #fff;
       width:  50%;
@@ -203,21 +203,21 @@ div.importers {
          .inner-shadow(0, 1px, 7px, .2);
          cursor: default;
          background: #fafafa;
-         div.importer-name{
+         div.account-name{
             float:left;
          }
-         div.imported-products-count {
+         div.account-products-count {
             display:block;
             margin-top: -10px;
             margin-bottom: -10px;
          }
       }
-      div.importer-name {
+      div.account-name {
          img {
             height: 45px;
          }
       }
-      div.imported-products-count {
+      div.account-products-count {
          display:none;
          float:right;
          margin-right: 5%;

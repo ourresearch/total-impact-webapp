@@ -1,4 +1,113 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+
+angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("accounts/account.tpl.html",
+    "\n" +
+    "\n" +
+    "<div class=\"account-tile\" id=\"{{ account.CSSname }}-account-tile\"\n" +
+    "     ng-click=\"showAccountWindow()\"\n" +
+    "     ng-class=\"{'has-run': accountHasRun, 'not-run': !accountHasRun}\">\n" +
+    "\n" +
+    "   <div class=\"account-name\"><img ng-src=\"{{ account.logoPath }}\"></div>\n" +
+    "   <div class=\"account-products-count\">\n" +
+    "      <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ products.length }}</span>\n" +
+    "      <span class=\"descr\">products in account</span>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"overlay\"\n" +
+    "     ng-click=\"onCancel()\"\n" +
+    "     ng-if=\"accountWindowOpen\"\n" +
+    "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
+    "\n" +
+    "<div class=\"account-window-wrapper\"\n" +
+    "     ng-if=\"accountWindowOpen\"\n" +
+    "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
+    "        >\n" +
+    "   <div class=\"account-window\">\n" +
+    "\n" +
+    "      <div class=\"account-tabs\">\n" +
+    "         <menu class=\"account-menu\">\n" +
+    "            <li class=\"tab\"\n" +
+    "                ng-click=\"setCurrentTab($index)\"\n" +
+    "                ng-class=\"{current: $index==currentTab}\"\n" +
+    "                ng-repeat=\"tab in account.tabs\"> {{ tab.label }}</li>\n" +
+    "         </menu>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"content\">\n" +
+    "         <h2 class=\"account-name\" ng-show=\"!account.url\"><img ng-src=\"{{ account.logoPath }}\" /> </h2>\n" +
+    "         <h2 class=\"account-name\" ng-show=\"account.url\">\n" +
+    "            <a class=\"logo\" href=\"{{ account.url }}\" target=\"_blank\"><img ng-src=\"{{ account.logoPath }}\" /></a>\n" +
+    "            <a class=\"visit\" href=\"{{ account.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
+    "         </h2>\n" +
+    "\n" +
+    "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ account.descr }}</div>\n" +
+    "\n" +
+    "         <form name=\"{{ account.name }}accountForm\" novalidate class=\"form\" ng-submit=\"onLink()\">\n" +
+    "\n" +
+    "            <div class=\"form-group\"\n" +
+    "                 ng-show=\"$index==currentTab\"\n" +
+    "                 ng-repeat=\"input in account.inputs\">\n" +
+    "               <label class=\"control-label\">\n" +
+    "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
+    "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
+    "                  <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
+    "               </label>\n" +
+    "               <div class=\"account-input\" ng-switch on=\"input.inputType\">\n" +
+    "                  <input\n" +
+    "                          class=\"form-control\"\n" +
+    "                          ng-model=\"input.value\"\n" +
+    "                          type=\"text\" ng-switch-when=\"username\"\n" +
+    "                          placeholder=\"{{ input.placeholder }}\">\n" +
+    "\n" +
+    "                  <textarea placeholder=\"{{ input.placeholder }}\"\n" +
+    "                            class=\"form-control\"\n" +
+    "                            ng-model=\"input.value\"\n" +
+    "                            ng-switch-when=\"idList\"></textarea>\n" +
+    "\n" +
+    "                  <!-- you can only have ONE file input per account, otherwise namespace collision -->\n" +
+    "                  <input type=\"file\" ng-switch-when=\"file\" ng-file-select=\"input.inputType\">\n" +
+    "\n" +
+    "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"buttons-group save\">\n" +
+    "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
+    "                  <button ng-show=\"false\" type=\"submit\" class=\"btn btn-primary\">Link</button>\n" +
+    "                  <a ng-show=\"true\" class=\"btn btn-danger\">Unlink</a>\n" +
+    "\n" +
+    "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
+    "\n" +
+    "\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"working\" ng-show=\"loading.is('saveButton')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  <span class=\"text\">Unlinking...</span>\n" +
+    "               </div>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "         </form>\n" +
+    "\n" +
+    "         <div class=\"extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "");
+}]);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -68,100 +177,6 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "   </div>\n" +
     "</div>\n" +
     "<div ng-show=\"page.showNotificationsIn('header')\" ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
-    "\n" +
-    "");
-}]);
-
-angular.module("importers/importer.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("importers/importer.tpl.html",
-    "\n" +
-    "\n" +
-    "<div class=\"importer-tile\" id=\"{{ importer.CSSname }}-import-tile\"\n" +
-    "     ng-click=\"showImporterWindow()\"\n" +
-    "     ng-class=\"{'has-run': importerHasRun, 'not-run': !importerHasRun}\">\n" +
-    "\n" +
-    "   <div class=\"importer-name\"><img ng-src=\"{{ importer.logoPath }}\"></div>\n" +
-    "   <div class=\"imported-products-count\">\n" +
-    "      <span class=\"count\" id=\"{{ importer.CSSname }}-import-count\">{{ products.length }}</span>\n" +
-    "      <span class=\"descr\">products imported</span>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"overlay\"\n" +
-    "     ng-click=\"onCancel()\"\n" +
-    "     ng-if=\"importWindowOpen\"\n" +
-    "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
-    "\n" +
-    "<div class=\"import-window-wrapper\"\n" +
-    "     ng-if=\"importWindowOpen\"\n" +
-    "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
-    "        >\n" +
-    "   <div class=\"import-window\">\n" +
-    "\n" +
-    "      <div class=\"importer-tabs\">\n" +
-    "         <menu class=\"importer-menu\">\n" +
-    "            <li class=\"tab\"\n" +
-    "                ng-click=\"setCurrentTab($index)\"\n" +
-    "                ng-class=\"{current: $index==currentTab}\"\n" +
-    "                ng-repeat=\"tab in importer.tabs\"> {{ tab.label }}</li>\n" +
-    "         </menu>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"content\">\n" +
-    "         <h2 class=\"importer-name\" ng-show=\"!importer.url\"><img ng-src=\"{{ importer.logoPath }}\" /> </h2>\n" +
-    "         <h2 class=\"importer-name\" ng-show=\"importer.url\">\n" +
-    "            <a class=\"logo\" href=\"{{ importer.url }}\" target=\"_blank\"><img ng-src=\"{{ importer.logoPath }}\" /></a>\n" +
-    "            <a class=\"visit\" href=\"{{ importer.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
-    "         </h2>\n" +
-    "\n" +
-    "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ importer.descr }}</div>\n" +
-    "\n" +
-    "         <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
-    "\n" +
-    "            <div class=\"form-group\"\n" +
-    "                 ng-show=\"$index==currentTab\"\n" +
-    "                 ng-repeat=\"input in importer.inputs\">\n" +
-    "               <label class=\"control-label\">\n" +
-    "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
-    "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
-    "                  <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
-    "               </label>\n" +
-    "               <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
-    "                  <input\n" +
-    "                          class=\"form-control\"\n" +
-    "                          ng-model=\"input.value\"\n" +
-    "                          type=\"text\" ng-switch-when=\"username\"\n" +
-    "                          placeholder=\"{{ input.placeholder }}\">\n" +
-    "\n" +
-    "                  <textarea placeholder=\"{{ input.placeholder }}\"\n" +
-    "                            class=\"form-control\"\n" +
-    "                            ng-model=\"input.value\"\n" +
-    "                            ng-switch-when=\"idList\"></textarea>\n" +
-    "\n" +
-    "                  <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
-    "                  <input type=\"file\" ng-switch-when=\"file\" ng-file-select=\"input.inputType\">\n" +
-    "\n" +
-    "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
-    "               </div>\n" +
-    "            </div>\n" +
-    "\n" +
-    "\n" +
-    "            <save-buttons action=\"Import\"></save-buttons>\n" +
-    "\n" +
-    "\n" +
-    "         </form>\n" +
-    "\n" +
-    "         <div class=\"extra\" ng-show=\"importer.extra\" ng-bind-html-unsafe=\"importer.extra\"></div>\n" +
-    "\n" +
-    "\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "\n" +
     "");
 }]);
@@ -736,11 +751,11 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"importers\">\n" +
-    "      <div class=\"importer\"\n" +
-    "           ng-repeat=\"importer in importers\"\n" +
-    "           ng-controller=\"importerCtrl\"\n" +
-    "           ng-include=\"'importers/importer.tpl.html'\">\n" +
+    "   <div class=\"accounts\">\n" +
+    "      <div class=\"account\"\n" +
+    "           ng-repeat=\"account in accounts\"\n" +
+    "           ng-controller=\"accountCtrl\"\n" +
+    "           ng-include=\"'accounts/account.tpl.html'\">\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +

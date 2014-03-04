@@ -1,4 +1,4 @@
-angular.module('importers.importer', [
+angular.module('accounts.account', [
   'directives.forms',
   'directives.onRepeatFinished',
   'services.loading',
@@ -7,8 +7,7 @@ angular.module('importers.importer', [
   'update.update',
   'profile'
 ])
-angular.module('importers.importer')
-.factory('Importer', function(
+.factory('Account', function(
     $q,
     Loading,
     Products,
@@ -16,30 +15,13 @@ angular.module('importers.importer')
     UsersLinkedAccounts,
     UsersAbout){
 
-    var waitingOn = {}
     var tiidsAdded = []
 
-    var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
-
-    var finish = function(importJobName){
-      waitingOn[importJobName] = false;
-      if (!_.some(_.values(waitingOn))) { // we're not waiting on anything...
-        Loading.finish('saveButton')
-        onImportCompletion()
-      }
-    }
-
-    var start = function(importJobName){
-      Loading.start("saveButton")
-      waitingOn[importJobName] = true
-    }
-
-
-    var saveImporterInput = function(url_slug, importerObj) {
+    var saveAccountInput = function(url_slug, accountObj) {
 
       var deferred = $q.defer()
 
-      var usernameInput = _.find(importerObj.inputs, function(input){
+      var usernameInput = _.find(accountObj.inputs, function(input){
         return input.saveUsername
       })
 
@@ -51,13 +33,12 @@ angular.module('importers.importer')
 
       var patchData = {'about': about}
 
-      start("saveExternalUsernames")
+      Loading.start("saveButton")
       console.log("saving usernames", patchData)
       UsersAbout.patch(
         {id:url_slug},
         patchData,
         function(resp){
-          finish("saveExternalUsernames")
 
           console.log("telling webapp to update " + accountType)
           UsersLinkedAccounts.update(
@@ -68,6 +49,7 @@ angular.module('importers.importer')
               // as many products we find in that account, then dedup.
               // we'll return the list of new tiids
               console.log("update started for " + accountType + ". ", resp)
+              Loading.finish("saveButton")
               deferred.resolve(resp)
             },
             function(updateResp){
@@ -95,89 +77,64 @@ angular.module('importers.importer')
 
 
     return {
-      'saveImporterInput': saveImporterInput,
-      setOnImportCompletion: function(callback){
-        onImportCompletion = callback
-      },
+      'saveAccountInput': saveAccountInput,
       getTiids: function(){return tiidsAdded}
     }
 
 })
 
 
-.controller('importerCtrl', function(
+.controller('accountCtrl', function(
     $scope,
     $routeParams,
     $location,
     Products,
     UserProfile,
     UsersProducts,
-    Importer,
+    Account,
     Loading,
     Update){
 
 
-  var importCompleteCallback = function(){
 
-    // define vars
-    var slug = getUserSlug()
-    Importer.setOnImportCompletion(
-      function(){
-        // close the window
-        $scope.importWindowOpen = false;
-        $scope.products = Importer.getTiids();
+  $scope.showAccountWindow = function(){
+    analytics.track("Opened an account window", {
+      "Account name": Account.displayName
+    })
 
-        Update.showUpdate(slug, function(){
-          $location.path("/"+slug)
-          analytics.track(
-            "Imported products",
-            {
-              "Importer name": Importer.displayName,
-              "Number of products": $scope.products.length
-            }
-          )
-        })
-        $scope.importerHasRun = true
-      }
-    )
-  }
-
-
-  $scope.showImporterWindow = function(){
-    if (!$scope.importerHasRun) { // only allow one import for this importer.
-
-      analytics.track("Opened an importer", {
-        "Importer name": Importer.displayName
-      })
-
-      $scope.importWindowOpen = true;
-      $scope.importer.userInput = null  // may have been used before; clear it.
-    }
+    $scope.accountWindowOpen = true;
+    $scope.account.userInput = null  // may have been used before; clear it.
   }
 
   $scope.products = []
   $scope.currentTab = 0;
   $scope.userInput = {}
-  $scope.importerHasRun = false
+  $scope.accountHasRun = false
 
 
   $scope.setCurrentTab = function(index){$scope.currentTab = index}
 
   $scope.onCancel = function(){
-    $scope.importWindowOpen = false;
+    $scope.accountWindowOpen = false;
   }
 
-  $scope.onImport = function(){
+  $scope.onLink = function(){
     console.log(
       _.sprintf("calling /importer/%s updating '%s' with userInput:",
-        $scope.importer.endpoint,
+        $scope.account.endpoint,
         $routeParams.url_slug),
-      $scope.importer
+      $scope.account
     )
 
-    Importer.saveImporterInput($routeParams.url_slug, $scope.importer).then(
+    Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
+
+      // linked this account successfully
       function(resp){
-        console.log("success at saving inputs!", resp)
+        console.log("successfully saved linked account", resp)
+
+
+
+
       },
       function(resp){
         console.log("failure at saving inputs :(", resp)

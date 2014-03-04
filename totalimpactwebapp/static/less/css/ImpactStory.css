@@ -8365,12 +8365,12 @@ div.settings div.settings-input form.form-horizontal.linked-accounts-settings .f
 div.settings div.settings-input form.form-horizontal.linked-accounts-settings .submit {
   margin-top: 50px;
 }
-div.importers {
+div.accounts {
   width: 100%;
   float: left;
   border-top: 2px solid #ddd;
 }
-div.importers div.overlay {
+div.accounts div.overlay {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -8383,7 +8383,7 @@ div.importers div.overlay {
   -webkit-transition: opacity 0.5s;
   cursor: pointer;
 }
-div.importers div.import-window-wrapper {
+div.accounts div.account-window-wrapper {
   top: 0;
   right: 0;
   bottom: 0;
@@ -8393,7 +8393,7 @@ div.importers div.import-window-wrapper {
   margin-right: -1em;
   left: 38.19%;
 }
-div.importers div.import-window-wrapper div.import-window {
+div.accounts div.account-window-wrapper div.account-window {
   position: absolute;
   overflow-y: auto;
   overflow-x: hidden;
@@ -8408,17 +8408,17 @@ div.importers div.import-window-wrapper div.import-window {
   -moz-box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
   box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
 }
-div.importers div.import-window-wrapper div.import-window div.importer-tabs {
+div.accounts div.account-window-wrapper div.account-window div.account-tabs {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   text-align: center;
 }
-div.importers div.import-window-wrapper div.import-window div.importer-tabs menu {
+div.accounts div.account-window-wrapper div.account-window div.account-tabs menu {
   margin: 0;
 }
-div.importers div.import-window-wrapper div.import-window div.importer-tabs menu li {
+div.accounts div.account-window-wrapper div.account-window div.account-tabs menu li {
   list-style-type: none;
   font-weight: bold;
   color: #999;
@@ -8426,19 +8426,19 @@ div.importers div.import-window-wrapper div.import-window div.importer-tabs menu
   cursor: pointer;
   padding: 10px 20px;
 }
-div.importers div.import-window-wrapper div.import-window div.importer-tabs menu li.current {
+div.accounts div.account-window-wrapper div.account-window div.account-tabs menu li.current {
   background: #eee;
   color: #555;
 }
-div.importers div.import-window-wrapper div.import-window h2 {
+div.accounts div.account-window-wrapper div.account-window h2 {
   text-align: center;
   margin-bottom: 30px;
   position: relative;
 }
-div.importers div.import-window-wrapper div.import-window h2 img {
+div.accounts div.account-window-wrapper div.account-window h2 img {
   height: 70px;
 }
-div.importers div.import-window-wrapper div.import-window h2 a.visit {
+div.accounts div.account-window-wrapper div.account-window h2 a.visit {
   font-size: 16px;
   color: #999;
   position: absolute;
@@ -8446,101 +8446,101 @@ div.importers div.import-window-wrapper div.import-window h2 a.visit {
   right: 0;
   font-weight: normal;
 }
-div.importers div.import-window-wrapper div.import-window h2 a.visit i {
+div.accounts div.account-window-wrapper div.account-window h2 a.visit i {
   margin-left: 5px;
   font-size: 70%;
 }
-div.importers div.import-window-wrapper div.import-window h2 a.visit:hover {
+div.accounts div.account-window-wrapper div.account-window h2 a.visit:hover {
   text-decoration: none;
   color: #555;
 }
-div.importers div.import-window-wrapper div.import-window .content {
+div.accounts div.account-window-wrapper div.account-window .content {
   width: 500px;
   margin: 0 auto;
 }
-div.importers div.import-window-wrapper div.import-window .content form {
+div.accounts div.account-window-wrapper div.account-window .content form {
   margin-top: 50px;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group {
   margin-left: 0;
   margin-top: 20px;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group label {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group label {
   color: #555;
   font-size: 20px;
   font-weight: bolder;
   margin-left: 10px;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group label span.one-per-line {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group label span.one-per-line {
   font-size: 66%;
   font-weight: 500;
   margin-left: 9px;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group label i {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group label i {
   color: #999;
   margin-left: 1px;
   font-size: 75%;
   vertical-align: 1px;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group label i:hover {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group label i:hover {
   color: #000;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group label .tooltip .tooltip-inner {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group label .tooltip .tooltip-inner {
   background: #333;
   font-weight: 300;
   font-size: 15px;
   min-width: 400px;
   padding: 20px;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group .input-extra {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group .input-extra {
   color: #999;
   font-size: 15px;
   padding: 10px 20px 0;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group .input-extra a {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group .input-extra a {
   color: #555;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group .input-extra a:hover {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group .input-extra a:hover {
   text-decoration: underline;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group textarea {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group textarea {
   height: 150px;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group input {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group input {
   font-size: 30px;
   height: 60px;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group input[type="file"] {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group input[type="file"] {
   height: auto;
   font-size: 20px;
   margin: 0 auto;
   width: 50%;
 }
-div.importers div.import-window-wrapper div.import-window .content form .form-group .form-control {
+div.accounts div.account-window-wrapper div.account-window .content form .form-group .form-control {
   margin-left: 0;
   width: 100%;
 }
-div.importers div.import-window-wrapper div.import-window .content form .buttons-group {
+div.accounts div.account-window-wrapper div.account-window .content form .buttons-group {
   text-align: center;
   margin-top: 50px;
 }
-div.importers div.import-window-wrapper div.import-window .content .extra {
+div.accounts div.account-window-wrapper div.account-window .content .extra {
   margin-top: 50px;
   font-size: 16px;
   color: #555;
   border-top: 3px solid #eee;
 }
-div.importers div.import-window-wrapper div.import-window .content .extra h3 {
+div.accounts div.account-window-wrapper div.account-window .content .extra h3 {
   border-bottom: none;
   font-size: 20px;
   margin: 0 0 15px 0;
   padding-top: 15px;
   color: #333;
 }
-div.importers div.import-window-wrapper div.import-window .content .extra code {
+div.accounts div.account-window-wrapper div.account-window .content .extra code {
   border: 1px solid #dddddd;
 }
-div.importers div.importer-tile {
+div.accounts div.account-tile {
   float: left;
   background: #fff;
   width: 50%;
@@ -8552,21 +8552,21 @@ div.importers div.importer-tile {
   cursor: pointer;
 }
 @media (max-width: 83em) {
-  div.importers div.importer-tile {
+  div.accounts div.account-tile {
     width: 33.333333%;
   }
 }
 @media (max-width: 65em) {
-  div.importers div.importer-tile {
+  div.accounts div.account-tile {
     width: 50%;
   }
 }
 @media (max-width: 42em) {
-  div.importers div.importer-tile {
+  div.accounts div.account-tile {
     width: 100%;
   }
 }
-div.importers div.importer-tile.not-run:hover {
+div.accounts div.account-tile.not-run:hover {
   -webkit-box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
   box-shadow: 0 1px 7px rgba(0, 0, 0, 0.3);
@@ -8574,35 +8574,35 @@ div.importers div.importer-tile.not-run:hover {
   -webkit-transition: box-shadow 0.3s;
   transition: box-shadow 0.3s;
 }
-div.importers div.importer-tile.has-run {
+div.accounts div.account-tile.has-run {
   -webkit-box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 1px 7px rgba(0, 0, 0, 0.2);
   cursor: default;
   background: #fafafa;
 }
-div.importers div.importer-tile.has-run div.importer-name {
+div.accounts div.account-tile.has-run div.account-name {
   float: left;
 }
-div.importers div.importer-tile.has-run div.imported-products-count {
+div.accounts div.account-tile.has-run div.account-products-count {
   display: block;
   margin-top: -10px;
   margin-bottom: -10px;
 }
-div.importers div.importer-tile div.importer-name img {
+div.accounts div.account-tile div.account-name img {
   height: 45px;
 }
-div.importers div.importer-tile div.imported-products-count {
+div.accounts div.account-tile div.account-products-count {
   display: none;
   float: right;
   margin-right: 5%;
 }
-div.importers div.importer-tile div.imported-products-count span.count {
+div.accounts div.account-tile div.account-products-count span.count {
   font-weight: 900;
   color: #555;
   font-size: 35px;
 }
-div.importers div.importer-tile div.imported-products-count span.descr {
+div.accounts div.account-tile div.account-products-count span.descr {
   width: 60px;
   display: inline-block;
   font-size: 12px;
