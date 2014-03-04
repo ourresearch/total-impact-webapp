@@ -17,7 +17,7 @@ from totalimpactwebapp.password_reset import reset_password_from_token
 from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
-from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id
+from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id, delete_user
 from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import EmailExistsError
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
@@ -123,9 +123,6 @@ def get_user_for_response(id, request):
     return retrieved_user
 
 
-
-
-
 def make_js_response(template_name, **kwargs):
     rendered = render_template(template_name, **kwargs)
     resp = make_response(rendered)
@@ -133,8 +130,8 @@ def make_js_response(template_name, **kwargs):
     return resp
 
 
-
-
+def has_admin_authorization():
+    return request.args.get("key", "") == os.getenv("API_ADMIN_KEY")
 
 
 
@@ -299,6 +296,16 @@ def create_new_user_profile(slug):
 
 
 
+@app.route("/user/<profile_id>", methods=["DELETE"])
+def user_delete(profile_id):
+    if not has_admin_authorization():
+        abort_json(401, "Need admin key to delete users")
+
+    user = get_user_for_response(profile_id, request)
+    delete_user(user)
+    return json_resp_from_thing({"user": "deleted"})
+
+
 
 #------------------ /user/:id/about   -----------------
 
@@ -348,27 +355,6 @@ def user_profile_awards(profile_id):
 
     return json_resp_from_thing(user.profile_awards_dicts)
 
-
-
-
-
-
-#@app.route("/user/<profile_id>/tips", methods=['GET', 'DELETE'])
-#def user_tips(profile_id):
-#    user = get_user_for_response(
-#        profile_id,
-#        request
-#    )
-#
-#    if request.method == "GET":
-#        resp = user.get_tips()
-#
-#    elif request.method == "DELETE":
-#        resp = user.delete_tip(request.json.get("id"))
-#
-#    db.session.commit()
-#
-#    return json_resp_from_thing({'ids': resp})
 
 
 
@@ -552,52 +538,6 @@ def user_linked_accounts_update(id, account):
     user = get_user_for_response(id, request)
     tiids = user.update_products_from_linked_account(account)
     return json_resp_from_thing({"products": tiids})
-
-
-
-#------------------ users/test  (manage test users) -----------------
-
-
-@app.route("/users/test", methods=["DELETE", "GET"])
-def delete_test_user():
-    coll_delete_params = {
-        "include_items": "true",
-        "api_admin_key": os.getenv("API_ADMIN_KEY")
-    }
-    if request.method == "DELETE" or request.args.get("method") == "delete":
-
-        # for now just the first one...should be all of them
-        retrieved_users = User.query.filter(User.surname == "impactstory").all()
-        for user in retrieved_users:
-            if user.collection_id is None:
-                continue
-
-            url = g.api_root + "/v1/collection/" + user.collection_id
-            r = requests.delete(url, params=coll_delete_params)
-            logger.debug(u"delete colls and items; {text}".format(
-                text=r.text))
-
-            logger.debug(u"deleting user {email}".format(
-                email=user.email))
-
-            db.session.delete(user)
-
-        db.session.commit()
-        return make_response(u"deleted {num_users} users.".format(
-            num_users=len(retrieved_users)))
-    else:
-        return make_response("these endpoint only supports deleting for now.")
-
-
-@app.route("/users/test/collection_ids")
-def test_user_cids():
-    test_users = User.query.filter(User.surname == "impactstory").all()
-    logger.debug(u"test users: {test_users}".format(
-        test_users=test_users))
-
-    test_collection_ids = [user.collection_id for user in test_users]
-    return json_resp_from_thing({"collection_ids": test_collection_ids})
-
 
 
 

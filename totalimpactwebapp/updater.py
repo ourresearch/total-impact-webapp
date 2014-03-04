@@ -83,18 +83,16 @@ def main(number_to_update=3, max_days_since_updated=7):
         webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "http://localhost:5000")
         now=datetime.datetime.utcnow()
 
-        # url_slugs = get_url_slugs_since_refresh_date(number_to_update, max_days_since_updated, now)
-        # try:    
-        #     print u"got", len(url_slugs), url_slugs
-        # except UnicodeEncodeError:
-        #     print print u"got", len(url_slugs), "UnicodeEncodeError in by_profile"
-
-        url_slugs = ["sdfsfdfsdf"]
+        url_slugs = get_url_slugs_since_refresh_date(number_to_update, max_days_since_updated, now)
+        try:    
+            print u"got", len(url_slugs), url_slugs
+        except UnicodeEncodeError:
+            print u"got", len(url_slugs), "UnicodeEncodeError in by_profile"
 
         for url_slug in url_slugs:
             import_products_by_url_slug(url_slug, webapp_api_endpoint)
             deduplicate_by_url_slug(url_slug, webapp_api_endpoint)
-            # refresh_by_url_slug(url_slug, webapp_api_endpoint)
+            refresh_by_url_slug(url_slug, webapp_api_endpoint)
 
     except (KeyboardInterrupt, SystemExit): 
         # this approach is per http://stackoverflow.com/questions/2564137/python-how-to-terminate-a-thread-when-main-program-ends
