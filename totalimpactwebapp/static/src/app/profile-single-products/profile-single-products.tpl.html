@@ -10,33 +10,25 @@
 
    <div class="profile-single-products-body">
       <div class="wrapper">
-         <form>
+         <form name="import-single-products"
+               ng-submit="onSubmit()"
+               ng-controller="ImportSingleProductsFormCtrl">
             <textarea class="form-control" name="single-produts" id="single-products-importer"></textarea>
-            <submit-button action="Import"></submit-button>
+            <save-buttons action="Import"></save-buttons>
          </form>
 
          <div class="id-sources">
              <h3>Paste in IDs from any of these sources:</h3>
             <ul class="accepted-ids">
-               <li><img src="/static/img/logos/altmetric-com.png" /></li>
-               <li><img src="/static/img/logos/arxiv.png" /></li>
-               <li><img src="/static/img/logos/citeulike.png" /></li>
+               <li><img src="/static/img/logos/pubmed.png" /></li>
+               <li><img src="/static/img/logos/dataset.png" /></li>
                <li><img src="/static/img/logos/crossref.jpg" /></li>
-               <li><img src="/static/img/logos/delicious.jpg" /></li>
                <li><img src="/static/img/logos/dryad.png" /></li>
-               <li><img src="/static/img/logos/f1000.png" /></li>
                <li><img src="/static/img/logos/figshare.png" /></li>
                <li><img src="/static/img/logos/github.png" /></li>
-               <li><img src="/static/img/logos/mendeley.png" /></li>
-               <li><img src="/static/img/logos/orcid.png" /></li>
-               <li><img src="/static/img/logos/plos.png" /></li>
-               <li><img src="/static/img/logos/pmc.gif" /></li>
-               <li><img src="/static/img/logos/pubmed.png" /></li>
-               <li><img src="/static/img/logos/scopus.jpg" /></li>
+               <li><img src="/static/img/logos/products-by-url.png" /></li>
                <li><img src="/static/img/logos/slideshare.png" /></li>
-               <li><img src="/static/img/logos/twitter.png" /></li>
                <li><img src="/static/img/logos/vimeo.png" /></li>
-               <li><img src="/static/img/logos/wikipedia.png" /></li>
                <li><img src="/static/img/logos/youtube.png" /></li>
             </ul>
          </div>

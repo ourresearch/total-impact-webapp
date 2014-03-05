@@ -21,3 +21,9 @@ angular.module('profileSingleProducts', [
     Page.showFooter(false)
 
   })
+  .controller("ImportSingleProductsFormCtrl", function($scope, Page, $routeParams){
+    $scope.onSubmit = function(){
+      console.log("form submitted, yo; we'll send it to ", $routeParams.url_slug)
+    }
+
+  })

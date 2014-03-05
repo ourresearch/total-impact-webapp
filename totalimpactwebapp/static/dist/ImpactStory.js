@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-04
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-05
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -889,6 +889,12 @@ angular.module('profileSingleProducts', [
   .controller("addSingleProductsCtrl", function($scope, Page, $routeParams){
     Page.showHeader(false)
     Page.showFooter(false)
+
+  })
+  .controller("ImportSingleProductsFormCtrl", function($scope, Page, $routeParams){
+    $scope.onSubmit = function(){
+      console.log("form submitted, yo; we'll send it to ", $routeParams.url_slug)
+    }
 
   })
 angular.module("profile", [
@@ -4561,33 +4567,25 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
     "\n" +
     "   <div class=\"profile-single-products-body\">\n" +
     "      <div class=\"wrapper\">\n" +
-    "         <form>\n" +
+    "         <form name=\"import-single-products\"\n" +
+    "               ng-submit=\"onSubmit()\"\n" +
+    "               ng-controller=\"ImportSingleProductsFormCtrl\">\n" +
     "            <textarea class=\"form-control\" name=\"single-produts\" id=\"single-products-importer\"></textarea>\n" +
-    "            <submit-button action=\"Import\"></submit-button>\n" +
+    "            <save-buttons action=\"Import\"></save-buttons>\n" +
     "         </form>\n" +
     "\n" +
     "         <div class=\"id-sources\">\n" +
     "             <h3>Paste in IDs from any of these sources:</h3>\n" +
     "            <ul class=\"accepted-ids\">\n" +
-    "               <li><img src=\"/static/img/logos/altmetric-com.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/arxiv.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/citeulike.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/dataset.png\" /></li>\n" +
     "               <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/delicious.jpg\" /></li>\n" +
     "               <li><img src=\"/static/img/logos/dryad.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/f1000.png\" /></li>\n" +
     "               <li><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
     "               <li><img src=\"/static/img/logos/github.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/mendeley.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/orcid.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/plos.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/pmc.gif\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/scopus.jpg\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/products-by-url.png\" /></li>\n" +
     "               <li><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
     "               <li><img src=\"/static/img/logos/vimeo.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
     "               <li><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
     "            </ul>\n" +
     "         </div>\n" +

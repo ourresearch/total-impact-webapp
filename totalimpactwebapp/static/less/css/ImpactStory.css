@@ -7610,14 +7610,6 @@ div.products .wrapper div.products-without-metrics div.well a {
   font-size: 80%;
   margin-left: 8px;
 }
-div.profile-subpage {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #eee;
-}
 div.profile-subpage .profile-subpage-header {
   background: #555;
   color: #fff;
@@ -7645,13 +7637,31 @@ div.profile-subpage .profile-subpage-header .wrapper h2 {
   padding-bottom: 50px;
   color: #fff;
 }
-div.profile-single-products-body {
+div.profile-subpage.profile-linked-accounts {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #eee;
+}
+div.profile-subpage.profile-single-products div.profile-single-products-body {
   min-height: 600px;
   padding-top: 100px;
 }
-div.profile-single-products-body div.wrapper textarea {
+div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper form {
   width: 50%;
+  float: left;
+}
+div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper form textarea {
   height: 300px;
+}
+div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources ul li {
+  float: left;
+}
+div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources ul li img {
+  height: 50px;
+  margin: 5px;
 }
 .product {
   float: left;

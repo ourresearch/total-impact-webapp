@@ -1,10 +1,5 @@
 div.profile-subpage {
-   position: fixed;
-   top:0;
-   bottom:0;
-   left:0;
-   width: 100%;
-   background: #eee;
+
    .profile-subpage-header {
       background: #555;
       color: #fff;
@@ -30,21 +25,50 @@ div.profile-subpage {
             padding-bottom: 50px;
             color: #fff;
          }
-
       }
    }
-}
 
-div.profile-single-products-body {
-   min-height: 600px;
-   padding-top: 100px;
-   div.wrapper{
-      textarea {
-         width: 50%;
-         height: 300px;
+   // the linked accounts subpage
+   &.profile-linked-accounts {
+      position: fixed;
+      top:0;
+      bottom:0;
+      left:0;
+      width: 100%;
+      background: #eee;
+   }
+
+
+   // the import single products page
+   &.profile-single-products {
+      div.profile-single-products-body {
+         min-height: 600px;
+         padding-top: 100px;
+         div.wrapper{
+            form {
+               width: 50%;
+               float:left;
+               textarea {
+                  height: 300px;
+               }
+            }
+            .id-sources {
+               ul {
+                  li {
+                     float:left;
+                     img {
+                        height: 50px;
+                        margin: 5px;
+                     }
+                  }
+               }
+            }
+         }
       }
 
-
-
    }
+
+
+
 }
+
