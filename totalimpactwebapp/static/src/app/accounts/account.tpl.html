@@ -20,17 +20,8 @@
 <div class="account-window-wrapper"
      ng-if="accountWindowOpen"
      ng-animate="{enter: 'animated slideInRight', leave: 'animated slideOutRight'}">
-        >
    <div class="account-window">
 
-      <div class="account-tabs">
-         <menu class="account-menu">
-            <li class="tab"
-                ng-click="setCurrentTab($index)"
-                ng-class="{current: $index==currentTab}"
-                ng-repeat="tab in account.tabs"> {{ tab.label }}</li>
-         </menu>
-      </div>
 
       <div class="content">
          <h2 class="account-name" ng-show="!account.url"><img ng-src="{{ account.logoPath }}" /> </h2>
@@ -43,30 +34,20 @@
 
          <form name="{{ account.name }}accountForm" novalidate class="form" ng-submit="onLink()">
 
-            <div class="form-group"
-                 ng-show="$index==currentTab"
-                 ng-repeat="input in account.inputs">
+
+            <div class="form-group username">
                <label class="control-label">
-                  {{ input.displayName }} {{ input.inputNeeded }}
-                  <i class="icon-question-sign" ng-show="input.help" tooltip-html-unsafe="{{ input.help }}"></i>
-                  <span class="one-per-line" ng-show="input.inputType=='idList'">(one per line)</span>
+                  {{ account.displayName }} {{ account.username.inputNeeded }}
+                  <i class="icon-question-sign" ng-show="account.username.help" tooltip-html-unsafe="{{ account.username.help }}"></i>
                </label>
-               <div class="account-input" ng-switch on="input.inputType">
+               <div class="account-input">
                   <input
                           class="form-control"
-                          ng-model="input.value"
-                          type="text" ng-switch-when="username"
-                          placeholder="{{ input.placeholder }}">
+                          ng-model="account.username.value"
+                          type="text"
+                          placeholder="{{ account.username.placeholder }}">
 
-                  <textarea placeholder="{{ input.placeholder }}"
-                            class="form-control"
-                            ng-model="input.value"
-                            ng-switch-when="idList"></textarea>
-
-                  <!-- you can only have ONE file input per account, otherwise namespace collision -->
-                  <input type="file" ng-switch-when="file" ng-file-select="input.inputType">
-
-                  <div class="input-extra" ng-show="input.extra" ng-bind-html-unsafe="input.extra"></div>
+                  <div class="input-extra" ng-show="account.extra" ng-bind-html-unsafe="account.extra"></div>
                </div>
             </div>
 
@@ -77,8 +58,6 @@
                   <a ng-show="true" class="btn btn-danger">Unlink</a>
 
                   <a class="btn btn-default cancel" ng-click="onCancel()">Cancel</a>
-
-
                </div>
 
                <div class="working" ng-show="loading.is('saveButton')">
