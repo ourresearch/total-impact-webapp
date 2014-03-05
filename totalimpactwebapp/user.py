@@ -292,7 +292,7 @@ class User(db.Model):
 
             ret_dict[property] = val
 
-        ret_dict["products_count"] = len(self.products)
+        ret_dict["products_count"] = len(self.tiids)
 
         return ret_dict
 
