@@ -545,7 +545,12 @@ def make_products_for_linked_account(importer_name, importer_value, analytics_cr
         data=json.dumps(data_dict),
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
-    return r.json()
+    if r.status_code==200:
+        return r.json()
+    else:
+        logger.warning(u"make_products_for_linked_account returned status={status}".format(
+            status=r.status))
+        return {"products": {}}
 
 
 def make_products_for_product_id_strings(product_id_strings, analytics_credentials={}):
@@ -563,7 +568,12 @@ def make_products_for_product_id_strings(product_id_strings, analytics_credentia
         data=json.dumps(data_dict),
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
-    return r.json()
+    if r.status_code==200:
+        return r.json()
+    else:
+        logger.warning(u"make_products_for_product_id_strings returned status={status}".format(
+            status=r.status))        
+        return {"products": {}}
 
 
 def hide_user_secrets(user):

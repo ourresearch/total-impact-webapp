@@ -63,7 +63,11 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
             r = requests.post(url, 
                     headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-            print r.json()
+            if r.status_code==200:
+                print r.json()
+            else:
+                print "error importing products with url {url}, status={status}".format(
+                    url=url, status=r.status_code)
 
     return True
 
