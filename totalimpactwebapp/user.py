@@ -207,7 +207,9 @@ class User(db.Model):
         except AttributeError:
             # AnonymousUser doesn't have method
             analytics_credentials = {}        
-        tiids = make_products_for_product_id_strings(product_id_strings, analytics_credentials)
+        import_response = make_products_for_product_id_strings(product_id_strings, analytics_credentials)
+        tiids = import_response["products"].keys()
+
         return add_tiids_to_user(self.id, tiids)
 
     def delete_products(self, tiids_to_delete):
@@ -320,6 +322,10 @@ def get_products_from_core(tiids):
 
 
 def add_tiids_to_user(user_id, tiids):
+    logger.info(u"in add_tiids_to_user {user_id} with {tiids}".format(
+        user_id=user_id,
+        tiids=tiids))
+
     user_object = User.query.get(user_id)
     db.session.merge(user_object)
 
