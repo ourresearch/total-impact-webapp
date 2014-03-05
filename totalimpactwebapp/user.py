@@ -201,8 +201,14 @@ class User(db.Model):
         products = get_products_from_core(self.tiids)
         return products
 
-    def add_products(self, tiids_to_add):
-        return add_products_to_user(self.id, tiids_to_add)
+    def add_products(self, product_id_strings):
+        try:
+            analytics_credentials = self.get_analytics_credentials()
+        except AttributeError:
+            # AnonymousUser doesn't have method
+            analytics_credentials = {}        
+        tiids = make_products_for_product_id_strings(product_id_strings, analytics_credentials)
+        return add_tiids_to_user(self.id, tiids)
 
     def delete_products(self, tiids_to_delete):
         delete_products_from_user(self.id, tiids_to_delete)
@@ -224,7 +230,7 @@ class User(db.Model):
                 analytics_credentials = {}
             import_response = make_products_for_linked_account(account, account_value, analytics_credentials)
             tiids = import_response["products"].keys()
-            resp = self.add_products(tiids)
+            resp = add_tiids_to_user(self.id, tiids)
         return tiids
 
     def patch(self, newValuesDict):
@@ -313,7 +319,7 @@ def get_products_from_core(tiids):
     return products_list
 
 
-def add_products_to_user(user_id, tiids):
+def add_tiids_to_user(user_id, tiids):
     user_object = User.query.get(user_id)
     db.session.merge(user_object)
 
@@ -325,7 +331,7 @@ def add_products_to_user(user_id, tiids):
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in add_products_to_user for {user_id}, rolling back.  Message: {message}".format(
+        logger.warning(u"Fails Integrity check in add_tiids_to_user for {user_id}, rolling back.  Message: {message}".format(
             user_id=user_id,
             message=e.message))
 
@@ -525,6 +531,24 @@ def make_products_for_linked_account(importer_name, importer_value, analytics_cr
     )
     data_dict = {
         "account_name": importer_value, 
+        "analytics_credentials": analytics_credentials
+        }
+
+    r = requests.post(
+        query,
+        data=json.dumps(data_dict),
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
+    )
+    return r.json()
+
+
+def make_products_for_product_id_strings(product_id_strings, analytics_credentials={}):
+    query = u"{core_api_root}/v1/importer/product_id_strings?api_admin_key={api_admin_key}".format(
+        core_api_root=g.api_root,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    data_dict = {
+        "product_id_strings": product_id_strings, 
         "analytics_credentials": analytics_credentials
         }
 
