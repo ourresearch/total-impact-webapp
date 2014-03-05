@@ -56,8 +56,8 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
                 url_slug=url_slug,
                 account_type=account_type)
             try:
-                logger.debug(u"LINKED-ACCOUNTS POST to {url}".format(
-                    url=url))
+                logger.debug(u"LINKED-ACCOUNTS POST to {url} with value {user_account_value}".format(
+                    url=url, user_account_value=user_account_value))
             except UnicodeEncodeError:
                 logger.debug(u"UnicodeEncodeError when trying to print url")
             r = requests.post(url, 
@@ -104,9 +104,8 @@ def main(number_to_update=3, max_days_since_updated=7):
         for url_slug in url_slugs:
             number_products_before = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
             import_products_by_url_slug(url_slug, webapp_api_endpoint)
-            if get_num_products_by_url_slug(url_slug, webapp_api_endpoint) > 0:
-                deduplicate_by_url_slug(url_slug, webapp_api_endpoint)
-                refresh_by_url_slug(url_slug, webapp_api_endpoint)
+            deduplicate_by_url_slug(url_slug, webapp_api_endpoint)
+            refresh_by_url_slug(url_slug, webapp_api_endpoint)
             number_products_after = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
             if number_products_before==number_products_after:
                 logger.info(u"***NO CHANGE on update for {url_slug}, {number_products_before} products".format(
