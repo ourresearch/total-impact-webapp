@@ -429,6 +429,7 @@ def user_products_modify(id):
         resp = {"products": tiids_being_refreshed}
 
     else:
+
         # Actions that require authentication
         try:
             if current_user.url_slug != user.url_slug:
@@ -437,7 +438,7 @@ def user_products_modify(id):
             abort_json(405, "You must be logged in to modify profiles.")
 
         if request.method == "PATCH":
-            product_ids = request.json.get("product_id_strings")
+            product_id_strings = request.json.get("product_id_strings")
             resp = {"products": user.add_products(product_id_strings)}
 
         elif request.method == "DELETE":
