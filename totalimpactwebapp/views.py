@@ -437,6 +437,7 @@ def user_products_modify(id):
 
 
     else:
+
         # Actions that require authentication
         try:
             if current_user.url_slug != user.url_slug:
