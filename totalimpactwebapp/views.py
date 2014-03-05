@@ -388,7 +388,11 @@ def user_products_get(id):
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
 def product_biblio_modify(tiid):
 
-    # TODO:  check this user has permission to make this change
+    try:
+        if current_user.url_slug != user.url_slug:
+            abort_json(401, "Only profile owners can modify profiles.")
+    except AttributeError:
+        abort_json(405, "You must be logged in to modify profiles.")
 
     query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,
@@ -415,18 +419,17 @@ def user_products_modify(id):
     logger.debug(u"got user {user}".format(
         user=user))
 
-    # ADDING THIS HERE TEMPORARILY
     if request.method == "POST" and action == "deduplicate":
         deleted_tiids = remove_duplicates_from_user(user.id)
         resp = {"deleted_tiids": deleted_tiids}
 
     elif request.method == "POST" and (action == "refresh"):
-        # anyone can refresh extant products.
         source = request.args.get("source", "webapp")
         tiids_being_refreshed = user.refresh_products(source)
         resp = {"products": tiids_being_refreshed}
 
     else:
+
         # Actions that require authentication
         try:
             if current_user.url_slug != user.url_slug:
@@ -434,14 +437,9 @@ def user_products_modify(id):
         except AttributeError:
             abort_json(405, "You must be logged in to modify profiles.")
 
-        # actions, depending on what http method was used:
-        if request.method == "POST" and action == "deduplicate":
-            deleted_tiids = remove_duplicates_from_user(user.id)
-            resp = {"deleted_tiids": deleted_tiids}
-
-        elif request.method == "PATCH":
-            tiids_to_add = request.json.get("tiids")
-            resp = {"products": user.add_products(tiids_to_add)}
+        if request.method == "PATCH":
+            product_id_strings = request.json.get("product_id_strings")
+            resp = {"products": user.add_products(product_id_strings)}
 
         elif request.method == "DELETE":
             tiids_to_delete = request.json.get("tiids")
