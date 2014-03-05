@@ -428,6 +428,14 @@ def user_products_modify(id):
         tiids_being_refreshed = user.refresh_products(source)
         resp = {"products": tiids_being_refreshed}
 
+
+
+    # temporary!!!
+    login_user(user)
+    # remove the above before production!!!
+
+
+
     else:
         # Actions that require authentication
         try:
