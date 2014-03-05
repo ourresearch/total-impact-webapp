@@ -1,10 +1,11 @@
 angular.module('profileLinkedAccounts', [
   'accounts.allTheAccounts',
   'services.page',
-  'accounts.account'
+  'accounts.account',
+  'resources.users'
 ])
 
-  .config(['$routeProvider', function($routeProvider) {
+  .config(['$routeProvider', function($routeProvider, UserAbout) {
 
     $routeProvider
       .when("/:url_slug/accounts", {
@@ -13,17 +14,23 @@ angular.module('profileLinkedAccounts', [
         resolve:{
           userOwnsThisProfile: function(security){
             return security.testUserAuthenticationLevel("ownsThisProfile")
+          },
+          currentUser: function(security){
+            return security.requestCurrentUser()
           }
         }
       })
 
   }])
-  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheAccounts){
+  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheAccounts, currentUser){
 
 
     Page.showHeader(false)
     Page.showFooter(false)
-    $scope.accounts = AllTheAccounts.get()
+
+    console.log("current user: ", currentUser)
+
+    $scope.accounts = AllTheAccounts.get(currentUser)
     $scope.returnLink = "/"+$routeParams.url_slug
 
 

@@ -24,17 +24,8 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "<div class=\"account-window-wrapper\"\n" +
     "     ng-if=\"accountWindowOpen\"\n" +
     "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
-    "        >\n" +
     "   <div class=\"account-window\">\n" +
     "\n" +
-    "      <div class=\"account-tabs\">\n" +
-    "         <menu class=\"account-menu\">\n" +
-    "            <li class=\"tab\"\n" +
-    "                ng-click=\"setCurrentTab($index)\"\n" +
-    "                ng-class=\"{current: $index==currentTab}\"\n" +
-    "                ng-repeat=\"tab in account.tabs\"> {{ tab.label }}</li>\n" +
-    "         </menu>\n" +
-    "      </div>\n" +
     "\n" +
     "      <div class=\"content\">\n" +
     "         <h2 class=\"account-name\" ng-show=\"!account.url\"><img ng-src=\"{{ account.logoPath }}\" /> </h2>\n" +
@@ -47,30 +38,20 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "         <form name=\"{{ account.name }}accountForm\" novalidate class=\"form\" ng-submit=\"onLink()\">\n" +
     "\n" +
-    "            <div class=\"form-group\"\n" +
-    "                 ng-show=\"$index==currentTab\"\n" +
-    "                 ng-repeat=\"input in account.inputs\">\n" +
+    "\n" +
+    "            <div class=\"form-group username\">\n" +
     "               <label class=\"control-label\">\n" +
-    "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
-    "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
-    "                  <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
+    "                  {{ account.displayName }} {{ account.username.inputNeeded }}\n" +
+    "                  <i class=\"icon-question-sign\" ng-show=\"account.username.help\" tooltip-html-unsafe=\"{{ account.username.help }}\"></i>\n" +
     "               </label>\n" +
-    "               <div class=\"account-input\" ng-switch on=\"input.inputType\">\n" +
+    "               <div class=\"account-input\">\n" +
     "                  <input\n" +
     "                          class=\"form-control\"\n" +
-    "                          ng-model=\"input.value\"\n" +
-    "                          type=\"text\" ng-switch-when=\"username\"\n" +
-    "                          placeholder=\"{{ input.placeholder }}\">\n" +
+    "                          ng-model=\"account.username.value\"\n" +
+    "                          type=\"text\"\n" +
+    "                          placeholder=\"{{ account.username.placeholder }}\">\n" +
     "\n" +
-    "                  <textarea placeholder=\"{{ input.placeholder }}\"\n" +
-    "                            class=\"form-control\"\n" +
-    "                            ng-model=\"input.value\"\n" +
-    "                            ng-switch-when=\"idList\"></textarea>\n" +
-    "\n" +
-    "                  <!-- you can only have ONE file input per account, otherwise namespace collision -->\n" +
-    "                  <input type=\"file\" ng-switch-when=\"file\" ng-file-select=\"input.inputType\">\n" +
-    "\n" +
-    "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
+    "                  <div class=\"input-extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
@@ -81,8 +62,6 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "                  <a ng-show=\"true\" class=\"btn btn-danger\">Unlink</a>\n" +
     "\n" +
     "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
-    "\n" +
-    "\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"working\" ng-show=\"loading.is('saveButton')\">\n" +
@@ -966,15 +945,44 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
     "         <h1 class=\"instr\">Import individual products</h1>\n" +
-    "         <h2>Paste unique product IDs and we'll add them to your Impactstory profile.</h2>\n" +
+    "         <h2>Add products to Impactstory profile one-by-one. For easier importing,\n" +
+    "            link your external accounts and we'll sync them automatically.</h2>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"profile-single-products-body\">\n" +
-    "      <form>\n" +
-    "         <textarea name=\"single-produts\" id=\"single-products-importer\"></textarea>\n" +
-    "         <submit-button action=\"Import\"></submit-button>\n" +
-    "      </form>\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <form>\n" +
+    "            <textarea class=\"form-control\" name=\"single-produts\" id=\"single-products-importer\"></textarea>\n" +
+    "            <submit-button action=\"Import\"></submit-button>\n" +
+    "         </form>\n" +
+    "\n" +
+    "         <div class=\"id-sources\">\n" +
+    "             <h3>Paste in IDs from any of these sources:</h3>\n" +
+    "            <ul class=\"accepted-ids\">\n" +
+    "               <li><img src=\"/static/img/logos/altmetric-com.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/arxiv.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/citeulike.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/delicious.jpg\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/dryad.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/f1000.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/github.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/mendeley.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/orcid.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/plos.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/pmc.gif\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/scopus.jpg\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/vimeo.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
     "\n" +
     "\n" +
     "\n" +

@@ -7645,6 +7645,14 @@ div.profile-subpage .profile-subpage-header .wrapper h2 {
   padding-bottom: 50px;
   color: #fff;
 }
+div.profile-single-products-body {
+  min-height: 600px;
+  padding-top: 100px;
+}
+div.profile-single-products-body div.wrapper textarea {
+  width: 50%;
+  height: 300px;
+}
 .product {
   float: left;
   clear: both;

@@ -172,101 +172,86 @@ angular.module('accounts.allTheAccounts', [
 .factory('AllTheAccounts', function(){
 
   var importedProducts = []
-  var accounts = [
-    {
+  var accounts = {
+    github: {
       displayName: "GitHub",
+      usernameCleanupFunction: function(x){return x},
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features.",
-//     tabs: [
-//       {
-//         label: "account"
-//       },
-//       {
-//         label: "additional repositories"
-//       }
-//     ],
-      inputs: [{
-//            tab: 0,
-            name: "account_name",
-            inputType: "username",
-            inputNeeded: "username",
-            help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
-            saveUsername: "github_id"
-          }]
+      username: {
+        inputNeeded: "username",
+        help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+      }
     },
 
 
-    {
+
+    orcid: {
       displayName: "ORCID",
-      inputs: [{
-        inputType: "username",
+      username:{
         inputNeeded: "ID",
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
-        saveUsername: "orcid_id",
-        cleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
         help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
-      }],
+      },
+      usernameCleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
       url: 'http://orcid.org',
       signupUrl: 'http://orcid.org/register',
       descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",
       extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
     },
 
-    {
+
+
+    slideshare: {
       displayName: "SlideShare",
+      usernameCleanupFunction: function(x){return x},
       url:'http://slideshare.net',
       descr: "SlideShare is community for sharing presentations online.",
-      inputs: [{
-            name: "account_name",
-            inputType: "username",
-            inputNeeded: "username",
-            help: "Your username is right after \"slideshare.net/\" in your profile's URL.",            
-            saveUsername: "slideshare_id"
-          }]
+      username: {
+          help: "Your username is right after \"slideshare.net/\" in your profile's URL.",
+          inputNeeded: "username"
+
+      }
     },
 
 
-    {
-      displayName: "Google Scholar",
-      inputs: [{
-        inputType: "file",
-        inputNeeded: "BibTeX file"
-      }],
-      endpoint: "bibtex",
-      url: 'http://scholar.google.com/citations',
-      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
-      extra: '<h3>How to import your Google Scholar profile:</h3>'
-        + '<ol>'
-          + '<li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li>'
-          + '<li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>'
-          + '<li>Click <code>Export all my articles</code>, then save the BibTex file.</li>'
-          + '<li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.'
-        + '</ol>'
-    },
+
+//    google_scholar: {
+//      displayName: "Google Scholar",
+//      inputs: [{
+//        inputType: "file",
+//        inputNeeded: "BibTeX file"
+//      }],
+//      endpoint: "bibtex",
+//      url: 'http://scholar.google.com/citations',
+//      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
+//      extra: '<h3>How to import your Google Scholar profile:</h3>'
+//        + '<ol>'
+//          + '<li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li>'
+//          + '<li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>'
+//          + '<li>Click <code>Export all my articles</code>, then save the BibTex file.</li>'
+//          + '<li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.'
+//        + '</ol>'
+//    },
 
 
-    {
+
+    figshare: {
       displayName: "figshare",
       url: "http://figshare.com",
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
-      inputs: [{
-            name: "account_name",
-            inputType: "username",
+      username:{
             inputNeeded: "author page URL",
-            placeholder: "http://figshare.com/authors/your_username/12345",
-            cleanupFunction: function(x) {
-              if (typeof x==="undefined") return x; 
-              return('http://'+x.replace('http://', ''))},
-            saveUsername: "figshare_id"
-          }]
-    }
-  ]
+            placeholder: "http://figshare.com/authors/your_username/12345"
 
-  var defaultInputObj = {
-    name: "primary",
-    cleanupFunction: function(x){return x},
-    tab:0
+      },
+      usernameCleanupFunction: function(x) {
+              if (typeof x==="undefined") return x;
+              return('http://'+x.replace('http://', ''))
+      }
+    }
   }
+
 
 
 
@@ -284,16 +269,6 @@ angular.module('accounts.allTheAccounts', [
       return makeName(account.displayName)
     }
   }
-          
-  var makeName = function(accountName) {
-    var words = accountName.split(" ");
-    var capitalizedWords = _.map(words, function(word){
-      return word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)
-    })
-    capitalizedWords[0] = capitalizedWords[0].toLowerCase()
-    return capitalizedWords.join("");
-
-  }
 
 
   var makeCSSName = function(accountName) {
@@ -309,31 +284,31 @@ angular.module('accounts.allTheAccounts', [
     getProducts: function(){
       return importedProducts
     },
-    get: function(){
+    accountServiceNamesFromUserAboutDict:function(userAboutDict){
 
-      // this way no state is saved in the actual accounts obj.
+    },
+
+    get: function(userDict){
+
+      var ret = []
       var accountsConfig = angular.copy(accounts)
 
-      var accountsWithAllData = _.map(accountsConfig, function(account){
-        account.name = makeName(account.displayName)
-        account.CSSname = makeCSSName(account.displayName)
-        account.logoPath = makeLogoPath(account.displayName)
-        account.endpoint = makeEndpoint(account)
+      _.each(accountsConfig, function(accountObj, accountProvider){
+        var userDictAccountKey = accountProvider + "_id"
 
-        account.inputs = _.map(account.inputs, function(inputObj){
-          return _.defaults(inputObj, defaultInputObj)
-        })
+        accountObj.username.value = userDict[userDictAccountKey]
+        accountObj.accountProvider = accountProvider
+        accountObj.CSSname = makeCSSName(accountObj.displayName)
+        accountObj.logoPath = makeLogoPath(accountObj.displayName)
 
-
-        return account
+        ret.push(accountObj)
       })
 
-      return _.sortBy(accountsWithAllData, function(account){
+      return _.sortBy(ret, function(account){
         return account.displayName.toLocaleLowerCase();
       })
 
     }
-
 
   }
 
@@ -677,10 +652,11 @@ angular.module('profileAward.profileAward', [])
 angular.module('profileLinkedAccounts', [
   'accounts.allTheAccounts',
   'services.page',
-  'accounts.account'
+  'accounts.account',
+  'resources.users'
 ])
 
-  .config(['$routeProvider', function($routeProvider) {
+  .config(['$routeProvider', function($routeProvider, UserAbout) {
 
     $routeProvider
       .when("/:url_slug/accounts", {
@@ -689,17 +665,23 @@ angular.module('profileLinkedAccounts', [
         resolve:{
           userOwnsThisProfile: function(security){
             return security.testUserAuthenticationLevel("ownsThisProfile")
+          },
+          currentUser: function(security){
+            return security.requestCurrentUser()
           }
         }
       })
 
   }])
-  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheAccounts){
+  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheAccounts, currentUser){
 
 
     Page.showHeader(false)
     Page.showFooter(false)
-    $scope.accounts = AllTheAccounts.get()
+
+    console.log("current user: ", currentUser)
+
+    $scope.accounts = AllTheAccounts.get(currentUser)
     $scope.returnLink = "/"+$routeParams.url_slug
 
 
@@ -3651,17 +3633,8 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "<div class=\"account-window-wrapper\"\n" +
     "     ng-if=\"accountWindowOpen\"\n" +
     "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
-    "        >\n" +
     "   <div class=\"account-window\">\n" +
     "\n" +
-    "      <div class=\"account-tabs\">\n" +
-    "         <menu class=\"account-menu\">\n" +
-    "            <li class=\"tab\"\n" +
-    "                ng-click=\"setCurrentTab($index)\"\n" +
-    "                ng-class=\"{current: $index==currentTab}\"\n" +
-    "                ng-repeat=\"tab in account.tabs\"> {{ tab.label }}</li>\n" +
-    "         </menu>\n" +
-    "      </div>\n" +
     "\n" +
     "      <div class=\"content\">\n" +
     "         <h2 class=\"account-name\" ng-show=\"!account.url\"><img ng-src=\"{{ account.logoPath }}\" /> </h2>\n" +
@@ -3674,30 +3647,20 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "         <form name=\"{{ account.name }}accountForm\" novalidate class=\"form\" ng-submit=\"onLink()\">\n" +
     "\n" +
-    "            <div class=\"form-group\"\n" +
-    "                 ng-show=\"$index==currentTab\"\n" +
-    "                 ng-repeat=\"input in account.inputs\">\n" +
+    "\n" +
+    "            <div class=\"form-group username\">\n" +
     "               <label class=\"control-label\">\n" +
-    "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
-    "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
-    "                  <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
+    "                  {{ account.displayName }} {{ account.username.inputNeeded }}\n" +
+    "                  <i class=\"icon-question-sign\" ng-show=\"account.username.help\" tooltip-html-unsafe=\"{{ account.username.help }}\"></i>\n" +
     "               </label>\n" +
-    "               <div class=\"account-input\" ng-switch on=\"input.inputType\">\n" +
+    "               <div class=\"account-input\">\n" +
     "                  <input\n" +
     "                          class=\"form-control\"\n" +
-    "                          ng-model=\"input.value\"\n" +
-    "                          type=\"text\" ng-switch-when=\"username\"\n" +
-    "                          placeholder=\"{{ input.placeholder }}\">\n" +
+    "                          ng-model=\"account.username.value\"\n" +
+    "                          type=\"text\"\n" +
+    "                          placeholder=\"{{ account.username.placeholder }}\">\n" +
     "\n" +
-    "                  <textarea placeholder=\"{{ input.placeholder }}\"\n" +
-    "                            class=\"form-control\"\n" +
-    "                            ng-model=\"input.value\"\n" +
-    "                            ng-switch-when=\"idList\"></textarea>\n" +
-    "\n" +
-    "                  <!-- you can only have ONE file input per account, otherwise namespace collision -->\n" +
-    "                  <input type=\"file\" ng-switch-when=\"file\" ng-file-select=\"input.inputType\">\n" +
-    "\n" +
-    "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
+    "                  <div class=\"input-extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
@@ -3708,8 +3671,6 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "                  <a ng-show=\"true\" class=\"btn btn-danger\">Unlink</a>\n" +
     "\n" +
     "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
-    "\n" +
-    "\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"working\" ng-show=\"loading.is('saveButton')\">\n" +
@@ -4593,15 +4554,44 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
     "         <h1 class=\"instr\">Import individual products</h1>\n" +
-    "         <h2>Paste unique product IDs and we'll add them to your Impactstory profile.</h2>\n" +
+    "         <h2>Add products to Impactstory profile one-by-one. For easier importing,\n" +
+    "            link your external accounts and we'll sync them automatically.</h2>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"profile-single-products-body\">\n" +
-    "      <form>\n" +
-    "         <textarea name=\"single-produts\" id=\"single-products-importer\"></textarea>\n" +
-    "         <submit-button action=\"Import\"></submit-button>\n" +
-    "      </form>\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <form>\n" +
+    "            <textarea class=\"form-control\" name=\"single-produts\" id=\"single-products-importer\"></textarea>\n" +
+    "            <submit-button action=\"Import\"></submit-button>\n" +
+    "         </form>\n" +
+    "\n" +
+    "         <div class=\"id-sources\">\n" +
+    "             <h3>Paste in IDs from any of these sources:</h3>\n" +
+    "            <ul class=\"accepted-ids\">\n" +
+    "               <li><img src=\"/static/img/logos/altmetric-com.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/arxiv.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/citeulike.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/delicious.jpg\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/dryad.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/f1000.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/github.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/mendeley.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/orcid.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/plos.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/pmc.gif\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/scopus.jpg\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/twitter.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/vimeo.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/wikipedia.png\" /></li>\n" +
+    "               <li><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
     "\n" +
     "\n" +
     "\n" +
