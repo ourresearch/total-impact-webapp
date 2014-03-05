@@ -437,7 +437,7 @@ def user_products_modify(id):
             abort_json(405, "You must be logged in to modify profiles.")
 
         if request.method == "PATCH":
-            product_ids = request.json.get("product_id_strings")
+            product_id_strings = request.json.get("product_id_strings")
             resp = {"products": user.add_products(product_id_strings)}
 
         elif request.method == "DELETE":
