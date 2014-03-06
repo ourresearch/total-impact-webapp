@@ -126,11 +126,11 @@ angular.module('accounts.allTheAccounts', [
       var ret = []
       var accountsConfig = angular.copy(accounts)
 
-      _.each(accountsConfig, function(accountObj, accountProvider){
-        var userDictAccountKey = accountProvider + "_id"
+      _.each(accountsConfig, function(accountObj, accountHost){
+        var userDictAccountKey = accountHost + "_id"
 
         accountObj.username.value = userDict[userDictAccountKey]
-        accountObj.accountProvider = accountProvider
+        accountObj.accountHost = accountHost
         accountObj.CSSname = makeCSSName(accountObj.displayName)
         accountObj.logoPath = makeLogoPath(accountObj.displayName)
 

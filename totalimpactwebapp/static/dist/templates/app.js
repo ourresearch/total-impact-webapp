@@ -5,15 +5,19 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "\n" +
     "<div class=\"account-tile\" id=\"{{ account.CSSname }}-account-tile\"\n" +
-    "     ng-click=\"showAccountWindow()\"\n" +
-    "     ng-class=\"{'has-run': accountHasRun, 'not-run': !accountHasRun}\">\n" +
+    "     ng-click=\"showAccountWindow()\">\n" +
     "\n" +
     "   <div class=\"account-name\"><img ng-src=\"{{ account.logoPath }}\"></div>\n" +
-    "   <div class=\"account-products-count\">\n" +
-    "      <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ products.length }}</span>\n" +
-    "      <span class=\"descr\">products in account</span>\n" +
+    "   <div class=\"linked-info\">\n" +
+    "      <span class=\"linked-or-not\">\n" +
+    "         <span ng-show=\"isLinked\" class=\"linked\">Linked and synced</span>\n" +
+    "         <span ng-show=\"!isLinked\" class=\"linked\">Not linked</span>\n" +
+    "      </span>\n" +
+    "      <div class=\"products-just-added\" ng-show=\"justAddedProducts.length && isLinked\">\n" +
+    "         <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ justAddedProducts.length }}</span>\n" +
+    "         <span class=\"descr\">products just added</span>\n" +
+    "      </div>\n" +
     "   </div>\n" +
-    "\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"overlay\"\n" +
@@ -36,7 +40,9 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ account.descr }}</div>\n" +
     "\n" +
-    "         <form name=\"{{ account.name }}accountForm\" novalidate class=\"form\" ng-submit=\"onLink()\">\n" +
+    "         <form name=\"{{ account.name }}accountForm\"\n" +
+    "               novalidate class=\"form\"\n" +
+    "               ng-submit=\"onLink()\">\n" +
     "\n" +
     "\n" +
     "            <div class=\"form-group username\">\n" +
@@ -48,7 +54,9 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "                  <input\n" +
     "                          class=\"form-control\"\n" +
     "                          ng-model=\"account.username.value\"\n" +
+    "                          ng-disabled=\"isLinked\"\n" +
     "                          type=\"text\"\n" +
+    "                          autofocus=\"autofocus\"\n" +
     "                          placeholder=\"{{ account.username.placeholder }}\">\n" +
     "\n" +
     "                  <div class=\"input-extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
@@ -58,17 +66,11 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"false\" type=\"submit\" class=\"btn btn-primary\">Link</button>\n" +
-    "                  <a ng-show=\"true\" class=\"btn btn-danger\">Unlink</a>\n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\" class=\"btn btn-primary\">Link and sync products</button>\n" +
+    "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">Unlink this account</a>\n" +
     "\n" +
     "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
     "               </div>\n" +
-    "\n" +
-    "               <div class=\"working\" ng-show=\"loading.is('saveButton')\">\n" +
-    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "                  <span class=\"text\">Unlinking...</span>\n" +
-    "               </div>\n" +
-    "\n" +
     "            </div>\n" +
     "\n" +
     "\n" +
@@ -955,7 +957,10 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
     "         <form name=\"import-single-products\"\n" +
     "               ng-submit=\"onSubmit()\"\n" +
     "               ng-controller=\"ImportSingleProductsFormCtrl\">\n" +
-    "            <textarea class=\"form-control\" name=\"single-produts\" id=\"single-products-importer\"></textarea>\n" +
+    "            <textarea class=\"form-control\"\n" +
+    "                      name=\"single-produts\"\n" +
+    "                      ng-model=\"newlineDelimitedProductIds\"\n" +
+    "                      id=\"single-products-importer\"></textarea>\n" +
     "            <save-buttons action=\"Import\"></save-buttons>\n" +
     "         </form>\n" +
     "\n" +

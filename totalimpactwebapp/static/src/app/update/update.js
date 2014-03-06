@@ -49,6 +49,8 @@ angular.module( 'update.update', [
       updateStatus.numDone = null
       updateStatus.numNotDone = null
       updateStatus.percentComplete = null
+      onFinish = onFinish || function(){}
+
 
       // clear the cache. right now wiping out *everything*. be smart later.
       $httpDefaultCache.removeAll()

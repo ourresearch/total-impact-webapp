@@ -1,5 +1,8 @@
 angular.module('profileSingleProducts', [
-  'services.page'
+  'services.page',
+  'resources.users',
+  'services.loading'
+
 ])
 
   .config(['$routeProvider', function($routeProvider) {
@@ -21,9 +24,35 @@ angular.module('profileSingleProducts', [
     Page.showFooter(false)
 
   })
-  .controller("ImportSingleProductsFormCtrl", function($scope, Page, $routeParams){
+  .controller("ImportSingleProductsFormCtrl", function($scope, $location, $routeParams, $cacheFactory, Loading, UsersProducts, security){
+
+    $scope.newlineDelimitedProductIds = ""
+    var $httpDefaultCache = $cacheFactory.get('$http')
+
+
     $scope.onSubmit = function(){
-      console.log("form submitted, yo; we'll send it to ", $routeParams.url_slug)
+      Loading.start("saveButton")
+
+      var productIds = _.compact($scope.newlineDelimitedProductIds.split("\n"))
+
+      UsersProducts.patch(
+        {id: $routeParams.url_slug},
+        {product_id_strings: productIds},
+        function(resp){
+
+          // clear the cache. right now wiping out *everything*. be smart later.
+          $httpDefaultCache.removeAll()
+          console.log("clearing the cache")
+          security.redirectToProfile()
+
+        },
+        function(resp){
+          console.log("failed to save new products!", resp)
+
+        }
+      )
+
+
     }
 
   })

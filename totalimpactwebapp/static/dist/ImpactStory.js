@@ -22,42 +22,66 @@ angular.module('accounts.account', [
 
     var tiidsAdded = []
 
+    var unlinkAccount = function(url_slug, accountObj){
+      var deferred = $q.defer()
+
+      var about = {}
+      about[accountObj.accountHost + "_id"] = null
+
+
+
+      Loading.start("saveButton")
+      console.log("unlinking account " + accountObj.accountHost)
+      UsersAbout.patch(
+        {id:url_slug},
+        {about: about},
+        function(resp){
+          deferred.resolve(resp)
+          Loading.finish("saveButton")
+
+        },
+        function(resp){
+          deferred(reject(resp))
+          Loading.finish("saveButton")
+        })
+
+      return deferred.promise
+    }
+
+
+
     var saveAccountInput = function(url_slug, accountObj) {
 
       var deferred = $q.defer()
 
-      var usernameInput = _.find(accountObj.inputs, function(input){
-        return input.saveUsername
-      })
-
       var about = {}
-      about[usernameInput.saveUsername] = usernameInput.cleanupFunction(usernameInput.value)
+      var cleanUsername = accountObj.usernameCleanupFunction(accountObj.username.value)
+      about[accountObj.accountHost + "_id"] = cleanUsername
 
-      // hack to use the api endpoint
-      var accountType = usernameInput.saveUsername.replace("_id", "")
-
-      var patchData = {'about': about}
 
       Loading.start("saveButton")
-      console.log("saving usernames", patchData)
       UsersAbout.patch(
         {id:url_slug},
-        patchData,
-        function(resp){
+        {about: about},
 
-          console.log("telling webapp to update " + accountType)
+        function(resp){
+          // ok the userAbout object has this username in it now. let's slurp.
+
+          console.log("telling webapp to update " + accountObj.accountHost)
           UsersLinkedAccounts.update(
-            {id: url_slug, account: accountType},
+            {id: url_slug, account: accountObj.accountHost},
             {},
             function(resp){
               // we've kicked off a slurp for this account type. we'll add
               // as many products we find in that account, then dedup.
               // we'll return the list of new tiids
-              console.log("update started for " + accountType + ". ", resp)
+
+              console.log("update started for " + accountObj.accountHost + ". ", resp)
               Loading.finish("saveButton")
               deferred.resolve(resp)
             },
             function(updateResp){
+              Loading.finish("saveButton")
               deferred.reject({
                 msg: "attempt to slurp in products from linked account failed",
                 resp: updateResp
@@ -83,6 +107,7 @@ angular.module('accounts.account', [
 
     return {
       'saveAccountInput': saveAccountInput,
+      unlinkAccount: unlinkAccount,
       getTiids: function(){return tiidsAdded}
     }
 
@@ -103,18 +128,18 @@ angular.module('accounts.account', [
 
 
   $scope.showAccountWindow = function(){
+    $scope.accountWindowOpen = true;
     analytics.track("Opened an account window", {
       "Account name": Account.displayName
     })
 
-    $scope.accountWindowOpen = true;
-    $scope.account.userInput = null  // may have been used before; clear it.
   }
 
-  $scope.products = []
-  $scope.currentTab = 0;
-  $scope.userInput = {}
-  $scope.accountHasRun = false
+  $scope.justAddedProducts =[]
+  $scope.isLinked = !!$scope.account.username.value
+
+  console.log("account.username", $scope.account.username)
+
 
 
   $scope.setCurrentTab = function(index){$scope.currentTab = index}
@@ -123,19 +148,37 @@ angular.module('accounts.account', [
     $scope.accountWindowOpen = false;
   }
 
+  $scope.unlink = function() {
+    $scope.accountWindowOpen = false;
+    $scope.isLinked = false
+
+    Account.unlinkAccount($routeParams.url_slug, $scope.account).then(
+      function(resp){
+        console.log("finished unlinking!", resp)
+        $scope.account.username.value = null
+      }
+    )
+  }
+
   $scope.onLink = function(){
     console.log(
       _.sprintf("calling /importer/%s updating '%s' with userInput:",
-        $scope.account.endpoint,
+        $scope.account.accountHost,
         $routeParams.url_slug),
       $scope.account
     )
+
+    $scope.accountWindowOpen = false
+    Loading.start("linkAccount")
 
     Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
 
       // linked this account successfully
       function(resp){
         console.log("successfully saved linked account", resp)
+        $scope.justAddedProducts = resp.products
+        $scope.isLinked = true
+        Loading.finish("linkAccount")
 
 
 
@@ -293,11 +336,11 @@ angular.module('accounts.allTheAccounts', [
       var ret = []
       var accountsConfig = angular.copy(accounts)
 
-      _.each(accountsConfig, function(accountObj, accountProvider){
-        var userDictAccountKey = accountProvider + "_id"
+      _.each(accountsConfig, function(accountObj, accountHost){
+        var userDictAccountKey = accountHost + "_id"
 
         accountObj.username.value = userDict[userDictAccountKey]
-        accountObj.accountProvider = accountProvider
+        accountObj.accountHost = accountHost
         accountObj.CSSname = makeCSSName(accountObj.displayName)
         accountObj.logoPath = makeLogoPath(accountObj.displayName)
 
@@ -869,7 +912,10 @@ angular.module("profileProduct", [
 
 
 angular.module('profileSingleProducts', [
-  'services.page'
+  'services.page',
+  'resources.users',
+  'services.loading'
+
 ])
 
   .config(['$routeProvider', function($routeProvider) {
@@ -891,9 +937,35 @@ angular.module('profileSingleProducts', [
     Page.showFooter(false)
 
   })
-  .controller("ImportSingleProductsFormCtrl", function($scope, Page, $routeParams){
+  .controller("ImportSingleProductsFormCtrl", function($scope, $location, $routeParams, $cacheFactory, Loading, UsersProducts, security){
+
+    $scope.newlineDelimitedProductIds = ""
+    var $httpDefaultCache = $cacheFactory.get('$http')
+
+
     $scope.onSubmit = function(){
-      console.log("form submitted, yo; we'll send it to ", $routeParams.url_slug)
+      Loading.start("saveButton")
+
+      var productIds = _.compact($scope.newlineDelimitedProductIds.split("\n"))
+
+      UsersProducts.patch(
+        {id: $routeParams.url_slug},
+        {product_id_strings: productIds},
+        function(resp){
+
+          // clear the cache. right now wiping out *everything*. be smart later.
+          $httpDefaultCache.removeAll()
+          console.log("clearing the cache")
+          security.redirectToProfile()
+
+        },
+        function(resp){
+          console.log("failed to save new products!", resp)
+
+        }
+      )
+
+
     }
 
   })
@@ -902,7 +974,6 @@ angular.module("profile", [
   'product.product',
   'profileAward.profileAward',
   'services.page',
-  'update.update',
   'ui.bootstrap',
   'security',
   'services.loading',
@@ -911,7 +982,8 @@ angular.module("profile", [
   'profileLinkedAccounts',
   'services.i18nNotifications',
   'services.tour',
-  'directives.jQueryTools'
+  'directives.jQueryTools',
+  'update.update'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
@@ -1129,8 +1201,18 @@ angular.module("profile", [
         function(resp){
           console.log("loaded products in " + Timer.elapsed("getProducts") + "ms")
 
+          var anythingStillUpdating = !!_.find(resp, function(product){
+            return product.currently_updating
+          })
+
+          if (anythingStillUpdating) {
+            Update.showUpdate(userSlug, renderProducts)
+          }
+
+
           Timer.start("renderProducts")
           loadingProducts = false
+
           // scroll to any hash-specified anchors on page. in a timeout because
           // must happen after page is totally rendered.
           $timeout(function(){
@@ -1519,6 +1601,8 @@ angular.module( 'update.update', [
       updateStatus.numDone = null
       updateStatus.numNotDone = null
       updateStatus.percentComplete = null
+      onFinish = onFinish || function(){}
+
 
       // clear the cache. right now wiping out *everything*. be smart later.
       $httpDefaultCache.removeAll()
@@ -3620,15 +3704,19 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "\n" +
     "<div class=\"account-tile\" id=\"{{ account.CSSname }}-account-tile\"\n" +
-    "     ng-click=\"showAccountWindow()\"\n" +
-    "     ng-class=\"{'has-run': accountHasRun, 'not-run': !accountHasRun}\">\n" +
+    "     ng-click=\"showAccountWindow()\">\n" +
     "\n" +
     "   <div class=\"account-name\"><img ng-src=\"{{ account.logoPath }}\"></div>\n" +
-    "   <div class=\"account-products-count\">\n" +
-    "      <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ products.length }}</span>\n" +
-    "      <span class=\"descr\">products in account</span>\n" +
+    "   <div class=\"linked-info\">\n" +
+    "      <span class=\"linked-or-not\">\n" +
+    "         <span ng-show=\"isLinked\" class=\"linked\">Linked and synced</span>\n" +
+    "         <span ng-show=\"!isLinked\" class=\"linked\">Not linked</span>\n" +
+    "      </span>\n" +
+    "      <div class=\"products-just-added\" ng-show=\"justAddedProducts.length && isLinked\">\n" +
+    "         <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ justAddedProducts.length }}</span>\n" +
+    "         <span class=\"descr\">products just added</span>\n" +
+    "      </div>\n" +
     "   </div>\n" +
-    "\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"overlay\"\n" +
@@ -3651,7 +3739,9 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ account.descr }}</div>\n" +
     "\n" +
-    "         <form name=\"{{ account.name }}accountForm\" novalidate class=\"form\" ng-submit=\"onLink()\">\n" +
+    "         <form name=\"{{ account.name }}accountForm\"\n" +
+    "               novalidate class=\"form\"\n" +
+    "               ng-submit=\"onLink()\">\n" +
     "\n" +
     "\n" +
     "            <div class=\"form-group username\">\n" +
@@ -3663,7 +3753,9 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "                  <input\n" +
     "                          class=\"form-control\"\n" +
     "                          ng-model=\"account.username.value\"\n" +
+    "                          ng-disabled=\"isLinked\"\n" +
     "                          type=\"text\"\n" +
+    "                          autofocus=\"autofocus\"\n" +
     "                          placeholder=\"{{ account.username.placeholder }}\">\n" +
     "\n" +
     "                  <div class=\"input-extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
@@ -3673,17 +3765,11 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"false\" type=\"submit\" class=\"btn btn-primary\">Link</button>\n" +
-    "                  <a ng-show=\"true\" class=\"btn btn-danger\">Unlink</a>\n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\" class=\"btn btn-primary\">Link and sync products</button>\n" +
+    "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">Unlink this account</a>\n" +
     "\n" +
     "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
     "               </div>\n" +
-    "\n" +
-    "               <div class=\"working\" ng-show=\"loading.is('saveButton')\">\n" +
-    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "                  <span class=\"text\">Unlinking...</span>\n" +
-    "               </div>\n" +
-    "\n" +
     "            </div>\n" +
     "\n" +
     "\n" +
@@ -4570,7 +4656,10 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
     "         <form name=\"import-single-products\"\n" +
     "               ng-submit=\"onSubmit()\"\n" +
     "               ng-controller=\"ImportSingleProductsFormCtrl\">\n" +
-    "            <textarea class=\"form-control\" name=\"single-produts\" id=\"single-products-importer\"></textarea>\n" +
+    "            <textarea class=\"form-control\"\n" +
+    "                      name=\"single-produts\"\n" +
+    "                      ng-model=\"newlineDelimitedProductIds\"\n" +
+    "                      id=\"single-products-importer\"></textarea>\n" +
     "            <save-buttons action=\"Import\"></save-buttons>\n" +
     "         </form>\n" +
     "\n" +

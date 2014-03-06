@@ -3,7 +3,6 @@ angular.module("profile", [
   'product.product',
   'profileAward.profileAward',
   'services.page',
-  'update.update',
   'ui.bootstrap',
   'security',
   'services.loading',
@@ -12,7 +11,8 @@ angular.module("profile", [
   'profileLinkedAccounts',
   'services.i18nNotifications',
   'services.tour',
-  'directives.jQueryTools'
+  'directives.jQueryTools',
+  'update.update'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
@@ -230,8 +230,18 @@ angular.module("profile", [
         function(resp){
           console.log("loaded products in " + Timer.elapsed("getProducts") + "ms")
 
+          var anythingStillUpdating = !!_.find(resp, function(product){
+            return product.currently_updating
+          })
+
+          if (anythingStillUpdating) {
+            Update.showUpdate(userSlug, renderProducts)
+          }
+
+
           Timer.start("renderProducts")
           loadingProducts = false
+
           // scroll to any hash-specified anchors on page. in a timeout because
           // must happen after page is totally rendered.
           $timeout(function(){

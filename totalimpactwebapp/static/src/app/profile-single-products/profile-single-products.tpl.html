@@ -13,7 +13,10 @@
          <form name="import-single-products"
                ng-submit="onSubmit()"
                ng-controller="ImportSingleProductsFormCtrl">
-            <textarea class="form-control" name="single-produts" id="single-products-importer"></textarea>
+            <textarea class="form-control"
+                      name="single-produts"
+                      ng-model="newlineDelimitedProductIds"
+                      id="single-products-importer"></textarea>
             <save-buttons action="Import"></save-buttons>
          </form>
 

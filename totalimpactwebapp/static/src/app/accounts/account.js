@@ -17,42 +17,66 @@ angular.module('accounts.account', [
 
     var tiidsAdded = []
 
+    var unlinkAccount = function(url_slug, accountObj){
+      var deferred = $q.defer()
+
+      var about = {}
+      about[accountObj.accountHost + "_id"] = null
+
+
+
+      Loading.start("saveButton")
+      console.log("unlinking account " + accountObj.accountHost)
+      UsersAbout.patch(
+        {id:url_slug},
+        {about: about},
+        function(resp){
+          deferred.resolve(resp)
+          Loading.finish("saveButton")
+
+        },
+        function(resp){
+          deferred(reject(resp))
+          Loading.finish("saveButton")
+        })
+
+      return deferred.promise
+    }
+
+
+
     var saveAccountInput = function(url_slug, accountObj) {
 
       var deferred = $q.defer()
 
-      var usernameInput = _.find(accountObj.inputs, function(input){
-        return input.saveUsername
-      })
-
       var about = {}
-      about[usernameInput.saveUsername] = usernameInput.cleanupFunction(usernameInput.value)
+      var cleanUsername = accountObj.usernameCleanupFunction(accountObj.username.value)
+      about[accountObj.accountHost + "_id"] = cleanUsername
 
-      // hack to use the api endpoint
-      var accountType = usernameInput.saveUsername.replace("_id", "")
-
-      var patchData = {'about': about}
 
       Loading.start("saveButton")
-      console.log("saving usernames", patchData)
       UsersAbout.patch(
         {id:url_slug},
-        patchData,
-        function(resp){
+        {about: about},
 
-          console.log("telling webapp to update " + accountType)
+        function(resp){
+          // ok the userAbout object has this username in it now. let's slurp.
+
+          console.log("telling webapp to update " + accountObj.accountHost)
           UsersLinkedAccounts.update(
-            {id: url_slug, account: accountType},
+            {id: url_slug, account: accountObj.accountHost},
             {},
             function(resp){
               // we've kicked off a slurp for this account type. we'll add
               // as many products we find in that account, then dedup.
               // we'll return the list of new tiids
-              console.log("update started for " + accountType + ". ", resp)
+
+              console.log("update started for " + accountObj.accountHost + ". ", resp)
               Loading.finish("saveButton")
               deferred.resolve(resp)
             },
             function(updateResp){
+              Loading.finish("saveButton")
               deferred.reject({
                 msg: "attempt to slurp in products from linked account failed",
                 resp: updateResp
@@ -78,6 +102,7 @@ angular.module('accounts.account', [
 
     return {
       'saveAccountInput': saveAccountInput,
+      unlinkAccount: unlinkAccount,
       getTiids: function(){return tiidsAdded}
     }
 
@@ -98,18 +123,18 @@ angular.module('accounts.account', [
 
 
   $scope.showAccountWindow = function(){
+    $scope.accountWindowOpen = true;
     analytics.track("Opened an account window", {
       "Account name": Account.displayName
     })
 
-    $scope.accountWindowOpen = true;
-    $scope.account.userInput = null  // may have been used before; clear it.
   }
 
-  $scope.products = []
-  $scope.currentTab = 0;
-  $scope.userInput = {}
-  $scope.accountHasRun = false
+  $scope.justAddedProducts =[]
+  $scope.isLinked = !!$scope.account.username.value
+
+  console.log("account.username", $scope.account.username)
+
 
 
   $scope.setCurrentTab = function(index){$scope.currentTab = index}
@@ -118,19 +143,37 @@ angular.module('accounts.account', [
     $scope.accountWindowOpen = false;
   }
 
+  $scope.unlink = function() {
+    $scope.accountWindowOpen = false;
+    $scope.isLinked = false
+
+    Account.unlinkAccount($routeParams.url_slug, $scope.account).then(
+      function(resp){
+        console.log("finished unlinking!", resp)
+        $scope.account.username.value = null
+      }
+    )
+  }
+
   $scope.onLink = function(){
     console.log(
       _.sprintf("calling /importer/%s updating '%s' with userInput:",
-        $scope.account.endpoint,
+        $scope.account.accountHost,
         $routeParams.url_slug),
       $scope.account
     )
+
+    $scope.accountWindowOpen = false
+    Loading.start("linkAccount")
 
     Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
 
       // linked this account successfully
       function(resp){
         console.log("successfully saved linked account", resp)
+        $scope.justAddedProducts = resp.products
+        $scope.isLinked = true
+        Loading.finish("linkAccount")
 
 
 
