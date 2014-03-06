@@ -78,8 +78,14 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"!isLinked\" type=\"submit\" class=\"btn btn-primary\">Link and sync products</button>\n" +
-    "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">Unlink this account</a>\n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\" class=\"btn btn-primary\">\n" +
+    "                     <i class=\"icon-link left\"></i>\n" +
+    "                     Link and sync your  {{ account.displayName }}\n" +
+    "                  </button>\n" +
+    "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">\n" +
+    "                     <i class=\"icon-unlink left\"></i>\n" +
+    "                     Unlink your  {{ account.displayName }}\n" +
+    "                  </a>\n" +
     "\n" +
     "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
     "               </div>\n" +

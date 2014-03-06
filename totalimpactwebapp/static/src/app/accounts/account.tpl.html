@@ -74,8 +74,14 @@
 
             <div class="buttons-group save">
                <div class="buttons" ng-show="!loading.is('saveButton')">
-                  <button ng-show="!isLinked" type="submit" class="btn btn-primary">Link and sync products</button>
-                  <a ng-show="isLinked" ng-click="unlink()" class="btn btn-danger">Unlink this account</a>
+                  <button ng-show="!isLinked" type="submit" class="btn btn-primary">
+                     <i class="icon-link left"></i>
+                     Link and sync your  {{ account.displayName }}
+                  </button>
+                  <a ng-show="isLinked" ng-click="unlink()" class="btn btn-danger">
+                     <i class="icon-unlink left"></i>
+                     Unlink your  {{ account.displayName }}
+                  </a>
 
                   <a class="btn btn-default cancel" ng-click="onCancel()">Cancel</a>
                </div>
