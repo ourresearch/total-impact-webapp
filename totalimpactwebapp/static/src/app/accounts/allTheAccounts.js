@@ -62,23 +62,15 @@ angular.module('accounts.allTheAccounts', [
     // },
 
 
-//    google_scholar: {
-//      displayName: "Google Scholar",
-//      inputs: [{
-//        inputType: "file",
-//        inputNeeded: "BibTeX file"
-//      }],
-//      endpoint: "bibtex",
-//      url: 'http://scholar.google.com/citations',
-//      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
-//      extra: '<h3>How to import your Google Scholar profile:</h3>'
-//        + '<ol>'
-//          + '<li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li>'
-//          + '<li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>'
-//          + '<li>Click <code>Export all my articles</code>, then save the BibTex file.</li>'
-//          + '<li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.'
-//        + '</ol>'
-//    },
+    google_scholar: {
+      displayName: "Google Scholar",
+      username: {
+        inputNeeded: "profile URL"
+      },
+      url: 'http://scholar.google.com/citations',
+      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact."
+
+    },
 
 
 

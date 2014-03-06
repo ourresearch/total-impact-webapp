@@ -2,6 +2,7 @@ angular.module('accounts.account', [
   'directives.forms',
   'directives.onRepeatFinished',
   'services.loading',
+  'googleScholar',
   'resources.users',
   'resources.products',
   'update.update',
@@ -113,6 +114,7 @@ angular.module('accounts.account', [
     $scope,
     $routeParams,
     $location,
+    $modal,
     Products,
     UserProfile,
     UsersProducts,
@@ -174,6 +176,10 @@ angular.module('accounts.account', [
         $scope.justAddedProducts = resp.products
         $scope.isLinked = true
         Loading.finish($scope.account.accountHost)
+
+        if ($scope.account.accountHost == "google_scholar"){
+
+        }
 
 
 
