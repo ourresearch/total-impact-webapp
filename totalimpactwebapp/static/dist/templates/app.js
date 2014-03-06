@@ -72,7 +72,6 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "                          autofocus=\"autofocus\"\n" +
     "                          placeholder=\"{{ account.username.placeholder }}\">\n" +
     "\n" +
-    "                  <div class=\"input-extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
