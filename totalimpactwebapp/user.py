@@ -83,8 +83,9 @@ class User(db.Model):
     orcid_id = db.Column(db.String(64))
     github_id = db.Column(db.String(64))
     slideshare_id = db.Column(db.String(64))
-    twitter_account_id = db.Column(db.String(64))
+    twitter_id = db.Column(db.String(64))
     figshare_id = db.Column(db.String(64))
+    google_scholar_id = db.Column(db.String(64))
     wordpress_api_key = db.Column(db.String(64))
 
     #awards = []
@@ -278,6 +279,7 @@ class User(db.Model):
             "slideshare_id",
             "twitter_account_id",
             "figshare_id",
+            "google_scholar_id",
             "wordpress_api_key"
         ]
 
