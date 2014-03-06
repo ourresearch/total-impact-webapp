@@ -173,7 +173,7 @@ div.accounts {
 
    div.account-tile {
       float:left;
-      background: #fff;
+      background: #fafafa;
       width:  50%;
       padding: 65px 1% 65px 2%;
       border-right: 1px solid #ccc;
@@ -181,6 +181,20 @@ div.accounts {
       text-align: center;
       position: relative;
       cursor: pointer;
+
+      &:hover {
+         .drop-shadow(0, 1px, 7px, .3);
+         z-index: 1;
+         -webkit-transition: box-shadow .3s;
+         transition: box-shadow .3s;
+
+      }
+
+
+
+      &.is-linked {
+         background: #fff;
+      }
       @media(max-width: 83em){
          width:  33.333333%;
       }
@@ -191,46 +205,44 @@ div.accounts {
          width:  100%;
       }
 
-      &.not-run:hover {
-         .drop-shadow(0, 1px, 7px, .3);
-         z-index: 1;
-         -webkit-transition: box-shadow .3s;
-         transition: box-shadow .3s;
-      }
-      &.has-run {
-         &:hover {
-         }
-         .inner-shadow(0, 1px, 7px, .2);
-         cursor: default;
-         background: #fafafa;
-         div.account-name{
-            float:left;
-         }
-         div.account-products-count {
-            display:block;
-            margin-top: -10px;
-            margin-bottom: -10px;
-         }
-      }
       div.account-name {
+         float:left;
+         margin-left: 100px;
          img {
             height: 45px;
          }
       }
-      div.account-products-count {
-         display:none;
+      div.linked-info {
          float:right;
-         margin-right: 5%;
-         span.count {
-            font-weight: 900;
-            color:  #555;
-            font-size: 35px;
+         margin-right: 100px;
+         font-size: 20px;
+         span.linking-in-progress {
+            margin-top: 10px;
+            display:block;
+            font-weight: bold;
+            color: @gray-light;
          }
-         span.descr {
-            width: 60px;
-            display:inline-block;
-            font-size: 12px;
+         span.unlinked {
+            padding-top: 10px;
+            display:block;
+            color: @gray-light;
+            font-weight: bold;
          }
+         span.linked {
+            margin-top: 10px;
+            display:block;
+            color: @alert-success-text;
+            font-weight: bold;
+            &.just-added-products {
+               margin-top: -5px;
+               .products-just-added {
+                  font-weight: 300;
+                  font-size: 70%;
+               }
+
+            }
+         }
+
       }
 
    }

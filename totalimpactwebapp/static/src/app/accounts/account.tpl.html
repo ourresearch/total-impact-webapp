@@ -1,18 +1,31 @@
 
 
 <div class="account-tile" id="{{ account.CSSname }}-account-tile"
+     ng-class="{'is-linked': isLinked}"
      ng-click="showAccountWindow()">
 
    <div class="account-name"><img ng-src="{{ account.logoPath }}"></div>
    <div class="linked-info">
-      <span class="linked-or-not">
-         <span ng-show="isLinked" class="linked">Linked and synced</span>
-         <span ng-show="!isLinked" class="linked">Not linked</span>
+      <span class="linking-in-progress working" ng-show="loading.is(account.accountHost)">
+         <i class="icon-refresh icon-spin"></i>
+         <span class="text">Linking account...</span>
       </span>
-      <div class="products-just-added" ng-show="justAddedProducts.length && isLinked">
-         <span class="count" id="{{ account.CSSname }}-account-count">{{ justAddedProducts.length }}</span>
-         <span class="descr">products just added</span>
-      </div>
+      <span class="linked" ng-show="isLinked" ng-class="{'just-added-products': justAddedProducts.length}">
+         <span class="linked-status">
+            <i class="icon-link left"></i>
+            Linked and synced
+         </span>
+         <div class="products-just-added" ng-show="justAddedProducts.length">
+            <span class="count" id="{{ account.CSSname }}-account-count">{{ justAddedProducts.length }}</span>
+            <span class="descr">products just added</span>
+         </div>
+      </span>
+      <span class="unlinked" ng-show="!loading.is(account.accountHost) && !isLinked">
+         <span class="linked-status">
+            Unlinked
+         </span>
+      </span>
+
    </div>
 </div>
 

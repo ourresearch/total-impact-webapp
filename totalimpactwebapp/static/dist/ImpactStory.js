@@ -169,7 +169,7 @@ angular.module('accounts.account', [
     )
 
     $scope.accountWindowOpen = false
-    Loading.start("linkAccount")
+    Loading.start($scope.account.accountHost)
 
     Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
 
@@ -178,7 +178,7 @@ angular.module('accounts.account', [
         console.log("successfully saved linked account", resp)
         $scope.justAddedProducts = resp.products
         $scope.isLinked = true
-        Loading.finish("linkAccount")
+        Loading.finish($scope.account.accountHost)
 
 
 
@@ -3704,18 +3704,31 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "\n" +
     "<div class=\"account-tile\" id=\"{{ account.CSSname }}-account-tile\"\n" +
+    "     ng-class=\"{'is-linked': isLinked}\"\n" +
     "     ng-click=\"showAccountWindow()\">\n" +
     "\n" +
     "   <div class=\"account-name\"><img ng-src=\"{{ account.logoPath }}\"></div>\n" +
     "   <div class=\"linked-info\">\n" +
-    "      <span class=\"linked-or-not\">\n" +
-    "         <span ng-show=\"isLinked\" class=\"linked\">Linked and synced</span>\n" +
-    "         <span ng-show=\"!isLinked\" class=\"linked\">Not linked</span>\n" +
+    "      <span class=\"linking-in-progress working\" ng-show=\"loading.is(account.accountHost)\">\n" +
+    "         <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "         <span class=\"text\">Linking account...</span>\n" +
     "      </span>\n" +
-    "      <div class=\"products-just-added\" ng-show=\"justAddedProducts.length && isLinked\">\n" +
-    "         <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ justAddedProducts.length }}</span>\n" +
-    "         <span class=\"descr\">products just added</span>\n" +
-    "      </div>\n" +
+    "      <span class=\"linked\" ng-show=\"isLinked\" ng-class=\"{'just-added-products': justAddedProducts.length}\">\n" +
+    "         <span class=\"linked-status\">\n" +
+    "            <i class=\"icon-link left\"></i>\n" +
+    "            Linked and synced\n" +
+    "         </span>\n" +
+    "         <div class=\"products-just-added\" ng-show=\"justAddedProducts.length\">\n" +
+    "            <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ justAddedProducts.length }}</span>\n" +
+    "            <span class=\"descr\">products just added</span>\n" +
+    "         </div>\n" +
+    "      </span>\n" +
+    "      <span class=\"unlinked\" ng-show=\"!loading.is(account.accountHost) && !isLinked\">\n" +
+    "         <span class=\"linked-status\">\n" +
+    "            Unlinked\n" +
+    "         </span>\n" +
+    "      </span>\n" +
+    "\n" +
     "   </div>\n" +
     "</div>\n" +
     "\n" +

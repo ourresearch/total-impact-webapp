@@ -164,7 +164,7 @@ angular.module('accounts.account', [
     )
 
     $scope.accountWindowOpen = false
-    Loading.start("linkAccount")
+    Loading.start($scope.account.accountHost)
 
     Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
 
@@ -173,7 +173,7 @@ angular.module('accounts.account', [
         console.log("successfully saved linked account", resp)
         $scope.justAddedProducts = resp.products
         $scope.isLinked = true
-        Loading.finish("linkAccount")
+        Loading.finish($scope.account.accountHost)
 
 
 
