@@ -60,21 +60,24 @@ angular.module('accounts.account', [
         {id:url_slug},
         {about: about},
 
-        function(resp){
+        function(patchResp){
           // ok the userAbout object has this username in it now. let's slurp.
 
           console.log("telling webapp to update " + accountObj.accountHost)
           UsersLinkedAccounts.update(
             {id: url_slug, account: accountObj.accountHost},
             {},
-            function(resp){
+            function(updateResp){
               // we've kicked off a slurp for this account type. we'll add
               // as many products we find in that account, then dedup.
               // we'll return the list of new tiids
 
-              console.log("update started for " + accountObj.accountHost + ". ", resp)
+              console.log("update started for " + accountObj.accountHost + ". ", updateResp)
               Loading.finish("saveButton")
-              deferred.resolve(resp)
+              deferred.resolve({
+                updateResp: updateResp,
+                patchResp: patchResp
+              })
             },
             function(updateResp){
               Loading.finish("saveButton")
@@ -114,8 +117,8 @@ angular.module('accounts.account', [
     $scope,
     $routeParams,
     $location,
-    $modal,
     Products,
+    GoogleScholar,
     UserProfile,
     UsersProducts,
     Account,
@@ -134,11 +137,6 @@ angular.module('accounts.account', [
 
   $scope.justAddedProducts =[]
   $scope.isLinked = !!$scope.account.username.value
-
-  console.log("account.username", $scope.account.username)
-
-
-
   $scope.setCurrentTab = function(index){$scope.currentTab = index}
 
   $scope.onCancel = function(){
@@ -178,7 +176,8 @@ angular.module('accounts.account', [
         Loading.finish($scope.account.accountHost)
 
         if ($scope.account.accountHost == "google_scholar"){
-
+          console.log("opening google scholar modal")
+          GoogleScholar.showImportModal()
         }
 
 

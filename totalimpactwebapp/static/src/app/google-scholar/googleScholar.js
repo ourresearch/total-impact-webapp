@@ -1,13 +1,20 @@
 angular.module("googleScholar", [
  "security"
+
 ])
-.factory("GoogleScholar", function($modal, security){
+.factory("GoogleScholar", function($modal, UsersAbout){
 
   return {
-    openImportModal: function(){
+    showImportModal: function(){
       $modal.open({
         templateUrl: "google-scholar/google-scholar-modal.tpl.html",
-        controller: "google-scholar/googleScholar.js"
+        controller: "GoogleScholarModalCtrl",
+        resolve: {
+          currentUser: function(security){
+            security.clearCachedUser()
+            return security.requestCurrentUser()
+          }
+        }
       })
     }
 
@@ -17,8 +24,9 @@ angular.module("googleScholar", [
 
   })
 
-.controller("GoogleScholarModalCtrl", function($modal){
-
+.controller("GoogleScholarModalCtrl", function($scope, currentUser){
+  console.log("modal controller activated!")
+  $scope.currentUser = currentUser
 
 
 
