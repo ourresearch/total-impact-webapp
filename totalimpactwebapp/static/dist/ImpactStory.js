@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-05
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-06
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -258,18 +258,18 @@ angular.module('accounts.allTheAccounts', [
     },
 
 
-    // twitter: {
-    //   displayName: "Twitter",
-    //   usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
-    //   url:'http://twitter.com',
-    //   descr: "Twitter is a social networking site for sharing short messages.",
-    //   extra: "We don't import your tweets right now -- stay tuned!",      
-    //   username: {
-    //       inputNeeded: "username",
-    //       placeholder: "@example",
-    //       help: "Your Twitter username is often written starting with @."        
-    //   }
-    // },
+    twitter: {
+      displayName: "Twitter",
+      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
+      url:'http://twitter.com',
+      descr: "Twitter is a social networking site for sharing short messages.",
+      extra: "We don't import your tweets right now -- stay tuned!",      
+      username: {
+          inputNeeded: "username",
+          placeholder: "@example",
+          help: "Your Twitter username is often written starting with @."        
+      }
+    },
 
 
 //    google_scholar: {
