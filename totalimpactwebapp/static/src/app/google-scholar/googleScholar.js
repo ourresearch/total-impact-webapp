@@ -25,7 +25,7 @@ angular.module("googleScholar", [
       console.log("getting bibtex!", bibtex)
       return bibtex
     },
-    showImportModal: function(){ 
+    showImportModal: function(){
       $modal.open({
         templateUrl: "google-scholar/google-scholar-modal.tpl.html",
         controller: "GoogleScholarModalCtrl",
@@ -71,8 +71,11 @@ angular.module("googleScholar", [
 
     $scope.googleScholar = GoogleScholar
 
-
-
+    $scope.$on("fileLoaded", function(event, result){
+      GoogleScholar.setBibtex(result)
+      $scope.fileLoaded = true
+      $scope.$apply()
+    })
 
 
 
