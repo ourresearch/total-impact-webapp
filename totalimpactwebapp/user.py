@@ -206,13 +206,14 @@ class User(db.Model):
         products = get_products_from_core(self.tiids)
         return products
 
-    def add_products(self, product_id_strings):
+    def add_products(self, product_id_dict):
         try:
             analytics_credentials = self.get_analytics_credentials()
         except AttributeError:
             # AnonymousUser doesn't have method
-            analytics_credentials = {}        
-        import_response = make_products_for_product_id_strings(product_id_strings, analytics_credentials)
+            analytics_credentials = {}    
+        product_id_type = product_id_dict.keys()[0]
+        import_response = make_products_for_product_id_strings(product_id_type, product_id_dict[product_id_type], analytics_credentials)
         tiids = import_response["products"].keys()
 
         return add_tiids_to_user(self.id, tiids)
@@ -559,17 +560,18 @@ def make_products_for_linked_account(importer_name, importer_value, analytics_cr
         return r.json()
     else:
         logger.warning(u"make_products_for_linked_account returned status={status}".format(
-            status=r.status))
+            status=r.status_code))
         return {"products": {}}
 
 
-def make_products_for_product_id_strings(product_id_strings, analytics_credentials={}):
-    query = u"{core_api_root}/v1/importer/product_id_strings?api_admin_key={api_admin_key}".format(
+def make_products_for_product_id_strings(product_id_type, product_id_strings, analytics_credentials={}):
+    query = u"{core_api_root}/v1/importer/{product_id_type}?api_admin_key={api_admin_key}".format(
+        product_id_type=product_id_type,
         core_api_root=g.api_root,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     data_dict = {
-        "product_id_strings": product_id_strings, 
+        product_id_type: product_id_strings, 
         "analytics_credentials": analytics_credentials
         }
 
@@ -582,7 +584,7 @@ def make_products_for_product_id_strings(product_id_strings, analytics_credentia
         return r.json()
     else:
         logger.warning(u"make_products_for_product_id_strings returned status={status}".format(
-            status=r.status))        
+            status=r.status_code))        
         return {"products": {}}
 
 
