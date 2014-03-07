@@ -44,6 +44,10 @@ angular.module("googleScholar", [
     $scope.submitFile = function(){
 
       console.log("submitting these file contents: ", GoogleScholar.getBibtex())
+
+        analytics.track("Uploaded Google Scholar", {
+          "Account name": $scope.account.displayName
+        })      
     }
 
 

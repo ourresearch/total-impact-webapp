@@ -156,6 +156,10 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
+        analytics.track("Unlinked an account", {
+          "Account name": $scope.account.displayName
+        })
+
       }
     )
   }
@@ -178,6 +182,10 @@ angular.module('accounts.account', [
         console.log("successfully saved linked account", resp)
         $scope.justAddedProducts = resp.products
         $scope.isLinked = true
+        analytics.track("Linked an account", {
+          "Account name": $scope.account.displayName
+        })
+
         Loading.finish($scope.account.accountHost)
 
         if ($scope.account.accountHost == "google_scholar"){
@@ -206,7 +214,7 @@ angular.module('accounts.allTheAccounts', [
   var accounts = {
     academia_edu: {
       displayName: "Academia.edu",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url:'http://academia.edu',
       descr: "Academia.edu is a place to share and follow research.",
       username: {
@@ -232,7 +240,7 @@ angular.module('accounts.allTheAccounts', [
 
     github: {
       displayName: "GitHub",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features.",
       username: {
@@ -243,7 +251,7 @@ angular.module('accounts.allTheAccounts', [
 
     google_scholar: {
       displayName: "Google Scholar",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url: 'http://scholar.google.com/citations',
       descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
       username: {
@@ -254,7 +262,7 @@ angular.module('accounts.allTheAccounts', [
 
     linkedin: {
       displayName: "LinkedIn",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url:'http://linkedin.com',
       descr: "LinkedIn is a social networking site for professional networking.",
       username: {
@@ -265,7 +273,7 @@ angular.module('accounts.allTheAccounts', [
 
     mendeley: {
       displayName: "Mendeley",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url:'http://mendeley.com',
       descr: "Mendeley is a desktop and web program for managing and sharing research papers,discovering research data, and collaborating online.",
       username: {
@@ -290,7 +298,7 @@ angular.module('accounts.allTheAccounts', [
 
     researchgate: {
       displayName: "ResearchGate",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url:'http://researchgate.net',
       descr: "ResearchGate is a social networking site for scientists and researchers to share papers, ask and answer questions, and find collaborators.",
       username: {
@@ -301,7 +309,7 @@ angular.module('accounts.allTheAccounts', [
 
     slideshare: {
       displayName: "SlideShare",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url:'http://slideshare.net',
       descr: "SlideShare is community for sharing presentations online.",
       username: {
@@ -569,6 +577,10 @@ angular.module("googleScholar", [
     $scope.submitFile = function(){
 
       console.log("submitting these file contents: ", GoogleScholar.getBibtex())
+
+        analytics.track("Uploaded Google Scholar", {
+          "Account name": $scope.account.displayName
+        })      
     }
 
 
@@ -3400,7 +3412,7 @@ angular.module("services.page")
       var myPageType = "profile"
       var path = $location.path()
 
-      var accountPages = [
+      var settingsPages = [
           "/settings",
           "/reset-password"
       ]
@@ -3409,7 +3421,6 @@ angular.module("services.page")
           "/faq",
           "/about"
         ]
-
 
       if (path === "/"){
         myPageType = "landing"
@@ -3423,11 +3434,14 @@ angular.module("services.page")
       else if (_.contains(infopages, path)){
         myPageType = "infopages"
       }
-      else if (_.contains(accountPages, path)) {
-        myPageType = "account"
+      else if (_.contains(settingsPages, path)) {
+        myPageType = "settings"
       }
       else if (path.indexOf("products/add") > -1) {
-        myPageType = "import"
+        myPageType = "importIndividual"
+      }
+      else if (path.indexOf("account") > -1) {
+        myPageType = "linkAccount"
       }
 
       return myPageType
@@ -4979,7 +4993,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <div class=\"add-linked-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
     "               <a href=\"/{{ user.about.url_slug }}/accounts\">\n" +
     "                  <i class=\"icon-edit left\"></i>\n" +
-    "                  Edd or edit accounts\n" +
+    "                  Add or edit accounts\n" +
     "               </a>\n" +
     "            </div>\n" +
     "         </div>\n" +
@@ -5114,7 +5128,7 @@ angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", f
     "\n" +
     "   <a class=\"btn btn-primary\"\n" +
     "      ng-click=\"$close()\"\n" +
-    "      href=\"/{{ userAbout.url_slug }}/products/add\">\n" +
+    "      href=\"/{{ userAbout.url_slug }}/accounts\">\n" +
     "      Import my products\n" +
     "      <i class=\"icon-cloud-upload left\"></i>\n" +
     "   </a>\n" +

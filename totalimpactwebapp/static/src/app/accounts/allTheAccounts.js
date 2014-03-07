@@ -8,7 +8,7 @@ angular.module('accounts.allTheAccounts', [
   var accounts = {
     academia_edu: {
       displayName: "Academia.edu",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url:'http://academia.edu',
       descr: "Academia.edu is a place to share and follow research.",
       username: {
@@ -34,7 +34,7 @@ angular.module('accounts.allTheAccounts', [
 
     github: {
       displayName: "GitHub",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features.",
       username: {
@@ -45,7 +45,7 @@ angular.module('accounts.allTheAccounts', [
 
     google_scholar: {
       displayName: "Google Scholar",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url: 'http://scholar.google.com/citations',
       descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
       username: {
@@ -56,7 +56,7 @@ angular.module('accounts.allTheAccounts', [
 
     linkedin: {
       displayName: "LinkedIn",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url:'http://linkedin.com',
       descr: "LinkedIn is a social networking site for professional networking.",
       username: {
@@ -67,7 +67,7 @@ angular.module('accounts.allTheAccounts', [
 
     mendeley: {
       displayName: "Mendeley",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url:'http://mendeley.com',
       descr: "Mendeley is a desktop and web program for managing and sharing research papers,discovering research data, and collaborating online.",
       username: {
@@ -92,7 +92,7 @@ angular.module('accounts.allTheAccounts', [
 
     researchgate: {
       displayName: "ResearchGate",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url:'http://researchgate.net',
       descr: "ResearchGate is a social networking site for scientists and researchers to share papers, ask and answer questions, and find collaborators.",
       username: {
@@ -103,7 +103,7 @@ angular.module('accounts.allTheAccounts', [
 
     slideshare: {
       displayName: "SlideShare",
-      usernameCleanupFunction: function(){},
+      usernameCleanupFunction: function(x){return x},
       url:'http://slideshare.net',
       descr: "SlideShare is community for sharing presentations online.",
       username: {
