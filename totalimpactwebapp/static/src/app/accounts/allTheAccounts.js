@@ -6,9 +6,35 @@ angular.module('accounts.allTheAccounts', [
 
   var importedProducts = []
   var accounts = {
+    academia_edu: {
+      displayName: "Academia.edu",
+      usernameCleanupFunction: function(){},
+      url:'http://academia.edu',
+      descr: "Academia.edu is a place to share and follow research.",
+      username: {
+        inputNeeded: "profile URL",
+          placeholder: "http://your_university.academia.edu/your_username"
+      }
+    },
+
+    figshare: {
+      displayName: "figshare",
+      url: "http://figshare.com",
+      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
+      username:{
+            inputNeeded: "author page URL",
+            placeholder: "http://figshare.com/authors/your_username/12345"
+
+      },
+      usernameCleanupFunction: function(x) {
+              if (typeof x==="undefined") return x;
+              return('http://'+x.replace('http://', ''))
+      }
+    },
+
     github: {
       displayName: "GitHub",
-      usernameCleanupFunction: function(x){return x},
+      usernameCleanupFunction: function(){},
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features.",
       username: {
@@ -17,7 +43,38 @@ angular.module('accounts.allTheAccounts', [
       }
     },
 
+    google_scholar: {
+      displayName: "Google Scholar",
+      usernameCleanupFunction: function(){},
+      url: 'http://scholar.google.com/citations',
+      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
+      username: {
+        inputNeeded: "profile URL",
+        placeholder: "http://scholar.google.ca/citations?user=your_user_id"
+      }
+    },
 
+    linkedin: {
+      displayName: "LinkedIn",
+      usernameCleanupFunction: function(){},
+      url:'http://linkedin.com',
+      descr: "LinkedIn is a social networking site for professional networking.",
+      username: {
+        inputNeeded: "profile URL",
+          placeholder: "http://www.linkedin.com/in/your_username"
+      }
+    }, 
+
+    mendeley: {
+      displayName: "Mendeley",
+      usernameCleanupFunction: function(){},
+      url:'http://mendeley.com',
+      descr: "Mendeley is a desktop and web program for managing and sharing research papers,discovering research data, and collaborating online.",
+      username: {
+        inputNeeded: "profile URL",
+          placeholder: "http://www.mendeley.com/profiles/your_username"
+      }
+    },
 
     orcid: {
       displayName: "ORCID",
@@ -33,17 +90,25 @@ angular.module('accounts.allTheAccounts', [
       extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
     },
 
-
+    researchgate: {
+      displayName: "ResearchGate",
+      usernameCleanupFunction: function(){},
+      url:'http://researchgate.net',
+      descr: "ResearchGate is a social networking site for scientists and researchers to share papers, ask and answer questions, and find collaborators.",
+      username: {
+        inputNeeded: "profile URL",
+          placeholder: "https://www.researchgate.net/profile/your_username"
+      }
+    },
 
     slideshare: {
       displayName: "SlideShare",
-      usernameCleanupFunction: function(x){return x},
+      usernameCleanupFunction: function(){},
       url:'http://slideshare.net',
       descr: "SlideShare is community for sharing presentations online.",
       username: {
           help: "Your username is right after \"slideshare.net/\" in your profile's URL.",
           inputNeeded: "username"
-
       }
     },
 
@@ -59,87 +124,8 @@ angular.module('accounts.allTheAccounts', [
           placeholder: "@example",
           help: "Your Twitter username is often written starting with @."        
       }
-    },
-
-    mendeley: {
-      displayName: "Mendeley",
-      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
-      url:'http://twitter.com',
-      descr: "Twitter is a social networking site for sharing short messages.",
-      extra: "We don't import your tweets right now -- stay tuned!",      
-      username: {
-          inputNeeded: "username",
-          placeholder: "@example",
-          help: "Your Twitter username is often written starting with @."        
-      }
-    },
-
-    researchgate: {
-      displayName: "ResearchGate",
-      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
-      url:'http://twitter.com',
-      descr: "Twitter is a social networking site for sharing short messages.",
-      extra: "We don't import your tweets right now -- stay tuned!",      
-      username: {
-          inputNeeded: "username",
-          placeholder: "@example",
-          help: "Your Twitter username is often written starting with @."        
-      }
-    },
-
-    academia_edu: {
-      displayName: "Academia.edu",
-      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
-      url:'http://twitter.com',
-      descr: "Twitter is a social networking site for sharing short messages.",
-      extra: "We don't import your tweets right now -- stay tuned!",      
-      username: {
-          inputNeeded: "username",
-          placeholder: "@example",
-          help: "Your Twitter username is often written starting with @."        
-      }
-    },
-
-    linkedin: {
-      displayName: "LinkedIn",
-      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
-      url:'http://twitter.com',
-      descr: "Twitter is a social networking site for sharing short messages.",
-      extra: "We don't import your tweets right now -- stay tuned!",      
-      username: {
-          inputNeeded: "username",
-          placeholder: "@example",
-          help: "Your Twitter username is often written starting with @."        
-      }
-    }, 
-
-    google_scholar: {
-      displayName: "Google Scholar",
-      username: {
-        inputNeeded: "profile URL"
-      },
-      usernameCleanupFunction: function(x){return x},
-      url: 'http://scholar.google.com/citations',
-      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact."
-
-    },
-
-
-
-    figshare: {
-      displayName: "figshare",
-      url: "http://figshare.com",
-      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
-      username:{
-            inputNeeded: "author page URL",
-            placeholder: "http://figshare.com/authors/your_username/12345"
-
-      },
-      usernameCleanupFunction: function(x) {
-              if (typeof x==="undefined") return x;
-              return('http://'+x.replace('http://', ''))
-      }
     }
+
   }
 
 

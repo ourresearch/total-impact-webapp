@@ -15,28 +15,52 @@
          </h2>
          <div class="external-usernames">
             <ul>
-               <li ng-show="user.about.twitter_id" style="display: none;">
-                  <a href="https://twitter.com/">
-                     <img src="https://twitter.com/favicon.ico">
-                     <span class="service">Twitter</span>
+               <li ng-show="user.about.academia_edu_id" style="display: none;">
+                  <a href="https://academia.edu/">
+                     <img src="http://www.academia.edu/favicon.ico">
+                     <span class="service">Academia.edu</span>
                   </a>
-               </li>
-               <li ng-show="user.about.orcid_id" style="display: none;">
-                  <a href="https://orcid.org/">
-                     <img src="http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico">
-                     <span class="service">ORCID</span>
+               </li>        
+               <li ng-show="user.about.figshare_id" style="display: none;">
+                  <a href="http://figshare.com">
+                     <img src="http://figshare.com/static/img/favicon.png">
+                     <span class="service">figshare</span>
                   </a>
-               </li>
+               </li>           
                <li ng-show="user.about.github_id" style="display: none;">
                   <a href="https://github.com/">
                      <img src="https://github.com/fluidicon.png">
                      <span class="service">GitHub</span>
                   </a>
                </li>
-               <li ng-show="user.about.figshare_id" style="display: none;">
-                  <a href="http://figshare.com">
-                     <img src="http://figshare.com/static/img/favicon.png">
-                     <span class="service">figshare</span>
+               <li ng-show="user.about.google_scholar_id" style="display: none;">
+                  <a href="https://github.com/">
+                     <img src="http://scholar.google.com/favicon.ico">
+                     <span class="service">Google Scholar</span>
+                  </a>
+               </li>     
+               <li ng-show="user.about.linkedin_id" style="display: none;">
+                  <a href="https://linkedin.com/">
+                     <img src="http://s.c.lnkd.licdn.com/scds/common/u/images/logos/favicons/v1/16x16/favicon.ico">
+                     <span class="service">LinkedIn</span>
+                  </a>
+               </li>
+               <li ng-show="user.about.mendeley_id" style="display: none;">
+                  <a href="https://mendeley.com/">
+                     <img src="http://www.mendeley.com/graphics/favicon.ico">
+                     <span class="service">Mendeley</span>
+                  </a>
+               </li>                                                   
+               <li ng-show="user.about.orcid_id" style="display: none;">
+                  <a href="https://orcid.org/">
+                     <img src="http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico">
+                     <span class="service">ORCID</span>
+                  </a>
+               </li>
+               <li ng-show="user.about.researchgate_id" style="display: none;">
+                  <a href="https://researchgate.net/">
+                     <img src="http://researchgate.net/favicon.ico">
+                     <span class="service">ResearchGate</span>
                   </a>
                </li>
                <li ng-show="user.about.slideshare_id" style="display: none;">
@@ -45,7 +69,14 @@
                      <span class="service">Slideshare</span>
                   </a>
                </li>
+               <li ng-show="user.about.twitter_id" style="display: none;">
+                  <a href="https://twitter.com/">
+                     <img src="https://twitter.com/favicon.ico">
+                     <span class="service">Twitter</span>
+                  </a>
+               </li>
             </ul>
+
             <div class="add-linked-account" ng-show="currentUserIsProfileOwner()">
                <a href="/{{ user.about.url_slug }}/accounts">
                   <i class="icon-edit left"></i>
