@@ -15,7 +15,12 @@
      <li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.
    </ol>
 
-   <input type="file" ng-file-select="google_scholar_bibtex">
+   <div file-input="file" on-change="readFile()"></div>
+
+   <div class="submit" ng-show="getBibtex()">
+      <a class="btn btn-primary" ng-click="submitFile()">Upload articles</a>
+
+   </div>
 
 
 </div>
