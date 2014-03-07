@@ -190,11 +190,10 @@ angular.module('accounts.account', [
         }
 
 
-
-
       },
       function(resp){
         console.log("failure at saving inputs :(", resp)
+        Loading.finish($scope.account.accountHost)
       }
     )
   }
