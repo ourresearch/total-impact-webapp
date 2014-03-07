@@ -1,0 +1,27 @@
+<div class="modal-header">
+   <h4>Manually import Google Scholar articles</h4>
+   <a class="dismiss" ng-click="$close()">&times;</a>
+</div>
+<div class="modal-body tour-start">
+   <p>
+      Unfortunately, Google Scholar prevents us from automatically
+      syncing articles. However, you <em>can</em> manually upload your data. Here's how:
+   </p>
+
+   <ol>
+     <li>Go to <a class="your-google-scholar-profile" target="_blank" href="{{ currentUser.google_scholar_id }}">your Google Scholar profile</a>.</li>
+     <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>
+     <li>Click <code>Export all my articles</code>, then save the BibTex file.</li>
+     <li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.
+   </ol>
+
+   <div file-input="file" on-change="readFile()"></div>
+
+   <div class="submit" ng-show="getBibtex()">
+      <a class="btn btn-primary" ng-click="submitFile()">Upload articles</a>
+
+   </div>
+
+
+</div>
+

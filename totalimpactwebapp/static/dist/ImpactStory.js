@@ -7,6 +7,7 @@ angular.module('accounts.account', [
   'directives.forms',
   'directives.onRepeatFinished',
   'services.loading',
+  'googleScholar',
   'resources.users',
   'resources.products',
   'update.update',
@@ -64,21 +65,24 @@ angular.module('accounts.account', [
         {id:url_slug},
         {about: about},
 
-        function(resp){
+        function(patchResp){
           // ok the userAbout object has this username in it now. let's slurp.
 
           console.log("telling webapp to update " + accountObj.accountHost)
           UsersLinkedAccounts.update(
             {id: url_slug, account: accountObj.accountHost},
             {},
-            function(resp){
+            function(updateResp){
               // we've kicked off a slurp for this account type. we'll add
               // as many products we find in that account, then dedup.
               // we'll return the list of new tiids
 
-              console.log("update started for " + accountObj.accountHost + ". ", resp)
+              console.log("update started for " + accountObj.accountHost + ". ", updateResp)
               Loading.finish("saveButton")
-              deferred.resolve(resp)
+              deferred.resolve({
+                updateResp: updateResp,
+                patchResp: patchResp
+              })
             },
             function(updateResp){
               Loading.finish("saveButton")
@@ -119,6 +123,7 @@ angular.module('accounts.account', [
     $routeParams,
     $location,
     Products,
+    GoogleScholar,
     UserProfile,
     UsersProducts,
     Account,
@@ -137,11 +142,6 @@ angular.module('accounts.account', [
 
   $scope.justAddedProducts =[]
   $scope.isLinked = !!$scope.account.username.value
-
-  console.log("account.username", $scope.account.username)
-
-
-
   $scope.setCurrentTab = function(index){$scope.currentTab = index}
 
   $scope.onCancel = function(){
@@ -180,6 +180,11 @@ angular.module('accounts.account', [
         $scope.isLinked = true
         Loading.finish($scope.account.accountHost)
 
+        if ($scope.account.accountHost == "google_scholar"){
+          console.log("opening google scholar modal")
+          GoogleScholar.showImportModal()
+        }
+
 
 
 
@@ -190,23 +195,6 @@ angular.module('accounts.account', [
     )
   }
 })
-
-
-  .directive("ngFileSelect",function(){
-    return {
-      link: function($scope, el, attrs){
-        el.bind("change", function(e){
-          var reader = new FileReader()
-          reader.onload = function(e){
-            $scope.input.value = reader.result
-          }
-
-          var file = (e.srcElement || e.target).files[0];
-          reader.readAsText(file)
-        })
-      }
-    }
-  })
 
 angular.module('accounts.allTheAccounts', [
   'accounts.account'
@@ -323,28 +311,16 @@ angular.module('accounts.allTheAccounts', [
       }
     }, 
 
-   // google_scholar: {
-   //   displayName: "Google Scholar",
-   //   inputs: [{
-   //     inputType: "file",
-   //     inputNeeded: "BibTeX file"
-   //   }],
-   //    username: {
-   //        inputNeeded: "username",
-   //        placeholder: "@example",
-   //        help: "Your Twitter username is often written starting with @."        
-   //    },     
-   //   endpoint: "bibtex",
-   //   url: 'http://scholar.google.com/citations',
-   //   descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
-   //   extra: '<h3>How to import your Google Scholar profile:</h3>'
-   //     + '<ol>'
-   //       + '<li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li>'
-   //       + '<li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>'
-   //       + '<li>Click <code>Export all my articles</code>, then save the BibTex file.</li>'
-   //       + '<li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.'
-   //     + '</ol>'
-   // },
+    google_scholar: {
+      displayName: "Google Scholar",
+      username: {
+        inputNeeded: "profile URL"
+      },
+      usernameCleanupFunction: function(x){return x},
+      url: 'http://scholar.google.com/citations',
+      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact."
+
+    },
 
 
 
@@ -561,6 +537,58 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   };
 }]);
 
+angular.module("googleScholar", [
+ "security"
+
+])
+.factory("GoogleScholar", function($modal, UsersAbout){
+  var bibtex = ""
+
+  return {
+    setBibtex: function(newBibtex){
+      bibtex = newBibtex
+      console.log("new bibtex just got set!")
+    },
+    getBibtex: function(){
+      console.log("getting bibtex!", bibtex)
+      return bibtex
+    },
+    showImportModal: function(){
+      $modal.open({
+        templateUrl: "google-scholar/google-scholar-modal.tpl.html",
+        controller: "GoogleScholarModalCtrl",
+        resolve: {
+          currentUser: function(security){
+            security.clearCachedUser()
+            return security.requestCurrentUser()
+          }
+        }
+      })
+    }
+
+
+  }
+
+
+  })
+
+  .controller("GoogleScholarModalCtrl", function($scope, GoogleScholar, currentUser){
+    console.log("modal controller activated!")
+    $scope.currentUser = currentUser
+
+    $scope.setFileContents = GoogleScholar.setBibtex
+    $scope.getBibtex = GoogleScholar.getBibtex
+
+
+    $scope.submitFile = function(){
+
+      console.log("submitting these file contents: ", GoogleScholar.getBibtex())
+    }
+
+
+
+
+  })
 angular.module("importers.allTheImporters",["importers.importer"]);angular.module("importers.allTheImporters").factory("AllTheImporters",function(){var e=[],t=[{displayName:"GitHub",url:"http://github.com",descr:"GitHub is an online code repository emphasizing community collaboration features.",tabs:[{label:"account"},{label:"additional repositories"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:"Your GitHub account ID is at the top right of your screen when you're logged in.",saveUsername:"github_id"},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other github repositories here.",placeholder:"https://github.com/your_username/your_repository",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"https://"+t}).join("\n")}}]},{displayName:"ORCID",inputs:[{inputType:"username",inputNeeded:"ID",placeholder:"http://orcid.org/xxxx-xxxx-xxxx-xxxx",saveUsername:"orcid_id",cleanupFunction:function(e){return e.replace("http://orcid.org/","")},help:"You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."}],url:"http://orcid.org",signupUrl:"http://orcid.org/register",descr:"ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into ImpactStory.",extra:"If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."},{displayName:"SlideShare",url:"http://slideshare.net",descr:"SlideShare is community for sharing presentations online.",tabs:[{label:"account"},{label:"additional products"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:'Your username is right after "slideshare.net/" in your profile\'s URL.',saveUsername:"slideshare_id"},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other SlideShare products here.",placeholder:"http://www.slideshare.net/your-username/your-presentation",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");return"http://"+t}).join("\n")}}]},{displayName:"Twitter",url:"http://twitter.com",descr:"Twitter is a social networking site for sharing short messages.",endpoint:"twitter_account",tabs:[{label:"account"},{label:"additional tweets"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:"Your Twitter username is often written starting with @.",saveUsername:"twitter_account_id",placeholder:"@username",cleanupFunction:function(e){return typeof e=="undefined"?e:"@"+e.replace("@","")}},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other Tweets here.",placeholder:"https://twitter.com/username/status/123456",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/https*:\/\//,"");return"http://"+t}).join("\n")}}]},{displayName:"Google Scholar",inputs:[{inputType:"file",inputNeeded:"BibTeX file"}],endpoint:"bibtex",url:"http://scholar.google.com/citations",descr:"Google Scholar profiles find and show researchers' articles as well as their citation impact.",extra:'<h3>How to import your Google Scholar profile:</h3><ol><li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li><li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li><li>Click <code>Export all my articles</code>, then save the BibTex file.</li><li>Return to ImpactStory. Click "upload" in this window, select your previously saved file, and upload.</ol>'},{displayName:"figshare",url:"http://figshare.com",descr:"Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",tabs:[{label:"account"},{label:"additional products"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"author page URL",placeholder:"http://figshare.com/authors/your_username/12345",cleanupFunction:function(e){return"http://"+e.replace("http://","")},saveUsername:"figshare_id"},{tab:1,name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"Paste DOIs for other figshare products here.",placeholder:"http://dx.doi.org/10.6084/m9.figshare.12345"}]},{displayName:"Blogs",descr:"Blogs and websites",endpoint:"wordpresscom",tabs:[{label:"blog url"},{label:"additional posts"}],inputs:[{tab:0,name:"blogUrl",inputType:"username",inputNeeded:"Blog URL",help:"The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",placeholder:"yourblogname.com",cleanupFunction:function(e){if(typeof e=="undefined")return e;var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"http://"+t}},{tab:1,name:"blog_post_urls",inputType:"idList",inputNeeded:"Blog post URLs",help:"Paste URLs for individual blog posts here.",placeholder:"http://yourblog.com/your-awesome-post",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"http://"+t}).join("\n")}}]},{displayName:"YouTube",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Copy the URLs for the videos you want to add, then paste them here.",placeholder:"http://www.youtube.com/watch?v=12345"}],endpoint:"urls",url:"http://youtube.com",descr:"YouTube is an online video-sharing site."},{displayName:"Vimeo",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Copy the URL for the video you want to add, then paste it here.",placeholder:"http://vimeo.com/12345"}],endpoint:"urls",url:"http://vimeo.com",descr:"Vimeo is an online video-sharing site."},{displayName:"arXiv",inputs:[{name:"arxiv_id_input",inputType:"idList",inputNeeded:"arXiv IDs",help:"A typical arXiv ID looks like this: 1305.3328",placeholder:"arXiv:1234.5678"}],endpoint:"arxiv",url:"http://arXiv.org",descr:"arXiv is an e-print service in the fields of physics, mathematics, computer science, quantitative biology, quantitative finance and statistics."},{displayName:"Dryad",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:'You can find Dryad DOIs on each dataset\'s individual Dryad webpage, inside the <strong>"please cite the Dryad data package"</strong> section.',placeholder:"doi:10.5061/dryad.example"}],endpoint:"dois",url:"http://datadryad.org",descr:"The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."},{displayName:"Dataset DOIs",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",placeholder:"http://doi.org/10.example/example"}],endpoint:"dois",descr:"Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."},{displayName:"Article DOIs",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"You can (generally) find article DOIs wherever the publishers have made the articles available online.",placeholder:"http://doi.org/10.example/example"}],endpoint:"dois",descr:"Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."},{displayName:"PubMed IDs",inputs:[{name:"standard_pmids_input",inputType:"idList",inputNeeded:"IDs",placeholder:"123456789",help:"You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."}],endpoint:"pmids",url:"http://www.ncbi.nlm.nih.gov/pubmed",descr:"PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."},{displayName:"Products by URL",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs"}],endpoint:"urls",descr:"Our service-specific importers (DOI, blogs, GitHub, etc) give the most comprehensive results. But if you've got a product not handled by any of those, you can import it here, via URL."}],n={name:"primary",cleanupFunction:function(e){return e},tab:0},r=function(e){return"/static/img/logos/"+_(e.toLowerCase()).dasherize()+".png"},i=function(e){return e.endpoint?e.endpoint:s(e.displayName)},s=function(e){var t=e.split(" "),n=_.map(t,function(e){return e.charAt(0).toUpperCase()+e.toLowerCase().slice(1)});n[0]=n[0].toLowerCase();return n.join("")};return{addProducts:function(t){e=e.concat(t)},getProducts:function(){return e},get:function(){var e=angular.copy(t),o=_.map(e,function(e){e.name=s(e.displayName);e.logoPath=r(e.displayName);e.endpoint=i(e);e.inputs=_.map(e.inputs,function(e){return _.defaults(e,n)});return e});return _.sortBy(o,function(e){return e.displayName.toLocaleLowerCase()})}}});
 angular.module( 'infopages', [
     'security',
@@ -1322,8 +1350,12 @@ angular.module("profile", [
  return {
    restrict: 'A',
    replace: true,
-   template:"<a ng-show='returnLink' class='back-to-profile' href='{{ returnLink }}'><i class='icon-chevron-left left'></i>back to profile</a>",
+   template:"<a ng-show='returnLink' class='back-to-profile btn btn-info btn-sm' href='{{ returnLink }}'><i class='icon-chevron-left left'></i>back to profile</a>",
    link: function($scope,el){
+
+     console.log("path: ", $location.path())
+
+     $scope.returnLink = $location.path().split("/")[1]
 
      if ($scope.returnLink === "/embed") {
        $scope.returnLink = null
@@ -2265,6 +2297,29 @@ angular.module("directives.spinner")
     }
     })
 angular.module('directives.forms', ["services.loading"])
+
+
+  .directive("ngFileSelect",function(){
+    return {
+      link: function($scope, el, attrs){
+        el.bind("change", function(e){
+          var reader = new FileReader()
+          reader.onload = function(e){
+            $scope.setFileContents(reader.result)
+
+          }
+
+          var file = (e.srcElement || e.target).files[0];
+          reader.readAsText(file)
+        })
+      }
+    }
+  })
+
+
+
+
+
 .directive('prettyCheckbox', function(){
   // mostly from http://jsfiddle.net/zy7Rg/6/
   return {
@@ -3773,7 +3828,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -3853,8 +3908,14 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"!isLinked\" type=\"submit\" class=\"btn btn-primary\">Link and sync products</button>\n" +
-    "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">Unlink this account</a>\n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\" class=\"btn btn-primary\">\n" +
+    "                     <i class=\"icon-link left\"></i>\n" +
+    "                     Link and sync your  {{ account.displayName }}\n" +
+    "                  </button>\n" +
+    "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">\n" +
+    "                     <i class=\"icon-unlink left\"></i>\n" +
+    "                     Unlink your  {{ account.displayName }}\n" +
+    "                  </a>\n" +
     "\n" +
     "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
     "               </div>\n" +
@@ -3931,6 +3992,38 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "\n" +
     "   </div>\n" +
     "</div> <!-- end footer -->\n" +
+    "");
+}]);
+
+angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("google-scholar/google-scholar-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Manually import Google Scholar articles</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body tour-start\">\n" +
+    "   <p>\n" +
+    "      Unfortunately, Google Scholar prevents us from automatically\n" +
+    "      syncing articles. However, you <em>can</em> manually upload your data. Here's how:\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <ol>\n" +
+    "     <li>Go to <a class=\"your-google-scholar-profile\" target=\"_blank\" href=\"{{ currentUser.google_scholar_id }}\">your Google Scholar profile</a>.</li>\n" +
+    "     <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>\n" +
+    "     <li>Click <code>Export all my articles</code>, then save the BibTex file.</li>\n" +
+    "     <li>Return to Impactstory. Click \"upload\" in this window, select your previously saved file, and upload.\n" +
+    "   </ol>\n" +
+    "\n" +
+    "   <div file-input=\"file\" on-change=\"readFile()\"></div>\n" +
+    "\n" +
+    "   <div class=\"submit\" ng-show=\"getBibtex()\">\n" +
+    "      <a class=\"btn btn-primary\" ng-click=\"submitFile()\">Upload articles</a>\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
     "");
 }]);
 

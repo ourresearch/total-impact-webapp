@@ -1,4 +1,4 @@
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -78,8 +78,14 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"!isLinked\" type=\"submit\" class=\"btn btn-primary\">Link and sync products</button>\n" +
-    "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">Unlink this account</a>\n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\" class=\"btn btn-primary\">\n" +
+    "                     <i class=\"icon-link left\"></i>\n" +
+    "                     Link and sync your  {{ account.displayName }}\n" +
+    "                  </button>\n" +
+    "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">\n" +
+    "                     <i class=\"icon-unlink left\"></i>\n" +
+    "                     Unlink your  {{ account.displayName }}\n" +
+    "                  </a>\n" +
     "\n" +
     "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
     "               </div>\n" +
@@ -156,6 +162,38 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "\n" +
     "   </div>\n" +
     "</div> <!-- end footer -->\n" +
+    "");
+}]);
+
+angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("google-scholar/google-scholar-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Manually import Google Scholar articles</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body tour-start\">\n" +
+    "   <p>\n" +
+    "      Unfortunately, Google Scholar prevents us from automatically\n" +
+    "      syncing articles. However, you <em>can</em> manually upload your data. Here's how:\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <ol>\n" +
+    "     <li>Go to <a class=\"your-google-scholar-profile\" target=\"_blank\" href=\"{{ currentUser.google_scholar_id }}\">your Google Scholar profile</a>.</li>\n" +
+    "     <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>\n" +
+    "     <li>Click <code>Export all my articles</code>, then save the BibTex file.</li>\n" +
+    "     <li>Return to Impactstory. Click \"upload\" in this window, select your previously saved file, and upload.\n" +
+    "   </ol>\n" +
+    "\n" +
+    "   <div file-input=\"file\" on-change=\"readFile()\"></div>\n" +
+    "\n" +
+    "   <div class=\"submit\" ng-show=\"getBibtex()\">\n" +
+    "      <a class=\"btn btn-primary\" ng-click=\"submitFile()\">Upload articles</a>\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
     "");
 }]);
 

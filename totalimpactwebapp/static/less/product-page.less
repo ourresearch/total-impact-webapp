@@ -35,16 +35,30 @@ div.modal-body.edit-product {
 
 div.product-page {
    min-height: 500px;
+   padding-top: 50px;
    div.header {
-      div.product-page-controls {
-         float:right;
-         a {
-            margin-left: 20px;
-            font-weight: 700;
-            font-size: 20px;
-            &.delete-product {
+      div.wrapper {
+         position:relative;
+         a.back-to-profile {
+            position:absolute;
+            bottom:0;
+            left: 0;
+         }
+         div.product-page-controls {
+            position:absolute;
+            right:0;
+            bottom:0;
+            width: 400px;
+            text-align: right;
+            a {
+               margin-left: 20px;
+               font-weight: 700;
+               font-size: 20px;
+               &.delete-product {
 
+               }
             }
+
          }
 
       }
@@ -52,7 +66,7 @@ div.product-page {
 
    .content {
       margin-bottom: 100px;
-      padding-top: 50px;
+      padding-top: 20px;
       div.working {
          color: #ddd;
          font-size: 30px;

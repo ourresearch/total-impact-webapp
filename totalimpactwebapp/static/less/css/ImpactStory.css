@@ -7622,7 +7622,7 @@ div.profile-subpage .profile-subpage-header .wrapper a.back-to-profile {
   position: absolute;
   bottom: 47px;
   left: 0;
-  color: #999999;
+  color: #fff;
   font-weight: 300;
 }
 div.profile-subpage .profile-subpage-header .wrapper h1 {
@@ -7631,11 +7631,12 @@ div.profile-subpage .profile-subpage-header .wrapper h1 {
   color: #fff;
 }
 div.profile-subpage .profile-subpage-header .wrapper h2 {
-  margin: 0;
+  margin: 0 auto;
   font-size: 20px;
   font-weight: 300;
   padding-bottom: 50px;
   color: #fff;
+  max-width: 600px;
 }
 div.profile-subpage.profile-linked-accounts {
   position: fixed;
@@ -7914,18 +7915,31 @@ div.modal-body.edit-product div.buttons-group .btn {
 }
 div.product-page {
   min-height: 500px;
+  padding-top: 50px;
 }
-div.product-page div.header div.product-page-controls {
-  float: right;
+div.product-page div.header div.wrapper {
+  position: relative;
 }
-div.product-page div.header div.product-page-controls a {
+div.product-page div.header div.wrapper a.back-to-profile {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+div.product-page div.header div.wrapper div.product-page-controls {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  text-align: right;
+}
+div.product-page div.header div.wrapper div.product-page-controls a {
   margin-left: 20px;
   font-weight: 700;
   font-size: 20px;
 }
 div.product-page .content {
   margin-bottom: 100px;
-  padding-top: 50px;
+  padding-top: 20px;
 }
 div.product-page .content div.working {
   color: #ddd;
@@ -8560,7 +8574,7 @@ div.accounts div.account-window-wrapper div.account-window .content .extra code 
 }
 div.accounts div.account-tile {
   float: left;
-  background: #fafafa;
+  background: #fff;
   width: 50%;
   padding: 65px 1% 65px 2%;
   border-right: 1px solid #ccc;
