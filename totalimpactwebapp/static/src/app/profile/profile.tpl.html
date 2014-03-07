@@ -15,34 +15,34 @@
          </h2>
          <div class="external-usernames">
             <ul>
-               <li ng-show="user.about.twitter_account_id">
-                  <a href="https://twitter.com/{{ user.about.twitter_account_id }}" target="_blank">
-                     <img src="https://twitter.com/favicon.ico" />
+               <li ng-show="user.about.twitter_id" style="display: none;">
+                  <a href="https://twitter.com/">
+                     <img src="https://twitter.com/favicon.ico">
                      <span class="service">Twitter</span>
                   </a>
                </li>
-               <li ng-show="user.about.github_id">
-                  <a href="https://github.com/{{ user.about.github_id }}" target="_blank">
-                     <img src="https://github.com/fluidicon.png" />
-                     <span class="service">GitHub</span>
-                  </a>
-               </li>
-               <li ng-show="user.about.orcid_id">
-                  <a href="https://orcid.org/{{ user.about.orcid_id }}" target="_blank">
-                     <img src="http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico" />
+               <li ng-show="user.about.orcid_id" style="display: none;">
+                  <a href="https://orcid.org/">
+                     <img src="http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico">
                      <span class="service">ORCID</span>
                   </a>
                </li>
-               <li ng-show="user.about.slideshare_id">
-                  <a href="https://www.slideshare.net/{{ user.about.slideshare_id }}" target="_blank">
-                     <img src="http://www.slideshare.net/favicon.ico" />
-                     <span class="service">SlideShare</span>
+               <li ng-show="user.about.github_id" style="display: none;">
+                  <a href="https://github.com/">
+                     <img src="https://github.com/fluidicon.png">
+                     <span class="service">GitHub</span>
                   </a>
                </li>
-               <li ng-show="user.about.figshare_id">
-                  <a href="{{ user.about.figshare_id }}" target="_blank">
-                     <img src="http://figshare.com/static/img/favicon.png" />
+               <li ng-show="user.about.figshare_id" style="display: none;">
+                  <a href="http://figshare.com">
+                     <img src="http://figshare.com/static/img/favicon.png">
                      <span class="service">figshare</span>
+                  </a>
+               </li>
+               <li ng-show="user.about.slideshare_id" style="display: none;">
+                  <a href="https://www.slideshare.net/">
+                     <img src="http://www.slideshare.net/favicon.ico">
+                     <span class="service">Slideshare</span>
                   </a>
                </li>
             </ul>

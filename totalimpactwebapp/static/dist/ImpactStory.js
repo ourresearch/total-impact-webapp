@@ -271,24 +271,80 @@ angular.module('accounts.allTheAccounts', [
       }
     },
 
+    mendeley: {
+      displayName: "Mendeley",
+      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
+      url:'http://twitter.com',
+      descr: "Twitter is a social networking site for sharing short messages.",
+      extra: "We don't import your tweets right now -- stay tuned!",      
+      username: {
+          inputNeeded: "username",
+          placeholder: "@example",
+          help: "Your Twitter username is often written starting with @."        
+      }
+    },
 
-//    google_scholar: {
-//      displayName: "Google Scholar",
-//      inputs: [{
-//        inputType: "file",
-//        inputNeeded: "BibTeX file"
-//      }],
-//      endpoint: "bibtex",
-//      url: 'http://scholar.google.com/citations',
-//      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
-//      extra: '<h3>How to import your Google Scholar profile:</h3>'
-//        + '<ol>'
-//          + '<li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li>'
-//          + '<li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>'
-//          + '<li>Click <code>Export all my articles</code>, then save the BibTex file.</li>'
-//          + '<li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.'
-//        + '</ol>'
-//    },
+    researchgate: {
+      displayName: "ResearchGate",
+      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
+      url:'http://twitter.com',
+      descr: "Twitter is a social networking site for sharing short messages.",
+      extra: "We don't import your tweets right now -- stay tuned!",      
+      username: {
+          inputNeeded: "username",
+          placeholder: "@example",
+          help: "Your Twitter username is often written starting with @."        
+      }
+    },
+
+    academia_edu: {
+      displayName: "Academia.edu",
+      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
+      url:'http://twitter.com',
+      descr: "Twitter is a social networking site for sharing short messages.",
+      extra: "We don't import your tweets right now -- stay tuned!",      
+      username: {
+          inputNeeded: "username",
+          placeholder: "@example",
+          help: "Your Twitter username is often written starting with @."        
+      }
+    },
+
+    linkedin: {
+      displayName: "LinkedIn",
+      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
+      url:'http://twitter.com',
+      descr: "Twitter is a social networking site for sharing short messages.",
+      extra: "We don't import your tweets right now -- stay tuned!",      
+      username: {
+          inputNeeded: "username",
+          placeholder: "@example",
+          help: "Your Twitter username is often written starting with @."        
+      }
+    }, 
+
+   // google_scholar: {
+   //   displayName: "Google Scholar",
+   //   inputs: [{
+   //     inputType: "file",
+   //     inputNeeded: "BibTeX file"
+   //   }],
+   //    username: {
+   //        inputNeeded: "username",
+   //        placeholder: "@example",
+   //        help: "Your Twitter username is often written starting with @."        
+   //    },     
+   //   endpoint: "bibtex",
+   //   url: 'http://scholar.google.com/citations',
+   //   descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
+   //   extra: '<h3>How to import your Google Scholar profile:</h3>'
+   //     + '<ol>'
+   //       + '<li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li>'
+   //       + '<li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>'
+   //       + '<li>Click <code>Export all my articles</code>, then save the BibTex file.</li>'
+   //       + '<li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.'
+   //     + '</ol>'
+   // },
 
 
 
@@ -4779,34 +4835,34 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </h2>\n" +
     "         <div class=\"external-usernames\">\n" +
     "            <ul>\n" +
-    "               <li ng-show=\"user.about.twitter_account_id\">\n" +
-    "                  <a href=\"https://twitter.com/{{ user.about.twitter_account_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"https://twitter.com/favicon.ico\" />\n" +
+    "               <li ng-show=\"user.about.twitter_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://twitter.com/\">\n" +
+    "                     <img src=\"https://twitter.com/favicon.ico\">\n" +
     "                     <span class=\"service\">Twitter</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.github_id\">\n" +
-    "                  <a href=\"https://github.com/{{ user.about.github_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"https://github.com/fluidicon.png\" />\n" +
-    "                     <span class=\"service\">GitHub</span>\n" +
-    "                  </a>\n" +
-    "               </li>\n" +
-    "               <li ng-show=\"user.about.orcid_id\">\n" +
-    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\" />\n" +
+    "               <li ng-show=\"user.about.orcid_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://orcid.org/\">\n" +
+    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\">\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.slideshare_id\">\n" +
-    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://www.slideshare.net/favicon.ico\" />\n" +
-    "                     <span class=\"service\">SlideShare</span>\n" +
+    "               <li ng-show=\"user.about.github_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://github.com/\">\n" +
+    "                     <img src=\"https://github.com/fluidicon.png\">\n" +
+    "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.figshare_id\">\n" +
-    "                  <a href=\"{{ user.about.figshare_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://figshare.com/static/img/favicon.png\" />\n" +
+    "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"http://figshare.com\">\n" +
+    "                     <img src=\"http://figshare.com/static/img/favicon.png\">\n" +
     "                     <span class=\"service\">figshare</span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "               <li ng-show=\"user.about.slideshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://www.slideshare.net/\">\n" +
+    "                     <img src=\"http://www.slideshare.net/favicon.ico\">\n" +
+    "                     <span class=\"service\">Slideshare</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "            </ul>\n" +
