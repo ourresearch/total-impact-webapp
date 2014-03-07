@@ -130,7 +130,7 @@ angular.module('accounts.account', [
   $scope.showAccountWindow = function(){
     $scope.accountWindowOpen = true;
     analytics.track("Opened an account window", {
-      "Account name": Account.displayName
+      "Account name": $scope.account.displayName
     })
 
   }

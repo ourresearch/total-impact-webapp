@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-06
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-07
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -135,7 +135,7 @@ angular.module('accounts.account', [
   $scope.showAccountWindow = function(){
     $scope.accountWindowOpen = true;
     analytics.track("Opened an account window", {
-      "Account name": Account.displayName
+      "Account name": $scope.account.displayName
     })
 
   }
