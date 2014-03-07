@@ -125,6 +125,7 @@ angular.module('accounts.account', [
     Loading,
     Update){
 
+          GoogleScholar.showImportModal()
 
 
   $scope.showAccountWindow = function(){

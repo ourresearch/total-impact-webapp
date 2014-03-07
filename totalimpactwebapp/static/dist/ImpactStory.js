@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-06
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-07
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -130,6 +130,7 @@ angular.module('accounts.account', [
     Loading,
     Update){
 
+          GoogleScholar.showImportModal()
 
 
   $scope.showAccountWindow = function(){
@@ -487,13 +488,23 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
 }]);
 
 angular.module("googleScholar", [
- "security"
+ "security",
+ "resources.users"
 
 ])
-.factory("GoogleScholar", function($modal, UsersAbout){
+.factory("GoogleScholar", function($modal, UsersProducts, security){
   var bibtex = ""
 
   return {
+    bibtexArticlesCount: function(){
+      var matches = bibtex.match(/^@/gm)
+      if (matches) {
+        return matches.length
+      }
+      else {
+        return 0
+      }
+    },
     setBibtex: function(newBibtex){
       bibtex = newBibtex
       console.log("new bibtex just got set!")
@@ -513,6 +524,23 @@ angular.module("googleScholar", [
           }
         }
       })
+    },
+    sendToServer: function(){
+      console.log(
+        "sending this bibtex to /importers/bibtex: ",
+        bibtex.substring(0, 50) + "..."
+      )
+
+      UsersProducts.patch(
+        {id: security.getCurrentUser("url_slug")},
+        {bibtex: bibtex},
+        function(resp){
+          console.log("successfully uploaded bibtex!", resp)
+        },
+        function(resp){
+          console.log("bibtex import failed :(")
+        }
+      )
     }
 
 
@@ -525,15 +553,13 @@ angular.module("googleScholar", [
     console.log("modal controller activated!")
     $scope.currentUser = currentUser
 
-    $scope.setFileContents = GoogleScholar.setBibtex
-    $scope.getBibtex = GoogleScholar.getBibtex
+    $scope.googleScholar = GoogleScholar
 
-
-    $scope.submitFile = function(){
-
-      console.log("submitting these file contents: ", GoogleScholar.getBibtex())
-    }
-
+    $scope.$on("fileLoaded", function(event, result){
+      GoogleScholar.setBibtex(result)
+      $scope.fileLoaded = true
+      $scope.$apply()
+    })
 
 
 
@@ -2249,8 +2275,7 @@ angular.module('directives.forms', ["services.loading"])
         el.bind("change", function(e){
           var reader = new FileReader()
           reader.onload = function(e){
-            $scope.setFileContents(reader.result)
-
+            $scope.$emit("fileLoaded", reader.result)
           }
 
           var file = (e.srcElement || e.target).files[0];
@@ -3869,6 +3894,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "         <div class=\"extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
     "\n" +
     "\n" +
+    "\n" +
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
@@ -3956,11 +3982,18 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "     <li>Return to Impactstory. Click \"upload\" in this window, select your previously saved file, and upload.\n" +
     "   </ol>\n" +
     "\n" +
-    "   <div file-input=\"file\" on-change=\"readFile()\"></div>\n" +
+    "   <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
     "\n" +
-    "   <div class=\"submit\" ng-show=\"getBibtex()\">\n" +
-    "      <a class=\"btn btn-primary\" ng-click=\"submitFile()\">Upload articles</a>\n" +
     "\n" +
+    "   <div class=\"submit\" ng-show=\"fileLoaded && !loading.is('bibtex')\">\n" +
+    "      <a class=\"btn btn-primary\" ng-click=\"googleScholar.sendToServer()\">\n" +
+    "         Import {{ googleScholar.bibtexArticlesCount() }} articles\n" +
+    "      </a>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"working\" ng-show=\"loading.is('bibtex')\">\n" +
+    "      <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "      <span class=\"text\">Adding articles...</span>\n" +
     "   </div>\n" +
     "\n" +
     "\n" +

@@ -1,11 +1,21 @@
 angular.module("googleScholar", [
- "security"
+ "security",
+ "resources.users"
 
 ])
-.factory("GoogleScholar", function($modal, UsersAbout){
+.factory("GoogleScholar", function($modal, UsersProducts, security){
   var bibtex = ""
 
   return {
+    bibtexArticlesCount: function(){
+      var matches = bibtex.match(/^@/gm)
+      if (matches) {
+        return matches.length
+      }
+      else {
+        return 0
+      }
+    },
     setBibtex: function(newBibtex){
       bibtex = newBibtex
       console.log("new bibtex just got set!")
@@ -25,6 +35,23 @@ angular.module("googleScholar", [
           }
         }
       })
+    },
+    sendToServer: function(){
+      console.log(
+        "sending this bibtex to /importers/bibtex: ",
+        bibtex.substring(0, 50) + "..."
+      )
+
+      UsersProducts.patch(
+        {id: security.getCurrentUser("url_slug")},
+        {bibtex: bibtex},
+        function(resp){
+          console.log("successfully uploaded bibtex!", resp)
+        },
+        function(resp){
+          console.log("bibtex import failed :(")
+        }
+      )
     }
 
 
@@ -37,15 +64,13 @@ angular.module("googleScholar", [
     console.log("modal controller activated!")
     $scope.currentUser = currentUser
 
-    $scope.setFileContents = GoogleScholar.setBibtex
-    $scope.getBibtex = GoogleScholar.getBibtex
+    $scope.googleScholar = GoogleScholar
 
-
-    $scope.submitFile = function(){
-
-      console.log("submitting these file contents: ", GoogleScholar.getBibtex())
-    }
-
+    $scope.$on("fileLoaded", function(event, result){
+      GoogleScholar.setBibtex(result)
+      $scope.fileLoaded = true
+      $scope.$apply()
+    })
 
 
 

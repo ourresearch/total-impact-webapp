@@ -15,11 +15,18 @@
      <li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.
    </ol>
 
-   <div file-input="file" on-change="readFile()"></div>
+   <input type="file" ng-file-select="google_scholar_bibtex">
 
-   <div class="submit" ng-show="getBibtex()">
-      <a class="btn btn-primary" ng-click="submitFile()">Upload articles</a>
 
+   <div class="submit" ng-show="fileLoaded && !loading.is('bibtex')">
+      <a class="btn btn-primary" ng-click="googleScholar.sendToServer()">
+         Import {{ googleScholar.bibtexArticlesCount() }} articles
+      </a>
+   </div>
+
+   <div class="working" ng-show="loading.is('bibtex')">
+      <i class="icon-refresh icon-spin"></i>
+      <span class="text">Adding articles...</span>
    </div>
 
 

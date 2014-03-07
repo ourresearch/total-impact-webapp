@@ -7,8 +7,7 @@ angular.module('directives.forms', ["services.loading"])
         el.bind("change", function(e){
           var reader = new FileReader()
           reader.onload = function(e){
-            $scope.setFileContents(reader.result)
-
+            $scope.$emit("fileLoaded", reader.result)
           }
 
           var file = (e.srcElement || e.target).files[0];

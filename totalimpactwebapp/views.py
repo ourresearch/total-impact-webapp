@@ -287,7 +287,7 @@ def create_new_user_profile(slug):
     except EmailExistsError:
         abort_json(409, "That email already exists.")
 
-    logger.debug(u"logging in user {user}".format(
+    logger.debug(u"creating new user {user}".format(
         user=user.dict_about()))
 
     login_user(user)
