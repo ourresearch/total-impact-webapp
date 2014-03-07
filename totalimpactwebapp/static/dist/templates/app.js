@@ -1106,41 +1106,72 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </h2>\n" +
     "         <div class=\"external-usernames\">\n" +
     "            <ul>\n" +
-    "               <li ng-show=\"user.about.twitter_account_id\">\n" +
-    "                  <a href=\"https://twitter.com/{{ user.about.twitter_account_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"https://twitter.com/favicon.ico\" />\n" +
-    "                     <span class=\"service\">Twitter</span>\n" +
+    "               <li ng-show=\"user.about.academia_edu_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://academia.edu/\">\n" +
+    "                     <img src=\"http://www.academia.edu/favicon.ico\">\n" +
+    "                     <span class=\"service\">Academia.edu</span>\n" +
     "                  </a>\n" +
-    "               </li>\n" +
-    "               <li ng-show=\"user.about.github_id\">\n" +
-    "                  <a href=\"https://github.com/{{ user.about.github_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"https://github.com/fluidicon.png\" />\n" +
+    "               </li>        \n" +
+    "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"http://figshare.com\">\n" +
+    "                     <img src=\"http://figshare.com/static/img/favicon.png\">\n" +
+    "                     <span class=\"service\">figshare</span>\n" +
+    "                  </a>\n" +
+    "               </li>           \n" +
+    "               <li ng-show=\"user.about.github_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://github.com/\">\n" +
+    "                     <img src=\"https://github.com/fluidicon.png\">\n" +
     "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.orcid_id\">\n" +
-    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\" />\n" +
+    "               <li ng-show=\"user.about.google_scholar_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://github.com/\">\n" +
+    "                     <img src=\"http://scholar.google.com/favicon.ico\">\n" +
+    "                     <span class=\"service\">Google Scholar</span>\n" +
+    "                  </a>\n" +
+    "               </li>     \n" +
+    "               <li ng-show=\"user.about.linkedin_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://linkedin.com/\">\n" +
+    "                     <img src=\"http://s.c.lnkd.licdn.com/scds/common/u/images/logos/favicons/v1/16x16/favicon.ico\">\n" +
+    "                     <span class=\"service\">LinkedIn</span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "               <li ng-show=\"user.about.mendeley_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://mendeley.com/\">\n" +
+    "                     <img src=\"http://www.mendeley.com/graphics/favicon.ico\">\n" +
+    "                     <span class=\"service\">Mendeley</span>\n" +
+    "                  </a>\n" +
+    "               </li>                                                   \n" +
+    "               <li ng-show=\"user.about.orcid_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://orcid.org/\">\n" +
+    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\">\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.slideshare_id\">\n" +
-    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://www.slideshare.net/favicon.ico\" />\n" +
-    "                     <span class=\"service\">SlideShare</span>\n" +
+    "               <li ng-show=\"user.about.researchgate_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://researchgate.net/\">\n" +
+    "                     <img src=\"http://researchgate.net/favicon.ico\">\n" +
+    "                     <span class=\"service\">ResearchGate</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.figshare_id\">\n" +
-    "                  <a href=\"{{ user.about.figshare_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://figshare.com/static/img/favicon.png\" />\n" +
-    "                     <span class=\"service\">figshare</span>\n" +
+    "               <li ng-show=\"user.about.slideshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://www.slideshare.net/\">\n" +
+    "                     <img src=\"http://www.slideshare.net/favicon.ico\">\n" +
+    "                     <span class=\"service\">Slideshare</span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "               <li ng-show=\"user.about.twitter_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://twitter.com/\">\n" +
+    "                     <img src=\"https://twitter.com/favicon.ico\">\n" +
+    "                     <span class=\"service\">Twitter</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "            </ul>\n" +
+    "\n" +
     "            <div class=\"add-linked-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
     "               <a href=\"/{{ user.about.url_slug }}/accounts\">\n" +
     "                  <i class=\"icon-edit left\"></i>\n" +
-    "                  Edd or edit accounts\n" +
+    "                  Add or edit accounts\n" +
     "               </a>\n" +
     "            </div>\n" +
     "         </div>\n" +
@@ -1275,7 +1306,7 @@ angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", f
     "\n" +
     "   <a class=\"btn btn-primary\"\n" +
     "      ng-click=\"$close()\"\n" +
-    "      href=\"/{{ userAbout.url_slug }}/products/add\">\n" +
+    "      href=\"/{{ userAbout.url_slug }}/accounts\">\n" +
     "      Import my products\n" +
     "      <i class=\"icon-cloud-upload left\"></i>\n" +
     "   </a>\n" +

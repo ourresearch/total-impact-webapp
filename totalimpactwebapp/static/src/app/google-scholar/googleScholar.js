@@ -5,17 +5,18 @@ angular.module("googleScholar", [
 ])
 .factory("GoogleScholar", function($modal, UsersProducts, security){
   var bibtex = ""
+  var bibtexArticlesCount = function(){
+    var matches = bibtex.match(/^@/gm)
+    if (matches) {
+      return matches.length
+    }
+    else {
+      return 0
+    }
+  }
 
   return {
-    bibtexArticlesCount: function(){
-      var matches = bibtex.match(/^@/gm)
-      if (matches) {
-        return matches.length
-      }
-      else {
-        return 0
-      }
-    },
+    bibtexArticlesCount: bibtexArticlesCount,
     setBibtex: function(newBibtex){
       bibtex = newBibtex
       console.log("new bibtex just got set!")
@@ -24,7 +25,7 @@ angular.module("googleScholar", [
       console.log("getting bibtex!", bibtex)
       return bibtex
     },
-    showImportModal: function(){
+    showImportModal: function(){ 
       $modal.open({
         templateUrl: "google-scholar/google-scholar-modal.tpl.html",
         controller: "GoogleScholarModalCtrl",
@@ -41,6 +42,10 @@ angular.module("googleScholar", [
         "sending this bibtex to /importers/bibtex: ",
         bibtex.substring(0, 50) + "..."
       )
+
+      analytics.track("Uploaded Google Scholar", {
+        "Number of products": bibtexArticlesCount()
+      })
 
       UsersProducts.patch(
         {id: security.getCurrentUser("url_slug")},
@@ -66,11 +71,8 @@ angular.module("googleScholar", [
 
     $scope.googleScholar = GoogleScholar
 
-    $scope.$on("fileLoaded", function(event, result){
-      GoogleScholar.setBibtex(result)
-      $scope.fileLoaded = true
-      $scope.$apply()
-    })
+
+
 
 
 

@@ -86,6 +86,10 @@ class User(db.Model):
     twitter_id = db.Column(db.String(64))
     figshare_id = db.Column(db.String(64))
     google_scholar_id = db.Column(db.String(64))
+    mendeley_id = db.Column(db.String(64))
+    researchgate_id = db.Column(db.String(64))
+    academia_edu_id = db.Column(db.String(64))
+    linkedin_id = db.Column(db.String(64))
     wordpress_api_key = db.Column(db.String(64))
 
     #awards = []
@@ -277,9 +281,13 @@ class User(db.Model):
             "orcid_id",
             "github_id",
             "slideshare_id",
-            "twitter_account_id",
+            "twitter_id",
             "figshare_id",
             "google_scholar_id",
+            "mendeley_id",
+            "academia_edu_id",
+            "researchgate_id",
+            "linkedin_id",
             "wordpress_api_key"
         ]
 

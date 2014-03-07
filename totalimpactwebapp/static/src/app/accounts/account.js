@@ -131,7 +131,7 @@ angular.module('accounts.account', [
   $scope.showAccountWindow = function(){
     $scope.accountWindowOpen = true;
     analytics.track("Opened an account window", {
-      "Account name": Account.displayName
+      "Account name": $scope.account.displayName
     })
 
   }
@@ -152,6 +152,10 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
+        analytics.track("Unlinked an account", {
+          "Account name": $scope.account.displayName
+        })
+
       }
     )
   }
@@ -174,6 +178,10 @@ angular.module('accounts.account', [
         console.log("successfully saved linked account", resp)
         $scope.justAddedProducts = resp.products
         $scope.isLinked = true
+        analytics.track("Linked an account", {
+          "Account name": $scope.account.displayName
+        })
+
         Loading.finish($scope.account.accountHost)
 
         if ($scope.account.accountHost == "google_scholar"){

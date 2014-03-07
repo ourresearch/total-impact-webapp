@@ -136,7 +136,7 @@ angular.module('accounts.account', [
   $scope.showAccountWindow = function(){
     $scope.accountWindowOpen = true;
     analytics.track("Opened an account window", {
-      "Account name": Account.displayName
+      "Account name": $scope.account.displayName
     })
 
   }
@@ -157,6 +157,10 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
+        analytics.track("Unlinked an account", {
+          "Account name": $scope.account.displayName
+        })
+
       }
     )
   }
@@ -179,6 +183,10 @@ angular.module('accounts.account', [
         console.log("successfully saved linked account", resp)
         $scope.justAddedProducts = resp.products
         $scope.isLinked = true
+        analytics.track("Linked an account", {
+          "Account name": $scope.account.displayName
+        })
+
         Loading.finish($scope.account.accountHost)
 
         if ($scope.account.accountHost == "google_scholar"){
@@ -205,6 +213,32 @@ angular.module('accounts.allTheAccounts', [
 
   var importedProducts = []
   var accounts = {
+    academia_edu: {
+      displayName: "Academia.edu",
+      usernameCleanupFunction: function(x){return x},
+      url:'http://academia.edu',
+      descr: "Academia.edu is a place to share and follow research.",
+      username: {
+        inputNeeded: "profile URL",
+          placeholder: "http://your_university.academia.edu/your_username"
+      }
+    },
+
+    figshare: {
+      displayName: "figshare",
+      url: "http://figshare.com",
+      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
+      username:{
+            inputNeeded: "author page URL",
+            placeholder: "http://figshare.com/authors/your_username/12345"
+
+      },
+      usernameCleanupFunction: function(x) {
+              if (typeof x==="undefined") return x;
+              return('http://'+x.replace('http://', ''))
+      }
+    },
+
     github: {
       displayName: "GitHub",
       usernameCleanupFunction: function(x){return x},
@@ -216,7 +250,38 @@ angular.module('accounts.allTheAccounts', [
       }
     },
 
+    google_scholar: {
+      displayName: "Google Scholar",
+      usernameCleanupFunction: function(x){return x},
+      url: 'http://scholar.google.com/citations',
+      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
+      username: {
+        inputNeeded: "profile URL",
+        placeholder: "http://scholar.google.ca/citations?user=your_user_id"
+      }
+    },
 
+    linkedin: {
+      displayName: "LinkedIn",
+      usernameCleanupFunction: function(x){return x},
+      url:'http://linkedin.com',
+      descr: "LinkedIn is a social networking site for professional networking.",
+      username: {
+        inputNeeded: "profile URL",
+          placeholder: "http://www.linkedin.com/in/your_username"
+      }
+    }, 
+
+    mendeley: {
+      displayName: "Mendeley",
+      usernameCleanupFunction: function(x){return x},
+      url:'http://mendeley.com',
+      descr: "Mendeley is a desktop and web program for managing and sharing research papers,discovering research data, and collaborating online.",
+      username: {
+        inputNeeded: "profile URL",
+          placeholder: "http://www.mendeley.com/profiles/your_username"
+      }
+    },
 
     orcid: {
       displayName: "ORCID",
@@ -232,7 +297,16 @@ angular.module('accounts.allTheAccounts', [
       extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
     },
 
-
+    researchgate: {
+      displayName: "ResearchGate",
+      usernameCleanupFunction: function(x){return x},
+      url:'http://researchgate.net',
+      descr: "ResearchGate is a social networking site for scientists and researchers to share papers, ask and answer questions, and find collaborators.",
+      username: {
+        inputNeeded: "profile URL",
+          placeholder: "https://www.researchgate.net/profile/your_username"
+      }
+    },
 
     slideshare: {
       displayName: "SlideShare",
@@ -242,7 +316,6 @@ angular.module('accounts.allTheAccounts', [
       username: {
           help: "Your username is right after \"slideshare.net/\" in your profile's URL.",
           inputNeeded: "username"
-
       }
     },
 
@@ -258,36 +331,8 @@ angular.module('accounts.allTheAccounts', [
           placeholder: "@example",
           help: "Your Twitter username is often written starting with @."        
       }
-    },
-
-
-    google_scholar: {
-      displayName: "Google Scholar",
-      username: {
-        inputNeeded: "profile URL"
-      },
-      usernameCleanupFunction: function(x){return x},
-      url: 'http://scholar.google.com/citations',
-      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact."
-
-    },
-
-
-
-    figshare: {
-      displayName: "figshare",
-      url: "http://figshare.com",
-      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
-      username:{
-            inputNeeded: "author page URL",
-            placeholder: "http://figshare.com/authors/your_username/12345"
-
-      },
-      usernameCleanupFunction: function(x) {
-              if (typeof x==="undefined") return x;
-              return('http://'+x.replace('http://', ''))
-      }
     }
+
   }
 
 
@@ -494,17 +539,18 @@ angular.module("googleScholar", [
 ])
 .factory("GoogleScholar", function($modal, UsersProducts, security){
   var bibtex = ""
+  var bibtexArticlesCount = function(){
+    var matches = bibtex.match(/^@/gm)
+    if (matches) {
+      return matches.length
+    }
+    else {
+      return 0
+    }
+  }
 
   return {
-    bibtexArticlesCount: function(){
-      var matches = bibtex.match(/^@/gm)
-      if (matches) {
-        return matches.length
-      }
-      else {
-        return 0
-      }
-    },
+    bibtexArticlesCount: bibtexArticlesCount,
     setBibtex: function(newBibtex){
       bibtex = newBibtex
       console.log("new bibtex just got set!")
@@ -513,7 +559,7 @@ angular.module("googleScholar", [
       console.log("getting bibtex!", bibtex)
       return bibtex
     },
-    showImportModal: function(){
+    showImportModal: function(){ 
       $modal.open({
         templateUrl: "google-scholar/google-scholar-modal.tpl.html",
         controller: "GoogleScholarModalCtrl",
@@ -530,6 +576,10 @@ angular.module("googleScholar", [
         "sending this bibtex to /importers/bibtex: ",
         bibtex.substring(0, 50) + "..."
       )
+
+      analytics.track("Uploaded Google Scholar", {
+        "Number of products": bibtexArticlesCount()
+      })
 
       UsersProducts.patch(
         {id: security.getCurrentUser("url_slug")},
@@ -555,15 +605,13 @@ angular.module("googleScholar", [
 
     $scope.googleScholar = GoogleScholar
 
-    $scope.$on("fileLoaded", function(event, result){
-      GoogleScholar.setBibtex(result)
-      $scope.fileLoaded = true
-      $scope.$apply()
-    })
+
+
 
 
 
   })
+
 angular.module( 'infopages', [
     'security',
     'services.page',
@@ -3381,7 +3429,7 @@ angular.module("services.page")
       var myPageType = "profile"
       var path = $location.path()
 
-      var accountPages = [
+      var settingsPages = [
           "/settings",
           "/reset-password"
       ]
@@ -3390,7 +3438,6 @@ angular.module("services.page")
           "/faq",
           "/about"
         ]
-
 
       if (path === "/"){
         myPageType = "landing"
@@ -3404,11 +3451,14 @@ angular.module("services.page")
       else if (_.contains(infopages, path)){
         myPageType = "infopages"
       }
-      else if (_.contains(accountPages, path)) {
-        myPageType = "account"
+      else if (_.contains(settingsPages, path)) {
+        myPageType = "settings"
       }
       else if (path.indexOf("products/add") > -1) {
-        myPageType = "import"
+        myPageType = "importIndividual"
+      }
+      else if (path.indexOf("account") > -1) {
+        myPageType = "linkAccount"
       }
 
       return myPageType
@@ -4903,41 +4953,72 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </h2>\n" +
     "         <div class=\"external-usernames\">\n" +
     "            <ul>\n" +
-    "               <li ng-show=\"user.about.twitter_account_id\">\n" +
-    "                  <a href=\"https://twitter.com/{{ user.about.twitter_account_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"https://twitter.com/favicon.ico\" />\n" +
-    "                     <span class=\"service\">Twitter</span>\n" +
+    "               <li ng-show=\"user.about.academia_edu_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://academia.edu/\">\n" +
+    "                     <img src=\"http://www.academia.edu/favicon.ico\">\n" +
+    "                     <span class=\"service\">Academia.edu</span>\n" +
     "                  </a>\n" +
-    "               </li>\n" +
-    "               <li ng-show=\"user.about.github_id\">\n" +
-    "                  <a href=\"https://github.com/{{ user.about.github_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"https://github.com/fluidicon.png\" />\n" +
+    "               </li>        \n" +
+    "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"http://figshare.com\">\n" +
+    "                     <img src=\"http://figshare.com/static/img/favicon.png\">\n" +
+    "                     <span class=\"service\">figshare</span>\n" +
+    "                  </a>\n" +
+    "               </li>           \n" +
+    "               <li ng-show=\"user.about.github_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://github.com/\">\n" +
+    "                     <img src=\"https://github.com/fluidicon.png\">\n" +
     "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.orcid_id\">\n" +
-    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\" />\n" +
+    "               <li ng-show=\"user.about.google_scholar_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://github.com/\">\n" +
+    "                     <img src=\"http://scholar.google.com/favicon.ico\">\n" +
+    "                     <span class=\"service\">Google Scholar</span>\n" +
+    "                  </a>\n" +
+    "               </li>     \n" +
+    "               <li ng-show=\"user.about.linkedin_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://linkedin.com/\">\n" +
+    "                     <img src=\"http://s.c.lnkd.licdn.com/scds/common/u/images/logos/favicons/v1/16x16/favicon.ico\">\n" +
+    "                     <span class=\"service\">LinkedIn</span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "               <li ng-show=\"user.about.mendeley_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://mendeley.com/\">\n" +
+    "                     <img src=\"http://www.mendeley.com/graphics/favicon.ico\">\n" +
+    "                     <span class=\"service\">Mendeley</span>\n" +
+    "                  </a>\n" +
+    "               </li>                                                   \n" +
+    "               <li ng-show=\"user.about.orcid_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://orcid.org/\">\n" +
+    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\">\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.slideshare_id\">\n" +
-    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://www.slideshare.net/favicon.ico\" />\n" +
-    "                     <span class=\"service\">SlideShare</span>\n" +
+    "               <li ng-show=\"user.about.researchgate_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://researchgate.net/\">\n" +
+    "                     <img src=\"http://researchgate.net/favicon.ico\">\n" +
+    "                     <span class=\"service\">ResearchGate</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.figshare_id\">\n" +
-    "                  <a href=\"{{ user.about.figshare_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://figshare.com/static/img/favicon.png\" />\n" +
-    "                     <span class=\"service\">figshare</span>\n" +
+    "               <li ng-show=\"user.about.slideshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://www.slideshare.net/\">\n" +
+    "                     <img src=\"http://www.slideshare.net/favicon.ico\">\n" +
+    "                     <span class=\"service\">Slideshare</span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "               <li ng-show=\"user.about.twitter_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://twitter.com/\">\n" +
+    "                     <img src=\"https://twitter.com/favicon.ico\">\n" +
+    "                     <span class=\"service\">Twitter</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "            </ul>\n" +
+    "\n" +
     "            <div class=\"add-linked-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
     "               <a href=\"/{{ user.about.url_slug }}/accounts\">\n" +
     "                  <i class=\"icon-edit left\"></i>\n" +
-    "                  Edd or edit accounts\n" +
+    "                  Add or edit accounts\n" +
     "               </a>\n" +
     "            </div>\n" +
     "         </div>\n" +
@@ -5072,7 +5153,7 @@ angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", f
     "\n" +
     "   <a class=\"btn btn-primary\"\n" +
     "      ng-click=\"$close()\"\n" +
-    "      href=\"/{{ userAbout.url_slug }}/products/add\">\n" +
+    "      href=\"/{{ userAbout.url_slug }}/accounts\">\n" +
     "      Import my products\n" +
     "      <i class=\"icon-cloud-upload left\"></i>\n" +
     "   </a>\n" +
