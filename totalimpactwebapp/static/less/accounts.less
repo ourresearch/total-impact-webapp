@@ -55,23 +55,22 @@ div.accounts {
          border-left:  1px solid #555;
          .drop-shadow(-5px, 0, 10px, .2);
 
-         div.account-tabs {
+         div.top-tab-wrapper {
             position: absolute;
             top:0; left: 0; right:0;
             text-align:center;
-            menu {
+            .top-tab {
                margin:0;
-               li {
-                  list-style-type: none;
-                  font-weight: bold;
-                  color: #999;
-                  display:inline-block;
-                  cursor: pointer;
-                  padding: 10px 20px;
-                  &.current {
-                     background: #eee;
-                     color: #555;
-                  }
+               padding: 5px 13px;
+               .border-radius(0, 3px, 3px, 0);
+               color: #fff;
+               font-size: 14px;
+               display:inline-block;
+               &.sync-true {
+                  background: @btn-success-bg;
+               }
+               &.sync-false {
+                  background: @btn-primary-bg;
                }
             }
          }
@@ -255,6 +254,9 @@ div.accounts {
             display:block;
             font-weight: bold;
             color: @gray-light;
+            font-size: 30px;
+            margin-top: -10px;
+            margin-right: 30px;
          }
 
          div.connected-toggle {
@@ -263,6 +265,7 @@ div.accounts {
                height: 30px;
                width: @toggle-width;
                background: #ccc;
+               color: #777;
                .border-radius(15px, 15px, 15px, 15px);
                font-size: 16px;
 
@@ -282,6 +285,11 @@ div.accounts {
 
                &.toggle-on {
                   background: @btn-success-bg;
+                  color: #333;
+
+                  &.sync-false {
+                     background: @btn-primary-bg;
+                  }
                   .toggle-state-label {
                      float: left;
                      margin-right: 0;

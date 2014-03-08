@@ -12,17 +12,18 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "   <div class=\"linked-info\">\n" +
     "      <div class=\"linking-in-progress working\" ng-show=\"loading.is(account.accountHost)\">\n" +
     "         <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "         <div class=\"text\">Linking account...</div>\n" +
+    "         <div class=\"text\"></div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"connected-toggle\" ng-show=\"!loading.is(account.accountHost)\">\n" +
+    "      <div class=\"connected-toggle\"\n" +
+    "           ng-show=\"!loading.is(account.accountHost)\">\n" +
     "\n" +
-    "         <div class=\"toggle-housing toggle-on\" ng-show=\"isLinked\">\n" +
+    "         <div class=\"toggle-housing toggle-on sync-{{ account.sync }}\" ng-show=\"isLinked\">\n" +
     "               <div class=\"toggle-state-label\">on</div>\n" +
     "               <div class=\"toggle-switch\"></div>\n" +
     "         </div>\n" +
     "\n" +
-    "         <div class=\"toggle-housing toggle-off\" ng-show=\"!isLinked\">\n" +
+    "         <div class=\"toggle-housing toggle-off sync-{{ account.sync }}\" ng-show=\"!isLinked\">\n" +
     "               <div class=\"toggle-switch\"></div>\n" +
     "               <div class=\"toggle-state-label\">off</div>\n" +
     "         </div>\n" +
@@ -42,6 +43,11 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
     "   <div class=\"account-window\">\n" +
     "\n" +
+    "      <div class=\"top-tab-wrapper\">\n" +
+    "         <div ng-show=\"{{ account.sync }}\" class=\"top-tab sync-true\">Automatic import</div>\n" +
+    "         <div ng-show=\"{{ !account.sync }}\" class=\"top-tab sync-false\">Manual import</div>\n" +
+    "      </div>\n" +
+    "\n" +
     "\n" +
     "      <div class=\"content\">\n" +
     "         <h2 class=\"account-name\" ng-show=\"!account.url\"><img ng-src=\"{{ account.logoPath }}\" /> </h2>\n" +
@@ -50,7 +56,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "            <a class=\"visit\" href=\"{{ account.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
     "         </h2>\n" +
     "\n" +
-    "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ account.descr }}</div>\n" +
+    "         <div class=\"descr\">{{ account.descr }}</div>\n" +
     "\n" +
     "         <form name=\"{{ account.name }}accountForm\"\n" +
     "               novalidate class=\"form\"\n" +
@@ -77,10 +83,12 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"!isLinked\" type=\"submit\" class=\"btn btn-primary\">\n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\"\n" +
+    "                          ng-class=\"{'btn-success': account.sync, 'btn-primary': !account.sync }\" class=\"btn\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
     "                     Connect to {{ account.displayName }}\n" +
     "                  </button>\n" +
+    "\n" +
     "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">\n" +
     "                     <i class=\"icon-unlink left\"></i>\n" +
     "                     Disconnect from {{ account.displayName }}\n" +
@@ -104,7 +112,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "            </p>\n" +
     "            <div class=\"button-container\">\n" +
     "               <a id=\"show-google-scholar-import-modal-button\"\n" +
-    "                  class=\"show-modal btn btn-info\"\n" +
+    "                  class=\"show-modal btn btn-primary\"\n" +
     "                  ng-click=\"showImportModal()\">\n" +
     "                  Manually import products\n" +
     "               </a>\n" +
@@ -803,8 +811,8 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
     "         <h1 class=\"instr\">Connect to other accounts</h1>\n" +
-    "         <h2>We'll pull in your products in real time, keeping your Impactstory\n" +
-    "         profile up to date.</h2>\n" +
+    "         <h2>We'll automatically import your products from all over the web,\n" +
+    "            so your profile stays up to date.</h2>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +

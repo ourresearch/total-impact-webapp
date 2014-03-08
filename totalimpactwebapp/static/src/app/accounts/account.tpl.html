@@ -8,17 +8,18 @@
    <div class="linked-info">
       <div class="linking-in-progress working" ng-show="loading.is(account.accountHost)">
          <i class="icon-refresh icon-spin"></i>
-         <div class="text">Linking account...</div>
+         <div class="text"></div>
       </div>
 
-      <div class="connected-toggle" ng-show="!loading.is(account.accountHost)">
+      <div class="connected-toggle"
+           ng-show="!loading.is(account.accountHost)">
 
-         <div class="toggle-housing toggle-on" ng-show="isLinked">
+         <div class="toggle-housing toggle-on sync-{{ account.sync }}" ng-show="isLinked">
                <div class="toggle-state-label">on</div>
                <div class="toggle-switch"></div>
          </div>
 
-         <div class="toggle-housing toggle-off" ng-show="!isLinked">
+         <div class="toggle-housing toggle-off sync-{{ account.sync }}" ng-show="!isLinked">
                <div class="toggle-switch"></div>
                <div class="toggle-state-label">off</div>
          </div>
@@ -38,6 +39,11 @@
      ng-animate="{enter: 'animated slideInRight', leave: 'animated slideOutRight'}">
    <div class="account-window">
 
+      <div class="top-tab-wrapper">
+         <div ng-show="{{ account.sync }}" class="top-tab sync-true">Automatic import</div>
+         <div ng-show="{{ !account.sync }}" class="top-tab sync-false">Manual import</div>
+      </div>
+
 
       <div class="content">
          <h2 class="account-name" ng-show="!account.url"><img ng-src="{{ account.logoPath }}" /> </h2>
@@ -46,7 +52,7 @@
             <a class="visit" href="{{ account.url }}" target="_blank">Visit<i class="icon-chevron-right"></i></a>
          </h2>
 
-         <div class="descr" ng-show="currentTab==0">{{ account.descr }}</div>
+         <div class="descr">{{ account.descr }}</div>
 
          <form name="{{ account.name }}accountForm"
                novalidate class="form"
@@ -73,10 +79,12 @@
 
             <div class="buttons-group save">
                <div class="buttons" ng-show="!loading.is('saveButton')">
-                  <button ng-show="!isLinked" type="submit" class="btn btn-primary">
+                  <button ng-show="!isLinked" type="submit"
+                          ng-class="{'btn-success': account.sync, 'btn-primary': !account.sync }" class="btn">
                      <i class="icon-link left"></i>
                      Connect to {{ account.displayName }}
                   </button>
+
                   <a ng-show="isLinked" ng-click="unlink()" class="btn btn-danger">
                      <i class="icon-unlink left"></i>
                      Disconnect from {{ account.displayName }}
@@ -100,7 +108,7 @@
             </p>
             <div class="button-container">
                <a id="show-google-scholar-import-modal-button"
-                  class="show-modal btn btn-info"
+                  class="show-modal btn btn-primary"
                   ng-click="showImportModal()">
                   Manually import products
                </a>

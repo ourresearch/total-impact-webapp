@@ -20,7 +20,7 @@ angular.module('accounts.allTheAccounts', [
     figshare: {
       displayName: "figshare",
       url: "http://figshare.com",
-      syncs: true,
+      sync: true,
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
       username:{
             inputNeeded: "author page URL",
@@ -35,7 +35,7 @@ angular.module('accounts.allTheAccounts', [
 
     github: {
       displayName: "GitHub",
-      syncs: true,
+      sync: true,
       usernameCleanupFunction: function(x){return x},
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features.",
@@ -47,7 +47,7 @@ angular.module('accounts.allTheAccounts', [
 
     google_scholar: {
       displayName: "Google Scholar",
-      syncs:false,
+      sync:false,
       usernameCleanupFunction: function(x){return x},
       url: 'http://scholar.google.com/citations',
       descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
@@ -81,6 +81,7 @@ angular.module('accounts.allTheAccounts', [
 
     orcid: {
       displayName: "ORCID",
+      sync: true,
       username:{
         inputNeeded: "ID",
         placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
@@ -106,6 +107,7 @@ angular.module('accounts.allTheAccounts', [
 
     slideshare: {
       displayName: "SlideShare",
+      sync: true,
       usernameCleanupFunction: function(x){return x},
       url:'http://slideshare.net',
       descr: "SlideShare is community for sharing presentations online.",
