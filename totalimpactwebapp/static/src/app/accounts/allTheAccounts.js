@@ -20,6 +20,7 @@ angular.module('accounts.allTheAccounts', [
     figshare: {
       displayName: "figshare",
       url: "http://figshare.com",
+      syncs: true,
       descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
       username:{
             inputNeeded: "author page URL",
@@ -34,6 +35,7 @@ angular.module('accounts.allTheAccounts', [
 
     github: {
       displayName: "GitHub",
+      syncs: true,
       usernameCleanupFunction: function(x){return x},
       url: 'http://github.com',
       descr: "GitHub is an online code repository emphasizing community collaboration features.",
@@ -45,6 +47,7 @@ angular.module('accounts.allTheAccounts', [
 
     google_scholar: {
       displayName: "Google Scholar",
+      syncs:false,
       usernameCleanupFunction: function(x){return x},
       url: 'http://scholar.google.com/citations',
       descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",

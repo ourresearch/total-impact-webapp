@@ -68,10 +68,7 @@ angular.module("googleScholar", [
     setFinishCb: function(newFinishCb){
       finishCb = newFinishCb
     }
-
-
   }
-
 
   })
 

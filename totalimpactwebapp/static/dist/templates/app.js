@@ -10,44 +10,24 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "   <div class=\"account-name\"><img ng-src=\"{{ account.logoPath }}\"></div>\n" +
     "   <div class=\"linked-info\">\n" +
-    "      <span class=\"linking-in-progress working\" ng-show=\"loading.is(account.accountHost)\">\n" +
+    "      <div class=\"linking-in-progress working\" ng-show=\"loading.is(account.accountHost)\">\n" +
     "         <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "         <span class=\"text\">Linking account...</span>\n" +
-    "      </span>\n" +
+    "         <div class=\"text\">Linking account...</div>\n" +
+    "      </div>\n" +
     "\n" +
-    "      <!-- link info for account we are also syncing -->\n" +
-    "      <span class=\"linked\" ng-show=\"isLinked && account.accountHost != 'google_scholar'\" ng-class=\"{'just-added-products': justAddedProducts.length}\">\n" +
-    "         <span class=\"linked-status\">\n" +
-    "            <i class=\"icon-link left\"></i>\n" +
-    "            Linked and synced\n" +
-    "         </span>\n" +
-    "         <div class=\"products-just-added\" ng-show=\"justAddedProducts.length\">\n" +
-    "            <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ justAddedProducts.length }}</span>\n" +
-    "            <span class=\"descr\">products just added</span>\n" +
+    "      <div class=\"connected-toggle\" ng-show=\"!loading.is(account.accountHost)\">\n" +
+    "\n" +
+    "         <div class=\"toggle-housing toggle-on\" ng-show=\"isLinked\">\n" +
+    "               <div class=\"toggle-state-label\">on</div>\n" +
+    "               <div class=\"toggle-switch\"></div>\n" +
     "         </div>\n" +
-    "      </span>\n" +
     "\n" +
-    "      <!-- special version of link info for google scholar -->\n" +
-    "      <span class=\"linked\" ng-show=\"isLinked && account.accountHost=='google_scholar'\" ng-class=\"{'just-added-products': justAddedProducts.length}\">\n" +
-    "         <span class=\"linked-status\">\n" +
-    "            <i class=\"icon-link left\"></i>\n" +
-    "            Linked\n" +
-    "            <span class=\"excuses\">\n" +
-    "               click to sync manually\n" +
-    "            </span>\n" +
-    "         </span>\n" +
-    "         <div class=\"products-just-added\" ng-show=\"googleScholar.getTiids().length\">\n" +
-    "            <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ googleScholar.getTiids().length }}</span>\n" +
-    "            <span class=\"descr\">products just manually imported</span>\n" +
+    "         <div class=\"toggle-housing toggle-off\" ng-show=\"!isLinked\">\n" +
+    "               <div class=\"toggle-switch\"></div>\n" +
+    "               <div class=\"toggle-state-label\">off</div>\n" +
     "         </div>\n" +
-    "      </span>\n" +
     "\n" +
-    "\n" +
-    "      <span class=\"unlinked\" ng-show=\"!loading.is(account.accountHost) && !isLinked\">\n" +
-    "         <span class=\"linked-status\">\n" +
-    "            Unlinked\n" +
-    "         </span>\n" +
-    "      </span>\n" +
+    "      </div>\n" +
     "\n" +
     "   </div>\n" +
     "</div>\n" +
@@ -99,11 +79,11 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
     "                  <button ng-show=\"!isLinked\" type=\"submit\" class=\"btn btn-primary\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
-    "                     Link and sync your  {{ account.displayName }}\n" +
+    "                     Connect to {{ account.displayName }}\n" +
     "                  </button>\n" +
     "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">\n" +
     "                     <i class=\"icon-unlink left\"></i>\n" +
-    "                     Unlink your  {{ account.displayName }}\n" +
+    "                     Disconnect from {{ account.displayName }}\n" +
     "                  </a>\n" +
     "\n" +
     "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
@@ -118,8 +98,8 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "         <div class=\"google-scholar-stuff\"\n" +
     "              ng-show=\"account.accountHost=='google_scholar' && isLinked\">\n" +
     "            <p class=\"excuses\">\n" +
-    "               Unfortunately, Google Scholar prevents anyone from\n" +
-    "               syncing articles, so we can't run automatic updates.\n" +
+    "               Unfortunately, Google Scholar prevents automatic profile access,\n" +
+    "               so we can't do automated updates.\n" +
     "               However, you can still import Google Scholar articles manually.\n" +
     "            </p>\n" +
     "            <div class=\"button-container\">\n" +
@@ -822,7 +802,7 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "   <div class=\"profile-accounts-header profile-subpage-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
-    "         <h1 class=\"instr\">Link to other accounts</h1>\n" +
+    "         <h1 class=\"instr\">Connect to other accounts</h1>\n" +
     "         <h2>We'll pull in your products in real time, keeping your Impactstory\n" +
     "         profile up to date.</h2>\n" +
     "      </div>\n" +

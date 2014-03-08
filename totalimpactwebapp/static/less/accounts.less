@@ -250,47 +250,56 @@ div.accounts {
          float:right;
          margin-right: 100px;
          font-size: 20px;
-         span.linking-in-progress {
-            margin-top: 10px;
+         margin-top: 10px;
+         div.linking-in-progress {
             display:block;
             font-weight: bold;
             color: @gray-light;
          }
-         span.unlinked {
-            padding-top: 10px;
-            display:block;
-            color: @gray-light;
-            font-weight: bold;
-         }
-         span.linked {
-            margin-top: 10px;
-            display:block;
-            color: @alert-success-text;
-            font-weight: bold;
 
-            .linked-status {
-               .excuses {
-                  color: @gray-light;
-                  font-size: 70%;
-                  font-weight: normal;
-                  width: 6em;
-                  display:inline-block;
-                  vertical-align: -4px;
-                  line-height: 1;
-                  text-align: left;
-                  margin-left: 20px;
+         div.connected-toggle {
+            @toggle-width: 80px;
+            .toggle-housing {
+               height: 30px;
+               width: @toggle-width;
+               background: #ccc;
+               .border-radius(15px, 15px, 15px, 15px);
+               font-size: 16px;
+
+               .toggle-switch {
+                  height: 26px;
+                  margin: 2px;
+                  background: #fff;
+                  width: 26px;
+                  .border-radius(13px, 13px, 13px, 13px);
+                  float: left;
                }
-            }
-
-            &.just-added-products {
-               margin-top: -5px;
-               .products-just-added {
-                  font-weight: 300;
-                  font-size: 70%;
+               .toggle-state-label {
+                  float:right;
+                  margin-right: 19px;
+                  margin-top: 3px;
                }
 
+               &.toggle-on {
+                  background: @btn-success-bg;
+                  .toggle-state-label {
+                     float: left;
+                     margin-right: 0;
+                     margin-left: 22px;
+                  }
+                  .toggle-switch {
+                     float:right;
+                  }
+
+               }
+               &.toggle-off {
+
+               }
+
+
             }
          }
+
 
       }
 
