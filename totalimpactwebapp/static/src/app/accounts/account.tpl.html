@@ -11,17 +11,17 @@
          <div class="text"></div>
       </div>
 
-      <div class="connected-toggle"
+      <div class="connected-toggle" id="{{account.CSSname}}-account-toggle"
            ng-show="!loading.is(account.accountHost)">
 
          <div class="toggle-housing toggle-on sync-{{ account.sync }}" ng-show="isLinked">
-               <div class="toggle-state-label">on</div>
+               <div class="toggle-state-label" id="{{account.CSSname}}-account-toggle-on">on</div>
                <div class="toggle-switch"></div>
          </div>
 
          <div class="toggle-housing toggle-off sync-{{ account.sync }}" ng-show="!isLinked">
                <div class="toggle-switch"></div>
-               <div class="toggle-state-label">off</div>
+               <div class="toggle-state-label" id="{{account.CSSname}}-account-toggle-off">off</div>
          </div>
 
       </div>
@@ -61,12 +61,13 @@
 
             <div class="form-group username">
                <label class="control-label">
-                  {{ account.displayName }} {{ account.username.inputNeeded }}
+                  {{ account.CSSname }} {{ account.username.inputNeeded }}
                   <i class="icon-question-sign" ng-show="account.username.help" tooltip-html-unsafe="{{ account.username.help }}"></i>
                </label>
                <div class="account-input">
                   <input
-                          class="form-control"
+                          class="form-control",
+                          id="{{ account.CSSname }}-account-username-input"
                           ng-model="account.username.value"
                           ng-disabled="isLinked"
                           type="text"
@@ -79,7 +80,8 @@
 
             <div class="buttons-group save">
                <div class="buttons" ng-show="!loading.is('saveButton')">
-                  <button ng-show="!isLinked" type="submit"
+                  <button ng-show="!isLinked" type="submit" 
+                          id="{{ account.CSSname }}-account-username-submit",                  
                           ng-class="{'btn-success': account.sync, 'btn-primary': !account.sync }" class="btn">
                      <i class="icon-link left"></i>
                      Connect to {{ account.displayName }}

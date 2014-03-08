@@ -15,17 +15,17 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "         <div class=\"text\"></div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"connected-toggle\"\n" +
+    "      <div class=\"connected-toggle\" id=\"{{account.CSSname}}-account-toggle\"\n" +
     "           ng-show=\"!loading.is(account.accountHost)\">\n" +
     "\n" +
     "         <div class=\"toggle-housing toggle-on sync-{{ account.sync }}\" ng-show=\"isLinked\">\n" +
-    "               <div class=\"toggle-state-label\">on</div>\n" +
+    "               <div class=\"toggle-state-label\" id=\"{{account.CSSname}}-account-toggle-on\">on</div>\n" +
     "               <div class=\"toggle-switch\"></div>\n" +
     "         </div>\n" +
     "\n" +
     "         <div class=\"toggle-housing toggle-off sync-{{ account.sync }}\" ng-show=\"!isLinked\">\n" +
     "               <div class=\"toggle-switch\"></div>\n" +
-    "               <div class=\"toggle-state-label\">off</div>\n" +
+    "               <div class=\"toggle-state-label\" id=\"{{account.CSSname}}-account-toggle-off\">off</div>\n" +
     "         </div>\n" +
     "\n" +
     "      </div>\n" +
@@ -65,12 +65,13 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"form-group username\">\n" +
     "               <label class=\"control-label\">\n" +
-    "                  {{ account.displayName }} {{ account.username.inputNeeded }}\n" +
+    "                  {{ account.CSSname }} {{ account.username.inputNeeded }}\n" +
     "                  <i class=\"icon-question-sign\" ng-show=\"account.username.help\" tooltip-html-unsafe=\"{{ account.username.help }}\"></i>\n" +
     "               </label>\n" +
     "               <div class=\"account-input\">\n" +
     "                  <input\n" +
-    "                          class=\"form-control\"\n" +
+    "                          class=\"form-control\",\n" +
+    "                          id=\"{{ account.CSSname }}-account-username-input\"\n" +
     "                          ng-model=\"account.username.value\"\n" +
     "                          ng-disabled=\"isLinked\"\n" +
     "                          type=\"text\"\n" +
@@ -83,7 +84,8 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"!isLinked\" type=\"submit\"\n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\" \n" +
+    "                          id=\"{{ account.CSSname }}-account-username-submit\",                  \n" +
     "                          ng-class=\"{'btn-success': account.sync, 'btn-primary': !account.sync }\" class=\"btn\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
     "                     Connect to {{ account.displayName }}\n" +
