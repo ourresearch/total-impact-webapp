@@ -5017,65 +5017,39 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </h2>\n" +
     "         <div class=\"external-usernames\">\n" +
     "            <ul>\n" +
-    "               <li ng-show=\"user.about.academia_edu_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://academia.edu/\">\n" +
-    "                     <img src=\"http://www.academia.edu/favicon.ico\">\n" +
-    "                     <span class=\"service\">Academia.edu</span>\n" +
-    "                  </a>\n" +
-    "               </li>        \n" +
+    "\n" +
     "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"http://figshare.com\">\n" +
+    "                  <a href=\"{{ user.about.figshare_id }}\">\n" +
     "                     <img src=\"http://figshare.com/static/img/favicon.png\">\n" +
     "                     <span class=\"service\">figshare</span>\n" +
     "                  </a>\n" +
     "               </li>           \n" +
     "               <li ng-show=\"user.about.github_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://github.com/\">\n" +
+    "                  <a href=\"https://github.com/{{ user.about.github_id }}\">\n" +
     "                     <img src=\"https://github.com/fluidicon.png\">\n" +
     "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "               <li ng-show=\"user.about.google_scholar_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://github.com/\">\n" +
+    "                  <a href=\"{{ user.about.google_scholar_id }}\">\n" +
     "                     <img src=\"http://scholar.google.com/favicon.ico\">\n" +
     "                     <span class=\"service\">Google Scholar</span>\n" +
     "                  </a>\n" +
     "               </li>     \n" +
-    "               <li ng-show=\"user.about.linkedin_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://linkedin.com/\">\n" +
-    "                     <img src=\"http://s.c.lnkd.licdn.com/scds/common/u/images/logos/favicons/v1/16x16/favicon.ico\">\n" +
-    "                     <span class=\"service\">LinkedIn</span>\n" +
-    "                  </a>\n" +
-    "               </li>\n" +
-    "               <li ng-show=\"user.about.mendeley_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://mendeley.com/\">\n" +
-    "                     <img src=\"http://www.mendeley.com/graphics/favicon.ico\">\n" +
-    "                     <span class=\"service\">Mendeley</span>\n" +
-    "                  </a>\n" +
-    "               </li>                                                   \n" +
     "               <li ng-show=\"user.about.orcid_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://orcid.org/\">\n" +
+    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\">\n" +
     "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\">\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.researchgate_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://researchgate.net/\">\n" +
-    "                     <img src=\"http://researchgate.net/favicon.ico\">\n" +
-    "                     <span class=\"service\">ResearchGate</span>\n" +
-    "                  </a>\n" +
-    "               </li>\n" +
+    "\n" +
     "               <li ng-show=\"user.about.slideshare_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://www.slideshare.net/\">\n" +
+    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
     "                     <img src=\"http://www.slideshare.net/favicon.ico\">\n" +
     "                     <span class=\"service\">Slideshare</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.twitter_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://twitter.com/\">\n" +
-    "                     <img src=\"https://twitter.com/favicon.ico\">\n" +
-    "                     <span class=\"service\">Twitter</span>\n" +
-    "                  </a>\n" +
+    "\n" +
     "               </li>\n" +
     "            </ul>\n" +
     "\n" +
@@ -5621,7 +5595,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
 angular.module("update/update-progress.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("update/update-progress.tpl.html",
     "<div class=\"modal-header\">\n" +
-    "   <h3>Finding impact data</h3>\n" +
+    "   <h3 id=\"finding-impact-data-header\">Finding impact data</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body update\">\n" +
     "   <div class=\"intro\"><br>We're scouring the web to discover the impacts of all your research products...</div>\n" +
