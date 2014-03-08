@@ -29,11 +29,11 @@
             <i class="icon-link left"></i>
             Linked
             <span class="excuses">
-               Syncing not yet available
+               click to sync manually
             </span>
          </span>
-         <div class="products-just-added" ng-show="justAddedProducts.length">
-            <span class="count" id="{{ account.CSSname }}-account-count">{{ googleScholar.getTiids.length }}</span>
+         <div class="products-just-added" ng-show="googleScholar.getTiids().length">
+            <span class="count" id="{{ account.CSSname }}-account-count">{{ googleScholar.getTiids().length }}</span>
             <span class="descr">products just manually imported</span>
          </div>
       </span>
@@ -111,8 +111,22 @@
 
          <div class="extra" ng-show="account.extra" ng-bind-html-unsafe="account.extra"></div>
 
-         <div class="google-scholar-stuff">
-            <a class="show-modal" ng-click="googleScholar.showImportModal()">Manually import products</a>
+         <div class="google-scholar-stuff"
+              ng-show="account.accountHost=='google_scholar' && isLinked">
+            <p class="excuses">
+               Unfortunately, Google Scholar prevents anyone from
+               syncing articles, so we can't run automatic updates.
+               However, you can still import Google Scholar articles manually.
+            </p>
+            <div class="button-container">
+               <a id="show-google-scholar-import-modal-button"
+                  class="show-modal btn btn-info"
+                  ng-click="showImportModal()">
+                  Manually import products
+               </a>
+
+            </div>
+
          </div>
 
       </div>

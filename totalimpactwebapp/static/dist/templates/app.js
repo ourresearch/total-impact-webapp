@@ -33,11 +33,11 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "            <i class=\"icon-link left\"></i>\n" +
     "            Linked\n" +
     "            <span class=\"excuses\">\n" +
-    "               Syncing not yet available\n" +
+    "               click to sync manually\n" +
     "            </span>\n" +
     "         </span>\n" +
-    "         <div class=\"products-just-added\" ng-show=\"justAddedProducts.length\">\n" +
-    "            <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ googleScholar.getTiids.length }}</span>\n" +
+    "         <div class=\"products-just-added\" ng-show=\"googleScholar.getTiids().length\">\n" +
+    "            <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ googleScholar.getTiids().length }}</span>\n" +
     "            <span class=\"descr\">products just manually imported</span>\n" +
     "         </div>\n" +
     "      </span>\n" +
@@ -115,8 +115,22 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "         <div class=\"extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
     "\n" +
-    "         <div class=\"google-scholar-stuff\">\n" +
-    "            <a class=\"show-modal\" ng-click=\"googleScholar.showImportModal()\">Manually import products</a>\n" +
+    "         <div class=\"google-scholar-stuff\"\n" +
+    "              ng-show=\"account.accountHost=='google_scholar' && isLinked\">\n" +
+    "            <p class=\"excuses\">\n" +
+    "               Unfortunately, Google Scholar prevents anyone from\n" +
+    "               syncing articles, so we can't run automatic updates.\n" +
+    "               However, you can still import Google Scholar articles manually.\n" +
+    "            </p>\n" +
+    "            <div class=\"button-container\">\n" +
+    "               <a id=\"show-google-scholar-import-modal-button\"\n" +
+    "                  class=\"show-modal btn btn-info\"\n" +
+    "                  ng-click=\"showImportModal()\">\n" +
+    "                  Manually import products\n" +
+    "               </a>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
     "         </div>\n" +
     "\n" +
     "      </div>\n" +
@@ -193,24 +207,27 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "   <h4>Manually import Google Scholar articles</h4>\n" +
     "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
     "</div>\n" +
-    "<div class=\"modal-body tour-start\">\n" +
+    "<div class=\"modal-body google-scholar-import\">\n" +
     "   <p>\n" +
-    "      Unfortunately, Google Scholar prevents us from automatically\n" +
-    "      syncing articles. However, you <em>can</em> manually upload your data. Here's how:\n" +
+    "      Unfortunately, Google Scholar prevents automatic\n" +
+    "      syncing. However, you can manually import your data. Here's how:\n" +
     "   </p>\n" +
     "\n" +
     "   <ol>\n" +
     "     <li>Go to <a class=\"your-google-scholar-profile\" target=\"_blank\" href=\"{{ currentUser.google_scholar_id }}\">your Google Scholar profile</a>.</li>\n" +
     "     <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>\n" +
-    "     <li>Click <code>Export all my articles</code>, then save the BibTex file.</li>\n" +
-    "     <li>Return to Impactstory. Click \"upload\" in this window, select your previously saved file, and upload.\n" +
+    "     <li>Click <code>Export all my articles</code>, then save the BiBTeX file.</li>\n" +
+    "     <li>Return to Impactstory and upload your .bib file here.\n" +
     "   </ol>\n" +
     "\n" +
-    "   <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
+    "   <div class=\"file-input-container\">\n" +
+    "      <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
+    "   </div>\n" +
+    "\n" +
     "\n" +
     "\n" +
     "   <div class=\"submit\" ng-show=\"fileLoaded && !loading.is('bibtex')\">\n" +
-    "      <a class=\"btn btn-primary\" ng-click=\"googleScholar.sendToServer()\">\n" +
+    "      <a class=\"btn btn-primary\" ng-click=\"sendToServer()\">\n" +
     "         Import {{ googleScholar.bibtexArticlesCount() }} articles\n" +
     "      </a>\n" +
     "   </div>\n" +

@@ -141,7 +141,17 @@ angular.module('accounts.account', [
   $scope.justAddedProducts =[]
   $scope.isLinked = !!$scope.account.username.value
   $scope.setCurrentTab = function(index){$scope.currentTab = index}
+
+  GoogleScholar.setFinishCb(function(resp){
+    console.log("calling finishCb supplied by account controller.")
+    $scope.accountWindowOpen = false
+  })
   $scope.googleScholar = GoogleScholar
+
+  $scope.showImportModal = function(){
+    GoogleScholar.showImportModal()
+    $scope.accountWindowOpen = false
+  }
 
 
   $scope.onCancel = function(){
@@ -211,16 +221,16 @@ angular.module('accounts.allTheAccounts', [
 
   var importedProducts = []
   var accounts = {
-    academia_edu: {
-      displayName: "Academia.edu",
-      usernameCleanupFunction: function(x){return x},
-      url:'http://academia.edu',
-      descr: "Academia.edu is a place to share and follow research.",
-      username: {
-        inputNeeded: "profile URL",
-          placeholder: "http://your_university.academia.edu/your_username"
-      }
-    },
+//    academia_edu: {
+//      displayName: "Academia.edu",
+//      usernameCleanupFunction: function(x){return x},
+//      url:'http://academia.edu',
+//      descr: "Academia.edu is a place to share and follow research.",
+//      username: {
+//        inputNeeded: "profile URL",
+//          placeholder: "http://your_university.academia.edu/your_username"
+//      }
+//    },
 
     figshare: {
       displayName: "figshare",
@@ -259,27 +269,27 @@ angular.module('accounts.allTheAccounts', [
       }
     },
 
-    linkedin: {
-      displayName: "LinkedIn",
-      usernameCleanupFunction: function(x){return x},
-      url:'http://linkedin.com',
-      descr: "LinkedIn is a social networking site for professional networking.",
-      username: {
-        inputNeeded: "profile URL",
-          placeholder: "http://www.linkedin.com/in/your_username"
-      }
-    }, 
+//    linkedin: {
+//      displayName: "LinkedIn",
+//      usernameCleanupFunction: function(x){return x},
+//      url:'http://linkedin.com',
+//      descr: "LinkedIn is a social networking site for professional networking.",
+//      username: {
+//        inputNeeded: "profile URL",
+//          placeholder: "http://www.linkedin.com/in/your_username"
+//      }
+//    },
 
-    mendeley: {
-      displayName: "Mendeley",
-      usernameCleanupFunction: function(x){return x},
-      url:'http://mendeley.com',
-      descr: "Mendeley is a desktop and web program for managing and sharing research papers,discovering research data, and collaborating online.",
-      username: {
-        inputNeeded: "profile URL",
-          placeholder: "http://www.mendeley.com/profiles/your_username"
-      }
-    },
+//    mendeley: {
+//      displayName: "Mendeley",
+//      usernameCleanupFunction: function(x){return x},
+//      url:'http://mendeley.com',
+//      descr: "Mendeley is a desktop and web program for managing and sharing research papers,discovering research data, and collaborating online.",
+//      username: {
+//        inputNeeded: "profile URL",
+//          placeholder: "http://www.mendeley.com/profiles/your_username"
+//      }
+//    },
 
     orcid: {
       displayName: "ORCID",
@@ -295,16 +305,16 @@ angular.module('accounts.allTheAccounts', [
       extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
     },
 
-    researchgate: {
-      displayName: "ResearchGate",
-      usernameCleanupFunction: function(x){return x},
-      url:'http://researchgate.net',
-      descr: "ResearchGate is a social networking site for scientists and researchers to share papers, ask and answer questions, and find collaborators.",
-      username: {
-        inputNeeded: "profile URL",
-          placeholder: "https://www.researchgate.net/profile/your_username"
-      }
-    },
+//    researchgate: {
+//      displayName: "ResearchGate",
+//      usernameCleanupFunction: function(x){return x},
+//      url:'http://researchgate.net',
+//      descr: "ResearchGate is a social networking site for scientists and researchers to share papers, ask and answer questions, and find collaborators.",
+//      username: {
+//        inputNeeded: "profile URL",
+//          placeholder: "https://www.researchgate.net/profile/your_username"
+//      }
+//    },
 
     slideshare: {
       displayName: "SlideShare",
@@ -315,21 +325,21 @@ angular.module('accounts.allTheAccounts', [
           help: "Your username is right after \"slideshare.net/\" in your profile's URL.",
           inputNeeded: "username"
       }
-    },
-
-
-    twitter: {
-      displayName: "Twitter",
-      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
-      url:'http://twitter.com',
-      descr: "Twitter is a social networking site for sharing short messages.",
-      extra: "We don't import your tweets right now -- stay tuned!",      
-      username: {
-          inputNeeded: "username",
-          placeholder: "@example",
-          help: "Your Twitter username is often written starting with @."        
-      }
     }
+
+
+//    ,twitter: {
+//      displayName: "Twitter",
+//      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
+//      url:'http://twitter.com',
+//      descr: "Twitter is a social networking site for sharing short messages.",
+//      extra: "We don't import your tweets right now -- stay tuned!",
+//      username: {
+//          inputNeeded: "username",
+//          placeholder: "@example",
+//          help: "Your Twitter username is often written starting with @."
+//      }
+//    }
 
   }
 
@@ -535,9 +545,10 @@ angular.module("googleScholar", [
  "resources.users"
 
 ])
-.factory("GoogleScholar", function($modal, UsersProducts, security){
+.factory("GoogleScholar", function($modal, $q, UsersProducts, security){
   var bibtex = ""
   var tiids = []
+  var finishCb = function(resp){}
   var bibtexArticlesCount = function(){
     var matches = bibtex.match(/^@/gm)
     if (matches) {
@@ -580,12 +591,13 @@ angular.module("googleScholar", [
         "Number of products": bibtexArticlesCount()
       })
 
-      UsersProducts.patch(
+      return UsersProducts.patch(
         {id: security.getCurrentUser("url_slug")},
         {bibtex: bibtex},
         function(resp){
-          console.log("successfully uploaded bibtex!", resp)
+          console.log("successfully uploaded bibtex! Calling finishCb()", resp)
           tiids = resp.products
+          finishCb(resp)
         },
         function(resp){
           console.log("bibtex import failed :(")
@@ -594,6 +606,9 @@ angular.module("googleScholar", [
     },
     getTiids: function(){
       return tiids
+    },
+    setFinishCb: function(newFinishCb){
+      finishCb = newFinishCb
     }
 
 
@@ -605,8 +620,14 @@ angular.module("googleScholar", [
   .controller("GoogleScholarModalCtrl", function($scope, GoogleScholar, currentUser){
     console.log("modal controller activated!")
     $scope.currentUser = currentUser
-
     $scope.googleScholar = GoogleScholar
+
+    $scope.sendToServer = function(){
+      GoogleScholar.sendToServer().$then(function(resp){
+        console.log("finished with the upload, closing the modal.")
+        $scope.$close()
+      })
+    }
 
     $scope.$on("fileLoaded", function(event, result){
       GoogleScholar.setBibtex(result)
@@ -3886,11 +3907,11 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "            <i class=\"icon-link left\"></i>\n" +
     "            Linked\n" +
     "            <span class=\"excuses\">\n" +
-    "               Syncing not yet available\n" +
+    "               click to sync manually\n" +
     "            </span>\n" +
     "         </span>\n" +
-    "         <div class=\"products-just-added\" ng-show=\"justAddedProducts.length\">\n" +
-    "            <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ googleScholar.getTiids.length }}</span>\n" +
+    "         <div class=\"products-just-added\" ng-show=\"googleScholar.getTiids().length\">\n" +
+    "            <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ googleScholar.getTiids().length }}</span>\n" +
     "            <span class=\"descr\">products just manually imported</span>\n" +
     "         </div>\n" +
     "      </span>\n" +
@@ -3968,8 +3989,22 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "         <div class=\"extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
     "\n" +
-    "         <div class=\"google-scholar-stuff\">\n" +
-    "            <a class=\"show-modal\" ng-click=\"googleScholar.showImportModal()\">Manually import products</a>\n" +
+    "         <div class=\"google-scholar-stuff\"\n" +
+    "              ng-show=\"account.accountHost=='google_scholar' && isLinked\">\n" +
+    "            <p class=\"excuses\">\n" +
+    "               Unfortunately, Google Scholar prevents anyone from\n" +
+    "               syncing articles, so we can't run automatic updates.\n" +
+    "               However, you can still import Google Scholar articles manually.\n" +
+    "            </p>\n" +
+    "            <div class=\"button-container\">\n" +
+    "               <a id=\"show-google-scholar-import-modal-button\"\n" +
+    "                  class=\"show-modal btn btn-info\"\n" +
+    "                  ng-click=\"showImportModal()\">\n" +
+    "                  Manually import products\n" +
+    "               </a>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
     "         </div>\n" +
     "\n" +
     "      </div>\n" +
@@ -4046,24 +4081,27 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "   <h4>Manually import Google Scholar articles</h4>\n" +
     "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
     "</div>\n" +
-    "<div class=\"modal-body tour-start\">\n" +
+    "<div class=\"modal-body google-scholar-import\">\n" +
     "   <p>\n" +
-    "      Unfortunately, Google Scholar prevents us from automatically\n" +
-    "      syncing articles. However, you <em>can</em> manually upload your data. Here's how:\n" +
+    "      Unfortunately, Google Scholar prevents automatic\n" +
+    "      syncing. However, you can manually import your data. Here's how:\n" +
     "   </p>\n" +
     "\n" +
     "   <ol>\n" +
     "     <li>Go to <a class=\"your-google-scholar-profile\" target=\"_blank\" href=\"{{ currentUser.google_scholar_id }}\">your Google Scholar profile</a>.</li>\n" +
     "     <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>\n" +
-    "     <li>Click <code>Export all my articles</code>, then save the BibTex file.</li>\n" +
-    "     <li>Return to Impactstory. Click \"upload\" in this window, select your previously saved file, and upload.\n" +
+    "     <li>Click <code>Export all my articles</code>, then save the BiBTeX file.</li>\n" +
+    "     <li>Return to Impactstory and upload your .bib file here.\n" +
     "   </ol>\n" +
     "\n" +
-    "   <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
+    "   <div class=\"file-input-container\">\n" +
+    "      <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
+    "   </div>\n" +
+    "\n" +
     "\n" +
     "\n" +
     "   <div class=\"submit\" ng-show=\"fileLoaded && !loading.is('bibtex')\">\n" +
-    "      <a class=\"btn btn-primary\" ng-click=\"googleScholar.sendToServer()\">\n" +
+    "      <a class=\"btn btn-primary\" ng-click=\"sendToServer()\">\n" +
     "         Import {{ googleScholar.bibtexArticlesCount() }} articles\n" +
     "      </a>\n" +
     "   </div>\n" +

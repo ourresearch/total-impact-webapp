@@ -3,9 +3,10 @@ angular.module("googleScholar", [
  "resources.users"
 
 ])
-.factory("GoogleScholar", function($modal, UsersProducts, security){
+.factory("GoogleScholar", function($modal, $q, UsersProducts, security){
   var bibtex = ""
   var tiids = []
+  var finishCb = function(resp){}
   var bibtexArticlesCount = function(){
     var matches = bibtex.match(/^@/gm)
     if (matches) {
@@ -48,12 +49,13 @@ angular.module("googleScholar", [
         "Number of products": bibtexArticlesCount()
       })
 
-      UsersProducts.patch(
+      return UsersProducts.patch(
         {id: security.getCurrentUser("url_slug")},
         {bibtex: bibtex},
         function(resp){
-          console.log("successfully uploaded bibtex!", resp)
+          console.log("successfully uploaded bibtex! Calling finishCb()", resp)
           tiids = resp.products
+          finishCb(resp)
         },
         function(resp){
           console.log("bibtex import failed :(")
@@ -62,6 +64,9 @@ angular.module("googleScholar", [
     },
     getTiids: function(){
       return tiids
+    },
+    setFinishCb: function(newFinishCb){
+      finishCb = newFinishCb
     }
 
 
@@ -73,8 +78,14 @@ angular.module("googleScholar", [
   .controller("GoogleScholarModalCtrl", function($scope, GoogleScholar, currentUser){
     console.log("modal controller activated!")
     $scope.currentUser = currentUser
-
     $scope.googleScholar = GoogleScholar
+
+    $scope.sendToServer = function(){
+      GoogleScholar.sendToServer().$then(function(resp){
+        console.log("finished with the upload, closing the modal.")
+        $scope.$close()
+      })
+    }
 
     $scope.$on("fileLoaded", function(event, result){
       GoogleScholar.setBibtex(result)

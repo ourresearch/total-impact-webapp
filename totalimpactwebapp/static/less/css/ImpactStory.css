@@ -8397,6 +8397,19 @@ div.settings div.settings-input form.form-horizontal.linked-accounts-settings .f
 div.settings div.settings-input form.form-horizontal.linked-accounts-settings .submit {
   margin-top: 50px;
 }
+div.modal-body.google-scholar-import ol {
+  margin: 20px 0 40px;
+}
+div.modal-body.google-scholar-import ol li {
+  font-size: 90%;
+}
+div.modal-body.google-scholar-import .file-input-container {
+  padding-left: 50px;
+}
+div.modal-body.google-scholar-import .submit {
+  margin-top: 30px;
+  text-align: center;
+}
 div.accounts {
   width: 100%;
   float: left;
@@ -8572,6 +8585,16 @@ div.accounts div.account-window-wrapper div.account-window .content .extra h3 {
 div.accounts div.account-window-wrapper div.account-window .content .extra code {
   border: 1px solid #dddddd;
 }
+div.accounts div.account-window-wrapper div.account-window .content .google-scholar-stuff p.excuses {
+  color: #555555;
+  margin-top: 100px;
+  padding-top: 10px;
+  border-top: 1px solid #999999;
+}
+div.accounts div.account-window-wrapper div.account-window .content .google-scholar-stuff .button-container {
+  margin-top: 20px;
+  text-align: center;
+}
 div.accounts div.account-tile {
   float: left;
   background: #fff;
@@ -8643,12 +8666,12 @@ div.accounts div.account-tile div.linked-info span.linked .linked-status .excuse
   color: #999999;
   font-size: 70%;
   font-weight: normal;
-  width: 100px;
+  width: 6em;
   display: inline-block;
   vertical-align: -4px;
   line-height: 1;
   text-align: left;
-  margin-left: 10px;
+  margin-left: 20px;
 }
 div.accounts div.account-tile div.linked-info span.linked.just-added-products {
   margin-top: -5px;
