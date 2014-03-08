@@ -15,17 +15,17 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "         <div class=\"text\"></div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"connected-toggle\"\n" +
+    "      <div class=\"connected-toggle\" id=\"{{account.CSSname}}-account-toggle\"\n" +
     "           ng-show=\"!loading.is(account.accountHost)\">\n" +
     "\n" +
     "         <div class=\"toggle-housing toggle-on sync-{{ account.sync }}\" ng-show=\"isLinked\">\n" +
-    "               <div class=\"toggle-state-label\">on</div>\n" +
+    "               <div class=\"toggle-state-label\" id=\"{{account.CSSname}}-account-toggle-on\">on</div>\n" +
     "               <div class=\"toggle-switch\"></div>\n" +
     "         </div>\n" +
     "\n" +
     "         <div class=\"toggle-housing toggle-off sync-{{ account.sync }}\" ng-show=\"!isLinked\">\n" +
     "               <div class=\"toggle-switch\"></div>\n" +
-    "               <div class=\"toggle-state-label\">off</div>\n" +
+    "               <div class=\"toggle-state-label\" id=\"{{account.CSSname}}-account-toggle-off\">off</div>\n" +
     "         </div>\n" +
     "\n" +
     "      </div>\n" +
@@ -65,12 +65,13 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"form-group username\">\n" +
     "               <label class=\"control-label\">\n" +
-    "                  {{ account.displayName }} {{ account.username.inputNeeded }}\n" +
+    "                  {{ account.CSSname }} {{ account.username.inputNeeded }}\n" +
     "                  <i class=\"icon-question-sign\" ng-show=\"account.username.help\" tooltip-html-unsafe=\"{{ account.username.help }}\"></i>\n" +
     "               </label>\n" +
     "               <div class=\"account-input\">\n" +
     "                  <input\n" +
-    "                          class=\"form-control\"\n" +
+    "                          class=\"form-control\",\n" +
+    "                          id=\"{{ account.CSSname }}-account-username-input\"\n" +
     "                          ng-model=\"account.username.value\"\n" +
     "                          ng-disabled=\"isLinked\"\n" +
     "                          type=\"text\"\n" +
@@ -83,7 +84,8 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"!isLinked\" type=\"submit\"\n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\" \n" +
+    "                          id=\"{{ account.CSSname }}-account-username-submit\",                  \n" +
     "                          ng-class=\"{'btn-success': account.sync, 'btn-primary': !account.sync }\" class=\"btn\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
     "                     Connect to {{ account.displayName }}\n" +
@@ -1135,65 +1137,39 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </h2>\n" +
     "         <div class=\"external-usernames\">\n" +
     "            <ul>\n" +
-    "               <li ng-show=\"user.about.academia_edu_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://academia.edu/\">\n" +
-    "                     <img src=\"http://www.academia.edu/favicon.ico\">\n" +
-    "                     <span class=\"service\">Academia.edu</span>\n" +
-    "                  </a>\n" +
-    "               </li>        \n" +
+    "\n" +
     "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"http://figshare.com\">\n" +
+    "                  <a href=\"{{ user.about.figshare_id }}\">\n" +
     "                     <img src=\"http://figshare.com/static/img/favicon.png\">\n" +
     "                     <span class=\"service\">figshare</span>\n" +
     "                  </a>\n" +
     "               </li>           \n" +
     "               <li ng-show=\"user.about.github_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://github.com/\">\n" +
+    "                  <a href=\"https://github.com/{{ user.about.github_id }}\">\n" +
     "                     <img src=\"https://github.com/fluidicon.png\">\n" +
     "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "               <li ng-show=\"user.about.google_scholar_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://github.com/\">\n" +
+    "                  <a href=\"{{ user.about.google_scholar_id }}\">\n" +
     "                     <img src=\"http://scholar.google.com/favicon.ico\">\n" +
     "                     <span class=\"service\">Google Scholar</span>\n" +
     "                  </a>\n" +
     "               </li>     \n" +
-    "               <li ng-show=\"user.about.linkedin_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://linkedin.com/\">\n" +
-    "                     <img src=\"http://s.c.lnkd.licdn.com/scds/common/u/images/logos/favicons/v1/16x16/favicon.ico\">\n" +
-    "                     <span class=\"service\">LinkedIn</span>\n" +
-    "                  </a>\n" +
-    "               </li>\n" +
-    "               <li ng-show=\"user.about.mendeley_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://mendeley.com/\">\n" +
-    "                     <img src=\"http://www.mendeley.com/graphics/favicon.ico\">\n" +
-    "                     <span class=\"service\">Mendeley</span>\n" +
-    "                  </a>\n" +
-    "               </li>                                                   \n" +
     "               <li ng-show=\"user.about.orcid_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://orcid.org/\">\n" +
+    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\">\n" +
     "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\">\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.researchgate_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://researchgate.net/\">\n" +
-    "                     <img src=\"http://researchgate.net/favicon.ico\">\n" +
-    "                     <span class=\"service\">ResearchGate</span>\n" +
-    "                  </a>\n" +
-    "               </li>\n" +
+    "\n" +
     "               <li ng-show=\"user.about.slideshare_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://www.slideshare.net/\">\n" +
+    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
     "                     <img src=\"http://www.slideshare.net/favicon.ico\">\n" +
     "                     <span class=\"service\">Slideshare</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.twitter_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://twitter.com/\">\n" +
-    "                     <img src=\"https://twitter.com/favicon.ico\">\n" +
-    "                     <span class=\"service\">Twitter</span>\n" +
-    "                  </a>\n" +
+    "\n" +
     "               </li>\n" +
     "            </ul>\n" +
     "\n" +
@@ -1739,7 +1715,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
 angular.module("update/update-progress.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("update/update-progress.tpl.html",
     "<div class=\"modal-header\">\n" +
-    "   <h3>Finding impact data</h3>\n" +
+    "   <h3 id=\"finding-impact-data-header\">Finding impact data</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body update\">\n" +
     "   <div class=\"intro\"><br>We're scouring the web to discover the impacts of all your research products...</div>\n" +

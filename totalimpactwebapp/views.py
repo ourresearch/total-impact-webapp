@@ -563,12 +563,21 @@ def providers():
 
 
 
+#------------------ /tests  (supports functional testing) -----------------
 
 
+@app.route("/tests", methods=["DELETE"])
+def delete_all_test_users():
+    if not has_admin_authorization():
+        abort_json(401, "Need admin key to delete all test users")
 
-
-
-
+    email_suffex_for_text_accounts = "@test-impactstory.org"
+    users = User.query.filter(User.email.like("%"+email_suffex_for_text_accounts)).all()
+    user_slugs_deleted = []
+    for user in users:
+        user_slugs_deleted.append(user.url_slug)
+        delete_user(user)
+    return json_resp_from_thing({"test_users": user_slugs_deleted})
 
 
 
