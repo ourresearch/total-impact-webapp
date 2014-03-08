@@ -14,7 +14,9 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "         <i class=\"icon-refresh icon-spin\"></i>\n" +
     "         <span class=\"text\">Linking account...</span>\n" +
     "      </span>\n" +
-    "      <span class=\"linked\" ng-show=\"isLinked\" ng-class=\"{'just-added-products': justAddedProducts.length}\">\n" +
+    "\n" +
+    "      <!-- link info for account we are also syncing -->\n" +
+    "      <span class=\"linked\" ng-show=\"isLinked && account.accountHost != 'google_scholar'\" ng-class=\"{'just-added-products': justAddedProducts.length}\">\n" +
     "         <span class=\"linked-status\">\n" +
     "            <i class=\"icon-link left\"></i>\n" +
     "            Linked and synced\n" +
@@ -24,6 +26,23 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "            <span class=\"descr\">products just added</span>\n" +
     "         </div>\n" +
     "      </span>\n" +
+    "\n" +
+    "      <!-- special version of link info for google scholar -->\n" +
+    "      <span class=\"linked\" ng-show=\"isLinked && account.accountHost=='google_scholar'\" ng-class=\"{'just-added-products': justAddedProducts.length}\">\n" +
+    "         <span class=\"linked-status\">\n" +
+    "            <i class=\"icon-link left\"></i>\n" +
+    "            Linked\n" +
+    "            <span class=\"excuses\">\n" +
+    "               Syncing not yet available\n" +
+    "            </span>\n" +
+    "         </span>\n" +
+    "         <div class=\"products-just-added\" ng-show=\"justAddedProducts.length\">\n" +
+    "            <span class=\"count\" id=\"{{ account.CSSname }}-account-count\">{{ googleScholar.getTiids.length }}</span>\n" +
+    "            <span class=\"descr\">products just manually imported</span>\n" +
+    "         </div>\n" +
+    "      </span>\n" +
+    "\n" +
+    "\n" +
     "      <span class=\"unlinked\" ng-show=\"!loading.is(account.accountHost) && !isLinked\">\n" +
     "         <span class=\"linked-status\">\n" +
     "            Unlinked\n" +
@@ -96,7 +115,9 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "         <div class=\"extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
     "\n" +
-    "\n" +
+    "         <div class=\"google-scholar-stuff\">\n" +
+    "            <a class=\"show-modal\" ng-click=\"googleScholar.showImportModal()\">Manually import products</a>\n" +
+    "         </div>\n" +
     "\n" +
     "      </div>\n" +
     "   </div>\n" +

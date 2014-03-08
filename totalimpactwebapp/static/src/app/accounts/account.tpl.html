@@ -10,7 +10,9 @@
          <i class="icon-refresh icon-spin"></i>
          <span class="text">Linking account...</span>
       </span>
-      <span class="linked" ng-show="isLinked" ng-class="{'just-added-products': justAddedProducts.length}">
+
+      <!-- link info for account we are also syncing -->
+      <span class="linked" ng-show="isLinked && account.accountHost != 'google_scholar'" ng-class="{'just-added-products': justAddedProducts.length}">
          <span class="linked-status">
             <i class="icon-link left"></i>
             Linked and synced
@@ -20,6 +22,23 @@
             <span class="descr">products just added</span>
          </div>
       </span>
+
+      <!-- special version of link info for google scholar -->
+      <span class="linked" ng-show="isLinked && account.accountHost=='google_scholar'" ng-class="{'just-added-products': justAddedProducts.length}">
+         <span class="linked-status">
+            <i class="icon-link left"></i>
+            Linked
+            <span class="excuses">
+               Syncing not yet available
+            </span>
+         </span>
+         <div class="products-just-added" ng-show="justAddedProducts.length">
+            <span class="count" id="{{ account.CSSname }}-account-count">{{ googleScholar.getTiids.length }}</span>
+            <span class="descr">products just manually imported</span>
+         </div>
+      </span>
+
+
       <span class="unlinked" ng-show="!loading.is(account.accountHost) && !isLinked">
          <span class="linked-status">
             Unlinked
@@ -92,7 +111,9 @@
 
          <div class="extra" ng-show="account.extra" ng-bind-html-unsafe="account.extra"></div>
 
-
+         <div class="google-scholar-stuff">
+            <a class="show-modal" ng-click="googleScholar.showImportModal()">Manually import products</a>
+         </div>
 
       </div>
    </div>

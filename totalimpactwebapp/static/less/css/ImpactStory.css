@@ -8639,6 +8639,17 @@ div.accounts div.account-tile div.linked-info span.linked {
   color: #468847;
   font-weight: bold;
 }
+div.accounts div.account-tile div.linked-info span.linked .linked-status .excuses {
+  color: #999999;
+  font-size: 70%;
+  font-weight: normal;
+  width: 100px;
+  display: inline-block;
+  vertical-align: -4px;
+  line-height: 1;
+  text-align: left;
+  margin-left: 10px;
+}
 div.accounts div.account-tile div.linked-info span.linked.just-added-products {
   margin-top: -5px;
 }

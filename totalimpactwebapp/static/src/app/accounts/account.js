@@ -125,9 +125,6 @@ angular.module('accounts.account', [
     Loading,
     Update){
 
-          GoogleScholar.showImportModal()
-
-
   $scope.showAccountWindow = function(){
     $scope.accountWindowOpen = true;
     analytics.track("Opened an account window", {
@@ -139,6 +136,8 @@ angular.module('accounts.account', [
   $scope.justAddedProducts =[]
   $scope.isLinked = !!$scope.account.username.value
   $scope.setCurrentTab = function(index){$scope.currentTab = index}
+  $scope.googleScholar = GoogleScholar
+
 
   $scope.onCancel = function(){
     $scope.accountWindowOpen = false;

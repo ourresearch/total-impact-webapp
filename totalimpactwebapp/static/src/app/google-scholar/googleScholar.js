@@ -5,6 +5,7 @@ angular.module("googleScholar", [
 ])
 .factory("GoogleScholar", function($modal, UsersProducts, security){
   var bibtex = ""
+  var tiids = []
   var bibtexArticlesCount = function(){
     var matches = bibtex.match(/^@/gm)
     if (matches) {
@@ -52,11 +53,15 @@ angular.module("googleScholar", [
         {bibtex: bibtex},
         function(resp){
           console.log("successfully uploaded bibtex!", resp)
+          tiids = resp.products
         },
         function(resp){
           console.log("bibtex import failed :(")
         }
       )
+    },
+    getTiids: function(){
+      return tiids
     }
 
 
