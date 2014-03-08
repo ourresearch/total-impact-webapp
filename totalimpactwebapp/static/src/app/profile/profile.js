@@ -31,7 +31,19 @@ angular.module("profile", [
     return (security.getCurrentUser().url_slug == slug);
   }
 
+  var cacheProductsSetting = false
+
   return {
+
+    cacheProducts: function(cacheProductsArg){
+      // set or get the cache products setting.
+
+      if (typeof cacheProductsArg !== "undefined"){
+        cacheProductsSetting = !!cacheProductsArg
+      }
+
+      return cacheProductsSetting
+    },
 
     makeAnchorLink: function(genre, account){
       var anchor = genre
