@@ -103,7 +103,7 @@
       <div class="edit-controls btn-group">
          <div class="num-items">
             <span ng-hide="loadingProducts()" class="val-plus-text">
-               <span class="value" id="number-products">{{ filterProducts(products).length }}</span> research products
+               <span class="value" id="number-products">{{ productsCount }}</span> research products
             </span>
             <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics" ng-show="showProductsWithoutMetrics">
                (hide <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> without metrics)

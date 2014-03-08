@@ -237,6 +237,9 @@ angular.module("profile", [
           if (anythingStillUpdating) {
             Update.showUpdate(userSlug, renderProducts)
           }
+          else {
+            $scope.productsCount = resp.length
+          }
 
 
           Timer.start("renderProducts")

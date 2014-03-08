@@ -1357,6 +1357,9 @@ angular.module("profile", [
           if (anythingStillUpdating) {
             Update.showUpdate(userSlug, renderProducts)
           }
+          else {
+            $scope.productsCount = resp.length
+          }
 
 
           Timer.start("renderProducts")
@@ -4088,8 +4091,6 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "      <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
     "   </div>\n" +
     "\n" +
-    "\n" +
-    "\n" +
     "   <div class=\"submit\" ng-show=\"fileLoaded && !loading.is('bibtex')\">\n" +
     "      <a class=\"btn btn-primary\" ng-click=\"sendToServer()\">\n" +
     "         Import {{ googleScholar.bibtexArticlesCount() }} articles\n" +
@@ -4099,6 +4100,11 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "   <div class=\"working\" ng-show=\"loading.is('bibtex')\">\n" +
     "      <i class=\"icon-refresh icon-spin\"></i>\n" +
     "      <span class=\"text\">Adding articles...</span>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"all-done\" ng-show=\"importComplete\">\n" +
+    "      Import complete!\n" +
+    "      <a class=\"btn btn-info\" ng-click=\"$close()\">ok</a>\n" +
     "   </div>\n" +
     "\n" +
     "\n" +
@@ -5096,7 +5102,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"edit-controls btn-group\">\n" +
     "         <div class=\"num-items\">\n" +
     "            <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
-    "               <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
+    "               <span class=\"value\" id=\"number-products\">{{ productsCount }}</span> research products\n" +
     "            </span>\n" +
     "            <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
     "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
