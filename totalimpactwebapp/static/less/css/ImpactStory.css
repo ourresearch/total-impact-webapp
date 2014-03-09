@@ -7647,15 +7647,41 @@ div.profile-subpage.profile-single-products div.profile-single-products-body {
 div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper form {
   width: 50%;
   float: left;
+  margin-right: 5%;
 }
 div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper form textarea {
   height: 300px;
 }
-div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources ul li {
+div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper form div.buttons {
+  text-align: right;
+  margin-top: 20px;
+}
+div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources {
+  width: 45%;
   float: left;
 }
+div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources h3 {
+  margin: -5px 0 20px 50px;
+  padding-bottom: 5px;
+  width: 300px;
+  text-align: center;
+  font-weight: 900;
+  border-bottom: 1px solid #ccc;
+  font-size: 22px;
+}
+div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources ul li {
+  margin-bottom: 5px;
+}
+div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources ul li span.id-type {
+  font-weight: 300;
+  width: 200px;
+  display: inline-block;
+  text-align: right;
+  padding-right: 10px;
+  font-size: 16px;
+}
 div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources ul li img {
-  height: 50px;
+  height: 25px;
   margin: 5px;
 }
 .product {

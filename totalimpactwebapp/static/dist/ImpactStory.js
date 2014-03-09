@@ -4961,23 +4961,22 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
     "            <textarea class=\"form-control\"\n" +
     "                      name=\"single-produts\"\n" +
     "                      ng-model=\"newlineDelimitedProductIds\"\n" +
-    "                      id=\"single-products-importer\"></textarea>\n" +
+    "                      placeholder=\"Paste products IDs here, one per line\"\n" +
+    "                      id=\"single-products-importer\">\n" +
+    "             </textarea>\n" +
     "            <save-buttons action=\"Import\"></save-buttons>\n" +
     "         </form>\n" +
     "\n" +
     "         <div class=\"id-sources\">\n" +
-    "             <h3>Paste in IDs from any of these sources:</h3>\n" +
+    "             <h3>Supported ID types:</h3>\n" +
     "            <ul class=\"accepted-ids\">\n" +
-    "               <li><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/dataset.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/dryad.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/github.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/products-by-url.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/vimeo.png\" /></li>\n" +
-    "               <li><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Article PMIDs</span><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Article DOIs</span><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
+    "               <li><span class=\"id-type\">Dataset DOIs</span><img src=\"/static/img/logos/dryad.png\" /><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">GitHub repo URLs</span><img src=\"/static/img/logos/github.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Webpage URLs</span><img src=\"/static/img/logos/products-by-url.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Slide deck URLs</span><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Video URLs</span><img src=\"/static/img/logos/vimeo.png\" /><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
     "            </ul>\n" +
     "         </div>\n" +
     "      </div>\n" +
