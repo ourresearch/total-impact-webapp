@@ -6,7 +6,6 @@ angular.module("googleScholar", [
 .factory("GoogleScholar", function($modal, $q, UsersProducts, security){
   var bibtex = ""
   var tiids = []
-  var finishCb = function(resp){}
   var bibtexArticlesCount = function(){
     var matches = bibtex.match(/^@/gm)
     if (matches) {
@@ -53,9 +52,7 @@ angular.module("googleScholar", [
         {id: security.getCurrentUser("url_slug")},
         {bibtex: bibtex},
         function(resp){
-          console.log("successfully uploaded bibtex! Calling finishCb()", resp)
-          tiids = resp.products
-          finishCb(resp)
+          console.log("successfully uploaded bibtex!", resp)
         },
         function(resp){
           console.log("bibtex import failed :(")
@@ -64,9 +61,6 @@ angular.module("googleScholar", [
     },
     getTiids: function(){
       return tiids
-    },
-    setFinishCb: function(newFinishCb){
-      finishCb = newFinishCb
     }
   }
 
@@ -79,8 +73,9 @@ angular.module("googleScholar", [
 
     $scope.sendToServer = function(){
       GoogleScholar.sendToServer().$then(function(resp){
-        console.log("finished with the upload, closing the modal.")
-        $scope.$close()
+        console.log("finished with the upload, here's the resp", resp)
+        $scope.importComplete = true
+        $scope.importedProductsCount = resp.data.products.length
       })
     }
 

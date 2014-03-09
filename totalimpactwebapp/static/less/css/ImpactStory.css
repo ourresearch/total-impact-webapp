@@ -8404,6 +8404,19 @@ div.modal-body.google-scholar-import .submit {
   margin-top: 30px;
   text-align: center;
 }
+div.modal-body.google-scholar-import div.import-complete {
+  text-align: center;
+}
+div.modal-body.google-scholar-import div.import-complete div.msg {
+  font-weight: 900;
+  font-size: 24px;
+  color: #5bc0de;
+}
+div.modal-body.google-scholar-import div.import-complete a.btn {
+  width: 33%;
+  margin-top: 30px;
+  font-weight: 900;
+}
 div.accounts {
   width: 100%;
   float: left;

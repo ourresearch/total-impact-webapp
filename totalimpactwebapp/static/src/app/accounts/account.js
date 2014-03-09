@@ -141,10 +141,6 @@ angular.module('accounts.account', [
 
   $scope.setCurrentTab = function(index){$scope.currentTab = index}
 
-  GoogleScholar.setFinishCb(function(resp){
-    console.log("calling finishCb supplied by account controller.")
-    $scope.accountWindowOpen = false
-  })
   $scope.googleScholar = GoogleScholar
 
   $scope.showImportModal = function(){

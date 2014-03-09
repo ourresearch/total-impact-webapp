@@ -198,35 +198,40 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
     "</div>\n" +
     "<div class=\"modal-body google-scholar-import\">\n" +
-    "   <p>\n" +
-    "      Unfortunately, Google Scholar prevents automatic\n" +
-    "      syncing. However, you can manually import your data. Here's how:\n" +
-    "   </p>\n" +
+    "   <div class=\"import-not-complete\" ng-show=\"!importComplete\">\n" +
     "\n" +
-    "   <ol>\n" +
-    "     <li>Go to <a class=\"your-google-scholar-profile\" target=\"_blank\" href=\"{{ currentUser.google_scholar_id }}\">your Google Scholar profile</a>.</li>\n" +
-    "     <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>\n" +
-    "     <li>Click <code>Export all my articles</code>, then save the BiBTeX file.</li>\n" +
-    "     <li>Return to Impactstory and upload your .bib file here.\n" +
-    "   </ol>\n" +
+    "      <p>\n" +
+    "         Unfortunately, Google Scholar prevents automatic\n" +
+    "         syncing. However, you can manually import your data. Here's how:\n" +
+    "      </p>\n" +
     "\n" +
-    "   <div class=\"file-input-container\">\n" +
-    "      <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
-    "   </div>\n" +
+    "      <ol>\n" +
+    "        <li>Go to <a class=\"your-google-scholar-profile\" target=\"_blank\" href=\"{{ currentUser.google_scholar_id }}\">your Google Scholar profile</a>.</li>\n" +
+    "        <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>\n" +
+    "        <li>Click <code>Export all my articles</code>, then save the BiBTeX file.</li>\n" +
+    "        <li>Return to Impactstory and upload your .bib file here.\n" +
+    "      </ol>\n" +
     "\n" +
-    "   <div class=\"submit\" ng-show=\"fileLoaded && !loading.is('bibtex')\">\n" +
-    "      <a class=\"btn btn-primary\" ng-click=\"sendToServer()\">\n" +
-    "         Import {{ googleScholar.bibtexArticlesCount() }} articles\n" +
-    "      </a>\n" +
-    "   </div>\n" +
+    "         <div class=\"file-input-container\">\n" +
+    "            <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
+    "         </div>\n" +
     "\n" +
-    "   <div class=\"working\" ng-show=\"loading.is('bibtex')\">\n" +
-    "      <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "      <span class=\"text\">Adding articles...</span>\n" +
-    "   </div>\n" +
+    "         <div class=\"submit\" ng-show=\"fileLoaded && !loading.is('bibtex')\">\n" +
+    "            <a class=\"btn btn-primary\" ng-click=\"sendToServer()\">\n" +
+    "               Import {{ googleScholar.bibtexArticlesCount() }} articles\n" +
+    "            </a>\n" +
+    "         </div>\n" +
     "\n" +
-    "   <div class=\"all-done\" ng-show=\"importComplete\">\n" +
-    "      Import complete!\n" +
+    "         <div class=\"working\" ng-show=\"loading.is('bibtex')\">\n" +
+    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "            <span class=\"text\">Adding articles...</span>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "   <div class=\"import-complete\" ng-show=\"importComplete\">\n" +
+    "      <div class=\"msg\">\n" +
+    "      Successfully imported {{ importedProductsCount }} articles!\n" +
+    "      </div>\n" +
     "      <a class=\"btn btn-info\" ng-click=\"$close()\">ok</a>\n" +
     "   </div>\n" +
     "\n" +
