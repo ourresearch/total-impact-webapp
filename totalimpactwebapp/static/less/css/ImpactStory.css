@@ -8516,11 +8516,22 @@ div.accounts div.account-window-wrapper div.account-window div.top-tab-wrapper .
   font-size: 14px;
   display: inline-block;
 }
-div.accounts div.account-window-wrapper div.account-window div.top-tab-wrapper .top-tab.sync-true {
+div.accounts div.account-window-wrapper div.account-window div.top-tab-wrapper .top-tab i {
+  font-size: 20px;
+  vertical-align: -2px;
+}
+div.accounts div.account-window-wrapper div.account-window div.top-tab-wrapper .top-tab.sync-true.syncing-now-true {
   background: #5cb85c;
 }
+div.accounts div.account-window-wrapper div.account-window div.top-tab-wrapper .top-tab.sync-true.syncing-now-false {
+  border: 1px solid #5cb85c;
+  border-top: none;
+  color: #5cb85c;
+}
 div.accounts div.account-window-wrapper div.account-window div.top-tab-wrapper .top-tab.sync-false {
-  background: #428bca;
+  border: 1px #428bca solid;
+  border-top: none;
+  color: #428bca;
 }
 div.accounts div.account-window-wrapper div.account-window h2 {
   text-align: center;

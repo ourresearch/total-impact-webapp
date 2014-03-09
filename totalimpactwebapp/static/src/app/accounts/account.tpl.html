@@ -40,8 +40,16 @@
    <div class="account-window">
 
       <div class="top-tab-wrapper">
-         <div ng-show="{{ account.sync }}" class="top-tab sync-true">Automatic import</div>
-         <div ng-show="{{ !account.sync }}" class="top-tab sync-false">Manual import</div>
+         <div ng-show="{{ account.sync }}" class="top-tab sync-true syncing-now-{{ isLinked }}" >
+            <span ng-show="!isLinked" class="syncing-status syncing-status-off">
+               Automatic import available
+            </span>
+            <span ng-show="isLinked" class="syncing-status syncing-status-on">
+               <i class="icon-cloud-download left"></i>
+               Automatic import enabled
+            </span>
+         </div>
+         <div ng-show="{{ !account.sync }}" class="top-tab sync-false syncing-now-false">Manual import available</div>
       </div>
 
 

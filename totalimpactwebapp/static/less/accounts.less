@@ -79,11 +79,25 @@ div.accounts {
                color: #fff;
                font-size: 14px;
                display:inline-block;
+               i {
+                  font-size: 20px;
+                  vertical-align: -2px;
+               }
                &.sync-true {
-                  background: @btn-success-bg;
+                  &.syncing-now-true {
+                     background: @btn-success-bg;
+                  }
+                  &.syncing-now-false {
+                     border: 1px solid @btn-success-bg;
+                     border-top: none;
+                     color: @btn-success-bg;
+
+                  }
                }
                &.sync-false {
-                  background: @btn-primary-bg;
+                  border: 1px @btn-primary-bg solid;
+                  border-top: none;
+                  color: @btn-primary-bg;
                }
             }
          }

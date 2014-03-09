@@ -3960,8 +3960,16 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "   <div class=\"account-window\">\n" +
     "\n" +
     "      <div class=\"top-tab-wrapper\">\n" +
-    "         <div ng-show=\"{{ account.sync }}\" class=\"top-tab sync-true\">Automatic import</div>\n" +
-    "         <div ng-show=\"{{ !account.sync }}\" class=\"top-tab sync-false\">Manual import</div>\n" +
+    "         <div ng-show=\"{{ account.sync }}\" class=\"top-tab sync-true syncing-now-{{ isLinked }}\" >\n" +
+    "            <span ng-show=\"!isLinked\" class=\"syncing-status syncing-status-off\">\n" +
+    "               Automatic import available\n" +
+    "            </span>\n" +
+    "            <span ng-show=\"isLinked\" class=\"syncing-status syncing-status-on\">\n" +
+    "               <i class=\"icon-cloud-download left\"></i>\n" +
+    "               Automatic import enabled\n" +
+    "            </span>\n" +
+    "         </div>\n" +
+    "         <div ng-show=\"{{ !account.sync }}\" class=\"top-tab sync-false syncing-now-false\">Manual import available</div>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
@@ -5235,7 +5243,7 @@ angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", f
     "   </p>\n" +
     "\n" +
     "   <p>\n" +
-    "     Before you share, though, you'll want to import some of your research products:\n" +
+    "     Before you share, though, you'll want to import some of your research products from around the web:\n" +
     "   </p>\n" +
     "\n" +
     "   <a class=\"btn btn-primary\"\n" +
