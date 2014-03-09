@@ -3,15 +3,16 @@ angular.module("profile", [
   'product.product',
   'profileAward.profileAward',
   'services.page',
-  'update.update',
   'ui.bootstrap',
   'security',
   'services.loading',
   'services.timer',
-  'profile.addProducts',
+  'profileSingleProducts',
+  'profileLinkedAccounts',
   'services.i18nNotifications',
   'services.tour',
-  'directives.jQueryTools'
+  'directives.jQueryTools',
+  'update.update'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
@@ -30,8 +31,23 @@ angular.module("profile", [
     return (security.getCurrentUser().url_slug == slug);
   }
 
+  var cacheProductsSetting = false
+  var hasConnectedAccounts = false
+
   return {
 
+    useCache: function(cacheProductsArg){
+      // set or get the cache products setting.
+
+      if (typeof cacheProductsArg !== "undefined"){
+        cacheProductsSetting = !!cacheProductsArg
+      }
+
+      return cacheProductsSetting
+    },
+    hasConnectedAccounts: function(){
+      return hasConnectedAccounts
+    },
     makeAnchorLink: function(genre, account){
       var anchor = genre
       if (account) {
@@ -73,6 +89,12 @@ angular.module("profile", [
         function(resp) { // success
           Page.setTitle(resp.about.given_name + " " + resp.about.surname)
           about = resp.about
+
+          hasConnectedAccounts = _.some(about, function(v, k){
+            return (k.match(/_id$/) && v)
+          })
+
+
           if (!about.products_count && slugIsCurrentUser(about.url_slug)){
             Tour.start(about)
           }
@@ -130,9 +152,15 @@ angular.module("profile", [
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
+    // hack to make it easy to tell when update is done from selenium
+    $scope.productsStillUpdating = true
+
+
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
+
+      $scope.productsStillUpdating = false
 
       console.log(
         "finished rendering products in "
@@ -146,6 +174,7 @@ angular.module("profile", [
 
     });
 
+    $scope.hasConnectedAccounts = UserProfile.hasConnectedAccounts
 
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
@@ -196,6 +225,9 @@ angular.module("profile", [
       return Product.getMetricSum(product) * -1;
     }
 
+
+
+
     $scope.dedup = function(){
       Loading.start("dedup")
 
@@ -209,18 +241,22 @@ angular.module("profile", [
           "success",
           {numDuplicates: resp.deleted_tiids.length}
         )
-        renderProducts(true)
+        renderProducts()
       })
     }
 
-    var renderProducts = function(fresh){
+
+    var renderProducts = function(){
       Timer.start("getProducts")
       loadingProducts = true
-      if (fresh){
+      if (UserProfile.useCache() === false){
+        // generally this will happen, since the default is falst
+        // and we set it back to false either way once this function
+        // has run once.
         $httpDefaultCache.removeAll()
       }
 
-      $scope.products = UsersProducts.query({
+      UsersProducts.query({
         id: userSlug,
         includeHeadingProducts: true,
         embedded: Page.isEmbedded(),
@@ -229,8 +265,24 @@ angular.module("profile", [
         function(resp){
           console.log("loaded products in " + Timer.elapsed("getProducts") + "ms")
 
+          // we only cache things one time
+          UserProfile.useCache(false)
+
+          var anythingStillUpdating = !!_.find(resp, function(product){
+            return product.currently_updating
+          })
+
+          if (anythingStillUpdating) {
+            Update.showUpdate(userSlug, renderProducts)
+          }
+          else {
+            $scope.products = resp
+          }
+
+
           Timer.start("renderProducts")
           loadingProducts = false
+
           // scroll to any hash-specified anchors on page. in a timeout because
           // must happen after page is totally rendered.
           $timeout(function(){
@@ -264,22 +316,19 @@ angular.module("profile", [
 
 
 
-.directive("backToProfile",function($location){
+.directive("backToProfile",function($location, Loading){
  return {
    restrict: 'A',
    replace: true,
-   template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
+   template:"<a ng-show='returnLink' class='back-to-profile btn btn-info btn-sm' href='{{ returnLink }}' ng-disabled='loading.is()'><i class='icon-chevron-left left'></i>back to profile</a>",
    link: function($scope,el){
-     var re = /^\/([-\w\.]+)\/product\/(\w+)/
-     var m = re.exec($location.path())
-     $scope.returnLink = null
 
-     if (m) {
-       var url_slug = m[1]
+     console.log("path: ", $location.path())
 
-       if (url_slug != "embed") {
-         $scope.returnLink = url_slug
-       }
+     $scope.returnLink = $location.path().split("/")[1]
+
+     if ($scope.returnLink === "/embed") {
+       $scope.returnLink = null
      }
    }
  }

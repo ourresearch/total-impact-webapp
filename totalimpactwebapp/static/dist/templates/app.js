@@ -1,4 +1,138 @@
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+
+angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("accounts/account.tpl.html",
+    "\n" +
+    "\n" +
+    "<div class=\"account-tile\" id=\"{{ account.CSSname }}-account-tile\"\n" +
+    "     ng-class=\"{'is-linked': isLinked}\"\n" +
+    "     ng-click=\"showAccountWindow()\">\n" +
+    "\n" +
+    "   <div class=\"account-name\"><img ng-src=\"{{ account.logoPath }}\"></div>\n" +
+    "   <div class=\"linked-info\">\n" +
+    "      <div class=\"linking-in-progress working\" ng-show=\"loading.is(account.accountHost)\">\n" +
+    "         <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "         <div class=\"text\"></div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"connected-toggle\" id=\"{{account.CSSname}}-account-toggle\"\n" +
+    "           ng-show=\"!loading.is(account.accountHost)\">\n" +
+    "\n" +
+    "         <div class=\"toggle-housing toggle-on sync-{{ account.sync }}\" ng-show=\"isLinked\">\n" +
+    "               <div class=\"toggle-state-label\" id=\"{{account.CSSname}}-account-toggle-on\">on</div>\n" +
+    "               <div class=\"toggle-switch\"></div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"toggle-housing toggle-off sync-{{ account.sync }}\" ng-show=\"!isLinked\">\n" +
+    "               <div class=\"toggle-switch\"></div>\n" +
+    "               <div class=\"toggle-state-label\" id=\"{{account.CSSname}}-account-toggle-off\">off</div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"overlay\"\n" +
+    "     ng-click=\"onCancel()\"\n" +
+    "     ng-if=\"accountWindowOpen\"\n" +
+    "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
+    "\n" +
+    "<div class=\"account-window-wrapper\"\n" +
+    "     ng-if=\"accountWindowOpen\"\n" +
+    "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
+    "   <div class=\"account-window\">\n" +
+    "\n" +
+    "      <div class=\"top-tab-wrapper\">\n" +
+    "         <div ng-show=\"{{ account.sync }}\" class=\"top-tab sync-true\">Automatic import</div>\n" +
+    "         <div ng-show=\"{{ !account.sync }}\" class=\"top-tab sync-false\">Manual import</div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"content\">\n" +
+    "         <h2 class=\"account-name\" ng-show=\"!account.url\"><img ng-src=\"{{ account.logoPath }}\" /> </h2>\n" +
+    "         <h2 class=\"account-name\" ng-show=\"account.url\">\n" +
+    "            <a class=\"logo\" href=\"{{ account.url }}\" target=\"_blank\"><img ng-src=\"{{ account.logoPath }}\" /></a>\n" +
+    "            <a class=\"visit\" href=\"{{ account.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
+    "         </h2>\n" +
+    "\n" +
+    "         <div class=\"descr\">{{ account.descr }}</div>\n" +
+    "\n" +
+    "         <form name=\"{{ account.name }}accountForm\"\n" +
+    "               novalidate class=\"form\"\n" +
+    "               ng-submit=\"onLink()\">\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"form-group username\">\n" +
+    "               <label class=\"control-label\">\n" +
+    "                  {{ account.CSSname }} {{ account.username.inputNeeded }}\n" +
+    "                  <i class=\"icon-question-sign\" ng-show=\"account.username.help\" tooltip-html-unsafe=\"{{ account.username.help }}\"></i>\n" +
+    "               </label>\n" +
+    "               <div class=\"account-input\">\n" +
+    "                  <input\n" +
+    "                          class=\"form-control\"\n" +
+    "                          id=\"{{ account.CSSname }}-account-username-input\"\n" +
+    "                          ng-model=\"account.username.value\"\n" +
+    "                          ng-disabled=\"isLinked\"\n" +
+    "                          type=\"text\"\n" +
+    "                          autofocus=\"autofocus\"\n" +
+    "                          placeholder=\"{{ account.username.placeholder }}\">\n" +
+    "\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"buttons-group save\">\n" +
+    "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\"\n" +
+    "                          id=\"{{ account.CSSname }}-account-username-submit\",                  \n" +
+    "                          ng-class=\"{'btn-success': account.sync, 'btn-primary': !account.sync }\" class=\"btn\">\n" +
+    "                     <i class=\"icon-link left\"></i>\n" +
+    "                     Connect to {{ account.displayName }}\n" +
+    "                  </button>\n" +
+    "\n" +
+    "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">\n" +
+    "                     <i class=\"icon-unlink left\"></i>\n" +
+    "                     Disconnect from {{ account.displayName }}\n" +
+    "                  </a>\n" +
+    "\n" +
+    "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "         </form>\n" +
+    "\n" +
+    "         <div class=\"extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
+    "\n" +
+    "         <div class=\"google-scholar-stuff\"\n" +
+    "              ng-show=\"account.accountHost=='google_scholar' && isLinked\">\n" +
+    "            <p class=\"excuses\">\n" +
+    "               Unfortunately, Google Scholar prevents automatic profile access,\n" +
+    "               so we can't do automated updates.\n" +
+    "               However, you can still import Google Scholar articles manually.\n" +
+    "            </p>\n" +
+    "            <div class=\"button-container\">\n" +
+    "               <a id=\"show-google-scholar-import-modal-button\"\n" +
+    "                  class=\"show-modal btn btn-primary\"\n" +
+    "                  ng-click=\"showImportModal()\">\n" +
+    "                  Manually import products\n" +
+    "               </a>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "         </div>\n" +
+    "\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "");
+}]);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -57,6 +191,56 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "");
 }]);
 
+angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("google-scholar/google-scholar-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Manually import Google Scholar articles</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body google-scholar-import\">\n" +
+    "   <div class=\"import-not-complete\" ng-show=\"!importComplete\">\n" +
+    "\n" +
+    "      <p>\n" +
+    "         Unfortunately, Google Scholar prevents automatic\n" +
+    "         syncing. However, you can manually import your data. Here's how:\n" +
+    "      </p>\n" +
+    "\n" +
+    "      <ol>\n" +
+    "        <li>Go to <a class=\"your-google-scholar-profile\" target=\"_blank\" href=\"{{ currentUser.google_scholar_id }}\">your Google Scholar profile</a>.</li>\n" +
+    "        <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>\n" +
+    "        <li>Click <code>Export all my articles</code>, then save the BiBTeX file.</li>\n" +
+    "        <li>Return to Impactstory and upload your .bib file here.\n" +
+    "      </ol>\n" +
+    "\n" +
+    "         <div class=\"file-input-container\">\n" +
+    "            <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"submit\" ng-show=\"fileLoaded && !loading.is('bibtex')\">\n" +
+    "            <a class=\"btn btn-primary\" ng-click=\"sendToServer()\">\n" +
+    "               Import {{ googleScholar.bibtexArticlesCount() }} articles\n" +
+    "            </a>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"working\" ng-show=\"loading.is('bibtex')\">\n" +
+    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "            <span class=\"text\">Adding articles...</span>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "   <div class=\"import-complete\" ng-show=\"importComplete\">\n" +
+    "      <div class=\"msg\">\n" +
+    "      Successfully imported {{ importedProductsCount }} articles!\n" +
+    "      </div>\n" +
+    "      <a class=\"btn btn-info\" ng-click=\"$close()\">ok</a>\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
     "<div class=\"main-header header\" ng-show=\"page.showHeader()\">\n" +
@@ -68,100 +252,6 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "   </div>\n" +
     "</div>\n" +
     "<div ng-show=\"page.showNotificationsIn('header')\" ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
-    "\n" +
-    "");
-}]);
-
-angular.module("importers/importer.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("importers/importer.tpl.html",
-    "\n" +
-    "\n" +
-    "<div class=\"importer-tile\" id=\"{{ importer.CSSname }}-import-tile\"\n" +
-    "     ng-click=\"showImporterWindow()\"\n" +
-    "     ng-class=\"{'has-run': importerHasRun, 'not-run': !importerHasRun}\">\n" +
-    "\n" +
-    "   <div class=\"importer-name\"><img ng-src=\"{{ importer.logoPath }}\"></div>\n" +
-    "   <div class=\"imported-products-count\">\n" +
-    "      <span class=\"count\" id=\"{{ importer.CSSname }}-import-count\">{{ products.length }}</span>\n" +
-    "      <span class=\"descr\">products imported</span>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"overlay\"\n" +
-    "     ng-click=\"onCancel()\"\n" +
-    "     ng-if=\"importWindowOpen\"\n" +
-    "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
-    "\n" +
-    "<div class=\"import-window-wrapper\"\n" +
-    "     ng-if=\"importWindowOpen\"\n" +
-    "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
-    "        >\n" +
-    "   <div class=\"import-window\">\n" +
-    "\n" +
-    "      <div class=\"importer-tabs\">\n" +
-    "         <menu class=\"importer-menu\">\n" +
-    "            <li class=\"tab\"\n" +
-    "                ng-click=\"setCurrentTab($index)\"\n" +
-    "                ng-class=\"{current: $index==currentTab}\"\n" +
-    "                ng-repeat=\"tab in importer.tabs\"> {{ tab.label }}</li>\n" +
-    "         </menu>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"content\">\n" +
-    "         <h2 class=\"importer-name\" ng-show=\"!importer.url\"><img ng-src=\"{{ importer.logoPath }}\" /> </h2>\n" +
-    "         <h2 class=\"importer-name\" ng-show=\"importer.url\">\n" +
-    "            <a class=\"logo\" href=\"{{ importer.url }}\" target=\"_blank\"><img ng-src=\"{{ importer.logoPath }}\" /></a>\n" +
-    "            <a class=\"visit\" href=\"{{ importer.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
-    "         </h2>\n" +
-    "\n" +
-    "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ importer.descr }}</div>\n" +
-    "\n" +
-    "         <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
-    "\n" +
-    "            <div class=\"form-group\"\n" +
-    "                 ng-show=\"$index==currentTab\"\n" +
-    "                 ng-repeat=\"input in importer.inputs\">\n" +
-    "               <label class=\"control-label\">\n" +
-    "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
-    "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
-    "                  <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
-    "               </label>\n" +
-    "               <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
-    "                  <input\n" +
-    "                          class=\"form-control\"\n" +
-    "                          ng-model=\"input.value\"\n" +
-    "                          type=\"text\" ng-switch-when=\"username\"\n" +
-    "                          placeholder=\"{{ input.placeholder }}\">\n" +
-    "\n" +
-    "                  <textarea placeholder=\"{{ input.placeholder }}\"\n" +
-    "                            class=\"form-control\"\n" +
-    "                            ng-model=\"input.value\"\n" +
-    "                            ng-switch-when=\"idList\"></textarea>\n" +
-    "\n" +
-    "                  <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
-    "                  <input type=\"file\" ng-switch-when=\"file\" ng-file-select=\"input.inputType\">\n" +
-    "\n" +
-    "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
-    "               </div>\n" +
-    "            </div>\n" +
-    "\n" +
-    "\n" +
-    "            <save-buttons action=\"Import\"></save-buttons>\n" +
-    "\n" +
-    "\n" +
-    "         </form>\n" +
-    "\n" +
-    "         <div class=\"extra\" ng-show=\"importer.extra\" ng-bind-html-unsafe=\"importer.extra\"></div>\n" +
-    "\n" +
-    "\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "\n" +
     "");
 }]);
@@ -724,6 +814,29 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "</div>");
 }]);
 
+angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-linked-accounts/profile-linked-accounts.tpl.html",
+    "<div class=\"profile-linked-accounts profile-subpage\" >\n" +
+    "   <div class=\"profile-accounts-header profile-subpage-header\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <a back-to-profile></a>\n" +
+    "         <h1 class=\"instr\">Connect to other accounts</h1>\n" +
+    "         <h2>We'll automatically import your products from all over the web,\n" +
+    "            so your profile stays up to date.</h2>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"accounts\">\n" +
+    "      <div class=\"account\"\n" +
+    "           ng-repeat=\"account in accounts\"\n" +
+    "           ng-controller=\"accountCtrl\"\n" +
+    "           ng-include=\"'accounts/account.tpl.html'\">\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>");
+}]);
+
 angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/edit-product-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
@@ -921,22 +1034,48 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "</div>");
 }]);
 
-angular.module("profile/profile-add-products.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile/profile-add-products.tpl.html",
-    "<div class=\"profile-add-products profile-subpage\" >\n" +
-    "   <div class=\"add-products-header profile-subpage-header\">\n" +
+angular.module("profile-single-products/profile-single-products.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-single-products/profile-single-products.tpl.html",
+    "<div class=\"profile-single-products profile-subpage\" >\n" +
+    "   <div class=\"profile-single-products-header profile-subpage-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
-    "         <h2 class=\"instr\">Select a source to import from</h2>\n" +
+    "         <h1 class=\"instr\">Import individual products</h1>\n" +
+    "         <h2>Add products to Impactstory profile one-by-one. For easier importing,\n" +
+    "            link your external accounts and we'll sync them automatically.</h2>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"importers\" ng-controller=\"addProductsCtrl\">\n" +
-    "      <div class=\"importer\"\n" +
-    "           ng-repeat=\"importer in importers\"\n" +
-    "           ng-controller=\"importerCtrl\"\n" +
-    "           ng-include=\"'importers/importer.tpl.html'\">\n" +
+    "   <div class=\"profile-single-products-body\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <form name=\"import-single-products\"\n" +
+    "               ng-submit=\"onSubmit()\"\n" +
+    "               ng-controller=\"ImportSingleProductsFormCtrl\">\n" +
+    "            <textarea class=\"form-control\"\n" +
+    "                      name=\"single-produts\"\n" +
+    "                      ng-model=\"newlineDelimitedProductIds\"\n" +
+    "                      placeholder=\"Paste products IDs here, one per line\"\n" +
+    "                      id=\"single-products-importer\">\n" +
+    "             </textarea>\n" +
+    "            <save-buttons action=\"Import\"></save-buttons>\n" +
+    "         </form>\n" +
+    "\n" +
+    "         <div class=\"id-sources\">\n" +
+    "             <h3>Supported ID types:</h3>\n" +
+    "            <ul class=\"accepted-ids\">\n" +
+    "               <li><span class=\"id-type\">Article PMIDs</span><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Article DOIs</span><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
+    "               <li><span class=\"id-type\">Dataset DOIs</span><img src=\"/static/img/logos/dryad.png\" /><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">GitHub repo URLs</span><img src=\"/static/img/logos/github.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Webpage URLs</span><img src=\"/static/img/logos/products-by-url.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Slide deck URLs</span><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Video URLs</span><img src=\"/static/img/logos/vimeo.png\" /><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
     "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "   </div>\n" +
     "\n" +
     "</div>");
@@ -1000,39 +1139,51 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"given-name editable\" data-name=\"given_name\">{{ user.about.given_name }}</span>\n" +
     "            <span class=\"surname editable\" data-name=\"surname\">{{ user.about.surname }}</span>\n" +
     "         </h2>\n" +
-    "         <div class=\"external-usernames\">\n" +
+    "         <div class=\"connected-accounts\">\n" +
     "            <ul>\n" +
-    "               <li ng-show=\"user.about.twitter_account_id\">\n" +
-    "                  <a href=\"https://twitter.com/{{ user.about.twitter_account_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"https://twitter.com/favicon.ico\" />\n" +
-    "                     <span class=\"service\">Twitter</span>\n" +
+    "\n" +
+    "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"{{ user.about.figshare_id }}\">\n" +
+    "                     <img src=\"http://figshare.com/static/img/favicon.png\">\n" +
+    "                     <span class=\"service\">figshare</span>\n" +
     "                  </a>\n" +
-    "               </li>\n" +
-    "               <li ng-show=\"user.about.github_id\">\n" +
-    "                  <a href=\"https://github.com/{{ user.about.github_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"https://github.com/fluidicon.png\" />\n" +
+    "               </li>           \n" +
+    "               <li ng-show=\"user.about.github_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://github.com/{{ user.about.github_id }}\">\n" +
+    "                     <img src=\"https://github.com/fluidicon.png\">\n" +
     "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.orcid_id\">\n" +
-    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\" />\n" +
+    "               <li ng-show=\"user.about.google_scholar_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"{{ user.about.google_scholar_id }}\">\n" +
+    "                     <img src=\"http://scholar.google.com/favicon.ico\">\n" +
+    "                     <span class=\"service\">Google Scholar</span>\n" +
+    "                  </a>\n" +
+    "               </li>     \n" +
+    "               <li ng-show=\"user.about.orcid_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\">\n" +
+    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\">\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.slideshare_id\">\n" +
-    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://www.slideshare.net/favicon.ico\" />\n" +
-    "                     <span class=\"service\">SlideShare</span>\n" +
+    "\n" +
+    "               <li ng-show=\"user.about.slideshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
+    "                     <img src=\"http://www.slideshare.net/favicon.ico\">\n" +
+    "                     <span class=\"service\">Slideshare</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.figshare_id\">\n" +
-    "                  <a href=\"{{ user.about.figshare_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://figshare.com/static/img/favicon.png\" />\n" +
-    "                     <span class=\"service\">figshare</span>\n" +
-    "                  </a>\n" +
+    "\n" +
     "               </li>\n" +
     "            </ul>\n" +
+    "\n" +
+    "            <div class=\"add-connected-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
+    "               <a href=\"/{{ user.about.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
+    "                  <i class=\"icon-link left\"></i>\n" +
+    "                  <span ng-show=\"!hasConnectedAccounts()\" class=\"first\">Import from accounts</span>\n" +
+    "                  <span ng-show=\"hasConnectedAccounts()\" class=\"more\">Connect more accounts</span>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"my-metrics\">\n" +
@@ -1042,8 +1193,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                ng-repeat=\"profileAward in profileAwards\">\n" +
     "            </li>\n" +
     "         </ul>\n" +
-    "\n" +
-    "\n" +
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
@@ -1052,19 +1201,24 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"edit-controls btn-group\">\n" +
     "         <div class=\"num-items\">\n" +
-    "            <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
-    "               <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
+    "            <span class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
+    "               <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
+    "                  <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
+    "               </span>\n" +
+    "               <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
+    "                  (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
+    "               </a>\n" +
     "            </span>\n" +
-    "            <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
-    "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
-    "            </a>\n" +
+    "            <span ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
+    "               Products still updating...\n" +
+    "            </span>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
     "            <a href=\"/{{ user.about.url_slug }}/products/add\">\n" +
-    "               <i class=\"icon-upload\"></i>Import\n" +
+    "               <i class=\"icon-upload\"></i>Import products one-by-one\n" +
     "            </a>\n" +
     "            <a ng-click=\"dedup()\"\n" +
     "               ng-class=\"{working: loading.is('dedup')}\"\n" +
@@ -1165,7 +1319,7 @@ angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", f
     "\n" +
     "   <a class=\"btn btn-primary\"\n" +
     "      ng-click=\"$close()\"\n" +
-    "      href=\"/{{ userAbout.url_slug }}/products/add\">\n" +
+    "      href=\"/{{ userAbout.url_slug }}/accounts\">\n" +
     "      Import my products\n" +
     "      <i class=\"icon-cloud-upload left\"></i>\n" +
     "   </a>\n" +
@@ -1569,7 +1723,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
 angular.module("update/update-progress.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("update/update-progress.tpl.html",
     "<div class=\"modal-header\">\n" +
-    "   <h3>Finding impact data</h3>\n" +
+    "   <h3 id=\"finding-impact-data-header\">Finding impact data</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body update\">\n" +
     "   <div class=\"intro\"><br>We're scouring the web to discover the impacts of all your research products...</div>\n" +

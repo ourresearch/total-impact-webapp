@@ -62,54 +62,6 @@ div.signup-banner {
    }
 }
 
-div.profile-subpage {
-   div.profile-subpage-header {
-      height:  70px;
-      padding-top: 24px;
-      background:  #555;
-      background:  @linkColor;
-      color:  #fff;
-      div.wrapper {
-         position: relative;
-         a {
-            top:  5px;
-            color:  #fff;
-            font-size: 15px;
-            i {margin-right: 5px;}
-            &:hover {
-               text-decoration: none;
-            }
-            &.back-to-profile {
-               position: absolute;
-               left:  0px;
-               float:left;
-               font-weight: lighter;
-               i { font-size: 80%;}
-            }
-         }
-         h2 {
-            text-align: center;
-            font-size: 24px;
-            padding:  0;
-            width: 70%;
-            margin: 0 auto;
-            &.instr {
-               color: #fff;
-            }
-         }
-      }
-   }
-   &.profile-add-products {
-
-      div.importers {
-         top:  130px; // override the top margin used in the /signup flow
-         margin-bottom: 0;
-         padding-bottom: 0;
-         background: #fff;
-      }
-   }
-
-}
 
 div.profile-header {
    margin-bottom: 35px;
@@ -137,9 +89,14 @@ div.profile-header {
             padding-top: 0;
             float:left;
          }
-         div.external-usernames {
+         div.connected-accounts {
             float:left;
             clear:left;
+            div.add-connected-account {
+               a {
+                  margin-top: 5px;
+               }
+            }
             li {
                float:left;
                margin: 0 10px 0 2px;

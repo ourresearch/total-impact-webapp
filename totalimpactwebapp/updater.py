@@ -13,22 +13,66 @@ logger.setLevel(logging.DEBUG)
 # heroku run python totalimpact/updater.py
 
 
+def get_user_about_dict(url_slug, webapp_api_endpoint):
+    url = webapp_api_endpoint + u"/user/{url_slug}/about".format(
+        url_slug=url_slug)
+    about = requests.get(url).json()["about"]
+    return about
 
-def update_by_url_slugs(url_slugs, webapp_api_endpoint):
-    QUEUE_DELAY_IN_SECONDS = 0.25
-    for url_slug in url_slugs:
-        url = webapp_api_endpoint + u"/user/{url_slug}/products?action=refresh&source=scheduled".format(
-            url_slug=url_slug)
-        try:
-            print u"going to post to this url", url
-        except UnicodeEncodeError:
-            print "UnicodeEncodeError when trying to print url"
-        requests.post(url)
-        time.sleep(QUEUE_DELAY_IN_SECONDS)
-    return url_slugs
+def get_num_products_by_url_slug(url_slug, webapp_api_endpoint):
+    return get_user_about_dict(url_slug, webapp_api_endpoint)["products_count"]
+
+def refresh_by_url_slug(url_slug, webapp_api_endpoint):
+    url = webapp_api_endpoint + u"/user/{url_slug}/products?action=refresh&source=scheduled".format(
+        url_slug=url_slug)
+    # try:
+    #     logger.debug(u"REFRESH POST to {url}".format(
+    #         url=url))
+    # except UnicodeEncodeError:
+    #     logger.debug(u"UnicodeEncodeError when trying to print url")
+    r = requests.post(url)
+    return r
+
+def deduplicate_by_url_slug(url_slug, webapp_api_endpoint):
+    url = webapp_api_endpoint + u"/user/{url_slug}/products?action=deduplicate&source=scheduled".format(
+        url_slug=url_slug)
+    # try:
+    #     logger.debug(u"DEDUP POST to {url}".format(
+    #         url=url))
+    # except UnicodeEncodeError:
+    #     logger.debug(u"UnicodeEncodeError when trying to print url")
+    r = requests.post(url)
+    return r    
 
 
-def get_profiles_not_updated_since(number_to_update, max_days_since_updated, now=datetime.datetime.utcnow()):
+def import_products_by_url_slug(url_slug, webapp_api_endpoint):
+    user_about = get_user_about_dict(url_slug, webapp_api_endpoint)
+
+    for account_type in ["github", "slideshare", "figshare", "orcid"]:
+        user_account_value = user_about[account_type+"_id"]
+        if user_account_value:
+            print user_account_value
+            url = webapp_api_endpoint + u"/user/{url_slug}/linked-accounts/{account_type}?action=update".format(
+                url_slug=url_slug,
+                account_type=account_type)
+            try:
+                logger.debug(u"LINKED-ACCOUNTS POST to {url} with value {user_account_value}".format(
+                    url=url, user_account_value=user_account_value))
+            except UnicodeEncodeError:
+                logger.debug(u"UnicodeEncodeError when trying to print url")
+            r = requests.post(url, 
+                    headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+
+            if r.status_code==200:
+                print r.json()
+            else:
+                print "error importing products with url {url}, status={status}".format(
+                    url=url, status=r.status_code)
+
+    return True
+
+
+def get_url_slugs_since_refresh_date(number_to_update, max_days_since_updated, now=datetime.datetime.utcnow()):
     raw_sql = text(u"""SELECT url_slug FROM "user" u
                         WHERE last_refreshed < now()::date - :max_days_since_updated
                         ORDER BY last_refreshed ASC, url_slug
@@ -43,41 +87,52 @@ def get_profiles_not_updated_since(number_to_update, max_days_since_updated, now
     return url_slugs
 
 
-def by_profile(number_to_update, webapp_api_endpoint, max_days_since_updated, now=datetime.datetime.utcnow()):
-    max_days_since_updated = 2
-    url_slugs = get_profiles_not_updated_since(number_to_update, max_days_since_updated, now)
-    try:    
-        print u"got", len(url_slugs), url_slugs
-    except UnicodeEncodeError:
-        print "UnicodeEncodeError in by_profile"
-    update_by_url_slugs(url_slugs, webapp_api_endpoint)
-    return url_slugs
 
-
-def main(action_type, number_to_update=3, max_days_since_updated=7):
+def main(number_to_update=3, max_days_since_updated=7):
     #35 every 10 minutes is 35*6perhour*24hours=5040 per day
 
-    print u"running " + action_type
-
     try:
-        if action_type == "by_profile":
-            webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "http://localhost:5000")
-            by_profile(number_to_update, webapp_api_endpoint, max_days_since_updated)
+        webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "http://localhost:5000")
+        now=datetime.datetime.utcnow()
+
+        url_slugs = get_url_slugs_since_refresh_date(number_to_update, max_days_since_updated, now)
+        try:    
+            print u"got", len(url_slugs), url_slugs
+        except UnicodeEncodeError:
+            print u"got", len(url_slugs), "UnicodeEncodeError in by_profile"
+
+        for url_slug in url_slugs:
+            number_products_before = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
+            import_products_by_url_slug(url_slug, webapp_api_endpoint)
+            deduplicate_by_url_slug(url_slug, webapp_api_endpoint)
+            refresh_by_url_slug(url_slug, webapp_api_endpoint)
+            number_products_after = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
+            if number_products_before==number_products_after:
+                logger.info(u"***NO CHANGE on update for {url_slug}, {number_products_before} products".format(
+                    number_products_before=number_products_before,
+                    url_slug=url_slug))
+            else:
+                logger.info(u"***BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
+                    number_products_before=number_products_before,
+                    number_products_after=number_products_after,
+                    percent=100.0*(number_products_after-number_products_before)/number_products_before,
+                    url_slug=url_slug))
+
     except (KeyboardInterrupt, SystemExit): 
         # this approach is per http://stackoverflow.com/questions/2564137/python-how-to-terminate-a-thread-when-main-program-ends
         sys.exit()
  
-if __name__ == "__main__":
 
+
+if __name__ == "__main__":
     # get args from the command line:
     parser = argparse.ArgumentParser(description="Run periodic metrics updating from the command line")
-    action_type = "by_profile"
     parser.add_argument('--number_to_update', default='3', type=int, help="Number to update.")
     parser.add_argument('--max_days_since_updated', default='7', type=int, help="Update if hasn't been updated in this many days.")
     args = vars(parser.parse_args())
     print args
     print u"updater.py starting."
-    main(action_type, args["number_to_update"], args["max_days_since_updated"])
+    main(args["number_to_update"], args["max_days_since_updated"])
 
 
 

@@ -1,0 +1,43 @@
+<div class="profile-single-products profile-subpage" >
+   <div class="profile-single-products-header profile-subpage-header">
+      <div class="wrapper">
+         <a back-to-profile></a>
+         <h1 class="instr">Import individual products</h1>
+         <h2>Add products to Impactstory profile one-by-one. For easier importing,
+            link your external accounts and we'll sync them automatically.</h2>
+      </div>
+   </div>
+
+   <div class="profile-single-products-body">
+      <div class="wrapper">
+         <form name="import-single-products"
+               ng-submit="onSubmit()"
+               ng-controller="ImportSingleProductsFormCtrl">
+            <textarea class="form-control"
+                      name="single-produts"
+                      ng-model="newlineDelimitedProductIds"
+                      placeholder="Paste products IDs here, one per line"
+                      id="single-products-importer">
+             </textarea>
+            <save-buttons action="Import"></save-buttons>
+         </form>
+
+         <div class="id-sources">
+             <h3>Supported ID types:</h3>
+            <ul class="accepted-ids">
+               <li><span class="id-type">Article PMIDs</span><img src="/static/img/logos/pubmed.png" /></li>
+               <li><span class="id-type">Article DOIs</span><img src="/static/img/logos/crossref.jpg" /></li>
+               <li><span class="id-type">Dataset DOIs</span><img src="/static/img/logos/dryad.png" /><img src="/static/img/logos/figshare.png" /></li>
+               <li><span class="id-type">GitHub repo URLs</span><img src="/static/img/logos/github.png" /></li>
+               <li><span class="id-type">Webpage URLs</span><img src="/static/img/logos/products-by-url.png" /></li>
+               <li><span class="id-type">Slide deck URLs</span><img src="/static/img/logos/slideshare.png" /></li>
+               <li><span class="id-type">Video URLs</span><img src="/static/img/logos/vimeo.png" /><img src="/static/img/logos/youtube.png" /></li>
+            </ul>
+         </div>
+      </div>
+
+
+
+   </div>
+
+</div>

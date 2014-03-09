@@ -580,12 +580,6 @@ angular.module('importers.importer')
 
     var saveExternalUsernames = function(url_slug, userInputObjs){
 
-      var about = {}
-      _.each(userInputObjs, function(input){
-        if (input.saveUsername){
-          about[input.saveUsername] = input.cleanedValue
-        }
-      })
 
       var patchData = {'about': about}
       console.log("trying to save this patch data: ", patchData)
@@ -615,7 +609,7 @@ angular.module('importers.importer')
 })
 
 
-.controller('importerCtrl', function($scope, $location, Products, UserProfile, UsersProducts, Importer, Loading, Update){
+});
 
   var getUserSlug = function(){
     var re = /\/([-\w\.]+)\/products/
@@ -4813,22 +4807,48 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "</div>");
 }]);
 
-angular.module("profile/profile-add-products.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile/profile-add-products.tpl.html",
-    "<div class=\"profile-add-products profile-subpage\" >\n" +
-    "   <div class=\"add-products-header profile-subpage-header\">\n" +
+angular.module("profile-single-products/profile-single-products.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-single-products/profile-single-products.tpl.html",
+    "<div class=\"profile-single-products profile-subpage\" >\n" +
+    "   <div class=\"profile-single-products-header profile-subpage-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
-    "         <h2 class=\"instr\">Select a source to import from</h2>\n" +
+    "         <h1 class=\"instr\">Import individual products</h1>\n" +
+    "         <h2>Add products to Impactstory profile one-by-one. For easier importing,\n" +
+    "            link your external accounts and we'll sync them automatically.</h2>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"importers\" ng-controller=\"addProductsCtrl\">\n" +
-    "      <div class=\"importer\"\n" +
-    "           ng-repeat=\"importer in importers\"\n" +
-    "           ng-controller=\"importerCtrl\"\n" +
-    "           ng-include=\"'importers/importer.tpl.html'\">\n" +
+    "   <div class=\"profile-single-products-body\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <form name=\"import-single-products\"\n" +
+    "               ng-submit=\"onSubmit()\"\n" +
+    "               ng-controller=\"ImportSingleProductsFormCtrl\">\n" +
+    "            <textarea class=\"form-control\"\n" +
+    "                      name=\"single-produts\"\n" +
+    "                      ng-model=\"newlineDelimitedProductIds\"\n" +
+    "                      placeholder=\"Paste products IDs here, one per line\"\n" +
+    "                      id=\"single-products-importer\">\n" +
+    "             </textarea>\n" +
+    "            <save-buttons action=\"Import\"></save-buttons>\n" +
+    "         </form>\n" +
+    "\n" +
+    "         <div class=\"id-sources\">\n" +
+    "             <h3>Supported ID types:</h3>\n" +
+    "            <ul class=\"accepted-ids\">\n" +
+    "               <li><span class=\"id-type\">Article PMIDs</span><img src=\"/static/img/logos/pubmed.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Article DOIs</span><img src=\"/static/img/logos/crossref.jpg\" /></li>\n" +
+    "               <li><span class=\"id-type\">Dataset DOIs</span><img src=\"/static/img/logos/dryad.png\" /><img src=\"/static/img/logos/figshare.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">GitHub repo URLs</span><img src=\"/static/img/logos/github.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Webpage URLs</span><img src=\"/static/img/logos/products-by-url.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Slide deck URLs</span><img src=\"/static/img/logos/slideshare.png\" /></li>\n" +
+    "               <li><span class=\"id-type\">Video URLs</span><img src=\"/static/img/logos/vimeo.png\" /><img src=\"/static/img/logos/youtube.png\" /></li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
     "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "   </div>\n" +
     "\n" +
     "</div>");
@@ -4892,39 +4912,51 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"given-name editable\" data-name=\"given_name\">{{ user.about.given_name }}</span>\n" +
     "            <span class=\"surname editable\" data-name=\"surname\">{{ user.about.surname }}</span>\n" +
     "         </h2>\n" +
-    "         <div class=\"external-usernames\">\n" +
+    "         <div class=\"connected-accounts\">\n" +
     "            <ul>\n" +
-    "               <li ng-show=\"user.about.twitter_account_id\">\n" +
-    "                  <a href=\"https://twitter.com/{{ user.about.twitter_account_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"https://twitter.com/favicon.ico\" />\n" +
-    "                     <span class=\"service\">Twitter</span>\n" +
+    "\n" +
+    "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"{{ user.about.figshare_id }}\">\n" +
+    "                     <img src=\"http://figshare.com/static/img/favicon.png\">\n" +
+    "                     <span class=\"service\">figshare</span>\n" +
     "                  </a>\n" +
-    "               </li>\n" +
-    "               <li ng-show=\"user.about.github_id\">\n" +
-    "                  <a href=\"https://github.com/{{ user.about.github_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"https://github.com/fluidicon.png\" />\n" +
+    "               </li>           \n" +
+    "               <li ng-show=\"user.about.github_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://github.com/{{ user.about.github_id }}\">\n" +
+    "                     <img src=\"https://github.com/fluidicon.png\">\n" +
     "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.orcid_id\">\n" +
-    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\" />\n" +
+    "               <li ng-show=\"user.about.google_scholar_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"{{ user.about.google_scholar_id }}\">\n" +
+    "                     <img src=\"http://scholar.google.com/favicon.ico\">\n" +
+    "                     <span class=\"service\">Google Scholar</span>\n" +
+    "                  </a>\n" +
+    "               </li>     \n" +
+    "               <li ng-show=\"user.about.orcid_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\">\n" +
+    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\">\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.slideshare_id\">\n" +
-    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://www.slideshare.net/favicon.ico\" />\n" +
-    "                     <span class=\"service\">SlideShare</span>\n" +
+    "\n" +
+    "               <li ng-show=\"user.about.slideshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
+    "                     <img src=\"http://www.slideshare.net/favicon.ico\">\n" +
+    "                     <span class=\"service\">Slideshare</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.figshare_id\">\n" +
-    "                  <a href=\"{{ user.about.figshare_id }}\" target=\"_blank\">\n" +
-    "                     <img src=\"http://figshare.com/static/img/favicon.png\" />\n" +
-    "                     <span class=\"service\">figshare</span>\n" +
-    "                  </a>\n" +
+    "\n" +
     "               </li>\n" +
     "            </ul>\n" +
+    "\n" +
+    "            <div class=\"add-connected-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
+    "               <a href=\"/{{ user.about.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
+    "                  <i class=\"icon-link left\"></i>\n" +
+    "                  <span ng-show=\"!hasConnectedAccounts()\" class=\"first\">Import from accounts</span>\n" +
+    "                  <span ng-show=\"hasConnectedAccounts()\" class=\"more\">Connect more accounts</span>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"my-metrics\">\n" +
@@ -4934,8 +4966,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                ng-repeat=\"profileAward in profileAwards\">\n" +
     "            </li>\n" +
     "         </ul>\n" +
-    "\n" +
-    "\n" +
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
@@ -4944,19 +4974,24 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"edit-controls btn-group\">\n" +
     "         <div class=\"num-items\">\n" +
-    "            <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
-    "               <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
+    "            <span class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
+    "               <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
+    "                  <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
+    "               </span>\n" +
+    "               <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
+    "                  (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
+    "               </a>\n" +
     "            </span>\n" +
-    "            <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
-    "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
-    "            </a>\n" +
+    "            <span ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
+    "               Products still updating...\n" +
+    "            </span>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
     "            <a href=\"/{{ user.about.url_slug }}/products/add\">\n" +
-    "               <i class=\"icon-upload\"></i>Import\n" +
+    "               <i class=\"icon-upload\"></i>Import products one-by-one\n" +
     "            </a>\n" +
     "            <a ng-click=\"dedup()\"\n" +
     "               ng-class=\"{working: loading.is('dedup')}\"\n" +
@@ -5057,7 +5092,7 @@ angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", f
     "\n" +
     "   <a class=\"btn btn-primary\"\n" +
     "      ng-click=\"$close()\"\n" +
-    "      href=\"/{{ userAbout.url_slug }}/products/add\">\n" +
+    "      href=\"/{{ userAbout.url_slug }}/accounts\">\n" +
     "      Import my products\n" +
     "      <i class=\"icon-cloud-upload left\"></i>\n" +
     "   </a>\n" +
@@ -5461,7 +5496,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
 angular.module("update/update-progress.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("update/update-progress.tpl.html",
     "<div class=\"modal-header\">\n" +
-    "   <h3>Finding impact data</h3>\n" +
+    "   <h3 id=\"finding-impact-data-header\">Finding impact data</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body update\">\n" +
     "   <div class=\"intro\"><br>We're scouring the web to discover the impacts of all your research products...</div>\n" +

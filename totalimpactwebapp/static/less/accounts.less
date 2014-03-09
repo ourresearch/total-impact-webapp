@@ -1,11 +1,39 @@
-div.importers {
-   position: absolute;
-   top: 80px;
-   left: 0;
-   right: 0;
-   bottom: 0;
-   background: #eee;
+div.modal-body.google-scholar-import {
+   ol {
+      margin: 20px 0 40px;
+      li {
+         font-size: 90%;
+      }
+   }
+   .file-input-container {
+      padding-left: 50px;
+      input {
+      }
+   }
+
+   .submit {
+      margin-top: 30px;
+      text-align: center;
+   }
+   div.import-complete {
+      text-align: center;
+      div.msg {
+         font-weight: 900;
+         font-size: 24px;
+         color: @btn-info-bg;
+      }
+      a.btn {
+         width: 33%;
+         margin-top: 30px;
+         font-weight: 900;
+      }
+   }
+}
+
+div.accounts {
+   width: 100%;
    float:left;
+   border-top: 2px solid #ddd;
    div.overlay {
       position: fixed;
       top: 0;
@@ -19,7 +47,7 @@ div.importers {
       -webkit-transition: opacity 0.5s;
       cursor: pointer;
    }
-   div.import-window-wrapper {
+   div.account-window-wrapper {
       top:0; right:0; bottom:0;
       z-index: 1001;
       position: fixed;
@@ -27,7 +55,7 @@ div.importers {
       margin-right: -1em;
       left: 38.19%;
 
-      div.import-window {
+      div.account-window {
          position: absolute;
          overflow-y: auto;
          overflow-x:hidden;
@@ -40,23 +68,22 @@ div.importers {
          border-left:  1px solid #555;
          .drop-shadow(-5px, 0, 10px, .2);
 
-         div.importer-tabs {
+         div.top-tab-wrapper {
             position: absolute;
             top:0; left: 0; right:0;
             text-align:center;
-            menu {
+            .top-tab {
                margin:0;
-               li {
-                  list-style-type: none;
-                  font-weight: bold;
-                  color: #999;
-                  display:inline-block;
-                  cursor: pointer;
-                  padding: 10px 20px;
-                  &.current {
-                     background: #eee;
-                     color: #555;
-                  }
+               padding: 5px 13px;
+               .border-radius(0, 3px, 3px, 0);
+               color: #fff;
+               font-size: 14px;
+               display:inline-block;
+               &.sync-true {
+                  background: @btn-success-bg;
+               }
+               &.sync-false {
+                  background: @btn-primary-bg;
                }
             }
          }
@@ -170,21 +197,50 @@ div.importers {
                }
                code {border:  1px solid #ddd}
             }
+
+            .google-scholar-stuff {
+               p.excuses {
+                  color: @gray;
+                  margin-top: 100px;
+                  padding-top: 10px;
+                  border-top: 1px solid @gray-light;
+               }
+               .button-container {
+                  margin-top: 20px;
+                  text-align: center;
+                  a.show-modal {
+                  }
+               }
+            }
          }
       }
    }
 
 
-   div.importer-tile {
+   div.account-tile {
       float:left;
       background: #fff;
-      width:  25%;
-      padding: 45px 1% 45px 2%;
+      width:  50%;
+      padding: 65px 1% 65px 2%;
       border-right: 1px solid #ccc;
       border-bottom: 1px solid #ccc;
       text-align: center;
       position: relative;
       cursor: pointer;
+
+      &:hover {
+         .drop-shadow(0, 1px, 7px, .3);
+         z-index: 1;
+         -webkit-transition: box-shadow .3s;
+         transition: box-shadow .3s;
+
+      }
+
+
+
+      &.is-linked {
+         background: #fff;
+      }
       @media(max-width: 83em){
          width:  33.333333%;
       }
@@ -195,46 +251,77 @@ div.importers {
          width:  100%;
       }
 
-      &.not-run:hover {
-         .drop-shadow(0, 1px, 7px, .3);
-         z-index: 1;
-         -webkit-transition: box-shadow .3s;
-         transition: box-shadow .3s;
-      }
-      &.has-run {
-         &:hover {
-         }
-         .inner-shadow(0, 1px, 7px, .2);
-         cursor: default;
-         background: #fafafa;
-         div.importer-name{
-            float:left;
-         }
-         div.imported-products-count {
-            display:block;
-            margin-top: -10px;
-            margin-bottom: -10px;
-         }
-      }
-      div.importer-name {
+      div.account-name {
+         float:left;
+         margin-left: 100px;
          img {
-            height: 35px;
+            height: 45px;
          }
       }
-      div.imported-products-count {
-         display:none;
+      div.linked-info {
          float:right;
-         margin-right: 5%;
-         span.count {
-            font-weight: 900;
-            color:  #555;
-            font-size: 35px;
+         margin-right: 100px;
+         font-size: 20px;
+         margin-top: 10px;
+         div.linking-in-progress {
+            display:block;
+            font-weight: bold;
+            color: @gray-light;
+            font-size: 30px;
+            margin-top: -10px;
+            margin-right: 30px;
          }
-         span.descr {
-            width: 60px;
-            display:inline-block;
-            font-size: 12px;
+
+         div.connected-toggle {
+            @toggle-width: 80px;
+            .toggle-housing {
+               height: 30px;
+               width: @toggle-width;
+               background: #ccc;
+               color: #777;
+               .border-radius(15px, 15px, 15px, 15px);
+               font-size: 16px;
+
+               .toggle-switch {
+                  height: 26px;
+                  margin: 2px;
+                  background: #fff;
+                  width: 26px;
+                  .border-radius(13px, 13px, 13px, 13px);
+                  float: left;
+               }
+               .toggle-state-label {
+                  float:right;
+                  margin-right: 19px;
+                  margin-top: 3px;
+               }
+
+               &.toggle-on {
+                  background: @btn-success-bg;
+                  color: #333;
+
+                  &.sync-false {
+                     background: @btn-primary-bg;
+                  }
+                  .toggle-state-label {
+                     float: left;
+                     margin-right: 0;
+                     margin-left: 22px;
+                  }
+                  .toggle-switch {
+                     float:right;
+                  }
+
+               }
+               &.toggle-off {
+
+               }
+
+
+            }
          }
+
+
       }
 
    }

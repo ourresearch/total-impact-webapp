@@ -287,7 +287,7 @@ def create_new_user_profile(slug):
     except EmailExistsError:
         abort_json(409, "That email already exists.")
 
-    logger.debug(u"logging in user {user}".format(
+    logger.debug(u"creating new user {user}".format(
         user=user.dict_about()))
 
     login_user(user)
@@ -388,7 +388,11 @@ def user_products_get(id):
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
 def product_biblio_modify(tiid):
 
-    # TODO:  check this user has permission to make this change
+    try:
+        if current_user.url_slug != user.url_slug:
+            abort_json(401, "Only profile owners can modify profiles.")
+    except AttributeError:
+        abort_json(405, "You must be logged in to modify profiles.")
 
     query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,
@@ -415,18 +419,17 @@ def user_products_modify(id):
     logger.debug(u"got user {user}".format(
         user=user))
 
-    # ADDING THIS HERE TEMPORARILY
     if request.method == "POST" and action == "deduplicate":
         deleted_tiids = remove_duplicates_from_user(user.id)
         resp = {"deleted_tiids": deleted_tiids}
 
     elif request.method == "POST" and (action == "refresh"):
-        # anyone can refresh extant products.
         source = request.args.get("source", "webapp")
         tiids_being_refreshed = user.refresh_products(source)
         resp = {"products": tiids_being_refreshed}
 
     else:
+
         # Actions that require authentication
         try:
             if current_user.url_slug != user.url_slug:
@@ -434,14 +437,8 @@ def user_products_modify(id):
         except AttributeError:
             abort_json(405, "You must be logged in to modify profiles.")
 
-        # actions, depending on what http method was used:
-        if request.method == "POST" and action == "deduplicate":
-            deleted_tiids = remove_duplicates_from_user(user.id)
-            resp = {"deleted_tiids": deleted_tiids}
-
-        elif request.method == "PATCH":
-            tiids_to_add = request.json.get("tiids")
-            resp = {"products": user.add_products(tiids_to_add)}
+        if request.method == "PATCH":
+            resp = {"products": user.add_products(request.json)}
 
         elif request.method == "DELETE":
             tiids_to_delete = request.json.get("tiids")
@@ -529,32 +526,15 @@ def get_password_reset_link(id):
 
 
 
-
 #------------------ importers/:importer -----------------
 
-@app.route("/importer/<importer_name>", methods=["POST"])
-def import_products(importer_name):
-
-    query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
-        importer_name=importer_name,
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    analytics_credentials = current_user.get_analytics_credentials()
-    data_dict = json.loads(request.data)
-    data_dict["analytics_credentials"] = analytics_credentials
-    r = requests.post(
-        query,
-        data=json.dumps(data_dict),
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
-    )
-
-    local_sleep(1)
-    return json_resp_from_thing(r.json())
 
 
-
-
+@app.route("/user/<id>/linked-accounts/<account>", methods=["POST"])
+def user_linked_accounts_update(id, account):
+    user = get_user_for_response(id, request)
+    tiids = user.update_products_from_linked_account(account)
+    return json_resp_from_thing({"products": tiids})
 
 
 
@@ -583,12 +563,21 @@ def providers():
 
 
 
+#------------------ /tests  (supports functional testing) -----------------
 
 
+@app.route("/tests", methods=["DELETE"])
+def delete_all_test_users():
+    if not has_admin_authorization():
+        abort_json(401, "Need admin key to delete all test users")
 
-
-
-
+    email_suffex_for_text_accounts = "@test-impactstory.org"
+    users = User.query.filter(User.email.like("%"+email_suffex_for_text_accounts)).all()
+    user_slugs_deleted = []
+    for user in users:
+        user_slugs_deleted.append(user.url_slug)
+        delete_user(user)
+    return json_resp_from_thing({"test_users": user_slugs_deleted})
 
 
 
@@ -653,7 +642,6 @@ def item_page(namespace, nid):
         nid=nid,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
-    print "making request with this url: ", url
     r = requests.get(url)
     try:
         tiid = r.json()["tiid"]

@@ -1,0 +1,19 @@
+<div class="profile-linked-accounts profile-subpage" >
+   <div class="profile-accounts-header profile-subpage-header">
+      <div class="wrapper">
+         <a back-to-profile></a>
+         <h1 class="instr">Connect to other accounts</h1>
+         <h2>We'll automatically import your products from all over the web,
+            so your profile stays up to date.</h2>
+      </div>
+   </div>
+
+   <div class="accounts">
+      <div class="account"
+           ng-repeat="account in accounts"
+           ng-controller="accountCtrl"
+           ng-include="'accounts/account.tpl.html'">
+      </div>
+   </div>
+
+</div>

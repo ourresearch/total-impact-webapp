@@ -1,4 +1,26 @@
 angular.module('directives.forms', ["services.loading"])
+
+
+  .directive("ngFileSelect",function(){
+    return {
+      link: function($scope, el, attrs){
+        el.bind("change", function(e){
+          var reader = new FileReader()
+          reader.onload = function(e){
+            $scope.$emit("fileLoaded", reader.result)
+          }
+
+          var file = (e.srcElement || e.target).files[0];
+          reader.readAsText(file)
+        })
+      }
+    }
+  })
+
+
+
+
+
 .directive('prettyCheckbox', function(){
   // mostly from http://jsfiddle.net/zy7Rg/6/
   return {

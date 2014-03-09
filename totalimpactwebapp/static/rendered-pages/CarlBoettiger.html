@@ -987,16 +987,10 @@
          </h2>
          <div class="external-usernames">
             <ul>
-               <li ng-show="user.about.twitter_account_id" style="display: none;">
+               <li ng-show="user.about.twitter_id" style="display: none;">
                   <a href="https://twitter.com/">
                      <img src="https://twitter.com/favicon.ico">
                      <span class="service">Twitter</span>
-                  </a>
-               </li>
-               <li ng-show="user.about.github_id" style="display: none;">
-                  <a href="https://github.com/">
-                     <img src="https://github.com/fluidicon.png">
-                     <span class="service">GitHub</span>
                   </a>
                </li>
                <li ng-show="user.about.orcid_id" style="display: none;">
@@ -1005,16 +999,22 @@
                      <span class="service">ORCID</span>
                   </a>
                </li>
+               <li ng-show="user.about.github_id" style="display: none;">
+                  <a href="https://github.com/">
+                     <img src="https://github.com/fluidicon.png">
+                     <span class="service">GitHub</span>
+                  </a>
+               </li>
+               <li ng-show="user.about.figshare_id" style="display: none;">
+                  <a href="http://figshare.com">
+                     <img src="http://figshare.com/static/img/favicon.png">
+                     <span class="service">figshare</span>
+                  </a>
+               </li>
                <li ng-show="user.about.slideshare_id" style="display: none;">
                   <a href="https://www.slideshare.net/">
                      <img src="http://www.slideshare.net/favicon.ico">
                      <span class="service">Slideshare</span>
-                  </a>
-               </li>
-               <li ng-show="user.about.figshare_id" style="display: none;">
-                  <a href="">
-                     <img src="http://figshare.com/static/img/favicon.png">
-                     <span class="service">figshare</span>
                   </a>
                </li>
             </ul>

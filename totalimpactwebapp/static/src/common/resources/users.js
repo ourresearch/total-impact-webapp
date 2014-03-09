@@ -78,6 +78,22 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  .factory('UsersLinkedAccounts', function($resource){
+
+    return $resource(
+      "/user/:id/linked-accounts/:account",
+      {},
+      {
+        update:{
+          method: "POST",
+          params: {action: "update"}
+        }
+      }
+
+    )
+
+
+  })
 
   .factory('UsersPassword', function ($resource) {
 

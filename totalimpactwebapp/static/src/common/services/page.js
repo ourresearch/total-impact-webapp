@@ -31,7 +31,7 @@ angular.module("services.page")
       var myPageType = "profile"
       var path = $location.path()
 
-      var accountPages = [
+      var settingsPages = [
           "/settings",
           "/reset-password"
       ]
@@ -40,7 +40,6 @@ angular.module("services.page")
           "/faq",
           "/about"
         ]
-
 
       if (path === "/"){
         myPageType = "landing"
@@ -54,11 +53,14 @@ angular.module("services.page")
       else if (_.contains(infopages, path)){
         myPageType = "infopages"
       }
-      else if (_.contains(accountPages, path)) {
-        myPageType = "account"
+      else if (_.contains(settingsPages, path)) {
+        myPageType = "settings"
       }
       else if (path.indexOf("products/add") > -1) {
-        myPageType = "import"
+        myPageType = "importIndividual"
+      }
+      else if (path.indexOf("account") > -1) {
+        myPageType = "linkAccount"
       }
 
       return myPageType

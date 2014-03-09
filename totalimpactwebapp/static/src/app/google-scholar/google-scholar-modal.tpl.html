@@ -1,0 +1,45 @@
+<div class="modal-header">
+   <h4>Manually import Google Scholar articles</h4>
+   <a class="dismiss" ng-click="$close()">&times;</a>
+</div>
+<div class="modal-body google-scholar-import">
+   <div class="import-not-complete" ng-show="!importComplete">
+
+      <p>
+         Unfortunately, Google Scholar prevents automatic
+         syncing. However, you can manually import your data. Here's how:
+      </p>
+
+      <ol>
+        <li>Go to <a class="your-google-scholar-profile" target="_blank" href="{{ currentUser.google_scholar_id }}">your Google Scholar profile</a>.</li>
+        <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>
+        <li>Click <code>Export all my articles</code>, then save the BiBTeX file.</li>
+        <li>Return to Impactstory and upload your .bib file here.
+      </ol>
+
+         <div class="file-input-container">
+            <input type="file" ng-file-select="google_scholar_bibtex">
+         </div>
+
+         <div class="submit" ng-show="fileLoaded && !loading.is('bibtex')">
+            <a class="btn btn-primary" ng-click="sendToServer()">
+               Import {{ googleScholar.bibtexArticlesCount() }} articles
+            </a>
+         </div>
+
+         <div class="working" ng-show="loading.is('bibtex')">
+            <i class="icon-refresh icon-spin"></i>
+            <span class="text">Adding articles...</span>
+         </div>
+      </div>
+
+   <div class="import-complete" ng-show="importComplete">
+      <div class="msg">
+      Successfully imported {{ importedProductsCount }} articles!
+      </div>
+      <a class="btn btn-info" ng-click="$close()">ok</a>
+   </div>
+
+
+</div>
+

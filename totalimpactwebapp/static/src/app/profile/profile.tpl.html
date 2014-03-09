@@ -13,39 +13,51 @@
             <span class="given-name editable" data-name="given_name">{{ user.about.given_name }}</span>
             <span class="surname editable" data-name="surname">{{ user.about.surname }}</span>
          </h2>
-         <div class="external-usernames">
+         <div class="connected-accounts">
             <ul>
-               <li ng-show="user.about.twitter_account_id">
-                  <a href="https://twitter.com/{{ user.about.twitter_account_id }}" target="_blank">
-                     <img src="https://twitter.com/favicon.ico" />
-                     <span class="service">Twitter</span>
+
+               <li ng-show="user.about.figshare_id" style="display: none;">
+                  <a href="{{ user.about.figshare_id }}">
+                     <img src="http://figshare.com/static/img/favicon.png">
+                     <span class="service">figshare</span>
                   </a>
-               </li>
-               <li ng-show="user.about.github_id">
-                  <a href="https://github.com/{{ user.about.github_id }}" target="_blank">
-                     <img src="https://github.com/fluidicon.png" />
+               </li>           
+               <li ng-show="user.about.github_id" style="display: none;">
+                  <a href="https://github.com/{{ user.about.github_id }}">
+                     <img src="https://github.com/fluidicon.png">
                      <span class="service">GitHub</span>
                   </a>
                </li>
-               <li ng-show="user.about.orcid_id">
-                  <a href="https://orcid.org/{{ user.about.orcid_id }}" target="_blank">
-                     <img src="http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico" />
+               <li ng-show="user.about.google_scholar_id" style="display: none;">
+                  <a href="{{ user.about.google_scholar_id }}">
+                     <img src="http://scholar.google.com/favicon.ico">
+                     <span class="service">Google Scholar</span>
+                  </a>
+               </li>     
+               <li ng-show="user.about.orcid_id" style="display: none;">
+                  <a href="https://orcid.org/{{ user.about.orcid_id }}">
+                     <img src="http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico">
                      <span class="service">ORCID</span>
                   </a>
                </li>
-               <li ng-show="user.about.slideshare_id">
-                  <a href="https://www.slideshare.net/{{ user.about.slideshare_id }}" target="_blank">
-                     <img src="http://www.slideshare.net/favicon.ico" />
-                     <span class="service">SlideShare</span>
+
+               <li ng-show="user.about.slideshare_id" style="display: none;">
+                  <a href="https://www.slideshare.net/{{ user.about.slideshare_id }}">
+                     <img src="http://www.slideshare.net/favicon.ico">
+                     <span class="service">Slideshare</span>
                   </a>
                </li>
-               <li ng-show="user.about.figshare_id">
-                  <a href="{{ user.about.figshare_id }}" target="_blank">
-                     <img src="http://figshare.com/static/img/favicon.png" />
-                     <span class="service">figshare</span>
-                  </a>
+
                </li>
             </ul>
+
+            <div class="add-connected-account" ng-show="currentUserIsProfileOwner()">
+               <a href="/{{ user.about.url_slug }}/accounts" class="btn btn-xs btn-info">
+                  <i class="icon-link left"></i>
+                  <span ng-show="!hasConnectedAccounts()" class="first">Import from accounts</span>
+                  <span ng-show="hasConnectedAccounts()" class="more">Connect more accounts</span>
+               </a>
+            </div>
          </div>
       </div>
       <div class="my-metrics">
@@ -55,8 +67,6 @@
                 ng-repeat="profileAward in profileAwards">
             </li>
          </ul>
-
-
       </div>
    </div>
 </div>
@@ -65,19 +75,24 @@
    <div class="wrapper">
       <div class="edit-controls btn-group">
          <div class="num-items">
-            <span ng-hide="loadingProducts()" class="val-plus-text">
-               <span class="value" id="number-products">{{ filterProducts(products).length }}</span> research products
+            <span class="products-done-updating" ng-show="!productsStillUpdating">
+               <span ng-hide="loadingProducts()" class="val-plus-text">
+                  <span class="value" id="number-products">{{ filterProducts(products).length }}</span> research products
+               </span>
+               <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics" ng-show="showProductsWithoutMetrics">
+                  (hide <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> without metrics)
+               </a>
             </span>
-            <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics" ng-show="showProductsWithoutMetrics">
-               (hide <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> without metrics)
-            </a>
+            <span ng-show="productsStillUpdating" class="products-still-updating" id="products-still-updating">
+               Products still updating...
+            </span>
          </div>
       </div>
       <div class="view-controls">
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
          <div class="admin-controls" ng-show="currentUserIsProfileOwner() && !page.isEmbedded()">
             <a href="/{{ user.about.url_slug }}/products/add">
-               <i class="icon-upload"></i>Import
+               <i class="icon-upload"></i>Import products one-by-one
             </a>
             <a ng-click="dedup()"
                ng-class="{working: loading.is('dedup')}"

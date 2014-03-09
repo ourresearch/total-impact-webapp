@@ -83,8 +83,13 @@ class User(db.Model):
     orcid_id = db.Column(db.String(64))
     github_id = db.Column(db.String(64))
     slideshare_id = db.Column(db.String(64))
-    twitter_account_id = db.Column(db.String(64))
+    twitter_id = db.Column(db.String(64))
     figshare_id = db.Column(db.String(64))
+    google_scholar_id = db.Column(db.String(64))
+    mendeley_id = db.Column(db.String(64))
+    researchgate_id = db.Column(db.String(64))
+    academia_edu_id = db.Column(db.String(64))
+    linkedin_id = db.Column(db.String(64))
     wordpress_api_key = db.Column(db.String(64))
 
     #awards = []
@@ -201,8 +206,17 @@ class User(db.Model):
         products = get_products_from_core(self.tiids)
         return products
 
-    def add_products(self, tiids_to_add):
-        return add_products_to_user(self.id, tiids_to_add)
+    def add_products(self, product_id_dict):
+        try:
+            analytics_credentials = self.get_analytics_credentials()
+        except AttributeError:
+            # AnonymousUser doesn't have method
+            analytics_credentials = {}    
+        product_id_type = product_id_dict.keys()[0]
+        import_response = make_products_for_product_id_strings(product_id_type, product_id_dict[product_id_type], analytics_credentials)
+        tiids = import_response["products"].keys()
+
+        return add_tiids_to_user(self.id, tiids)
 
     def delete_products(self, tiids_to_delete):
         delete_products_from_user(self.id, tiids_to_delete)
@@ -212,6 +226,20 @@ class User(db.Model):
         save_user_last_refreshed_timestamp(self.id)
         analytics_credentials = self.get_analytics_credentials()        
         return refresh_products_from_tiids(self.tiids, analytics_credentials, source)
+
+    def update_products_from_linked_account(self, account):
+        account_value = getattr(self, account+"_id")
+        tiids = []        
+        if account_value:
+            try:
+                analytics_credentials = self.get_analytics_credentials()
+            except AttributeError:
+                # AnonymousUser doesn't have method
+                analytics_credentials = {}
+            import_response = make_products_for_linked_account(account, account_value, analytics_credentials)
+            tiids = import_response["products"].keys()
+            resp = add_tiids_to_user(self.id, tiids)
+        return tiids
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -254,8 +282,13 @@ class User(db.Model):
             "orcid_id",
             "github_id",
             "slideshare_id",
-            "twitter_account_id",
+            "twitter_id",
             "figshare_id",
+            "google_scholar_id",
+            "mendeley_id",
+            "academia_edu_id",
+            "researchgate_id",
+            "linkedin_id",
             "wordpress_api_key"
         ]
 
@@ -270,7 +303,7 @@ class User(db.Model):
 
             ret_dict[property] = val
 
-        ret_dict["products_count"] = len(self.products)
+        ret_dict["products_count"] = len(self.tiids)
 
         return ret_dict
 
@@ -299,7 +332,11 @@ def get_products_from_core(tiids):
     return products_list
 
 
-def add_products_to_user(user_id, tiids):
+def add_tiids_to_user(user_id, tiids):
+    logger.info(u"in add_tiids_to_user {user_id} with {tiids}".format(
+        user_id=user_id,
+        tiids=tiids))
+
     user_object = User.query.get(user_id)
     db.session.merge(user_object)
 
@@ -311,7 +348,7 @@ def add_products_to_user(user_id, tiids):
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in add_products_to_user for {user_id}, rolling back.  Message: {message}".format(
+        logger.warning(u"Fails Integrity check in add_tiids_to_user for {user_id}, rolling back.  Message: {message}".format(
             user_id=user_id,
             message=e.message))
 
@@ -465,9 +502,6 @@ def create_user_from_slug(url_slug, user_request_dict, db):
 
             user.url_slug += str(random.randint(1, 9999))
 
-            print "commiting fixed user: "
-            print dir(user)
-
             db.session.commit()
 
 
@@ -504,6 +538,54 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
         pass
 
     return user
+
+
+def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}):
+    query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
+        core_api_root=g.api_root,
+        importer_name=importer_name,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    data_dict = {
+        "account_name": importer_value, 
+        "analytics_credentials": analytics_credentials
+        }
+
+    r = requests.post(
+        query,
+        data=json.dumps(data_dict),
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
+    )
+    if r.status_code==200:
+        return r.json()
+    else:
+        logger.warning(u"make_products_for_linked_account returned status={status}".format(
+            status=r.status_code))
+        return {"products": {}}
+
+
+def make_products_for_product_id_strings(product_id_type, product_id_strings, analytics_credentials={}):
+    query = u"{core_api_root}/v1/importer/{product_id_type}?api_admin_key={api_admin_key}".format(
+        product_id_type=product_id_type,
+        core_api_root=g.api_root,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    data_dict = {
+        product_id_type: product_id_strings, 
+        "analytics_credentials": analytics_credentials
+        }
+
+    r = requests.post(
+        query,
+        data=json.dumps(data_dict),
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
+    )
+    if r.status_code==200:
+        return r.json()
+    else:
+        logger.warning(u"make_products_for_product_id_strings returned status={status}".format(
+            status=r.status_code))        
+        return {"products": {}}
 
 
 def hide_user_secrets(user):

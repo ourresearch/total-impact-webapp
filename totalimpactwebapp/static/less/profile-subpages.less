@@ -1,0 +1,100 @@
+div.profile-subpage {
+
+   .profile-subpage-header {
+      background: #555;
+      color: #fff;
+      .wrapper {
+         position:relative;
+         text-align: center;
+         a.back-to-profile {
+            position:absolute;
+            bottom: 47px;
+            left:0;
+            color: #fff;
+            font-weight: 300;
+         }
+         h1 {
+            margin-top: 0;
+            padding-top: 60px;
+            color: #fff;
+         }
+         h2 {
+            margin: 0 auto;
+            font-size: 20px;
+            font-weight: 300;
+            padding-bottom: 50px;
+            color: #fff;
+            max-width: 600px;
+            line-height: 1.5;
+         }
+      }
+   }
+
+   // the linked accounts subpage
+   &.profile-linked-accounts {
+      position: fixed;
+      top:0;
+      bottom:0;
+      left:0;
+      width: 100%;
+      background: #ddd;
+   }
+
+
+   // the import single products page
+   &.profile-single-products {
+      div.profile-single-products-body {
+         min-height: 600px;
+         padding-top: 100px;
+         div.wrapper{
+            form {
+               width: 50%;
+               float:left;
+               margin-right: 5%;
+               textarea {
+                  height: 300px;
+               }
+               div.buttons {
+                  text-align: right;
+                  margin-top: 20px;
+               }
+            }
+            .id-sources {
+               width: 45%;
+               float:left;
+               h3 {
+                  margin: -5px 0 20px 50px;
+                  padding-bottom: 5px;
+                  width: 300px;
+                  text-align: center;
+                  font-weight: 900;
+                  border-bottom: 1px solid #ccc;
+                  font-size: 22px;
+               }
+               ul {
+                  li {
+                     margin-bottom: 5px;
+                     span.id-type {
+                        font-weight: 300;
+                        width: 200px;
+                        display:inline-block;
+                        text-align: right;
+                        padding-right: 10px;
+                        font-size: 16px;
+                     }
+                     img {
+                        height: 25px;
+                        margin: 5px;
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+   }
+
+
+
+}
+
