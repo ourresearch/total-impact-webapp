@@ -88,14 +88,15 @@ def get_url_slugs_since_refresh_date(number_to_update, max_days_since_updated, n
 
 
 
-def main(number_to_update=3, max_days_since_updated=7):
+def main(number_to_update=3, max_days_since_updated=7, url_slugs=[]):
     #35 every 10 minutes is 35*6perhour*24hours=5040 per day
 
     try:
         webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "http://localhost:5000")
         now=datetime.datetime.utcnow()
 
-        url_slugs = get_url_slugs_since_refresh_date(number_to_update, max_days_since_updated, now)
+        if not url_slugs:
+            url_slugs = get_url_slugs_since_refresh_date(number_to_update, max_days_since_updated, now)
         try:    
             print u"got", len(url_slugs), url_slugs
         except UnicodeEncodeError:
@@ -127,12 +128,13 @@ def main(number_to_update=3, max_days_since_updated=7):
 if __name__ == "__main__":
     # get args from the command line:
     parser = argparse.ArgumentParser(description="Run periodic metrics updating from the command line")
+    parser.add_argument('--url_slug', default=None, type=str, help="url slug")
     parser.add_argument('--number_to_update', default='3', type=int, help="Number to update.")
     parser.add_argument('--max_days_since_updated', default='7', type=int, help="Update if hasn't been updated in this many days.")
     args = vars(parser.parse_args())
     print args
     print u"updater.py starting."
-    main(args["number_to_update"], args["max_days_since_updated"])
+    main(args["number_to_update"], args["max_days_since_updated"], [args["url_slug"]])
 
 
 
