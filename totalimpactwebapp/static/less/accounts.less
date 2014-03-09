@@ -221,7 +221,7 @@ div.accounts {
       float:left;
       background: #fff;
       width:  50%;
-      padding: 65px 1% 65px 2%;
+      padding: 65px 0 65px 0;
       border-right: 1px solid #ccc;
       border-bottom: 1px solid #ccc;
       text-align: center;
@@ -241,26 +241,27 @@ div.accounts {
       &.is-linked {
          background: #fff;
       }
-      @media(max-width: 83em){
-         width:  33.333333%;
-      }
-      @media(max-width: 65em){
-         width:  50%;
-      }
-      @media(max-width: 42em){
+//      @media(max-width: 83em){
+//         width:  33.333333%;
+//      }
+//      @media(max-width: 55em){
+//         width:  50%;
+//      }
+      @media(max-width: 45em){
          width:  100%;
       }
 
       div.account-name {
          float:left;
-         margin-left: 100px;
+         margin-left: 15%;
          img {
-            height: 45px;
+            height: 42px;
          }
       }
+
       div.linked-info {
          float:right;
-         margin-right: 100px;
+         margin-right: 15%;
          font-size: 20px;
          margin-top: 10px;
          div.linking-in-progress {
