@@ -1,8 +1,420 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-04
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-08
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
  */
+angular.module('accounts.account', [
+  'directives.forms',
+  'directives.onRepeatFinished',
+  'services.loading',
+  'googleScholar',
+  'resources.users',
+  'resources.products',
+  'update.update',
+  'profile'
+])
+.factory('Account', function(
+    $q,
+    Loading,
+    Products,
+    UsersProducts,
+    UsersLinkedAccounts,
+    UsersAbout){
+
+    var tiidsAdded = []
+
+    var unlinkAccount = function(url_slug, accountObj){
+      var deferred = $q.defer()
+
+      var about = {}
+      about[accountObj.accountHost + "_id"] = null
+
+
+
+      Loading.start("saveButton")
+      console.log("unlinking account " + accountObj.accountHost)
+      UsersAbout.patch(
+        {id:url_slug},
+        {about: about},
+        function(resp){
+          deferred.resolve(resp)
+          Loading.finish("saveButton")
+
+        },
+        function(resp){
+          deferred(reject(resp))
+          Loading.finish("saveButton")
+        })
+
+      return deferred.promise
+    }
+
+
+
+    var saveAccountInput = function(url_slug, accountObj) {
+
+      var deferred = $q.defer()
+
+      var about = {}
+      var cleanUsername = accountObj.usernameCleanupFunction(accountObj.username.value)
+      about[accountObj.accountHost + "_id"] = cleanUsername
+
+
+      Loading.start("saveButton")
+      UsersAbout.patch(
+        {id:url_slug},
+        {about: about},
+
+        function(patchResp){
+          // ok the userAbout object has this username in it now. let's slurp.
+
+          console.log("telling webapp to update " + accountObj.accountHost)
+          UsersLinkedAccounts.update(
+            {id: url_slug, account: accountObj.accountHost},
+            {},
+            function(updateResp){
+              // we've kicked off a slurp for this account type. we'll add
+              // as many products we find in that account, then dedup.
+              // we'll return the list of new tiids
+
+              console.log("update started for " + accountObj.accountHost + ". ", updateResp)
+              Loading.finish("saveButton")
+              deferred.resolve({
+                updateResp: updateResp,
+                patchResp: patchResp
+              })
+            },
+            function(updateResp){
+              Loading.finish("saveButton")
+              deferred.reject({
+                msg: "attempt to slurp in products from linked account failed",
+                resp: updateResp
+              })
+            }
+
+          )
+        },
+        function(patchResp){
+          deferred.reject({
+            failure: "PATCH to add external account failed; didn't even try slurping.",
+            resp: patchResp
+          })
+        }
+      )
+      return deferred.promise
+    }
+
+
+
+
+
+
+    return {
+      'saveAccountInput': saveAccountInput,
+      unlinkAccount: unlinkAccount,
+      getTiids: function(){return tiidsAdded}
+    }
+
+})
+
+
+.controller('accountCtrl', function(
+    $scope,
+    $routeParams,
+    $location,
+    Products,
+    GoogleScholar,
+    UserProfile,
+    UsersProducts,
+    Account,
+    Loading,
+    Update){
+
+  $scope.showAccountWindow = function(){
+    $scope.accountWindowOpen = true;
+    analytics.track("Opened an account window", {
+      "Account name": $scope.account.displayName
+    })
+
+  }
+
+  $scope.isLinked = function(){
+    return !!$scope.account.username.value
+  }
+
+  $scope.isLinked = !!$scope.account.username.value
+
+  $scope.setCurrentTab = function(index){$scope.currentTab = index}
+
+  $scope.googleScholar = GoogleScholar
+
+  $scope.showImportModal = function(){
+    GoogleScholar.showImportModal()
+    $scope.accountWindowOpen = false
+  }
+
+
+  $scope.onCancel = function(){
+    $scope.accountWindowOpen = false;
+  }
+
+  $scope.unlink = function() {
+    $scope.accountWindowOpen = false;
+    $scope.isLinked = false
+
+    Account.unlinkAccount($routeParams.url_slug, $scope.account).then(
+      function(resp){
+        console.log("finished unlinking!", resp)
+        $scope.account.username.value = null
+        analytics.track("Unlinked an account", {
+          "Account name": $scope.account.displayName
+        })
+
+      }
+    )
+  }
+
+  $scope.onLink = function(){
+    console.log(
+      _.sprintf("calling /importer/%s updating '%s' with userInput:",
+        $scope.account.accountHost,
+        $routeParams.url_slug),
+      $scope.account
+    )
+
+    $scope.accountWindowOpen = false
+    Loading.start($scope.account.accountHost)
+
+    Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
+
+      // linked this account successfully
+      function(resp){
+        console.log("successfully saved linked account", resp)
+        $scope.isLinked = true
+        analytics.track("Linked an account", {
+          "Account name": $scope.account.displayName
+        })
+
+        Loading.finish($scope.account.accountHost)
+
+        if ($scope.account.accountHost == "google_scholar"){
+          console.log("opening google scholar modal")
+          GoogleScholar.showImportModal()
+        }
+
+
+      },
+      function(resp){
+        console.log("failure at saving inputs :(", resp)
+        Loading.finish($scope.account.accountHost)
+      }
+    )
+  }
+})
+
+angular.module('accounts.allTheAccounts', [
+  'accounts.account'
+])
+
+.factory('AllTheAccounts', function(){
+
+  var importedProducts = []
+  var accounts = {
+//    academia_edu: {
+//      displayName: "Academia.edu",
+//      usernameCleanupFunction: function(x){return x},
+//      url:'http://academia.edu',
+//      descr: "Academia.edu is a place to share and follow research.",
+//      username: {
+//        inputNeeded: "profile URL",
+//          placeholder: "http://your_university.academia.edu/your_username"
+//      }
+//    },
+
+    figshare: {
+      displayName: "figshare",
+      url: "http://figshare.com",
+      sync: true,
+      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
+      username:{
+            inputNeeded: "author page URL",
+            placeholder: "http://figshare.com/authors/your_username/12345"
+
+      },
+      usernameCleanupFunction: function(x) {
+              if (typeof x==="undefined") return x;
+              return('http://'+x.replace('http://', ''))
+      }
+    },
+
+    github: {
+      displayName: "GitHub",
+      sync: true,
+      usernameCleanupFunction: function(x){return x},
+      url: 'http://github.com',
+      descr: "GitHub is an online code repository emphasizing community collaboration features.",
+      username: {
+        inputNeeded: "username",
+        help: "Your GitHub account ID is at the top right of your screen when you're logged in."
+      }
+    },
+
+    google_scholar: {
+      displayName: "Google Scholar",
+      sync:false,
+      usernameCleanupFunction: function(x){return x},
+      url: 'http://scholar.google.com/citations',
+      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
+      username: {
+        inputNeeded: "profile URL",
+        placeholder: "http://scholar.google.ca/citations?user=your_user_id"
+      }
+    },
+
+//    linkedin: {
+//      displayName: "LinkedIn",
+//      usernameCleanupFunction: function(x){return x},
+//      url:'http://linkedin.com',
+//      descr: "LinkedIn is a social networking site for professional networking.",
+//      username: {
+//        inputNeeded: "profile URL",
+//          placeholder: "http://www.linkedin.com/in/your_username"
+//      }
+//    },
+
+//    mendeley: {
+//      displayName: "Mendeley",
+//      usernameCleanupFunction: function(x){return x},
+//      url:'http://mendeley.com',
+//      descr: "Mendeley is a desktop and web program for managing and sharing research papers,discovering research data, and collaborating online.",
+//      username: {
+//        inputNeeded: "profile URL",
+//          placeholder: "http://www.mendeley.com/profiles/your_username"
+//      }
+//    },
+
+    orcid: {
+      displayName: "ORCID",
+      sync: true,
+      username:{
+        inputNeeded: "ID",
+        placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
+        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
+      },
+      usernameCleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
+      url: 'http://orcid.org',
+      signupUrl: 'http://orcid.org/register',
+      descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",
+      extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
+    },
+
+//    researchgate: {
+//      displayName: "ResearchGate",
+//      usernameCleanupFunction: function(x){return x},
+//      url:'http://researchgate.net',
+//      descr: "ResearchGate is a social networking site for scientists and researchers to share papers, ask and answer questions, and find collaborators.",
+//      username: {
+//        inputNeeded: "profile URL",
+//          placeholder: "https://www.researchgate.net/profile/your_username"
+//      }
+//    },
+
+    slideshare: {
+      displayName: "SlideShare",
+      sync: true,
+      usernameCleanupFunction: function(x){return x},
+      url:'http://slideshare.net',
+      descr: "SlideShare is community for sharing presentations online.",
+      username: {
+          help: "Your username is right after \"slideshare.net/\" in your profile's URL.",
+          inputNeeded: "username"
+      }
+    }
+
+
+//    ,twitter: {
+//      displayName: "Twitter",
+//      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
+//      url:'http://twitter.com',
+//      descr: "Twitter is a social networking site for sharing short messages.",
+//      extra: "We don't import your tweets right now -- stay tuned!",
+//      username: {
+//          inputNeeded: "username",
+//          placeholder: "@example",
+//          help: "Your Twitter username is often written starting with @."
+//      }
+//    }
+
+  }
+
+
+
+
+
+  var makeLogoPath = function(displayName) {
+    return '/static/img/logos/' + _(displayName.toLowerCase()).dasherize() + '.png';
+  }
+
+
+  var makeEndpoint = function(account) {
+    if (account.endpoint) {
+      return account.endpoint
+    }
+    else {
+      return makeName(account.displayName)
+    }
+  }
+
+
+  var makeCSSName = function(accountName) {
+    return accountName.replace(/ /g, '-').toLowerCase()
+
+  }
+
+
+  return {
+    addProducts: function(products) {
+      importedProducts = importedProducts.concat(products)
+}   ,
+    getProducts: function(){
+      return importedProducts
+    },
+    accountServiceNamesFromUserAboutDict:function(userAboutDict){
+
+    },
+
+    get: function(userDict){
+
+      var ret = []
+      var accountsConfig = angular.copy(accounts)
+
+      _.each(accountsConfig, function(accountObj, accountHost){
+        var userDictAccountKey = accountHost + "_id"
+
+
+        accountObj.username.value = userDict[userDictAccountKey]
+        console.log("making account dict. username value: ", accountObj.username.value)
+
+
+        accountObj.accountHost = accountHost
+        accountObj.CSSname = makeCSSName(accountObj.displayName)
+        accountObj.logoPath = makeLogoPath(accountObj.displayName)
+
+        ret.push(accountObj)
+      })
+
+      return _.sortBy(ret, function(account){
+        return account.displayName.toLocaleLowerCase();
+      })
+
+    }
+
+  }
+
+
+
+})
+
 // setup libs outside angular-land. this may break some unit tests at some point...#problemForLater
 // Underscore string functions: https://github.com/epeli/underscore.string
 _.mixin(_.str.exports());
@@ -136,559 +548,95 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   };
 }]);
 
-angular.module('importers.allTheImporters', [
-  'importers.importer'
+angular.module("googleScholar", [
+ "security",
+ "resources.users"
+
 ])
-
-angular.module('importers.allTheImporters')
-.factory('AllTheImporters', function(){
-
-  var importedProducts = []
-  var importers = [
-    {
-      displayName: "GitHub",
-      url: 'http://github.com',
-      descr: "GitHub is an online code repository emphasizing community collaboration features.",
-     tabs: [
-       {
-         label: "account"
-       },
-       {
-         label: "additional repositories"
-       }
-     ],
-      inputs: [{
-            tab: 0,
-            name: "account_name",            
-            inputType: "username",
-            inputNeeded: "username",
-            help: "Your GitHub account ID is at the top right of your screen when you're logged in.",
-            saveUsername: "github_id"
-          }
-         ,{
-            tab:1,
-            name: "standard_urls_input",                        
-            inputType: "idList",
-            inputNeeded: "URLs",
-            help: "Paste URLs for other github repositories here.",
-            placeholder: "https://github.com/your_username/your_repository",
-            cleanupFunction: function (fullString) {
-              if (typeof fullString==="undefined") return fullString; 
-              return _.map(fullString.split("\n"), function(line) {            
-                // make sure it starts with https and doesn't end with trailing slash
-                var working = line.replace(/^https*:\/\//, ""); 
-                working = working.replace(/\/$/, ""); 
-                return "https://"+working}).join("\n")}
-         }
-      ]
-    },
-
-
-    {
-      displayName: "ORCID",
-      inputs: [{
-        inputType: "username",
-        inputNeeded: "ID",
-        placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
-        saveUsername: "orcid_id",
-        cleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
-        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
-      }],
-      url: 'http://orcid.org',
-      signupUrl: 'http://orcid.org/register',
-      descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",
-      extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
-    },
-
-    {
-      displayName: "SlideShare",
-      url:'http://slideshare.net',
-      descr: "SlideShare is community for sharing presentations online.",
-      tabs: [
-       {
-         label: "account"
-       },
-       {
-         label: "additional products"
-       }
-       ],
-      inputs: [{
-            tab: 0,
-            name: "account_name",            
-            inputType: "username",
-            inputNeeded: "username",
-            help: "Your username is right after \"slideshare.net/\" in your profile's URL.",            
-            saveUsername: "slideshare_id"
-          }
-         ,{
-            tab:1,
-            name: "standard_urls_input",                        
-            inputType: "idList",
-            inputNeeded: "URLs",
-            help: "Paste URLs for other SlideShare products here.",
-            placeholder: "http://www.slideshare.net/your-username/your-presentation",
-            cleanupFunction: function (fullString) {
-              if (typeof fullString==="undefined") return fullString; 
-              return _.map(fullString.split("\n"), function(line) {            
-                // make sure it starts with http
-                var working = line.replace(/^https*:\/\//, ""); 
-                return "http://"+working}).join("\n")}
-         }
-      ]
-    },
-
-
-    {
-      displayName: "Google Scholar",
-      inputs: [{
-        inputType: "file",
-        inputNeeded: "BibTeX file"
-      }],
-      endpoint: "bibtex",
-      url: 'http://scholar.google.com/citations',
-      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
-      extra: '<h3>How to import your Google Scholar profile:</h3>'
-        + '<ol>'
-          + '<li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li>'
-          + '<li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>'
-          + '<li>Click <code>Export all my articles</code>, then save the BibTex file.</li>'
-          + '<li>Return to Impactstory. Click "upload" in this window, select your previously saved file, and upload.'
-        + '</ol>'
-    },
-
-
-    {
-      displayName: "figshare",
-      url: "http://figshare.com",
-      descr: "Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",
-      tabs: [
-       {
-         label: "account"
-       },
-       {
-         label: "additional products"
-       }
-       ],
-      inputs: [{
-            tab: 0,
-            name: "account_name",            
-            inputType: "username",
-            inputNeeded: "author page URL",
-            placeholder: "http://figshare.com/authors/your_username/12345",
-            cleanupFunction: function(x) {
-              if (typeof x==="undefined") return x; 
-              return('http://'+x.replace('http://', ''))},
-            saveUsername: "figshare_id"
-          }
-         ,{
-            tab:1,
-            name: "standard_dois_input",                        
-            inputType: "idList",
-            inputNeeded: "DOIs",
-            help: "Paste DOIs for other figshare products here.",
-            placeholder: "http://dx.doi.org/10.6084/m9.figshare.12345"
-         }
-      ]
-    },
-
-
-
-
-
-    {
-      displayName: "YouTube",
-      inputs: [{
-        name: "standard_urls_input",
-        inputType: "idList",
-        inputNeeded: "URLs",
-        help: "Copy the URLs for the videos you want to add, then paste them here.",
-        placeholder: "http://www.youtube.com/watch?v=12345"
-      }],
-      endpoint: "urls",
-      url: "http://youtube.com",
-      descr: "YouTube is an online video-sharing site."
-    },
-
-
-    {
-      displayName: "Vimeo",
-      inputs: [{
-        name: "standard_urls_input",        
-        inputType: "idList",
-        inputNeeded: "URLs",
-        help: "Copy the URL for the video you want to add, then paste it here.",
-        placeholder: "http://vimeo.com/12345"
-      }],
-      endpoint: "urls",
-      url: "http://vimeo.com",
-      descr: "Vimeo is an online video-sharing site."
-    },
-
-    {
-      displayName: "arXiv",
-      inputs: [{
-        name: "arxiv_id_input",
-        inputType: "idList",
-        inputNeeded: "arXiv IDs",
-        help: "A typical arXiv ID looks like this: 1305.3328",
-        placeholder: "arXiv:1234.5678"       
-      }],
-      endpoint: "arxiv",
-      url: "http://arXiv.org",
-      descr: "arXiv is an e-print service in the fields of physics, mathematics, computer science, quantitative biology, quantitative finance and statistics."
-    },
-
-
-    {
-      displayName: "Dryad",
-      inputs: [{
-        name: "standard_dois_input",        
-        inputType: "idList",
-        inputNeeded: "DOIs",
-        help: "You can find Dryad DOIs on each dataset's individual Dryad webpage, inside the <strong>\"please cite the Dryad data package\"</strong> section.",
-        placeholder: "doi:10.5061/dryad.example"
-      }],
-      endpoint: "dois",
-      url: 'http://datadryad.org',
-      descr: "The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."
-    },
-
-
-    {
-      displayName: "Dataset DOIs",
-      inputs: [{
-        name: "standard_dois_input",                
-        inputType: "idList",
-        inputNeeded: "DOIs",
-        help: "You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",
-        placeholder: "http://doi.org/10.example/example"
-      }],
-      endpoint: "dois",
-      descr: "Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."
-    },
-
-
-    {
-      displayName: "Article DOIs",
-      inputs: [{
-        name: "standard_dois_input",                
-        inputType: "idList",
-        inputNeeded: "DOIs",
-        help: "You can (generally) find article DOIs wherever the publishers have made the articles available online.",
-        placeholder: "http://doi.org/10.example/example"
-      }],
-      endpoint: "dois",
-      descr: "Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."
-    },
-
-
-    {
-      displayName: "PubMed IDs",
-      inputs: [{
-        name: "standard_pmids_input",                
-        inputType: "idList",
-        inputNeeded: "IDs",
-        placeholder: "123456789",
-        help: "You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."
-      }],
-      endpoint: "pmids",
-      url:'http://www.ncbi.nlm.nih.gov/pubmed',
-      descr: "PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."
-    },
-
-
-    {
-      displayName: "Products by URL",
-      inputs: [{
-        name: "standard_urls_input",                
-        inputType: "idList",
-        inputNeeded: "URLs"
-      }],
-      endpoint: "urls",
-      descr: "Our service-specific importers (DOI, blogs, GitHub, etc) give the most comprehensive results. But if you've got a product not handled by any of those, you can import it here, via URL."
-    }
-  ]
-
-  var defaultInputObj = {
-    name: "primary",
-    cleanupFunction: function(x){return x},
-    tab:0
-  }
-
-
-
-
-  var makeLogoPath = function(displayName) {
-    return '/static/img/logos/' + _(displayName.toLowerCase()).dasherize() + '.png';
-  }
-
-
-  var makeEndpoint = function(importer) {
-    if (importer.endpoint) {
-      return importer.endpoint
+.factory("GoogleScholar", function($modal, $q, UsersProducts, security){
+  var bibtex = ""
+  var tiids = []
+  var bibtexArticlesCount = function(){
+    var matches = bibtex.match(/^@/gm)
+    if (matches) {
+      return matches.length
     }
     else {
-      return makeName(importer.displayName)
+      return 0
     }
   }
-          
-  var makeName = function(importerName) {
-    var words = importerName.split(" ");
-    var capitalizedWords = _.map(words, function(word){
-      return word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)
-    })
-    capitalizedWords[0] = capitalizedWords[0].toLowerCase()
-    return capitalizedWords.join("");
-
-  }
-
-
-  var makeCSSName = function(importerName) {
-    return importerName.replace(/ /g, '-').toLowerCase()
-
-  }
-
 
   return {
-    addProducts: function(products) {
-      importedProducts = importedProducts.concat(products)
-}   ,
-    getProducts: function(){
-      return importedProducts
+    bibtexArticlesCount: bibtexArticlesCount,
+    setBibtex: function(newBibtex){
+      bibtex = newBibtex
+      console.log("new bibtex just got set!")
     },
-    get: function(){
-
-      // this way no state is saved in the actual importers obj.
-      var importersConfig = angular.copy(importers)
-
-      var importersWithAllData = _.map(importersConfig, function(importer){
-        importer.name = makeName(importer.displayName)
-        importer.CSSname = makeCSSName(importer.displayName)
-        importer.logoPath = makeLogoPath(importer.displayName)
-        importer.endpoint = makeEndpoint(importer)
-
-        importer.inputs = _.map(importer.inputs, function(inputObj){
-          return _.defaults(inputObj, defaultInputObj)
-        })
-
-
-        return importer
-      })
-
-      return _.sortBy(importersWithAllData, function(importer){
-        return importer.displayName.toLocaleLowerCase();
-      })
-
-    }
-
-
-  }
-
-
-
-})
-
-angular.module('importers.importer', [
-  'directives.forms',
-  'directives.onRepeatFinished',
-  'services.loading',
-  'resources.users',
-  'resources.products',
-  'update.update',
-  'profile'
-])
-angular.module('importers.importer')
-.factory('Importer', function($q, Loading, Products, UsersProducts, UsersAbout){
-    var waitingOn = {}
-    var tiidsAdded = []
-
-    var onImportCompletion = function(){console.log("onImportCompletion(), override me.")}
-
-    var finish = function(importJobName){
-      waitingOn[importJobName] = false;
-      if (!_.some(_.values(waitingOn))) { // we're not waiting on anything...
-        Loading.finish('saveButton')
-        onImportCompletion()
-      }
-    }
-
-    var start = function(importJobName){
-      Loading.start("saveButton")
-      waitingOn[importJobName] = true
-    }
-
-
-    var saveImporterInput = function(url_slug, importerObj) {
-
-      // clean the values
-      _.each(importerObj.inputs, function(input){
-        input.cleanedValue = input.cleanupFunction(input.value)
-      })
-
-      saveExternalUsernames(url_slug, importerObj.inputs)
-      saveProducts(url_slug, importerObj.endpoint, importerObj.inputs)
-
-    }
-
-
-    var saveProducts = function(url_slug, importerName, userInputObjs){
-
-      // make a simple dict of cleaned input values.
-      var userInput = {}
-      _.each(userInputObjs, function(input){
-        userInput[input.name] = input.cleanedValue
-      })
-
-      console.log("saveProducts()", url_slug, importerName, userInput)
-      start("saveProducts")
-      Products.save(
-        {'importerName': importerName}, // define the url
-        userInput, // the post data, from user input
-        function(resp, headers){  // run when the server gives us something back.
-          var tiids;
-
-          if (resp.error){
-            tiids = []
+    getBibtex: function(){
+      console.log("getting bibtex!", bibtex)
+      return bibtex
+    },
+    showImportModal: function(){
+      $modal.open({
+        templateUrl: "google-scholar/google-scholar-modal.tpl.html",
+        controller: "GoogleScholarModalCtrl",
+        resolve: {
+          currentUser: function(security){
+            security.clearCachedUser()
+            return security.requestCurrentUser()
           }
-          else {
-            tiids = _.keys(resp.products)
-          }
-
-          console.log("importer got us some tiids:", tiids);
-          tiidsAdded = tiids
-
-          // add the new products to the user's profile on the server
-          UsersProducts.patch(
-            {id: url_slug},  // the url
-            {"tiids": tiids},  // the POST data
-            function(){
-              finish("saveProducts")
-            }
-          )
-        },
-        function(resp){ // if there's a failure
-          console.log("importer failure!")
-          finish("saveProducts")
-          alert("Oops! Sorry, we seem to have run into an error. We weren't able to import your " +
-            importerName + " products, but we've logged this error and will get straight to work " +
-            "on fixing it.")
-
         }
+      })
+    },
+    sendToServer: function(){
+      console.log(
+        "sending this bibtex to /importers/bibtex: ",
+        bibtex.substring(0, 50) + "..."
       )
-    }
 
+      analytics.track("Uploaded Google Scholar", {
+        "Number of products": bibtexArticlesCount()
+      })
 
-    var saveExternalUsernames = function(url_slug, userInputObjs){
-
-
-      var patchData = {'about': about}
-      console.log("trying to save this patch data: ", patchData)
-
-      start("saveExternalUsernames")
-      console.log("saving usernames")
-      UsersAbout.patch(
-        {id:url_slug},
-        patchData,
+      return UsersProducts.patch(
+        {id: security.getCurrentUser("url_slug")},
+        {bibtex: bibtex},
         function(resp){
-          finish("saveExternalUsernames")
-          console.log("done saving external usernames.")
+          console.log("successfully uploaded bibtex!", resp)
+        },
+        function(resp){
+          console.log("bibtex import failed :(")
         }
       )
+    },
+    getTiids: function(){
+      return tiids
     }
-
-
-
-    return {
-      'saveImporterInput': saveImporterInput,
-      setOnImportCompletion: function(callback){
-        onImportCompletion = callback
-      },
-      getTiids: function(){return tiidsAdded}
-    }
-
-})
-
-
-});
-
-  var getUserSlug = function(){
-    var re = /\/([-\w\.]+)\/products/
-    var res = re.exec($location.path())
-    return res[1]
   }
-  $scope.showImporterWindow = function(){
-    if (!$scope.importerHasRun) { // only allow one import for this importer.
 
-      analytics.track("Opened an importer", {
-        "Importer name": Importer.displayName
+  })
+
+  .controller("GoogleScholarModalCtrl", function($scope, GoogleScholar, currentUser){
+    console.log("modal controller activated!")
+    $scope.currentUser = currentUser
+    $scope.googleScholar = GoogleScholar
+
+    $scope.sendToServer = function(){
+      GoogleScholar.sendToServer().$then(function(resp){
+        console.log("finished with the upload, here's the resp", resp)
+        $scope.importComplete = true
+        $scope.importedProductsCount = resp.data.products.length
       })
-
-      $scope.importWindowOpen = true;
-      $scope.importer.userInput = null  // may have been used before; clear it.
     }
-  }
 
-  $scope.products = []
-  $scope.currentTab = 0;
-  $scope.userInput = {}
-  $scope.importerHasRun = false
-
-
-  $scope.setCurrentTab = function(index){$scope.currentTab = index}
-
-  $scope.onCancel = function(){
-    $scope.importWindowOpen = false;
-  }
-
-  $scope.onImport = function(){
-
-    // define vars
-    var slug = getUserSlug()
-    Importer.setOnImportCompletion(
-      function(){
-        // close the window
-        $scope.importWindowOpen = false;
-        $scope.products = Importer.getTiids();
-
-        Update.showUpdate(slug, function(){
-          $location.path("/"+slug)
-          analytics.track(
-            "Imported products",
-            {
-              "Importer name": Importer.displayName,
-              "Number of products": $scope.products.length
-            }
-          )
-        })
-        $scope.importerHasRun = true
-      }
-    )
-
-    // ok, let's do this
-    console.log(
-      _.sprintf("calling /importer/%s updating '%s' with userInput:", $scope.importer.endpoint, slug),
-      $scope.importer
-    )
-
-    Importer.saveImporterInput(slug, $scope.importer)
-  }
-})
+    $scope.$on("fileLoaded", function(event, result){
+      GoogleScholar.setBibtex(result)
+      $scope.fileLoaded = true
+      $scope.$apply()
+    })
 
 
-  .directive("ngFileSelect",function(){
-    return {
-      link: function($scope, el, attrs){
-        el.bind("change", function(e){
-          var reader = new FileReader()
-          reader.onload = function(e){
-            $scope.input.value = reader.result
-          }
 
-          var file = (e.srcElement || e.target).files[0];
-          reader.readAsText(file)
-        })
-      }
-    }
   })
 
 angular.module( 'infopages', [
@@ -891,11 +839,51 @@ angular.module('profileAward.profileAward', [])
   })
 
 
+angular.module('profileLinkedAccounts', [
+  'accounts.allTheAccounts',
+  'services.page',
+  'accounts.account',
+  'resources.users'
+])
+
+  .config(['$routeProvider', function($routeProvider, UserAbout) {
+
+    $routeProvider
+      .when("/:url_slug/accounts", {
+        templateUrl: 'profile-linked-accounts/profile-linked-accounts.tpl.html',
+        controller: 'profileLinkedAccountsCtrl',
+        resolve:{
+          userOwnsThisProfile: function(security){
+            return security.testUserAuthenticationLevel("ownsThisProfile")
+          },
+          currentUser: function(security){
+            security.clearCachedUser()
+            return security.requestCurrentUser()
+          }
+        }
+      })
+
+  }])
+  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheAccounts, currentUser){
+
+
+    Page.showHeader(false)
+    Page.showFooter(false)
+
+    console.log("current user: ", currentUser)
+
+    $scope.accounts = AllTheAccounts.get(currentUser)
+    $scope.returnLink = "/"+$routeParams.url_slug
+
+
+
+  })
 angular.module("profileProduct", [
     'resources.users',
     'resources.products',
     'profileAward.profileAward',
     'services.page',
+    'profile',
     'product.product',
     'services.loading',
     'ui.bootstrap',
@@ -923,14 +911,15 @@ angular.module("profileProduct", [
     UsersProduct,
     UsersProducts,
     ProfileAwards,
+    UserProfile,
     Product,
     Loading,
     Page) {
 
     var slug = $routeParams.url_slug
-    var $httpDefaultCache = $cacheFactory.get('$http')
 
     Loading.start('profileProduct')
+    UserProfile.useCache(true)
 
     $scope.userSlug = slug
     $scope.loading = Loading
@@ -957,6 +946,7 @@ angular.module("profileProduct", [
     $scope.deleteProduct = function(){
 
       Loading.start("deleteProduct")
+      UserProfile.useCache(false)
 
       // do the deletion in the background, without a progress spinner...
       UsersProducts.delete(
@@ -964,13 +954,13 @@ angular.module("profileProduct", [
         {"tiids": [$routeParams.tiid]},  // the body data
         function(){
           console.log("finished deleting", $routeParams.tiid)
-          $httpDefaultCache.removeAll()
           security.redirectToProfile()
         }
       )
     }
 
     $scope.editProduct = function(){
+      UserProfile.useCache(false)
       $modal.open({
         templateUrl: "profile-product/edit-product-modal.tpl.html",
         controller: "editProductModalCtrl",
@@ -1072,20 +1062,74 @@ angular.module("profileProduct", [
 
 
 
+angular.module('profileSingleProducts', [
+  'services.page',
+  'resources.users',
+  'services.loading'
+
+])
+
+  .config(['$routeProvider', function($routeProvider) {
+
+    $routeProvider
+      .when("/:url_slug/products/add", {
+        templateUrl: 'profile-single-products/profile-single-products.tpl.html',
+        controller: 'addSingleProductsCtrl',
+        resolve:{
+          userOwnsThisProfile: function(security){
+            return security.testUserAuthenticationLevel("ownsThisProfile")
+          }
+        }
+      })
+
+  }])
+  .controller("addSingleProductsCtrl", function($scope, Page, $routeParams){
+    Page.showHeader(false)
+    Page.showFooter(false)
+
+  })
+  .controller("ImportSingleProductsFormCtrl", function($scope, $location, $routeParams, $cacheFactory, Loading, UsersProducts, security){
+
+    $scope.newlineDelimitedProductIds = ""
+
+
+    $scope.onSubmit = function(){
+      Loading.start("saveButton")
+
+      var productIds = _.compact($scope.newlineDelimitedProductIds.split("\n"))
+
+      UsersProducts.patch(
+        {id: $routeParams.url_slug},
+        {product_id_strings: productIds},
+        function(resp){
+          console.log("saved some single products!", resp)
+
+        },
+        function(resp){
+          console.log("failed to save new products :(", resp)
+
+        }
+      )
+
+
+    }
+
+  })
 angular.module("profile", [
   'resources.users',
   'product.product',
   'profileAward.profileAward',
   'services.page',
-  'update.update',
   'ui.bootstrap',
   'security',
   'services.loading',
   'services.timer',
-  'profile.addProducts',
+  'profileSingleProducts',
+  'profileLinkedAccounts',
   'services.i18nNotifications',
   'services.tour',
-  'directives.jQueryTools'
+  'directives.jQueryTools',
+  'update.update'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
@@ -1104,8 +1148,23 @@ angular.module("profile", [
     return (security.getCurrentUser().url_slug == slug);
   }
 
+  var cacheProductsSetting = false
+  var hasConnectedAccounts = false
+
   return {
 
+    useCache: function(cacheProductsArg){
+      // set or get the cache products setting.
+
+      if (typeof cacheProductsArg !== "undefined"){
+        cacheProductsSetting = !!cacheProductsArg
+      }
+
+      return cacheProductsSetting
+    },
+    hasConnectedAccounts: function(){
+      return hasConnectedAccounts
+    },
     makeAnchorLink: function(genre, account){
       var anchor = genre
       if (account) {
@@ -1147,6 +1206,12 @@ angular.module("profile", [
         function(resp) { // success
           Page.setTitle(resp.about.given_name + " " + resp.about.surname)
           about = resp.about
+
+          hasConnectedAccounts = _.some(about, function(v, k){
+            return (k.match(/_id$/) && v)
+          })
+
+
           if (!about.products_count && slugIsCurrentUser(about.url_slug)){
             Tour.start(about)
           }
@@ -1204,9 +1269,15 @@ angular.module("profile", [
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
+    // hack to make it easy to tell when update is done from selenium
+    $scope.productsStillUpdating = true
+
+
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
+
+      $scope.productsStillUpdating = false
 
       console.log(
         "finished rendering products in "
@@ -1220,6 +1291,7 @@ angular.module("profile", [
 
     });
 
+    $scope.hasConnectedAccounts = UserProfile.hasConnectedAccounts
 
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
@@ -1270,6 +1342,9 @@ angular.module("profile", [
       return Product.getMetricSum(product) * -1;
     }
 
+
+
+
     $scope.dedup = function(){
       Loading.start("dedup")
 
@@ -1283,18 +1358,22 @@ angular.module("profile", [
           "success",
           {numDuplicates: resp.deleted_tiids.length}
         )
-        renderProducts(true)
+        renderProducts()
       })
     }
 
-    var renderProducts = function(fresh){
+
+    var renderProducts = function(){
       Timer.start("getProducts")
       loadingProducts = true
-      if (fresh){
+      if (UserProfile.useCache() === false){
+        // generally this will happen, since the default is falst
+        // and we set it back to false either way once this function
+        // has run once.
         $httpDefaultCache.removeAll()
       }
 
-      $scope.products = UsersProducts.query({
+      UsersProducts.query({
         id: userSlug,
         includeHeadingProducts: true,
         embedded: Page.isEmbedded(),
@@ -1303,8 +1382,24 @@ angular.module("profile", [
         function(resp){
           console.log("loaded products in " + Timer.elapsed("getProducts") + "ms")
 
+          // we only cache things one time
+          UserProfile.useCache(false)
+
+          var anythingStillUpdating = !!_.find(resp, function(product){
+            return product.currently_updating
+          })
+
+          if (anythingStillUpdating) {
+            Update.showUpdate(userSlug, renderProducts)
+          }
+          else {
+            $scope.products = resp
+          }
+
+
           Timer.start("renderProducts")
           loadingProducts = false
+
           // scroll to any hash-specified anchors on page. in a timeout because
           // must happen after page is totally rendered.
           $timeout(function(){
@@ -1338,22 +1433,19 @@ angular.module("profile", [
 
 
 
-.directive("backToProfile",function($location){
+.directive("backToProfile",function($location, Loading){
  return {
    restrict: 'A',
    replace: true,
-   template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",
+   template:"<a ng-show='returnLink' class='back-to-profile btn btn-info btn-sm' href='{{ returnLink }}' ng-disabled='loading.is()'><i class='icon-chevron-left left'></i>back to profile</a>",
    link: function($scope,el){
-     var re = /^\/([-\w\.]+)\/product\/(\w+)/
-     var m = re.exec($location.path())
-     $scope.returnLink = null
 
-     if (m) {
-       var url_slug = m[1]
+     console.log("path: ", $location.path())
 
-       if (url_slug != "embed") {
-         $scope.returnLink = url_slug
-       }
+     $scope.returnLink = $location.path().split("/")[1]
+
+     if ($scope.returnLink === "/embed") {
+       $scope.returnLink = null
      }
    }
  }
@@ -1363,32 +1455,6 @@ angular.module("profile", [
 
 
 
-angular.module('profile.addProducts', [
-  'importers.allTheImporters',
-  'services.page',
-  'importers.importer'
-])
-angular.module('profile.addProducts')
-
-  .config(['$routeProvider', function($routeProvider) {
-
-    $routeProvider
-      .when("/:url_slug/products/add", {
-        templateUrl: 'profile/profile-add-products.tpl.html',
-        controller: 'addProductsCtrl',
-        resolve:{
-          userOwnsThisProfile: function(security){
-            return security.testUserAuthenticationLevel("ownsThisProfile")
-          }
-        }
-      })
-
-  }])
-  .controller("addProductsCtrl", function($scope, Page, $routeParams, AllTheImporters){
-    Page.showHeader(false)
-    $scope.redirectAfterImport = true
-    $scope.importers = AllTheImporters.get()
-  })
 angular.module("settings.pageDescriptions", [])
 angular.module('settings.pageDescriptions')
 .factory('SettingsPageDescriptions', function(){
@@ -1675,86 +1741,6 @@ angular.module( 'signup', [
     }
   })
 
-  .controller( 'signupUrlCtrl', function ( $scope, $http, Users, TipsService, Slug, $location, security) {
-    var nameRegex = /\/signup\/(.+?)\/url/
-    var slug = nameRegex.exec($location.path())[1]
-
-    $scope.input.url_slug = slug
-    analytics.track("Signup: url")
-
-
-    $scope.nav.goToNextStep = function(){
-      var logMsg = "saving user for the first time"
-      var givenName = $location.search()["givenName"]
-      var surname = $location.search()["surname"]
-
-      Users.save(
-        {id: $scope.input.url_slug, idType: "url_slug", log:logMsg},
-        {
-          givenName: givenName,
-          surname: surname,
-          url_slug: $scope.input.url_slug
-        },
-        function(resp, headers){
-          console.log("got response back from save user", resp)
-          security.clearCachedUser()
-          $location.path("signup/" + $scope.input.url_slug + "/products/add")
-          $location.search("")  // clear the names from the url
-
-          // so mixpanel will start tracking this user via her userid from here
-          // on out.
-          analytics.alias(resp.user.id)
-        }
-      )
-    }
-  })
-
-  .controller( 'signupProductsCtrl', function($location, $scope, Signup, AllTheImporters, security ) {
-    var m = /\/signup\/([-\w\.]+)\//.exec($location.path())
-    analytics.track("Signup: products")
-
-    $scope.importers = AllTheImporters.get()
-    $scope.nav.goToNextStep = function(){
-      $location.path("signup/" + m[1] + "/password")
-    }
-  })
-
-  .controller( 'signupPasswordCtrl', function ($scope, $location, security, UsersAbout, UsersPassword, Update) {
-    var url_slug = /\/signup\/([-\w\.]+)\//.exec($location.path())[1]
-    analytics.track("Signup: password")
-
-    var redirectCb = function(){
-      $location.path("/" + url_slug)
-      analytics.track("First profile view")
-    }
-
-    $scope.nav.goToNextStep = function(){
-      var emailLogMsg = "saving the email on signup"
-      var pwLogMsg = "saving the password on signup"
-
-      analytics.track("Completed signup")
-
-      UsersAbout.patch(
-        {"id": url_slug, idType:"url_slug", log: emailLogMsg},
-        {about: {email: $scope.input.email}},
-        function(resp) {
-          console.log("we set the email", resp)
-        }
-      )
-
-      UsersPassword.save(
-        {"id": url_slug, idType:"url_slug"},
-        {newPassword: $scope.input.password, log: pwLogMsg},
-        function(data){
-          console.log("we set the password; showing the 'updating' modal.")
-          security.clearCachedUser()
-          Update.showUpdate(url_slug, redirectCb)
-        }
-      )
-
-    }
-  })
-
 angular.module( 'update.update', [
     'resources.users'
   ])
@@ -1762,7 +1748,6 @@ angular.module( 'update.update', [
 
     var updateStatus = {}
     var updateStarted = true
-    var $httpDefaultCache = $cacheFactory.get('$http')
 
 
     var keepPolling = function(url_slug, onFinish){
@@ -1806,11 +1791,7 @@ angular.module( 'update.update', [
       updateStatus.numDone = null
       updateStatus.numNotDone = null
       updateStatus.percentComplete = null
-
-      // clear the cache. right now wiping out *everything*. be smart later.
-      $httpDefaultCache.removeAll()
-      console.log("clearing the cache")
-
+      onFinish = onFinish || function(){}
 
       var modal = $modal.open({
         templateUrl: 'update/update-progress.tpl.html',
@@ -2394,6 +2375,28 @@ angular.module("directives.spinner")
     }
     })
 angular.module('directives.forms', ["services.loading"])
+
+
+  .directive("ngFileSelect",function(){
+    return {
+      link: function($scope, el, attrs){
+        el.bind("change", function(e){
+          var reader = new FileReader()
+          reader.onload = function(e){
+            $scope.$emit("fileLoaded", reader.result)
+          }
+
+          var file = (e.srcElement || e.target).files[0];
+          reader.readAsText(file)
+        })
+      }
+    }
+  })
+
+
+
+
+
 .directive('prettyCheckbox', function(){
   // mostly from http://jsfiddle.net/zy7Rg/6/
   return {
@@ -2613,6 +2616,22 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  .factory('UsersLinkedAccounts', function($resource){
+
+    return $resource(
+      "/user/:id/linked-accounts/:account",
+      {},
+      {
+        update:{
+          method: "POST",
+          params: {action: "update"}
+        }
+      }
+
+    )
+
+
+  })
 
   .factory('UsersPassword', function ($resource) {
 
@@ -3470,7 +3489,7 @@ angular.module("services.page")
       var myPageType = "profile"
       var path = $location.path()
 
-      var accountPages = [
+      var settingsPages = [
           "/settings",
           "/reset-password"
       ]
@@ -3479,7 +3498,6 @@ angular.module("services.page")
           "/faq",
           "/about"
         ]
-
 
       if (path === "/"){
         myPageType = "landing"
@@ -3493,11 +3511,14 @@ angular.module("services.page")
       else if (_.contains(infopages, path)){
         myPageType = "infopages"
       }
-      else if (_.contains(accountPages, path)) {
-        myPageType = "account"
+      else if (_.contains(settingsPages, path)) {
+        myPageType = "settings"
       }
       else if (path.indexOf("products/add") > -1) {
-        myPageType = "import"
+        myPageType = "importIndividual"
+      }
+      else if (path.indexOf("account") > -1) {
+        myPageType = "linkAccount"
       }
 
       return myPageType
@@ -3884,7 +3905,141 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['footer.tpl.html', 'header.tpl.html', 'importers/importer.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile/profile-add-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+
+angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("accounts/account.tpl.html",
+    "\n" +
+    "\n" +
+    "<div class=\"account-tile\" id=\"{{ account.CSSname }}-account-tile\"\n" +
+    "     ng-class=\"{'is-linked': isLinked}\"\n" +
+    "     ng-click=\"showAccountWindow()\">\n" +
+    "\n" +
+    "   <div class=\"account-name\"><img ng-src=\"{{ account.logoPath }}\"></div>\n" +
+    "   <div class=\"linked-info\">\n" +
+    "      <div class=\"linking-in-progress working\" ng-show=\"loading.is(account.accountHost)\">\n" +
+    "         <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "         <div class=\"text\"></div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"connected-toggle\" id=\"{{account.CSSname}}-account-toggle\"\n" +
+    "           ng-show=\"!loading.is(account.accountHost)\">\n" +
+    "\n" +
+    "         <div class=\"toggle-housing toggle-on sync-{{ account.sync }}\" ng-show=\"isLinked\">\n" +
+    "               <div class=\"toggle-state-label\" id=\"{{account.CSSname}}-account-toggle-on\">on</div>\n" +
+    "               <div class=\"toggle-switch\"></div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"toggle-housing toggle-off sync-{{ account.sync }}\" ng-show=\"!isLinked\">\n" +
+    "               <div class=\"toggle-switch\"></div>\n" +
+    "               <div class=\"toggle-state-label\" id=\"{{account.CSSname}}-account-toggle-off\">off</div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"overlay\"\n" +
+    "     ng-click=\"onCancel()\"\n" +
+    "     ng-if=\"accountWindowOpen\"\n" +
+    "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
+    "\n" +
+    "<div class=\"account-window-wrapper\"\n" +
+    "     ng-if=\"accountWindowOpen\"\n" +
+    "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
+    "   <div class=\"account-window\">\n" +
+    "\n" +
+    "      <div class=\"top-tab-wrapper\">\n" +
+    "         <div ng-show=\"{{ account.sync }}\" class=\"top-tab sync-true\">Automatic import</div>\n" +
+    "         <div ng-show=\"{{ !account.sync }}\" class=\"top-tab sync-false\">Manual import</div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"content\">\n" +
+    "         <h2 class=\"account-name\" ng-show=\"!account.url\"><img ng-src=\"{{ account.logoPath }}\" /> </h2>\n" +
+    "         <h2 class=\"account-name\" ng-show=\"account.url\">\n" +
+    "            <a class=\"logo\" href=\"{{ account.url }}\" target=\"_blank\"><img ng-src=\"{{ account.logoPath }}\" /></a>\n" +
+    "            <a class=\"visit\" href=\"{{ account.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
+    "         </h2>\n" +
+    "\n" +
+    "         <div class=\"descr\">{{ account.descr }}</div>\n" +
+    "\n" +
+    "         <form name=\"{{ account.name }}accountForm\"\n" +
+    "               novalidate class=\"form\"\n" +
+    "               ng-submit=\"onLink()\">\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"form-group username\">\n" +
+    "               <label class=\"control-label\">\n" +
+    "                  {{ account.CSSname }} {{ account.username.inputNeeded }}\n" +
+    "                  <i class=\"icon-question-sign\" ng-show=\"account.username.help\" tooltip-html-unsafe=\"{{ account.username.help }}\"></i>\n" +
+    "               </label>\n" +
+    "               <div class=\"account-input\">\n" +
+    "                  <input\n" +
+    "                          class=\"form-control\"\n" +
+    "                          id=\"{{ account.CSSname }}-account-username-input\"\n" +
+    "                          ng-model=\"account.username.value\"\n" +
+    "                          ng-disabled=\"isLinked\"\n" +
+    "                          type=\"text\"\n" +
+    "                          autofocus=\"autofocus\"\n" +
+    "                          placeholder=\"{{ account.username.placeholder }}\">\n" +
+    "\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"buttons-group save\">\n" +
+    "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\"\n" +
+    "                          id=\"{{ account.CSSname }}-account-username-submit\",                  \n" +
+    "                          ng-class=\"{'btn-success': account.sync, 'btn-primary': !account.sync }\" class=\"btn\">\n" +
+    "                     <i class=\"icon-link left\"></i>\n" +
+    "                     Connect to {{ account.displayName }}\n" +
+    "                  </button>\n" +
+    "\n" +
+    "                  <a ng-show=\"isLinked\" ng-click=\"unlink()\" class=\"btn btn-danger\">\n" +
+    "                     <i class=\"icon-unlink left\"></i>\n" +
+    "                     Disconnect from {{ account.displayName }}\n" +
+    "                  </a>\n" +
+    "\n" +
+    "                  <a class=\"btn btn-default cancel\" ng-click=\"onCancel()\">Cancel</a>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "         </form>\n" +
+    "\n" +
+    "         <div class=\"extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
+    "\n" +
+    "         <div class=\"google-scholar-stuff\"\n" +
+    "              ng-show=\"account.accountHost=='google_scholar' && isLinked\">\n" +
+    "            <p class=\"excuses\">\n" +
+    "               Unfortunately, Google Scholar prevents automatic profile access,\n" +
+    "               so we can't do automated updates.\n" +
+    "               However, you can still import Google Scholar articles manually.\n" +
+    "            </p>\n" +
+    "            <div class=\"button-container\">\n" +
+    "               <a id=\"show-google-scholar-import-modal-button\"\n" +
+    "                  class=\"show-modal btn btn-primary\"\n" +
+    "                  ng-click=\"showImportModal()\">\n" +
+    "                  Manually import products\n" +
+    "               </a>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "         </div>\n" +
+    "\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "");
+}]);
 
 angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer.tpl.html",
@@ -3943,6 +4098,56 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "");
 }]);
 
+angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("google-scholar/google-scholar-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Manually import Google Scholar articles</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body google-scholar-import\">\n" +
+    "   <div class=\"import-not-complete\" ng-show=\"!importComplete\">\n" +
+    "\n" +
+    "      <p>\n" +
+    "         Unfortunately, Google Scholar prevents automatic\n" +
+    "         syncing. However, you can manually import your data. Here's how:\n" +
+    "      </p>\n" +
+    "\n" +
+    "      <ol>\n" +
+    "        <li>Go to <a class=\"your-google-scholar-profile\" target=\"_blank\" href=\"{{ currentUser.google_scholar_id }}\">your Google Scholar profile</a>.</li>\n" +
+    "        <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>\n" +
+    "        <li>Click <code>Export all my articles</code>, then save the BiBTeX file.</li>\n" +
+    "        <li>Return to Impactstory and upload your .bib file here.\n" +
+    "      </ol>\n" +
+    "\n" +
+    "         <div class=\"file-input-container\">\n" +
+    "            <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"submit\" ng-show=\"fileLoaded && !loading.is('bibtex')\">\n" +
+    "            <a class=\"btn btn-primary\" ng-click=\"sendToServer()\">\n" +
+    "               Import {{ googleScholar.bibtexArticlesCount() }} articles\n" +
+    "            </a>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"working\" ng-show=\"loading.is('bibtex')\">\n" +
+    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "            <span class=\"text\">Adding articles...</span>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "   <div class=\"import-complete\" ng-show=\"importComplete\">\n" +
+    "      <div class=\"msg\">\n" +
+    "      Successfully imported {{ importedProductsCount }} articles!\n" +
+    "      </div>\n" +
+    "      <a class=\"btn btn-info\" ng-click=\"$close()\">ok</a>\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
 angular.module("header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("header.tpl.html",
     "<div class=\"main-header header\" ng-show=\"page.showHeader()\">\n" +
@@ -3954,100 +4159,6 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "   </div>\n" +
     "</div>\n" +
     "<div ng-show=\"page.showNotificationsIn('header')\" ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
-    "\n" +
-    "");
-}]);
-
-angular.module("importers/importer.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("importers/importer.tpl.html",
-    "\n" +
-    "\n" +
-    "<div class=\"importer-tile\" id=\"{{ importer.CSSname }}-import-tile\"\n" +
-    "     ng-click=\"showImporterWindow()\"\n" +
-    "     ng-class=\"{'has-run': importerHasRun, 'not-run': !importerHasRun}\">\n" +
-    "\n" +
-    "   <div class=\"importer-name\"><img ng-src=\"{{ importer.logoPath }}\"></div>\n" +
-    "   <div class=\"imported-products-count\">\n" +
-    "      <span class=\"count\" id=\"{{ importer.CSSname }}-import-count\">{{ products.length }}</span>\n" +
-    "      <span class=\"descr\">products imported</span>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"overlay\"\n" +
-    "     ng-click=\"onCancel()\"\n" +
-    "     ng-if=\"importWindowOpen\"\n" +
-    "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
-    "\n" +
-    "<div class=\"import-window-wrapper\"\n" +
-    "     ng-if=\"importWindowOpen\"\n" +
-    "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
-    "        >\n" +
-    "   <div class=\"import-window\">\n" +
-    "\n" +
-    "      <div class=\"importer-tabs\">\n" +
-    "         <menu class=\"importer-menu\">\n" +
-    "            <li class=\"tab\"\n" +
-    "                ng-click=\"setCurrentTab($index)\"\n" +
-    "                ng-class=\"{current: $index==currentTab}\"\n" +
-    "                ng-repeat=\"tab in importer.tabs\"> {{ tab.label }}</li>\n" +
-    "         </menu>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"content\">\n" +
-    "         <h2 class=\"importer-name\" ng-show=\"!importer.url\"><img ng-src=\"{{ importer.logoPath }}\" /> </h2>\n" +
-    "         <h2 class=\"importer-name\" ng-show=\"importer.url\">\n" +
-    "            <a class=\"logo\" href=\"{{ importer.url }}\" target=\"_blank\"><img ng-src=\"{{ importer.logoPath }}\" /></a>\n" +
-    "            <a class=\"visit\" href=\"{{ importer.url }}\" target=\"_blank\">Visit<i class=\"icon-chevron-right\"></i></a>\n" +
-    "         </h2>\n" +
-    "\n" +
-    "         <div class=\"descr\" ng-show=\"currentTab==0\">{{ importer.descr }}</div>\n" +
-    "\n" +
-    "         <form name=\"{{ importer.name }}ImporterForm\" novalidate class=\"form\" ng-submit=\"onImport()\">\n" +
-    "\n" +
-    "            <div class=\"form-group\"\n" +
-    "                 ng-show=\"$index==currentTab\"\n" +
-    "                 ng-repeat=\"input in importer.inputs\">\n" +
-    "               <label class=\"control-label\">\n" +
-    "                  {{ input.displayName }} {{ input.inputNeeded }}\n" +
-    "                  <i class=\"icon-question-sign\" ng-show=\"input.help\" tooltip-html-unsafe=\"{{ input.help }}\"></i>\n" +
-    "                  <span class=\"one-per-line\" ng-show=\"input.inputType=='idList'\">(one per line)</span>\n" +
-    "               </label>\n" +
-    "               <div class=\"importer-input\" ng-switch on=\"input.inputType\">\n" +
-    "                  <input\n" +
-    "                          class=\"form-control\"\n" +
-    "                          ng-model=\"input.value\"\n" +
-    "                          type=\"text\" ng-switch-when=\"username\"\n" +
-    "                          placeholder=\"{{ input.placeholder }}\">\n" +
-    "\n" +
-    "                  <textarea placeholder=\"{{ input.placeholder }}\"\n" +
-    "                            class=\"form-control\"\n" +
-    "                            ng-model=\"input.value\"\n" +
-    "                            ng-switch-when=\"idList\"></textarea>\n" +
-    "\n" +
-    "                  <!-- you can only have ONE file input per importer, otherwise namespace collision -->\n" +
-    "                  <input type=\"file\" ng-switch-when=\"file\" ng-file-select=\"input.inputType\">\n" +
-    "\n" +
-    "                  <div class=\"input-extra\" ng-show=\"input.extra\" ng-bind-html-unsafe=\"input.extra\"></div>\n" +
-    "               </div>\n" +
-    "            </div>\n" +
-    "\n" +
-    "\n" +
-    "            <save-buttons action=\"Import\"></save-buttons>\n" +
-    "\n" +
-    "\n" +
-    "         </form>\n" +
-    "\n" +
-    "         <div class=\"extra\" ng-show=\"importer.extra\" ng-bind-html-unsafe=\"importer.extra\"></div>\n" +
-    "\n" +
-    "\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "\n" +
     "");
 }]);
@@ -4607,6 +4718,29 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "\n" +
     "   </span>\n" +
     "   <a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"http://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter\" data-text=\"I got a new badge on my Impactstory profile: {{ profileAward.level_name }}-level {{ profileAward.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
+    "</div>");
+}]);
+
+angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-linked-accounts/profile-linked-accounts.tpl.html",
+    "<div class=\"profile-linked-accounts profile-subpage\" >\n" +
+    "   <div class=\"profile-accounts-header profile-subpage-header\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <a back-to-profile></a>\n" +
+    "         <h1 class=\"instr\">Connect to other accounts</h1>\n" +
+    "         <h2>We'll automatically import your products from all over the web,\n" +
+    "            so your profile stays up to date.</h2>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"accounts\">\n" +
+    "      <div class=\"account\"\n" +
+    "           ng-repeat=\"account in accounts\"\n" +
+    "           ng-controller=\"accountCtrl\"\n" +
+    "           ng-include=\"'accounts/account.tpl.html'\">\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
     "</div>");
 }]);
 
