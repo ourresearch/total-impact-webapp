@@ -95,7 +95,7 @@ def main(number_to_update=3, max_days_since_updated=7, url_slugs=[None]):
         webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "http://localhost:5000")
         now=datetime.datetime.utcnow()
 
-        if not url_slugs[0]:
+        if url_slugs[0]==None:
             url_slugs = get_url_slugs_since_refresh_date(number_to_update, max_days_since_updated, now)
         try:    
             print u"got", len(url_slugs), url_slugs
