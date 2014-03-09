@@ -7633,6 +7633,11 @@ div.profile-subpage .profile-subpage-header .wrapper h2 {
   line-height: 1.5;
 }
 div.profile-subpage.profile-linked-accounts {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  overflow: scroll;
   width: 100%;
   background: #ddd;
 }
