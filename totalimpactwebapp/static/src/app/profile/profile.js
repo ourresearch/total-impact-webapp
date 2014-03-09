@@ -35,7 +35,7 @@ angular.module("profile", [
 
   return {
 
-    cacheProducts: function(cacheProductsArg){
+    useCache: function(cacheProductsArg){
       // set or get the cache products setting.
 
       if (typeof cacheProductsArg !== "undefined"){
@@ -228,15 +228,18 @@ angular.module("profile", [
           "success",
           {numDuplicates: resp.deleted_tiids.length}
         )
-        renderProducts(true)
+        renderProducts()
       })
     }
 
 
-    var renderProducts = function(fresh){
+    var renderProducts = function(){
       Timer.start("getProducts")
       loadingProducts = true
-      if (fresh){
+      if (UserProfile.useCache() === false){
+        // generally this will happen, since the default is falst
+        // and we set it back to false either way once this function
+        // has run once.
         $httpDefaultCache.removeAll()
       }
 
@@ -248,6 +251,9 @@ angular.module("profile", [
       },
         function(resp){
           console.log("loaded products in " + Timer.elapsed("getProducts") + "ms")
+
+          // we only cache things one time
+          UserProfile.useCache(false)
 
           var anythingStillUpdating = !!_.find(resp, function(product){
             return product.currently_updating

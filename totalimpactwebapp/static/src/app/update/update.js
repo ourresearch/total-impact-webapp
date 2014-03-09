@@ -5,7 +5,6 @@ angular.module( 'update.update', [
 
     var updateStatus = {}
     var updateStarted = true
-    var $httpDefaultCache = $cacheFactory.get('$http')
 
 
     var keepPolling = function(url_slug, onFinish){
@@ -50,12 +49,6 @@ angular.module( 'update.update', [
       updateStatus.numNotDone = null
       updateStatus.percentComplete = null
       onFinish = onFinish || function(){}
-
-
-      // clear the cache. right now wiping out *everything*. be smart later.
-      $httpDefaultCache.removeAll()
-      console.log("clearing the cache")
-
 
       var modal = $modal.open({
         templateUrl: 'update/update-progress.tpl.html',

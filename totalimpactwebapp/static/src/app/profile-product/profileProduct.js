@@ -3,6 +3,7 @@ angular.module("profileProduct", [
     'resources.products',
     'profileAward.profileAward',
     'services.page',
+    'profile',
     'product.product',
     'services.loading',
     'ui.bootstrap',
@@ -30,14 +31,15 @@ angular.module("profileProduct", [
     UsersProduct,
     UsersProducts,
     ProfileAwards,
+    UserProfile,
     Product,
     Loading,
     Page) {
 
     var slug = $routeParams.url_slug
-    var $httpDefaultCache = $cacheFactory.get('$http')
 
     Loading.start('profileProduct')
+    UserProfile.useCache(true)
 
     $scope.userSlug = slug
     $scope.loading = Loading
@@ -64,6 +66,7 @@ angular.module("profileProduct", [
     $scope.deleteProduct = function(){
 
       Loading.start("deleteProduct")
+      UserProfile.useCache(false)
 
       // do the deletion in the background, without a progress spinner...
       UsersProducts.delete(
@@ -71,13 +74,13 @@ angular.module("profileProduct", [
         {"tiids": [$routeParams.tiid]},  // the body data
         function(){
           console.log("finished deleting", $routeParams.tiid)
-          $httpDefaultCache.removeAll()
           security.redirectToProfile()
         }
       )
     }
 
     $scope.editProduct = function(){
+      UserProfile.useCache(false)
       $modal.open({
         templateUrl: "profile-product/edit-product-modal.tpl.html",
         controller: "editProductModalCtrl",

@@ -884,6 +884,7 @@ angular.module("profileProduct", [
     'resources.products',
     'profileAward.profileAward',
     'services.page',
+    'profile',
     'product.product',
     'services.loading',
     'ui.bootstrap',
@@ -911,14 +912,15 @@ angular.module("profileProduct", [
     UsersProduct,
     UsersProducts,
     ProfileAwards,
+    UserProfile,
     Product,
     Loading,
     Page) {
 
     var slug = $routeParams.url_slug
-    var $httpDefaultCache = $cacheFactory.get('$http')
 
     Loading.start('profileProduct')
+    UserProfile.useCache(true)
 
     $scope.userSlug = slug
     $scope.loading = Loading
@@ -945,6 +947,7 @@ angular.module("profileProduct", [
     $scope.deleteProduct = function(){
 
       Loading.start("deleteProduct")
+      UserProfile.useCache(false)
 
       // do the deletion in the background, without a progress spinner...
       UsersProducts.delete(
@@ -952,13 +955,13 @@ angular.module("profileProduct", [
         {"tiids": [$routeParams.tiid]},  // the body data
         function(){
           console.log("finished deleting", $routeParams.tiid)
-          $httpDefaultCache.removeAll()
           security.redirectToProfile()
         }
       )
     }
 
     $scope.editProduct = function(){
+      UserProfile.useCache(false)
       $modal.open({
         templateUrl: "profile-product/edit-product-modal.tpl.html",
         controller: "editProductModalCtrl",
@@ -1089,7 +1092,6 @@ angular.module('profileSingleProducts', [
   .controller("ImportSingleProductsFormCtrl", function($scope, $location, $routeParams, $cacheFactory, Loading, UsersProducts, security){
 
     $scope.newlineDelimitedProductIds = ""
-    var $httpDefaultCache = $cacheFactory.get('$http')
 
 
     $scope.onSubmit = function(){
@@ -1101,15 +1103,11 @@ angular.module('profileSingleProducts', [
         {id: $routeParams.url_slug},
         {product_id_strings: productIds},
         function(resp){
-
-          // clear the cache. right now wiping out *everything*. be smart later.
-          $httpDefaultCache.removeAll()
-          console.log("clearing the cache")
-          security.redirectToProfile()
+          console.log("saved some single products!", resp)
 
         },
         function(resp){
-          console.log("failed to save new products!", resp)
+          console.log("failed to save new products :(", resp)
 
         }
       )
@@ -1155,7 +1153,7 @@ angular.module("profile", [
 
   return {
 
-    cacheProducts: function(cacheProductsArg){
+    useCache: function(cacheProductsArg){
       // set or get the cache products setting.
 
       if (typeof cacheProductsArg !== "undefined"){
@@ -1348,15 +1346,18 @@ angular.module("profile", [
           "success",
           {numDuplicates: resp.deleted_tiids.length}
         )
-        renderProducts(true)
+        renderProducts()
       })
     }
 
 
-    var renderProducts = function(fresh){
+    var renderProducts = function(){
       Timer.start("getProducts")
       loadingProducts = true
-      if (fresh){
+      if (UserProfile.useCache() === false){
+        // generally this will happen, since the default is falst
+        // and we set it back to false either way once this function
+        // has run once.
         $httpDefaultCache.removeAll()
       }
 
@@ -1368,6 +1369,9 @@ angular.module("profile", [
       },
         function(resp){
           console.log("loaded products in " + Timer.elapsed("getProducts") + "ms")
+
+          // we only cache things one time
+          UserProfile.useCache(false)
 
           var anythingStillUpdating = !!_.find(resp, function(product){
             return product.currently_updating
@@ -1732,7 +1736,6 @@ angular.module( 'update.update', [
 
     var updateStatus = {}
     var updateStarted = true
-    var $httpDefaultCache = $cacheFactory.get('$http')
 
 
     var keepPolling = function(url_slug, onFinish){
@@ -1777,12 +1780,6 @@ angular.module( 'update.update', [
       updateStatus.numNotDone = null
       updateStatus.percentComplete = null
       onFinish = onFinish || function(){}
-
-
-      // clear the cache. right now wiping out *everything*. be smart later.
-      $httpDefaultCache.removeAll()
-      console.log("clearing the cache")
-
 
       var modal = $modal.open({
         templateUrl: 'update/update-progress.tpl.html',

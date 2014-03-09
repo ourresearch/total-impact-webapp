@@ -27,7 +27,6 @@ angular.module('profileSingleProducts', [
   .controller("ImportSingleProductsFormCtrl", function($scope, $location, $routeParams, $cacheFactory, Loading, UsersProducts, security){
 
     $scope.newlineDelimitedProductIds = ""
-    var $httpDefaultCache = $cacheFactory.get('$http')
 
 
     $scope.onSubmit = function(){
@@ -39,15 +38,11 @@ angular.module('profileSingleProducts', [
         {id: $routeParams.url_slug},
         {product_id_strings: productIds},
         function(resp){
-
-          // clear the cache. right now wiping out *everything*. be smart later.
-          $httpDefaultCache.removeAll()
-          console.log("clearing the cache")
-          security.redirectToProfile()
+          console.log("saved some single products!", resp)
 
         },
         function(resp){
-          console.log("failed to save new products!", resp)
+          console.log("failed to save new products :(", resp)
 
         }
       )
