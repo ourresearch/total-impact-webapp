@@ -27,6 +27,9 @@ angular.module('profileSingleProducts', [
   .controller("ImportSingleProductsFormCtrl", function($scope, $location, $routeParams, $cacheFactory, Loading, UsersProducts, security){
 
     $scope.newlineDelimitedProductIds = ""
+    $scope.onCancel = function(){
+      security.redirectToProfile()
+    }
 
 
     $scope.onSubmit = function(){
@@ -39,10 +42,16 @@ angular.module('profileSingleProducts', [
         {product_id_strings: productIds},
         function(resp){
           console.log("saved some single products!", resp)
+          Loading.finish("saveButton")
+          security.redirectToProfile()
 
         },
         function(resp){
           console.log("failed to save new products :(", resp)
+          Loading.finish("saveButton")
+          alert("Oops! Looks like there was an error importing your products! " +
+            "We've logged the error, but please feel free to open a support " +
+            "ticket, too (click the orange tab on the right of the screen).")
 
         }
       )
