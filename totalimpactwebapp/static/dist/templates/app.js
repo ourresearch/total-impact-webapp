@@ -1198,12 +1198,17 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"edit-controls btn-group\">\n" +
     "         <div class=\"num-items\">\n" +
-    "            <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
-    "               <span class=\"value\" id=\"number-products\">{{ productsCount }}</span> research products\n" +
+    "            <span class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
+    "               <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
+    "                  <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
+    "               </span>\n" +
+    "               <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
+    "                  (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
+    "               </a>\n" +
     "            </span>\n" +
-    "            <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
-    "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
-    "            </a>\n" +
+    "            <span ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
+    "               Products still updating...\n" +
+    "            </span>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +

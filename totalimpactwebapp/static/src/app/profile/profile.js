@@ -143,9 +143,15 @@ angular.module("profile", [
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
+    // hack to make it easy to tell when update is done from selenium
+    $scope.productsStillUpdating = true
+
+
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
+
+      $scope.productsStillUpdating = false
 
       console.log(
         "finished rendering products in "
@@ -226,6 +232,7 @@ angular.module("profile", [
       })
     }
 
+
     var renderProducts = function(fresh){
       Timer.start("getProducts")
       loadingProducts = true
@@ -233,7 +240,7 @@ angular.module("profile", [
         $httpDefaultCache.removeAll()
       }
 
-      $scope.products = UsersProducts.query({
+      UsersProducts.query({
         id: userSlug,
         includeHeadingProducts: true,
         embedded: Page.isEmbedded(),
@@ -250,7 +257,7 @@ angular.module("profile", [
             Update.showUpdate(userSlug, renderProducts)
           }
           else {
-            $scope.productsCount = resp.length
+            $scope.products = resp
           }
 
 

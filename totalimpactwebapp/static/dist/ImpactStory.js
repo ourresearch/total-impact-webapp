@@ -1263,9 +1263,15 @@ angular.module("profile", [
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
+    // hack to make it easy to tell when update is done from selenium
+    $scope.productsStillUpdating = true
+
+
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
+
+      $scope.productsStillUpdating = false
 
       console.log(
         "finished rendering products in "
@@ -1346,6 +1352,7 @@ angular.module("profile", [
       })
     }
 
+
     var renderProducts = function(fresh){
       Timer.start("getProducts")
       loadingProducts = true
@@ -1353,7 +1360,7 @@ angular.module("profile", [
         $httpDefaultCache.removeAll()
       }
 
-      $scope.products = UsersProducts.query({
+      UsersProducts.query({
         id: userSlug,
         includeHeadingProducts: true,
         embedded: Page.isEmbedded(),
@@ -1370,7 +1377,7 @@ angular.module("profile", [
             Update.showUpdate(userSlug, renderProducts)
           }
           else {
-            $scope.productsCount = resp.length
+            $scope.products = resp
           }
 
 
@@ -5089,12 +5096,17 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"edit-controls btn-group\">\n" +
     "         <div class=\"num-items\">\n" +
-    "            <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
-    "               <span class=\"value\" id=\"number-products\">{{ productsCount }}</span> research products\n" +
+    "            <span class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
+    "               <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
+    "                  <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
+    "               </span>\n" +
+    "               <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
+    "                  (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
+    "               </a>\n" +
     "            </span>\n" +
-    "            <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
-    "               (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
-    "            </a>\n" +
+    "            <span ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
+    "               Products still updating...\n" +
+    "            </span>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
