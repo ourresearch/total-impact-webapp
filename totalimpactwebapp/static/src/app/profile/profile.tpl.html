@@ -13,7 +13,7 @@
             <span class="given-name editable" data-name="given_name">{{ user.about.given_name }}</span>
             <span class="surname editable" data-name="surname">{{ user.about.surname }}</span>
          </h2>
-         <div class="external-usernames">
+         <div class="connected-accounts">
             <ul>
 
                <li ng-show="user.about.figshare_id" style="display: none;">
@@ -51,10 +51,11 @@
                </li>
             </ul>
 
-            <div class="add-linked-account" ng-show="currentUserIsProfileOwner()">
-               <a href="/{{ user.about.url_slug }}/accounts">
-                  <i class="icon-edit left"></i>
-                  Add or edit accounts
+            <div class="add-connected-account" ng-show="currentUserIsProfileOwner()">
+               <a href="/{{ user.about.url_slug }}/accounts" class="btn btn-xs btn-info">
+                  <i class="icon-link left"></i>
+                  <span ng-show="!hasConnectedAccounts()" class="first">Import from accounts</span>
+                  <span ng-show="hasConnectedAccounts()" class="more">Connect more accounts</span>
                </a>
             </div>
          </div>
@@ -66,8 +67,6 @@
                 ng-repeat="profileAward in profileAwards">
             </li>
          </ul>
-
-
       </div>
    </div>
 </div>
@@ -93,7 +92,7 @@
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
          <div class="admin-controls" ng-show="currentUserIsProfileOwner() && !page.isEmbedded()">
             <a href="/{{ user.about.url_slug }}/products/add">
-               <i class="icon-upload"></i>Import
+               <i class="icon-upload"></i>Import products one-by-one
             </a>
             <a ng-click="dedup()"
                ng-class="{working: loading.is('dedup')}"

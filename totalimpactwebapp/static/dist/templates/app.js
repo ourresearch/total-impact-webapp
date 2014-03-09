@@ -70,7 +70,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "               </label>\n" +
     "               <div class=\"account-input\">\n" +
     "                  <input\n" +
-    "                          class=\"form-control\",\n" +
+    "                          class=\"form-control\"\n" +
     "                          id=\"{{ account.CSSname }}-account-username-input\"\n" +
     "                          ng-model=\"account.username.value\"\n" +
     "                          ng-disabled=\"isLinked\"\n" +
@@ -84,7 +84,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"!isLinked\" type=\"submit\" \n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\"\n" +
     "                          id=\"{{ account.CSSname }}-account-username-submit\",                  \n" +
     "                          ng-class=\"{'btn-success': account.sync, 'btn-primary': !account.sync }\" class=\"btn\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
@@ -1135,7 +1135,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"given-name editable\" data-name=\"given_name\">{{ user.about.given_name }}</span>\n" +
     "            <span class=\"surname editable\" data-name=\"surname\">{{ user.about.surname }}</span>\n" +
     "         </h2>\n" +
-    "         <div class=\"external-usernames\">\n" +
+    "         <div class=\"connected-accounts\">\n" +
     "            <ul>\n" +
     "\n" +
     "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
@@ -1173,10 +1173,11 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </li>\n" +
     "            </ul>\n" +
     "\n" +
-    "            <div class=\"add-linked-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
-    "               <a href=\"/{{ user.about.url_slug }}/accounts\">\n" +
-    "                  <i class=\"icon-edit left\"></i>\n" +
-    "                  Add or edit accounts\n" +
+    "            <div class=\"add-connected-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
+    "               <a href=\"/{{ user.about.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
+    "                  <i class=\"icon-link left\"></i>\n" +
+    "                  <span ng-show=\"!hasConnectedAccounts()\" class=\"first\">Import from accounts</span>\n" +
+    "                  <span ng-show=\"hasConnectedAccounts()\" class=\"more\">Connect more accounts</span>\n" +
     "               </a>\n" +
     "            </div>\n" +
     "         </div>\n" +
@@ -1188,8 +1189,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                ng-repeat=\"profileAward in profileAwards\">\n" +
     "            </li>\n" +
     "         </ul>\n" +
-    "\n" +
-    "\n" +
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
@@ -1215,7 +1214,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
     "            <a href=\"/{{ user.about.url_slug }}/products/add\">\n" +
-    "               <i class=\"icon-upload\"></i>Import\n" +
+    "               <i class=\"icon-upload\"></i>Import products one-by-one\n" +
     "            </a>\n" +
     "            <a ng-click=\"dedup()\"\n" +
     "               ng-class=\"{working: loading.is('dedup')}\"\n" +

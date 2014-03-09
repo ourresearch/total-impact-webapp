@@ -138,8 +138,12 @@ angular.module('accounts.account', [
 
   }
 
-  $scope.justAddedProducts =[]
+  $scope.isLinked = function(){
+    return !!$scope.account.username.value
+  }
+
   $scope.isLinked = !!$scope.account.username.value
+
   $scope.setCurrentTab = function(index){$scope.currentTab = index}
 
   GoogleScholar.setFinishCb(function(resp){
@@ -190,7 +194,6 @@ angular.module('accounts.account', [
       // linked this account successfully
       function(resp){
         console.log("successfully saved linked account", resp)
-        $scope.justAddedProducts = resp.products
         $scope.isLinked = true
         analytics.track("Linked an account", {
           "Account name": $scope.account.displayName
@@ -392,7 +395,11 @@ angular.module('accounts.allTheAccounts', [
       _.each(accountsConfig, function(accountObj, accountHost){
         var userDictAccountKey = accountHost + "_id"
 
+
         accountObj.username.value = userDict[userDictAccountKey]
+        console.log("making account dict. username value: ", accountObj.username.value)
+
+
         accountObj.accountHost = accountHost
         accountObj.CSSname = makeCSSName(accountObj.displayName)
         accountObj.logoPath = makeLogoPath(accountObj.displayName)
@@ -859,6 +866,7 @@ angular.module('profileLinkedAccounts', [
             return security.testUserAuthenticationLevel("ownsThisProfile")
           },
           currentUser: function(security){
+            security.clearCachedUser()
             return security.requestCurrentUser()
           }
         }
@@ -1150,6 +1158,7 @@ angular.module("profile", [
   }
 
   var cacheProductsSetting = false
+  var hasConnectedAccounts = false
 
   return {
 
@@ -1162,7 +1171,9 @@ angular.module("profile", [
 
       return cacheProductsSetting
     },
-
+    hasConnectedAccounts: function(){
+      return hasConnectedAccounts
+    },
     makeAnchorLink: function(genre, account){
       var anchor = genre
       if (account) {
@@ -1204,6 +1215,12 @@ angular.module("profile", [
         function(resp) { // success
           Page.setTitle(resp.about.given_name + " " + resp.about.surname)
           about = resp.about
+
+          hasConnectedAccounts = _.some(about, function(v, k){
+            return (k.match(/_id$/) && v)
+          })
+
+
           if (!about.products_count && slugIsCurrentUser(about.url_slug)){
             Tour.start(about)
           }
@@ -1283,6 +1300,7 @@ angular.module("profile", [
 
     });
 
+    $scope.hasConnectedAccounts = UserProfile.hasConnectedAccounts
 
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
@@ -1332,6 +1350,9 @@ angular.module("profile", [
     $scope.getMetricSum = function(product) {
       return Product.getMetricSum(product) * -1;
     }
+
+
+
 
     $scope.dedup = function(){
       Loading.start("dedup")
@@ -1421,11 +1442,11 @@ angular.module("profile", [
 
 
 
-.directive("backToProfile",function($location){
+.directive("backToProfile",function($location, Loading){
  return {
    restrict: 'A',
    replace: true,
-   template:"<a ng-show='returnLink' class='back-to-profile btn btn-info btn-sm' href='{{ returnLink }}'><i class='icon-chevron-left left'></i>back to profile</a>",
+   template:"<a ng-show='returnLink' class='back-to-profile btn btn-info btn-sm' href='{{ returnLink }}' ng-disabled='loading.is()'><i class='icon-chevron-left left'></i>back to profile</a>",
    link: function($scope,el){
 
      console.log("path: ", $location.path())
@@ -3965,7 +3986,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "               </label>\n" +
     "               <div class=\"account-input\">\n" +
     "                  <input\n" +
-    "                          class=\"form-control\",\n" +
+    "                          class=\"form-control\"\n" +
     "                          id=\"{{ account.CSSname }}-account-username-input\"\n" +
     "                          ng-model=\"account.username.value\"\n" +
     "                          ng-disabled=\"isLinked\"\n" +
@@ -3979,7 +4000,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"!isLinked\" type=\"submit\" \n" +
+    "                  <button ng-show=\"!isLinked\" type=\"submit\"\n" +
     "                          id=\"{{ account.CSSname }}-account-username-submit\",                  \n" +
     "                          ng-class=\"{'btn-success': account.sync, 'btn-primary': !account.sync }\" class=\"btn\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
@@ -5030,7 +5051,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"given-name editable\" data-name=\"given_name\">{{ user.about.given_name }}</span>\n" +
     "            <span class=\"surname editable\" data-name=\"surname\">{{ user.about.surname }}</span>\n" +
     "         </h2>\n" +
-    "         <div class=\"external-usernames\">\n" +
+    "         <div class=\"connected-accounts\">\n" +
     "            <ul>\n" +
     "\n" +
     "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
@@ -5068,10 +5089,11 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </li>\n" +
     "            </ul>\n" +
     "\n" +
-    "            <div class=\"add-linked-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
-    "               <a href=\"/{{ user.about.url_slug }}/accounts\">\n" +
-    "                  <i class=\"icon-edit left\"></i>\n" +
-    "                  Add or edit accounts\n" +
+    "            <div class=\"add-connected-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
+    "               <a href=\"/{{ user.about.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
+    "                  <i class=\"icon-link left\"></i>\n" +
+    "                  <span ng-show=\"!hasConnectedAccounts()\" class=\"first\">Import from accounts</span>\n" +
+    "                  <span ng-show=\"hasConnectedAccounts()\" class=\"more\">Connect more accounts</span>\n" +
     "               </a>\n" +
     "            </div>\n" +
     "         </div>\n" +
@@ -5083,8 +5105,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                ng-repeat=\"profileAward in profileAwards\">\n" +
     "            </li>\n" +
     "         </ul>\n" +
-    "\n" +
-    "\n" +
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
@@ -5110,7 +5130,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
     "            <a href=\"/{{ user.about.url_slug }}/products/add\">\n" +
-    "               <i class=\"icon-upload\"></i>Import\n" +
+    "               <i class=\"icon-upload\"></i>Import products one-by-one\n" +
     "            </a>\n" +
     "            <a ng-click=\"dedup()\"\n" +
     "               ng-class=\"{working: loading.is('dedup')}\"\n" +

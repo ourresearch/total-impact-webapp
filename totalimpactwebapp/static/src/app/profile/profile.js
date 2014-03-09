@@ -32,6 +32,7 @@ angular.module("profile", [
   }
 
   var cacheProductsSetting = false
+  var hasConnectedAccounts = false
 
   return {
 
@@ -44,7 +45,9 @@ angular.module("profile", [
 
       return cacheProductsSetting
     },
-
+    hasConnectedAccounts: function(){
+      return hasConnectedAccounts
+    },
     makeAnchorLink: function(genre, account){
       var anchor = genre
       if (account) {
@@ -86,6 +89,12 @@ angular.module("profile", [
         function(resp) { // success
           Page.setTitle(resp.about.given_name + " " + resp.about.surname)
           about = resp.about
+
+          hasConnectedAccounts = _.some(about, function(v, k){
+            return (k.match(/_id$/) && v)
+          })
+
+
           if (!about.products_count && slugIsCurrentUser(about.url_slug)){
             Tour.start(about)
           }
@@ -165,6 +174,7 @@ angular.module("profile", [
 
     });
 
+    $scope.hasConnectedAccounts = UserProfile.hasConnectedAccounts
 
     var userSlug = $routeParams.url_slug;
     var loadingProducts = true
@@ -214,6 +224,9 @@ angular.module("profile", [
     $scope.getMetricSum = function(product) {
       return Product.getMetricSum(product) * -1;
     }
+
+
+
 
     $scope.dedup = function(){
       Loading.start("dedup")
@@ -303,11 +316,11 @@ angular.module("profile", [
 
 
 
-.directive("backToProfile",function($location){
+.directive("backToProfile",function($location, Loading){
  return {
    restrict: 'A',
    replace: true,
-   template:"<a ng-show='returnLink' class='back-to-profile btn btn-info btn-sm' href='{{ returnLink }}'><i class='icon-chevron-left left'></i>back to profile</a>",
+   template:"<a ng-show='returnLink' class='back-to-profile btn btn-info btn-sm' href='{{ returnLink }}' ng-disabled='loading.is()'><i class='icon-chevron-left left'></i>back to profile</a>",
    link: function($scope,el){
 
      console.log("path: ", $location.path())

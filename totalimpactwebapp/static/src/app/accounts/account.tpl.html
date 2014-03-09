@@ -66,7 +66,7 @@
                </label>
                <div class="account-input">
                   <input
-                          class="form-control",
+                          class="form-control"
                           id="{{ account.CSSname }}-account-username-input"
                           ng-model="account.username.value"
                           ng-disabled="isLinked"
@@ -80,7 +80,7 @@
 
             <div class="buttons-group save">
                <div class="buttons" ng-show="!loading.is('saveButton')">
-                  <button ng-show="!isLinked" type="submit" 
+                  <button ng-show="!isLinked" type="submit"
                           id="{{ account.CSSname }}-account-username-submit",                  
                           ng-class="{'btn-success': account.sync, 'btn-primary': !account.sync }" class="btn">
                      <i class="icon-link left"></i>

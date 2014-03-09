@@ -133,8 +133,12 @@ angular.module('accounts.account', [
 
   }
 
-  $scope.justAddedProducts =[]
+  $scope.isLinked = function(){
+    return !!$scope.account.username.value
+  }
+
   $scope.isLinked = !!$scope.account.username.value
+
   $scope.setCurrentTab = function(index){$scope.currentTab = index}
 
   GoogleScholar.setFinishCb(function(resp){
@@ -185,7 +189,6 @@ angular.module('accounts.account', [
       // linked this account successfully
       function(resp){
         console.log("successfully saved linked account", resp)
-        $scope.justAddedProducts = resp.products
         $scope.isLinked = true
         analytics.track("Linked an account", {
           "Account name": $scope.account.displayName

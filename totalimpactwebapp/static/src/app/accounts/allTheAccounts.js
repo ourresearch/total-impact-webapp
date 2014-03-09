@@ -177,7 +177,11 @@ angular.module('accounts.allTheAccounts', [
       _.each(accountsConfig, function(accountObj, accountHost){
         var userDictAccountKey = accountHost + "_id"
 
+
         accountObj.username.value = userDict[userDictAccountKey]
+        console.log("making account dict. username value: ", accountObj.username.value)
+
+
         accountObj.accountHost = accountHost
         accountObj.CSSname = makeCSSName(accountObj.displayName)
         accountObj.logoPath = makeLogoPath(accountObj.displayName)
