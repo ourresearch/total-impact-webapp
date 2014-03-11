@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-08
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-11
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -4812,6 +4812,13 @@ angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$te
     "</div>\n" +
     "<div class=\"modal-body free-fulltext-url\">\n" +
     "\n" +
+    "   <div class=\"alert alert-warning\">\n" +
+    "     Oops--we've got a bug! Hang tight, we're working on this, and should have\n" +
+    "      it fixed soon.\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <!--\n" +
     "   <div class=\"add-link\">\n" +
     "      <p>Is there a free version of this article, outside any paywalls?\n" +
     "         <strong>Nice!</strong>\n" +
@@ -4846,6 +4853,7 @@ angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$te
     "         upload a free version\n" +
     "      </a>\n" +
     "   </div>\n" +
+    "   -->\n" +
     "\n" +
     "</div>");
 }]);
