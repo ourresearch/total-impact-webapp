@@ -388,11 +388,11 @@ def user_products_get(id):
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
 def product_biblio_modify(tiid):
 
-    try:
-        if current_user.url_slug != user.url_slug:
-            abort_json(401, "Only profile owners can modify profiles.")
-    except AttributeError:
-        abort_json(405, "You must be logged in to modify profiles.")
+    #try:
+    #    if current_user.url_slug != user.url_slug:
+    #        abort_json(401, "Only profile owners can modify profiles.")
+    #except AttributeError:
+    #    abort_json(405, "You must be logged in to modify profiles.")
 
     query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,
