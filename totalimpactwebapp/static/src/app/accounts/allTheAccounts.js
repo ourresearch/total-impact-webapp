@@ -179,7 +179,6 @@ angular.module('accounts.allTheAccounts', [
 
 
         accountObj.username.value = userDict[userDictAccountKey]
-        console.log("making account dict. username value: ", accountObj.username.value)
 
 
         accountObj.accountHost = accountHost
