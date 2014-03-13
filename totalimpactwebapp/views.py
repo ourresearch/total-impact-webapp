@@ -290,7 +290,7 @@ def create_new_user_profile(slug):
     user_profile_url = u"{webapp_root}/{url_slug}".format(
         webapp_root=g.webapp_root, url_slug=user.url_slug)
     logger.debug(u"created new user {user_profile_url}".format(
-        user_profile_url=user_profile_url)
+        user_profile_url=user_profile_url))
 
     # send to alert
     for webhook_slug in os.getenv("ZAPIER_ALERT_HOOKS", "").split(","):
