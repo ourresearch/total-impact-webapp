@@ -469,7 +469,7 @@ def save_user_last_viewed_profile_timestamp(user_id, timestamp=None):
     return True
 
 def create_user_from_slug(url_slug, user_request_dict, db):
-    logger.debug(u"Creating new user {url_slug} with unicode_request_dict {user_request_dict}".format(
+    logger.debug(u"create_user_from_slug new user {url_slug} with unicode_request_dict {user_request_dict}".format(
         url_slug=url_slug, user_request_dict=user_request_dict))
 
     # have to explicitly unicodify ascii-looking strings even when encoding
