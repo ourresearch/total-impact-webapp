@@ -981,11 +981,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "               </span>\n" +
     "            </a>\n" +
     "\n" +
-    "            <!-- Remove Product is temporarily disabled because because we won't\n" +
-    "             remember it when adding new products via importer. @todo: make a\n" +
-    "             \"deleted\" attr of items so we know not to show em ever. -->\n" +
     "            <a class=\"delete-product\"\n" +
-    "               ng-show=\"false\"\n" +
     "               ng-click=\"deleteProduct()\"\n" +
     "               tooltip=\"Remove this product from your profile.\"\n" +
     "               tooltip-placement=\"bottom\">\n" +
