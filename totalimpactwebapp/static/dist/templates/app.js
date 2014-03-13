@@ -975,10 +975,6 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "                  <i class=\"icon-edit\"></i>\n" +
     "                  Edit\n" +
     "               </span>\n" +
-    "               <span class=\"working\" ng-show=\"loading.is('deleteProduct')\">\n" +
-    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "                  Removing...\n" +
-    "               </span>\n" +
     "            </a>\n" +
     "\n" +
     "            <a class=\"delete-product\"\n" +
@@ -988,6 +984,10 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "               <span class=\"ready\">\n" +
     "                  <i class=\"icon-trash\"></i>\n" +
     "                  Remove\n" +
+    "               </span>\n" +
+    "               <span class=\"working\" ng-show=\"loading.is('deleteProduct')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  Removing...\n" +
     "               </span>\n" +
     "            </a>\n" +
     "         </div>\n" +
