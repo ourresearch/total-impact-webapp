@@ -287,8 +287,21 @@ def create_new_user_profile(slug):
     except EmailExistsError:
         abort_json(409, "That email already exists.")
 
-    logger.debug(u"created new user {webapp_root}/{url_slug}".format(
-        webapp_root=g.webapp_root, url_slug=user.url_slug))
+    user_profile_url = u"{webapp_root}/{url_slug}".format(
+        webapp_root=g.webapp_root, url_slug=user.url_slug)
+    logger.debug(u"created new user {user_profile_url}".format(
+        user_profile_url=user_profile_url)
+
+    # send to alert
+    for webhook_slug in os.getenv("ZAPIER_ALERT_HOOKS", "").split(","):
+        zapier_webhook_url = "https://zapier.com/hooks/catch/n/{webhook_slug}/".format(
+            webhook_slug=webhook_slug)
+        r = requests.post(zapier_webhook_url,
+            data=json.dumps({
+                "user_profile_url": user_profile_url
+                }),
+            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+
     logger.debug(u"new user {url_slug} has id {id}".format(
         url_slug=user.url_slug, id=user.id))
 
