@@ -11,6 +11,10 @@
                   <i class="icon-edit"></i>
                   Edit
                </span>
+               <span class="working" ng-show="loading.is('deleteProduct')">
+                  <i class="icon-refresh icon-spin"></i>
+                  Removing...
+               </span>
             </a>
 
             <a class="delete-product"
@@ -20,10 +24,6 @@
                <span class="ready">
                   <i class="icon-trash"></i>
                   Remove
-               </span>
-               <span class="working" ng-show="loading.is('deleteProduct')">
-                  <i class="icon-refresh icon-spin"></i>
-                  Removing...
                </span>
             </a>
          </div>
