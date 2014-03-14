@@ -27,7 +27,7 @@ if (typeof console === "undefined"){
 // Prepare Segment.io's analytics.js object:
 
 // for testing, monkeypatch the Segment.io functions to do nothing
-if (window.location.href.indexOf("test=true") > -1) {
+if (window.location.href.indexOf(".herokuapp.com") > -1) {
   window.analytics = {
     track: function(){console.log("called stubbed analytics.track()")},
     page: function(){console.log("called stubbed anlytics.page()")},
