@@ -5,6 +5,7 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
+  'services.abTesting',
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -63,6 +64,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
                                                      i18nNotifications,
+                                                     AbTesting,
                                                      localizedMessages,
                                                      UservoiceWidget,
                                                      $location,

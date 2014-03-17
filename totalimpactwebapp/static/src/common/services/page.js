@@ -2,7 +2,7 @@ angular.module("services.page", [
   'signup'
 ])
 angular.module("services.page")
-.factory("Page", function($location, $window){
+.factory("Page", function($location){
    var title = '';
    var notificationsLoc = "header"
    var uservoiceTabLoc = "right"
@@ -134,7 +134,7 @@ angular.module("services.page")
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
 
      getTitle: function() { return title; },
-     setTitle: function(newTitle) { title = "ImpactStory: " + newTitle },
+     setTitle: function(newTitle) { title = "Impactstory: " + newTitle },
 
      pickTestVersion: function(){testVersion = (Math.random() > .5) ? "a" : "b"},
      isTestVersion: function(versionLetter){

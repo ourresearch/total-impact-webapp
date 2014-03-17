@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-11
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-16
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -421,6 +421,7 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
+  'services.abTesting',
   'services.loading',
   'services.i18nNotifications',
   'services.uservoiceWidget',
@@ -479,6 +480,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
                                                      i18nNotifications,
+                                                     AbTesting,
                                                      localizedMessages,
                                                      UservoiceWidget,
                                                      $location,
@@ -3011,6 +3013,48 @@ angular.module('security.service', [
 
   return service;
 });
+angular.module('services.abTesting', ['ngCookies'])
+  .factory("AbTesting", function($cookieStore){
+    console.log("abTesting loaded. test those abs!")
+
+    var testDefinitions = {
+      "link to sample profile from landing page": ["yes", "no"]
+    }
+
+    var assignTestStates = function(){
+      _.each(testDefinitions, function(testName, testStates){
+        if ($cookieStore.get(testName)) {
+          // it's already set, move on
+        }
+        else {
+          $cookieStore.set(testName, _.sample(testStates) )
+        }
+      })
+    }
+
+    var getTestStates = function(){
+      var ret = {}
+      _.each(testDefinitions, function(testName){
+        ret[testName] = $cookieStore.get(testName)
+      })
+      return ret
+    }
+
+    var getTestState = function(testName){
+      return $cookieStore[testName]
+    }
+
+    return {
+      assignTestStates: assignTestStates,
+      getTestStates: getTestStates,
+      getTestState: getTestState
+    }
+
+
+
+
+  })
+
 angular.module('services.breadcrumbs', []);
 angular.module('services.breadcrumbs').factory('breadcrumbs', ['$rootScope', '$location', function($rootScope, $location){
 
@@ -3468,7 +3512,7 @@ angular.module("services.page", [
   'signup'
 ])
 angular.module("services.page")
-.factory("Page", function($location, $window){
+.factory("Page", function($location){
    var title = '';
    var notificationsLoc = "header"
    var uservoiceTabLoc = "right"
@@ -3600,7 +3644,7 @@ angular.module("services.page")
      setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
 
      getTitle: function() { return title; },
-     setTitle: function(newTitle) { title = "ImpactStory: " + newTitle },
+     setTitle: function(newTitle) { title = "Impactstory: " + newTitle },
 
      pickTestVersion: function(){testVersion = (Math.random() > .5) ? "a" : "b"},
      isTestVersion: function(versionLetter){
