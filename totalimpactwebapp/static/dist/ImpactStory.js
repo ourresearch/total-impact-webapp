@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-16
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-18
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -496,9 +496,8 @@ angular.module('app').controller('AppCtrl', function($scope,
 
 
 
+  // these will be the user's test states forever (or until she clears our cookie)
   AbTesting.assignTestStates()
-  console.log("test states: ", AbTesting.getTestStates())
-
 
   $scope.removeNotification = function (notification) {
     i18nNotifications.remove(notification);
@@ -510,13 +509,12 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     security.requestCurrentUser().then(function(currentUser){
+      var userData = AbTesting.getTestStates()
       if (currentUser){
-        analytics.identify(currentUser.id, currentUser);
-        if (currentUser.url_slug){
-
-        }
+        userData = _.extend(userData, currentUser)
       }
-      Page.pickTestVersion()
+
+      analytics.identify(currentUser.id, userData);
       Page.sendPageloadToSegmentio()
     })
 
@@ -3521,7 +3519,6 @@ angular.module("services.page")
    var uservoiceTabLoc = "right"
    var lastScrollPosition = {}
    var isEmbedded =  _($location.path()).startsWith("/embed/")
-   var testVersion
 
    var showHeaderNow = true
    var showFooterNow = true
@@ -3625,9 +3622,7 @@ angular.module("services.page")
           'embedded': isEmbedded
         }
 
-       var classes = [
-         'test-version-' + testVersion
-       ]
+       var classes = []
 
        _.each(conditionalClasses, function(v, k){
          if (v) classes.push(k)
@@ -3648,12 +3643,6 @@ angular.module("services.page")
 
      getTitle: function() { return title; },
      setTitle: function(newTitle) { title = "Impactstory: " + newTitle },
-
-     pickTestVersion: function(){testVersion = (Math.random() > .5) ? "a" : "b"},
-     isTestVersion: function(versionLetter){
-       return testVersion === versionLetter
-     },
-
 
      isLandingPage: function(){
        return ($location.path() === "/")
@@ -3678,7 +3667,6 @@ angular.module("services.page")
          getPageType(),
          $location.path(),
          {
-           "version": testVersion,
            "viewport width": $(window).width(),
            "page_type": getPageType()
          }
