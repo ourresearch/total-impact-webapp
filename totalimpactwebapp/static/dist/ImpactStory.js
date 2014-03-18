@@ -472,7 +472,6 @@ angular.module('app').run(function(security, $window, Page, $location) {
     Page.setLastScrollPosition($(window).scrollTop(), $location.path())
   })
 
-
 });
 
 
@@ -495,6 +494,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   UservoiceWidget.insertTabs()
   $scope.isAuthenticated =  security.isAuthenticated
 
+
+
+  AbTesting.assignTestStates()
+  console.log("test states: ", AbTesting.getTestStates())
 
 
   $scope.removeNotification = function (notification) {
@@ -3022,19 +3025,19 @@ angular.module('services.abTesting', ['ngCookies'])
     }
 
     var assignTestStates = function(){
-      _.each(testDefinitions, function(testName, testStates){
+      _.each(testDefinitions, function(testStates, testName){
         if ($cookieStore.get(testName)) {
           // it's already set, move on
         }
         else {
-          $cookieStore.set(testName, _.sample(testStates) )
+          $cookieStore.put(testName, _.sample(testStates) )
         }
       })
     }
 
     var getTestStates = function(){
       var ret = {}
-      _.each(testDefinitions, function(testName){
+      _.each(testDefinitions, function(testStates, testName){
         ret[testName] = $cookieStore.get(testName)
       })
       return ret

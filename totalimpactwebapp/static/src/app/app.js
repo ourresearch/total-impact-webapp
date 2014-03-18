@@ -56,7 +56,6 @@ angular.module('app').run(function(security, $window, Page, $location) {
     Page.setLastScrollPosition($(window).scrollTop(), $location.path())
   })
 
-
 });
 
 
@@ -81,6 +80,9 @@ angular.module('app').controller('AppCtrl', function($scope,
 
 
 
+  // these will be the user's test states forever (or until she clears our cookie)
+  AbTesting.assignTestStates()
+
   $scope.removeNotification = function (notification) {
     i18nNotifications.remove(notification);
   };
@@ -91,13 +93,12 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     security.requestCurrentUser().then(function(currentUser){
+      var userData = AbTesting.getTestStates()
       if (currentUser){
-        analytics.identify(currentUser.id, currentUser);
-        if (currentUser.url_slug){
-
-        }
+        userData = _.extend(userData, currentUser)
       }
-      Page.pickTestVersion()
+
+      analytics.identify(currentUser.id, userData);
       Page.sendPageloadToSegmentio()
     })
 
