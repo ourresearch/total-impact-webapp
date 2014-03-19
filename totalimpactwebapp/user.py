@@ -33,10 +33,14 @@ class UrlSlugExistsError(Exception):
 class UserTiid(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     tiid = db.Column(db.Text, primary_key=True)
+    created = db.Column(db.DateTime())  # ALTER TABLE "user_tiid" ADD created timestamp;
+    removed = db.Column(db.DateTime())  # ALTER TABLE "user_tiid" ADD removed timestamp;
 
     def __init__(self, **kwargs):
         logger.debug(u"new UserTiid {kwargs}".format(
-            kwargs=kwargs))                
+            kwargs=kwargs))        
+        self.created = now_in_utc()     
+        self.removed = None   
         super(UserTiid, self).__init__(**kwargs)
 
     def __repr__(self):
@@ -107,7 +111,8 @@ class User(db.Model):
 
     @property
     def tiids(self):
-        return [tiid_link.tiid for tiid_link in self.tiid_links]
+        # return all tiids that have not been removed
+        return [tiid_link.tiid for tiid_link in self.tiid_links if not tiid_link.removed]
 
     @property
     def products(self):
@@ -363,7 +368,7 @@ def delete_products_from_user(user_id, tiids_to_delete):
     for user_tiid_obj in user_object.tiid_links:
         if user_tiid_obj.tiid in tiids_to_delete:
             number_deleted += 1
-            db.session.delete(user_tiid_obj)
+            user_tiid_obj.removed = now_in_utc()
 
     try:
         db.session.commit()
@@ -469,7 +474,7 @@ def save_user_last_viewed_profile_timestamp(user_id, timestamp=None):
     return True
 
 def create_user_from_slug(url_slug, user_request_dict, db):
-    logger.debug(u"Creating new user {url_slug} with unicode_request_dict {user_request_dict}".format(
+    logger.debug(u"create_user_from_slug new user {url_slug} with unicode_request_dict {user_request_dict}".format(
         url_slug=url_slug, user_request_dict=user_request_dict))
 
     # have to explicitly unicodify ascii-looking strings even when encoding
