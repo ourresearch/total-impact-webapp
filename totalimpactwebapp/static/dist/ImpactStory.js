@@ -997,6 +997,9 @@ angular.module("profileProduct", [
 
     $scope.product = product
     var tiid = $location.path().match(/\/product\/(.+)$/)[1]
+    $scope.onCancel = function(){
+      $scope.$close()
+    }
 
     $scope.onSave = function() {
       Loading.start("saveButton")
