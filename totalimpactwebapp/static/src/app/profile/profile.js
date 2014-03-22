@@ -192,6 +192,10 @@ angular.module("profile", [
 
     }
 
+    $scope.clickSignupLink = function(){
+      analytics.track("Clicked signup link on profile")
+    }
+
     $scope.user = UserProfile.loadUser($scope, userSlug);
 
     $scope.profileAwards = ProfileAwards.query(

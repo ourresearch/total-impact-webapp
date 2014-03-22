@@ -1330,6 +1330,10 @@ angular.module("profile", [
 
     }
 
+    $scope.clickSignupLink = function(){
+      analytics.track("Clicked signup link on profile")
+    }
+
     $scope.user = UserProfile.loadUser($scope, userSlug);
 
     $scope.profileAwards = ProfileAwards.query(
@@ -5273,7 +5277,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "     ng-animate=\"{leave: 'animated fadeOutDown'}\">\n" +
     "\n" +
     "   <span class=\"msg\">Join {{ user.about.given_name }} and thousands of other scientists on Impactstory!</span>\n" +
-    "   <a class=\"signup-button btn btn-primary btn-sm\" href=\"/signup\">Make your free profile</a>\n" +
+    "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Make your free profile</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>");
 }]);
