@@ -96,9 +96,12 @@ angular.module('app').controller('AppCtrl', function($scope,
       var userData = AbTesting.getTestStates()
       if (currentUser){
         userData = _.extend(userData, currentUser)
+        analytics.identify(currentUser.id, userData);
+      }
+      else {
+        analytics.identify()
       }
 
-      analytics.identify(currentUser.id, userData);
       Page.sendPageloadToSegmentio()
     })
 

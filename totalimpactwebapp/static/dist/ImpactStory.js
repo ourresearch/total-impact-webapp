@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-20
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-22
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -512,9 +512,12 @@ angular.module('app').controller('AppCtrl', function($scope,
       var userData = AbTesting.getTestStates()
       if (currentUser){
         userData = _.extend(userData, currentUser)
+        analytics.identify(currentUser.id, userData);
+      }
+      else {
+        analytics.identify()
       }
 
-      analytics.identify(currentUser.id, userData);
       Page.sendPageloadToSegmentio()
     })
 
@@ -1111,6 +1114,10 @@ angular.module('profileSingleProducts', [
         {product_id_strings: productIds},
         function(resp){
           console.log("saved some single products!", resp)
+          analytics.track(
+            "Added single products",
+            {productsCount: resp.products.length}
+          )
           Loading.finish("saveButton")
           security.redirectToProfile()
 
@@ -1742,6 +1749,7 @@ angular.module( 'signup', [
           // so mixpanel will start tracking this user via her userid from here
           // on out.
           analytics.alias(resp.user.id)
+          analytics.track("Signed up new user")
         },
         function(resp){
           if (resp.status === 409) {

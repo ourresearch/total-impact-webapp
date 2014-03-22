@@ -42,6 +42,10 @@ angular.module('profileSingleProducts', [
         {product_id_strings: productIds},
         function(resp){
           console.log("saved some single products!", resp)
+          analytics.track(
+            "Added single products",
+            {productsCount: resp.products.length}
+          )
           Loading.finish("saveButton")
           security.redirectToProfile()
 

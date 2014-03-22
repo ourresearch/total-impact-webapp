@@ -54,6 +54,7 @@ angular.module( 'signup', [
           // so mixpanel will start tracking this user via her userid from here
           // on out.
           analytics.alias(resp.user.id)
+          analytics.track("Signed up new user")
         },
         function(resp){
           if (resp.status === 409) {
