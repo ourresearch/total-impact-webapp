@@ -8171,6 +8171,7 @@ div.product-page .content .product ul.metric-details-list li.metric-detail span.
   background: #5cb85c;
   color: #fff;
   font-size: 12px;
+  cursor: default;
   margin-left: 5px;
   padding: 0 5px;
   -webkit-border-top-right-radius: 3px;
@@ -8873,7 +8874,7 @@ div.password-reset form.password-reset div.submit {
 .product.heading {
   margin-top: 130px;
 }
-.product.heading div.notification {
+.product.heading .notification {
   display: none;
 }
 .product.heading.first {
