@@ -7758,6 +7758,15 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   line-height: 1;
   font-size: 14px;
 }
+.product .notification {
+  position: absolute;
+  left: -20px;
+}
+.product .notification .icon {
+  vertical-align: 4px;
+  font-size: 14px;
+  color: #ff4000;
+}
 .product .biblio {
   float: left;
   width: 700px;
@@ -7845,7 +7854,18 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 
 }
-.product .ti-badge {
+.product div.popover {
+  font-family: helvetica, arial, sans-serif;
+  max-width: 230px;
+}
+.product div.popover h3 {
+  font-size: 16px;
+  font-family: helvetica, arial, sans-serif;
+}
+.product div.popover .popover-content {
+  font-size: 14px;
+}
+.ti-badge {
   height: 24px;
   font-size: 12px;
   text-align: center;
@@ -7872,42 +7892,31 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   background: black;
   border: 1px solid black;
 }
-.product .ti-badge span.audience {
+.ti-badge span.audience {
   display: none;
 }
-.product .ti-badge:hover {
+.ti-badge:hover {
   text-decoration: none;
 }
-.product .ti-badge.scholars {
+.ti-badge.scholars {
   background: #377eb8;
   border-color: #377eb8;
 }
-.product .ti-badge.public {
+.ti-badge.public {
   background: #4daf4a;
   border-color: #4daf4a;
 }
-.product .ti-badge.is-highly {
+.ti-badge.is-highly {
   color: #fff;
 }
-.product .ti-badge.is-not-highly {
+.ti-badge.is-not-highly {
   background: #fff;
 }
-.product .ti-badge.is-not-highly.scholars {
+.ti-badge.is-not-highly.scholars {
   color: #377eb8;
 }
-.product .ti-badge.is-not-highly.public {
+.ti-badge.is-not-highly.public {
   color: #4daf4a;
-}
-.product div.popover {
-  font-family: helvetica, arial, sans-serif;
-  max-width: 230px;
-}
-.product div.popover h3 {
-  font-size: 16px;
-  font-family: helvetica, arial, sans-serif;
-}
-.product div.popover .popover-content {
-  font-size: 14px;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
   height: 40px;
@@ -8135,7 +8144,6 @@ div.product-page .content .product ul.metric-details-list li.metric-detail span.
 div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name {
   color: #333;
   display: inline-block;
-  vertical-align: 8px;
 }
 div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name:hover {
   text-decoration: none;
@@ -8158,6 +8166,28 @@ div.product-page .content .product ul.metric-details-list li.metric-detail span.
 }
 div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name i {
   color: #ddd;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.new-metrics {
+  background: #5cb85c;
+  color: #fff;
+  font-size: 12px;
+  margin-left: 5px;
+  padding: 0 5px;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
 }
 div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile {
   display: block;
@@ -8842,6 +8872,9 @@ div.password-reset form.password-reset div.submit {
 }
 .product.heading {
   margin-top: 130px;
+}
+.product.heading div.notification {
+  display: none;
 }
 .product.heading.first {
   margin-top: 30px;

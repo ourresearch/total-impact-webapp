@@ -41,6 +41,11 @@
             <span class="interaction">{{ metric.display_interaction }}</span>
             <i class="icon-external-link-sign"></i>
          </a>
+         {% if metric.historical_values.raw_diff_30_days > 0 %}
+            <span class="new-metrics">
+             +{{ metric.historical_values.raw_diff_30_days }}
+            </span>
+         {% endif %}
 
          {% if metric.percentiles %}
          <span class="percentile">

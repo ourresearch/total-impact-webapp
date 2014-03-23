@@ -60,6 +60,18 @@
       font-size:14px;
    }
 
+   .notification {
+      position: absolute;
+      left: -20px;
+      .icon {
+         vertical-align: 4px;
+         font-size: 14px;
+         color: @linkColor;
+      }
+
+   }
+
+
 
 
    .biblio{
@@ -67,17 +79,6 @@
       width: 700px;
       h5 {
          margin-top: 0;
-//         .tooltip {
-//            .tooltip-inner {
-//               background: @linkColor;
-//               color: #fff;
-//            }
-//            &.bottom {
-//               .tooltip-arrow {
-//                  border-bottom-color: @linkColor;
-//               }
-//            }
-//         }
          a {
             &.title-text {
                font-size:16px;
@@ -114,6 +115,12 @@
 
 
    .awards {
+
+      // HACK ALERT: see the ti-badge.less file for some important parts
+      // of this section; had to move them out of here and into their own
+      // file because reasons.
+
+
       width: 360px;
       margin-left: 20px;
       float:left;
@@ -147,31 +154,7 @@
    }
 
 
-   .ti-badge {
-      height: 24px;
-      font-size: 12px;
-      text-align: center;
-      padding: 3px 9px;
-      float:left;
-      display:block;
-      font-weight:normal;
-      .border-radius(3px, 3px, 3px, 3px);
-      font-family: helvetica, arial, sans-serif;
-      span.audience {display:none;}
-      background:  black;
-      border: 1px solid black;
-      &:hover{text-decoration: none;}
-      &.scholars {background: @scholarsColor; border-color: @scholarsColor;}
-      &.public {background: @publicColor; border-color: @publicColor;}
-      &.is-highly {
-         color:  #fff;
-      }
-      &.is-not-highly {
-         &.scholars {color: @scholarsColor;}
-         &.public {color: @publicColor;}
-         background: #fff;
-      }
-   }
+
    div.popover {
       font-family: helvetica, arial, sans-serif;
       max-width: 230px;
@@ -188,4 +171,6 @@
 
 
 }
+
+
 

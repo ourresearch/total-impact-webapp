@@ -1282,6 +1282,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
+    "            <div class=\"notification\">\n" +
+    "               <span class=\"icon-bell icon\" tooltip=\"New impacts!\"></span>\n" +
+    "            </div>\n" +
     "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
     "            <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
     "\n" +

@@ -1,0 +1,29 @@
+// this file is a hack, to contain all the ti-badge stuff. this stuff should be
+//  in product.less, but for some reason it causes jason's IDE to eat all the
+// cpu. so isolating it in this file for now.
+
+.ti-badge {
+   height: 24px;
+   font-size: 12px;
+   text-align: center;
+   padding: 3px 9px;
+   float:left;
+   display:block;
+   font-weight:normal;
+   .border-radius(3px, 3px, 3px, 3px);
+   font-family: helvetica, arial, sans-serif;
+   span.audience {display:none;}
+   background:  black;
+   border: 1px solid black;
+   &:hover{text-decoration: none;}
+   &.scholars {background: @scholarsColor; border-color: @scholarsColor;}
+   &.public {background: @publicColor; border-color: @publicColor;}
+   &.is-highly {
+      color:  #fff;
+   }
+   &.is-not-highly {
+      &.scholars {color: @scholarsColor;}
+      &.public {color: @publicColor;}
+      background: #fff;
+   }
+}

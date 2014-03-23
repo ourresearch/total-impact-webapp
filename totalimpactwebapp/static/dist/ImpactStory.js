@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-22
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-03-23
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -5247,6 +5247,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
+    "            <div class=\"notification\">\n" +
+    "               <span class=\"icon-bell icon\" tooltip=\"New impacts!\"></span>\n" +
+    "            </div>\n" +
     "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
     "            <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
     "\n" +
