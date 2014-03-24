@@ -51,7 +51,6 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
     for account_type in ["github", "slideshare", "figshare", "orcid"]:
         user_account_value = user_about[account_type+"_id"]
         if user_account_value:
-            print user_account_value
             url = webapp_api_endpoint + u"/user/{url_slug}/linked-accounts/{account_type}?action=update".format(
                 url_slug=url_slug,
                 account_type=account_type)
