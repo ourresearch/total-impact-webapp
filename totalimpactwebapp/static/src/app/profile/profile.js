@@ -192,6 +192,11 @@ angular.module("profile", [
 
     }
 
+    $scope.humanDate = function(isoStr) {
+      // using moment.js library imported from cdnjs at runtime. not encapsulated,
+      // so will break in unit testing...
+      return moment(isoStr).fromNow()
+    }
     $scope.clickSignupLink = function(){
       analytics.track("Clicked signup link on profile")
     }

@@ -7223,7 +7223,7 @@ div.signup-banner a.close-link:hover {
 div.profile-header {
   margin-bottom: 35px;
   margin-top: -20px;
-  height: 110px;
+  height: 140px;
   clear: both;
 }
 div.profile-header:before,
@@ -7473,29 +7473,34 @@ div.product-controls:after {
 div.product-controls:after {
   clear: both;
 }
-div.product-controls a:hover {
+div.product-controls div.wrapper {
+  position: relative;
+}
+div.product-controls div.wrapper a:hover {
   color: #333;
 }
-div.product-controls a.dedup-button.working {
+div.product-controls div.wrapper a.dedup-button.working {
   color: #ff4000;
 }
-div.product-controls a.dedup-button i {
+div.product-controls div.wrapper a.dedup-button i {
   margin-right: 0;
 }
-div.product-controls a.dedup-button i.icon-refresh {
+div.product-controls div.wrapper a.dedup-button i.icon-refresh {
   margin-right: 2px;
 }
-div.product-controls div.view-controls {
-  float: right;
+div.product-controls div.wrapper div.view-controls {
+  position: absolute;
+  right: 0;
+  bottom: 0;
   margin: 0 30px 0 0;
 }
-div.product-controls div.view-controls div.admin-controls {
+div.product-controls div.wrapper div.view-controls div.admin-controls {
   float: left;
 }
-div.product-controls div.view-controls div.everyone-controls {
+div.product-controls div.wrapper div.view-controls div.everyone-controls {
   float: left;
 }
-div.product-controls div.view-controls span.dropdown ul.dropdown-menu {
+div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-menu {
   border: none;
   -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
@@ -7520,49 +7525,63 @@ div.product-controls div.view-controls span.dropdown ul.dropdown-menu {
   top: 22px;
   min-width: 120px;
 }
-div.product-controls div.view-controls span.dropdown ul.dropdown-menu a {
+div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-menu a {
   margin: 0;
   width: 100%;
 }
-div.product-controls div.view-controls span.dropdown ul.dropdown-menu a:hover {
+div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-menu a:hover {
   color: #fff;
 }
-div.product-controls div.view-controls span.dropdown ul.dropdown-menu i {
+div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-menu i {
   font-style: normal;
   margin-right: 5px;
 }
-div.product-controls div.view-controls span.dropdown ul.dropdown-menu i.json {
+div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-menu i.json {
   font-weight: 900;
   font-size: 14px;
 }
-div.product-controls div.edit-controls {
+div.product-controls div.wrapper div.products-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+div.product-controls div.wrapper div.products-info div.num-items {
   float: left;
 }
-div.product-controls div.edit-controls div.num-items {
-  float: left;
-}
-div.product-controls div.edit-controls div.num-items span.val-plus-text {
+div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating span.val-plus-text {
   font-weight: 300;
   margin: 0;
 }
-div.product-controls div.edit-controls div.num-items span.val-plus-text span.value {
+div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating span.val-plus-text span.value {
   font-weight: bold;
   margin-right: 3px;
 }
-div.product-controls div.edit-controls div.num-items a {
+div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating a {
   font-size: 14px;
   margin-left: 5px;
   color: #ff4000;
 }
-div.product-controls div.edit-controls div.num-items a:hover {
+div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating a:hover {
   text-decoration: underline;
 }
-div.product-controls a {
+div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating div.last-collected {
+  font-size: 13px;
+  font-weight: 300;
+}
+div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating div.last-collected a.upgrade {
+  color: #555;
+  text-decoration: underline;
+  margin-left: 5px;
+}
+div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating div.last-collected a.upgrade:hover {
+  color: #000;
+}
+div.product-controls div.wrapper a {
   margin-left: 15px;
   color: #777;
   display: inline-block;
 }
-div.product-controls a i {
+div.product-controls div.wrapper a i {
   margin-right: 5px;
 }
 div.products {
@@ -8346,6 +8365,7 @@ div.settings div.settings-nav {
 }
 div.settings div.settings-nav ul li a {
   padding: 10px;
+  font-weight: 300;
   font-size: 18px;
   display: block;
   margin-top: 5px;
