@@ -23,7 +23,7 @@ from totalimpactwebapp.user import EmailExistsError
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
-from totalimpactwebapp import profile_award
+from totalimpactwebapp import welcome_email
 
 import newrelic.agent
 
@@ -291,6 +291,11 @@ def create_new_user_profile(slug):
         webapp_root=g.webapp_root, url_slug=user.url_slug)
     logger.debug(u"created new user {user_profile_url}".format(
         user_profile_url=user_profile_url))
+
+
+    # send welcome email
+    welcome_email.send_welcome_email(user.email, user.given_name)
+
 
     # send to alert
     for webhook_slug in os.getenv("ZAPIER_ALERT_HOOKS", "").split(","):
