@@ -15,15 +15,10 @@ def send_welcome_email(email, given_name):
     # send the email here...
     mailer = mandrill.Mandrill(os.getenv("MANDRILL_APIKEY"))
 
-    text = """Hi {given_name},\nWelcome to Impactstory!  You just joined thousands of
-other cutting-edge researchers who are discovering the full impact of their research.\n\n\
+    text = """Hi {given_name},\nWelcome to Impactstory!  You just joined thousands of other cutting-edge researchers who are discovering the full impact of their research.\n\n\
 Got any questions? Drop us a line at team@impactstory.org and we'll be glad to help.\n\n
-Want inside tips and insights about open science and altmetrics, along with actionable
-content that helps maximize your research impact? Then you're going to absolutely
-love our free newsletter. Check it out here: http://eepurl.com/RaRZ1\n\n
-As a non-profit, we're passionate about helping to build a more open, expansive, 
-and web-native science. It's why we do this. And we're thrilled that you've chosen 
-to be part of it.\n\n
+Want inside tips and insights about open science and altmetrics, along with actionable content that helps maximize your research impact? Then you're going to absolutely love our free newsletter. Check it out here: http://eepurl.com/RaRZ1\n\n
+As a non-profit, we're passionate about helping to build a more open, expansive, and web-native science. It's why we do this. And we're thrilled that you've chosen to be part of it.\n\n
 All our best,\nHeather, Jason, and Stacy""".format(given_name=given_name)
 
     html = """<p>Hi {given_name},</p>
