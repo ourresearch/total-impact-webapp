@@ -573,11 +573,10 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "         <div class=\"wrapper\">\n" +
     "            <img class=\"big-logo\" src=\"/static/img/impactstory-logo-no-type.png\" alt=\"\"/>\n" +
     "            <h1>Discover the full impact<br> of your research.</h1>\n" +
-    "            <!--<p class=\"subtagline\">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>-->\n" +
     "            <div id=\"call-to-action\">\n" +
     "               <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
     "               <a href=\"/CarlBoettiger\"\n" +
-    "                  ng-show=\"page.isTestVersion('b')\"\n" +
+    "                  ng-show=\"abTesting.getTestState['link to sample profile from landing page']=='yes'\"\n" +
     "                  class=\"btn btn-xlarge btn-default\"\n" +
     "                  id=\"secondary-cta-button\">See an example</a>\n" +
     "            </div>\n" +

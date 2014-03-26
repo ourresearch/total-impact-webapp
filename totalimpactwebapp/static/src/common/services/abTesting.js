@@ -1,6 +1,5 @@
 angular.module('services.abTesting', ['ngCookies'])
   .factory("AbTesting", function($cookieStore){
-    console.log("abTesting loaded. test those abs!")
 
     var testDefinitions = {
       "link to sample profile from landing page": ["yes", "no"]
@@ -10,9 +9,12 @@ angular.module('services.abTesting', ['ngCookies'])
       _.each(testDefinitions, function(testStates, testName){
         if ($cookieStore.get(testName)) {
           // it's already set, move on
+          console.log("test already set: ", testName, $cookieStore.get(testName))
         }
         else {
-          $cookieStore.put(testName, _.sample(testStates) )
+          var testState = _.sample(testStates)
+          console.log("setting A/B test state: ", testName, testState)
+          $cookieStore.put(testName, testState)
         }
       })
     }
