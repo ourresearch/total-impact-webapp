@@ -68,6 +68,7 @@ angular.module( 'infopages', [
 
   .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {
     var signupFormShowing = false
+    $scope.landingPageType = "main"
     Page.showHeader(false)
     Page.setUservoiceTabLoc("hidden")
     Page.setTitle("Share the full story of your research impact.")
@@ -75,6 +76,7 @@ angular.module( 'infopages', [
   })
 
   .controller("hIndexLandingPageCtrl", function($scope, Page){
+    $scope.landingPageType = "h-index"
     Page.showHeader(false)
     Page.setUservoiceTabLoc("hidden")
     Page.setTitle("Share the full story of your research impact.")

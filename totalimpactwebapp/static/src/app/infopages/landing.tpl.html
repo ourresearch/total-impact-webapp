@@ -11,9 +11,16 @@
             <img class="big-logo" src="/static/img/impactstory-logo-no-type.png" alt=""/>
 
 
-            <div class="landing-page main" ng-show="">
+            <div class="landing-page main" ng-show="landingPageType=='main'">
                <h1>Discover the full impact<br> of your research.</h1>
             </div>
+            <div class="landing-page main" ng-show="landingPageType=='h-index'">
+               <h1>You're more than your h-index.</h1>
+               <h2>Discover the full impact of your research.</h2>
+            </div>
+
+
+
             <div id="call-to-action">
                <a href="/signup" class="btn btn-xlarge btn-primary primary-action" id="signup-button">What's my impact?</a>
                <a href="/CarlBoettiger"
