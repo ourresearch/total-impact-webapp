@@ -572,7 +572,11 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "      <div id=\"tagline\">\n" +
     "         <div class=\"wrapper\">\n" +
     "            <img class=\"big-logo\" src=\"/static/img/impactstory-logo-no-type.png\" alt=\"\"/>\n" +
-    "            <h1>Discover the full impact<br> of your research.</h1>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"landing-page main\" ng-show=\"\">\n" +
+    "               <h1>Discover the full impact<br> of your research.</h1>\n" +
+    "            </div>\n" +
     "            <div id=\"call-to-action\">\n" +
     "               <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
     "               <a href=\"/CarlBoettiger\"\n" +

@@ -681,6 +681,15 @@ angular.module( 'infopages', [
           }
         }
       })
+      .when('/h-index', {
+        templateUrl: 'infopages/landing.tpl.html',
+        controller: 'hIndexLandingPageCtrl',
+        resolve:{
+          allowed: function(security){
+            return security.testUserAuthenticationLevel("loggedIn", false)
+          }
+        }
+      })
       .when('/faq', {
         templateUrl: 'infopages/faq.tpl.html',
         controller: 'faqPageCtrl',
@@ -711,6 +720,13 @@ angular.module( 'infopages', [
     Page.setTitle("Share the full story of your research impact.")
 
   })
+
+  .controller("hIndexLandingPageCtrl", function($scope, Page){
+    Page.showHeader(false)
+    Page.setUservoiceTabLoc("hidden")
+    Page.setTitle("Share the full story of your research impact.")
+  })
+
 
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
     Page.setTitle("FAQ")
@@ -4540,7 +4556,11 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "      <div id=\"tagline\">\n" +
     "         <div class=\"wrapper\">\n" +
     "            <img class=\"big-logo\" src=\"/static/img/impactstory-logo-no-type.png\" alt=\"\"/>\n" +
-    "            <h1>Discover the full impact<br> of your research.</h1>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"landing-page main\" ng-show=\"\">\n" +
+    "               <h1>Discover the full impact<br> of your research.</h1>\n" +
+    "            </div>\n" +
     "            <div id=\"call-to-action\">\n" +
     "               <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
     "               <a href=\"/CarlBoettiger\"\n" +

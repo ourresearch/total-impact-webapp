@@ -34,6 +34,15 @@ angular.module( 'infopages', [
           }
         }
       })
+      .when('/h-index', {
+        templateUrl: 'infopages/landing.tpl.html',
+        controller: 'hIndexLandingPageCtrl',
+        resolve:{
+          allowed: function(security){
+            return security.testUserAuthenticationLevel("loggedIn", false)
+          }
+        }
+      })
       .when('/faq', {
         templateUrl: 'infopages/faq.tpl.html',
         controller: 'faqPageCtrl',
@@ -64,6 +73,13 @@ angular.module( 'infopages', [
     Page.setTitle("Share the full story of your research impact.")
 
   })
+
+  .controller("hIndexLandingPageCtrl", function($scope, Page){
+    Page.showHeader(false)
+    Page.setUservoiceTabLoc("hidden")
+    Page.setTitle("Share the full story of your research impact.")
+  })
+
 
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
     Page.setTitle("FAQ")
