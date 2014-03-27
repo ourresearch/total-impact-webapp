@@ -690,6 +690,15 @@ angular.module( 'infopages', [
           }
         }
       })
+      .when('/open-science', {
+        templateUrl: 'infopages/landing.tpl.html',
+        controller: 'openScienceLandingPageCtrl',
+        resolve:{
+          allowed: function(security){
+            return security.testUserAuthenticationLevel("loggedIn", false)
+          }
+        }
+      })
       .when('/faq', {
         templateUrl: 'infopages/faq.tpl.html',
         controller: 'faqPageCtrl',
@@ -729,6 +738,12 @@ angular.module( 'infopages', [
     Page.setTitle("Share the full story of your research impact.")
   })
 
+  .controller("openScienceLandingPageCtrl", function($scope, Page){
+    $scope.landingPageType = "open-science"
+    Page.showHeader(false)
+    Page.setUservoiceTabLoc("hidden")
+    Page.setTitle("Share the full story of your research impact.")
+  })
 
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
     Page.setTitle("FAQ")
@@ -4563,9 +4578,15 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='main'\">\n" +
     "               <h1>Discover the full impact<br> of your research.</h1>\n" +
     "            </div>\n" +
+    "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='h-index'\">\n" +
     "               <h1>You're more than your h-index.</h1>\n" +
-    "               <h2>Discover the full impact of your research.</h2>\n" +
+    "               <h2>Discover the full impact of your research</h2>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"landing-page main\" ng-show=\"landingPageType=='open-science'\">\n" +
+    "               <h1>For open scientists.</h1>\n" +
+    "               <h2>Discover the full impact of all your open science</h2>\n" +
     "            </div>\n" +
     "\n" +
     "\n" +

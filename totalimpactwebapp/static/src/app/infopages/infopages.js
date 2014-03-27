@@ -43,6 +43,15 @@ angular.module( 'infopages', [
           }
         }
       })
+      .when('/open-science', {
+        templateUrl: 'infopages/landing.tpl.html',
+        controller: 'openScienceLandingPageCtrl',
+        resolve:{
+          allowed: function(security){
+            return security.testUserAuthenticationLevel("loggedIn", false)
+          }
+        }
+      })
       .when('/faq', {
         templateUrl: 'infopages/faq.tpl.html',
         controller: 'faqPageCtrl',
@@ -82,6 +91,12 @@ angular.module( 'infopages', [
     Page.setTitle("Share the full story of your research impact.")
   })
 
+  .controller("openScienceLandingPageCtrl", function($scope, Page){
+    $scope.landingPageType = "open-science"
+    Page.showHeader(false)
+    Page.setUservoiceTabLoc("hidden")
+    Page.setTitle("Share the full story of your research impact.")
+  })
 
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
     Page.setTitle("FAQ")
