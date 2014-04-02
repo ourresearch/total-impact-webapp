@@ -620,3 +620,5 @@ def _make_id(len=6):
     '''
     choices = string.ascii_lowercase + string.digits
     return ''.join(random.choice(choices) for x in range(len))
+
+    
