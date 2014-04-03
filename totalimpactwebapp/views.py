@@ -277,6 +277,7 @@ def user_profile(profile_id):
     return json_resp_from_thing(user)
 
 
+
 @app.route("/user/<slug>", methods=["POST"])
 def create_new_user_profile(slug):
     userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
@@ -293,19 +294,22 @@ def create_new_user_profile(slug):
         user_profile_url=user_profile_url))
 
 
-    # send welcome email
-    welcome_email.send_welcome_email(user.email, user.given_name)
+    # refactor this and the mention in /tests some day
+    email_suffex_for_text_accounts = "@test-impactstory.org"
+    
+    if not user.email.endswith(email_suffex_for_text_accounts):
+        # send welcome email
+        welcome_email.send_welcome_email(user.email, user.given_name)
 
-
-    # send to alert
-    for webhook_slug in os.getenv("ZAPIER_ALERT_HOOKS", "").split(","):
-        zapier_webhook_url = "https://zapier.com/hooks/catch/n/{webhook_slug}/".format(
-            webhook_slug=webhook_slug)
-        r = requests.post(zapier_webhook_url,
-            data=json.dumps({
-                "user_profile_url": user_profile_url
-                }),
-            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+        # send to alert
+        for webhook_slug in os.getenv("ZAPIER_ALERT_HOOKS", "").split(","):
+            zapier_webhook_url = "https://zapier.com/hooks/catch/n/{webhook_slug}/".format(
+                webhook_slug=webhook_slug)
+            r = requests.post(zapier_webhook_url,
+                data=json.dumps({
+                    "user_profile_url": user_profile_url
+                    }),
+                headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
     logger.debug(u"new user {url_slug} has id {id}".format(
         url_slug=user.url_slug, id=user.id))
