@@ -1,7 +1,8 @@
 angular.module( 'infopages', [
     'security',
     'services.page',
-    'directives.fullscreen'
+    'directives.fullscreen',
+    'services.charge'
   ])
   .factory("InfoPages", function ($http) {
     var getProvidersInfo = function () {
@@ -98,10 +99,19 @@ angular.module( 'infopages', [
     Page.setTitle("Share the full story of your research impact.")
   })
 
-  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
+  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo, Charge) {
     Page.setTitle("FAQ")
     $scope.providers = providersInfo
     console.log("faq page controller running")
+    $scope.openDonateModal = function(){
+
+      Charge.open({
+        name: 'Donate to Impactstory',
+        description: '$10 per month',
+        amount: 10
+      });
+
+    }
   })
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {

@@ -648,7 +648,8 @@ angular.module("googleScholar", [
 angular.module( 'infopages', [
     'security',
     'services.page',
-    'directives.fullscreen'
+    'directives.fullscreen',
+    'services.charge'
   ])
   .factory("InfoPages", function ($http) {
     var getProvidersInfo = function () {
@@ -745,10 +746,19 @@ angular.module( 'infopages', [
     Page.setTitle("Share the full story of your research impact.")
   })
 
-  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
+  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo, Charge) {
     Page.setTitle("FAQ")
     $scope.providers = providersInfo
     console.log("faq page controller running")
+    $scope.openDonateModal = function(){
+
+      Charge.open({
+        name: 'Donate to Impactstory',
+        description: '$10 per month',
+        amount: 10
+      });
+
+    }
   })
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
@@ -3140,6 +3150,30 @@ angular.module('services.breadcrumbs').factory('breadcrumbs', ['$rootScope', '$l
 
   return breadcrumbsService;
 }]);
+angular.module('services.charge', [])
+  .factory("Charge", function(){
+    var handler = StripeCheckout.configure({
+      key: 'pk_test_CR4uaJdje6LJ02H4m6Mdcuor',
+      image: '//gravatar.com/avatar/9387b461360eaf54e3fa3ce763c656f4/?s=120&d=mm',
+      allowRememberMe: false,
+      token: function(token, args) {
+        // Use the token to create the charge with a server-side script.
+        // You can access the token ID with `token.id`
+        console.log("doin' stuff with the token!")
+      }
+    });
+
+
+    return {
+      open:function(args){
+        handler.open(args)
+      }
+    }
+
+
+
+
+  })
 angular.module('services.crud', ['services.crudRouteProvider']);
 angular.module('services.crud').factory('crudEditMethods', function () {
 
@@ -4376,16 +4410,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <h3 id=\"donate\">How can I give money to Impactstory?</h3>\n" +
     "\n" +
     "   <p>We're glad you asked! Impactstory's a 501(c)(3) nonprofit, and we're happy to take donations</p>\n" +
-    "   <form action=\"\" method=\"POST\">\n" +
-    "     <script\n" +
-    "       src=\"https://checkout.stripe.com/checkout.js\" class=\"stripe-button\"\n" +
-    "       data-key=\"pk_test_CR4uaJdje6LJ02H4m6Mdcuor\"\n" +
-    "       data-amount=\"2000\"\n" +
-    "       data-name=\"Impactstory\"\n" +
-    "       data-description=\"Donation to Impactstory\"\n" +
-    "       data-image=\"/128x128.png\">\n" +
-    "     </script>\n" +
-    "   </form>\n" +
+    "   <button id=\"donate-button\" class=\"btn btn-primary\" ng-click=\"openDonateModal()\">Donate!</button>\n" +
     "\n" +
     "   <h3 id=\"uses\">how should it be used?</h3>\n" +
     "\n" +

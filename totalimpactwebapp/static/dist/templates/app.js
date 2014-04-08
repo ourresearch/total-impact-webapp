@@ -375,16 +375,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <h3 id=\"donate\">How can I give money to Impactstory?</h3>\n" +
     "\n" +
     "   <p>We're glad you asked! Impactstory's a 501(c)(3) nonprofit, and we're happy to take donations</p>\n" +
-    "   <form action=\"\" method=\"POST\">\n" +
-    "     <script\n" +
-    "       src=\"https://checkout.stripe.com/checkout.js\" class=\"stripe-button\"\n" +
-    "       data-key=\"pk_test_CR4uaJdje6LJ02H4m6Mdcuor\"\n" +
-    "       data-amount=\"2000\"\n" +
-    "       data-name=\"Impactstory\"\n" +
-    "       data-description=\"Donation to Impactstory\"\n" +
-    "       data-image=\"/128x128.png\">\n" +
-    "     </script>\n" +
-    "   </form>\n" +
+    "   <button id=\"donate-button\" class=\"btn btn-primary\" ng-click=\"openDonateModal()\">Donate!</button>\n" +
     "\n" +
     "   <h3 id=\"uses\">how should it be used?</h3>\n" +
     "\n" +
