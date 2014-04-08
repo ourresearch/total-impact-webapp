@@ -415,11 +415,12 @@ def tiids_to_remove_from_duplicates_list(duplicates_list):
             if (tiid_to_keep==None) and tiid_dict["has_user_provided_biblio"]:
                 tiid_to_keep = tiid_dict["tiid"]
             else:
-                tiids_to_remove += [tiid_dict["tiid"]]
+                tiids_to_remove += [tiid_dict]
         if not tiid_to_keep:
             # don't delete last tiid added even if it had user supplied stuff, because multiple do
-            tiids_to_remove.pop() 
-    return tiids_to_remove
+            earliest_created_date = min([tiid_dict["created"] for tiid_dict in duplicate_group])
+            tiids_to_remove = [tiid_dict for tiid_dict in tiids_to_remove if tiid_dict["created"] != earliest_created_date]
+    return [tiid_dict["tiid"] for tiid_dict in tiids_to_remove]
 
 
 def remove_duplicates_from_user(user_id):
