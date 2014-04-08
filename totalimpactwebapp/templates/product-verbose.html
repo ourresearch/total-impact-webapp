@@ -41,10 +41,10 @@
             <span class="interaction">{{ metric.display_interaction }}</span>
             <i class="icon-external-link-sign"></i>
          </a>
-         {% if metric.historical_values.raw_diff_30_days > 0 %}
+         {% if metric.historical_values.raw_diff_7_days > 0 %}
             <span class="new-metrics"
-                  data-content="{{ metric.historical_values.raw_diff_30_days }} new {{ metric.environment | replace('Altmetric.com', '') }} {{ metric.display_interaction }} in the last week.">
-             +{{ metric.historical_values.raw_diff_30_days }}
+                  data-content="{{ metric.historical_values.raw_diff_7_days }} new {{ metric.environment | replace('Altmetric.com', '') }} {{ metric.display_interaction }} in the last week.">
+             +{{ metric.historical_values.raw_diff_7_days }}
             </span>
          {% endif %}
 
