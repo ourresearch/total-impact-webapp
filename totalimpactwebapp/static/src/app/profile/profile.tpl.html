@@ -5,7 +5,7 @@
       </div>
       <div class="my-picture" ng-show="user.about.id">
          <a href="http://www.gravatar.com" >
-            <img class="gravatar" ng-src="http://www.gravatar.com/avatar/{{ user.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
+            <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ user.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
          </a>
       </div>
       <div class="my-vitals">
@@ -18,32 +18,32 @@
 
                <li ng-show="user.about.figshare_id" style="display: none;">
                   <a href="{{ user.about.figshare_id }}">
-                     <img src="http://figshare.com/static/img/favicon.png">
+                     <img src="/static/img/favicons/figshare.ico">
                      <span class="service">figshare</span>
                   </a>
                </li>           
                <li ng-show="user.about.github_id" style="display: none;">
                   <a href="https://github.com/{{ user.about.github_id }}">
-                     <img src="https://github.com/fluidicon.png">
+                     <img src="/static/img/favicons/github.ico">
                      <span class="service">GitHub</span>
                   </a>
                </li>
                <li ng-show="user.about.google_scholar_id" style="display: none;">
                   <a href="{{ user.about.google_scholar_id }}">
-                     <img src="http://scholar.google.com/favicon.ico">
+                     <img src="/static/img/favicons/google_scholar.ico">
                      <span class="service">Google Scholar</span>
                   </a>
                </li>     
                <li ng-show="user.about.orcid_id" style="display: none;">
                   <a href="https://orcid.org/{{ user.about.orcid_id }}">
-                     <img src="http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico">
+                     <img src="/static/img/favicons/orcid.ico">
                      <span class="service">ORCID</span>
                   </a>
                </li>
 
                <li ng-show="user.about.slideshare_id" style="display: none;">
                   <a href="https://www.slideshare.net/{{ user.about.slideshare_id }}">
-                     <img src="http://www.slideshare.net/favicon.ico">
+                     <img src="/static/img/favicons/slideshare.ico">
                      <span class="service">Slideshare</span>
                   </a>
                </li>

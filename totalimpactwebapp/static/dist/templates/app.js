@@ -1166,7 +1166,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "      <div class=\"my-picture\" ng-show=\"user.about.id\">\n" +
     "         <a href=\"http://www.gravatar.com\" >\n" +
-    "            <img class=\"gravatar\" ng-src=\"http://www.gravatar.com/avatar/{{ user.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "            <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ user.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "         </a>\n" +
     "      </div>\n" +
     "      <div class=\"my-vitals\">\n" +
@@ -1179,32 +1179,32 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
     "                  <a href=\"{{ user.about.figshare_id }}\">\n" +
-    "                     <img src=\"http://figshare.com/static/img/favicon.png\">\n" +
+    "                     <img src=\"/static/img/favicons/figshare.ico\">\n" +
     "                     <span class=\"service\">figshare</span>\n" +
     "                  </a>\n" +
     "               </li>           \n" +
     "               <li ng-show=\"user.about.github_id\" style=\"display: none;\">\n" +
     "                  <a href=\"https://github.com/{{ user.about.github_id }}\">\n" +
-    "                     <img src=\"https://github.com/fluidicon.png\">\n" +
+    "                     <img src=\"/static/img/favicons/github.ico\">\n" +
     "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "               <li ng-show=\"user.about.google_scholar_id\" style=\"display: none;\">\n" +
     "                  <a href=\"{{ user.about.google_scholar_id }}\">\n" +
-    "                     <img src=\"http://scholar.google.com/favicon.ico\">\n" +
+    "                     <img src=\"/static/img/favicons/google_scholar.ico\">\n" +
     "                     <span class=\"service\">Google Scholar</span>\n" +
     "                  </a>\n" +
     "               </li>     \n" +
     "               <li ng-show=\"user.about.orcid_id\" style=\"display: none;\">\n" +
     "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\">\n" +
-    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\">\n" +
+    "                     <img src=\"/static/img/favicons/orcid.ico\">\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "\n" +
     "               <li ng-show=\"user.about.slideshare_id\" style=\"display: none;\">\n" +
     "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
-    "                     <img src=\"http://www.slideshare.net/favicon.ico\">\n" +
+    "                     <img src=\"/static/img/favicons/slideshare.ico\">\n" +
     "                     <span class=\"service\">Slideshare</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
