@@ -317,6 +317,25 @@ class User(db.Model):
         return ret_dict
 
 
+def get_products_from_core_as_csv(tiids):
+    if not tiids:
+        return None
+
+    query = u"{core_api_root}/v1/products.csv?api_admin_key={api_admin_key}".format(
+        core_api_root=g.api_root,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    logger.debug(u"in get_products_from_core with query {query}".format(
+        query=query))
+
+    r = requests.post(query,
+            data=json.dumps({
+                "tiids": tiids
+                }),
+            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+    return r
+
+
 
 def get_products_from_core(tiids):
     if not tiids:
