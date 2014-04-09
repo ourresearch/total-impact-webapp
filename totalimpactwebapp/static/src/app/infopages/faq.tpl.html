@@ -22,6 +22,7 @@
       <li><b>all of us</b> who believe that people should be rewarded when their work (no matter what the format) makes a positive impact (no matter what the venue). Aggregating evidence of impact will facilitate appropriate rewards, thereby encouraging additional openness of useful forms of research output.
    </ul>
 
+
    <h3 id="uses">how should it be used?</h3>
 
    <p>Impactstory data can be:</p>
@@ -99,7 +100,7 @@
          <ul>
             <!-- a metric supplied by this provider -->
             <li ng-repeat="(metric_name, metric) in provider.metrics" class="metric">
-               <img src="{{ metric.icon }}" width="16" height="16" />
+               <img ng-src="/static/img/favicons/{{ provider.name }}_{{ metric_name }}.ico" width="16" height="16" />
                <strong>{{ metric.display_name }}</strong>
                <span class="metric-descr">{{ metric.description }}</span>
                <span class="csv-name">({{ provider.name }}:{{ metric_name }})</span>

@@ -714,6 +714,9 @@ def get_2013_year_in_review():
 def create_page():
     return redirect("signup", 301)
 
+@app.route("/scratchpad")
+def scratchpad():
+    return render_template("scratchpad.html")
 
 
 
