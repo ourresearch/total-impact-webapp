@@ -155,6 +155,10 @@ def setup_db_tables():
     db.create_all()
 
 
+@app.before_request
+def redirect_to_https():
+    if request.url.startswith("http://") and not request.url.startswith("http://localhost"):
+        return redirect(request.url.replace("http://", "https://"))
 
 
 @app.before_request
