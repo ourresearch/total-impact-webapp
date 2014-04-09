@@ -100,6 +100,8 @@ class User(db.Model):
 
     tips = db.Column(db.String())  # ALTER TABLE "user" ADD tips text
     last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
+    next_refresh = db.Column(db.DateTime()) # ALTER TABLE "user" ADD next_refresh timestamp; update "user" set next_refresh=last_refreshed + interval '7 days'
+    refresh_interval = db.Column(db.Integer) # ALTER TABLE "user" ADD refresh_interval Integer; update "user" set refresh_interval=7
 
     tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
@@ -141,6 +143,8 @@ class User(db.Model):
         super(User, self).__init__(**kwargs)
         self.created = now_in_utc()
         self.last_refreshed = now_in_utc()
+        self.refresh_interval = self.refresh_interval or 7
+        self.next_refresh = self.last_refreshed + datetime.timedelta(days=self.refresh_interval)
         self.given_name = self.given_name or u"Anonymous"
         self.surname = self.surname or u"User"
         self.password_hash = None
@@ -447,6 +451,7 @@ def save_user_last_refreshed_timestamp(user_id, timestamp=None):
     if not timestamp:
         timestamp = now_in_utc()
     user.last_refreshed = timestamp
+    user.next_refresh = user.last_refreshed + datetime.timedelta(days=user.refresh_interval)
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
