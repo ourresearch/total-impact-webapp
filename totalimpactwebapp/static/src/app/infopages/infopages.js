@@ -124,4 +124,3 @@ angular.module( 'infopages', [
 
   });
 
-

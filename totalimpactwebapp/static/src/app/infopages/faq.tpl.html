@@ -100,7 +100,7 @@
          <ul>
             <!-- a metric supplied by this provider -->
             <li ng-repeat="(metric_name, metric) in provider.metrics" class="metric">
-               <img src="{{ metric.icon }}" width="16" height="16" />
+               <img ng-src="/static/img/favicons/{{ provider.name }}_{{ metric_name }}.ico" width="16" height="16" />
                <strong>{{ metric.display_name }}</strong>
                <span class="metric-descr">{{ metric.description }}</span>
                <span class="csv-name">({{ provider.name }}:{{ metric_name }})</span>

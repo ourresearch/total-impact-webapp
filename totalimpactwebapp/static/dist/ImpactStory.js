@@ -772,7 +772,6 @@ angular.module( 'infopages', [
   });
 
 
-
 angular.module('passwordReset', [
     'resources.users',
     'services.loading',
@@ -4407,11 +4406,6 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   </ul>\n" +
     "\n" +
     "\n" +
-    "   <h3 id=\"donate\">How can I give money to Impactstory?</h3>\n" +
-    "\n" +
-    "   <p>We're glad you asked! Impactstory's a 501(c)(3) nonprofit, and we're happy to take donations</p>\n" +
-    "   <button id=\"donate-button\" class=\"btn btn-primary\" ng-click=\"openDonateModal()\">Donate!</button>\n" +
-    "\n" +
     "   <h3 id=\"uses\">how should it be used?</h3>\n" +
     "\n" +
     "   <p>Impactstory data can be:</p>\n" +
@@ -4489,7 +4483,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "         <ul>\n" +
     "            <!-- a metric supplied by this provider -->\n" +
     "            <li ng-repeat=\"(metric_name, metric) in provider.metrics\" class=\"metric\">\n" +
-    "               <img src=\"{{ metric.icon }}\" width=\"16\" height=\"16\" />\n" +
+    "               <img ng-src=\"/static/img/favicons/{{ provider.name }}_{{ metric_name }}.ico\" width=\"16\" height=\"16\" />\n" +
     "               <strong>{{ metric.display_name }}</strong>\n" +
     "               <span class=\"metric-descr\">{{ metric.description }}</span>\n" +
     "               <span class=\"csv-name\">({{ provider.name }}:{{ metric_name }})</span>\n" +
