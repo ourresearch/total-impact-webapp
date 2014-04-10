@@ -69,7 +69,7 @@ def main(action_type, number_to_update=3, max_days_since_updated=7):
 
     try:
         if action_type == "by_profile":
-            webapp_api_endpoint = "http://impactstory.org"
+            webapp_api_endpoint = "https://impactstory.org"
             by_profile(number_to_update, webapp_api_endpoint, max_days_since_updated)
     except (KeyboardInterrupt, SystemExit): 
         # this approach is per http://stackoverflow.com/questions/2564137/python-how-to-terminate-a-thread-when-main-program-ends

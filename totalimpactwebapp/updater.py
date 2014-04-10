@@ -91,7 +91,7 @@ def main(number_to_update=3, max_days_since_updated=7, url_slugs=[None]):
     #35 every 10 minutes is 35*6perhour*24hours=5040 per day
 
     try:
-        webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "http://localhost:5000")
+        webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "https://localhost:5000")
         now=datetime.datetime.utcnow()
 
         if url_slugs[0]==None:
