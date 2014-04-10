@@ -310,7 +310,6 @@ angular.module("profile", [
 .controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
   console.log("user slug is: ", userSlug)
   $scope.userSlug = userSlug;
-  $scope.baseUrl = Page.getBaseUrl
   $scope.embed = {}
   $scope.embed.type = "badge"
 

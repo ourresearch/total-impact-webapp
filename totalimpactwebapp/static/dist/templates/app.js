@@ -164,7 +164,6 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "            <li><a href=\"http://twitter.com/Impactstory\">Twitter</a></li>\n" +
     "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
     "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Free stickers!</a></li>\n" +
-    "            <!--<li><a href=\"http://twitter.com/#!/Impactstory_now\">Site status</a></li>-->\n" +
     "\n" +
     "         </ul>\n" +
     "      </div>\n" +
@@ -177,6 +176,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "               <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Report bug</a>\n" +
     "            </li>\n" +
     "            <li><a href=\"/faq\">FAQ</a></li>\n" +
+    "            <li><a href=\"/CarlBoettiger\">Example profile</a></li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
     "\n" +
@@ -371,6 +371,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "      <li><b>all of us</b> who believe that people should be rewarded when their work (no matter what the format) makes a positive impact (no matter what the venue). Aggregating evidence of impact will facilitate appropriate rewards, thereby encouraging additional openness of useful forms of research output.\n" +
     "   </ul>\n" +
     "\n" +
+    "\n" +
     "   <h3 id=\"uses\">how should it be used?</h3>\n" +
     "\n" +
     "   <p>Impactstory data can be:</p>\n" +
@@ -448,7 +449,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "         <ul>\n" +
     "            <!-- a metric supplied by this provider -->\n" +
     "            <li ng-repeat=\"(metric_name, metric) in provider.metrics\" class=\"metric\">\n" +
-    "               <img src=\"{{ metric.icon }}\" width=\"16\" height=\"16\" />\n" +
+    "               <img ng-src=\"/static/img/favicons/{{ provider.name }}_{{ metric_name }}.ico\" width=\"16\" height=\"16\" />\n" +
     "               <strong>{{ metric.display_name }}</strong>\n" +
     "               <span class=\"metric-descr\">{{ metric.description }}</span>\n" +
     "               <span class=\"csv-name\">({{ provider.name }}:{{ metric_name }})</span>\n" +
@@ -844,7 +845,7 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "      <span class=\"text\">{{ profileAward.name }}</span>\n" +
     "\n" +
     "   </span>\n" +
-    "   <a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"http://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter\" data-text=\"I got a new badge on my Impactstory profile: {{ profileAward.level_name }}-level {{ profileAward.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
+    "   <a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"https://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter\" data-text=\"I got a new badge on my Impactstory profile: {{ profileAward.level_name }}-level {{ profileAward.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
     "</div>");
 }]);
 
@@ -1165,7 +1166,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "      <div class=\"my-picture\" ng-show=\"user.about.id\">\n" +
     "         <a href=\"http://www.gravatar.com\" >\n" +
-    "            <img class=\"gravatar\" ng-src=\"http://www.gravatar.com/avatar/{{ user.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "            <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ user.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "         </a>\n" +
     "      </div>\n" +
     "      <div class=\"my-vitals\">\n" +
@@ -1178,32 +1179,32 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
     "                  <a href=\"{{ user.about.figshare_id }}\">\n" +
-    "                     <img src=\"http://figshare.com/static/img/favicon.png\">\n" +
+    "                     <img src=\"/static/img/favicons/figshare.ico\">\n" +
     "                     <span class=\"service\">figshare</span>\n" +
     "                  </a>\n" +
     "               </li>           \n" +
     "               <li ng-show=\"user.about.github_id\" style=\"display: none;\">\n" +
     "                  <a href=\"https://github.com/{{ user.about.github_id }}\">\n" +
-    "                     <img src=\"https://github.com/fluidicon.png\">\n" +
+    "                     <img src=\"/static/img/favicons/github.ico\">\n" +
     "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "               <li ng-show=\"user.about.google_scholar_id\" style=\"display: none;\">\n" +
     "                  <a href=\"{{ user.about.google_scholar_id }}\">\n" +
-    "                     <img src=\"http://scholar.google.com/favicon.ico\">\n" +
+    "                     <img src=\"/static/img/favicons/google_scholar.ico\">\n" +
     "                     <span class=\"service\">Google Scholar</span>\n" +
     "                  </a>\n" +
     "               </li>     \n" +
     "               <li ng-show=\"user.about.orcid_id\" style=\"display: none;\">\n" +
     "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\">\n" +
-    "                     <img src=\"http://orcid.org/sites/about.orcid.org/files/orcid_16x16.ico\">\n" +
+    "                     <img src=\"/static/img/favicons/orcid.ico\">\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "\n" +
     "               <li ng-show=\"user.about.slideshare_id\" style=\"display: none;\">\n" +
     "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
-    "                     <img src=\"http://www.slideshare.net/favicon.ico\">\n" +
+    "                     <img src=\"/static/img/favicons/slideshare.ico\">\n" +
     "                     <span class=\"service\">Slideshare</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
@@ -1275,8 +1276,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"dropdown download\">\n" +
     "               <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "               <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "                  <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "                  <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "               </ul>\n" +
     "            </span>\n" +
     "         </div>\n" +
@@ -1608,7 +1609,7 @@ angular.module("settings/profile-settings.tpl.html", []).run(["$templateCache", 
     "      <div class=\"controls col-sm-7\">\n" +
     "         <div class=\"my-picture\">\n" +
     "            <a href=\"http://www.gravatar.com\" >\n" +
-    "               <img class=\"gravatar\" ng-src=\"http://www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "            </a>\n" +
     "            <p>You can change your profile image at <a href=\"http://www.gravatar.com\">Gravatar.com</a></p>\n" +
     "         </div>\n" +
