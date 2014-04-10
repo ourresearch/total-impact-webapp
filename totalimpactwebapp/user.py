@@ -238,17 +238,18 @@ class User(db.Model):
 
     def update_products_from_linked_account(self, account):
         account_value = getattr(self, account+"_id")
-        tiids = []        
+        tiids_to_add = []        
         if account_value:
             try:
                 analytics_credentials = self.get_analytics_credentials()
             except AttributeError:
                 # AnonymousUser doesn't have method
                 analytics_credentials = {}
-            import_response = make_products_for_linked_account(account, account_value, analytics_credentials)
-            tiids = import_response["products"].keys()
-            resp = add_tiids_to_user(self.id, tiids)
-        return tiids
+            existing_tiids = self.tiids
+            import_response = make_products_for_linked_account(account, account_value, analytics_credentials, existing_tiids)
+            tiids_to_add = import_response["products"].keys()
+            resp = add_tiids_to_user(self.id, tiids_to_add)
+        return tiids_to_add
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -570,7 +571,7 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
     return user
 
 
-def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}):
+def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,
         importer_name=importer_name,
@@ -578,7 +579,8 @@ def make_products_for_linked_account(importer_name, importer_value, analytics_cr
     )
     data_dict = {
         "account_name": importer_value, 
-        "analytics_credentials": analytics_credentials
+        "analytics_credentials": analytics_credentials,
+        "existing_tiids": existing_tiids
         }
 
     r = requests.post(
