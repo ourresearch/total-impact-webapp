@@ -164,7 +164,6 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "            <li><a href=\"http://twitter.com/Impactstory\">Twitter</a></li>\n" +
     "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
     "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Free stickers!</a></li>\n" +
-    "            <!--<li><a href=\"http://twitter.com/#!/Impactstory_now\">Site status</a></li>-->\n" +
     "\n" +
     "         </ul>\n" +
     "      </div>\n" +
@@ -177,6 +176,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "               <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Report bug</a>\n" +
     "            </li>\n" +
     "            <li><a href=\"/faq\">FAQ</a></li>\n" +
+    "            <li><a href=\"/CarlBoettiger\">Example profile</a></li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
     "\n" +

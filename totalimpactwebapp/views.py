@@ -157,12 +157,16 @@ def setup_db_tables():
 
 @app.before_request
 def redirect_to_https():
+    logger.debug(u"testing for https")
 
     try:
         if request.headers["X-Forwarded-Proto"] == "https":
+            logger.debug(u"passing. X-Forwarded-Proto is " + request.headers["X-Forwarded-Proto"])
+
+
             pass
         else:
-            logger.debug(u"X-Forwarded-Proto is " + request.headers["X-Forwarded-Proto"])
+            logger.debug(u"REDIRECTING! X-Forwarded-Proto is " + request.headers["X-Forwarded-Proto"])
             logger.debug(u"request.url is " + request.url)
             return redirect(request.url.replace("http://", "https://"))
 
