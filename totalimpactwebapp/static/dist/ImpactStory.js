@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-08
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-10
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1491,7 +1491,6 @@ angular.module("profile", [
 .controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
   console.log("user slug is: ", userSlug)
   $scope.userSlug = userSlug;
-  $scope.baseUrl = Page.getBaseUrl
   $scope.embed = {}
   $scope.embed.type = "badge"
 
@@ -3717,9 +3716,6 @@ angular.module("services.page")
 
 
      },
-     getBaseUrl: function(){
-       return "http://" + window.location.host
-     },
      'isEmbedded': function(){
        return isEmbedded
      } ,
@@ -4198,7 +4194,6 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "            <li><a href=\"http://twitter.com/Impactstory\">Twitter</a></li>\n" +
     "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
     "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Free stickers!</a></li>\n" +
-    "            <!--<li><a href=\"http://twitter.com/#!/Impactstory_now\">Site status</a></li>-->\n" +
     "\n" +
     "         </ul>\n" +
     "      </div>\n" +
@@ -4211,6 +4206,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "               <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Report bug</a>\n" +
     "            </li>\n" +
     "            <li><a href=\"/faq\">FAQ</a></li>\n" +
+    "            <li><a href=\"/CarlBoettiger\">Example profile</a></li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
     "\n" +
@@ -4879,7 +4875,7 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "      <span class=\"text\">{{ profileAward.name }}</span>\n" +
     "\n" +
     "   </span>\n" +
-    "   <a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"http://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter\" data-text=\"I got a new badge on my Impactstory profile: {{ profileAward.level_name }}-level {{ profileAward.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
+    "   <a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"https://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter\" data-text=\"I got a new badge on my Impactstory profile: {{ profileAward.level_name }}-level {{ profileAward.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
     "</div>");
 }]);
 
@@ -5310,8 +5306,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"dropdown download\">\n" +
     "               <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "               <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "                  <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "                  <li><a tabindex=\"-1\" href=\"{{ page.getBaseUrl }}/user/{{ user.about.url_slug }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "               </ul>\n" +
     "            </span>\n" +
     "         </div>\n" +
@@ -5643,7 +5639,7 @@ angular.module("settings/profile-settings.tpl.html", []).run(["$templateCache", 
     "      <div class=\"controls col-sm-7\">\n" +
     "         <div class=\"my-picture\">\n" +
     "            <a href=\"http://www.gravatar.com\" >\n" +
-    "               <img class=\"gravatar\" ng-src=\"http://www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "            </a>\n" +
     "            <p>You can change your profile image at <a href=\"http://www.gravatar.com\">Gravatar.com</a></p>\n" +
     "         </div>\n" +

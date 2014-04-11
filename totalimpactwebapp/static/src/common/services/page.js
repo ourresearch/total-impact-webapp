@@ -122,9 +122,6 @@ angular.module("services.page")
 
 
      },
-     getBaseUrl: function(){
-       return "http://" + window.location.host
-     },
      'isEmbedded': function(){
        return isEmbedded
      } ,

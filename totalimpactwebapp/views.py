@@ -156,6 +156,17 @@ def setup_db_tables():
     db.create_all()
 
 
+#@app.before_request
+#def redirect_to_https():
+#    try:
+#        if request.headers["X-Forwarded-Proto"] == "https":
+#            pass
+#        else:
+#            return redirect(request.url.replace("http://", "https://"))
+#
+#    except KeyError:
+#        logger.debug(u"There's no X-Forwarded-Proto header; assuming localhost, serving http.")
+
 
 
 @app.before_request
