@@ -5281,7 +5281,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
     "               </a>\n" +
     "               <div class=\"last-collected\">\n" +
-    "                  <span class=\"msg\">Metrics last collected {{ humanDate(user.about.last_refreshed) }}.</span>\n" +
+    "                  <span class=\"msg\">Metrics last collected {{ humanDate(user.about.last_refreshed+\" Z\") }}.</span>\n" +
     "                  <span class=\"call-to-action\">\n" +
     "                     <a class=\"upgrade\" href=\"/settings/upgrade\">Upgrade</a> for daily collection.\n" +
     "                  </span>\n" +

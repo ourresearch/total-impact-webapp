@@ -84,7 +84,7 @@
                   (hide <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> without metrics)
                </a>
                <div class="last-collected">
-                  <span class="msg">Metrics last collected {{ humanDate(user.about.last_refreshed) }}.</span>
+                  <span class="msg">Metrics last collected {{ humanDate(user.about.last_refreshed+" Z") }}.</span>
                   <span class="call-to-action">
                      <a class="upgrade" href="/settings/upgrade">Upgrade</a> for daily collection.
                   </span>
