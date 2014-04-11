@@ -1,21 +1,25 @@
    <!--[if lt IE 9]>
-   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+   <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
    <![endif]--><!DOCTYPE html>
 <html ng-app="app" ng-controller="AppCtrl" lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
    <base href="/"> <!-- needed for html5 pretty urls -->
    <meta charset="utf-8">
    <title ng-bind="page.getTitle()">Impactstory</title>
-   <meta name="google-site-verification" content="eBr2vhkz1SYB5e6B7QDhFu7vazuGo_lI_mf3EaRdHZ8" /><!-- verification for production GA -->
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <!-- site verifications -->
+   <meta name="google-site-verification" content="eBr2vhkz1SYB5e6B7QDhFu7vazuGo_lI_mf3EaRdHZ8" />
+   <meta property='twitter:account_id' content='4503599628513816'>
+   <meta name='msvalidate.01' content='BAD67C681687625C7781BE0C1DA9C721'>
 
 
    <!-- Load stylesheets -->
    <!-------------------------------------------------------------------------->
    <!--[if lt IE 9]>
-   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+   <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
    <![endif]-->
-   <link href='http://fonts.googleapis.com/css?family=Rokkitt:400' rel='stylesheet' type='text/css' />
+   <link href='//fonts.googleapis.com/css?family=Rokkitt:400' rel='stylesheet' type='text/css' />
    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
 
    <!-- stylesheet is in less/css dir; it's a hack to get around limitations of CodeKit -->
@@ -37,6 +41,7 @@
    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script>
    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.js"></script>
+   <script src="https://checkout.stripe.com/checkout.js"></script>
 
    <!-- compiled scripts from our sources -->
    <script type="text/javascript" src="{{ url_for('static', filename='dist/libs.js') }}"></script>

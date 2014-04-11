@@ -82,6 +82,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   // these will be the user's test states forever (or until she clears our cookie)
   AbTesting.assignTestStates()
+  $scope.abTesting = AbTesting
 
   $scope.removeNotification = function (notification) {
     i18nNotifications.remove(notification);

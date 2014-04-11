@@ -1,7 +1,8 @@
 angular.module( 'infopages', [
     'security',
     'services.page',
-    'directives.fullscreen'
+    'directives.fullscreen',
+    'services.charge'
   ])
   .factory("InfoPages", function ($http) {
     var getProvidersInfo = function () {
@@ -34,6 +35,24 @@ angular.module( 'infopages', [
           }
         }
       })
+      .when('/h-index', {
+        templateUrl: 'infopages/landing.tpl.html',
+        controller: 'hIndexLandingPageCtrl',
+        resolve:{
+          allowed: function(security){
+            return security.testUserAuthenticationLevel("loggedIn", false)
+          }
+        }
+      })
+      .when('/open-science', {
+        templateUrl: 'infopages/landing.tpl.html',
+        controller: 'openScienceLandingPageCtrl',
+        resolve:{
+          allowed: function(security){
+            return security.testUserAuthenticationLevel("loggedIn", false)
+          }
+        }
+      })
       .when('/faq', {
         templateUrl: 'infopages/faq.tpl.html',
         controller: 'faqPageCtrl',
@@ -59,16 +78,40 @@ angular.module( 'infopages', [
 
   .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {
     var signupFormShowing = false
+    $scope.landingPageType = "main"
     Page.showHeader(false)
     Page.setUservoiceTabLoc("hidden")
     Page.setTitle("Share the full story of your research impact.")
 
   })
 
-  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
+  .controller("hIndexLandingPageCtrl", function($scope, Page){
+    $scope.landingPageType = "h-index"
+    Page.showHeader(false)
+    Page.setUservoiceTabLoc("hidden")
+    Page.setTitle("Share the full story of your research impact.")
+  })
+
+  .controller("openScienceLandingPageCtrl", function($scope, Page){
+    $scope.landingPageType = "open-science"
+    Page.showHeader(false)
+    Page.setUservoiceTabLoc("hidden")
+    Page.setTitle("Share the full story of your research impact.")
+  })
+
+  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo, Charge) {
     Page.setTitle("FAQ")
     $scope.providers = providersInfo
     console.log("faq page controller running")
+    $scope.openDonateModal = function(){
+
+      Charge.open({
+        name: 'Donate to Impactstory',
+        description: '$10 per month',
+        amount: 10
+      });
+
+    }
   })
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
@@ -80,5 +123,4 @@ angular.module( 'infopages', [
     Page.setTitle("Collections are retired")
 
   });
-
 

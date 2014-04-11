@@ -9,12 +9,28 @@
       <div id="tagline">
          <div class="wrapper">
             <img class="big-logo" src="/static/img/impactstory-logo-no-type.png" alt=""/>
-            <h1>Discover the full impact<br> of your research.</h1>
-            <!--<p class="subtagline">Impactstory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>-->
+
+
+            <div class="landing-page main" ng-show="landingPageType=='main'">
+               <h1>Discover the full impact<br> of your research.</h1>
+            </div>
+
+            <div class="landing-page main" ng-show="landingPageType=='h-index'">
+               <h1>You're more than your h-index.</h1>
+               <h2>Discover the full impact of your research</h2>
+            </div>
+
+            <div class="landing-page main" ng-show="landingPageType=='open-science'">
+               <h1>For open scientists.</h1>
+               <h2>Discover the full impact of all your open science</h2>
+            </div>
+
+
+
             <div id="call-to-action">
                <a href="/signup" class="btn btn-xlarge btn-primary primary-action" id="signup-button">What's my impact?</a>
                <a href="/CarlBoettiger"
-                  ng-show="page.isTestVersion('b')"
+                  ng-show="abTesting.getTestState['link to sample profile from landing page']=='yes'"
                   class="btn btn-xlarge btn-default"
                   id="secondary-cta-button">See an example</a>
             </div>

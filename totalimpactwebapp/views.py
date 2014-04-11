@@ -23,7 +23,7 @@ from totalimpactwebapp.user import EmailExistsError
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
-from totalimpactwebapp import profile_award
+from totalimpactwebapp import welcome_email
 
 import newrelic.agent
 
@@ -155,6 +155,17 @@ def setup_db_tables():
     db.create_all()
 
 
+#@app.before_request
+#def redirect_to_https():
+#    try:
+#        if request.headers["X-Forwarded-Proto"] == "https":
+#            pass
+#        else:
+#            return redirect(request.url.replace("http://", "https://"))
+#
+#    except KeyError:
+#        logger.debug(u"There's no X-Forwarded-Proto header; assuming localhost, serving http.")
+
 
 
 @app.before_request
@@ -277,6 +288,7 @@ def user_profile(profile_id):
     return json_resp_from_thing(user)
 
 
+
 @app.route("/user/<slug>", methods=["POST"])
 def create_new_user_profile(slug):
     userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
@@ -292,15 +304,23 @@ def create_new_user_profile(slug):
     logger.debug(u"created new user {user_profile_url}".format(
         user_profile_url=user_profile_url))
 
-    # send to alert
-    for webhook_slug in os.getenv("ZAPIER_ALERT_HOOKS", "").split(","):
-        zapier_webhook_url = "https://zapier.com/hooks/catch/n/{webhook_slug}/".format(
-            webhook_slug=webhook_slug)
-        r = requests.post(zapier_webhook_url,
-            data=json.dumps({
-                "user_profile_url": user_profile_url
-                }),
-            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+
+    # refactor this and the mention in /tests some day
+    email_suffex_for_text_accounts = "@test-impactstory.org"
+    
+    if not user.email.endswith(email_suffex_for_text_accounts):
+        # send welcome email
+        welcome_email.send_welcome_email(user.email, user.given_name)
+
+        # send to alert
+        for webhook_slug in os.getenv("ZAPIER_ALERT_HOOKS", "").split(","):
+            zapier_webhook_url = "https://zapier.com/hooks/catch/n/{webhook_slug}/".format(
+                webhook_slug=webhook_slug)
+            r = requests.post(zapier_webhook_url,
+                data=json.dumps({
+                    "user_profile_url": user_profile_url
+                    }),
+                headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
     logger.debug(u"new user {url_slug} has id {id}".format(
         url_slug=user.url_slug, id=user.id))
@@ -708,6 +728,9 @@ def get_2013_year_in_review():
 def create_page():
     return redirect("signup", 301)
 
+@app.route("/scratchpad")
+def scratchpad():
+    return render_template("scratchpad.html")
 
 
 

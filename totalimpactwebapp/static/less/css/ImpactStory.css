@@ -6722,13 +6722,9 @@ div.infopage.landing div.top-screen div#tagline div.wrapper h1 {
   font-weight: 900;
   margin: 20px auto 30px;
 }
-div.infopage.landing div.top-screen div#tagline div.wrapper p.subtagline {
-  color: #fff;
-  font-size: 28px;
-  padding: 5px 0 10px;
-  font-weight: 300;
-  width: 750px;
-  margin: 0 auto 40px;
+div.infopage.landing div.top-screen div#tagline div.wrapper h2 {
+  color: #ff4000;
+  margin-top: -20px;
 }
 div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action {
   margin: 40px auto;

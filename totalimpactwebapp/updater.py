@@ -51,7 +51,6 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
     for account_type in ["github", "slideshare", "figshare", "orcid"]:
         user_account_value = user_about[account_type+"_id"]
         if user_account_value:
-            print user_account_value
             url = webapp_api_endpoint + u"/user/{url_slug}/linked-accounts/{account_type}?action=update".format(
                 url_slug=url_slug,
                 account_type=account_type)
@@ -92,7 +91,7 @@ def main(number_to_update=3, max_days_since_updated=7, url_slugs=[None]):
     #35 every 10 minutes is 35*6perhour*24hours=5040 per day
 
     try:
-        webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "http://localhost:5000")
+        webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "https://localhost:5000")
         now=datetime.datetime.utcnow()
 
         if url_slugs[0]==None:
