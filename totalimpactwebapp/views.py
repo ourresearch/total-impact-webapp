@@ -162,10 +162,20 @@ def redirect_to_https():
         if request.headers["X-Forwarded-Proto"] == "https":
             pass
         else:
-            return redirect(request.url.replace("http://", "https://"))
-
+            return redirect(request.url.replace("http://", "https://"), 301)  # permanent
     except KeyError:
         logger.debug(u"There's no X-Forwarded-Proto header; assuming localhost, serving http.")
+
+
+@app.before_request
+def redirect_www_to_naked_domain():
+    if request.url.startswith("https://www.impactstory.org"):
+        new_url = request.url.replace(
+            "https://www.impactstory.org",
+            "https://impactstory.org"
+        )
+        return redirect(new_url, 301)  # permanent
+
 
 
 
