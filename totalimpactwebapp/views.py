@@ -18,7 +18,8 @@ from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
 from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id, delete_user
-from totalimpactwebapp.user import remove_duplicates_from_user
+from totalimpactwebapp.user import remove_duplicates_from_user 
+from totalimpactwebapp.user import get_products_from_core_as_csv
 from totalimpactwebapp.user import EmailExistsError
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
@@ -509,11 +510,7 @@ def user_products_csv(id):
     user = get_user_for_response(id, request)
     tiids = user.tiids
 
-    url = u"{api_root}/v1/products.csv/{tiids_string}?key={api_key}".format(
-        api_key=g.api_key,
-        api_root=g.api_root,
-        tiids_string=",".join(tiids))
-    r = requests.get(url)
+    r = get_products_from_core_as_csv(tiids)
     csv_contents = r.text
 
     resp = make_response(unicode(csv_contents), r.status_code)
