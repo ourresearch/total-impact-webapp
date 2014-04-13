@@ -6,6 +6,7 @@ angular.module('settings', [
     'settings.pageDescriptions',
     'services.i18nNotifications',
     'security',
+    'angularPayments',
     'directives.forms'])
 
   .config(function ($routeProvider) {
@@ -119,6 +120,11 @@ angular.module('settings', [
     };
   })
 
+
+
+  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+     console.log("upgrade settings controller ran.")
+  })
 
 
   .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {

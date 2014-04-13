@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-11
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-13
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1577,6 +1577,7 @@ angular.module('settings', [
     'settings.pageDescriptions',
     'services.i18nNotifications',
     'security',
+    'angularPayments',
     'directives.forms'])
 
   .config(function ($routeProvider) {
@@ -1690,6 +1691,11 @@ angular.module('settings', [
     };
   })
 
+
+
+  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+     console.log("upgrade settings controller ran.")
+  })
 
 
   .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
@@ -5713,6 +5719,40 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "   <p>Wonderful benefits!</p>\n" +
     "</div>\n" +
     "\n" +
+    "<div class=\"form-container\"  ng-controller=\"upgradeSettingsCtrl\">\n" +
+    "\n" +
+    "   <form stripe-form=\"handleStripe\" name=\"upgradeForm\">\n" +
+    "\n" +
+    "      <pre>\n" +
+    "         {{ type | json }}\n" +
+    "      </pre>\n" +
+    "\n" +
+    "     <div class=\"span3\">\n" +
+    "       <label for=\"\">Card number</label>\n" +
+    "       <input type=\"text\" class=\"input-block-level\" ng-model=\"number\" payments-validate=\"card\" payments-format=\"card\" payments-type-model=\"type\" ng-class=\"upgradeForm.number.$card.type\"/>\n" +
+    "     </div>\n" +
+    "\n" +
+    "     <div class=\"span1\">\n" +
+    "       <label for=\"\">Expiry</label>\n" +
+    "       <input type=\"text\" class=\"input-block-level\" ng-model=\"expiry\" payments-validate=\"expiry\" payments-format=\"expiry\" />\n" +
+    "     </div>\n" +
+    "\n" +
+    "     <div class=\"span3\">\n" +
+    "       <label for=\"\">Name on card </label>\n" +
+    "       <input type=\"text\" class=\"input-block-level\">\n" +
+    "     </div>\n" +
+    "\n" +
+    "     <div class=\"span1\">\n" +
+    "       <label for=\"\">CVC</label>\n" +
+    "       <input type=\"text\" class=\"input-block-level\" ng-model=\"cvc\" payments-validate=\"cvc\" payments-format=\"cvc\" payments-type-model=\"type\"/>\n" +
+    "     </div>\n" +
+    "\n" +
+    "     <div class=\"span4\">\n" +
+    "       <button type=\"submit\" class=\"btn btn-primary btn-large\">Submit</button>\n" +
+    "     </div>\n" +
+    "   </form>\n" +
+    "\n" +
+    "</div>\n" +
     "\n" +
     "");
 }]);

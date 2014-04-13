@@ -41,7 +41,11 @@
    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script>
    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.js"></script>
-   <script src="https://checkout.stripe.com/checkout.js"></script>
+   <script src="https://js.stripe.com/v2/"></script>
+
+
+   <!-- move this later -->
+   <script>Stripe.setPublishableKey('pk_test_6pRNASCoBOKtIshFeQd4XMUh');</script>
 
    <!-- compiled scripts from our sources -->
    <script type="text/javascript" src="{{ url_for('static', filename='dist/libs.js') }}"></script>
