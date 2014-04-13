@@ -139,12 +139,9 @@ def abort_if_user_not_logged_in(profile):
     allowed = True
     try:
         if current_user.id != profile.id:
-            allowed = False
+            abort_json(401, "You can't do this because it's not your profile.")
     except AttributeError:
-        allowed = False
-
-    if not allowed:
-        abort("Looks like you're not authorized to do this.")
+        abort_json(405, "You can't do this because you're not logged in.")
 
 
 
@@ -443,11 +440,11 @@ def user_products_get(id):
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
 def product_biblio_modify(tiid):
 
-    #try:
-    #    if current_user.url_slug != user.url_slug:
-    #        abort_json(401, "Only profile owners can modify profiles.")
-    #except AttributeError:
-    #    abort_json(405, "You must be logged in to modify profiles.")
+    try:
+        if tiid not in current_user.tiids:
+            abort_json(401, "You have to own this product to modify it.")
+    except AttributeError:
+        abort_json(405, "You musts be logged in to modify products.")
 
     query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,
@@ -486,11 +483,7 @@ def user_products_modify(id):
     else:
 
         # Actions that require authentication
-        try:
-            if current_user.url_slug != user.url_slug:
-                abort_json(401, "Only profile owners can modify profiles.")
-        except AttributeError:
-            abort_json(405, "You must be logged in to modify profiles.")
+        abort_if_user_not_logged_in(user)
 
         if request.method == "PATCH":
             resp = {"products": user.add_products(request.json)}
