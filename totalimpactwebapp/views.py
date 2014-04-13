@@ -135,6 +135,17 @@ def has_admin_authorization():
     return request.args.get("key", "") == os.getenv("API_ADMIN_KEY")
 
 
+def abort_if_user_not_logged_in(profile):
+    allowed = True
+    try:
+        if current_user.id != profile.id:
+            allowed = False
+    except AttributeError:
+        allowed = False
+
+    if not allowed:
+        abort("Looks like you're not authorized to do this.")
+
 
 
 ###############################################################################
@@ -359,39 +370,34 @@ def user_delete(profile_id):
 #------------------ /user/:id/about   -----------------
 
 
-@app.route("/user/<profile_id>/about", methods=['GET', 'PATCH'])
+@app.route("/user/<profile_id>/about", methods=['GET'])
 def user_about(profile_id):
+    user = get_user_for_response(profile_id, request)
 
-    logger.debug(u"got request for user {profile_id}".format(
-        profile_id=profile_id))
-
-    user = get_user_for_response(
-        profile_id,
-        request
-    )
     logger.debug(u"got the user out: {user}".format(
         user=user.dict_about()))
 
-    if request.method == "GET":
-        pass
-
-    elif request.method == "PATCH":
-        logger.debug(
-            u"got patch request for user {profile_id} (PK {pk}): '{log}'. {json}".format(
-            profile_id=profile_id,
-            pk=user.id,
-            log=request.args.get("log", "").replace("+", " "),
-            json=request.json)
-        )
-
-        user.patch(request.json["about"])
-        logger.debug(u"patched the user: {user} ".format(
-            user=user.dict_about()))
-
-        db.session.commit()
-
     return json_resp_from_thing({"about": user.dict_about()})
 
+
+@app.route("/user/<profile_id>/about", methods=['PATCH'])
+def patch_user_about(profile_id):
+
+    profile = get_user_for_response(profile_id, request)
+    abort_if_user_not_logged_in(profile)
+
+    logger.debug(
+        u"got patch request for profile {profile_id} (PK {pk}): '{log}'. {json}".format(
+        profile_id=profile_id,
+        pk=profile.id,
+        log=request.args.get("log", "").replace("+", " "),
+        json=request.json)
+    )
+
+    profile.patch(request.json["about"])
+    db.session.commit()
+
+    return json_resp_from_thing({"about": profile.dict_about()})
 
 
 
