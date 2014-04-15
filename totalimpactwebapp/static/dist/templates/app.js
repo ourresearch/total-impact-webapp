@@ -1674,40 +1674,95 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
   $templateCache.put("settings/upgrade-settings.tpl.html",
     "<div class=\"settings-header\">\n" +
     "   <h1>Upgrade to premium</h1>\n" +
-    "   <p>Wonderful benefits!</p>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"form-container\"  ng-controller=\"upgradeSettingsCtrl\">\n" +
+    "<div class=\"upgrade-form-container\"  ng-controller=\"upgradeSettingsCtrl\">\n" +
+    "   <div class=\"pitch\">\n" +
+    "      <p>Premium accounts update metrics daily instead of weekly--so if you've got a big\n" +
+    "      new hit on Twitter, you'll know right away. You also help us support\n" +
+    "      Impactstory as an independent nonprofit.</p>\n" +
+    "   </div>\n" +
     "\n" +
-    "   <form stripe-form=\"handleStripe\" name=\"upgradeForm\">\n" +
+    "   <form stripe-form=\"handleStripe\"\n" +
+    "         name=\"upgradeForm\"\n" +
+    "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "      <pre>\n" +
     "         {{ type | json }}\n" +
     "      </pre>\n" +
     "\n" +
-    "     <div class=\"span3\">\n" +
-    "       <label for=\"\">Card number</label>\n" +
-    "       <input type=\"text\" class=\"input-block-level\" ng-model=\"number\" payments-validate=\"card\" payments-format=\"card\" payments-type-model=\"type\" ng-class=\"upgradeForm.number.$card.type\"/>\n" +
-    "     </div>\n" +
+    "      <!-- name on card -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name on Card</label>\n" +
+    "         <div class=\"col-sm-9\">\n" +
+    "            <input type=\"text\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   name=\"card-holder-name\"\n" +
+    "                   id=\"card-holder-name\"\n" +
+    "                   placeholder=\"Card Holder's Name\">\n" +
+    "         </div>\n" +
+    "      </div>\n" +
     "\n" +
-    "     <div class=\"span1\">\n" +
-    "       <label for=\"\">Expiry</label>\n" +
-    "       <input type=\"text\" class=\"input-block-level\" ng-model=\"expiry\" payments-validate=\"expiry\" payments-format=\"expiry\" />\n" +
-    "     </div>\n" +
+    "      <!-- card number -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "          <input type=\"text\"\n" +
+    "                 class=\"form-control\"\n" +
+    "                 name=\"card-number\"\n" +
+    "                 id=\"card-number\"\n" +
+    "                 ng-model=\"number\"\n" +
+    "                 payments-validate=\"card\"\n" +
+    "                 payments-format=\"card\"\n" +
+    "                 payments-type-model=\"type\"\n" +
+    "                 ng-class=\"type\"\n" +
+    "                 placeholder=\"Debit/Credit Card Number\">\n" +
+    "        </div>\n" +
+    "      </div>\n" +
     "\n" +
-    "     <div class=\"span3\">\n" +
-    "       <label for=\"\">Name on card </label>\n" +
-    "       <input type=\"text\" class=\"input-block-level\">\n" +
-    "     </div>\n" +
     "\n" +
-    "     <div class=\"span1\">\n" +
-    "       <label for=\"\">CVC</label>\n" +
-    "       <input type=\"text\" class=\"input-block-level\" ng-model=\"cvc\" payments-validate=\"cvc\" payments-format=\"cvc\" payments-type-model=\"type\"/>\n" +
-    "     </div>\n" +
+    "      <!-- expiration date -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
+    "         <div class=\"col-sm-3\">\n" +
+    "            <input type=\"text\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   name=\"card-expiry\"\n" +
+    "                   id=\"card-expiry\"\n" +
+    "                   ng-model=\"expiry\"\n" +
+    "                   payments-validate=\"expiry\"\n" +
+    "                   payments-format=\"expiry\"\n" +
+    "                   placeholder=\"MM/YY\">\n" +
+    "         </div>\n" +
+    "      </div>\n" +
     "\n" +
-    "     <div class=\"span4\">\n" +
-    "       <button type=\"submit\" class=\"btn btn-primary btn-large\">Submit</button>\n" +
-    "     </div>\n" +
+    "\n" +
+    "      <!-- CVV -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "          <input type=\"text\"\n" +
+    "                 class=\"form-control\"\n" +
+    "                 name=\"cvv\"\n" +
+    "                 id=\"cvv\"\n" +
+    "                 ng-model=\"cvc\"\n" +
+    "                 payments-validate=\"cvc\"\n" +
+    "                 payments-format=\"cvc\"\n" +
+    "                 payments-type-model=\"type\"\n" +
+    "                 placeholder=\"CVV\">\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-2 cvv-graphic\">\n" +
+    "           <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <div class=\"col-sm-offset-3 col-sm-9\">\n" +
+    "          <button type=\"button\" class=\"btn btn-success\">Upgrade</button>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
     "   </form>\n" +
     "\n" +
     "</div>\n" +

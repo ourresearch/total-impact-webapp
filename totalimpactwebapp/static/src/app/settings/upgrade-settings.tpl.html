@@ -1,39 +1,94 @@
 <div class="settings-header">
    <h1>Upgrade to premium</h1>
-   <p>Wonderful benefits!</p>
 </div>
 
-<div class="form-container"  ng-controller="upgradeSettingsCtrl">
+<div class="upgrade-form-container"  ng-controller="upgradeSettingsCtrl">
+   <div class="pitch">
+      <p>Premium accounts update metrics daily instead of weekly--so if you've got a big
+      new hit on Twitter, you'll know right away. You also help us support
+      Impactstory as an independent nonprofit.</p>
+   </div>
 
-   <form stripe-form="handleStripe" name="upgradeForm">
+   <form stripe-form="handleStripe"
+         name="upgradeForm"
+         class="form-horizontal upgrade-form">
 
       <pre>
          {{ type | json }}
       </pre>
 
-     <div class="span3">
-       <label for="">Card number</label>
-       <input type="text" class="input-block-level" ng-model="number" payments-validate="card" payments-format="card" payments-type-model="type" ng-class="upgradeForm.number.$card.type"/>
-     </div>
+      <!-- name on card -->
+      <div class="form-group">
+         <label class="col-sm-3 control-label" for="card-holder-name">Name on Card</label>
+         <div class="col-sm-9">
+            <input type="text"
+                   class="form-control"
+                   name="card-holder-name"
+                   id="card-holder-name"
+                   placeholder="Card Holder's Name">
+         </div>
+      </div>
 
-     <div class="span1">
-       <label for="">Expiry</label>
-       <input type="text" class="input-block-level" ng-model="expiry" payments-validate="expiry" payments-format="expiry" />
-     </div>
+      <!-- card number -->
+      <div class="form-group">
+        <label class="col-sm-3 control-label" for="card-number">Card Number</label>
+        <div class="col-sm-9">
+          <input type="text"
+                 class="form-control"
+                 name="card-number"
+                 id="card-number"
+                 ng-model="number"
+                 payments-validate="card"
+                 payments-format="card"
+                 payments-type-model="type"
+                 ng-class="type"
+                 placeholder="Debit/Credit Card Number">
+        </div>
+      </div>
 
-     <div class="span3">
-       <label for="">Name on card </label>
-       <input type="text" class="input-block-level">
-     </div>
 
-     <div class="span1">
-       <label for="">CVC</label>
-       <input type="text" class="input-block-level" ng-model="cvc" payments-validate="cvc" payments-format="cvc" payments-type-model="type"/>
-     </div>
+      <!-- expiration date -->
+      <div class="form-group">
+         <label class="col-sm-3 control-label" for="card-expiry">Expiration</label>
+         <div class="col-sm-3">
+            <input type="text"
+                   class="form-control"
+                   name="card-expiry"
+                   id="card-expiry"
+                   ng-model="expiry"
+                   payments-validate="expiry"
+                   payments-format="expiry"
+                   placeholder="MM/YY">
+         </div>
+      </div>
 
-     <div class="span4">
-       <button type="submit" class="btn btn-primary btn-large">Submit</button>
-     </div>
+
+      <!-- CVV -->
+      <div class="form-group">
+         <label class="col-sm-3 control-label" for="cvv">Security code</label>
+        <div class="col-sm-3">
+          <input type="text"
+                 class="form-control"
+                 name="cvv"
+                 id="cvv"
+                 ng-model="cvc"
+                 payments-validate="cvc"
+                 payments-format="cvc"
+                 payments-type-model="type"
+                 placeholder="CVV">
+        </div>
+        <div class="col-sm-2 cvv-graphic">
+           <img src="static/img/cvv-graphic.png" alt="cvv graphic"/>
+        </div>
+      </div>
+
+
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <button type="button" class="btn btn-success">Upgrade</button>
+        </div>
+      </div>
    </form>
 
 </div>
