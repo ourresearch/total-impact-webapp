@@ -1,21 +1,19 @@
 <div class="settings-header">
-   <h1>Upgrade to premium</h1>
+   <h1>Upgrade</h1>
+   <p class="pitch">Premium accounts update metrics daily instead of weekly--so if you've got a big
+   new hit on Twitter, you'll know right away. You also help us support
+   Impactstory as an independent nonprofit.</p>
 </div>
 
 <div class="upgrade-form-container"  ng-controller="upgradeSettingsCtrl">
-   <div class="pitch">
-      <p>Premium accounts update metrics daily instead of weekly--so if you've got a big
-      new hit on Twitter, you'll know right away. You also help us support
-      Impactstory as an independent nonprofit.</p>
-   </div>
+
 
    <form stripe-form="handleStripe"
          name="upgradeForm"
          class="form-horizontal upgrade-form">
 
-      <pre>
-         {{ type | json }}
-      </pre>
+      <h3>Upgrade to premium for $5/mo</h3>
+
 
       <!-- name on card -->
       <div class="form-group">
@@ -84,9 +82,12 @@
 
 
 
+
       <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9">
-          <button type="button" class="btn btn-success">Upgrade</button>
+          <button type="button"
+                  ng-disabled="upgradeForm.$invalid"
+                  class="btn btn-success">Upgrade me for $5/mo!</button>
         </div>
       </div>
    </form>

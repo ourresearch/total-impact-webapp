@@ -8355,6 +8355,9 @@ div.settings div.settings-header p {
   font-size: 18px;
   color: #999;
 }
+div.settings div.settings-header p.pitch {
+  padding-top: 20px;
+}
 div.settings div.settings-nav {
   float: left;
   width: 200px;
@@ -8404,8 +8407,8 @@ div.settings div.settings-input {
   float: left;
   margin: 0  0 0 50px;
 }
-div.settings div.settings-input div.upgrade-form-container div.pitch {
-  width: 600px;
+div.settings div.settings-input div.upgrade-form-container {
+  margin-left: 50px;
 }
 div.settings div.settings-input div.upgrade-form-container .cvv-graphic {
   padding-top: 12px;
@@ -8419,7 +8422,7 @@ div.settings div.settings-input form.form-horizontal.custom-url {
   padding-left: 50px;
 }
 div.settings div.settings-input form.form-horizontal.upgrade-form input#card-number {
-  background-size: auto 70%;
+  background-size: auto 50%;
   background-repeat: no-repeat;
   background-position-x: 98%;
   background-position-y: 50%;

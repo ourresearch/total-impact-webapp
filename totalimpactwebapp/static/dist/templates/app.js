@@ -1673,23 +1673,21 @@ angular.module("settings/settings.tpl.html", []).run(["$templateCache", function
 angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("settings/upgrade-settings.tpl.html",
     "<div class=\"settings-header\">\n" +
-    "   <h1>Upgrade to premium</h1>\n" +
+    "   <h1>Upgrade</h1>\n" +
+    "   <p class=\"pitch\">Premium accounts update metrics daily instead of weekly--so if you've got a big\n" +
+    "   new hit on Twitter, you'll know right away. You also help us support\n" +
+    "   Impactstory as an independent nonprofit.</p>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"upgrade-form-container\"  ng-controller=\"upgradeSettingsCtrl\">\n" +
-    "   <div class=\"pitch\">\n" +
-    "      <p>Premium accounts update metrics daily instead of weekly--so if you've got a big\n" +
-    "      new hit on Twitter, you'll know right away. You also help us support\n" +
-    "      Impactstory as an independent nonprofit.</p>\n" +
-    "   </div>\n" +
+    "\n" +
     "\n" +
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
-    "      <pre>\n" +
-    "         {{ type | json }}\n" +
-    "      </pre>\n" +
+    "      <h3>Upgrade to premium for $5/mo</h3>\n" +
+    "\n" +
     "\n" +
     "      <!-- name on card -->\n" +
     "      <div class=\"form-group\">\n" +
@@ -1758,9 +1756,12 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "\n" +
+    "\n" +
     "      <div class=\"form-group\">\n" +
     "        <div class=\"col-sm-offset-3 col-sm-9\">\n" +
-    "          <button type=\"button\" class=\"btn btn-success\">Upgrade</button>\n" +
+    "          <button type=\"button\"\n" +
+    "                  ng-disabled=\"upgradeForm.$invalid\"\n" +
+    "                  class=\"btn btn-success\">Upgrade me for $5/mo!</button>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "   </form>\n" +
