@@ -772,6 +772,8 @@ angular.module('angularPayments', []);angular.module('angularPayments')
 
       form.bind('submit', function() {
 
+        console.log("form submitted.")
+
         expMonthUsed = scope.expMonth ? true : false;
         expYearUsed = scope.expYear ? true : false;
 

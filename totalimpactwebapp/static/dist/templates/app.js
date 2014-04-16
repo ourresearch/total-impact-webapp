@@ -1684,6 +1684,7 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "\n" +
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
+    "         novalidate\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "      <h3>Upgrade to premium for $5/mo</h3>\n" +
@@ -1691,12 +1692,13 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "\n" +
     "      <!-- name on card -->\n" +
     "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name on Card</label>\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
     "         <div class=\"col-sm-9\">\n" +
     "            <input type=\"text\"\n" +
     "                   class=\"form-control\"\n" +
     "                   name=\"card-holder-name\"\n" +
     "                   id=\"card-holder-name\"\n" +
+    "                   required\n" +
     "                   placeholder=\"Card Holder's Name\">\n" +
     "         </div>\n" +
     "      </div>\n" +
@@ -1709,6 +1711,7 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "                 class=\"form-control\"\n" +
     "                 name=\"card-number\"\n" +
     "                 id=\"card-number\"\n" +
+    "                 required\n" +
     "                 ng-model=\"number\"\n" +
     "                 payments-validate=\"card\"\n" +
     "                 payments-format=\"card\"\n" +
@@ -1727,6 +1730,7 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "                   class=\"form-control\"\n" +
     "                   name=\"card-expiry\"\n" +
     "                   id=\"card-expiry\"\n" +
+    "                   required\n" +
     "                   ng-model=\"expiry\"\n" +
     "                   payments-validate=\"expiry\"\n" +
     "                   payments-format=\"expiry\"\n" +
@@ -1744,6 +1748,7 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "                 name=\"cvv\"\n" +
     "                 id=\"cvv\"\n" +
     "                 ng-model=\"cvc\"\n" +
+    "                 required\n" +
     "                 payments-validate=\"cvc\"\n" +
     "                 payments-format=\"cvc\"\n" +
     "                 payments-type-model=\"type\"\n" +
@@ -1759,8 +1764,8 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "\n" +
     "      <div class=\"form-group\">\n" +
     "        <div class=\"col-sm-offset-3 col-sm-9\">\n" +
-    "          <button type=\"button\"\n" +
-    "                  ng-disabled=\"upgradeForm.$invalid\"\n" +
+    "          <button type=\"submit\"\n" +
+    "                  ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
     "                  class=\"btn btn-success\">Upgrade me for $5/mo!</button>\n" +
     "        </div>\n" +
     "      </div>\n" +

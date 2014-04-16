@@ -10,6 +10,7 @@
 
    <form stripe-form="handleStripe"
          name="upgradeForm"
+         novalidate
          class="form-horizontal upgrade-form">
 
       <h3>Upgrade to premium for $5/mo</h3>
@@ -17,12 +18,13 @@
 
       <!-- name on card -->
       <div class="form-group">
-         <label class="col-sm-3 control-label" for="card-holder-name">Name on Card</label>
+         <label class="col-sm-3 control-label" for="card-holder-name">Name</label>
          <div class="col-sm-9">
             <input type="text"
                    class="form-control"
                    name="card-holder-name"
                    id="card-holder-name"
+                   required
                    placeholder="Card Holder's Name">
          </div>
       </div>
@@ -35,6 +37,7 @@
                  class="form-control"
                  name="card-number"
                  id="card-number"
+                 required
                  ng-model="number"
                  payments-validate="card"
                  payments-format="card"
@@ -53,6 +56,7 @@
                    class="form-control"
                    name="card-expiry"
                    id="card-expiry"
+                   required
                    ng-model="expiry"
                    payments-validate="expiry"
                    payments-format="expiry"
@@ -70,6 +74,7 @@
                  name="cvv"
                  id="cvv"
                  ng-model="cvc"
+                 required
                  payments-validate="cvc"
                  payments-format="cvc"
                  payments-type-model="type"
@@ -85,8 +90,8 @@
 
       <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9">
-          <button type="button"
-                  ng-disabled="upgradeForm.$invalid"
+          <button type="submit"
+                  ng-disabled="upgradeForm.$invalid || upgradeForm.$pristine"
                   class="btn btn-success">Upgrade me for $5/mo!</button>
         </div>
       </div>

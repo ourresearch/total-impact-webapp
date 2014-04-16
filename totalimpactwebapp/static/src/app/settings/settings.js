@@ -123,7 +123,15 @@ angular.module('settings', [
 
 
   .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
-     console.log("upgrade settings controller ran.")
+      $scope.handleStripe = function(status, response){
+        console.log("calling handleStripe()")
+        if(response.error) {
+          console.log("ack, there was an error!", status, response)
+        } else {
+          console.log("yay, the charge worked!", status, response)
+          var token = response.id
+        }
+      }
   })
 
 
