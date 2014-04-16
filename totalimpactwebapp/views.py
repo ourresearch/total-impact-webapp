@@ -177,7 +177,6 @@ def redirect_to_https():
 
 @app.before_request
 def redirect_www_to_naked_domain():
-    logger.debug(u"checking to see if URL starts with WWW")
     if request.url.startswith("https://www.impactstory.org"):
 
         new_url = request.url.replace(

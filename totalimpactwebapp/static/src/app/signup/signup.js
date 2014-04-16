@@ -28,7 +28,7 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupFormCtrl', function ( $scope, $location, security, Slug, Users) {
+  .controller( 'signupFormCtrl', function ($scope, $location, security, Slug, Users, Loading) {
     var emailThatIsAlreadyTaken = "aaaaaaaaaaaa@foo.com"
 
     $scope.newUser = {}
@@ -38,6 +38,7 @@ angular.module( 'signup', [
 
     $scope.signup = function(){
       var slug = Slug.make($scope.newUser.givenName, $scope.newUser.surname)
+      Loading.start("signup")
       Users.save(
         {id: slug},
         {
@@ -58,6 +59,7 @@ angular.module( 'signup', [
         },
         function(resp){
           if (resp.status === 409) {
+            Loading.finish("signup")
             emailThatIsAlreadyTaken = angular.copy($scope.newUser.email)
             console.log("oops, email already taken...")
             console.log("resp", resp)

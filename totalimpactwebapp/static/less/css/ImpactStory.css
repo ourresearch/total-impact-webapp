@@ -8256,18 +8256,25 @@ div.signup-page div.signup-main-page div.form-container #main-signup-form div.fo
   right: -130px;
   width: 120px;
 }
-div.signup-page div.signup-main-page div.form-container #main-signup-form button.btn {
+div.signup-page div.signup-main-page div.form-container #main-signup-form div.submit-button button.btn {
   background: #ff4000;
   border: none;
   font-weight: 900;
   padding: 15px 20px;
   margin-top: 20px;
 }
-div.signup-page div.signup-main-page div.form-container #main-signup-form button.btn[disabled] {
+div.signup-page div.signup-main-page div.form-container #main-signup-form div.submit-button button.btn[disabled] {
   opacity: .8;
 }
-div.signup-page div.signup-main-page div.form-container #main-signup-form button.btn i {
+div.signup-page div.signup-main-page div.form-container #main-signup-form div.submit-button button.btn i {
   margin-left: 10px;
+}
+div.signup-page div.signup-main-page div.form-container #main-signup-form div.submit-button div.working {
+  padding-left: 20px;
+  padding-top: 20px;
+  font-weight: 900;
+  font-size: 25px;
+  color: #999999;
 }
 div.signup-page div.signup-sidebar {
   width: 30%;

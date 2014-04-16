@@ -506,33 +506,34 @@ def create_user_from_slug(url_slug, user_request_dict, db):
     # is set by client, it seems:
     unicode_request_dict = {k: unicode(v) for k, v in user_request_dict.iteritems()}
     unicode_request_dict["url_slug"] = unicode(url_slug)
-    password = None
-    if "password" in unicode_request_dict:
-        password = unicode_request_dict["password"]
-        del unicode_request_dict["password"]
 
+    # all emails should be lowercase
+    unicode_request_dict["email"] = unicode_request_dict["email"].lower()
+
+    # move password to temp var so we don't instantiate the User with it...
+    # passwords have to be set with a special setter method.
+    password = unicode_request_dict["password"]
+    del unicode_request_dict["password"]
+
+    # see if the slug is being used, in any upper/lower case combo
+    user_with_this_slug = User.query.filter(
+        func.lower(User.url_slug) == func.lower(unicode_request_dict["url_slug"])
+    ).first()
+    if user_with_this_slug is not None:
+        unicode_request_dict["url_slug"] += str(random.randint(1, 9999))
+
+    # ok, let's make a user:
     user = User(**unicode_request_dict)
     db.session.add(user)
-
-    if password:
-        user.set_password(password)
+    user.set_password(password)
 
     try:
         db.session.commit()
     except IntegrityError as e:
-
         if "user_email_key" in e.message:
-            # we can't fix this. it's the caller's problem now.
+            # we can't fix this....it's the caller's problem now.
             raise EmailExistsError
 
-        elif "url_slug" in e.message:
-            # we can fix this.
-            db.session.rollback()
-            db.session.add(user)
-
-            user.url_slug += str(random.randint(1, 9999))
-
-            db.session.commit()
 
 
     logger.debug(u"Finished creating user {id} with slug '{slug}'".format(
