@@ -383,7 +383,12 @@ has_new_metrics stuff
 """
 
 def make_has_new_metrics(product_dict):
-    return True
+    for metric_name, metric in product_dict["metrics"].iteritems():
+
+        if metric["historical_values"]["raw_diff_7_days"] > 0:
+            return True
+
+    return False
 
 
 

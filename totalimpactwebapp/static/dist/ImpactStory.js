@@ -5359,6 +5359,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
+    "            <a class=\"notification\"\n" +
+    "               ng-show=\"product.has_new_metrics\"\n" +
+    "               href=\"/{{ user.about.url_slug }}/product/{{ product._id }}\"\n" +
+    "               tooltip=\"New impacts!\">\n" +
+    "               <span class=\"icon-bell icon\"></span>\n" +
+    "            </a>\n" +
     "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
     "            <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
     "\n" +

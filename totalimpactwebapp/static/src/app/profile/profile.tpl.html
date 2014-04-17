@@ -148,6 +148,12 @@
              id="{{ product._id }}"
              on-repeat-finished>
 
+            <a class="notification"
+               ng-show="product.has_new_metrics"
+               href="/{{ user.about.url_slug }}/product/{{ product._id }}"
+               tooltip="New impacts!">
+               <span class="icon-bell icon"></span>
+            </a>
             <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
             <div class="metrics-container" ng-bind-html-unsafe="product.markup.metrics"></div>
 
