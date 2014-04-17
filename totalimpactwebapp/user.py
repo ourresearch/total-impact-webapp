@@ -95,6 +95,8 @@ class User(db.Model):
     academia_edu_id = db.Column(db.String(64))
     linkedin_id = db.Column(db.String(64))
     wordpress_api_key = db.Column(db.String(64))
+    upgrade_plan = db.Column(db.String(64))
+    stripe_token = db.Column(db.String(64))
 
     #awards = []
 
