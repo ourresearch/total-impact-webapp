@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-10
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-16
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1769,7 +1769,7 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupFormCtrl', function ( $scope, $location, security, Slug, Users) {
+  .controller( 'signupFormCtrl', function ($scope, $location, security, Slug, Users, Loading) {
     var emailThatIsAlreadyTaken = "aaaaaaaaaaaa@foo.com"
 
     $scope.newUser = {}
@@ -1779,6 +1779,7 @@ angular.module( 'signup', [
 
     $scope.signup = function(){
       var slug = Slug.make($scope.newUser.givenName, $scope.newUser.surname)
+      Loading.start("signup")
       Users.save(
         {id: slug},
         {
@@ -1799,6 +1800,7 @@ angular.module( 'signup', [
         },
         function(resp){
           if (resp.status === 409) {
+            Loading.finish("signup")
             emailThatIsAlreadyTaken = angular.copy($scope.newUser.email)
             console.log("oops, email already taken...")
             console.log("resp", resp)
@@ -5750,9 +5752,18 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <button ng-disabled=\"signupForm.$invalid\" class=\"btn btn-primary btn-xlarge\">\n" +
-    "               Uncover my impact<i class=\"icon-arrow-right\"></i>\n" +
-    "            </button>\n" +
+    "            <div class=\"submit-button\">\n" +
+    "               <button ng-disabled=\"signupForm.$invalid\"\n" +
+    "                       ng-hide=\"loading.is('signup')\"\n" +
+    "                       class=\"btn btn-primary btn-xlarge\">\n" +
+    "                  Uncover my impact<i class=\"icon-arrow-right\"></i>\n" +
+    "               </button>\n" +
+    "               <div class=\"working\" ng-show=\"loading.is('signup')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  <span class=\"text\">Creating your profile...</span>\n" +
+    "               </div>\n" +
+    "\n" +
+    "            </div>\n" +
     "         </form>\n" +
     "\n" +
     "      </div>\n" +

@@ -55,9 +55,18 @@
                </div>
             </div>
 
-            <button ng-disabled="signupForm.$invalid" class="btn btn-primary btn-xlarge">
-               Uncover my impact<i class="icon-arrow-right"></i>
-            </button>
+            <div class="submit-button">
+               <button ng-disabled="signupForm.$invalid"
+                       ng-hide="loading.is('signup')"
+                       class="btn btn-primary btn-xlarge">
+                  Uncover my impact<i class="icon-arrow-right"></i>
+               </button>
+               <div class="working" ng-show="loading.is('signup')">
+                  <i class="icon-refresh icon-spin"></i>
+                  <span class="text">Creating your profile...</span>
+               </div>
+
+            </div>
          </form>
 
       </div>
