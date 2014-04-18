@@ -71,14 +71,13 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
     return True
 
 
-def get_url_slugs_since_refresh_date(number_to_update, max_days_since_updated, now=datetime.datetime.utcnow()):
+def get_url_slugs_with_past_next_refresh_date(number_to_update, max_days_since_updated, now=datetime.datetime.utcnow()):
     raw_sql = text(u"""SELECT url_slug FROM "user" u
-                        WHERE last_refreshed < now()::date - :max_days_since_updated
-                        ORDER BY last_refreshed ASC, url_slug
+                        WHERE next_refresh <= now()::date
+                        ORDER BY next_refresh ASC, url_slug
                         LIMIT :number_to_update""")
 
     result = db.session.execute(raw_sql, params={
-        "max_days_since_updated": max_days_since_updated, 
         "number_to_update": number_to_update
         })
     url_slugs = [row["url_slug"] for row in result]
@@ -95,7 +94,7 @@ def main(number_to_update=3, max_days_since_updated=7, url_slugs=[None]):
         now=datetime.datetime.utcnow()
 
         if url_slugs[0]==None:
-            url_slugs = get_url_slugs_since_refresh_date(number_to_update, max_days_since_updated, now)
+            url_slugs = get_url_slugs_with_past_next_refresh_date(number_to_update, max_days_since_updated, now)
         try:    
             print u"got", len(url_slugs), url_slugs
         except UnicodeEncodeError:

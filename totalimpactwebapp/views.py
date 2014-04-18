@@ -18,7 +18,8 @@ from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
 from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id, delete_user
-from totalimpactwebapp.user import remove_duplicates_from_user
+from totalimpactwebapp.user import remove_duplicates_from_user 
+from totalimpactwebapp.user import get_products_from_core_as_csv
 from totalimpactwebapp.user import EmailExistsError
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
@@ -134,6 +135,14 @@ def has_admin_authorization():
     return request.args.get("key", "") == os.getenv("API_ADMIN_KEY")
 
 
+def abort_if_user_not_logged_in(profile):
+    allowed = True
+    try:
+        if current_user.id != profile.id:
+            abort_json(401, "You can't do this because it's not your profile.")
+    except AttributeError:
+        abort_json(405, "You can't do this because you're not logged in.")
+
 
 
 ###############################################################################
@@ -155,16 +164,28 @@ def setup_db_tables():
     db.create_all()
 
 
-#@app.before_request
-#def redirect_to_https():
-#    try:
-#        if request.headers["X-Forwarded-Proto"] == "https":
-#            pass
-#        else:
-#            return redirect(request.url.replace("http://", "https://"))
-#
-#    except KeyError:
-#        logger.debug(u"There's no X-Forwarded-Proto header; assuming localhost, serving http.")
+@app.before_request
+def redirect_to_https():
+    try:
+        if request.headers["X-Forwarded-Proto"] == "https":
+            pass
+        else:
+            return redirect(request.url.replace("http://", "https://"), 301)  # permanent
+    except KeyError:
+        logger.debug(u"There's no X-Forwarded-Proto header; assuming localhost, serving http.")
+
+
+@app.before_request
+def redirect_www_to_naked_domain():
+    if request.url.startswith("https://www.impactstory.org"):
+
+        new_url = request.url.replace(
+            "https://www.impactstory.org",
+            "https://impactstory.org"
+        )
+        logger.debug(u"URL starts with www; redirecting to " + new_url)
+        return redirect(new_url, 301)  # permanent
+
 
 
 
@@ -345,39 +366,34 @@ def user_delete(profile_id):
 #------------------ /user/:id/about   -----------------
 
 
-@app.route("/user/<profile_id>/about", methods=['GET', 'PATCH'])
+@app.route("/user/<profile_id>/about", methods=['GET'])
 def user_about(profile_id):
+    user = get_user_for_response(profile_id, request)
 
-    logger.debug(u"got request for user {profile_id}".format(
-        profile_id=profile_id))
-
-    user = get_user_for_response(
-        profile_id,
-        request
-    )
     logger.debug(u"got the user out: {user}".format(
         user=user.dict_about()))
 
-    if request.method == "GET":
-        pass
-
-    elif request.method == "PATCH":
-        logger.debug(
-            u"got patch request for user {profile_id} (PK {pk}): '{log}'. {json}".format(
-            profile_id=profile_id,
-            pk=user.id,
-            log=request.args.get("log", "").replace("+", " "),
-            json=request.json)
-        )
-
-        user.patch(request.json["about"])
-        logger.debug(u"patched the user: {user} ".format(
-            user=user.dict_about()))
-
-        db.session.commit()
-
     return json_resp_from_thing({"about": user.dict_about()})
 
+
+@app.route("/user/<profile_id>/about", methods=['PATCH'])
+def patch_user_about(profile_id):
+
+    profile = get_user_for_response(profile_id, request)
+    abort_if_user_not_logged_in(profile)
+
+    logger.debug(
+        u"got patch request for profile {profile_id} (PK {pk}): '{log}'. {json}".format(
+        profile_id=profile_id,
+        pk=profile.id,
+        log=request.args.get("log", "").replace("+", " "),
+        json=request.json)
+    )
+
+    profile.patch(request.json["about"])
+    db.session.commit()
+
+    return json_resp_from_thing({"about": profile.dict_about()})
 
 
 
@@ -423,11 +439,11 @@ def user_products_get(id):
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
 def product_biblio_modify(tiid):
 
-    #try:
-    #    if current_user.url_slug != user.url_slug:
-    #        abort_json(401, "Only profile owners can modify profiles.")
-    #except AttributeError:
-    #    abort_json(405, "You must be logged in to modify profiles.")
+    try:
+        if tiid not in current_user.tiids:
+            abort_json(401, "You have to own this product to modify it.")
+    except AttributeError:
+        abort_json(405, "You musts be logged in to modify products.")
 
     query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,
@@ -466,11 +482,7 @@ def user_products_modify(id):
     else:
 
         # Actions that require authentication
-        try:
-            if current_user.url_slug != user.url_slug:
-                abort_json(401, "Only profile owners can modify profiles.")
-        except AttributeError:
-            abort_json(405, "You must be logged in to modify profiles.")
+        abort_if_user_not_logged_in(user)
 
         if request.method == "PATCH":
             resp = {"products": user.add_products(request.json)}
@@ -509,11 +521,7 @@ def user_products_csv(id):
     user = get_user_for_response(id, request)
     tiids = user.tiids
 
-    url = u"{api_root}/v1/products.csv/{tiids_string}?key={api_key}".format(
-        api_key=g.api_key,
-        api_root=g.api_root,
-        tiids_string=",".join(tiids))
-    r = requests.get(url)
+    r = get_products_from_core_as_csv(tiids)
     csv_contents = r.text
 
     resp = make_response(unicode(csv_contents), r.status_code)

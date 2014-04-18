@@ -1841,9 +1841,18 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <button ng-disabled=\"signupForm.$invalid\" class=\"btn btn-primary btn-xlarge\">\n" +
-    "               Uncover my impact<i class=\"icon-arrow-right\"></i>\n" +
-    "            </button>\n" +
+    "            <div class=\"submit-button\">\n" +
+    "               <button ng-disabled=\"signupForm.$invalid\"\n" +
+    "                       ng-hide=\"loading.is('signup')\"\n" +
+    "                       class=\"btn btn-primary btn-xlarge\">\n" +
+    "                  Uncover my impact<i class=\"icon-arrow-right\"></i>\n" +
+    "               </button>\n" +
+    "               <div class=\"working\" ng-show=\"loading.is('signup')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  <span class=\"text\">Creating your profile...</span>\n" +
+    "               </div>\n" +
+    "\n" +
+    "            </div>\n" +
     "         </form>\n" +
     "\n" +
     "      </div>\n" +
