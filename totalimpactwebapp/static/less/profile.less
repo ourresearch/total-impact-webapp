@@ -66,7 +66,7 @@ div.signup-banner {
 div.profile-header {
    margin-bottom: 35px;
    margin-top: -20px;
-   height: 110px;
+   height: 140px;
    .clearfix();
    div.wrapper {
       div.my-picture {
@@ -275,81 +275,103 @@ div.product-controls {
    font-size:  16px;
    border-bottom:  5px solid #eee;
    color: #777;
-
    .clearfix();
-   a {
-      &:hover {color: #333;}
 
-      &.dedup-button {
-         &.working {color: @linkColor;}
-         i {margin-right: 0;}
-         i.icon-refresh {margin-right: 2px;}
+   div.wrapper {
+      position:relative;
+      a {
+         &:hover {color: #333;}
+
+         &.dedup-button {
+            &.working {color: @linkColor;}
+            i {margin-right: 0;}
+            i.icon-refresh {margin-right: 2px;}
+         }
       }
-   }
-   div.view-controls {
-      float:right;
-      margin: 0 30px 0 0;
-      div.admin-controls {
-         float:left;
-      }
-      div.everyone-controls{
-         float:left;
-      }
-      span.dropdown {
-         ul.dropdown-menu {
-            border: none;
-            .drop-shadow(0, 0, 0, 0);
-            .border-radius(0, 3px, 3px, 0);
-            padding: 0;
-            background: #eee;
-            top: 22px;
-            min-width:  120px;
-            a {
-               margin: 0;
-               width: 100%;
-               &:hover {
-                  color: #fff;
+      div.view-controls {
+         position: absolute;
+         right:0;
+         bottom: 0;
+         margin: 0 30px 0 0;
+         div.admin-controls {
+            float:left;
+         }
+         div.everyone-controls{
+            float:left;
+         }
+         span.dropdown {
+            ul.dropdown-menu {
+               border: none;
+               .drop-shadow(0, 0, 0, 0);
+               .border-radius(0, 3px, 3px, 0);
+               padding: 0;
+               background: #eee;
+               top: 22px;
+               min-width:  120px;
+               a {
+                  margin: 0;
+                  width: 100%;
+                  &:hover {
+                     color: #fff;
+                  }
+               }
+               i {
+                  font-style: normal;
+                  margin-right: 5px;
+               }
+               i.json {
+                  font-weight: 900;
+                  font-size: 14px;
                }
             }
-            i {
-               font-style: normal;
-               margin-right: 5px;
-            }
-            i.json {
-               font-weight: 900;
-               font-size: 14px;
-            }
-         }
 
+         }
       }
-   }
-   div.edit-controls {
-      float:left;
-      div.num-items {
-         float:left;
-         span.val-plus-text {
-            font-weight: 300;
-            margin: 0;
-            span.value {
-               font-weight: bold;
-               margin-right: 3px;
+      div.products-info {
+         position: absolute;
+         bottom: 0;
+         left: 0;
+         div.num-items {
+            float:left;
+            div.products-done-updating {
+               span.val-plus-text {
+                  font-weight: 300;
+                  margin: 0;
+                  span.value {
+                     font-weight: bold;
+                     margin-right: 3px;
+                  }
+               }
+               a {
+                  font-size: 14px;
+                  margin-left: 5px;
+                  color: @linkColor;
+                  &:hover {text-decoration: underline;}
+               }
+
+               div.last-collected {
+                  font-size: 13px;
+                  font-weight: 300;
+                  a.upgrade {
+                     color: #555;
+                     text-decoration: underline;
+                     margin-left: 5px;
+                     &:hover {color: #000;}
+                  }
+               }
             }
-         }
-         a {
-            font-size: 14px;
-            margin-left: 5px;
-            color: @linkColor;
-            &:hover {text-decoration: underline;}
+
          }
       }
-   }
-   a {
-      margin-left: 15px;
-      color: #777;
-      display:inline-block;
-      i {
-         margin-right:5px;
+      a {
+         margin-left: 15px;
+         color: #777;
+         display:inline-block;
+         i {
+            margin-right:5px;
+         }
       }
+
    }
 }
 
