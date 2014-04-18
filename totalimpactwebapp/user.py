@@ -3,8 +3,7 @@ from totalimpactwebapp import products_list
 from totalimpactwebapp import profile_award
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.exc import DataError
+from sqlalchemy.exc import IntegrityError, DataError, FlushError
 from sqlalchemy import func
 
 import requests
