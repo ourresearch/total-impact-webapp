@@ -246,7 +246,7 @@ class User(db.Model):
         analytics_credentials = self.get_analytics_credentials()        
         return refresh_products_from_tiids(self.tiids, analytics_credentials, source)
 
-    def update_products_from_linked_account(self, account):
+    def update_products_from_linked_account(self, account, update_even_removed_products):
         account_value = getattr(self, account+"_id")
         tiids_to_add = []        
         if account_value:
@@ -255,7 +255,10 @@ class User(db.Model):
             except AttributeError:
                 # AnonymousUser doesn't have method
                 analytics_credentials = {}
-            existing_tiids = self.tiids_including_removed # don't re-import dup or removed products
+            if update_even_removed_products:
+                existing_tiids = self.tiids
+            else:
+                existing_tiids = self.tiids_including_removed # don't re-import dup or removed products
             import_response = make_products_for_linked_account(
                     account, 
                     account_value, 
