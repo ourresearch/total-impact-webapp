@@ -222,7 +222,12 @@ class User(db.Model):
             # AnonymousUser doesn't have method
             analytics_credentials = {}    
         product_id_type = product_id_dict.keys()[0]
-        import_response = make_products_for_product_id_strings(product_id_type, product_id_dict[product_id_type], analytics_credentials)
+        existing_tiids = self.tiids        
+        import_response = make_products_for_product_id_strings(
+                product_id_type, 
+                product_id_dict[product_id_type], 
+                analytics_credentials,
+                existing_tiids)
         tiids = import_response["products"].keys()
 
         return add_tiids_to_user(self.id, tiids)
@@ -246,7 +251,11 @@ class User(db.Model):
                 # AnonymousUser doesn't have method
                 analytics_credentials = {}
             existing_tiids = self.tiids
-            import_response = make_products_for_linked_account(account, account_value, analytics_credentials, existing_tiids)
+            import_response = make_products_for_linked_account(
+                    account, 
+                    account_value, 
+                    analytics_credentials,
+                    existing_tiids)
             tiids_to_add = import_response["products"].keys()
             resp = add_tiids_to_user(self.id, tiids_to_add)
         return tiids_to_add
@@ -386,7 +395,6 @@ def add_tiids_to_user(user_id, tiids):
 
 def delete_products_from_user(user_id, tiids_to_delete):
     user_object = User.query.get(user_id)
-    db.session.merge(user_object)
 
     number_deleted = 0
     for user_tiid_obj in user_object.tiid_links:
@@ -597,7 +605,7 @@ def make_products_for_linked_account(importer_name, importer_value, analytics_cr
         return {"products": {}}
 
 
-def make_products_for_product_id_strings(product_id_type, product_id_strings, analytics_credentials={}):
+def make_products_for_product_id_strings(product_id_type, product_id_strings, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{product_id_type}?api_admin_key={api_admin_key}".format(
         product_id_type=product_id_type,
         core_api_root=g.api_root,
@@ -605,7 +613,8 @@ def make_products_for_product_id_strings(product_id_type, product_id_strings, an
     )
     data_dict = {
         product_id_type: product_id_strings, 
-        "analytics_credentials": analytics_credentials
+        "analytics_credentials": analytics_credentials,
+        "existing_tiids": existing_tiids        
         }
 
     r = requests.post(
