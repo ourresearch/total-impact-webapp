@@ -1300,6 +1300,14 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
+    "            <div class=\"single-product-controls\">\n" +
+    "               <a class=\"remove-product\"\n" +
+    "                  tooltip=\"Delete this product\"\n" +
+    "                  ng-click=\"removeProduct(product)\">\n" +
+    "                  <i class=\"icon-trash icon\"></i>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
+    "\n" +
     "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
     "            <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
     "\n" +

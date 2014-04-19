@@ -139,6 +139,14 @@
              id="{{ product._id }}"
              on-repeat-finished>
 
+            <div class="single-product-controls">
+               <a class="remove-product"
+                  tooltip="Delete this product"
+                  ng-click="removeProduct(product)">
+                  <i class="icon-trash icon"></i>
+               </a>
+            </div>
+
             <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
             <div class="metrics-container" ng-bind-html-unsafe="product.markup.metrics"></div>
 

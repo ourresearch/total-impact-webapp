@@ -7694,7 +7694,7 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   position: relative;
   width: 100%;
 }
-.product:hover div.product-controls {
+.product:hover div.single-product-controls {
   display: block;
 }
 .product.twitter.real-product div.real-product .badges {
@@ -7743,16 +7743,30 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 .product.twitter.real-product .awards {
   margin-top: 40px;
 }
-.product div.product-controls {
+.product div.single-product-controls {
   position: absolute;
   display: none;
-  left: -100px;
-  width: 100px;
+  padding-right: 10px;
+  left: -50px;
+  width: 50px;
   height: 40px;
-  top: 12px;
+  top: 27px;
   text-align: right;
   line-height: 1;
   font-size: 14px;
+}
+.product div.single-product-controls a.remove-product {
+  color: #999999;
+}
+.product div.single-product-controls a.remove-product:hover {
+  color: red;
+}
+.product div.single-product-controls .tooltip-inner {
+  background: red;
+  width: 100px;
+}
+.product div.single-product-controls .tooltip-arrow {
+  border-top-color: red;
 }
 .product .notification {
   position: absolute;

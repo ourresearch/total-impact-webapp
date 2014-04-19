@@ -230,6 +230,12 @@ angular.module("profile", [
     }
 
 
+    $scope.removeProduct = function(product){
+      console.log("removing product: ", product)
+      $scope.products.splice($scope.products.indexOf(product),1)
+
+    }
+
 
 
     $scope.dedup = function(){

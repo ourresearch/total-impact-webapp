@@ -6,7 +6,7 @@
    width:100%;
 
    &:hover {
-      div.product-controls{
+      div.single-product-controls{
          display: block;
       }
    }
@@ -48,16 +48,30 @@
    }
 
 
-   div.product-controls {
+   div.single-product-controls {
       position: absolute;
       display:none;
-      left: -100px;
-      width: 100px;
+      padding-right: 10px;
+      left: -50px;
+      width: 50px;
       height: 40px;
-      top: 12px;
+      top: 27px;
       text-align:right;
       line-height: 1;
       font-size:14px;
+      a.remove-product {
+         color: @gray-light;
+         &:hover {
+            color: red;
+         }
+      }
+      .tooltip-inner {
+         background: red;
+         width: 100px;
+      }
+      .tooltip-arrow {
+         border-top-color: red;
+      }
    }
 
    .notification {

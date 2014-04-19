@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-16
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-18
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1410,6 +1410,12 @@ angular.module("profile", [
       return Product.getMetricSum(product) * -1;
     }
 
+
+    $scope.removeProduct = function(product){
+      console.log("removing product: ", product)
+      $scope.products.splice($scope.products.indexOf(product),1)
+
+    }
 
 
 
@@ -5331,6 +5337,14 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             ng-show=\"product.has_metrics || showProductsWithoutMetrics || product.is_heading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
+    "\n" +
+    "            <div class=\"single-product-controls\">\n" +
+    "               <a class=\"remove-product\"\n" +
+    "                  tooltip=\"Delete this product\"\n" +
+    "                  ng-click=\"removeProduct(product)\">\n" +
+    "                  <i class=\"icon-trash icon\"></i>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
     "\n" +
     "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
     "            <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
