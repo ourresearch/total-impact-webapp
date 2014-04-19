@@ -117,6 +117,11 @@ class User(db.Model):
         return [tiid_link.tiid for tiid_link in self.tiid_links if not tiid_link.removed]
 
     @property
+    def tiids_including_removed(self):
+        # return all tiids even those that have been removed
+        return [tiid_link.tiid for tiid_link in self.tiid_links]
+
+    @property
     def products(self):
         products = get_products_from_core(self.tiids)
         if not products:
@@ -222,7 +227,7 @@ class User(db.Model):
             # AnonymousUser doesn't have method
             analytics_credentials = {}    
         product_id_type = product_id_dict.keys()[0]
-        existing_tiids = self.tiids        
+        existing_tiids = self.tiids_including_removed # don't re-import dup or removed products    
         import_response = make_products_for_product_id_strings(
                 product_id_type, 
                 product_id_dict[product_id_type], 
@@ -250,7 +255,7 @@ class User(db.Model):
             except AttributeError:
                 # AnonymousUser doesn't have method
                 analytics_credentials = {}
-            existing_tiids = self.tiids
+            existing_tiids = self.tiids_including_removed # don't re-import dup or removed products
             import_response = make_products_for_linked_account(
                     account, 
                     account_value, 
