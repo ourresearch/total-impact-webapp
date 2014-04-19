@@ -5344,7 +5344,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"product.has_metrics || showProductsWithoutMetrics || product.is_heading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
-    "             on-repeat-finished> \n" +
+    "             on-repeat-finished>\n" +
     "\n" +
     "            <div class=\"product-margin\" ng-show=\"currentUserIsProfileOwner()\">\n" +
     "               <span class=\"single-product-controls\">\n" +
