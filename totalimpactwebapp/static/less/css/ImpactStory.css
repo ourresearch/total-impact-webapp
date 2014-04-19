@@ -7713,8 +7713,8 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   position: relative;
   width: 100%;
 }
-.product:hover div.single-product-controls {
-  display: block;
+.product:hover .product-margin .single-product-controls a.remove-product {
+  display: inline;
 }
 .product.twitter.real-product div.real-product .badges {
   margin-top: 40px;
@@ -7762,9 +7762,9 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 .product.twitter.real-product .awards {
   margin-top: 40px;
 }
-.product div.single-product-controls {
+.product div.product-margin {
   position: absolute;
-  display: none;
+  display: block;
   padding-right: 10px;
   left: -50px;
   width: 50px;
@@ -7774,22 +7774,22 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   line-height: 1;
   font-size: 14px;
 }
-.product div.single-product-controls a.remove-product {
+.product div.product-margin span.single-product-controls a.remove-product {
   color: #999999;
+  display: none;
+  vertical-align: 4px;
+  padding-right: 5px;
+  padding-left: 5px;
 }
-.product div.single-product-controls a.remove-product:hover {
+.product div.product-margin span.single-product-controls a.remove-product:hover {
   color: red;
 }
-.product div.single-product-controls .tooltip-inner {
+.product div.product-margin span.single-product-controls .tooltip-inner {
   background: red;
   width: 100px;
 }
-.product div.single-product-controls .tooltip-arrow {
+.product div.product-margin span.single-product-controls .tooltip-arrow {
   border-top-color: red;
-}
-.product .notification {
-  position: absolute;
-  left: -20px;
 }
 .product .notification .icon {
   vertical-align: 4px;

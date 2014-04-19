@@ -136,20 +136,22 @@
              id="{{ product._id }}"
              on-repeat-finished>
 
-            <div class="single-product-controls" ng-show="currentUserIsProfileOwner()">
-               <a class="remove-product"
-                  tooltip="Delete this product"
-                  ng-click="removeProduct(product)">
-                  <i class="icon-trash icon"></i>
+            <div class="product-margin" ng-show="currentUserIsProfileOwner()">
+               <span class="single-product-controls">
+                  <a class="remove-product"
+                     tooltip="Delete this product"
+                     ng-click="removeProduct(product)">
+                     <i class="icon-trash icon"></i>
+                  </a>
+               </span>
+               <a class="notification"
+                  ng-show="product.has_new_metrics"
+                  href="/{{ user.about.url_slug }}/product/{{ product._id }}"
+                  tooltip="New impacts!">
+                  <span class="icon-bell icon"></span>
                </a>
             </div>
 
-            <a class="notification"
-               ng-show="product.has_new_metrics"
-               href="/{{ user.about.url_slug }}/product/{{ product._id }}"
-               tooltip="New impacts!">
-               <span class="icon-bell icon"></span>
-            </a>
 
             <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
             <div class="metrics-container" ng-bind-html-unsafe="product.markup.metrics"></div>
