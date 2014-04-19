@@ -239,7 +239,7 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "\n" +
     "   <div class=\"import-complete\" ng-show=\"importComplete\">\n" +
     "      <div class=\"msg\">\n" +
-    "      Successfully imported {{ importedProductsCount }} articles!\n" +
+    "      Successfully imported {{ importedProductsCount }} new articles!\n" +
     "      </div>\n" +
     "      <a class=\"btn btn-info\" ng-click=\"$close()\">ok</a>\n" +
     "   </div>\n" +
