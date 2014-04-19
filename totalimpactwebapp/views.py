@@ -427,10 +427,12 @@ def user_products_get(id):
     if request.args.get("group_by")=="duplicates":
         resp = products_list.get_duplicates_list_from_tiids(user.tiids)
     else:        
+        display_debug = request.args.get("debug", "unset") != "unset"
         include_headings = request.args.get("include_heading_products") in [1, "true", "True"]
         resp = products_list.prep(
             user.products,
-            include_headings
+            include_headings,
+            display_debug
         )
 
     return json_resp_from_thing(resp)
