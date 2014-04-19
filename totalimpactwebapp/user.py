@@ -296,7 +296,9 @@ class User(db.Model):
             "academia_edu_id",
             "researchgate_id",
             "linkedin_id",
-            "wordpress_api_key"
+            "wordpress_api_key",
+            "upgrade_plan",
+            "stripe_token"
         ]
 
         ret_dict = {}
