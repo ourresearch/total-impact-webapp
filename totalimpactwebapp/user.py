@@ -101,6 +101,8 @@ class User(db.Model):
 
     tips = db.Column(db.String())  # ALTER TABLE "user" ADD tips text
     last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
+    next_refresh = db.Column(db.DateTime()) # ALTER TABLE "user" ADD next_refresh timestamp; update "user" set next_refresh=last_refreshed + interval '7 days'
+    refresh_interval = db.Column(db.Integer) # ALTER TABLE "user" ADD refresh_interval Integer; update "user" set refresh_interval=7
 
     tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
@@ -142,6 +144,8 @@ class User(db.Model):
         super(User, self).__init__(**kwargs)
         self.created = now_in_utc()
         self.last_refreshed = now_in_utc()
+        self.refresh_interval = self.refresh_interval or 7
+        self.next_refresh = self.last_refreshed + datetime.timedelta(days=self.refresh_interval)
         self.given_name = self.given_name or u"Anonymous"
         self.surname = self.surname or u"User"
         self.password_hash = None
@@ -315,6 +319,25 @@ class User(db.Model):
         return ret_dict
 
 
+def get_products_from_core_as_csv(tiids):
+    if not tiids:
+        return None
+
+    query = u"{core_api_root}/v1/products.csv?api_admin_key={api_admin_key}".format(
+        core_api_root=g.api_root,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    logger.debug(u"in get_products_from_core with query {query}".format(
+        query=query))
+
+    r = requests.post(query,
+            data=json.dumps({
+                "tiids": tiids
+                }),
+            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+    return r
+
+
 
 def get_products_from_core(tiids):
     if not tiids:
@@ -417,11 +440,12 @@ def tiids_to_remove_from_duplicates_list(duplicates_list):
             if (tiid_to_keep==None) and tiid_dict["has_user_provided_biblio"]:
                 tiid_to_keep = tiid_dict["tiid"]
             else:
-                tiids_to_remove += [tiid_dict["tiid"]]
+                tiids_to_remove += [tiid_dict]
         if not tiid_to_keep:
             # don't delete last tiid added even if it had user supplied stuff, because multiple do
-            tiids_to_remove.pop() 
-    return tiids_to_remove
+            earliest_created_date = min([tiid_dict["created"] for tiid_dict in duplicate_group])
+            tiids_to_remove = [tiid_dict for tiid_dict in tiids_to_remove if tiid_dict["created"] != earliest_created_date]
+    return [tiid_dict["tiid"] for tiid_dict in tiids_to_remove]
 
 
 def remove_duplicates_from_user(user_id):
@@ -448,6 +472,7 @@ def save_user_last_refreshed_timestamp(user_id, timestamp=None):
     if not timestamp:
         timestamp = now_in_utc()
     user.last_refreshed = timestamp
+    user.next_refresh = user.last_refreshed + datetime.timedelta(days=user.refresh_interval)
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
@@ -483,33 +508,34 @@ def create_user_from_slug(url_slug, user_request_dict, db):
     # is set by client, it seems:
     unicode_request_dict = {k: unicode(v) for k, v in user_request_dict.iteritems()}
     unicode_request_dict["url_slug"] = unicode(url_slug)
-    password = None
-    if "password" in unicode_request_dict:
-        password = unicode_request_dict["password"]
-        del unicode_request_dict["password"]
 
+    # all emails should be lowercase
+    unicode_request_dict["email"] = unicode_request_dict["email"].lower()
+
+    # move password to temp var so we don't instantiate the User with it...
+    # passwords have to be set with a special setter method.
+    password = unicode_request_dict["password"]
+    del unicode_request_dict["password"]
+
+    # see if the slug is being used, in any upper/lower case combo
+    user_with_this_slug = User.query.filter(
+        func.lower(User.url_slug) == func.lower(unicode_request_dict["url_slug"])
+    ).first()
+    if user_with_this_slug is not None:
+        unicode_request_dict["url_slug"] += str(random.randint(1, 9999))
+
+    # ok, let's make a user:
     user = User(**unicode_request_dict)
     db.session.add(user)
-
-    if password:
-        user.set_password(password)
+    user.set_password(password)
 
     try:
         db.session.commit()
     except IntegrityError as e:
-
         if "user_email_key" in e.message:
-            # we can't fix this. it's the caller's problem now.
+            # we can't fix this....it's the caller's problem now.
             raise EmailExistsError
 
-        elif "url_slug" in e.message:
-            # we can fix this.
-            db.session.rollback()
-            db.session.add(user)
-
-            user.url_slug += str(random.randint(1, 9999))
-
-            db.session.commit()
 
 
     logger.debug(u"Finished creating user {id} with slug '{slug}'".format(

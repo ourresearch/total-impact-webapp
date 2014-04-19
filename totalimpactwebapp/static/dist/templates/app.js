@@ -1262,19 +1262,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
     "            <a href=\"/{{ user.about.url_slug }}/products/add\">\n" +
-    "               <i class=\"icon-upload\"></i>Import products one-by-one\n" +
-    "            </a>\n" +
-    "            <a ng-click=\"dedup()\"\n" +
-    "               ng-class=\"{working: loading.is('dedup')}\"\n" +
-    "               class=\"dedup-button\">\n" +
-    "               <span class=\"content ready\" ng-show=\"!loading.is('dedup')\">\n" +
-    "                  <i class=\"icon-copy\"></i>\n" +
-    "                  <span class=\"text\">Merge duplicates</span>\n" +
-    "               </span>\n" +
-    "               <span class=\"content working\" ng-show=\"loading.is('dedup')\">\n" +
-    "                  <i class=\"icon-refresh icon-spin\" ng-show=\"loading.is('dedup')\"></i>\n" +
-    "                  <span class=\"text\">Merging duplicates</span>\n" +
-    "               </span>\n" +
+    "               <i class=\"icon-upload\"></i>Import individual products\n" +
     "            </a>\n" +
     "         </div>\n" +
     "         <div class=\"everyone-controls\">\n" +
@@ -1303,11 +1291,19 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product {{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
-    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum']\"\n" +
+    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"product.has_metrics || showProductsWithoutMetrics || product.is_heading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
+    "\n" +
+    "            <div class=\"single-product-controls\" ng-show=\"currentUserIsProfileOwner()\">\n" +
+    "               <a class=\"remove-product\"\n" +
+    "                  tooltip=\"Delete this product\"\n" +
+    "                  ng-click=\"removeProduct(product)\">\n" +
+    "                  <i class=\"icon-trash icon\"></i>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
     "\n" +
     "            <a class=\"notification\"\n" +
     "               ng-show=\"product.has_new_metrics\"\n" +
@@ -1315,6 +1311,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               tooltip=\"New impacts!\">\n" +
     "               <span class=\"icon-bell icon\"></span>\n" +
     "            </a>\n" +
+    "\n" +
     "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
     "            <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
     "\n" +
@@ -1347,7 +1344,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <span class=\"msg\">Join {{ user.about.given_name }} and thousands of other scientists on Impactstory!</span>\n" +
     "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Make your free profile</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
-    "</div>");
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -1841,9 +1839,18 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <button ng-disabled=\"signupForm.$invalid\" class=\"btn btn-primary btn-xlarge\">\n" +
-    "               Uncover my impact<i class=\"icon-arrow-right\"></i>\n" +
-    "            </button>\n" +
+    "            <div class=\"submit-button\">\n" +
+    "               <button ng-disabled=\"signupForm.$invalid\"\n" +
+    "                       ng-hide=\"loading.is('signup')\"\n" +
+    "                       class=\"btn btn-primary btn-xlarge\">\n" +
+    "                  Uncover my impact<i class=\"icon-arrow-right\"></i>\n" +
+    "               </button>\n" +
+    "               <div class=\"working\" ng-show=\"loading.is('signup')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  <span class=\"text\">Creating your profile...</span>\n" +
+    "               </div>\n" +
+    "\n" +
+    "            </div>\n" +
     "         </form>\n" +
     "\n" +
     "      </div>\n" +

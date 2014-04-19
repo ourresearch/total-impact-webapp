@@ -101,19 +101,7 @@
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
          <div class="admin-controls" ng-show="currentUserIsProfileOwner() && !page.isEmbedded()">
             <a href="/{{ user.about.url_slug }}/products/add">
-               <i class="icon-upload"></i>Import products one-by-one
-            </a>
-            <a ng-click="dedup()"
-               ng-class="{working: loading.is('dedup')}"
-               class="dedup-button">
-               <span class="content ready" ng-show="!loading.is('dedup')">
-                  <i class="icon-copy"></i>
-                  <span class="text">Merge duplicates</span>
-               </span>
-               <span class="content working" ng-show="loading.is('dedup')">
-                  <i class="icon-refresh icon-spin" ng-show="loading.is('dedup')"></i>
-                  <span class="text">Merging duplicates</span>
-               </span>
+               <i class="icon-upload"></i>Import individual products
             </a>
          </div>
          <div class="everyone-controls">
@@ -142,11 +130,19 @@
       <ul class="products-list">
          <li class="product {{ product.genre }}"
              ng-class="{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}"
-             ng-repeat="product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum']"
+             ng-repeat="product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title']"
              ng-controller="productCtrl"
              ng-show="product.has_metrics || showProductsWithoutMetrics || product.is_heading"
              id="{{ product._id }}"
              on-repeat-finished>
+
+            <div class="single-product-controls" ng-show="currentUserIsProfileOwner()">
+               <a class="remove-product"
+                  tooltip="Delete this product"
+                  ng-click="removeProduct(product)">
+                  <i class="icon-trash icon"></i>
+               </a>
+            </div>
 
             <a class="notification"
                ng-show="product.has_new_metrics"
@@ -154,6 +150,7 @@
                tooltip="New impacts!">
                <span class="icon-bell icon"></span>
             </a>
+
             <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
             <div class="metrics-container" ng-bind-html-unsafe="product.markup.metrics"></div>
 
