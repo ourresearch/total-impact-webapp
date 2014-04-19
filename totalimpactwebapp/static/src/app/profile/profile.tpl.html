@@ -127,7 +127,7 @@
              id="{{ product._id }}"
              on-repeat-finished>
 
-            <div class="single-product-controls" ng-show="currentUserIsProfileOwner()">
+            <div class="single-product-controls" ng-show="currentUserIsProfileOwner() && !product.is_heading">
                <a class="remove-product"
                   tooltip="Delete this product"
                   ng-click="removeProduct(product)">
