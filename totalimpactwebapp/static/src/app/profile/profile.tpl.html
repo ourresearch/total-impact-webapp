@@ -92,19 +92,7 @@
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
          <div class="admin-controls" ng-show="currentUserIsProfileOwner() && !page.isEmbedded()">
             <a href="/{{ user.about.url_slug }}/products/add">
-               <i class="icon-upload"></i>Import products one-by-one
-            </a>
-            <a ng-click="dedup()"
-               ng-class="{working: loading.is('dedup')}"
-               class="dedup-button">
-               <span class="content ready" ng-show="!loading.is('dedup')">
-                  <i class="icon-copy"></i>
-                  <span class="text">Merge duplicates</span>
-               </span>
-               <span class="content working" ng-show="loading.is('dedup')">
-                  <i class="icon-refresh icon-spin" ng-show="loading.is('dedup')"></i>
-                  <span class="text">Merging duplicates</span>
-               </span>
+               <i class="icon-upload"></i>Import individual products
             </a>
          </div>
          <div class="everyone-controls">

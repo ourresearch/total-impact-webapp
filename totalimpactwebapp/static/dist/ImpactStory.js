@@ -1415,26 +1415,17 @@ angular.module("profile", [
       console.log("removing product: ", product)
       $scope.products.splice($scope.products.indexOf(product),1)
 
+      // do the deletion in the background, without a progress spinner...
+      UsersProducts.delete(
+        {id: userSlug},
+        {"tiids": [product._id]},
+        function(){
+          console.log("finished deleting", product.biblio.title)
+        }
+      )
+
     }
 
-
-
-    $scope.dedup = function(){
-      Loading.start("dedup")
-
-
-      UsersProducts.dedup({id: userSlug}, {}, function(resp){
-        console.log("deduped!", resp)
-        Loading.finish("dedup")
-        i18nNotifications.removeAll()
-        i18nNotifications.pushForCurrentRoute(
-          "dedup.success",
-          "success",
-          {numDuplicates: resp.deleted_tiids.length}
-        )
-        renderProducts()
-      })
-    }
 
 
     var renderProducts = function(){
@@ -5291,19 +5282,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
     "            <a href=\"/{{ user.about.url_slug }}/products/add\">\n" +
-    "               <i class=\"icon-upload\"></i>Import products one-by-one\n" +
-    "            </a>\n" +
-    "            <a ng-click=\"dedup()\"\n" +
-    "               ng-class=\"{working: loading.is('dedup')}\"\n" +
-    "               class=\"dedup-button\">\n" +
-    "               <span class=\"content ready\" ng-show=\"!loading.is('dedup')\">\n" +
-    "                  <i class=\"icon-copy\"></i>\n" +
-    "                  <span class=\"text\">Merge duplicates</span>\n" +
-    "               </span>\n" +
-    "               <span class=\"content working\" ng-show=\"loading.is('dedup')\">\n" +
-    "                  <i class=\"icon-refresh icon-spin\" ng-show=\"loading.is('dedup')\"></i>\n" +
-    "                  <span class=\"text\">Merging duplicates</span>\n" +
-    "               </span>\n" +
+    "               <i class=\"icon-upload\"></i>Import individual products\n" +
     "            </a>\n" +
     "         </div>\n" +
     "         <div class=\"everyone-controls\">\n" +

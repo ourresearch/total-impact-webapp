@@ -234,26 +234,17 @@ angular.module("profile", [
       console.log("removing product: ", product)
       $scope.products.splice($scope.products.indexOf(product),1)
 
+      // do the deletion in the background, without a progress spinner...
+      UsersProducts.delete(
+        {id: userSlug},
+        {"tiids": [product._id]},
+        function(){
+          console.log("finished deleting", product.biblio.title)
+        }
+      )
+
     }
 
-
-
-    $scope.dedup = function(){
-      Loading.start("dedup")
-
-
-      UsersProducts.dedup({id: userSlug}, {}, function(resp){
-        console.log("deduped!", resp)
-        Loading.finish("dedup")
-        i18nNotifications.removeAll()
-        i18nNotifications.pushForCurrentRoute(
-          "dedup.success",
-          "success",
-          {numDuplicates: resp.deleted_tiids.length}
-        )
-        renderProducts()
-      })
-    }
 
 
     var renderProducts = function(){
