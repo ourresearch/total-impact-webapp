@@ -1294,7 +1294,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product {{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
-    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum']\"\n" +
+    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             ng-show=\"product.has_metrics || showProductsWithoutMetrics || product.is_heading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
