@@ -4,7 +4,7 @@ angular.module('settings', [
     'update.update',
     'directives.spinner',
     'settings.pageDescriptions',
-    'services.i18nNotifications',
+    'services.userMessage',
     'security',
     'directives.forms'])
 
@@ -59,7 +59,7 @@ angular.module('settings', [
 
   })
 
-  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, i18nNotifications, Loading) {
+  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, UserMessage, Loading) {
     $scope.onSave = function() {
       Loading.start('saveButton')
       UsersAbout.patch(
@@ -67,14 +67,14 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute('settings.profile.change.success', 'success');
+          UserMessage.set('settings.profile.change.success', true);
           $scope.home();
         }
       )
     };
   })
 
-  .controller('passwordSettingsCtrl', function ($scope, $location, UsersPassword, security, i18nNotifications, Loading) {
+  .controller('passwordSettingsCtrl', function ($scope, $location, UsersPassword, security, UserMessage, Loading) {
 
     $scope.showPassword = false;
     var resetToken =  $location.search()["reset_token"]
@@ -87,11 +87,11 @@ angular.module('settings', [
         {id: $scope.user.url_slug},
         $scope.user,
         function(resp) {
-          i18nNotifications.pushForNextRoute('settings.password.change.success', 'success');
+          UserMessage.set('settings.password.change.success', true);
           $scope.home()
         },
         function(resp) {
-          i18nNotifications.pushForCurrentRoute('settings.password.change.error.unauthenticated', 'danger');
+          UserMessage.set('settings.password.change.error.unauthenticated');
           Loading.finish('saveButton')
           $scope.resetUser();  // reset the form
           $scope.wrongPassword = true;
@@ -103,7 +103,7 @@ angular.module('settings', [
 
 
 
-  .controller('urlSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+  .controller('urlSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
@@ -112,7 +112,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute('settings.url.change.success', 'success');
+          UserMessage.set('settings.url.change.success', true);
           $location.path('/' + resp.about.url_slug)
         }
       )
@@ -121,7 +121,7 @@ angular.module('settings', [
 
 
 
-  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
@@ -130,9 +130,9 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute(
+          UserMessage.set(
             'settings.email.change.success',
-            'success',
+            true,
             {email: resp.about.email}
           );
           $location.path('/' + resp.about.url_slug)
@@ -143,7 +143,7 @@ angular.module('settings', [
 
 
   // not currently using this...LinkedAccounts page is hidden.
-  .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading, Update, UsersProducts) {
+  .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, Update, UsersProducts) {
 
 
     $scope.onSave = function() {
@@ -157,7 +157,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute('settings.wordpress_api_key.add.success', 'success');
+          UserMessage.set('settings.wordpress_api_key.add.success', true);
 
           Update.setUpdateStarted(false)
           Update.showUpdate(url_slug, function(){

@@ -1,5 +1,5 @@
 angular.module('services.userMessage', [])
-  .factory('$rootScope', function ($interpolate, $rootScope) {
+  .factory('UserMessage', function ($interpolate, $rootScope) {
 
     var messageKey = null
     var persistAfterNextRouteChange = false
@@ -23,36 +23,43 @@ angular.module('services.userMessage', [])
       'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info']
     };
 
+    var clear = function(){
+        messageKey = null
+        interpolateParams = null
+        persistAfterNextRouteChange = false
+    }
 
     $rootScope.$on('$routeChangeSuccess', function () {
       if (persistAfterNextRouteChange){
         persistAfterNextRouteChange = false
       }
       else {
-        messageKey = null
-        interpolateParams = {}
+        clear()
       }
     });
 
 
 
+
     return {
-      setMessage: function(key, persist, params){
+      set: function(key, persist, params){
         messageKey = key
         persistAfterNextRouteChange = !!persist
         interpolateParams = params
       },
 
-      getMessage: function(){
+      get: function(){
         if (!messageKey) {
           return null
         }
-        var msg = messages["messageKey"]
+        var msg = messages[messageKey]
         return {
           message: $interpolate(msg[0])(interpolateParams),
           type: msg[1]
         }
-      }
+      },
+
+      remove: clear
 
     }
 

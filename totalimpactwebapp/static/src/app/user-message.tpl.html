@@ -1,0 +1,6 @@
+<div ng-class="['alert', 'alert-'+userMessage.get().type]"
+        ng-if="userMessage.get().message"
+        ng-animate="{leave: 'animated slideOutUp'}">
+       <span class="text" ng-bind-html-unsafe="userMessage.get().message"></span>
+       <button class="close" ng-click="userMessage.remove()">&times;</button>
+</div>

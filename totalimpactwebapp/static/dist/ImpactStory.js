@@ -424,6 +424,9 @@ angular.module('app', [
   'services.abTesting',
   'services.loading',
   'services.i18nNotifications',
+  'services.userMessage',
+
+
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
@@ -479,6 +482,8 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
                                                      i18nNotifications,
+                                                     UserMessage,
+
                                                      AbTesting,
                                                      localizedMessages,
                                                      UservoiceWidget,
@@ -489,6 +494,8 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
+  $scope.userMessage = UserMessage
+
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
@@ -1566,7 +1573,7 @@ angular.module('settings', [
     'update.update',
     'directives.spinner',
     'settings.pageDescriptions',
-    'services.i18nNotifications',
+    'services.userMessage',
     'security',
     'directives.forms'])
 
@@ -1621,7 +1628,7 @@ angular.module('settings', [
 
   })
 
-  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, i18nNotifications, Loading) {
+  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, UserMessage, Loading) {
     $scope.onSave = function() {
       Loading.start('saveButton')
       UsersAbout.patch(
@@ -1629,14 +1636,14 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute('settings.profile.change.success', 'success');
+          UserMessage.set('settings.profile.change.success', true);
           $scope.home();
         }
       )
     };
   })
 
-  .controller('passwordSettingsCtrl', function ($scope, $location, UsersPassword, security, i18nNotifications, Loading) {
+  .controller('passwordSettingsCtrl', function ($scope, $location, UsersPassword, security, UserMessage, Loading) {
 
     $scope.showPassword = false;
     var resetToken =  $location.search()["reset_token"]
@@ -1649,11 +1656,11 @@ angular.module('settings', [
         {id: $scope.user.url_slug},
         $scope.user,
         function(resp) {
-          i18nNotifications.pushForNextRoute('settings.password.change.success', 'success');
+          UserMessage.set('settings.password.change.success', true);
           $scope.home()
         },
         function(resp) {
-          i18nNotifications.pushForCurrentRoute('settings.password.change.error.unauthenticated', 'danger');
+          UserMessage.set('settings.password.change.error.unauthenticated');
           Loading.finish('saveButton')
           $scope.resetUser();  // reset the form
           $scope.wrongPassword = true;
@@ -1665,7 +1672,7 @@ angular.module('settings', [
 
 
 
-  .controller('urlSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+  .controller('urlSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
@@ -1674,7 +1681,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute('settings.url.change.success', 'success');
+          UserMessage.set('settings.url.change.success', true);
           $location.path('/' + resp.about.url_slug)
         }
       )
@@ -1683,7 +1690,7 @@ angular.module('settings', [
 
 
 
-  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
@@ -1692,9 +1699,9 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute(
+          UserMessage.set(
             'settings.email.change.success',
-            'success',
+            true,
             {email: resp.about.email}
           );
           $location.path('/' + resp.about.url_slug)
@@ -1705,7 +1712,7 @@ angular.module('settings', [
 
 
   // not currently using this...LinkedAccounts page is hidden.
-  .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading, Update, UsersProducts) {
+  .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, Update, UsersProducts) {
 
 
     $scope.onSave = function() {
@@ -1719,7 +1726,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute('settings.wordpress_api_key.add.success', 'success');
+          UserMessage.set('settings.wordpress_api_key.add.success', true);
 
           Update.setUpdateStarted(false)
           Update.showUpdate(url_slug, function(){
@@ -3973,7 +3980,7 @@ angular.module('services.tour', [])
   })
 
 angular.module('services.userMessage', [])
-  .factory('$rootScope', function ($interpolate, $rootScope) {
+  .factory('UserMessage', function ($interpolate, $rootScope) {
 
     var messageKey = null
     var persistAfterNextRouteChange = false
@@ -3997,36 +4004,43 @@ angular.module('services.userMessage', [])
       'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info']
     };
 
+    var clear = function(){
+        messageKey = null
+        interpolateParams = null
+        persistAfterNextRouteChange = false
+    }
 
     $rootScope.$on('$routeChangeSuccess', function () {
       if (persistAfterNextRouteChange){
         persistAfterNextRouteChange = false
       }
       else {
-        messageKey = null
-        interpolateParams = {} 
+        clear()
       }
     });
 
 
 
+
     return {
-      setMessage: function(key, persist, params){
+      set: function(key, persist, params){
         messageKey = key
         persistAfterNextRouteChange = !!persist
         interpolateParams = params
       },
 
-      getMessage: function(){
+      get: function(){
         if (!messageKey) {
           return null
         }
-        var msg = messages["messageKey"]
+        var msg = messages[messageKey]
         return {
           message: $interpolate(msg[0])(interpolateParams),
           type: msg[1]
         }
-      }
+      },
+
+      remove: clear
 
     }
 
@@ -4088,7 +4102,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -4350,7 +4364,6 @@ angular.module("header.tpl.html", []).run(["$templateCache", function($templateC
     "      <login-toolbar></login-toolbar>\n" +
     "   </div>\n" +
     "</div>\n" +
-    "<div ng-show=\"page.showNotificationsIn('header')\" ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
     "\n" +
     "");
 }]);
@@ -5876,6 +5889,17 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "      </div>\n" +
     "   </div>\n" +
     "</div>");
+}]);
+
+angular.module("user-message.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("user-message.tpl.html",
+    "<div ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
+    "        ng-if=\"userMessage.get().message\"\n" +
+    "        ng-animate=\"{leave: 'animated slideOutUp'}\">\n" +
+    "       <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
+    "       <button class=\"close\" ng-click=\"userMessage.remove()\">&times;</button>\n" +
+    "</div>\n" +
+    "");
 }]);
 
 angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html']);

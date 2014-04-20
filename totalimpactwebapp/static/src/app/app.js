@@ -8,6 +8,9 @@ angular.module('app', [
   'services.abTesting',
   'services.loading',
   'services.i18nNotifications',
+  'services.userMessage',
+
+
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
@@ -63,6 +66,8 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
                                                      i18nNotifications,
+                                                     UserMessage,
+
                                                      AbTesting,
                                                      localizedMessages,
                                                      UservoiceWidget,
@@ -73,6 +78,8 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      RouteChangeErrorHandler) {
 
   $scope.notifications = i18nNotifications;
+  $scope.userMessage = UserMessage
+
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()

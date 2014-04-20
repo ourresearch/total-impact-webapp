@@ -6439,6 +6439,18 @@ ul.notifications li.alert span.count {
   font-weight: 900;
   margin: 0 2px;
 }
+div#user-message {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+div#user-message .alert {
+  opacity: .9;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 /**
  * Extra large button extensions. Extends `.btn`.
  */
