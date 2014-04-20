@@ -6,6 +6,7 @@ angular.module('settings', [
     'settings.pageDescriptions',
     'services.i18nNotifications',
     'security',
+    'angularPayments',
     'directives.forms'])
 
   .config(function ($routeProvider) {
@@ -119,6 +120,19 @@ angular.module('settings', [
     };
   })
 
+
+
+  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+      $scope.handleStripe = function(status, response){
+        console.log("calling handleStripe()")
+        if(response.error) {
+          console.log("ack, there was an error!", status, response)
+        } else {
+          console.log("yay, the charge worked!", status, response)
+          var token = response.id
+        }
+      }
+  })
 
 
   .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {

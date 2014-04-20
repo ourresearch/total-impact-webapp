@@ -1,4 +1,4 @@
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/upgrade-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -239,7 +239,7 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "\n" +
     "   <div class=\"import-complete\" ng-show=\"importComplete\">\n" +
     "      <div class=\"msg\">\n" +
-    "      Successfully imported {{ importedProductsCount }} articles!\n" +
+    "      Successfully imported {{ importedProductsCount }} new articles!\n" +
     "      </div>\n" +
     "      <a class=\"btn btn-info\" ng-click=\"$close()\">ok</a>\n" +
     "   </div>\n" +
@@ -1234,19 +1234,22 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div class=\"product-controls\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
-    "      <div class=\"edit-controls btn-group\">\n" +
+    "      <div class=\"products-info\">\n" +
     "         <div class=\"num-items\">\n" +
-    "            <span class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
+    "\n" +
+    "            <div class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
     "               <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
     "                  <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
     "               </span>\n" +
     "               <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
     "                  (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
     "               </a>\n" +
-    "            </span>\n" +
-    "            <span ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
     "               Products still updating...\n" +
-    "            </span>\n" +
+    "            </div>\n" +
+    "\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
@@ -1654,6 +1657,112 @@ angular.module("settings/settings.tpl.html", []).run(["$templateCache", function
     "\n" +
     "   <div class=\"settings-input\" ng-include='include'></div>\n" +
     "</div>\n" +
+    "");
+}]);
+
+angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/upgrade-settings.tpl.html",
+    "<div class=\"settings-header\">\n" +
+    "   <h1>Upgrade</h1>\n" +
+    "   <p class=\"pitch\">Premium accounts update metrics daily instead of weekly--so if you've got a big\n" +
+    "   new hit on Twitter, you'll know right away. You also help us support\n" +
+    "   Impactstory as an independent nonprofit.</p>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"upgrade-form-container\"  ng-controller=\"upgradeSettingsCtrl\">\n" +
+    "\n" +
+    "\n" +
+    "   <form stripe-form=\"handleStripe\"\n" +
+    "         name=\"upgradeForm\"\n" +
+    "         novalidate\n" +
+    "         class=\"form-horizontal upgrade-form\">\n" +
+    "\n" +
+    "      <h3>Upgrade to premium for $5/mo</h3>\n" +
+    "\n" +
+    "\n" +
+    "      <!-- name on card -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
+    "         <div class=\"col-sm-9\">\n" +
+    "            <input type=\"text\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   name=\"card-holder-name\"\n" +
+    "                   id=\"card-holder-name\"\n" +
+    "                   required\n" +
+    "                   placeholder=\"Card Holder's Name\">\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <!-- card number -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "          <input type=\"text\"\n" +
+    "                 class=\"form-control\"\n" +
+    "                 name=\"card-number\"\n" +
+    "                 id=\"card-number\"\n" +
+    "                 required\n" +
+    "                 ng-model=\"number\"\n" +
+    "                 payments-validate=\"card\"\n" +
+    "                 payments-format=\"card\"\n" +
+    "                 payments-type-model=\"type\"\n" +
+    "                 ng-class=\"type\"\n" +
+    "                 placeholder=\"Debit/Credit Card Number\">\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <!-- expiration date -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
+    "         <div class=\"col-sm-3\">\n" +
+    "            <input type=\"text\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   name=\"card-expiry\"\n" +
+    "                   id=\"card-expiry\"\n" +
+    "                   required\n" +
+    "                   ng-model=\"expiry\"\n" +
+    "                   payments-validate=\"expiry\"\n" +
+    "                   payments-format=\"expiry\"\n" +
+    "                   placeholder=\"MM/YY\">\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <!-- CVV -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "          <input type=\"text\"\n" +
+    "                 class=\"form-control\"\n" +
+    "                 name=\"cvv\"\n" +
+    "                 id=\"cvv\"\n" +
+    "                 ng-model=\"cvc\"\n" +
+    "                 required\n" +
+    "                 payments-validate=\"cvc\"\n" +
+    "                 payments-format=\"cvc\"\n" +
+    "                 payments-type-model=\"type\"\n" +
+    "                 placeholder=\"CVV\">\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-2 cvv-graphic\">\n" +
+    "           <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <div class=\"col-sm-offset-3 col-sm-9\">\n" +
+    "          <button type=\"submit\"\n" +
+    "                  ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
+    "                  class=\"btn btn-success\">Upgrade me for $5/mo!</button>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "   </form>\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
     "");
 }]);
 

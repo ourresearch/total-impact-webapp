@@ -13,7 +13,7 @@ class GenreDeprecatedError(Exception):
     pass
 
 
-def prep_product(product, verbose=False):
+def prep_product(product, verbose=False, display_debug=False):
 
     if product["biblio"]["genre"] in deprecated_genres:
         raise GenreDeprecatedError
@@ -22,9 +22,11 @@ def prep_product(product, verbose=False):
 
     product["biblio"] = make_biblio(product)
     product["metrics"] = make_metrics(product)
-    product["awards"] = make_awards(product)
-    product["markup"] = make_markup(product, verbose)
-    product = add_sort_keys(product)
+    if not display_debug:
+        product["awards"] = make_awards(product)
+        product["markup"] = make_markup(product, verbose)
+        product = add_sort_keys(product)
+    product["has_new_metrics"] = make_has_new_metrics(product)
 
     return product
 
@@ -370,6 +372,31 @@ def make_markup(product_dict, verbose):
     }
 
     return ret
+
+
+
+
+
+
+
+"""
+has_new_metrics stuff
+"""
+
+def make_has_new_metrics(product_dict):
+    for metric_name, metric in product_dict["metrics"].iteritems():
+
+        if metric["historical_values"]["raw_diff_7_days"] > 0:
+            return True
+
+    return False
+
+
+
+
+
+
+
 
 
 
