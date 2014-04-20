@@ -10,6 +10,11 @@ class WelcomeEmailError(Exception):
     pass
 
 
+domains_to_ignore = [
+    ""
+]
+
+
 def send_welcome_email(email, given_name):
 
     # send the email here...

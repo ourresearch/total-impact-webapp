@@ -1,6 +1,7 @@
 from totalimpactwebapp import db
 from totalimpactwebapp import products_list
 from totalimpactwebapp import profile_award
+
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
@@ -8,6 +9,7 @@ from sqlalchemy.exc import DataError
 from sqlalchemy import func
 
 import requests
+import stripe
 import json
 import os
 import datetime
@@ -18,6 +20,7 @@ import string
 import hashlib
 
 logger = logging.getLogger("tiwebapp.user")
+stripe.api_key = os.getenv("STRIPE_API_KEY")
 
 def now_in_utc():
     return datetime.datetime.utcnow()
@@ -501,47 +504,77 @@ def save_user_last_viewed_profile_timestamp(user_id, timestamp=None):
     return True
 
 def create_user_from_slug(url_slug, user_request_dict, db):
-    logger.debug(u"create_user_from_slug new user {url_slug} with unicode_request_dict {user_request_dict}".format(
+    logger.debug(u"create_user_from_slug new user {url_slug} with user_dict {user_request_dict}".format(
         url_slug=url_slug, user_request_dict=user_request_dict))
 
     # have to explicitly unicodify ascii-looking strings even when encoding
     # is set by client, it seems:
-    unicode_request_dict = {k: unicode(v) for k, v in user_request_dict.iteritems()}
-    unicode_request_dict["url_slug"] = unicode(url_slug)
+    user_dict = {k: unicode(v) for k, v in user_request_dict.iteritems()}
+    user_dict["url_slug"] = unicode(url_slug)
 
     # all emails should be lowercase
-    unicode_request_dict["email"] = unicode_request_dict["email"].lower()
+    user_dict["email"] = user_dict["email"].lower()
 
     # move password to temp var so we don't instantiate the User with it...
     # passwords have to be set with a special setter method.
-    password = unicode_request_dict["password"]
-    del unicode_request_dict["password"]
+    password = user_dict["password"]
+    del user_dict["password"]
 
-    # see if the slug is being used, in any upper/lower case combo
+    # make sure this slug isn't being used yet, in any upper/lower case combo
     user_with_this_slug = User.query.filter(
-        func.lower(User.url_slug) == func.lower(unicode_request_dict["url_slug"])
+        func.lower(User.url_slug) == func.lower(user_dict["url_slug"])
     ).first()
     if user_with_this_slug is not None:
-        unicode_request_dict["url_slug"] += str(random.randint(1, 9999))
+        user_dict["url_slug"] += str(random.randint(1, 9999))
+
+    # make sure this email isn't being used yet
+    user_with_this_email = User.query.filter(
+        User.email == user_dict["email"]
+    ).first()
+    if user_with_this_email is not None:
+        raise EmailExistsError  # the caller needs to deal with this.
+
+
+    # make the Stripe customer so we can get their customer number:
+    stripe_customer = stripe.Customer.create(
+        description=user_dict["given_name"] + " " + user_dict["surname"],
+        email=user_dict["email"],
+        plan="Premium"
+    )
+
+    user_dict["stripe_id"] = stripe_customer.id
+
 
     # ok, let's make a user:
-    user = User(**unicode_request_dict)
+    user = User(**user_dict)
     db.session.add(user)
     user.set_password(password)
+    db.session.commit()
 
-    try:
-        db.session.commit()
-    except IntegrityError as e:
-        if "user_email_key" in e.message:
-            # we can't fix this....it's the caller's problem now.
-            raise EmailExistsError
+    # do stuff with the new user
+    email_suffex_for_text_accounts = "@test-impactstory.org"
+    if not user.email.endswith(email_suffex_for_text_accounts):
+        # send welcome email
+        welcome_email.send_welcome_email(user.email, user.given_name)
 
+        # send us an alert
+        for webhook_slug in os.getenv("ZAPIER_ALERT_HOOKS", "").split(","):
+
+            zapier_webhook_url = "httpt://zapier.com/hooks/catch/n/{webhook_slug}/".format(
+                webhook_slug=webhook_slug)
+            data = {
+                "user_profile_url": "https://impactstory.org/" + user.url_slug
+            }
+            headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+
+            r = requests.post( zapier_webhook_url, data=data, headers=headers)
 
 
     logger.debug(u"Finished creating user {id} with slug '{slug}'".format(
         id=user.id,
         slug=user.url_slug
     ))
+
 
     return user
 
