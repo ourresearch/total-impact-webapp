@@ -25,6 +25,7 @@ from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
+from totalimpactwebapp import event_monitoring
 
 
 import newrelic.agent
@@ -324,6 +325,7 @@ def create_new_user_profile(slug):
         abort_json(409, "That email already exists.")
 
     welcome_email.send_welcome_email(user.email, user.given_name)
+    event_monitoring.new_user(user.url_slug, user.given_name)
     login_user(user)
     return json_resp_from_thing({"user": user.dict_about()})
 

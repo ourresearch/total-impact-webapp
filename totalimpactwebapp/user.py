@@ -541,6 +541,10 @@ def create_user_from_slug(url_slug, user_request_dict, db):
         email=user_dict["email"],
         plan="Premium"
     )
+    logger.debug(u"Made a Stripe ID '{stripe_id}' for user '{slug}'".format(
+        stripe_id=stripe_customer.id,
+        slug=user_dict["url_slug"]
+    ))
 
     user_dict["stripe_id"] = stripe_customer.id
 
@@ -550,25 +554,6 @@ def create_user_from_slug(url_slug, user_request_dict, db):
     db.session.add(user)
     user.set_password(password)
     db.session.commit()
-
-    # do stuff with the new user
-    email_suffex_for_text_accounts = "@test-impactstory.org"
-    if not user.email.endswith(email_suffex_for_text_accounts):
-        # send welcome email
-        welcome_email.send_welcome_email(user.email, user.given_name)
-
-        # send us an alert
-        for webhook_slug in os.getenv("ZAPIER_ALERT_HOOKS", "").split(","):
-
-            zapier_webhook_url = "httpt://zapier.com/hooks/catch/n/{webhook_slug}/".format(
-                webhook_slug=webhook_slug)
-            data = {
-                "user_profile_url": "https://impactstory.org/" + user.url_slug
-            }
-            headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-
-            r = requests.post( zapier_webhook_url, data=data, headers=headers)
-
 
     logger.debug(u"Finished creating user {id} with slug '{slug}'".format(
         id=user.id,
