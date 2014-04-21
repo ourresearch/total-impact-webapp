@@ -10,7 +10,7 @@ STRIPE_API_KEY
 
 def mint_stripe_customers_for_all_users():
 
-    for user in User.query.all():
+    for user in User.query.yield_per(5):
 
         if user.stripe_id:
             print "Already a Stripe customer for {email}; skipping".format(
@@ -19,9 +19,13 @@ def mint_stripe_customers_for_all_users():
             continue
 
 
-        print "making a Stripe customer for " + user.email
+        print "making a Stripe customer for {email} ".format(email=user.email)
+        full_name = "{first} {last}".format(
+            first=user.given_name,
+            last=user.surname
+        )
         stripe_customer = stripe.Customer.create(
-            description=user.given_name + " " + user.surname,
+            description=full_name,
             email=user.email,
             plan="Premium"
         )
