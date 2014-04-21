@@ -1405,7 +1405,7 @@ angular.module("profile", [
 
 
     $scope.getSortScore = function(product) {
-      return Product.getSortScore(product) * -1; 
+      return Product.getSortScore(product) * -1;
     }
 
     $scope.getMetricSum = function(product) {

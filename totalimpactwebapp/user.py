@@ -591,6 +591,11 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
     return user
 
 
+def get_all_users():
+    res = User.query.all()
+    return res
+
+
 def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}):
     query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,

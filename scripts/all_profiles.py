@@ -52,7 +52,6 @@ def write_to_csv(slugs):
 
 
 
-
 pick_random_bronze_or_better_oa_award()
 
 
