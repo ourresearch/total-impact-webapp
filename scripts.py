@@ -2,6 +2,11 @@ import stripe
 from totalimpactwebapp.user import get_all_users
 from totalimpactwebapp import db
 
+"""
+requires these env vars be set in this environment:
+DATABASE_URL
+STRIPE_KEY
+"""
 
 def mint_stripe_customers_for_all_users():
     users = get_all_users()
