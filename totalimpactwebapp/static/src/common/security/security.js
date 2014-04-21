@@ -1,11 +1,11 @@
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
-  'services.i18nNotifications',
+  'services.userMessage',
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', function($http, $q, $location, $modal, i18nNotifications) {
+.factory('security', function($http, $q, $location, $modal, UserMessage) {
   var useCachedUser = false
   var currentUser
 
@@ -128,9 +128,7 @@ angular.module('security.service', [
     logout: function(redirectTo) {
       currentUser = null;
       $http.get('/user/logout').success(function(data, status, headers, config) {
-        console.log("logout message: ", data)
-        i18nNotifications.pushForCurrentRoute("logout.success", "success")
-//        redirect(redirectTo);
+        UserMessage.set("logout.success")
       });
     },
 

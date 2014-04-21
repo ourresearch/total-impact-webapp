@@ -9,7 +9,7 @@ angular.module("profile", [
   'services.timer',
   'profileSingleProducts',
   'profileLinkedAccounts',
-  'services.i18nNotifications',
+  'services.userMessage',
   'services.tour',
   'directives.jQueryTools',
   'update.update'
@@ -141,7 +141,7 @@ angular.module("profile", [
     Product,
     UserProfile,
     ProfileAwards,
-    i18nNotifications,
+    UserMessage,
     Update,
     Loading,
     Timer,
@@ -227,7 +227,7 @@ angular.module("profile", [
 
 
     $scope.getSortScore = function(product) {
-      return Product.getSortScore(product) * -1;
+      return Product.getSortScore(product) * -1; 
     }
 
     $scope.getMetricSum = function(product) {
@@ -238,6 +238,11 @@ angular.module("profile", [
     $scope.removeProduct = function(product){
       console.log("removing product: ", product)
       $scope.products.splice($scope.products.indexOf(product),1)
+      UserMessage.set(
+        "profile.removeProduct.success",
+        false,
+        {title: product.biblio.title}
+      )
 
       // do the deletion in the background, without a progress spinner...
       UsersProducts.delete(
