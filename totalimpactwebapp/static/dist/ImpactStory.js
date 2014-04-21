@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-20
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-21
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -642,6 +642,7 @@ angular.module("googleScholar", [
 
   })
 
+angular.module("importers.allTheImporters",["importers.importer"]);angular.module("importers.allTheImporters").factory("AllTheImporters",function(){var e=[],t=[{displayName:"GitHub",url:"http://github.com",descr:"GitHub is an online code repository emphasizing community collaboration features.",tabs:[{label:"account"},{label:"additional repositories"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:"Your GitHub account ID is at the top right of your screen when you're logged in.",saveUsername:"github_id"},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other github repositories here.",placeholder:"https://github.com/your_username/your_repository",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"https://"+t}).join("\n")}}]},{displayName:"ORCID",inputs:[{inputType:"username",inputNeeded:"ID",placeholder:"http://orcid.org/xxxx-xxxx-xxxx-xxxx",saveUsername:"orcid_id",cleanupFunction:function(e){return e.replace("http://orcid.org/","")},help:"You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."}],url:"http://orcid.org",signupUrl:"http://orcid.org/register",descr:"ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into ImpactStory.",extra:"If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."},{displayName:"SlideShare",url:"http://slideshare.net",descr:"SlideShare is community for sharing presentations online.",tabs:[{label:"account"},{label:"additional products"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:'Your username is right after "slideshare.net/" in your profile\'s URL.',saveUsername:"slideshare_id"},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other SlideShare products here.",placeholder:"http://www.slideshare.net/your-username/your-presentation",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");return"http://"+t}).join("\n")}}]},{displayName:"Twitter",url:"http://twitter.com",descr:"Twitter is a social networking site for sharing short messages.",endpoint:"twitter_account",tabs:[{label:"account"},{label:"additional tweets"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:"Your Twitter username is often written starting with @.",saveUsername:"twitter_account_id",placeholder:"@username",cleanupFunction:function(e){return typeof e=="undefined"?e:"@"+e.replace("@","")}},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other Tweets here.",placeholder:"https://twitter.com/username/status/123456",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/https*:\/\//,"");return"http://"+t}).join("\n")}}]},{displayName:"Google Scholar",inputs:[{inputType:"file",inputNeeded:"BibTeX file"}],endpoint:"bibtex",url:"http://scholar.google.com/citations",descr:"Google Scholar profiles find and show researchers' articles as well as their citation impact.",extra:'<h3>How to import your Google Scholar profile:</h3><ol><li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li><li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li><li>Click <code>Export all my articles</code>, then save the BibTex file.</li><li>Return to ImpactStory. Click "upload" in this window, select your previously saved file, and upload.</ol>'},{displayName:"figshare",url:"http://figshare.com",descr:"Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",tabs:[{label:"account"},{label:"additional products"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"author page URL",placeholder:"http://figshare.com/authors/your_username/12345",cleanupFunction:function(e){return"http://"+e.replace("http://","")},saveUsername:"figshare_id"},{tab:1,name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"Paste DOIs for other figshare products here.",placeholder:"http://dx.doi.org/10.6084/m9.figshare.12345"}]},{displayName:"Blogs",descr:"Blogs and websites",endpoint:"wordpresscom",tabs:[{label:"blog url"},{label:"additional posts"}],inputs:[{tab:0,name:"blogUrl",inputType:"username",inputNeeded:"Blog URL",help:"The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",placeholder:"yourblogname.com",cleanupFunction:function(e){if(typeof e=="undefined")return e;var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"http://"+t}},{tab:1,name:"blog_post_urls",inputType:"idList",inputNeeded:"Blog post URLs",help:"Paste URLs for individual blog posts here.",placeholder:"http://yourblog.com/your-awesome-post",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"http://"+t}).join("\n")}}]},{displayName:"YouTube",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Copy the URLs for the videos you want to add, then paste them here.",placeholder:"http://www.youtube.com/watch?v=12345"}],endpoint:"urls",url:"http://youtube.com",descr:"YouTube is an online video-sharing site."},{displayName:"Vimeo",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Copy the URL for the video you want to add, then paste it here.",placeholder:"http://vimeo.com/12345"}],endpoint:"urls",url:"http://vimeo.com",descr:"Vimeo is an online video-sharing site."},{displayName:"arXiv",inputs:[{name:"arxiv_id_input",inputType:"idList",inputNeeded:"arXiv IDs",help:"A typical arXiv ID looks like this: 1305.3328",placeholder:"arXiv:1234.5678"}],endpoint:"arxiv",url:"http://arXiv.org",descr:"arXiv is an e-print service in the fields of physics, mathematics, computer science, quantitative biology, quantitative finance and statistics."},{displayName:"Dryad",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:'You can find Dryad DOIs on each dataset\'s individual Dryad webpage, inside the <strong>"please cite the Dryad data package"</strong> section.',placeholder:"doi:10.5061/dryad.example"}],endpoint:"dois",url:"http://datadryad.org",descr:"The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."},{displayName:"Dataset DOIs",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",placeholder:"http://doi.org/10.example/example"}],endpoint:"dois",descr:"Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."},{displayName:"Article DOIs",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"You can (generally) find article DOIs wherever the publishers have made the articles available online.",placeholder:"http://doi.org/10.example/example"}],endpoint:"dois",descr:"Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."},{displayName:"PubMed IDs",inputs:[{name:"standard_pmids_input",inputType:"idList",inputNeeded:"IDs",placeholder:"123456789",help:"You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."}],endpoint:"pmids",url:"http://www.ncbi.nlm.nih.gov/pubmed",descr:"PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."},{displayName:"Products by URL",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs"}],endpoint:"urls",descr:"Our service-specific importers (DOI, blogs, GitHub, etc) give the most comprehensive results. But if you've got a product not handled by any of those, you can import it here, via URL."}],n={name:"primary",cleanupFunction:function(e){return e},tab:0},r=function(e){return"/static/img/logos/"+_(e.toLowerCase()).dasherize()+".png"},i=function(e){return e.endpoint?e.endpoint:s(e.displayName)},s=function(e){var t=e.split(" "),n=_.map(t,function(e){return e.charAt(0).toUpperCase()+e.toLowerCase().slice(1)});n[0]=n[0].toLowerCase();return n.join("")};return{addProducts:function(t){e=e.concat(t)},getProducts:function(){return e},get:function(){var e=angular.copy(t),o=_.map(e,function(e){e.name=s(e.displayName);e.logoPath=r(e.displayName);e.endpoint=i(e);e.inputs=_.map(e.inputs,function(e){return _.defaults(e,n)});return e});return _.sortBy(o,function(e){return e.displayName.toLocaleLowerCase()})}}});
 angular.module( 'infopages', [
     'security',
     'services.page',
@@ -923,6 +924,7 @@ angular.module('profileLinkedAccounts', [
 
 
   })
+angular.module("profileProduct",["resources.users","services.page","product.product","services.loading","ui.bootstrap","security"]).config(["$routeProvider",function(e){e.when("/:url_slug/product/:tiid",{templateUrl:"profile-product/profile-product-page.tpl.html",controller:"ProfileProductPageCtrl"})}]).controller("ProfileProductPageCtrl",function(e,t,n,r,i,s,o,u,a,f,l){var c=t.url_slug,h=i.get("$http");f.start("profileProduct");e.userSlug=c;e.loading=f;e.userOwnsThisProfile=s.testUserAuthenticationLevel("ownsThisProfile");e.openInfoModal=function(){r.open({templateUrl:"profile-product/percentilesInfoModal.tpl.html"})};e.deleteProduct=function(){f.start("deleteProduct");u.delete({id:c,idType:"url_slug"},{tiids:[t.tiid]},function(){console.log("finished deleting",t.tiid);h.removeAll();s.redirectToProfile()})};e.product=o.get({id:c,tiid:t.tiid},function(t){console.log("data",t);e.biblio=a.makeBiblio(t);e.metrics=a.makeMetrics(t);f.finish("profileProduct");l.setTitle(t.biblio.title)},function(e){n.path("/"+c)})}).controller("modalCtrl");
 angular.module("profileProduct", [
     'resources.users',
     'resources.products',
@@ -1176,6 +1178,7 @@ angular.module('profileSingleProducts', [
     }
 
   })
+angular.module("profile",["resources.users","product.product","services.page","update.update","ui.bootstrap","security","services.loading","services.timer","tips","profile.addProducts","services.i18nNotifications"]).config(["$routeProvider",function(e,t){e.when("/embed/:url_slug",{templateUrl:"profile/profile.tpl.html",controller:"ProfileCtrl"})}]).factory("UserProfile",function(e,t,n,r,i,s,o){var u={};return{makeAnchorLink:function(e,t){var r=e;t&&(r+=":"+encodeURIComponent(t));return n.path()+"#"+r},filterProducts:function(e,t){var n=_.filter(e,function(e){return _.size(e.metrics)}),r=_.filter(e,function(e){return e.metrics&&_.size(e.metrics)==0});return t=="withMetrics"?n:t==="withoutMetrics"?r:n.concat(r)},scrollToCorrectLocation:function(){if(n.hash())t();else{var r=o.getLastScrollPosition(n.path());e.scrollTo(0,r)}},loadUser:function(e,t){return r.get({id:t,idType:"url_slug"},function(e){o.setTitle(e.about.given_name+" "+e.about.surname)},function(n){if(n.status==404){e.userExists=!1;e.slug=t}})},slugIsCurrentUser:function(e){return i.getCurrentUser()?i.getCurrentUser().url_slug==e:!1},makeSlug:function(){u.url_slug=s.make(u.givenName,u.surname)},readyToCreateOnServer:function(){return u.url_slug&&!id},reset:function(){u={}},setId:function(e){id=e},getId:function(){return id},getSlug:function(){return u.url_slug},about:u}}).controller("ProfileCtrl",function(e,t,n,r,i,s,o,u,a,f,l,c,h,p,d,v,m,g){g.isEmbedded();var y=a.get("$http");e.$on("ngRepeatFinished",function(e){console.log("finished rendering products in "+m.elapsed("renderProducts")+"ms");twttr.widgets.load()});var b=r.url_slug,w=!0;e.loadingProducts=function(){return w};e.userExists=!0;e.showProductsWithoutMetrics=!1;e.filterProducts=h.filterProducts;e.user=h.loadUser(e,b);e.currentUserIsProfileOwner=function(){return h.slugIsCurrentUser(b)};e.openProfileEmbedModal=function(){i.open({templateUrl:"profile/profile-embed-modal.tpl.html",controller:"profileEmbedModalCtrl",resolve:{userSlug:function(e){return e.when(b)}}})};e.getSortScore=function(e){return c.getSortScore(e)*-1};e.getMetricSum=function(e){return c.getMetricSum(e)*-1};e.dedup=function(){v.start("dedup");l.dedup({id:b},{},function(e){console.log("deduped!",e);v.finish("dedup");p.removeAll();p.pushForCurrentRoute("dedup.success","success",{numDuplicates:e.deleted_tiids.length});E(!0)})};var E=function(t){m.start("getProducts");w=!0;t&&y.removeAll();e.products=l.query({id:b,includeHeadingProducts:!0,embedded:g.isEmbedded(),idType:"url_slug"},function(e){console.log("loaded products in "+m.elapsed("getProducts")+"ms");m.start("renderProducts");w=!1;s(function(){h.scrollToCorrectLocation()},0)},function(e){w=!1})};s(E,100)}).controller("profileEmbedModalCtrl",function(e,t,n){console.log("user slug is: ",n);e.userSlug=n;e.baseUrl=t.getBaseUrl;e.embed={};e.embed.type="badge"}).directive("backToProfile",function(e){return{restrict:"A",replace:!0,template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",link:function(t,n){var r=/^\/([-\w\.]+)\/product\/(\w+)/,i=r.exec(e.path());t.returnLink=null;if(i){var s=i[1];s!="embed"&&(t.returnLink=s)}}}});
 angular.module("profile", [
   'resources.users',
   'product.product',
@@ -1370,6 +1373,11 @@ angular.module("profile", [
 
     }
 
+    $scope.humanDate = function(isoStr) {
+      // using moment.js library imported from cdnjs at runtime. not encapsulated,
+      // so will break in unit testing...
+      return moment(isoStr).fromNow()
+    }
     $scope.clickSignupLink = function(){
       analytics.track("Clicked signup link on profile")
     }
@@ -1526,6 +1534,7 @@ angular.module('settings.pageDescriptions')
 .factory('SettingsPageDescriptions', function(){
            
   var settingsPageDisplayNames = [
+    // "Upgrade",
     "Profile",
     "Custom URL",
     "Email",
@@ -1570,6 +1579,7 @@ angular.module('settings', [
     'settings.pageDescriptions',
     'services.userMessage',
     'security',
+    'angularPayments',
     'directives.forms'])
 
   .config(function ($routeProvider) {
@@ -1738,6 +1748,7 @@ angular.module('settings', [
 
 
 
+angular.module("signup",["services.slug","services.page","resources.users","update.update","security.service","tips","importers.allTheImporters","importers.importer"]).factory("Signup",function(e){var t=["name","url","products","password"],n=function(n){var r="name";_.each(t,function(t){e.path().indexOf("/"+t)>0&&(r=t)});n&&(r=r.charAt(0).toUpperCase()+r.slice(1));return r},r=function(){return _.indexOf(t,n())};return{signupSteps:function(){return t},onSignupStep:function(t){return t==n()},isBeforeCurrentSignupStep:function(e){var n=_.indexOf(t,e);return r()>-1&&n<r()},getTemplatePath:function(){return"signup/signup-"+n()+".tpl.html"}}}).config(["$routeProvider",function(e){e.when("/signup/:url_slug/products/add",{templateUrl:"signup/signup.tpl.html",controller:"signupCtrl",resolve:{userOwnsThisProfile:function(e){return e.testUserAuthenticationLevel("ownsThisProfile")}}}).when("/signup/:url_slug/password",{templateUrl:"signup/signup.tpl.html",controller:"signupCtrl",resolve:{userOwnsThisProfile:function(e){return e.testUserAuthenticationLevel("ownsThisProfile")}}}).when("/signup/*rest",{templateUrl:"signup/signup.tpl.html",controller:"signupCtrl",resolve:{userNotLoggedIn:function(e){return e.testUserAuthenticationLevel("loggedIn",!1)}}}).when("/signup",{redirectTo:"/signup/name"})}]).controller("signupCtrl",function(e,t,n,r){n.setUservoiceTabLoc("bottom");n.setTemplates("signup/signup-header","");e.input={};e.include=t.getTemplatePath();e.nav={goToNextStep:function(){console.log("we should be overriding me.")}}}).controller("signupNameCtrl",function(e,t,n,r){e.nav.goToNextStep=function(){var n=r.asciify(e.input.givenName+"/"+e.input.surname).replace(/\s/g,"_");t.path("signup/"+n+"/url")}}).controller("signupUrlCtrl",function(e,t,n,r,i,s,o){var u=/\/(\w+)\/(\w+)\/url/,a=u.exec(s.path());e.givenName=a[1];e.input.url_slug=i.make(a[1],a[2]);e.nav.goToNextStep=function(){n.save({id:e.input.url_slug,idType:"url_slug"},{givenName:a[1],surname:a[2],url_slug:e.input.url_slug,tips:r.keysStr()},function(t,n){console.log("got response back from save user",t);o.clearCachedUser();s.path("signup/"+e.input.url_slug+"/products/add")})}}).controller("signupProductsCtrl",function(e,t,n,r,i){var s=/\/signup\/(\w+)\//.exec(e.path());t.importers=r.get();t.nav.goToNextStep=function(){e.path("signup/"+s[1]+"/password")}}).controller("signupPasswordCtrl",function(e,t,n,r,i,s){var o=/\/signup\/(\w+)\//.exec(t.path())[1],u=function(){t.path("/"+o);n.requestCurrentUser()};e.nav.goToNextStep=function(){r.patch({id:o,idType:"url_slug"},{about:{email:e.input.email}},function(e){console.log("we set the email",e)});i.save({id:o,idType:"url_slug"},{newPassword:e.input.password},function(e){console.log("we set the password; showing the 'updating' modal.");n.clearCachedUser();s.showUpdate(o,u)})}}).controller("signupHeaderCtrl",function(e,t,n){n.setTitle("signup");e.signupSteps=t.signupSteps();e.isStepCurrent=t.onSignupStep;e.isStepCompleted=t.isBeforeCurrentSignupStep});
 angular.module( 'signup', [
     'services.slug',
     'services.page',
@@ -1810,6 +1821,7 @@ angular.module( 'signup', [
     }
   })
 
+angular.module("update.update",["resources.users"]).factory("Update",function(e,t,n,r,i){var s={},o=function(e,t){s.numNotDone>0||_.isNull(s.numNotDone)?n.query({id:e,idType:"url_slug"},function(n){s.numDone=u(n,!0);s.numNotDone=u(n,!1);s.percentComplete=s.numDone*100/(s.numDone+s.numNotDone);console.log("in keepPolling");console.log(s);r(function(){o(e,t)},500)}):t()},u=function(e,t){var n=_.filter(e,function(e){return!e.currently_updating});return t?n.length:e.length-n.length},a=function(e,t){s.numDone=null;s.numNotDone=null;s.percentComplete=null;var n=i.open({templateUrl:"update/update-progress.tpl.html",controller:"updateProgressModalCtrl",backdrop:"static",keyboard:!1});o(e,function(){n.close();t()})};return{showUpdate:a,updateStatus:s}}).controller("updateProgressModalCtrl",function(e,t){e.updateStatus=t.updateStatus});
 angular.module( 'update.update', [
     'resources.users'
   ])
@@ -2605,6 +2617,7 @@ angular.module('resources.products',['ngResource'])
 })
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -3066,6 +3079,86 @@ angular.module('security.service', [
 
   return service;
 });
+angular.module('services.userMessage', [])
+  .factory('UserMessage', function ($interpolate, $rootScope) {
+
+
+    var currentMessageObject
+    var persistAfterNextRouteChange
+    var showOnTop = true
+
+    var messages = {
+      'login.error.invalidPassword':["Whoops! We recognize your email address but it looks like you've got the wrong password.", 'danger'],
+      'login.error.invalidUser':["Sorry, we don't recognize that email address.", 'danger'],
+      'login.error.serverError': ["Uh oh, looks like we've got a system error...feel free to let us know, and we'll fix it.", 'danger'],
+      'logout.success': ["You've logged out.", 'info'],
+
+      'settings.password.change.success': ["Password changed.", 'success'],
+      'settings.password.change.error.unauthenticated': ["Sorry, looks like you typed your password wrong.", 'danger'],
+      'settings.profile.change.success': ["Your profile's been updated.", 'success'],
+      'settings.url.change.success': ["Your profile URL has been updated.", 'success'],
+      'settings.email.change.success': ["Your email has been updated to {{email}}.", 'success'],
+      'passwordReset.error.invalidToken': ["Looks like you've got an expired password reset token in the URL.", 'danger'],
+      'passwordReset.success': ["Your password was reset.", 'success'],
+
+
+      'profile.removeProduct.success': ["'<em>{{title}}</em>' has been deleted from your profile.", 'info'],
+
+      'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
+      'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info']
+    };
+
+    var clear = function(){
+      currentMessageObject = null
+    }
+
+    $rootScope.$on('$routeChangeSuccess', function () {
+      if (persistAfterNextRouteChange){
+        persistAfterNextRouteChange = false
+      }
+      else {
+        clear()
+      }
+    });
+
+
+
+
+    return {
+      set: function(key, persist, interpolateParams){
+        persistAfterNextRouteChange = persist
+
+        var msg = messages[key]
+        currentMessageObject = {
+          message: $interpolate(msg[0])(interpolateParams),
+          type: msg[1]
+        }
+      },
+
+      showOnTop: function(yesOrNo){
+        if (typeof yesOrNo !== "undefined") {
+          console.log("setting showontop to ", yesOrNo)
+          clear()
+          showOnTop = !!yesOrNo
+        }
+        else {
+          return showOnTop
+        }
+      },
+
+      get: function(){
+        return currentMessageObject
+      },
+
+      remove: function(){
+        clear()
+      }
+
+    }
+
+
+  })
+
 angular.module('services.abTesting', ['ngCookies'])
   .factory("AbTesting", function($cookieStore){
 
@@ -3437,6 +3530,7 @@ angular.module("services.loading")
     }
   }
 })
+angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -3818,86 +3912,6 @@ angular.module('services.tour', [])
     $scope.userAbout = userAbout
   })
 
-angular.module('services.userMessage', [])
-  .factory('UserMessage', function ($interpolate, $rootScope) {
-
-
-    var currentMessageObject
-    var persistAfterNextRouteChange
-    var showOnTop = true
-
-    var messages = {
-      'login.error.invalidPassword':["Whoops! We recognize your email address but it looks like you've got the wrong password.", 'danger'],
-      'login.error.invalidUser':["Sorry, we don't recognize that email address.", 'danger'],
-      'login.error.serverError': ["Uh oh, looks like we've got a system error...feel free to let us know, and we'll fix it.", 'danger'],
-      'logout.success': ["You've logged out.", 'info'],
-
-      'settings.password.change.success': ["Password changed.", 'success'],
-      'settings.password.change.error.unauthenticated': ["Sorry, looks like you typed your password wrong.", 'danger'],
-      'settings.profile.change.success': ["Your profile's been updated.", 'success'],
-      'settings.url.change.success': ["Your profile URL has been updated.", 'success'],
-      'settings.email.change.success': ["Your email has been updated to {{email}}.", 'success'],
-      'passwordReset.error.invalidToken': ["Looks like you've got an expired password reset token in the URL.", 'danger'],
-      'passwordReset.success': ["Your password was reset.", 'success'],
-
-
-      'profile.removeProduct.success': ["'<em>{{title}}</em>' has been deleted from your profile.", 'info'],
-
-      'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
-      'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info']
-    };
-
-    var clear = function(){
-      currentMessageObject = null
-    }
-
-    $rootScope.$on('$routeChangeSuccess', function () {
-      if (persistAfterNextRouteChange){
-        persistAfterNextRouteChange = false
-      }
-      else {
-        clear()
-      }
-    });
-
-
-
-
-    return {
-      set: function(key, persist, interpolateParams){
-        persistAfterNextRouteChange = persist
-
-        var msg = messages[key]
-        currentMessageObject = {
-          message: $interpolate(msg[0])(interpolateParams),
-          type: msg[1]
-        }
-      },
-
-      showOnTop: function(yesOrNo){
-        if (typeof yesOrNo !== "undefined") {
-          console.log("setting showontop to ", yesOrNo)
-          clear()
-          showOnTop = !!yesOrNo
-        }
-        else {
-          return showOnTop
-        }
-      },
-
-      get: function(){
-        return currentMessageObject
-      },
-
-      remove: function(){
-        clear()
-      }
-
-    }
-
-
-  })
-
 angular.module("services.uservoiceWidget", [])
 angular.module("services.uservoiceWidget")
 .factory("UservoiceWidget", function(){
@@ -3953,7 +3967,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/upgrade-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -4194,7 +4208,7 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "\n" +
     "   <div class=\"import-complete\" ng-show=\"importComplete\">\n" +
     "      <div class=\"msg\">\n" +
-    "      Successfully imported {{ importedProductsCount }} articles!\n" +
+    "      Successfully imported {{ importedProductsCount }} new articles!\n" +
     "      </div>\n" +
     "      <a class=\"btn btn-info\" ng-click=\"$close()\">ok</a>\n" +
     "   </div>\n" +
@@ -5188,19 +5202,22 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div class=\"product-controls\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
-    "      <div class=\"edit-controls btn-group\">\n" +
+    "      <div class=\"products-info\">\n" +
     "         <div class=\"num-items\">\n" +
-    "            <span class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
+    "\n" +
+    "            <div class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
     "               <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
     "                  <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
     "               </span>\n" +
     "               <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
     "                  (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
     "               </a>\n" +
-    "            </span>\n" +
-    "            <span ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
     "               Products still updating...\n" +
-    "            </span>\n" +
+    "            </div>\n" +
+    "\n" +
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
@@ -5608,6 +5625,112 @@ angular.module("settings/settings.tpl.html", []).run(["$templateCache", function
     "\n" +
     "   <div class=\"settings-input\" ng-include='include'></div>\n" +
     "</div>\n" +
+    "");
+}]);
+
+angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/upgrade-settings.tpl.html",
+    "<div class=\"settings-header\">\n" +
+    "   <h1>Upgrade</h1>\n" +
+    "   <p class=\"pitch\">Premium accounts update metrics daily instead of weekly--so if you've got a big\n" +
+    "   new hit on Twitter, you'll know right away. You also help us support\n" +
+    "   Impactstory as an independent nonprofit.</p>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"upgrade-form-container\"  ng-controller=\"upgradeSettingsCtrl\">\n" +
+    "\n" +
+    "\n" +
+    "   <form stripe-form=\"handleStripe\"\n" +
+    "         name=\"upgradeForm\"\n" +
+    "         novalidate\n" +
+    "         class=\"form-horizontal upgrade-form\">\n" +
+    "\n" +
+    "      <h3>Upgrade to premium for $5/mo</h3>\n" +
+    "\n" +
+    "\n" +
+    "      <!-- name on card -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
+    "         <div class=\"col-sm-9\">\n" +
+    "            <input type=\"text\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   name=\"card-holder-name\"\n" +
+    "                   id=\"card-holder-name\"\n" +
+    "                   required\n" +
+    "                   placeholder=\"Card Holder's Name\">\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <!-- card number -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "          <input type=\"text\"\n" +
+    "                 class=\"form-control\"\n" +
+    "                 name=\"card-number\"\n" +
+    "                 id=\"card-number\"\n" +
+    "                 required\n" +
+    "                 ng-model=\"number\"\n" +
+    "                 payments-validate=\"card\"\n" +
+    "                 payments-format=\"card\"\n" +
+    "                 payments-type-model=\"type\"\n" +
+    "                 ng-class=\"type\"\n" +
+    "                 placeholder=\"Debit/Credit Card Number\">\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <!-- expiration date -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
+    "         <div class=\"col-sm-3\">\n" +
+    "            <input type=\"text\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   name=\"card-expiry\"\n" +
+    "                   id=\"card-expiry\"\n" +
+    "                   required\n" +
+    "                   ng-model=\"expiry\"\n" +
+    "                   payments-validate=\"expiry\"\n" +
+    "                   payments-format=\"expiry\"\n" +
+    "                   placeholder=\"MM/YY\">\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <!-- CVV -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "          <input type=\"text\"\n" +
+    "                 class=\"form-control\"\n" +
+    "                 name=\"cvv\"\n" +
+    "                 id=\"cvv\"\n" +
+    "                 ng-model=\"cvc\"\n" +
+    "                 required\n" +
+    "                 payments-validate=\"cvc\"\n" +
+    "                 payments-format=\"cvc\"\n" +
+    "                 payments-type-model=\"type\"\n" +
+    "                 placeholder=\"CVV\">\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-2 cvv-graphic\">\n" +
+    "           <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <div class=\"col-sm-offset-3 col-sm-9\">\n" +
+    "          <button type=\"submit\"\n" +
+    "                  ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
+    "                  class=\"btn btn-success\">Upgrade me for $5/mo!</button>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "   </form>\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
     "");
 }]);
 

@@ -73,19 +73,22 @@
 
 <div class="product-controls" ng-show="userExists">
    <div class="wrapper">
-      <div class="edit-controls btn-group">
+      <div class="products-info">
          <div class="num-items">
-            <span class="products-done-updating" ng-show="!productsStillUpdating">
+
+            <div class="products-done-updating" ng-show="!productsStillUpdating">
                <span ng-hide="loadingProducts()" class="val-plus-text">
                   <span class="value" id="number-products">{{ filterProducts(products).length }}</span> research products
                </span>
                <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics" ng-show="showProductsWithoutMetrics">
                   (hide <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> without metrics)
                </a>
-            </span>
-            <span ng-show="productsStillUpdating" class="products-still-updating" id="products-still-updating">
+            </div>
+
+            <div ng-show="productsStillUpdating" class="products-still-updating" id="products-still-updating">
                Products still updating...
-            </span>
+            </div>
+
          </div>
       </div>
       <div class="view-controls">

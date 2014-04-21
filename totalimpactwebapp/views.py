@@ -427,10 +427,12 @@ def user_products_get(id):
     if request.args.get("group_by")=="duplicates":
         resp = products_list.get_duplicates_list_from_tiids(user.tiids)
     else:        
+        display_debug = request.args.get("debug", "unset") != "unset"
         include_headings = request.args.get("include_heading_products") in [1, "true", "True"]
         resp = products_list.prep(
             user.products,
-            include_headings
+            include_headings,
+            display_debug
         )
 
     return json_resp_from_thing(resp)
@@ -470,12 +472,13 @@ def user_products_modify(id):
     logger.debug(u"got user {user}".format(
         user=user))
 
+    source = request.args.get("source", "webapp")
+
     if request.method == "POST" and action == "deduplicate":
         deleted_tiids = remove_duplicates_from_user(user.id)
         resp = {"deleted_tiids": deleted_tiids}
 
     elif request.method == "POST" and (action == "refresh"):
-        source = request.args.get("source", "webapp")
         tiids_being_refreshed = user.refresh_products(source)
         resp = {"products": tiids_being_refreshed}
 
@@ -485,7 +488,8 @@ def user_products_modify(id):
         abort_if_user_not_logged_in(user)
 
         if request.method == "PATCH":
-            resp = {"products": user.add_products(request.json)}
+            added_products = user.add_products(request.json)
+            resp = {"products": added_products}
 
         elif request.method == "DELETE":
             tiids_to_delete = request.json.get("tiids")
@@ -576,7 +580,12 @@ def get_password_reset_link(id):
 @app.route("/user/<id>/linked-accounts/<account>", methods=["POST"])
 def user_linked_accounts_update(id, account):
     user = get_user_for_response(id, request)
-    tiids = user.update_products_from_linked_account(account)
+
+    # if add products is coming from a scheduled source, don't add if previously removed
+    source = request.args.get("source", "webapp")    
+    update_even_removed_products = (source=="webapp")
+
+    tiids = user.update_products_from_linked_account(account, update_even_removed_products)
     return json_resp_from_thing({"products": tiids})
 
 

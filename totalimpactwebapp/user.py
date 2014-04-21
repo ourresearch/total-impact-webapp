@@ -3,8 +3,8 @@ from totalimpactwebapp import products_list
 from totalimpactwebapp import profile_award
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.exc import DataError
+from sqlalchemy.exc import IntegrityError, DataError
+from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
 
 import requests
@@ -117,6 +117,11 @@ class User(db.Model):
         return [tiid_link.tiid for tiid_link in self.tiid_links if not tiid_link.removed]
 
     @property
+    def tiids_including_removed(self):
+        # return all tiids even those that have been removed
+        return [tiid_link.tiid for tiid_link in self.tiid_links]
+
+    @property
     def products(self):
         products = get_products_from_core(self.tiids)
         if not products:
@@ -222,7 +227,12 @@ class User(db.Model):
             # AnonymousUser doesn't have method
             analytics_credentials = {}    
         product_id_type = product_id_dict.keys()[0]
-        import_response = make_products_for_product_id_strings(product_id_type, product_id_dict[product_id_type], analytics_credentials)
+        existing_tiids = self.tiids_including_removed # don't re-import dup or removed products    
+        import_response = make_products_for_product_id_strings(
+                product_id_type, 
+                product_id_dict[product_id_type], 
+                analytics_credentials,
+                existing_tiids)
         tiids = import_response["products"].keys()
 
         return add_tiids_to_user(self.id, tiids)
@@ -236,19 +246,27 @@ class User(db.Model):
         analytics_credentials = self.get_analytics_credentials()        
         return refresh_products_from_tiids(self.tiids, analytics_credentials, source)
 
-    def update_products_from_linked_account(self, account):
+    def update_products_from_linked_account(self, account, update_even_removed_products):
         account_value = getattr(self, account+"_id")
-        tiids = []        
+        tiids_to_add = []        
         if account_value:
             try:
                 analytics_credentials = self.get_analytics_credentials()
             except AttributeError:
                 # AnonymousUser doesn't have method
                 analytics_credentials = {}
-            import_response = make_products_for_linked_account(account, account_value, analytics_credentials)
-            tiids = import_response["products"].keys()
-            resp = add_tiids_to_user(self.id, tiids)
-        return tiids
+            if update_even_removed_products:
+                existing_tiids = self.tiids
+            else:
+                existing_tiids = self.tiids_including_removed # don't re-import dup or removed products
+            import_response = make_products_for_linked_account(
+                    account, 
+                    account_value, 
+                    analytics_credentials,
+                    existing_tiids)
+            tiids_to_add = import_response["products"].keys()
+            resp = add_tiids_to_user(self.id, tiids_to_add)
+        return tiids_to_add
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -385,7 +403,6 @@ def add_tiids_to_user(user_id, tiids):
 
 def delete_products_from_user(user_id, tiids_to_delete):
     user_object = User.query.get(user_id)
-    db.session.merge(user_object)
 
     number_deleted = 0
     for user_tiid_obj in user_object.tiid_links:
@@ -571,7 +588,7 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
     return user
 
 
-def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}):
+def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
         core_api_root=g.api_root,
         importer_name=importer_name,
@@ -579,7 +596,8 @@ def make_products_for_linked_account(importer_name, importer_value, analytics_cr
     )
     data_dict = {
         "account_name": importer_value, 
-        "analytics_credentials": analytics_credentials
+        "analytics_credentials": analytics_credentials,
+        "existing_tiids": existing_tiids
         }
 
     r = requests.post(
@@ -595,7 +613,7 @@ def make_products_for_linked_account(importer_name, importer_value, analytics_cr
         return {"products": {}}
 
 
-def make_products_for_product_id_strings(product_id_type, product_id_strings, analytics_credentials={}):
+def make_products_for_product_id_strings(product_id_type, product_id_strings, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{product_id_type}?api_admin_key={api_admin_key}".format(
         product_id_type=product_id_type,
         core_api_root=g.api_root,
@@ -603,7 +621,8 @@ def make_products_for_product_id_strings(product_id_type, product_id_strings, an
     )
     data_dict = {
         product_id_type: product_id_strings, 
-        "analytics_credentials": analytics_credentials
+        "analytics_credentials": analytics_credentials,
+        "existing_tiids": existing_tiids        
         }
 
     r = requests.post(

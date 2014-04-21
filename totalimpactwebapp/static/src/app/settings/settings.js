@@ -6,6 +6,7 @@ angular.module('settings', [
     'settings.pageDescriptions',
     'services.userMessage',
     'security',
+    'angularPayments',
     'directives.forms'])
 
   .config(function ($routeProvider) {
