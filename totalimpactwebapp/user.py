@@ -469,6 +469,9 @@ def remove_duplicates_from_user(user_id):
 
     duplicates_list = products_list.get_duplicates_list_from_tiids(user.tiids)
     tiids_to_remove = tiids_to_remove_from_duplicates_list(duplicates_list)
+    logger.debug(u"about to remove duplicate tiids from {user_id}: {tiids_to_remove}".format(
+        user_id=user_id, tiids_to_remove=tiids_to_remove))
+
     user.delete_products(tiids_to_remove) 
 
     # important to keep this logging in so we can recover if necessary
