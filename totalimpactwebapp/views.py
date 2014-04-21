@@ -1,5 +1,6 @@
 import requests, os, json, logging, re, datetime
 import analytics
+import stripe
 from util import local_sleep
 
 from flask import request, send_file, abort, make_response, g, redirect
@@ -22,6 +23,7 @@ from totalimpactwebapp.user import create_user_from_slug
 from totalimpactwebapp.user import get_user_from_id
 from totalimpactwebapp.user import delete_user
 from totalimpactwebapp.user import get_stripe_plan
+from totalimpactwebapp.user import update_stripe_customer
 
 from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import get_products_from_core_as_csv
@@ -380,6 +382,15 @@ def patch_user_about(profile_id):
     db.session.commit()
 
     return json_resp_from_thing({"about": profile.dict_about()})
+
+
+@app.route("/user/<profile_id>/credit_card/<stripe_token>", methods=["POST"])
+def user_credit_card(profile_id, stripe_token):
+    profile = get_user_for_response(profile_id, request)
+    abort_if_user_not_logged_in(profile)
+
+    ret = update_stripe_customer(profile, "card", stripe_token)
+    return json_resp_from_thing({"result": ret})
 
 
 

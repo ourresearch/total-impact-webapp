@@ -1692,14 +1692,23 @@ angular.module('settings', [
 
 
 
-  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {
+  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, UsersCreditCard) {
       $scope.handleStripe = function(status, response){
         console.log("calling handleStripe()")
         if(response.error) {
           console.log("ack, there was an error!", status, response)
         } else {
           console.log("yay, the charge worked!", status, response)
-          var token = response.id
+          UsersCreditCard.save(
+            {id: $scope.user.url_slug, stripeToken: response.id},
+            {},
+            function(resp){
+              console.log("success!", resp)
+            },
+            function(resp){
+              console.log("failure!", resp)
+            }
+          )
         }
       }
   })
@@ -2736,6 +2745,15 @@ angular.module('resources.users',['ngResource'])
         query: function(){}
       }
     })
+
+
+  .factory("UsersCreditCard", function($resource){
+    return $resource(
+      "/user/:id/credit_card/:stripeToken",
+      {},
+      {}
+    )
+  })
 
 
 

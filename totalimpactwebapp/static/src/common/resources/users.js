@@ -111,6 +111,15 @@ angular.module('resources.users',['ngResource'])
     })
 
 
+  .factory("UsersCreditCard", function($resource){
+    return $resource(
+      "/user/:id/credit_card/:stripeToken",
+      {},
+      {}
+    )
+  })
+
+
 
   .factory('ProfileAwards', function ($resource) {
 

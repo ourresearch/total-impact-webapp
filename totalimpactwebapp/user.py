@@ -596,6 +596,12 @@ def get_stripe_plan(user):
     return stripe.Customer.retrieve(user.stripe_id).subscriptions.data[0].to_dict()
 
 
+def update_stripe_customer(user, property, value):
+    customer = stripe.Customer.retrieve(user.stripe_id)
+    setattr(customer, property, value)
+    return customer.save()
+
+
 def get_users():
     res = User.query.all()
     return res
