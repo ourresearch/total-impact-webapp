@@ -240,6 +240,11 @@ angular.module("profile", [
         {"tiids": [product._id]},
         function(){
           console.log("finished deleting", product.biblio.title)
+          UserMessage.set(
+            "profile.removeProduct.success",
+            false,
+            {title: product.biblio.title}
+          )
         }
       )
 

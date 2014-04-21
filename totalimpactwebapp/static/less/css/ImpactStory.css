@@ -6383,9 +6383,10 @@ div#user-message {
 div#user-message .alert {
   opacity: .9;
   text-align: center;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-top: 7px;
+  padding-bottom: 7px;
   margin-bottom: 0;
+  font-size: 16px;
 }
 div#user-message .alert a {
   font-weight: bold;

@@ -4,7 +4,7 @@ angular.module('services.userMessage', [])
 
     var currentMessageObject
     var persistAfterNextRouteChange
-    var showOnTop
+    var showOnTop = true
 
     var messages = {
       'login.error.invalidPassword':["Whoops! We recognize your email address but it looks like you've got the wrong password.", 'danger'],
@@ -19,6 +19,9 @@ angular.module('services.userMessage', [])
       'settings.email.change.success': ["Your email has been updated to {{email}}.", 'success'],
       'passwordReset.error.invalidToken': ["Looks like you've got an expired password reset token in the URL.", 'danger'],
       'passwordReset.success': ["Your password was reset.", 'success'],
+
+
+      'profile.removeProduct.success': ["'<em>{{title}}</em>' has been deleted from your profile.", 'success'],
 
       'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
       'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info']
@@ -58,7 +61,6 @@ angular.module('services.userMessage', [])
           showOnTop = !!yesOrNo
         }
         else {
-          console.log("returning showOnTop: ", showOnTop)
           return showOnTop
         }
       },
