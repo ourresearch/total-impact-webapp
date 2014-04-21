@@ -452,7 +452,7 @@ def tiids_to_remove_from_duplicates_list(duplicates_list):
     for duplicate_group in duplicates_list:
         tiid_to_keep = None
         for tiid_dict in duplicate_group:
-            if (tiid_to_keep==None) and tiid_dict["has_user_provided_biblio"]:
+            if (tiid_to_keep==None) and (tiid_dict["has_user_provided_biblio"] or tiid_dict["has_free_fulltext_url"]):
                 tiid_to_keep = tiid_dict["tiid"]
             else:
                 tiids_to_remove += [tiid_dict]
