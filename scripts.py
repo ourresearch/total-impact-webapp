@@ -10,7 +10,7 @@ STRIPE_API_KEY
 
 def mint_stripe_customers_for_all_users():
 
-    for user in db.session.Query(User):
+    for user in User.query.all():
 
         if user.stripe_id:
             print "Already a Stripe customer for {email}; skipping".format(
