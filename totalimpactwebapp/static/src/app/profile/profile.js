@@ -9,7 +9,7 @@ angular.module("profile", [
   'services.timer',
   'profileSingleProducts',
   'profileLinkedAccounts',
-  'services.i18nNotifications',
+  'services.userMessage',
   'services.tour',
   'directives.jQueryTools',
   'update.update'
@@ -141,7 +141,7 @@ angular.module("profile", [
     Product,
     UserProfile,
     ProfileAwards,
-    i18nNotifications,
+    UserMessage,
     Update,
     Loading,
     Timer,

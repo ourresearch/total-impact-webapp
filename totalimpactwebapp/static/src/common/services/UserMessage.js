@@ -1,9 +1,10 @@
 angular.module('services.userMessage', [])
   .factory('UserMessage', function ($interpolate, $rootScope) {
 
-    var messageKey = null
-    var persistAfterNextRouteChange = false
-    var interpolateParams = {}
+
+    var currentMessageObject
+    var persistAfterNextRouteChange
+    var showOnTop
 
     var messages = {
       'login.error.invalidPassword':["Whoops! We recognize your email address but it looks like you've got the wrong password.", 'danger'],
@@ -17,16 +18,14 @@ angular.module('services.userMessage', [])
       'settings.url.change.success': ["Your profile URL has been updated.", 'success'],
       'settings.email.change.success': ["Your email has been updated to {{email}}.", 'success'],
       'passwordReset.error.invalidToken': ["Looks like you've got an expired password reset token in the URL.", 'danger'],
-      'passwordReset.ready': ["You're temporarily logged in. You should change your password now.", 'warning'],
+      'passwordReset.success': ["Your password was reset.", 'success'],
 
       'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
       'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info']
     };
 
     var clear = function(){
-        messageKey = null
-        interpolateParams = null
-        persistAfterNextRouteChange = false
+      currentMessageObject = null
     }
 
     $rootScope.$on('$routeChangeSuccess', function () {
@@ -42,24 +41,35 @@ angular.module('services.userMessage', [])
 
 
     return {
-      set: function(key, persist, params){
-        messageKey = key
-        persistAfterNextRouteChange = !!persist
-        interpolateParams = params
-      },
+      set: function(key, persist, interpolateParams){
+        persistAfterNextRouteChange = persist
 
-      get: function(){
-        if (!messageKey) {
-          return null
-        }
-        var msg = messages[messageKey]
-        return {
+        var msg = messages[key]
+        currentMessageObject = {
           message: $interpolate(msg[0])(interpolateParams),
           type: msg[1]
         }
       },
 
-      remove: clear
+      showOnTop: function(yesOrNo){
+        if (typeof yesOrNo !== "undefined") {
+          console.log("setting showontop to ", yesOrNo)
+          clear()
+          showOnTop = !!yesOrNo
+        }
+        else {
+          console.log("returning showOnTop: ", showOnTop)
+          return showOnTop
+        }
+      },
+
+      get: function(){
+        return currentMessageObject
+      },
+
+      remove: function(){
+        clear()
+      }
 
     }
 

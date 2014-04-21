@@ -423,10 +423,7 @@ angular.module('app', [
   'placeholderShim',
   'services.abTesting',
   'services.loading',
-  'services.i18nNotifications',
   'services.userMessage',
-
-
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
@@ -481,11 +478,8 @@ angular.module('app').run(function(security, $window, Page, $location) {
 angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
-                                                     i18nNotifications,
                                                      UserMessage,
-
                                                      AbTesting,
-                                                     localizedMessages,
                                                      UservoiceWidget,
                                                      $location,
                                                      Loading,
@@ -493,7 +487,6 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      security,
                                                      RouteChangeErrorHandler) {
 
-  $scope.notifications = i18nNotifications;
   $scope.userMessage = UserMessage
 
   $scope.page = Page;
@@ -507,9 +500,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   AbTesting.assignTestStates()
   $scope.abTesting = AbTesting
 
-  $scope.removeNotification = function (notification) {
-    i18nNotifications.remove(notification);
-  };
 
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
     RouteChangeErrorHandler.handle(event, current, previous, rejection)
@@ -783,8 +773,8 @@ angular.module('passwordReset', [
     'resources.users',
     'services.loading',
     'services.page',
+    'services.userMessage',
     'directives.spinner',
-    'services.i18nNotifications',
     'security',
     'directives.forms'])
 
@@ -797,7 +787,7 @@ angular.module('passwordReset', [
   )
 })
 
-.controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, i18nNotifications, security){
+.controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, UserMessage, security){
   console.log("reset token", $routeParams.resetToken)
 
   $scope.password = ""
@@ -808,12 +798,12 @@ angular.module('passwordReset', [
       {id: $routeParams.resetToken, idType:"reset_token"},
       {newPassword: $scope.password},
       function(resp) {
-        i18nNotifications.pushForNextRoute('settings.password.change.success', 'success');
+        UserMessage.set('passwordReset.success', true);
         $location.path("/")
         security.showLogin()
       },
       function(resp) {
-        i18nNotifications.pushForCurrentRoute('settings.password.change.error.unauthenticated', 'danger');
+        UserMessage.set('passwordReset.error.invalidToken');
         Loading.finish('saveButton')
         $scope.password = "";  // reset the form
       }
@@ -1197,7 +1187,7 @@ angular.module("profile", [
   'services.timer',
   'profileSingleProducts',
   'profileLinkedAccounts',
-  'services.i18nNotifications',
+  'services.userMessage',
   'services.tour',
   'directives.jQueryTools',
   'update.update'
@@ -1329,7 +1319,7 @@ angular.module("profile", [
     Product,
     UserProfile,
     ProfileAwards,
-    i18nNotifications,
+    UserMessage,
     Update,
     Loading,
     Timer,
@@ -2739,50 +2729,46 @@ angular.module('security', [
 ]);
 
 angular.module('security.login.form', [
-    'services.localizedMessages',
     'directives.forms',
     'services.page',
     'services.loading',
-    'services.i18nNotifications',
+    'services.userMessage',
     'security.login.resetPassword',
     'ui.bootstrap'
   ])
 
 // The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
 // This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
-.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance, $modal, i18nNotifications, Page, Loading) {
+.controller('LoginFormController', function($scope, security, $modalInstance, $modal, UserMessage, Page, Loading) {
   var reportError = function(status){
     var key
     if (status == 401) {
-      key = "login.error.invalidPassword"
+      UserMessage.set("login.error.invalidPassword")
     }
     else if (status == 404) {
-      key = "login.error.invalidUser"
+      UserMessage.set("login.error.invalidUser")
     }
     else {
-      key = "login.error.serverError"
+      UserMessage.set("login.error.serverError")
     }
-    i18nNotifications.pushForCurrentRoute(key, "danger")
 
   }
   var dismissModal = function(){
-    i18nNotifications.removeAll()
-    Page.setNotificationsLoc("header")
+    UserMessage.remove()
+    UserMessage.showOnTop(true)
     $modalInstance.dismiss('cancel');
     Loading.finish('login')
   }
 
-  console.log("setting notifications to modal")
-  Page.setNotificationsLoc("modal")
+  UserMessage.showOnTop(false)
   $scope.user = {};
-  $scope.notifications = i18nNotifications
   $scope.loading = Loading
+  $scope.userMessage = UserMessage
 
 
 
   $scope.login = function () {
     // Clear any previous security errors
-    i18nNotifications.removeAll()
     Loading.start('login')
 
     // Try to login
@@ -2821,7 +2807,7 @@ angular.module('security.login', [
 angular.module('security.login.resetPassword',
   ['ui.bootstrap']
 )
-.controller('ResetPasswordModalCtrl', function($scope, $http, security, localizedMessages, $modalInstance) {
+.controller('ResetPasswordModalCtrl', function($scope, $http, security, $modalInstance) {
   $scope.user = {}
   var emailSubmittedBool = false
   $scope.emailSubmitted = function(){
@@ -2871,12 +2857,12 @@ angular.module('security.login.toolbar', [
 });
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
-  'services.i18nNotifications',
+  'services.userMessage',
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', function($http, $q, $location, $modal, i18nNotifications) {
+.factory('security', function($http, $q, $location, $modal, UserMessage) {
   var useCachedUser = false
   var currentUser
 
@@ -2999,9 +2985,7 @@ angular.module('security.service', [
     logout: function(redirectTo) {
       currentUser = null;
       $http.get('/user/logout').success(function(data, status, headers, config) {
-        console.log("logout message: ", data)
-        i18nNotifications.pushForCurrentRoute("logout.success", "success")
-//        redirect(redirectTo);
+        UserMessage.set("logout.success")
       });
     },
 
@@ -3403,44 +3387,6 @@ angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$h
 
   return httpRequestTracker;
 }]);
-angular.module('services.i18nNotifications', ['services.notifications', 'services.localizedMessages']);
-angular.module('services.i18nNotifications').factory('i18nNotifications', ['localizedMessages', 'notifications', function (localizedMessages, notifications) {
-
-
-
-  var prepareNotification = function(msgKey, type, interpolateParams, otherProperties) {
-     return angular.extend({
-       message: localizedMessages.get(msgKey, interpolateParams),
-       type: type
-     }, otherProperties);
-  };
-
-  var I18nNotifications = {
-    pushSticky:function (msgKey, type, interpolateParams, otherProperties) {
-      return notifications.pushSticky(prepareNotification(msgKey, type, interpolateParams, otherProperties));
-    },
-    pushForCurrentRoute:function (msgKey, type, interpolateParams, otherProperties) {
-      return notifications.pushForCurrentRoute(prepareNotification(msgKey, type, interpolateParams, otherProperties));
-    },
-    pushForNextRoute:function (msgKey, type, interpolateParams, otherProperties) {
-      return notifications.pushForNextRoute(prepareNotification(msgKey, type, interpolateParams, otherProperties));
-    },
-    getCurrent:function () {
-      return notifications.getCurrent();
-    },
-    getFirst:function(){
-      return notifications.getCurrent()[0]
-    },
-    remove:function (notification) {
-      return notifications.remove(notification);
-    },
-    removeAll: function(){
-      return notifications.removeAll()
-    }
-  };
-
-  return I18nNotifications;
-}]);
 angular.module("services.loading", [])
 angular.module("services.loading")
 .factory("Loading", function(){
@@ -3486,118 +3432,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module('services.localizedMessages', []).factory('localizedMessages', function ($interpolate) {
-
-
-  var i18nmessages = {
-
-    'login.error.invalidPassword':"Whoops! We recognize your email address but it looks like you've got the wrong password.",
-    'login.error.invalidUser':"Sorry, we don't recognize that email address.",
-    'login.error.serverError': "Uh oh, looks like we've got a system error...feel free to let us know, and we'll fix it.",
-    'logout.success': "You've logged out.",
-
-    'test.first': "This is a test of the notification system...",
-    'settings.password.change.success': "Password changed.",
-    'settings.password.change.error.unauthenticated': "Sorry, looks like you typed your password wrong.",
-    'settings.profile.change.success': "Your profile's been updated.",
-    'settings.url.change.success': "Your profile URL has been updated.",
-    'settings.email.change.success': "Your email has been updated to {{email}}.",
-    'settings.wordpress_api_key.add.success': "Congrats, you've linked to wordpress.com. Check out your new blog post stats!",
-    'passwordReset.error.invalidToken': "Looks like you've got an expired password reset token in the URL.",
-    'passwordReset.ready': "You're temporarily logged in. You should change your password now.",
-
-    'browser.error.oldIE': "Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>",
-    'dedup.success': "We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products."
-
-  };
-
-  var handleNotFound = function (msg, msgKey) {
-    return msg || '?' + msgKey + '?';
-  };
-
-  return {
-    get : function (msgKey, interpolateParams) {
-      var msg =  i18nmessages[msgKey];
-      if (msg) {
-        return $interpolate(msg)(interpolateParams);
-      } else {
-        return handleNotFound(msg, msgKey);
-      }
-    }
-  };
-});
-angular.module('services.notifications', []).factory('notifications', ['$rootScope', function ($rootScope) {
-
-  var notifications = {
-    'STICKY' : [],
-    'ROUTE_CURRENT' : [],
-    'ROUTE_NEXT' : []
-  };
-  var notificationsService = {};
-
-  var notificationAlreadyLoaded = function(notification){
-    var allNotifications = _.flatten(notifications)
-    var allNotificationMessages =   _.pluck(allNotifications, "message")
-
-    return _.contains(allNotificationMessages, notification.message)
-
-  }
-
-  var addNotification = function (notificationsArray, notificationObj) {
-    if (!angular.isObject(notificationObj)) {
-      throw new Error("Only object can be added to the notification service");
-    }
-
-    if (notificationAlreadyLoaded(notificationObj)) {
-      // no point in having duplicate notifications.
-      return false
-    }
-    else {
-      notificationsArray.push(notificationObj);
-      return notificationObj;
-    }
-  };
-
-  $rootScope.$on('$routeChangeSuccess', function () {
-    notifications.ROUTE_CURRENT.length = 0;
-
-    notifications.ROUTE_CURRENT = angular.copy(notifications.ROUTE_NEXT);
-    notifications.ROUTE_NEXT.length = 0;
-  });
-
-  notificationsService.getCurrent = function(){
-    return [].concat(notifications.STICKY, notifications.ROUTE_CURRENT);
-  };
-
-  notificationsService.pushSticky = function(notification) {
-    return addNotification(notifications.STICKY, notification);
-  };
-
-  notificationsService.pushForCurrentRoute = function(notification) {
-    return addNotification(notifications.ROUTE_CURRENT, notification);
-  };
-
-  notificationsService.pushForNextRoute = function(notification) {
-    return addNotification(notifications.ROUTE_NEXT, notification);
-  };
-
-  notificationsService.remove = function(notification){
-    angular.forEach(notifications, function (notificationsByType) {
-      var idx = _.indexOf(notificationsByType, (notification))
-      if (idx>-1){
-        notificationsByType.splice(idx,1);
-      }
-    });
-  };
-
-  notificationsService.removeAll = function(){
-    angular.forEach(notifications, function (notificationsByType) {
-      notificationsByType.length = 0;
-    });
-  };
-
-  return notificationsService;
-}]);
 angular.module("services.page", [
   'signup'
 ])
@@ -3982,9 +3816,10 @@ angular.module('services.tour', [])
 angular.module('services.userMessage', [])
   .factory('UserMessage', function ($interpolate, $rootScope) {
 
-    var messageKey = null
-    var persistAfterNextRouteChange = false
-    var interpolateParams = {}
+
+    var currentMessageObject
+    var persistAfterNextRouteChange
+    var showOnTop
 
     var messages = {
       'login.error.invalidPassword':["Whoops! We recognize your email address but it looks like you've got the wrong password.", 'danger'],
@@ -3998,16 +3833,14 @@ angular.module('services.userMessage', [])
       'settings.url.change.success': ["Your profile URL has been updated.", 'success'],
       'settings.email.change.success': ["Your email has been updated to {{email}}.", 'success'],
       'passwordReset.error.invalidToken': ["Looks like you've got an expired password reset token in the URL.", 'danger'],
-      'passwordReset.ready': ["You're temporarily logged in. You should change your password now.", 'warning'],
+      'passwordReset.success': ["Your password was reset.", 'success'],
 
       'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
       'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info']
     };
 
     var clear = function(){
-        messageKey = null
-        interpolateParams = null
-        persistAfterNextRouteChange = false
+      currentMessageObject = null
     }
 
     $rootScope.$on('$routeChangeSuccess', function () {
@@ -4023,24 +3856,35 @@ angular.module('services.userMessage', [])
 
 
     return {
-      set: function(key, persist, params){
-        messageKey = key
-        persistAfterNextRouteChange = !!persist
-        interpolateParams = params
-      },
+      set: function(key, persist, interpolateParams){
+        persistAfterNextRouteChange = persist
 
-      get: function(){
-        if (!messageKey) {
-          return null
-        }
-        var msg = messages[messageKey]
-        return {
+        var msg = messages[key]
+        currentMessageObject = {
           message: $interpolate(msg[0])(interpolateParams),
           type: msg[1]
         }
       },
 
-      remove: clear
+      showOnTop: function(yesOrNo){
+        if (typeof yesOrNo !== "undefined") {
+          console.log("setting showontop to ", yesOrNo)
+          clear()
+          showOnTop = !!yesOrNo
+        }
+        else {
+          console.log("returning showOnTop: ", showOnTop)
+          return showOnTop
+        }
+      },
+
+      get: function(){
+        return currentMessageObject
+      },
+
+      remove: function(){
+        clear()
+      }
 
     }
 
@@ -5894,8 +5738,8 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
 angular.module("user-message.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("user-message.tpl.html",
     "<div ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
-    "        ng-if=\"userMessage.get().message\"\n" +
-    "        ng-animate=\"{leave: 'animated slideOutUp'}\">\n" +
+    "        ng-if=\"userMessage.get().message && userMessage.showOnTop()\"\n" +
+    "        ng-animate=\"{leave: 'animated fadeOutUp'}\">\n" +
     "       <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
     "       <button class=\"close\" ng-click=\"userMessage.remove()\">&times;</button>\n" +
     "</div>\n" +
@@ -5936,11 +5780,13 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "</div>\n" +
     "\n" +
     "<div class=\"modal-body\">\n" +
-    "   <ul class=\"modal-notifications\">\n" +
-    "      <li ng-class=\"['alert', 'alert-'+notification.type]\" ng-repeat=\"notification in notifications.getCurrent()\">\n" +
-    "         <span class=\"text\" ng-bind-html-unsafe=\"notification.message\"></span>\n" +
-    "      </li>\n" +
-    "   </ul>\n" +
+    "   <div id=\"user-message-modal\">\n" +
+    "      <div ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
+    "           ng-animate=\"{enter: 'animated fadeInDown', leave:'animated fadeOutUp'}\"\n" +
+    "           ng-if=\"userMessage.get().message\">\n" +
+    "             <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
     "\n" +
     "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\" autocomplete=\"off\">\n" +
     "      <div class=\"form-group\" >\n" +

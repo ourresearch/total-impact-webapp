@@ -1790,8 +1790,8 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
 angular.module("user-message.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("user-message.tpl.html",
     "<div ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
-    "        ng-if=\"userMessage.get().message\"\n" +
-    "        ng-animate=\"{leave: 'animated slideOutUp'}\">\n" +
+    "        ng-if=\"userMessage.get().message && userMessage.showOnTop()\"\n" +
+    "        ng-animate=\"{leave: 'animated fadeOutUp'}\">\n" +
     "       <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
     "       <button class=\"close\" ng-click=\"userMessage.remove()\">&times;</button>\n" +
     "</div>\n" +

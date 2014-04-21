@@ -1,7 +1,7 @@
 angular.module('security.login.resetPassword',
   ['ui.bootstrap']
 )
-.controller('ResetPasswordModalCtrl', function($scope, $http, security, localizedMessages, $modalInstance) {
+.controller('ResetPasswordModalCtrl', function($scope, $http, security, $modalInstance) {
   $scope.user = {}
   var emailSubmittedBool = false
   $scope.emailSubmitted = function(){

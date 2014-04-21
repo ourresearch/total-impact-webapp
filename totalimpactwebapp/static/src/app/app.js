@@ -7,10 +7,7 @@ angular.module('app', [
   'placeholderShim',
   'services.abTesting',
   'services.loading',
-  'services.i18nNotifications',
   'services.userMessage',
-
-
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
@@ -65,11 +62,8 @@ angular.module('app').run(function(security, $window, Page, $location) {
 angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
-                                                     i18nNotifications,
                                                      UserMessage,
-
                                                      AbTesting,
-                                                     localizedMessages,
                                                      UservoiceWidget,
                                                      $location,
                                                      Loading,
@@ -77,7 +71,6 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      security,
                                                      RouteChangeErrorHandler) {
 
-  $scope.notifications = i18nNotifications;
   $scope.userMessage = UserMessage
 
   $scope.page = Page;
@@ -91,9 +84,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   AbTesting.assignTestStates()
   $scope.abTesting = AbTesting
 
-  $scope.removeNotification = function (notification) {
-    i18nNotifications.remove(notification);
-  };
 
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
     RouteChangeErrorHandler.handle(event, current, previous, rejection)
