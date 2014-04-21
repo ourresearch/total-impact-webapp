@@ -1692,7 +1692,7 @@ angular.module('settings', [
 
 
 
-  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {
       $scope.handleStripe = function(status, response){
         console.log("calling handleStripe()")
         if(response.error) {
@@ -1705,7 +1705,7 @@ angular.module('settings', [
   })
 
 
-  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')

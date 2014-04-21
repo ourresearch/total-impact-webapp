@@ -21,7 +21,7 @@ from totalimpactwebapp.user import User
 from totalimpactwebapp.user import create_user_from_slug
 from totalimpactwebapp.user import get_user_from_id
 from totalimpactwebapp.user import delete_user
-from totalimpactwebapp.user import add_stripe_info_to_user
+from totalimpactwebapp.user import get_stripe_plan
 
 from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import get_products_from_core_as_csv
@@ -263,7 +263,9 @@ def get_current_user():
     #sleep(1)
 
     try:
-        ret = {"user": g.user.dict_about()}
+        dict_about = g.user.dict_about()
+        dict_about["subscription"] = get_stripe_plan(g.user)
+        ret = {"user": dict_about}
 
     except AttributeError:  # anon user has no as_dict()
         ret = {"user": None}
@@ -353,12 +355,11 @@ def user_delete(profile_id):
 @app.route("/user/<profile_id>/about", methods=['GET'])
 def user_about(profile_id):
     user = get_user_for_response(profile_id, request)
-    user = add_stripe_info_to_user(user)
+    dict_about = user.dict_about()
+    logger.debug(u"got the user dict out: {user}".format(
+        user=dict_about))
 
-    logger.debug(u"got the user out: {user}".format(
-        user=user.dict_about()))
-
-    return json_resp_from_thing({"about": user.dict_about()})
+    return json_resp_from_thing({"about": dict_about})
 
 
 @app.route("/user/<profile_id>/about", methods=['PATCH'])

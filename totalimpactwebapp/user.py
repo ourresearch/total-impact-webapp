@@ -592,9 +592,8 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
     return user
 
 
-def add_stripe_info_to_user(user):
-    user.stripe_customer = stripe.Customer.retrieve(user.stripe_id)
-    return user
+def get_stripe_plan(user):
+    return stripe.Customer.retrieve(user.stripe_id).subscriptions.data[0].to_dict()
 
 
 def get_users():
