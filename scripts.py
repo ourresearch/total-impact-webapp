@@ -1,23 +1,16 @@
 import stripe
-from totalimpactwebapp.user import get_all_users
+from totalimpactwebapp.user import User
 from totalimpactwebapp import db
 
 """
 requires these env vars be set in this environment:
 DATABASE_URL
-STRIPE_KEY
+STRIPE_API_KEY
 """
 
 def mint_stripe_customers_for_all_users():
-    users = get_all_users()
 
-    # TODO this is just for testing; use all the users in production
-    users = users[0:4]
-
-    print "Minting and saving Stripe customer IDs for all {count} " \
-          "users...".format(count=len(users))
-
-    for user in users:
+    for user in db.session.Query(User):
 
         if user.stripe_id:
             print "Already a Stripe customer for {email}; skipping".format(
