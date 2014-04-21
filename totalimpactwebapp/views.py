@@ -17,8 +17,13 @@ from totalimpactwebapp.password_reset import reset_password_from_token
 from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
-from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id, delete_user
-from totalimpactwebapp.user import remove_duplicates_from_user 
+from totalimpactwebapp.user import User
+from totalimpactwebapp.user import create_user_from_slug
+from totalimpactwebapp.user import get_user_from_id
+from totalimpactwebapp.user import delete_user
+from totalimpactwebapp.user import add_stripe_info_to_user
+
+from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import get_products_from_core_as_csv
 from totalimpactwebapp.user import EmailExistsError
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
@@ -348,6 +353,7 @@ def user_delete(profile_id):
 @app.route("/user/<profile_id>/about", methods=['GET'])
 def user_about(profile_id):
     user = get_user_for_response(profile_id, request)
+    user = add_stripe_info_to_user(user)
 
     logger.debug(u"got the user out: {user}".format(
         user=user.dict_about()))

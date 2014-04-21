@@ -536,8 +536,9 @@ def create_user_from_slug(url_slug, user_request_dict, db):
 
 
     # make the Stripe customer so we can get their customer number:
+    full_name = "{first} {last}".format(first=user_dict["given_name"], last=user_dict["surname"])
     stripe_customer = stripe.Customer.create(
-        description=user_dict["given_name"] + " " + user_dict["surname"],
+        description=full_name,
         email=user_dict["email"],
         plan="Premium"
     )
@@ -591,7 +592,12 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
     return user
 
 
-def get_all_users():
+def add_stripe_info_to_user(user):
+    user.stripe_customer = stripe.Customer.retrieve(user.stripe_id)
+    return user
+
+
+def get_users():
     res = User.query.all()
     return res
 
