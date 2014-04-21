@@ -8,9 +8,22 @@ DATABASE_URL
 STRIPE_API_KEY
 """
 
+
+def page_query(q):
+    offset = 0
+    while True:
+        r = False
+        for elem in q.limit(5).offset(offset):
+           r = True
+           yield elem
+        offset += 5
+        if not r:
+            break
+
+
 def mint_stripe_customers_for_all_users():
 
-    for user in User.query.yield_per(5):
+    for user in page_query(User.query):
 
         if user.stripe_id:
             print "Already a Stripe customer for {email}; skipping".format(
