@@ -1411,6 +1411,11 @@ angular.module("profile", [
     $scope.removeProduct = function(product){
       console.log("removing product: ", product)
       $scope.products.splice($scope.products.indexOf(product),1)
+      UserMessage.set(
+        "profile.removeProduct.success",
+        false,
+        {title: product.biblio.title}
+      )
 
       // do the deletion in the background, without a progress spinner...
       UsersProducts.delete(
@@ -1418,11 +1423,6 @@ angular.module("profile", [
         {"tiids": [product._id]},
         function(){
           console.log("finished deleting", product.biblio.title)
-          UserMessage.set(
-            "profile.removeProduct.success",
-            false,
-            {title: product.biblio.title}
-          )
         }
       )
 
@@ -3841,7 +3841,7 @@ angular.module('services.userMessage', [])
       'passwordReset.success': ["Your password was reset.", 'success'],
 
 
-      'profile.removeProduct.success': ["'<em>{{title}}</em>' has been deleted from your profile.", 'success'],
+      'profile.removeProduct.success': ["'<em>{{title}}</em>' has been deleted from your profile.", 'info'],
 
       'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
       'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info']

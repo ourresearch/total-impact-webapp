@@ -233,6 +233,11 @@ angular.module("profile", [
     $scope.removeProduct = function(product){
       console.log("removing product: ", product)
       $scope.products.splice($scope.products.indexOf(product),1)
+      UserMessage.set(
+        "profile.removeProduct.success",
+        false,
+        {title: product.biblio.title}
+      )
 
       // do the deletion in the background, without a progress spinner...
       UsersProducts.delete(
@@ -240,11 +245,6 @@ angular.module("profile", [
         {"tiids": [product._id]},
         function(){
           console.log("finished deleting", product.biblio.title)
-          UserMessage.set(
-            "profile.removeProduct.success",
-            false,
-            {title: product.biblio.title}
-          )
         }
       )
 
