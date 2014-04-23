@@ -51,7 +51,7 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
     for account_type in ["github", "slideshare", "figshare", "orcid"]:
         user_account_value = user_about[account_type+"_id"]
         if user_account_value:
-            url = webapp_api_endpoint + u"/user/{url_slug}/linked-accounts/{account_type}?action=update".format(
+            url = webapp_api_endpoint + u"/user/{url_slug}/linked-accounts/{account_type}?action=update&source=scheduled".format(
                 url_slug=url_slug,
                 account_type=account_type)
             try:
@@ -103,6 +103,7 @@ def main(number_to_update=3, max_days_since_updated=7, url_slugs=[None]):
         for url_slug in url_slugs:
             number_products_before = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
             import_products_by_url_slug(url_slug, webapp_api_endpoint)
+            # don't need to deduplicate any more
             # deduplicate_by_url_slug(url_slug, webapp_api_endpoint)
             refresh_by_url_slug(url_slug, webapp_api_endpoint)
             number_products_after = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
