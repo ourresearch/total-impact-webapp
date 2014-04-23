@@ -123,7 +123,25 @@ angular.module('settings', [
 
 
   .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, UsersCreditCard) {
-      $scope.handleStripe = function(status, response){
+
+
+    $scope.planStatus = function(){
+      var su = security.currentUser.subscription
+      if (su.user_has_card && _.contains(["active", "trialing", "past_due"], su.status)) {
+        // paid user with working premium plan
+        return "paid"
+      }
+      else if (!su.user_has_card && su.status == "trialing") {
+        // trial user with working premium plan
+        return "trial"
+      }
+      else {
+        // on the free plan
+        return "free"
+      }
+    }
+
+    $scope.handleStripe = function(status, response){
         console.log("calling handleStripe()")
         if(response.error) {
           console.log("ack, there was an error!", status, response)

@@ -593,7 +593,13 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
 
 
 def get_stripe_plan(user):
-    return stripe.Customer.retrieve(user.stripe_id).subscriptions.data[0].to_dict()
+    cu = stripe.Customer.retrieve(user.stripe_id)
+    subscription = cu.subscriptions.data[0].to_dict()
+    subscription["user_has_card"] = bool(cu.default_card)
+    return subscription
+
+
+
 
 
 def update_stripe_customer(user, property, value):
