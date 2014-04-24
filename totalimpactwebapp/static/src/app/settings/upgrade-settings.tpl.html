@@ -1,26 +1,39 @@
 <div class="settings-header">
    <h1>Upgrade</h1>
 
-   <div class="trial">
-
-   </div>
-
-
-
-   <p class="pitch">Premium accounts update metrics daily instead of weekly--so if you've got a big
-   new hit on Twitter, you'll know right away. You also help us support
-   Impactstory as an independent nonprofit.</p>
+   <p class="expl">Get weekly updates revealing your latest impacts.</p>
 </div>
 
 <div class="upgrade-form-container"  ng-controller="upgradeSettingsCtrl">
+
+   <div class="current-plan-status">
+      <div class="premium" ng-show="!planStatus('free')">
+         Your Impactstory Premium subscription is
+         <div class="status subscribed" ng-if="planStatus('trial')">
+            <span class="status-word">active</span>
+            <span class="status-descr">since {{ paidSince() }}</span>
+
+         </div>
+         <div class="status subscribed" ng-if="planStatus('paid')">
+            <span class="status-word">on free trial</span>
+            <span class="status-descr">for {{ timeLeftInTrial() }} more days.</span>
+         </div>
+      </div>
+
+      <div class="status free" ng-show="planStatus('free')">You don't have Premium yet.</div>
+
+
+   </div>
 
 
    <form stripe-form="handleStripe"
          name="upgradeForm"
          novalidate
+         ng-show="!planStatus('paid')"
          class="form-horizontal upgrade-form">
 
-      <h3>Upgrade to premium for $5/mo</h3>
+      <h3 ng-show="planStatus('free')">Upgrade to Premium for $5/mo</h3>
+      <h3 ng-show="planStatus('trial')">Continue your Premium plan for $5/mo</h3>
 
 
       <!-- name on card -->
@@ -103,6 +116,20 @@
         </div>
       </div>
    </form>
+
+   <div class="subscriber-buttons" ng-show="planStatus('paid')">
+      <button ng-click="editCard()" class="btn btn-primary edit-credit-card">
+         <i class="icon-credit-card left"></i>
+         Change my credit card info
+      </button>
+      <button ng-click="cancelPremium()" class="btn btn-danger">
+         <i class="icon-warning-sign left"></i>
+         Cancel Premium
+      </button>
+
+
+   </div>
+
 
 </div>
 

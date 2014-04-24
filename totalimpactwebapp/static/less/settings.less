@@ -1,7 +1,7 @@
 div.settings {
    div.settings-header {
-      margin: 0 0 70px 20px;
-      padding: 0 0 0 30px;
+      margin: 0 0 50px 0;
+      padding: 0 0 0 0;
       width: 600px;
       h1 {
          font-weight: bolder;
@@ -12,7 +12,8 @@ div.settings {
       }
       p {
          font-size: 18px;
-         color: #999;
+         color: @gray-light;
+         font-weight: 300;
          &.pitch {
             padding-top: 20px;
          }
@@ -58,12 +59,34 @@ div.settings {
    div.settings-input {
 
       float:left;
-      margin: 0  0 0 50px;
+      margin: 0 0 0 100px;
+      width: 800px;
 
       div.upgrade-form-container {
-         margin-left: 50px;
+         div.current-plan-status {
+            margin-bottom: 50px;
+            font-size: 30px;
+            font-weight: 300;
+            color: @gray-light;
+            div.status {
+               &.subscribed {
+                  color: @alert-success-text;
+                  .status-word {
+                     font-weight: 900;
+
+                  }
+               }
+
+            }
+         }
          .cvv-graphic {
             padding-top: 12px;
+         }
+
+         div.subscriber-buttons {
+            .edit-credit-card{
+               margin-right: 20px;
+            }
          }
       }
 
@@ -72,7 +95,6 @@ div.settings {
          margin:0;
          width: 600px;
          &.custom-url {
-            padding-left: 50px;
          }
 
          &.upgrade-form {

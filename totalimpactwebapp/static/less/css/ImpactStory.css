@@ -8323,8 +8323,8 @@ div.signup-page div.signup-sidebar div.testimonials-container div.testimonial ci
   margin-top: 10px;
 }
 div.settings div.settings-header {
-  margin: 0 0 70px 20px;
-  padding: 0 0 0 30px;
+  margin: 0 0 50px 0;
+  padding: 0 0 0 0;
   width: 600px;
 }
 div.settings div.settings-header h1 {
@@ -8336,7 +8336,8 @@ div.settings div.settings-header h1 {
 }
 div.settings div.settings-header p {
   font-size: 18px;
-  color: #999;
+  color: #999999;
+  font-weight: 300;
 }
 div.settings div.settings-header p.pitch {
   padding-top: 20px;
@@ -8388,21 +8389,31 @@ div.settings div.settings-nav ul li a i {
 }
 div.settings div.settings-input {
   float: left;
-  margin: 0  0 0 50px;
+  margin: 0 0 0 100px;
+  width: 800px;
 }
-div.settings div.settings-input div.upgrade-form-container {
-  margin-left: 50px;
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status {
+  margin-bottom: 50px;
+  font-size: 30px;
+  font-weight: 300;
+  color: #999999;
+}
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status div.status.subscribed {
+  color: #468847;
+}
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status div.status.subscribed .status-word {
+  font-weight: 900;
 }
 div.settings div.settings-input div.upgrade-form-container .cvv-graphic {
   padding-top: 12px;
+}
+div.settings div.settings-input div.upgrade-form-container div.subscriber-buttons .edit-credit-card {
+  margin-right: 20px;
 }
 div.settings div.settings-input form.form-horizontal {
   padding: 0;
   margin: 0;
   width: 600px;
-}
-div.settings div.settings-input form.form-horizontal.custom-url {
-  padding-left: 50px;
 }
 div.settings div.settings-input form.form-horizontal.upgrade-form input#card-number {
   background-size: auto 50%;

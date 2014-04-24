@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-22
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-23
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1692,9 +1692,54 @@ angular.module('settings', [
 
 
 
-  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, UsersCreditCard) {
+  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
 
 
+    $scope.planStatus = function(statusToTest){
+
+      var su = security.getCurrentUser("subscription")
+
+      var actualStatus
+      if (su.user_has_card && _.contains(["active", "trialing", "past_due"], su.status)) {
+        // paid user with working premium plan
+        actualStatus = "paid"
+      }
+      else if (!su.user_has_card && su.status == "trial") {
+        // trial user with working premium plan
+        actualStatus = "trial"
+      }
+      else {
+        // on the free plan
+        actualStatus = "free"
+      }
+      return actualStatus == statusToTest
+    }
+
+    $scope.timeLeftInTrial = function(){
+      var su = security.getCurrentUser("subscription")
+      var trialEnd = moment.unix(su.trial_end)
+      return trialEnd.diff(moment(), "days") // days from now
+    }
+
+    $scope.paidSince = function(){
+      var su = security.getCurrentUser("subscription")
+      return "April 2014"
+    }
+
+
+    $scope.cancelPremium = function(){
+      UsersSubscription.delete(
+        {id: $scope.user.url_slug},
+        {},
+        function(resp){
+          console.log("subscription successfully cancelled", resp)
+          UserMessage.set("settings.subscription.delete.success")
+        },
+        function(resp){
+          console.log("there was a problem; subscription not cancelled", resp)
+        }
+      )
+    }
 
     $scope.handleStripe = function(status, response){
         console.log("calling handleStripe()")
@@ -2759,6 +2804,20 @@ angular.module('resources.users',['ngResource'])
   })
 
 
+  .factory("UsersSubscription", function($resource){
+    return $resource(
+      "/user/:id/subscription",
+      {},
+      {
+        delete: {
+          method: "DELETE",
+          headers: {'Content-Type': 'application/json'}
+        }
+      }
+    )
+  })
+
+
 
   .factory('ProfileAwards', function ($resource) {
 
@@ -3097,12 +3156,8 @@ angular.module('security.service', [
     // Is the current user authenticated?
     isAuthenticated: function(){
       return !!currentUser;
-    },
-    
-    // Is the current user an adminstrator?
-    isAdmin: function() {
-      return !!(currentUser && currentUser.admin);
     }
+    
   };
 
   return service;
@@ -3878,6 +3933,9 @@ angular.module('services.userMessage', [])
       'settings.profile.change.success': ["Your profile's been updated.", 'success'],
       'settings.url.change.success': ["Your profile URL has been updated.", 'success'],
       'settings.email.change.success': ["Your email has been updated to {{email}}.", 'success'],
+      'settings.subscription.delete.success': ["We've cancelled your subscription to Premium.", 'success'],
+
+
       'passwordReset.error.invalidToken': ["Looks like you've got an expired password reset token in the URL.", 'danger'],
       'passwordReset.success': ["Your password was reset.", 'success'],
 
@@ -5675,20 +5733,40 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
   $templateCache.put("settings/upgrade-settings.tpl.html",
     "<div class=\"settings-header\">\n" +
     "   <h1>Upgrade</h1>\n" +
-    "   <p class=\"pitch\">Premium accounts update metrics daily instead of weekly--so if you've got a big\n" +
-    "   new hit on Twitter, you'll know right away. You also help us support\n" +
-    "   Impactstory as an independent nonprofit.</p>\n" +
+    "\n" +
+    "   <p class=\"expl\">Get weekly updates revealing your latest impacts.</p>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"upgrade-form-container\"  ng-controller=\"upgradeSettingsCtrl\">\n" +
+    "\n" +
+    "   <div class=\"current-plan-status\">\n" +
+    "      <div class=\"premium\" ng-show=\"!planStatus('free')\">\n" +
+    "         Your Impactstory Premium subscription is\n" +
+    "         <div class=\"status subscribed\" ng-if=\"planStatus('trial')\">\n" +
+    "            <span class=\"status-word\">active</span>\n" +
+    "            <span class=\"status-descr\">since {{ paidSince() }}</span>\n" +
+    "\n" +
+    "         </div>\n" +
+    "         <div class=\"status subscribed\" ng-if=\"planStatus('paid')\">\n" +
+    "            <span class=\"status-word\">on free trial</span>\n" +
+    "            <span class=\"status-descr\">for {{ timeLeftInTrial() }} more days.</span>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"status free\" ng-show=\"planStatus('free')\">You don't have Premium yet.</div>\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
     "\n" +
     "\n" +
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         novalidate\n" +
+    "         ng-show=\"!planStatus('paid')\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
-    "      <h3>Upgrade to premium for $5/mo</h3>\n" +
+    "      <h3 ng-show=\"planStatus('free')\">Upgrade to Premium for $5/mo</h3>\n" +
+    "      <h3 ng-show=\"planStatus('trial')\">Continue your Premium plan for $5/mo</h3>\n" +
     "\n" +
     "\n" +
     "      <!-- name on card -->\n" +
@@ -5771,6 +5849,20 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "        </div>\n" +
     "      </div>\n" +
     "   </form>\n" +
+    "\n" +
+    "   <div class=\"subscriber-buttons\" ng-show=\"planStatus('paid')\">\n" +
+    "      <button ng-click=\"editCard()\" class=\"btn btn-primary edit-credit-card\">\n" +
+    "         <i class=\"icon-credit-card left\"></i>\n" +
+    "         Change my credit card info\n" +
+    "      </button>\n" +
+    "      <button ng-click=\"cancelPremium()\" class=\"btn btn-danger\">\n" +
+    "         <i class=\"icon-warning-sign left\"></i>\n" +
+    "         Cancel Premium\n" +
+    "      </button>\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
     "\n" +
     "</div>\n" +
     "\n" +

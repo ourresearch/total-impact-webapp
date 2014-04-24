@@ -18,6 +18,7 @@ from totalimpactwebapp.password_reset import reset_password_from_token
 from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
+from totalimpactwebapp import user
 from totalimpactwebapp.user import User
 from totalimpactwebapp.user import create_user_from_slug
 from totalimpactwebapp.user import get_user_from_id
@@ -390,6 +391,17 @@ def user_credit_card(profile_id, stripe_token):
     abort_if_user_not_logged_in(profile)
 
     ret = update_stripe_customer(profile, "card", stripe_token)
+    return json_resp_from_thing({"result": ret})
+
+
+@app.route("/user/<profile_id>/subscription", methods=["DELETE"])
+def user_subscription(profile_id):
+    profile = get_user_for_response(profile_id, request)
+    abort_if_user_not_logged_in(profile)
+
+    if request.method == "DELETE":
+        ret = user.cancel_premium(profile)
+
     return json_resp_from_thing({"result": ret})
 
 

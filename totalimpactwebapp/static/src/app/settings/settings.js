@@ -122,23 +122,53 @@ angular.module('settings', [
 
 
 
-  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, UsersCreditCard) {
+  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
 
 
-    $scope.planStatus = function(){
-      var su = security.currentUser.subscription
+    $scope.planStatus = function(statusToTest){
+
+      var su = security.getCurrentUser("subscription")
+
+      var actualStatus
       if (su.user_has_card && _.contains(["active", "trialing", "past_due"], su.status)) {
         // paid user with working premium plan
-        return "paid"
+        actualStatus = "paid"
       }
-      else if (!su.user_has_card && su.status == "trialing") {
+      else if (!su.user_has_card && su.status == "trial") {
         // trial user with working premium plan
-        return "trial"
+        actualStatus = "trial"
       }
       else {
         // on the free plan
-        return "free"
+        actualStatus = "free"
       }
+      return actualStatus == statusToTest
+    }
+
+    $scope.timeLeftInTrial = function(){
+      var su = security.getCurrentUser("subscription")
+      var trialEnd = moment.unix(su.trial_end)
+      return trialEnd.diff(moment(), "days") // days from now
+    }
+
+    $scope.paidSince = function(){
+      var su = security.getCurrentUser("subscription")
+      return "April 2014"
+    }
+
+
+    $scope.cancelPremium = function(){
+      UsersSubscription.delete(
+        {id: $scope.user.url_slug},
+        {},
+        function(resp){
+          console.log("subscription successfully cancelled", resp)
+          UserMessage.set("settings.subscription.delete.success")
+        },
+        function(resp){
+          console.log("there was a problem; subscription not cancelled", resp)
+        }
+      )
     }
 
     $scope.handleStripe = function(status, response){

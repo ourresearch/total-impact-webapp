@@ -608,6 +608,14 @@ def update_stripe_customer(user, property, value):
     return customer.save()
 
 
+
+def cancel_premium(user):
+
+    #customer = stripe.Customer.retrieve(user.stripe_id)
+
+    return "we (fake) cancelled this user's plan."
+
+
 def get_users():
     res = User.query.all()
     return res

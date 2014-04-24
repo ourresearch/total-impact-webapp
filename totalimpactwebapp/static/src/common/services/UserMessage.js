@@ -17,6 +17,9 @@ angular.module('services.userMessage', [])
       'settings.profile.change.success': ["Your profile's been updated.", 'success'],
       'settings.url.change.success': ["Your profile URL has been updated.", 'success'],
       'settings.email.change.success': ["Your email has been updated to {{email}}.", 'success'],
+      'settings.subscription.delete.success': ["We've cancelled your subscription to Premium.", 'success'],
+
+
       'passwordReset.error.invalidToken': ["Looks like you've got an expired password reset token in the URL.", 'danger'],
       'passwordReset.success': ["Your password was reset.", 'success'],
 
