@@ -127,27 +127,27 @@ angular.module('settings', [
 
     $scope.planStatus = function(statusToTest){
 
-      var su = security.getCurrentUser("subscription")
+      var subscription = security.getCurrentUser("subscription")
 
       var actualStatus
-      if (su.user_has_card && _.contains(["active", "trialing", "past_due"], su.status)) {
-        // paid user with working premium plan
-        actualStatus = "paid"
+      if (!subscription){
+        // on the free plan
+        actualStatus = "free"
       }
-      else if (!su.user_has_card && su.status == "trial") {
+      else if (!subscription.user_has_card) {
         // trial user with working premium plan
         actualStatus = "trial"
       }
       else {
-        // on the free plan
-        actualStatus = "free"
+        // paid user with working premium plan
+        actualStatus = "paid"
       }
       return actualStatus == statusToTest
     }
 
     $scope.timeLeftInTrial = function(){
-      var su = security.getCurrentUser("subscription")
-      var trialEnd = moment.unix(su.trial_end)
+      var subscription = security.getCurrentUser("subscription")
+      var trialEnd = moment.unix(subscription.trial_end)
       return trialEnd.diff(moment(), "days") // days from now
     }
 
@@ -156,6 +156,9 @@ angular.module('settings', [
       return "April 2014"
     }
 
+    $scope.editCard = function(){
+      alert("Sorry--we're actually still working on the form for this! But drop us a line at team@impactstory.org and we'll be glad to modify your credit card information manually.")
+    }
 
     $scope.cancelPremium = function(){
       UsersSubscription.delete(

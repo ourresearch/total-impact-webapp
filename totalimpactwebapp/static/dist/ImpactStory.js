@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-23
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-24
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1697,27 +1697,27 @@ angular.module('settings', [
 
     $scope.planStatus = function(statusToTest){
 
-      var su = security.getCurrentUser("subscription")
+      var subscription = security.getCurrentUser("subscription")
 
       var actualStatus
-      if (su.user_has_card && _.contains(["active", "trialing", "past_due"], su.status)) {
-        // paid user with working premium plan
-        actualStatus = "paid"
+      if (!subscription){
+        // on the free plan
+        actualStatus = "free"
       }
-      else if (!su.user_has_card && su.status == "trial") {
+      else if (!subscription.user_has_card) {
         // trial user with working premium plan
         actualStatus = "trial"
       }
       else {
-        // on the free plan
-        actualStatus = "free"
+        // paid user with working premium plan
+        actualStatus = "paid"
       }
       return actualStatus == statusToTest
     }
 
     $scope.timeLeftInTrial = function(){
-      var su = security.getCurrentUser("subscription")
-      var trialEnd = moment.unix(su.trial_end)
+      var subscription = security.getCurrentUser("subscription")
+      var trialEnd = moment.unix(subscription.trial_end)
       return trialEnd.diff(moment(), "days") // days from now
     }
 
@@ -1726,6 +1726,9 @@ angular.module('settings', [
       return "April 2014"
     }
 
+    $scope.editCard = function(){
+      alert("Sorry--we're actually still working on the form for this! But drop us a line at team@impactstory.org and we'll be glad to modify your credit card information manually.")
+    }
 
     $scope.cancelPremium = function(){
       UsersSubscription.delete(
@@ -5742,12 +5745,12 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "   <div class=\"current-plan-status\">\n" +
     "      <div class=\"premium\" ng-show=\"!planStatus('free')\">\n" +
     "         Your Impactstory Premium subscription is\n" +
-    "         <div class=\"status subscribed\" ng-if=\"planStatus('trial')\">\n" +
+    "         <div class=\"status subscribed\" ng-if=\"planStatus('paid')\">\n" +
     "            <span class=\"status-word\">active</span>\n" +
     "            <span class=\"status-descr\">since {{ paidSince() }}</span>\n" +
     "\n" +
     "         </div>\n" +
-    "         <div class=\"status subscribed\" ng-if=\"planStatus('paid')\">\n" +
+    "         <div class=\"status subscribed\" ng-if=\"planStatus('trial')\">\n" +
     "            <span class=\"status-word\">on free trial</span>\n" +
     "            <span class=\"status-descr\">for {{ timeLeftInTrial() }} more days.</span>\n" +
     "         </div>\n" +
@@ -6004,7 +6007,7 @@ angular.module("user-message.tpl.html", []).run(["$templateCache", function($tem
   $templateCache.put("user-message.tpl.html",
     "<div ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
     "        ng-if=\"userMessage.get().message && userMessage.showOnTop()\"\n" +
-    "        ng-animate=\"{leave: 'animated fadeOutUp'}\">\n" +
+    "        ng-animate=\"{enter: 'animated fadeInDown', leave: 'animated fadeOutUp'}\">\n" +
     "       <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
     "       <button class=\"close\" ng-click=\"userMessage.remove()\">&times;</button>\n" +
     "</div>\n" +

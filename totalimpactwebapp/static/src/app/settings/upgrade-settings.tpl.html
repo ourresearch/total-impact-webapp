@@ -9,12 +9,12 @@
    <div class="current-plan-status">
       <div class="premium" ng-show="!planStatus('free')">
          Your Impactstory Premium subscription is
-         <div class="status subscribed" ng-if="planStatus('trial')">
+         <div class="status subscribed" ng-if="planStatus('paid')">
             <span class="status-word">active</span>
             <span class="status-descr">since {{ paidSince() }}</span>
 
          </div>
-         <div class="status subscribed" ng-if="planStatus('paid')">
+         <div class="status subscribed" ng-if="planStatus('trial')">
             <span class="status-word">on free trial</span>
             <span class="status-descr">for {{ timeLeftInTrial() }} more days.</span>
          </div>

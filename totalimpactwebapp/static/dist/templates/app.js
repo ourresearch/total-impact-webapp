@@ -1688,12 +1688,12 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "   <div class=\"current-plan-status\">\n" +
     "      <div class=\"premium\" ng-show=\"!planStatus('free')\">\n" +
     "         Your Impactstory Premium subscription is\n" +
-    "         <div class=\"status subscribed\" ng-if=\"planStatus('trial')\">\n" +
+    "         <div class=\"status subscribed\" ng-if=\"planStatus('paid')\">\n" +
     "            <span class=\"status-word\">active</span>\n" +
     "            <span class=\"status-descr\">since {{ paidSince() }}</span>\n" +
     "\n" +
     "         </div>\n" +
-    "         <div class=\"status subscribed\" ng-if=\"planStatus('paid')\">\n" +
+    "         <div class=\"status subscribed\" ng-if=\"planStatus('trial')\">\n" +
     "            <span class=\"status-word\">on free trial</span>\n" +
     "            <span class=\"status-descr\">for {{ timeLeftInTrial() }} more days.</span>\n" +
     "         </div>\n" +
@@ -1950,7 +1950,7 @@ angular.module("user-message.tpl.html", []).run(["$templateCache", function($tem
   $templateCache.put("user-message.tpl.html",
     "<div ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
     "        ng-if=\"userMessage.get().message && userMessage.showOnTop()\"\n" +
-    "        ng-animate=\"{leave: 'animated fadeOutUp'}\">\n" +
+    "        ng-animate=\"{enter: 'animated fadeInDown', leave: 'animated fadeOutUp'}\">\n" +
     "       <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
     "       <button class=\"close\" ng-click=\"userMessage.remove()\">&times;</button>\n" +
     "</div>\n" +

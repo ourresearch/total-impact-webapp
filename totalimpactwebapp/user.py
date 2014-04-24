@@ -594,8 +594,12 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
 
 def get_stripe_plan(user):
     cu = stripe.Customer.retrieve(user.stripe_id)
-    subscription = cu.subscriptions.data[0].to_dict()
-    subscription["user_has_card"] = bool(cu.default_card)
+    try:
+        subscription = cu.subscriptions.data[0].to_dict()
+        subscription["user_has_card"] = bool(cu.default_card)
+    except IndexError:
+        subscription = None
+
     return subscription
 
 
@@ -610,11 +614,8 @@ def update_stripe_customer(user, property, value):
 
 
 def cancel_premium(user):
-
-    #customer = stripe.Customer.retrieve(user.stripe_id)
-
-    return "we (fake) cancelled this user's plan."
-
+    cu = stripe.Customer.retrieve(user.stripe_id)
+    return cu.subscriptions.data[0].delete()
 
 def get_users():
     res = User.query.all()
