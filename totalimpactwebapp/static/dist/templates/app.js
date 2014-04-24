@@ -1618,21 +1618,37 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "\n" +
     "<div class=\"upgrade-form-container\"  ng-controller=\"premiumSettingsCtrl\">\n" +
     "\n" +
-    "   <div class=\"current-plan-status\">\n" +
-    "      <div class=\"premium\" ng-show=\"!planStatus('free')\">\n" +
-    "         Your Impactstory Premium subscription is\n" +
-    "         <div class=\"status subscribed\" ng-if=\"planStatus('paid')\">\n" +
-    "            <span class=\"status-word\">active</span>\n" +
-    "            <span class=\"status-descr\">since {{ paidSince() }}</span>\n" +
-    "\n" +
-    "         </div>\n" +
-    "         <div class=\"status subscribed\" ng-if=\"planStatus('trial')\">\n" +
-    "            <span class=\"status-word\">on free trial</span>\n" +
-    "            <span class=\"status-descr\">for {{ timeLeftInTrial() }} more days.</span>\n" +
-    "         </div>\n" +
+    "   <div class=\"current-plan-status paid\" ng-if=\"planStatus('paid')\">\n" +
+    "      <span class=\"setup\">Your Impactstory Premium subscription is</span>\n" +
+    "      <div class=\"status subscribed\">\n" +
+    "         <span class=\"status-word\">active</span>\n" +
+    "         <span class=\"status-descr\">since {{ paidSince() }}</span>\n" +
     "      </div>\n" +
+    "   </div>\n" +
     "\n" +
-    "      <div class=\"status free\" ng-show=\"planStatus('free')\">You don't have Premium yet.</div>\n" +
+    "   <div class=\"current-plan-status trial\" ng-if=\"planStatus('trial')\">\n" +
+    "      <span class=\"setup\">Your Impactstory Premium subscription is</span>\n" +
+    "      <div class=\"status subscribed\" >\n" +
+    "         <span class=\"status-word\">on free trial</span>\n" +
+    "         <span class=\"status-descr\">for {{ timeLeftInTrial() }} more days.</span>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"current-plan-status free\" ng-if=\"planStatus('free')\">\n" +
+    "      <span class=\"setup\">You don't have Premium yet.</span>\n" +
+    "\n" +
+    "      <div class=\"email-example\">\n" +
+    "         <img src=\"http://i.imgur.com/S38ECK5.png\" alt=\"Impactstory Premium email\"/>\n" +
+    "      </div>\n" +
+    "      <div class=\"pitch\">\n" +
+    "         <p>But you should. Because your research is making impacts all the time.\n" +
+    "         And with Impactstory Premium, you'll get the latest news on <em>your</em>\n" +
+    "         most exciting impacts&mdash;everything from citations to downloads to tweets\n" +
+    "         and more&mdash;delivered straight to your inbox. </p>\n" +
+    "         <p>Plus you get to help keep\n" +
+    "         Impactstory a sustainable, open-source nonprofit&hellip;all for less than than the\n" +
+    "         cost of a latte every month.</p>\n" +
+    "      </div>\n" +
     "\n" +
     "\n" +
     "   </div>\n" +

@@ -64,20 +64,55 @@ div.settings {
 
       div.upgrade-form-container {
          div.current-plan-status {
-            margin-bottom: 50px;
-            font-size: 30px;
-            font-weight: 300;
-            color: @gray-light;
-            div.status {
-               &.subscribed {
+            margin-bottom: 90px;
+            margin-top: 80px;
+            .clearfix;
+
+            .setup {
+               color: #555;
+               font-size: 38px;
+               font-weight: 300;
+               display:block;
+               margin-bottom: 20px;
+            }
+
+            div.pitch {
+            }
+
+            div.email-example {
+               float:left;
+               margin-right: 20px;
+               img {
+                  width: 400px;
+               }
+            }
+
+
+            &.paid, &.trial {
+               .subscribed {
                   color: @alert-success-text;
+                  font-size: 30px;
+                  font-weight: 300;
                   .status-word {
                      font-weight: 900;
 
                   }
                }
+            }
+
+            &.paid {
 
             }
+
+            &.trial {
+
+            }
+
+            &.free {
+
+            }
+
+
          }
          .cvv-graphic {
             padding-top: 12px;
@@ -94,6 +129,14 @@ div.settings {
          padding: 0;
          margin:0;
          width: 600px;
+         clear:both;
+         margin-bottom: 70px;
+         h3 {
+            font-size: 38px;
+            color: #555;
+            font-weight: 300;
+            margin-bottom: 30px;
+         }
          &.custom-url {
          }
 

@@ -6,21 +6,37 @@
 
 <div class="upgrade-form-container"  ng-controller="premiumSettingsCtrl">
 
-   <div class="current-plan-status">
-      <div class="premium" ng-show="!planStatus('free')">
-         Your Impactstory Premium subscription is
-         <div class="status subscribed" ng-if="planStatus('paid')">
-            <span class="status-word">active</span>
-            <span class="status-descr">since {{ paidSince() }}</span>
-
-         </div>
-         <div class="status subscribed" ng-if="planStatus('trial')">
-            <span class="status-word">on free trial</span>
-            <span class="status-descr">for {{ timeLeftInTrial() }} more days.</span>
-         </div>
+   <div class="current-plan-status paid" ng-if="planStatus('paid')">
+      <span class="setup">Your Impactstory Premium subscription is</span>
+      <div class="status subscribed">
+         <span class="status-word">active</span>
+         <span class="status-descr">since {{ paidSince() }}</span>
       </div>
+   </div>
 
-      <div class="status free" ng-show="planStatus('free')">You don't have Premium yet.</div>
+   <div class="current-plan-status trial" ng-if="planStatus('trial')">
+      <span class="setup">Your Impactstory Premium subscription is</span>
+      <div class="status subscribed" >
+         <span class="status-word">on free trial</span>
+         <span class="status-descr">for {{ timeLeftInTrial() }} more days.</span>
+      </div>
+   </div>
+
+   <div class="current-plan-status free" ng-if="planStatus('free')">
+      <span class="setup">You don't have Premium yet.</span>
+
+      <div class="email-example">
+         <img src="http://i.imgur.com/S38ECK5.png" alt="Impactstory Premium email"/>
+      </div>
+      <div class="pitch">
+         <p>But you should. Because your research is making impacts all the time.
+         And with Impactstory Premium, you'll get the latest news on <em>your</em>
+         most exciting impacts&mdash;everything from citations to downloads to tweets
+         and more&mdash;delivered straight to your inbox. </p>
+         <p>Plus you get to help keep
+         Impactstory a sustainable, open-source nonprofit&hellip;all for less than than the
+         cost of a latte every month.</p>
+      </div>
 
 
    </div>

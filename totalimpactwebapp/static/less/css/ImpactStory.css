@@ -8393,15 +8393,56 @@ div.settings div.settings-input {
   width: 800px;
 }
 div.settings div.settings-input div.upgrade-form-container div.current-plan-status {
-  margin-bottom: 50px;
+  margin-bottom: 90px;
+  margin-top: 80px;
+  clear: both;
+}
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status:before,
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status:after {
+  clear: both;
+}
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status:before,
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status:after {
+  clear: both;
+}
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status .setup {
+  color: #555;
+  font-size: 38px;
+  font-weight: 300;
+  display: block;
+  margin-bottom: 20px;
+}
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status div.email-example {
+  float: left;
+  margin-right: 20px;
+}
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status div.email-example img {
+  width: 400px;
+}
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status.paid .subscribed,
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status.trial .subscribed {
+  color: #468847;
   font-size: 30px;
   font-weight: 300;
-  color: #999999;
 }
-div.settings div.settings-input div.upgrade-form-container div.current-plan-status div.status.subscribed {
-  color: #468847;
-}
-div.settings div.settings-input div.upgrade-form-container div.current-plan-status div.status.subscribed .status-word {
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status.paid .subscribed .status-word,
+div.settings div.settings-input div.upgrade-form-container div.current-plan-status.trial .subscribed .status-word {
   font-weight: 900;
 }
 div.settings div.settings-input div.upgrade-form-container .cvv-graphic {
@@ -8414,6 +8455,14 @@ div.settings div.settings-input form.form-horizontal {
   padding: 0;
   margin: 0;
   width: 600px;
+  clear: both;
+  margin-bottom: 70px;
+}
+div.settings div.settings-input form.form-horizontal h3 {
+  font-size: 38px;
+  color: #555;
+  font-weight: 300;
+  margin-bottom: 30px;
 }
 div.settings div.settings-input form.form-horizontal.upgrade-form input#card-number {
   background-size: auto 50%;
