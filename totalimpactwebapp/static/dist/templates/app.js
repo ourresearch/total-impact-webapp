@@ -1,4 +1,4 @@
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/upgrade-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/premium-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -1608,82 +1608,15 @@ angular.module("settings/password-settings.tpl.html", []).run(["$templateCache",
     "");
 }]);
 
-angular.module("settings/profile-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("settings/profile-settings.tpl.html",
+angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/premium-settings.tpl.html",
     "<div class=\"settings-header\">\n" +
-    "   <h1>Profile</h1>\n" +
-    "   <p>Modify what's displayed in your profile.</p>\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "<form novalidate name=\"userProfileForm\" class=\"form-horizontal\" ng-submit=\"onSave()\" ng-controller=\"profileSettingsCtrl\">\n" +
-    "\n" +
-    "   <div class=\"form-group photo\">\n" +
-    "      <label class=\"control-label col-sm-3\">Photo</label>\n" +
-    "      <div class=\"controls col-sm-7\">\n" +
-    "         <div class=\"my-picture\">\n" +
-    "            <a href=\"http://www.gravatar.com\" >\n" +
-    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
-    "            </a>\n" +
-    "            <p>You can change your profile image at <a href=\"http://www.gravatar.com\">Gravatar.com</a></p>\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <label class=\"control-label col-sm-3\">First name</label>\n" +
-    "      <div class=\"controls col-sm-7\">\n" +
-    "         <input ng-model=\"user.given_name\" name=\"givenname\" class=\"form-control\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <label class=\"control-label col-sm-3\">Surname</label>\n" +
-    "      <div class=\"controls col-sm-7\">\n" +
-    "         <input ng-model=\"user.surname\" name=\"surname\" class=\"form-control\">\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group submit\">\n" +
-    "      <div class=\" col-sm-offset-3 col-sm-7\">\n" +
-    "         <save-buttons valid=\"userProfileForm.$valid\"></save-buttons>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</form>\n" +
-    "");
-}]);
-
-angular.module("settings/settings.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("settings/settings.tpl.html",
-    "<div class=\"wrapper settings\">\n" +
-    "   <div class=\"settings-nav \">\n" +
-    "      <ul nav-list nav>\n" +
-    "         <li ng-repeat=\"pageDescr in pageDescriptions\">\n" +
-    "            <a ng-class=\"{selected: isCurrentPath(pageDescr.urlPath)}\"\n" +
-    "               href=\"{{ pageDescr.urlPath }}\">\n" +
-    "               {{ pageDescr.displayName }}\n" +
-    "               <i class=\"icon-chevron-right\"></i>\n" +
-    "            </a>\n" +
-    "         </li>\n" +
-    "      </ul>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"settings-input\" ng-include='include'></div>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("settings/upgrade-settings.tpl.html",
-    "<div class=\"settings-header\">\n" +
-    "   <h1>Upgrade</h1>\n" +
+    "   <h1>Premium</h1>\n" +
     "\n" +
     "   <p class=\"expl\">Get weekly updates revealing your latest impacts.</p>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"upgrade-form-container\"  ng-controller=\"upgradeSettingsCtrl\">\n" +
+    "<div class=\"upgrade-form-container\"  ng-controller=\"premiumSettingsCtrl\">\n" +
     "\n" +
     "   <div class=\"current-plan-status\">\n" +
     "      <div class=\"premium\" ng-show=\"!planStatus('free')\">\n" +
@@ -1812,6 +1745,73 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "\n" +
     "</div>\n" +
     "\n" +
+    "");
+}]);
+
+angular.module("settings/profile-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/profile-settings.tpl.html",
+    "<div class=\"settings-header\">\n" +
+    "   <h1>Profile</h1>\n" +
+    "   <p>Modify what's displayed in your profile.</p>\n" +
+    "</div>\n" +
+    "\n" +
+    "\n" +
+    "<form novalidate name=\"userProfileForm\" class=\"form-horizontal\" ng-submit=\"onSave()\" ng-controller=\"profileSettingsCtrl\">\n" +
+    "\n" +
+    "   <div class=\"form-group photo\">\n" +
+    "      <label class=\"control-label col-sm-3\">Photo</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
+    "         <div class=\"my-picture\">\n" +
+    "            <a href=\"http://www.gravatar.com\" >\n" +
+    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "            </a>\n" +
+    "            <p>You can change your profile image at <a href=\"http://www.gravatar.com\">Gravatar.com</a></p>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"form-group\">\n" +
+    "      <label class=\"control-label col-sm-3\">First name</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
+    "         <input ng-model=\"user.given_name\" name=\"givenname\" class=\"form-control\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"form-group\">\n" +
+    "      <label class=\"control-label col-sm-3\">Surname</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
+    "         <input ng-model=\"user.surname\" name=\"surname\" class=\"form-control\">\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"form-group submit\">\n" +
+    "      <div class=\" col-sm-offset-3 col-sm-7\">\n" +
+    "         <save-buttons valid=\"userProfileForm.$valid\"></save-buttons>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</form>\n" +
+    "");
+}]);
+
+angular.module("settings/settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/settings.tpl.html",
+    "<div class=\"wrapper settings\">\n" +
+    "   <div class=\"settings-nav \">\n" +
+    "      <ul nav-list nav>\n" +
+    "         <li ng-repeat=\"pageDescr in pageDescriptions\">\n" +
+    "            <a ng-class=\"{selected: isCurrentPath(pageDescr.urlPath)}\"\n" +
+    "               href=\"{{ pageDescr.urlPath }}\">\n" +
+    "               {{ pageDescr.displayName }}\n" +
+    "               <i class=\"icon-chevron-right\"></i>\n" +
+    "            </a>\n" +
+    "         </li>\n" +
+    "      </ul>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"settings-input\" ng-include='include'></div>\n" +
+    "</div>\n" +
     "");
 }]);
 

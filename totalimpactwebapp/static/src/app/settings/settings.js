@@ -122,7 +122,7 @@ angular.module('settings', [
 
 
 
-  .controller('upgradeSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
+  .controller('premiumSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
 
 
     $scope.planStatus = function(statusToTest){
