@@ -1619,11 +1619,11 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "<div class=\"upgrade-form-container\"  ng-controller=\"premiumSettingsCtrl\">\n" +
     "\n" +
     "   <div class=\"current-plan-status paid\" ng-if=\"planStatus('paid')\">\n" +
-    "      <span class=\"setup\">Your Impactstory Premium subscription is</span>\n" +
-    "      <div class=\"status subscribed\">\n" +
-    "         <span class=\"status-word\">active</span>\n" +
-    "         <span class=\"status-descr\">since {{ paidSince() }}</span>\n" +
-    "      </div>\n" +
+    "      <span class=\"setup\">\n" +
+    "         Your Impactstory Premium subscription has been active\n" +
+    "         since {{ paidSince() }}.\n" +
+    "      </span>\n" +
+    "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"current-plan-status trial\" ng-if=\"planStatus('trial')\">\n" +
@@ -1669,7 +1669,7 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         novalidate\n" +
-    "         ng-show=\"!planStatus('paid')\"\n" +
+    "         ng-if=\"!planStatus('paid')\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "      <div class=\"form-title free\" ng-show=\"planStatus('free')\">\n" +

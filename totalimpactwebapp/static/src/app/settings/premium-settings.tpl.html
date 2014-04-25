@@ -7,11 +7,11 @@
 <div class="upgrade-form-container"  ng-controller="premiumSettingsCtrl">
 
    <div class="current-plan-status paid" ng-if="planStatus('paid')">
-      <span class="setup">Your Impactstory Premium subscription is</span>
-      <div class="status subscribed">
-         <span class="status-word">active</span>
-         <span class="status-descr">since {{ paidSince() }}</span>
-      </div>
+      <span class="setup">
+         Your Impactstory Premium subscription has been active
+         since {{ paidSince() }}.
+      </span>
+      <span class="thanks">Thanks for helping to keep Impactstory nonprofit and open source!</span>
    </div>
 
    <div class="current-plan-status trial" ng-if="planStatus('trial')">
@@ -57,7 +57,7 @@
    <form stripe-form="handleStripe"
          name="upgradeForm"
          novalidate
-         ng-show="!planStatus('paid')"
+         ng-if="!planStatus('paid')"
          class="form-horizontal upgrade-form">
 
       <div class="form-title free" ng-show="planStatus('free')">

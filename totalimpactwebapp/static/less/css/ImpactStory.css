@@ -8438,6 +8438,9 @@ div.settings div.settings-input div.upgrade-form-container div.current-plan-stat
 div.settings div.settings-input div.upgrade-form-container .cvv-graphic {
   padding-top: 12px;
 }
+div.settings div.settings-input div.upgrade-form-container div.subscriber-buttons {
+  margin-top: -50px;
+}
 div.settings div.settings-input div.upgrade-form-container div.subscriber-buttons .edit-credit-card {
   margin-right: 20px;
 }

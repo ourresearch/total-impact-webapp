@@ -610,9 +610,14 @@ def get_stripe_plan(user):
 
 
 
-def update_stripe_customer(user, property, value):
+def update_to_premium(user, stripe_token):
     customer = stripe.Customer.retrieve(user.stripe_id)
-    setattr(customer, property, value)
+    customer.card = stripe_token
+    if len(customer.subscriptions.data) == 0:
+        # if the subscription was cancelled before
+        customer.subscriptions.create(plan="Premium")
+
+
     return customer.save()
 
 

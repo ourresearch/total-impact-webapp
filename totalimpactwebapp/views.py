@@ -24,7 +24,6 @@ from totalimpactwebapp.user import create_user_from_slug
 from totalimpactwebapp.user import get_user_from_id
 from totalimpactwebapp.user import delete_user
 from totalimpactwebapp.user import get_stripe_plan
-from totalimpactwebapp.user import update_stripe_customer
 
 from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import get_products_from_core_as_csv
@@ -390,7 +389,7 @@ def user_credit_card(profile_id, stripe_token):
     profile = get_user_for_response(profile_id, request)
     abort_if_user_not_logged_in(profile)
 
-    ret = update_stripe_customer(profile, "card", stripe_token)
+    ret = user.update_to_premium(profile, stripe_token)
     return json_resp_from_thing({"result": ret})
 
 

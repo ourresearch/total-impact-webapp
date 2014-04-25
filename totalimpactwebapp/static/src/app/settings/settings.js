@@ -147,13 +147,18 @@ angular.module('settings', [
 
     $scope.daysLeftInTrial = function(){
       var subscription = security.getCurrentUser("subscription")
+
+      if (!subscription){
+        return null
+      }
+
       var trialEnd = moment.unix(subscription.trial_end)
       return trialEnd.diff(moment(), "days") // days from now
     }
 
     $scope.paidSince = function(){
       var su = security.getCurrentUser("subscription")
-      return "April 2014"
+      return "May 2014"
     }
 
     $scope.editCard = function(){
@@ -166,6 +171,7 @@ angular.module('settings', [
         {},
         function(resp){
           console.log("subscription successfully cancelled", resp)
+          security.loginFromCookie() // refresh the currentUser from server
           UserMessage.set("settings.premium.delete.success")
         },
         function(resp){
@@ -185,6 +191,7 @@ angular.module('settings', [
             {},
             function(resp){
               console.log("success!", resp)
+              security.loginFromCookie() // refresh the currentUser from server
               UserMessage.set("settings.premium.subscribe.success")
 
             },

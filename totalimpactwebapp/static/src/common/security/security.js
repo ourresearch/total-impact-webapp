@@ -125,7 +125,8 @@ angular.module('security.service', [
     },
 
 
-    logout: function(redirectTo) {
+    logout: function() {
+      $location.path("/")
       currentUser = null;
       $http.get('/user/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")

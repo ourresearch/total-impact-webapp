@@ -3,8 +3,8 @@ angular.module('settings.pageDescriptions')
 .factory('SettingsPageDescriptions', function(){
            
   var settingsPageDisplayNames = [
-    "Premium",
     "Profile",
+    "Premium",
     "Custom URL",
     "Email",
     "Password"

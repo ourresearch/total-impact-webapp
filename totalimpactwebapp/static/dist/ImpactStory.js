@@ -1531,8 +1531,8 @@ angular.module('settings.pageDescriptions')
 .factory('SettingsPageDescriptions', function(){
            
   var settingsPageDisplayNames = [
-    "Premium",
     "Profile",
+    "Premium",
     "Custom URL",
     "Email",
     "Password"
@@ -1717,13 +1717,18 @@ angular.module('settings', [
 
     $scope.daysLeftInTrial = function(){
       var subscription = security.getCurrentUser("subscription")
+
+      if (!subscription){
+        return null
+      }
+
       var trialEnd = moment.unix(subscription.trial_end)
       return trialEnd.diff(moment(), "days") // days from now
     }
 
     $scope.paidSince = function(){
       var su = security.getCurrentUser("subscription")
-      return "April 2014"
+      return "May 2014"
     }
 
     $scope.editCard = function(){
@@ -1736,6 +1741,7 @@ angular.module('settings', [
         {},
         function(resp){
           console.log("subscription successfully cancelled", resp)
+          security.loginFromCookie() // refresh the currentUser from server
           UserMessage.set("settings.premium.delete.success")
         },
         function(resp){
@@ -1755,6 +1761,7 @@ angular.module('settings', [
             {},
             function(resp){
               console.log("success!", resp)
+              security.loginFromCookie() // refresh the currentUser from server
               UserMessage.set("settings.premium.subscribe.success")
 
             },
@@ -3093,7 +3100,8 @@ angular.module('security.service', [
     },
 
 
-    logout: function(redirectTo) {
+    logout: function() {
+      $location.path("/")
       currentUser = null;
       $http.get('/user/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")
@@ -5681,11 +5689,11 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "<div class=\"upgrade-form-container\"  ng-controller=\"premiumSettingsCtrl\">\n" +
     "\n" +
     "   <div class=\"current-plan-status paid\" ng-if=\"planStatus('paid')\">\n" +
-    "      <span class=\"setup\">Your Impactstory Premium subscription is</span>\n" +
-    "      <div class=\"status subscribed\">\n" +
-    "         <span class=\"status-word\">active</span>\n" +
-    "         <span class=\"status-descr\">since {{ paidSince() }}</span>\n" +
-    "      </div>\n" +
+    "      <span class=\"setup\">\n" +
+    "         Your Impactstory Premium subscription has been active\n" +
+    "         since {{ paidSince() }}.\n" +
+    "      </span>\n" +
+    "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"current-plan-status trial\" ng-if=\"planStatus('trial')\">\n" +
@@ -5731,7 +5739,7 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         novalidate\n" +
-    "         ng-show=\"!planStatus('paid')\"\n" +
+    "         ng-if=\"!planStatus('paid')\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "      <div class=\"form-title free\" ng-show=\"planStatus('free')\">\n" +
