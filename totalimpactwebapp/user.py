@@ -593,6 +593,10 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
 
 
 def get_stripe_plan(user):
+
+    if user.stripe_id is None:  # shouldn't happen, but just in case
+        return None
+
     cu = stripe.Customer.retrieve(user.stripe_id)
     try:
         subscription = cu.subscriptions.data[0].to_dict()

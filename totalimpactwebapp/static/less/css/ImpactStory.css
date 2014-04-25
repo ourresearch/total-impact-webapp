@@ -8435,16 +8435,6 @@ div.settings div.settings-input div.upgrade-form-container div.current-plan-stat
 div.settings div.settings-input div.upgrade-form-container div.current-plan-status div.email-example img {
   width: 400px;
 }
-div.settings div.settings-input div.upgrade-form-container div.current-plan-status.paid .subscribed,
-div.settings div.settings-input div.upgrade-form-container div.current-plan-status.trial .subscribed {
-  color: #468847;
-  font-size: 30px;
-  font-weight: 300;
-}
-div.settings div.settings-input div.upgrade-form-container div.current-plan-status.paid .subscribed .status-word,
-div.settings div.settings-input div.upgrade-form-container div.current-plan-status.trial .subscribed .status-word {
-  font-weight: 900;
-}
 div.settings div.settings-input div.upgrade-form-container .cvv-graphic {
   padding-top: 12px;
 }
@@ -8458,11 +8448,17 @@ div.settings div.settings-input form.form-horizontal {
   clear: both;
   margin-bottom: 70px;
 }
-div.settings div.settings-input form.form-horizontal h3 {
+div.settings div.settings-input form.form-horizontal div.form-title {
+  margin-bottom: 30px;
+}
+div.settings div.settings-input form.form-horizontal div.form-title h3 {
   font-size: 38px;
   color: #555;
   font-weight: 300;
-  margin-bottom: 30px;
+}
+div.settings div.settings-input form.form-horizontal div.form-title h4 {
+  font-weight: normal;
+  font-size: 16px;
 }
 div.settings div.settings-input form.form-horizontal.upgrade-form input#card-number {
   background-size: auto 50%;

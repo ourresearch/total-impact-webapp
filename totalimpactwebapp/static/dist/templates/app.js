@@ -1627,11 +1627,23 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "   </div>\n" +
     "\n" +
     "   <div class=\"current-plan-status trial\" ng-if=\"planStatus('trial')\">\n" +
-    "      <span class=\"setup\">Your Impactstory Premium subscription is</span>\n" +
-    "      <div class=\"status subscribed\" >\n" +
-    "         <span class=\"status-word\">on free trial</span>\n" +
-    "         <span class=\"status-descr\">for {{ timeLeftInTrial() }} more days.</span>\n" +
+    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Premium trial ends in {{ daysLeftInTrial() }} days</span>\n" +
+    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Premium trial ends today!</span>\n" +
+    "\n" +
+    "      <div class=\"email-example\">\n" +
+    "         <img src=\"http://i.imgur.com/S38ECK5.png\" alt=\"Impactstory Premium email\"/>\n" +
     "      </div>\n" +
+    "      <div class=\"pitch\">\n" +
+    "         <p>Your research is making impacts all the time.\n" +
+    "         And with Impactstory Premium, you're getting the latest news on those\n" +
+    "         impacts&mdash;everything from citations to downloads to tweets\n" +
+    "         and more&mdash;delivered straight to your inbox. </p>\n" +
+    "         <p>By extending your free trial today, you won't miss a single\n" +
+    "         notification&mdash;and   you'll be helping to keep\n" +
+    "         Impactstory a sustainable, open-source nonprofit. And all for less than than the\n" +
+    "         cost of a latte every month.</p>\n" +
+    "      </div>\n" +
+    "\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"current-plan-status free\" ng-if=\"planStatus('free')\">\n" +
@@ -1660,8 +1672,15 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "         ng-show=\"!planStatus('paid')\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
-    "      <h3 ng-show=\"planStatus('free')\">Upgrade to Premium for $5/mo</h3>\n" +
-    "      <h3 ng-show=\"planStatus('trial')\">Continue your Premium plan for $5/mo</h3>\n" +
+    "      <div class=\"form-title free\" ng-show=\"planStatus('free')\">\n" +
+    "         <h3>Upgrade to Premium for $5/mo</h3>\n" +
+    "\n" +
+    "      </div>\n" +
+    "      <div class=\"form-title trial\"ng-show=\"planStatus('trial')\">\n" +
+    "         <h3>Continue Premium for $5/mo</h3>\n" +
+    "         <h4 ng-if=\"daysLeftInTrial()>0\">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>\n" +
+    "      </div>\n" +
+    "\n" +
     "\n" +
     "\n" +
     "      <!-- name on card -->\n" +

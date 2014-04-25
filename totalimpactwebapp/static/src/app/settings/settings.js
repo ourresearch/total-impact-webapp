@@ -145,7 +145,7 @@ angular.module('settings', [
       return actualStatus == statusToTest
     }
 
-    $scope.timeLeftInTrial = function(){
+    $scope.daysLeftInTrial = function(){
       var subscription = security.getCurrentUser("subscription")
       var trialEnd = moment.unix(subscription.trial_end)
       return trialEnd.diff(moment(), "days") // days from now

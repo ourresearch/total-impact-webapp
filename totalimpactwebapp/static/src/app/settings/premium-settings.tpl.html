@@ -15,11 +15,23 @@
    </div>
 
    <div class="current-plan-status trial" ng-if="planStatus('trial')">
-      <span class="setup">Your Impactstory Premium subscription is</span>
-      <div class="status subscribed" >
-         <span class="status-word">on free trial</span>
-         <span class="status-descr">for {{ timeLeftInTrial() }} more days.</span>
+      <span class="setup" ng-if="daysLeftInTrial()>0">Your Premium trial ends in {{ daysLeftInTrial() }} days</span>
+      <span class="setup" ng-if="daysLeftInTrial()==0">Your Premium trial ends today!</span>
+
+      <div class="email-example">
+         <img src="http://i.imgur.com/S38ECK5.png" alt="Impactstory Premium email"/>
       </div>
+      <div class="pitch">
+         <p>Your research is making impacts all the time.
+         And with Impactstory Premium, you're getting the latest news on those
+         impacts&mdash;everything from citations to downloads to tweets
+         and more&mdash;delivered straight to your inbox. </p>
+         <p>By extending your free trial today, you won't miss a single
+         notification&mdash;and   you'll be helping to keep
+         Impactstory a sustainable, open-source nonprofit. And all for less than than the
+         cost of a latte every month.</p>
+      </div>
+
    </div>
 
    <div class="current-plan-status free" ng-if="planStatus('free')">
@@ -48,8 +60,15 @@
          ng-show="!planStatus('paid')"
          class="form-horizontal upgrade-form">
 
-      <h3 ng-show="planStatus('free')">Upgrade to Premium for $5/mo</h3>
-      <h3 ng-show="planStatus('trial')">Continue your Premium plan for $5/mo</h3>
+      <div class="form-title free" ng-show="planStatus('free')">
+         <h3>Upgrade to Premium for $5/mo</h3>
+
+      </div>
+      <div class="form-title trial"ng-show="planStatus('trial')">
+         <h3>Continue Premium for $5/mo</h3>
+         <h4 ng-if="daysLeftInTrial()>0">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>
+      </div>
+
 
 
       <!-- name on card -->

@@ -88,18 +88,6 @@ div.settings {
             }
 
 
-            &.paid, &.trial {
-               .subscribed {
-                  color: @alert-success-text;
-                  font-size: 30px;
-                  font-weight: 300;
-                  .status-word {
-                     font-weight: 900;
-
-                  }
-               }
-            }
-
             &.paid {
 
             }
@@ -131,11 +119,17 @@ div.settings {
          width: 600px;
          clear:both;
          margin-bottom: 70px;
-         h3 {
-            font-size: 38px;
-            color: #555;
-            font-weight: 300;
+         div.form-title {
             margin-bottom: 30px;
+            h3 {
+               font-size: 38px;
+               color: #555;
+               font-weight: 300;
+            }
+            h4 {
+               font-weight: normal;
+               font-size: 16px;
+            }
          }
          &.custom-url {
          }
