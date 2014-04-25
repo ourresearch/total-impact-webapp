@@ -1736,7 +1736,7 @@ angular.module('settings', [
         {},
         function(resp){
           console.log("subscription successfully cancelled", resp)
-          UserMessage.set("settings.subscription.delete.success")
+          UserMessage.set("settings.premium.delete.success")
         },
         function(resp){
           console.log("there was a problem; subscription not cancelled", resp)
@@ -1755,9 +1755,12 @@ angular.module('settings', [
             {},
             function(resp){
               console.log("success!", resp)
+              UserMessage.set("settings.premium.subscribe.success")
+
             },
             function(resp){
               console.log("failure!", resp)
+              UserMessage.set("settings.premium.subscribe.error")
             }
           )
         }
@@ -3936,7 +3939,9 @@ angular.module('services.userMessage', [])
       'settings.profile.change.success': ["Your profile's been updated.", 'success'],
       'settings.url.change.success': ["Your profile URL has been updated.", 'success'],
       'settings.email.change.success': ["Your email has been updated to {{email}}.", 'success'],
-      'settings.subscription.delete.success': ["We've cancelled your subscription to Premium.", 'success'],
+      'settings.premium.delete.success': ["We've cancelled your subscription to Premium.", 'success'],
+      'settings.premium.subscribe.success': ["Congratulations: you're now subscribed to Impact Premium!", 'success'],
+      'settings.premium.subscribe.error': ["Sorry, looks like there was an error! Please check your credit card info.", 'success'],
 
 
       'passwordReset.error.invalidToken': ["Looks like you've got an expired password reset token in the URL.", 'danger'],
@@ -5818,6 +5823,10 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "                  ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
     "                  class=\"btn btn-success\">Upgrade me for $5/mo!</button>\n" +
     "        </div>\n" +
+    "         <div class=\"col-sm-offset-3 col-sm-9 money-help\">\n" +
+    "            Trouble affording $5/mo? No worries, we've been through some lean times\n" +
+    "            ourselves. <a href=\"mailto:team@impactstory.org\">Drop us a line</a> and we'll work something out for you.\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "   </form>\n" +
     "\n" +

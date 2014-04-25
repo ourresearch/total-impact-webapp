@@ -1761,6 +1761,10 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "                  ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
     "                  class=\"btn btn-success\">Upgrade me for $5/mo!</button>\n" +
     "        </div>\n" +
+    "         <div class=\"col-sm-offset-3 col-sm-9 money-help\">\n" +
+    "            Trouble affording $5/mo? No worries, we've been through some lean times\n" +
+    "            ourselves. <a href=\"mailto:team@impactstory.org\">Drop us a line</a> and we'll work something out for you.\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "   </form>\n" +
     "\n" +

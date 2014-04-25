@@ -166,7 +166,7 @@ angular.module('settings', [
         {},
         function(resp){
           console.log("subscription successfully cancelled", resp)
-          UserMessage.set("settings.subscription.delete.success")
+          UserMessage.set("settings.premium.delete.success")
         },
         function(resp){
           console.log("there was a problem; subscription not cancelled", resp)
@@ -185,9 +185,12 @@ angular.module('settings', [
             {},
             function(resp){
               console.log("success!", resp)
+              UserMessage.set("settings.premium.subscribe.success")
+
             },
             function(resp){
               console.log("failure!", resp)
+              UserMessage.set("settings.premium.subscribe.error")
             }
           )
         }
