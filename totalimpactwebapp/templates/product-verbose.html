@@ -3,33 +3,14 @@
 
    <li class="metric-detail">
       <span class="badge-container">
-         {% if metric.award.is_highly %}
          <span
-               class="ti-badge is-highly {{metric.award.audience}} {{metric.award.engagement_type}}"
-               data-original-title="Highly {{metric.award.engagement_type}} by {{metric.award.display_audience}}"
-               data-content="This item has {{metric.actual_count}} {{metric.environment}}
-               {{metric.display_interaction}}. That's better than
-               {{metric.percentiles.CI95_lower}}% of items
-               {{metric.refset_storage_verb}} {{metric.refSet}} in {{metric.refset_year}},
-               suggesting it's highly {{metric.award.engagement_type}} by {{metric.award.display_audience }}.">
-            <span class="modifier">highly</span>
+            class="ti-badge {{ metric.award.is_highly_classname }} {{metric.award.audience}} {{metric.award.engagement_type}}">
+            <span class="modifier">{{ metric.award.highly_string }}</span>
             <span class="engagement-type">{{metric.award.engagement_type}}</span>
             <span class="audience">by {{metric.award.audience}}</span>
          </span>
-         {% else %}
-         <span
-               class="ti-badge is-not-highly {{metric.award.audience}} {{metric.award.engagement_type}}"
-               ng-show="!metric.award.isHighly"
-               data-original-title="{{metric.award.engagement_type}} by {{metric.award.display_audience}}"
-               data-content="This item has {{metric.actual_count}} {{metric.environment}}
-               {{metric.display_interaction}}, suggesting it's been
-               {{metric.award.engagement_type}} by {{metric.award.display_audience}}.">
-            <span class="engagement-type">{{metric.award.engagement_type}}</span>
-            <span class="audience">by {{metric.award.audience}}</span>
-          </span>
-         {% endif %}
-
       </span>
+
       <span class="text">
          <a class="value-and-name"
             href="{{ metric.provenance_url }}"

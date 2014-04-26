@@ -13,6 +13,7 @@
    font-weight:normal;
    margin: 0 7px 7px 0;
 
+
    span.badge-part {
       &.scholars {border-color: @scholarsColor;}
       &.public {border-color: @publicColor;}
@@ -32,11 +33,16 @@
 
       &.text {
          .border-radius(0, 0, 3px, 3px);
-         border-right: none;
+         border-right-width: 0;
+         &.new-metrics-false {
+            .border-radius(3px, 3px, 3px, 3px);
+            border-right-width: 1px;
+         }
       }
       &.new-this-week {
          .border-radius(3px, 3px, 0, 0);
          .plus-sign {font-weight: normal;}
+         &.new-metrics-false {display:none;}
          &.scholars {
             color: #fff;
             background: @scholarsColorDark;

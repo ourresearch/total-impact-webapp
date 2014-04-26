@@ -7985,7 +7985,25 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  border-right: none;
+  border-right-width: 0;
+}
+.ti-badge span.badge-part.text.new-metrics-false {
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border-right-width: 1px;
 }
 .ti-badge span.badge-part.new-this-week {
   -webkit-border-top-right-radius: 3px;
@@ -8006,6 +8024,9 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 }
 .ti-badge span.badge-part.new-this-week .plus-sign {
   font-weight: normal;
+}
+.ti-badge span.badge-part.new-this-week.new-metrics-false {
+  display: none;
 }
 .ti-badge span.badge-part.new-this-week.scholars {
   color: #fff;

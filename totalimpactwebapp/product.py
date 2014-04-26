@@ -18,13 +18,15 @@ def prep_product(product, verbose=False):
     if product["biblio"]["genre"] in deprecated_genres:
         raise GenreDeprecatedError
 
+    # temp for testing
+    #product = set_historical_values_to_zero(product)
 
 
     product["biblio"] = make_biblio(product)
     product["metrics"] = make_metrics(product)
     product["awards"] = make_awards(product)
-    product["markup"] = make_markup(product, verbose)
     product["has_new_metrics"] = make_has_new_metrics(product)
+    product["markup"] = make_markup(product, verbose)
     product = add_sort_keys(product)
 
     return product
@@ -395,6 +397,15 @@ def make_has_new_metrics(product_dict):
     return False
 
 
+def set_historical_values_to_zero(product_dict):
+    """ this is for testing
+    """
+    for metric_name, metric in product_dict["metrics"].iteritems():
+        metric["historical_values"]["raw_diff_7_days"] = 0
+
+    print product_dict["metrics"]
+
+    return product_dict
 
 
 
