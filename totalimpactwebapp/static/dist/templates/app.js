@@ -1756,11 +1756,18 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <div class=\"col-sm-offset-3 col-sm-9\">\n" +
-    "          <button type=\"submit\"\n" +
-    "                  ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
-    "                  class=\"btn btn-success\">Upgrade me for $5/mo!</button>\n" +
-    "        </div>\n" +
+    "         <div class=\"col-sm-offset-3 col-sm-9\">\n" +
+    "               <button type=\"submit\"\n" +
+    "                       ng-show=\"!loading.is('subscribeToPremium')\"\n" +
+    "                       ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
+    "                       class=\"btn btn-success\">\n" +
+    "                  Upgrade me for $5/mo!\n" +
+    "               </button>\n" +
+    "               <div class=\"working\" ng-show=\"loading.is('subscribeToPremium')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  <span class=\"text\">Subscribing you to Premium&hellip;</span>\n" +
+    "               </div>\n" +
+    "         </div>\n" +
     "         <div class=\"col-sm-offset-3 col-sm-9 money-help\">\n" +
     "            Trouble affording $5/mo? No worries, we've been through some lean times\n" +
     "            ourselves. <a href=\"mailto:team@impactstory.org\">Drop us a line</a> and we'll work something out for you.\n" +
@@ -1768,7 +1775,7 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "      </div>\n" +
     "   </form>\n" +
     "\n" +
-    "   <div class=\"subscriber-buttons\" ng-show=\"planStatus('paid')\">\n" +
+    "   <div class=\"subscriber-buttons\" ng-if=\"planStatus('paid')\">\n" +
     "      <button ng-click=\"editCard()\" class=\"btn btn-primary edit-credit-card\">\n" +
     "         <i class=\"icon-credit-card left\"></i>\n" +
     "         Change my credit card info\n" +
@@ -1777,10 +1784,7 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "         <i class=\"icon-warning-sign left\"></i>\n" +
     "         Cancel Premium\n" +
     "      </button>\n" +
-    "\n" +
-    "\n" +
     "   </div>\n" +
-    "\n" +
     "\n" +
     "</div>\n" +
     "\n" +

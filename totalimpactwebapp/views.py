@@ -23,7 +23,6 @@ from totalimpactwebapp.user import User
 from totalimpactwebapp.user import create_user_from_slug
 from totalimpactwebapp.user import get_user_from_id
 from totalimpactwebapp.user import delete_user
-from totalimpactwebapp.user import get_stripe_plan
 
 from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import get_products_from_core_as_csv
@@ -265,14 +264,12 @@ def get_current_user():
     #sleep(1)
 
     try:
-        dict_about = g.user.dict_about()
-        dict_about["subscription"] = get_stripe_plan(g.user)
-        ret = {"user": dict_about}
+        user_info = g.user.dict_about(include_stripe=True)
 
     except AttributeError:  # anon user has no as_dict()
-        ret = {"user": None}
+        user_info = None
 
-    return json_resp_from_thing(ret)
+    return json_resp_from_thing({"user": user_info})
 
 
 
@@ -303,7 +300,7 @@ def login():
         # Yay, no errors! Log the user in.
         login_user(user)
 
-    return json_resp_from_thing({"user": user.dict_about()})
+    return json_resp_from_thing({"user": user.dict_about(include_stripe=True)})
 
 
 
@@ -389,7 +386,7 @@ def user_credit_card(profile_id, stripe_token):
     profile = get_user_for_response(profile_id, request)
     abort_if_user_not_logged_in(profile)
 
-    ret = user.update_to_premium(profile, stripe_token)
+    ret = user.upgrade_to_premium(profile, stripe_token)
     return json_resp_from_thing({"result": ret})
 
 

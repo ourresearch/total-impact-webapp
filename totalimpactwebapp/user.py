@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import DataError
 from sqlalchemy import func
+from stripe import InvalidRequestError
 
 import requests
 import stripe
@@ -279,7 +280,7 @@ class User(db.Model):
         return u'<User {name}>'.format(name=self.full_name)
 
 
-    def dict_about(self):
+    def dict_about(self, include_stripe=False):
 
         properties_to_return = [
             "id",
@@ -318,6 +319,15 @@ class User(db.Model):
             ret_dict[property] = val
 
         ret_dict["products_count"] = len(self.tiids)
+
+        if include_stripe:
+            try:
+                cu = stripe.Customer.retrieve(self.stripe_id)
+                ret_dict["subscription"] = cu.subscriptions.data[0].to_dict()
+                ret_dict["subscription"]["user_has_card"] = bool(cu.default_card)
+            except (IndexError, InvalidRequestError):
+                ret_dict["subscription"] = None
+
 
         return ret_dict
 
@@ -535,19 +545,9 @@ def create_user_from_slug(url_slug, user_request_dict, db):
         raise EmailExistsError  # the caller needs to deal with this.
 
 
-    # make the Stripe customer so we can get their customer number:
-    full_name = "{first} {last}".format(first=user_dict["given_name"], last=user_dict["surname"])
-    stripe_customer = stripe.Customer.create(
-        description=full_name,
-        email=user_dict["email"],
-        plan="Premium"
-    )
-    logger.debug(u"Made a Stripe ID '{stripe_id}' for user '{slug}'".format(
-        stripe_id=stripe_customer.id,
-        slug=user_dict["url_slug"]
-    ))
 
-    user_dict["stripe_id"] = stripe_customer.id
+
+    user_dict["stripe_id"] = mint_stripe_id(user_dict)
 
 
     # ok, let's make a user:
@@ -592,25 +592,31 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
     return user
 
 
-def get_stripe_plan(user):
 
-    if user.stripe_id is None:  # shouldn't happen, but just in case
-        return None
+def mint_stripe_id(user_dict):
+    # make the Stripe customer so we can get their customer number:
+    full_name = "{first} {last}".format(first=user_dict["given_name"], last=user_dict["surname"])
+    stripe_customer = stripe.Customer.create(
+        description=full_name,
+        email=user_dict["email"],
+        plan="Premium"
+    )
+    logger.debug(u"Made a Stripe ID '{stripe_id}' for user '{slug}'".format(
+        stripe_id=stripe_customer.id,
+        slug=user_dict["url_slug"]
+    ))
 
-    cu = stripe.Customer.retrieve(user.stripe_id)
-    try:
-        subscription = cu.subscriptions.data[0].to_dict()
-        subscription["user_has_card"] = bool(cu.default_card)
-    except IndexError:
-        subscription = None
-
-    return subscription
+    return stripe_customer.id
 
 
+def upgrade_to_premium(user, stripe_token):
 
+    if user.stripe_id is None:
+        # shouldn't be needed in production
+        user.stripe_id = mint_stripe_id(user.dict_about())
+        db.session.merge(user)
+        db.session.commit()
 
-
-def update_to_premium(user, stripe_token):
     customer = stripe.Customer.retrieve(user.stripe_id)
     customer.card = stripe_token
     if len(customer.subscriptions.data) == 0:

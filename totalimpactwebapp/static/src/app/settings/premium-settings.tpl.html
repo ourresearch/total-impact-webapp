@@ -144,11 +144,18 @@
 
 
       <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <button type="submit"
-                  ng-disabled="upgradeForm.$invalid || upgradeForm.$pristine"
-                  class="btn btn-success">Upgrade me for $5/mo!</button>
-        </div>
+         <div class="col-sm-offset-3 col-sm-9">
+               <button type="submit"
+                       ng-show="!loading.is('subscribeToPremium')"
+                       ng-disabled="upgradeForm.$invalid || upgradeForm.$pristine"
+                       class="btn btn-success">
+                  Upgrade me for $5/mo!
+               </button>
+               <div class="working" ng-show="loading.is('subscribeToPremium')">
+                  <i class="icon-refresh icon-spin"></i>
+                  <span class="text">Subscribing you to Premium&hellip;</span>
+               </div>
+         </div>
          <div class="col-sm-offset-3 col-sm-9 money-help">
             Trouble affording $5/mo? No worries, we've been through some lean times
             ourselves. <a href="mailto:team@impactstory.org">Drop us a line</a> and we'll work something out for you.
@@ -156,7 +163,7 @@
       </div>
    </form>
 
-   <div class="subscriber-buttons" ng-show="planStatus('paid')">
+   <div class="subscriber-buttons" ng-if="planStatus('paid')">
       <button ng-click="editCard()" class="btn btn-primary edit-credit-card">
          <i class="icon-credit-card left"></i>
          Change my credit card info
@@ -165,10 +172,7 @@
          <i class="icon-warning-sign left"></i>
          Cancel Premium
       </button>
-
-
    </div>
-
 
 </div>
 

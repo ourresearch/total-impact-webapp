@@ -50,7 +50,6 @@ angular.module('settings', [
     }
 
     var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
-    console.log(currentPageDescr)
 
     $scope.resetUser()
     Loading.finish()
@@ -181,6 +180,7 @@ angular.module('settings', [
     }
 
     $scope.handleStripe = function(status, response){
+        Loading.start("subscribeToPremium")
         console.log("calling handleStripe()")
         if(response.error) {
           console.log("ack, there was an error!", status, response)
@@ -192,12 +192,15 @@ angular.module('settings', [
             function(resp){
               console.log("success!", resp)
               security.loginFromCookie() // refresh the currentUser from server
+              window.scrollTo(0,0)
               UserMessage.set("settings.premium.subscribe.success")
+              Loading.finish("subscribeToPremium")
 
             },
             function(resp){
               console.log("failure!", resp)
               UserMessage.set("settings.premium.subscribe.error")
+              Loading.finish("subscribeToPremium")
             }
           )
         }

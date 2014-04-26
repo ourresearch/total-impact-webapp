@@ -6134,6 +6134,10 @@ form div.help-block {
 form div.help-block.one-line {
   margin-top: 12px;
 }
+form div.working {
+  font-size: 20px;
+  color: #999999;
+}
 form div.working i {
   margin-right: 5px;
 }
@@ -6141,6 +6145,7 @@ form div.buttons-group.save div.working {
   font-size: 24px;
   padding-left: 10px;
   color: #999;
+  height: 47px;
 }
 form i.icon-check-empty {
   padding-right: 3px;
@@ -8323,7 +8328,7 @@ div.signup-page div.signup-sidebar div.testimonials-container div.testimonial ci
   margin-top: 10px;
 }
 div.settings div.settings-header {
-  margin: 0 0 50px 0;
+  margin: 0 0 100px 0;
   padding: 0 0 0 0;
   width: 600px;
 }
@@ -8394,7 +8399,6 @@ div.settings div.settings-input {
 }
 div.settings div.settings-input div.upgrade-form-container div.current-plan-status {
   margin-bottom: 90px;
-  margin-top: 80px;
   clear: both;
 }
 div.settings div.settings-input div.upgrade-form-container div.current-plan-status:before,

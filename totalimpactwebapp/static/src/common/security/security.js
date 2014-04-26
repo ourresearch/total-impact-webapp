@@ -12,7 +12,6 @@ angular.module('security.service', [
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
     url = url || '/';
-    console.log("in security, redirectin' to " + url)
     $location.path(url);
   }
 
@@ -48,7 +47,6 @@ angular.module('security.service', [
     login: function(email, password) {
       return $http.post('/user/login', {email: email, password: password})
         .success(function(data, status) {
-            console.log("success in security.login()")
             currentUser = data.user;
         })
     },
@@ -126,8 +124,8 @@ angular.module('security.service', [
 
 
     logout: function() {
-      $location.path("/")
       currentUser = null;
+      $location.path("/")
       $http.get('/user/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")
       });
@@ -158,7 +156,6 @@ angular.module('security.service', [
 
     redirectToProfile: function(){
       service.requestCurrentUser().then(function(user){
-        console.log("redirect to profile.")
         redirect("/" + user.url_slug)
       })
     },
