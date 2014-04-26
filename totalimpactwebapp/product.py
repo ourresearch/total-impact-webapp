@@ -255,6 +255,11 @@ def make_award_for_single_metric(metric):
     if is_highly:
         display_order += 100
 
+    if is_highly:
+        classname = "is-highly"
+    else:
+        classname = "is-not-highly"
+
 
     return {
         "engagement_type_noun": config[metric["engagement_type"]][0],
@@ -262,6 +267,7 @@ def make_award_for_single_metric(metric):
         "audience": metric["audience"],
         "display_order": display_order,
         "is_highly": is_highly,
+        "is_highly_classname": classname,
         "display_audience": metric["audience"].replace("public", "the public")
     }
 

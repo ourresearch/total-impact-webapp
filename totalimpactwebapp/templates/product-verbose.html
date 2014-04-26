@@ -3,11 +3,14 @@
 
    <li class="metric-detail">
       <span class="badge-container">
-         <span
-            class="ti-badge {{ metric.award.is_highly_classname }} {{metric.award.audience}} {{metric.award.engagement_type}}">
-            <span class="modifier">{{ metric.award.highly_string }}</span>
-            <span class="engagement-type">{{metric.award.engagement_type}}</span>
-            <span class="audience">by {{metric.award.audience}}</span>
+         <span class="ti-badge">
+            <span class="badge-part text new-metrics-false {{ metric.award.is_highly_classname }} {{metric.award.audience}} {{metric.award.engagement_type}}">
+               {% if metric.award.is_highly %}
+                  <span class="modifier">highly</span>
+               {% endif %}
+               <span class="engagement-type">{{metric.award.engagement_type}}</span>
+               <span class="audience">by {{metric.award.audience}}</span>
+            </span>
          </span>
       </span>
 
