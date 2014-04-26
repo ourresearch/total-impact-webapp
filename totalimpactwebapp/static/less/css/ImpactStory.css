@@ -7933,57 +7933,95 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   font-weight: bold;
 }
 .ti-badge {
-  height: 24px;
   font-size: 12px;
-  text-align: center;
-  padding: 3px 9px;
   float: left;
   display: block;
   font-weight: normal;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
+  margin: 0 7px 7px 0;
+  font-family: helvetica, arial, sans-serif;
+}
+.ti-badge span.badge-part {
+  padding: 3px 9px;
+  border-width: 1px;
+  border-style: solid;
+}
+.ti-badge span.badge-part.scholars {
+  border-color: #377eb8;
+}
+.ti-badge span.badge-part.public {
+  border-color: #4daf4a;
+}
+.ti-badge span.badge-part.is-highly {
+  color: #fff;
+}
+.ti-badge span.badge-part.is-highly.scholars {
+  background: #377eb8;
+}
+.ti-badge span.badge-part.is-highly.public {
+  background: #4daf4a;
+}
+.ti-badge span.badge-part.is-not-highly {
+  background: #fff;
+}
+.ti-badge span.badge-part.is-not-highly.scholars {
+  color: #377eb8;
+}
+.ti-badge span.badge-part.is-not-highly.public {
+  color: #4daf4a;
+}
+.ti-badge span.badge-part.text {
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
   -webkit-border-bottom-left-radius: 3px;
   -webkit-border-top-left-radius: 3px;
-  -moz-border-radius-topright: 3px;
-  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomright: 0;
   -moz-border-radius-bottomleft: 3px;
   -moz-border-radius-topleft: 3px;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   border-bottom-left-radius: 3px;
   border-top-left-radius: 3px;
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  font-family: helvetica, arial, sans-serif;
-  background: black;
-  border: 1px solid black;
+  border-right: none;
+}
+.ti-badge span.badge-part.new-this-week {
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+.ti-badge span.badge-part.new-this-week .plus-sign {
+  font-weight: normal;
+}
+.ti-badge span.badge-part.new-this-week.scholars {
+  color: #fff;
+  background: #2b6391;
+  border-color: #2b6391;
+}
+.ti-badge span.badge-part.new-this-week.public {
+  color: #fff;
+  background: #3d8b3b;
+  border-color: #3d8b3b;
 }
 .ti-badge span.audience {
   display: none;
 }
 .ti-badge:hover {
   text-decoration: none;
-}
-.ti-badge.scholars {
-  background: #377eb8;
-  border-color: #377eb8;
-}
-.ti-badge.public {
-  background: #4daf4a;
-  border-color: #4daf4a;
-}
-.ti-badge.is-highly {
-  color: #fff;
-}
-.ti-badge.is-not-highly {
-  background: #fff;
-}
-.ti-badge.is-not-highly.scholars {
-  color: #377eb8;
-}
-.ti-badge.is-not-highly.public {
-  color: #4daf4a;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
   height: 40px;

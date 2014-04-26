@@ -208,8 +208,12 @@ def make_awards(product):
         # logic is ghastly.
         if award["top_metric"]["award"]["is_highly"]:
             award["is_highly"] = True
+            award["is_highly_classname"] = "is-highly"
+            award["highly_string"] = "highly"
         else:
             award["is_highly"] = False
+            award["is_highly_classname"] = "is-not-highly"
+            award["highly_string"] = ""
 
 
     return awards_dict.values()

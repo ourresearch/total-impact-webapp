@@ -3,27 +3,56 @@
 // cpu. so isolating it in this file for now.
 
 .ti-badge {
-   height: 24px;
+
+   @scholarsColorDark:  darken(@scholarsColor, 10%);
+   @publicColorDark:  darken(@publicColor, 10%);
+
    font-size: 12px;
-   text-align: center;
-   padding: 3px 9px;
    float:left;
    display:block;
    font-weight:normal;
-   .border-radius(3px, 3px, 3px, 3px);
+   margin: 0 7px 7px 0;
+
+   span.badge-part {
+      &.scholars {border-color: @scholarsColor;}
+      &.public {border-color: @publicColor;}
+      padding: 3px 9px;
+      border-width: 1px;
+      border-style: solid;
+      &.is-highly {
+         color:  #fff;
+         &.scholars {background: @scholarsColor;}
+         &.public {background: @publicColor;}
+      }
+      &.is-not-highly {
+         &.scholars {color: @scholarsColor;}
+         &.public {color: @publicColor;}
+         background: #fff;
+      }
+
+      &.text {
+         .border-radius(0, 0, 3px, 3px);
+         border-right: none;
+      }
+      &.new-this-week {
+         .border-radius(3px, 3px, 0, 0);
+         .plus-sign {font-weight: normal;}
+         &.scholars {
+            color: #fff;
+            background: @scholarsColorDark;
+            border-color: @scholarsColorDark;
+         }
+         &.public {
+            color: #fff;
+            background: @publicColorDark;
+            border-color: @publicColorDark;
+         }
+      }
+   }
+
+
    font-family: helvetica, arial, sans-serif;
    span.audience {display:none;}
-   background:  black;
-   border: 1px solid black;
    &:hover{text-decoration: none;}
-   &.scholars {background: @scholarsColor; border-color: @scholarsColor;}
-   &.public {background: @publicColor; border-color: @publicColor;}
-   &.is-highly {
-      color:  #fff;
-   }
-   &.is-not-highly {
-      &.scholars {color: @scholarsColor;}
-      &.public {color: @publicColor;}
-      background: #fff;
-   }
+
 }
