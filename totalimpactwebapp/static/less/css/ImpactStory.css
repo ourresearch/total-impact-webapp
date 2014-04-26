@@ -7852,14 +7852,85 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 }
 .product div.popover {
   font-family: helvetica, arial, sans-serif;
-  max-width: 230px;
+  min-width: 200px;
 }
 .product div.popover h3 {
-  font-size: 16px;
-  font-family: helvetica, arial, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+}
+.product div.popover h3.new-metrics-heading {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 14px;
+  border-bottom: 1px solid #ddd;
+}
+.product div.popover h3:first-letter {
+  text-transform: uppercase;
 }
 .product div.popover .popover-content {
   font-size: 14px;
+}
+.product div.popover ul.new-metrics {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  border-top: 1px solid #ddd;
+}
+.product div.popover ul.new-metrics li {
+  font-size: 12px;
+  margin-top: 10px;
+  clear: both;
+}
+.product div.popover ul.new-metrics li:before,
+.product div.popover ul.new-metrics li:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+.product div.popover ul.new-metrics li:after {
+  clear: both;
+}
+.product div.popover ul.new-metrics li:before,
+.product div.popover ul.new-metrics li:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+.product div.popover ul.new-metrics li:after {
+  clear: both;
+}
+.product div.popover ul.new-metrics li img.icon {
+  width: 16px;
+  margin-right: 10px;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  float: left;
+}
+.product div.popover ul.new-metrics li span.text {
+  float: left;
+  width: 80%;
+  line-height: 1.1;
+}
+.product div.popover ul.new-metrics li span.text span.count {
+  font-weight: bold;
 }
 .ti-badge {
   height: 24px;
