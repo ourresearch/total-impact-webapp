@@ -124,6 +124,9 @@ class User(db.Model):
     @property
     def products(self):
         products = get_products_from_core(self.tiids)
+        for product in products:
+            product['last_refreshed'] = self.last_refreshed
+
         if not products:
             products = []
         return products
@@ -216,9 +219,6 @@ class User(db.Model):
             creds["wordpress_api_key"] = self.wordpress_api_key
         return creds
 
-    def get_products(self):
-        products = get_products_from_core(self.tiids)
-        return products
 
     def add_products(self, product_id_dict):
         try:
