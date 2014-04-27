@@ -71,22 +71,19 @@ def write_500_random_profile_urls():
             ))
 
     sampled_urls = random.sample(urls, sample_size)
-    csv_filename = "totalimpactwebapp/static/500_random_profile_urls.csv"
 
-    with open(csv_filename, "w") as csv_file:
-        logger.info("writing our {sample_size} sampled profile URLs to {csv_filename}".format(
-            sample_size=sample_size,
-            csv_filename=csv_filename
-        ))
-        new_csv = csv.writer(csv_file, delimiter=',',
-                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    logger.info("writing our {sample_size} sampled profile URLs".format(
+        sample_size=sample_size
+    ))
 
-        for row in sampled_urls:
-            try:
-                new_csv.writerow(row)
-            except UnicodeEncodeError:
-                pass
-
+    for row in sampled_urls:
+        try:
+            print "{products_count},{url}".format(
+                products_count=row[0],
+                url=row[1]
+            )
+        except UnicodeEncodeError:
+            pass  # whatever, we don't need exactly 500
 
 
 
