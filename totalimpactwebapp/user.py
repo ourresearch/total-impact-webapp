@@ -366,9 +366,14 @@ def get_products_from_core(tiids):
     logger.debug(u"in get_products_from_core with query {query}".format(
         query=query))
 
+    most_recent_metric_date = os.getenv("most_recent_metric_date", now_in_utc().isoformat())
+    most_recent_diff_metric_date = os.getenv("most_recent_diff_metric_date", (now_in_utc() - datetime.timedelta(days=7)).isoformat())
+
     r = requests.post(query,
             data=json.dumps({
-                "tiids": tiids
+                "tiids": tiids,
+                "most_recent_metric_date": most_recent_metric_date,
+                "most_recent_diff_metric_date": most_recent_diff_metric_date
                 }),
             headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
