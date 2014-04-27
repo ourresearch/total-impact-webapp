@@ -7531,10 +7531,14 @@ div.product-controls div.wrapper div.products-info div.products-done-updating di
 }
 div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter {
   float: left;
-  margin-left: 10px;
+  padding-left: 10px;
 }
 div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter label {
   font-weight: normal;
+  cursor: pointer;
+}
+div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter input {
+  cursor: pointer;
 }
 div.product-controls div.wrapper a {
   margin-left: 15px;

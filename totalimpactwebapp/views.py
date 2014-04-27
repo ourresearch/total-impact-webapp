@@ -1,15 +1,11 @@
 import requests, os, json, logging, re, datetime
 import analytics
-import stripe
 from util import local_sleep
 
 from flask import request, send_file, abort, make_response, g, redirect
 from flask import render_template
 from flask import render_template_string
 from flask.ext.login import login_user, logout_user, current_user, login_required
-
-from sqlalchemy.exc import IntegrityError
-
 
 from totalimpactwebapp import app, db, login_manager, products_list, product
 

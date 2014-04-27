@@ -1,6 +1,11 @@
 import stripe
+import csv
+import random
+import logging
 from totalimpactwebapp.user import User
 from totalimpactwebapp import db
+
+logger = logging.getLogger("tiwebapp.scripts")
 
 """
 requires these env vars be set in this environment:
@@ -53,4 +58,36 @@ def mint_stripe_customers_for_all_users():
     print "Comitted to db. All donesies!"
 
 
-mint_stripe_customers_for_all_users()
+def write_500_random_profile_urls():
+    urls = []
+    sample_size = 500
+    for user in page_query(User.query):
+        products_count = len(user.tiids)
+        if products_count > 0:
+            url = "https://staging-impactstory.org/" + user.url_slug
+            urls.append([products_count, url])
+            logger.info(u"getting a new profile url out: {url}".format(
+                url=url
+            ))
+
+    sampled_urls = random.sample(urls, sample_size)
+    csv_filename = "totalimpactwebapp/static/500_random_profile_urls.csv"
+
+    with open(csv_filename, "w") as csv_file:
+        logger.info("writing our {sample_size} sampled profile URLs to {csv_filename}".format(
+            sample_size=sample_size,
+            csv_filename=csv_filename
+        ))
+        new_csv = csv.writer(csv_file, delimiter=',',
+                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+        for row in sampled_urls:
+            try:
+                new_csv.writerow(row)
+            except UnicodeEncodeError:
+                pass
+
+
+
+
+write_500_random_profile_urls()
