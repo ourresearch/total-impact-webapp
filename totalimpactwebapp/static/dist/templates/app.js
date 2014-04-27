@@ -239,7 +239,7 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "\n" +
     "   <div class=\"import-complete\" ng-show=\"importComplete\">\n" +
     "      <div class=\"msg\">\n" +
-    "      Successfully imported {{ importedProductsCount }} articles!\n" +
+    "      Successfully imported {{ importedProductsCount }} new articles!\n" +
     "      </div>\n" +
     "      <a class=\"btn btn-info\" ng-click=\"$close()\">ok</a>\n" +
     "   </div>\n" +
@@ -1246,6 +1246,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               of\n" +
     "               <span class=\"count total-products\">{{ (products|filter:{is_true_product:true}).length }}</span>\n" +
     "               research products\n" +
+    "\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"filters\">\n" +
@@ -1317,7 +1318,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </span>\n" +
     "            </div>\n" +
-    "\n" +
     "\n" +
     "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
     "            <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
