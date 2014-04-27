@@ -1234,28 +1234,41 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "<div class=\"product-controls\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"products-info\">\n" +
-    "         <div class=\"num-items\">\n" +
     "\n" +
-    "            <div class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
-    "               <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
-    "                  <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
-    "               </span>\n" +
-    "               <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
-    "                  (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
-    "               </a>\n" +
-    "               <div class=\"last-collected\">\n" +
-    "                  <span class=\"msg\">Metrics last collected {{ humanDate(user.about.last_refreshed+\" Z\") }}.</span>\n" +
-    "                  <span class=\"call-to-action\">\n" +
-    "                     <a class=\"upgrade\" href=\"/settings/upgrade\">Upgrade</a> for daily collection.\n" +
-    "                  </span>\n" +
+    "         <div class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
+    "            <div class=\"last-collected\">\n" +
+    "               <span class=\"msg\">Metrics last collected {{ humanDate(user.about.last_refreshed+\" Z\") }}.</span>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div ng-hide=\"loadingProducts()\" class=\"products-count-info\">\n" +
+    "               Showing\n" +
+    "               <span class=\"count visible-products\">{{ (filteredProducts|filter:{is_true_product:true}).length }}</span>\n" +
+    "               of\n" +
+    "               <span class=\"count total-products\">{{ (products|filter:{is_true_product:true}).length }}</span>\n" +
+    "               research products\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"filters\">\n" +
+    "               <span class=\"filters-label\">Show only products</span>\n" +
+    "               <div class=\"filter\">\n" +
+    "                  <input type=\"checkbox\" id=\"filter-has-metrics\" ng-model=\"productFilter.has_metrics\"/>\n" +
+    "                  <label for=\"filter-has-metrics\">with metrics</label>\n" +
+    "               </div>\n" +
+    "               <div class=\"filter\">\n" +
+    "                  <input type=\"checkbox\"\n" +
+    "                         id=\"filter-has-new-metrics\"\n" +
+    "                         ng-model=\"productFilter.has_new_metrics\"\n" +
+    "                         ng-false-value=\"{{ null }}\" />\n" +
+    "                  <label for=\"filter-has-new-metrics\">with new metrics</label>\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
-    "               Products still updating...\n" +
-    "            </div>\n" +
-    "\n" +
     "         </div>\n" +
+    "\n" +
+    "         <div ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
+    "            Products still updating...\n" +
+    "         </div>\n" +
+    "\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
@@ -1290,9 +1303,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product {{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
-    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
+    "             ng-repeat=\"product in filteredProducts = (products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title'] | filter: productFilter)\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
-    "             ng-show=\"product.has_metrics || showProductsWithoutMetrics || product.is_heading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
@@ -1304,12 +1316,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                     <i class=\"icon-trash icon\"></i>\n" +
     "                  </a>\n" +
     "               </span>\n" +
-    "               <a class=\"notification\"\n" +
-    "                  ng-show=\"product.has_new_metrics\"\n" +
-    "                  href=\"/{{ user.about.url_slug }}/product/{{ product._id }}\"\n" +
-    "                  tooltip=\"New impacts!\">\n" +
-    "                  <span class=\"icon-bell icon\"></span>\n" +
-    "               </a>\n" +
     "            </div>\n" +
     "\n" +
     "\n" +
@@ -1318,14 +1324,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "         </li>\n" +
     "      </ul>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"products-without-metrics wrapper\"\n" +
-    "        ng-show=\"!loadingProducts() && !showProductsWithoutMetrics && filterProducts(products, 'withoutMetrics').length\">\n" +
-    "      <div class=\"well\">\n" +
-    "         Another <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> products aren't shown, because we couldn't find any impact data for them.\n" +
-    "         <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\">Show these, too.</a>\n" +
-    "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "\n" +

@@ -66,7 +66,7 @@ div.signup-banner {
 div.profile-header {
    margin-bottom: 35px;
    margin-top: -20px;
-   height: 140px;
+   height: 150px;
    .clearfix();
    div.wrapper {
       div.my-picture {
@@ -139,10 +139,6 @@ div.profile-header {
                      text-align: center;
                      font-family: Lato;
                      font-weight: normal;
-                  }
-                  div.call-to-action {
-                     font-style: italic;
-                     margin-top: 20px;
                   }
                }
 
@@ -327,40 +323,51 @@ div.product-controls {
 
          }
       }
+
+
+      // filters and counts on right side of profile
       div.products-info {
          position: absolute;
          bottom: 0;
          left: 0;
-         div.num-items {
-            float:left;
-            div.products-done-updating {
-               span.val-plus-text {
-                  font-weight: 300;
-                  margin: 0;
-                  span.value {
-                     font-weight: bold;
-                     margin-right: 3px;
-                  }
-               }
-               a {
-                  font-size: 14px;
-                  margin-left: 5px;
-                  color: @linkColor;
-                  &:hover {text-decoration: underline;}
-               }
+         div.products-done-updating {
 
-               div.last-collected {
-                  font-size: 13px;
-                  font-weight: 300;
-                  a.upgrade {
-                     color: #555;
-                     text-decoration: underline;
-                     margin-left: 5px;
-                     &:hover {color: #000;}
-                  }
-               }
+            div.last-collected {
+               font-size: 13px;
+               font-weight: 300;
+               display:none;
             }
 
+            div.products-count-info {
+               font-weight: 300;
+               margin: 0;
+               span.value {
+                  font-weight: bold;
+                  margin-right: 3px;
+               }
+            }
+            a {
+               font-size: 14px;
+               margin-left: 5px;
+               color: @linkColor;
+               &:hover {text-decoration: underline;}
+            }
+
+            div.filters {
+               .filters-label {
+                  float:left;
+                  font-weight: 100;
+               }
+               .filter {
+                  float:left;
+                  margin-left: 10px;
+                  label {
+                     font-weight: normal;
+
+                  }
+               }
+
+            }
          }
       }
       a {
@@ -389,19 +396,6 @@ div.products {
          }
 
       }
-      div.products-without-metrics {
-         div.well {
-            margin: 0 20px 70px;
-            text-align: center;
-            font-size: 16px;
-            color:  #777;
-            a {
-               font-size: 80%;
-               margin-left: 8px;
-            }
-         }
-      }
-
    }
 }
 

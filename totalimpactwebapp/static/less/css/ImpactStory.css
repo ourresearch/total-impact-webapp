@@ -7186,7 +7186,7 @@ div.signup-banner a.close-link:hover {
 div.profile-header {
   margin-bottom: 35px;
   margin-top: -20px;
-  height: 140px;
+  height: 150px;
   clear: both;
 }
 div.profile-header:before,
@@ -7272,10 +7272,6 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-a
   text-align: center;
   font-family: Lato;
   font-weight: normal;
-}
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover div.call-to-action {
-  font-style: italic;
-  margin-top: 20px;
 }
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award {
   color: #fff;
@@ -7508,36 +7504,37 @@ div.product-controls div.wrapper div.products-info {
   bottom: 0;
   left: 0;
 }
-div.product-controls div.wrapper div.products-info div.num-items {
-  float: left;
+div.product-controls div.wrapper div.products-info div.products-done-updating div.last-collected {
+  font-size: 13px;
+  font-weight: 300;
+  display: none;
 }
-div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating span.val-plus-text {
+div.product-controls div.wrapper div.products-info div.products-done-updating div.products-count-info {
   font-weight: 300;
   margin: 0;
 }
-div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating span.val-plus-text span.value {
+div.product-controls div.wrapper div.products-info div.products-done-updating div.products-count-info span.value {
   font-weight: bold;
   margin-right: 3px;
 }
-div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating a {
+div.product-controls div.wrapper div.products-info div.products-done-updating a {
   font-size: 14px;
   margin-left: 5px;
   color: #ff4000;
 }
-div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating a:hover {
+div.product-controls div.wrapper div.products-info div.products-done-updating a:hover {
   text-decoration: underline;
 }
-div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating div.last-collected {
-  font-size: 13px;
-  font-weight: 300;
+div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filters-label {
+  float: left;
+  font-weight: 100;
 }
-div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating div.last-collected a.upgrade {
-  color: #555;
-  text-decoration: underline;
-  margin-left: 5px;
+div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter {
+  float: left;
+  margin-left: 10px;
 }
-div.product-controls div.wrapper div.products-info div.num-items div.products-done-updating div.last-collected a.upgrade:hover {
-  color: #000;
+div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter label {
+  font-weight: normal;
 }
 div.product-controls div.wrapper a {
   margin-left: 15px;
@@ -7580,16 +7577,6 @@ div.products .wrapper ul.products-list:after {
 }
 div.products .wrapper ul.products-list li.product {
   position: relative;
-}
-div.products .wrapper div.products-without-metrics div.well {
-  margin: 0 20px 70px;
-  text-align: center;
-  font-size: 16px;
-  color: #777;
-}
-div.products .wrapper div.products-without-metrics div.well a {
-  font-size: 80%;
-  margin-left: 8px;
 }
 div.profile-subpage .profile-subpage-header {
   background: #555;
@@ -7757,11 +7744,6 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 }
 .product div.product-margin span.single-product-controls .tooltip-arrow {
   border-top-color: red;
-}
-.product .notification .icon {
-  vertical-align: 4px;
-  font-size: 14px;
-  color: #ff4000;
 }
 .product .biblio {
   float: left;

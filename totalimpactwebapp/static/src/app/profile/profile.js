@@ -155,6 +155,11 @@ angular.module("profile", [
     // hack to make it easy to tell when update is done from selenium
     $scope.productsStillUpdating = true
 
+    $scope.productFilter = {
+      has_new_metrics: null,
+      has_metrics: true
+    }
+
 
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
@@ -184,7 +189,6 @@ angular.module("profile", [
       return loadingProducts
     }
     $scope.userExists = true;
-    $scope.showProductsWithoutMetrics = false;
     $scope.filterProducts =  UserProfile.filterProducts;
 
     $scope.hideSignupBannerNow = function(){

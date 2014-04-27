@@ -27,6 +27,7 @@ def prep_product(product, verbose=False):
     product["awards"] = make_awards(product)
     product["has_new_metrics"] = make_has_new_metrics(product)
     product["markup"] = make_markup(product, verbose)
+    product["is_true_product"] = True
     product = add_sort_keys(product)
 
     return product
