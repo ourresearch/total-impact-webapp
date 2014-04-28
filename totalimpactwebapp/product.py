@@ -400,7 +400,7 @@ has_new_metrics stuff
 def make_has_new_metrics(product_dict):
     for metric_name, metric in product_dict["metrics"].iteritems():
 
-        if metric["historical_values"]["raw_diff_7_days"] > 0:
+        if metric["historical_values"]["diff"]["raw"] > 0:
             return True
 
     return False
@@ -410,7 +410,7 @@ def set_historical_values_to_zero(product_dict):
     """ this is for testing
     """
     for metric_name, metric in product_dict["metrics"].iteritems():
-        metric["historical_values"]["raw_diff_7_days"] = 0
+        metric["historical_values"]["diff"]["raw"] = 0
 
     print product_dict["metrics"]
 

@@ -13,13 +13,13 @@
                of items {{award.top_metric.refset_storage_verb}} {{award.top_metric.refset}} in
                {{award.top_metric.refset_year}}{% endif %},
                suggesting it's highly {{award.engagement_type}} by {{award.display_audience }}. Click for details.
-               {% if award.top_metric.historical_values.raw_diff_7_days > 0 %}
+               {% if award.top_metric.historical_values.diff.raw > 0 %}
                <ul class='new-metrics'>
                   {% for metric in award.metrics %}
                      <li>
                         <img src='/static/img/favicons/{{ metric.name | replace(':','_') }}.ico' class='icon' >
                         <span class='text'>
-                           <span class='count'>{{ metric.historical_values.raw_diff_7_days }}</span> new
+                           <span class='count'>{{ metric.historical_values.diff.raw }}</span> new
                            {% if metric.environment != 'Altmetric.com' %}
                               {{ metric.environment }}
                            {% endif %}
@@ -32,13 +32,13 @@
 
 
 
-               <span class="text badge-part new-metrics-{{ (award.top_metric.historical_values.raw_diff_7_days > 0) | string() | lower() }} {{ award.is_highly_classname }} {{award.audience}} {{award.engagement_type}}">
+               <span class="text badge-part new-metrics-{{ (award.top_metric.historical_values.diff.raw > 0) | string() | lower() }} {{ award.is_highly_classname }} {{award.audience}} {{award.engagement_type}}">
                   {% if award.is_highly %}<span class="modifier">highly</span>{% endif %}
                   <span class="engagement-type">{{award.engagement_type}}</span>
                   <span class="audience">by {{award.audience}}</span>
                </span>
-               <span class="new-this-week badge-part new-metrics-{{ (award.top_metric.historical_values.raw_diff_7_days > 0) | string() | lower() }} {{ award.is_highly_classname }} {{award.audience}} {{award.engagement_type}}">
-                  <span class="plus-sign">+</span>{{ award.top_metric.historical_values.raw_diff_7_days }}
+               <span class="new-this-week badge-part new-metrics-{{ (award.top_metric.historical_values.diff.raw > 0) | string() | lower() }} {{ award.is_highly_classname }} {{award.audience}} {{award.engagement_type}}">
+                  <span class="plus-sign">+</span>{{ award.top_metric.historical_values.diff.raw }}
                </span>
             </a> {# ending <a> tag. #}
          </li>
