@@ -229,8 +229,11 @@ def get_top_metric(metrics):
     max_actual_count = max([m["actual_count"] for m in metrics])
 
     def sort_key(m):
-        raw_count_contribution = m["actual_count"] / max_actual_count
-        raw_count_contribution -= .0001  # always <1
+        try:
+            raw_count_contribution = m["actual_count"] / max_actual_count
+            raw_count_contribution -= .0001  # always <1
+        except TypeError:  # dealing with a dict from mendeley reader breakdown.
+            raw_count_contribution = .5
 
         try:
             return m["percentiles"]["CI95_lower"] + raw_count_contribution
@@ -341,7 +344,7 @@ def sum_metric_raw_values(product):
     try:
         for metric_name, metric in product["metrics"].iteritems():
             raw_values_sum += metric["actual_count"]
-    except KeyError:
+    except (KeyError, TypeError):  # ignore strings and dicts
         pass
 
     return raw_values_sum

@@ -156,7 +156,7 @@ angular.module("profile", [
     $scope.productsStillUpdating = true
 
     $scope.productFilter = {
-      has_new_metrics: null, 
+      has_new_metrics: null,
       has_metrics: true
     }
 

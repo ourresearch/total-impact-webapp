@@ -7786,6 +7786,23 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 .product .biblio div.optional-biblio span.journal {
   font-style: italic;
 }
+.product .biblio div.mendeley-reader-breakdowns {
+  font-size: 15px;
+  line-height: 1.9;
+}
+.product .biblio div.mendeley-reader-breakdowns .metric-name {
+  padding-right: 15px;
+  font-weight: 300;
+  display: inline-block;
+  width: 150px;
+  text-align: right;
+}
+.product .biblio div.mendeley-reader-breakdowns .reader-type-name-and-value {
+  margin-right: 10px;
+}
+.product .biblio div.mendeley-reader-breakdowns .reader-type-name-and-value .reader-type-name {
+  color: #555;
+}
 .product .awards {
   width: 360px;
   margin-left: 20px;

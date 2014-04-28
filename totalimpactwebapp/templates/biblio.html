@@ -71,4 +71,39 @@
       <span class="embed">{{ product.biblio.embed | safe}}</span>
       {% endif %}
    </div>
+
+   <div class="mendeley-reader-breakdowns">
+      {% for metric in product.metrics | dictsort() %}
+         {% if metric[0] in ["mendeley:discipline", "mendeley:country", "mendeley:career_stage"]  %}
+            <div class="mendeley-reader-type-metric">
+               <span class="metric-name">
+                  {{ metric[1].display_interaction }}s:
+               </span>
+               {%  for reader_type_object in metric[1].historical_values.current.raw %}
+                  <span class="reader-type-name-and-value">
+                     <span class="reader-type-name">{{ reader_type_object.name }}</span>
+                     <span class="reader-type-value">{{ (reader_type_object.value * 0.01 * product.metrics['mendeley:readers'].historical_values.current.raw) | int()}}</span>,
+                  </span>
+               {% endfor %}
+             </div>
+         {% endif %}
+
+
+      {% endfor %}
+
+   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
