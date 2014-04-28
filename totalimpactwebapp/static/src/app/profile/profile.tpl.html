@@ -86,6 +86,7 @@
                of
                <span class="count total-products">{{ (products|filter:{is_true_product:true}).length }}</span>
                research products
+
             </div>
 
             <div class="filters">
@@ -157,7 +158,6 @@
                   </a>
                </span>
             </div>
-
 
             <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
             <div class="metrics-container" ng-bind-html-unsafe="product.markup.metrics"></div>

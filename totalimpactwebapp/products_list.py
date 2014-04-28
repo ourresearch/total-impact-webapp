@@ -10,14 +10,14 @@ from flask import g
 
 
 
-def prep(products_dict, include_headings=False):
+def prep(products_dict, include_headings=False, display_debug=False):
 
     prepped_products = []
 
     for product_dict in products_dict:
 
         try:
-            prepped_products.append(product.prep_product(product_dict))
+            prepped_products.append(product.prep_product(product_dict, display_debug=display_debug))
         except product.GenreDeprecatedError:
             pass
 
