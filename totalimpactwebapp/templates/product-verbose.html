@@ -25,10 +25,10 @@
             <span class="interaction">{{ metric.display_interaction }}</span>
             <i class="icon-external-link-sign"></i>
          </a>
-         {% if metric.historical_values.raw_diff_7_days > 0 %}
+         {% if metric.historical_values.diff.raw > 0 %}
             <span class="new-metrics"
-                  data-content="{{ metric.historical_values.raw_diff_7_days }} new {{ metric.environment | replace('Altmetric.com', '') }} {{ metric.display_interaction }} in the last 7 days">
-             +{{ metric.historical_values.raw_diff_7_days }}
+                  data-content="{{ metric.historical_values.diff.raw }} new {{ metric.environment | replace('Altmetric.com', '') }} {{ metric.display_interaction }} in the last 7 days">
+             +{{ metric.historical_values.diff.raw }}
             </span>
          {% endif %}
 
