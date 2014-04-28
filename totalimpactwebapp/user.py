@@ -124,8 +124,6 @@ class User(db.Model):
     @property
     def products(self):
         products = get_products_from_core(self.tiids)
-        for product in products:
-            product['last_refreshed'] = self.last_refreshed.isoformat()
 
         if not products:
             products = []

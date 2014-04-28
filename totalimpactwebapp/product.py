@@ -2,6 +2,7 @@ from copy import deepcopy
 import logging
 from flask import render_template
 from totalimpactwebapp import product_configs
+import arrow
 
 logger = logging.getLogger("tiwebapp.product")
 
@@ -25,9 +26,11 @@ def prep_product(product, verbose=False):
     product["biblio"] = make_biblio(product)
     product["metrics"] = make_metrics(product)
     product["awards"] = make_awards(product)
+
     product["has_new_metrics"] = make_has_new_metrics(product)
-    product["markup"] = make_markup(product, verbose)
     product["is_true_product"] = True
+
+    product["markup"] = make_markup(product, verbose)
     product = add_sort_keys(product)
 
     return product
