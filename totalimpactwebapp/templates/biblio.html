@@ -82,7 +82,7 @@
                {%  for reader_type_object in metric[1].historical_values.current.raw %}
                   <span class="reader-type-name-and-value">
                      <span class="reader-type-name">{{ reader_type_object.name }}</span>
-                     <span class="reader-type-value">{{ (reader_type_object.value * 0.01 * product.metrics['mendeley:readers'].historical_values.current.raw) | int()}}</span>,
+                     <span class="reader-type-value">{{ (reader_type_object.value * 0.01 * product.metrics['mendeley:readers'].historical_values.current.raw) | round() | int()}}</span>,
                   </span>
                {% endfor %}
              </div>
