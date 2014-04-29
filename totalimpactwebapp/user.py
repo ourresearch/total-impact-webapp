@@ -227,7 +227,7 @@ class User(db.Model):
             # AnonymousUser doesn't have method
             analytics_credentials = {}    
         product_id_type = product_id_dict.keys()[0]
-        existing_tiids = self.tiids_including_removed # don't re-import dup or removed products    
+        existing_tiids = self.tiids # re-import dup removed products    
         import_response = make_products_for_product_id_strings(
                 product_id_type, 
                 product_id_dict[product_id_type], 
