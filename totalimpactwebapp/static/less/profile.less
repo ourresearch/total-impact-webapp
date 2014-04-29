@@ -64,7 +64,6 @@ div.signup-banner {
 
 a.refresh {
    position:absolute;
-   background: red;
    width: 20px;
    height: 20px;
    text-indent: -1000px;
@@ -351,6 +350,10 @@ div.product-controls {
             div.products-count-info {
                font-weight: 300;
                margin: 0;
+               span.showing {
+                  font-weight: normal;
+                  display:none;
+               }
                span.value {
                   font-weight: bold;
                   margin-right: 3px;
@@ -366,14 +369,18 @@ div.product-controls {
             div.filters {
                .filters-label {
                   float:left;
-                  font-weight: 100;
+                  font-weight: normal;
                }
                .filter {
                   float:left;
                   padding-left: 10px;
                   label {
-                     font-weight: normal;
+                     font-weight: 100;
+                     margin-bottom:0;
                      cursor:pointer;
+                     span.count {
+                        font-size: 80%;
+                     }
                   }
                   input {
                      cursor: pointer;

@@ -1240,26 +1240,34 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            </div>\n" +
     "\n" +
     "            <div ng-hide=\"loadingProducts()\" class=\"products-count-info\">\n" +
-    "               Showing\n" +
-    "               <span class=\"count visible-products\">{{ (filteredProducts|filter:{is_true_product:true}).length }}</span>\n" +
-    "               of\n" +
-    "               <span class=\"count total-products\">{{ (products|filter:{is_true_product:true}).length }}</span>\n" +
-    "               research products\n" +
-    "\n" +
+    "               <span class=\"showing\">\n" +
+    "                  Showing\n" +
+    "                  <span class=\"count visible-products\">{{ (filteredProducts|filter:{is_true_product:true}).length }}</span>\n" +
+    "                  of\n" +
+    "                  <span class=\"count total-products\">{{ (products|filter:{is_true_product:true}).length }}</span>\n" +
+    "                  research products\n" +
+    "               </span>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"filters\">\n" +
     "               <span class=\"filters-label\">Show only products</span>\n" +
     "               <div class=\"filter\">\n" +
     "                  <input type=\"checkbox\" id=\"filter-has-metrics\" ng-model=\"productFilter.has_metrics\"/>\n" +
-    "                  <label for=\"filter-has-metrics\">with metrics</label>\n" +
+    "                  <label for=\"filter-has-metrics\">\n" +
+    "                     with metrics\n" +
+    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_metrics: true}).length }})</span>\n" +
+    "                  </label>\n" +
     "               </div>\n" +
     "               <div class=\"filter\">\n" +
     "                  <input type=\"checkbox\"\n" +
     "                         id=\"filter-has-new-metrics\"\n" +
     "                         ng-model=\"productFilter.has_new_metrics\"\n" +
     "                         ng-false-value=\"{{ null }}\" />\n" +
-    "                  <label for=\"filter-has-new-metrics\">with new metrics</label>\n" +
+    "                  <label for=\"filter-has-new-metrics\">\n" +
+    "                     with new metrics\n" +
+    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_new_metrics: true}).length }})</span>\n" +
+    "\n" +
+    "                  </label>\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +

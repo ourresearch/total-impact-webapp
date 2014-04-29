@@ -81,26 +81,34 @@
             </div>
 
             <div ng-hide="loadingProducts()" class="products-count-info">
-               Showing
-               <span class="count visible-products">{{ (filteredProducts|filter:{is_true_product:true}).length }}</span>
-               of
-               <span class="count total-products">{{ (products|filter:{is_true_product:true}).length }}</span>
-               research products
-
+               <span class="showing">
+                  Showing
+                  <span class="count visible-products">{{ (filteredProducts|filter:{is_true_product:true}).length }}</span>
+                  of
+                  <span class="count total-products">{{ (products|filter:{is_true_product:true}).length }}</span>
+                  research products
+               </span>
             </div>
 
             <div class="filters">
                <span class="filters-label">Show only products</span>
                <div class="filter">
                   <input type="checkbox" id="filter-has-metrics" ng-model="productFilter.has_metrics"/>
-                  <label for="filter-has-metrics">with metrics</label>
+                  <label for="filter-has-metrics">
+                     with metrics
+                     <span class="count">({{ (products|filter:{is_true_product:true, has_metrics: true}).length }})</span>
+                  </label>
                </div>
                <div class="filter">
                   <input type="checkbox"
                          id="filter-has-new-metrics"
                          ng-model="productFilter.has_new_metrics"
                          ng-false-value="{{ null }}" />
-                  <label for="filter-has-new-metrics">with new metrics</label>
+                  <label for="filter-has-new-metrics">
+                     with new metrics
+                     <span class="count">({{ (products|filter:{is_true_product:true, has_new_metrics: true}).length }})</span>
+
+                  </label>
                </div>
             </div>
 
