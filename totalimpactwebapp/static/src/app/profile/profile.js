@@ -196,6 +196,15 @@ angular.module("profile", [
 
     }
 
+    $scope.refresh = function(){
+      var url = "/user/"+ security.getCurrentUser.url_slug +"/products?action=refresh"
+
+      console.log("POSTing to ", url)
+      $http.post(url, {}).success(function(data, status, headers, config){
+        console.log("refresh POST returned: ", data)
+      })
+    }
+
     $scope.humanDate = function(isoStr) {
       // using moment.js library imported from cdnjs at runtime. not encapsulated,
       // so will break in unit testing...

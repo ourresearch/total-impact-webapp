@@ -485,15 +485,17 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      security,
+                                                     $rootScope,
                                                      RouteChangeErrorHandler) {
 
   $scope.userMessage = UserMessage
+  $rootScope.security = security
+
 
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
   $scope.isAuthenticated =  security.isAuthenticated
-
 
 
   // these will be the user's test states forever (or until she clears our cookie)
@@ -1372,6 +1374,15 @@ angular.module("profile", [
     $scope.hideSignupBannerNow = function(){
       $scope.hideSignupBanner = true
 
+    }
+
+    $scope.refresh = function(){
+      var url = "/user/"+ security.getCurrentUser.url_slug +"/products?action=refresh"
+
+      console.log("POSTing to ", url)
+      $http.post(url, {}).success(function(data, status, headers, config){
+        console.log("refresh POST returned: ", data)
+      })
     }
 
     $scope.humanDate = function(isoStr) {
@@ -4267,8 +4278,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "\n" +
     "\n" +
     "   </div>\n" +
-    "</div> <!-- end footer -->\n" +
-    "");
+    "</div> <!-- end footer -->");
 }]);
 
 angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -5415,6 +5425,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Make your free profile</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>\n" +
+    "\n" +
+    "<a class=\"refresh\" ng-click=\"refresh()\">mmm, refreshing!</a>\n" +
+    "\n" +
     "");
 }]);
 

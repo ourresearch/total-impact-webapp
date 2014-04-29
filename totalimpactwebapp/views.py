@@ -419,6 +419,8 @@ def user_products_get(id):
 
     user = get_user_for_response(id, request)
 
+    source = request.args.get("source", "webapp")
+
     try:
         if current_user.url_slug == user.url_slug:
             user.update_last_viewed_profile()

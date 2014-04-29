@@ -6537,6 +6537,7 @@ div#footer {
   float: left;
   margin-top: 100px;
   font-size: 16px;
+  position: relative;
 }
 div#footer p {
   margin: 6px 0 0 0;
@@ -7182,6 +7183,15 @@ div.signup-banner a.close-link:hover {
   text-align: center;
   margin-top: 10px;
   font-weight: bold;
+}
+a.refresh {
+  position: absolute;
+  background: red;
+  width: 20px;
+  height: 20px;
+  text-indent: -1000px;
+  top: 20px;
+  left: 0;
 }
 div.profile-header {
   margin-bottom: 35px;

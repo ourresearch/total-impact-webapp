@@ -196,8 +196,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "\n" +
     "\n" +
     "   </div>\n" +
-    "</div> <!-- end footer -->\n" +
-    "");
+    "</div> <!-- end footer -->");
 }]);
 
 angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -1344,6 +1343,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Make your free profile</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>\n" +
+    "\n" +
+    "<a class=\"refresh\" ng-click=\"refresh()\">mmm, refreshing!</a>\n" +
+    "\n" +
     "");
 }]);
 

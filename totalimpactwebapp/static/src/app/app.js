@@ -69,15 +69,17 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      security,
+                                                     $rootScope,
                                                      RouteChangeErrorHandler) {
 
   $scope.userMessage = UserMessage
+  $rootScope.security = security
+
 
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
   $scope.isAuthenticated =  security.isAuthenticated
-
 
 
   // these will be the user's test states forever (or until she clears our cookie)

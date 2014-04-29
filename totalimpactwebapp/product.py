@@ -148,6 +148,10 @@ def metric_metadata(metric, year):
     return ret
 
 
+def metric_days_since_last_nonzero_refresh(metric):
+    return 7
+
+
 def metric_percentiles(metric):
     ret = {}
     refsets_config = {
