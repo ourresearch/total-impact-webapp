@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-29
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-30
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1350,8 +1350,6 @@ angular.module("profile", [
 
     $scope.setProductFilter = function(setting){
 
-      console.log("ran setProductFilter")
-
       if (setting == "all") {
         $scope.productFilter.has_new_metrics = null
         $scope.productFilter.has_metrics = null
@@ -1415,11 +1413,12 @@ angular.module("profile", [
     }
 
     $scope.refresh = function(){
-      var url = "/user/"+ security.getCurrentUser.url_slug +"/products?action=refresh"
+
+      var url = "/user/"+ userSlug +"/products?action=refresh"
 
       console.log("POSTing to ", url)
       $http.post(url, {}).success(function(data, status, headers, config){
-        console.log("refresh POST returned: ", data)
+        console.log("POST returned. We're refreshing these tiids: ", data)
       })
     }
 
@@ -1545,9 +1544,20 @@ angular.module("profile", [
 
 
 
-.controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
+.controller("profileEmbedModalCtrl", function($scope, $location, Page, userSlug){
   console.log("user slug is: ", userSlug)
+
+  var baseUrl = $location.protocol() + "://"
+  baseUrl += $location.host()
+  if ($location.port()){
+    baseUrl += (":" + $location.port())
+  }
+
+  console.log("base url is ", baseUrl)
+
+
   $scope.userSlug = userSlug;
+  $scope.baseUrl = baseUrl
   $scope.embed = {}
   $scope.embed.type = "badge"
 
@@ -5259,11 +5269,11 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "   <div class=\"code\">\n" +
     "      <div class=\"embed-profile\" ng-show=\"embed.type=='profile'\">\n" +
     "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</textarea>\n" +
+    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</textarea>\n" +
     "      </div>\n" +
     "      <div class=\"embed-link\" ng-show=\"embed.type=='link'\">\n" +
     "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl() }}/{{ userSlug }}\"&gt;&lt;img src=\"{{ baseUrl() }}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</textarea>\n" +
+    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl }}/{{ userSlug }}\"&gt;&lt;img src=\"{{ baseUrl}}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</textarea>\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
@@ -5371,12 +5381,11 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            </div>\n" +
     "\n" +
     "            <!-- filter products -->\n" +
-    "            <div class=\"filters-label\">Showing:</div>\n" +
     "            <div class=\"filters\">\n" +
     "\n" +
     "               <div class=\"filter\" ng-class=\"{active: !productFilter.has_metrics && !productFilter.has_new_metrics}\">\n" +
     "                  <a ng-click=\"setProductFilter('all')\">\n" +
-    "                     All\n" +
+    "                     Products\n" +
     "                     <span class=\"count\">({{ (products|filter:{is_true_product:true}).length }})</span>\n" +
     "                  </a>\n" +
     "               </div>\n" +
@@ -6254,7 +6263,6 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
   $templateCache.put("security/login/toolbar.tpl.html",
     "<ul class=\"main-nav\">\n" +
     "   <li ng-show=\"currentUser\" class=\"logged-in-user nav-item\">\n" +
-    "      <!--<span class=\"context\">Welcome back, </span>-->\n" +
     "      <a class=\"current-user\"\n" +
     "         href=\"/{{ currentUser.url_slug }}\"\n" +
     "         tooltip=\"View your profile\"\n" +
@@ -6265,14 +6273,25 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "\n" +
     "   <li ng-show=\"currentUser\" class=\"preferences nav-item\">\n" +
+    "\n" +
     "      <span class=\"or\"></span>\n" +
+    "\n" +
+    "      <a class=\"new-metrics\"\n" +
+    "         href=\"/{{ currentUser.url_slug }}?filter=has_new_metrics\">\n" +
+    "         <i class=\"icon-bell\"></i>\n" +
+    "      </a>\n" +
+    "\n" +
+    "      <span class=\"or\"></span>\n" +
+    "\n" +
     "      <a class=\"profile preference\"\n" +
     "         href=\"/settings/profile\"\n" +
     "         tooltip=\"Change profile settings\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
+    "\n" +
     "      <span class=\"or\"></span>\n" +
+    "\n" +
     "      <a class=\"logout preference\"\n" +
     "         ng-click=\"logout()\"\n" +
     "         tooltip=\"Log out\"\n" +

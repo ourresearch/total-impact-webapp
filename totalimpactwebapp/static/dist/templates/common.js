@@ -122,7 +122,6 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
   $templateCache.put("security/login/toolbar.tpl.html",
     "<ul class=\"main-nav\">\n" +
     "   <li ng-show=\"currentUser\" class=\"logged-in-user nav-item\">\n" +
-    "      <!--<span class=\"context\">Welcome back, </span>-->\n" +
     "      <a class=\"current-user\"\n" +
     "         href=\"/{{ currentUser.url_slug }}\"\n" +
     "         tooltip=\"View your profile\"\n" +
@@ -133,14 +132,25 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "\n" +
     "   <li ng-show=\"currentUser\" class=\"preferences nav-item\">\n" +
+    "\n" +
     "      <span class=\"or\"></span>\n" +
+    "\n" +
+    "      <a class=\"new-metrics\"\n" +
+    "         href=\"/{{ currentUser.url_slug }}?filter=has_new_metrics\">\n" +
+    "         <i class=\"icon-bell\"></i>\n" +
+    "      </a>\n" +
+    "\n" +
+    "      <span class=\"or\"></span>\n" +
+    "\n" +
     "      <a class=\"profile preference\"\n" +
     "         href=\"/settings/profile\"\n" +
     "         tooltip=\"Change profile settings\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
+    "\n" +
     "      <span class=\"or\"></span>\n" +
+    "\n" +
     "      <a class=\"logout preference\"\n" +
     "         ng-click=\"logout()\"\n" +
     "         tooltip=\"Log out\"\n" +

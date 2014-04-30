@@ -1,6 +1,5 @@
 <ul class="main-nav">
    <li ng-show="currentUser" class="logged-in-user nav-item">
-      <!--<span class="context">Welcome back, </span>-->
       <a class="current-user"
          href="/{{ currentUser.url_slug }}"
          tooltip="View your profile"
@@ -11,14 +10,25 @@
    </li>
 
    <li ng-show="currentUser" class="preferences nav-item">
+
       <span class="or"></span>
+
+      <a class="new-metrics"
+         href="/{{ currentUser.url_slug }}?filter=has_new_metrics">
+         <i class="icon-bell"></i>
+      </a>
+
+      <span class="or"></span>
+
       <a class="profile preference"
          href="/settings/profile"
          tooltip="Change profile settings"
          tooltip-placement="bottom">
          <i class="icon-cog"></i>
       </a>
+
       <span class="or"></span>
+
       <a class="logout preference"
          ng-click="logout()"
          tooltip="Log out"

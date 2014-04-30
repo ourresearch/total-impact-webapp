@@ -261,6 +261,7 @@ def get_current_user():
 
     try:
         user_info = g.user.dict_about(include_stripe=True)
+        user_info["has_new_metrics"] = products_list.has_new_metrics(g.user.products)
 
     except AttributeError:  # anon user has no as_dict()
         user_info = None

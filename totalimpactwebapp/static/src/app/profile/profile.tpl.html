@@ -92,12 +92,11 @@
             </div>
 
             <!-- filter products -->
-            <div class="filters-label">Showing:</div>
             <div class="filters">
 
                <div class="filter" ng-class="{active: !productFilter.has_metrics && !productFilter.has_new_metrics}">
                   <a ng-click="setProductFilter('all')">
-                     All
+                     Products
                      <span class="count">({{ (products|filter:{is_true_product:true}).length }})</span>
                   </a>
                </div>

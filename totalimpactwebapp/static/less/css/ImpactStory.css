@@ -7805,6 +7805,7 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   font-style: italic;
 }
 .product .biblio div.mendeley-reader-breakdowns {
+  display: none;
   font-size: 15px;
   line-height: 1.9;
 }

@@ -169,8 +169,6 @@ angular.module("profile", [
 
     $scope.setProductFilter = function(setting){
 
-      console.log("ran setProductFilter")
-
       if (setting == "all") {
         $scope.productFilter.has_new_metrics = null
         $scope.productFilter.has_metrics = null
@@ -234,11 +232,12 @@ angular.module("profile", [
     }
 
     $scope.refresh = function(){
-      var url = "/user/"+ security.getCurrentUser.url_slug +"/products?action=refresh"
+
+      var url = "/user/"+ userSlug +"/products?action=refresh"
 
       console.log("POSTing to ", url)
       $http.post(url, {}).success(function(data, status, headers, config){
-        console.log("refresh POST returned: ", data)
+        console.log("POST returned. We're refreshing these tiids: ", data)
       })
     }
 
@@ -364,9 +363,20 @@ angular.module("profile", [
 
 
 
-.controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
+.controller("profileEmbedModalCtrl", function($scope, $location, Page, userSlug){
   console.log("user slug is: ", userSlug)
+
+  var baseUrl = $location.protocol() + "://"
+  baseUrl += $location.host()
+  if ($location.port()){
+    baseUrl += (":" + $location.port())
+  }
+
+  console.log("base url is ", baseUrl)
+
+
   $scope.userSlug = userSlug;
+  $scope.baseUrl = baseUrl
   $scope.embed = {}
   $scope.embed.type = "badge"
 
