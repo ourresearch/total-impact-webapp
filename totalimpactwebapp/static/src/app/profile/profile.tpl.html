@@ -75,12 +75,13 @@
    <div class="wrapper">
       <div class="products-info">
 
-         <div class="products-done-updating" ng-show="!productsStillUpdating">
+         <div class="products-done-updating" ng-show="!loadingProducts()">
             <div class="last-collected">
                <span class="msg">Metrics last collected {{ humanDate(user.about.last_refreshed+" Z") }}.</span>
             </div>
 
-            <div ng-hide="loadingProducts()" class="products-count-info">
+            <!-- show total products...just for dev use. -->
+            <div class="products-count-info">
                <span class="showing">
                   Showing
                   <span class="count visible-products">{{ (filteredProducts|filter:{is_true_product:true}).length }}</span>
@@ -90,32 +91,33 @@
                </span>
             </div>
 
+            <!-- filter products -->
+            <div class="filters-label">Showing:</div>
             <div class="filters">
-               <span class="filters-label">Show only products</span>
-               <div class="filter">
-                  <input type="checkbox" id="filter-has-metrics" ng-model="productFilter.has_metrics"/>
-                  <label for="filter-has-metrics">
+
+               <div class="filter" ng-class="{active: !productFilter.has_metrics && !productFilter.has_new_metrics}">
+                  <a ng-click="setProductFilter('all')">
+                     All
+                     <span class="count">({{ (products|filter:{is_true_product:true}).length }})</span>
+                  </a>
+               </div>
+
+               <div class="filter" ng-class="{active: (productFilter.has_metrics && !productFilter.has_new_metrics)}">
+                  <i class="icon-chevron-right left"></i>
+                  <a ng-click="setProductFilter('has_metrics')">
                      with metrics
                      <span class="count">({{ (products|filter:{is_true_product:true, has_metrics: true}).length }})</span>
-                  </label>
+                  </a>
                </div>
-               <div class="filter">
-                  <input type="checkbox"
-                         id="filter-has-new-metrics"
-                         ng-model="productFilter.has_new_metrics"
-                         ng-false-value="{{ null }}" />
-                  <label for="filter-has-new-metrics">
-                     with new metrics
+               <div class="filter this-week" ng-class="{active: productFilter.has_new_metrics}">
+                  <i class="icon-chevron-right left"></i>
+                  <a ng-click="setProductFilter('has_new_metrics')">
+                     this week
                      <span class="count">({{ (products|filter:{is_true_product:true, has_new_metrics: true}).length }})</span>
 
-                  </label>
+                  </a>
                </div>
             </div>
-
-         </div>
-
-         <div ng-show="productsStillUpdating" class="products-still-updating" id="products-still-updating">
-            Products still updating...
          </div>
 
       </div>

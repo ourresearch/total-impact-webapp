@@ -286,12 +286,7 @@ div.product-controls {
       position:relative;
       a {
          &:hover {color: #333;}
-
-         &.dedup-button {
-            &.working {color: @linkColor;}
-            i {margin-right: 0;}
-            i.icon-refresh {margin-right: 2px;}
-         }
+         font-size: 16px;
       }
       div.view-controls {
          position: absolute;
@@ -303,6 +298,14 @@ div.product-controls {
          }
          div.everyone-controls{
             float:left;
+         }
+         a {
+            margin-left: 15px;
+            color: #777;
+            display:inline-block;
+            i {
+               margin-right:5px;
+            }
          }
          span.dropdown {
             ul.dropdown-menu {
@@ -359,46 +362,45 @@ div.product-controls {
                   margin-right: 3px;
                }
             }
-            a {
-               font-size: 14px;
-               margin-left: 5px;
-               color: @linkColor;
-               &:hover {text-decoration: underline;}
+            div.filters-label {
+               color: #777;
+               font-weight: normal;
+               font-size: 16px;
+               float:left;
             }
-
             div.filters {
+               float:left;
+               i.icon-chevron-right {
+                  vertical-align: -2px;
+                  color: #aaa;
+               }
                .filters-label {
                   float:left;
                   font-weight: normal;
                }
                .filter {
+                  font-size: 15px;
+                  &.active {
+                     a {
+                        font-weight: normal;
+                        color: #555;
+                        cursor: pointer;
+                     }
+                  }
                   float:left;
                   padding-left: 10px;
-                  label {
+                  a {
                      font-weight: 100;
-                     margin-bottom:0;
-                     cursor:pointer;
+                     color: @gray-light;
                      span.count {
                         font-size: 80%;
                      }
-                  }
-                  input {
-                     cursor: pointer;
                   }
                }
 
             }
          }
       }
-      a {
-         margin-left: 15px;
-         color: #777;
-         display:inline-block;
-         i {
-            margin-right:5px;
-         }
-      }
-
    }
 }
 

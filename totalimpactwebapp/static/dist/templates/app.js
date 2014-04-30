@@ -1234,12 +1234,13 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"products-info\">\n" +
     "\n" +
-    "         <div class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
+    "         <div class=\"products-done-updating\" ng-show=\"!loadingProducts()\">\n" +
     "            <div class=\"last-collected\">\n" +
     "               <span class=\"msg\">Metrics last collected {{ humanDate(user.about.last_refreshed+\" Z\") }}.</span>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div ng-hide=\"loadingProducts()\" class=\"products-count-info\">\n" +
+    "            <!-- show total products...just for dev use. -->\n" +
+    "            <div class=\"products-count-info\">\n" +
     "               <span class=\"showing\">\n" +
     "                  Showing\n" +
     "                  <span class=\"count visible-products\">{{ (filteredProducts|filter:{is_true_product:true}).length }}</span>\n" +
@@ -1249,32 +1250,33 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </span>\n" +
     "            </div>\n" +
     "\n" +
+    "            <!-- filter products -->\n" +
+    "            <div class=\"filters-label\">Showing:</div>\n" +
     "            <div class=\"filters\">\n" +
-    "               <span class=\"filters-label\">Show only products</span>\n" +
-    "               <div class=\"filter\">\n" +
-    "                  <input type=\"checkbox\" id=\"filter-has-metrics\" ng-model=\"productFilter.has_metrics\"/>\n" +
-    "                  <label for=\"filter-has-metrics\">\n" +
+    "\n" +
+    "               <div class=\"filter\" ng-class=\"{active: !productFilter.has_metrics && !productFilter.has_new_metrics}\">\n" +
+    "                  <a ng-click=\"setProductFilter('all')\">\n" +
+    "                     All\n" +
+    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true}).length }})</span>\n" +
+    "                  </a>\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"filter\" ng-class=\"{active: (productFilter.has_metrics && !productFilter.has_new_metrics)}\">\n" +
+    "                  <i class=\"icon-chevron-right left\"></i>\n" +
+    "                  <a ng-click=\"setProductFilter('has_metrics')\">\n" +
     "                     with metrics\n" +
     "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_metrics: true}).length }})</span>\n" +
-    "                  </label>\n" +
+    "                  </a>\n" +
     "               </div>\n" +
-    "               <div class=\"filter\">\n" +
-    "                  <input type=\"checkbox\"\n" +
-    "                         id=\"filter-has-new-metrics\"\n" +
-    "                         ng-model=\"productFilter.has_new_metrics\"\n" +
-    "                         ng-false-value=\"{{ null }}\" />\n" +
-    "                  <label for=\"filter-has-new-metrics\">\n" +
-    "                     with new metrics\n" +
+    "               <div class=\"filter this-week\" ng-class=\"{active: productFilter.has_new_metrics}\">\n" +
+    "                  <i class=\"icon-chevron-right left\"></i>\n" +
+    "                  <a ng-click=\"setProductFilter('has_new_metrics')\">\n" +
+    "                     this week\n" +
     "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_new_metrics: true}).length }})</span>\n" +
     "\n" +
-    "                  </label>\n" +
+    "                  </a>\n" +
     "               </div>\n" +
     "            </div>\n" +
-    "\n" +
-    "         </div>\n" +
-    "\n" +
-    "         <div ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
-    "            Products still updating...\n" +
     "         </div>\n" +
     "\n" +
     "      </div>\n" +

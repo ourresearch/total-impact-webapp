@@ -36,7 +36,8 @@ angular.module('app').config(function ($routeProvider, $locationProvider) {
   // want to make sure the user profile route loads last, because it's super greedy.
   $routeProvider.when("/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
-    controller:'ProfileCtrl'
+    controller:'ProfileCtrl',
+    reloadOnSearch: false
   })
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'

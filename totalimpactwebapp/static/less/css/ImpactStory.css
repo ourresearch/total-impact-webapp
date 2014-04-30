@@ -7444,17 +7444,11 @@ div.product-controls:after {
 div.product-controls div.wrapper {
   position: relative;
 }
+div.product-controls div.wrapper a {
+  font-size: 16px;
+}
 div.product-controls div.wrapper a:hover {
   color: #333;
-}
-div.product-controls div.wrapper a.dedup-button.working {
-  color: #ff4000;
-}
-div.product-controls div.wrapper a.dedup-button i {
-  margin-right: 0;
-}
-div.product-controls div.wrapper a.dedup-button i.icon-refresh {
-  margin-right: 2px;
 }
 div.product-controls div.wrapper div.view-controls {
   position: absolute;
@@ -7467,6 +7461,14 @@ div.product-controls div.wrapper div.view-controls div.admin-controls {
 }
 div.product-controls div.wrapper div.view-controls div.everyone-controls {
   float: left;
+}
+div.product-controls div.wrapper div.view-controls a {
+  margin-left: 15px;
+  color: #777;
+  display: inline-block;
+}
+div.product-controls div.wrapper div.view-controls a i {
+  margin-right: 5px;
 }
 div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-menu {
   border: none;
@@ -7530,40 +7532,39 @@ div.product-controls div.wrapper div.products-info div.products-done-updating di
   font-weight: bold;
   margin-right: 3px;
 }
-div.product-controls div.wrapper div.products-info div.products-done-updating a {
-  font-size: 14px;
-  margin-left: 5px;
-  color: #ff4000;
+div.product-controls div.wrapper div.products-info div.products-done-updating div.filters-label {
+  color: #777;
+  font-weight: normal;
+  font-size: 16px;
+  float: left;
 }
-div.product-controls div.wrapper div.products-info div.products-done-updating a:hover {
-  text-decoration: underline;
+div.product-controls div.wrapper div.products-info div.products-done-updating div.filters {
+  float: left;
+}
+div.product-controls div.wrapper div.products-info div.products-done-updating div.filters i.icon-chevron-right {
+  vertical-align: -2px;
+  color: #aaa;
 }
 div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filters-label {
   float: left;
   font-weight: normal;
 }
 div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter {
+  font-size: 15px;
   float: left;
   padding-left: 10px;
 }
-div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter label {
+div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter.active a {
+  font-weight: normal;
+  color: #555;
+  cursor: pointer;
+}
+div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter a {
   font-weight: 100;
-  margin-bottom: 0;
-  cursor: pointer;
+  color: #999999;
 }
-div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter label span.count {
+div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter a span.count {
   font-size: 80%;
-}
-div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter input {
-  cursor: pointer;
-}
-div.product-controls div.wrapper a {
-  margin-left: 15px;
-  color: #777;
-  display: inline-block;
-}
-div.product-controls div.wrapper a i {
-  margin-right: 5px;
 }
 div.products {
   margin-top: 0;
