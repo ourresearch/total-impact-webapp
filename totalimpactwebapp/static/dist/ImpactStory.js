@@ -1549,8 +1549,8 @@ angular.module("profile", [
 
   var baseUrl = $location.protocol() + "://"
   baseUrl += $location.host()
-  if ($location.port()){
-    baseUrl += (":" + $location.port())
+  if ($location.port() === 5000){ // handle localhost special
+    baseUrl += (":5000")
   }
 
   console.log("base url is ", baseUrl)
@@ -5365,20 +5365,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"products-info\">\n" +
     "\n" +
     "         <div class=\"products-done-updating\" ng-show=\"!loadingProducts()\">\n" +
-    "            <div class=\"last-collected\">\n" +
-    "               <span class=\"msg\">Metrics last collected {{ humanDate(user.about.last_refreshed+\" Z\") }}.</span>\n" +
-    "            </div>\n" +
-    "\n" +
-    "            <!-- show total products...just for dev use. -->\n" +
-    "            <div class=\"products-count-info\">\n" +
-    "               <span class=\"showing\">\n" +
-    "                  Showing\n" +
-    "                  <span class=\"count visible-products\">{{ (filteredProducts|filter:{is_true_product:true}).length }}</span>\n" +
-    "                  of\n" +
-    "                  <span class=\"count total-products\">{{ (products|filter:{is_true_product:true}).length }}</span>\n" +
-    "                  research products\n" +
-    "               </span>\n" +
-    "            </div>\n" +
     "\n" +
     "            <!-- filter products -->\n" +
     "            <div class=\"filters\">\n" +
@@ -5397,7 +5383,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_metrics: true}).length }})</span>\n" +
     "                  </a>\n" +
     "               </div>\n" +
-    "               <div class=\"filter this-week\" ng-class=\"{active: productFilter.has_new_metrics}\">\n" +
+    "               <div class=\"filter this-week\"\n" +
+    "                    ng-show=\"(products|filter:{has_new_metrics: true}).length > 0\"\n" +
+    "                    ng-class=\"{active: productFilter.has_new_metrics}\">\n" +
     "                  <i class=\"icon-chevron-right left\"></i>\n" +
     "                  <a ng-click=\"setProductFilter('has_new_metrics')\">\n" +
     "                     this week\n" +

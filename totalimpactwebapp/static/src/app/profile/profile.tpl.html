@@ -76,20 +76,6 @@
       <div class="products-info">
 
          <div class="products-done-updating" ng-show="!loadingProducts()">
-            <div class="last-collected">
-               <span class="msg">Metrics last collected {{ humanDate(user.about.last_refreshed+" Z") }}.</span>
-            </div>
-
-            <!-- show total products...just for dev use. -->
-            <div class="products-count-info">
-               <span class="showing">
-                  Showing
-                  <span class="count visible-products">{{ (filteredProducts|filter:{is_true_product:true}).length }}</span>
-                  of
-                  <span class="count total-products">{{ (products|filter:{is_true_product:true}).length }}</span>
-                  research products
-               </span>
-            </div>
 
             <!-- filter products -->
             <div class="filters">
@@ -108,7 +94,9 @@
                      <span class="count">({{ (products|filter:{is_true_product:true, has_metrics: true}).length }})</span>
                   </a>
                </div>
-               <div class="filter this-week" ng-class="{active: productFilter.has_new_metrics}">
+               <div class="filter this-week"
+                    ng-show="(products|filter:{has_new_metrics: true}).length > 0"
+                    ng-class="{active: productFilter.has_new_metrics}">
                   <i class="icon-chevron-right left"></i>
                   <a ng-click="setProductFilter('has_new_metrics')">
                      this week
