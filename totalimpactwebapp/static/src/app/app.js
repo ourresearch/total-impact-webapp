@@ -76,7 +76,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.userMessage = UserMessage
   $rootScope.security = security
 
-
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()

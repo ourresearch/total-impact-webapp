@@ -373,8 +373,6 @@ angular.module("profile", [
   }
 
   console.log("base url is ", baseUrl)
-
-
   $scope.userSlug = userSlug;
   $scope.baseUrl = baseUrl
   $scope.embed = {}

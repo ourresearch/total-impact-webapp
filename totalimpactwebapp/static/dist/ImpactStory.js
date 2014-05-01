@@ -492,7 +492,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.userMessage = UserMessage
   $rootScope.security = security
 
-
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
@@ -1554,8 +1553,6 @@ angular.module("profile", [
   }
 
   console.log("base url is ", baseUrl)
-
-
   $scope.userSlug = userSlug;
   $scope.baseUrl = baseUrl
   $scope.embed = {}
@@ -3157,6 +3154,7 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
+          console.log("currentUser.has_new_metrics:", currentUser.has_new_metrics)
 
         })
         .then(function(){return currentUser})

@@ -117,6 +117,7 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
+          console.log("currentUser.has_new_metrics:", currentUser.has_new_metrics)
 
         })
         .then(function(){return currentUser})

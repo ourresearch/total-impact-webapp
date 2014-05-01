@@ -406,7 +406,6 @@ has_new_metrics stuff
 
 def make_has_new_metrics(product_dict):
     for metric_name, metric in product_dict["metrics"].iteritems():
-
         if metric["historical_values"]["diff"]["raw"] > 0:
             return True
 
@@ -418,8 +417,6 @@ def set_historical_values_to_zero(product_dict):
     """
     for metric_name, metric in product_dict["metrics"].iteritems():
         metric["historical_values"]["diff"]["raw"] = 0
-
-    print product_dict["metrics"]
 
     return product_dict
 
