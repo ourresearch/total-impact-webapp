@@ -1,6 +1,8 @@
 from totalimpactwebapp.user import User
 from totalimpactwebapp import db
 import datetime
+from totalimpactwebapp.user import remove_duplicates_from_user 
+
 
 # from tasks import update_from_linked_account
 
@@ -26,28 +28,18 @@ def page_query(q):
             break
 
 
-def deduplicate_by_url_slug(url_slug, webapp_api_endpoint):
-    url = webapp_api_endpoint + u"/user/{url_slug}/products?action=deduplicate&source=scheduled".format(
-        url_slug=url_slug)
-    try:
-        print(u"DEDUP POST to {url}".format(
-            url=url))
-    except UnicodeEncodeError:
-        print(u"UnicodeEncodeError when trying to print url")
-    r = requests.post(url)
-    return r  
 
 def put_linked_account_users_on_queue():
 
     i = 0
     # now = datetime.datetime.utcnow().isoformat()
-    now = "2015-06-24"
+    now = "2013-06-24"
     # for user in page_query(User.query.filter(User.next_refresh < now).order_by(User.next_refresh.asc())):
 
-    # for user in page_query(User.query):
-    for user in page_query(User.query.filter(User.next_refresh <= now)):
-        tiids = deduplicate_by_url_slug("https://impactstory.org", user.url_slug)
-        print tiids
+    # for user in page_query(User.query.filter(User.next_refresh <= now)):
+    for user in page_query(User.query):
+        removed_tiids = remove_duplicates_from_user(user.id)
+        print removed_tiids
         # linked_accounts_to_sync = {
         #     "figshare": user.figshare_id, 
         #     "github": user.github_id, 
