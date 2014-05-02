@@ -2,7 +2,7 @@ from totalimpactwebapp.user import User
 from totalimpactwebapp import db
 import datetime
 
-from tasks import update_from_linked_account
+# from tasks import update_from_linked_account
 
 
 """
