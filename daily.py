@@ -40,8 +40,8 @@ def deduplicate_by_url_slug(url_slug, webapp_api_endpoint):
 def put_linked_account_users_on_queue():
 
     i = 0
-    now = datetime.datetime.utcnow().isoformat()
-    # now = "2013-06-24"
+    # now = datetime.datetime.utcnow().isoformat()
+    now = "2015-06-24"
     # for user in page_query(User.query.filter(User.next_refresh < now).order_by(User.next_refresh.asc())):
 
     # for user in page_query(User.query):
