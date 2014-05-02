@@ -30,10 +30,10 @@ def deduplicate_by_url_slug(url_slug, webapp_api_endpoint):
     url = webapp_api_endpoint + u"/user/{url_slug}/products?action=deduplicate&source=scheduled".format(
         url_slug=url_slug)
     try:
-        logger.debug(u"DEDUP POST to {url}".format(
+        print(u"DEDUP POST to {url}".format(
             url=url))
     except UnicodeEncodeError:
-        logger.debug(u"UnicodeEncodeError when trying to print url")
+        print(u"UnicodeEncodeError when trying to print url")
     r = requests.post(url)
     return r  
 
@@ -47,6 +47,7 @@ def put_linked_account_users_on_queue():
     # for user in page_query(User.query):
     for user in page_query(User.query.filter(User.next_refresh <= now)):
         tiids = deduplicate_by_url_slug("https://impactstory.org", user.url_slug)
+        print tiids
         # linked_accounts_to_sync = {
         #     "figshare": user.figshare_id, 
         #     "github": user.github_id, 
