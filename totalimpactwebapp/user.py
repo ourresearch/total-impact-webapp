@@ -75,30 +75,30 @@ def sqla_object_to_dict(inst, cls):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    given_name = db.Column(db.String(64))
-    surname = db.Column(db.String(64))
-    email = db.Column(db.String(120), unique=True)
-    password_hash = db.Column(db.String(120))
-    url_slug = db.Column(db.String(100), unique=True)
-    collection_id = db.Column(db.String(12))
+    given_name = db.Column(db.Text)
+    surname = db.Column(db.Text)
+    email = db.Column(db.Text, unique=True)
+    password_hash = db.Column(db.Text)
+    url_slug = db.Column(db.Text, unique=True)
+    collection_id = db.Column(db.Text)
     created = db.Column(db.DateTime())
     last_viewed_profile = db.Column(db.DateTime())
 
-    orcid_id = db.Column(db.String(64))
-    github_id = db.Column(db.String(64))
-    slideshare_id = db.Column(db.String(64))
-    twitter_id = db.Column(db.String(64))
-    figshare_id = db.Column(db.String(64))
-    google_scholar_id = db.Column(db.String(64))
-    mendeley_id = db.Column(db.String(64))
-    researchgate_id = db.Column(db.String(64))
-    academia_edu_id = db.Column(db.String(64))
-    linkedin_id = db.Column(db.String(64))
-    wordpress_api_key = db.Column(db.String(64))
+    orcid_id = db.Column(db.Text)
+    github_id = db.Column(db.Text)
+    slideshare_id = db.Column(db.Text)
+    twitter_id = db.Column(db.Text)
+    figshare_id = db.Column(db.Text)
+    google_scholar_id = db.Column(db.Text)
+    mendeley_id = db.Column(db.Text)
+    researchgate_id = db.Column(db.Text)
+    academia_edu_id = db.Column(db.Text)
+    linkedin_id = db.Column(db.Text)
+    wordpress_api_key = db.Column(db.Text)
 
     #awards = []
 
-    tips = db.Column(db.String())  # ALTER TABLE "user" ADD tips text
+    tips = db.Column(db.Text)  # ALTER TABLE "user" ADD tips text
     last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
     next_refresh = db.Column(db.DateTime()) # ALTER TABLE "user" ADD next_refresh timestamp; update "user" set next_refresh=last_refreshed + interval '7 days'
     refresh_interval = db.Column(db.Integer) # ALTER TABLE "user" ADD refresh_interval Integer; update "user" set refresh_interval=7
