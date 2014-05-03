@@ -121,7 +121,13 @@ def get_duplicates_list_from_tiids(tiids):
             }),
         headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-    return r.json()["duplicates_list"]
+    try:
+        duplicates_list = r.json()["duplicates_list"]
+    except ValueError:
+        print "got ValueError in get_duplicates_list_from_tiids, maybe decode error?"
+        duplicates_list = []
+
+    return duplicates_list
 
 
 
