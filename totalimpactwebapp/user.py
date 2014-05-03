@@ -340,7 +340,7 @@ def get_products_from_core_as_csv(tiids):
         return None
 
     query = u"{core_api_root}/v1/products.csv?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     logger.debug(u"in get_products_from_core with query {query}".format(
@@ -360,7 +360,7 @@ def get_products_from_core(tiids):
         return None
 
     query = u"{core_api_root}/v1/products?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     logger.debug(u"in get_products_from_core with query {query}".format(
@@ -436,7 +436,7 @@ def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"
         priority = "low"
 
     query = u"{core_api_root}/v1/products/refresh?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
 
@@ -598,7 +598,7 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
 
 def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         importer_name=importer_name,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
@@ -624,7 +624,7 @@ def make_products_for_linked_account(importer_name, importer_value, analytics_cr
 def make_products_for_product_id_strings(product_id_type, product_id_strings, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{product_id_type}?api_admin_key={api_admin_key}".format(
         product_id_type=product_id_type,
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     data_dict = {

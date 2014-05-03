@@ -111,7 +111,7 @@ def get_duplicates_list_from_tiids(tiids):
         return []
 
     query = u"{core_api_root}/v1/products/duplicates?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
 

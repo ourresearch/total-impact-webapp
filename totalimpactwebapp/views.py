@@ -448,7 +448,7 @@ def product_biblio_modify(tiid):
         abort_json(405, "You musts be logged in to modify products.")
 
     query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         tiid=tiid,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
@@ -595,8 +595,8 @@ def user_linked_accounts_update(id, account):
 def providers():
     try:
         url = u"{api_root}/v1/provider?key={api_key}".format(
-            api_key=g.api_key,
-            api_root=g.api_root)
+            api_key=os.getenv("API_KEY"),
+            api_root=os.getenv("API_ROOT"))
         r = requests.get(url)
         metadata = r.json()
     except requests.ConnectionError:
@@ -689,7 +689,7 @@ def images():
 @app.route('/item/<namespace>/<path:nid>', methods=['GET'])
 def item_page(namespace, nid):
     url = u"{api_root}/v1/tiid/{namespace}/{nid}?api_admin_key={api_admin_key}".format(
-        api_root=g.api_root,
+        api_root=os.getenv("API_ROOT"),
         namespace=namespace,
         nid=nid,
         api_admin_key=os.getenv("API_ADMIN_KEY")
