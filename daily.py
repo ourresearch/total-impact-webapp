@@ -38,8 +38,14 @@ def put_linked_account_users_on_queue():
 
     # for user in page_query(User.query.filter(User.next_refresh <= now)):
     for user in page_query(User.query):
-        removed_tiids = remove_duplicates_from_user(user.id)
-        print removed_tiids
+        try:
+            removed_tiids = remove_duplicates_from_user(user.id)
+            print removed_tiids
+        except Exception as e:
+            print
+            print "EXCEPTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", user.id
+            print e.message
+            print "ON USER", user.url_slug
         # linked_accounts_to_sync = {
         #     "figshare": user.figshare_id, 
         #     "github": user.github_id, 
