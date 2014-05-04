@@ -47,7 +47,8 @@ angular.module('security.service', [
     login: function(email, password) {
       return $http.post('/user/login', {email: email, password: password})
         .success(function(data, status) {
-            currentUser = data.user;
+          currentUser = data.user;
+          console.log("user just logged in: ", currentUser)
         })
     },
 
@@ -117,16 +118,15 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
-          console.log("currentUser.has_new_metrics:", currentUser.has_new_metrics)
-
         })
         .then(function(){return currentUser})
     },
 
 
     logout: function() {
+      console.log("logging out user.", currentUser)
       currentUser = null;
-      $location.path("/")
+      $location.path("/").search("filter", null)
       $http.get('/user/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")
       });
@@ -150,6 +150,11 @@ angular.module('security.service', [
         }
       )
       return deferred.promise
+    },
+
+
+    hasNewMetrics: function(){
+      return currentUser && currentUser.has_new_metrics
     },
 
 

@@ -522,17 +522,27 @@ div.main-header {
             }
             &.logged-in-user {
                a{
-                  &:hover{color:darken(@linkColor, 10%);}
-                  padding: 2px;
+                  color: #999;
+                  &:hover{color: #333;}
+                  padding: 5px;
                   margin: 0 3px;
                }
             }
-            &.preferences {
-               a.preference {
-                  padding: 2px 0;
-                  margin: 0 2px;
-                  font-size: 16px;
+            &.controls {
+               a {
+                  color: #999;
+                  padding: 5px;
+                  &:hover {color: #333;}
+                  &.new-metrics.has-new-metrics i {
+                     color: @linkColor;
+                  }
+                  &.preferences {
+                     padding: 2px 0;
+                     margin: 0 2px;
+                     font-size: 16px;
+                  }
                   &.logout { font-size: 15px;}
+
                }
             }
          }

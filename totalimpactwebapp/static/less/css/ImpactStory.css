@@ -6508,18 +6508,29 @@ div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.login:hov
   color: #333;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.logged-in-user a {
-  padding: 2px;
+  color: #999;
+  padding: 5px;
   margin: 0 3px;
 }
 div.main-header div.wrapper ul.main-nav li.nav-item.logged-in-user a:hover {
-  color: #cc3300;
+  color: #333;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.preferences a.preference {
+div.main-header div.wrapper ul.main-nav li.nav-item.controls a {
+  color: #999;
+  padding: 5px;
+}
+div.main-header div.wrapper ul.main-nav li.nav-item.controls a:hover {
+  color: #333;
+}
+div.main-header div.wrapper ul.main-nav li.nav-item.controls a.new-metrics.has-new-metrics i {
+  color: #ff4000;
+}
+div.main-header div.wrapper ul.main-nav li.nav-item.controls a.preferences {
   padding: 2px 0;
   margin: 0 2px;
   font-size: 16px;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.preferences a.preference.logout {
+div.main-header div.wrapper ul.main-nav li.nav-item.controls a.logout {
   font-size: 15px;
 }
 /* footer
@@ -7557,7 +7568,7 @@ div.product-controls div.wrapper div.products-info div.products-done-updating di
 div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter.active a {
   font-weight: normal;
   color: #555;
-  cursor: pointer;
+  cursor: default;
 }
 div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter a {
   font-weight: 100;

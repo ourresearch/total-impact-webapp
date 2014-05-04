@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-30
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-04
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1368,6 +1368,15 @@ angular.module("profile", [
       console.log($scope.productFilter)
 
     }
+
+    $scope.$on('$locationChangeStart', function(event, next, current){
+      console.log("location change start!", $location.search())
+      if ($location.search().filter == "has_new_metrics"){
+        console.log("filter=has_new_metrics")
+        $scope.productFilter.has_new_metrics = true
+        $scope.productFilter.has_metrics = true
+      }
+    })
 
 
 
@@ -3084,7 +3093,8 @@ angular.module('security.service', [
     login: function(email, password) {
       return $http.post('/user/login', {email: email, password: password})
         .success(function(data, status) {
-            currentUser = data.user;
+          currentUser = data.user;
+          console.log("user just logged in: ", currentUser)
         })
     },
 
@@ -3154,16 +3164,15 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
-          console.log("currentUser.has_new_metrics:", currentUser.has_new_metrics)
-
         })
         .then(function(){return currentUser})
     },
 
 
     logout: function() {
+      console.log("logging out user.", currentUser)
       currentUser = null;
-      $location.path("/")
+      $location.path("/").search("filter", null)
       $http.get('/user/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")
       });
@@ -3187,6 +3196,11 @@ angular.module('security.service', [
         }
       )
       return deferred.promise
+    },
+
+
+    hasNewMetrics: function(){
+      return currentUser && currentUser.has_new_metrics
     },
 
 
@@ -6258,18 +6272,28 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      </a>\n" +
     "   </li>\n" +
     "\n" +
-    "   <li ng-show=\"currentUser\" class=\"preferences nav-item\">\n" +
+    "   <li ng-show=\"currentUser\" class=\"controls nav-item\">\n" +
     "\n" +
     "      <span class=\"or\"></span>\n" +
     "\n" +
-    "      <a class=\"new-metrics\"\n" +
-    "         href=\"/{{ currentUser.url_slug }}?filter=has_new_metrics\">\n" +
+    "      <a class=\"new-metrics control no-new-metrics\"\n" +
+    "         tooltip=\"No new metrics.\"\n" +
+    "         tooltip-placement=\"bottom\"\n" +
+    "         ng-show=\"!security.hasNewMetrics()\"\n" +
+    "         href=\"/{{ currentUser.url_slug }}\">\n" +
     "         <i class=\"icon-bell\"></i>\n" +
+    "      </a>\n" +
+    "      <a class=\"new-metrics control has-new-metrics\"\n" +
+    "         tooltip=\"You've got new metrics!\"\n" +
+    "         tooltip-placement=\"bottom\"\n" +
+    "         ng-show=\"security.hasNewMetrics()\"\n" +
+    "         href=\"/{{ currentUser.url_slug }}?filter=has_new_metrics\">\n" +
+    "         <i class=\"icon-bell-alt\"></i>\n" +
     "      </a>\n" +
     "\n" +
     "      <span class=\"or\"></span>\n" +
     "\n" +
-    "      <a class=\"profile preference\"\n" +
+    "      <a class=\"preferences control\"\n" +
     "         href=\"/settings/profile\"\n" +
     "         tooltip=\"Change profile settings\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
@@ -6278,7 +6302,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "      <span class=\"or\"></span>\n" +
     "\n" +
-    "      <a class=\"logout preference\"\n" +
+    "      <a class=\"logout control\"\n" +
     "         ng-click=\"logout()\"\n" +
     "         tooltip=\"Log out\"\n" +
     "         tooltip-placement=\"bottom\">\n" +

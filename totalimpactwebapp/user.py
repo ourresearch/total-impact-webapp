@@ -344,6 +344,10 @@ class User(db.Model):
             except (IndexError, InvalidRequestError):
                 ret_dict["subscription"] = None
 
+                
+        ret_dict["has_new_metrics"] = products_list.has_new_metrics(self.products)
+
+
 
         return ret_dict
 
