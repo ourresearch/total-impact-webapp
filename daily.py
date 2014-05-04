@@ -1,10 +1,9 @@
 from totalimpactwebapp.user import User
 from totalimpactwebapp import db
 import datetime
-from totalimpactwebapp.user import remove_duplicates_from_user 
 
+import tasks
 
-# from tasks import update_from_linked_account
 
 
 """
@@ -29,23 +28,20 @@ def page_query(q):
 
 
 
+def deduplicate():
+    for user in page_query(User.query.order_by(User.url_slug.asc())):
+        print user.url_slug
+        removed_tiids = tasks.deduplicate.delay(user)
+
+
 def put_linked_account_users_on_queue():
 
     i = 0
     # now = datetime.datetime.utcnow().isoformat()
     now = "2013-06-24"
     # for user in page_query(User.query.filter(User.next_refresh < now).order_by(User.next_refresh.asc())):
-
     # for user in page_query(User.query.filter(User.next_refresh <= now)):
-    for user in page_query(User.query):
-        try:
-            removed_tiids = remove_duplicates_from_user(user.id)
-            print removed_tiids
-        except Exception as e:
-            print
-            print "EXCEPTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", user.id
-            print e.message
-            print "ON USER", user.url_slug
+    # for user in page_query(User.query):
         # linked_accounts_to_sync = {
         #     "figshare": user.figshare_id, 
         #     "github": user.github_id, 
@@ -61,6 +57,6 @@ def put_linked_account_users_on_queue():
         #         tiids = update_from_linked_account.delay(user, account)    
 
 
-put_linked_account_users_on_queue()
+deduplicate()
 
 
