@@ -66,6 +66,10 @@ angular.module( 'infopages', [
         templateUrl: 'infopages/about.tpl.html',
         controller: 'aboutPageCtrl'
       })
+      .when('/advisors', {
+        templateUrl: 'infopages/advisors.tpl.html',
+        controller: 'advisorsPageCtrl'
+      })
       .when('/collection/:cid', {
         templateUrl: 'infopages/collection.tpl.html',
         controller: 'collectionPageCtrl'
@@ -116,6 +120,11 @@ angular.module( 'infopages', [
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
     Page.setTitle("about")
+
+  })
+
+  .controller('advisorsPageCtrl', function($scope, Page) {
+    Page.setTitle("advisors")
 
   })
 

@@ -1,4 +1,4 @@
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/upgrade-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/upgrade-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -326,6 +326,57 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "   </div><!-- end wrapper -->\n" +
+    "</div>");
+}]);
+
+angular.module("infopages/advisors.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("infopages/advisors.tpl.html",
+    "<div class=\"main infopage\" id=\"advisors-infopage\">\n" +
+    "   <div class=\"wrapper\">\n" +
+    "      <h2 class=\"infopage-heading\">Impactstory advisors</h2>\n" +
+    "\n" +
+    "      <p>Do you love Impactstory and want to tell others about us? Are you already an advocate who wants cool perks like free premium features and high fives from our team?\n" +
+    "      <strong>Become an Impactstory Advisor!</strong>\n" +
+    "      We’re now accepting applications to be part of a select group of researchers and librarians who believe in Impactstory to help spread the word!</p>\n" +
+    "      <img id=\"stickers-pic\" src=\"/static/img/many-stickers-2.jpg\" alt=\"many impactstory stickers\"/>\n" +
+    "\n" +
+    "      <h3>Advisor responsibilities</h3>\n" +
+    "      <ul>\n" +
+    "         <li>Maintain a top-notch Impactstory profile</li>\n" +
+    "         <li>Invite friends and colleagues to try out Impactstory</li>\n" +
+    "         <li>Help us understand the needs of researchers in your field or region</li>\n" +
+    "         <li>Spread the word locally by hanging up our cool new posters</li>\n" +
+    "         <li>Stay on top of the latest Impactstory news</li>\n" +
+    "         <li>Host brown bag lunches and presentations on Impactstory in your school or library </li>\n" +
+    "         <li>Engage your university’s administration how Impactstory can help its faculty</li>\n" +
+    "         <li>Connect Impactstory to the rest of your online life--link to your profile from your Twitter bio, Facebook page, lab website, and anywhere else you can!</li>\n" +
+    "         <li>Tell us your Impactstory success stories, in promotions, grants, tenure, and beyond.</li>\n" +
+    "      </ul>\n" +
+    "\n" +
+    "      <h3>Your Benefits</h3>\n" +
+    "      <ul>\n" +
+    "         <li>Satisfaction that you’re helping to change academic research evaluation for the better!</li>\n" +
+    "         <li>Free Impactstory swag--t-shirts, stickers, and more!</li>\n" +
+    "         <li>Premium Impactstory features (coming soon!) for free</li>\n" +
+    "         <li>A shiny Advisor badge for your Impactstory profile and website</li>\n" +
+    "         <li>Have pizza and drinks on us when you give a demo or talk at your institution</li>\n" +
+    "         <li>A community of like-minded, cutting-edge Advisors </li>\n" +
+    "         <li>High fives from our team members, whenever you see them in person!</li>\n" +
+    "      </ul>\n" +
+    "\n" +
+    "      <div class=\"call-to-action\">\n" +
+    "         <h3>\n" +
+    "            Join the team--apply to the Advisor program today!\n" +
+    "         </h3>\n" +
+    "         <a class=\"btn btn-primary btn-lg\"\n" +
+    "            target=\"_blank\"\n" +
+    "            href=\"https://docs.google.com/forms/d/1oZ2UMv3h4wVkW1PhtdDiUD2npNsRuxouMnxgqeVFPdE/viewform\">Apply now</a>\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
     "</div>");
 }]);
 
