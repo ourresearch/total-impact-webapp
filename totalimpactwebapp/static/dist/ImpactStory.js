@@ -4134,6 +4134,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "            <li><a href=\"http://eepurl.com/RaRZ1\">Newsletter</a></li>\n" +
     "            <li><a href=\"http://twitter.com/Impactstory\">Twitter</a></li>\n" +
     "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
+    "            <li><a href=\"/advisors\">Advisors</a></li>\n" +
     "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Free stickers!</a></li>\n" +
     "\n" +
     "         </ul>\n" +
