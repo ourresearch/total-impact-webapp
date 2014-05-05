@@ -1,7 +1,8 @@
 import os
 import datetime
 import time
-from celery import Celery
+import logging
+import celery
 
 from totalimpactwebapp.user import User
 from totalimpactwebapp import products_list
@@ -9,8 +10,9 @@ from totalimpactwebapp import db
 from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
 from totalimpactwebapp.user import remove_duplicates_from_user
 
+logger = logging.getLogger(__name__)
 
-celery_app = Celery('tasks', 
+celery_app = celery.Celery('tasks', 
     broker=os.getenv("CLOUDAMQP_URL", "amqp://guest@localhost//")
     )
 
@@ -24,25 +26,46 @@ celery_app = Celery('tasks',
 #     CELERY_ACKS_LATE=True, 
 # )
 
-# class CeleryStatus(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)    
-#     user_id = db.Column(db.Integer)
-#     task_name = db.Column(db.Text)
-#     run = db.Column(db.DateTime())
 
-#     def __init__(self, **kwargs):
-#         print(u"new CeleryStatus {kwargs}".format(
-#             kwargs=kwargs))        
-#         self.run = datetime.datetime.utcnow()    
-#         super(CeleryStatus, self).__init__(**kwargs)
+# from http://stackoverflow.com/questions/6393879/celery-task-and-customize-decorator
+class TaskThatSavesState(celery.Task):
 
-#     def __repr__(self):
-#         return u'<CeleryStatus {user_id} {tiid}>'.format(
-#             user_id=self.user_id, 
-#             tiid=self.tiid)
+    def __call__(self, *args, **kwargs):
+        """In celery task this function call the run method, here you can
+        set some environment variable before the run of the task"""
+        logger.info("Starting to run")
+        return self.run(*args, **kwargs)
+
+    def after_return(self, status, retval, task_id, args, kwargs, einfo):
+        #exit point of the task whatever is the state
+        logger.info("Ending run")
+        pass
 
 
-@celery_app.task(ignore_result=True)
+class CeleryStatus(db.Model):
+    id = db.Column(db.Integer, primary_key=True)    
+    user_id = db.Column(db.Integer)
+    task_uuid = db.Column(db.Text)
+    task_name = db.Column(db.Text)
+    state = db.Column(db.Text)
+    args = db.Column(db.Text)
+    kwargs = db.Column(db.Text)
+    result = db.Column(db.Text)
+    run = db.Column(db.DateTime())
+
+    def __init__(self, **kwargs):
+        print(u"new CeleryStatus {kwargs}".format(
+            kwargs=kwargs))        
+        self.run = datetime.datetime.utcnow()    
+        super(CeleryStatus, self).__init__(**kwargs)
+
+    def __repr__(self):
+        return u'<CeleryStatus {user_id} {task_name}>'.format(
+            user_id=self.user_id, 
+            task_name=self.task_name)
+
+
+@celery_app.task(ignore_result=True, base=TaskThatSavesState)
 def deduplicate(user):
     removed_tiids = []
     try:
@@ -81,7 +104,7 @@ class ProfileDeets(db.Model):
             tiid=self.tiid)
 
 
-@celery_app.task(ignore_result=True)
+@celery_app.task(ignore_result=True, base=TaskThatSavesState)
 def add_profile_deets(user):
     product_dicts = products_list.prep(
             user.products,
@@ -109,7 +132,7 @@ def add_profile_deets(user):
     db.session.commit()
 
 
-@celery_app.task(ignore_result=True)
+@celery_app.task(ignore_result=True, base=TaskThatSavesState)
 def update_from_linked_account(user, account):
     tiids = user.update_products_from_linked_account(account, update_even_removed_products=False)
     return tiids
