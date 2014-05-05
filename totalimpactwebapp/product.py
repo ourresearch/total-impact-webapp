@@ -221,8 +221,11 @@ def get_top_metric(metrics):
     max_actual_count = max([m["actual_count"] for m in metrics])
 
     def sort_key(m):
-        raw_count_contribution = m["actual_count"] / max_actual_count
-        raw_count_contribution -= .0001  # always <1
+        try:
+            raw_count_contribution = m["actual_count"] / max_actual_count
+            raw_count_contribution -= .0001  # always <1
+        except TypeError:  # dealing with a dict from mendeley reader breakdown.
+            raw_count_contribution = .5
 
         try:
             return m["percentiles"]["CI95_lower"] + raw_count_contribution
@@ -241,8 +244,10 @@ def get_top_metric(metrics):
 def make_award_for_single_metric(metric):
     config = product_configs.award_configs
 
+
     display_order = config[metric["engagement_type"]][1]
     is_highly = calculate_is_highly(metric)
+    display = (metric["display"] == "badge")
 
     if metric["audience"] == "scholars":
         display_order += 10
@@ -250,13 +255,13 @@ def make_award_for_single_metric(metric):
     if is_highly:
         display_order += 100
 
-
     return {
         "engagement_type_noun": config[metric["engagement_type"]][0],
         "engagement_type": metric["engagement_type"],
         "audience": metric["audience"],
         "display_order": display_order,
         "is_highly": is_highly,
+        "dont_display": not display,
         "display_audience": metric["audience"].replace("public", "the public")
     }
 
@@ -327,7 +332,7 @@ def sum_metric_raw_values(product):
     try:
         for metric_name, metric in product["metrics"].iteritems():
             raw_values_sum += metric["actual_count"]
-    except KeyError:
+    except (KeyError, TypeError):  # ignore strings and dicts
         pass
 
     return raw_values_sum

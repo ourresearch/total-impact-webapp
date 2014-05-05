@@ -1,5 +1,5 @@
 <ul class="metric-details-list">
-   {% for metric in product.metrics.values() | sort(reverse=True, attribute="award.display_order") %}
+   {% for metric in product.metrics.values() | sort(reverse=True, attribute="award.display_order") | rejectattr("award.dont_display") %}
 
    <li class="metric-detail">
       <span class="badge-container">

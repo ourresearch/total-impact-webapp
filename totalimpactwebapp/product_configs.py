@@ -63,9 +63,9 @@ configs = [
     ["github:forks", "public", "cited", "badge", 3],
     ["github:stars", "public", "recommended", "badge", 3],
     ["github:watchers", "public", "saved", "badge", 3],  # depricate this later
-    ["mendeley:career_stage"],
-    ["mendeley:country"],
-    ["mendeley:discipline"],
+    ["mendeley:career_stage", "scholars", "saved", "NOBADGE", 3],
+    ["mendeley:country", "scholars", "saved", "NOBADGE", 3],
+    ["mendeley:discipline", "scholars", "saved", "NOBADGE", 3],
     ["mendeley:student_readers"], # display later
     ["mendeley:developing_countries"], # display later
     ["mendeley:groups"],
