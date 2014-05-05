@@ -68,7 +68,7 @@ class TaskThatSavesState(celery.Task):
             state = status,
             args = args,
             kwargs = kwargs,
-            result = dretval
+            result = retval
             )
         db.session.add(profile_deets)
         db.session.commit()
