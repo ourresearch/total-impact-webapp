@@ -61,7 +61,7 @@ class TaskThatSavesState(celery.Task):
 
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         #exit point of the task whatever is the state
-        logger.info("Ending run")
+        # logger.info("Ending run")
         celery_status = CeleryStatus(
             task_name = self.name,
             task_uuid = task_id,
@@ -70,7 +70,7 @@ class TaskThatSavesState(celery.Task):
             kwargs = kwargs,
             result = retval
             )
-        db.session.add(profile_deets)
+        db.session.add(celery_status)
         db.session.commit()
 
 
