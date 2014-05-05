@@ -3,6 +3,8 @@ import datetime
 import time
 import logging
 import celery
+from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
+from sqlalchemy.orm.exc import FlushError
 
 from totalimpactwebapp.user import User
 from totalimpactwebapp import products_list
@@ -29,12 +31,13 @@ celery_app = celery.Celery('tasks',
 class CeleryStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)    
     user_id = db.Column(db.Integer)
+    url_slug = db.Column(db.Text)
     task_uuid = db.Column(db.Text)
     task_name = db.Column(db.Text)
     state = db.Column(db.Text)
-    args = db.Column(db.Text)
-    kwargs = db.Column(db.Text)
-    result = db.Column(db.Text)
+    args = db.Column(JSONAlchemy(db.Text))
+    kwargs = db.Column(JSONAlchemy(db.Text))
+    result = db.Column(JSONAlchemy(db.Text))
     run = db.Column(db.DateTime())
 
     def __init__(self, **kwargs):
@@ -62,17 +65,31 @@ class TaskThatSavesState(celery.Task):
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         #exit point of the task whatever is the state
         # logger.info("Ending run")
+        user_id = None
+        url_slug = None
+        args_to_save = []
+        for arg in args:
+            args_to_save.append(u"{user_object}".format(user_object=arg))
+            if isinstance(arg, User):
+                user_id = arg.id
+                url_slug = arg.url_slug
         celery_status = CeleryStatus(
             task_name = self.name,
             task_uuid = task_id,
+            user_id = user_id,
+            url_slug = url_slug,
             state = status,
-            # args = str(args),
-            # kwargs = kwargs,
-            result = str(retval)
+            args = args_to_save,
+            kwargs = kwargs,
+            result = retval
             )
-        
+
         db.session.add(celery_status)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except InvalidRequestError:
+            db.session.rollback()
+            db.session.commit()
 
 
 
