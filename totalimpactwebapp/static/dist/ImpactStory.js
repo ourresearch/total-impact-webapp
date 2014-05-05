@@ -1506,8 +1506,8 @@ angular.module("profile", [
 
   var baseUrl = $location.protocol() + "://"
   baseUrl += $location.host()
-  if ($location.port()){
-    baseUrl += (":" + $location.port())
+  if ($location.port() === 5000){ // handle localhost special
+    baseUrl += (":5000")
   }
 
   console.log("base url is ", baseUrl)
@@ -1519,10 +1519,6 @@ angular.module("profile", [
   $scope.embed.type = "badge"
 
 })
-
-
-
-
 
 .directive("backToProfile",function($location, Loading){
  return {
@@ -5178,11 +5174,11 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "   <div class=\"code\">\n" +
     "      <div class=\"embed-profile\" ng-show=\"embed.type=='profile'\">\n" +
     "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</textarea>\n" +
+    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</textarea>\n" +
     "      </div>\n" +
     "      <div class=\"embed-link\" ng-show=\"embed.type=='link'\">\n" +
     "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl() }}/{{ userSlug }}\"&gt;&lt;img src=\"{{ baseUrl() }}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</textarea>\n" +
+    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl }}/{{ userSlug }}\"&gt;&lt;img src=\"{{ baseUrl}}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</textarea>\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +

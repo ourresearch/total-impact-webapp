@@ -316,8 +316,8 @@ angular.module("profile", [
 
   var baseUrl = $location.protocol() + "://"
   baseUrl += $location.host()
-  if ($location.port()){
-    baseUrl += (":" + $location.port())
+  if ($location.port() === 5000){ // handle localhost special
+    baseUrl += (":5000")
   }
 
   console.log("base url is ", baseUrl)
@@ -329,10 +329,6 @@ angular.module("profile", [
   $scope.embed.type = "badge"
 
 })
-
-
-
-
 
 .directive("backToProfile",function($location, Loading){
  return {
