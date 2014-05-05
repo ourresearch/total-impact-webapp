@@ -66,10 +66,11 @@ class TaskThatSavesState(celery.Task):
             task_name = self.name,
             task_uuid = task_id,
             state = status,
-            args = str(args),
-            kwargs = kwargs,
-            result = retval
+            # args = str(args),
+            # kwargs = kwargs,
+            result = str(retval)
             )
+        
         db.session.add(celery_status)
         db.session.commit()
 
