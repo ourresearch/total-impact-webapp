@@ -66,7 +66,7 @@ class TaskThatSavesState(celery.Task):
             task_name = self.name,
             task_uuid = task_id,
             state = status,
-            args = args,
+            args = str(args),
             kwargs = kwargs,
             result = retval
             )
