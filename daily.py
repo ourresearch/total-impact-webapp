@@ -25,10 +25,11 @@ def page_query(q):
             break
 
 def add_profile_deets_for_everyone():
-    for user in page_query(User.query.filter(User.url_slug=="HeatherPiwowar").order_by(User.url_slug.asc())):
+    for user in page_query(User.query.order_by(User.url_slug.asc())):
         print user.url_slug
         # tasks.add_profile_deets.delay(user)
         tasks.add_profile_deets(user)
+
 
 def deduplicate_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):

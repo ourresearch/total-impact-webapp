@@ -6,6 +6,7 @@ from celery import Celery
 from totalimpactwebapp.user import User
 from totalimpactwebapp import products_list
 from totalimpactwebapp import db
+from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
 from totalimpactwebapp.user import remove_duplicates_from_user
 
 
@@ -22,6 +23,24 @@ celery_app = Celery('tasks',
 #     CELERY_TRACK_STARTED=True,
 #     CELERY_ACKS_LATE=True, 
 # )
+
+# class CeleryStatus(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)    
+#     user_id = db.Column(db.Integer)
+#     task_name = db.Column(db.Text)
+#     run = db.Column(db.DateTime())
+
+#     def __init__(self, **kwargs):
+#         print(u"new CeleryStatus {kwargs}".format(
+#             kwargs=kwargs))        
+#         self.run = datetime.datetime.utcnow()    
+#         super(CeleryStatus, self).__init__(**kwargs)
+
+#     def __repr__(self):
+#         return u'<CeleryStatus {user_id} {tiid}>'.format(
+#             user_id=self.user_id, 
+#             tiid=self.tiid)
+
 
 @celery_app.task(ignore_result=True)
 def deduplicate(user):
@@ -44,8 +63,8 @@ class ProfileDeets(db.Model):
     tiid = db.Column(db.Text)
     provider = db.Column(db.Text)
     metric = db.Column(db.Text)
-    current_raw = db.Column(db.Text)
-    diff = db.Column(db.Text)
+    current_raw = db.Column(JSONAlchemy(db.Text))
+    diff = db.Column(JSONAlchemy(db.Text))
     diff_days = db.Column(db.Text)
     metrics_collected_date = db.Column(db.DateTime())
     deets_collected_date = db.Column(db.DateTime())
@@ -88,7 +107,6 @@ def add_profile_deets(user):
                     )
                     db.session.add(profile_deets)
     db.session.commit()
-    print 1/0
 
 
 @celery_app.task(ignore_result=True)
