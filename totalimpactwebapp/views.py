@@ -670,7 +670,7 @@ def redirect_to_profile(dummy="index"):
 
 
 @app.route("/google6653442d2224e762.html")
-def google_verification():
+def google_verification_impactstory():
     # needed for https://support.google.com/webmasters/answer/35179?hl=en
     return send_file("static/rendered-pages/google6653442d2224e762.html")
 
