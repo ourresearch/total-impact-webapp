@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-21
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-05
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1492,12 +1492,20 @@ angular.module("profile", [
 
 
 
-
-
-
-.controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
+.controller("profileEmbedModalCtrl", function($scope, $location, Page, userSlug){
   console.log("user slug is: ", userSlug)
+
+  var baseUrl = $location.protocol() + "://"
+  baseUrl += $location.host()
+  if ($location.port()){
+    baseUrl += (":" + $location.port())
+  }
+
+  console.log("base url is ", baseUrl)
+
+
   $scope.userSlug = userSlug;
+  $scope.baseUrl = baseUrl
   $scope.embed = {}
   $scope.embed.type = "badge"
 

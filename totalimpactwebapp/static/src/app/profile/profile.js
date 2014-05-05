@@ -311,12 +311,20 @@ angular.module("profile", [
 
 
 
-
-
-
-.controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
+.controller("profileEmbedModalCtrl", function($scope, $location, Page, userSlug){
   console.log("user slug is: ", userSlug)
+
+  var baseUrl = $location.protocol() + "://"
+  baseUrl += $location.host()
+  if ($location.port()){
+    baseUrl += (":" + $location.port())
+  }
+
+  console.log("base url is ", baseUrl)
+
+
   $scope.userSlug = userSlug;
+  $scope.baseUrl = baseUrl
   $scope.embed = {}
   $scope.embed.type = "badge"
 

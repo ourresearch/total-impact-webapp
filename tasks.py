@@ -13,6 +13,15 @@ celery_app = Celery('tasks',
     )
 
 
+# celery_app.conf.update(
+#     CELERY_TASK_SERIALIZER='json',
+#     CELERY_ACCEPT_CONTENT=['json'],  # Ignore other content
+#     CELERY_RESULT_SERIALIZER='json',
+#     CELERY_ENABLE_UTC=True,
+#     CELERY_TRACK_STARTED=True,
+#     CELERY_ACKS_LATE=True, 
+# )
+
 @celery_app.task(ignore_result=True)
 def deduplicate(user):
     removed_tiids = []
