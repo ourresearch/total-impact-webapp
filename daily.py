@@ -11,9 +11,7 @@ requires these env vars be set in this environment:
 DATABASE_URL
 """
 
-# TBD
-# should this be in webapp library?  if not, implications for logging
-# should we have a library for these scripts, somewhere to put page_query?
+
 
 def page_query(q):
     offset = 0
@@ -26,12 +24,17 @@ def page_query(q):
         if not r:
             break
 
+def add_profile_deets_for_everyone():
+    for user in page_query(User.query.filter(User.url_slug=="HeatherPiwowar").order_by(User.url_slug.asc())):
+        print user.url_slug
+        # tasks.add_profile_deets.delay(user)
+        tasks.add_profile_deets(user)
 
-
-def deduplicate():
+def deduplicate_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
         print user.url_slug
         removed_tiids = tasks.deduplicate.delay(user)
+
 
 
 def put_linked_account_users_on_queue():
@@ -57,6 +60,7 @@ def put_linked_account_users_on_queue():
         #         tiids = update_from_linked_account.delay(user, account)    
 
 
-deduplicate()
+db.create_all()
+add_profile_deets_for_everyone()
 
 
