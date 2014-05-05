@@ -26,22 +26,6 @@ celery_app = celery.Celery('tasks',
 #     CELERY_ACKS_LATE=True, 
 # )
 
-
-# from http://stackoverflow.com/questions/6393879/celery-task-and-customize-decorator
-class TaskThatSavesState(celery.Task):
-
-    def __call__(self, *args, **kwargs):
-        """In celery task this function call the run method, here you can
-        set some environment variable before the run of the task"""
-        logger.info("Starting to run")
-        return self.run(*args, **kwargs)
-
-    def after_return(self, status, retval, task_id, args, kwargs, einfo):
-        #exit point of the task whatever is the state
-        logger.info("Ending run")
-        pass
-
-
 class CeleryStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)    
     user_id = db.Column(db.Integer)
@@ -63,6 +47,35 @@ class CeleryStatus(db.Model):
         return u'<CeleryStatus {user_id} {task_name}>'.format(
             user_id=self.user_id, 
             task_name=self.task_name)
+
+
+
+# from http://stackoverflow.com/questions/6393879/celery-task-and-customize-decorator
+class TaskThatSavesState(celery.Task):
+
+    def __call__(self, *args, **kwargs):
+        """In celery task this function call the run method, here you can
+        set some environment variable before the run of the task"""
+        # logger.info("Starting to run")
+        return self.run(*args, **kwargs)
+
+    def after_return(self, status, retval, task_id, args, kwargs, einfo):
+        #exit point of the task whatever is the state
+        logger.info("Ending run")
+        celery_status = CeleryStatus(
+            task_name = self.name,
+            task_uuid = task_id,
+            state = status,
+            args = args,
+            kwargs = kwargs,
+            result = dretval
+            )
+        db.session.add(profile_deets)
+        db.session.commit()
+
+
+
+
 
 
 @celery_app.task(ignore_result=True, base=TaskThatSavesState)
