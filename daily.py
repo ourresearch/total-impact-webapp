@@ -27,8 +27,7 @@ def page_query(q):
 def add_profile_deets_for_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
         print user.url_slug
-        # tasks.add_profile_deets.delay(user)
-        tasks.add_profile_deets(user)
+        tasks.add_profile_deets.delay(user)
 
 
 def deduplicate_everyone():
