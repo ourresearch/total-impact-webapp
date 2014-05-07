@@ -258,8 +258,10 @@ def get_top_metric(metrics):
 def make_award_for_single_metric(metric):
     config = product_configs.award_configs
 
+
     display_order = config[metric["engagement_type"]][1]
     is_highly = calculate_is_highly(metric)
+    display = (metric["display"] == "badge")
 
     if metric["audience"] == "scholars":
         display_order += 10
@@ -272,7 +274,6 @@ def make_award_for_single_metric(metric):
     else:
         classname = "is-not-highly"
 
-
     return {
         "engagement_type_noun": config[metric["engagement_type"]][0],
         "engagement_type": metric["engagement_type"],
@@ -280,6 +281,7 @@ def make_award_for_single_metric(metric):
         "display_order": display_order,
         "is_highly": is_highly,
         "is_highly_classname": classname,
+        "dont_display": not display,
         "display_audience": metric["audience"].replace("public", "the public")
     }
 

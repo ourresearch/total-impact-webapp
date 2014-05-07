@@ -79,31 +79,31 @@ def sqla_object_to_dict(inst, cls):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    given_name = db.Column(db.String(64))
-    surname = db.Column(db.String(64))
-    email = db.Column(db.String(120), unique=True)
-    password_hash = db.Column(db.String(120))
-    url_slug = db.Column(db.String(100), unique=True)
-    collection_id = db.Column(db.String(12))
+    given_name = db.Column(db.Text)
+    surname = db.Column(db.Text)
+    email = db.Column(db.Text, unique=True)
+    password_hash = db.Column(db.Text)
+    url_slug = db.Column(db.Text, unique=True)
+    collection_id = db.Column(db.Text)
     created = db.Column(db.DateTime())
     last_viewed_profile = db.Column(db.DateTime())
 
-    orcid_id = db.Column(db.String(64))
-    github_id = db.Column(db.String(64))
-    slideshare_id = db.Column(db.String(64))
-    twitter_id = db.Column(db.String(64))
-    figshare_id = db.Column(db.String(64))
-    google_scholar_id = db.Column(db.String(64))
-    mendeley_id = db.Column(db.String(64))
-    researchgate_id = db.Column(db.String(64))
-    academia_edu_id = db.Column(db.String(64))
-    linkedin_id = db.Column(db.String(64))
-    wordpress_api_key = db.Column(db.String(64))
-    stripe_id = db.Column(db.String(64))
+    orcid_id = db.Column(db.Text)
+    github_id = db.Column(db.Text)
+    slideshare_id = db.Column(db.Text)
+    twitter_id = db.Column(db.Text)
+    figshare_id = db.Column(db.Text)
+    google_scholar_id = db.Column(db.Text)
+    mendeley_id = db.Column(db.Text)
+    researchgate_id = db.Column(db.Text)
+    academia_edu_id = db.Column(db.Text)
+    linkedin_id = db.Column(db.Text)
+    wordpress_api_key = db.Column(db.Text)
+    stripe_id = db.Column(db.Text)
 
     #awards = []
 
-    tips = db.Column(db.String())  # ALTER TABLE "user" ADD tips text
+    tips = db.Column(db.Text)  # ALTER TABLE "user" ADD tips text
     last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
     next_refresh = db.Column(db.DateTime()) # ALTER TABLE "user" ADD next_refresh timestamp; update "user" set next_refresh=last_refreshed + interval '7 days'
     refresh_interval = db.Column(db.Integer) # ALTER TABLE "user" ADD refresh_interval Integer; update "user" set refresh_interval=7
@@ -230,7 +230,7 @@ class User(db.Model):
             # AnonymousUser doesn't have method
             analytics_credentials = {}    
         product_id_type = product_id_dict.keys()[0]
-        existing_tiids = self.tiids_including_removed # don't re-import dup or removed products    
+        existing_tiids = self.tiids # re-import dup removed products    
         import_response = make_products_for_product_id_strings(
                 product_id_type, 
                 product_id_dict[product_id_type], 
@@ -357,7 +357,7 @@ def get_products_from_core_as_csv(tiids):
         return None
 
     query = u"{core_api_root}/v1/products.csv?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     logger.debug(u"in get_products_from_core with query {query}".format(
@@ -377,7 +377,7 @@ def get_products_from_core(tiids):
         return None
 
     query = u"{core_api_root}/v1/products?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     logger.debug(u"in get_products_from_core with query {query}".format(
@@ -453,7 +453,7 @@ def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"
         priority = "low"
 
     query = u"{core_api_root}/v1/products/refresh?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
 
@@ -491,14 +491,14 @@ def remove_duplicates_from_user(user_id):
 
     duplicates_list = products_list.get_duplicates_list_from_tiids(user.tiids)
     tiids_to_remove = tiids_to_remove_from_duplicates_list(duplicates_list)
-    logger.debug(u"about to remove duplicate tiids from {user_id}: {tiids_to_remove}".format(
-        user_id=user_id, tiids_to_remove=tiids_to_remove))
+    # logger.debug(u"about to remove duplicate tiids from {user_id}: {tiids_to_remove}".format(
+    #     user_id=user_id, tiids_to_remove=tiids_to_remove))
 
     user.delete_products(tiids_to_remove) 
 
     # important to keep this logging in so we can recover if necessary
-    logger.debug(u"removed duplicate tiids from {user_id}: {tiids_to_remove}".format(
-        user_id=user_id, tiids_to_remove=tiids_to_remove))
+    logger.debug(u"removed duplicate tiids from {url_slug} {user_id}: {tiids_to_remove}".format(
+        url_slug=user.url_slug, user_id=user_id, tiids_to_remove=tiids_to_remove))
 
     return tiids_to_remove
 
@@ -665,7 +665,7 @@ def get_users():
 
 def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         importer_name=importer_name,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
@@ -691,7 +691,7 @@ def make_products_for_linked_account(importer_name, importer_value, analytics_cr
 def make_products_for_product_id_strings(product_id_type, product_id_strings, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{product_id_type}?api_admin_key={api_admin_key}".format(
         product_id_type=product_id_type,
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     data_dict = {
