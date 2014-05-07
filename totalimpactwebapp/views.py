@@ -20,6 +20,8 @@ from totalimpactwebapp.user import create_user_from_slug
 from totalimpactwebapp.user import get_user_from_id
 from totalimpactwebapp.user import delete_user
 
+from totalimpactwebapp.card_generate import *
+
 from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import get_products_from_core_as_csv
 from totalimpactwebapp.user import EmailExistsError
@@ -753,7 +755,15 @@ def scratchpad():
     return render_template("scratchpad.html")
 
 
-
+@app.route("/<profile_id>/cards")
+def render_cards(profile_id):
+    user = get_user_for_response(
+        profile_id,
+        request
+    )
+    cards = []
+    cards += ProductNewMetricCardGenerator.make(user)
+    return json_resp_from_thing(cards)
 
 
 

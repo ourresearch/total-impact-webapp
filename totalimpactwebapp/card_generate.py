@@ -28,8 +28,8 @@ class ProductNewMetricCardGenerator(CardGenerator):
                         my_card = Card(
                             card_type="new metrics",
                             granularity="product"
-                            metric_name=provider + ":" + metric, 
-                            user_id=user.id, 
+                            metric_name=provider + ":" + metric,
+                            user_id=user.id,
                             tiid=tiid,
                             weekly_diff=hist["diff"]["raw"],
                             current_value=None,
