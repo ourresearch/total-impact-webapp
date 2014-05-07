@@ -81,7 +81,7 @@ def get_product_list_for_cards(user):
 def get_medians_lookup():
     url = "http://total-impact-core-staging.herokuapp.com/collections/reference-sets-medians"
     resp = requests.get(url)
-    return resp.json()
+    return json.loads(resp.text)
 
 
 class CardGenerator:
