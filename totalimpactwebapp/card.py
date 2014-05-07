@@ -2,7 +2,6 @@ from totalimpactwebapp import db
 
 
 class Card(db.Model):
-    pass
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Text)  # readability, flags, new_metrics
     user_id = db.Column(db.Integer, unique=True)
@@ -13,8 +12,36 @@ class Card(db.Model):
     current_value = db.Column(db.Text)
     percentile_current_value = db.Column(db.Text)
     median = db.Column(db.Float)
-    threshold_awarded = db.Column(db.Text)
+    threshold_awarded = db.Column(db.Integer)
     num_profile_products_this_good = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime())
     weight = db.Column(db.Float)
+
+
+    def __init__(self, **kwargs):
+        super(Card, self).__init__(**kwargs)
+
+
+    def to_dict(self):
+        self_dict = self.__dict__
+        ret = {}
+        for k, v in self_dict.iteritems():
+            if k.startswith("_"):
+                pass
+
+            else:
+                try:
+                    v = v.isovalue()
+                except AttributeError:
+                    pass
+
+                ret[k] = v
+
+        return ret
+
+
+    def to_html(self):
+        # jinja template code goes here
+        return "<h1>awesome html!</h1>"
+
 
