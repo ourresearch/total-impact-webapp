@@ -4,11 +4,11 @@ import datetime
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    granularity = db.Column(db.Text)  # profile or product
+    metric_name = db.Column(db.Text)  # mendeley:views, scopus:citations
     card_type = db.Column(db.Text)  # readability, flags, new_metrics
     user_id = db.Column(db.Integer, unique=True)
     tiid = db.Column(db.Text, unique=True)
-    granularity = db.Column(db.Text)  # profile or product
-    metric_name = db.Column(db.Text)  # mendeley:views, scopus:citations
     weekly_diff = db.Column(db.Text)
     current_value = db.Column(db.Text)
     percentile_current_value = db.Column(db.Text)
@@ -33,7 +33,7 @@ class Card(db.Model):
 
             else:
                 try:
-                    v = v.isovalue()
+                    v = v.isoformat()
                 except AttributeError:
                     pass
 
@@ -46,4 +46,7 @@ class Card(db.Model):
         # jinja template code goes here
         return "<h1>awesome html!</h1>"
 
+    def __repr__(self):
+        return u'<Card {id} {user_id} {tiid} {granularity} {metric_name} {card_type}>'.format(
+            id=self.id, user_id=self.user_id, tiid=self.tiid, granularity=self.granularity, metric_name=self.metric_name, card_type=self.card_type)
 

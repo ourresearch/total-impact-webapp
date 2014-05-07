@@ -62,5 +62,6 @@ class ProductNewMetricCardGenerator(CardGenerator):
                 if new_card:
                     cards.append(new_card)
 
+        print cards
         return cards
 
