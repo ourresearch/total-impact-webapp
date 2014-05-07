@@ -70,7 +70,9 @@ def local_sleep(interval, fuzz_proportion=.2):
     if "localhost:5000" in request.url_root:
         sleep(interval)
 
-
+# getting a "decoding Unicode is not supported" error in this function?  
+# might need to reinstall libaries as per 
+# http://stackoverflow.com/questions/17092849/flask-login-typeerror-decoding-unicode-is-not-supported
 class HTTPMethodOverrideMiddleware(object):
     allowed_methods = frozenset([
         'GET',
@@ -94,3 +96,4 @@ class HTTPMethodOverrideMiddleware(object):
         if method in self.bodyless_methods:
             environ['CONTENT_LENGTH'] = '0'
         return self.app(environ, start_response)
+

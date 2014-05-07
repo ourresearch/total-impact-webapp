@@ -360,9 +360,6 @@ angular.module("profile", [
 
 
 
-
-
-
 .controller("profileEmbedModalCtrl", function($scope, $location, Page, userSlug){
   console.log("user slug is: ", userSlug)
 
@@ -374,17 +371,12 @@ angular.module("profile", [
 
   console.log("base url is ", baseUrl)
 
-
   $scope.userSlug = userSlug;
   $scope.baseUrl = baseUrl
   $scope.embed = {}
   $scope.embed.type = "badge"
 
 })
-
-
-
-
 
 .directive("backToProfile",function($location, Loading){
  return {
