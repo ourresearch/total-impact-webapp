@@ -95,6 +95,7 @@ def make_metrics(product_dict):
     except KeyError:
         year = None
 
+    refset_genre = product_dict["biblio"]["genre"]
     ret = {}
     for metric_name, metric in metrics.iteritems():
         try:
@@ -106,7 +107,7 @@ def make_metrics(product_dict):
 
         if audience is not None:
             metric.update(config_dict[metric_name])
-            metric.update(metric_metadata(metric, year))
+            metric.update(metric_metadata(metric, year, refset_genre))
             metric.update(metric_percentiles(metric))
             metric["award"] = make_award_for_single_metric(metric)
             ret[metric_name] = metric
@@ -114,7 +115,7 @@ def make_metrics(product_dict):
     return ret
 
 
-def metric_metadata(metric, year):
+def metric_metadata(metric, year, refset_genre):
     interaction_display_names = {
         "f1000": "recommendations",
         "pmc_citations": "citations"
@@ -146,6 +147,7 @@ def metric_metadata(metric, year):
         ret["display_interaction"] = interaction
 
     ret["refset_year"] = year
+    ret["refset_genre"] = refset_genre
 
     return ret
 

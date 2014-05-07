@@ -1,6 +1,9 @@
 from totalimpactwebapp.card import Card
+from totalimpactwebapp.util import as_int_or_float_if_possible
 from totalimpactwebapp import products_list
 
+import requests
+import json
 
 
 def products_above_threshold(product_dicts, metric_name, threshold):
@@ -12,6 +15,7 @@ def products_above_threshold(product_dicts, metric_name, threshold):
                 above_threshold.append(product)
     return above_threshold
 
+
 def get_percentile(metric_dict):
     for value_type in metric_dict["values"]:
         # the keys that aren't "raw" are reference ests
@@ -20,57 +24,109 @@ def get_percentile(metric_dict):
     return None
 
 
-def populate_card(user_id, tiid, metrics_dict, full_metric_name):
-    hist = metrics_dict[full_metric_name]["historical_values"]
-    current_value = hist["current"]["raw"]
-    weekly_diff = hist["diff"]["raw"]
+def get_threshold_just_crossed(current_value, diff_value, thresholds):
+    try:
+        previous_value = current_value - diff_value
+    except TypeError:
+        # not numeric
+        return None
+
+    for threshold in thresholds:
+        if (current_value >= threshold) and (previous_value < threshold):
+            return threshold
+    return None
+
+def get_median(metric_dict, medians_lookup):
+    try:
+        refset_year = metric_dict["refset_year"]
+        refset_genre = metric_dict["refset_genre"]
+        refset_name = "unknown"
+        for (key, val) in metric_dict["values"].iteritems():
+            try:
+                if "CI95_lower" in val.keys():
+                    refset_name = key.lower()
+            except AttributeError:
+                pass
+        metric_name = metric_dict["name"]
+
+        median = medians_lookup[refset_genre][refset_name][refset_year][metric_name]
+    except KeyError:
+        median = None
+    return median
+
+
+def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[], medians_lookup={}):
+    hist = metric_dict["historical_values"]
+    current_value = as_int_or_float_if_possible(hist["current"]["raw"])
+    weekly_diff = as_int_or_float_if_possible(hist["diff"]["raw"])
+    thresholds = thresholds_lookup.get(metric_name, [])
 
     my_card = Card(
         card_type="new metrics",
         granularity="product",
-        metric_name=full_metric_name,
+        metric_name=metric_name,
         user_id=user_id,
         tiid=tiid,
         weekly_diff=weekly_diff,
         current_value=current_value,
-        percentile_current_value=get_percentile(metrics_dict[full_metric_name]),
-        median=None,
-        threshold_awarded=None,
-        weight=1
+        percentile_current_value=get_percentile(metric_dict),
+        median=get_median(metric_dict, medians_lookup),
+        threshold_awarded=get_threshold_just_crossed(current_value, weekly_diff, thresholds),
+        weight=0.7
     )
 
     return my_card
 
 
+def get_product_list_for_cards(user):
+    product_dicts = products_list.prep(
+            user.products,
+            include_headings=False,
+            display_debug=True
+        )
+    return product_dicts
+
+
+def get_medians_lookup():
+    url = "http://total-impact-core-staging.herokuapp.com/collections/reference-sets-medians"
+    resp = requests.get(url)
+    return json.loads(resp.text)
+
 
 class CardGenerator:
     pass
 
+
+
+
 class ProductNewMetricCardGenerator(CardGenerator):
 
-    @staticmethod
-    def make(user):
-        cards = []
+    @classmethod
+    def make(cls, user):
+        thresholds_lookup = {
+            "mendeley:readers": [5, 10, 25, 50, 75, 100]
+            }
+        medians_lookup = get_medians_lookup()
 
-        product_dicts = products_list.prep(
-                user.products,
-                include_headings=False,
-                display_debug=True
-            )
+        cards = []
+        product_dicts = get_product_list_for_cards(user)
 
         for product in product_dicts:
             metrics_dict = product["metrics"]
             tiid = product["_id"]
-            for full_metric_name in metrics_dict:
-                new_card = populate_card(user.id, tiid, metrics_dict, full_metric_name)
 
-                #only keep cards that have new metrics:
-                if new_card and new_card.weekly_diff:
+            for metric_name in metrics_dict:
+                weekly_diff = metrics_dict[metric_name]["historical_values"]["diff"]["raw"]
 
-                    # populate with profile-level information
-                    peers = products_above_threshold(product_dicts, full_metric_name, new_card.current_value)
+                # this card generator only makes cards with weekly diffs
+                if weekly_diff:
+                    new_card = populate_card(user.id, tiid, metrics_dict[metric_name], metric_name, thresholds_lookup, medians_lookup)
+
+                    # now populate with profile-level information
+                    peers = products_above_threshold(product_dicts, metric_name, new_card.current_value)
                     new_card.num_profile_products_this_good = len(peers)
 
+                    # and keep the card
                     cards.append(new_card)
 
         return cards
