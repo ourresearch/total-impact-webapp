@@ -70,6 +70,17 @@ def local_sleep(interval, fuzz_proportion=.2):
     if "localhost:5000" in request.url_root:
         sleep(interval)
 
+def as_int_or_float_if_possible(input_value):
+    value = input_value
+    try:
+        value = int(input_value)
+    except (ValueError, TypeError):
+        try:
+            value = float(input_value)
+        except (ValueError, TypeError):
+            pass
+    return(value)
+    
 # getting a "decoding Unicode is not supported" error in this function?  
 # might need to reinstall libaries as per 
 # http://stackoverflow.com/questions/17092849/flask-login-typeerror-decoding-unicode-is-not-supported
