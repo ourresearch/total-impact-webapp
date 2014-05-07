@@ -42,14 +42,13 @@ def deduplicate_everyone():
 
 
 
+class CardGenerator:
+    pass
 
-
-class ProductNewMetricFactGenerator:
-    def __init__(self, User):
-        self.user = User
-
-    def make(self):
-        print "Hi I'm making some cards for", self.user.url_slug
+class ProductNewMetricCardGenerator(CardGenerator):
+    @staticmethod
+    def make(cls, user):
+        print "Hi I'm making some cards for", user.url_slug
         # save all cards
         return ["a"]
 
@@ -57,7 +56,7 @@ class ProductNewMetricFactGenerator:
 def create_cards():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
         facts = []
-        facts += ProductNewMetricFactGenerator(user)
+        facts += ProductNewMetricCardGenerator.make(user)
 
 
         for fact in facts:

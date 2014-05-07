@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-04-30
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-07
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -3213,6 +3213,9 @@ angular.module('security.service', [
       return currentUser && currentUser.has_new_metrics
     },
 
+    dismissProfileNewProductsNotification: function(){
+      console.log("dismiss profile new products notification")
+    },
 
 
 
@@ -6351,6 +6354,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         tooltip=\"You've got new metrics!\"\n" +
     "         tooltip-placement=\"bottom\"\n" +
     "         ng-show=\"security.hasNewMetrics()\"\n" +
+    "         ng-click=\"dismissProfileNewProductsNotification\"\n" +
     "         href=\"/{{ currentUser.url_slug }}?filter=has_new_metrics\">\n" +
     "         <i class=\"icon-bell-alt\"></i>\n" +
     "      </a>\n" +
