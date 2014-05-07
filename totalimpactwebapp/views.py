@@ -21,6 +21,7 @@ from totalimpactwebapp.user import get_user_from_id
 from totalimpactwebapp.user import delete_user
 
 from totalimpactwebapp.card_generate import *
+from totalimpactwebapp import emailer
 
 from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import get_products_from_core_as_csv
@@ -770,8 +771,16 @@ def render_cards(profile_id):
     return json_resp_from_thing(card_dicts)
 
 
+@app.route("/test/email")
+def test_emailer():
 
-
+    ret = emailer.send(
+        "wordslikethis@gmail.com",
+        "this is a test email",
+        "card",
+        {"title": "my wonderful paper about rabbits"}
+    )
+    return json_resp_from_thing(ret)
 
 ###############################################################################
 #
