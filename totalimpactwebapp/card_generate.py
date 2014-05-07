@@ -37,10 +37,20 @@ def get_threshold_just_crossed(current_value, diff_value, thresholds):
     return None
 
 def get_median(metric_dict, medians_lookup):
+    print "in get_median"
+    print metric_dict
     try:
         refset_year = metric_dict["refset_year"]
         refset_genre = metric_dict["refset_genre"]
-        refset_name = metric_dict["refset"].lower()
+        refset_name = "unknown"
+        for (key, val) in metric_dict["values"].iteritems():
+            try:
+                if "CI95_lower" in val.keys():
+                    refset_name = key.lower()
+            except AttributeError:
+                pass
+
+        print "****", refset_year, refset_genre, refset_name
         median = medians_lookup[refset_genre][refset_name][refset_year]
     except KeyError:
         median = None
