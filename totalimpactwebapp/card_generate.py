@@ -3,6 +3,7 @@ from totalimpactwebapp.util import as_int_or_float_if_possible
 from totalimpactwebapp import products_list
 
 import requests
+import json
 
 
 def products_above_threshold(product_dicts, metric_name, threshold):
