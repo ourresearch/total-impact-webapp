@@ -49,9 +49,10 @@ def get_median(metric_dict, medians_lookup):
                     refset_name = key.lower()
             except AttributeError:
                 pass
+        metric_name = metric_dict["name"]
 
-        print "****", refset_year, refset_genre, refset_name
-        median = medians_lookup[refset_genre][refset_name][refset_year]
+        print "****", refset_year, refset_genre, refset_name, metric_name
+        median = medians_lookup[refset_genre][refset_name][refset_year][metric_name]
     except KeyError:
         median = None
     return median
