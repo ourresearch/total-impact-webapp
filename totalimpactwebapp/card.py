@@ -1,9 +1,10 @@
 from totalimpactwebapp import db
+import datetime
 
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.Text)  # readability, flags, new_metrics
+    card_type = db.Column(db.Text)  # readability, flags, new_metrics
     user_id = db.Column(db.Integer, unique=True)
     tiid = db.Column(db.Text, unique=True)
     granularity = db.Column(db.Text)  # profile or product
@@ -19,6 +20,7 @@ class Card(db.Model):
 
 
     def __init__(self, **kwargs):
+        self.timestamp = datetime.datetime.utcnow()
         super(Card, self).__init__(**kwargs)
 
 

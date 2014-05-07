@@ -1,5 +1,6 @@
 from totalimpactwebapp.user import User
 from totalimpactwebapp import db
+from totalimpactwebapp.card_generate import ProductNewMetricCardGenerator
 import tasks
 
 import datetime
@@ -41,23 +42,10 @@ def deduplicate_everyone():
 
 
 
-
-class CardGenerator:
-    pass
-
-class ProductNewMetricCardGenerator(CardGenerator):
-    @staticmethod
-    def make(cls, user):
-        print "Hi I'm making some cards for", user.url_slug
-        # save all cards
-        return ["a"]
-
-
 def create_cards():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
         facts = []
         facts += ProductNewMetricCardGenerator.make(user)
-
 
         for fact in facts:
             db.session.add(fact)
