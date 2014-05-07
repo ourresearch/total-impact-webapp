@@ -3,9 +3,14 @@ from totalimpactwebapp import products_list
 
 
 
-def products_above_threshold(product_dicts, full_metric_name, current_value):
-    return []
-
+def products_above_threshold(product_dicts, metric_name, threshold):
+    above_threshold = []
+    for product in product_dicts:
+        if (metric_name in product["metrics"]):
+            value = product["metrics"][metric_name]["values"]["raw"]
+            if value >= threshold:
+                above_threshold.append(product)
+    return above_threshold
 
 def get_percentile(metric_dict):
     for value_type in metric_dict["values"]:
@@ -31,7 +36,6 @@ def populate_card(user_id, tiid, metrics_dict, full_metric_name):
         percentile_current_value=get_percentile(metrics_dict[full_metric_name]),
         median=None,
         threshold_awarded=None,
-        num_profile_products_this_good=len(products_above_threshold(metrics_dict, full_metric_name, current_value)),
         weight=1
     )
 
@@ -46,7 +50,6 @@ class ProductNewMetricCardGenerator(CardGenerator):
 
     @staticmethod
     def make(user):
-        print "Hi I'm making some cards for", user.url_slug
         cards = []
 
         product_dicts = products_list.prep(
@@ -54,14 +57,21 @@ class ProductNewMetricCardGenerator(CardGenerator):
                 include_headings=False,
                 display_debug=True
             )
+
         for product in product_dicts:
             metrics_dict = product["metrics"]
             tiid = product["_id"]
             for full_metric_name in metrics_dict:
                 new_card = populate_card(user.id, tiid, metrics_dict, full_metric_name)
-                if new_card:
+
+                #only keep cards that have new metrics:
+                if new_card and new_card.weekly_diff:
+
+                    # populate with profile-level information
+                    peers = products_above_threshold(product_dicts, full_metric_name, new_card.current_value)
+                    new_card.num_profile_products_this_good = len(peers)
+
                     cards.append(new_card)
 
-        print cards
         return cards
 
