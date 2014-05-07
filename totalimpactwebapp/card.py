@@ -8,7 +8,7 @@ class Card(db.Model):
     user_id = db.Column(db.Integer, unique=True)
     tiid = db.Column(db.Text, unique=True)
     granularity = db.Column(db.Text)  # profile or product
-    metric = db.Column(db.Text)  # mendeley:views, scopus:citations
+    metric_name = db.Column(db.Text)  # mendeley:views, scopus:citations
     weekly_diff = db.Column(db.Text)
     current_value = db.Column(db.Text)
     percentile_current_value = db.Column(db.Text)

@@ -1,9 +1,10 @@
 from totalimpactwebapp.card import Card
+from totalimpactwebapp import products_list
 
 
 
-def num_products_above_threshold(product_dicts, full_metric_name, current_value):
-    return None
+def products_above_threshold(product_dicts, full_metric_name, current_value):
+    return []
 
 
 def get_percentile(metric_dict):
@@ -14,24 +15,23 @@ def get_percentile(metric_dict):
     return None
 
 
-def populate_card(user_id, product["metrics"], full_metric_name):
-    tiid = product["_id"]
-    hist = product["metrics"][full_metric_name]["historical_values"]
+def populate_card(user_id, tiid, metrics_dict, full_metric_name):
+    hist = metrics_dict[full_metric_name]["historical_values"]
     current_value = hist["current"]["raw"]
     weekly_diff = hist["diff"]["raw"]
 
     my_card = Card(
         card_type="new metrics",
-        granularity="product"
+        granularity="product",
         metric_name=full_metric_name,
         user_id=user_id,
         tiid=tiid,
         weekly_diff=weekly_diff,
         current_value=current_value,
-        percentile_current_value=get_percentile(product["metrics"][full_metric_name])
+        percentile_current_value=get_percentile(metrics_dict[full_metric_name]),
         median=None,
         threshold_awarded=None,
-        num_profile_products_this_good=num_products_above_threshold(product_dicts, full_metric_name, current_value)
+        num_profile_products_this_good=len(products_above_threshold(metrics_dict, full_metric_name, current_value)),
         weight=1
     )
 
@@ -55,10 +55,12 @@ class ProductNewMetricCardGenerator(CardGenerator):
                 display_debug=True
             )
         for product in product_dicts:
-            for full_metric_name in product["metrics"]:
-                new_card = populate_card(user.id, product["metrics"], full_metric_name)
+            metrics_dict = product["metrics"]
+            tiid = product["_id"]
+            for full_metric_name in metrics_dict:
+                new_card = populate_card(user.id, tiid, metrics_dict, full_metric_name)
                 if new_card:
-                    cards.append(my_card)
+                    cards.append(new_card)
 
         return cards
 
