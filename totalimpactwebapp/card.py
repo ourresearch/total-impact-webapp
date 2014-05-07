@@ -5,11 +5,11 @@ from flask import render_template
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    card_type = db.Column(db.Text)  # readability, flags, new_metrics
-    user_id = db.Column(db.Integer, unique=True)
-    tiid = db.Column(db.Text, unique=True)
     granularity = db.Column(db.Text)  # profile or product
-    metric = db.Column(db.Text)  # mendeley:views, scopus:citations
+    metric_name = db.Column(db.Text)  # mendeley:views, scopus:citations
+    card_type = db.Column(db.Text)  # readability, flags, new_metrics
+    user_id = db.Column(db.Integer)
+    tiid = db.Column(db.Text)
     weekly_diff = db.Column(db.Text)
     current_value = db.Column(db.Text)
     percentile_current_value = db.Column(db.Text)
@@ -46,4 +46,7 @@ class Card(db.Model):
     def to_html(self):
         return render_template("card.html", self.to_dict())
 
+    def __repr__(self):
+        return u'<Card {id} {user_id} {tiid} {granularity} {metric_name} {card_type}>'.format(
+            id=self.id, user_id=self.user_id, tiid=self.tiid, granularity=self.granularity, metric_name=self.metric_name, card_type=self.card_type)
 
