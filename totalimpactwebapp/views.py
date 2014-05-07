@@ -763,7 +763,9 @@ def render_cards(profile_id):
     )
     cards = []
     cards += ProductNewMetricCardGenerator.make(user)
-    return json_resp_from_thing(cards)
+
+    card_dicts = [card.to_dict() for card in cards]
+    return json_resp_from_thing(card_dicts)
 
 
 
