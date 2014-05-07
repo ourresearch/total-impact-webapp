@@ -22,6 +22,7 @@ from totalimpactwebapp.user import delete_user
 
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import emailer
+from totalimpactwebapp import thresholds
 
 from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import get_products_from_core_as_csv
@@ -781,6 +782,12 @@ def test_emailer():
         {"title": "my wonderful paper about rabbits"}
     )
     return json_resp_from_thing(ret)
+
+
+@app.route("/thresholds")
+def get_thresholds():
+
+    return json_resp_from_thing(thresholds.values)
 
 ###############################################################################
 #

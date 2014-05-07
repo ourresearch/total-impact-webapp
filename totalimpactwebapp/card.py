@@ -44,7 +44,10 @@ class Card(db.Model):
 
 
     def to_html(self):
-        return render_template("card.html", self.to_dict())
+        return render_template("card.html", **self.to_dict())
+
+    def to_text(self):
+        return render_template("card.txt", **self.to_dict())
 
     def __repr__(self):
         return u'<Card {id} {user_id} {tiid} {granularity} {metric_name} {card_type}>'.format(
