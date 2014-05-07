@@ -1,5 +1,6 @@
 from totalimpactwebapp import db
 import datetime
+from flask import render_template
 
 
 class Card(db.Model):
@@ -33,7 +34,7 @@ class Card(db.Model):
 
             else:
                 try:
-                    v = v.isovalue()
+                    v = v.isoformat()
                 except AttributeError:
                     pass
 
@@ -43,7 +44,6 @@ class Card(db.Model):
 
 
     def to_html(self):
-        # jinja template code goes here
-        return "<h1>awesome html!</h1>"
+        return render_template("card.html", self.to_dict())
 
 
