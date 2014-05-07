@@ -37,8 +37,6 @@ def get_threshold_just_crossed(current_value, diff_value, thresholds):
     return None
 
 def get_median(metric_dict, medians_lookup):
-    print "in get_median"
-    print metric_dict
     try:
         refset_year = metric_dict["refset_year"]
         refset_genre = metric_dict["refset_genre"]
@@ -51,7 +49,6 @@ def get_median(metric_dict, medians_lookup):
                 pass
         metric_name = metric_dict["name"]
 
-        print "****", refset_year, refset_genre, refset_name, metric_name
         median = medians_lookup[refset_genre][refset_name][refset_year][metric_name]
     except KeyError:
         median = None
