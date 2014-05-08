@@ -104,7 +104,7 @@ class ProductNewMetricCardGenerator(CardGenerator):
 
     @classmethod
     def make(cls, user):
-        thresholds_lookup = thresholds.shared_values
+        thresholds_lookup = thresholds.values["product"]
         medians_lookup = get_medians_lookup()
 
         cards = []
