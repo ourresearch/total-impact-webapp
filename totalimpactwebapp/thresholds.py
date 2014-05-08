@@ -12,20 +12,6 @@ def orders_of_magnitude(start_with_fives=False):
     ret += range(100000, 500000, 100000)  # hundred-thousands
     return ret
 
-def remove_values_if_string_in_key(blacklist_strings, dict):
-    keys_to_delete = []
-    for key in dict.keys():
-        for bad_str in blacklist_strings:
-            if bad_str in key:
-                keys_to_delete.append(key)
-
-    ret = {}
-    for k, v in dict.iteritems():
-        if k not in keys_to_delete:
-            ret[k] = v
-
-    return ret
-
 
 shared_values = {
     "altmetric_com:blog_posts": orders_of_magnitude(True),
@@ -67,10 +53,7 @@ shared_values = {
 
 values = {
     "product": shared_values,
-    "profile": remove_values_if_string_in_key(
-        ["scopus", "pubmed"],
-        shared_values
-    )
+    "profile": shared_values
 }
 
 
