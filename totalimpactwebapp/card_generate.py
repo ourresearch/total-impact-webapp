@@ -47,7 +47,7 @@ def get_median(metric_dict, medians_lookup):
         for (key, val) in metric_dict["values"].iteritems():
             try:
                 if "CI95_lower" in val.keys():
-                    refset_name = key.lower()
+                    refset_name = key
             except AttributeError:
                 pass
         metric_name = metric_dict["name"]
@@ -63,8 +63,8 @@ def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[],
     current_value = as_int_or_float_if_possible(hist["current"]["raw"])
     diff_value = as_int_or_float_if_possible(hist["diff"]["raw"])
     thresholds = thresholds_lookup.get(metric_name, [])
-    newest_diff_timestamp = arrow.get(hist["current"]["collected_date"])
-    oldest_diff_timestamp = arrow.get(hist["previous"]["collected_date"])
+    newest_diff_timestamp = arrow.get(hist["current"]["collected_date"]).datetime
+    oldest_diff_timestamp = arrow.get(hist["previous"]["collected_date"]).datetime
 
     my_card = Card(
         card_type="new metrics",
@@ -180,8 +180,8 @@ class ProfileNewMetricCardGenerator(CardGenerator):
                     granularity="profile",
                     metric_name=metric_name,
                     user_id=user.id,
-                    newest_diff_timestamp=arrow.get(datetime.datetime.min),  #initiate with a very recent value
-                    oldest_diff_timestamp=arrow.get(datetime.datetime.max),  #initiate with a very recent value
+                    newest_diff_timestamp=arrow.get(datetime.datetime.min).datetime,  #initiate with a very recent value
+                    oldest_diff_timestamp=arrow.get(datetime.datetime.max).datetime,  #initiate with a very recent value
                     diff_value=0,
                     current_value=0,
                     weight=0.8
@@ -194,8 +194,8 @@ class ProfileNewMetricCardGenerator(CardGenerator):
                     hist = metric_dict["historical_values"]
                     product_current_value = as_int_or_float_if_possible(hist["current"]["raw"])
                     product_diff_value = as_int_or_float_if_possible(hist["diff"]["raw"])
-                    current_diff_timestamp = arrow.get(hist["current"]["collected_date"])
-                    previous_diff_timestamp = arrow.get(hist["previous"]["collected_date"])
+                    current_diff_timestamp = arrow.get(hist["current"]["collected_date"]).datetime
+                    previous_diff_timestamp = arrow.get(hist["previous"]["collected_date"]).datetime
 
                     accumulating_card.current_value += product_current_value
                     accumulating_card.diff_value += product_diff_value
