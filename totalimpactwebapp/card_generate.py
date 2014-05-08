@@ -217,8 +217,9 @@ class ProfileNewMetricCardGenerator(CardGenerator):
                     accumulating_card.current_value, 
                     accumulating_card.diff_value, 
                     thresholds)
-                accumulating_card.diff_window_days = (accumulating_card.newest_diff_timestamp - accumulating_card.oldest_diff_timestamp).days
-                cards.append(accumulating_card)
+                if accumulating_card.threshold_awarded:
+                    accumulating_card.diff_window_days = (accumulating_card.newest_diff_timestamp - accumulating_card.oldest_diff_timestamp).days
+                    cards.append(accumulating_card)
 
         return cards
 
