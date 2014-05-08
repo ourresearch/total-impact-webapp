@@ -48,7 +48,6 @@ def create_cards():
         cards += ProductNewMetricCardGenerator.make(user)
 
         for card in cards:
-            print "writing card", card
             db.session.add(card)
         
         try:

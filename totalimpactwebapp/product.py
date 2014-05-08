@@ -31,7 +31,7 @@ def prep_product(product, verbose=False, display_debug=False):
         product["latest_metric_timestamp"] = get_latest_metric_timestamp(product)
         product["markup"] = make_markup(product, verbose)
         product["is_true_product"] = True
-        product = add_sort_keys(product)
+    product = add_sort_keys(product)
 
     return product
 
@@ -329,7 +329,10 @@ def add_sort_keys(product):
         product["account"] = None
 
     product["metric_raw_sum"] = sum_metric_raw_values(product)
-    product["awardedness_score"] = get_awardedness_score(product)
+    try:
+        product["awardedness_score"] = get_awardedness_score(product)
+    except KeyError:
+        product["awardedness_score"] = None
     product["has_metrics"] = bool(product["metrics"])
     product["has_percentiles"] = has_percentiles(product)
 
