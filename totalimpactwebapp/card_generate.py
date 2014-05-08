@@ -1,6 +1,7 @@
 from totalimpactwebapp.card import Card
 from totalimpactwebapp.util import as_int_or_float_if_possible
 from totalimpactwebapp import products_list
+from totalimpactwebapp import thresholds
 
 import requests
 import json
@@ -103,9 +104,7 @@ class ProductNewMetricCardGenerator(CardGenerator):
 
     @classmethod
     def make(cls, user):
-        thresholds_lookup = {
-            "mendeley:readers": [5, 10, 25, 50, 75, 100]
-            }
+        thresholds_lookup = thresholds.shared_values
         medians_lookup = get_medians_lookup()
 
         cards = []
