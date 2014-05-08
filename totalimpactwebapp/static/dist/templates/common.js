@@ -138,14 +138,14 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      <a class=\"new-metrics control no-new-metrics\"\n" +
     "         tooltip=\"No new metrics.\"\n" +
     "         tooltip-placement=\"bottom\"\n" +
-    "         ng-show=\"!security.hasNewMetrics()\"\n" +
+    "         ng-show=\"!illuminateNotificationIcon()\"\n" +
     "         href=\"/{{ currentUser.url_slug }}\">\n" +
     "         <i class=\"icon-bell\"></i>\n" +
     "      </a>\n" +
     "      <a class=\"new-metrics control has-new-metrics\"\n" +
     "         tooltip=\"You've got new metrics!\"\n" +
     "         tooltip-placement=\"bottom\"\n" +
-    "         ng-show=\"security.hasNewMetrics()\"\n" +
+    "         ng-show=\"illuminateNotificationIcon()\"\n" +
     "         ng-click=\"dismissProfileNewProductsNotification()\"\n" +
     "         href=\"/{{ currentUser.url_slug }}?filter=has_new_metrics\">\n" +
     "         <i class=\"icon-bell-alt\"></i>\n" +
