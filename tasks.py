@@ -82,7 +82,7 @@ class TaskThatSavesState(celery.Task):
             state = status,
             args = args_to_save,
             kwargs = kwargs,
-            result = retval
+            # result = retval  #causing seriializaion problems when failures
             )
 
         db.session.add(celery_status)

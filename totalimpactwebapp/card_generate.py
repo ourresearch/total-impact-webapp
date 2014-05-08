@@ -197,8 +197,11 @@ class ProfileNewMetricCardGenerator(CardGenerator):
                     current_diff_timestamp = arrow.get(hist["current"]["collected_date"]).datetime
                     previous_diff_timestamp = arrow.get(hist["previous"]["collected_date"]).datetime
 
-                    accumulating_card.current_value += product_current_value
-                    accumulating_card.diff_value += product_diff_value
+                    try:
+                        accumulating_card.current_value += product_current_value
+                        accumulating_card.diff_value += product_diff_value
+                    except TypeError:
+                        pass
                     if current_diff_timestamp > accumulating_card.newest_diff_timestamp:
                         accumulating_card.newest_diff_timestamp = current_diff_timestamp
                     if previous_diff_timestamp < accumulating_card.oldest_diff_timestamp:
