@@ -37,6 +37,15 @@ def has_new_metrics(products_list):
 
     return False
 
+def latest_diff_timestamp(products_list):
+    prepped = prep(products_list)
+    timestamps = [p["latest_diff_timestamp"] for p in prepped]
+
+    try:
+        return sorted(timestamps)[0]
+    except IndexError:
+        return None
+
 
 
 

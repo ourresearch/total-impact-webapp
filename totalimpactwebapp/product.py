@@ -28,7 +28,7 @@ def prep_product(product, verbose=False, display_debug=False):
     if not display_debug:
         product["awards"] = make_awards(product)
         product["has_new_metrics"] = make_has_new_metrics(product)
-        product["latest_metric_timestamp"] = get_latest_metric_timestamp(product)
+        product["latest_diff_timestamp"] = get_latest_diff_timestamp(product)
         product["markup"] = make_markup(product, verbose)
         product["is_true_product"] = True
     product = add_sort_keys(product)
@@ -421,7 +421,7 @@ def make_has_new_metrics(product_dict):
     return False
 
 
-def get_latest_metric_timestamp(product_dict):
+def get_latest_diff_timestamp(product_dict):
     timestamps_of_nonzero_refreshes = []
     for metric_name, metric in product_dict["metrics"].iteritems():
         is_new = metric["historical_values"]["diff"]["raw"] > 0

@@ -262,14 +262,30 @@ def extract_filename(s):
 @app.route("/user/current")
 def get_current_user():
     #sleep(1)
-
     try:
         user_info = g.user.dict_about(include_stripe=True)
-
     except AttributeError:  # anon user has no as_dict()
         user_info = None
 
     return json_resp_from_thing({"user": user_info})
+
+
+@app.route("/user/current/notifications/<notification_name>", methods=["GET"])
+def current_user_notifications(notification_name):
+
+    # hardcode for now
+    notification_name = "new_metrics_notification_dismissed"
+
+    if request.args.get("action") == "dismiss":
+        g.user.new_metrics_notification_dismissed = datetime.datetime.now()
+        db.session.merge(g.user)
+        db.session.commit()
+
+    return json_resp_from_thing({"user": g.user.dict_about()})
+
+
+
+
 
 
 
@@ -304,6 +320,12 @@ def login():
 
 
 
+@app.route("/user/current/dismiss/new_metrics_notification", methods=["GET", "POST"])
+def user_new_metrics_notification(profile_id):
+    user = get_user_for_response(
+        profile_id,
+        request
+    )
 
 
 
@@ -410,8 +432,6 @@ def user_profile_awards(profile_id):
     )
 
     return json_resp_from_thing(user.profile_awards_dicts)
-
-
 
 
 
