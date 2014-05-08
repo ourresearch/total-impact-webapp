@@ -25,13 +25,13 @@ def prep_product(product, verbose=False, display_debug=False):
 
     product["biblio"] = make_biblio(product)
     product["metrics"] = make_metrics(product)
-    product["awards"] = make_awards(product)
-    product["has_new_metrics"] = make_has_new_metrics(product)
-    product["latest_metric_timestamp"] = get_latest_metric_timestamp(product)
-
-    product["markup"] = make_markup(product, verbose)
-    product["is_true_product"] = True
-    product = add_sort_keys(product)
+    if not display_debug:
+        product["awards"] = make_awards(product)
+        product["has_new_metrics"] = make_has_new_metrics(product)
+        product["latest_metric_timestamp"] = get_latest_metric_timestamp(product)
+        product["markup"] = make_markup(product, verbose)
+        product["is_true_product"] = True
+        product = add_sort_keys(product)
 
     return product
 
