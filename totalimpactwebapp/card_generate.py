@@ -100,6 +100,19 @@ class CardGenerator:
 
 
 
+
+
+
+
+
+
+
+"""
+ ProductNewMetricCardGenerator
+ *************************************************************************** """
+
+
+
 class ProductNewMetricCardGenerator(CardGenerator):
 
     @classmethod
@@ -129,4 +142,65 @@ class ProductNewMetricCardGenerator(CardGenerator):
                     cards.append(new_card)
 
         return cards
+
+
+
+
+"""
+ ProductNewMetricCardGenerator
+ *************************************************************************** """
+
+
+class ProfileNewMetricCardGenerator(CardGenerator):
+
+    @classmethod
+    def make(cls, user):
+        thresholds_lookup = thresholds.values["profile"]
+        product_dicts = get_product_list_for_cards(user)
+        cards = []
+
+        metric_totals = {}
+
+        for metric_name, threshold_bins in thresholds.values["profile"].iteritems():
+            pass
+
+
+
+        for product in product_dicts:
+            metrics_dict = product["metrics"]
+            tiid = product["_id"]
+
+            for metric_name in metrics_dict:
+                weekly_diff = metrics_dict[metric_name]["historical_values"]["diff"]["raw"]
+
+                # this card generator only makes cards with weekly diffs
+                if weekly_diff:
+                    new_card = populate_card(user.id, tiid, metrics_dict[metric_name], metric_name, thresholds_lookup, medians_lookup)
+
+                    # now populate with profile-level information
+                    peers = products_above_threshold(product_dicts, metric_name, new_card.current_value)
+                    new_card.num_profile_products_this_good = len(peers)
+
+                    # and keep the card
+                    cards.append(new_card)
+
+        return cards
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

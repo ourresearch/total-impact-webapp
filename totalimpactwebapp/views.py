@@ -766,6 +766,7 @@ def render_cards(profile_id, granularity="all"):
     )
     cards = []
     cards += ProductNewMetricCardGenerator.make(user)
+    cards += ProfileNewMetricCardGenerator.make(user)
 
     if granularity == "profile":
         cards = [card for card in cards if card.granularity == "profile"]
