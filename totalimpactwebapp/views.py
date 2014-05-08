@@ -758,15 +758,22 @@ def scratchpad():
 
 
 @app.route("/<profile_id>/cards")
-def render_cards(profile_id):
+@app.route("/<profile_id>/cards/<granularity>")
+def render_cards(profile_id, granularity="all"):
     user = get_user_for_response(
         profile_id,
         request
     )
     cards = []
     cards += ProductNewMetricCardGenerator.make(user)
-    card_dicts = [card.to_dict() for card in cards]
 
+    if granularity == "profile":
+        cards = [card for card in cards if card.granularity == "profile"]
+    elif granularity == "product":
+        cards = [card for card in cards if card.granularity == "product"]
+
+
+    card_dicts = [card.to_dict() for card in cards]
     return json_resp_from_thing(card_dicts)
 
 
