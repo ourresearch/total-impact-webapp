@@ -10,13 +10,16 @@ class Card(db.Model):
     card_type = db.Column(db.Text)  # readability, flags, new_metrics
     user_id = db.Column(db.Integer)
     tiid = db.Column(db.Text)
-    weekly_diff = db.Column(db.Text)
+    diff_value = db.Column(db.Text)
     current_value = db.Column(db.Text)
     percentile_current_value = db.Column(db.Text)
     median = db.Column(db.Float)
     threshold_awarded = db.Column(db.Integer)
     num_profile_products_this_good = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime())
+    newest_diff_timestamp = db.Column(db.DateTime())
+    oldest_diff_timestamp = db.Column(db.DateTime())
+    diff_window_days = db.Column(db.Integer)
     weight = db.Column(db.Float)
 
 

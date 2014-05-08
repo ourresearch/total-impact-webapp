@@ -11,6 +11,7 @@ from totalimpactwebapp import products_list
 from totalimpactwebapp import db
 from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
 from totalimpactwebapp.user import remove_duplicates_from_user
+from totalimpactwebapp.card_generate import *
 
 logger = logging.getLogger(__name__)
 
@@ -168,4 +169,19 @@ def update_from_linked_account(user, account):
     tiids = user.update_products_from_linked_account(account, update_even_removed_products=False)
     return tiids
 
+
+@celery_app.task(ignore_result=True, base=TaskThatSavesState)
+def create_cards(user):
+    cards = []
+    cards += ProductNewMetricCardGenerator.make(user)
+    cards += ProfileNewMetricCardGenerator.make(user)
+
+    for card in cards:
+        db.session.add(card)
+    
+    try:
+        db.session.commit()
+    except InvalidRequestError:
+        db.session.rollback()
+        db.session.commit()
 
