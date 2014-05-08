@@ -44,11 +44,12 @@ def deduplicate_everyone():
 
 def create_cards():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        facts = []
-        facts += ProductNewMetricCardGenerator.make(user)
+        cards = []
+        cards += ProductNewMetricCardGenerator.make(user)
 
-        for fact in facts:
-            db.session.add(fact)
+        for card in cards:
+            print "writing card", card
+            db.session.add(card)
         
         try:
             db.session.commit()
