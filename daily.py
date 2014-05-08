@@ -45,6 +45,6 @@ def create_cards_for_everyone():
 
 
 db.create_all()
-create_cards_for_everyone()
+add_profile_deets_for_everyone()
 
 
