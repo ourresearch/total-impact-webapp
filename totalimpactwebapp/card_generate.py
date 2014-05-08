@@ -63,6 +63,8 @@ def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[],
     current_value = as_int_or_float_if_possible(hist["current"]["raw"])
     diff_value = as_int_or_float_if_possible(hist["diff"]["raw"])
     thresholds = thresholds_lookup.get(metric_name, [])
+    newest_diff_timestamp = arrow.get(hist["current"]["collected_date"])
+    oldest_diff_timestamp = arrow.get(hist["previous"]["collected_date"])
 
     my_card = Card(
         card_type="new metrics",
@@ -72,8 +74,9 @@ def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[],
         tiid=tiid,
         diff_value=diff_value,
         current_value=current_value,
-        newest_diff_timestamp=arrow.get(hist["current"]["collected_date"]),
-        oldest_diff_timestamp=arrow.get(hist["previous"]["collected_date"]),
+        newest_diff_timestamp=newest_diff_timestamp,
+        oldest_diff_timestamp=oldest_diff_timestamp, 
+        diff_window_days = (newest_diff_timestamp - oldest_diff_timestamp).days,
         percentile_current_value=get_percentile(metric_dict),
         median=get_median(metric_dict, medians_lookup),
         threshold_awarded=get_threshold_just_crossed(current_value, diff_value, thresholds),
@@ -211,6 +214,7 @@ class ProfileNewMetricCardGenerator(CardGenerator):
                     accumulating_card.current_value, 
                     accumulating_card.diff_value, 
                     thresholds)
+                accumulating_card.diff_window_days = (accumulating_card.newest_diff_timestamp - accumulating_card.oldest_diff_timestamp).days
                 cards.append(accumulating_card)
 
         return cards
