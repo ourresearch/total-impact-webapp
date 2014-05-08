@@ -157,11 +157,6 @@ angular.module('security.service', [
       return currentUser && currentUser.has_new_metrics
     },
 
-    dismissProfileNewProductsNotification: function(){
-      console.log("dismiss profile new products notification")
-    },
-
-
 
     redirectToProfile: function(){
       service.requestCurrentUser().then(function(user){

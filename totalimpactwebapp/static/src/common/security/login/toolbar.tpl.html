@@ -24,7 +24,7 @@
          tooltip="You've got new metrics!"
          tooltip-placement="bottom"
          ng-show="security.hasNewMetrics()"
-         ng-click="dismissProfileNewProductsNotification"
+         ng-click="dismissProfileNewProductsNotification()"
          href="/{{ currentUser.url_slug }}?filter=has_new_metrics">
          <i class="icon-bell-alt"></i>
       </a>

@@ -190,7 +190,6 @@ angular.module("profile", [
     }
 
     $scope.$on('$locationChangeStart', function(event, next, current){
-      console.log("location change start!", $location.search())
       if ($location.search().filter == "has_new_metrics"){
         console.log("filter=has_new_metrics")
         $scope.productFilter.has_new_metrics = true
