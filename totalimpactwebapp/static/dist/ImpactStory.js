@@ -6353,13 +6353,12 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "      <span class=\"or\"></span>\n" +
     "\n" +
-    "      <a class=\"new-metrics control no-new-metrics\"\n" +
+    "      <span class=\"new-metrics control no-new-metrics\"\n" +
     "         tooltip=\"No new metrics.\"\n" +
     "         tooltip-placement=\"bottom\"\n" +
-    "         ng-show=\"!illuminateNotificationIcon()\"\n" +
-    "         href=\"/{{ currentUser.url_slug }}\">\n" +
+    "         ng-show=\"!illuminateNotificationIcon()\">\n" +
     "         <i class=\"icon-bell\"></i>\n" +
-    "      </a>\n" +
+    "      </span>\n" +
     "      <a class=\"new-metrics control has-new-metrics\"\n" +
     "         tooltip=\"You've got new metrics!\"\n" +
     "         tooltip-placement=\"bottom\"\n" +

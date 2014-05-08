@@ -13,13 +13,12 @@
 
       <span class="or"></span>
 
-      <a class="new-metrics control no-new-metrics"
+      <span class="new-metrics control no-new-metrics"
          tooltip="No new metrics."
          tooltip-placement="bottom"
-         ng-show="!illuminateNotificationIcon()"
-         href="/{{ currentUser.url_slug }}">
+         ng-show="!illuminateNotificationIcon()">
          <i class="icon-bell"></i>
-      </a>
+      </span>
       <a class="new-metrics control has-new-metrics"
          tooltip="You've got new metrics!"
          tooltip-placement="bottom"

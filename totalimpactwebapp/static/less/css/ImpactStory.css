@@ -6533,6 +6533,9 @@ div.main-header div.wrapper ul.main-nav li.nav-item.controls a.preferences {
 div.main-header div.wrapper ul.main-nav li.nav-item.controls a.logout {
   font-size: 15px;
 }
+div.main-header div.wrapper ul.main-nav li.nav-item.controls span.new-metrics {
+  color: #999;
+}
 /* footer
 *****************************************************************************
 *****************************************************************************
