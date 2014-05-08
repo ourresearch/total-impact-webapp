@@ -1,11 +1,6 @@
 from totalimpactwebapp.user import User
 from totalimpactwebapp import db
-from totalimpactwebapp.card_generate import ProductNewMetricCardGenerator
 import tasks
-
-import datetime
-from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
-from sqlalchemy.orm.exc import FlushError
 
 
 
@@ -42,23 +37,14 @@ def deduplicate_everyone():
 
 
 
-def create_cards():
+def create_cards_for_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        cards = []
-        cards += ProductNewMetricCardGenerator.make(user)
+        tasks.create_cards.delay(user)
 
-        for card in cards:
-            db.session.add(card)
-        
-        try:
-            db.session.commit()
-        except InvalidRequestError:
-            db.session.rollback()
-            db.session.commit()
 
 
 
 db.create_all()
-create_cards()
+create_cards_for_everyone()
 
 
