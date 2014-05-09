@@ -162,77 +162,67 @@ def deduplicate(user):
     return removed_tiids
 
 
-@celery_app.task(base=TaskThatSavesState)
-def create_cards(user):
-    timestamp = datetime.datetime.utcnow()
-    cards = []
-    cards += ProductNewMetricCardGenerator.make(user, timestamp)
-    cards += ProfileNewMetricCardGenerator.make(user, timestamp)
 
-    for card in cards:
-        db.session.add(card)
+
+
+@celery_app.task(base=TaskThatSavesState)
+def send_email_report(user, override_with_send=False):
+
+    template_filler_dict = notification_report.make(user)
+
+    email = "heather@impactstory.org"
+    # email = user.email
     
+    msg = emailer.send(email, "Here's your Impactstory report", "report", template_filler_dict)
+
+    user.last_email_check = datetime.datetime.utcnow()
+
     try:
         db.session.commit()
     except InvalidRequestError:
         db.session.rollback()
         db.session.commit()
-    return cards
+
+    return "success"
 
 
-@celery_app.task(base=TaskThatSavesState)
-def send_email_report(user, override_with_send=False):
-    now = datetime.datetime.utcnow()
-    if (override_with_send or 
-        not user.last_email_check or
-        ((user.last_email_check - now).days >= 7) and 
-        (user.notification_email_frequency != "none")):
-        
-        my_report = notification_report.NotificationReport(user)
-
-        print "here I am"
-
-        template_filler_dict = my_report.get_dict()
-
-        try:
-            template_name = template_filler_dict["template_name"]
-        except KeyError:
-            template_name = "card"
-
-        print "****", template_name
-        msg = emailer.send("heather@impactstory.org", "hi", template_name, template_filler_dict)
-
-        user.last_email_check = now
-
-        try:
-            db.session.commit()
-        except InvalidRequestError:
-            db.session.rollback()
-            db.session.commit()
-
-        return "success"
+# @celery_app.task(base=TaskThatSavesState)
+# def update_from_linked_account(user, account):
+#     tiids = user.update_products_from_linked_account(account, update_even_removed_products=False)
+#     return tiids
 
 
 
-@celery_app.task(base=TaskThatSavesState)
-def update_from_linked_account(user, account):
-    tiids = user.update_products_from_linked_account(account, update_even_removed_products=False)
-    return tiids
+# @celery_app.task(base=TaskThatSavesState)
+# def link_accounts_and_update(user):
+#     all_tiids = []
+#     for account in ["github", "slideshare", "figshare", "orcid"]:
+#         all_tiids += update_from_linked_account(user, account)  
+#     all_tiids += user.refresh_products(source="scheduled")
+#     return all_tiids  
 
 
-
-@celery_app.task(base=TaskThatSavesState)
-def link_accounts_and_update(user):
-    all_tiids = []
-    for account in ["github", "slideshare", "figshare", "orcid"]:
-        all_tiids += update_from_linked_account(user, account)  
-    all_tiids += user.refresh_products(source="scheduled")
-    return all_tiids  
+# @celery_app.task(base=TaskThatSavesState)
+# def dedup_and_create_cards_and_email(user, override_with_send=True):
+#     deduplicate(user)
+#     # create_cards(user)
+#     send_email_report(user, override_with_send=True)
 
 
-@celery_app.task(base=TaskThatSavesState)
-def dedup_and_create_cards_and_email(user, override_with_send=True):
-    deduplicate(user)
-    create_cards(user)
-    send_email_report(user, override_with_send=True)
+# @celery_app.task(base=TaskThatSavesState)
+# def create_cards(user):
+#     timestamp = datetime.datetime.utcnow()
+#     cards = []
+#     cards += ProductNewMetricCardGenerator.make(user, timestamp)
+#     cards += ProfileNewMetricCardGenerator.make(user, timestamp)
+
+#     for card in cards:
+#         db.session.add(card)
+    
+#     try:
+#         db.session.commit()
+#     except InvalidRequestError:
+#         db.session.rollback()
+    #     db.session.commit()
+    # return cards
 

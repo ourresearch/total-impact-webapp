@@ -62,44 +62,31 @@ def create_cards_for_everyone(url_slug=None):
 
 
 
-def send_email_reports(url_slug=None, override_with_send=False):
+def email_report_to_url_slug(url_slug=None):
     if url_slug:
         user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
         print user.url_slug        
         tasks.send_email_report(user, override_with_send=True)
-    else:    
-        for user in page_query(User.query.order_by(User.url_slug.asc())):
-            print user.url_slug        
+
+
+
+def email_report_to_everyone_who_needs_one():
+    for user in page_query(User.query.order_by(User.url_slug.asc())):
+        print user.url_slug     
+        if (override_with_send or 
+            not user.last_email_check or
+            ((user.last_email_check - now).days >= 7) and 
+            (user.notification_email_frequency != "none")):
             tasks.send_email_report.delay(user, override_with_send)
-
-
-def do_all_the_things(url_slug=None, override_with_send=False):
-    if url_slug:
-        user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
-        print user.url_slug        
-        success = tasks.link_accounts_and_update(user)
-        print success
-        print "sleeping 10 seconds"
-        time.sleep(10)
-        success = tasks.dedup_and_create_cards_and_email(user, override_with_send=True)
-        print success
-    else:    
-        for user in page_query(User.query.order_by(User.url_slug.asc())):
-            print user.url_slug        
-            success = tasks.link_accounts_and_update.delay(user)
-            print success
-            success = tasks.dedup_and_create_cards_and_email.delay(user, override_with_send=True)
-            print success
-
 
 
 def main(function, url_slug):
     if function=="create_cards_for_everyone":
         create_cards_for_everyone(url_slug)
-    elif function=="send_email_reports":
-        send_email_reports(url_slug)
+    elif function=="email_report_to_everyone_who_needs_one":
+        email_report_to_everyone_who_needs_one(url_slug)
     else:
-        do_all_the_things(url_slug)
+        email_report_to_url_slug(url_slug)
 
 
 
