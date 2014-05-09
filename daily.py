@@ -52,6 +52,7 @@ def create_cards_for_everyone(url_slug=None):
         for user in page_query(User.query.order_by(User.url_slug.asc())):
             print user.url_slug        
             tasks.create_cards.delay(user)
+            tasks.add_profile_deets.delay(user)
 
 
 def main(function, url_slug):
