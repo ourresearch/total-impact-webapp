@@ -108,7 +108,7 @@ class User(db.Model):
     next_refresh = db.Column(db.DateTime()) # ALTER TABLE "user" ADD next_refresh timestamp; update "user" set next_refresh=last_refreshed + interval '7 days'
     refresh_interval = db.Column(db.Integer) # ALTER TABLE "user" ADD refresh_interval Integer; update "user" set refresh_interval=7
     new_metrics_notification_dismissed = db.Column(db.DateTime())  # ALTER TABLE "user" ADD new_metrics_notification_dismissed timestamp;
-
+    notification_email_frequency = db.Column(db.Text)  # ALTER TABLE "user" ADD notification_email_frequency text
 
     tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
@@ -323,7 +323,8 @@ class User(db.Model):
             "linkedin_id",
             "wordpress_api_key",
             "stripe_id",
-            "new_metrics_notification_dismissed"
+            "new_metrics_notification_dismissed",
+            "notification_email_frequency"
         ]
 
         ret_dict = {}

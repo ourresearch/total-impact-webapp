@@ -399,11 +399,15 @@ body.staging {
 
 div#user-message {
    position: fixed;
-   top: 0;
    width: 100%;
    z-index: 1000;
+   button.close {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+   }
    .alert {
-      opacity: .9;
+      opacity: .95;
       text-align: center;
       padding-top: 7px;
       padding-bottom: 7px;
@@ -411,11 +415,11 @@ div#user-message {
       font-size: 16px;
       a {
          font-weight: bold;
-         text-decoration: underline;
+         text-decoration: none;
          font-size: 90%;
-         margin: 0 20px;
          &:hover {
-            color: #fff;
+            text-decoration: underline;
+            color: @linkColor;
          }
       }
       span.count {

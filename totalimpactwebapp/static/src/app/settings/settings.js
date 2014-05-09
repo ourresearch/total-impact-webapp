@@ -77,19 +77,21 @@ angular.module('settings', [
 
   .controller('NotificationsSettingsCtrl', function ($scope, UsersAbout, security, UserMessage, Loading) {
     $scope.onSave = function() {
-      $scope.frequency = "medium"
-      console.log("save the notifications settings!")
+      var messageKey = "settings.notifications."
+        + $scope.user.notification_email_frequency
+        + ".success"
 
-//      Loading.start('saveButton')
-//      UsersAbout.patch(
-//        {id: $scope.user.url_slug},
-//        {about: $scope.user},
-//        function(resp) {
-//          security.setCurrentUser(resp.about) // update the current authenticated user.
-//          UserMessage.set('settings.profile.change.success', true);
-//          $scope.home();
-//        }
-//      )
+
+      Loading.start('saveButton')
+      UsersAbout.patch(
+        {id: $scope.user.url_slug},
+        {about: $scope.user},
+        function(resp) {
+          security.setCurrentUser(resp.about) // update the current authenticated user.
+          UserMessage.set(messageKey, true);
+          $scope.home();
+        }
+      )
     };
   })
 

@@ -6381,12 +6381,16 @@ body.staging div.staging-warning div.content span {
 }
 div#user-message {
   position: fixed;
-  top: 0;
   width: 100%;
   z-index: 1000;
 }
+div#user-message button.close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
 div#user-message .alert {
-  opacity: .9;
+  opacity: .95;
   text-align: center;
   padding-top: 7px;
   padding-bottom: 7px;
@@ -6395,12 +6399,12 @@ div#user-message .alert {
 }
 div#user-message .alert a {
   font-weight: bold;
-  text-decoration: underline;
+  text-decoration: none;
   font-size: 90%;
-  margin: 0 20px;
 }
 div#user-message .alert a:hover {
-  color: #fff;
+  text-decoration: underline;
+  color: #ff4000;
 }
 div#user-message .alert span.count {
   font-weight: 900;
