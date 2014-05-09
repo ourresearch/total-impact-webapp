@@ -1,6 +1,6 @@
 div.settings {
    div.settings-header {
-      margin: 0 0 100px 0;
+      margin: 0 0 50px 0;
       padding: 0 0 0 0;
       width: 600px;
       h1 {
@@ -12,7 +12,6 @@ div.settings {
       }
       p {
          font-size: 18px;
-         color: @gray-light;
          font-weight: 300;
          &.pitch {
             padding-top: 20px;
@@ -61,6 +60,37 @@ div.settings {
       float:left;
       margin: 0 0 0 100px;
       width: 800px;
+
+      div.notifications-form-container {
+         h2 {
+            font-weight: normal;
+            margin-bottom: 20px;
+            font-size: 30px;
+            border-bottom: 1px solid #ddd;
+            width: 600px;
+            display:None;
+         }
+         form {
+            margin-left: 13px;
+            div.radio {
+               margin-bottom: 20px;
+               label {
+                  h3 {
+                     margin: -5px 0 10px 5px;
+                     padding: 0;
+                     font-weight: 300;
+                     font-size: 25px;
+                  }
+                  p {
+                     padding-left: 5px;
+                     font-weight: normal;
+                  }
+
+               }
+            }
+         }
+      }
+
 
       div.upgrade-form-container {
          div.current-plan-status {

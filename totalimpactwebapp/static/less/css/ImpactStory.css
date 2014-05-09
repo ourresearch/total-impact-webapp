@@ -6381,12 +6381,16 @@ body.staging div.staging-warning div.content span {
 }
 div#user-message {
   position: fixed;
-  top: 0;
   width: 100%;
   z-index: 1000;
 }
+div#user-message button.close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
 div#user-message .alert {
-  opacity: .9;
+  opacity: .95;
   text-align: center;
   padding-top: 7px;
   padding-bottom: 7px;
@@ -6395,12 +6399,12 @@ div#user-message .alert {
 }
 div#user-message .alert a {
   font-weight: bold;
-  text-decoration: underline;
+  text-decoration: none;
   font-size: 90%;
-  margin: 0 20px;
 }
 div#user-message .alert a:hover {
-  color: #fff;
+  text-decoration: underline;
+  color: #ff4000;
 }
 div#user-message .alert span.count {
   font-weight: 900;
@@ -8515,7 +8519,7 @@ div.signup-page div.signup-sidebar div.testimonials-container div.testimonial ci
   margin-top: 10px;
 }
 div.settings div.settings-header {
-  margin: 0 0 100px 0;
+  margin: 0 0 50px 0;
   padding: 0 0 0 0;
   width: 600px;
 }
@@ -8528,7 +8532,6 @@ div.settings div.settings-header h1 {
 }
 div.settings div.settings-header p {
   font-size: 18px;
-  color: #999999;
   font-weight: 300;
 }
 div.settings div.settings-header p.pitch {
@@ -8583,6 +8586,30 @@ div.settings div.settings-input {
   float: left;
   margin: 0 0 0 100px;
   width: 800px;
+}
+div.settings div.settings-input div.notifications-form-container h2 {
+  font-weight: normal;
+  margin-bottom: 20px;
+  font-size: 30px;
+  border-bottom: 1px solid #ddd;
+  width: 600px;
+  display: None;
+}
+div.settings div.settings-input div.notifications-form-container form {
+  margin-left: 13px;
+}
+div.settings div.settings-input div.notifications-form-container form div.radio {
+  margin-bottom: 20px;
+}
+div.settings div.settings-input div.notifications-form-container form div.radio label h3 {
+  margin: -5px 0 10px 5px;
+  padding: 0;
+  font-weight: 300;
+  font-size: 25px;
+}
+div.settings div.settings-input div.notifications-form-container form div.radio label p {
+  padding-left: 5px;
+  font-weight: normal;
 }
 div.settings div.settings-input div.upgrade-form-container div.current-plan-status {
   margin-bottom: 90px;

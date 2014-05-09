@@ -1,4 +1,4 @@
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/premium-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/premium-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -722,18 +722,6 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "   </div>\n" +
     "\n" +
     "</div>\n" +
-    "");
-}]);
-
-angular.module("notifications.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("notifications.tpl.html",
-    "<ul class=\"notifications\">\n" +
-    "   <li ng-class=\"['alert', 'alert-'+notification.type]\"\n" +
-    "       ng-repeat=\"notification in notifications.getCurrent()\">\n" +
-    "       <span class=\"text\" ng-bind-html-unsafe=\"notification.message\"></span>\n" +
-    "       <button class=\"close\" ng-click=\"removeNotification(notification)\">&times;</button>\n" +
-    "   </li>\n" +
-    "</ul>\n" +
     "");
 }]);
 
@@ -1602,6 +1590,87 @@ angular.module("settings/linked-accounts-settings.tpl.html", []).run(["$template
     "");
 }]);
 
+angular.module("settings/notifications-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/notifications-settings.tpl.html",
+    "<div class=\"settings-header\">\n" +
+    "   <h1>Notifications</h1>\n" +
+    "   <p>Change how often you get emails about new impacts</p>\n" +
+    "</div>\n" +
+    "\n" +
+    "\n" +
+    "<div class=\"notifications-form-container\">\n" +
+    "   <form novalidate name=\"userNotificationsForm\"\n" +
+    "         class=\"form-horizontal custom-url\"\n" +
+    "         ng-submit=\"onSave()\"\n" +
+    "         ng-controller=\"NotificationsSettingsCtrl\">\n" +
+    "\n" +
+    "      <pre>current setting: {{ user.notification_email_frequency }}</pre>\n" +
+    "\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <div class=\"radio\">\n" +
+    "           <label>\n" +
+    "             <input type=\"radio\"\n" +
+    "                    name=\"notifications-options\"\n" +
+    "                    id=\"notifications-as-they-happen\"\n" +
+    "                    ng-model=\"user.notification_email_frequency\"\n" +
+    "                    value=\"as_they_happen\">\n" +
+    "             <h3>As they happen</h3>\n" +
+    "              <p>Whenever your research makes new impacts, we'll let you know right away.</p>\n" +
+    "           </label>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"radio\">\n" +
+    "           <label>\n" +
+    "             <input type=\"radio\"\n" +
+    "                    name=\"notifications-options\"\n" +
+    "                    id=\"notifications-every-week-or-two\"\n" +
+    "                    ng-model=\"user.notification_email_frequency\"\n" +
+    "                    value=\"every_week_or_two\">\n" +
+    "             <h3>Every week or two</h3>\n" +
+    "              <p>Get a digest of all your latest impacts a few times each month.</p>\n" +
+    "           </label>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"radio\">\n" +
+    "           <label>\n" +
+    "             <input type=\"radio\"\n" +
+    "                    name=\"notifications-options\"\n" +
+    "                    id=\"notifications-monthly\"\n" +
+    "                    ng-model=\"user.notification_email_frequency\"\n" +
+    "                    value=\"monthly\">\n" +
+    "              <h3>Monthly</h3>\n" +
+    "              <p>Get a report on your biggest research impacts that month.</p>\n" +
+    "           </label>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"radio\">\n" +
+    "           <label>\n" +
+    "             <input type=\"radio\"\n" +
+    "                    name=\"notifications-options\"\n" +
+    "                    id=\"notifications-none\"\n" +
+    "                    ng-model=\"user.notification_email_frequency\"\n" +
+    "                    value=\"none\">\n" +
+    "              <h3>None</h3>\n" +
+    "              <p>Don't get any impact reports.</p>\n" +
+    "           </label>\n" +
+    "         </div>\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"form-group submit\">\n" +
+    "         <div class=\" col-xs-10\">\n" +
+    "            <save-buttons valid=\"userNotificationsForm.$valid\"></save-buttons>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </form>\n" +
+    "\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("settings/password-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("settings/password-settings.tpl.html",
     "<div class=\"settings-header\">\n" +
@@ -2044,8 +2113,10 @@ angular.module("user-message.tpl.html", []).run(["$templateCache", function($tem
     "<div ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
     "        ng-if=\"userMessage.get().message && userMessage.showOnTop()\"\n" +
     "        ng-animate=\"{enter: 'animated fadeInDown', leave: 'animated fadeOutUp'}\">\n" +
-    "       <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
-    "       <button class=\"close\" ng-click=\"userMessage.remove()\">&times;</button>\n" +
+    "   <span class=\"wrapper\">\n" +
+    "      <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
+    "   </span>\n" +
+    "   <button class=\"close\" ng-click=\"userMessage.remove()\">&times;</button>\n" +
     "</div>\n" +
     "");
 }]);

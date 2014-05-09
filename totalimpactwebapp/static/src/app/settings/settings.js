@@ -74,6 +74,28 @@ angular.module('settings', [
     };
   })
 
+
+  .controller('NotificationsSettingsCtrl', function ($scope, UsersAbout, security, UserMessage, Loading) {
+    $scope.onSave = function() {
+      var messageKey = "settings.notifications."
+        + $scope.user.notification_email_frequency
+        + ".success"
+
+
+      Loading.start('saveButton')
+      UsersAbout.patch(
+        {id: $scope.user.url_slug},
+        {about: $scope.user},
+        function(resp) {
+          security.setCurrentUser(resp.about) // update the current authenticated user.
+          UserMessage.set(messageKey, true);
+          $scope.home();
+        }
+      )
+    };
+  })
+
+
   .controller('passwordSettingsCtrl', function ($scope, $location, UsersPassword, security, UserMessage, Loading) {
 
     $scope.showPassword = false;
@@ -227,6 +249,7 @@ angular.module('settings', [
       )
     };
   })
+
 
 
   // not currently using this...LinkedAccounts page is hidden.
