@@ -2,9 +2,10 @@ from totalimpactwebapp.user import User
 from totalimpactwebapp import db
 import tasks
 
-import argparse
 from sqlalchemy import func
-
+from celery import chain
+import time
+import argparse
 
 
 
@@ -48,14 +49,16 @@ def deduplicate_everyone():
 
 
 def create_cards_for_everyone(url_slug=None):
+    cards = []
     if url_slug:
         user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
         print user.url_slug        
-        tasks.create_cards(user)
+        cards = tasks.create_cards(user)
     else:    
         for user in page_query(User.query.order_by(User.url_slug.asc())):
             print user.url_slug        
-            tasks.create_cards.delay(user)
+            cards = tasks.create_cards.delay(user)
+    return cards
 
 
 
@@ -70,12 +73,33 @@ def send_email_reports(url_slug=None, override_with_send=False):
             tasks.send_email_report.delay(user, override_with_send)
 
 
+def do_all_the_things(url_slug=None, override_with_send=False):
+    if url_slug:
+        user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
+        print user.url_slug        
+        success = tasks.link_accounts_and_update(user)
+        print success
+        print "sleeping 10 seconds"
+        time.sleep(10)
+        success = tasks.dedup_and_create_cards_and_email(user, override_with_send=True)
+        print success
+    else:    
+        for user in page_query(User.query.order_by(User.url_slug.asc())):
+            print user.url_slug        
+            success = tasks.link_accounts_and_update.delay(user)
+            print success
+            success = tasks.dedup_and_create_cards_and_email.delay(user, override_with_send=True)
+            print success
+
+
 
 def main(function, url_slug):
     if function=="create_cards_for_everyone":
         create_cards_for_everyone(url_slug)
     elif function=="send_email_reports":
         send_email_reports(url_slug)
+    else:
+        do_all_the_things(url_slug)
 
 
 
@@ -88,7 +112,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run stuff")
     parser.add_argument('--url_slug', default=None, type=str, help="url slug")
     # parser.add_argument('--celery', default=True, type=bool, help="celery")
-    parser.add_argument('--function', default="create_cards_for_everyone", type=str, help="function")
+    parser.add_argument('--function', default=None, type=str, help="function")
     args = vars(parser.parse_args())
     print args
     print u"daily.py starting."
