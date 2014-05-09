@@ -795,7 +795,19 @@ def render_cards(profile_id, granularity="all"):
 
 
     card_dicts = [card.to_dict() for card in cards]
-    return json_resp_from_thing(card_dicts)
+    return render_template("scratchpad.html")
+
+
+@app.route("/<profile_id>/report")
+def render_report(profile_id):
+    user = get_user_for_response(
+        profile_id,
+        request
+    )
+    cards = Card.query.filter(Card.user_id == user.id).all()
+
+    return "\n".join([card.to_html() for card in cards])
+    # return render_template("report.html")
 
 
 @app.route("/test/email")
