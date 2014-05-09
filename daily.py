@@ -14,7 +14,12 @@ requires these env vars be set in this environment:
 DATABASE_URL
 """
 
-
+try:
+    # set jason's env variables for local running.
+    import config
+    config.set_env_vars_from_dot_env()
+except ImportError:
+    pass
 
 
 def page_query(q):
