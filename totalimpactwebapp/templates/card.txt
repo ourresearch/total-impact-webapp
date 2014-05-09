@@ -1,3 +1,0 @@
-{{ title }}
-----------
-here's your card yo

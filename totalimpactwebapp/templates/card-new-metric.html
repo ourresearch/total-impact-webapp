@@ -1,0 +1,40 @@
+{% set this_metric = metrics_info[metric_name] %}
+
+<div class="card new-metric product">
+   <div class="header">
+      <h3>
+         {{ diff_value }} new {{ this_metric.provider }} {{ this_metric.display_name }}
+      </h3>
+      <h4>
+         on <em>{{ product.biblio.title }}</em>
+      </h4>
+   </div>
+   <div class="body">
+      <p>
+         That brings this {{ product.biblio.genre }} up to {{ current_value }}
+         {{ this_metric.provider }} {{ this_metric.display_name }} total.
+      </p>
+
+      {% if percentile_current_value > 50 %}
+      <p>
+         {% if percentile_current_value > 80 %}
+            Impressive!
+         {% else %}
+            Not bad!
+         {% endif %}
+
+         Only {{ percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
+               have reached {{ current_value }} {{ this_metric.display_name }}.
+      </p>
+      {% endif %}
+
+      <p>
+         It marks your {{ nth_profile_product_this_good }} product to get at least {{ current_value }}
+         {{ this_metric.display_name }} on {{ this_metric.provider }}. Nice work!
+      </p>
+   </div>
+
+   <div class="footer">
+      footer
+   </div>
+</div>

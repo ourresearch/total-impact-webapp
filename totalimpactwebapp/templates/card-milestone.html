@@ -1,0 +1,148 @@
+
+{% set this_metric = metrics_info[metric_name] %}
+
+
+
+
+
+{#  PROFILE getting a First Metric milestone #}
+{#  ########################################### #}
+{% if granularity == "profile" and threshold_awarded == 1 %}
+<div class="card milestone first-metric profile">
+   <div class="header">
+      <h3>
+            Welcome to the {{ this_metric.provider }} {{ this_metric.display_name }} club!
+      </h3>
+      <h4>
+         on <a href="https://impactstory.org/{{ user.url_slug }}">https://impactstory.org/{{ user.url_slug }}</a>
+      </h4>
+   </div>
+   <div class="body">
+      <p>
+         Congratulations, you just got your first {{ this_metric.provider }} {{ this_metric.display_name }}!
+      </p>
+   </div>
+   <div class="footer">
+      footer
+   </div>
+</div>
+
+
+
+
+
+{#  PROFILE getting a milestone OTHER than First Metric #}
+{#  ################################################### #}
+{% elif granularity == "profile" and threshold_awarded > 1 %}
+<div class="card milestone profile">
+   <div class="header">
+      <h3>
+         Welcome to the {{ threshold_awarded }}+ combined {{ this_metric.display_name }} club!
+      </h3>
+      <h4>
+         on <a href="https://impactstory.org/{{ user.url_slug }}">https://impactstory.org/{{ user.url_slug }}</a>
+      </h4>
+   </div>
+
+   <div class="body">
+      <p>
+         One or more of the {{ user.products_count }} products on your profile attracted
+         a combined {{ diff_value }} new
+         {{ this_metric.provider }} {{ this_metric.display_name }}
+         this week, bringing you to {{ current_value }} total.
+      </p>
+      <p>
+         Congrats on passing the {{ threshold_awarded }} mark!
+      </p>
+   </div>
+   <div class="footer">
+      footer
+   </div>
+</div>
+
+
+
+
+
+{#  PRODUCT getting its First Metric milestone #}
+{#  ########################################### #}
+{% elif granularity == "product" and threshold_awarded == 1 %}
+<div class="card milestone first-metric product">
+   <div class="header">
+      <h3>
+         First {{ this_metric.provider }} {{ this_metric.display_name }}
+      </h3>
+      <h4>
+         on <em>{{ product.biblio.title }}</em>
+      </h4>
+   </div>
+
+   <div class="body">
+      <p>
+         This {{ product.biblio.genre }} attracted {{ diff_value }} new
+         {{ this_metric.provider }} {{ this_metric.display_name }}
+         this week, bringing it up to {{ current_value }} total.
+      </p>
+
+      {% if percentile_current_value %}
+      <p>
+            That's pretty good--only {{ percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
+            have earned a {{ this_metric.display_name }}!
+      </p>
+      {% endif %}
+
+      <p>
+         It marks your {{ nth_profile_product_this_good }} unique product to get a
+         {{ this_metric.display_name }} on {{ this_metric.provider }}. Nice work!
+      </p>
+
+   </div>
+
+   <div class="footer">
+      footer
+   </div>
+</div>
+
+
+
+
+
+
+{#  PRODUCT hitting a milestone other than First Metric #}
+{#  ##################################################### #}
+{% elif granularity == "product" and threshold_awarded > 1 %}
+<div class="card milestone product">
+   <div class="header">
+      <h3>
+         {{ threshold_awarded }}+ total {{ this_metric.provider }} {{ this_metric.display_name }}
+      </h3>
+      <h4>
+         on <em>{{ product.biblio.title }}</em>
+      </h4>
+   </div>
+   <div class="body">
+      <p>
+         This {{ product.biblio.genre }} attracted {{ diff_value }} new
+         {{ this_metric.provider }} {{ this_metric.display_name }}
+         this week, bringing it up to {{ current_value }} total.
+      </p>
+
+      {% if percentile_current_value %}
+      <p>
+         That's pretty good--only {{ percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
+               have reached {{ threshold }} {{ this_metric.display_name }}.
+      </p>
+      {% endif %}
+
+      <p>
+         It marks your {{ nth_profile_product_this_good }} product to get {{ threshold_awarded }}
+         or more {{ this_metric.display_name }} on {{ this_metric.provider }}. Nice work!
+      </p>
+   </div>
+
+   <div class="footer">
+      footer
+   </div>
+</div>
+
+{% endif %}

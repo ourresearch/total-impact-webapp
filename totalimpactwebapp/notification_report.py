@@ -1,35 +1,37 @@
 from totalimpactwebapp.card import Card
-from totalimpactwebapp import db
+from totalimpactwebapp import providers_info
+from totalimpactwebapp.card_generate import *
+from totalimpactwebapp import products_list
+
 
 import datetime
 
 
-class NotificationReport(object):
+def make(user):
 
-    def __init__(self, user):
-        self.user = user
-        self.cards = Card.query.filter(Card.user_id == user.id).all()
+    products = user.products
+    prepped_products = products_list.prep(
+            products,
+            include_headings=False,
+            display_debug=True
+    )
+    user_dict_about = user.dict_about()
 
-    def sort(self):
+    cards = []
+    cards += ProductNewMetricCardGenerator.make(user, prepped_products)
+    cards += ProfileNewMetricCardGenerator.make(user, prepped_products)
+
+    for card in cards:
         pass
+        card.set_product_from_list(products)
+        card.metrics_info = providers_info.metrics()
+        card.user = user_dict_about
 
-    def filter(self):
-        pass
-
-    def get_dict(self):
-
-        self.sort()
-        self.filter()
-
-        response = {
-            "user": self.user.dict_about(),
-            "cards": self.cards
-        }
-        return response
-
-    def __repr__(self):
-        return u'<NotificationReport {user_id} {len_cards}>'.format(
-            user_id=self.user.id, len_cards=len(self.cards))
+    response = {
+        "user": user_dict_about,
+        "cards": cards
+    }
+    return response
 
 
 

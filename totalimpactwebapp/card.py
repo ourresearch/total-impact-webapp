@@ -2,6 +2,11 @@ from totalimpactwebapp import db
 import datetime
 from flask import render_template
 
+def ordinal(n):
+    try:
+        return "%d%s" % (n,"tsnrhtdd"[(n/10%10!=1)*(n%10<4)*n%10::4])
+    except TypeError:
+        return None
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -20,7 +25,6 @@ class Card(db.Model):
     newest_diff_timestamp = db.Column(db.DateTime())
     oldest_diff_timestamp = db.Column(db.DateTime())
     diff_window_days = db.Column(db.Integer)
-    template_name = db.Column(db.Text)  # ALTER TABLE "card" ADD template_name text;
     weight = db.Column(db.Float)
 
 
@@ -43,14 +47,27 @@ class Card(db.Model):
                     pass
 
                 ret[k] = v
+
+        ret["nth_profile_product_this_good"] = ordinal(self.num_profile_products_this_good)
         return ret
+
+    def set_product_from_list(self, products):
+        for product in products:
+            if product["_id"] == self.tiid:
+                self.product = product
 
 
     def to_html(self):
-        return render_template(self.template_name+".html", **self.to_dict())
+        return render_template(self.get_template_name() + ".html", **self.to_dict())
 
     def to_text(self):
-        return render_template(self.template_name+".txt", **self.to_dict())
+        return render_template(self.get_template_name() + ".txt", **self.to_dict())
+
+    def get_template_name(self):
+        if self.threshold_awarded is not None:
+            return "card-milestone"
+        else:
+            return "card-new-metric"
 
     def __repr__(self):
         return u'<Card {id} {user_id} {tiid} {granularity} {metric_name} {card_type}>'.format(

@@ -80,20 +80,11 @@ def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[],
         percentile_current_value=get_percentile(metric_dict),
         median=get_median(metric_dict, medians_lookup),
         threshold_awarded=get_threshold_just_crossed(current_value, diff_value, thresholds),
-        template_name="card",        
         weight=0.7
     )
 
     return my_card
 
-
-def get_product_list_for_cards(user):
-    product_dicts = products_list.prep(
-            user.products,
-            include_headings=False,
-            display_debug=True
-        )
-    return product_dicts
 
 
 def get_medians_lookup():
@@ -124,10 +115,9 @@ class CardGenerator:
 class ProductNewMetricCardGenerator(CardGenerator):
 
     @classmethod
-    def make(cls, user):
+    def make(cls, user, product_dicts):
         thresholds_lookup = thresh.values["product"]
         medians_lookup = get_medians_lookup()
-        product_dicts = get_product_list_for_cards(user)
 
         cards = []
 
@@ -162,10 +152,9 @@ class ProductNewMetricCardGenerator(CardGenerator):
 class ProfileNewMetricCardGenerator(CardGenerator):
 
     @classmethod
-    def make(cls, user):
+    def make(cls, user, product_dicts):
         thresholds_lookup = thresh.values["profile"]
         medians_lookup = get_medians_lookup()        
-        product_dicts = get_product_list_for_cards(user)
 
         metrics_to_accumulate = []
         cards = []
@@ -185,7 +174,6 @@ class ProfileNewMetricCardGenerator(CardGenerator):
                     oldest_diff_timestamp=arrow.get(datetime.datetime.max).datetime,  #initiate with a very recent value
                     diff_value=0,
                     current_value=0,
-                    template_name="card",
                     weight=0.8
                 )            
 
