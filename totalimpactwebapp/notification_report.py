@@ -2,6 +2,7 @@ from totalimpactwebapp.card import Card
 from totalimpactwebapp import providers_info
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import products_list
+import os
 
 
 import datetime
@@ -29,9 +30,19 @@ def make(user):
 
     response = {
         "user": user_dict_about,
-        "cards": cards
+        "cards": cards,
+        "css": get_css()
     }
     return response
+
+
+def get_css():
+    path = os.path.join(
+        os.path.dirname(__file__),
+        'static/less.emails/css/new-metrics.css'
+    )
+    file = open(path, "r")
+    return file.read()
 
 
 
