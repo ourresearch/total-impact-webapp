@@ -6,8 +6,8 @@
    width:100%;
 
    &:hover {
-      div.single-product-controls{
-         display: block;
+      .product-margin .single-product-controls a.remove-product{
+         display: inline;
       }
    }
 
@@ -48,9 +48,9 @@
    }
 
 
-   div.single-product-controls {
+   div.product-margin {
       position: absolute;
-      display:none;
+      display:block;
       padding-right: 10px;
       left: -50px;
       width: 50px;
@@ -59,30 +59,26 @@
       text-align:right;
       line-height: 1;
       font-size:14px;
-      a.remove-product {
-         color: @gray-light;
-         &:hover {
-            color: red;
+      span.single-product-controls{
+         a.remove-product {
+            color: @gray-light;
+            display:none;
+            vertical-align: 4px;
+            padding-right: 5px;
+            padding-left: 5px;
+            &:hover {
+               color: red;
+            }
          }
-      }
-      .tooltip-inner {
-         background: red;
-         width: 100px;
-      }
-      .tooltip-arrow {
-         border-top-color: red;
-      }
-   }
+         .tooltip-inner {
+            background: red;
+            width: 100px;
+         }
+         .tooltip-arrow {
+            border-top-color: red;
+         }
 
-   .notification {
-      position: absolute;
-      left: -20px;
-      .icon {
-         vertical-align: 4px;
-         font-size: 14px;
-         color: @linkColor;
       }
-
    }
 
 
@@ -124,7 +120,29 @@
          span.repository {font-style:italic;}
          span.journal {font-style:italic;}
       }
+
+      div.mendeley-reader-breakdowns {
+         // this is for us getting more data, not for users.
+         display:none;
+
+         font-size: 15px;
+         line-height: 1.9;
+         .metric-name {
+            padding-right: 15px;
+            font-weight: 300;
+            display:inline-block;
+            width: 150px;
+            text-align: right;
+         }
+         .reader-type-name-and-value {
+            margin-right: 10px;
+            .reader-type-name{
+               color: #555;
+            }
+         }
+      }
    }
+
 
 
 
@@ -171,9 +189,51 @@
 
    div.popover {
       font-family: helvetica, arial, sans-serif;
-      max-width: 230px;
-      h3 {font-size: 16px; font-family: helvetica, arial, sans-serif;}
+      min-width: 200px;
+      h3 {
+         font-size: 18px;
+         font-weight: bold;
+         &.new-metrics-heading {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+            border-bottom: 1px solid #ddd;
+         }
+         &:first-letter {
+            text-transform: uppercase;
+         }
+      }
       .popover-content {font-size: 14px;}
+
+      ul.new-metrics {
+         margin-bottom: 10px;
+         margin-top: 10px;
+         border-top: 1px solid #ddd;
+         li {
+            font-size: 12px;
+            margin-top: 10px;
+            clear:both;
+            .clearfix;
+            img.icon {
+               width: 16px;
+               margin-right: 10px;
+               .border-radius(3px, 3px, 3px, 3px);
+               float:left;
+            }
+            span.text {
+               span.count {
+                  font-weight: bold;
+               }
+               float:left;
+               width: 80%;
+               line-height: 1.1;
+
+
+            }
+
+         }
+      }
+
    }
 
 

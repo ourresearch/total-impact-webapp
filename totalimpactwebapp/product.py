@@ -2,6 +2,7 @@ from copy import deepcopy
 import logging
 from flask import render_template
 from totalimpactwebapp import product_configs
+import arrow
 
 logger = logging.getLogger("tiwebapp.product")
 
@@ -18,15 +19,19 @@ def prep_product(product, verbose=False, display_debug=False):
     if product["biblio"]["genre"] in deprecated_genres:
         raise GenreDeprecatedError
 
+    # temp for testing
+    #product = set_historical_values_to_zero(product)
 
 
     product["biblio"] = make_biblio(product)
     product["metrics"] = make_metrics(product)
     if not display_debug:
         product["awards"] = make_awards(product)
+        product["has_new_metrics"] = make_has_new_metrics(product)
+        product["latest_diff_timestamp"] = get_latest_diff_timestamp(product)
         product["markup"] = make_markup(product, verbose)
-        product = add_sort_keys(product)
-    product["has_new_metrics"] = make_has_new_metrics(product)
+        product["is_true_product"] = True
+    product = add_sort_keys(product)
 
     return product
 
@@ -90,6 +95,7 @@ def make_metrics(product_dict):
     except KeyError:
         year = None
 
+    refset_genre = product_dict["biblio"]["genre"]
     ret = {}
     for metric_name, metric in metrics.iteritems():
         try:
@@ -101,7 +107,7 @@ def make_metrics(product_dict):
 
         if audience is not None:
             metric.update(config_dict[metric_name])
-            metric.update(metric_metadata(metric, year))
+            metric.update(metric_metadata(metric, year, refset_genre))
             metric.update(metric_percentiles(metric))
             metric["award"] = make_award_for_single_metric(metric)
             ret[metric_name] = metric
@@ -109,7 +115,7 @@ def make_metrics(product_dict):
     return ret
 
 
-def metric_metadata(metric, year):
+def metric_metadata(metric, year, refset_genre):
     interaction_display_names = {
         "f1000": "recommendations",
         "pmc_citations": "citations"
@@ -141,8 +147,13 @@ def metric_metadata(metric, year):
         ret["display_interaction"] = interaction
 
     ret["refset_year"] = year
+    ret["refset_genre"] = refset_genre
 
     return ret
+
+
+def metric_days_since_last_nonzero_refresh(metric):
+    return 7
 
 
 def metric_percentiles(metric):
@@ -168,6 +179,7 @@ def metric_percentiles(metric):
             ret["refset_storage_verb"] = refsets_config[refset_key][1]
 
     return ret
+
 
 
 
@@ -209,8 +221,12 @@ def make_awards(product):
         # logic is ghastly.
         if award["top_metric"]["award"]["is_highly"]:
             award["is_highly"] = True
+            award["is_highly_classname"] = "is-highly"
+            award["highly_string"] = "highly"
         else:
             award["is_highly"] = False
+            award["is_highly_classname"] = "is-not-highly"
+            award["highly_string"] = ""
 
 
     return awards_dict.values()
@@ -221,8 +237,11 @@ def get_top_metric(metrics):
     max_actual_count = max([m["actual_count"] for m in metrics])
 
     def sort_key(m):
-        raw_count_contribution = m["actual_count"] / max_actual_count
-        raw_count_contribution -= .0001  # always <1
+        try:
+            raw_count_contribution = m["actual_count"] / max_actual_count
+            raw_count_contribution -= .0001  # always <1
+        except TypeError:  # dealing with a dict from mendeley reader breakdown.
+            raw_count_contribution = .5
 
         try:
             return m["percentiles"]["CI95_lower"] + raw_count_contribution
@@ -241,8 +260,10 @@ def get_top_metric(metrics):
 def make_award_for_single_metric(metric):
     config = product_configs.award_configs
 
+
     display_order = config[metric["engagement_type"]][1]
     is_highly = calculate_is_highly(metric)
+    display = (metric["display"] == "badge")
 
     if metric["audience"] == "scholars":
         display_order += 10
@@ -250,6 +271,10 @@ def make_award_for_single_metric(metric):
     if is_highly:
         display_order += 100
 
+    if is_highly:
+        classname = "is-highly"
+    else:
+        classname = "is-not-highly"
 
     return {
         "engagement_type_noun": config[metric["engagement_type"]][0],
@@ -257,6 +282,8 @@ def make_award_for_single_metric(metric):
         "audience": metric["audience"],
         "display_order": display_order,
         "is_highly": is_highly,
+        "is_highly_classname": classname,
+        "dont_display": not display,
         "display_audience": metric["audience"].replace("public", "the public")
     }
 
@@ -302,7 +329,10 @@ def add_sort_keys(product):
         product["account"] = None
 
     product["metric_raw_sum"] = sum_metric_raw_values(product)
-    product["awardedness_score"] = get_awardedness_score(product)
+    try:
+        product["awardedness_score"] = get_awardedness_score(product)
+    except KeyError:
+        product["awardedness_score"] = None
     product["has_metrics"] = bool(product["metrics"])
     product["has_percentiles"] = has_percentiles(product)
 
@@ -327,7 +357,7 @@ def sum_metric_raw_values(product):
     try:
         for metric_name, metric in product["metrics"].iteritems():
             raw_values_sum += metric["actual_count"]
-    except KeyError:
+    except (KeyError, TypeError):  # ignore strings and dicts
         pass
 
     return raw_values_sum
@@ -385,13 +415,34 @@ has_new_metrics stuff
 
 def make_has_new_metrics(product_dict):
     for metric_name, metric in product_dict["metrics"].iteritems():
-
-        if metric["historical_values"]["raw_diff_7_days"] > 0:
+        if metric["historical_values"]["diff"]["raw"] > 0:
             return True
 
     return False
 
 
+def get_latest_diff_timestamp(product_dict):
+    timestamps_of_nonzero_refreshes = []
+    for metric_name, metric in product_dict["metrics"].iteritems():
+        is_new = metric["historical_values"]["diff"]["raw"] > 0
+        if is_new:
+            ts = metric["historical_values"]["current"]["collected_date"]
+            timestamps_of_nonzero_refreshes.append(ts)
+
+    try:
+        return sorted(timestamps_of_nonzero_refreshes)[0]
+    except IndexError:
+        return None
+
+
+
+def set_historical_values_to_zero(product_dict):
+    """ this is for testing
+    """
+    for metric_name, metric in product_dict["metrics"].iteritems():
+        metric["historical_values"]["diff"]["raw"] = 0
+
+    return product_dict
 
 
 

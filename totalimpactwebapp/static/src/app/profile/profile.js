@@ -156,6 +156,54 @@ angular.module("profile", [
     $scope.productsStillUpdating = true
 
 
+    // filtering stuff
+    $scope.productFilter = {
+      has_new_metrics: null,
+      has_metrics: true
+    }
+
+    if ($location.search().filter == "has_new_metrics") {
+      $scope.productFilter.has_new_metrics = true
+    }
+
+
+    $scope.setProductFilter = function(setting){
+
+      if (setting == "all") {
+        $scope.productFilter.has_new_metrics = null
+        $scope.productFilter.has_metrics = null
+        $location.search("filter", null)
+      }
+      else if (setting == "has_metrics"){
+        $scope.productFilter.has_new_metrics = null
+        $scope.productFilter.has_metrics = true
+        $location.search("filter", null)
+      }
+      else if (setting == "has_new_metrics"){
+        $scope.productFilter.has_new_metrics = true
+        $scope.productFilter.has_metrics = true
+        $location.search("filter", "has_new_metrics")
+      }
+
+      console.log($scope.productFilter)
+
+    }
+
+    $scope.$on('$locationChangeStart', function(event, next, current){
+      if ($location.search().filter == "has_new_metrics"){
+        console.log("filter=has_new_metrics")
+        $scope.productFilter.has_new_metrics = true
+        $scope.productFilter.has_metrics = true
+      }
+    })
+
+
+
+
+
+
+
+
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
@@ -184,12 +232,21 @@ angular.module("profile", [
       return loadingProducts
     }
     $scope.userExists = true;
-    $scope.showProductsWithoutMetrics = false;
     $scope.filterProducts =  UserProfile.filterProducts;
 
     $scope.hideSignupBannerNow = function(){
       $scope.hideSignupBanner = true
 
+    }
+
+    $scope.refresh = function(){
+
+      var url = "/user/"+ userSlug +"/products?action=refresh"
+
+      console.log("POSTing to ", url)
+      $http.post(url, {}).success(function(data, status, headers, config){
+        console.log("POST returned. We're refreshing these tiids: ", data)
+      })
     }
 
     $scope.humanDate = function(isoStr) {
@@ -311,20 +368,24 @@ angular.module("profile", [
 
 
 
-
-
-
-.controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
+.controller("profileEmbedModalCtrl", function($scope, $location, Page, userSlug){
   console.log("user slug is: ", userSlug)
+
+  var baseUrl = $location.protocol() + "://"
+  baseUrl += $location.host()
+  if ($location.port() === 5000){ // handle localhost special
+    baseUrl += (":5000")
+  }
+
+  console.log("base url is ", baseUrl)
+
+
   $scope.userSlug = userSlug;
+  $scope.baseUrl = baseUrl
   $scope.embed = {}
   $scope.embed.type = "badge"
 
 })
-
-
-
-
 
 .directive("backToProfile",function($location, Loading){
  return {

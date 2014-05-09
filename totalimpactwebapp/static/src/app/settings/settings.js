@@ -50,7 +50,6 @@ angular.module('settings', [
     }
 
     var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
-    console.log(currentPageDescr)
 
     $scope.resetUser()
     Loading.finish()
@@ -120,6 +119,93 @@ angular.module('settings', [
     };
   })
 
+
+
+  .controller('premiumSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
+
+
+    $scope.planStatus = function(statusToTest){
+
+      var subscription = security.getCurrentUser("subscription")
+
+      var actualStatus
+      if (!subscription){
+        // on the free plan
+        actualStatus = "free"
+      }
+      else if (!subscription.user_has_card) {
+        // trial user with working premium plan
+        actualStatus = "trial"
+      }
+      else {
+        // paid user with working premium plan
+        actualStatus = "paid"
+      }
+      return actualStatus == statusToTest
+    }
+
+    $scope.daysLeftInTrial = function(){
+      var subscription = security.getCurrentUser("subscription")
+
+      if (!subscription){
+        return null
+      }
+
+      var trialEnd = moment.unix(subscription.trial_end)
+      return trialEnd.diff(moment(), "days") // days from now
+    }
+
+    $scope.paidSince = function(){
+      var su = security.getCurrentUser("subscription")
+      return "May 2014"
+    }
+
+    $scope.editCard = function(){
+      alert("Sorry--we're actually still working on the form for this! But drop us a line at team@impactstory.org and we'll be glad to modify your credit card information manually.")
+    }
+
+    $scope.cancelPremium = function(){
+      UsersSubscription.delete(
+        {id: $scope.user.url_slug},
+        {},
+        function(resp){
+          console.log("subscription successfully cancelled", resp)
+          security.loginFromCookie() // refresh the currentUser from server
+          UserMessage.set("settings.premium.delete.success")
+        },
+        function(resp){
+          console.log("there was a problem; subscription not cancelled", resp)
+        }
+      )
+    }
+
+    $scope.handleStripe = function(status, response){
+        Loading.start("subscribeToPremium")
+        console.log("calling handleStripe()")
+        if(response.error) {
+          console.log("ack, there was an error!", status, response)
+        } else {
+          console.log("yay, the charge worked!", status, response)
+          UsersCreditCard.save(
+            {id: $scope.user.url_slug, stripeToken: response.id},
+            {},
+            function(resp){
+              console.log("success!", resp)
+              security.loginFromCookie() // refresh the currentUser from server
+              window.scrollTo(0,0)
+              UserMessage.set("settings.premium.subscribe.success")
+              Loading.finish("subscribeToPremium")
+
+            },
+            function(resp){
+              console.log("failure!", resp)
+              UserMessage.set("settings.premium.subscribe.error")
+              Loading.finish("subscribeToPremium")
+            }
+          )
+        }
+      }
+  })
 
 
   .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {

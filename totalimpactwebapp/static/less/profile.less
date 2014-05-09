@@ -62,11 +62,20 @@ div.signup-banner {
    }
 }
 
+a.refresh {
+   position:absolute;
+   width: 20px;
+   height: 20px;
+   text-indent: -1000px;
+   top:20px;
+   left:0;
+}
+
 
 div.profile-header {
    margin-bottom: 35px;
    margin-top: -20px;
-   height: 140px;
+   height: 150px;
    .clearfix();
    div.wrapper {
       div.my-picture {
@@ -139,10 +148,6 @@ div.profile-header {
                      text-align: center;
                      font-family: Lato;
                      font-weight: normal;
-                  }
-                  div.call-to-action {
-                     font-style: italic;
-                     margin-top: 20px;
                   }
                }
 
@@ -281,12 +286,7 @@ div.product-controls {
       position:relative;
       a {
          &:hover {color: #333;}
-
-         &.dedup-button {
-            &.working {color: @linkColor;}
-            i {margin-right: 0;}
-            i.icon-refresh {margin-right: 2px;}
-         }
+         font-size: 16px;
       }
       div.view-controls {
          position: absolute;
@@ -298,6 +298,14 @@ div.product-controls {
          }
          div.everyone-controls{
             float:left;
+         }
+         a {
+            margin-left: 15px;
+            color: #777;
+            display:inline-block;
+            i {
+               margin-right:5px;
+            }
          }
          span.dropdown {
             ul.dropdown-menu {
@@ -327,51 +335,72 @@ div.product-controls {
 
          }
       }
+
+
+      // filters and counts on right side of profile
       div.products-info {
          position: absolute;
          bottom: 0;
          left: 0;
-         div.num-items {
-            float:left;
-            div.products-done-updating {
-               span.val-plus-text {
-                  font-weight: 300;
-                  margin: 0;
-                  span.value {
-                     font-weight: bold;
-                     margin-right: 3px;
-                  }
-               }
-               a {
-                  font-size: 14px;
-                  margin-left: 5px;
-                  color: @linkColor;
-                  &:hover {text-decoration: underline;}
-               }
+         div.products-done-updating {
 
-               div.last-collected {
-                  font-size: 13px;
-                  font-weight: 300;
-                  a.upgrade {
-                     color: #555;
-                     text-decoration: underline;
-                     margin-left: 5px;
-                     &:hover {color: #000;}
-                  }
-               }
+            div.last-collected {
+               font-size: 13px;
+               font-weight: 300;
+               display:none;
             }
 
-         }
-      }
-      a {
-         margin-left: 15px;
-         color: #777;
-         display:inline-block;
-         i {
-            margin-right:5px;
-         }
-      }
+            div.products-count-info {
+               font-weight: 300;
+               margin: 0;
+               span.showing {
+                  font-weight: normal;
+                  display:none;
+               }
+               span.value {
+                  font-weight: bold;
+                  margin-right: 3px;
+               }
+            }
+            div.filters-label {
+               color: #777;
+               font-weight: normal;
+               font-size: 16px;
+               float:left;
+            }
+            div.filters {
+               float:left;
+               i.icon-chevron-right {
+                  vertical-align: -2px;
+                  color: #aaa;
+               }
+               .filters-label {
+                  float:left;
+                  font-weight: normal;
+               }
+               .filter {
+                  font-size: 15px;
+                  &.active {
+                     a {
+                        font-weight: normal;
+                        color: #555;
+                        cursor: default;
+                     }
+                  }
+                  float:left;
+                  padding-left: 10px;
+                  a {
+                     font-weight: 100;
+                     color: @gray-light;
+                     span.count {
+                        font-size: 80%;
+                     }
+                  }
+               }
 
+            }
+         }
+      }
    }
 }
 
@@ -389,19 +418,6 @@ div.products {
          }
 
       }
-      div.products-without-metrics {
-         div.well {
-            margin: 0 20px 70px;
-            text-align: center;
-            font-size: 16px;
-            color:  #777;
-            a {
-               font-size: 80%;
-               margin-left: 8px;
-            }
-         }
-      }
-
    }
 }
 

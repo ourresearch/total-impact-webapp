@@ -111,6 +111,29 @@ angular.module('resources.users',['ngResource'])
     })
 
 
+  .factory("UsersCreditCard", function($resource){
+    return $resource(
+      "/user/:id/credit_card/:stripeToken",
+      {},
+      {}
+    )
+  })
+
+
+  .factory("UsersSubscription", function($resource){
+    return $resource(
+      "/user/:id/subscription",
+      {},
+      {
+        delete: {
+          method: "DELETE",
+          headers: {'Content-Type': 'application/json'}
+        }
+      }
+    )
+  })
+
+
 
   .factory('ProfileAwards', function ($resource) {
 

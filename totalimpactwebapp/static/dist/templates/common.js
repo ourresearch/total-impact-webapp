@@ -122,7 +122,6 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
   $templateCache.put("security/login/toolbar.tpl.html",
     "<ul class=\"main-nav\">\n" +
     "   <li ng-show=\"currentUser\" class=\"logged-in-user nav-item\">\n" +
-    "      <!--<span class=\"context\">Welcome back, </span>-->\n" +
     "      <a class=\"current-user\"\n" +
     "         href=\"/{{ currentUser.url_slug }}\"\n" +
     "         tooltip=\"View your profile\"\n" +
@@ -132,16 +131,37 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      </a>\n" +
     "   </li>\n" +
     "\n" +
-    "   <li ng-show=\"currentUser\" class=\"preferences nav-item\">\n" +
+    "   <li ng-show=\"currentUser\" class=\"controls nav-item\">\n" +
+    "\n" +
     "      <span class=\"or\"></span>\n" +
-    "      <a class=\"profile preference\"\n" +
+    "\n" +
+    "      <span class=\"new-metrics control no-new-metrics\"\n" +
+    "         tooltip=\"No new metrics.\"\n" +
+    "         tooltip-placement=\"bottom\"\n" +
+    "         ng-show=\"!illuminateNotificationIcon()\">\n" +
+    "         <i class=\"icon-bell\"></i>\n" +
+    "      </span>\n" +
+    "      <a class=\"new-metrics control has-new-metrics\"\n" +
+    "         tooltip=\"You've got new metrics!\"\n" +
+    "         tooltip-placement=\"bottom\"\n" +
+    "         ng-show=\"illuminateNotificationIcon()\"\n" +
+    "         ng-click=\"dismissProfileNewProductsNotification()\"\n" +
+    "         href=\"/{{ currentUser.url_slug }}?filter=has_new_metrics\">\n" +
+    "         <i class=\"icon-bell-alt\"></i>\n" +
+    "      </a>\n" +
+    "\n" +
+    "      <span class=\"or\"></span>\n" +
+    "\n" +
+    "      <a class=\"preferences control\"\n" +
     "         href=\"/settings/profile\"\n" +
     "         tooltip=\"Change profile settings\"\n" +
     "         tooltip-placement=\"bottom\">\n" +
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
+    "\n" +
     "      <span class=\"or\"></span>\n" +
-    "      <a class=\"logout preference\"\n" +
+    "\n" +
+    "      <a class=\"logout control\"\n" +
     "         ng-click=\"logout()\"\n" +
     "         tooltip=\"Log out\"\n" +
     "         tooltip-placement=\"bottom\">\n" +

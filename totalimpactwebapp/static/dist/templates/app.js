@@ -1,4 +1,4 @@
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/upgrade-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'notifications.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/premium-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -1192,11 +1192,11 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "   <div class=\"code\">\n" +
     "      <div class=\"embed-profile\" ng-show=\"embed.type=='profile'\">\n" +
     "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl() }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</textarea>\n" +
+    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</textarea>\n" +
     "      </div>\n" +
     "      <div class=\"embed-link\" ng-show=\"embed.type=='link'\">\n" +
     "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl() }}/{{ userSlug }}\"&gt;&lt;img src=\"{{ baseUrl() }}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</textarea>\n" +
+    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl }}/{{ userSlug }}\"&gt;&lt;img src=\"{{ baseUrl}}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</textarea>\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
@@ -1286,22 +1286,39 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "<div class=\"product-controls\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"products-info\">\n" +
-    "         <div class=\"num-items\">\n" +
     "\n" +
-    "            <div class=\"products-done-updating\" ng-show=\"!productsStillUpdating\">\n" +
-    "               <span ng-hide=\"loadingProducts()\" class=\"val-plus-text\">\n" +
-    "                  <span class=\"value\" id=\"number-products\">{{ filterProducts(products).length }}</span> research products\n" +
-    "               </span>\n" +
-    "               <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\" ng-show=\"showProductsWithoutMetrics\">\n" +
-    "                  (hide <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> without metrics)\n" +
-    "               </a>\n" +
+    "         <div class=\"products-done-updating\" ng-show=\"!loadingProducts()\">\n" +
+    "\n" +
+    "            <!-- filter products -->\n" +
+    "            <div class=\"filters\">\n" +
+    "\n" +
+    "               <div class=\"filter\" ng-class=\"{active: !productFilter.has_metrics && !productFilter.has_new_metrics}\">\n" +
+    "                  <a ng-click=\"setProductFilter('all')\">\n" +
+    "                     Products\n" +
+    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true}).length }})</span>\n" +
+    "                  </a>\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"filter\" ng-class=\"{active: (productFilter.has_metrics && !productFilter.has_new_metrics)}\">\n" +
+    "                  <i class=\"icon-chevron-right left\"></i>\n" +
+    "                  <a ng-click=\"setProductFilter('has_metrics')\">\n" +
+    "                     with metrics\n" +
+    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_metrics: true}).length }})</span>\n" +
+    "                  </a>\n" +
+    "               </div>\n" +
+    "               <div class=\"filter this-week\"\n" +
+    "                    ng-show=\"(products|filter:{has_new_metrics: true}).length > 0\"\n" +
+    "                    ng-class=\"{active: productFilter.has_new_metrics}\">\n" +
+    "                  <i class=\"icon-chevron-right left\"></i>\n" +
+    "                  <a ng-click=\"setProductFilter('has_new_metrics')\">\n" +
+    "                     this week\n" +
+    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_new_metrics: true}).length }})</span>\n" +
+    "\n" +
+    "                  </a>\n" +
+    "               </div>\n" +
     "            </div>\n" +
-    "\n" +
-    "            <div ng-show=\"productsStillUpdating\" class=\"products-still-updating\" id=\"products-still-updating\">\n" +
-    "               Products still updating...\n" +
-    "            </div>\n" +
-    "\n" +
     "         </div>\n" +
+    "\n" +
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
@@ -1336,18 +1353,19 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product {{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
-    "             ng-repeat=\"product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
+    "             ng-repeat=\"product in filteredProducts = (products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title'] | filter: productFilter)\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
-    "             ng-show=\"product.has_metrics || showProductsWithoutMetrics || product.is_heading\"\n" +
     "             id=\"{{ product._id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
-    "            <div class=\"single-product-controls\" ng-show=\"currentUserIsProfileOwner() && !product.is_heading\">\n" +
-    "               <a class=\"remove-product\"\n" +
-    "                  tooltip=\"Delete this product\"\n" +
-    "                  ng-click=\"removeProduct(product)\">\n" +
-    "                  <i class=\"icon-trash icon\"></i>\n" +
-    "               </a>\n" +
+    "            <div class=\"product-margin\" ng-show=\"currentUserIsProfileOwner()\">\n" +
+    "               <span class=\"single-product-controls\">\n" +
+    "                  <a class=\"remove-product\"\n" +
+    "                     tooltip=\"Delete this product\"\n" +
+    "                     ng-click=\"removeProduct(product)\">\n" +
+    "                     <i class=\"icon-trash icon\"></i>\n" +
+    "                  </a>\n" +
+    "               </span>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
@@ -1355,14 +1373,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "         </li>\n" +
     "      </ul>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"products-without-metrics wrapper\"\n" +
-    "        ng-show=\"!loadingProducts() && !showProductsWithoutMetrics && filterProducts(products, 'withoutMetrics').length\">\n" +
-    "      <div class=\"well\">\n" +
-    "         Another <span class=\"value\">{{ filterProducts(products, \"withoutMetrics\").length }}</span> products aren't shown, because we couldn't find any impact data for them.\n" +
-    "         <a ng-click=\"showProductsWithoutMetrics = !showProductsWithoutMetrics\">Show these, too.</a>\n" +
-    "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "\n" +
@@ -1382,7 +1392,11 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <span class=\"msg\">Join {{ user.about.given_name }} and thousands of other scientists on Impactstory!</span>\n" +
     "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Make your free profile</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
-    "</div>");
+    "</div>\n" +
+    "\n" +
+    "<a class=\"refresh\" ng-click=\"refresh()\">mmm, refreshing!</a>\n" +
+    "\n" +
+    "");
 }]);
 
 angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -1644,91 +1658,79 @@ angular.module("settings/password-settings.tpl.html", []).run(["$templateCache",
     "");
 }]);
 
-angular.module("settings/profile-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("settings/profile-settings.tpl.html",
+angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/premium-settings.tpl.html",
     "<div class=\"settings-header\">\n" +
-    "   <h1>Profile</h1>\n" +
-    "   <p>Modify what's displayed in your profile.</p>\n" +
+    "   <h1>Premium</h1>\n" +
+    "\n" +
+    "   <p class=\"expl\">Get weekly updates revealing your latest impacts.</p>\n" +
     "</div>\n" +
     "\n" +
+    "<div class=\"upgrade-form-container\"  ng-controller=\"premiumSettingsCtrl\">\n" +
     "\n" +
-    "<form novalidate name=\"userProfileForm\" class=\"form-horizontal\" ng-submit=\"onSave()\" ng-controller=\"profileSettingsCtrl\">\n" +
+    "   <div class=\"current-plan-status paid\" ng-if=\"planStatus('paid')\">\n" +
+    "      <span class=\"setup\">\n" +
+    "         Your Impactstory Premium subscription has been active\n" +
+    "         since {{ paidSince() }}.\n" +
+    "      </span>\n" +
+    "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
+    "   </div>\n" +
     "\n" +
-    "   <div class=\"form-group photo\">\n" +
-    "      <label class=\"control-label col-sm-3\">Photo</label>\n" +
-    "      <div class=\"controls col-sm-7\">\n" +
-    "         <div class=\"my-picture\">\n" +
-    "            <a href=\"http://www.gravatar.com\" >\n" +
-    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
-    "            </a>\n" +
-    "            <p>You can change your profile image at <a href=\"http://www.gravatar.com\">Gravatar.com</a></p>\n" +
-    "         </div>\n" +
+    "   <div class=\"current-plan-status trial\" ng-if=\"planStatus('trial')\">\n" +
+    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Premium trial ends in {{ daysLeftInTrial() }} days</span>\n" +
+    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Premium trial ends today!</span>\n" +
+    "\n" +
+    "      <div class=\"email-example\">\n" +
+    "         <img src=\"http://i.imgur.com/S38ECK5.png\" alt=\"Impactstory Premium email\"/>\n" +
     "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <label class=\"control-label col-sm-3\">First name</label>\n" +
-    "      <div class=\"controls col-sm-7\">\n" +
-    "         <input ng-model=\"user.given_name\" name=\"givenname\" class=\"form-control\">\n" +
+    "      <div class=\"pitch\">\n" +
+    "         <p>Your research is making impacts all the time.\n" +
+    "         And with Impactstory Premium, you're getting the latest news on those\n" +
+    "         impacts&mdash;everything from citations to downloads to tweets\n" +
+    "         and more&mdash;delivered straight to your inbox. </p>\n" +
+    "         <p>By extending your free trial today, you won't miss a single\n" +
+    "         notification&mdash;and   you'll be helping to keep\n" +
+    "         Impactstory a sustainable, open-source nonprofit. And all for less than than the\n" +
+    "         cost of a latte every month.</p>\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <label class=\"control-label col-sm-3\">Surname</label>\n" +
-    "      <div class=\"controls col-sm-7\">\n" +
-    "         <input ng-model=\"user.surname\" name=\"surname\" class=\"form-control\">\n" +
+    "   <div class=\"current-plan-status free\" ng-if=\"planStatus('free')\">\n" +
+    "      <span class=\"setup\">You don't have Premium yet.</span>\n" +
+    "\n" +
+    "      <div class=\"email-example\">\n" +
+    "         <img src=\"http://i.imgur.com/S38ECK5.png\" alt=\"Impactstory Premium email\"/>\n" +
     "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group submit\">\n" +
-    "      <div class=\" col-sm-offset-3 col-sm-7\">\n" +
-    "         <save-buttons valid=\"userProfileForm.$valid\"></save-buttons>\n" +
+    "      <div class=\"pitch\">\n" +
+    "         <p>But you should. Because your research is making impacts all the time.\n" +
+    "         And with Impactstory Premium, you'll get the latest news on <em>your</em>\n" +
+    "         most exciting impacts&mdash;everything from citations to downloads to tweets\n" +
+    "         and more&mdash;delivered straight to your inbox. </p>\n" +
+    "         <p>Plus you get to help keep\n" +
+    "         Impactstory a sustainable, open-source nonprofit&hellip;all for less than than the\n" +
+    "         cost of a latte every month.</p>\n" +
     "      </div>\n" +
+    "\n" +
+    "\n" +
     "   </div>\n" +
-    "\n" +
-    "</form>\n" +
-    "");
-}]);
-
-angular.module("settings/settings.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("settings/settings.tpl.html",
-    "<div class=\"wrapper settings\">\n" +
-    "   <div class=\"settings-nav \">\n" +
-    "      <ul nav-list nav>\n" +
-    "         <li ng-repeat=\"pageDescr in pageDescriptions\">\n" +
-    "            <a ng-class=\"{selected: isCurrentPath(pageDescr.urlPath)}\"\n" +
-    "               href=\"{{ pageDescr.urlPath }}\">\n" +
-    "               {{ pageDescr.displayName }}\n" +
-    "               <i class=\"icon-chevron-right\"></i>\n" +
-    "            </a>\n" +
-    "         </li>\n" +
-    "      </ul>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"settings-input\" ng-include='include'></div>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("settings/upgrade-settings.tpl.html",
-    "<div class=\"settings-header\">\n" +
-    "   <h1>Upgrade</h1>\n" +
-    "   <p class=\"pitch\">Premium accounts update metrics daily instead of weekly--so if you've got a big\n" +
-    "   new hit on Twitter, you'll know right away. You also help us support\n" +
-    "   Impactstory as an independent nonprofit.</p>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"upgrade-form-container\"  ng-controller=\"upgradeSettingsCtrl\">\n" +
     "\n" +
     "\n" +
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         novalidate\n" +
+    "         ng-if=\"!planStatus('paid')\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
-    "      <h3>Upgrade to premium for $5/mo</h3>\n" +
+    "      <div class=\"form-title free\" ng-show=\"planStatus('free')\">\n" +
+    "         <h3>Upgrade to Premium for $5/mo</h3>\n" +
+    "\n" +
+    "      </div>\n" +
+    "      <div class=\"form-title trial\"ng-show=\"planStatus('trial')\">\n" +
+    "         <h3>Continue Premium for $5/mo</h3>\n" +
+    "         <h4 ng-if=\"daysLeftInTrial()>0\">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>\n" +
+    "      </div>\n" +
+    "\n" +
     "\n" +
     "\n" +
     "      <!-- name on card -->\n" +
@@ -1804,16 +1806,105 @@ angular.module("settings/upgrade-settings.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <div class=\"col-sm-offset-3 col-sm-9\">\n" +
-    "          <button type=\"submit\"\n" +
-    "                  ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
-    "                  class=\"btn btn-success\">Upgrade me for $5/mo!</button>\n" +
-    "        </div>\n" +
+    "         <div class=\"col-sm-offset-3 col-sm-9\">\n" +
+    "               <button type=\"submit\"\n" +
+    "                       ng-show=\"!loading.is('subscribeToPremium')\"\n" +
+    "                       ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
+    "                       class=\"btn btn-success\">\n" +
+    "                  Upgrade me for $5/mo!\n" +
+    "               </button>\n" +
+    "               <div class=\"working\" ng-show=\"loading.is('subscribeToPremium')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  <span class=\"text\">Subscribing you to Premium&hellip;</span>\n" +
+    "               </div>\n" +
+    "         </div>\n" +
+    "         <div class=\"col-sm-offset-3 col-sm-9 money-help\">\n" +
+    "            Trouble affording $5/mo? No worries, we've been through some lean times\n" +
+    "            ourselves. <a href=\"mailto:team@impactstory.org\">Drop us a line</a> and we'll work something out for you.\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "   </form>\n" +
     "\n" +
+    "   <div class=\"subscriber-buttons\" ng-if=\"planStatus('paid')\">\n" +
+    "      <button ng-click=\"editCard()\" class=\"btn btn-primary edit-credit-card\">\n" +
+    "         <i class=\"icon-credit-card left\"></i>\n" +
+    "         Change my credit card info\n" +
+    "      </button>\n" +
+    "      <button ng-click=\"cancelPremium()\" class=\"btn btn-danger\">\n" +
+    "         <i class=\"icon-warning-sign left\"></i>\n" +
+    "         Cancel Premium\n" +
+    "      </button>\n" +
+    "   </div>\n" +
+    "\n" +
     "</div>\n" +
     "\n" +
+    "");
+}]);
+
+angular.module("settings/profile-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/profile-settings.tpl.html",
+    "<div class=\"settings-header\">\n" +
+    "   <h1>Profile</h1>\n" +
+    "   <p>Modify what's displayed in your profile.</p>\n" +
+    "</div>\n" +
+    "\n" +
+    "\n" +
+    "<form novalidate name=\"userProfileForm\" class=\"form-horizontal\" ng-submit=\"onSave()\" ng-controller=\"profileSettingsCtrl\">\n" +
+    "\n" +
+    "   <div class=\"form-group photo\">\n" +
+    "      <label class=\"control-label col-sm-3\">Photo</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
+    "         <div class=\"my-picture\">\n" +
+    "            <a href=\"http://www.gravatar.com\" >\n" +
+    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "            </a>\n" +
+    "            <p>You can change your profile image at <a href=\"http://www.gravatar.com\">Gravatar.com</a></p>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"form-group\">\n" +
+    "      <label class=\"control-label col-sm-3\">First name</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
+    "         <input ng-model=\"user.given_name\" name=\"givenname\" class=\"form-control\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"form-group\">\n" +
+    "      <label class=\"control-label col-sm-3\">Surname</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
+    "         <input ng-model=\"user.surname\" name=\"surname\" class=\"form-control\">\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"form-group submit\">\n" +
+    "      <div class=\" col-sm-offset-3 col-sm-7\">\n" +
+    "         <save-buttons valid=\"userProfileForm.$valid\"></save-buttons>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</form>\n" +
+    "");
+}]);
+
+angular.module("settings/settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/settings.tpl.html",
+    "<div class=\"wrapper settings\">\n" +
+    "   <div class=\"settings-nav \">\n" +
+    "      <ul nav-list nav>\n" +
+    "         <li ng-repeat=\"pageDescr in pageDescriptions\">\n" +
+    "            <a ng-class=\"{selected: isCurrentPath(pageDescr.urlPath)}\"\n" +
+    "               href=\"{{ pageDescr.urlPath }}\">\n" +
+    "               {{ pageDescr.displayName }}\n" +
+    "               <i class=\"icon-chevron-right\"></i>\n" +
+    "            </a>\n" +
+    "         </li>\n" +
+    "      </ul>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"settings-input\" ng-include='include'></div>\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -1952,7 +2043,7 @@ angular.module("user-message.tpl.html", []).run(["$templateCache", function($tem
   $templateCache.put("user-message.tpl.html",
     "<div ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
     "        ng-if=\"userMessage.get().message && userMessage.showOnTop()\"\n" +
-    "        ng-animate=\"{leave: 'animated fadeOutUp'}\">\n" +
+    "        ng-animate=\"{enter: 'animated fadeInDown', leave: 'animated fadeOutUp'}\">\n" +
     "       <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
     "       <button class=\"close\" ng-click=\"userMessage.remove()\">&times;</button>\n" +
     "</div>\n" +

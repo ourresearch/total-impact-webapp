@@ -1,6 +1,8 @@
 import mandrill
 import os
 import logging
+from totalimpactwebapp.testing import is_test_email
+
 
 
 logger = logging.getLogger("tiwebapp.welcome_email")
@@ -10,7 +12,12 @@ class WelcomeEmailError(Exception):
     pass
 
 
+
 def send_welcome_email(email, given_name):
+
+    if is_test_email(email):
+        return False
+
 
     # send the email here...
     mailer = mandrill.Mandrill(os.getenv("MANDRILL_APIKEY"))

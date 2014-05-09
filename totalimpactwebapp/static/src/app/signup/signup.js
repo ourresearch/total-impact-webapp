@@ -48,7 +48,6 @@ angular.module( 'signup', [
           password: $scope.newUser.password
         },
         function(resp, headers){
-          console.log("got response back from save user", resp)
           security.clearCachedUser()
           $location.path(resp.user.url_slug)
 

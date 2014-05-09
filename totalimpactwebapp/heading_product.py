@@ -30,8 +30,15 @@ def make_for_category(genre, account, category_products):
         }
     }
 
-    # extract relevant info from the account product, if there is one.
     for product in category_products:
+
+        if len(product["metrics"].values()) > 0:
+            heading_product["has_metrics"] = True
+
+        if product["has_new_metrics"]:
+            heading_product["has_new_metrics"] = True
+
+        # extract relevant info from the account product, if there is one.
         if "is_account" in product["biblio"].keys():
             heading_product["metrics"] = product["metrics"].values()
             heading_product["account_biblio"] = product["biblio"]

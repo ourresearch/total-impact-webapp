@@ -1,13 +1,16 @@
 from totalimpactwebapp import db
 from totalimpactwebapp import products_list
 from totalimpactwebapp import profile_award
+
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
+from stripe import InvalidRequestError
 
 import requests
+import stripe
 import json
 import os
 import datetime
@@ -18,6 +21,7 @@ import string
 import hashlib
 
 logger = logging.getLogger("tiwebapp.user")
+stripe.api_key = os.getenv("STRIPE_API_KEY")
 
 def now_in_utc():
     return datetime.datetime.utcnow()
@@ -95,6 +99,7 @@ class User(db.Model):
     academia_edu_id = db.Column(db.Text)
     linkedin_id = db.Column(db.Text)
     wordpress_api_key = db.Column(db.Text)
+    stripe_id = db.Column(db.Text)
 
     #awards = []
 
@@ -102,6 +107,8 @@ class User(db.Model):
     last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
     next_refresh = db.Column(db.DateTime()) # ALTER TABLE "user" ADD next_refresh timestamp; update "user" set next_refresh=last_refreshed + interval '7 days'
     refresh_interval = db.Column(db.Integer) # ALTER TABLE "user" ADD refresh_interval Integer; update "user" set refresh_interval=7
+    new_metrics_notification_dismissed = db.Column(db.DateTime())  # ALTER TABLE "user" ADD new_metrics_notification_dismissed timestamp;
+
 
     tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
@@ -124,6 +131,7 @@ class User(db.Model):
     @property
     def products(self):
         products = get_products_from_core(self.tiids)
+
         if not products:
             products = []
         return products
@@ -216,9 +224,6 @@ class User(db.Model):
             creds["wordpress_api_key"] = self.wordpress_api_key
         return creds
 
-    def get_products(self):
-        products = get_products_from_core(self.tiids)
-        return products
 
     def add_products(self, product_id_dict):
         try:
@@ -293,7 +298,7 @@ class User(db.Model):
         return u'<User {name}>'.format(name=self.full_name)
 
 
-    def dict_about(self):
+    def dict_about(self, include_stripe=False):
 
         properties_to_return = [
             "id",
@@ -316,7 +321,9 @@ class User(db.Model):
             "academia_edu_id",
             "researchgate_id",
             "linkedin_id",
-            "wordpress_api_key"
+            "wordpress_api_key",
+            "stripe_id",
+            "new_metrics_notification_dismissed"
         ]
 
         ret_dict = {}
@@ -331,6 +338,20 @@ class User(db.Model):
             ret_dict[property] = val
 
         ret_dict["products_count"] = len(self.tiids)
+
+        if include_stripe:
+            try:
+                cu = stripe.Customer.retrieve(self.stripe_id)
+                ret_dict["subscription"] = cu.subscriptions.data[0].to_dict()
+                ret_dict["subscription"]["user_has_card"] = bool(cu.default_card)
+            except (IndexError, InvalidRequestError):
+                ret_dict["subscription"] = None
+
+        ret_dict["has_new_metrics"] = products_list.has_new_metrics(self.products)
+        latest_diff_ts = products_list.latest_diff_timestamp(self.products)
+        ret_dict["latest_diff_timestamp"] = latest_diff_ts
+
+
 
         return ret_dict
 
@@ -524,47 +545,53 @@ def save_user_last_viewed_profile_timestamp(user_id, timestamp=None):
     return True
 
 def create_user_from_slug(url_slug, user_request_dict, db):
-    logger.debug(u"create_user_from_slug new user {url_slug} with unicode_request_dict {user_request_dict}".format(
+    logger.debug(u"create_user_from_slug new user {url_slug} with user_dict {user_request_dict}".format(
         url_slug=url_slug, user_request_dict=user_request_dict))
 
     # have to explicitly unicodify ascii-looking strings even when encoding
     # is set by client, it seems:
-    unicode_request_dict = {k: unicode(v) for k, v in user_request_dict.iteritems()}
-    unicode_request_dict["url_slug"] = unicode(url_slug)
+    user_dict = {k: unicode(v) for k, v in user_request_dict.iteritems()}
+    user_dict["url_slug"] = unicode(url_slug)
 
     # all emails should be lowercase
-    unicode_request_dict["email"] = unicode_request_dict["email"].lower()
+    user_dict["email"] = user_dict["email"].lower()
 
     # move password to temp var so we don't instantiate the User with it...
     # passwords have to be set with a special setter method.
-    password = unicode_request_dict["password"]
-    del unicode_request_dict["password"]
+    password = user_dict["password"]
+    del user_dict["password"]
 
-    # see if the slug is being used, in any upper/lower case combo
+    # make sure this slug isn't being used yet, in any upper/lower case combo
     user_with_this_slug = User.query.filter(
-        func.lower(User.url_slug) == func.lower(unicode_request_dict["url_slug"])
+        func.lower(User.url_slug) == func.lower(user_dict["url_slug"])
     ).first()
     if user_with_this_slug is not None:
-        unicode_request_dict["url_slug"] += str(random.randint(1, 9999))
+        user_dict["url_slug"] += str(random.randint(1, 9999))
+
+    # make sure this email isn't being used yet
+    user_with_this_email = User.query.filter(
+        User.email == user_dict["email"]
+    ).first()
+    if user_with_this_email is not None:
+        raise EmailExistsError  # the caller needs to deal with this.
+
+
+
+
+    user_dict["stripe_id"] = mint_stripe_id(user_dict)
+
 
     # ok, let's make a user:
-    user = User(**unicode_request_dict)
+    user = User(**user_dict)
     db.session.add(user)
     user.set_password(password)
-
-    try:
-        db.session.commit()
-    except IntegrityError as e:
-        if "user_email_key" in e.message:
-            # we can't fix this....it's the caller's problem now.
-            raise EmailExistsError
-
-
+    db.session.commit()
 
     logger.debug(u"Finished creating user {id} with slug '{slug}'".format(
         id=user.id,
         slug=user.url_slug
     ))
+
 
     return user
 
@@ -594,6 +621,50 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
         pass
 
     return user
+
+
+def mint_stripe_id(user_dict):
+    # make the Stripe customer so we can get their customer number:
+    full_name = "{first} {last}".format(first=user_dict["given_name"], last=user_dict["surname"])
+    stripe_customer = stripe.Customer.create(
+        description=full_name,
+        email=user_dict["email"],
+        plan="Premium"
+    )
+    logger.debug(u"Made a Stripe ID '{stripe_id}' for user '{slug}'".format(
+        stripe_id=stripe_customer.id,
+        slug=user_dict["url_slug"]
+    ))
+
+    return stripe_customer.id
+
+
+def upgrade_to_premium(user, stripe_token):
+
+    if user.stripe_id is None:
+        # shouldn't be needed in production
+        user.stripe_id = mint_stripe_id(user.dict_about())
+        db.session.merge(user)
+        db.session.commit()
+
+    customer = stripe.Customer.retrieve(user.stripe_id)
+    customer.card = stripe_token
+    if len(customer.subscriptions.data) == 0:
+        # if the subscription was cancelled before
+        customer.subscriptions.create(plan="Premium")
+
+
+    return customer.save()
+
+
+
+def cancel_premium(user):
+    cu = stripe.Customer.retrieve(user.stripe_id)
+    return cu.subscriptions.data[0].delete()
+
+def get_users():
+    res = User.query.all()
+    return res
 
 
 def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}, existing_tiids={}):

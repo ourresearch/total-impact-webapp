@@ -1,6 +1,5 @@
 <ul class="main-nav">
    <li ng-show="currentUser" class="logged-in-user nav-item">
-      <!--<span class="context">Welcome back, </span>-->
       <a class="current-user"
          href="/{{ currentUser.url_slug }}"
          tooltip="View your profile"
@@ -10,16 +9,37 @@
       </a>
    </li>
 
-   <li ng-show="currentUser" class="preferences nav-item">
+   <li ng-show="currentUser" class="controls nav-item">
+
       <span class="or"></span>
-      <a class="profile preference"
+
+      <span class="new-metrics control no-new-metrics"
+         tooltip="No new metrics."
+         tooltip-placement="bottom"
+         ng-show="!illuminateNotificationIcon()">
+         <i class="icon-bell"></i>
+      </span>
+      <a class="new-metrics control has-new-metrics"
+         tooltip="You've got new metrics!"
+         tooltip-placement="bottom"
+         ng-show="illuminateNotificationIcon()"
+         ng-click="dismissProfileNewProductsNotification()"
+         href="/{{ currentUser.url_slug }}?filter=has_new_metrics">
+         <i class="icon-bell-alt"></i>
+      </a>
+
+      <span class="or"></span>
+
+      <a class="preferences control"
          href="/settings/profile"
          tooltip="Change profile settings"
          tooltip-placement="bottom">
          <i class="icon-cog"></i>
       </a>
+
       <span class="or"></span>
-      <a class="logout preference"
+
+      <a class="logout control"
          ng-click="logout()"
          tooltip="Log out"
          tooltip-placement="bottom">

@@ -12,7 +12,6 @@ angular.module('security.service', [
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
     url = url || '/';
-    console.log("in security, redirectin' to " + url)
     $location.path(url);
   }
 
@@ -48,8 +47,8 @@ angular.module('security.service', [
     login: function(email, password) {
       return $http.post('/user/login', {email: email, password: password})
         .success(function(data, status) {
-            console.log("success in security.login()")
-            currentUser = data.user;
+          currentUser = data.user;
+          console.log("user just logged in: ", currentUser)
         })
     },
 
@@ -119,14 +118,15 @@ angular.module('security.service', [
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
-
         })
         .then(function(){return currentUser})
     },
 
 
-    logout: function(redirectTo) {
+    logout: function() {
+      console.log("logging out user.", currentUser)
       currentUser = null;
+      $location.path("/").search("filter", null)
       $http.get('/user/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")
       });
@@ -153,11 +153,13 @@ angular.module('security.service', [
     },
 
 
+    hasNewMetrics: function(){
+      return currentUser && currentUser.has_new_metrics
+    },
 
 
     redirectToProfile: function(){
       service.requestCurrentUser().then(function(user){
-        console.log("redirect to profile.")
         redirect("/" + user.url_slug)
       })
     },
@@ -194,12 +196,8 @@ angular.module('security.service', [
     // Is the current user authenticated?
     isAuthenticated: function(){
       return !!currentUser;
-    },
-    
-    // Is the current user an adminstrator?
-    isAdmin: function() {
-      return !!(currentUser && currentUser.admin);
     }
+    
   };
 
   return service;

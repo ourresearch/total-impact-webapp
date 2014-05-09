@@ -7,9 +7,6 @@ from flask import render_template
 from flask import render_template_string
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
-from sqlalchemy.exc import IntegrityError
-
-
 from totalimpactwebapp import app, db, login_manager, products_list, product
 
 from totalimpactwebapp.password_reset import send_reset_token
@@ -17,14 +14,25 @@ from totalimpactwebapp.password_reset import reset_password_from_token
 from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
-from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id, delete_user
-from totalimpactwebapp.user import remove_duplicates_from_user 
+from totalimpactwebapp import user
+from totalimpactwebapp.user import User
+from totalimpactwebapp.user import create_user_from_slug
+from totalimpactwebapp.user import get_user_from_id
+from totalimpactwebapp.user import delete_user
+
+from totalimpactwebapp.card_generate import *
+from totalimpactwebapp import emailer
+from totalimpactwebapp import thresholds
+
+from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import get_products_from_core_as_csv
 from totalimpactwebapp.user import EmailExistsError
 from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
+from totalimpactwebapp import event_monitoring
+
 
 import newrelic.agent
 
@@ -254,14 +262,30 @@ def extract_filename(s):
 @app.route("/user/current")
 def get_current_user():
     #sleep(1)
-
     try:
-        ret = {"user": g.user.dict_about()}
-
+        user_info = g.user.dict_about(include_stripe=True)
     except AttributeError:  # anon user has no as_dict()
-        ret = {"user": None}
+        user_info = None
 
-    return json_resp_from_thing(ret)
+    return json_resp_from_thing({"user": user_info})
+
+
+@app.route("/user/current/notifications/<notification_name>", methods=["GET"])
+def current_user_notifications(notification_name):
+
+    # hardcode for now
+    notification_name = "new_metrics_notification_dismissed"
+
+    if request.args.get("action") == "dismiss":
+        g.user.new_metrics_notification_dismissed = datetime.datetime.now()
+        db.session.merge(g.user)
+        db.session.commit()
+
+    return json_resp_from_thing({"user": g.user.dict_about()})
+
+
+
+
 
 
 
@@ -292,8 +316,16 @@ def login():
         # Yay, no errors! Log the user in.
         login_user(user)
 
-    return json_resp_from_thing({"user": user.dict_about()})
+    return json_resp_from_thing({"user": user.dict_about(include_stripe=True)})
 
+
+
+@app.route("/user/current/dismiss/new_metrics_notification", methods=["GET", "POST"])
+def user_new_metrics_notification(profile_id):
+    user = get_user_for_response(
+        profile_id,
+        request
+    )
 
 
 
@@ -320,34 +352,9 @@ def create_new_user_profile(slug):
     except EmailExistsError:
         abort_json(409, "That email already exists.")
 
-    user_profile_url = u"{webapp_root}/{url_slug}".format(
-        webapp_root=g.webapp_root, url_slug=user.url_slug)
-    logger.debug(u"created new user {user_profile_url}".format(
-        user_profile_url=user_profile_url))
-
-
-    # refactor this and the mention in /tests some day
-    email_suffex_for_text_accounts = "@test-impactstory.org"
-    
-    if not user.email.endswith(email_suffex_for_text_accounts):
-        # send welcome email
-        welcome_email.send_welcome_email(user.email, user.given_name)
-
-        # send to alert
-        for webhook_slug in os.getenv("ZAPIER_ALERT_HOOKS", "").split(","):
-            zapier_webhook_url = "https://zapier.com/hooks/catch/n/{webhook_slug}/".format(
-                webhook_slug=webhook_slug)
-            r = requests.post(zapier_webhook_url,
-                data=json.dumps({
-                    "user_profile_url": user_profile_url
-                    }),
-                headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-
-    logger.debug(u"new user {url_slug} has id {id}".format(
-        url_slug=user.url_slug, id=user.id))
-
+    welcome_email.send_welcome_email(user.email, user.given_name)
+    event_monitoring.new_user(user.url_slug, user.given_name)
     login_user(user)
-
     return json_resp_from_thing({"user": user.dict_about()})
 
 
@@ -369,11 +376,11 @@ def user_delete(profile_id):
 @app.route("/user/<profile_id>/about", methods=['GET'])
 def user_about(profile_id):
     user = get_user_for_response(profile_id, request)
+    dict_about = user.dict_about()
+    logger.debug(u"got the user dict out: {user}".format(
+        user=dict_about))
 
-    logger.debug(u"got the user out: {user}".format(
-        user=user.dict_about()))
-
-    return json_resp_from_thing({"about": user.dict_about()})
+    return json_resp_from_thing({"about": dict_about})
 
 
 @app.route("/user/<profile_id>/about", methods=['PATCH'])
@@ -396,6 +403,26 @@ def patch_user_about(profile_id):
     return json_resp_from_thing({"about": profile.dict_about()})
 
 
+@app.route("/user/<profile_id>/credit_card/<stripe_token>", methods=["POST"])
+def user_credit_card(profile_id, stripe_token):
+    profile = get_user_for_response(profile_id, request)
+    abort_if_user_not_logged_in(profile)
+
+    ret = user.upgrade_to_premium(profile, stripe_token)
+    return json_resp_from_thing({"result": ret})
+
+
+@app.route("/user/<profile_id>/subscription", methods=["DELETE"])
+def user_subscription(profile_id):
+    profile = get_user_for_response(profile_id, request)
+    abort_if_user_not_logged_in(profile)
+
+    if request.method == "DELETE":
+        ret = user.cancel_premium(profile)
+
+    return json_resp_from_thing({"result": ret})
+
+
 
 @app.route("/user/<profile_id>/awards", methods=['GET'])
 def user_profile_awards(profile_id):
@@ -409,14 +436,14 @@ def user_profile_awards(profile_id):
 
 
 
-
-
 #------------------ user/:userId/products -----------------
 
 @app.route("/user/<id>/products", methods=["GET"])
 def user_products_get(id):
 
     user = get_user_for_response(id, request)
+
+    source = request.args.get("source", "webapp")
 
     try:
         if current_user.url_slug == user.url_slug:
@@ -670,7 +697,7 @@ def redirect_to_profile(dummy="index"):
 
 
 @app.route("/google6653442d2224e762.html")
-def google_verification():
+def google_verification_impactstory():
     # needed for https://support.google.com/webmasters/answer/35179?hl=en
     return send_file("static/rendered-pages/google6653442d2224e762.html")
 
@@ -750,11 +777,43 @@ def scratchpad():
     return render_template("scratchpad.html")
 
 
+@app.route("/<profile_id>/cards")
+@app.route("/<profile_id>/cards/<granularity>")
+def render_cards(profile_id, granularity="all"):
+    user = get_user_for_response(
+        profile_id,
+        request
+    )
+    cards = []
+    cards += ProductNewMetricCardGenerator.make(user)
+    cards += ProfileNewMetricCardGenerator.make(user)
+
+    if granularity == "profile":
+        cards = [card for card in cards if card.granularity == "profile"]
+    elif granularity == "product":
+        cards = [card for card in cards if card.granularity == "product"]
 
 
+    card_dicts = [card.to_dict() for card in cards]
+    return json_resp_from_thing(card_dicts)
 
 
+@app.route("/test/email")
+def test_emailer():
 
+    ret = emailer.send(
+        "wordslikethis@gmail.com",
+        "this is a test email",
+        "card",
+        {"title": "my wonderful paper about rabbits"}
+    )
+    return json_resp_from_thing(ret)
+
+
+@app.route("/thresholds")
+def get_thresholds():
+
+    return json_resp_from_thing(thresholds.values)
 
 ###############################################################################
 #

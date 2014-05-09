@@ -2,7 +2,6 @@ angular.module('services.tour', [])
   .factory("Tour", function($modal){
     return {
       start: function(userAbout){
-        console.log("start tour!")
 //        $(".tour").popover({trigger: "click"}).popover("show")
 
         $modal.open({
