@@ -58,7 +58,7 @@ def get_median(metric_dict, medians_lookup):
     return median
 
 
-def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[], medians_lookup={}):
+def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[], medians_lookup={}, timestamp=None):
     hist = metric_dict["historical_values"]
     current_value = as_int_or_float_if_possible(hist["current"]["raw"])
     diff_value = as_int_or_float_if_possible(hist["diff"]["raw"])
@@ -81,7 +81,8 @@ def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[],
         median=get_median(metric_dict, medians_lookup),
         threshold_awarded=get_threshold_just_crossed(current_value, diff_value, thresholds),
         template_name="card",        
-        weight=0.7
+        weight=0.7,
+        timestamp=timestamp
     )
 
     return my_card
@@ -123,10 +124,12 @@ class CardGenerator:
 class ProductNewMetricCardGenerator(CardGenerator):
 
     @classmethod
-    def make(cls, user):
+    def make(cls, user, timestamp=None):
         thresholds_lookup = thresh.values["product"]
         medians_lookup = get_medians_lookup()
         product_dicts = get_product_list_for_cards(user)
+        if not timestamp:
+            timestamp = datetime.datetime.utcnow()
 
         cards = []
 
@@ -139,7 +142,7 @@ class ProductNewMetricCardGenerator(CardGenerator):
 
                 # this card generator only makes cards with weekly diffs
                 if diff_value:
-                    new_card = populate_card(user.id, tiid, metrics_dict[metric_name], metric_name, thresholds_lookup, medians_lookup)
+                    new_card = populate_card(user.id, tiid, metrics_dict[metric_name], metric_name, thresholds_lookup, medians_lookup, timestamp)
 
                     # now populate with profile-level information
                     peers = products_above_threshold(product_dicts, metric_name, new_card.current_value)
@@ -161,10 +164,12 @@ class ProductNewMetricCardGenerator(CardGenerator):
 class ProfileNewMetricCardGenerator(CardGenerator):
 
     @classmethod
-    def make(cls, user):
+    def make(cls, user, timestamp=None):
         thresholds_lookup = thresh.values["profile"]
         medians_lookup = get_medians_lookup()        
         product_dicts = get_product_list_for_cards(user)
+        if not timestamp:
+            timestamp = datetime.datetime.utcnow()
 
         metrics_to_accumulate = []
         cards = []
@@ -185,7 +190,8 @@ class ProfileNewMetricCardGenerator(CardGenerator):
                     diff_value=0,
                     current_value=0,
                     template_name="card",
-                    weight=0.8
+                    weight=0.8, 
+                    timestamp=timestamp
                 )            
 
             for product in product_dicts:
