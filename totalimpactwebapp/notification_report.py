@@ -31,7 +31,8 @@ def make(user):
     response = {
         "user": user_dict_about,
         "cards": cards,
-        "css": get_css()
+        "css": get_css(),
+        "given_name": user.given_name
     }
     return response
 
