@@ -4,7 +4,6 @@
    <title>Your Impactstory report</title>
 </head>
 <body>
-   <h1>This is so totally your impact report!</h1>
    <div class="header">
       <img src="https://impactstory.org/static/img/impactstory-logo-sideways.png" alt="Impactstory logo"/>
       <h1>Your new research impacts this week</h1>
@@ -16,6 +15,10 @@
    </div>
    <div class="cards">
       {% for card in cards %}
+      <div class="card">
+         <h3>Card times!</h3>
+         <pre>{{ card.test() }}</pre>
+      </div>
       {% endfor %}
    </div>
    <div class="footer">
