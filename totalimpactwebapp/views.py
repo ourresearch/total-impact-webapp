@@ -804,18 +804,10 @@ def render_report(profile_id):
         profile_id,
         request
     )
-    cards = []
-    cards += ProductNewMetricCardGenerator.make(user)
-    cards += ProfileNewMetricCardGenerator.make(user)
+    cards = Card.query.filter(Card.user_id == user.id).all()
 
-    if granularity == "profile":
-        cards = [card for card in cards if card.granularity == "profile"]
-    elif granularity == "product":
-        cards = [card for card in cards if card.granularity == "product"]
-
-
-    card_dicts = [card.to_dict() for card in cards]
-    return json_resp_from_thing(card_dicts)
+    return "\n".join([card.to_html() for card in cards])
+    # return render_template("report.html")
 
 
 @app.route("/test/email")
