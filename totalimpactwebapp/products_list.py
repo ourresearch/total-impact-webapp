@@ -10,14 +10,14 @@ from flask import g
 
 
 
-def prep(products_dict, include_headings=False, display_debug=False):
+def prep(products_dict, include_headings=False, hide_markup=True, display_debug=False):
 
     prepped_products = []
 
     for product_dict in products_dict:
 
         try:
-            prepped_products.append(product.prep_product(product_dict, display_debug=display_debug))
+            prepped_products.append(product.prep_product(product_dict, hide_markup=hide_markup, display_debug=display_debug))
         except product.GenreDeprecatedError:
             pass
 
@@ -38,7 +38,7 @@ def has_new_metrics(products_list):
     return False
 
 def latest_diff_timestamp(products_list):
-    prepped = prep(products_list)
+    prepped = prep(products_list, hide_markup=True)
     timestamps = [p["latest_diff_timestamp"] for p in prepped]
 
     try:

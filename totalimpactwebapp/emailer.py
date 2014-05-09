@@ -1,7 +1,7 @@
 import mandrill
 import os
 import logging
-from flask import render_template
+import jinja2
 from totalimpactwebapp.testing import is_test_email
 
 
@@ -12,8 +12,13 @@ def send(address, subject, template_name, context):
     if is_test_email(address):
         return False
 
-    html_to_send = render_template(template_name + ".html", **context)
-    text_to_send = render_template(template_name + ".txt", **context)
+    templateLoader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
+    templateEnv = jinja2.Environment(loader=templateLoader)
+    html_template = templateEnv.get_template(template_name + ".html")
+    text_template = templateEnv.get_template(template_name + ".txt")
+
+    html_to_send = html_template.render(context)
+    text_to_send = html_template.render(context)
 
     mailer = mandrill.Mandrill(os.getenv("MANDRILL_APIKEY"))
 

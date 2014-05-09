@@ -14,7 +14,7 @@ class GenreDeprecatedError(Exception):
     pass
 
 
-def prep_product(product, verbose=False, display_debug=False):
+def prep_product(product, verbose=False, hide_markup=False, display_debug=False):
 
     if product["biblio"]["genre"] in deprecated_genres:
         raise GenreDeprecatedError
@@ -29,8 +29,10 @@ def prep_product(product, verbose=False, display_debug=False):
         product["awards"] = make_awards(product)
         product["has_new_metrics"] = make_has_new_metrics(product)
         product["latest_diff_timestamp"] = get_latest_diff_timestamp(product)
-        product["markup"] = make_markup(product, verbose)
         product["is_true_product"] = True
+    if not hide_markup and not display_debug:
+        product["markup"] = make_markup(product, verbose)
+        
     product = add_sort_keys(product)
 
     return product

@@ -29,7 +29,8 @@ class Card(db.Model):
 
 
     def __init__(self, **kwargs):
-        self.timestamp = datetime.datetime.utcnow()
+        if not "timestamp" in kwargs:
+            self.timestamp = datetime.datetime.utcnow()
         super(Card, self).__init__(**kwargs)
 
 
