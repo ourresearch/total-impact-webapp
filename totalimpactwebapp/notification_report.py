@@ -23,7 +23,7 @@ class NotificationReport(object):
 
         response = {
             "user": self.user.dict_about(),
-            "cards": [card.to_dict() for card in self.cards]
+            "cards": self.cards
         }
         return response
 

@@ -16,8 +16,7 @@
    <div class="cards">
       {% for card in cards %}
       <div class="card">
-         <h3>Card times!</h3>
-         <pre>{{ card.to_html() }}</pre>
+         {{ card.to_html() | safe}}
       </div>
       {% endfor %}
    </div>

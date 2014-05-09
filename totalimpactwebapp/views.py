@@ -806,9 +806,8 @@ def render_report(profile_id):
         request
     )
     my_report = notification_report.NotificationReport(user)
-    return json_resp_from_thing(my_report.get_dict())
 
-    # return render_template("report.html")
+    return render_template("report.html", **my_report.get_dict())
 
 
 @app.route("/test/email")
