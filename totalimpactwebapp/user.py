@@ -161,6 +161,7 @@ class User(db.Model):
         self.given_name = self.given_name or u"Anonymous"
         self.surname = self.surname or u"User"
         self.password_hash = None
+        self.notification_email_frequency = "every_week_or_two"
 
     def make_url_slug(self, surname, given_name):
         slug = (surname + given_name).replace(" ", "")
