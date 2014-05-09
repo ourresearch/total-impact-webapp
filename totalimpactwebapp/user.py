@@ -34,16 +34,6 @@ class UrlSlugExistsError(Exception):
     pass
 
 
-class ProductsCache:
-    cache = None
-    def get(self, tiids):
-        if self.cache is not None:
-            return self.cache
-        else:
-            self.cache = get_products_from_core(tiids)
-            return self.cache
-
-
 class UserTiid(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     tiid = db.Column(db.Text, primary_key=True)
@@ -139,10 +129,14 @@ class User(db.Model):
         # return all tiids even those that have been removed
         return [tiid_link.tiid for tiid_link in self.tiid_links]
 
+
     @property
     def products(self):
-        cache = ProductsCache()
-        return cache.get(self.tiids)
+        products = get_products_from_core(self.tiids)
+
+        if not products:
+            products = []
+        return products
 
 
     @property

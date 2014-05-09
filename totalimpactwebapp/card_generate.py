@@ -58,7 +58,7 @@ def get_median(metric_dict, medians_lookup):
     return median
 
 
-def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[], medians_lookup={}):
+def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[], medians_lookup={}, timestamp=None):
     hist = metric_dict["historical_values"]
     current_value = as_int_or_float_if_possible(hist["current"]["raw"])
     diff_value = as_int_or_float_if_possible(hist["diff"]["raw"])
@@ -115,7 +115,7 @@ class CardGenerator:
 class ProductNewMetricCardGenerator(CardGenerator):
 
     @classmethod
-    def make(cls, user, timestamp=None):
+    def make(cls, user, product_dicts, timestamp=None):
         thresholds_lookup = thresh.values["product"]
         medians_lookup = get_medians_lookup()
         if not timestamp:
@@ -154,7 +154,7 @@ class ProductNewMetricCardGenerator(CardGenerator):
 class ProfileNewMetricCardGenerator(CardGenerator):
 
     @classmethod
-    def make(cls, user, timestamp=None):
+    def make(cls, user, product_dicts, timestamp=None):
         thresholds_lookup = thresh.values["profile"]
         medians_lookup = get_medians_lookup()
         if not timestamp:
