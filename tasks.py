@@ -12,6 +12,8 @@ from totalimpactwebapp import db
 from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
 from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.card_generate import *
+from totalimpactwebapp import notification_report
+from totalimpactwebapp import emailer
 
 logger = logging.getLogger(__name__)
 
@@ -184,4 +186,38 @@ def create_cards(user):
     except InvalidRequestError:
         db.session.rollback()
         db.session.commit()
+
+
+@celery_app.task(ignore_result=True, base=TaskThatSavesState)
+def send_email_report(user, override_with_send=False):
+    now = datetime.datetime.utcnow()
+    if (override_with_send or 
+        not user.last_email_check or
+        ((user.last_email_check - now).days >= 7) and 
+        (user.notification_email_frequency != "none")):
+        
+        my_report = notification_report.NotificationReport(user)
+
+        print "here I am"
+
+        template_filler_dict = my_report.get_dict()
+
+        try:
+            template_name = template_filler_dict["template_name"]
+        except KeyError:
+            template_name = "card"
+
+        print "****", template_name
+        msg = emailer.send("heather@impactstory.org", "hi", template_name, template_filler_dict)
+
+        user.last_email_check = now
+
+        try:
+            db.session.commit()
+        except InvalidRequestError:
+            db.session.rollback()
+            db.session.commit()
+
+    
+
 

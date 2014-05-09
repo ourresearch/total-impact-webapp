@@ -109,6 +109,7 @@ class User(db.Model):
     refresh_interval = db.Column(db.Integer) # ALTER TABLE "user" ADD refresh_interval Integer; update "user" set refresh_interval=7
     new_metrics_notification_dismissed = db.Column(db.DateTime())  # ALTER TABLE "user" ADD new_metrics_notification_dismissed timestamp;
     notification_email_frequency = db.Column(db.Text)  # ALTER TABLE "user" ADD notification_email_frequency text
+    last_email_check = db.Column(db.DateTime())  # ALTER TABLE "user" ADD last_email_check timestamp
 
     tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))

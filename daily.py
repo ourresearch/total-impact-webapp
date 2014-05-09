@@ -51,18 +51,31 @@ def create_cards_for_everyone(url_slug=None):
     if url_slug:
         user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
         print user.url_slug        
-        # tasks.create_cards.delay(user)
         tasks.create_cards(user)
     else:    
         for user in page_query(User.query.order_by(User.url_slug.asc())):
             print user.url_slug        
             tasks.create_cards.delay(user)
-            # tasks.add_profile_deets.delay(user)
+
+
+
+def send_email_reports(url_slug=None, override_with_send=False):
+    if url_slug:
+        user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
+        print user.url_slug        
+        tasks.send_email_report(user, override_with_send=True)
+    else:    
+        for user in page_query(User.query.order_by(User.url_slug.asc())):
+            print user.url_slug        
+            tasks.send_email_report.delay(user, override_with_send)
+
 
 
 def main(function, url_slug):
     if function=="create_cards_for_everyone":
         create_cards_for_everyone(url_slug)
+    elif function=="send_email_reports":
+        send_email_reports(url_slug)
 
 
 
