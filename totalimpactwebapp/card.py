@@ -20,7 +20,7 @@ class Card(db.Model):
     newest_diff_timestamp = db.Column(db.DateTime())
     oldest_diff_timestamp = db.Column(db.DateTime())
     diff_window_days = db.Column(db.Integer)
-    template_name = db.Column(db.Text)
+    template_name = db.Column(db.Text)  # ALTER TABLE "card" ADD template_name text;
     weight = db.Column(db.Float)
 
 
@@ -43,6 +43,9 @@ class Card(db.Model):
                     pass
 
                 ret[k] = v
+
+        ret["html_template"] = self.template_name # lookup html template here
+        ret["text_template"] = self.template_name # lookup text template here
 
         return ret
 
