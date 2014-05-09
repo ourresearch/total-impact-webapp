@@ -120,7 +120,6 @@ class CardGenerator:
  *************************************************************************** """
 
 
-
 class ProductNewMetricCardGenerator(CardGenerator):
 
     @classmethod
