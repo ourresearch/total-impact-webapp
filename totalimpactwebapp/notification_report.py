@@ -1,5 +1,6 @@
 from totalimpactwebapp.card import Card
 from totalimpactwebapp import db
+
 import datetime
 
 

@@ -43,18 +43,14 @@ class Card(db.Model):
                     pass
 
                 ret[k] = v
-
-        ret["html_template"] = self.template_name # lookup html template here
-        ret["text_template"] = self.template_name # lookup text template here
-
         return ret
 
 
     def to_html(self):
-        return render_template("card.html", **self.to_dict())
+        return render_template(self.template_name+".html", **self.to_dict())
 
     def to_text(self):
-        return render_template("card.txt", **self.to_dict())
+        return render_template(self.template_name+".txt", **self.to_dict())
 
     def __repr__(self):
         return u'<Card {id} {user_id} {tiid} {granularity} {metric_name} {card_type}>'.format(

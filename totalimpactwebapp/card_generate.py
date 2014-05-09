@@ -80,6 +80,7 @@ def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[],
         percentile_current_value=get_percentile(metric_dict),
         median=get_median(metric_dict, medians_lookup),
         threshold_awarded=get_threshold_just_crossed(current_value, diff_value, thresholds),
+        template_name="card",        
         weight=0.7
     )
 
@@ -184,6 +185,7 @@ class ProfileNewMetricCardGenerator(CardGenerator):
                     oldest_diff_timestamp=arrow.get(datetime.datetime.max).datetime,  #initiate with a very recent value
                     diff_value=0,
                     current_value=0,
+                    template_name="card",
                     weight=0.8
                 )            
 
