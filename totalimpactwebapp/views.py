@@ -32,6 +32,7 @@ from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring
+from totalimpactwebapp import notification_report
 
 
 import newrelic.agent
@@ -804,9 +805,9 @@ def render_report(profile_id):
         profile_id,
         request
     )
-    cards = Card.query.filter(Card.user_id == user.id).all()
+    my_report = notification_report.NotificationReport(user)
+    return json_resp_from_thing(my_report.get_dict())
 
-    return "\n".join([card.to_html() for card in cards])
     # return render_template("report.html")
 
 

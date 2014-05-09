@@ -20,6 +20,7 @@ class Card(db.Model):
     newest_diff_timestamp = db.Column(db.DateTime())
     oldest_diff_timestamp = db.Column(db.DateTime())
     diff_window_days = db.Column(db.Integer)
+    template_name = db.Column(db.Text)
     weight = db.Column(db.Float)
 
 
