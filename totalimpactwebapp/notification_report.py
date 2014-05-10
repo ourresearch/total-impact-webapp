@@ -28,7 +28,7 @@ def make(user):
         card.user = user_dict_about
 
     cards = filter_cards(cards)
-    cards = sort_cards(cards)
+    cards = sort_cards(cards)[0:10]
 
     response = {
         "user": user_dict_about,
