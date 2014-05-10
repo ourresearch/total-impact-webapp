@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-08
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-09
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -3321,7 +3321,7 @@ angular.module('services.userMessage', [])
       'settings.premium.subscribe.error': ["Sorry, looks like there was an error! Please check your credit card info.", 'danger'],
       'settings.notifications.as_they_happen.success': ["As-they-happen notifications are coming soon! We've changed your settings so that you'll get them as soon as we launch. In the meantime, we'll still send you emails every week or two. Can't wait? Got ideas? Drop us a line at <a href='http://twitter.com/impactstory'>@impactstory<a/> or <a href='mailto:team@impactstory.org'>team@impactstory.org</a>!", 'warning'],
       'settings.notifications.every_week_or_two.success':["Notification settings updated! You'll be getting emails every week or two with your latest impacts.", "success"],
-      'settings.notifications.monthly.success':["Monthly notifications are coming soon! But we've changed your settings so you'll get monthly emails as soon as they're available. <br> Can't wait? Got ideas? Drop us a line at <a href='http://twitter.com/impactstory'>@impactstory<a/> or <a href='mailto:team@impactstory.org'>team@impactstory.org</a>!", "warning"],
+      'settings.notifications.monthly.success':["Monthly notifications are coming soon! We've changed your settings so you'll get monthly emails when we roll them out. <br> Can't wait? Got ideas? Drop us a line at <a href='http://twitter.com/impactstory'>@impactstory<a/> or <a href='mailto:team@impactstory.org'>team@impactstory.org</a>!", "warning"],
       'settings.notifications.none.success':["We've unsubscribed you from notification emails. If you've got any suggestions for how these emails could be more useful for you, we'd love to hear them! <br> Drop us a line at <a href='http://twitter.com/impactstory'>@impactstory<a/> or <a href='mailto:team@impactstory.org'>team@impactstory.org</a>", "success"],
 
       'passwordReset.error.invalidToken': ["Looks like you've got an expired password reset token in the URL.", 'danger'],
@@ -5787,7 +5787,7 @@ angular.module("settings/notifications-settings.tpl.html", []).run(["$templateCa
     "<div class=\"settings-header\">\n" +
     "   <h1>Notifications</h1>\n" +
     "   <p>Change how often you get emails about new impacts</p>\n" +
-    "</div>\n" +
+    "</div>   \n" +
     "\n" +
     "\n" +
     "<div class=\"notifications-form-container\">\n" +
@@ -5795,8 +5795,6 @@ angular.module("settings/notifications-settings.tpl.html", []).run(["$templateCa
     "         class=\"form-horizontal custom-url\"\n" +
     "         ng-submit=\"onSave()\"\n" +
     "         ng-controller=\"NotificationsSettingsCtrl\">\n" +
-    "\n" +
-    "      <pre>current setting: {{ user.notification_email_frequency }}</pre>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
     "         <div class=\"radio\">\n" +
