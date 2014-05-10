@@ -76,6 +76,7 @@ def email_report_to_everyone_who_needs_one():
         print user.url_slug  
 
         latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
+
         if (latest_diff_timestamp and
             ((user.last_email_check is None) or (latest_diff_timestamp > user.last_email_check.isoformat())) and 
             (user.notification_email_frequency != "none")):
@@ -83,6 +84,7 @@ def email_report_to_everyone_who_needs_one():
             tasks.send_email_report(user)
         else:
             print "DIDN'T PASS TEST TO SEND EMAIL"
+
 
 def main(function, url_slug):
     if url_slug:
