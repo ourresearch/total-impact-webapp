@@ -85,7 +85,7 @@ def email_report_to_everyone_who_needs_one():
 
                 if (latest_diff_timestamp > user.last_email_check.isoformat()):
                     logger.debug("has diffs since last email check!  calling send_email report for {url_slug}".format(url_slug=user.url_slug))
-                    tasks.send_email_report(user)
+                    tasks.send_email_report.delay(user)
                 else:
                     logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
         except Exception as e:
