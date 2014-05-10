@@ -42,7 +42,7 @@ def latest_diff_timestamp(products_list):
     timestamps = [p["latest_diff_timestamp"] for p in prepped]
 
     try:
-        return sorted(timestamps)[0]
+        return sorted(timestamps, reverse=True)[0]
     except IndexError:
         return None
 

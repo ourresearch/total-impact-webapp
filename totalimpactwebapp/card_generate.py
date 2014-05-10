@@ -28,13 +28,14 @@ def get_percentile(metric_dict):
 
 
 def get_threshold_just_crossed(current_value, diff_value, thresholds):
+
     try:
         previous_value = current_value - diff_value
     except TypeError:
         # not numeric
         return None
 
-    for threshold in thresholds:
+    for threshold in sorted(thresholds, reverse=True):
         if (current_value >= threshold) and (previous_value < threshold):
             return threshold
     return None
