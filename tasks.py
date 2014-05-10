@@ -169,24 +169,20 @@ def deduplicate(user):
 def send_email_report(user):
 
     template_filler_dict = notification_report.make(user)
+    now = datetime.datetime.utcnow()
 
     if template_filler_dict["cards"]:
-
-        # HAP change this when go live
-        # email = user.email
-        email = "heather@impactstory.org"
-        
+        email = user.email
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
-        user.last_email_sent = datetime.datetime.utcnow()
+        user.last_email_sent = now
 
-    user.last_email_check = datetime.datetime.utcnow()
+    user.last_email_check = now
 
-    # HAP change this when go live
-    # try:
-    #     db.session.commit()
-    # except InvalidRequestError:
-    #     db.session.rollback()
-    #     db.session.commit()
+    try:
+        db.session.commit()
+    except InvalidRequestError:
+        db.session.rollback()
+        db.session.commit()
 
     return "success"
 
