@@ -23,9 +23,13 @@ div.report-header h1 {
 }
 div.report-header h2 {
   border: 1px solid #555;
-  background: #eee;
-  margin: 10px 0 10px 0;
+  background: #555;
+  margin: 10px 0 40px 0;
+  color: #fff;
   text-align: left;
+}
+div.report-header h2 a {
+  color: #fff;
 }
 div.report-header h2 span.name {
   padding-top: 15px;
@@ -78,6 +82,7 @@ div.card .header h3 {
 div.card .header h3 span.value {
   font-size: 30px;
   font-weight: bold;
+  margin-right: 5px;
 }
 div.card .header h4 {
   margin: 0;
