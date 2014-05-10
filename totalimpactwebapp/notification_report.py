@@ -23,10 +23,12 @@ def make(user):
     cards += ProfileNewMetricCardGenerator.make(user, prepped_products)
 
     for card in cards:
-        pass
         card.set_product_from_list(products)
         card.metrics_info = providers_info.metrics()
         card.user = user_dict_about
+
+
+    cards = sort_cards(cards)
 
     response = {
         "user": user_dict_about,
@@ -44,6 +46,25 @@ def get_css():
     )
     file = open(path, "r")
     return file.read()
+
+
+def sort_cards(cards):
+    sorted_cards = sorted(cards, key=lambda card: card.sort_by(), reverse=True)
+    return sorted_cards
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

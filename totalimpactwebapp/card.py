@@ -50,12 +50,35 @@ class Card(db.Model):
                 ret[k] = v
 
         ret["nth_profile_product_this_good"] = ordinal(self.num_profile_products_this_good)
+        ret["sort_by"] = self.sort_by()
         return ret
 
     def set_product_from_list(self, products):
         for product in products:
             if product["_id"] == self.tiid:
                 self.product = product
+
+
+    def sort_by(self):
+        score = 0
+        if self.granularity == "profile":
+            score += 1000
+
+        if self.percentile_current_value and self.percentile_current_value > 50:
+            top_half = self.percentile_current_value - 50
+            score += (top_half * 20)  # max 1000
+
+        if self.threshold_awarded == 1:
+            score += 500  # as good as a 75th percentile
+
+        if self.threshold_awarded > 1:
+            score += self.threshold_awarded
+
+        if self.diff_value:
+            score += int(self.diff_value)
+
+        return score
+
 
 
     def to_html(self):
