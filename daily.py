@@ -75,19 +75,22 @@ def email_report_to_url_slug(url_slug=None):
 
 def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        if not user.email:
-            logger.debug(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))
-        elif user.notification_email_frequency == "none":
-            logger.debug(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
-        else:
-            latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
-
-            if (latest_diff_timestamp > user.last_email_check.isoformat()):
-                logger.debug("has diffs since last email check!  calling send_email report for {url_slug}".format(url_slug=user.url_slug))
-                tasks.send_email_report(user)
+        try:
+            if not user.email:
+                logger.debug(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))
+            elif user.notification_email_frequency == "none":
+                logger.debug(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
             else:
-                logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
+                latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
 
+                if (latest_diff_timestamp > user.last_email_check.isoformat()):
+                    logger.debug("has diffs since last email check!  calling send_email report for {url_slug}".format(url_slug=user.url_slug))
+                    tasks.send_email_report(user)
+                else:
+                    logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
+        except Exception as e:
+            logger.warning(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next user".format(url_slug=user.url_slug))
+            pass
     return
 
 

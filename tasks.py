@@ -15,7 +15,7 @@ from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import notification_report
 from totalimpactwebapp import emailer
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("webapp.tasks")
 
 celery_app = celery.Celery('tasks', 
     broker=os.getenv("CLOUDAMQP_URL", "amqp://guest@localhost//")
@@ -177,6 +177,9 @@ def send_email_report(user):
             email = "team@impactstory.org"
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
         user.last_email_sent = now
+        logger.debug(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
+    else:
+        logger.debug(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
 
     user.last_email_check = now
 
