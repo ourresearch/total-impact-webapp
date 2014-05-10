@@ -786,8 +786,8 @@ def render_cards(profile_id, granularity="all"):
         request
     )
     cards = []
-    cards += ProductNewMetricCardGenerator.make(user)
-    cards += ProfileNewMetricCardGenerator.make(user)
+    cards += ProductNewMetricCardGenerator.make(user, user.products)
+    cards += ProfileNewMetricCardGenerator.make(user, user.products)
 
     if granularity == "profile":
         cards = [card for card in cards if card.granularity == "profile"]

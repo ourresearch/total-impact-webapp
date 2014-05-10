@@ -73,9 +73,7 @@ def email_report_to_url_slug(url_slug=None):
 def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
         print user.url_slug     
-        if (override_with_send or 
-            not user.last_email_check or
-            ((user.last_email_check - now).days >= 7) and 
+        if (((user.last_email_check is None) or (user.last_email_check - now).days >= 7) and 
             (user.notification_email_frequency != "none")):
             tasks.send_email_report.delay(user, override_with_send)
 
