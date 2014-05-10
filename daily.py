@@ -36,13 +36,13 @@ def page_query(q):
 
 def add_profile_deets_for_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        print user.url_slug
+        # print user.url_slug
         tasks.add_profile_deets.delay(user)
 
 
 def deduplicate_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        print user.url_slug
+        # print user.url_slug
         removed_tiids = tasks.deduplicate.delay(user)
 
 
@@ -52,11 +52,11 @@ def create_cards_for_everyone(url_slug=None):
     cards = []
     if url_slug:
         user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
-        print user.url_slug        
+        # print user.url_slug        
         cards = tasks.create_cards(user)
     else:    
         for user in page_query(User.query.order_by(User.url_slug.asc())):
-            print user.url_slug        
+            # print user.url_slug        
             cards = tasks.create_cards.delay(user)
     return cards
 
@@ -65,16 +65,13 @@ def create_cards_for_everyone(url_slug=None):
 def email_report_to_url_slug(url_slug=None):
     if url_slug:
         user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
-        print user.url_slug        
+        # print user.url_slug        
         tasks.send_email_report(user, override_with_send=True)
 
 
 
 def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        print "********"
-        print user.url_slug  
-
         latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
 
         if (latest_diff_timestamp and

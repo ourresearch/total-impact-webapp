@@ -157,7 +157,6 @@ def deduplicate(user):
         print
         print "EXCEPTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", user.id
         print e.message
-        print "ON USER", user.url_slug
 
     return removed_tiids
 
