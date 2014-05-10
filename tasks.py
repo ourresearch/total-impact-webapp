@@ -170,8 +170,8 @@ def send_email_report(user, override_with_send=False):
 
     template_filler_dict = notification_report.make(user)
 
-    email = "heather@impactstory.org"
     # email = user.email
+    email = "heather@impactstory.org"
     
     msg = emailer.send(email, "Here's your Impactstory report", "report", template_filler_dict)
 

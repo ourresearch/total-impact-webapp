@@ -15,7 +15,8 @@ def send(address, subject, template_name, context):
     templateLoader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
     templateEnv = jinja2.Environment(loader=templateLoader)
     html_template = templateEnv.get_template(template_name + ".html")
-    text_template = templateEnv.get_template(template_name + ".txt")
+    #text_template = templateEnv.get_template(template_name + ".txt")
+    text_template = templateEnv.get_template(template_name + ".html")
 
     html_to_send = html_template.render(context)
     text_to_send = html_template.render(context)
