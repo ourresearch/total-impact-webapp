@@ -158,6 +158,7 @@ class User(db.Model):
         super(User, self).__init__(**kwargs)
         self.created = now_in_utc()
         self.last_refreshed = now_in_utc()
+        self.last_email_check = now_in_utc()
         self.refresh_interval = self.refresh_interval or 7
         self.next_refresh = self.last_refreshed + datetime.timedelta(days=self.refresh_interval)
         self.given_name = self.given_name or u"Anonymous"
