@@ -72,20 +72,19 @@ def email_report_to_url_slug(url_slug=None):
 
 def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
+        print "********"
         print user.url_slug     
-        if (((user.last_email_check is None) or (user.last_email_check - now).days >= 7) and 
+        if (((user.last_email_check is None) or (user.latest_diff_timestamp > user.last_email_check)) and 
             (user.notification_email_frequency != "none")):
-            tasks.send_email_report.delay(user, override_with_send)
+            tasks.send_email_report(user)
+            time.sleep(5)
 
 
 def main(function, url_slug):
-    if function=="create_cards_for_everyone":
-        create_cards_for_everyone(url_slug)
-    elif function=="email_report_to_everyone_who_needs_one":
-        email_report_to_everyone_who_needs_one(url_slug)
-    else:
+    if url_slug:
         email_report_to_url_slug(url_slug)
-
+    else:    
+        email_report_to_everyone_who_needs_one()
 
 
 

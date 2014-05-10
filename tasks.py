@@ -166,12 +166,12 @@ def deduplicate(user):
 
 
 @celery_app.task(base=TaskThatSavesState)
-def send_email_report(user, override_with_send=False):
+def send_email_report(user):
 
     template_filler_dict = notification_report.make(user)
 
     # email = user.email
-    email = "jason@impactstory.org"
+    email = "heather@impactstory.org"
     # email = "heather@impactstory.org"
     
     msg = emailer.send(email, "Here's your Impactstory report", "report", template_filler_dict)
