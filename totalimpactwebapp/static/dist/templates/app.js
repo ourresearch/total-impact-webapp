@@ -1595,7 +1595,7 @@ angular.module("settings/notifications-settings.tpl.html", []).run(["$templateCa
     "<div class=\"settings-header\">\n" +
     "   <h1>Notifications</h1>\n" +
     "   <p>Change how often you get emails about new impacts</p>\n" +
-    "</div>   \n" +
+    "</div>\n" +
     "\n" +
     "\n" +
     "<div class=\"notifications-form-container\">\n" +
