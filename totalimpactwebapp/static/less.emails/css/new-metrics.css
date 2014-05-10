@@ -72,14 +72,16 @@ div.card .header {
 div.card .header h3 {
   margin: 0 0 5px 0;
   color: #fff;
-  padding: 10px 10px 0;
+  padding: 15px 15px 0;
+  font-weight: normal;
 }
 div.card .header h3 span.value {
   font-size: 30px;
+  font-weight: bold;
 }
 div.card .header h4 {
   margin: 0;
-  padding: 0 10px 10px;
+  padding: 0 15px 10px;
   color: #fff;
 }
 div.card .header h4 a {
@@ -93,5 +95,5 @@ div.card .footer {
   color: #fff;
   text-align: left;
   font-size: 12px;
-  padding: 5px 10px;
+  padding: 5px 15px;
 }
