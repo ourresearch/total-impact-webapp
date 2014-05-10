@@ -177,7 +177,7 @@ def send_email_report(user):
         email = "heather@impactstory.org"
         
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
-
+        user.last_email_sent = datetime.datetime.utcnow()
 
     user.last_email_check = datetime.datetime.utcnow()
 
