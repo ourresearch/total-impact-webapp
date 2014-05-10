@@ -72,7 +72,6 @@ def email_report_to_url_slug(url_slug=None):
         tasks.send_email_report(user, override_with_send=True)
 
 
-
 def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
         try:
@@ -81,13 +80,8 @@ def email_report_to_everyone_who_needs_one():
             elif user.notification_email_frequency == "none":
                 logger.debug(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
             else:
-                latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
-
-                if (latest_diff_timestamp > user.last_email_check.isoformat()):
-                    logger.debug("has diffs since last email check!  calling send_email report for {url_slug}".format(url_slug=user.url_slug))
-                    tasks.send_email_report.delay(user)
-                else:
-                    logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
+                logger.debug(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=user.url_slug))
+                tasks.send_email_if_new_diffs.delay(user)
         except Exception as e:
             logger.warning(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next user".format(url_slug=user.url_slug))
             pass
