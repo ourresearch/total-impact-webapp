@@ -68,16 +68,27 @@ class Card(db.Model):
 
         if self.percentile_current_value and self.percentile_current_value > 50:
             top_half = self.percentile_current_value - 50
-            score += (top_half * 20)  # max 1000
+            score += (top_half * 10)  # max 500
 
         if self.threshold_awarded == 1:
             score += 500  # as good as a 75th percentile
 
         if self.threshold_awarded > 1:
-            score += self.threshold_awarded
+            score += (self.threshold_awarded + 500)
 
         if self.diff_value:
-            score += int(self.diff_value)
+            if "plos" in self.metric_name or "slideshare" in self.metric_name:
+                score += int(self.diff_value)
+
+            elif "wikipedia" in self.metric_name:
+                score += 10000
+
+            else:
+                score += (int(self.diff_value) * 10)
+
+        if "youtube" in self.metric_name:
+            score += 1000
+
 
         return score
 
