@@ -81,7 +81,6 @@ def email_report_to_everyone_who_needs_one():
             (user.notification_email_frequency != "none")):
             print "CHECKING TO SEND EMAIL"
             tasks.send_email_report(user)
-            time.sleep(5)
         else:
             print "DIDN'T PASS TEST TO SEND EMAIL"
 

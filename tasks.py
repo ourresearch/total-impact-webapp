@@ -170,14 +170,15 @@ def send_email_report(user):
 
     template_filler_dict = notification_report.make(user)
 
-    # email = user.email
-    email = "heather@impactstory.org"
-    # email = "heather@impactstory.org"
-    
-    msg = emailer.send(email, "Here's your Impactstory report", "report", template_filler_dict)
+    if template_filler_dict["cards"]:
+        # email = user.email
+        email = "heather@impactstory.org"
+        # email = "heather@impactstory.org"
+        
+        msg = emailer.send(email, "Here's your Impactstory report", "report", template_filler_dict)
+
 
     user.last_email_check = datetime.datetime.utcnow()
-
     try:
         db.session.commit()
     except InvalidRequestError:
