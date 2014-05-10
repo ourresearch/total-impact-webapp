@@ -1,13 +1,12 @@
 {% set this_metric = metrics_info[metric_name] %}
 
-<pre>{{ sort_by }}</pre>
 <div class="card new-metric product">
    <div class="header">
       <h3>
-         {{ diff_value }} new {{ this_metric.provider }} {{ this_metric.display_name }}
+         <span class="value">{{ diff_value }}</span> new {{ this_metric.provider }} {{ this_metric.display_name }}
       </h3>
       <h4>
-         on <em>{{ product.biblio.title }}</em>
+         on <em><a href="https://impactstory.org/{{ user.url_slug }}/product/{{ product._id }}">{{ product.biblio.title }}</a></em>
       </h4>
    </div>
    <div class="body">
@@ -24,7 +23,7 @@
             Not bad!
          {% endif %}
 
-         Only {{ percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
+         Only {{ 101 - percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
                have reached {{ current_value }} {{ this_metric.display_name }}.
       </p>
       {% endif %}
@@ -36,6 +35,6 @@
    </div>
 
    <div class="footer">
-      footer
+      <strong>{{ product.biblio.genre }}</strong> new metrics
    </div>
 </div>

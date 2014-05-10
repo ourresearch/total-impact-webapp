@@ -27,7 +27,7 @@ def make(user):
         card.metrics_info = providers_info.metrics()
         card.user = user_dict_about
 
-
+    cards = filter_cards(cards)
     cards = sort_cards(cards)
 
     response = {
@@ -51,6 +51,21 @@ def get_css():
 def sort_cards(cards):
     sorted_cards = sorted(cards, key=lambda card: card.sort_by(), reverse=True)
     return sorted_cards
+
+
+def filter_cards(cards):
+    ret = []
+    for card in cards:
+        if int(card.diff_value) <= 0:
+            pass
+        elif "pubmed" in card.metric_name:
+            pass
+        else:
+            ret.append(card)
+
+    return ret
+
+
 
 
 

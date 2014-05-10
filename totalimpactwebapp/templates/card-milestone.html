@@ -2,7 +2,6 @@
 {% set this_metric = metrics_info[metric_name] %}
 
 
-<pre>{{ sort_by }}</pre>
 
 
 
@@ -24,7 +23,7 @@
       </p>
    </div>
    <div class="footer">
-      footer
+      <strong>profile</strong> milestone
    </div>
 </div>
 
@@ -38,7 +37,7 @@
 <div class="card milestone profile">
    <div class="header">
       <h3>
-         Welcome to the {{ threshold_awarded }}+ combined {{ this_metric.display_name }} club!
+         <span class="value">{{ threshold_awarded }}+</span> profile {{ this_metric.provider }} {{ this_metric.display_name }}
       </h3>
       <h4>
          on <a href="https://impactstory.org/{{ user.url_slug }}">https://impactstory.org/{{ user.url_slug }}</a>
@@ -57,7 +56,7 @@
       </p>
    </div>
    <div class="footer">
-      footer
+      <strong>profile</strong> milestone
    </div>
 </div>
 
@@ -71,7 +70,7 @@
 <div class="card milestone first-metric product">
    <div class="header">
       <h3>
-         First {{ this_metric.provider }} {{ this_metric.display_name }}
+         <span class="value">First</span> {{ this_metric.provider }} {{ this_metric.display_name }}
       </h3>
       <h4>
          on <em>{{ product.biblio.title }}</em>
@@ -87,8 +86,8 @@
 
       {% if percentile_current_value %}
       <p>
-            That's pretty good--only {{ percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
-            have earned a {{ this_metric.display_name }}!
+            That's good--only {{ 101 - percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
+            have that many!
       </p>
       {% endif %}
 
@@ -100,7 +99,7 @@
    </div>
 
    <div class="footer">
-      footer
+      <strong>{{ product.biblio.genre }}</strong> milestone
    </div>
 </div>
 
@@ -115,10 +114,10 @@
 <div class="card milestone product">
    <div class="header">
       <h3>
-         {{ threshold_awarded }}+ total {{ this_metric.provider }} {{ this_metric.display_name }}
+         <span class="value">{{ threshold_awarded }}+</span> {{ this_metric.provider }} {{ this_metric.display_name }}
       </h3>
       <h4>
-         on <em>{{ product.biblio.title }}</em>
+         on <em><a href="https://impactstory.org/{{ user.url_slug }}/product/{{ product._id }}">{{ product.biblio.title }}</a></em>
       </h4>
    </div>
    <div class="body">
@@ -130,8 +129,8 @@
 
       {% if percentile_current_value %}
       <p>
-         That's pretty good--only {{ percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
-               have reached {{ threshold }} {{ this_metric.display_name }}.
+         That's good--only {{ 101 - percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
+               have that many.
       </p>
       {% endif %}
 
@@ -142,7 +141,7 @@
    </div>
 
    <div class="footer">
-      footer
+      <strong>{{ product.biblio.genre }}</strong> milestone
    </div>
 </div>
 

@@ -44,7 +44,54 @@ div.cards {
   clear: both;
 }
 div.card {
-  padding: 10px;
+  padding: 0;
   margin-bottom: 20px;
-  border: 1px solid #555;
+  border: 2px solid #555;
+}
+div.card.milestone {
+  border-color: #285e8e;
+}
+div.card.milestone .header {
+  background: #3276b1;
+}
+div.card.milestone .footer {
+  color: #285e8e;
+}
+div.card.new-metric {
+  border-color: #269abc;
+}
+div.card.new-metric .header {
+  background: #39b3d7;
+}
+div.card.new-metric .footer {
+  color: #269abc;
+}
+div.card .header {
+  background: #555;
+}
+div.card .header h3 {
+  margin: 0 0 5px 0;
+  color: #fff;
+  padding: 10px 10px 0;
+}
+div.card .header h3 span.value {
+  font-size: 30px;
+}
+div.card .header h4 {
+  margin: 0;
+  padding: 0 10px 10px;
+  color: #fff;
+}
+div.card .header h4 a {
+  color: #fff;
+  font-weight: normal;
+}
+div.card .body {
+  padding: 0 10px;
+}
+div.card .footer {
+  color: #fff;
+  text-align: left;
+  font-size: 12px;
+  padding: 5px 10px;
 }

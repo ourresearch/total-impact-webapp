@@ -83,6 +83,9 @@ class Card(db.Model):
             elif "wikipedia" in self.metric_name:
                 score += 10000
 
+            elif "scopus" in self.metric_name:
+                score += (int(self.diff_value) * 100)
+
             else:
                 score += (int(self.diff_value) * 10)
 

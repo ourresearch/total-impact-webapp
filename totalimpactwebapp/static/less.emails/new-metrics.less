@@ -1,3 +1,9 @@
+@blue: #3276b1;
+@blue-border: #285e8e;
+
+@green: #39b3d7;
+@green-border: #269abc;
+
 body {
    font-family: Helvetica, Arial, sans-serif;
    width: 600px;
@@ -49,9 +55,58 @@ div.cards {
 }
 
 div.card {
-   padding: 10px;
+   padding: 0;
    margin-bottom: 20px;
-   border: 1px solid #555;
+   border: 2px solid #555;
+
+   &.milestone {
+      border-color: @blue-border;
+      .header {
+         background: @blue;
+      }
+      .footer {
+         color: @blue-border;
+      }
+   }
+   &.new-metric {
+      border-color: @green-border;
+      .header {
+         background: @green;
+      }
+      .footer {
+         color: @green-border;
+      }
+   }
+
+   .header {
+      background: #555;
+      h3 {
+         margin: 0 0 5px 0;
+         color: #fff;
+         padding: 10px 10px 0;
+         span.value {
+            font-size: 30px;
+         }
+      }
+      h4 {
+         margin: 0;
+         padding: 0 10px 10px;
+         color: #fff;
+         a {
+            color: #fff;
+            font-weight: normal;
+         }
+      }
+   }
+   .body {
+      padding: 0 10px;
+   }
+   .footer {
+      color: #fff;
+      text-align: left;
+      font-size: 12px;
+      padding: 5px 10px;
+   }
 }
 
 
