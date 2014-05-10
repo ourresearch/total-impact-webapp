@@ -172,7 +172,10 @@ def send_email_report(user):
     now = datetime.datetime.utcnow()
 
     if template_filler_dict["cards"]:
-        email = user.email
+        if os.getenv("ENVIRONMENT", "testing") == "production":
+            email = user.email
+        else:
+            email = "team@impactstory.org"
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
         user.last_email_sent = now
 
