@@ -1,5 +1,6 @@
 from totalimpactwebapp.user import User
 from totalimpactwebapp import db
+from totalimpactwebapp import products_list
 import tasks
 
 from sqlalchemy import func
@@ -73,12 +74,17 @@ def email_report_to_url_slug(url_slug=None):
 def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
         print "********"
-        print user.url_slug     
-        if (((user.last_email_check is None) or (user.latest_diff_timestamp > user.last_email_check)) and 
+        print user.url_slug  
+
+        latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
+        if (latest_diff_timestamp and
+            ((user.last_email_check is None) or (latest_diff_timestamp > user.last_email_check)) and 
             (user.notification_email_frequency != "none")):
+            print "CHECKING TO SEND EMAIL"
             tasks.send_email_report(user)
             time.sleep(5)
-
+        else:
+            print "DIDN'T PASS TEST TO SEND EMAIL"
 
 def main(function, url_slug):
     if url_slug:
