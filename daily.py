@@ -10,7 +10,6 @@ import argparse
 
 
 
-
 """
 requires these env vars be set in this environment:
 DATABASE_URL
@@ -78,7 +77,7 @@ def email_report_to_everyone_who_needs_one():
 
         latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
         if (latest_diff_timestamp and
-            ((user.last_email_check is None) or (latest_diff_timestamp > user.last_email_check)) and 
+            ((user.last_email_check is None) or (latest_diff_timestamp > user.last_email_check.isoformat())) and 
             (user.notification_email_frequency != "none")):
             print "CHECKING TO SEND EMAIL"
             tasks.send_email_report(user)
