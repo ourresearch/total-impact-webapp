@@ -85,6 +85,7 @@ def email_report_to_everyone_who_needs_one():
         else:
             print "DIDN'T PASS TEST TO SEND EMAIL"
 
+
 def main(function, url_slug):
     if url_slug:
         email_report_to_url_slug(url_slug)
