@@ -72,15 +72,20 @@ def email_report_to_url_slug(url_slug=None):
 
 def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
-
-        if (latest_diff_timestamp and
-            ((user.last_email_check is None) or (latest_diff_timestamp > user.last_email_check.isoformat())) and 
-            (user.notification_email_frequency != "none")):
-            print "CHECKING TO SEND EMAIL"
-            tasks.send_email_report(user)
+        if not user.email:
+            print u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug)
+        elif user.notification_email_frequency == "none":
+            print u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug)
         else:
-            print "DIDN'T PASS TEST TO SEND EMAIL"
+            latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
+
+            if (latest_diff_timestamp > user.last_email_check.isoformat()):
+                print "has diffs since last email check!  calling send_email report for {url_slug}".format(url_slug=user.url_slug)
+                tasks.send_email_report(user)
+            else:
+                print "not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug)
+
+    return
 
 
 def main(function, url_slug):
