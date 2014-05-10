@@ -432,7 +432,7 @@ def get_latest_diff_timestamp(product_dict):
             timestamps_of_nonzero_refreshes.append(ts)
 
     try:
-        return sorted(timestamps_of_nonzero_refreshes)[0]
+        return sorted(timestamps_of_nonzero_refreshes, reverse=True)[0]
     except IndexError:
         return None
 
