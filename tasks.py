@@ -163,15 +163,19 @@ def deduplicate(user):
 
 @celery_app.task(base=TaskThatSavesState)
 def send_email_if_new_diffs(user):
+    status = "started"
     logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
     latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
-
+    status = "checking diffs"
+    
     if (latest_diff_timestamp > user.last_email_check.isoformat()):
         logger.debug("has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
         send_email_report(user)
+        status = "email sent"
     else:
         logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
-
+        status = "no new diffs"
+    return status
 
 @celery_app.task(base=TaskThatSavesState)
 def send_email_report(user):
@@ -185,7 +189,7 @@ def send_email_report(user):
         else:
             email = "team@impactstory.org"
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
-        user.last_email_sent = now
+        status = user.last_email_sent = now
         logger.debug(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
     else:
         logger.debug(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
@@ -198,7 +202,7 @@ def send_email_report(user):
         db.session.rollback()
         db.session.commit()
 
-    return "success"
+    return status
 
 
 # @celery_app.task(base=TaskThatSavesState)
