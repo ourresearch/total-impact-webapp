@@ -168,7 +168,7 @@ def send_email_if_new_diffs(user):
 
     if (latest_diff_timestamp > user.last_email_check.isoformat()):
         logger.debug("has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
-        tasks.send_email_report(user)
+        send_email_report(user)
     else:
         logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
 
