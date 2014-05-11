@@ -167,7 +167,6 @@ def send_email_if_new_diffs(user):
     logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
     latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
     status = "checking diffs"
-    
     if (latest_diff_timestamp > user.last_email_check.isoformat()):
         logger.debug("has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
         send_email_report(user)
@@ -179,9 +178,10 @@ def send_email_if_new_diffs(user):
 
 @celery_app.task(base=TaskThatSavesState)
 def send_email_report(user):
-
+    status = "started"
     template_filler_dict = notification_report.make(user)
     now = datetime.datetime.utcnow()
+    db.session.merge(user)
 
     if template_filler_dict["cards"]:
         if os.getenv("ENVIRONMENT", "testing") == "production":
@@ -189,18 +189,23 @@ def send_email_report(user):
         else:
             email = "team@impactstory.org"
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
-        status = user.last_email_sent = now
+        user.last_email_sent = now
+        status = "emailed"
         logger.debug(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
     else:
+        status = "not emailed, no cards made"
         logger.debug(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
 
     user.last_email_check = now
 
     try:
         db.session.commit()
+        logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
     except InvalidRequestError:
+        logger.debug(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
         db.session.rollback()
         db.session.commit()
+        logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
 
     return status
 
