@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-09
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-12
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -3067,6 +3067,10 @@ angular.module('security.login.toolbar', [
         if (user){
           var dismissed = user.new_metrics_notification_dismissed
           var latestMetrics = user.latest_diff_timestamp
+
+          console.log("latest metrics date: ", latestMetrics)
+          console.log("notifications last dismissed on: ", dismissed)
+
           return latestMetrics > dismissed
         }
         else {
