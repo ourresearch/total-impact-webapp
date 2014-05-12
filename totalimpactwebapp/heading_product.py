@@ -1,6 +1,6 @@
 import re
 from flask import render_template
-from totalimpactwebapp import product_configs
+from totalimpactwebapp import configs
 
 
 
@@ -13,9 +13,9 @@ def make_for_category(genre, account, category_products):
 
     anchor = anchor.replace("--", "-")
     try:
-        icon = product_configs.genre_icons[genre]
+        icon = configs.genre_icons[genre]
     except KeyError:
-        icon = product_configs.genre_icons["unknown"]
+        icon = configs.genre_icons["unknown"]
 
     heading_product = {
         'is_heading': True,

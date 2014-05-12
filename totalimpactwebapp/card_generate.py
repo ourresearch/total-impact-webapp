@@ -1,7 +1,7 @@
 from totalimpactwebapp.card import Card
 from totalimpactwebapp.util import as_int_or_float_if_possible
 from totalimpactwebapp import products_list
-from totalimpactwebapp import thresholds as thresh
+from totalimpactwebapp import configs
 
 import requests
 import json
@@ -117,7 +117,9 @@ class ProductNewMetricCardGenerator(CardGenerator):
 
     @classmethod
     def make(cls, user, product_dicts, timestamp=None):
-        thresholds_lookup = thresh.values["product"]
+        thresholds_lookup = [c["thresholds"] for c in configs.get()]
+
+
         medians_lookup = get_medians_lookup()
         if not timestamp:
             timestamp = datetime.datetime.utcnow()
@@ -156,7 +158,7 @@ class ProfileNewMetricCardGenerator(CardGenerator):
 
     @classmethod
     def make(cls, user, product_dicts, timestamp=None):
-        thresholds_lookup = thresh.values["profile"]
+        thresholds_lookup = [c["thresholds"] for c in configs.get()]
         medians_lookup = get_medians_lookup()
         if not timestamp:
             timestamp = datetime.datetime.utcnow()

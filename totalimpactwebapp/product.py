@@ -1,7 +1,7 @@
 from copy import deepcopy
 import logging
 from flask import render_template
-from totalimpactwebapp import product_configs
+from totalimpactwebapp import configs
 import arrow
 
 logger = logging.getLogger("tiwebapp.product")
@@ -90,7 +90,7 @@ Metrics stuff
 
 def make_metrics(product_dict):
     metrics = product_dict["metrics"]
-    config_dict = product_configs.get_metric_configs()
+    config_dict = configs.get()
 
     try:
         year = product_dict["biblio"]["year"]
@@ -260,7 +260,7 @@ def get_top_metric(metrics):
 
 
 def make_award_for_single_metric(metric):
-    config = product_configs.award_configs
+    config = configs.award_configs
 
 
     display_order = config[metric["engagement_type"]][1]
