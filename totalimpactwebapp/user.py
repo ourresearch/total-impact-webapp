@@ -316,6 +316,8 @@ class User(db.Model):
             "created",
             "last_viewed_profile",
             "last_refreshed",
+            "last_email_check",
+            "last_email_sent",
             "orcid_id",
             "github_id",
             "slideshare_id",

@@ -6,7 +6,7 @@ test_email_domains = [
 
 def is_test_email(email):
     for domain in test_email_domains:
-        if email.endswith("@" + domain):
+        if email and email.endswith("@" + domain):
             return True
 
     return False

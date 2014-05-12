@@ -7,6 +7,9 @@ from sqlalchemy import func
 from celery import chain
 import time
 import argparse
+import logging
+
+logger = logging.getLogger("webapp.daily")
 
 
 
@@ -36,13 +39,13 @@ def page_query(q):
 
 def add_profile_deets_for_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        print user.url_slug
+        # print user.url_slug
         tasks.add_profile_deets.delay(user)
 
 
 def deduplicate_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        print user.url_slug
+        # print user.url_slug
         removed_tiids = tasks.deduplicate.delay(user)
 
 
@@ -52,11 +55,11 @@ def create_cards_for_everyone(url_slug=None):
     cards = []
     if url_slug:
         user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
-        print user.url_slug        
+        # print user.url_slug        
         cards = tasks.create_cards(user)
     else:    
         for user in page_query(User.query.order_by(User.url_slug.asc())):
-            print user.url_slug        
+            # print user.url_slug        
             cards = tasks.create_cards.delay(user)
     return cards
 
@@ -65,25 +68,24 @@ def create_cards_for_everyone(url_slug=None):
 def email_report_to_url_slug(url_slug=None):
     if url_slug:
         user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
-        print user.url_slug        
+        # print user.url_slug        
         tasks.send_email_report(user, override_with_send=True)
-
 
 
 def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        print "********"
-        print user.url_slug  
-
-        latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
-
-        if (latest_diff_timestamp and
-            ((user.last_email_check is None) or (latest_diff_timestamp > user.last_email_check.isoformat())) and 
-            (user.notification_email_frequency != "none")):
-            print "CHECKING TO SEND EMAIL"
-            tasks.send_email_report(user)
-        else:
-            print "DIDN'T PASS TEST TO SEND EMAIL"
+        try:
+            if not user.email:
+                logger.debug(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))
+            elif user.notification_email_frequency == "none":
+                logger.debug(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
+            else:
+                logger.debug(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=user.url_slug))
+                status = tasks.send_email_if_new_diffs.delay(user)
+        except Exception as e:
+            logger.warning(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next user".format(url_slug=user.url_slug))
+            pass
+    return
 
 
 def main(function, url_slug):

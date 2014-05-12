@@ -15,7 +15,7 @@ from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import notification_report
 from totalimpactwebapp import emailer
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("webapp.tasks")
 
 celery_app = celery.Celery('tasks', 
     broker=os.getenv("CLOUDAMQP_URL", "amqp://guest@localhost//")
@@ -157,38 +157,67 @@ def deduplicate(user):
         print
         print "EXCEPTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", user.id
         print e.message
-        print "ON USER", user.url_slug
 
     return removed_tiids
 
 
-
-
-
 @celery_app.task(base=TaskThatSavesState)
-def send_email_report(user):
+def send_email_if_new_diffs(user):
+    status = "started"
+    logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+    latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
+    status = "checking diffs"
+    if (latest_diff_timestamp > user.last_email_check.isoformat()):
+        logger.debug("has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
+        send_email_report(user)
+        status = "email sent"
+    else:
+        logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
+        status = "no new diffs"
+    return status
 
+def send_email_report(user):
+    status = "started"
     template_filler_dict = notification_report.make(user)
+    now = datetime.datetime.utcnow()
+    db.session.merge(user)
 
     if template_filler_dict["cards"]:
+        if os.getenv("ENVIRONMENT", "testing") == "production":
+            email = user.email
+        else:
+            email = "team@impactstory.org"
+        user.last_email_sent = now
 
-        # HAP change this when go live
-        # email = user.email
-        email = "heather@impactstory.org"
-        
+        try:
+            db.session.commit()
+            logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+        except InvalidRequestError:
+            logger.debug(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            db.session.rollback()
+            db.session.commit()
+            logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
-        user.last_email_sent = datetime.datetime.utcnow()
+        status = "emailed"
+        logger.debug(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
+    else:
+        status = "not emailed, no cards made"
+        logger.debug(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
 
-    user.last_email_check = datetime.datetime.utcnow()
+    db.session.merge(user)
+    user.last_email_check = now
 
-    # HAP change this when go live
-    # try:
-    #     db.session.commit()
-    # except InvalidRequestError:
-    #     db.session.rollback()
-    #     db.session.commit()
+    try:
+        db.session.commit()
+        logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+    except InvalidRequestError:
+        logger.debug(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+        db.session.rollback()
+        db.session.commit()
+        logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
 
-    return "success"
+    return status
 
 
 # @celery_app.task(base=TaskThatSavesState)
