@@ -176,7 +176,6 @@ def send_email_if_new_diffs(user):
         status = "no new diffs"
     return status
 
-@celery_app.task(base=TaskThatSavesState)
 def send_email_report(user):
     status = "started"
     template_filler_dict = notification_report.make(user)
@@ -206,6 +205,7 @@ def send_email_report(user):
         status = "not emailed, no cards made"
         logger.debug(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
 
+    db.session.merge(user)
     user.last_email_check = now
 
     try:
