@@ -103,6 +103,10 @@ class Card(db.Model):
         html_template = templateEnv.get_template(self.get_template_name() + ".html")
         return html_template.render(self.to_dict())
 
+
+    def print_metric(self):
+        pass
+
     def to_text(self):
         templateLoader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
         templateEnv = jinja2.Environment(loader=templateLoader)

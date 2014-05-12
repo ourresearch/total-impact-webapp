@@ -7598,6 +7598,10 @@ div.product-controls div.wrapper div.products-info div.products-done-updating di
   color: #555;
   cursor: default;
 }
+div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter.active.this-week a {
+  font-weight: 900;
+  color: #ff4000;
+}
 div.product-controls div.wrapper div.products-info div.products-done-updating div.filters .filter a {
   font-weight: 100;
   color: #999999;
