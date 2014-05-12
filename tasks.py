@@ -161,8 +161,13 @@ def deduplicate(user):
     return removed_tiids
 
 
-@celery_app.task(base=TaskThatSavesState)
+# @celery_app.task(base=TaskThatSavesState)
+@celery_app.task()
 def send_email_if_new_diffs(user):
+
+    # get it again to help with debugging?
+    user = User.query.get(user.id)
+
     status = "started"
     now = datetime.datetime.utcnow()    
     print(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
@@ -186,13 +191,13 @@ def send_email_if_new_diffs(user):
         print(u"rollback, trying again to update user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
         db.session.rollback()
         db.session.commit()
-        print(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        print(u"after rollback updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
 
     return status
 
 
 
-def send_email_report(user, now=None):
+def send_email_report(user, now=None):    
     status = "started"
     if not now:
         now = datetime.datetime.utcnow()
@@ -213,7 +218,7 @@ def send_email_report(user, now=None):
             print(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
             db.session.rollback()
             db.session.commit()
-            print(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            print(u"after rollback updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
 
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
         status = "emailed"
