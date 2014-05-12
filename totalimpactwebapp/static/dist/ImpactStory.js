@@ -3068,10 +3068,7 @@ angular.module('security.login.toolbar', [
           var dismissed = user.new_metrics_notification_dismissed
           var latestMetrics = user.latest_diff_timestamp
 
-          console.log("latest metrics date: ", latestMetrics)
-          console.log("notifications last dismissed on: ", dismissed)
-
-          return latestMetrics > dismissed
+          return !dismissed || latestMetrics > dismissed
         }
         else {
           return false
