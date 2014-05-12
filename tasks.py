@@ -188,8 +188,18 @@ def send_email_report(user):
             email = user.email
         else:
             email = "team@impactstory.org"
-        msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
         user.last_email_sent = now
+
+        try:
+            db.session.commit()
+            logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+        except InvalidRequestError:
+            logger.debug(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            db.session.rollback()
+            db.session.commit()
+            logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+
+        msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
         status = "emailed"
         logger.debug(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
     else:
