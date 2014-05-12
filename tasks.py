@@ -164,22 +164,39 @@ def deduplicate(user):
 @celery_app.task(base=TaskThatSavesState)
 def send_email_if_new_diffs(user):
     status = "started"
+    now = datetime.datetime.utcnow()    
     logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
     latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
     status = "checking diffs"
     if (latest_diff_timestamp > user.last_email_check.isoformat()):
         logger.debug("has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
-        send_email_report(user)
+        send_email_report(user, now)
         status = "email sent"
     else:
         logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
         status = "no new diffs"
+
+    # set last email check
+    db.session.merge(user)
+    user.last_email_check = now
+    try:
+        db.session.commit()
+        logger.debug(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+    except InvalidRequestError:
+        logger.debug(u"rollback, trying again to update user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        db.session.rollback()
+        db.session.commit()
+        logger.debug(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+
     return status
 
-def send_email_report(user):
+
+
+def send_email_report(user, now=None):
     status = "started"
+    if not now:
+        now = datetime.datetime.utcnow()
     template_filler_dict = notification_report.make(user)
-    now = datetime.datetime.utcnow()
     db.session.merge(user)
 
     if template_filler_dict["cards"]:
@@ -204,18 +221,6 @@ def send_email_report(user):
     else:
         status = "not emailed, no cards made"
         logger.debug(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
-
-    db.session.merge(user)
-    user.last_email_check = now
-
-    try:
-        db.session.commit()
-        logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
-    except InvalidRequestError:
-        logger.debug(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
-        db.session.rollback()
-        db.session.commit()
-        logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
 
     return status
 
