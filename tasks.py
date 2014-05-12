@@ -165,15 +165,15 @@ def deduplicate(user):
 def send_email_if_new_diffs(user):
     status = "started"
     now = datetime.datetime.utcnow()    
-    logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+    print(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
     latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
     status = "checking diffs"
     if (latest_diff_timestamp > user.last_email_check.isoformat()):
-        logger.debug("has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
+        print("has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
         send_email_report(user, now)
         status = "email sent"
     else:
-        logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
+        print(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
         status = "no new diffs"
 
     # set last email check
@@ -181,12 +181,12 @@ def send_email_if_new_diffs(user):
     user.last_email_check = now
     try:
         db.session.commit()
-        logger.debug(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        print(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
     except InvalidRequestError:
-        logger.debug(u"rollback, trying again to update user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        print(u"rollback, trying again to update user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
         db.session.rollback()
         db.session.commit()
-        logger.debug(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        print(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
 
     return status
 
@@ -208,19 +208,19 @@ def send_email_report(user, now=None):
 
         try:
             db.session.commit()
-            logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            print(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
         except InvalidRequestError:
-            logger.debug(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            print(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
             db.session.rollback()
             db.session.commit()
-            logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            print(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
 
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
         status = "emailed"
-        logger.debug(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
+        print(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
     else:
         status = "not emailed, no cards made"
-        logger.debug(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
+        print(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
 
     return status
 
