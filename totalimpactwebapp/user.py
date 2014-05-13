@@ -332,7 +332,8 @@ class User(db.Model):
             "wordpress_api_key",
             "stripe_id",
             "new_metrics_notification_dismissed",
-            "notification_email_frequency"
+            "notification_email_frequency",
+            "is_advisor"
         ]
 
         ret_dict = {}
