@@ -101,22 +101,26 @@ def main(number_to_update=3, max_days_since_updated=7, url_slugs=[None]):
             print u"got", len(url_slugs), "UnicodeEncodeError in by_profile"
 
         for url_slug in url_slugs:
-            number_products_before = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
-            import_products_by_url_slug(url_slug, webapp_api_endpoint)
-            # don't need to deduplicate any more
-            # deduplicate_by_url_slug(url_slug, webapp_api_endpoint)
-            refresh_by_url_slug(url_slug, webapp_api_endpoint)
-            number_products_after = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
-            if number_products_before==number_products_after:
-                logger.info(u"***NO CHANGE on update for {url_slug}, {number_products_before} products".format(
-                    number_products_before=number_products_before,
-                    url_slug=url_slug))
-            else:
-                logger.info(u"***BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
-                    number_products_before=number_products_before,
-                    number_products_after=number_products_after,
-                    percent=100.0*(number_products_after-number_products_before)/number_products_before,
-                    url_slug=url_slug))
+            try:
+                number_products_before = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
+                import_products_by_url_slug(url_slug, webapp_api_endpoint)
+                # don't need to deduplicate any more
+                # deduplicate_by_url_slug(url_slug, webapp_api_endpoint)
+                refresh_by_url_slug(url_slug, webapp_api_endpoint)
+                number_products_after = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
+                if number_products_before==number_products_after:
+                    logger.info(u"***NO CHANGE on update for {url_slug}, {number_products_before} products".format(
+                        number_products_before=number_products_before,
+                        url_slug=url_slug))
+                else:
+                    logger.info(u"***BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
+                        number_products_before=number_products_before,
+                        number_products_after=number_products_after,
+                        percent=100.0*(number_products_after-number_products_before)/number_products_before,
+                        url_slug=url_slug))
+            except Exception:
+                logger.warning(u"Exception in main loop on {url_slug}, so skipping".format(url_slug=url_slug))
+
 
     except (KeyboardInterrupt, SystemExit): 
         # this approach is per http://stackoverflow.com/questions/2564137/python-how-to-terminate-a-thread-when-main-program-ends
