@@ -852,3 +852,10 @@ def logo_small():
     return send_file(filename, mimetype='image/png')
 
 
+
+@app.route('/advisor.png')
+def logo_small():
+    filename = "static/img/advisor-badge.png"
+    return send_file(filename, mimetype='image/png')
+
+
