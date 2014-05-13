@@ -1321,7 +1321,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "      <div class=\"my-metrics\">\n" +
     "         <!-- advisor badge -->\n" +
-    "         <div class=\"advisor\" ng-show=\"user.is_advisor\">\n" +
+    "         <div class=\"advisor\" ng-show=\"user.about.is_advisor\">\n" +
     "            <img src=\"/static/img/advisor-badge.png\">\n" +
     "         </div>\n" +
     "         <ul class=\"profile-award-list\">\n" +

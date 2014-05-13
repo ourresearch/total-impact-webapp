@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-12
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-13
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -5522,7 +5522,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "      <div class=\"my-metrics\">\n" +
     "         <!-- advisor badge -->\n" +
-    "         <div class=\"advisor\" ng-show=\"user.is_advisor\">\n" +
+    "         <div class=\"advisor\" ng-show=\"user.about.is_advisor\">\n" +
     "            <img src=\"/static/img/advisor-badge.png\">\n" +
     "         </div>\n" +
     "         <ul class=\"profile-award-list\">\n" +
