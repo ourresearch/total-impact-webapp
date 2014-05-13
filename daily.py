@@ -76,14 +76,14 @@ def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
         try:
             if not user.email:
-                print(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))
+                logger.debug(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))
             elif user.notification_email_frequency == "none":
-                print(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
+                logger.debug(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
             else:
-                print(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=user.url_slug))
+                logger.debug(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=user.url_slug))
                 status = tasks.send_email_if_new_diffs.delay(user)
         except Exception as e:
-            print(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next user".format(url_slug=user.url_slug))
+            logger.warning(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next user".format(url_slug=user.url_slug))
             pass
     return
 

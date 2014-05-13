@@ -44,7 +44,7 @@ class CeleryStatus(db.Model):
     run = db.Column(db.DateTime())
 
     def __init__(self, **kwargs):
-        print(u"new CeleryStatus {kwargs}".format(
+        logger.debug(u"new CeleryStatus {kwargs}".format(
             kwargs=kwargs))        
         self.run = datetime.datetime.utcnow()    
         super(CeleryStatus, self).__init__(**kwargs)
@@ -108,7 +108,7 @@ class ProfileDeets(db.Model):
     deets_collected_date = db.Column(db.DateTime())
 
     def __init__(self, **kwargs):
-        print(u"new ProfileDeets {kwargs}".format(
+        logger.debug(u"new ProfileDeets {kwargs}".format(
             kwargs=kwargs))        
         self.deets_collected_date = datetime.datetime.utcnow()    
         super(ProfileDeets, self).__init__(**kwargs)
@@ -152,11 +152,9 @@ def deduplicate(user):
     removed_tiids = []
     try:
         removed_tiids = remove_duplicates_from_user(user.id)
-        print removed_tiids
+        logger.debug(removed_tiids)
     except Exception as e:
-        print
-        print "EXCEPTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", user.id
-        print e.message
+        logger.debug("EXCEPTION!!!!!!!!!!!!!!!! deduplicating")
 
     return removed_tiids
 
@@ -170,15 +168,15 @@ def send_email_if_new_diffs(user):
 
     status = "started"
     now = datetime.datetime.utcnow()    
-    print(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+    logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
     latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
     status = "checking diffs"
     if (latest_diff_timestamp > user.last_email_check.isoformat()):
-        print("has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
+        logger.debug("has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
         send_email_report(user, now)
         status = "email sent"
     else:
-        print(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
+        logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
         status = "no new diffs"
 
     # set last email check
@@ -186,12 +184,12 @@ def send_email_if_new_diffs(user):
     user.last_email_check = now
     try:
         db.session.commit()
-        print(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        logger.debug(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
     except InvalidRequestError:
-        print(u"rollback, trying again to update user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        logger.debug(u"rollback, trying again to update user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
         db.session.rollback()
         db.session.commit()
-        print(u"after rollback updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        logger.debug(u"after rollback updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
 
     return status
 
@@ -213,19 +211,19 @@ def send_email_report(user, now=None):
 
         try:
             db.session.commit()
-            print(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
         except InvalidRequestError:
-            print(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            logger.debug(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
             db.session.rollback()
             db.session.commit()
-            print(u"after rollback updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            logger.debug(u"after rollback updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
 
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
         status = "emailed"
-        print(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
+        logger.debug(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
     else:
         status = "not emailed, no cards made"
-        print(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
+        logger.debug(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
 
     return status
 
