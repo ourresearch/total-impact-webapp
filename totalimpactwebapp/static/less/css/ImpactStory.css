@@ -7304,6 +7304,9 @@ div.profile-header div.wrapper div.my-vitals div.connected-accounts li a img {
 div.profile-header div.wrapper div.my-metrics {
   float: left;
 }
+div.profile-header div.wrapper div.my-metrics div.advisor {
+  margin-bottom: 20px;
+}
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container:hover iframe {
   display: inline;
 }

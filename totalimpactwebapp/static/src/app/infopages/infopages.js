@@ -70,6 +70,10 @@ angular.module( 'infopages', [
         templateUrl: 'infopages/advisors.tpl.html',
         controller: 'advisorsPageCtrl'
       })
+      .when('/spread-the-word', {
+        templateUrl: 'infopages/spread-the-word.tpl.html',
+        controller: 'SpreadTheWordCtrl'
+      })
       .when('/collection/:cid', {
         templateUrl: 'infopages/collection.tpl.html',
         controller: 'collectionPageCtrl'
@@ -125,6 +129,10 @@ angular.module( 'infopages', [
 
   .controller('advisorsPageCtrl', function($scope, Page) {
     Page.setTitle("advisors")
+
+  })
+  .controller('SpreadTheWordCtrl', function($scope, Page) {
+    Page.setTitle("Spread the word")
 
   })
 

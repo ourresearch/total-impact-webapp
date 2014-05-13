@@ -111,6 +111,7 @@ class User(db.Model):
     notification_email_frequency = db.Column(db.Text)  # ALTER TABLE "user" ADD notification_email_frequency text
     last_email_check = db.Column(db.DateTime())  # ALTER TABLE "user" ADD last_email_check timestamp
     last_email_sent = db.Column(db.DateTime())  # ALTER TABLE "user" ADD last_email_sent timestamp
+    is_advisor = db.Column(db.Text)  # ALTER TABLE "user" ADD is_advisor text
 
     tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
         backref=db.backref("user", lazy="subquery"))
