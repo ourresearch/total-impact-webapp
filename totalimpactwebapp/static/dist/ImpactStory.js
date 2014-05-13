@@ -4932,21 +4932,26 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "   <div class=\"wrapper\">\n" +
     "      <h2 class=\"infopage-heading\">Spread the word</h2>\n" +
     "\n" +
+    "      <div class=\"intro\">\n" +
+    "         <p>Want to share the news about Impactstory with your colleagues? Great!\n" +
+    "            Here are some resources to get you started; let us know if you've got other\n" +
+    "            materials you could use as well. If you've translated any of these into another language,\n" +
+    "            let us know that too...we’ll post them here! </p>\n" +
+    "      </div>\n" +
+    "\n" +
     "      <h3>Slides</h3>\n" +
     "      <div class=\"descr\">\n" +
     "         <p>\n" +
-    "            A deck that introduces Impactstory and altmetrics, and describes how to set up an Impactstory profile. Use it in your next presentation, or create your own! Feel free to edit these slides to suit your needs.\n" +
+    "            A deck that introduces Impactstory, and describes how to set up an Impactstory profile. Use it in your next presentation, or create your own! Feel free to edit these slides to suit your needs.\n" +
     "         </p>\n" +
     "         <p>\n" +
-    "            Download this slide deck as\n" +
-    "            <a href=\"/static/downloads/share-the-word-slides.pptx\">Powerpoint</a> or\n" +
-    "            <a href=\"/static/downloads/share-the-word-slides.pdf\">PDF.</a>\n" +
+    "            Click the <img src=\"http://i.imgur.com/ivV76hl.png\" alt=\"\"/> icon under the embedded slides on the right to\n" +
+    "            download them as PDF or Powerpoint, or check them out on\n" +
+    "            <a href=\"https://docs.google.com/presentation/d/1WhE8yNwQ1grOffBoXSbbpNJo8oY7YdOBy83x8NPVU7s\">Google Slides.</a>\n" +
     "         </p>\n" +
     "      </div>\n" +
     "      <div class=\"content\">\n" +
-    "         <iframe src=\"https://docs.google.com/presentation/d/1jiwvritheO8rS0myZF9ZfkGJCELC-lziOIMofTkwLX8/embed?start=true&loop=false&delayms=3000\"\n" +
-    "                 start=\"false\"\n" +
-    "                 loop=\"false\"\n" +
+    "         <iframe src=\"https://docs.google.com/presentation/d/1WhE8yNwQ1grOffBoXSbbpNJo8oY7YdOBy83x8NPVU7s/embed?start=false&loop=false&delayms=3000\"\n" +
     "                 frameborder=\"0\"\n" +
     "                 width=\"480\"\n" +
     "                 height=\"299\"\n" +
@@ -4975,7 +4980,9 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "   </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "\n" +
+    "");
 }]);
 
 angular.module("password-reset/password-reset-header.tpl.html", []).run(["$templateCache", function($templateCache) {

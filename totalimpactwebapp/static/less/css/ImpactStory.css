@@ -7029,10 +7029,19 @@ div#about div#contact p {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+#share-the-word-infopage div.intro {
+  padding-right: 100px;
+}
 #share-the-word-infopage div.descr {
   width: 400px;
   float: left;
-  margin-right: 20px;
+  margin-right: 40px;
+}
+#share-the-word-infopage div.descr img {
+  margin: 0 5px;
+}
+#share-the-word-infopage div.content {
+  margin-top: -20px;
 }
 #share-the-word-infopage div.content #poster-sample-image {
   border: 1px solid #333;
