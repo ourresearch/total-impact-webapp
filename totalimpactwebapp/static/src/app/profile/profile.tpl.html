@@ -61,6 +61,10 @@
          </div>
       </div>
       <div class="my-metrics">
+         <!-- advisor badge -->
+         <div class="advisor" ng-show="user.about.is_advisor">
+            <img src="/static/img/advisor-badge.png">
+         </div>
          <ul class="profile-award-list">
             <li class="profile-award-container level-{{ profileAward.level }}"
                 ng-include="'profile-award/profile-award.tpl.html'"

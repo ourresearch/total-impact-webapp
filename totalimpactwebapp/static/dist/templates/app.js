@@ -1,4 +1,4 @@
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/premium-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/premium-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -725,6 +725,65 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "");
 }]);
 
+angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("infopages/spread-the-word.tpl.html",
+    "<div class=\"main infopage\" id=\"share-the-word-infopage\">\n" +
+    "   <div class=\"wrapper\">\n" +
+    "      <h2 class=\"infopage-heading\">Spread the word</h2>\n" +
+    "\n" +
+    "      <div class=\"intro\">\n" +
+    "         <p>Want to share the news about Impactstory with your colleagues? Great!\n" +
+    "            Here are some resources to get you started; let us know if you've got other\n" +
+    "            materials you could use as well. If you've translated any of these into another language,\n" +
+    "            let us know that too...we’ll post them here! </p>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <h3>Slides</h3>\n" +
+    "      <div class=\"descr\">\n" +
+    "         <p>\n" +
+    "            A deck that introduces Impactstory, and describes how to set up an Impactstory profile. Use it in your next presentation, or create your own! Feel free to edit these slides to suit your needs.\n" +
+    "         </p>\n" +
+    "         <p>\n" +
+    "            Click the <img src=\"http://i.imgur.com/ivV76hl.png\" alt=\"\"/> icon under the embedded slides on the right to\n" +
+    "            download them as PDF or Powerpoint, or check them out on\n" +
+    "            <a href=\"https://docs.google.com/presentation/d/1WhE8yNwQ1grOffBoXSbbpNJo8oY7YdOBy83x8NPVU7s\">Google Slides.</a>\n" +
+    "         </p>\n" +
+    "      </div>\n" +
+    "      <div class=\"content\">\n" +
+    "         <iframe src=\"https://docs.google.com/presentation/d/1WhE8yNwQ1grOffBoXSbbpNJo8oY7YdOBy83x8NPVU7s/embed?start=false&loop=false&delayms=3000\"\n" +
+    "                 frameborder=\"0\"\n" +
+    "                 width=\"480\"\n" +
+    "                 height=\"299\"\n" +
+    "                 allowfullscreen=\"true\"\n" +
+    "                 mozallowfullscreen=\"true\"\n" +
+    "                 webkitallowfullscreen=\"true\">\n" +
+    "        </iframe>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <h3>Poster</h3>\n" +
+    "      <div class=\"descr\">\n" +
+    "         <p>\n" +
+    "            Help your colleagues realize there’s more to impact than the h-index (and also learn about Impactstory).\n" +
+    "         </p>\n" +
+    "         <p>\n" +
+    "            Download the 8.5” x 11” poster as\n" +
+    "            <a href=\"/static/downloads/share-the-word-poster.docx\" target=\"_self\">Word,</a>\n" +
+    "            <a href=\"/static/downloads/share-the-word-poster.pdf\" target=\"_self\">PDF, </a> or\n" +
+    "            <a href=\"/static/downloads/share-the-word-poster.png\" target=\"_self\">PNG.</a>\n" +
+    "         </p>\n" +
+    "      </div>\n" +
+    "      <div class=\"content\">\n" +
+    "         <img id=\"poster-sample-image\" src=\"/static/downloads/share-the-word-poster.png\" alt=\"image of impactstory poster\"/>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
 angular.module("password-reset/password-reset-header.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("password-reset/password-reset-header.tpl.html",
     "<div class=\"password-reset-header\">\n" +
@@ -1261,6 +1320,10 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"my-metrics\">\n" +
+    "         <!-- advisor badge -->\n" +
+    "         <div class=\"advisor\" ng-show=\"user.about.is_advisor\">\n" +
+    "            <img src=\"/static/img/advisor-badge.png\">\n" +
+    "         </div>\n" +
     "         <ul class=\"profile-award-list\">\n" +
     "            <li class=\"profile-award-container level-{{ profileAward.level }}\"\n" +
     "                ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +

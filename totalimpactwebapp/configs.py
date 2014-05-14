@@ -136,8 +136,18 @@ def get():
     ret = {}
     for config_values in configs:
         config_dict = dict(map(None, config_keys, config_values))
+        metric_name = config_values[0]
 
-        ret[config_values[0]] = config_dict
+        ret[metric_name] = config_dict
+
+    return ret
+
+
+def get_metric_config_by_key(key, return_nones=False):
+    ret = {}
+    for metric_name, config_dict in get().iteritems():
+        if return_nones or config_dict[key] is not None:
+            ret[metric_name] = config_dict[key]
 
     return ret
 
