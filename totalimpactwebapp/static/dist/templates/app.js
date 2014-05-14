@@ -767,9 +767,9 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "         </p>\n" +
     "         <p>\n" +
     "            Download the 8.5” x 11” poster as\n" +
-    "            <a href=\"/static/downloads/share-the-word-poster.docx\">Word,</a>\n" +
-    "            <a href=\"/static/downloads/share-the-word-poster.pdf\">PDF, </a> or\n" +
-    "            <a href=\"/static/downloads/share-the-word-poster.png\">PNG.</a>\n" +
+    "            <a href=\"/static/downloads/share-the-word-poster.docx\" target=\"_self\">Word,</a>\n" +
+    "            <a href=\"/static/downloads/share-the-word-poster.pdf\" target=\"_self\">PDF, </a> or\n" +
+    "            <a href=\"/static/downloads/share-the-word-poster.png\" target=\"_self\">PNG.</a>\n" +
     "         </p>\n" +
     "      </div>\n" +
     "      <div class=\"content\">\n" +
