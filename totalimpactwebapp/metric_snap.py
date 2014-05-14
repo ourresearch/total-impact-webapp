@@ -8,8 +8,12 @@ logger = logging.getLogger("tiwebapp.metric_snap")
 * Factory
 ***************************************** """
 
-def make(metricName, product):
+def make(metricName, product_dict):
     relevant_config = configs.get()[metricName]
+
+    #  get the metric_snap dict from the product
+    metric_snap_dict = product_dict["metrics"]["foo"]
+    return MetricSnap(metric_snap_dict)
 
 
 
@@ -124,8 +128,12 @@ def metric_percentiles(metric):
 
 
 class MetricSnap():
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, metric_snap_dict):
+        self.metric_snap_dict = metric_snap_dict
+
+
+    def is_highly(self):
+        pass
 
 
 
