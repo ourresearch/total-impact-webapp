@@ -11,6 +11,8 @@ def make_awards_list(user):
     # but right now that doesn't exist.
     award.calculate({}, user.products)
 
+    print user.products
+
     awards_list.append(award)
     return awards_list
 
