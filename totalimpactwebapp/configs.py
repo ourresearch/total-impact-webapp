@@ -110,7 +110,7 @@ configs = [
     ["plosalm:pubmed_central"],
     ["plosalm:scopus"],                      # figure it out
     ["plossearch:mentions", "scholars", "cited", "badge", 3, orders_of_magnitude(True)],
-    ["pubmed:f1000", "scholars", "recommended", "badge", 3, orders_of_magnitude(True)],
+    ["pubmed:f1000", "scholars", "recommended", "badge", 1, orders_of_magnitude(True)],
     ["pubmed:pmc_citations", "scholars", "cited", "badge", 3, orders_of_magnitude()],
     ["pubmed:pmc_citations_editorials"],
     ["pubmed:pmc_citations_reviews"],
