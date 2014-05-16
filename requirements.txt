@@ -1,5 +1,6 @@
 Flask==0.9
 Flask-Assets==0.8
+Flask-Compress==1.0.0
 Flask-Jasmine==1.3a
 Flask-Login==0.1.3
 Flask-SQLAlchemy==0.16
