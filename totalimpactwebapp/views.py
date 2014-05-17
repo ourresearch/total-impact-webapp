@@ -840,7 +840,6 @@ def impactstory_dot_js():
     abort(410)
 
 
-
 @app.route('/logo')
 def logo():
     filename = "static/img/logos/impactstory-logo-big.png"
@@ -851,10 +850,8 @@ def logo_small():
     filename = "static/img/impactstory-logo.png"
     return send_file(filename, mimetype='image/png')
 
-
-
 @app.route('/advisor.png')
-def logo_small():
+def advisor_badge():
     filename = "static/img/advisor-badge.png"
     return send_file(filename, mimetype='image/png')
 
