@@ -56,6 +56,23 @@ class CeleryStatus(db.Model):
 
 
 
+class TaskAlertIfFail(celery.Task):
+
+    def __call__(self, *args, **kwargs):
+        """In celery task this function call the run method, here you can
+        set some environment variable before the run of the task"""
+        # logger.info("Starting to run")
+        return self.run(*args, **kwargs)
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        url_slug="unknown"
+        for arg in args:
+            if isinstance(arg, User):
+                url_slug = arg.url_slug
+        logger.error("Celery task failed on {task_name}, user {url_slug}, task_id={task_id}".format(
+            task_name=self.name, url_slug=url_slug, task_id=task_id))
+
+
 # from http://stackoverflow.com/questions/6393879/celery-task-and-customize-decorator
 class TaskThatSavesState(celery.Task):
 
@@ -93,6 +110,9 @@ class TaskThatSavesState(celery.Task):
         except InvalidRequestError:
             db.session.rollback()
             db.session.commit()
+
+
+
 
 
 class ProfileDeets(db.Model):
@@ -159,8 +179,7 @@ def deduplicate(user):
     return removed_tiids
 
 
-# @celery_app.task(base=TaskThatSavesState)
-@celery_app.task()
+@celery_app.task(base=TaskAlertIfFail)
 def send_email_if_new_diffs(user):
 
     # get it again to help with debugging?
