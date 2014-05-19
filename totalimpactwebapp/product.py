@@ -2,6 +2,7 @@ from copy import deepcopy
 import logging
 from flask import render_template
 from totalimpactwebapp import configs
+from totalimpactwebapp import metric_snap
 import arrow
 
 logger = logging.getLogger("tiwebapp.product")
@@ -40,8 +41,28 @@ def prep_product(product, verbose=False, hide_markup=False, display_debug=False)
 
 
 
+def make(raw_dict):
+    snaps = []
+    for metric_name, snap_dict in raw_dict["metrics"].iteritems():
+        snaps.append(metric_snap.make(metric_name, snap_dict))
+
+    new_product = Product(raw_dict)
+    new_product.metric_snaps = snaps
+
+    return new_product
 
 
+
+class Product():
+    def __init__(self, product_dict):
+        self.raw_dict = product_dict
+
+    def to_dict(self, awards=None, markup=None):
+        ret = {
+            "biblio": make_biblio(self.raw_dict),
+            "metric_snaps": [snap.to_dict() for snap in self.metric_snaps]
+        }
+        return ret
 
 
 
@@ -90,7 +111,7 @@ Metrics stuff
 
 def make_metrics(product_dict):
     metrics = product_dict["metrics"]
-    config_dict = configs.get()
+    config_dict = configs.metrics()
 
     try:
         year = product_dict["biblio"]["year"]
@@ -109,7 +130,7 @@ def make_metrics(product_dict):
 
         if audience is not None:
             metric.update(config_dict[metric_name])
-            metric.update(metric_metadata(metric, year, refset_genre))
+            #metric.update(metric_metadata(metric, year, refset_genre))
             metric.update(metric_percentiles(metric))
             metric["award"] = make_award_for_single_metric(metric)
             ret[metric_name] = metric

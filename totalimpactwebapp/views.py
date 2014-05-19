@@ -456,12 +456,19 @@ def user_products_get(id):
         resp = products_list.get_duplicates_list_from_tiids(user.tiids)
     else:        
         display_debug = request.args.get("debug", "unset") != "unset"
+
+        show_awards = "awards" not in request.args.get("hide", "")
+        show_markup = "markup" not in request.args.get("hide", "")
         include_headings = request.args.get("include_heading_products") in [1, "true", "True"]
+
         resp = products_list.prep(
             user.products,
-            include_headings,
-            display_debug
+            headings=include_headings,
+            awards=show_awards,
+            markup=show_markup
         )
+
+        #resp = user.products
 
     return json_resp_from_thing(resp)
 

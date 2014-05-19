@@ -10,22 +10,22 @@ from flask import g
 
 
 
-def prep(products_dict, include_headings=False, hide_markup=True, display_debug=False):
+def prep(products_dict, headings=None, awards=None, markup=None):
 
-    prepped_products = []
+    product_dicts = []
 
     for product_dict in products_dict:
 
         try:
-            prepped_products.append(product.prep_product(product_dict, hide_markup=hide_markup, display_debug=display_debug))
+            new_product = product.make(product_dict)
+            product_dicts.append(new_product.to_dict())
         except product.GenreDeprecatedError:
             pass
 
-    if include_headings:
-        prepped_products += make_heading_products(prepped_products)
-        #prepped_products = remove_account_products(prepped_products)
+    if headings:
+        product_dicts += make_heading_products(product_dicts)
 
-    return prepped_products
+    return product_dicts
 
 
 

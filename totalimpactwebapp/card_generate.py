@@ -117,11 +117,7 @@ class ProductNewMetricCardGenerator(CardGenerator):
 
     @classmethod
     def make(cls, user, product_dicts, timestamp=None):
-        thresholds_lookup = configs.get_metric_config_by_key("thresholds")
-
-        print "THRESHOLDS LOOKUP", thresholds_lookup
-
-
+        thresholds_lookup = configs.metrics(this_key_only="thresholds")
 
         medians_lookup = get_medians_lookup()
         if not timestamp:
@@ -161,7 +157,7 @@ class ProfileNewMetricCardGenerator(CardGenerator):
 
     @classmethod
     def make(cls, user, product_dicts, timestamp=None):
-        thresholds_lookup = configs.get_metric_config_by_key("thresholds")
+        thresholds_lookup = configs.metrics(this_key_only="thresholds")
 
 
         medians_lookup = get_medians_lookup()
