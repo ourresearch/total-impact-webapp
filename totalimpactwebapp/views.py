@@ -829,9 +829,9 @@ def test_emailer():
     return json_resp_from_thing(ret)
 
 
-@app.route("/configs")
+@app.route("/configs/metrics")
 def get_configs():
-    return json_resp_from_thing(configs.get())
+    return json_resp_from_thing(configs.metrics())
 
 ###############################################################################
 #

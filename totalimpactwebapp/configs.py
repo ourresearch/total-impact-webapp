@@ -29,6 +29,9 @@ def metrics(this_key_only=None):
         try:
             for metric_name, metric_config in provider["metrics"].iteritems():
                 new_key = provider["name"] + ":" + metric_name
+                metric_config["environment"] = provider["name"]
+                if "interaction" not in metric_config.keys():
+                    metric_config["interaction"] = metric_name.replace("_", " ")
 
                 if this_key_only is None:
                     ret[new_key] = metric_config
@@ -753,7 +756,8 @@ providers = [
                 "provider_url": "http://f1000.com",
                 "audience": "scholars",
                 "engagement_type": "recommended",
-                "milestones": fives_then_orders_of_magnitude()
+                "milestones": fives_then_orders_of_magnitude(),
+                "interaction": "recommendations"
             },
             "pmc_citations": {
                 "description": "The number of citations by papers in PubMed Central",
@@ -761,7 +765,8 @@ providers = [
                 "icon": "http://www.ncbi.nlm.nih.gov/favicon.ico",
                 "provider": "PubMed Central",
                 "provider_url": "http://pubmed.gov",
-                "hide_badge": True
+                "hide_badge": True,
+                "interaction": "citations"
             },
             "pmc_citations_editorials": {
                 "description": "The number of citations by editorials papers in PubMed Central",

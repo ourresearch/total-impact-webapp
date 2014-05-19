@@ -10,83 +10,36 @@ logger = logging.getLogger("tiwebapp.metric_snap")
 
 
 
-def make(metric_name, raw_dict):
-    return MetricSnap(metric_name, raw_dict)
+def make(raw_dict, metric_name, year, genre):
+    snap = raw_dict
+    snap["config"] = configs.metrics()[metric_name]
 
-
-
-
-
-
-
-def make_metrics(product_dict):
-    metrics = product_dict["metrics"]
-    config_dict = configs.get()
-
-    try:
-        year = product_dict["biblio"]["year"]
-    except KeyError:
-        year = None
-
-    refset_genre = product_dict["biblio"]["genre"]
-    ret = {}
-    for metric_name, metric in metrics.iteritems():
-        try:
-            audience = config_dict[metric_name]["audience"]
-        except KeyError:
-            logger.warning("couldn't find audience for {metric_name}".format(
-                metric_name=metric_name))
-            return ret
-
-        if audience is not None:
-            metric.update(config_dict[metric_name])
-            metric.update(metric_metadata(metric, year, refset_genre))
-            metric.update(metric_percentiles(metric))
-            metric["award"] = make_award_for_single_metric(metric)
-            ret[metric_name] = metric
-
-    return ret
-
-
-def metric_metadata(metric, year, refset_genre):
-    interaction_display_names = {
-        "f1000": "recommendations",
-        "pmc_citations": "citations"
-    }
-
-    ret = {}
-
-    raw_count = metric["values"]["raw"]
-    ret["display_count"] = raw_count
+    raw_count = snap["values"]["raw"]
+    snap["display_count"] = raw_count
 
     # deal with F1000's troublesome "count" of "Yes." Can add others later.
     # currently ALL strings are transformed to 1.
     if isinstance(raw_count, basestring):
-        ret["actual_count"] = 1
+        snap["actual_count"] = 1
     else:
-        ret["actual_count"] = raw_count
+        snap["actual_count"] = raw_count
 
-    ret["environment"] = metric["static_meta"]["provider"]
-    interaction = metric["name"].split(":")[1].replace("_", " ")
+    # handle plurals
+    if snap["actual_count"] <= 1:
+        snap["display_interaction"] = snap["config"]["interaction"][:-1]  # de-pluralize
 
-    try:
-        interaction = interaction_display_names[interaction]
-    except KeyError:
-        pass
+    # add product-level info
+    snap["refset_year"] = year
+    snap["refset_genre"] = genre
 
-    if ret["actual_count"] <= 1:
-        ret["display_interaction"] = interaction[:-1]  # de-pluralize
-    else:
-        ret["display_interaction"] = interaction
-
-    ret["refset_year"] = year
-    ret["refset_genre"] = refset_genre
-
-    return ret
+    snap.update(metric_percentiles(snap))
+    return MetricSnap(metric_name, snap)
 
 
-def metric_days_since_last_nonzero_refresh(metric):
-    return 7
+
+
+
+
 
 
 def metric_percentiles(metric):
@@ -139,8 +92,12 @@ class MetricSnap():
     def is_highly(self):
         pass
 
-    def to_dict(self):
-        return {"foo": "bar"}
+    def to_dict(self, include_config=False):
+        ret = self.metric_snap_dict
+        if not include_config:
+            del ret["config"]
+
+        return ret
 
 
 

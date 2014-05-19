@@ -40,13 +40,19 @@ def prep_product(product, verbose=False, hide_markup=False, display_debug=False)
 
 
 
-
 def make(raw_dict):
+    new_product = Product(raw_dict)
+
     snaps = []
     for metric_name, snap_dict in raw_dict["metrics"].iteritems():
-        snaps.append(metric_snap.make(metric_name, snap_dict))
+        new_snap = metric_snap.make(
+            snap_dict,
+            metric_name,
+            new_product.get_year(),
+            new_product.get_genre()
+        )
+        snaps.append(new_snap)
 
-    new_product = Product(raw_dict)
     new_product.metric_snaps = snaps
 
     return new_product
@@ -56,6 +62,15 @@ def make(raw_dict):
 class Product():
     def __init__(self, product_dict):
         self.raw_dict = product_dict
+
+    def get_year(self):
+        try:
+            return self.raw_dict["biblio"]["year"]
+        except KeyError:
+            return None
+
+    def get_genre(self):
+        return self.raw_dict["biblio"]["genre"]
 
     def to_dict(self, awards=None, markup=None):
         ret = {
