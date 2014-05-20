@@ -4981,6 +4981,19 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "         <img id=\"stickers-pic\" src=\"/static/img/stickers-sheet.jpg\" alt=\"many impactstory stickers\"/>\n" +
     "      </div>\n" +
     "\n" +
+    "      <h3>Logo</h3>\n" +
+    "      <div class=\"descr\">\n" +
+    "         <p>\n" +
+    "            Want to use our logo for your poster, presentation, or other informational resource? Go for it!\n" +
+    "         </p>\n" +
+    "         <p>\n" +
+    "            Download logo as a <a href=\"/logo\">big ol' PNG</a>\n" +
+    "         </p>\n" +
+    "      </div>\n" +
+    "      <div class=\"content\">\n" +
+    "         <img id=\"stickers-pic\" src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory logo\"/>\n" +
+    "      </div>\n" +
+    "\n" +
     "\n" +
     "\n" +
     "   </div>\n" +

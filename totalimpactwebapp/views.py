@@ -842,7 +842,7 @@ def impactstory_dot_js():
 
 @app.route('/logo')
 def logo():
-    filename = "static/img/logos/impactstory-logo-big.png"
+    filename = "static/img/impactstory-logo-sideways-big.png"
     return send_file(filename, mimetype='image/png')
 
 @app.route('/logo/small')
