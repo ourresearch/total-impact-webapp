@@ -486,7 +486,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "      <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\">CC-BY license</a>.\n" +
     "   </span>\n" +
     "\n" +
-    "   \n" +
+    "\n" +
     "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
     "\n" +
