@@ -727,7 +727,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
 
 angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("infopages/spread-the-word.tpl.html",
-    "<div class=\"main infopage\" id=\"share-the-word-infopage\">\n" +
+    "<div class=\"main infopage\" id=\"spread-the-word-infopage\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <h2 class=\"infopage-heading\">Spread the word</h2>\n" +
     "\n" +
@@ -774,6 +774,20 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "      </div>\n" +
     "      <div class=\"content\">\n" +
     "         <img id=\"poster-sample-image\" src=\"/static/downloads/share-the-word-poster.png\" alt=\"image of impactstory poster\"/>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <h3>Stickers</h3>\n" +
+    "      <div class=\"descr\">\n" +
+    "         <p>\n" +
+    "            Let folks know you're more than your h-index, and show your support for Impactstory\n" +
+    "            with these weather-resistant vinyl stickers.\n" +
+    "         </p>\n" +
+    "         <p>\n" +
+    "            We'll send you a pack for free...just <a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">email us</a> us with your address!\n" +
+    "         </p>\n" +
+    "      </div>\n" +
+    "      <div class=\"content\">\n" +
+    "         <img id=\"stickers-pic\" src=\"/static/img/stickers-sheet.jpg\" alt=\"many impactstory stickers\"/>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
