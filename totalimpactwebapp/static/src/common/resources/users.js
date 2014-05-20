@@ -31,7 +31,7 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: true,
-          params: {include_heading_products: true, embedded: "@"}
+          params: {hide: "metrics,awards", include_headings: true, embedded: "@"}
         },
         poll:{
           method: "GET",

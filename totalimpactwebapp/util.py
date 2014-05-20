@@ -2,6 +2,7 @@ from functools import wraps
 from flask import request, current_app
 import random, math
 import re
+import jinja2
 from time import sleep
 
 
@@ -24,6 +25,14 @@ def jsonp(f):
         else:
             return f(*args, **kwargs)
     return decorated_function
+
+
+
+def jinja_render(template_name, context):
+    templateLoader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
+    templateEnv = jinja2.Environment(loader=templateLoader)
+    html_template = templateEnv.get_template(template_name)
+    return html_template.render(context)
 
 
 

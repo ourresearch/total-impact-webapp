@@ -60,43 +60,44 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 
 
-def json_resp_from_jsonable_thing(jsonable_thing):
-    json_str = json.dumps(jsonable_thing, sort_keys=True, indent=4)
+def todict(obj, classkey=None):
+    # http://stackoverflow.com/a/1118038/226013
+    if isinstance(obj, dict):
+        data = {}
+        for (k, v) in obj.items():
+            data[k] = todict(v, classkey)
+        return data
+    elif hasattr(obj, "_ast"):
+        return todict(obj._ast())
+    elif type(obj) is datetime.datetime:  # convert datetimes to strings; jason added this bit
+        return obj.isoformat()
+    elif hasattr(obj, "__iter__"):
+        return [todict(v, classkey) for v in obj]
+    elif hasattr(obj, "__dict__"):
+        data = dict([(key, todict(value, classkey))
+            for key, value in obj.__dict__.iteritems()
+            if not callable(value) and not key.startswith('_')])
+        if classkey is not None and hasattr(obj, "__class__"):
+            data[classkey] = obj.__class__.__name__
+        return data
+    else:
+        return obj
+
+
+
+def json_resp_from_thing(thing):
+
+    try:
+        my_dict = thing.as_dict()
+    except AttributeError:
+        my_dict =todict(thing)
+
+    json_str = json.dumps(my_dict, sort_keys=True, indent=4)
     resp = make_response(json_str, 200)
     resp.mimetype = "application/json"
     return views_helpers.bust_caches(resp)
 
 
-def json_resp_from_thing(thing):
-    """
-    JSON-serialize an obj or dict and put it in a Flask response.
-    This should be converted to an object and moved out of here...
-
-    :param obj: the obj you want to serialize to json and send back
-    :return: a flask json response, ready to send to client
-    """
-
-    try:
-        return json_resp_from_jsonable_thing(thing)
-    except TypeError:
-        pass
-
-    try:
-        return json_resp_from_jsonable_thing(thing.as_dict())
-    except AttributeError:
-        pass
-
-    temp_dict = thing.__dict__
-    obj_dict = {}
-    for k, v in temp_dict.iteritems():
-        if k[0] != "_":  # we don't care to serialize private attributes
-
-            if type(v) is datetime.datetime:  # convert datetimes to strings
-                obj_dict[k] = v.isoformat()
-            else:
-                obj_dict[k] = v
-
-    return json_resp_from_jsonable_thing(obj_dict)
 
 
 def abort_json(status_code, msg):
@@ -444,8 +445,6 @@ def user_products_get(id):
 
     user = get_user_for_response(id, request)
 
-    source = request.args.get("source", "webapp")
-
     try:
         if current_user.url_slug == user.url_slug:
             user.update_last_viewed_profile()
@@ -455,20 +454,12 @@ def user_products_get(id):
     if request.args.get("group_by")=="duplicates":
         resp = products_list.get_duplicates_list_from_tiids(user.tiids)
     else:        
-        display_debug = request.args.get("debug", "unset") != "unset"
-
-        show_awards = "awards" not in request.args.get("hide", "")
-        show_markup = "markup" not in request.args.get("hide", "")
-        include_headings = request.args.get("include_heading_products") in [1, "true", "True"]
-
-        resp = products_list.prep(
+        include_headings = request.args.get("include_headings") in [1, "true", "True"]
+        resp = products_list.make(
             user.products,
-            headings=include_headings,
-            awards=show_awards,
-            markup=show_markup
+            include_headings,
+            request.args.get("hide", "").split(",")
         )
-
-        #resp = user.products
 
     return json_resp_from_thing(resp)
 

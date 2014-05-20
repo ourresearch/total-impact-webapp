@@ -10,22 +10,21 @@ from flask import g
 
 
 
-def prep(products_dict, headings=None, awards=None, markup=None):
 
-    product_dicts = []
 
+
+def make(products_dict, include_headings, hide_keys):
+    ret = []
     for product_dict in products_dict:
+        new_product = product.make(product_dict)
+        ret.append(new_product.to_dict(hide_keys))
 
-        try:
-            new_product = product.make(product_dict)
-            product_dicts.append(new_product.to_dict(awards, markup))
-        except product.GenreDeprecatedError:
-            pass
+    if include_headings:
+        ret += make_heading_products(ret)
 
-    if headings:
-        product_dicts += make_heading_products(product_dicts)
+    return ret
 
-    return product_dicts
+
 
 
 
@@ -34,11 +33,11 @@ def has_new_metrics(products_list):
     for product_dict in products_list:
         if product.make_has_new_metrics(product_dict):
             return True
-
     return False
 
+
 def latest_diff_timestamp(products_list):
-    prepped = prep(products_list, hide_markup=True)
+    prepped = make(products_list, ["markup"])
     timestamps = [p["latest_diff_timestamp"] for p in prepped]
 
     try:

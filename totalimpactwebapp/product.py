@@ -4,18 +4,12 @@ from flask import render_template
 from totalimpactwebapp import configs
 from totalimpactwebapp import metric
 from totalimpactwebapp import award
-import arrow
+from util import jinja_render
 
 logger = logging.getLogger("tiwebapp.product")
 
 
 deprecated_genres = ["twitter", "blog"]
-
-
-class GenreDeprecatedError(Exception):
-    pass
-
-
 
 
 
@@ -45,19 +39,26 @@ class Product():
     def genre(self):
         return self.raw_dict["biblio"]["genre"]
 
-    def to_dict(self, awards=None, markup=None):
+    def to_dict(self, hide_keys):
         ret = {
             "aliases": self.aliases.to_dict(),
-            "biblio": self.biblio.to_dict(self.aliases),
-            "metrics": [m.to_dict(self.genre, self.biblio.year)
-                             for m in self.metrics]
+            "biblio": self.biblio.to_dict(self.aliases)
         }
 
-        if awards:
-            awards_table = award.make_awards_table(self.metrics)
-            ret["awards"] = awards_table.to_list()
+        if "metrics" not in hide_keys:
+            ret["metrics"] = [m.to_dict() for m in self.metrics]
+
+        if "awards" not in hide_keys:
+            ret["awards"] = award.awards_list(self.metrics)
+
+        if "markup" not in hide_keys:
+            ret["markup"] = {
+                "biblio": self.biblio.html(self.aliases),
+                "awards": "<h1>award markup!</h1>"
+            }
 
         return ret
+
 
 
 
@@ -97,6 +98,17 @@ class Biblio():
             pass
     
         return ret
+
+    def html(self, aliases, verbose=False):
+        # this shouldn't require aliases...refactor sometime.
+
+        if not verbose:
+            template = "biblio.html"
+        else:
+            template = "biblio-verbose.html"
+
+        return jinja_render(template, self.to_dict(aliases))
+
 
 
 

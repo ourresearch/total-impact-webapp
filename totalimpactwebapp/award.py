@@ -10,8 +10,19 @@ logger = logging.getLogger("tiwebapp.metric_snap")
 * Factory
 ***************************************** """
 
-def make_awards_table(metrics):
-    return AwardsTable(metrics)
+def awards_list(metrics):
+    my_list = []
+    for engagement_type in configs.award_configs["engagement_types"].keys():
+        for audience in configs.award_configs["audiences"].keys():
+            this_award = Award(engagement_type, audience, metrics)
+            if len(this_award.metrics):
+                my_list.append(this_award)
+
+
+    return my_list
+
+
+
 
 
 
@@ -134,6 +145,7 @@ class Award():
             return False
 
 
+
     def to_dict(self):
         return {
             "audience": self.audience,
@@ -146,7 +158,7 @@ class Award():
 
 
 
-class AwardsTable():
+class AwardsList():
     def __init__(self, metrics):
         self.metrics = metrics
 
