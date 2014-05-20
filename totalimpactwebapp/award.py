@@ -10,8 +10,8 @@ logger = logging.getLogger("tiwebapp.metric_snap")
 * Factory
 ***************************************** """
 
-def make_awards_table(snaps):
-    return AwardsTable(snaps)
+def make_awards_table(metrics):
+    return AwardsTable(metrics)
 
 
 
@@ -115,38 +115,56 @@ def make_award_for_single_metric(metric):
 
 
 class Award():
-    def __init__(self, engagement_type, audience):
+    def __init__(self, engagement_type, audience, metrics):
         self.engagement_type = engagement_type
         self.audience = audience
-        self.snaps = []
+
+        self.metrics = []
+        for metric in metrics:
+            self.add_metric(metric)
+
+    def add_metric(self, metric):
+        same_audience = metric.audience == self.audience
+        same_engagement_type = metric.engagement_type == self.engagement_type
+
+        if same_audience and same_engagement_type:
+            self.metrics.append(metric)
+            return True
+        else:
+            return False
+
 
     def to_dict(self):
-        return {"award foo": "award bar"}
+        return {
+            "audience": self.audience,
+            "engagement_type": self.engagement_type,
+            "num_metrics": len(self.metrics),
+            "other cool stuff": "yes please"
+        }
 
 
 
 
 
 class AwardsTable():
-    def __init__(self, snaps):
-        self.table = self.make_awards_table()
-        self.snaps = snaps
+    def __init__(self, metrics):
+        self.metrics = metrics
 
-    def make_awards_table(self):
-        table = {}
-
+    def make_list(self):
+        my_list = []
         for engagement_type in configs.award_configs["engagement_types"].keys():
             for audience in configs.award_configs["audiences"].keys():
-                table_cell_key = (engagement_type, audience)
-                table[table_cell_key] = Award(engagement_type, audience)
+                this_award = Award(engagement_type, audience, self.metrics)
+                my_list.append(this_award)
 
-        return table
+        return my_list
 
     def to_list(self):
         ret = []
-        for award in self.table.values():
-            if len(award.snaps):
-                ret.append(award)
+
+        for award in self.make_list():
+            if len(award.metrics):
+                ret.append(award.to_dict())
 
         return ret
 

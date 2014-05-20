@@ -36,8 +36,17 @@ class Metric():
         except KeyError:  # no percentiles listed
             return False
 
+    @property
+    def engagement_type(self):
+        return self.config["engagement_type"]
+
+    @property
+    def audience(self):
+        return self.config["audience"]
+
     def to_dict(self, genre, year):
         ret = self.raw_dict
+
         ret["is_highly"] = self.is_highly
         ret.update(self.get_percentiles(ret))
 

@@ -53,8 +53,9 @@ class Product():
                              for m in self.metrics]
         }
 
-        #if awards:
-        #    ret["awards"] = self.awards_table.to_list()
+        if awards:
+            awards_table = award.make_awards_table(self.metrics)
+            ret["awards"] = awards_table.to_list()
 
         return ret
 
