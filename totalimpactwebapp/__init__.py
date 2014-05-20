@@ -1,5 +1,6 @@
 import os, logging, sys
 from flask import Flask
+from flask.ext.compress import Compress
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from sqlalchemy import exc
@@ -20,6 +21,9 @@ logger = logging.getLogger("tiwebapp")
 
 # set up application
 app = Flask(__name__)
+# gzip responses and make it similar on staging and production
+Compress(app)
+app.config["COMPRESS_DEBUG"] = os.getenv("COMPRESS_DEBUG", "False")=="True"
 
 # so you can fake PATCH support (http://flask.pocoo.org/docs/patterns/methodoverrides/)
 app.wsgi_app = HTTPMethodOverrideMiddleware(app.wsgi_app)

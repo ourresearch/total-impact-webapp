@@ -56,18 +56,35 @@ class CeleryStatus(db.Model):
 
 
 
+class TaskAlertIfFail(celery.Task):
+
+    def __call__(self, *args, **kwargs):
+        """In celery task this function call the run method, here you can
+        set some environment variable before the run of the task"""
+        # logger.info(u"Starting to run")
+        return self.run(*args, **kwargs)
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        url_slug="unknown"
+        for arg in args:
+            if isinstance(arg, User):
+                url_slug = arg.url_slug
+        logger.error(u"Celery task failed on {task_name}, user {url_slug}, task_id={task_id}".format(
+            task_name=self.name, url_slug=url_slug, task_id=task_id))
+
+
 # from http://stackoverflow.com/questions/6393879/celery-task-and-customize-decorator
 class TaskThatSavesState(celery.Task):
 
     def __call__(self, *args, **kwargs):
         """In celery task this function call the run method, here you can
         set some environment variable before the run of the task"""
-        # logger.info("Starting to run")
+        # logger.info(u"Starting to run")
         return self.run(*args, **kwargs)
 
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         #exit point of the task whatever is the state
-        # logger.info("Ending run")
+        # logger.info(u"Ending run")
         user_id = None
         url_slug = None
         args_to_save = []
@@ -93,6 +110,9 @@ class TaskThatSavesState(celery.Task):
         except InvalidRequestError:
             db.session.rollback()
             db.session.commit()
+
+
+
 
 
 class ProfileDeets(db.Model):
@@ -154,13 +174,12 @@ def deduplicate(user):
         removed_tiids = remove_duplicates_from_user(user.id)
         logger.debug(removed_tiids)
     except Exception as e:
-        logger.debug("EXCEPTION!!!!!!!!!!!!!!!! deduplicating")
+        logger.debug(u"EXCEPTION!!!!!!!!!!!!!!!! deduplicating")
 
     return removed_tiids
 
 
-# @celery_app.task(base=TaskThatSavesState)
-@celery_app.task()
+@celery_app.task(base=TaskAlertIfFail)
 def send_email_if_new_diffs(user):
 
     # get it again to help with debugging?
@@ -172,7 +191,7 @@ def send_email_if_new_diffs(user):
     latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
     status = "checking diffs"
     if (latest_diff_timestamp > user.last_email_check.isoformat()):
-        logger.debug("has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
+        logger.debug(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
         send_email_report(user, now)
         status = "email sent"
     else:
