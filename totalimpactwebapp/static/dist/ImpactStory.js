@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-13
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-20
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -4550,7 +4550,7 @@ angular.module("infopages/advisors.tpl.html", []).run(["$templateCache", functio
     "         <li>Spread the word locally by hanging up our cool new posters</li>\n" +
     "         <li>Stay on top of the latest Impactstory news</li>\n" +
     "         <li>Host brown bag lunches and presentations on Impactstory in your school or library </li>\n" +
-    "         <li>Engage your university’s administration how Impactstory can help its faculty</li>\n" +
+    "         <li>Engage your university's administration on how Impactstory can help its faculty</li>\n" +
     "         <li>Connect Impactstory to the rest of your online life--link to your profile from your Twitter bio, Facebook page, lab website, and anywhere else you can!</li>\n" +
     "         <li>Tell us your Impactstory success stories, in promotions, grants, tenure, and beyond.</li>\n" +
     "      </ul>\n" +
@@ -4964,7 +4964,7 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "      <h3>Poster</h3>\n" +
     "      <div class=\"descr\">\n" +
     "         <p>\n" +
-    "            Help your colleagues realize there’s more to impact than the h-index (and also learn about Impactstory).\n" +
+    "            Spread the word locally by hanging up our cool new posters!\n" +
     "         </p>\n" +
     "         <p>\n" +
     "            Download the 8.5” x 11” poster as\n" +
