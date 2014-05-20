@@ -796,7 +796,7 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "            Want to use our logo for your poster, presentation, or other informational resource? Go for it!\n" +
     "         </p>\n" +
     "         <p>\n" +
-    "            Download logo as a <a href=\"/logo\">big ol' PNG</a>\n" +
+    "            Download logo as a <a href=\"/logo\" target=\"_self\">big ol' PNG</a>\n" +
     "         </p>\n" +
     "      </div>\n" +
     "      <div class=\"content\">\n" +
