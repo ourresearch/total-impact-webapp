@@ -54,7 +54,7 @@ class Metric():
 
         # handle plurals
         if ret["actual_count"] <= 1:
-            ret["display_interaction"] = ret["config"]["interaction"][:-1]  # de-pluralize
+            ret["display_interaction"] = self.config["interaction"][:-1]  # de-pluralize
 
         # add product-level info
         ret["refset_year"] = year

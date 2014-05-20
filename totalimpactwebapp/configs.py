@@ -34,8 +34,6 @@ def metrics(this_key_only=None):
         for metric_name, metric_config in provider["metrics"].iteritems():
 
             new_key = provider["name"] + ":" + metric_name
-            print new_key
-
             metric_config["environment"] = provider["name"]
             metric_config["display_audience"] = \
                 metric_config["audience"].replace("public", "the public")

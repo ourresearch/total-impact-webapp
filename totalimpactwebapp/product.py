@@ -47,8 +47,9 @@ class Product():
 
     def to_dict(self, awards=None, markup=None):
         ret = {
-            "biblio": self.biblio.to_dict(),
-            "metric_snaps": [m.to_dict(self.genre, self.biblio.year)
+            "aliases": self.aliases.to_dict(),
+            "biblio": self.biblio.to_dict(self.aliases),
+            "metrics": [m.to_dict(self.genre, self.biblio.year)
                              for m in self.metrics]
         }
 
@@ -74,8 +75,8 @@ class Biblio():
             return None
 
     def to_dict(self, aliases):
-        
-        ret = {}
+        ret = self.raw_dict
+
         if aliases.get_url() is not None:
             ret["url"] = aliases.get_url()
         elif "url" in ret:
@@ -102,10 +103,15 @@ class Biblio():
 class Aliases():
     def __init__(self, raw_dict):
         self.raw_dict = raw_dict
-        
+
     def to_dict(self):
-        return self.raw_dict
-    
+        ret = {}
+        keys_to_ignore = ["biblio"]
+        for k, v in self.raw_dict.iteritems():
+            if k not in keys_to_ignore:
+                ret[k] = v
+        return ret
+
     def get_url(self):
         try: 
             return self.raw_dict["url"][0]
