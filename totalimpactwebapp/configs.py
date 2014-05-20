@@ -26,26 +26,33 @@ def fives_then_orders_of_magnitude():
 def metrics(this_key_only=None):
     ret = {}
     for provider in providers:
-        try:
-            for metric_name, metric_config in provider["metrics"].iteritems():
-                new_key = provider["name"] + ":" + metric_name
-                metric_config["environment"] = provider["name"]
-                if "interaction" not in metric_config.keys():
-                    metric_config["interaction"] = metric_name.replace("_", " ")
+        if "metrics" not in provider.keys():
+            # doing this the Less Pythonic Way because wrapping that whole loop
+            # in a try was hiding important errors.
+            continue
 
-                if this_key_only is None:
-                    ret[new_key] = metric_config
+        for metric_name, metric_config in provider["metrics"].iteritems():
 
-                # this_key_only is set, and exists in the metric config obj
-                elif metric_config[this_key_only] is not None:
-                    ret[new_key] = metric_config[this_key_only]
+            new_key = provider["name"] + ":" + metric_name
+            print new_key
 
-                # this_key_only is set, but metric config doesn't have it.
-                else:
-                    pass
+            metric_config["environment"] = provider["name"]
+            metric_config["display_audience"] = \
+                metric_config["audience"].replace("public", "the public")
 
-        except KeyError:
-            pass
+            if "interaction" not in metric_config.keys():
+                metric_config["interaction"] = metric_name.replace("_", " ")
+
+            if this_key_only is None:
+                ret[new_key] = metric_config
+
+            # this_key_only is set, and exists in the metric config obj
+            elif metric_config[this_key_only] is not None:
+                ret[new_key] = metric_config[this_key_only]
+
+            # this_key_only is set, but metric config doesn't have it.
+            else:
+                pass
 
     return ret
 
@@ -63,16 +70,31 @@ def metrics(this_key_only=None):
 #***************************************************************************
 
 award_configs = {
-    "viewed":["views", 1],
-    "discussed": ["discussion", 2],
-    "saved": ["saves", 3],
-    "cited": ["citation", 4],
-    "recommended": ["recommendation", 5],
-    "unknown": ["interactions", 6]
+    "engagement_types": {
+        "viewed":["views", 1],
+        "discussed": ["discussion", 2],
+        "saved": ["saves", 3],
+        "cited": ["citation", 4],
+        "recommended": ["recommendation", 5],
+        "unknown": ["interactions", 6]
+    },
+    "audiences": {
+        "scholars": [],
+        "public": []
+    }
 }
 
-
-
+#
+#award_configs = {
+#    "engagement_types": [
+#        {}
+#    ],
+#
+#    "audiences": [
+#        {"name": "scholars"},
+#        {"name": "public"}
+#    ]
+#}
 
 
 
@@ -566,7 +588,10 @@ providers = [
                 "icon": "http://www.mendeley.com/favicon.ico",
                 "provider": "Mendeley",
                 "provider_url": "http://www.mendeley.com/",
-                "hide_badge": True
+                "hide_badge": True,
+                "audience": "scholars",
+                "engagement_type": "saved",
+                "milestones": fives_then_orders_of_magnitude()
             },
             "country": {
                 "description": "Percent of readers by country, for top three countries (csv, api only)",
@@ -574,7 +599,10 @@ providers = [
                 "icon": "http://www.mendeley.com/favicon.ico",
                 "provider": "Mendeley",
                 "provider_url": "http://www.mendeley.com/",
-                "hide_badge": True
+                "hide_badge": True,
+                "audience": "scholars",
+                "engagement_type": "saved",
+                "milestones": fives_then_orders_of_magnitude()
             },
             "discipline": {
                 "description": "Percent of readers by discipline, for top three disciplines (csv, api only)",
@@ -582,7 +610,10 @@ providers = [
                 "icon": "http://www.mendeley.com/favicon.ico",
                 "provider": "Mendeley",
                 "provider_url": "http://www.mendeley.com/",
-                "hide_badge": True
+                "hide_badge": True,
+                "audience": "scholars",
+                "engagement_type": "saved",
+                "milestones": fives_then_orders_of_magnitude()
             },
             "groups": {
                 "description": "The number of groups who have added the article to their libraries",
@@ -766,6 +797,9 @@ providers = [
                 "provider": "PubMed Central",
                 "provider_url": "http://pubmed.gov",
                 "hide_badge": True,
+                "audience": "scholars",
+                "engagement_type": "cited",
+                "milestones": fives_then_orders_of_magnitude(),
                 "interaction": "citations"
             },
             "pmc_citations_editorials": {
@@ -774,7 +808,11 @@ providers = [
                 "icon": "http://www.ncbi.nlm.nih.gov/favicon.ico",
                 "provider": "PubMed Central",
                 "provider_url": "http://pubmed.gov",
-                "hide_badge": True
+                "hide_badge": True,
+                "audience": "scholars",
+                "engagement_type": "cited",
+                "milestones": fives_then_orders_of_magnitude(),
+                "interaction": "citations"
             },
             "pmc_citations_reviews": {
                 "description": "The number of citations by review papers in PubMed Central",
@@ -782,7 +820,11 @@ providers = [
                 "icon": "http://www.ncbi.nlm.nih.gov/favicon.ico",
                 "provider": "PubMed Central",
                 "provider_url": "http://pubmed.gov",
-                "hide_badge": True
+                "hide_badge": True,
+                "audience": "scholars",
+                "engagement_type": "cited",
+                "milestones": fives_then_orders_of_magnitude(),
+                "interaction": "citations"
             }
         },
         "name": "pubmed",

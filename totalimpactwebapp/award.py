@@ -10,11 +10,14 @@ logger = logging.getLogger("tiwebapp.metric_snap")
 * Factory
 ***************************************** """
 
-def make(metrics):
-    pass
+def make_awards_table(snaps):
+    return AwardsTable(snaps)
 
 
-def make_awards(product):
+
+
+
+def make_awards_old(product):
     metrics = product["metrics"]
     awards_dict = {}
 
@@ -107,33 +110,45 @@ def make_award_for_single_metric(metric):
     }
 
 
-def calculate_is_highly(metric):
-    try:
-        percentile_high_enough = metric["percentiles"]["CI95_lower"] > 75
-        raw_high_enough = metric["actual_count"] >= metric["min_for_award"]
-
-        if percentile_high_enough and raw_high_enough:
-            return True
-        else:
-            return False
-
-    except KeyError:  # no percentiles listed
-        return False
 
 
 
 
 class Award():
-    def __init__(self):
-        pass
+    def __init__(self, engagement_type, audience):
+        self.engagement_type = engagement_type
+        self.audience = audience
+        self.snaps = []
 
-    def is_highly(self):
-        pass
+    def to_dict(self):
+        return {"award foo": "award bar"}
 
 
 
 
 
+class AwardsTable():
+    def __init__(self, snaps):
+        self.table = self.make_awards_table()
+        self.snaps = snaps
+
+    def make_awards_table(self):
+        table = {}
+
+        for engagement_type in configs.award_configs["engagement_types"].keys():
+            for audience in configs.award_configs["audiences"].keys():
+                table_cell_key = (engagement_type, audience)
+                table[table_cell_key] = Award(engagement_type, audience)
+
+        return table
+
+    def to_list(self):
+        ret = []
+        for award in self.table.values():
+            if len(award.snaps):
+                ret.append(award)
+
+        return ret
 
 
 

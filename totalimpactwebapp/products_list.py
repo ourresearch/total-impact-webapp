@@ -18,7 +18,7 @@ def prep(products_dict, headings=None, awards=None, markup=None):
 
         try:
             new_product = product.make(product_dict)
-            product_dicts.append(new_product.to_dict())
+            product_dicts.append(new_product.to_dict(awards, markup))
         except product.GenreDeprecatedError:
             pass
 

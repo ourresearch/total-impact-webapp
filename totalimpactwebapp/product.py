@@ -2,7 +2,8 @@ from copy import deepcopy
 import logging
 from flask import render_template
 from totalimpactwebapp import configs
-from totalimpactwebapp import metric_snap
+from totalimpactwebapp import metric
+from totalimpactwebapp import award
 import arrow
 
 logger = logging.getLogger("tiwebapp.product")
@@ -15,68 +16,45 @@ class GenreDeprecatedError(Exception):
     pass
 
 
-def prep_product(product, verbose=False, hide_markup=False, display_debug=False):
-
-    if product["biblio"]["genre"] in deprecated_genres:
-        raise GenreDeprecatedError
-
-    # temp for testing
-    #product = set_historical_values_to_zero(product)
-
-
-    product["biblio"] = make_biblio(product)
-    product["metrics"] = make_metrics(product)
-    product["latest_diff_timestamp"] = get_latest_diff_timestamp(product)
-    if not display_debug:
-        product["awards"] = make_awards(product)
-        product["has_new_metrics"] = make_has_new_metrics(product)
-        product["is_true_product"] = True
-    if not hide_markup and not display_debug:
-        product["markup"] = make_markup(product, verbose)
-        
-    product = add_sort_keys(product)
-
-    return product
 
 
 
 def make(raw_dict):
-    new_product = Product(raw_dict)
-
-    snaps = []
-    for metric_name, snap_dict in raw_dict["metrics"].iteritems():
-        new_snap = metric_snap.make(
-            snap_dict,
-            metric_name,
-            new_product.get_year(),
-            new_product.get_genre()
-        )
-        snaps.append(new_snap)
-
-    new_product.metric_snaps = snaps
-
-    return new_product
+    return Product(raw_dict)
 
 
 
 class Product():
-    def __init__(self, product_dict):
-        self.raw_dict = product_dict
+    def __init__(self, raw_dict):
+        self.raw_dict = raw_dict
 
-    def get_year(self):
-        try:
-            return self.raw_dict["biblio"]["year"]
-        except KeyError:
-            return None
+        # in constructor for now; in future, sqlachemy will do w magic
+        self.aliases = Aliases(raw_dict["aliases"])
 
-    def get_genre(self):
+        # in constructor for now; in future, sqlachemy will do w magic
+        self.biblio = Biblio(raw_dict["biblio"])
+
+        # in constructor for now; in future, sqlachemy will do w magic
+        self.metrics = []
+        for metric_name, snap_dict in self.raw_dict["metrics"].iteritems():
+            new_metric = metric.make(snap_dict, metric_name)
+            self.metrics.append(new_metric)
+
+
+    @property
+    def genre(self):
         return self.raw_dict["biblio"]["genre"]
 
     def to_dict(self, awards=None, markup=None):
         ret = {
-            "biblio": make_biblio(self.raw_dict),
-            "metric_snaps": [snap.to_dict() for snap in self.metric_snaps]
+            "biblio": self.biblio.to_dict(),
+            "metric_snaps": [m.to_dict(self.genre, self.biblio.year)
+                             for m in self.metrics]
         }
+
+        #if awards:
+        #    ret["awards"] = self.awards_table.to_list()
+
         return ret
 
 
@@ -84,139 +62,79 @@ class Product():
 
 
 
-"""
-biblio stuff
-"""
+class Biblio():
+    def __init__(self, raw_dict):
+        self.raw_dict = raw_dict
 
-def make_biblio(product_dict):
-    biblio = product_dict["biblio"]
-
-
-    try:
-        biblio["url"] = product_dict["aliases"]["url"][0]
-    except KeyError:
-        if not "url" in biblio:
-            biblio["url"] = False    
-    if "title" not in biblio.keys():
-        biblio["title"] = "no title"
-
-    try:
-        auths = ",".join(biblio["authors"].split(",")[0:3])
-        if len(auths) < len(biblio["authors"]):
-            auths += " et al."
-        biblio["authors"] = auths
-    except KeyError:
-        pass
-
-    return biblio
-
-
-
-
-
-
-
-
-
-
-
-"""
-Metrics stuff
-"""
-
-def make_metrics(product_dict):
-    metrics = product_dict["metrics"]
-    config_dict = configs.metrics()
-
-    try:
-        year = product_dict["biblio"]["year"]
-    except KeyError:
-        year = None
-
-    refset_genre = product_dict["biblio"]["genre"]
-    ret = {}
-    for metric_name, metric in metrics.iteritems():
+    @property
+    def year(self):
         try:
-            audience = config_dict[metric_name]["audience"]
+            return self.raw_dict["year"]
         except KeyError:
-            logger.warning("couldn't find audience for {metric_name}".format(
-                metric_name=metric_name))
-            return ret
+            return None
 
-        if audience is not None:
-            metric.update(config_dict[metric_name])
-            #metric.update(metric_metadata(metric, year, refset_genre))
-            metric.update(metric_percentiles(metric))
-            metric["award"] = make_award_for_single_metric(metric)
-            ret[metric_name] = metric
-
-    return ret
-
-
-def metric_metadata(metric, year, refset_genre):
-    interaction_display_names = {
-        "f1000": "recommendations",
-        "pmc_citations": "citations"
-    }
-
-    ret = {}
-
-    raw_count = metric["values"]["raw"]
-    ret["display_count"] = raw_count
-
-    # deal with F1000's troublesome "count" of "Yes." Can add others later.
-    # currently ALL strings are transformed to 1.
-    if isinstance(raw_count, basestring):
-        ret["actual_count"] = 1
-    else:
-        ret["actual_count"] = raw_count
-
-    ret["environment"] = metric["static_meta"]["provider"]
-    interaction = metric["name"].split(":")[1].replace("_", " ")
-
-    try:
-        interaction = interaction_display_names[interaction]
-    except KeyError:
-        pass
-
-    if ret["actual_count"] <= 1:
-        ret["display_interaction"] = interaction[:-1]  # de-pluralize
-    else:
-        ret["display_interaction"] = interaction
-
-    ret["refset_year"] = year
-    ret["refset_genre"] = refset_genre
-
-    return ret
-
-
-def metric_days_since_last_nonzero_refresh(metric):
-    return 7
-
-
-def metric_percentiles(metric):
-    ret = {}
-    refsets_config = {
-        "WoS": ["Web of Science", "indexed by"],
-        "dryad": ["Dryad", "added to"],
-        "figshare": ["figshare", "added to"],
-        "github": ["GitHub", "added to"]
-    }
-
-    for refset_key, normalized_values in metric["values"].iteritems():
-        if refset_key == "raw":
-            continue
+    def to_dict(self, aliases):
+        
+        ret = {}
+        if aliases.get_url() is not None:
+            ret["url"] = aliases.get_url()
+        elif "url" in ret:
+            pass
         else:
-            # This will arbitrarily pick on percentile reference set and
-            # make it be the only one that counts. Works fine as long as
-            # there is just one.
+            ret["url"] = None
+    
+        if "title" not in ret.keys():
+            ret["title"] = "no title"
+    
+        try:
+            auths = ",".join(ret["authors"].split(",")[0:3])
+            if len(auths) < len(ret["authors"]):
+                auths += " et al."
+            ret["authors"] = auths
+        except KeyError:
+            pass
+    
+        return ret
 
-            ret["percentiles"] = normalized_values
-            ret["top_percent"] = 100 - normalized_values["CI95_lower"]
-            ret["refset"] = refsets_config[refset_key][0]
-            ret["refset_storage_verb"] = refsets_config[refset_key][1]
 
-    return ret
+
+
+class Aliases():
+    def __init__(self, raw_dict):
+        self.raw_dict = raw_dict
+        
+    def to_dict(self):
+        return self.raw_dict
+    
+    def get_url(self):
+        try: 
+            return self.raw_dict["url"][0]
+        except KeyError:
+            return None
+
+
+
+
+
+
+###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
+#############################    old stuff    #################################
+###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
+
+
+
+
+
+
+
+
 
 
 
