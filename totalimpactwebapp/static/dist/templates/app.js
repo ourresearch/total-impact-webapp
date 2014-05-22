@@ -1472,7 +1472,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>\n" +
     "\n" +
-    "<a class=\"refresh\" ng-click=\"refresh()\">mmm, refreshing!</a>\n" +
+    "<a class=\"refresh\" ng-click=\"refresh()\"></a>\n" +
     "\n" +
     "");
 }]);
