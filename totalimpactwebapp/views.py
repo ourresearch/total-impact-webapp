@@ -464,8 +464,8 @@ def user_products_get(id):
 
         resp = user.get_product_dicts(hide_keys, markup)
 
-        if request.args.get("include_headings") in [1, "true", "True"]:
-            resp += products_list.make_heading_products(resp)
+        #if request.args.get("include_headings") in [1, "true", "True"]:
+        #    resp += products_list.make_heading_products(resp)
 
     return json_resp_from_thing(resp)
 

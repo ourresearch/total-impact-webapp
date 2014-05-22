@@ -141,15 +141,22 @@ class User(db.Model):
             products = []
         return products
 
+    @property
+    def product_objects(self):
+        # this is a hack to imitate what sqlalchemy will give us naturally
+        return [Product(product_dict) for product_dict in self.products]
+
     def get_product_dicts(self, hide_keys, markup):
         markup.context["url_slug"] = self.url_slug
+        return [p.to_dict(hide_keys, markup) for p in self.product_objects]
 
-        # hack to immitate what sqlalchemy will give us naturally
-        product_objects = [Product(product_dict) for product_dict in self.products]
-
-        return [p.to_dict(hide_keys, markup) for p in product_objects]
-
-
+    @property
+    def latest_diff_ts(self):
+        ts_list = [p.latest_diff_timestamp for p in self.product_objects]
+        try:
+            return sorted(ts_list, reverse=True)[0]
+        except IndexError:
+            return None
 
     @property
     def profile_awards_dicts(self):
@@ -368,10 +375,7 @@ class User(db.Model):
                 ret_dict["subscription"] = None
 
         ret_dict["has_new_metrics"] = products_list.has_new_metrics(self.products)
-        latest_diff_ts = products_list.latest_diff_timestamp(self.products)
-        ret_dict["latest_diff_timestamp"] = latest_diff_ts
-
-
+        ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
 
         return ret_dict
 

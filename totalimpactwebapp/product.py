@@ -40,6 +40,16 @@ class Product():
     def genre(self):
         return self.raw_dict["biblio"]["genre"]
 
+
+    @property
+    def latest_diff_timestamp(self):
+        ts_list = [m.latest_nonzero_refresh_timestamp for m in self.metrics]
+        try:
+            return sorted(ts_list, reverse=True)[0]
+        except IndexError:
+            return None
+
+
     def to_dict(self, hide_keys, markup):
 
         ret = self._to_basic_dict()

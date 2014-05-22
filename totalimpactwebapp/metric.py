@@ -42,6 +42,14 @@ class Metric():
             return False
 
     @property
+    def latest_nonzero_refresh_timestamp(self):
+        try:
+            return self.historical_values["current"]["collected_date"]
+        except KeyError:
+            return None
+
+
+    @property
     def engagement_type(self):
         return self.config["engagement_type"]
 
