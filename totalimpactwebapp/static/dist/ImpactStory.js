@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-20
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-22
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -5663,7 +5663,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>\n" +
     "\n" +
-    "<a class=\"refresh\" ng-click=\"refresh()\">mmm, refreshing!</a>\n" +
+    "<a class=\"refresh\" ng-click=\"refresh()\"></a> \n" +
     "\n" +
     "");
 }]);
