@@ -1,6 +1,7 @@
 from totalimpactwebapp import db
 from totalimpactwebapp import products_list
 from totalimpactwebapp import profile_award
+from totalimpactwebapp.product import Product
 
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -139,6 +140,15 @@ class User(db.Model):
         if not products:
             products = []
         return products
+
+    def get_product_dicts(self, hide_keys, markup):
+        markup.context["url_slug"] = self.url_slug
+
+        # hack to immitate what sqlalchemy will give us naturally
+        product_objects = [Product(product_dict) for product_dict in self.products]
+
+        return [p.to_dict(hide_keys, markup) for p in product_objects]
+
 
 
     @property

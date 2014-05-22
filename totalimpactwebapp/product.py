@@ -21,6 +21,7 @@ def make(raw_dict):
 class Product():
     def __init__(self, raw_dict):
         self.raw_dict = raw_dict
+        self._id = raw_dict["_id"]
 
         # in constructor for now; in future, sqlachemy will do w magic
         self.aliases = Aliases(raw_dict["aliases"])
@@ -39,25 +40,29 @@ class Product():
     def genre(self):
         return self.raw_dict["biblio"]["genre"]
 
-    def to_dict(self, hide_keys):
-        ret = {
-            "aliases": self.aliases.to_dict(),
-            "biblio": self.biblio.to_dict(self.aliases)
-        }
+    def to_dict(self, hide_keys, markup):
 
-        if "metrics" not in hide_keys:
-            ret["metrics"] = [m.to_dict() for m in self.metrics]
+        ret = self._to_basic_dict()
+        ret["markup"] = markup.make("product", ret)
 
-        if "awards" not in hide_keys:
-            ret["awards"] = award.awards_list(self.metrics)
-
-        if "markup" not in hide_keys:
-            ret["markup"] = {
-                "biblio": self.biblio.html(self.aliases),
-                "awards": "<h1>award markup!</h1>"
-            }
+        try:
+            for key_to_hide in hide_keys:
+                del ret[key_to_hide]
+        except KeyError:
+            pass
 
         return ret
+
+    def _to_basic_dict(self):
+        return {
+            "aliases": self.aliases.to_dict(),
+            "biblio": self.biblio.to_dict(self.aliases),
+            "metrics": [m.to_dict() for m in self.metrics],
+            "awards": award.awards_list(self.metrics),
+            "id": self._id
+        }
+
+
 
 
 
@@ -99,16 +104,6 @@ class Biblio():
     
         return ret
 
-    def html(self, aliases, verbose=False):
-        # this shouldn't require aliases...refactor sometime.
-
-        if not verbose:
-            template = "biblio.html"
-        else:
-            template = "biblio-verbose.html"
-
-        return jinja_render(template, self.to_dict(aliases))
-
 
 
 
@@ -130,6 +125,33 @@ class Aliases():
             return self.raw_dict["url"][0]
         except KeyError:
             return None
+
+
+
+
+
+class Markup():
+    def __init__(self, verbose=False, embed=False):
+        self.verbose = verbose
+        self.context = {
+            "embed": embed
+        }
+
+
+    def make(self, template_name, local_context):
+        if self.verbose:
+            template_name += "-verbose.html"
+        else:
+            template_name += ".html"
+
+        local_context.update(self.context)
+
+        return jinja_render(template_name, local_context)
+
+
+
+
+
 
 
 

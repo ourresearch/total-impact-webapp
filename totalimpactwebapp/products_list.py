@@ -13,20 +13,6 @@ from flask import g
 
 
 
-def make(products_dict, include_headings, hide_keys):
-    ret = []
-    for product_dict in products_dict:
-        new_product = product.make(product_dict)
-        ret.append(new_product.to_dict(hide_keys))
-
-    if include_headings:
-        ret += make_heading_products(ret)
-
-    return ret
-
-
-
-
 
 def has_new_metrics(products_list):
 

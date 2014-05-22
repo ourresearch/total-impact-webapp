@@ -444,6 +444,10 @@ def user_profile_awards(profile_id):
 def user_products_get(id):
 
     user = get_user_for_response(id, request)
+    markup_context = {
+        "profile_slug": "foo",
+        "is_embedded": False
+    }
 
     try:
         if current_user.url_slug == user.url_slug:
@@ -453,13 +457,15 @@ def user_products_get(id):
 
     if request.args.get("group_by")=="duplicates":
         resp = products_list.get_duplicates_list_from_tiids(user.tiids)
-    else:        
-        include_headings = request.args.get("include_headings") in [1, "true", "True"]
-        resp = products_list.make(
-            user.products,
-            include_headings,
-            request.args.get("hide", "").split(",")
-        )
+    else:
+
+        markup = product.Markup(verbose=False, embed=request.args.get("embed"))
+        hide_keys = request.args.get("hide", "").split(",")
+
+        resp = user.get_product_dicts(hide_keys, markup)
+
+        if request.args.get("include_headings") in [1, "true", "True"]:
+            resp += products_list.make_heading_products(resp)
 
     return json_resp_from_thing(resp)
 
