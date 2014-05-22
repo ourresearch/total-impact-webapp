@@ -1343,14 +1343,14 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <!-- filter products -->\n" +
     "            <div class=\"filters\">\n" +
     "\n" +
-    "               <div class=\"filter\" ng-class=\"{active: !productFilter.has_metrics && !productFilter.has_new_metrics}\">\n" +
+    "               <div class=\"filter\" ng-class=\"{active: !productFilter.has_metrics && !productFilter.has_new_metric}\">\n" +
     "                  <a ng-click=\"setProductFilter('all')\">\n" +
     "                     Products\n" +
     "                     <span class=\"count\">({{ (products|filter:{is_true_product:true}).length }})</span>\n" +
     "                  </a>\n" +
     "               </div>\n" +
     "\n" +
-    "               <div class=\"filter\" ng-class=\"{active: (productFilter.has_metrics && !productFilter.has_new_metrics)}\">\n" +
+    "               <div class=\"filter\" ng-class=\"{active: (productFilter.has_metrics && !productFilter.has_new_metric)}\">\n" +
     "                  <i class=\"icon-chevron-right left\"></i>\n" +
     "                  <a ng-click=\"setProductFilter('has_metrics')\">\n" +
     "                     with metrics\n" +
@@ -1358,12 +1358,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </div>\n" +
     "               <div class=\"filter this-week\"\n" +
-    "                    ng-show=\"(products|filter:{has_new_metrics: true}).length > 0\"\n" +
-    "                    ng-class=\"{active: productFilter.has_new_metrics}\">\n" +
+    "                    ng-show=\"(products|filter:{has_new_metric: true}).length > 0\"\n" +
+    "                    ng-class=\"{active: productFilter.has_new_metric}\">\n" +
     "                  <i class=\"icon-chevron-right left\"></i>\n" +
-    "                  <a ng-click=\"setProductFilter('has_new_metrics')\">\n" +
+    "                  <a ng-click=\"setProductFilter('has_new_metric')\">\n" +
     "                     this week\n" +
-    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_new_metrics: true}).length }})</span>\n" +
+    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_new_metric: true}).length }})</span>\n" +
     "\n" +
     "                  </a>\n" +
     "               </div>\n" +
@@ -1406,7 +1406,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
     "             ng-repeat=\"product in filteredProducts = (products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title'] | filter: productFilter)\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
-    "             id=\"{{ product._id }}\"\n" +
+    "             id=\"{{ product.id }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
     "            <div class=\"product-margin\" ng-show=\"currentUserIsProfileOwner()\">\n" +
@@ -1418,10 +1418,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </span>\n" +
     "            </div>\n" +
-    "\n" +
-    "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
-    "            <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
-    "\n" +
+    "            <div class=\"product-container\" ng-bind-html-unsafe=\"product.markup\"></div>\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +

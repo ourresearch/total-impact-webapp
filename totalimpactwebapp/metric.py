@@ -41,6 +41,9 @@ class Metric():
         except KeyError:  # no percentiles listed
             return False
 
+    def has_new_metric(self):
+        return self.historical_values["diff"]["raw"] > 0
+
     @property
     def latest_nonzero_refresh_timestamp(self):
         try:

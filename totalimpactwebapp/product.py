@@ -21,13 +21,12 @@ def make(raw_dict):
 class Product():
     def __init__(self, raw_dict):
         self.raw_dict = raw_dict
-        self._id = raw_dict["_id"]
 
         # in constructor for now; in future, sqlachemy will do w magic
         self.aliases = Aliases(raw_dict["aliases"])
 
         # in constructor for now; in future, sqlachemy will do w magic
-        self.biblio = Biblio(raw_dict["biblio"])
+        self.biblio = Biblio(raw_dict["biblio"], self.aliases)
 
         # in constructor for now; in future, sqlachemy will do w magic
         self.metrics = []
@@ -40,6 +39,22 @@ class Product():
     def genre(self):
         return self.raw_dict["biblio"]["genre"]
 
+    @property
+    def id(self):
+        return self.raw_dict["_id"]
+
+    @property
+    def has_metrics(self):
+        return len(self.metrics) > 0
+
+    @property
+    def has_new_metric(self):
+        return any([m.has_new_metric() for m in self.metrics])
+
+    @property
+    def is_true_product(self):
+        return True
+
 
     @property
     def latest_diff_timestamp(self):
@@ -51,26 +66,29 @@ class Product():
 
 
     def to_dict(self, hide_keys, markup):
-
         ret = self._to_basic_dict()
         ret["markup"] = markup.make("product", ret)
+        ret["awards"] = award.awards_list(self.metrics)
 
-        try:
-            for key_to_hide in hide_keys:
-                del ret[key_to_hide]
-        except KeyError:
-            pass
+        for key_to_hide in hide_keys:
+            del ret[key_to_hide]
 
         return ret
 
+
     def _to_basic_dict(self):
-        return {
-            "aliases": self.aliases.to_dict(),
-            "biblio": self.biblio.to_dict(self.aliases),
-            "metrics": [m.to_dict() for m in self.metrics],
-            "awards": award.awards_list(self.metrics),
-            "id": self._id
-        }
+
+        ret = {}
+        for k in dir(self):
+            if k.startswith("_"):
+                pass
+            else:
+                ret[k] = getattr(self, k)
+
+        del ret["raw_dict"]
+        return ret
+
+
 
 
 
@@ -81,8 +99,27 @@ class Product():
 
 
 class Biblio():
-    def __init__(self, raw_dict):
+    def __init__(self, raw_dict, aliases):
+
+        # temporary for until we get this from the db via sqlalchemy
         self.raw_dict = raw_dict
+        for k, v in raw_dict.iteritems():
+            setattr(self, k, v)
+
+        if aliases.best_url is not None:
+            self.url = aliases.best_url
+
+        if not self.title:
+            self.title = "no title"
+
+        try:
+            auths = ",".join(self.authors.split(",")[0:3])
+            if len(auths) < len(self.authors):
+                auths += " et al."
+            self.authors = auths
+        except AttributeError:
+            pass
+
 
     @property
     def year(self):
@@ -91,49 +128,23 @@ class Biblio():
         except KeyError:
             return None
 
-    def to_dict(self, aliases):
-        ret = self.raw_dict
-
-        if aliases.get_url() is not None:
-            ret["url"] = aliases.get_url()
-        elif "url" in ret:
-            pass
-        else:
-            ret["url"] = None
-    
-        if "title" not in ret.keys():
-            ret["title"] = "no title"
-    
-        try:
-            auths = ",".join(ret["authors"].split(",")[0:3])
-            if len(auths) < len(ret["authors"]):
-                auths += " et al."
-            ret["authors"] = auths
-        except KeyError:
-            pass
-    
-        return ret
-
 
 
 
 
 class Aliases():
     def __init__(self, raw_dict):
-        self.raw_dict = raw_dict
+        # temporary for until we get this from the db via sqlalchemy
+        ignore_keys = ["biblio"]
+        for k, v in raw_dict.iteritems():
+            if k not in ignore_keys:
+                setattr(self, k, v)
 
-    def to_dict(self):
-        ret = {}
-        keys_to_ignore = ["biblio"]
-        for k, v in self.raw_dict.iteritems():
-            if k not in keys_to_ignore:
-                ret[k] = v
-        return ret
-
-    def get_url(self):
-        try: 
-            return self.raw_dict["url"][0]
-        except KeyError:
+    @property
+    def best_url(self):
+        try:
+            return self.url[0]
+        except AttributeError:
             return None
 
 

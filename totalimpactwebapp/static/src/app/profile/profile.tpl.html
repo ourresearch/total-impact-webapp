@@ -84,14 +84,14 @@
             <!-- filter products -->
             <div class="filters">
 
-               <div class="filter" ng-class="{active: !productFilter.has_metrics && !productFilter.has_new_metrics}">
+               <div class="filter" ng-class="{active: !productFilter.has_metrics && !productFilter.has_new_metric}">
                   <a ng-click="setProductFilter('all')">
                      Products
                      <span class="count">({{ (products|filter:{is_true_product:true}).length }})</span>
                   </a>
                </div>
 
-               <div class="filter" ng-class="{active: (productFilter.has_metrics && !productFilter.has_new_metrics)}">
+               <div class="filter" ng-class="{active: (productFilter.has_metrics && !productFilter.has_new_metric)}">
                   <i class="icon-chevron-right left"></i>
                   <a ng-click="setProductFilter('has_metrics')">
                      with metrics
@@ -99,12 +99,12 @@
                   </a>
                </div>
                <div class="filter this-week"
-                    ng-show="(products|filter:{has_new_metrics: true}).length > 0"
-                    ng-class="{active: productFilter.has_new_metrics}">
+                    ng-show="(products|filter:{has_new_metric: true}).length > 0"
+                    ng-class="{active: productFilter.has_new_metric}">
                   <i class="icon-chevron-right left"></i>
-                  <a ng-click="setProductFilter('has_new_metrics')">
+                  <a ng-click="setProductFilter('has_new_metric')">
                      this week
-                     <span class="count">({{ (products|filter:{is_true_product:true, has_new_metrics: true}).length }})</span>
+                     <span class="count">({{ (products|filter:{is_true_product:true, has_new_metric: true}).length }})</span>
 
                   </a>
                </div>
@@ -147,7 +147,7 @@
              ng-class="{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}"
              ng-repeat="product in filteredProducts = (products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title'] | filter: productFilter)"
              ng-controller="productCtrl"
-             id="{{ product._id }}"
+             id="{{ product.id }}"
              on-repeat-finished>
 
             <div class="product-margin" ng-show="currentUserIsProfileOwner()">
@@ -159,10 +159,7 @@
                   </a>
                </span>
             </div>
-
-            <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
-            <div class="metrics-container" ng-bind-html-unsafe="product.markup.metrics"></div>
-
+            <div class="product-container" ng-bind-html-unsafe="product.markup"></div>
          </li>
       </ul>
    </div>
