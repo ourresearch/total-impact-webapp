@@ -22,7 +22,6 @@ class Metric():
 
         # temporary for until we get this from the db via sqlalchemy
         del raw_dict["static_meta"]
-        self.raw_dict = raw_dict
         for k, v in raw_dict.iteritems():
             setattr(self, k, v)
 
@@ -30,8 +29,8 @@ class Metric():
     @property
     def is_highly(self):
         try:
-            percentile_high_enough = self.raw_dict["percentiles"]["CI95_lower"] > 75
-            raw_high_enough = self.raw_dict["actual_count"] >= 3
+            percentile_high_enough = self.percentiles["CI95_lower"] > 75
+            raw_high_enough = self.actual_count >= 3
 
             if percentile_high_enough and raw_high_enough:
                 return True
@@ -41,6 +40,7 @@ class Metric():
         except KeyError:  # no percentiles listed
             return False
 
+    @property
     def has_new_metric(self):
         return self.historical_values["diff"]["raw"] > 0
 
@@ -63,16 +63,19 @@ class Metric():
 
     @property
     def actual_count(self):
-        # deal with F1000's troublesome "count" of "Yes." Can add others later.
-        # currently ALL strings are transformed to 1.
-        if isinstance(self.raw_dict["values"]["raw"], basestring):
+        try:
+            return int(self.values["raw"])
+        except ValueError:
+            # deal with F1000's troublesome "count" of "Yes."
+            # currently ALL strings are transformed to 1.
             return 1
-        else:
-            return self.raw_dict["values"]["raw"]
+        except TypeError:
+            return 0  # ignore lists and dicts
+
 
     @property
     def display_count(self):
-        return self.raw_dict["values"]["raw"]
+        return self.values["raw"]
 
     @property
     def display_interaction(self):
@@ -81,13 +84,20 @@ class Metric():
         else:
             return self.config["interaction"]
 
-    def to_dict(self):
-        return self.__dict__
+    @property
+    def has_percentiles(self):
+        for refset_value in self.values:
+            try:
+                if "CI95_lower" in refset_value.keys():
+                    return True
+            except AttributeError:
+                pass
+        return False
 
 
 
     @property
-    def percentiles(self, metric_dict):
+    def percentiles(self):
         ret = {}
         refsets_config = {
             "WoS": ["Web of Science", "indexed by"],
@@ -96,7 +106,7 @@ class Metric():
             "github": ["GitHub", "added to"]
         }
 
-        for refset_key, normalized_values in metric_dict["values"].iteritems():
+        for refset_key, normalized_values in self.values.iteritems():
             if refset_key == "raw":
                 continue
             else:
@@ -112,6 +122,17 @@ class Metric():
         return ret
 
 
+    def _to_basic_dict(self):
+
+        ret = {}
+        for k in dir(self):
+            if k.startswith("_"):
+                pass
+            else:
+                ret[k] = getattr(self, k)
+
+        del ret["raw_dict"]
+        return ret
 
 
 

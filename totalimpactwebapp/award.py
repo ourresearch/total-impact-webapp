@@ -6,18 +6,17 @@ import configs
 logger = logging.getLogger("tiwebapp.metric_snap")
 
 
-""" *****************************************
-* Factory
-***************************************** """
 
 def awards_list(metrics):
+    """
+    Factory to make a list of Award objects from a list of Metric objects
+    """
     my_list = []
     for engagement_type in configs.award_configs["engagement_types"].keys():
         for audience in configs.award_configs["audiences"].keys():
             this_award = Award(engagement_type, audience, metrics)
             if len(this_award.metrics):
                 my_list.append(this_award)
-
 
     return my_list
 
@@ -49,6 +48,16 @@ class Award():
         else:
             return False
 
+    @property
+    def is_highly(self):
+        return True
+
+    @property
+    def sort_score(self):
+        if self.is_highly:
+            return 3
+        else:
+            return 1
 
 
     def to_dict(self):
@@ -58,6 +67,8 @@ class Award():
             "num_metrics": len(self.metrics),
             "other cool stuff": "yes please"
         }
+
+
 
 
 
