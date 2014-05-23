@@ -12,10 +12,10 @@ class Biblio():
 
 
     @property
-    def year(self):
+    def display_year(self):
         try:
-            return self.raw_dict["year"]
-        except KeyError:
+            return self.year
+        except AttributeError:
             return None
 
     @property
@@ -26,7 +26,7 @@ class Biblio():
             return "other"
 
     @property
-    def display_auths(self):
+    def display_authors(self):
         try:
             auths = ",".join(self.authors.split(",")[0:3])
             if len(auths) < len(self.authors):
