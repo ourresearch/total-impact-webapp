@@ -1,5 +1,6 @@
 import configs
 import logging
+from totalimpactwebapp import util
 
 logger = logging.getLogger("tiwebapp.metric_snap")
 
@@ -111,22 +112,9 @@ class Metric():
 
 
 
-    def _to_basic_dict(self):
-
-        ret = {}
-        for k in dir(self):
-            if k.startswith("_"):
-                pass
-            elif k == "as_dict":
-                pass
-            else:
-                ret[k] = getattr(self, k)
-
+    def to_dict(self):
+        ret = util.dict_from_dir(self, "config")
         return ret
-
-    @property
-    def as_dict(self):
-        return self._to_basic_dict()
 
 
 

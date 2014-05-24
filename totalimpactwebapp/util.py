@@ -92,6 +92,22 @@ def as_int_or_float_if_possible(input_value):
     return(value)
 
 
+def dict_from_dir(obj, keys_to_ignore=None):
+    if keys_to_ignore is None:
+        keys_to_ignore = []
+    elif isinstance(keys_to_ignore, basestring):
+        keys_to_ignore = [keys_to_ignore]
+
+    ret = {}
+    for k in dir(obj):
+        if k.startswith("_"):
+            pass
+        elif k in keys_to_ignore:
+            pass
+        else:
+            ret[k] = getattr(obj, k)
+    return ret
+
 
 def todict(obj, classkey=None):
     # from http://stackoverflow.com/a/1118038/226013
@@ -100,9 +116,8 @@ def todict(obj, classkey=None):
         for (k, v) in obj.items():
             data[k] = todict(v, classkey)
         return data
-    elif hasattr(obj, "as_dict"):
-        print "trying as_dict."
-        return todict(obj.as_dict, classkey)
+    elif hasattr(obj, "to_dict"):
+        return todict(obj.to_dict(), classkey)
     elif hasattr(obj, "_ast"):
         return todict(obj._ast())
     elif type(obj) is datetime.datetime:  # convert datetimes to strings; jason added this bit
