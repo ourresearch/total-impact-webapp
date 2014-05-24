@@ -1,4 +1,4 @@
-
+import util
 
 class Aliases():
     def __init__(self, raw_dict):
@@ -15,3 +15,7 @@ class Aliases():
         except AttributeError:
             return None
 
+
+    def to_dict(self):
+        ret = util.dict_from_dir(self)
+        return ret

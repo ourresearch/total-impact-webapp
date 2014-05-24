@@ -374,7 +374,7 @@ class User(db.Model):
             except (IndexError, InvalidRequestError):
                 ret_dict["subscription"] = None
 
-        ret_dict["has_new_metrics"] = products_list.has_new_metrics(self.products)
+        ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.product_objects])
         ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
 
         return ret_dict

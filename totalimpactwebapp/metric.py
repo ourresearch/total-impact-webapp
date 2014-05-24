@@ -43,7 +43,6 @@ class Metric():
 
     @property
     def has_new_metric(self):
-        return True
         return self.historical_values["diff"]["raw"] > 0
 
 
@@ -82,6 +81,13 @@ class Metric():
             return self.config["interaction"]
 
     @property
+    def top_percentile(self):
+        try:
+            return self.percentiles["CI95_upper"]
+        except TypeError:
+            return None
+
+    @property
     def percentiles(self):
         ret = {}
         refsets_config = {
@@ -108,8 +114,6 @@ class Metric():
             return ret
         else:
             return None
-
-
 
     def to_dict(self):
         ret = util.dict_from_dir(self, "config")

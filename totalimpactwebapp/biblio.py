@@ -1,3 +1,4 @@
+import util
 
 class Biblio():
     def __init__(self, raw_dict, aliases):
@@ -42,3 +43,9 @@ class Biblio():
             return self.title
         except AttributeError:
             return "no title"
+
+    def to_dict(self):
+        ret = util.dict_from_dir(self)
+        return ret
+
+

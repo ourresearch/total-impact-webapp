@@ -1,6 +1,6 @@
 from copy import deepcopy
 import logging
-
+import util
 import configs
 
 logger = logging.getLogger("tiwebapp.metric_snap")
@@ -19,7 +19,6 @@ def awards_list(metrics):
                 my_list.append(this_award)
 
     return my_list
-
 
 
 
@@ -50,7 +49,26 @@ class Award():
 
     @property
     def is_highly(self):
-        return True
+        return self.top_metric_by_percentile.is_highly
+
+
+    @property
+    def top_metric_by_percentile(self):
+        s = sorted(self.metrics, key=lambda metric: metric.top_percentile, reverse=True)
+        return s[0]
+
+    @property
+    def top_metric_by_diff(self):
+        s = sorted(
+            self.metrics,
+            key=lambda metric: metric.historical_values["diff"]["raw"],
+            reverse=True
+        )
+        return s[0]
+
+    @property
+    def metrics_with_new(self):
+        return [m for m in self.metrics if m.has_new_metric]
 
     @property
     def is_highly_classname(self):
@@ -58,7 +76,10 @@ class Award():
 
     @property
     def highly_string(self):
-        return ""
+        if self.is_highly:
+            return "highly"
+        else:
+            return ""
 
     @property
     def sort_score(self):
@@ -67,14 +88,21 @@ class Award():
         else:
             return 1
 
+    @property
+    def display_audience(self):
+        return self.audience.replace("public", "the public")
+
+    @property
+    def display_order(self):
+        ret = configs.award_configs["engagement_types"][self.engagement_type][1]
+        if self.audience == "scholars":
+            ret += 10
+
+        if self.is_highly:
+            ret += 100
 
     def to_dict(self):
-        return {
-            "audience": self.audience,
-            "engagement_type": self.engagement_type,
-            "num_metrics": len(self.metrics),
-            "other cool stuff": "yes please"
-        }
+        return util.dict_from_dir(self)
 
 
 
@@ -82,34 +110,14 @@ class Award():
 
 
 
-class AwardsList():
-    def __init__(self, metrics):
-        self.metrics = metrics
-
-    def make_list(self):
-        my_list = []
-        for engagement_type in configs.award_configs["engagement_types"].keys():
-            for audience in configs.award_configs["audiences"].keys():
-                this_award = Award(engagement_type, audience, self.metrics)
-                my_list.append(this_award)
-
-        return my_list
-
-    def to_list(self):
-        ret = []
-
-        for award in self.make_list():
-            if len(award.metrics):
-                ret.append(award.to_dict())
-
-        return ret
 
 
 
-
-"""
-Awards stuff
-"""
+##############################################################
+##############################################################
+#                  old awards stuff
+##############################################################
+##############################################################
 
 def make_awards(product):
     metrics = product["metrics"]
