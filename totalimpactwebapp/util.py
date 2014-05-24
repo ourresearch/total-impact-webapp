@@ -4,6 +4,7 @@ import random, math
 import re
 import jinja2
 from time import sleep
+import datetime
 
 
 # a slow decorator for tests, so can exclude them when necessary
@@ -89,6 +90,36 @@ def as_int_or_float_if_possible(input_value):
         except (ValueError, TypeError):
             pass
     return(value)
+
+
+
+def todict(obj, classkey=None):
+    # from http://stackoverflow.com/a/1118038/226013
+    if isinstance(obj, dict):
+        data = {}
+        for (k, v) in obj.items():
+            data[k] = todict(v, classkey)
+        return data
+    elif hasattr(obj, "as_dict"):
+        print "trying as_dict."
+        return todict(obj.as_dict, classkey)
+    elif hasattr(obj, "_ast"):
+        return todict(obj._ast())
+    elif type(obj) is datetime.datetime:  # convert datetimes to strings; jason added this bit
+        return obj.isoformat()
+    elif hasattr(obj, "__iter__"):
+        return [todict(v, classkey) for v in obj]
+    elif hasattr(obj, "__dict__"):
+        data = dict([(key, todict(value, classkey))
+            for key, value in obj.__dict__.iteritems()
+            if not callable(value) and not key.startswith('_')])
+        if classkey is not None and hasattr(obj, "__class__"):
+            data[classkey] = obj.__class__.__name__
+        return data
+    else:
+        return obj
+
+
     
 # getting a "decoding Unicode is not supported" error in this function?  
 # might need to reinstall libaries as per 
