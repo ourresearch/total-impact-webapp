@@ -26,21 +26,20 @@ class Metric():
         for k, v in raw_dict.iteritems():
             setattr(self, k, v)
 
+    @property
+    def is_highly(self):
+        try:
+            percentile_high_enough = self.percentiles["CI95_lower"] > 75
+        except TypeError:  # no percentiles listed
+            percentile_high_enough = False
 
-    #
-    #@property
-    #def is_highly(self):
-    #    try:
-    #        percentile_high_enough = self.percentiles["CI95_lower"] > 75
-    #        raw_high_enough = self.actual_count >= 3
-    #
-    #        if percentile_high_enough and raw_high_enough:
-    #            return True
-    #        else:
-    #            return False
-    #
-    #    except KeyError:  # no percentiles listed
-    #        return False
+        raw_high_enough = self.display_count >= 3
+
+        if percentile_high_enough and raw_high_enough:
+            return True
+        else:
+            return False
+
 
     @property
     def has_new_metric(self):
@@ -100,7 +99,7 @@ class Metric():
                 # make it be the only one that counts. Works fine as long as
                 # there is just one.
 
-                ret["values"] = normalized_values
+                ret.update(normalized_values)
                 ret["top_percent"] = 100 - normalized_values["CI95_lower"]
                 ret["refset"] = refsets_config[refset_key][0]
                 ret["refset_storage_verb"] = refsets_config[refset_key][1]
