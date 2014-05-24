@@ -59,7 +59,7 @@ class Product():
 
     @property
     def metrics_raw_sum(self):
-        return sum(m.actual_count for m in self.metrics)
+        return sum(m.display_count for m in self.metrics)
 
     @property
     def awardedness_score(self):
@@ -76,7 +76,7 @@ class Product():
 
     @property
     def has_percentiles(self):
-        return any([m.has_percentiles for m in self.metrics])
+        return any([m.percentiles for m in self.metrics])
 
 
     def to_dict(self, hide_keys, markup):

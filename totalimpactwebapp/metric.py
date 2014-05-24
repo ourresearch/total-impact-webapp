@@ -26,23 +26,26 @@ class Metric():
             setattr(self, k, v)
 
 
-    @property
-    def is_highly(self):
-        try:
-            percentile_high_enough = self.percentiles["CI95_lower"] > 75
-            raw_high_enough = self.actual_count >= 3
-
-            if percentile_high_enough and raw_high_enough:
-                return True
-            else:
-                return False
-
-        except KeyError:  # no percentiles listed
-            return False
+    #
+    #@property
+    #def is_highly(self):
+    #    try:
+    #        percentile_high_enough = self.percentiles["CI95_lower"] > 75
+    #        raw_high_enough = self.actual_count >= 3
+    #
+    #        if percentile_high_enough and raw_high_enough:
+    #            return True
+    #        else:
+    #            return False
+    #
+    #    except KeyError:  # no percentiles listed
+    #        return False
 
     @property
     def has_new_metric(self):
+        return True
         return self.historical_values["diff"]["raw"] > 0
+
 
     @property
     def latest_nonzero_refresh_timestamp(self):
@@ -62,7 +65,7 @@ class Metric():
         return self.config["audience"]
 
     @property
-    def actual_count(self):
+    def display_count(self):
         try:
             return int(self.values["raw"])
         except ValueError:
@@ -73,9 +76,6 @@ class Metric():
             return 0  # ignore lists and dicts
 
 
-    @property
-    def display_count(self):
-        return self.values["raw"]
 
     @property
     def display_interaction(self):
@@ -83,16 +83,6 @@ class Metric():
             return self.config["interaction"][:-1]  # de-pluralize
         else:
             return self.config["interaction"]
-
-    @property
-    def has_percentiles(self):
-        for refset_value in self.values:
-            try:
-                if "CI95_lower" in refset_value.keys():
-                    return True
-            except AttributeError:
-                pass
-        return False
 
 
 
@@ -119,7 +109,10 @@ class Metric():
                 ret["refset"] = refsets_config[refset_key][0]
                 ret["refset_storage_verb"] = refsets_config[refset_key][1]
 
-        return ret
+        if ret:
+            return ret
+        else:
+            return None
 
 
     def _to_basic_dict(self):
@@ -128,11 +121,17 @@ class Metric():
         for k in dir(self):
             if k.startswith("_"):
                 pass
+            elif k == "as_dict":
+                pass
             else:
                 ret[k] = getattr(self, k)
 
-        del ret["raw_dict"]
         return ret
+
+    @property
+    def as_dict(self):
+        return self._to_basic_dict()
+
 
 
 

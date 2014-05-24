@@ -67,6 +67,8 @@ def todict(obj, classkey=None):
         for (k, v) in obj.items():
             data[k] = todict(v, classkey)
         return data
+    elif hasattr(obj, "as_dict"):
+        return todict(obj.as_dict, classkey)
     elif hasattr(obj, "_ast"):
         return todict(obj._ast())
     elif type(obj) is datetime.datetime:  # convert datetimes to strings; jason added this bit
