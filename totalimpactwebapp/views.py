@@ -68,6 +68,7 @@ def todict(obj, classkey=None):
             data[k] = todict(v, classkey)
         return data
     elif hasattr(obj, "as_dict"):
+        print "trying as_dict."
         return todict(obj.as_dict, classkey)
     elif hasattr(obj, "_ast"):
         return todict(obj._ast())
@@ -89,10 +90,7 @@ def todict(obj, classkey=None):
 
 def json_resp_from_thing(thing):
 
-    try:
-        my_dict = thing.as_dict()
-    except AttributeError:
-        my_dict =todict(thing)
+    my_dict = todict(thing)
 
     json_str = json.dumps(my_dict, sort_keys=True, indent=4)
     resp = make_response(json_str, 200)

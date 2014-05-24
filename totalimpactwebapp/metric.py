@@ -54,7 +54,6 @@ class Metric():
         except KeyError:
             return None
 
-
     @property
     def engagement_type(self):
         return self.config["engagement_type"]
@@ -75,16 +74,12 @@ class Metric():
         except TypeError:
             return 0  # ignore lists and dicts
 
-
-
     @property
     def display_interaction(self):
-        if self.actual_count <= 1:
+        if self.display_count <= 1:
             return self.config["interaction"][:-1]  # de-pluralize
         else:
             return self.config["interaction"]
-
-
 
     @property
     def percentiles(self):
@@ -113,6 +108,7 @@ class Metric():
             return ret
         else:
             return None
+
 
 
     def _to_basic_dict(self):
