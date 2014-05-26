@@ -39,15 +39,14 @@ def page_query(q):
 
 def add_profile_deets_for_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        # print user.url_slug
-        tasks.add_profile_deets.delay(user)
+        logger.debug(u"add_profile_deets_for_everyone: {url_slug}".format(url_slug=user.url_slug))
+        response = tasks.add_profile_deets.delay(user)
 
 
 def deduplicate_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        # print user.url_slug
-        removed_tiids = tasks.deduplicate.delay(user)
-
+        logger.debug(u"deduplicate_everyone: {url_slug}".format(url_slug=user.url_slug))
+        response = tasks.deduplicate.delay(user)
 
 
 
@@ -96,7 +95,7 @@ def main(function, url_slug):
             email_report_to_everyone_who_needs_one()
     elif function=="dedup":
         deduplicate_everyone()
-    elif funciton=="profile_deets":
+    elif function=="profile_deets":
         add_profile_deets_for_everyone()
 
 

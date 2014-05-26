@@ -3,6 +3,9 @@ import datetime
 import time
 import logging
 import celery
+from celery.decorators import task
+from celery.signals import task_postrun, task_prerun, task_failure
+
 from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 from sqlalchemy.orm.exc import FlushError
 
@@ -17,19 +20,21 @@ from totalimpactwebapp import emailer
 
 logger = logging.getLogger("webapp.tasks")
 
-celery_app = celery.Celery('tasks', 
-    broker=os.getenv("CLOUDAMQP_URL", "amqp://guest@localhost//")
-    )
+
+@task_prerun.connect()
+def task_starting_handler(sender=None, task_id=None, task=None, args=None, kwargs=None, **kwds):    
+    # start with a new db session
+    db.session.remove()
 
 
-# celery_app.conf.update(
-#     CELERY_TASK_SERIALIZER='json',
-#     CELERY_ACCEPT_CONTENT=['json'],  # Ignore other content
-#     CELERY_RESULT_SERIALIZER='json',
-#     CELERY_ENABLE_UTC=True,
-#     CELERY_TRACK_STARTED=True,
-#     CELERY_ACKS_LATE=True, 
-# )
+@task_failure.connect
+def task_failure_handler(sender=None, task_id=None, task=None, args=None, kwargs=None, retval=None, state=None, **kwds):
+    try:
+        logger.error(u"Celery task FAILED on task_id={task_id}, {args}".format(
+            task_id=task_id, args=args))
+    except KeyError:
+        pass
+
 
 class CeleryStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)    
@@ -139,7 +144,7 @@ class ProfileDeets(db.Model):
             tiid=self.tiid)
 
 
-@celery_app.task(ignore_result=True, base=TaskThatSavesState)
+@task(ignore_result=True, base=TaskThatSavesState)
 def add_profile_deets(user):
     product_dicts = products_list.prep(
             user.products,
@@ -167,7 +172,7 @@ def add_profile_deets(user):
     db.session.commit()
 
 
-@celery_app.task(ignore_result=True, base=TaskThatSavesState)
+@task(ignore_result=True, base=TaskThatSavesState)
 def deduplicate(user):
     removed_tiids = []
     try:
@@ -179,7 +184,7 @@ def deduplicate(user):
     return removed_tiids
 
 
-@celery_app.task(base=TaskAlertIfFail)
+@task(base=TaskAlertIfFail)
 def send_email_if_new_diffs(user):
 
     # get it again to help with debugging?
@@ -247,14 +252,14 @@ def send_email_report(user, now=None):
     return status
 
 
-# @celery_app.task(base=TaskThatSavesState)
+# @task(base=TaskThatSavesState)
 # def update_from_linked_account(user, account):
 #     tiids = user.update_products_from_linked_account(account, update_even_removed_products=False)
 #     return tiids
 
 
 
-# @celery_app.task(base=TaskThatSavesState)
+# @task(base=TaskThatSavesState)
 # def link_accounts_and_update(user):
 #     all_tiids = []
 #     for account in ["github", "slideshare", "figshare", "orcid"]:
@@ -263,14 +268,14 @@ def send_email_report(user, now=None):
 #     return all_tiids  
 
 
-# @celery_app.task(base=TaskThatSavesState)
+# @task(base=TaskThatSavesState)
 # def dedup_and_create_cards_and_email(user, override_with_send=True):
 #     deduplicate(user)
 #     # create_cards(user)
 #     send_email_report(user, override_with_send=True)
 
 
-# @celery_app.task(base=TaskThatSavesState)
+# @task(base=TaskThatSavesState)
 # def create_cards(user):
 #     timestamp = datetime.datetime.utcnow()
 #     cards = []
