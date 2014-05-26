@@ -65,20 +65,20 @@
 
 <div class="awards">
    <ul class="awards-list">
-      {% for award in awards | sort(reverse=True, attribute='display_order') %}
+      {% for award in awards %}
          <li class="award">
             <a href="/{{ url_slug }}/product/{{ id }}"
                class="ti-badge"
 
                data-original-title="{{ award.highly_string }} {{award.engagement_type}} by <span class='{{award.display_audience}}'>{{award.display_audience}}</span>"
 
-               data-content="This item has {{award.top_metric_by_percentile.actual_count}} {{award.top_metric_by_percentileenvironment}}
-               {{award.top_metric_by_percentiledisplay_interaction}}{% if award.is_highly %}.
-               That's better than {{award.top_metric_by_percentilepercentiles.CI95_lower}}%
-               of items {{award.top_metric_by_percentilerefset_storage_verb}} {{award.top_metric_by_percentilerefset}} in
-               {{award.top_metric_by_percentilerefset_year}}{% endif %},
+               data-content="This item has {{award.top_metric_by_percentile.actual_count}} {{award.top_metric_by_percentile.environment}}
+               {{award.top_metric_by_percentile.display_interaction}}{% if award.is_highly %}.
+               That's better than {{award.top_metric_by_percentile.percentiles.CI95_lower}}%
+               of items {{award.top_metric_by_percentile.refset_storage_verb}} {{award.top_metric_by_percentile.refset}} in
+               {{award.top_metric_by_percentile.refset_year}}{% endif %},
                suggesting it's highly {{award.engagement_type}} by {{award.display_audience }}. Click for details.
-               {% if award.top_metric_by_percentilehistorical_values.diff.raw > 0 %}
+               {% if award.top_metric_by_percentile.historical_values.diff.raw > 0 %}
                <ul class='new-metrics'>
                   {% for metric in award.metrics %}
                      <li>
@@ -97,13 +97,13 @@
 
 
 
-               <span class="text badge-part new-metrics-{{ (award.top_metric_by_percentilehistorical_values.diff.raw > 0) | string() | lower() }} {{ award.is_highly_classname }} {{award.audience}} {{award.engagement_type}}">
+               <span class="text badge-part new-metrics-{{ (award.top_metric_by_percentile.historical_values.diff.raw > 0) | string() | lower() }} {{ award.is_highly_classname }} {{award.audience}} {{award.engagement_type}}">
                   {% if award.is_highly %}<span class="modifier">highly</span>{% endif %}
                   <span class="engagement-type">{{award.engagement_type}}</span>
                   <span class="audience">by {{award.audience}}</span>
                </span>
-               <span class="new-this-week badge-part new-metrics-{{ (award.top_metric_by_percentilehistorical_values.diff.raw > 0) | string() | lower() }} {{ award.is_highly_classname }} {{award.audience}} {{award.engagement_type}}">
-                  <span class="plus-sign">+</span>{{ award.top_metric_by_percentilehistorical_values.diff.raw }}
+               <span class="new-this-week badge-part new-metrics-{{ (award.top_metric_by_percentile.historical_values.diff.raw > 0) | string() | lower() }} {{ award.is_highly_classname }} {{award.audience}} {{award.engagement_type}}">
+                  <span class="plus-sign">+</span>{{ award.top_metric_by_percentile.historical_values.diff.raw }}
                </span>
             </a> {# ending <a> tag. #}
          </li>
