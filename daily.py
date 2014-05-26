@@ -89,10 +89,15 @@ def email_report_to_everyone_who_needs_one():
 
 
 def main(function, url_slug):
-    if url_slug:
-        email_report_to_url_slug(url_slug)
-    else:    
-        email_report_to_everyone_who_needs_one()
+    if function=="email_report":
+        if url_slug:
+            email_report_to_url_slug(url_slug)
+        else:    
+            email_report_to_everyone_who_needs_one()
+    elif function=="dedup":
+        deduplicate_everyone()
+    elif funciton=="profile_deets":
+        add_profile_deets_for_everyone()
 
 
 
@@ -104,7 +109,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run stuff")
     parser.add_argument('--url_slug', default=None, type=str, help="url slug")
     # parser.add_argument('--celery', default=True, type=bool, help="celery")
-    parser.add_argument('--function', default=None, type=str, help="function")
+    parser.add_argument('--function', default="email_report", type=str, help="function")
     args = vars(parser.parse_args())
     print args
     print u"daily.py starting."
