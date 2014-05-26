@@ -63,6 +63,14 @@ class Metric():
         return self.config["audience"]
 
     @property
+    def provider_name(self):
+        return self.metric_name.split(":")[0]
+
+    @property
+    def interaction(self):
+        return self.metric_name.split(":")[1]
+
+    @property
     def display_count(self):
         try:
             return int(self.values["raw"])

@@ -72,7 +72,10 @@ class Award():
 
     @property
     def is_highly_classname(self):
-        return "not-done-yet"
+        if self.is_highly:
+            return "is-highly"
+        else:
+            return "is-not-highly"
 
     @property
     def highly_string(self):
