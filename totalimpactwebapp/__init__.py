@@ -18,6 +18,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger("tiwebapp")
 
+requests_log = logging.getLogger("requests.packages.urllib3")
+requests_log.setLevel(logging.WARNING)
+requests_log.propagate = True
+
+stripe_log = logging.getLogger("stripe")
+stripe_log.setLevel(logging.WARNING)
+stripe_log.propagate = True
+
+newrelic_log = logging.getLogger("newrelic")
+newrelic_log.setLevel(logging.WARNING)
+newrelic_log.propagate = True
 
 # set up application
 app = Flask(__name__)
