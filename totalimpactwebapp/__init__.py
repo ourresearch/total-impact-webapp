@@ -7,6 +7,7 @@ from sqlalchemy import exc
 from sqlalchemy import event
 from sqlalchemy.pool import Pool
 from totalimpactwebapp.util import HTTPMethodOverrideMiddleware
+from multiprocessing.util import register_after_fork
 
 
 # set up logging
@@ -26,10 +27,6 @@ stripe_log = logging.getLogger("stripe")
 stripe_log.setLevel(logging.WARNING)
 stripe_log.propagate = True
 
-newrelic_log = logging.getLogger("newrelic")
-newrelic_log.setLevel(logging.WARNING)
-newrelic_log.propagate = True
-
 # set up application
 app = Flask(__name__)
 # gzip responses and make it similar on staging and production
@@ -42,7 +39,13 @@ app.wsgi_app = HTTPMethodOverrideMiddleware(app.wsgi_app)
 
 # database stuff
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.config["SQLALCHEMY_POOL_SIZE"] = 20
+
 db = SQLAlchemy(app)
+
+# see https://github.com/celery/celery/issues/1564
+register_after_fork(db.engine, engine.dispose)
+
 
 # from http://docs.sqlalchemy.org/en/latest/core/pooling.html
 # This recipe will ensure that a new Connection will succeed even if connections in the pool 

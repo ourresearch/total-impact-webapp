@@ -138,6 +138,8 @@ if __name__ == "__main__":
     print args
     print u"updater.py starting."
     main(args["number_to_update"], args["max_days_since_updated"], [args["url_slug"]])
+    db.session.remove()
+
 
 
 
