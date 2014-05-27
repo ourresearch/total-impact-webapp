@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-25
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-26
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1526,8 +1526,8 @@ angular.module("profile", [
           // we only cache things one time
           UserProfile.useCache(false)
 
-          var anythingStillUpdating = !!_.find(resp, function(product){
-            return product.currently_updating
+          var anythingStillUpdating =  !_.all(resp, function(product){
+            return (!!product.is_heading || !!_(product.update_status).startsWith("SUCCESS"))
           })
 
           if (anythingStillUpdating) {
@@ -2030,7 +2030,7 @@ angular.module( 'update.update', [
 
     var numDone = function(products, completedStatus){
        var productsDone =  _.filter(products, function(product){
-         return !product.currently_updating
+        return _(product.update_status).startsWith("SUCCESS")
        })
 
        if (!updateStarted){  // global var from above
