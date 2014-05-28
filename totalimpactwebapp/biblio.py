@@ -1,6 +1,7 @@
 import util
+from urlparse import urlparse
 
-class Biblio():
+class Biblio(object):
     def __init__(self, raw_dict, aliases):
 
         # temporary for until we get this from the db via sqlalchemy
@@ -44,8 +45,31 @@ class Biblio():
         except AttributeError:
             return "no title"
 
+    @property
+    def free_fulltext_host(self):
+        try:
+            return self._get_url_host(self.free_fulltext_url)
+        except AttributeError:
+            return None
+
     def to_dict(self):
         ret = util.dict_from_dir(self)
         return ret
+
+    def _get_url_host(self, url):
+        # this should actually be done upstream, where we have a list of
+        # free-fulltext DOI fragments. this quick hack gets a few for now.
+
+        parsed = urlparse(url)
+        if parsed.path.startswith("/10.1371"):
+            host = "Public Library of Science"
+        elif parsed.path.startswith("/10.6084"):
+            host = "figshare"
+        elif parsed.netloc == "www.ncbi.nlm.nih.gov/":
+            host = "PubMed Central"
+        else:
+            host = parsed.netloc
+
+        return host
 
 

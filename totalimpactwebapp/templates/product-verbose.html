@@ -4,8 +4,7 @@
 
 <div class="biblio">
    <h5 class="title">
-      {# the actual title will be rendered above. #}
-      <a ng-click="foo()">click me!</a>
+      {{biblio.display_title}}
 
       {% if biblio.url %}
       <a class="linkout url title"
@@ -55,6 +54,47 @@
 
 
 
+
+
+{# free-fulltext stuff; not in profile page at all.
+#  it includes the openFulltextLocationModal() function for angular to use.
+#}
+{% if genre in ['article', 'report'] %}
+<div class="free-fulltext-url well" >
+
+   {% if biblio.free_fulltext_url %}
+   <div class="has-free-fulltext-url">
+      <i class="icon-unlock-alt leader"></i>
+      Free fulltext available at
+      <a href="{{ biblio.free_fulltext_url }}" target="_blank">
+         {{ biblio.free_fulltext_host }}
+         <i class="icon-external-link-sign"></i>
+      </a>
+   </div>
+
+   {% else %}
+   <div class="no-free-fulltext-url">
+      <div class="info">
+         <i class="icon-warning-sign leader"></i>
+         <div class="no-fulltext">
+            Your article has no free fulltext available.
+         </div>
+{#         <div class="encouragement">#}
+{#            <!-- @TODO FIX THIS. we can't depend on the OA award being first in awards list -->#}
+{#            {{ profileAwards[0].extra.needed_for_next_level_product_page }}#}
+{#         </div>#}
+      </div>
+      <div class="action">
+         <a class="action btn btn-danger btn-xs" ng-click="openFulltextLocationModal()">Link to free fulltext</a>
+      </div>
+
+   {% endif %}
+
+   </div>
+
+
+</div>
+{% endif %}
 
 {# This div.metrics-details-list part is quite different from its counterpart
 on the profile page.

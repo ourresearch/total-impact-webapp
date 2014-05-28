@@ -54,11 +54,6 @@ angular.module("profileProduct", [
     }
 
 
-    $scope.getDomain = function(fullUri){
-      var uri = new URI(fullUri);
-      return uri.domain()
-    }
-
     $scope.profileAwards = ProfileAwards.query(
       {id:slug},
       function(resp){
@@ -94,9 +89,6 @@ angular.module("profileProduct", [
       })
     }
 
-    $scope.foo = function(){
-      console.log("someone clicked foo!")
-    }
     $scope.product = UsersProduct.get({
       id: slug,
       tiid: $routeParams.tiid
