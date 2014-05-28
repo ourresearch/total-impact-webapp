@@ -1125,6 +1125,8 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "\n" +
     "      <div  class=\"product\">\n" +
     "\n" +
+    "         <div class=\"product-container\" ng-bind-html-unsafe=\"productMarkup\"></div>\n" +
+    "\n" +
     "         <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
     "\n" +
     "         <div class=\"free-fulltext-url well\" ng-show=\"!loading.is('profileProduct') && (product.genre=='article' || product.genre=='report')\">\n" +

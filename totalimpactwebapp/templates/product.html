@@ -60,24 +60,29 @@
       <span class="description">{{ biblio.description }}</span>
       {% endif %}
    </div>
-
 </div>
 
 <div class="awards">
    <ul class="awards-list">
-      {% for award in awards %}
+      {% for award in awards | sort(reverse=True, attribute="display_order") %}
          <li class="award">
             <a href="/{{ url_slug }}/product/{{ id }}"
                class="ti-badge"
 
                data-original-title="{{ award.highly_string }} {{award.engagement_type}} by <span class='{{award.display_audience}}'>{{award.display_audience}}</span>"
 
-               data-content="This item has {{award.top_metric_by_percentile.actual_count}} {{award.top_metric_by_percentile.environment}}
-               {{award.top_metric_by_percentile.display_interaction}}{% if award.is_highly %}.
-               That's better than {{award.top_metric_by_percentile.percentiles.CI95_lower}}%
-               of items {{award.top_metric_by_percentile.refset_storage_verb}} {{award.top_metric_by_percentile.refset}} in
-               {{award.top_metric_by_percentile.refset_year}}{% endif %},
-               suggesting it's highly {{award.engagement_type}} by {{award.display_audience }}. Click for details.
+               data-content="This item has {{award.top_metric_by_percentile.display_count}}
+               {{award.top_metric_by_percentile.environment}}
+               {{award.top_metric_by_percentile.display_interaction}}.
+               {% if award.is_highly %}
+               That's more than {{award.top_metric_by_percentile.percentiles.CI95_lower}}%
+               of {{ biblio.year }}
+               {{ genre }}s
+               in {{award.top_metric_by_percentile.percentiles.refset}},
+               suggesting it's highly {{award.engagement_type}}
+               by {{award.display_audience }}.
+               {% endif %}
+               Click for details.
                {% if award.top_metric_by_percentile.historical_values.diff.raw > 0 %}
                <ul class='new-metrics'>
                   {% for metric in award.metrics if metric.has_new_metric %}
@@ -85,9 +90,7 @@
                         <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
                         <span class='text'>
                            <span class='count'>{{ metric.historical_values.diff.raw }}</span> new
-                           {% if metric.environment != 'Altmetric.com' %}
-                              {{ metric.environment }}
-                           {% endif %}
+                           {{ metric.display_provider }}
                            {{ metric.display_interaction }} in the last week.
                         </span>
                      </li>

@@ -417,10 +417,6 @@ def user_profile_awards(profile_id):
 def user_products_get(id):
 
     user = get_user_for_response(id, request)
-    markup_context = {
-        "profile_slug": "foo",
-        "is_embedded": False
-    }
 
     try:
         if current_user.url_slug == user.url_slug:
@@ -512,16 +508,18 @@ def user_product(user_id, tiid):
     if user_id == "embed":
         abort(410)
 
-    user = get_user_for_response(user_id, request)
+    profile = get_user_for_response(user_id, request)
+
+    markup = product.Markup(verbose=True, embed=False)
+    hide_keys = request.args.get("hide", "").split(",")
+
+    product_dicts = profile.get_product_dicts(hide_keys, markup)
     try:
-        requested_product = [p for p in user.products if p["_id"] == tiid][0]
+        resp = [p for p in product_dicts if p["id"] == tiid][0]
     except IndexError:
         abort_json(404, "That product doesn't exist.")
 
-    prepped = product.prep_product(requested_product, True)
-
-    return json_resp_from_thing(prepped)
-
+    return json_resp_from_thing(resp)
 
 
 @app.route("/user/<id>/products.csv", methods=["GET"])

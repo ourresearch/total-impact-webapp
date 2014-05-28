@@ -37,6 +37,8 @@
 
       <div  class="product">
 
+         <div class="product-container" ng-bind-html-unsafe="productMarkup"></div>
+
          <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
 
          <div class="free-fulltext-url well" ng-show="!loading.is('profileProduct') && (product.genre=='article' || product.genre=='report')">

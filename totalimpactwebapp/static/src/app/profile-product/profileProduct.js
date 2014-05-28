@@ -27,6 +27,7 @@ angular.module("profileProduct", [
     $location,
     $modal,
     $cacheFactory,
+    $compile,
     security,
     UsersProduct,
     UsersProducts,
@@ -51,6 +52,7 @@ angular.module("profileProduct", [
     $scope.openFulltextLocationModal = function(){
       $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
     }
+
 
     $scope.getDomain = function(fullUri){
       var uri = new URI(fullUri);
@@ -92,7 +94,9 @@ angular.module("profileProduct", [
       })
     }
 
-
+    $scope.foo = function(){
+      console.log("someone clicked foo!")
+    }
     $scope.product = UsersProduct.get({
       id: slug,
       tiid: $routeParams.tiid
@@ -100,6 +104,7 @@ angular.module("profileProduct", [
     function(data){
       Loading.finish('profileProduct')
       Page.setTitle(data.biblio.title)
+      $scope.productMarkup = $compile(data.markup)($scope)
 
     },
     function(data){

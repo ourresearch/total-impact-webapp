@@ -28,7 +28,7 @@ def awards_list(metrics):
 
 
 
-class Award():
+class Award(object):
     def __init__(self, engagement_type, audience, metrics):
         self.engagement_type = engagement_type
         self.audience = audience

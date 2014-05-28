@@ -15,7 +15,7 @@ def make(raw_dict, metric_name):
 
 
 
-class Metric():
+class Metric(object):
     def __init__(self, raw_dict, metric_name):
 
         self.config = configs.metrics()[metric_name]
@@ -40,6 +40,20 @@ class Metric():
         else:
             return False
 
+
+    @property
+    def display_order(self):
+        # this mostly duplicates this same method in the Award object.
+        # that ain't great. but not sure how else to sort metrics on the
+        # product page...can figure out something better if it becomes a prob.
+        ret = configs.award_configs["engagement_types"][self.engagement_type][1]
+        if self.audience == "scholars":
+            ret += 10
+
+        if self.is_highly:
+            ret += 100
+
+        return ret
 
     @property
     def has_new_metric(self):
@@ -80,6 +94,13 @@ class Metric():
             return 1
         except TypeError:
             return 0  # ignore lists and dicts
+
+    @property
+    def display_provider(self):
+        try:
+            return self.config["display_provider"]
+        except KeyError:
+            return "foo"
 
     @property
     def display_interaction(self):

@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-22
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-27
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -971,6 +971,7 @@ angular.module("profileProduct", [
     $location,
     $modal,
     $cacheFactory,
+    $compile,
     security,
     UsersProduct,
     UsersProducts,
@@ -995,6 +996,7 @@ angular.module("profileProduct", [
     $scope.openFulltextLocationModal = function(){
       $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
     }
+
 
     $scope.getDomain = function(fullUri){
       var uri = new URI(fullUri);
@@ -1036,7 +1038,9 @@ angular.module("profileProduct", [
       })
     }
 
-
+    $scope.foo = function(){
+      console.log("someone clicked foo!")
+    }
     $scope.product = UsersProduct.get({
       id: slug,
       tiid: $routeParams.tiid
@@ -1044,6 +1048,7 @@ angular.module("profileProduct", [
     function(data){
       Loading.finish('profileProduct')
       Page.setTitle(data.biblio.title)
+      $scope.productMarkup = $compile(data.markup)($scope)
 
     },
     function(data){
@@ -5325,6 +5330,8 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "      </div>\n" +
     "\n" +
     "      <div  class=\"product\">\n" +
+    "\n" +
+    "         <div class=\"product-container\" ng-bind-html-unsafe=\"productMarkup\"></div>\n" +
     "\n" +
     "         <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
     "\n" +

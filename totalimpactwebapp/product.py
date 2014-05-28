@@ -42,6 +42,10 @@ class Product():
         return self.raw_dict["_id"]
 
     @property
+    def genre(self):
+        return "article"
+
+    @property
     def has_metrics(self):
         return len(self.metrics) > 0
 
@@ -84,7 +88,11 @@ class Product():
         ret["markup"] = markup.make("product", ret)
 
         for key_to_hide in hide_keys:
-            del ret[key_to_hide]
+            try:
+                del ret[key_to_hide]
+            except KeyError:
+                pass
+
 
         return ret
 

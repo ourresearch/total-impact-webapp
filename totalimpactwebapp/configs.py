@@ -33,21 +33,22 @@ def metrics(this_key_only=None):
 
         for metric_name, metric_config in provider["metrics"].iteritems():
 
+            # first, add constructed keys to the the metric config
             new_key = provider["name"] + ":" + metric_name
             metric_config["environment"] = provider["name"]
+
             metric_config["display_audience"] = \
                 metric_config["audience"].replace("public", "the public")
 
             if "interaction" not in metric_config.keys():
                 metric_config["interaction"] = metric_name.replace("_", " ")
 
+            # next, handle the this_key_only stuff:
             if this_key_only is None:
                 ret[new_key] = metric_config
-
             # this_key_only is set, and exists in the metric config obj
             elif metric_config[this_key_only] is not None:
                 ret[new_key] = metric_config[this_key_only]
-
             # this_key_only is set, but metric config doesn't have it.
             else:
                 pass
@@ -720,6 +721,7 @@ providers = [
             "blog_posts": {
                 "description": "Number of blog posts mentioning the product",
                 "display_name": "blog posts",
+                "display_provider": None,
                 "icon": "http://impactstory.org/static/img/blogs-icon.png",
                 "provider": "Altmetric.com",
                 "provider_url": "http://plus.google.com",
@@ -729,7 +731,8 @@ providers = [
             },
             "facebook_posts": {
                 "description": "Number of posts mentioning the product on a public Facebook wall",
-                "display_name": "Facebook public posts",
+                "display_name": "public posts",
+                "display_provider": "Facebook",
                 "icon": "http://facebook.com/favicon.ico",
                 "provider": "Altmetric.com",
                 "provider_url": "http://facebook.com",
@@ -739,7 +742,8 @@ providers = [
             },
             "gplus_posts": {
                 "description": "Number of posts mentioning the product on Google+",
-                "display_name": "Google+ posts",
+                "display_name": "posts",
+                "display_provider": "Google+",
                 "icon": "http://plus.google.com/favicon.ico",
                 "provider": "Altmetric.com",
                 "provider_url": "http://plus.google.com",
@@ -749,7 +753,8 @@ providers = [
             },
             "tweets": {
                 "description": "Number of times the product has been tweeted",
-                "display_name": "Twitter tweets",
+                "display_name": "tweets",
+                "display_provider": "Twitter",
                 "icon": "https://twitter.com/favicon.ico",
                 "provider": "Altmetric.com",
                 "provider_url": "http://twitter.com",
