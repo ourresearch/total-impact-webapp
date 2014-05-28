@@ -104,6 +104,8 @@ class Award(object):
         if self.is_highly:
             ret += 100
 
+        return ret
+
     def to_dict(self):
         return util.dict_from_dir(self)
 

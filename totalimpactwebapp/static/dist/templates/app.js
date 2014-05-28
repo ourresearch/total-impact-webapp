@@ -1123,41 +1123,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         <span class=\"text\">Loading product...</span>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div  class=\"product\">\n" +
-    "\n" +
-    "         <div class=\"product-container\" ng-bind-html-unsafe=\"productMarkup\"></div>\n" +
-    "\n" +
-    "         <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
-    "\n" +
-    "         <div class=\"free-fulltext-url well\" ng-show=\"!loading.is('profileProduct') && (product.genre=='article' || product.genre=='report')\">\n" +
-    "            <div class=\"no-free-fulltext-url\" ng-show=\"!product.biblio.free_fulltext_url\">\n" +
-    "               <div class=\"info\">\n" +
-    "                  <i class=\"icon-warning-sign leader\"></i>\n" +
-    "                  <div class=\"no-fulltext\">\n" +
-    "                     Your article has no free fulltext available.\n" +
-    "                  </div>\n" +
-    "                  <div class=\"encouragement\">\n" +
-    "                     <!-- @TODO FIX THIS. we can't depend on the OA award being first in awards list -->\n" +
-    "                     {{ profileAwards[0].extra.needed_for_next_level_product_page }}\n" +
-    "                  </div>\n" +
-    "               </div>\n" +
-    "               <div class=\"action\">\n" +
-    "                  <a class=\"action btn btn-danger btn-xs\" ng-click=\"openFulltextLocationModal()\">Link to free fulltext</a>\n" +
-    "               </div>\n" +
-    "\n" +
-    "            </div>\n" +
-    "            <div class=\"has-free-fulltext-url\" ng-show=\"product.biblio.free_fulltext_url\">\n" +
-    "               <i class=\"icon-unlock-alt leader\"></i>\n" +
-    "               Free fulltext available at\n" +
-    "               <a href=\"{{ product.biblio.free_fulltext_url }}\" target=\"_blank\">\n" +
-    "                  {{ getDomain(product.biblio.free_fulltext_url) }}\n" +
-    "                  <i class=\"icon-external-link-sign\"></i>\n" +
-    "               </a>\n" +
-    "            </div>\n" +
-    "         </div>\n" +
-    "\n" +
-    "         <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
-    "      </div>\n" +
+    "      <div  class=\"product\" ng-bind-html-unsafe=\"productMarkup\"></div>\n" +
     "\n" +
     "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
     "         ng-show=\"!loading.is('profileProduct') && product.has_percentiles\">\n" +

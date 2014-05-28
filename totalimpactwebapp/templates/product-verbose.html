@@ -106,7 +106,7 @@ on the profile page.
 
       {# The badge #}
       <span class="ti-badge">
-         <span class="text badge-part is-highly-{{ metric.is_highly | lower() }} {{ metric.audience }} {{ metric.engagement_type }}">
+         <span class="text badge-part text is-highly-{{ metric.is_highly | lower() }} {{ metric.audience }} {{ metric.engagement_type }}">
             {% if metric.is_highly %}<span class="modifier">highly</span>{% endif %}
             <span class="engagement-type">{{metric.engagement_type}}</span>
             <span class="audience">by {{metric.audience}}</span>

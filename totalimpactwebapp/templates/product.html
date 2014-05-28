@@ -21,17 +21,17 @@
          target="_blank"
          title="Click to view on publisher site"
          data-toggle='tooltip'
-         href="{{ url }}">
+         href="{{ biblio.url }}">
          <i class="icon-external-link-sign"></i>
       </a>
       {% endif %}
 
-      {% if free_fulltext_url %}
+      {% if biblio.free_fulltext_url %}
       <a class="linkout free-fulltext-url"
          target="_blank"
-         title="Free fulltext available!"
+         title="Free fulltext available at {{ biblio.free_fulltext_host }}"
          data-toggle='tooltip'
-         href="{{ free_fulltext_url }}">
+         href="{{ biblio.free_fulltext_url }}">
          <i class="icon-unlock-alt"></i>
       </a>
       {% endif %}
@@ -97,8 +97,6 @@
                   {% endfor %}
                   {% endif %}
                </ul>">  {# ok, now we're finally done with the opening <a> tag... #}
-
-
 
                <span class="text badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ (award.top_metric_by_percentile.historical_values.diff.raw > 0) | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
                   {% if award.is_highly %}<span class="modifier">highly</span>{% endif %}

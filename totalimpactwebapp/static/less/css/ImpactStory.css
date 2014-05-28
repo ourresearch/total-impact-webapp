@@ -7843,7 +7843,7 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 .product div.popover ul.new-metrics li span.text span.count {
   font-weight: bold;
 }
-a.ti-badge {
+.ti-badge {
   font-size: 12px;
   float: left;
   display: block;
@@ -7851,36 +7851,36 @@ a.ti-badge {
   margin: 0 7px 7px 0;
   font-family: helvetica, arial, sans-serif;
 }
-a.ti-badge span.badge-part {
+.ti-badge span.badge-part {
   padding: 3px 9px;
   border-width: 1px;
   border-style: solid;
 }
-a.ti-badge span.badge-part.scholars {
+.ti-badge span.badge-part.scholars {
   border-color: #377eb8;
 }
-a.ti-badge span.badge-part.public {
+.ti-badge span.badge-part.public {
   border-color: #4daf4a;
 }
-a.ti-badge span.badge-part.is-highly-true {
+.ti-badge span.badge-part.is-highly-true {
   color: #fff;
 }
-a.ti-badge span.badge-part.is-highly-true.scholars {
+.ti-badge span.badge-part.is-highly-true.scholars {
   background: #377eb8;
 }
-a.ti-badge span.badge-part.is-highly-true.public {
+.ti-badge span.badge-part.is-highly-true.public {
   background: #4daf4a;
 }
-a.ti-badge span.badge-part.is-highly-false {
+.ti-badge span.badge-part.is-highly-false {
   background: #fff;
 }
-a.ti-badge span.badge-part.is-highly-false.scholars {
+.ti-badge span.badge-part.is-highly-false.scholars {
   color: #377eb8;
 }
-a.ti-badge span.badge-part.is-highly-false.public {
+.ti-badge span.badge-part.is-highly-false.public {
   color: #4daf4a;
 }
-a.ti-badge span.badge-part.text {
+.ti-badge span.badge-part.text {
   -webkit-border-top-right-radius: 0;
   -webkit-border-bottom-right-radius: 0;
   -webkit-border-bottom-left-radius: 3px;
@@ -7898,7 +7898,7 @@ a.ti-badge span.badge-part.text {
   background-clip: padding-box;
   border-right-width: 0;
 }
-a.ti-badge span.badge-part.text.new-metrics-false {
+.ti-badge span.badge-part.text.new-metrics-false {
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
   -webkit-border-bottom-left-radius: 3px;
@@ -7916,7 +7916,7 @@ a.ti-badge span.badge-part.text.new-metrics-false {
   background-clip: padding-box;
   border-right-width: 1px;
 }
-a.ti-badge span.badge-part.new-this-week {
+.ti-badge span.badge-part.new-this-week {
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
   -webkit-border-bottom-left-radius: 0;
@@ -7933,26 +7933,26 @@ a.ti-badge span.badge-part.new-this-week {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-a.ti-badge span.badge-part.new-this-week .plus-sign {
+.ti-badge span.badge-part.new-this-week .plus-sign {
   font-weight: normal;
 }
-a.ti-badge span.badge-part.new-this-week.new-metrics-false {
+.ti-badge span.badge-part.new-this-week.new-metrics-false {
   display: none;
 }
-a.ti-badge span.badge-part.new-this-week.scholars {
+.ti-badge span.badge-part.new-this-week.scholars {
   color: #fff;
   background: #2b6391;
   border-color: #2b6391;
 }
-a.ti-badge span.badge-part.new-this-week.public {
+.ti-badge span.badge-part.new-this-week.public {
   color: #fff;
   background: #3d8b3b;
   border-color: #3d8b3b;
 }
-a.ti-badge span.audience {
+.ti-badge span.audience {
   display: none;
 }
-a.ti-badge:hover {
+.ti-badge:hover {
   text-decoration: none;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
