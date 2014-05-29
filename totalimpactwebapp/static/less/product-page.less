@@ -180,17 +180,37 @@ div.product-page {
                margin-bottom: 20px;
                clear:both;
                .clearfix;
-               .badge-container {
+               .product-page-badge-container {
                   width: 250px;
                   float:left;
                   margin-top: 8px;
                   display:inline-block;
-                  .ti-badge {
+
+                  .product-page-badge {
+                     // a lot of this is duplicated from ti-badge.less.
+                     // but there we've got the two parts, text and diff...
+                     // seemed better to not have to account for that stuff here.
+                     padding: 3px 9px;
+                     border-width: 1px;
+                     border-style: solid;
                      float:right;
-                     span.audience {display:inline;} // override
+                     font-size:13px;
+                     .border-radius(3px, 3px, 3px, 3px);
+                     &.scholars {border-color: @scholarsColor;}
+                     &.public {border-color: @publicColor;}
+                     &.is-highly-true{
+                        color:  #fff;
+                        &.scholars {background: @scholarsColor;}
+                        &.public {background: @publicColor;}
+                     }
+                     &.is-highly-false {
+                        &.scholars {color: @scholarsColor;}
+                        &.public {color: @publicColor;}
+                        background: #fff;
+                     }
                   }
                }
-               span.text {
+               span.metric-text {
                   float:left;
                   margin-left: 10px;
                   padding-top: 5px;

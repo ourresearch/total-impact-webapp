@@ -8161,50 +8161,90 @@ div.product-page .content .product ul.metric-details-list li.metric-detail:after
 div.product-page .content .product ul.metric-details-list li.metric-detail:after {
   clear: both;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail .badge-container {
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container {
   width: 250px;
   float: left;
   margin-top: 8px;
   display: inline-block;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail .badge-container .ti-badge {
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge {
+  padding: 3px 9px;
+  border-width: 1px;
+  border-style: solid;
   float: right;
+  font-size: 13px;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail .badge-container .ti-badge span.audience {
-  display: inline;
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.scholars {
+  border-color: #377eb8;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text {
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.public {
+  border-color: #4daf4a;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true {
+  color: #fff;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true.scholars {
+  background: #377eb8;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true.public {
+  background: #4daf4a;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false {
+  background: #fff;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false.scholars {
+  color: #377eb8;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false.public {
+  color: #4daf4a;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text {
   float: left;
   margin-left: 10px;
   padding-top: 5px;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name {
   color: #333;
   display: inline-block;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name:hover {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover {
   text-decoration: none;
   color: #ff4000;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name:hover i {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover i {
   color: #ff4000;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name span.raw-value {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name span.raw-value {
   margin-left: 5px;
   display: inline-block;
   text-align: right;
   font-weight: bold;
   font-size: 16px;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name img {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name img {
   height: 16px;
   margin: 0 3px 0 3px;
   vertical-align: middle;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name i {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name i {
   color: #ddd;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.new-metrics {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.new-metrics {
   background: #5cb85c;
   color: #fff;
   font-size: 12px;
@@ -8227,26 +8267,26 @@ div.product-page .content .product ul.metric-details-list li.metric-detail span.
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile {
   display: block;
   float: left;
   border-bottom: 1px solid #eee;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.values {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values {
   font-weight: bold;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.values span.upper,
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.values span.lower {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values span.upper,
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values span.lower {
   font-size: 16px;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.values i {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values i {
   opacity: .5;
   cursor: pointer;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.values i:hover {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values i:hover {
   opacity: .8;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.descr {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.descr {
   color: #aaa;
   font-size: 80%;
 }

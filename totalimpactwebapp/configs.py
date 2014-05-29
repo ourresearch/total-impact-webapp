@@ -24,6 +24,7 @@ def fives_then_orders_of_magnitude():
 
 
 def metrics(this_key_only=None):
+    # todo: we should not do logic in the config like this...should build it into the Metric obj
     ret = {}
     for provider in providers:
         if "metrics" not in provider.keys():
@@ -35,7 +36,7 @@ def metrics(this_key_only=None):
 
             # first, add constructed keys to the the metric config
             new_key = provider["name"] + ":" + metric_name
-            metric_config["environment"] = provider["name"]
+            metric_config["provider"] = provider["name"]
 
             metric_config["display_audience"] = \
                 metric_config["audience"].replace("public", "the public")
@@ -453,7 +454,7 @@ providers = [
                 "provider": "Scopus",
                 "provider_url": "http://www.info.sciverse.com/scopus/about",
                 "audience": "scholars",
-                "engagement_type": "viewed",
+                "engagement_type": "cited",
                 "milestones": orders_of_magnitude()
             }
         },
@@ -587,6 +588,7 @@ providers = [
                 "icon": "http://www.mendeley.com/favicon.ico",
                 "provider": "Mendeley",
                 "provider_url": "http://www.mendeley.com/",
+                "value_type": "object",
                 "hide_badge": True,
                 "audience": "scholars",
                 "engagement_type": "saved",
@@ -598,6 +600,7 @@ providers = [
                 "icon": "http://www.mendeley.com/favicon.ico",
                 "provider": "Mendeley",
                 "provider_url": "http://www.mendeley.com/",
+                "value_type": "object",
                 "hide_badge": True,
                 "audience": "scholars",
                 "engagement_type": "saved",
@@ -609,6 +612,7 @@ providers = [
                 "icon": "http://www.mendeley.com/favicon.ico",
                 "provider": "Mendeley",
                 "provider_url": "http://www.mendeley.com/",
+                "value_type": "object",
                 "hide_badge": True,
                 "audience": "scholars",
                 "engagement_type": "saved",
@@ -721,7 +725,7 @@ providers = [
             "blog_posts": {
                 "description": "Number of blog posts mentioning the product",
                 "display_name": "blog posts",
-                "display_provider": None,
+                "display_provider": '',
                 "icon": "http://impactstory.org/static/img/blogs-icon.png",
                 "provider": "Altmetric.com",
                 "provider_url": "http://plus.google.com",

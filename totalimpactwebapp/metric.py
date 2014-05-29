@@ -59,6 +59,12 @@ class Metric(object):
     def has_new_metric(self):
         return self.historical_values["diff"]["raw"] > 0
 
+    @property
+    def hide_badge(self):
+        try:
+            return self.config["hide_badge"]
+        except KeyError:
+            return False
 
     @property
     def latest_nonzero_refresh_timestamp(self):
@@ -100,7 +106,7 @@ class Metric(object):
         try:
             return self.config["display_provider"]
         except KeyError:
-            return "foo"
+            return self.config["provider"]
 
     @property
     def display_interaction(self):
