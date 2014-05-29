@@ -104,9 +104,12 @@ class Metric(object):
     @property
     def display_provider(self):
         try:
-            return self.config["display_provider"]
+            ret = self.config["display_provider"]
         except KeyError:
-            return self.config["provider"]
+            ret = self.config["provider"].capitalize()
+
+        ret.replace("Figshare", "figshare")  # hack
+        return ret
 
     @property
     def display_interaction(self):
