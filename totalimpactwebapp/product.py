@@ -42,10 +42,6 @@ class Product():
         return self.raw_dict["_id"]
 
     @property
-    def genre(self):
-        return "article"
-
-    @property
     def has_metrics(self):
         return len(self.metrics) > 0
 
@@ -85,7 +81,7 @@ class Product():
 
     def to_dict(self, hide_keys, markup):
         ret = self._to_basic_dict()
-        ret["markup"] = markup.make("product", ret)
+        ret["markup"] = markup.make(ret)
 
         for key_to_hide in hide_keys:
             try:
@@ -122,22 +118,18 @@ class Product():
 
 
 class Markup():
-    def __init__(self, verbose=False, embed=False):
-        self.verbose = verbose
+    def __init__(self, user_id, embed=False):
+        self.template_name = "product.html"
+        self.user_id = user_id
         self.context = {
-            "embed": embed
+            "embed": embed,
+            "user_id": user_id
         }
 
 
-    def make(self, template_name, local_context):
-        if self.verbose:
-            template_name += "-verbose.html"
-        else:
-            template_name += ".html"
-
+    def make(self, local_context):
         local_context.update(self.context)
-
-        return jinja_render(template_name, local_context)
+        return jinja_render(self.template_name, local_context)
 
 
 

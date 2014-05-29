@@ -147,8 +147,14 @@ class User(db.Model):
         return [Product(product_dict) for product_dict in self.products]
 
     def get_product_dicts(self, hide_keys, markup):
-        markup.context["url_slug"] = self.url_slug
+        markup.context["profile"] = self
         return [p.to_dict(hide_keys, markup) for p in self.product_objects]
+
+    def get_single_product_dict(self, tiid, hide_keys, markup):
+        markup.context["profile"] = self
+        markup.template_name = "single-product.html"
+        product_to_return = [p for p in self.product_objects if p.id == tiid][0]
+        return product_to_return.to_dict(hide_keys, markup)
 
     @property
     def latest_diff_ts(self):

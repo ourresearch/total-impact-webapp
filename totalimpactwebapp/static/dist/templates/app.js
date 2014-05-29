@@ -1112,7 +1112,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "               <span class=\"ready\">\n" +
     "                  <i class=\"icon-trash\"></i>\n" +
     "                  Remove\n" +
-    "               </span> \n" +
+    "               </span>\n" +
     "            </a>\n" +
     "         </div>\n" +
     "      </div>\n" +

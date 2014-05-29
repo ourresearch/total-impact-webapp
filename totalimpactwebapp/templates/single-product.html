@@ -55,15 +55,14 @@
 
 
 
-
 {# free-fulltext stuff; not in profile page at all.
 #  it includes the openFulltextLocationModal() function for angular to use.
 #}
-{% if genre in ['article', 'report'] %}
-<div class="free-fulltext-url well" >
+{% if biblio.display_genre in ['article', 'report'] %}
+<div class="free-fulltext-url">
 
    {% if biblio.free_fulltext_url %}
-   <div class="has-free-fulltext-url">
+   <div class="has-free-fulltext-url well">
       <i class="icon-unlock-alt leader"></i>
       Free fulltext available at
       <a href="{{ biblio.free_fulltext_url }}" target="_blank">
@@ -72,8 +71,8 @@
       </a>
    </div>
 
-   {% else %}
-   <div class="no-free-fulltext-url">
+   {% elif (profile.id == user_id) and not biblio.free_fulltext_url %}
+   <div class="no-free-fulltext-url well">
       <div class="info">
          <i class="icon-warning-sign leader"></i>
          <div class="no-fulltext">
@@ -88,6 +87,8 @@
          <a class="action btn btn-danger btn-xs" ng-click="openFulltextLocationModal()">Link to free fulltext</a>
       </div>
 
+   {% else %}
+   <!-- We're looking at someone else's product, and it's got no free fulltext url -->
    {% endif %}
 
    </div>
@@ -144,7 +145,7 @@ on the profile page.
 
                <i class="icon-info-sign"></i>
             </span>
-            <span class="descr">of {{ genre }}s published in {{ biblio.display_year }}</span>
+            <span class="descr">of {{ biblio.display_genre }}s published in {{ biblio.display_year }}</span>
          </span>
          {% endif %}
 

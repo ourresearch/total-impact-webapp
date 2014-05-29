@@ -8044,31 +8044,23 @@ div.product-page .content .product .biblio {
   float: none;
   width: 100%;
 }
-div.product-page .content .product .biblio h5 a {
+div.product-page .content .product .biblio h5 {
   font-size: 30px;
-}
-div.product-page .content .product .biblio h5 a i {
-  font-size: 80%;
-}
-div.product-page .content .product .biblio h5 a i:hover {
-  cursor: pointer;
-  color: #ff4000;
-}
-div.product-page .content .product .biblio h5 a:hover {
-  color: inherit;
-  cursor: default;
   color: #333;
+}
+div.product-page .content .product .biblio h5 i {
+  font-size: 80%;
 }
 div.product-page .content .product .biblio div.optional-biblio {
   font-size: 20px;
 }
-div.product-page .content .product div.well.free-fulltext-url {
+div.product-page .content .product div.free-fulltext-url {
   clear: both;
   margin-top: 20px;
   margin-left: -15px;
 }
-div.product-page .content .product div.well.free-fulltext-url:before,
-div.product-page .content .product div.well.free-fulltext-url:after {
+div.product-page .content .product div.free-fulltext-url:before,
+div.product-page .content .product div.free-fulltext-url:after {
   content: " ";
   /* 1 */
 
@@ -8076,11 +8068,11 @@ div.product-page .content .product div.well.free-fulltext-url:after {
   /* 2 */
 
 }
-div.product-page .content .product div.well.free-fulltext-url:after {
+div.product-page .content .product div.free-fulltext-url:after {
   clear: both;
 }
-div.product-page .content .product div.well.free-fulltext-url:before,
-div.product-page .content .product div.well.free-fulltext-url:after {
+div.product-page .content .product div.free-fulltext-url:before,
+div.product-page .content .product div.free-fulltext-url:after {
   content: " ";
   /* 1 */
 
@@ -8088,45 +8080,45 @@ div.product-page .content .product div.well.free-fulltext-url:after {
   /* 2 */
 
 }
-div.product-page .content .product div.well.free-fulltext-url:after {
+div.product-page .content .product div.free-fulltext-url:after {
   clear: both;
 }
-div.product-page .content .product div.well.free-fulltext-url i.leader {
+div.product-page .content .product div.free-fulltext-url i.leader {
   font-size: 110%;
   margin-right: 5px;
   float: left;
 }
-div.product-page .content .product div.well.free-fulltext-url i.icon-external-link-sign {
+div.product-page .content .product div.free-fulltext-url i.icon-external-link-sign {
   font-size: 80%;
   opacity: .5;
 }
-div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info {
+div.product-page .content .product div.free-fulltext-url div.no-free-fulltext-url div.info {
   width: 400px;
   float: left;
 }
-div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info div.no-fulltext {
+div.product-page .content .product div.free-fulltext-url div.no-free-fulltext-url div.info div.no-fulltext {
   font-weight: bold;
 }
-div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info div.encouragement {
+div.product-page .content .product div.free-fulltext-url div.no-free-fulltext-url div.info div.encouragement {
   margin-top: 5px;
   font-style: italic;
   font-size: 90%;
 }
-div.product-page .content .product div.well.free-fulltext-url div.action a.action {
+div.product-page .content .product div.free-fulltext-url div.action a.action {
   margin: -5px 0 0 25px;
   text-decoration: none;
   background: #777;
   border: none;
   padding: 3px 10px;
 }
-div.product-page .content .product div.well.free-fulltext-url div.action a.action:hover {
+div.product-page .content .product div.free-fulltext-url div.action a.action:hover {
   background: #555;
 }
-div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a {
+div.product-page .content .product div.free-fulltext-url div.has-free-fulltext-url a {
   color: #333;
   font-weight: normal;
 }
-div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a:hover {
+div.product-page .content .product div.free-fulltext-url div.has-free-fulltext-url a:hover {
   text-decoration: underline;
 }
 div.product-page .content .product ul.metric-details-list {

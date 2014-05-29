@@ -428,7 +428,7 @@ def user_products_get(id):
         resp = products_list.get_duplicates_list_from_tiids(user.tiids)
     else:
 
-        markup = product.Markup(verbose=False, embed=request.args.get("embed"))
+        markup = product.Markup(g.user.id, embed=request.args.get("embed"))
         hide_keys = request.args.get("hide", "").split(",")
 
         resp = user.get_product_dicts(hide_keys, markup)
@@ -510,12 +510,11 @@ def user_product(user_id, tiid):
 
     profile = get_user_for_response(user_id, request)
 
-    markup = product.Markup(verbose=True, embed=False)
+    markup = product.Markup(g.user.id, embed=False)
     hide_keys = request.args.get("hide", "").split(",")
 
-    product_dicts = profile.get_product_dicts(hide_keys, markup)
     try:
-        resp = [p for p in product_dicts if p["id"] == tiid][0]
+        resp = profile.get_single_product_dict(tiid, hide_keys, markup)
     except IndexError:
         abort_json(404, "That product doesn't exist.")
 
