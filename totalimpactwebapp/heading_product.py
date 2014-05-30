@@ -10,7 +10,7 @@ def make_list(products):
     Works the same way as award.awards_list.make_list()
     """
     heading_products = []
-    genres = [p.biblio.display_genre for p in products]
+    genres = set([p.biblio.display_genre for p in products])
     for genre in genres:
         this_heading_product = HeadingProduct(genre, products)
         if len(this_heading_product.products):
@@ -56,7 +56,23 @@ class HeadingProduct(object):
 
     @property
     def has_new_metric(self):
-        return any([p.has_new_metrics for p in self.products])
+        return any([p.has_new_metric for p in self.products])
 
 
+    def to_dict(self):
+        ret = {}
+        for k in dir(self):
+            if k.startswith("_"):
+                pass
+            else:
+                ret[k] = getattr(self, k)
+        del ret["products"]
+        return ret
 
+    def to_markup_dict(self, markup):
+        """
+        same approach as the to_markup_dict() method on Product
+        """
+        ret = self.to_dict()
+        ret["markup"] = markup.make(self.to_dict())
+        return ret

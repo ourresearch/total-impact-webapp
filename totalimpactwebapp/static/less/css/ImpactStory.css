@@ -7619,52 +7619,6 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 .product:hover .product-margin .single-product-controls a.remove-product {
   display: inline;
 }
-.product.twitter.real-product div.real-product .badges {
-  margin-top: 40px;
-}
-.product.twitter.real-product:before {
-  width: 72px;
-  height: 25px;
-  background: #fff;
-  display: block;
-  content: "";
-  top: 49px;
-  left: 566px;
-  position: absolute;
-}
-.product.twitter.real-product h5 {
-  display: none;
-}
-.product.twitter.real-product span.year {
-  display: none;
-}
-.product.twitter.real-product iframe {
-  border: none !important;
-  border-bottom: 1px solid #ddd !important;
-  -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
-  -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
-  -webkit-border-top-right-radius: 0 !important;
-  -webkit-border-bottom-right-radius: 0 !important;
-  -webkit-border-bottom-left-radius: 0 !important;
-  -webkit-border-top-left-radius: 0 !important;
-  -moz-border-radius-topright: 0 !important;
-  -moz-border-radius-bottomright: 0 !important;
-  -moz-border-radius-bottomleft: 0 !important;
-  -moz-border-radius-topleft: 0 !important;
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
-  border-top-left-radius: 0 !important;
-  -moz-background-clip: padding !important;
-  -webkit-background-clip: padding-box !important;
-  background-clip: padding-box !important;
-  width: 660px !important;
-  padding: 0 !important;
-}
-.product.twitter.real-product .awards {
-  margin-top: 40px;
-}
 .product div.product-margin {
   position: absolute;
   display: block;

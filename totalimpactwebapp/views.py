@@ -432,14 +432,13 @@ def user_products_get(id):
 
     markup = product.Markup(g.user_id, embed=request.args.get("embed"))
     hide_keys = request.args.get("hide", "").split(",")
+    add_heading_products = request.args.get("include_headings") in [1, "true", "True"]
 
     products_decorator = ProductsDecorator(profile, markup)
-    products = products_decorator.list_of_dicts(hide_keys)
-
-    #product_headings = heading_product.make_list(profile.product_objects)
-
-    #if request.args.get("include_headings") in [1, "true", "True"]:
-    #    product_dicts += product_headings
+    products = products_decorator.list_of_dicts(
+        hide_keys=hide_keys,
+        add_heading_products=add_heading_products
+    )
 
     return json_resp_from_thing(products)
 

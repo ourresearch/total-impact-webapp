@@ -42,6 +42,11 @@ class Product():
         return self.raw_dict["_id"]
 
     @property
+    def genre(self):
+        # need this here to help the client sort category/real products
+        return self.biblio.genre
+
+    @property
     def has_metrics(self):
         return len(self.metrics) > 0
 
@@ -83,6 +88,7 @@ class Product():
     @property
     def has_percentiles(self):
         return any([m.percentiles for m in self.metrics])
+
 
     def to_markup_dict(self, markup, hide_keys=None):
         ret = self.to_dict()

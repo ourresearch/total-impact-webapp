@@ -115,8 +115,8 @@ genre_icons = {
     'twitter': "icon-twitter",
     'video': "icon-facetime-video",
     'webpage': "icon-globe",
-    'other': "icon-question-sign",
-    'unknown': "icon-question-sign"
+    'other': "icon-ellipsis-horizontal",
+    'unknown': "icon-ellipsis-horizontal"
 }
 
 
