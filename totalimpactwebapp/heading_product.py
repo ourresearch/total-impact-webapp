@@ -4,64 +4,59 @@ from totalimpactwebapp import configs
 
 
 
+def make_list(products):
+    """
+    Factory to make list of HeadingProduct objects from a list of Product objs.
+    Works the same way as award.awards_list.make_list()
+    """
+    heading_products = []
+    genres = [p.biblio.display_genre for p in products]
+    for genre in genres:
+        this_heading_product = HeadingProduct(genre, products)
+        if len(this_heading_product.products):
+            heading_products.append(this_heading_product)
 
-def make_for_category(genre, account, category_products):
-
-    anchor = genre
-    if account:
-        anchor += "-" + re.sub(r"[^\w]", r"-", account)
-
-    anchor = anchor.replace("--", "-")
-    try:
-        icon = configs.genre_icons[genre]
-    except KeyError:
-        icon = configs.genre_icons["unknown"]
-
-    heading_product = {
-        'is_heading': True,
-        '_id': anchor,
-        'anchor': anchor,
-        'genre': genre,
-        'icon': icon,
-        'account': account,
-        'headingDimension': 'category',
-        'summary': {
-            'numProducts': len(category_products)
-        }
-    }
-
-    for product in category_products:
-
-        if len(product["metrics"].values()) > 0:
-            heading_product["has_metrics"] = True
-
-        if product["has_new_metrics"]:
-            heading_product["has_new_metrics"] = True
-
-        # extract relevant info from the account product, if there is one.
-        if "is_account" in product["biblio"].keys():
-            heading_product["metrics"] = product["metrics"].values()
-            heading_product["account_biblio"] = product["biblio"]
-            break
-
-    try:
-        heading_product["account_url"] = heading_product["account_biblio"]["url"]
-    except KeyError:
-        heading_product["account_url"] = None
-
-    heading_product["markup"] = {
-        "biblio": make_markup(heading_product)
-    }
-
-    return heading_product
+    return heading_products
 
 
 
+class HeadingProduct(object):
+    def __init__(self, genre, products_to_check):
+        self.genre = genre
+        self.products = []
+        for product in products_to_check:
+            self.add_product_if_it_belongs_here(product)
+
+    def add_product_if_it_belongs_here(self, product):
+        if product.biblio.display_genre == self.genre:
+            self.products.append(product)
+            return True
+        else:
+            return False
+
+    @property
+    def is_heading(self):
+        return True
+
+    @property
+    def anchor(self):
+        anchor = self.genre  # will get more complex if account headings return
+        return anchor
+
+    @property
+    def icon(self):
+        try:
+            return configs.genre_icons[self.genre]
+        except KeyError:
+            return configs.genre_icons["unknown"]
+
+    @property
+    def has_metrics(self):
+        return any([p.has_metrics for p in self.products])
+
+    @property
+    def has_new_metric(self):
+        return any([p.has_new_metrics for p in self.products])
 
 
 
-def make_markup(heading_product):
-    return render_template(
-        "heading-product.html",
-        product=heading_product
-    )

@@ -55,7 +55,7 @@ class Product():
 
     @property
     def awards(self):
-        return award.awards_list(self.metrics)
+        return award.make_list(self.metrics)
 
     @property
     def metrics_raw_sum(self):
@@ -73,27 +73,34 @@ class Product():
         except IndexError:
             return None
 
-
     @property
     def has_percentiles(self):
         return any([m.percentiles for m in self.metrics])
 
+    def to_markup_dict(self, hide_keys, markup):
+        custom_dict = self.to_custom_dict(hide_keys)
+        custom_dict["markup"] = markup.make(custom_dict)
+        return custom_dict
 
-    def to_dict(self, hide_keys, markup):
-        ret = self._to_basic_dict()
-        ret["markup"] = markup.make(ret)
+    def to_custom_dict(self, hide_keys=None, markup=None):
+        ret = self.to_dict()
+        try:
+            ret["markup"] = markup.make(ret)
+        except AttributeError:  # markup=None has no .make() method
+            pass
 
-        for key_to_hide in hide_keys:
-            try:
-                del ret[key_to_hide]
-            except KeyError:
-                pass
-
+        try:
+            for key_to_hide in hide_keys:
+                try:
+                    del ret[key_to_hide]
+                except KeyError:
+                    pass
+        except TypeError:  # hide_keys=None is not iterable
+            pass
 
         return ret
 
-
-    def _to_basic_dict(self):
+    def to_dict(self):
 
         ret = {}
         for k in dir(self):
@@ -128,8 +135,9 @@ class Markup():
 
 
     def make(self, local_context):
-        local_context.update(self.context)
-        return jinja_render(self.template_name, local_context)
+        # the local context overwrites the Self on if there are conflicts.
+        full_context = dict(self.context, **local_context)
+        return jinja_render(self.template_name, full_context)
 
 
 

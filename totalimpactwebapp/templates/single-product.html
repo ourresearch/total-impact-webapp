@@ -140,12 +140,8 @@ on the profile page.
                <span class="dash">-</span>
                <span class="upper">{{ metric.percentiles.CI95_upper }}</span>
                <span class="unit">percentile</span>
-
-         {# @todo make the details model open when you click the info icon... #}
-
-               <i class="icon-info-sign"></i>
             </span>
-            <span class="descr">of {{ biblio.display_genre }}s published in {{ biblio.display_year }}</span>
+            <span class="descr">of {{ biblio.display_genre }}s from {{ biblio.display_year }}</span>
          </span>
          {% endif %}
 

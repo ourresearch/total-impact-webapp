@@ -8,7 +8,7 @@ from flask import render_template
 from flask import render_template_string
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
-from totalimpactwebapp import app, db, login_manager, products_list, product
+from totalimpactwebapp import app, db, login_manager, product
 
 from totalimpactwebapp.password_reset import send_reset_token
 from totalimpactwebapp.password_reset import reset_password_from_token
@@ -34,6 +34,7 @@ from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring
 from totalimpactwebapp import notification_report
+from totalimpactwebapp import heading_product
 
 
 import newrelic.agent
@@ -175,6 +176,11 @@ def redirect_www_to_naked_domain():
 @app.before_request
 def load_globals():
     g.user = current_user
+    try:
+        g.user_id = current_user.id
+    except AttributeError:
+        g.user_id = None
+
     g.api_root = os.getenv("API_ROOT")
     g.api_key = os.getenv("API_KEY")
     g.webapp_root = os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
@@ -424,19 +430,16 @@ def user_products_get(id):
     except AttributeError:   #AnonymousUser
         pass
 
-    if request.args.get("group_by")=="duplicates":
-        resp = products_list.get_duplicates_list_from_tiids(user.tiids)
-    else:
+    markup = product.Markup(g.user_id, embed=request.args.get("embed"))
+    hide_keys = request.args.get("hide", "").split(",")
 
-        markup = product.Markup(g.user.id, embed=request.args.get("embed"))
-        hide_keys = request.args.get("hide", "").split(",")
+    product_dicts = user.get_product_dicts(hide_keys, markup)
+    product_headings = heading_product.make_list(user.product_objects)
 
-        resp = user.get_product_dicts(hide_keys, markup)
+    if request.args.get("include_headings") in [1, "true", "True"]:
+        product_dicts += product_headings
 
-        #if request.args.get("include_headings") in [1, "true", "True"]:
-        #    resp += products_list.make_heading_products(resp)
-
-    return json_resp_from_thing(resp)
+    return json_resp_from_thing(product_dicts)
 
 
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
@@ -510,7 +513,7 @@ def user_product(user_id, tiid):
 
     profile = get_user_for_response(user_id, request)
 
-    markup = product.Markup(g.user.id, embed=False)
+    markup = product.Markup(g.user_id, embed=False)
     hide_keys = request.args.get("hide", "").split(",")
 
     try:

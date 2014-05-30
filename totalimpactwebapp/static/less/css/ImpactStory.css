@@ -8279,7 +8279,7 @@ div.product-page .content .product ul.metric-details-list li.metric-detail span.
   opacity: .8;
 }
 div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.descr {
-  color: #aaa;
+  font-weight: 100;
   font-size: 80%;
 }
 div.signup-page {
@@ -9069,12 +9069,6 @@ div.password-reset form.password-reset div.submit {
 }
 .product.heading.first {
   margin-top: 30px;
-}
-.product.heading.blog .category-heading {
-  width: 99%;
-}
-.product.heading.blog .category-heading div.category-metrics {
-  right: -15px;
 }
 .product.heading div.category-heading {
   width: 95%;

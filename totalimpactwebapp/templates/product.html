@@ -71,19 +71,19 @@
 
                data-original-title="{{ award.highly_string }} {{award.engagement_type}} by <span class='{{award.display_audience}}'>{{award.display_audience}}</span>"
 
-               data-content="This item has {{award.top_metric_by_percentile.display_count}}
-               {{award.top_metric_by_percentile.display_provider}}
-               {{award.top_metric_by_percentile.display_interaction}}.
+               data-content="This item has {{award.top_metric_by_count.display_count}}
+               {{award.top_metric_by_count.display_provider}}
+               {{award.top_metric_by_count.display_interaction}}.
                {% if award.is_highly %}
-               That's more than {{award.top_metric_by_percentile.percentiles.CI95_lower}}%
+               That's more than {{award.top_metric_by_count.percentiles.CI95_lower}}%
                of {{ biblio.year }}
                {{ genre }}s
-               in {{award.top_metric_by_percentile.percentiles.refset}},
+               in {{award.top_metric_by_count.percentiles.refset}},
                suggesting it's highly {{award.engagement_type}}
                by {{award.display_audience }}.
                {% endif %}
                Click for details.
-               {% if award.top_metric_by_percentile.historical_values.diff.raw > 0 %}
+               {% if award.has_new_metric %}
                <ul class='new-metrics'>
                   {% for metric in award.metrics if metric.has_new_metric %}
                      <li>
@@ -98,13 +98,13 @@
                   {% endif %}
                </ul>">  {# ok, now we're finally done with the opening <a> tag... #}
 
-               <span class="text badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ (award.top_metric_by_percentile.historical_values.diff.raw > 0) | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
+               <span class="text badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ award.has_new_metric | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
                   {% if award.is_highly %}<span class="modifier">highly</span>{% endif %}
                   <span class="engagement-type">{{award.engagement_type}}</span>
                   <span class="audience">by {{award.audience}}</span>
                </span>
-               <span class="new-this-week badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ (award.top_metric_by_percentile.historical_values.diff.raw > 0) | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
-                  <span class="plus-sign">+</span>{{ award.top_metric_by_percentile.historical_values.diff.raw }}
+               <span class="new-this-week badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ award.has_new_metric | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
+                  <span class="plus-sign">+</span>{{ award.top_metric_by_diff.historical_values.diff.raw }}
                </span>
             </a> {# ending <a> tag. #}
          </li>

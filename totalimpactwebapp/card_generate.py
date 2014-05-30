@@ -1,6 +1,5 @@
 from totalimpactwebapp.card import Card
 from totalimpactwebapp.util import as_int_or_float_if_possible
-from totalimpactwebapp import products_list
 from totalimpactwebapp import configs
 
 import requests

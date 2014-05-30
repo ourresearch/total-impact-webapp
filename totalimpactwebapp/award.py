@@ -7,18 +7,19 @@ logger = logging.getLogger("tiwebapp.metric_snap")
 
 
 
-def awards_list(metrics):
+def make_list(metrics):
     """
-    Factory to make a list of Award objects from a list of Metric objects
+    Factory to make a list of Award objects from a list of Metric objects.
+    Works the same way as heading_product.make_list()
     """
-    my_list = []
+    awards = []
     for engagement_type in configs.award_configs["engagement_types"].keys():
         for audience in configs.award_configs["audiences"].keys():
             this_award = Award(engagement_type, audience, metrics)
             if len(this_award.metrics):
-                my_list.append(this_award)
+                awards.append(this_award)
 
-    return my_list
+    return awards
 
 
 
@@ -58,6 +59,11 @@ class Award(object):
         return s[0]
 
     @property
+    def top_metric_by_count(self):
+        s = sorted(self.metrics, key=lambda metric: metric.display_count, reverse=True)
+        return s[0]
+
+    @property
     def top_metric_by_diff(self):
         s = sorted(
             self.metrics,
@@ -69,6 +75,10 @@ class Award(object):
     @property
     def metrics_with_new(self):
         return [m for m in self.metrics if m.has_new_metric]
+
+    @property
+    def has_new_metric(self):
+        return len(self.metrics_with_new) > 0
 
     @property
     def is_highly_classname(self):

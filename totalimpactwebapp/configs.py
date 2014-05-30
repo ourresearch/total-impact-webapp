@@ -104,7 +104,6 @@ award_configs = {
 #*                           Award Configs
 #*
 #***************************************************************************
-
 genre_icons = {
     'article': "icon-file-text-alt",
     'blog': "icon-comments",
