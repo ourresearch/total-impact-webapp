@@ -1382,7 +1382,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "               <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
     "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "               </ul>\n" +
     "            </span>\n" +
     "         </div>\n" +
@@ -1396,12 +1396,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <div class=\"working products-loading\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading products...</span></div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <ul class=\"products-list\"> \n" +
+    "      <ul class=\"products-list\">\n" +
     "         <li class=\"product genre-{{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
     "             ng-repeat=\"product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title'] | filter: productFilter)\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
-    "             id=\"{{ product.id }}\"\n" +
+    "             id=\"{{ product.tiid }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
     "            <div class=\"product-margin\" ng-show=\"currentUserIsProfileOwner()\">\n" +

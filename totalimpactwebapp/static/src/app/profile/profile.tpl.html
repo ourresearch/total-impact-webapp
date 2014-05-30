@@ -128,7 +128,7 @@
                <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>
                <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
                   <li><a tabindex="-1" href="/user/{{ user.about.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
-                  <li><a tabindex="-1" href="/user/{{ user.about.url_slug }}/products" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
+                  <li><a tabindex="-1" href="/user/{{ user.about.url_slug }}/products?hide=markup,awards" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
                </ul>
             </span>
          </div>
@@ -147,7 +147,7 @@
              ng-class="{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}"
              ng-repeat="product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title'] | filter: productFilter)"
              ng-controller="productCtrl"
-             id="{{ product.id }}"
+             id="{{ product.tiid }}"
              on-repeat-finished>
 
             <div class="product-margin" ng-show="currentUserIsProfileOwner()">

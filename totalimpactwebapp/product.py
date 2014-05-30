@@ -38,7 +38,7 @@ class Product():
 
 
     @property
-    def id(self):
+    def tiid(self):
         return self.raw_dict["_id"]
 
     @property
@@ -116,6 +116,7 @@ class Product():
                 ret[k] = getattr(self, k)
 
         del ret["raw_dict"]
+        ret["_tiid"] = self.tiid
         return ret
 
 

@@ -23,7 +23,7 @@ class ProductsDecorator(object):
 
     def single_dict(self, tiid):
         self.markup.template_name = "single-product.html"
-        product = [p for p in self.profile.product_objects if p.id == tiid][0]
+        product = [p for p in self.profile.product_objects if p.tiid == tiid][0]
         return product.to_markup_dict(self.markup)
 
 
