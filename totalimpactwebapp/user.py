@@ -1,4 +1,5 @@
 from totalimpactwebapp import db
+from totalimpactwebapp import cache
 from totalimpactwebapp import profile_award
 from totalimpactwebapp.product import Product
 
@@ -133,6 +134,7 @@ class User(db.Model):
 
 
     @property
+    @cache.memoize()
     def products(self):
         products = get_products_from_core(self.tiids)
 
