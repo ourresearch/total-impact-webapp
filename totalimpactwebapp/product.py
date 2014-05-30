@@ -93,7 +93,7 @@ class Product():
     def to_markup_dict(self, markup, hide_keys=None):
         ret = self.to_dict()
 
-        #ret["markup"] = markup.make(self.to_dict())
+        ret["markup"] = markup.make(self.to_dict())
 
         try:
             for key_to_hide in hide_keys:
