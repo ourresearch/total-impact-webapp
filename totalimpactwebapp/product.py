@@ -74,20 +74,19 @@ class Product():
             return None
 
     @property
+    def markup(self):
+        try:
+            return self.markup_object.make(self.to_dict())
+        except AttributeError:
+            return None
+
+    @property
     def has_percentiles(self):
         return any([m.percentiles for m in self.metrics])
 
-    def to_markup_dict(self, hide_keys, markup):
-        custom_dict = self.to_custom_dict(hide_keys)
-        custom_dict["markup"] = markup.make(custom_dict)
-        return custom_dict
-
-    def to_custom_dict(self, hide_keys=None, markup=None):
+    def to_markup_dict(self, markup, hide_keys=None):
         ret = self.to_dict()
-        try:
-            ret["markup"] = markup.make(ret)
-        except AttributeError:  # markup=None has no .make() method
-            pass
+        ret["markup"] = markup.make(self.to_dict())
 
         try:
             for key_to_hide in hide_keys:
@@ -99,6 +98,7 @@ class Product():
             pass
 
         return ret
+
 
     def to_dict(self):
 

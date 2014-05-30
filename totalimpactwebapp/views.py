@@ -34,7 +34,7 @@ from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring
 from totalimpactwebapp import notification_report
-from totalimpactwebapp import heading_product
+from totalimpactwebapp.products_decorator import ProductsDecorator
 
 
 import newrelic.agent
@@ -422,24 +422,26 @@ def user_profile_awards(profile_id):
 @app.route("/user/<id>/products", methods=["GET"])
 def user_products_get(id):
 
-    user = get_user_for_response(id, request)
+    profile = get_user_for_response(id, request)
 
     try:
-        if current_user.url_slug == user.url_slug:
-            user.update_last_viewed_profile()
+        if current_user.url_slug == profile.url_slug:
+            profile.update_last_viewed_profile()
     except AttributeError:   #AnonymousUser
         pass
 
     markup = product.Markup(g.user_id, embed=request.args.get("embed"))
     hide_keys = request.args.get("hide", "").split(",")
 
-    product_dicts = user.get_product_dicts(hide_keys, markup)
-    product_headings = heading_product.make_list(user.product_objects)
+    products_decorator = ProductsDecorator(profile, markup)
+    products = products_decorator.list_of_dicts(hide_keys)
 
-    if request.args.get("include_headings") in [1, "true", "True"]:
-        product_dicts += product_headings
+    #product_headings = heading_product.make_list(profile.product_objects)
 
-    return json_resp_from_thing(product_dicts)
+    #if request.args.get("include_headings") in [1, "true", "True"]:
+    #    product_dicts += product_headings
+
+    return json_resp_from_thing(products)
 
 
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
@@ -512,16 +514,15 @@ def user_product(user_id, tiid):
         abort(410)
 
     profile = get_user_for_response(user_id, request)
-
     markup = product.Markup(g.user_id, embed=False)
-    hide_keys = request.args.get("hide", "").split(",")
 
     try:
-        resp = profile.get_single_product_dict(tiid, hide_keys, markup)
+        products_decorator = ProductsDecorator(profile, markup)
+        ret = products_decorator.single_dict(tiid)
     except IndexError:
         abort_json(404, "That product doesn't exist.")
 
-    return json_resp_from_thing(resp)
+    return json_resp_from_thing(ret)
 
 
 @app.route("/user/<id>/products.csv", methods=["GET"])
