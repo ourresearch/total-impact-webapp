@@ -8,7 +8,11 @@ from flask import render_template
 from flask import render_template_string
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
-from totalimpactwebapp import app, db, login_manager, product
+from totalimpactwebapp import app
+from totalimpactwebapp import db
+from totalimpactwebapp import login_manager
+from totalimpactwebapp import product
+from totalimpactwebapp import cache
 
 from totalimpactwebapp.password_reset import send_reset_token
 from totalimpactwebapp.password_reset import reset_password_from_token
@@ -147,6 +151,13 @@ def setup_db_tables():
     logger.info(u"first request; setting up db tables.")
     db.create_all()
 
+@app.before_request
+def clear_cache():
+    """
+    On local, some users seem to persist in the cache across requests.
+    This is a hack to do fix that.
+    """
+    cache.clear()
 
 @app.before_request
 def redirect_to_https():

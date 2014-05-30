@@ -317,7 +317,7 @@ class User(db.Model):
 
 
     def __repr__(self):
-        return u'<User {name}>'.format(name=self.full_name)
+        return u'<User {name} (id {id})>'.format(name=self.full_name, id=self.id)
 
 
     def dict_about(self, include_stripe=False):
