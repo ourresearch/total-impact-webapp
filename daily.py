@@ -39,15 +39,14 @@ def page_query(q):
 
 def add_profile_deets_for_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        # print user.url_slug
-        tasks.add_profile_deets.delay(user)
+        logger.debug(u"add_profile_deets_for_everyone: {url_slug}".format(url_slug=user.url_slug))
+        response = tasks.add_profile_deets.delay(user)
 
 
 def deduplicate_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        # print user.url_slug
-        removed_tiids = tasks.deduplicate.delay(user)
-
+        logger.debug(u"deduplicate_everyone: {url_slug}".format(url_slug=user.url_slug))
+        response = tasks.deduplicate.delay(user)
 
 
 
@@ -89,10 +88,15 @@ def email_report_to_everyone_who_needs_one():
 
 
 def main(function, url_slug):
-    if url_slug:
-        email_report_to_url_slug(url_slug)
-    else:    
-        email_report_to_everyone_who_needs_one()
+    if function=="email_report":
+        if url_slug:
+            email_report_to_url_slug(url_slug)
+        else:    
+            email_report_to_everyone_who_needs_one()
+    elif function=="dedup":
+        deduplicate_everyone()
+    elif function=="profile_deets":
+        add_profile_deets_for_everyone()
 
 
 
@@ -104,7 +108,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run stuff")
     parser.add_argument('--url_slug', default=None, type=str, help="url slug")
     # parser.add_argument('--celery', default=True, type=bool, help="celery")
-    parser.add_argument('--function', default=None, type=str, help="function")
+    parser.add_argument('--function', default="email_report", type=str, help="function")
     args = vars(parser.parse_args())
     print args
     print u"daily.py starting."

@@ -3,6 +3,9 @@ import datetime
 import time
 import logging
 import celery
+from celery.decorators import task
+from celery.signals import task_postrun, task_prerun, task_failure
+
 from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 from sqlalchemy.orm.exc import FlushError
 
@@ -17,19 +20,21 @@ from totalimpactwebapp import emailer
 
 logger = logging.getLogger("webapp.tasks")
 
-celery_app = celery.Celery('tasks', 
-    broker=os.getenv("CLOUDAMQP_URL", "amqp://guest@localhost//")
-    )
+
+@task_prerun.connect()
+def task_starting_handler(sender=None, task_id=None, task=None, args=None, kwargs=None, **kwds):    
+    # start with a new db session
+    db.session.remove()
 
 
-# celery_app.conf.update(
-#     CELERY_TASK_SERIALIZER='json',
-#     CELERY_ACCEPT_CONTENT=['json'],  # Ignore other content
-#     CELERY_RESULT_SERIALIZER='json',
-#     CELERY_ENABLE_UTC=True,
-#     CELERY_TRACK_STARTED=True,
-#     CELERY_ACKS_LATE=True, 
-# )
+@task_failure.connect
+def task_failure_handler(sender=None, task_id=None, task=None, args=None, kwargs=None, retval=None, state=None, **kwds):
+    try:
+        logger.error(u"Celery task FAILED on task_id={task_id}, {args}".format(
+            task_id=task_id, args=args))
+    except KeyError:
+        pass
+
 
 class CeleryStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)    
@@ -56,18 +61,35 @@ class CeleryStatus(db.Model):
 
 
 
+class TaskAlertIfFail(celery.Task):
+
+    def __call__(self, *args, **kwargs):
+        """In celery task this function call the run method, here you can
+        set some environment variable before the run of the task"""
+        # logger.info(u"Starting to run")
+        return self.run(*args, **kwargs)
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        url_slug="unknown"
+        for arg in args:
+            if isinstance(arg, User):
+                url_slug = arg.url_slug
+        logger.error(u"Celery task failed on {task_name}, user {url_slug}, task_id={task_id}".format(
+            task_name=self.name, url_slug=url_slug, task_id=task_id))
+
+
 # from http://stackoverflow.com/questions/6393879/celery-task-and-customize-decorator
 class TaskThatSavesState(celery.Task):
 
     def __call__(self, *args, **kwargs):
         """In celery task this function call the run method, here you can
         set some environment variable before the run of the task"""
-        # logger.info("Starting to run")
+        # logger.info(u"Starting to run")
         return self.run(*args, **kwargs)
 
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         #exit point of the task whatever is the state
-        # logger.info("Ending run")
+        # logger.info(u"Ending run")
         user_id = None
         url_slug = None
         args_to_save = []
@@ -95,6 +117,9 @@ class TaskThatSavesState(celery.Task):
             db.session.commit()
 
 
+
+
+
 class ProfileDeets(db.Model):
     id = db.Column(db.Integer, primary_key=True)    
     user_id = db.Column(db.Integer)
@@ -119,7 +144,7 @@ class ProfileDeets(db.Model):
             tiid=self.tiid)
 
 
-@celery_app.task(ignore_result=True, base=TaskThatSavesState)
+@task(ignore_result=True, base=TaskThatSavesState)
 def add_profile_deets(user):
     product_dicts = products_list.prep(
             user.products,
@@ -147,20 +172,19 @@ def add_profile_deets(user):
     db.session.commit()
 
 
-@celery_app.task(ignore_result=True, base=TaskThatSavesState)
+@task(ignore_result=True, base=TaskThatSavesState)
 def deduplicate(user):
     removed_tiids = []
     try:
         removed_tiids = remove_duplicates_from_user(user.id)
         logger.debug(removed_tiids)
     except Exception as e:
-        logger.debug("EXCEPTION!!!!!!!!!!!!!!!! deduplicating")
+        logger.debug(u"EXCEPTION!!!!!!!!!!!!!!!! deduplicating")
 
     return removed_tiids
 
 
-# @celery_app.task(base=TaskThatSavesState)
-@celery_app.task()
+@task(base=TaskAlertIfFail)
 def send_email_if_new_diffs(user):
 
     # get it again to help with debugging?
@@ -172,7 +196,7 @@ def send_email_if_new_diffs(user):
     latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
     status = "checking diffs"
     if (latest_diff_timestamp > user.last_email_check.isoformat()):
-        logger.debug("has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
+        logger.debug(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
         send_email_report(user, now)
         status = "email sent"
     else:
@@ -228,14 +252,14 @@ def send_email_report(user, now=None):
     return status
 
 
-# @celery_app.task(base=TaskThatSavesState)
+# @task(base=TaskThatSavesState)
 # def update_from_linked_account(user, account):
 #     tiids = user.update_products_from_linked_account(account, update_even_removed_products=False)
 #     return tiids
 
 
 
-# @celery_app.task(base=TaskThatSavesState)
+# @task(base=TaskThatSavesState)
 # def link_accounts_and_update(user):
 #     all_tiids = []
 #     for account in ["github", "slideshare", "figshare", "orcid"]:
@@ -244,14 +268,14 @@ def send_email_report(user, now=None):
 #     return all_tiids  
 
 
-# @celery_app.task(base=TaskThatSavesState)
+# @task(base=TaskThatSavesState)
 # def dedup_and_create_cards_and_email(user, override_with_send=True):
 #     deduplicate(user)
 #     # create_cards(user)
 #     send_email_report(user, override_with_send=True)
 
 
-# @celery_app.task(base=TaskThatSavesState)
+# @task(base=TaskThatSavesState)
 # def create_cards(user):
 #     timestamp = datetime.datetime.utcnow()
 #     cards = []

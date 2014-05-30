@@ -349,7 +349,7 @@ angular.module("infopages/advisors.tpl.html", []).run(["$templateCache", functio
     "         <li>Spread the word locally by hanging up our cool new posters</li>\n" +
     "         <li>Stay on top of the latest Impactstory news</li>\n" +
     "         <li>Host brown bag lunches and presentations on Impactstory in your school or library </li>\n" +
-    "         <li>Engage your university’s administration how Impactstory can help its faculty</li>\n" +
+    "         <li>Engage your university's administration on how Impactstory can help its faculty</li>\n" +
     "         <li>Connect Impactstory to the rest of your online life--link to your profile from your Twitter bio, Facebook page, lab website, and anywhere else you can!</li>\n" +
     "         <li>Tell us your Impactstory success stories, in promotions, grants, tenure, and beyond.</li>\n" +
     "      </ul>\n" +
@@ -486,7 +486,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "      <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\">CC-BY license</a>.\n" +
     "   </span>\n" +
     "\n" +
-    "   \n" +
+    "\n" +
     "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
     "\n" +
@@ -727,7 +727,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
 
 angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("infopages/spread-the-word.tpl.html",
-    "<div class=\"main infopage\" id=\"share-the-word-infopage\">\n" +
+    "<div class=\"main infopage\" id=\"spread-the-word-infopage\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <h2 class=\"infopage-heading\">Spread the word</h2>\n" +
     "\n" +
@@ -763,7 +763,7 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "      <h3>Poster</h3>\n" +
     "      <div class=\"descr\">\n" +
     "         <p>\n" +
-    "            Help your colleagues realize there’s more to impact than the h-index (and also learn about Impactstory).\n" +
+    "            Spread the word locally by hanging up our cool new posters!\n" +
     "         </p>\n" +
     "         <p>\n" +
     "            Download the 8.5” x 11” poster as\n" +
@@ -774,6 +774,33 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "      </div>\n" +
     "      <div class=\"content\">\n" +
     "         <img id=\"poster-sample-image\" src=\"/static/downloads/share-the-word-poster.png\" alt=\"image of impactstory poster\"/>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <h3>Stickers</h3>\n" +
+    "      <div class=\"descr\">\n" +
+    "         <p>\n" +
+    "            Let folks know you're more than your h-index, and show your support for Impactstory\n" +
+    "            with these weather-resistant vinyl stickers.\n" +
+    "         </p>\n" +
+    "         <p>\n" +
+    "            We'll send you a pack for free...just <a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">email us</a> us with your address!\n" +
+    "         </p>\n" +
+    "      </div>\n" +
+    "      <div class=\"content\">\n" +
+    "         <img id=\"stickers-pic\" src=\"/static/img/stickers-sheet.jpg\" alt=\"many impactstory stickers\"/>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <h3>Logo</h3>\n" +
+    "      <div class=\"descr\">\n" +
+    "         <p>\n" +
+    "            Want to use our logo for your poster, presentation, or other informational resource? Go for it!\n" +
+    "         </p>\n" +
+    "         <p>\n" +
+    "            Download logo as a <a href=\"/logo\" target=\"_self\">big ol' PNG</a>\n" +
+    "         </p>\n" +
+    "      </div>\n" +
+    "      <div class=\"content\">\n" +
+    "         <img id=\"stickers-pic\" src=\"/static/img/impactstory-logo-sideways.png\" alt=\"Impactstory logo\"/>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
@@ -1410,7 +1437,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>\n" +
     "\n" +
-    "<a class=\"refresh\" ng-click=\"refresh()\">mmm, refreshing!</a>\n" +
+    "<a class=\"refresh\" ng-click=\"refresh()\"></a>\n" +
     "\n" +
     "");
 }]);

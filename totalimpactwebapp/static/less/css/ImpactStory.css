@@ -7025,27 +7025,30 @@ div#about div#contact p {
   font-size: 40px;
   margin-bottom: 20px;
 }
-/* "share the word" page
+/* "spread the word" page
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-#share-the-word-infopage div.intro {
+#spread-the-word-infopage div.intro {
   padding-right: 100px;
 }
-#share-the-word-infopage div.descr {
+#spread-the-word-infopage div.descr {
   width: 400px;
   float: left;
   margin-right: 40px;
 }
-#share-the-word-infopage div.descr img {
+#spread-the-word-infopage div.descr img {
   margin: 0 5px;
 }
-#share-the-word-infopage div.content {
-  margin-top: -20px;
+#spread-the-word-infopage div.content {
+  margin-top: -30px;
 }
-#share-the-word-infopage div.content #poster-sample-image {
+#spread-the-word-infopage div.content #poster-sample-image {
   border: 1px solid #333;
   height: 250px;
+}
+#spread-the-word-infopage div.content #stickers-pic {
+  width: 350px;
 }
 div.loading div.working {
   color: #999999;
