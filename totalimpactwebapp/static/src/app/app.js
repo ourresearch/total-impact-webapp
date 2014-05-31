@@ -80,6 +80,9 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
   $scope.isAuthenticated =  security.isAuthenticated
+  $scope.modalOpen = function(){
+    return $rootScope.modalOpen
+  }
 
 
   // these will be the user's test states forever (or until she clears our cookie)

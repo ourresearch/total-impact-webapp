@@ -373,7 +373,7 @@ def user_about(profile_id):
     logger.debug(u"got the user dict out: {user}".format(
         user=dict_about))
 
-    local_sleep(5)
+    local_sleep(1)
 
 
     return json_resp_from_thing({"about": dict_about})
