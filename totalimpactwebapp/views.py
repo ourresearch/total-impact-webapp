@@ -151,7 +151,7 @@ def setup_db_tables():
     logger.info(u"first request; setting up db tables.")
     db.create_all()
 
-#@app.before_request
+@app.before_request
 def clear_cache():
     """
     On local, some users seem to persist in the cache across requests.
