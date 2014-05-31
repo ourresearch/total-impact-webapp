@@ -52,7 +52,21 @@ angular.module('security.service', [
         })
     },
 
+    currentUserOwnsProfile: function(profileSlug){
+      var deferred = $q.defer()
 
+      service.requestCurrentUser().then(
+        function(user){
+          if (user && user.url_slug && user.url_slug == profileSlug){
+            deferred.resolve(true)
+          }
+          else {
+            deferred.resolve(false)
+          }
+        }
+      )
+      return deferred.promise
+    },
 
     testUserAuthenticationLevel: function(level, falseToNegate){
 
@@ -84,6 +98,7 @@ angular.module('security.service', [
 
         }
       }
+
 
       var deferred = $q.defer()
       service.requestCurrentUser().then(

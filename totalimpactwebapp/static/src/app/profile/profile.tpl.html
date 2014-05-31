@@ -1,48 +1,48 @@
 <div class="profile-header" ng-show="userExists">
    <div class="wrapper">
-      <div class="loading" ng-show="!user.about.id">
+      <div class="loading" ng-show="!profile.about.id">
          <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
       </div>
-      <div class="my-picture" ng-show="user.about.id">
+      <div class="my-picture" ng-show="profile.about.id">
          <a href="http://www.gravatar.com" >
-            <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ user.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
+            <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
          </a>
       </div>
       <div class="my-vitals">
          <h2 class='page-title editable-name' id="profile-owner-name">
-            <span class="given-name editable" data-name="given_name">{{ user.about.given_name }}</span>
-            <span class="surname editable" data-name="surname">{{ user.about.surname }}</span>
+            <span class="given-name editable" data-name="given_name">{{ profile.about.given_name }}</span>
+            <span class="surname editable" data-name="surname">{{ profile.about.surname }}</span>
          </h2>
          <div class="connected-accounts">
             <ul>
 
-               <li ng-show="user.about.figshare_id" style="display: none;">
-                  <a href="{{ user.about.figshare_id }}">
+               <li ng-show="profile.about.figshare_id" style="display: none;">
+                  <a href="{{ profile.about.figshare_id }}">
                      <img src="/static/img/favicons/figshare.ico">
                      <span class="service">figshare</span>
                   </a>
                </li>           
-               <li ng-show="user.about.github_id" style="display: none;">
-                  <a href="https://github.com/{{ user.about.github_id }}">
+               <li ng-show="profile.about.github_id" style="display: none;">
+                  <a href="https://github.com/{{ profile.about.github_id }}">
                      <img src="/static/img/favicons/github.ico">
                      <span class="service">GitHub</span>
                   </a>
                </li>
-               <li ng-show="user.about.google_scholar_id" style="display: none;">
-                  <a href="{{ user.about.google_scholar_id }}">
+               <li ng-show="profile.about.google_scholar_id" style="display: none;">
+                  <a href="{{ profile.about.google_scholar_id }}">
                      <img src="/static/img/favicons/google_scholar.ico">
                      <span class="service">Google Scholar</span>
                   </a>
                </li>     
-               <li ng-show="user.about.orcid_id" style="display: none;">
-                  <a href="https://orcid.org/{{ user.about.orcid_id }}">
+               <li ng-show="profile.about.orcid_id" style="display: none;">
+                  <a href="https://orcid.org/{{ profile.about.orcid_id }}">
                      <img src="/static/img/favicons/orcid.ico">
                      <span class="service">ORCID</span>
                   </a>
                </li>
 
-               <li ng-show="user.about.slideshare_id" style="display: none;">
-                  <a href="https://www.slideshare.net/{{ user.about.slideshare_id }}">
+               <li ng-show="profile.about.slideshare_id" style="display: none;">
+                  <a href="https://www.slideshare.net/{{ profile.about.slideshare_id }}">
                      <img src="/static/img/favicons/slideshare.ico">
                      <span class="service">Slideshare</span>
                   </a>
@@ -52,7 +52,7 @@
             </ul>
 
             <div class="add-connected-account" ng-show="currentUserIsProfileOwner()">
-               <a href="/{{ user.about.url_slug }}/accounts" class="btn btn-xs btn-info">
+               <a href="/{{ profile.about.url_slug }}/accounts" class="btn btn-xs btn-info">
                   <i class="icon-link left"></i>
                   <span ng-show="!hasConnectedAccounts()" class="first">Import from accounts</span>
                   <span ng-show="hasConnectedAccounts()" class="more">Connect more accounts</span>
@@ -62,7 +62,7 @@
       </div>
       <div class="my-metrics">
          <!-- advisor badge -->
-         <div class="advisor" ng-show="user.about.is_advisor">
+         <div class="advisor" ng-show="profile.about.is_advisor">
             <img src="/static/img/advisor-badge.png">
          </div>
          <ul class="profile-award-list">
@@ -115,7 +115,7 @@
       <div class="view-controls">
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
          <div class="admin-controls" ng-show="currentUserIsProfileOwner() && !page.isEmbedded()">
-            <a href="/{{ user.about.url_slug }}/products/add">
+            <a href="/{{ profile.about.url_slug }}/products/add">
                <i class="icon-upload"></i>Import individual products
             </a>
          </div>
@@ -127,8 +127,8 @@
             <span class="dropdown download">
                <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>
                <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
-                  <li><a tabindex="-1" href="/user/{{ user.about.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
-                  <li><a tabindex="-1" href="/user/{{ user.about.url_slug }}/products?hide=markup,awards" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
+                  <li><a tabindex="-1" href="/user/{{ profile.about.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
+                  <li><a tabindex="-1" href="/user/{{ profile.about.url_slug }}/products?hide=markup,awards" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
                </ul>
             </span>
          </div>
@@ -178,7 +178,7 @@
      ng-if="!hideSignupBanner"
      ng-animate="{leave: 'animated fadeOutDown'}">
 
-   <span class="msg">Join {{ user.about.given_name }} and thousands of other scientists on Impactstory!</span>
+   <span class="msg">Join {{ profile.about.given_name }} and thousands of other scientists on Impactstory!</span>
    <a class="signup-button btn btn-primary btn-sm" ng-click="clickSignupLink()" href="/signup">Make your free profile</a>
    <a class="close-link" ng-click="hideSignupBannerNow()">&times;</a>
 </div>

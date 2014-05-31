@@ -80,7 +80,7 @@ angular.module("profile", [
         $window.scrollTo(0, lastScrollPos)
       }
     },
-    loadUser: function($scope, slug) {
+    loadProfile: function($scope, slug, currentUserOwnsProfile) {
       return UsersAbout.get(
         {
           id: slug,
@@ -95,10 +95,7 @@ angular.module("profile", [
             return (k.match(/_id$/) && v)
           })
 
-
-
-          if (!about.products_count && slugIsCurrentUser(about.url_slug)){
-            console.log("calling Tour.start with ", about)
+          if (!about.products_count && currentUserOwnsProfile){
             Tour.start(about)
           }
         },
@@ -110,7 +107,6 @@ angular.module("profile", [
         }
       );
     },
-    'slugIsCurrentUser': slugIsCurrentUser,
     makeSlug: function(){
       about.url_slug = Slug.make(about.givenName, about.surname)
     },
@@ -148,10 +144,12 @@ angular.module("profile", [
     Update,
     Loading,
     Timer,
+    currentUserOwnsProfile,
     Page) {
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
     }
+
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
@@ -261,7 +259,7 @@ angular.module("profile", [
       analytics.track("Clicked signup link on profile")
     }
 
-    $scope.user = UserProfile.loadUser($scope, userSlug);
+    $scope.profile = UserProfile.loadProfile($scope, userSlug, currentUserOwnsProfile);
 
     $scope.profileAwards = ProfileAwards.query(
       {id:userSlug},
@@ -270,7 +268,7 @@ angular.module("profile", [
     )
 
     $scope.currentUserIsProfileOwner = function(){
-      return UserProfile.slugIsCurrentUser(userSlug);
+      return currentUserOwnsProfile
     }
 
     $scope.openProfileEmbedModal = function(){
