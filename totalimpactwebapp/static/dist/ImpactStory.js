@@ -3058,12 +3058,13 @@ angular.module('security.login.toolbar', [
       $scope.page = Page  // so toolbar can change when you're on  landing page.
 
       $scope.illuminateNotificationIcon = function(){
+
         var user = security.getCurrentUser()
         if (user){
           var dismissed = user.new_metrics_notification_dismissed
           var latestMetrics = user.latest_diff_timestamp
 
-          return !dismissed || latestMetrics > dismissed
+          return dismissed && latestMetrics > dismissed
         }
         else {
           return false
