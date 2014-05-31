@@ -126,7 +126,6 @@ angular.module('security.service', [
     logout: function() {
       console.log("logging out user.", currentUser)
       currentUser = null;
-      $location.path("/").search("filter", null)
       $http.get('/user/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")
       });

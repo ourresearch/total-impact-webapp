@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-30
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-31
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -3226,7 +3226,6 @@ angular.module('security.service', [
     logout: function() {
       console.log("logging out user.", currentUser)
       currentUser = null;
-      $location.path("/").search("filter", null)
       $http.get('/user/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")
       });
