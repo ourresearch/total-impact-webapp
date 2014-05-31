@@ -1,7 +1,6 @@
 from totalimpactwebapp.card import Card
 from totalimpactwebapp import providers_info
 from totalimpactwebapp.card_generate import *
-from totalimpactwebapp import products_list
 import os
 
 
@@ -11,11 +10,7 @@ import datetime
 def make(user):
 
     products = user.products
-    prepped_products = products_list.prep(
-            products,
-            include_headings=False,
-            display_debug=True
-    )
+    prepped_products = user.get_product_dicts()
     user_dict_about = user.dict_about()
 
     cards = []

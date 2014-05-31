@@ -35,39 +35,7 @@
          <span class="text">Loading product...</span>
       </div>
 
-      <div  class="product">
-
-         <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
-
-         <div class="free-fulltext-url well" ng-show="!loading.is('profileProduct') && (product.genre=='article' || product.genre=='report')">
-            <div class="no-free-fulltext-url" ng-show="!product.biblio.free_fulltext_url">
-               <div class="info">
-                  <i class="icon-warning-sign leader"></i>
-                  <div class="no-fulltext">
-                     Your article has no free fulltext available.
-                  </div>
-                  <div class="encouragement">
-                     <!-- @TODO FIX THIS. we can't depend on the OA award being first in awards list -->
-                     {{ profileAwards[0].extra.needed_for_next_level_product_page }}
-                  </div>
-               </div>
-               <div class="action">
-                  <a class="action btn btn-danger btn-xs" ng-click="openFulltextLocationModal()">Link to free fulltext</a>
-               </div>
-
-            </div>
-            <div class="has-free-fulltext-url" ng-show="product.biblio.free_fulltext_url">
-               <i class="icon-unlock-alt leader"></i>
-               Free fulltext available at
-               <a href="{{ product.biblio.free_fulltext_url }}" target="_blank">
-                  {{ getDomain(product.biblio.free_fulltext_url) }}
-                  <i class="icon-external-link-sign"></i>
-               </a>
-            </div>
-         </div>
-
-         <div class="metrics-container" ng-bind-html-unsafe="product.markup.metrics"></div>
-      </div>
+      <div  class="product" ng-bind-html-unsafe="productMarkup"></div>
 
       <a class="percentile-info" ng-click="openInfoModal()"
          ng-show="!loading.is('profileProduct') && product.has_percentiles">

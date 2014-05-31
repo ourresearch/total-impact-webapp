@@ -2,7 +2,9 @@ from functools import wraps
 from flask import request, current_app
 import random, math
 import re
+import jinja2
 from time import sleep
+import datetime
 
 
 # a slow decorator for tests, so can exclude them when necessary
@@ -24,6 +26,14 @@ def jsonp(f):
         else:
             return f(*args, **kwargs)
     return decorated_function
+
+
+
+def jinja_render(template_name, context):
+    templateLoader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
+    templateEnv = jinja2.Environment(loader=templateLoader)
+    html_template = templateEnv.get_template(template_name)
+    return html_template.render(context)
 
 
 
@@ -80,6 +90,51 @@ def as_int_or_float_if_possible(input_value):
         except (ValueError, TypeError):
             pass
     return(value)
+
+
+def dict_from_dir(obj, keys_to_ignore=None):
+    if keys_to_ignore is None:
+        keys_to_ignore = []
+    elif isinstance(keys_to_ignore, basestring):
+        keys_to_ignore = [keys_to_ignore]
+
+    ret = {}
+    for k in dir(obj):
+        if k.startswith("_"):
+            pass
+        elif k in keys_to_ignore:
+            pass
+        else:
+            ret[k] = getattr(obj, k)
+    return ret
+
+
+def todict(obj, classkey=None):
+    # from http://stackoverflow.com/a/1118038/226013
+    if isinstance(obj, dict):
+        data = {}
+        for (k, v) in obj.items():
+            data[k] = todict(v, classkey)
+        return data
+    elif hasattr(obj, "to_dict"):
+        return todict(obj.to_dict(), classkey)
+    elif hasattr(obj, "_ast"):
+        return todict(obj._ast())
+    elif type(obj) is datetime.datetime:  # convert datetimes to strings; jason added this bit
+        return obj.isoformat()
+    elif hasattr(obj, "__iter__"):
+        return [todict(v, classkey) for v in obj]
+    elif hasattr(obj, "__dict__"):
+        data = dict([(key, todict(value, classkey))
+            for key, value in obj.__dict__.iteritems()
+            if not callable(value) and not key.startswith('_')])
+        if classkey is not None and hasattr(obj, "__class__"):
+            data[classkey] = obj.__class__.__name__
+        return data
+    else:
+        return obj
+
+
     
 # getting a "decoding Unicode is not supported" error in this function?  
 # might need to reinstall libaries as per 
@@ -107,4 +162,5 @@ class HTTPMethodOverrideMiddleware(object):
         if method in self.bodyless_methods:
             environ['CONTENT_LENGTH'] = '0'
         return self.app(environ, start_response)
+
 

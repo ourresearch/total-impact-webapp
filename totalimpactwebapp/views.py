@@ -1,13 +1,18 @@
 import requests, os, json, logging, re, datetime
 import analytics
 from util import local_sleep
+from totalimpactwebapp import util
 
 from flask import request, send_file, abort, make_response, g, redirect
 from flask import render_template
 from flask import render_template_string
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
-from totalimpactwebapp import app, db, login_manager, products_list, product
+from totalimpactwebapp import app
+from totalimpactwebapp import db
+from totalimpactwebapp import login_manager
+from totalimpactwebapp import product
+from totalimpactwebapp import cache
 
 from totalimpactwebapp.password_reset import send_reset_token
 from totalimpactwebapp.password_reset import reset_password_from_token
@@ -33,6 +38,7 @@ from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring
 from totalimpactwebapp import notification_report
+from totalimpactwebapp.products_decorator import ProductsDecorator
 
 
 import newrelic.agent
@@ -60,43 +66,16 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 
 
-def json_resp_from_jsonable_thing(jsonable_thing):
-    json_str = json.dumps(jsonable_thing, sort_keys=True, indent=4)
+
+def json_resp_from_thing(thing):
+
+    my_dict = util.todict(thing)
+    json_str = json.dumps(my_dict, sort_keys=True, indent=4)
     resp = make_response(json_str, 200)
     resp.mimetype = "application/json"
     return views_helpers.bust_caches(resp)
 
 
-def json_resp_from_thing(thing):
-    """
-    JSON-serialize an obj or dict and put it in a Flask response.
-    This should be converted to an object and moved out of here...
-
-    :param obj: the obj you want to serialize to json and send back
-    :return: a flask json response, ready to send to client
-    """
-
-    try:
-        return json_resp_from_jsonable_thing(thing)
-    except TypeError:
-        pass
-
-    try:
-        return json_resp_from_jsonable_thing(thing.as_dict())
-    except AttributeError:
-        pass
-
-    temp_dict = thing.__dict__
-    obj_dict = {}
-    for k, v in temp_dict.iteritems():
-        if k[0] != "_":  # we don't care to serialize private attributes
-
-            if type(v) is datetime.datetime:  # convert datetimes to strings
-                obj_dict[k] = v.isoformat()
-            else:
-                obj_dict[k] = v
-
-    return json_resp_from_jsonable_thing(obj_dict)
 
 
 def abort_json(status_code, msg):
@@ -172,6 +151,14 @@ def setup_db_tables():
     logger.info(u"first request; setting up db tables.")
     db.create_all()
 
+#@app.before_request
+def clear_cache():
+    """
+    On local, some users seem to persist in the cache across requests.
+    This is a hack to do fix that.
+    """
+    cache.clear()
+
 
 @app.before_request
 def redirect_to_https():
@@ -201,6 +188,11 @@ def redirect_www_to_naked_domain():
 @app.before_request
 def load_globals():
     g.user = current_user
+    try:
+        g.user_id = current_user.id
+    except AttributeError:
+        g.user_id = None
+
     g.api_root = os.getenv("API_ROOT")
     g.api_key = os.getenv("API_KEY")
     g.webapp_root = os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
@@ -440,28 +432,25 @@ def user_profile_awards(profile_id):
 @app.route("/user/<id>/products", methods=["GET"])
 def user_products_get(id):
 
-    user = get_user_for_response(id, request)
-
-    source = request.args.get("source", "webapp")
+    profile = get_user_for_response(id, request)
 
     try:
-        if current_user.url_slug == user.url_slug:
-            user.update_last_viewed_profile()
+        if current_user.url_slug == profile.url_slug:
+            profile.update_last_viewed_profile()
     except AttributeError:   #AnonymousUser
         pass
 
-    if request.args.get("group_by")=="duplicates":
-        resp = products_list.get_duplicates_list_from_tiids(user.tiids)
-    else:        
-        display_debug = request.args.get("debug", "unset") != "unset"
-        include_headings = request.args.get("include_heading_products") in [1, "true", "True"]
-        resp = products_list.prep(
-            user.products,
-            include_headings,
-            display_debug
-        )
+    markup = product.Markup(g.user_id, embed=request.args.get("embed"))
+    hide_keys = request.args.get("hide", "").split(",")
+    add_heading_products = request.args.get("include_headings") in [1, "true", "True"]
 
-    return json_resp_from_thing(resp)
+    products_decorator = ProductsDecorator(profile, markup)
+    products = products_decorator.list_of_dicts(
+        hide_keys=hide_keys,
+        add_heading_products=add_heading_products
+    )
+
+    return json_resp_from_thing(products)
 
 
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
@@ -533,16 +522,16 @@ def user_product(user_id, tiid):
     if user_id == "embed":
         abort(410)
 
-    user = get_user_for_response(user_id, request)
+    profile = get_user_for_response(user_id, request)
+    markup = product.Markup(g.user_id, embed=False)
+
     try:
-        requested_product = [p for p in user.products if p["_id"] == tiid][0]
+        products_decorator = ProductsDecorator(profile, markup)
+        ret = products_decorator.single_dict(tiid)
     except IndexError:
         abort_json(404, "That product doesn't exist.")
 
-    prepped = product.prep_product(requested_product, True)
-
-    return json_resp_from_thing(prepped)
-
+    return json_resp_from_thing(ret)
 
 
 @app.route("/user/<id>/products.csv", methods=["GET"])
@@ -820,9 +809,9 @@ def test_emailer():
     return json_resp_from_thing(ret)
 
 
-@app.route("/configs")
+@app.route("/configs/metrics")
 def get_configs():
-    return json_resp_from_thing(configs.get())
+    return json_resp_from_thing(configs.metrics())
 
 ###############################################################################
 #

@@ -1,11 +1,17 @@
-import os, logging, sys
+import os
+import logging
+import sys
+
 from flask import Flask
 from flask.ext.compress import Compress
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
+from flask.ext.cache import Cache
+
 from sqlalchemy import exc
 from sqlalchemy import event
 from sqlalchemy.pool import Pool
+
 from totalimpactwebapp.util import HTTPMethodOverrideMiddleware
 from multiprocessing.util import register_after_fork
 
@@ -29,9 +35,13 @@ stripe_log.propagate = True
 
 # set up application
 app = Flask(__name__)
+
 # gzip responses and make it similar on staging and production
 Compress(app)
 app.config["COMPRESS_DEBUG"] = os.getenv("COMPRESS_DEBUG", "False")=="True"
+
+# setup cache
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 # so you can fake PATCH support (http://flask.pocoo.org/docs/patterns/methodoverrides/)
 app.wsgi_app = HTTPMethodOverrideMiddleware(app.wsgi_app)

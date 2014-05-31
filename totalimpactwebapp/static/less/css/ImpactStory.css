@@ -7622,52 +7622,6 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 .product:hover .product-margin .single-product-controls a.remove-product {
   display: inline;
 }
-.product.twitter.real-product div.real-product .badges {
-  margin-top: 40px;
-}
-.product.twitter.real-product:before {
-  width: 72px;
-  height: 25px;
-  background: #fff;
-  display: block;
-  content: "";
-  top: 49px;
-  left: 566px;
-  position: absolute;
-}
-.product.twitter.real-product h5 {
-  display: none;
-}
-.product.twitter.real-product span.year {
-  display: none;
-}
-.product.twitter.real-product iframe {
-  border: none !important;
-  border-bottom: 1px solid #ddd !important;
-  -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
-  -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
-  -webkit-border-top-right-radius: 0 !important;
-  -webkit-border-bottom-right-radius: 0 !important;
-  -webkit-border-bottom-left-radius: 0 !important;
-  -webkit-border-top-left-radius: 0 !important;
-  -moz-border-radius-topright: 0 !important;
-  -moz-border-radius-bottomright: 0 !important;
-  -moz-border-radius-bottomleft: 0 !important;
-  -moz-border-radius-topleft: 0 !important;
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
-  border-top-left-radius: 0 !important;
-  -moz-background-clip: padding !important;
-  -webkit-background-clip: padding-box !important;
-  background-clip: padding-box !important;
-  width: 660px !important;
-  padding: 0 !important;
-}
-.product.twitter.real-product .awards {
-  margin-top: 40px;
-}
 .product div.product-margin {
   position: absolute;
   display: block;
@@ -7763,44 +7717,6 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 .product .awards ul.awards-list .award {
   margin: 0 4px 4px 0;
   float: left;
-}
-.product .awards ul.awards-list .award span.metrics {
-  display: none;
-  float: left;
-  border: 1px solid #333;
-  border-left: none;
-  height: 24px;
-  padding: 3px 10px 0 0;
-  -webkit-border-top-right-radius: 13px;
-  -webkit-border-bottom-right-radius: 13px;
-  -webkit-border-bottom-left-radius: 0;
-  -webkit-border-top-left-radius: 0;
-  -moz-border-radius-topright: 13px;
-  -moz-border-radius-bottomright: 13px;
-  -moz-border-radius-bottomleft: 0;
-  -moz-border-radius-topleft: 0;
-  border-top-right-radius: 13px;
-  border-bottom-right-radius: 13px;
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-}
-.product .awards ul.awards-list .award span.metrics img {
-  height: 16px;
-  margin-left: 5px;
-  vertical-align: top;
-  opacity: 0.75;
-  filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
-  /* Firefox 10+, Firefox on Android */
-
-  filter: gray;
-  /* IE6-9 */
-
-  -webkit-filter: grayscale(100%);
-  /* Chrome 19+, Safari 6+, Safari 6+ iOS */
-
 }
 .product div.popover {
   font-family: helvetica, arial, sans-serif;
@@ -7903,22 +7819,22 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 .ti-badge span.badge-part.public {
   border-color: #4daf4a;
 }
-.ti-badge span.badge-part.is-highly {
+.ti-badge span.badge-part.is-highly-true {
   color: #fff;
 }
-.ti-badge span.badge-part.is-highly.scholars {
+.ti-badge span.badge-part.is-highly-true.scholars {
   background: #377eb8;
 }
-.ti-badge span.badge-part.is-highly.public {
+.ti-badge span.badge-part.is-highly-true.public {
   background: #4daf4a;
 }
-.ti-badge span.badge-part.is-not-highly {
+.ti-badge span.badge-part.is-highly-false {
   background: #fff;
 }
-.ti-badge span.badge-part.is-not-highly.scholars {
+.ti-badge span.badge-part.is-highly-false.scholars {
   color: #377eb8;
 }
-.ti-badge span.badge-part.is-not-highly.public {
+.ti-badge span.badge-part.is-highly-false.public {
   color: #4daf4a;
 }
 .ti-badge span.badge-part.text {
@@ -8085,31 +8001,23 @@ div.product-page .content .product .biblio {
   float: none;
   width: 100%;
 }
-div.product-page .content .product .biblio h5 a {
+div.product-page .content .product .biblio h5 {
   font-size: 30px;
-}
-div.product-page .content .product .biblio h5 a i {
-  font-size: 80%;
-}
-div.product-page .content .product .biblio h5 a i:hover {
-  cursor: pointer;
-  color: #ff4000;
-}
-div.product-page .content .product .biblio h5 a:hover {
-  color: inherit;
-  cursor: default;
   color: #333;
+}
+div.product-page .content .product .biblio h5 i {
+  font-size: 80%;
 }
 div.product-page .content .product .biblio div.optional-biblio {
   font-size: 20px;
 }
-div.product-page .content .product div.well.free-fulltext-url {
+div.product-page .content .product div.free-fulltext-url {
   clear: both;
   margin-top: 20px;
   margin-left: -15px;
 }
-div.product-page .content .product div.well.free-fulltext-url:before,
-div.product-page .content .product div.well.free-fulltext-url:after {
+div.product-page .content .product div.free-fulltext-url:before,
+div.product-page .content .product div.free-fulltext-url:after {
   content: " ";
   /* 1 */
 
@@ -8117,11 +8025,11 @@ div.product-page .content .product div.well.free-fulltext-url:after {
   /* 2 */
 
 }
-div.product-page .content .product div.well.free-fulltext-url:after {
+div.product-page .content .product div.free-fulltext-url:after {
   clear: both;
 }
-div.product-page .content .product div.well.free-fulltext-url:before,
-div.product-page .content .product div.well.free-fulltext-url:after {
+div.product-page .content .product div.free-fulltext-url:before,
+div.product-page .content .product div.free-fulltext-url:after {
   content: " ";
   /* 1 */
 
@@ -8129,45 +8037,45 @@ div.product-page .content .product div.well.free-fulltext-url:after {
   /* 2 */
 
 }
-div.product-page .content .product div.well.free-fulltext-url:after {
+div.product-page .content .product div.free-fulltext-url:after {
   clear: both;
 }
-div.product-page .content .product div.well.free-fulltext-url i.leader {
+div.product-page .content .product div.free-fulltext-url i.leader {
   font-size: 110%;
   margin-right: 5px;
   float: left;
 }
-div.product-page .content .product div.well.free-fulltext-url i.icon-external-link-sign {
+div.product-page .content .product div.free-fulltext-url i.icon-external-link-sign {
   font-size: 80%;
   opacity: .5;
 }
-div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info {
+div.product-page .content .product div.free-fulltext-url div.no-free-fulltext-url div.info {
   width: 400px;
   float: left;
 }
-div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info div.no-fulltext {
+div.product-page .content .product div.free-fulltext-url div.no-free-fulltext-url div.info div.no-fulltext {
   font-weight: bold;
 }
-div.product-page .content .product div.well.free-fulltext-url div.no-free-fulltext-url div.info div.encouragement {
+div.product-page .content .product div.free-fulltext-url div.no-free-fulltext-url div.info div.encouragement {
   margin-top: 5px;
   font-style: italic;
   font-size: 90%;
 }
-div.product-page .content .product div.well.free-fulltext-url div.action a.action {
+div.product-page .content .product div.free-fulltext-url div.action a.action {
   margin: -5px 0 0 25px;
   text-decoration: none;
   background: #777;
   border: none;
   padding: 3px 10px;
 }
-div.product-page .content .product div.well.free-fulltext-url div.action a.action:hover {
+div.product-page .content .product div.free-fulltext-url div.action a.action:hover {
   background: #555;
 }
-div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a {
+div.product-page .content .product div.free-fulltext-url div.has-free-fulltext-url a {
   color: #333;
   font-weight: normal;
 }
-div.product-page .content .product div.well.free-fulltext-url div.has-free-fulltext-url a:hover {
+div.product-page .content .product div.free-fulltext-url div.has-free-fulltext-url a:hover {
   text-decoration: underline;
 }
 div.product-page .content .product ul.metric-details-list {
@@ -8202,50 +8110,90 @@ div.product-page .content .product ul.metric-details-list li.metric-detail:after
 div.product-page .content .product ul.metric-details-list li.metric-detail:after {
   clear: both;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail .badge-container {
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container {
   width: 250px;
   float: left;
   margin-top: 8px;
   display: inline-block;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail .badge-container .ti-badge {
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge {
+  padding: 3px 9px;
+  border-width: 1px;
+  border-style: solid;
   float: right;
+  font-size: 13px;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail .badge-container .ti-badge span.audience {
-  display: inline;
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.scholars {
+  border-color: #377eb8;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text {
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.public {
+  border-color: #4daf4a;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true {
+  color: #fff;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true.scholars {
+  background: #377eb8;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true.public {
+  background: #4daf4a;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false {
+  background: #fff;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false.scholars {
+  color: #377eb8;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false.public {
+  color: #4daf4a;
+}
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text {
   float: left;
   margin-left: 10px;
   padding-top: 5px;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name {
   color: #333;
   display: inline-block;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name:hover {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover {
   text-decoration: none;
   color: #ff4000;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name:hover i {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover i {
   color: #ff4000;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name span.raw-value {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name span.raw-value {
   margin-left: 5px;
   display: inline-block;
   text-align: right;
   font-weight: bold;
   font-size: 16px;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name img {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name img {
   height: 16px;
   margin: 0 3px 0 3px;
   vertical-align: middle;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text a.value-and-name i {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name i {
   color: #ddd;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.new-metrics {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.new-metrics {
   background: #5cb85c;
   color: #fff;
   font-size: 12px;
@@ -8268,27 +8216,27 @@ div.product-page .content .product ul.metric-details-list li.metric-detail span.
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile {
   display: block;
   float: left;
   border-bottom: 1px solid #eee;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.values {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values {
   font-weight: bold;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.values span.upper,
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.values span.lower {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values span.upper,
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values span.lower {
   font-size: 16px;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.values i {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values i {
   opacity: .5;
   cursor: pointer;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.values i:hover {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values i:hover {
   opacity: .8;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.text span.percentile span.descr {
-  color: #aaa;
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.descr {
+  font-weight: 100;
   font-size: 80%;
 }
 div.signup-page {
@@ -9078,12 +9026,6 @@ div.password-reset form.password-reset div.submit {
 }
 .product.heading.first {
   margin-top: 30px;
-}
-.product.heading.blog .category-heading {
-  width: 99%;
-}
-.product.heading.blog .category-heading div.category-metrics {
-  right: -15px;
 }
 .product.heading div.category-heading {
   width: 95%;

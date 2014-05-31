@@ -1,0 +1,156 @@
+{# This div.biblio part is almost totally copy-pasted out of product.html
+#  There are minor changes though, so not refactoring for now.
+#}
+
+<div class="biblio">
+   <h5 class="title">
+      {{biblio.display_title}}
+
+      {% if biblio.url %}
+      <a class="linkout url title"
+         target="_blank"
+         title="Click to view on publisher site"
+         data-toggle='tooltip'
+         href="{{ url }}">
+         <i class="icon-external-link-sign"></i>
+      </a>
+      {% endif %}
+
+      {% if free_fulltext_url %}
+      <a class="linkout free-fulltext-url"
+         target="_blank"
+         title="Free fulltext available!"
+         data-toggle='tooltip'
+         href="{{ free_fulltext_url }}">
+         <i class="icon-unlock-alt"></i>
+      </a>
+      {% endif %}
+   </h5>
+
+   <div class="optional-biblio">
+      {% if biblio.display_year %}
+      <span class="year">({{ biblio.display_year }})</span>
+      {% endif %}
+
+      {% if biblio.display_authors %}
+      <span class="authors">{{ biblio.display_authors }}.</span>
+      {% endif %}
+
+
+      {% if biblio.repository and not biblio.journal %}
+      <span class="repository">{{ biblio.repository }}.</span>
+      {% endif %}
+
+
+      {% if biblio.journal %}
+      <span class="journal">{{ biblio.journal }}</span>
+      {% endif %}
+
+      {% if biblio.description %}
+      <span class="description">{{ biblio.description }}</span>
+      {% endif %}
+   </div>
+</div>
+
+
+
+
+{# free-fulltext stuff; not in profile page at all.
+#  it includes the openFulltextLocationModal() function for angular to use.
+#}
+{% if biblio.display_genre in ['article', 'report'] %}
+<div class="free-fulltext-url">
+
+   {% if biblio.free_fulltext_url %}
+   <div class="has-free-fulltext-url well">
+      <i class="icon-unlock-alt leader"></i>
+      Free fulltext available at
+      <a href="{{ biblio.free_fulltext_url }}" target="_blank">
+         {{ biblio.free_fulltext_host }}
+         <i class="icon-external-link-sign"></i>
+      </a>
+   </div>
+
+   {% elif (profile.id == user_id) and not biblio.free_fulltext_url %}
+   <div class="no-free-fulltext-url well">
+      <div class="info">
+         <i class="icon-warning-sign leader"></i>
+         <div class="no-fulltext">
+            Your article has no free fulltext available.
+         </div>
+{#         <div class="encouragement">#}
+{#            <!-- @TODO FIX THIS. we can't depend on the OA award being first in awards list -->#}
+{#            {{ profileAwards[0].extra.needed_for_next_level_product_page }}#}
+{#         </div>#}
+      </div>
+      <div class="action">
+         <a class="action btn btn-danger btn-xs" ng-click="openFulltextLocationModal()">Link to free fulltext</a>
+      </div>
+
+   {% else %}
+   <!-- We're looking at someone else's product, and it's got no free fulltext url -->
+   {% endif %}
+
+   </div>
+
+
+</div>
+{% endif %}
+
+{# This div.metrics-details-list part is quite different from its counterpart
+on the profile page.
+#}
+<ul class="metric-details-list">
+   {% for metric in metrics | sort(reverse=True, attribute="display_order") | rejectattr("hide_badge") %}
+
+   <li class="metric-detail">
+      {# The badge #}
+      <div class="product-page-badge-container">
+         <span class="product-page-badge is-highly-{{ metric.is_highly | lower() }} {{ metric.audience }} {{ metric.engagement_type }}">
+               {% if metric.is_highly %}<span class="modifier">highly</span>{% endif %}
+               <span class="engagement-type">{{metric.engagement_type}}</span>
+               <span class="audience">by {{metric.audience}}</span>
+         </span>
+      </div>
+
+      {# the text after the badge #}
+      <span class="metric-text">
+         <a class="value-and-name"
+            href="{{ metric.provenance_url }}"
+            target="_blank"
+            data-content="{{ metric.config.description }}. Click to see more details on {{ metric.display_provider }}.">
+            <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
+            <span class="raw-value">{{ metric.display_count }}</span>
+            <span class="environment">{{ metric.display_provider }}</span>
+            <span class="interaction">{{ metric.display_interaction }}</span>
+            <i class="icon-external-link-sign"></i>
+         </a>
+
+         {% if metric.has_new_metric %}
+         <span class="new-metrics"
+               data-content="{{ metric.historical_values.diff.raw }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week">
+          +{{ metric.historical_values.diff.raw }}
+         </span>
+         {% endif %}
+
+         {% if metric.percentiles %}
+         <span class="percentile">
+            <span class="values">
+               <span class="lower">{{ metric.percentiles.CI95_lower }}</span>
+               <span class="dash">-</span>
+               <span class="upper">{{ metric.percentiles.CI95_upper }}</span>
+               <span class="unit">percentile</span>
+            </span>
+            <span class="descr">of {{ biblio.display_genre }}s from {{ biblio.display_year }}</span>
+         </span>
+         {% endif %}
+
+      </span>
+
+
+
+
+   </li>
+
+   {% endfor %}
+</ul>

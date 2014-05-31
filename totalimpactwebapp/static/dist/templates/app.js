@@ -1150,39 +1150,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         <span class=\"text\">Loading product...</span>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div  class=\"product\">\n" +
-    "\n" +
-    "         <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
-    "\n" +
-    "         <div class=\"free-fulltext-url well\" ng-show=\"!loading.is('profileProduct') && (product.genre=='article' || product.genre=='report')\">\n" +
-    "            <div class=\"no-free-fulltext-url\" ng-show=\"!product.biblio.free_fulltext_url\">\n" +
-    "               <div class=\"info\">\n" +
-    "                  <i class=\"icon-warning-sign leader\"></i>\n" +
-    "                  <div class=\"no-fulltext\">\n" +
-    "                     Your article has no free fulltext available.\n" +
-    "                  </div>\n" +
-    "                  <div class=\"encouragement\">\n" +
-    "                     <!-- @TODO FIX THIS. we can't depend on the OA award being first in awards list -->\n" +
-    "                     {{ profileAwards[0].extra.needed_for_next_level_product_page }}\n" +
-    "                  </div>\n" +
-    "               </div>\n" +
-    "               <div class=\"action\">\n" +
-    "                  <a class=\"action btn btn-danger btn-xs\" ng-click=\"openFulltextLocationModal()\">Link to free fulltext</a>\n" +
-    "               </div>\n" +
-    "\n" +
-    "            </div>\n" +
-    "            <div class=\"has-free-fulltext-url\" ng-show=\"product.biblio.free_fulltext_url\">\n" +
-    "               <i class=\"icon-unlock-alt leader\"></i>\n" +
-    "               Free fulltext available at\n" +
-    "               <a href=\"{{ product.biblio.free_fulltext_url }}\" target=\"_blank\">\n" +
-    "                  {{ getDomain(product.biblio.free_fulltext_url) }}\n" +
-    "                  <i class=\"icon-external-link-sign\"></i>\n" +
-    "               </a>\n" +
-    "            </div>\n" +
-    "         </div>\n" +
-    "\n" +
-    "         <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
-    "      </div>\n" +
+    "      <div  class=\"product\" ng-bind-html-unsafe=\"productMarkup\"></div>\n" +
     "\n" +
     "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
     "         ng-show=\"!loading.is('profileProduct') && product.has_percentiles\">\n" +
@@ -1370,14 +1338,14 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <!-- filter products -->\n" +
     "            <div class=\"filters\">\n" +
     "\n" +
-    "               <div class=\"filter\" ng-class=\"{active: !productFilter.has_metrics && !productFilter.has_new_metrics}\">\n" +
+    "               <div class=\"filter\" ng-class=\"{active: !productFilter.has_metrics && !productFilter.has_new_metric}\">\n" +
     "                  <a ng-click=\"setProductFilter('all')\">\n" +
     "                     Products\n" +
     "                     <span class=\"count\">({{ (products|filter:{is_true_product:true}).length }})</span>\n" +
     "                  </a>\n" +
     "               </div>\n" +
     "\n" +
-    "               <div class=\"filter\" ng-class=\"{active: (productFilter.has_metrics && !productFilter.has_new_metrics)}\">\n" +
+    "               <div class=\"filter\" ng-class=\"{active: (productFilter.has_metrics && !productFilter.has_new_metric)}\">\n" +
     "                  <i class=\"icon-chevron-right left\"></i>\n" +
     "                  <a ng-click=\"setProductFilter('has_metrics')\">\n" +
     "                     with metrics\n" +
@@ -1385,12 +1353,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </div>\n" +
     "               <div class=\"filter this-week\"\n" +
-    "                    ng-show=\"(products|filter:{has_new_metrics: true}).length > 0\"\n" +
-    "                    ng-class=\"{active: productFilter.has_new_metrics}\">\n" +
+    "                    ng-show=\"(products|filter:{has_new_metric: true}).length > 0\"\n" +
+    "                    ng-class=\"{active: productFilter.has_new_metric}\">\n" +
     "                  <i class=\"icon-chevron-right left\"></i>\n" +
-    "                  <a ng-click=\"setProductFilter('has_new_metrics')\">\n" +
+    "                  <a ng-click=\"setProductFilter('has_new_metric')\">\n" +
     "                     this week\n" +
-    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_new_metrics: true}).length }})</span>\n" +
+    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_new_metric: true}).length }})</span>\n" +
     "\n" +
     "                  </a>\n" +
     "               </div>\n" +
@@ -1414,7 +1382,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "               <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
     "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "               </ul>\n" +
     "            </span>\n" +
     "         </div>\n" +
@@ -1429,11 +1397,11 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "\n" +
     "      <ul class=\"products-list\">\n" +
-    "         <li class=\"product {{ product.genre }}\"\n" +
+    "         <li class=\"product genre-{{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
-    "             ng-repeat=\"product in filteredProducts = (products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title'] | filter: productFilter)\"\n" +
+    "             ng-repeat=\"product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title'] | filter: productFilter)\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
-    "             id=\"{{ product._id }}\"\n" +
+    "             id=\"{{ product.tiid }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
     "            <div class=\"product-margin\" ng-show=\"currentUserIsProfileOwner()\">\n" +
@@ -1445,10 +1413,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </span>\n" +
     "            </div>\n" +
-    "\n" +
-    "            <div class=\"biblio-container\" ng-bind-html-unsafe=\"product.markup.biblio\"></div>\n" +
-    "            <div class=\"metrics-container\" ng-bind-html-unsafe=\"product.markup.metrics\"></div>\n" +
-    "\n" +
+    "            <div class=\"product-container\" ng-bind-html-unsafe=\"product.markup\"></div>\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +

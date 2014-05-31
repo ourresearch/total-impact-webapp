@@ -1,6 +1,7 @@
 from totalimpactwebapp import db
-from totalimpactwebapp import products_list
+from totalimpactwebapp import cache
 from totalimpactwebapp import profile_award
+from totalimpactwebapp.product import Product
 
 from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -133,6 +134,7 @@ class User(db.Model):
 
 
     @property
+    @cache.memoize()
     def products(self):
         products = get_products_from_core(self.tiids)
 
@@ -140,6 +142,21 @@ class User(db.Model):
             products = []
         return products
 
+    @property
+    @cache.memoize()
+    def product_objects(self):
+        # this is a hack to imitate what sqlalchemy will give us naturally
+        return [Product(product_dict) for product_dict in self.products]
+
+
+
+    @property
+    def latest_diff_ts(self):
+        ts_list = [p.latest_diff_timestamp for p in self.product_objects]
+        try:
+            return sorted(ts_list, reverse=True)[0]
+        except IndexError:
+            return None
 
     @property
     def profile_awards_dicts(self):
@@ -301,7 +318,7 @@ class User(db.Model):
 
 
     def __repr__(self):
-        return u'<User {name}>'.format(name=self.full_name)
+        return u'<User {name} (id {id})>'.format(name=self.full_name, id=self.id)
 
 
     def dict_about(self, include_stripe=False):
@@ -357,11 +374,8 @@ class User(db.Model):
             except (IndexError, InvalidRequestError):
                 ret_dict["subscription"] = None
 
-        ret_dict["has_new_metrics"] = products_list.has_new_metrics(self.products)
-        latest_diff_ts = products_list.latest_diff_timestamp(self.products)
-        ret_dict["latest_diff_timestamp"] = latest_diff_ts
-
-
+        ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.product_objects])
+        ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
 
         return ret_dict
 
@@ -503,10 +517,8 @@ def remove_duplicates_from_user(user_id):
     user = User.query.get(user_id)
     db.session.merge(user)
 
-    duplicates_list = products_list.get_duplicates_list_from_tiids(user.tiids)
+    duplicates_list = get_duplicates_list_from_tiids(user.tiids)
     tiids_to_remove = tiids_to_remove_from_duplicates_list(duplicates_list)
-    # logger.debug(u"about to remove duplicate tiids from {user_id}: {tiids_to_remove}".format(
-    #     user_id=user_id, tiids_to_remove=tiids_to_remove))
 
     user.delete_products(tiids_to_remove) 
 
@@ -515,6 +527,28 @@ def remove_duplicates_from_user(user_id):
         url_slug=user.url_slug, user_id=user_id, tiids_to_remove=tiids_to_remove))
 
     return tiids_to_remove
+
+
+def get_duplicates_list_from_tiids(tiids):
+    query = u"{core_api_root}/v1/products/duplicates?api_admin_key={api_admin_key}".format(
+        core_api_root=os.getenv("API_ROOT"),
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+
+    r = requests.post(query,
+        data=json.dumps({
+            "tiids": tiids
+            }),
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+
+    try:
+        duplicates_list = r.json()["duplicates_list"]
+    except ValueError:
+        print "got ValueError in get_duplicates_list_from_tiids, maybe decode error?"
+        duplicates_list = []
+
+    return duplicates_list
+
 
 
 def save_user_last_refreshed_timestamp(user_id, timestamp=None):
