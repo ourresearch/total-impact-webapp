@@ -24,8 +24,10 @@ angular.module('security.login.toolbar', [
         if (user){
           var dismissed = user.new_metrics_notification_dismissed
           var latestMetrics = user.latest_diff_timestamp
-
-          return dismissed && latestMetrics > dismissed
+          if (typeof dismissed === "undefined") { // handle legacy profiles.
+            dismissed = null
+          }
+          return latestMetrics > dismissed
         }
         else {
           return false
