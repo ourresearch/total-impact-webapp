@@ -1468,6 +1468,7 @@ angular.module('ui.bootstrap.modal', [])
         if (backdropIndex() == -1) {
           backdropDomEl.remove();
           backdropDomEl = undefined;
+          $rootScope.modalOpen = false
         }
 
         //destroy scope
@@ -1488,6 +1489,8 @@ angular.module('ui.bootstrap.modal', [])
       });
 
       $modalStack.open = function (modalInstance, modal) {
+        console.log("open a model from $modalStack")
+        $rootScope.modalOpen = true
 
         openedWindows.add(modalInstance, {
           deferred: modal.deferred,

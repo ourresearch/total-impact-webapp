@@ -6031,6 +6031,12 @@ body {
   font-family: Lato, Helvetica, Arial, sans-serif;
   font-size: 18px;
 }
+body div.blur-container {
+  width: 100%;
+}
+body div.blur-container.blur {
+  -webkit-filter: blur(3px) grayscale(50%);
+}
 body.show-tab-on-right .uv-tab.uv-slide-bottom {
   display: none !important;
 }

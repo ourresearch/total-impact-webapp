@@ -338,15 +338,15 @@ def create_new_user_profile(slug):
     userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
 
     try:
-        user = create_user_from_slug(slug, userdict, db)
+        new_profile = create_user_from_slug(slug, userdict, db)
 
     except EmailExistsError:
         abort_json(409, "That email already exists.")
 
-    welcome_email.send_welcome_email(user.email, user.given_name)
-    event_monitoring.new_user(user.url_slug, user.given_name)
-    login_user(user)
-    return json_resp_from_thing({"user": user.dict_about()})
+    welcome_email.send_welcome_email(new_profile.email, new_profile.given_name)
+    event_monitoring.new_user(new_profile.url_slug, new_profile.given_name)
+    login_user(new_profile)
+    return json_resp_from_thing({"user": new_profile.dict_about()})
 
 
 
@@ -370,6 +370,9 @@ def user_about(profile_id):
     dict_about = user.dict_about()
     # logger.debug(u"got the user dict out: {user}".format(
     #     user=dict_about))
+
+    local_sleep(1)
+
 
     return json_resp_from_thing({"about": dict_about})
 

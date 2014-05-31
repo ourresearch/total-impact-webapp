@@ -19,12 +19,21 @@ angular.module('security.login.toolbar', [
       $scope.page = Page  // so toolbar can change when you're on  landing page.
 
       $scope.illuminateNotificationIcon = function(){
+
         var user = security.getCurrentUser()
         if (user){
           var dismissed = user.new_metrics_notification_dismissed
           var latestMetrics = user.latest_diff_timestamp
+          if (!dismissed && latestMetrics) {
+            return true // never hit dismissed before
+          }
+          else if (dismissed && latestMetrics && latestMetrics > dismissed) {
+            return true // new stuff since they last dismissed
+          }
+          else {
+            return false // brand new profile, or no new metrics since dismissal
+          }
 
-          return !dismissed || latestMetrics > dismissed
         }
         else {
           return false

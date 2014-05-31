@@ -58,11 +58,12 @@
 </head>
 {% raw %}
 <body class="{{ page.getBodyClasses() }}" jq-popover jq-tooltip>
-   <div ng-include="'user-message.tpl.html'" id="user-message"></div>
-   <div ng-include="'header.tpl.html'" id="page-header"></div>
-   <div ng-view class="main-view"></div>
-   <div ng-include="'footer.tpl.html'" id="page-footer"></div>
-
+   <div class="blur-container" ng-class="{blur: modalOpen()}">
+      <div ng-include="'user-message.tpl.html'" id="user-message"></div>
+      <div ng-include="'header.tpl.html'" id="page-header"></div>
+      <div ng-view class="main-view"></div>
+      <div ng-include="'footer.tpl.html'" id="page-footer"></div>
+   </div>
    <script src="/bottom.js"></script>
 </body>
 {% endraw %}

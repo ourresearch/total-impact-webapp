@@ -3,6 +3,12 @@ body {
    min-width:1159px;
    font-family: Lato, Helvetica, Arial, sans-serif;
    font-size: 18px;
+   div.blur-container {
+      width: 100%;
+      &.blur {
+         -webkit-filter: blur(3px) grayscale(50%);
+      }
+   }
 
    &.show-tab-on-right {
       .uv-tab.uv-slide-bottom {
