@@ -87,6 +87,7 @@ angular.module("profile", [
           idType: "url_slug"
         },
         function(resp) { // success
+          console.log("got /about call back: ", resp.about)
           Page.setTitle(resp.about.given_name + " " + resp.about.surname)
           about = resp.about
 
@@ -95,7 +96,9 @@ angular.module("profile", [
           })
 
 
+
           if (!about.products_count && slugIsCurrentUser(about.url_slug)){
+            console.log("calling Tour.start with ", about)
             Tour.start(about)
           }
         },
