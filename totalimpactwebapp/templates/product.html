@@ -66,7 +66,7 @@
    <ul class="awards-list">
       {% for award in awards | sort(reverse=True, attribute="display_order") %}
          <li class="award">
-            <a href="/{{ url_slug }}/product/{{ id }}"
+            <a href="/{{ profile.url_slug }}/product/{{ tiid }}"            
                class="ti-badge"
 
                data-original-title="{{ award.highly_string }} {{award.engagement_type}} by <span class='{{award.display_audience}}'>{{award.display_audience}}</span>"
