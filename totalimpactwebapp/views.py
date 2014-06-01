@@ -139,8 +139,6 @@ def abort_if_user_not_logged_in(profile):
 #
 ###############################################################################
 
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
