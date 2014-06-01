@@ -644,10 +644,10 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "            <div id=\"call-to-action\">\n" +
     "               <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
-    "               <a href=\"/CarlBoettiger\"\n" +
+    "               <!--<a href=\"/CarlBoettiger\"\n" +
     "                  ng-show=\"abTesting.getTestState['link to sample profile from landing page']=='yes'\"\n" +
     "                  class=\"btn btn-xlarge btn-default\"\n" +
-    "                  id=\"secondary-cta-button\">See an example</a>\n" +
+    "                  id=\"secondary-cta-button\">See an example</a>-->\n" +
     "            </div>\n" +
     "         </div>\n" +
     "      </div>\n" +

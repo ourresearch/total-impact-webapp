@@ -5,7 +5,6 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
-  'services.abTesting',
   'services.loading',
   'services.userMessage',
   'services.uservoiceWidget',
@@ -69,7 +68,6 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
                                                      UserMessage,
-                                                     AbTesting,
                                                      UservoiceWidget,
                                                      $location,
                                                      Loading,
@@ -90,26 +88,12 @@ angular.module('app').controller('AppCtrl', function($scope,
   }
 
 
-  // these will be the user's test states forever (or until she clears our cookie)
-  AbTesting.assignTestStates()
-  $scope.abTesting = AbTesting
-
-
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
     RouteChangeErrorHandler.handle(event, current, previous, rejection)
   });
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     security.requestCurrentUser().then(function(currentUser){
-      var userData = AbTesting.getTestStates()
-      if (currentUser){
-        userData = _.extend(userData, currentUser)
-        analytics.identify(currentUser.id, userData);
-      }
-      else {
-        analytics.identify()
-      }
-
       Page.sendPageloadToSegmentio()
     })
 
