@@ -1,5 +1,5 @@
 /**
- * js to run at the top of the page. generated from templates/top.js
+ * js to run at the top of the page. generated w jinja so Flask can change
  * stuff depending on the environment (local, staging, production) where it's
  * running.
  */

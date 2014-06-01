@@ -10,6 +10,7 @@ angular.module('app', [
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
+  'services.tiMixpanel',
   'security',
   'directives.crud',
   'directives.jQueryTools',
