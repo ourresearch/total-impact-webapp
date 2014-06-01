@@ -17,7 +17,7 @@ angular.module( 'update.update', [
             updateStatus.numDone = numDone(resp, true)
             updateStatus.numNotDone = numDone(resp, false)
             updateStatus.percentComplete = updateStatus.numDone * 100 / (updateStatus.numDone + updateStatus.numNotDone)
-            $timeout(function(){keepPolling(url_slug, onFinish)}, 1000);
+            $timeout(function(){keepPolling(url_slug, onFinish)}, 500);
           })
       }
       else {
