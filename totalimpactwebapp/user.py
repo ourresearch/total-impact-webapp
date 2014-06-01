@@ -134,7 +134,7 @@ class User(db.Model):
 
 
     @property
-    @cache.memoize()
+    # @cache.memoize()
     def products(self):
         products = get_products_from_core(self.tiids)
 
@@ -143,7 +143,7 @@ class User(db.Model):
         return products
 
     @property
-    @cache.memoize()
+    # @cache.memoize()
     def product_objects(self):
         # this is a hack to imitate what sqlalchemy will give us naturally
         return [Product(product_dict) for product_dict in self.products]
