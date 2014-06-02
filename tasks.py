@@ -21,16 +21,6 @@ from totalimpactwebapp import emailer
 logger = logging.getLogger("webapp.tasks")
 
 
-@worker_process_init.connect
-def create_worker_connection(*args, **kwargs):
-    """Initialize database connection.
-      
-      This has to be done after the worker processes have been started otherwise
-      the connection will fail.
-      
-    """
-    db.session = db.create_scoped_session()
-
 
 @task_postrun.connect()
 def task_postrun_handler(*args, **kwargs):    
