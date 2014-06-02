@@ -203,28 +203,28 @@ def send_email_if_new_diffs(user):
 
     status = "started"
     now = datetime.datetime.utcnow()    
-    logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+    logger.debug(u"PRETEND in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
     latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
     status = "checking diffs"
     if (latest_diff_timestamp > user.last_email_check.isoformat()):
-        logger.debug(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
-        send_email_report(user, now)
-        status = "email sent"
+        logger.debug(u"PRETEND has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
+        # send_email_report(user, now)
+        status = "PRETEND email sent"
     else:
         logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
         status = "no new diffs"
 
     # set last email check
-    db.session.merge(user)
-    user.last_email_check = now
-    try:
-        db.session.commit()
-        logger.debug(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
-    except InvalidRequestError:
-        logger.debug(u"rollback, trying again to update user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
-        db.session.rollback()
-        db.session.commit()
-        logger.debug(u"after rollback updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+    # db.session.merge(user)
+    # user.last_email_check = now
+    # try:
+    #     db.session.commit()
+    #     logger.debug(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+    # except InvalidRequestError:
+    #     logger.debug(u"rollback, trying again to update user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+    #     db.session.rollback()
+    #     db.session.commit()
+    #     logger.debug(u"after rollback updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
 
     return status
 
@@ -241,7 +241,7 @@ def send_email_report(user, now=None):
         if os.getenv("ENVIRONMENT", "testing") == "production":
             email = user.email
         else:
-            email = "team@impactstory.org"
+            email = "heather@impactstory.org"
         user.last_email_sent = now
 
         try:
