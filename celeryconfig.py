@@ -20,15 +20,17 @@ BROKER_TRANSPORT_OPTIONS = {'fanout_patterns': True}
 
 
 BROKER_TRANSPORT_OPTIONS = {
-    'priority_steps': [0,9],
+    'priority_steps': [0, 3, 7, 9],
 }
 
+CELERY_CREATE_MISSING_QUEUES = True
 
 CELERY_ACCEPT_CONTENT = ['pickle', 'json']
 CELERY_ENABLE_UTC=True
 CELERY_TASK_RESULT_EXPIRES = 60*60  # 1 hour
 CELERYD_MAX_TASKS_PER_CHILD = 1000
 CELERYD_FORCE_EXECV = True
+CELERY_TRACK_STARTED = True
 
 # List of modules to import when celery starts.
 CELERY_IMPORTS = ("tasks",)
