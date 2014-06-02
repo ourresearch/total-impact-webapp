@@ -15,7 +15,9 @@ arrow==0.4.2
 celery==3.1.11
 certifi==0.0.8
 chardet==1.0.1
+dnspython==1.11.1
 docopt==0.4.0
+eventlet==0.14.0
 gunicorn==0.14.3
 iso8601==0.1.4
 itsdangerous==0.21
