@@ -10,7 +10,6 @@ from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 from sqlalchemy.orm.exc import FlushError
 
 from totalimpactwebapp.user import User
-from totalimpactwebapp import products_list
 from totalimpactwebapp import db
 from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
 from totalimpactwebapp.user import remove_duplicates_from_user
@@ -145,32 +144,32 @@ class ProfileDeets(db.Model):
             tiid=self.tiid)
 
 
-@task(ignore_result=True, base=TaskThatSavesState)
-def add_profile_deets(user):
-    product_dicts = products_list.prep(
-            user.products,
-            include_headings=False,
-            display_debug=True
-        )
-    for product in product_dicts:
-        tiid = product["_id"]
-        for full_metric_name in product["metrics"]:
-            if "historical_values" in product["metrics"][full_metric_name]:
-                hist = product["metrics"][full_metric_name]["historical_values"]
-                (provider, metric) = full_metric_name.split(":")
-                if hist["diff"]["raw"]:
-                    profile_deets = ProfileDeets(
-                        user_id=user.id, 
-                        tiid=tiid,
-                        provider=provider, 
-                        metric=metric,
-                        current_raw=hist["current"]["raw"],
-                        metrics_collected_date=hist["current"]["collected_date"],
-                        diff=hist["diff"]["raw"],
-                        diff_days=hist["diff"]["days"]
-                    )
-                    db.session.add(profile_deets)
-    db.session.commit()
+# @task(ignore_result=True, base=TaskThatSavesState)
+# def add_profile_deets(user):
+#     product_dicts = products_list.prep(
+#             user.products,
+#             include_headings=False,
+#             display_debug=True
+#         )
+#     for product in product_dicts:
+#         tiid = product["_id"]
+#         for full_metric_name in product["metrics"]:
+#             if "historical_values" in product["metrics"][full_metric_name]:
+#                 hist = product["metrics"][full_metric_name]["historical_values"]
+#                 (provider, metric) = full_metric_name.split(":")
+#                 if hist["diff"]["raw"]:
+#                     profile_deets = ProfileDeets(
+#                         user_id=user.id, 
+#                         tiid=tiid,
+#                         provider=provider, 
+#                         metric=metric,
+#                         current_raw=hist["current"]["raw"],
+#                         metrics_collected_date=hist["current"]["collected_date"],
+#                         diff=hist["diff"]["raw"],
+#                         diff_days=hist["diff"]["days"]
+#                     )
+#                     db.session.add(profile_deets)
+#     db.session.commit()
 
 
 @task(ignore_result=True, base=TaskThatSavesState)
