@@ -6,6 +6,7 @@ import tasks
 from sqlalchemy import func
 from celery import chain
 import time
+import datetime
 import argparse
 import logging
 
@@ -39,13 +40,13 @@ def page_query(q):
 
 def add_profile_deets_for_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        logger.debug(u"add_profile_deets_for_everyone: {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"add_profile_deets_for_everyone: {url_slug}".format(url_slug=user.url_slug))
         response = tasks.add_profile_deets.delay(user)
 
 
 def deduplicate_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
-        logger.debug(u"deduplicate_everyone: {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"deduplicate_everyone: {url_slug}".format(url_slug=user.url_slug))
         response = tasks.deduplicate.delay(user)
 
 
@@ -74,18 +75,18 @@ def email_report_to_url_slug(url_slug=None):
 def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
         try:
-            days_since_last_email_sent = datetime.datetime.utcnow() - user.last_email_sent
             if not user.email or (u"@" not in user.email):
-                logger.debug(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))
+                logger.info(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))
             elif user.notification_email_frequency == "none":
-                logger.debug(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
-            elif days_since_last_email_sent.days < 7:
-                logger.debug(u"not sending, {url_slug} already got email this week".format(url_slug=user.url_slug))
+                logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
+            elif user.last_email_sent and ((datetime.datetime.utcnow() - user.last_email_sent).days < 7):
+                logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=user.url_slug))
             else:
-                logger.debug(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=user.url_slug))
-                status = tasks.send_email_if_new_diffs.delay(user)
+                logger.info(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=user.url_slug))
+                status = tasks.send_email_if_new_diffs.delay(user.id)
         except Exception as e:
-            logger.warning(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next user".format(url_slug=user.url_slug))
+            logger.warning(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next user.  Error {e}".format(
+                url_slug=user.url_slug, e=e))
             pass
     return
 
