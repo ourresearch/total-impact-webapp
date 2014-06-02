@@ -74,10 +74,13 @@ def email_report_to_url_slug(url_slug=None):
 def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
         try:
-            if not user.email:
+            days_since_last_email_sent = datetime.datetime.utcnow() - user.last_email_sent
+            if not user.email or (u"@" not in user.email):
                 logger.debug(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))
             elif user.notification_email_frequency == "none":
                 logger.debug(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
+            elif days_since_last_email_sent.days < 7:
+                logger.debug(u"not sending, {url_slug} already got email this week".format(url_slug=user.url_slug))
             else:
                 logger.debug(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=user.url_slug))
                 status = tasks.send_email_if_new_diffs.delay(user)
