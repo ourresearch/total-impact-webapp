@@ -1,6 +1,5 @@
 from totalimpactwebapp.user import User
 from totalimpactwebapp import db
-from totalimpactwebapp import products_list
 import tasks
 
 from sqlalchemy import func
