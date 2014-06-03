@@ -1,6 +1,8 @@
 angular.module( 'infopages', [
     'security',
     'services.page',
+    'services.tiAnalytics',
+    'services.tiMixpanel',
     'directives.fullscreen'
   ])
   .factory("InfoPages", function ($http) {
@@ -83,7 +85,11 @@ angular.module( 'infopages', [
       })
   }])
 
-  .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {
+  .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page, TiMixpanel ) {
+    TiMixpanel.registerOnceRandom(
+      "landingPage.sampleProfileButton.show",
+      [true, false]
+    )
     var signupFormShowing = false
     $scope.landingPageType = "main"
     Page.showHeader(false)

@@ -21,6 +21,7 @@ angular.module('app', [
   'passwordReset',
   'profileProduct',
   'profile',
+  'tiMixpanel',
   'settings'
 ]);
 
@@ -75,6 +76,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Page,
                                                      security,
                                                      $rootScope,
+                                                     TiMixpanel,
                                                      RouteChangeErrorHandler) {
 
   $scope.userMessage = UserMessage
@@ -84,6 +86,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
   $scope.isAuthenticated =  security.isAuthenticated
+  $scope.tiMixpanel = TiMixpanel
   $scope.modalOpen = function(){
     return $rootScope.modalOpen
   }

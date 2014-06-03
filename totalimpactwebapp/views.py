@@ -451,6 +451,8 @@ def user_products_get(id):
         add_heading_products=add_heading_products
     )
 
+    #products = profile.products  # straight from core, for debugging.
+
     return json_resp_from_thing(products)
 
 
