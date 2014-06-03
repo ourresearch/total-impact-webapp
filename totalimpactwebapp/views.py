@@ -253,7 +253,7 @@ def extract_filename(s):
 
 @app.route("/user/current")
 def get_current_user():
-    local_sleep(5)
+    #local_sleep(5)
     try:
         user_info = g.user.dict_about(include_stripe=True)
     except AttributeError:  # anon user has no as_dict()
