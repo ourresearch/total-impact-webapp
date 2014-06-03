@@ -10,7 +10,6 @@ from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 from sqlalchemy.orm.exc import FlushError
 
 from totalimpactwebapp.user import User
-from totalimpactwebapp import products_list
 from totalimpactwebapp import db
 from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
 from totalimpactwebapp.user import remove_duplicates_from_user
@@ -21,15 +20,7 @@ from totalimpactwebapp import emailer
 logger = logging.getLogger("webapp.tasks")
 
 
-@worker_process_init.connect
-def create_worker_connection(*args, **kwargs):
-    """Initialize database connection.
-      
-      This has to be done after the worker processes have been started otherwise
-      the connection will fail.
-      
-    """
-    db.session = db.create_scoped_session()
+
 
 
 @task_postrun.connect()
@@ -81,12 +72,10 @@ class TaskAlertIfFail(celery.Task):
         return self.run(*args, **kwargs)
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
-        url_slug="unknown"
-        for arg in args:
-            if isinstance(arg, User):
-                url_slug = arg.url_slug
-        logger.error(u"Celery task failed on {task_name}, user {url_slug}, task_id={task_id}".format(
-            task_name=self.name, url_slug=url_slug, task_id=task_id))
+        if not "user_id" in args:
+            user_id = "unknown"
+        logger.error(u"Celery task failed on {task_name}, user {user_id}, task_id={task_id}".format(
+            task_name=self.name, user_id=user_id, task_id=task_id))
 
 
 # from http://stackoverflow.com/questions/6393879/celery-task-and-customize-decorator
@@ -155,32 +144,32 @@ class ProfileDeets(db.Model):
             tiid=self.tiid)
 
 
-@task(ignore_result=True, base=TaskThatSavesState)
-def add_profile_deets(user):
-    product_dicts = products_list.prep(
-            user.products,
-            include_headings=False,
-            display_debug=True
-        )
-    for product in product_dicts:
-        tiid = product["_id"]
-        for full_metric_name in product["metrics"]:
-            if "historical_values" in product["metrics"][full_metric_name]:
-                hist = product["metrics"][full_metric_name]["historical_values"]
-                (provider, metric) = full_metric_name.split(":")
-                if hist["diff"]["raw"]:
-                    profile_deets = ProfileDeets(
-                        user_id=user.id, 
-                        tiid=tiid,
-                        provider=provider, 
-                        metric=metric,
-                        current_raw=hist["current"]["raw"],
-                        metrics_collected_date=hist["current"]["collected_date"],
-                        diff=hist["diff"]["raw"],
-                        diff_days=hist["diff"]["days"]
-                    )
-                    db.session.add(profile_deets)
-    db.session.commit()
+# @task(ignore_result=True, base=TaskThatSavesState)
+# def add_profile_deets(user):
+#     product_dicts = products_list.prep(
+#             user.products,
+#             include_headings=False,
+#             display_debug=True
+#         )
+#     for product in product_dicts:
+#         tiid = product["_id"]
+#         for full_metric_name in product["metrics"]:
+#             if "historical_values" in product["metrics"][full_metric_name]:
+#                 hist = product["metrics"][full_metric_name]["historical_values"]
+#                 (provider, metric) = full_metric_name.split(":")
+#                 if hist["diff"]["raw"]:
+#                     profile_deets = ProfileDeets(
+#                         user_id=user.id, 
+#                         tiid=tiid,
+#                         provider=provider, 
+#                         metric=metric,
+#                         current_raw=hist["current"]["raw"],
+#                         metrics_collected_date=hist["current"]["collected_date"],
+#                         diff=hist["diff"]["raw"],
+#                         diff_days=hist["diff"]["days"]
+#                     )
+#                     db.session.add(profile_deets)
+#     db.session.commit()
 
 
 @task(ignore_result=True, base=TaskThatSavesState)
@@ -190,41 +179,40 @@ def deduplicate(user):
         removed_tiids = remove_duplicates_from_user(user.id)
         logger.debug(removed_tiids)
     except Exception as e:
-        logger.debug(u"EXCEPTION!!!!!!!!!!!!!!!! deduplicating")
+        logger.warning(u"EXCEPTION!!!!!!!!!!!!!!!! deduplicating")
 
     return removed_tiids
 
 
 @task(base=TaskAlertIfFail)
-def send_email_if_new_diffs(user):
+def send_email_if_new_diffs(user_id):
 
-    # get it again to help with debugging?
-    user = User.query.get(user.id)
+    user = db.session.query(User).get(user_id)
 
     status = "started"
     now = datetime.datetime.utcnow()    
     logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
-    latest_diff_timestamp = products_list.latest_diff_timestamp(user.products)
+    latest_diff_timestamp = user.latest_diff_ts
     status = "checking diffs"
-    if (latest_diff_timestamp > user.last_email_check.isoformat()):
-        logger.debug(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
+    if not user.last_email_check or (latest_diff_timestamp > user.last_email_check.isoformat()):
+        logger.info(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
         send_email_report(user, now)
         status = "email sent"
     else:
-        logger.debug(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
         status = "no new diffs"
 
-    # set last email check
+    # set last email check date
     db.session.merge(user)
     user.last_email_check = now
     try:
         db.session.commit()
-        logger.debug(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
     except InvalidRequestError:
-        logger.debug(u"rollback, trying again to update user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"rollback, trying again to update user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
         db.session.rollback()
         db.session.commit()
-        logger.debug(u"after rollback updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"after rollback updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
 
     return status
 
@@ -241,24 +229,24 @@ def send_email_report(user, now=None):
         if os.getenv("ENVIRONMENT", "testing") == "production":
             email = user.email
         else:
-            email = "team@impactstory.org"
+            email = "heather@impactstory.org"
         user.last_email_sent = now
 
         try:
             db.session.commit()
-            logger.debug(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            logger.info(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
         except InvalidRequestError:
-            logger.debug(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            logger.info(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
             db.session.rollback()
             db.session.commit()
-            logger.debug(u"after rollback updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            logger.info(u"after rollback updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
 
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
         status = "emailed"
-        logger.debug(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
+        logger.info(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
     else:
         status = "not emailed, no cards made"
-        logger.debug(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
 
     return status
 

@@ -106,7 +106,7 @@ class Metric(object):
         try:
             ret = self.config["display_provider"]
         except KeyError:
-            ret = self.config["provider"].capitalize()
+            ret = self.config["provider_name"].capitalize()
 
         ret.replace("Figshare", "figshare")  # hack
         return ret
