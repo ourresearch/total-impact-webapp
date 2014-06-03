@@ -1,6 +1,4 @@
-angular.module("services.tiMixpanel", [
-  '$cookieStore'
-  ])
+angular.module("services.tiMixpanel", [])
 .factory("TiMixpanel", function($cookieStore){
     var superProperties = {
       local: {},

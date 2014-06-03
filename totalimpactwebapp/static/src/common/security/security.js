@@ -65,6 +65,7 @@ angular.module('security.service', [
           }
         }
       )
+
       return deferred.promise
     },
 

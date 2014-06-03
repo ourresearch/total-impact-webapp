@@ -1,7 +1,6 @@
 angular.module( 'infopages', [
     'security',
     'services.page',
-    'services.tiAnalytics',
     'services.tiMixpanel',
     'directives.fullscreen'
   ])

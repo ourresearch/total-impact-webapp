@@ -5,6 +5,7 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
+  'ngCookies',
   'services.loading',
   'services.userMessage',
   'services.uservoiceWidget',
@@ -21,7 +22,6 @@ angular.module('app', [
   'passwordReset',
   'profileProduct',
   'profile',
-  'tiMixpanel',
   'settings'
 ]);
 

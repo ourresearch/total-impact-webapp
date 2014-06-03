@@ -3,7 +3,6 @@
  * stuff depending on the environment (local, staging, production) where it's
  * running.
  */
-console.log("top running")
 
 // shim console.log for IE
 if (typeof console === "undefined"){

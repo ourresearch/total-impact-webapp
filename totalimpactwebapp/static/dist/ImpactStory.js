@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-05-31
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-02
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -421,12 +421,13 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
-  'services.abTesting',
+  'ngCookies',
   'services.loading',
   'services.userMessage',
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
+  'services.tiMixpanel',
   'security',
   'directives.crud',
   'directives.jQueryTools',
@@ -453,7 +454,12 @@ angular.module('app').config(function ($routeProvider, $locationProvider) {
   $routeProvider.when("/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
     controller:'ProfileCtrl',
-    reloadOnSearch: false
+    reloadOnSearch: false,
+    resolve: {
+      currentUserOwnsProfile: function($route, $q, security){
+        return security.currentUserOwnsProfile($route.current.params.url_slug)
+      }
+    }
   })
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
@@ -480,13 +486,13 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
                                                      UserMessage,
-                                                     AbTesting,
                                                      UservoiceWidget,
                                                      $location,
                                                      Loading,
                                                      Page,
                                                      security,
                                                      $rootScope,
+                                                     TiMixpanel,
                                                      RouteChangeErrorHandler) {
 
   $scope.userMessage = UserMessage
@@ -496,14 +502,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
   $scope.isAuthenticated =  security.isAuthenticated
+  $scope.tiMixpanel = TiMixpanel
   $scope.modalOpen = function(){
     return $rootScope.modalOpen
   }
-
-
-  // these will be the user's test states forever (or until she clears our cookie)
-  AbTesting.assignTestStates()
-  $scope.abTesting = AbTesting
 
 
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
@@ -512,15 +514,6 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     security.requestCurrentUser().then(function(currentUser){
-      var userData = AbTesting.getTestStates()
-      if (currentUser){
-        userData = _.extend(userData, currentUser)
-        analytics.identify(currentUser.id, userData);
-      }
-      else {
-        analytics.identify()
-      }
-
       Page.sendPageloadToSegmentio()
     })
 
@@ -647,10 +640,10 @@ angular.module("googleScholar", [
 
   })
 
-angular.module("importers.allTheImporters",["importers.importer"]);angular.module("importers.allTheImporters").factory("AllTheImporters",function(){var e=[],t=[{displayName:"GitHub",url:"http://github.com",descr:"GitHub is an online code repository emphasizing community collaboration features.",tabs:[{label:"account"},{label:"additional repositories"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:"Your GitHub account ID is at the top right of your screen when you're logged in.",saveUsername:"github_id"},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other github repositories here.",placeholder:"https://github.com/your_username/your_repository",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"https://"+t}).join("\n")}}]},{displayName:"ORCID",inputs:[{inputType:"username",inputNeeded:"ID",placeholder:"http://orcid.org/xxxx-xxxx-xxxx-xxxx",saveUsername:"orcid_id",cleanupFunction:function(e){return e.replace("http://orcid.org/","")},help:"You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."}],url:"http://orcid.org",signupUrl:"http://orcid.org/register",descr:"ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into ImpactStory.",extra:"If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."},{displayName:"SlideShare",url:"http://slideshare.net",descr:"SlideShare is community for sharing presentations online.",tabs:[{label:"account"},{label:"additional products"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:'Your username is right after "slideshare.net/" in your profile\'s URL.',saveUsername:"slideshare_id"},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other SlideShare products here.",placeholder:"http://www.slideshare.net/your-username/your-presentation",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");return"http://"+t}).join("\n")}}]},{displayName:"Twitter",url:"http://twitter.com",descr:"Twitter is a social networking site for sharing short messages.",endpoint:"twitter_account",tabs:[{label:"account"},{label:"additional tweets"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:"Your Twitter username is often written starting with @.",saveUsername:"twitter_account_id",placeholder:"@username",cleanupFunction:function(e){return typeof e=="undefined"?e:"@"+e.replace("@","")}},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other Tweets here.",placeholder:"https://twitter.com/username/status/123456",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/https*:\/\//,"");return"http://"+t}).join("\n")}}]},{displayName:"Google Scholar",inputs:[{inputType:"file",inputNeeded:"BibTeX file"}],endpoint:"bibtex",url:"http://scholar.google.com/citations",descr:"Google Scholar profiles find and show researchers' articles as well as their citation impact.",extra:'<h3>How to import your Google Scholar profile:</h3><ol><li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li><li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li><li>Click <code>Export all my articles</code>, then save the BibTex file.</li><li>Return to ImpactStory. Click "upload" in this window, select your previously saved file, and upload.</ol>'},{displayName:"figshare",url:"http://figshare.com",descr:"Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",tabs:[{label:"account"},{label:"additional products"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"author page URL",placeholder:"http://figshare.com/authors/your_username/12345",cleanupFunction:function(e){return"http://"+e.replace("http://","")},saveUsername:"figshare_id"},{tab:1,name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"Paste DOIs for other figshare products here.",placeholder:"http://dx.doi.org/10.6084/m9.figshare.12345"}]},{displayName:"Blogs",descr:"Blogs and websites",endpoint:"wordpresscom",tabs:[{label:"blog url"},{label:"additional posts"}],inputs:[{tab:0,name:"blogUrl",inputType:"username",inputNeeded:"Blog URL",help:"The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",placeholder:"yourblogname.com",cleanupFunction:function(e){if(typeof e=="undefined")return e;var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"http://"+t}},{tab:1,name:"blog_post_urls",inputType:"idList",inputNeeded:"Blog post URLs",help:"Paste URLs for individual blog posts here.",placeholder:"http://yourblog.com/your-awesome-post",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"http://"+t}).join("\n")}}]},{displayName:"YouTube",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Copy the URLs for the videos you want to add, then paste them here.",placeholder:"http://www.youtube.com/watch?v=12345"}],endpoint:"urls",url:"http://youtube.com",descr:"YouTube is an online video-sharing site."},{displayName:"Vimeo",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Copy the URL for the video you want to add, then paste it here.",placeholder:"http://vimeo.com/12345"}],endpoint:"urls",url:"http://vimeo.com",descr:"Vimeo is an online video-sharing site."},{displayName:"arXiv",inputs:[{name:"arxiv_id_input",inputType:"idList",inputNeeded:"arXiv IDs",help:"A typical arXiv ID looks like this: 1305.3328",placeholder:"arXiv:1234.5678"}],endpoint:"arxiv",url:"http://arXiv.org",descr:"arXiv is an e-print service in the fields of physics, mathematics, computer science, quantitative biology, quantitative finance and statistics."},{displayName:"Dryad",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:'You can find Dryad DOIs on each dataset\'s individual Dryad webpage, inside the <strong>"please cite the Dryad data package"</strong> section.',placeholder:"doi:10.5061/dryad.example"}],endpoint:"dois",url:"http://datadryad.org",descr:"The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."},{displayName:"Dataset DOIs",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",placeholder:"http://doi.org/10.example/example"}],endpoint:"dois",descr:"Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."},{displayName:"Article DOIs",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"You can (generally) find article DOIs wherever the publishers have made the articles available online.",placeholder:"http://doi.org/10.example/example"}],endpoint:"dois",descr:"Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."},{displayName:"PubMed IDs",inputs:[{name:"standard_pmids_input",inputType:"idList",inputNeeded:"IDs",placeholder:"123456789",help:"You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."}],endpoint:"pmids",url:"http://www.ncbi.nlm.nih.gov/pubmed",descr:"PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."},{displayName:"Products by URL",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs"}],endpoint:"urls",descr:"Our service-specific importers (DOI, blogs, GitHub, etc) give the most comprehensive results. But if you've got a product not handled by any of those, you can import it here, via URL."}],n={name:"primary",cleanupFunction:function(e){return e},tab:0},r=function(e){return"/static/img/logos/"+_(e.toLowerCase()).dasherize()+".png"},i=function(e){return e.endpoint?e.endpoint:s(e.displayName)},s=function(e){var t=e.split(" "),n=_.map(t,function(e){return e.charAt(0).toUpperCase()+e.toLowerCase().slice(1)});n[0]=n[0].toLowerCase();return n.join("")};return{addProducts:function(t){e=e.concat(t)},getProducts:function(){return e},get:function(){var e=angular.copy(t),o=_.map(e,function(e){e.name=s(e.displayName);e.logoPath=r(e.displayName);e.endpoint=i(e);e.inputs=_.map(e.inputs,function(e){return _.defaults(e,n)});return e});return _.sortBy(o,function(e){return e.displayName.toLocaleLowerCase()})}}});
 angular.module( 'infopages', [
     'security',
     'services.page',
+    'services.tiMixpanel',
     'directives.fullscreen'
   ])
   .factory("InfoPages", function ($http) {
@@ -733,7 +726,11 @@ angular.module( 'infopages', [
       })
   }])
 
-  .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {
+  .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page, TiMixpanel ) {
+    TiMixpanel.registerOnceRandom(
+      "landingPage.sampleProfileButton.show",
+      [true, false]
+    )
     var signupFormShowing = false
     $scope.landingPageType = "main"
     Page.showHeader(false)
@@ -936,7 +933,6 @@ angular.module('profileLinkedAccounts', [
 
 
   })
-angular.module("profileProduct",["resources.users","services.page","product.product","services.loading","ui.bootstrap","security"]).config(["$routeProvider",function(e){e.when("/:url_slug/product/:tiid",{templateUrl:"profile-product/profile-product-page.tpl.html",controller:"ProfileProductPageCtrl"})}]).controller("ProfileProductPageCtrl",function(e,t,n,r,i,s,o,u,a,f,l){var c=t.url_slug,h=i.get("$http");f.start("profileProduct");e.userSlug=c;e.loading=f;e.userOwnsThisProfile=s.testUserAuthenticationLevel("ownsThisProfile");e.openInfoModal=function(){r.open({templateUrl:"profile-product/percentilesInfoModal.tpl.html"})};e.deleteProduct=function(){f.start("deleteProduct");u.delete({id:c,idType:"url_slug"},{tiids:[t.tiid]},function(){console.log("finished deleting",t.tiid);h.removeAll();s.redirectToProfile()})};e.product=o.get({id:c,tiid:t.tiid},function(t){console.log("data",t);e.biblio=a.makeBiblio(t);e.metrics=a.makeMetrics(t);f.finish("profileProduct");l.setTitle(t.biblio.title)},function(e){n.path("/"+c)})}).controller("modalCtrl");
 angular.module("profileProduct", [
     'resources.users',
     'resources.products',
@@ -1187,7 +1183,6 @@ angular.module('profileSingleProducts', [
     }
 
   })
-angular.module("profile",["resources.users","product.product","services.page","update.update","ui.bootstrap","security","services.loading","services.timer","tips","profile.addProducts","services.i18nNotifications"]).config(["$routeProvider",function(e,t){e.when("/embed/:url_slug",{templateUrl:"profile/profile.tpl.html",controller:"ProfileCtrl"})}]).factory("UserProfile",function(e,t,n,r,i,s,o){var u={};return{makeAnchorLink:function(e,t){var r=e;t&&(r+=":"+encodeURIComponent(t));return n.path()+"#"+r},filterProducts:function(e,t){var n=_.filter(e,function(e){return _.size(e.metrics)}),r=_.filter(e,function(e){return e.metrics&&_.size(e.metrics)==0});return t=="withMetrics"?n:t==="withoutMetrics"?r:n.concat(r)},scrollToCorrectLocation:function(){if(n.hash())t();else{var r=o.getLastScrollPosition(n.path());e.scrollTo(0,r)}},loadUser:function(e,t){return r.get({id:t,idType:"url_slug"},function(e){o.setTitle(e.about.given_name+" "+e.about.surname)},function(n){if(n.status==404){e.userExists=!1;e.slug=t}})},slugIsCurrentUser:function(e){return i.getCurrentUser()?i.getCurrentUser().url_slug==e:!1},makeSlug:function(){u.url_slug=s.make(u.givenName,u.surname)},readyToCreateOnServer:function(){return u.url_slug&&!id},reset:function(){u={}},setId:function(e){id=e},getId:function(){return id},getSlug:function(){return u.url_slug},about:u}}).controller("ProfileCtrl",function(e,t,n,r,i,s,o,u,a,f,l,c,h,p,d,v,m,g){g.isEmbedded();var y=a.get("$http");e.$on("ngRepeatFinished",function(e){console.log("finished rendering products in "+m.elapsed("renderProducts")+"ms");twttr.widgets.load()});var b=r.url_slug,w=!0;e.loadingProducts=function(){return w};e.userExists=!0;e.showProductsWithoutMetrics=!1;e.filterProducts=h.filterProducts;e.user=h.loadUser(e,b);e.currentUserIsProfileOwner=function(){return h.slugIsCurrentUser(b)};e.openProfileEmbedModal=function(){i.open({templateUrl:"profile/profile-embed-modal.tpl.html",controller:"profileEmbedModalCtrl",resolve:{userSlug:function(e){return e.when(b)}}})};e.getSortScore=function(e){return c.getSortScore(e)*-1};e.getMetricSum=function(e){return c.getMetricSum(e)*-1};e.dedup=function(){v.start("dedup");l.dedup({id:b},{},function(e){console.log("deduped!",e);v.finish("dedup");p.removeAll();p.pushForCurrentRoute("dedup.success","success",{numDuplicates:e.deleted_tiids.length});E(!0)})};var E=function(t){m.start("getProducts");w=!0;t&&y.removeAll();e.products=l.query({id:b,includeHeadingProducts:!0,embedded:g.isEmbedded(),idType:"url_slug"},function(e){console.log("loaded products in "+m.elapsed("getProducts")+"ms");m.start("renderProducts");w=!1;s(function(){h.scrollToCorrectLocation()},0)},function(e){w=!1})};s(E,100)}).controller("profileEmbedModalCtrl",function(e,t,n){console.log("user slug is: ",n);e.userSlug=n;e.baseUrl=t.getBaseUrl;e.embed={};e.embed.type="badge"}).directive("backToProfile",function(e){return{restrict:"A",replace:!0,template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",link:function(t,n){var r=/^\/([-\w\.]+)\/product\/(\w+)/,i=r.exec(e.path());t.returnLink=null;if(i){var s=i[1];s!="embed"&&(t.returnLink=s)}}}});
 angular.module("profile", [
   'resources.users',
   'product.product',
@@ -1270,7 +1265,7 @@ angular.module("profile", [
         $window.scrollTo(0, lastScrollPos)
       }
     },
-    loadUser: function($scope, slug) {
+    loadProfile: function($scope, slug, currentUserOwnsProfile) {
       return UsersAbout.get(
         {
           id: slug,
@@ -1285,10 +1280,7 @@ angular.module("profile", [
             return (k.match(/_id$/) && v)
           })
 
-
-
-          if (!about.products_count && slugIsCurrentUser(about.url_slug)){
-            console.log("calling Tour.start with ", about)
+          if (!about.products_count && currentUserOwnsProfile){
             Tour.start(about)
           }
         },
@@ -1300,7 +1292,6 @@ angular.module("profile", [
         }
       );
     },
-    'slugIsCurrentUser': slugIsCurrentUser,
     makeSlug: function(){
       about.url_slug = Slug.make(about.givenName, about.surname)
     },
@@ -1338,10 +1329,12 @@ angular.module("profile", [
     Update,
     Loading,
     Timer,
+    currentUserOwnsProfile,
     Page) {
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
     }
+
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
@@ -1451,7 +1444,7 @@ angular.module("profile", [
       analytics.track("Clicked signup link on profile")
     }
 
-    $scope.user = UserProfile.loadUser($scope, userSlug);
+    $scope.profile = UserProfile.loadProfile($scope, userSlug, currentUserOwnsProfile);
 
     $scope.profileAwards = ProfileAwards.query(
       {id:userSlug},
@@ -1460,7 +1453,7 @@ angular.module("profile", [
     )
 
     $scope.currentUserIsProfileOwner = function(){
-      return UserProfile.slugIsCurrentUser(userSlug);
+      return currentUserOwnsProfile
     }
 
     $scope.openProfileEmbedModal = function(){
@@ -1930,7 +1923,6 @@ angular.module('settings', [
 
 
 
-angular.module("signup",["services.slug","services.page","resources.users","update.update","security.service","tips","importers.allTheImporters","importers.importer"]).factory("Signup",function(e){var t=["name","url","products","password"],n=function(n){var r="name";_.each(t,function(t){e.path().indexOf("/"+t)>0&&(r=t)});n&&(r=r.charAt(0).toUpperCase()+r.slice(1));return r},r=function(){return _.indexOf(t,n())};return{signupSteps:function(){return t},onSignupStep:function(t){return t==n()},isBeforeCurrentSignupStep:function(e){var n=_.indexOf(t,e);return r()>-1&&n<r()},getTemplatePath:function(){return"signup/signup-"+n()+".tpl.html"}}}).config(["$routeProvider",function(e){e.when("/signup/:url_slug/products/add",{templateUrl:"signup/signup.tpl.html",controller:"signupCtrl",resolve:{userOwnsThisProfile:function(e){return e.testUserAuthenticationLevel("ownsThisProfile")}}}).when("/signup/:url_slug/password",{templateUrl:"signup/signup.tpl.html",controller:"signupCtrl",resolve:{userOwnsThisProfile:function(e){return e.testUserAuthenticationLevel("ownsThisProfile")}}}).when("/signup/*rest",{templateUrl:"signup/signup.tpl.html",controller:"signupCtrl",resolve:{userNotLoggedIn:function(e){return e.testUserAuthenticationLevel("loggedIn",!1)}}}).when("/signup",{redirectTo:"/signup/name"})}]).controller("signupCtrl",function(e,t,n,r){n.setUservoiceTabLoc("bottom");n.setTemplates("signup/signup-header","");e.input={};e.include=t.getTemplatePath();e.nav={goToNextStep:function(){console.log("we should be overriding me.")}}}).controller("signupNameCtrl",function(e,t,n,r){e.nav.goToNextStep=function(){var n=r.asciify(e.input.givenName+"/"+e.input.surname).replace(/\s/g,"_");t.path("signup/"+n+"/url")}}).controller("signupUrlCtrl",function(e,t,n,r,i,s,o){var u=/\/(\w+)\/(\w+)\/url/,a=u.exec(s.path());e.givenName=a[1];e.input.url_slug=i.make(a[1],a[2]);e.nav.goToNextStep=function(){n.save({id:e.input.url_slug,idType:"url_slug"},{givenName:a[1],surname:a[2],url_slug:e.input.url_slug,tips:r.keysStr()},function(t,n){console.log("got response back from save user",t);o.clearCachedUser();s.path("signup/"+e.input.url_slug+"/products/add")})}}).controller("signupProductsCtrl",function(e,t,n,r,i){var s=/\/signup\/(\w+)\//.exec(e.path());t.importers=r.get();t.nav.goToNextStep=function(){e.path("signup/"+s[1]+"/password")}}).controller("signupPasswordCtrl",function(e,t,n,r,i,s){var o=/\/signup\/(\w+)\//.exec(t.path())[1],u=function(){t.path("/"+o);n.requestCurrentUser()};e.nav.goToNextStep=function(){r.patch({id:o,idType:"url_slug"},{about:{email:e.input.email}},function(e){console.log("we set the email",e)});i.save({id:o,idType:"url_slug"},{newPassword:e.input.password},function(e){console.log("we set the password; showing the 'updating' modal.");n.clearCachedUser();s.showUpdate(o,u)})}}).controller("signupHeaderCtrl",function(e,t,n){n.setTitle("signup");e.signupSteps=t.signupSteps();e.isStepCurrent=t.onSignupStep;e.isStepCompleted=t.isBeforeCurrentSignupStep});
 angular.module( 'signup', [
     'services.slug',
     'services.page',
@@ -2002,7 +1994,6 @@ angular.module( 'signup', [
     }
   })
 
-angular.module("update.update",["resources.users"]).factory("Update",function(e,t,n,r,i){var s={},o=function(e,t){s.numNotDone>0||_.isNull(s.numNotDone)?n.query({id:e,idType:"url_slug"},function(n){s.numDone=u(n,!0);s.numNotDone=u(n,!1);s.percentComplete=s.numDone*100/(s.numDone+s.numNotDone);console.log("in keepPolling");console.log(s);r(function(){o(e,t)},500)}):t()},u=function(e,t){var n=_.filter(e,function(e){return!e.currently_updating});return t?n.length:e.length-n.length},a=function(e,t){s.numDone=null;s.numNotDone=null;s.percentComplete=null;var n=i.open({templateUrl:"update/update-progress.tpl.html",controller:"updateProgressModalCtrl",backdrop:"static",keyboard:!1});o(e,function(){n.close();t()})};return{showUpdate:a,updateStatus:s}}).controller("updateProgressModalCtrl",function(e,t){e.updateStatus=t.updateStatus});
 angular.module( 'update.update', [
     'resources.users'
   ])
@@ -2022,7 +2013,7 @@ angular.module( 'update.update', [
             updateStatus.numDone = numDone(resp, true)
             updateStatus.numNotDone = numDone(resp, false)
             updateStatus.percentComplete = updateStatus.numDone * 100 / (updateStatus.numDone + updateStatus.numNotDone)
-            $timeout(function(){keepPolling(url_slug, onFinish)}, 1000);
+            $timeout(function(){keepPolling(url_slug, onFinish)}, 500);
           })
       }
       else {
@@ -2798,7 +2789,6 @@ angular.module('resources.products',['ngResource'])
 })
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -3164,7 +3154,22 @@ angular.module('security.service', [
         })
     },
 
+    currentUserOwnsProfile: function(profileSlug){
+      var deferred = $q.defer()
 
+      service.requestCurrentUser().then(
+        function(user){
+          if (user && user.url_slug && user.url_slug == profileSlug){
+            deferred.resolve(true)
+          }
+          else {
+            deferred.resolve(false)
+          }
+        }
+      )
+
+      return deferred.promise
+    },
 
     testUserAuthenticationLevel: function(level, falseToNegate){
 
@@ -3196,6 +3201,7 @@ angular.module('security.service', [
 
         }
       }
+
 
       var deferred = $q.defer()
       service.requestCurrentUser().then(
@@ -3396,50 +3402,6 @@ angular.module('services.userMessage', [])
       }
 
     }
-
-
-  })
-
-angular.module('services.abTesting', ['ngCookies'])
-  .factory("AbTesting", function($cookieStore){
-
-    var testDefinitions = {
-      "link to sample profile from landing page": ["yes", "no"]
-    }
-
-    var assignTestStates = function(){
-      _.each(testDefinitions, function(testStates, testName){
-        if ($cookieStore.get(testName)) {
-          // it's already set, move on
-          console.log("test already set: ", testName, $cookieStore.get(testName))
-        }
-        else {
-          var testState = _.sample(testStates)
-          console.log("setting A/B test state: ", testName, testState)
-          $cookieStore.put(testName, testState)
-        }
-      })
-    }
-
-    var getTestStates = function(){
-      var ret = {}
-      _.each(testDefinitions, function(testStates, testName){
-        ret[testName] = $cookieStore.get(testName)
-      })
-      return ret
-    }
-
-    var getTestState = function(testName){
-      return $cookieStore[testName]
-    }
-
-    return {
-      assignTestStates: assignTestStates,
-      getTestStates: getTestStates,
-      getTestState: getTestState
-    }
-
-
 
 
   })
@@ -3771,7 +3733,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -4117,6 +4078,69 @@ angular.module('services.slug')
 
 
 })
+angular.module("services.tiMixpanel", [])
+.factory("TiMixpanel", function($cookieStore){
+    var superProperties = {
+      local: {},
+      user: {}
+    }
+    var currentUser = "anon"
+
+    return {
+
+      // purely wrappers around mixpanel methods
+
+      track: function(obj){
+        return mixpanel.track(obj)
+      },
+      alias: function(myAlias){
+        return mixpanel.alias(myAlias)
+      },
+      identify: function(myId){
+        return mixpanel.alias(myId)
+      },
+
+
+      // wrappers around mixpanel methods, that also maintain (essentially) a
+      // shadow version of the mixpanel cookie so we can access it easier
+
+      register: function(obj){
+        _.extend(superProperties, obj) // new values win conflicts (overwrite)
+        $cookieStore.set("tiMixpanel", superProperties)
+        return mixpanel.register(obj)
+      },
+      registerOnce: function(obj){
+        _.defaults(superProperties, obj) // old values win conflicts
+        return mixpanel.register_once(obj)
+      },
+      registerOnceRandom: function(key, potentialValues){
+        if (typeof superProperties[key] === "undefined") {
+          var sampled = _.sample(potentialValues)
+
+          var objToRegister = {}
+          objToRegister[key] = sampled
+          mixpanel.register_once(objToRegister)
+          return sampled
+        }
+        else {
+          // this key has already been set, leave it alone.
+          return false
+        }
+      },
+
+
+      // methods just for tiMixpanel, not wrappers around mixpanel methods.
+
+      get: function(key){
+        return superProperties[key]
+      },
+      clear: function(){
+        for (var k in superProperties) delete superProperties[k];
+        return true
+      }
+    }
+
+  })
 angular.module("services.timer", [])
 .factory("Timer", function(){
     var jobs = []
@@ -4853,10 +4877,10 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "            <div id=\"call-to-action\">\n" +
     "               <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
-    "               <a href=\"/CarlBoettiger\"\n" +
+    "               <!--<a href=\"/CarlBoettiger\"\n" +
     "                  ng-show=\"abTesting.getTestState['link to sample profile from landing page']=='yes'\"\n" +
     "                  class=\"btn btn-xlarge btn-default\"\n" +
-    "                  id=\"secondary-cta-button\">See an example</a>\n" +
+    "                  id=\"secondary-cta-button\">See an example</a>-->\n" +
     "            </div>\n" +
     "         </div>\n" +
     "      </div>\n" +
@@ -5463,49 +5487,49 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
   $templateCache.put("profile/profile.tpl.html",
     "<div class=\"profile-header\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
-    "      <div class=\"loading\" ng-show=\"!user.about.id\">\n" +
+    "      <div class=\"loading\" ng-show=\"!profile.about.id\">\n" +
     "         <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
     "      </div>\n" +
-    "      <div class=\"my-picture\" ng-show=\"user.about.id\">\n" +
+    "      <div class=\"my-picture\" ng-show=\"profile.about.id\">\n" +
     "         <a href=\"http://www.gravatar.com\" >\n" +
-    "            <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ user.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "            <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "         </a>\n" +
     "      </div>\n" +
     "      <div class=\"my-vitals\">\n" +
     "         <h2 class='page-title editable-name' id=\"profile-owner-name\">\n" +
-    "            <span class=\"given-name editable\" data-name=\"given_name\">{{ user.about.given_name }}</span>\n" +
-    "            <span class=\"surname editable\" data-name=\"surname\">{{ user.about.surname }}</span>\n" +
+    "            <span class=\"given-name editable\" data-name=\"given_name\">{{ profile.about.given_name }}</span>\n" +
+    "            <span class=\"surname editable\" data-name=\"surname\">{{ profile.about.surname }}</span>\n" +
     "         </h2>\n" +
     "         <div class=\"connected-accounts\">\n" +
     "            <ul>\n" +
     "\n" +
-    "               <li ng-show=\"user.about.figshare_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"{{ user.about.figshare_id }}\">\n" +
+    "               <li ng-show=\"profile.about.figshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"{{ profile.about.figshare_id }}\">\n" +
     "                     <img src=\"/static/img/favicons/figshare.ico\">\n" +
     "                     <span class=\"service\">figshare</span>\n" +
     "                  </a>\n" +
     "               </li>           \n" +
-    "               <li ng-show=\"user.about.github_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://github.com/{{ user.about.github_id }}\">\n" +
+    "               <li ng-show=\"profile.about.github_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://github.com/{{ profile.about.github_id }}\">\n" +
     "                     <img src=\"/static/img/favicons/github.ico\">\n" +
     "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"user.about.google_scholar_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"{{ user.about.google_scholar_id }}\">\n" +
+    "               <li ng-show=\"profile.about.google_scholar_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"{{ profile.about.google_scholar_id }}\">\n" +
     "                     <img src=\"/static/img/favicons/google_scholar.ico\">\n" +
     "                     <span class=\"service\">Google Scholar</span>\n" +
     "                  </a>\n" +
     "               </li>     \n" +
-    "               <li ng-show=\"user.about.orcid_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://orcid.org/{{ user.about.orcid_id }}\">\n" +
+    "               <li ng-show=\"profile.about.orcid_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://orcid.org/{{ profile.about.orcid_id }}\">\n" +
     "                     <img src=\"/static/img/favicons/orcid.ico\">\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "\n" +
-    "               <li ng-show=\"user.about.slideshare_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://www.slideshare.net/{{ user.about.slideshare_id }}\">\n" +
+    "               <li ng-show=\"profile.about.slideshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://www.slideshare.net/{{ profile.about.slideshare_id }}\">\n" +
     "                     <img src=\"/static/img/favicons/slideshare.ico\">\n" +
     "                     <span class=\"service\">Slideshare</span>\n" +
     "                  </a>\n" +
@@ -5515,7 +5539,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            </ul>\n" +
     "\n" +
     "            <div class=\"add-connected-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
-    "               <a href=\"/{{ user.about.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
+    "               <a href=\"/{{ profile.about.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
     "                  <i class=\"icon-link left\"></i>\n" +
     "                  <span ng-show=\"!hasConnectedAccounts()\" class=\"first\">Import from accounts</span>\n" +
     "                  <span ng-show=\"hasConnectedAccounts()\" class=\"more\">Connect more accounts</span>\n" +
@@ -5525,7 +5549,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "      <div class=\"my-metrics\">\n" +
     "         <!-- advisor badge -->\n" +
-    "         <div class=\"advisor\" ng-show=\"user.about.is_advisor\">\n" +
+    "         <div class=\"advisor\" ng-show=\"profile.about.is_advisor\">\n" +
     "            <img src=\"/static/img/advisor-badge.png\">\n" +
     "         </div>\n" +
     "         <ul class=\"profile-award-list\">\n" +
@@ -5578,7 +5602,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
-    "            <a href=\"/{{ user.about.url_slug }}/products/add\">\n" +
+    "            <a href=\"/{{ profile.about.url_slug }}/products/add\">\n" +
     "               <i class=\"icon-upload\"></i>Import individual products\n" +
     "            </a>\n" +
     "         </div>\n" +
@@ -5590,8 +5614,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"dropdown download\">\n" +
     "               <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "               <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "                  <li><a tabindex=\"-1\" href=\"/user/{{ user.about.url_slug }}/products?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/user/{{ profile.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/user/{{ profile.about.url_slug }}/products?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "               </ul>\n" +
     "            </span>\n" +
     "         </div>\n" +
@@ -5641,7 +5665,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "     ng-if=\"!hideSignupBanner\"\n" +
     "     ng-animate=\"{leave: 'animated fadeOutDown'}\">\n" +
     "\n" +
-    "   <span class=\"msg\">Join {{ user.about.given_name }} and thousands of other scientists on Impactstory!</span>\n" +
+    "   <span class=\"msg\">Join {{ profile.about.given_name }} and thousands of other scientists on Impactstory!</span>\n" +
     "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Make your free profile</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>\n" +
