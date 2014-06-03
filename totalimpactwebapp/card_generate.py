@@ -125,8 +125,10 @@ class ProductNewMetricCardGenerator(CardGenerator):
                     # now populate with profile-level information
                     peers = products_above_threshold(products, metric.metric_name, new_card.current_value)
                     new_card.num_profile_products_this_good = len(peers)
-                    new_card.median = get_median(metric, medians_lookup, product.biblio.year, product.genre)
-
+                    try:
+                        new_card.median = get_median(metric, medians_lookup, product.biblio.year, product.genre)
+                    except AttributeError:
+                        new_card.median = None
                     # and keep the card
                     cards.append(new_card)
 
