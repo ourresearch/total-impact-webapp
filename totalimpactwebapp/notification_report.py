@@ -1,5 +1,5 @@
 from totalimpactwebapp.card import Card
-from totalimpactwebapp import providers_info
+from totalimpactwebapp import configs
 from totalimpactwebapp.card_generate import *
 import os
 
@@ -18,7 +18,7 @@ def make(user):
 
     for card in cards:
         card.set_product_from_list(products)
-        card.metrics_info = providers_info.metrics()[card.metric_name]
+        card.metrics_info = configs.metrics()[card.metric_name]
         card.user = user_dict_about
 
     cards = filter_cards(cards)

@@ -19,7 +19,7 @@
    </div>
    <div class="body">
       <p>
-         Congratulations, you just got your first {{ this_metric.provider }} {{ this_metric.display_name }}!
+         Congratulations, you just got your first {{ this_metric.provider_name }} {{ this_metric.display_name }}!
       </p>
    </div>
    <div class="footer">
@@ -37,7 +37,7 @@
 <div class="card milestone profile">
    <div class="header">
       <h3>
-         <span class="value">{{ threshold_awarded }}+</span> profile {{ this_metric.provider }} {{ this_metric.display_name }}
+         <span class="value">{{ threshold_awarded }}+</span> profile {{ this_metric.provider_name }} {{ this_metric.display_name }}
       </h3>
       <h4>
          on <a href="https://impactstory.org/{{ user.url_slug }}">https://impactstory.org/{{ user.url_slug }}</a>
@@ -46,7 +46,7 @@
 
    <div class="body">
       <p>
-         You've now got a total of {{ current_value }} {{ this_metric.provider }}
+         You've now got a total of {{ current_value }} {{ this_metric.provider_name }}
          {{ this_metric.display_name }} on your profile, thanks to {{ diff_value }}
          new {{ this_metric.display_name }} this week!
       </p>
@@ -69,7 +69,7 @@
 <div class="card milestone first-metric product">
    <div class="header">
       <h3>
-         <span class="value">First</span> {{ this_metric.provider }} {{ this_metric.display_name }}
+         <span class="value">First</span> {{ this_metric.provider_name }} {{ this_metric.display_name }}
       </h3>
       <h4>
          on <em>{{ product.biblio.title }}</em>
@@ -78,27 +78,27 @@
 
    <div class="body">
       <p>
-         This {{ product.biblio.genre }} attracted {{ diff_value }} new
-         {{ this_metric.provider }} {{ this_metric.display_name }}
+         This {{ product.biblio.display_genre }} attracted {{ diff_value }} new
+         {{ this_metric.provider_name }} {{ this_metric.display_name }}
          this week, bringing it up to {{ current_value }} total.
       </p>
 
       {% if percentile_current_value %}
       <p>
-            That's good--only {{ 101 - percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
+            That's good--only {{ 101 - percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.display_genre }}
             have that many!
       </p>
       {% endif %}
 
       <p>
          It marks your {{ nth_profile_product_this_good }} unique product to get a
-         {{ this_metric.display_name }} on {{ this_metric.provider }}. Nice work!
+         {{ this_metric.display_name }} on {{ this_metric.provider_name }}. Nice work!
       </p>
 
    </div>
 
    <div class="footer">
-      <strong>{{ product.biblio.genre }}</strong> milestone
+      <strong>{{ product.biblio.display_genre }}</strong> milestone
    </div>
 </div>
 
@@ -113,7 +113,7 @@
 <div class="card milestone product">
    <div class="header">
       <h3>
-         <span class="value">{{ threshold_awarded }}+</span> {{ this_metric.provider }} {{ this_metric.display_name }}
+         <span class="value">{{ threshold_awarded }}+</span> {{ this_metric.provider_name }} {{ this_metric.display_name }}
       </h3>
       <h4>
          on <em><a href="https://impactstory.org/{{ user.url_slug }}/product/{{ product._id }}">{{ product.biblio.title }}</a></em>
@@ -121,25 +121,25 @@
    </div>
    <div class="body">
       <p>
-         This {{ product.biblio.genre }} attracted {{ diff_value }} new
-         {{ this_metric.provider }} {{ this_metric.display_name }}
+         This {{ product.biblio.display_genre }} attracted {{ diff_value }} new
+         {{ this_metric.provider_name }} {{ this_metric.display_name }}
          this week, bringing it up to {{ current_value }} total.
       </p>
 
       {% if percentile_current_value %}
       <p>
-         That's good--only {{ 101 - percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
+         That's good--only {{ 101 - percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.display_genre }}
                have that many.
       </p>
       {% endif %}
 
       <p>
-         It marks your {{ nth_profile_product_this_good }} product to get this many {{ this_metric.display_name }} on {{ this_metric.provider }}. Nice work!
+         It marks your {{ nth_profile_product_this_good }} product to get this many {{ this_metric.display_name }} on {{ this_metric.provider_name }}. Nice work!
       </p>
    </div>
 
    <div class="footer">
-      <strong>{{ product.biblio.genre }}</strong> milestone
+      <strong>{{ product.biblio.display_genre }}</strong> milestone
    </div>
 </div>
 

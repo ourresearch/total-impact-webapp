@@ -130,6 +130,7 @@ class ProductNewMetricCardGenerator(CardGenerator):
                     except AttributeError:
                         new_card.median = None
                     # and keep the card
+                    
                     cards.append(new_card)
 
         return cards
