@@ -4,7 +4,7 @@ import time
 import logging
 import celery
 from celery.decorators import task
-from celery.signals import task_postrun, task_prerun, task_failure
+from celery.signals import task_postrun, task_prerun, task_failure, worker_process_init
 
 from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 from sqlalchemy.orm.exc import FlushError
@@ -21,9 +21,20 @@ from totalimpactwebapp import emailer
 logger = logging.getLogger("webapp.tasks")
 
 
-@task_prerun.connect()
-def task_starting_handler(sender=None, task_id=None, task=None, args=None, kwargs=None, **kwds):    
-    # start with a new db session
+@worker_process_init.connect
+def create_worker_connection(*args, **kwargs):
+    """Initialize database connection.
+      
+      This has to be done after the worker processes have been started otherwise
+      the connection will fail.
+      
+    """
+    db.session = db.create_scoped_session()
+
+
+@task_postrun.connect()
+def task_postrun_handler(*args, **kwargs):    
+    # close db session
     db.session.remove()
 
 

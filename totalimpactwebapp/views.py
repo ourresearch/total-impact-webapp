@@ -139,8 +139,6 @@ def abort_if_user_not_logged_in(profile):
 #
 ###############################################################################
 
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -200,14 +198,15 @@ def load_globals():
 
 @app.before_request
 def log_ip_address():
-    if request.endpoint != "static":
-        try:
-            logger.info(u"{ip_address} IP address calling {method} {url}".format(
-                ip_address=request.remote_addr, 
-                method=request.method, 
-                url=to_unicode_or_bust(request.url)))
-        except UnicodeDecodeError:
-            logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
+    pass
+    # if request.endpoint != "static":
+    #     try:
+    #         logger.info(u"{ip_address} IP address calling {method} {url}".format(
+    #             ip_address=request.remote_addr, 
+    #             method=request.method, 
+    #             url=to_unicode_or_bust(request.url)))
+    #     except UnicodeDecodeError:
+    #         logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
 
 
 @app.after_request
@@ -293,9 +292,6 @@ def logout():
 @app.route("/user/login", methods=["POST"])
 def login():
 
-    logger.debug(u"user trying to log in.")
-
-
     email = unicode(request.json["email"]).lower()
     password = unicode(request.json["password"])
 
@@ -370,8 +366,8 @@ def user_delete(profile_id):
 def user_about(profile_id):
     user = get_user_for_response(profile_id, request)
     dict_about = user.dict_about()
-    logger.debug(u"got the user dict out: {user}".format(
-        user=dict_about))
+    # logger.debug(u"got the user dict out: {user}".format(
+    #     user=dict_about))
 
     local_sleep(1)
 
@@ -385,13 +381,13 @@ def patch_user_about(profile_id):
     profile = get_user_for_response(profile_id, request)
     abort_if_user_not_logged_in(profile)
 
-    logger.debug(
-        u"got patch request for profile {profile_id} (PK {pk}): '{log}'. {json}".format(
-        profile_id=profile_id,
-        pk=profile.id,
-        log=request.args.get("log", "").replace("+", " "),
-        json=request.json)
-    )
+    # logger.debug(
+    #     u"got patch request for profile {profile_id} (PK {pk}): '{log}'. {json}".format(
+    #     profile_id=profile_id,
+    #     pk=profile.id,
+    #     log=request.args.get("log", "").replace("+", " "),
+    #     json=request.json)
+    # )
 
     profile.patch(request.json["about"])
     db.session.commit()
@@ -489,8 +485,8 @@ def user_products_modify(id):
 
     action = request.args.get("action", "refresh")
     user = get_user_for_response(id, request)
-    logger.debug(u"got user {user}".format(
-        user=user))
+    # logger.debug(u"got user {user}".format(
+    #     user=user))
 
     source = request.args.get("source", "webapp")
 

@@ -42,8 +42,8 @@ class UserTiid(db.Model):
     removed = db.Column(db.DateTime())  # ALTER TABLE "user_tiid" ADD removed timestamp;
 
     def __init__(self, **kwargs):
-        logger.debug(u"new UserTiid {kwargs}".format(
-            kwargs=kwargs))        
+        # logger.debug(u"new UserTiid {kwargs}".format(
+        #     kwargs=kwargs))        
         self.created = now_in_utc()     
         self.removed = None   
         super(UserTiid, self).__init__(**kwargs)
@@ -134,7 +134,7 @@ class User(db.Model):
 
 
     @property
-    @cache.memoize()
+    # @cache.memoize()
     def products(self):
         products = get_products_from_core(self.tiids)
 
@@ -143,7 +143,7 @@ class User(db.Model):
         return products
 
     @property
-    @cache.memoize()
+    # @cache.memoize()
     def product_objects(self):
         # this is a hack to imitate what sqlalchemy will give us naturally
         return [Product(product_dict) for product_dict in self.products]
@@ -388,8 +388,8 @@ def get_products_from_core_as_csv(tiids):
         core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
-    logger.debug(u"in get_products_from_core with query {query}".format(
-        query=query))
+    # logger.debug(u"in get_products_from_core_as_csv with query {query}".format(
+    #     query=query))
 
     r = requests.post(query,
             data=json.dumps({
@@ -408,8 +408,8 @@ def get_products_from_core(tiids):
         core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
-    logger.debug(u"in get_products_from_core with query {query}".format(
-        query=query))
+    # logger.debug(u"in get_products_from_core with query {query}".format(
+    #     query=query))
 
     most_recent_metric_date = os.getenv("most_recent_metric_date", now_in_utc().isoformat())
     most_recent_diff_metric_date = os.getenv("most_recent_diff_metric_date", (now_in_utc() - datetime.timedelta(days=7)).isoformat())
@@ -429,9 +429,9 @@ def get_products_from_core(tiids):
 
 
 def add_tiids_to_user(user_id, tiids):
-    logger.info(u"in add_tiids_to_user {user_id} with {tiids}".format(
-        user_id=user_id,
-        tiids=tiids))
+    # logger.info(u"in add_tiids_to_user {user_id} with {tiids}".format(
+    #     user_id=user_id,
+    #     tiids=tiids))
 
     user_object = User.query.get(user_id)
     db.session.merge(user_object)
@@ -552,8 +552,8 @@ def get_duplicates_list_from_tiids(tiids):
 
 
 def save_user_last_refreshed_timestamp(user_id, timestamp=None):
-    logger.debug(u"In save_user_last_refreshed_timestamp with user {user_id}".format(
-        user_id=user_id))
+    # logger.debug(u"In save_user_last_refreshed_timestamp with user {user_id}".format(
+    #     user_id=user_id))
 
     user = User.query.get(user_id)
     db.session.merge(user)
@@ -571,8 +571,8 @@ def save_user_last_refreshed_timestamp(user_id, timestamp=None):
     return True
 
 def save_user_last_viewed_profile_timestamp(user_id, timestamp=None):
-    logger.debug(u"In save_user_last_viewed_profile_timestamp with user {user_id}".format(
-        user_id=user_id))
+    # logger.debug(u"In save_user_last_viewed_profile_timestamp with user {user_id}".format(
+    #     user_id=user_id))
 
     user = User.query.get(user_id)
     db.session.merge(user)

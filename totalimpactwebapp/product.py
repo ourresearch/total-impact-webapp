@@ -47,6 +47,10 @@ class Product():
         return self.biblio.genre
 
     @property
+    def update_status(self):
+        return self.raw_dict["update_status"]
+
+    @property
     def has_metrics(self):
         return len(self.metrics) > 0
 

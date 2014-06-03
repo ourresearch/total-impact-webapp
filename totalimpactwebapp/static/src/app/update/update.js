@@ -17,7 +17,7 @@ angular.module( 'update.update', [
             updateStatus.numDone = numDone(resp, true)
             updateStatus.numNotDone = numDone(resp, false)
             updateStatus.percentComplete = updateStatus.numDone * 100 / (updateStatus.numDone + updateStatus.numNotDone)
-            $timeout(function(){keepPolling(url_slug, onFinish)}, 1000);
+            $timeout(function(){keepPolling(url_slug, onFinish)}, 500);
           })
       }
       else {
@@ -28,7 +28,7 @@ angular.module( 'update.update', [
 
     var numDone = function(products, completedStatus){
        var productsDone =  _.filter(products, function(product){
-         return !product.currently_updating
+        return _(product.update_status).startsWith("SUCCESS")
        })
 
        if (!updateStarted){  // global var from above

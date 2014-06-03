@@ -114,4 +114,7 @@ if __name__ == "__main__":
     print u"daily.py starting."
     main(args["function"], args["url_slug"])
 
+    db.session.remove()
+    
+
 

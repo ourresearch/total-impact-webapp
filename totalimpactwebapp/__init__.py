@@ -13,6 +13,7 @@ from sqlalchemy import event
 from sqlalchemy.pool import Pool
 
 from totalimpactwebapp.util import HTTPMethodOverrideMiddleware
+from multiprocessing.util import register_after_fork
 
 
 # set up logging
@@ -24,6 +25,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger("tiwebapp")
 
+requests_log = logging.getLogger("requests.packages.urllib3")
+requests_log.setLevel(logging.WARNING)
+requests_log.propagate = True
+
+stripe_log = logging.getLogger("stripe")
+stripe_log.setLevel(logging.WARNING)
+stripe_log.propagate = True
 
 # set up application
 app = Flask(__name__)
@@ -41,7 +49,13 @@ app.wsgi_app = HTTPMethodOverrideMiddleware(app.wsgi_app)
 
 # database stuff
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.config["SQLALCHEMY_POOL_SIZE"] = 20
+
 db = SQLAlchemy(app)
+
+# see https://github.com/celery/celery/issues/1564
+register_after_fork(db.engine, db.engine.dispose)
+
 
 # from http://docs.sqlalchemy.org/en/latest/core/pooling.html
 # This recipe will ensure that a new Connection will succeed even if connections in the pool 
