@@ -1,5 +1,5 @@
 
-{% set this_metric = metrics_info[metric_name] %}
+{% set this_metric = metrics_info %}
 
 
 
@@ -11,7 +11,7 @@
 <div class="card milestone first-metric profile">
    <div class="header">
       <h3>
-            Welcome to the {{ this_metric.provider }} {{ this_metric.display_name }} club!
+            Welcome to the {{ this_metric.provider_name }} {{ this_metric.display_name }} club!
       </h3>
       <h4>
          on <a href="https://impactstory.org/{{ user.url_slug }}">https://impactstory.org/{{ user.url_slug }}</a>

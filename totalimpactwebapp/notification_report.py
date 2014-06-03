@@ -9,17 +9,16 @@ import datetime
 
 def make(user):
 
-    products = user.products
-    prepped_products = user.get_product_dicts()
+    products = user.product_objects
     user_dict_about = user.dict_about()
 
     cards = []
-    cards += ProductNewMetricCardGenerator.make(user, prepped_products)
-    cards += ProfileNewMetricCardGenerator.make(user, prepped_products)
+    cards += ProductNewMetricCardGenerator.make(user, products)
+    cards += ProfileNewMetricCardGenerator.make(user, products)
 
     for card in cards:
         card.set_product_from_list(products)
-        card.metrics_info = providers_info.metrics()
+        card.metrics_info = providers_info.metrics()[card.metric_name]
         card.user = user_dict_about
 
     cards = filter_cards(cards)

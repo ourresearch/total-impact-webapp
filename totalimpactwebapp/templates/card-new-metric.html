@@ -1,9 +1,9 @@
-{% set this_metric = metrics_info[metric_name] %}
+{% set this_metric = metrics_info %}
 
 <div class="card new-metric product">
    <div class="header">
       <h3>
-         <span class="value">{{ diff_value }}</span> new {{ this_metric.provider }} {{ this_metric.display_name }}
+         <span class="value">{{ diff_value }}</span> new {{ this_metric.provider_name }} {{ this_metric.display_name }}
       </h3>
       <h4>
          on <em><a href="https://impactstory.org/{{ user.url_slug }}/product/{{ product._id }}">{{ product.biblio.title }}</a></em>
@@ -12,7 +12,7 @@
    <div class="body">
       <p>
          That brings this {{ product.biblio.genre }} up to {{ current_value }}
-         {{ this_metric.provider }} {{ this_metric.display_name }} total.
+         {{ this_metric.provider_name }} {{ this_metric.display_name }} total.
       </p>
 
       {% if percentile_current_value > 50 %}
@@ -30,7 +30,7 @@
 
       <p>
          It marks your {{ nth_profile_product_this_good }} product to get this many
-         {{ this_metric.display_name }} on {{ this_metric.provider }}. Nice work!
+         {{ this_metric.display_name }} on {{ this_metric.provider_name }}. Nice work!
       </p>
    </div>
 

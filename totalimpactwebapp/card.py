@@ -57,7 +57,7 @@ class Card(db.Model):
 
     def set_product_from_list(self, products):
         for product in products:
-            if product["_id"] == self.tiid:
+            if product.tiid == self.tiid:
                 self.product = product
 
 
@@ -111,7 +111,7 @@ class Card(db.Model):
         templateLoader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
         templateEnv = jinja2.Environment(loader=templateLoader)
         html_template = templateEnv.get_template(self.get_template_name() + ".txt")
-        return html_template.render(self.to_dict())
+        return html_template.render(self)
 
     def get_template_name(self):
         if self.threshold_awarded is not None:

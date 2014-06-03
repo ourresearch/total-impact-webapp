@@ -3,27 +3,28 @@ from totalimpactwebapp.util import as_int_or_float_if_possible
 from totalimpactwebapp import configs
 
 import requests
+import os
 import json
 import datetime
 import arrow
 
 
-def products_above_threshold(product_dicts, metric_name, threshold):
+def products_above_threshold(products, metric_name, threshold):
     above_threshold = []
-    for product in product_dicts:
-        if (metric_name in product["metrics"]):
-            value = product["metrics"][metric_name]["values"]["raw"]
-            if value >= threshold:
-                above_threshold.append(product)
+    for product in products:
+        for metric in product.metrics:
+            if metric.metric_name == metric_name:
+                if metric.display_count >= threshold:
+                    above_threshold.append(product)
     return above_threshold
 
 
-def get_percentile(metric_dict):
-    for value_type in metric_dict["values"]:
-        # the keys that aren't "raw" are reference ests
-        if value_type != "raw":
-            return (metric_dict["values"][value_type]["estimate_lower"])
-    return None
+def get_percentile(metric):
+    top_percentile = metric.top_percentile
+    if top_percentile:
+        return 100 - top_percentile
+    else:
+        return None
 
 
 def get_threshold_just_crossed(current_value, diff_value, thresholds):
@@ -39,27 +40,16 @@ def get_threshold_just_crossed(current_value, diff_value, thresholds):
             return threshold
     return None
 
-def get_median(metric_dict, medians_lookup):
+def get_median(metric, medians_lookup, year, genre):
     try:
-        refset_year = metric_dict["refset_year"]
-        refset_genre = metric_dict["refset_genre"]
-        refset_name = "unknown"
-        for (key, val) in metric_dict["values"].iteritems():
-            try:
-                if "CI95_lower" in val.keys():
-                    refset_name = key
-            except AttributeError:
-                pass
-        metric_name = metric_dict["name"]
-
-        median = medians_lookup[refset_genre][refset_name][refset_year][metric_name]
-    except KeyError:
+        median = medians_lookup[genre][metric.percentiles["refset"]][year][metric.metric_name]
+    except (KeyError, TypeError):
         median = None
     return median
 
 
-def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[], medians_lookup={}, timestamp=None):
-    hist = metric_dict["historical_values"]
+def populate_card(user_id, tiid, metric, metric_name, thresholds_lookup=[], medians_lookup={}, timestamp=None):
+    hist = metric.historical_values
     current_value = as_int_or_float_if_possible(hist["current"]["raw"])
     diff_value = as_int_or_float_if_possible(hist["diff"]["raw"])
     thresholds = thresholds_lookup.get(metric_name, [])
@@ -77,8 +67,7 @@ def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[],
         newest_diff_timestamp=newest_diff_timestamp,
         oldest_diff_timestamp=oldest_diff_timestamp, 
         diff_window_days = (newest_diff_timestamp - oldest_diff_timestamp).days,
-        percentile_current_value=get_percentile(metric_dict),
-        median=get_median(metric_dict, medians_lookup),
+        percentile_current_value=get_percentile(metric),
         threshold_awarded=get_threshold_just_crossed(current_value, diff_value, thresholds),
         weight=0.7,
         timestamp=timestamp
@@ -89,7 +78,8 @@ def populate_card(user_id, tiid, metric_dict, metric_name, thresholds_lookup=[],
 
 
 def get_medians_lookup():
-    url = "http://total-impact-core.herokuapp.com/collections/reference-sets-medians"
+    api_root = os.getenv("API_ROOT", "http://total-impact-core.herokuapp.com")
+    url = api_root + "/collections/reference-sets-medians"
     resp = requests.get(url)
     return json.loads(resp.text)
 
@@ -115,8 +105,8 @@ class CardGenerator:
 class ProductNewMetricCardGenerator(CardGenerator):
 
     @classmethod
-    def make(cls, user, product_dicts, timestamp=None):
-        thresholds_lookup = configs.metrics(this_key_only="thresholds")
+    def make(cls, user, products, timestamp=None):
+        thresholds_lookup = configs.metrics(this_key_only="milestones")
 
         medians_lookup = get_medians_lookup()
         if not timestamp:
@@ -124,20 +114,18 @@ class ProductNewMetricCardGenerator(CardGenerator):
 
         cards = []
 
-        for product in product_dicts:
-            metrics_dict = product["metrics"]
-            tiid = product["_id"]
-
-            for metric_name in metrics_dict:
-                diff_value = metrics_dict[metric_name]["historical_values"]["diff"]["raw"]
+        for product in products:
+            for metric in product.metrics:
+                diff_value = metric.historical_values["diff"]["raw"]
 
                 # this card generator only makes cards with weekly diffs
                 if diff_value:
-                    new_card = populate_card(user.id, tiid, metrics_dict[metric_name], metric_name, thresholds_lookup, medians_lookup, timestamp)
+                    new_card = populate_card(user.id, product.tiid, metric, metric.metric_name, thresholds_lookup, medians_lookup, timestamp)
 
                     # now populate with profile-level information
-                    peers = products_above_threshold(product_dicts, metric_name, new_card.current_value)
+                    peers = products_above_threshold(products, metric.metric_name, new_card.current_value)
                     new_card.num_profile_products_this_good = len(peers)
+                    new_card.median = get_median(metric, medians_lookup, product.biblio.year, product.genre)
 
                     # and keep the card
                     cards.append(new_card)
@@ -155,8 +143,8 @@ class ProductNewMetricCardGenerator(CardGenerator):
 class ProfileNewMetricCardGenerator(CardGenerator):
 
     @classmethod
-    def make(cls, user, product_dicts, timestamp=None):
-        thresholds_lookup = configs.metrics(this_key_only="thresholds")
+    def make(cls, user, products, timestamp=None):
+        thresholds_lookup = configs.metrics(this_key_only="milestones")
 
 
         medians_lookup = get_medians_lookup()
@@ -185,11 +173,10 @@ class ProfileNewMetricCardGenerator(CardGenerator):
                     timestamp=timestamp
                 )            
 
-            for product in product_dicts:
-                tiid = product["_id"]
-                try:
-                    metric_dict = product["metrics"][metric_name]
-                    hist = metric_dict["historical_values"]
+            for product in products:
+                metric = product.metric_by_name(metric_name)
+                if metric:
+                    hist = metric.historical_values
                     product_current_value = as_int_or_float_if_possible(hist["current"]["raw"])
                     product_diff_value = as_int_or_float_if_possible(hist["diff"]["raw"])
                     current_diff_timestamp = arrow.get(hist["current"]["collected_date"]).datetime
@@ -198,16 +185,13 @@ class ProfileNewMetricCardGenerator(CardGenerator):
                     try:
                         accumulating_card.current_value += product_current_value
                         accumulating_card.diff_value += product_diff_value
-                    except TypeError:
+                    except (TypeError, AttributeError):
                         pass
                     if current_diff_timestamp > accumulating_card.newest_diff_timestamp:
                         accumulating_card.newest_diff_timestamp = current_diff_timestamp
                     if previous_diff_timestamp < accumulating_card.oldest_diff_timestamp:
                         accumulating_card.oldest_diff_timestamp = previous_diff_timestamp
 
-                except KeyError:
-                    # this product doesn't have this metric
-                    pass
 
             # only keep card if accumulating
             if accumulating_card.diff_value:

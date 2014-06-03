@@ -94,6 +94,12 @@ class Product():
         return any([m.percentiles for m in self.metrics])
 
 
+    def metric_by_name(self, metric_name):
+        for metric in self.metrics:
+            if metric.metric_name==metric_name:
+                return metric
+        return None
+
     def to_markup_dict(self, markup, hide_keys=None):
         ret = self.to_dict()
 
