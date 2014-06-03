@@ -35,6 +35,47 @@ class UrlSlugExistsError(Exception):
     pass
 
 
+class ProductsFromCore(object):
+    cache = []
+
+    def __init__(self):
+        pass
+
+    def get(self, tiids):
+
+        print "get products from core!"
+
+        if not tiids:
+            return []
+
+        query = u"{core_api_root}/v1/products?api_admin_key={api_admin_key}".format(
+            core_api_root=os.getenv("API_ROOT"),
+            api_admin_key=os.getenv("API_ADMIN_KEY")
+        )
+        # logger.debug(u"in get_products_from_core with query {query}".format(
+        #     query=query))
+
+        most_recent_metric_date = os.getenv("most_recent_metric_date", now_in_utc().isoformat())
+        most_recent_diff_metric_date = os.getenv("most_recent_diff_metric_date", (now_in_utc() - datetime.timedelta(days=7)).isoformat())
+
+        r = requests.post(query,
+                data=json.dumps({
+                    "tiids": tiids,
+                    "most_recent_metric_date": most_recent_metric_date,
+                    "most_recent_diff_metric_date": most_recent_diff_metric_date
+                    }),
+                headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+
+        products = r.json()["products"]
+        products_list = products.values()
+
+        return products_list
+
+
+
+
+
+
 class UserTiid(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     tiid = db.Column(db.Text, primary_key=True)
@@ -134,19 +175,15 @@ class User(db.Model):
 
 
     @property
-    # @cache.memoize()
-    def products(self):
-        products = get_products_from_core(self.tiids)
-
-        if not products:
-            products = []
-        return products
-
-    @property
-    # @cache.memoize()
     def product_objects(self):
+
+        print "get user.product_objects"
+
         # this is a hack to imitate what sqlalchemy will give us naturally
-        return [Product(product_dict) for product_dict in self.products]
+        products_from_core = ProductsFromCore()
+        product_dicts = products_from_core.get(self.tiids)
+
+        return [Product(product_dict) for product_dict in product_dicts]
 
 
 
@@ -158,13 +195,12 @@ class User(db.Model):
         except IndexError:
             return None
 
-    @property
-    def profile_awards_dicts(self):
-        awards = []
-        for award_obj in self.profile_awards:
-            awards.append(award_obj.as_dict())
 
-        return awards
+    @property
+    def profile_awards(self):
+        return profile_award.make_awards_list(self)
+
+
 
     @property
     def email_hash(self):
@@ -400,32 +436,7 @@ def get_products_from_core_as_csv(tiids):
 
 
 
-def get_products_from_core(tiids):
-    if not tiids:
-        return None
 
-    query = u"{core_api_root}/v1/products?api_admin_key={api_admin_key}".format(
-        core_api_root=os.getenv("API_ROOT"),
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    # logger.debug(u"in get_products_from_core with query {query}".format(
-    #     query=query))
-
-    most_recent_metric_date = os.getenv("most_recent_metric_date", now_in_utc().isoformat())
-    most_recent_diff_metric_date = os.getenv("most_recent_diff_metric_date", (now_in_utc() - datetime.timedelta(days=7)).isoformat())
-
-    r = requests.post(query,
-            data=json.dumps({
-                "tiids": tiids,
-                "most_recent_metric_date": most_recent_metric_date,
-                "most_recent_diff_metric_date": most_recent_diff_metric_date
-                }),
-            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-
-    products = r.json()["products"]
-    products_list = products.values()
-
-    return products_list
 
 
 def add_tiids_to_user(user_id, tiids):
@@ -657,12 +668,6 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
 
     if not show_secrets:
         user = hide_user_secrets(user)
-
-    try:
-        user.profile_awards = profile_award.make_awards_list(user)
-    except AttributeError:
-        # there ain't no user
-        pass
 
     return user
 

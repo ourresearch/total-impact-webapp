@@ -26,10 +26,6 @@ angular.module("profile", [
 
 .factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page, Tour){
   var about = {}
-  var slugIsCurrentUser = function(slug){
-    if (!security.getCurrentUser()) return false;
-    return (security.getCurrentUser().url_slug == slug);
-  }
 
   var cacheProductsSetting = false
   var hasConnectedAccounts = false
@@ -264,6 +260,7 @@ angular.module("profile", [
     $scope.profileAwards = ProfileAwards.query(
       {id:userSlug},
       function(resp){
+        console.log("we got profile awards back: ", resp)
       }
     )
 
