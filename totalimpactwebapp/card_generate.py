@@ -20,11 +20,7 @@ def products_above_threshold(products, metric_name, threshold):
 
 
 def get_percentile(metric):
-    top_percentile = metric.top_percentile
-    if top_percentile:
-        return 100 - top_percentile
-    else:
-        return None
+    return metric.top_percentile
 
 
 def get_threshold_just_crossed(current_value, diff_value, thresholds):
@@ -130,7 +126,7 @@ class ProductNewMetricCardGenerator(CardGenerator):
                     except AttributeError:
                         new_card.median = None
                     # and keep the card
-                    
+
                     cards.append(new_card)
 
         return cards
