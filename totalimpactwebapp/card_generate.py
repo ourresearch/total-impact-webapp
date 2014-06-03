@@ -43,7 +43,7 @@ def get_threshold_just_crossed(current_value, diff_value, thresholds):
 def get_median(metric, medians_lookup, year, genre):
     try:
         median = medians_lookup[genre][metric.percentiles["refset"]][year][metric.metric_name]
-    except (KeyError, TypeError):
+    except (KeyError, TypeError, AttributeError):
         median = None
     return median
 
