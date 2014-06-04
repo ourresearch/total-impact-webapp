@@ -333,6 +333,7 @@ def user_profile(profile_id):
 
     resp = {
         "about": profile.dict_about(),
+        "awards": profile.awards,
         "products": profile.get_products_markup(
             markup=markup,
             hide_keys=hide_keys,

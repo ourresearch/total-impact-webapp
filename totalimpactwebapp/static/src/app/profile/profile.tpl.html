@@ -1,85 +1,88 @@
 <div class="profile-header" ng-show="userExists">
    <div class="wrapper">
-      <div class="loading" ng-show="!profile.id">
+      <div class="loading" ng-show="!doneLoading">
          <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
       </div>
-      <div class="my-picture" ng-show="profile.id">
-         <a href="http://www.gravatar.com" >
-            <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
-         </a>
-      </div>
-      <div class="my-vitals">
-         <h2 class='page-title editable-name' id="profile-owner-name">
-            <span class="given-name editable" data-name="given_name">{{ profile.given_name }}</span>
-            <span class="surname editable" data-name="surname">{{ profile.surname }}</span>
-         </h2>
-         <div class="connected-accounts">
-            <ul>
 
-               <li ng-show="profile.figshare_id" style="display: none;">
-                  <a href="{{ profile.figshare_id }}">
-                     <img src="/static/img/favicons/figshare.ico">
-                     <span class="service">figshare</span>
-                  </a>
-               </li>           
-               <li ng-show="profile.github_id" style="display: none;">
-                  <a href="https://github.com/{{ profile.github_id }}">
-                     <img src="/static/img/favicons/github.ico">
-                     <span class="service">GitHub</span>
-                  </a>
-               </li>
-               <li ng-show="profile.google_scholar_id" style="display: none;">
-                  <a href="{{ profile.google_scholar_id }}">
-                     <img src="/static/img/favicons/google_scholar.ico">
-                     <span class="service">Google Scholar</span>
-                  </a>
-               </li>     
-               <li ng-show="profile.orcid_id" style="display: none;">
-                  <a href="https://orcid.org/{{ profile.orcid_id }}">
-                     <img src="/static/img/favicons/orcid.ico">
-                     <span class="service">ORCID</span>
-                  </a>
-               </li>
+      <div class="profile-header-loaded" ng-show="doneLoading">
+         <div class="my-picture" ng-show="profile.id">
+            <a href="http://www.gravatar.com" >
+               <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
+            </a>
+         </div>
+         <div class="my-vitals">
+            <h2 class='page-title editable-name' id="profile-owner-name">
+               <span class="given-name editable" data-name="given_name">{{ profile.given_name }}</span>
+               <span class="surname editable" data-name="surname">{{ profile.surname }}</span>
+            </h2>
+            <div class="connected-accounts">
+               <ul>
 
-               <li ng-show="profile.slideshare_id" style="display: none;">
-                  <a href="https://www.slideshare.net/{{ profile.slideshare_id }}">
-                     <img src="/static/img/favicons/slideshare.ico">
-                     <span class="service">Slideshare</span>
+                  <li ng-show="profile.figshare_id" style="display: none;">
+                     <a href="{{ profile.figshare_id }}">
+                        <img src="/static/img/favicons/figshare.ico">
+                        <span class="service">figshare</span>
+                     </a>
+                  </li>
+                  <li ng-show="profile.github_id" style="display: none;">
+                     <a href="https://github.com/{{ profile.github_id }}">
+                        <img src="/static/img/favicons/github.ico">
+                        <span class="service">GitHub</span>
+                     </a>
+                  </li>
+                  <li ng-show="profile.google_scholar_id" style="display: none;">
+                     <a href="{{ profile.google_scholar_id }}">
+                        <img src="/static/img/favicons/google_scholar.ico">
+                        <span class="service">Google Scholar</span>
+                     </a>
+                  </li>
+                  <li ng-show="profile.orcid_id" style="display: none;">
+                     <a href="https://orcid.org/{{ profile.orcid_id }}">
+                        <img src="/static/img/favicons/orcid.ico">
+                        <span class="service">ORCID</span>
+                     </a>
+                  </li>
+
+                  <li ng-show="profile.slideshare_id" style="display: none;">
+                     <a href="https://www.slideshare.net/{{ profile.slideshare_id }}">
+                        <img src="/static/img/favicons/slideshare.ico">
+                        <span class="service">Slideshare</span>
+                     </a>
+                  </li>
+
+               </ul>
+
+               <div class="add-connected-account" ng-show="currentUserIsProfileOwner()">
+                  <a href="/{{ profile.url_slug }}/accounts" class="btn btn-xs btn-info">
+                     <i class="icon-link left"></i>
+                     <span ng-show="!hasConnectedAccounts()" class="first">Import from accounts</span>
+                     <span ng-show="hasConnectedAccounts()" class="more">Connect more accounts</span>
                   </a>
-               </li>
-
-               </li>
-            </ul>
-
-            <div class="add-connected-account" ng-show="currentUserIsProfileOwner()">
-               <a href="/{{ profile.url_slug }}/accounts" class="btn btn-xs btn-info">
-                  <i class="icon-link left"></i>
-                  <span ng-show="!hasConnectedAccounts()" class="first">Import from accounts</span>
-                  <span ng-show="hasConnectedAccounts()" class="more">Connect more accounts</span>
-               </a>
+               </div>
             </div>
          </div>
-      </div>
-      <div class="my-metrics">
-         <!-- advisor badge -->
-         <div class="advisor" ng-show="profile.is_advisor">
-            <img src="/static/img/advisor-badge.png">
+         <div class="my-metrics">
+            <!-- advisor badge -->
+            <div class="advisor" ng-show="profile.is_advisor">
+               <img src="/static/img/advisor-badge.png">
+            </div>
+            <ul class="profile-award-list">
+               <li class="profile-award-container level-{{ profileAward.level }}"
+                   ng-include="'profile-award/profile-award.tpl.html'"
+                   ng-repeat="profileAward in profileAwards">
+               </li>
+            </ul>
          </div>
-         <ul class="profile-award-list">
-            <li class="profile-award-container level-{{ profileAward.level }}"
-                ng-include="'profile-award/profile-award.tpl.html'"
-                ng-repeat="profileAward in profileAwards">
-            </li>
-         </ul>
       </div>
+
    </div>
 </div>
 
-<div class="product-controls" ng-show="userExists">
+<div class="product-controls" ng-show="userExists && doneLoading">
    <div class="wrapper">
       <div class="products-info">
 
-         <div class="products-done-updating" ng-show="!loadingProducts()">
+         <div class="products-done-updating">
 
             <!-- filter products -->
             <div class="filters">

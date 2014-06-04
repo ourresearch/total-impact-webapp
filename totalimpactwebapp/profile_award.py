@@ -30,40 +30,37 @@ class ProfileAward(object):
         self.bins = []
         self.extra = {}
 
-    def as_dict(self):
-        return {
-            "name": self.name,
-            "level": self.level,
-            "award_badge": not self.is_bottom_level(),
-            "is_perfect": self.is_perfect(),
-            "level_name": self.level_name(),
-            "level_justification": self.level_justification,
-            "needed_for_next_level": self.needed_for_next_level,
-            "call_to_action": self.call_to_action,
-            "timestamp": self.timestamp,
-            "extra": self.extra
-        }
 
     def calculate(self, about, products):
         raise NotImplementedError  # override in children
 
+    @property
+    def award_badge(self):
+        return not self.is_bottom_level
+
+    @property
     def level_name(self):
         return self._value_for_level(self.level_names)
 
+    @property
     def next_level_name(self):
         return self._value_for_level(self.level_names, True)
 
+    @property
     def level_cutoff(self):
         return self._value_for_level(self.bins)
 
+    @property
     def next_level_cutoff(self):
         return self._value_for_level(self.bins, True)
 
+    @property
     def bottom_level(self):
         return len(self.bins) + 1
 
+    @property
     def is_bottom_level(self):
-        return self.level == self.bottom_level()
+        return self.level == self.bottom_level
 
     def _value_for_level(self, values, next_level=False):
         if next_level:
@@ -78,6 +75,18 @@ class ProfileAward(object):
             return values[i]
         except IndexError:
             return None
+
+
+
+    def to_dict(self):
+        ret = {}
+        for k in dir(self):
+            if k.startswith("_"):
+                pass
+            else:
+                ret[k] = getattr(self, k)
+
+        return ret
 
 
 
@@ -99,6 +108,7 @@ class OAAward(ProfileAward):
             .10   # 50%
         ]
 
+    @property
     def is_perfect(self):
         return self.extra["oa_articles_proportion"] == 1
 
@@ -120,7 +130,7 @@ class OAAward(ProfileAward):
         self.extra["oa_articles_proportion"] = oa_proportion
         
         # calculate level
-        self.level = self.bottom_level()
+        self.level = self.bottom_level
 
         # print "starting level check"
 
@@ -141,25 +151,22 @@ class OAAward(ProfileAward):
         )
 
 
-        # needed for next level
-        # print "next level cutoff", self.next_level_cutoff()
-
-        if self.next_level_cutoff() is not None:
+        if self.next_level_cutoff is not None:
             oa_articles_in_next_level = int(
-                math.ceil(self.next_level_cutoff() * article_count))
+                math.ceil(self.next_level_cutoff * article_count))
 
             fulltext_urls_needed = oa_articles_in_next_level - oa_article_count
 
             self.needed_for_next_level = "You're just {needed} freely-readable articles away from {next_level} level.".format(
                 needed=fulltext_urls_needed,
-                next_level=self.next_level_name()
+                next_level=self.next_level_name
             )
 
-            if self.is_bottom_level():
+            if self.is_bottom_level:
                 thing_you_want = "Get the Open Access badge"
             else:
                 thing_you_want = "Advance to the {next_level}-level Open Access badge".format(
-                    next_level=self.next_level_name()
+                    next_level=self.next_level_name
                 )
 
             self.extra["needed_for_next_level_product_page"] = "{thing_you_want} by adding free fulltext to this and {more_needed} more articles.".format(

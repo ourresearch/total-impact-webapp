@@ -28,6 +28,7 @@ def now_in_utc():
     return datetime.datetime.utcnow()
 
 
+
 class EmailExistsError(Exception):
     pass
 
@@ -41,35 +42,44 @@ class ProductsFromCore(object):
     def __init__(self):
         pass
 
+    def clear_cache(self):
+        del self.__class__.cache[:]
+
     def get(self, tiids):
-
-        print "get products from core!"
-
         if not tiids:
             return []
 
-        query = u"{core_api_root}/v1/products?api_admin_key={api_admin_key}".format(
-            core_api_root=os.getenv("API_ROOT"),
-            api_admin_key=os.getenv("API_ADMIN_KEY")
-        )
-        # logger.debug(u"in get_products_from_core with query {query}".format(
-        #     query=query))
+        if len(self.__class__.cache):
+            ret = self.__class__.cache
+            logger.debug("ProuctsFromCore returning {num_products} products from cache".format(
+                num_products=len(ret)
+            ))
+        else:
+            query = u"{core_api_root}/v1/products?api_admin_key={api_admin_key}".format(
+                core_api_root=os.getenv("API_ROOT"),
+                api_admin_key=os.getenv("API_ADMIN_KEY")
+            )
 
-        most_recent_metric_date = os.getenv("most_recent_metric_date", now_in_utc().isoformat())
-        most_recent_diff_metric_date = os.getenv("most_recent_diff_metric_date", (now_in_utc() - datetime.timedelta(days=7)).isoformat())
+            most_recent_metric_date = os.getenv("most_recent_metric_date", now_in_utc().isoformat())
+            most_recent_diff_metric_date = os.getenv("most_recent_diff_metric_date", (now_in_utc() - datetime.timedelta(days=7)).isoformat())
 
-        r = requests.post(query,
-                data=json.dumps({
-                    "tiids": tiids,
-                    "most_recent_metric_date": most_recent_metric_date,
-                    "most_recent_diff_metric_date": most_recent_diff_metric_date
-                    }),
-                headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+            r = requests.post(query,
+                    data=json.dumps({
+                        "tiids": tiids,
+                        "most_recent_metric_date": most_recent_metric_date,
+                        "most_recent_diff_metric_date": most_recent_diff_metric_date
+                        }),
+                    headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-        products = r.json()["products"]
-        products_list = products.values()
+            products = r.json()["products"]
+            ret = products.values()
 
-        return products_list
+            logger.debug("ProductsFromCore got {num_products} products from core because there was nothing cached. It took {elapsed}ms".format(
+                num_products=len(ret),
+                elapsed=12
+            ))
+
+        return ret
 
 
 
@@ -143,8 +153,6 @@ class User(db.Model):
     wordpress_api_key = db.Column(db.Text)
     stripe_id = db.Column(db.Text)
 
-    #awards = []
-
     tips = db.Column(db.Text)  # ALTER TABLE "user" ADD tips text
     last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
     next_refresh = db.Column(db.DateTime()) # ALTER TABLE "user" ADD next_refresh timestamp; update "user" set next_refresh=last_refreshed + interval '7 days'
@@ -176,15 +184,11 @@ class User(db.Model):
 
     @property
     def product_objects(self):
-
-        print "get user.product_objects"
-
         # this is a hack to imitate what sqlalchemy will give us naturally
         products_from_core = ProductsFromCore()
         product_dicts = products_from_core.get(self.tiids)
 
         return [Product(product_dict) for product_dict in product_dicts]
-
 
 
     @property
@@ -197,10 +201,8 @@ class User(db.Model):
 
 
     @property
-    def profile_awards(self):
+    def awards(self):
         return profile_award.make_awards_list(self)
-
-
 
     @property
     def email_hash(self):

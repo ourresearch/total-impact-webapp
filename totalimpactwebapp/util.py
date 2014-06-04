@@ -109,6 +109,7 @@ def dict_from_dir(obj, keys_to_ignore=None):
     return ret
 
 
+
 def todict(obj, classkey=None):
     # from http://stackoverflow.com/a/1118038/226013
     if isinstance(obj, dict):
@@ -164,3 +165,11 @@ class HTTPMethodOverrideMiddleware(object):
         return self.app(environ, start_response)
 
 
+
+
+class Timer(object):
+    def __init__(self):
+        self.start = datetime.datetime.now()
+
+    def finish(self):
+        pass

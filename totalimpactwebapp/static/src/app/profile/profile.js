@@ -1,7 +1,6 @@
 angular.module("profile", [
   'resources.users',
   'product.product',
-  'profileAward.profileAward',
   'services.page',
   'ui.bootstrap',
   'security',
@@ -109,7 +108,6 @@ angular.module("profile", [
     UsersProducts,
     Product,
     UserProfile,
-    ProfileAwards,
     UserMessage,
     Update,
     Loading,
@@ -123,8 +121,8 @@ angular.module("profile", [
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
-    // hack to make it easy to tell when update is done from selenium
-    $scope.productsStillUpdating = true
+    $scope.doneLoading = false
+    $scope.doneRendering = false
 
 
     // filtering stuff
@@ -179,7 +177,7 @@ angular.module("profile", [
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
 
-      $scope.productsStillUpdating = false
+      $scope.doneRendering = true
 
       console.log(
         "finished rendering products in "
@@ -229,12 +227,6 @@ angular.module("profile", [
       analytics.track("Clicked signup link on profile")
     }
 
-    $scope.profileAwards = ProfileAwards.query(
-      {id:userSlug},
-      function(resp){
-        console.log("we got profile awards back: ", resp)
-      }
-    )
 
     $scope.currentUserIsProfileOwner = function(){
       return currentUserOwnsProfile
@@ -306,7 +298,7 @@ angular.module("profile", [
 
         // populate the user-about stuff
         $scope.profile = resp.about
-        Page.setTitle(resp.given_name + " " + resp.surname)
+        Page.setTitle(resp.about.given_name + " " + resp.about.surname)
 
 //          if (!about.products_count && currentUserOwnsProfile){
 //            Tour.start(about)
@@ -314,6 +306,8 @@ angular.module("profile", [
 
 
         $scope.products = resp.products
+        $scope.profileAwards = resp.awards
+        $scope.doneLoading = true
 
 
 //        var anythingStillUpdating =  !_.all(resp.products, function(product){

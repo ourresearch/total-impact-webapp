@@ -938,7 +938,7 @@ angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", func
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-award/profile-award.tpl.html",
-    "<div class=\"award-container\" ng-show=\"!currentUserIsProfileOwner() && profileAward.award_badge\">\n" +
+    "<div class=\"award-container\" ng-show=\"!currentUserOwnsProfile && profileAward.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
     "        ng-controller=\"ProfileAwardCtrl\"\n" +
     "        popover=\"{{ user.about.given_name }} has made {{ profileAward.level_justification }}\"\n" +
@@ -955,7 +955,7 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "   </span>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"award-container\" ng-show=\"currentUserIsProfileOwner() && profileAward.award_badge\">\n" +
+    "<div class=\"award-container\" ng-show=\"currentUserOwnsProfile && profileAward.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
     "        ng-controller=\"ProfileAwardCtrl\"\n" +
     "        popover=\"You've made {{ profileAward.level_justification }} Nice work! <div class='call-to-action'>{{ profileAward.needed_for_next_level }} {{ profileAward.call_to_action }}</div>\"\n" +
@@ -1254,86 +1254,89 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
   $templateCache.put("profile/profile.tpl.html",
     "<div class=\"profile-header\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
-    "      <div class=\"loading\" ng-show=\"!profile.id\">\n" +
+    "      <div class=\"loading\" ng-show=\"!doneLoading\">\n" +
     "         <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
     "      </div>\n" +
-    "      <div class=\"my-picture\" ng-show=\"profile.id\">\n" +
-    "         <a href=\"http://www.gravatar.com\" >\n" +
-    "            <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
-    "         </a>\n" +
-    "      </div>\n" +
-    "      <div class=\"my-vitals\">\n" +
-    "         <h2 class='page-title editable-name' id=\"profile-owner-name\">\n" +
-    "            <span class=\"given-name editable\" data-name=\"given_name\">{{ profile.given_name }}</span>\n" +
-    "            <span class=\"surname editable\" data-name=\"surname\">{{ profile.surname }}</span>\n" +
-    "         </h2>\n" +
-    "         <div class=\"connected-accounts\">\n" +
-    "            <ul>\n" +
     "\n" +
-    "               <li ng-show=\"profile.figshare_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"{{ profile.figshare_id }}\">\n" +
-    "                     <img src=\"/static/img/favicons/figshare.ico\">\n" +
-    "                     <span class=\"service\">figshare</span>\n" +
-    "                  </a>\n" +
-    "               </li>           \n" +
-    "               <li ng-show=\"profile.github_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://github.com/{{ profile.github_id }}\">\n" +
-    "                     <img src=\"/static/img/favicons/github.ico\">\n" +
-    "                     <span class=\"service\">GitHub</span>\n" +
-    "                  </a>\n" +
-    "               </li>\n" +
-    "               <li ng-show=\"profile.google_scholar_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"{{ profile.google_scholar_id }}\">\n" +
-    "                     <img src=\"/static/img/favicons/google_scholar.ico\">\n" +
-    "                     <span class=\"service\">Google Scholar</span>\n" +
-    "                  </a>\n" +
-    "               </li>     \n" +
-    "               <li ng-show=\"profile.orcid_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://orcid.org/{{ profile.orcid_id }}\">\n" +
-    "                     <img src=\"/static/img/favicons/orcid.ico\">\n" +
-    "                     <span class=\"service\">ORCID</span>\n" +
-    "                  </a>\n" +
-    "               </li>\n" +
+    "      <div class=\"profile-header-loaded\" ng-show=\"doneLoading\">\n" +
+    "         <div class=\"my-picture\" ng-show=\"profile.id\">\n" +
+    "            <a href=\"http://www.gravatar.com\" >\n" +
+    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "            </a>\n" +
+    "         </div>\n" +
+    "         <div class=\"my-vitals\">\n" +
+    "            <h2 class='page-title editable-name' id=\"profile-owner-name\">\n" +
+    "               <span class=\"given-name editable\" data-name=\"given_name\">{{ profile.given_name }}</span>\n" +
+    "               <span class=\"surname editable\" data-name=\"surname\">{{ profile.surname }}</span>\n" +
+    "            </h2>\n" +
+    "            <div class=\"connected-accounts\">\n" +
+    "               <ul>\n" +
     "\n" +
-    "               <li ng-show=\"profile.slideshare_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://www.slideshare.net/{{ profile.slideshare_id }}\">\n" +
-    "                     <img src=\"/static/img/favicons/slideshare.ico\">\n" +
-    "                     <span class=\"service\">Slideshare</span>\n" +
+    "                  <li ng-show=\"profile.figshare_id\" style=\"display: none;\">\n" +
+    "                     <a href=\"{{ profile.figshare_id }}\">\n" +
+    "                        <img src=\"/static/img/favicons/figshare.ico\">\n" +
+    "                        <span class=\"service\">figshare</span>\n" +
+    "                     </a>\n" +
+    "                  </li>\n" +
+    "                  <li ng-show=\"profile.github_id\" style=\"display: none;\">\n" +
+    "                     <a href=\"https://github.com/{{ profile.github_id }}\">\n" +
+    "                        <img src=\"/static/img/favicons/github.ico\">\n" +
+    "                        <span class=\"service\">GitHub</span>\n" +
+    "                     </a>\n" +
+    "                  </li>\n" +
+    "                  <li ng-show=\"profile.google_scholar_id\" style=\"display: none;\">\n" +
+    "                     <a href=\"{{ profile.google_scholar_id }}\">\n" +
+    "                        <img src=\"/static/img/favicons/google_scholar.ico\">\n" +
+    "                        <span class=\"service\">Google Scholar</span>\n" +
+    "                     </a>\n" +
+    "                  </li>\n" +
+    "                  <li ng-show=\"profile.orcid_id\" style=\"display: none;\">\n" +
+    "                     <a href=\"https://orcid.org/{{ profile.orcid_id }}\">\n" +
+    "                        <img src=\"/static/img/favicons/orcid.ico\">\n" +
+    "                        <span class=\"service\">ORCID</span>\n" +
+    "                     </a>\n" +
+    "                  </li>\n" +
+    "\n" +
+    "                  <li ng-show=\"profile.slideshare_id\" style=\"display: none;\">\n" +
+    "                     <a href=\"https://www.slideshare.net/{{ profile.slideshare_id }}\">\n" +
+    "                        <img src=\"/static/img/favicons/slideshare.ico\">\n" +
+    "                        <span class=\"service\">Slideshare</span>\n" +
+    "                     </a>\n" +
+    "                  </li>\n" +
+    "\n" +
+    "               </ul>\n" +
+    "\n" +
+    "               <div class=\"add-connected-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
+    "                  <a href=\"/{{ profile.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
+    "                     <i class=\"icon-link left\"></i>\n" +
+    "                     <span ng-show=\"!hasConnectedAccounts()\" class=\"first\">Import from accounts</span>\n" +
+    "                     <span ng-show=\"hasConnectedAccounts()\" class=\"more\">Connect more accounts</span>\n" +
     "                  </a>\n" +
-    "               </li>\n" +
-    "\n" +
-    "               </li>\n" +
-    "            </ul>\n" +
-    "\n" +
-    "            <div class=\"add-connected-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
-    "               <a href=\"/{{ profile.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
-    "                  <i class=\"icon-link left\"></i>\n" +
-    "                  <span ng-show=\"!hasConnectedAccounts()\" class=\"first\">Import from accounts</span>\n" +
-    "                  <span ng-show=\"hasConnectedAccounts()\" class=\"more\">Connect more accounts</span>\n" +
-    "               </a>\n" +
+    "               </div>\n" +
     "            </div>\n" +
     "         </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"my-metrics\">\n" +
-    "         <!-- advisor badge -->\n" +
-    "         <div class=\"advisor\" ng-show=\"profile.is_advisor\">\n" +
-    "            <img src=\"/static/img/advisor-badge.png\">\n" +
+    "         <div class=\"my-metrics\">\n" +
+    "            <!-- advisor badge -->\n" +
+    "            <div class=\"advisor\" ng-show=\"profile.is_advisor\">\n" +
+    "               <img src=\"/static/img/advisor-badge.png\">\n" +
+    "            </div>\n" +
+    "            <ul class=\"profile-award-list\">\n" +
+    "               <li class=\"profile-award-container level-{{ profileAward.level }}\"\n" +
+    "                   ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +
+    "                   ng-repeat=\"profileAward in profileAwards\">\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
     "         </div>\n" +
-    "         <ul class=\"profile-award-list\">\n" +
-    "            <li class=\"profile-award-container level-{{ profileAward.level }}\"\n" +
-    "                ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +
-    "                ng-repeat=\"profileAward in profileAwards\">\n" +
-    "            </li>\n" +
-    "         </ul>\n" +
     "      </div>\n" +
+    "\n" +
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"product-controls\" ng-show=\"userExists\">\n" +
+    "<div class=\"product-controls\" ng-show=\"userExists && doneLoading\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <div class=\"products-info\">\n" +
     "\n" +
-    "         <div class=\"products-done-updating\" ng-show=\"!loadingProducts()\">\n" +
+    "         <div class=\"products-done-updating\">\n" +
     "\n" +
     "            <!-- filter products -->\n" +
     "            <div class=\"filters\">\n" +
