@@ -3,7 +3,15 @@ angular.module('resources.users',['ngResource'])
   .factory('Users', function ($resource) {
 
     return $resource(
-      "/user/:id"
+      "/user/:id",
+      {},
+      {
+        query:{
+          method: "GET",
+          cache: true,
+          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@"}
+        }
+      }
     )
   })
 

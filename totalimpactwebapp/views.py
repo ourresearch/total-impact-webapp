@@ -323,11 +323,23 @@ def user_new_metrics_notification(profile_id):
 
 @app.route("/user/<profile_id>", methods=['GET'])
 def user_profile(profile_id):
-    user = get_user_for_response(
+    profile = get_user_for_response(
         profile_id,
         request
     )
-    return json_resp_from_thing(user)
+
+    markup = product.Markup(g.user_id, embed=request.args.get("embed"))
+    hide_keys = request.args.get("hide", "").split(",")
+
+    resp = {
+        "about": profile.dict_about(),
+        "products": profile.get_products_markup(
+            markup=markup,
+            hide_keys=hide_keys,
+            add_heading_products=True
+        )
+    }
+    return json_resp_from_thing(resp)
 
 
 

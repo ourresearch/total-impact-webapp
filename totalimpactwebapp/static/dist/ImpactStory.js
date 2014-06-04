@@ -1261,33 +1261,6 @@ angular.module("profile", [
         $window.scrollTo(0, lastScrollPos)
       }
     },
-    loadProfile: function($scope, slug, currentUserOwnsProfile) {
-      return UsersAbout.get(
-        {
-          id: slug,
-          idType: "url_slug"
-        },
-        function(resp) { // success
-          console.log("got /about call back: ", resp.about)
-          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
-          about = resp.about
-
-          hasConnectedAccounts = _.some(about, function(v, k){
-            return (k.match(/_id$/) && v)
-          })
-
-          if (!about.products_count && currentUserOwnsProfile){
-            Tour.start(about)
-          }
-        },
-        function(resp) { // fail
-          if (resp.status == 404) {
-            $scope.userExists = false;
-            $scope.slug = slug;
-          }
-        }
-      );
-    },
     makeSlug: function(){
       about.url_slug = Slug.make(about.givenName, about.surname)
     },
@@ -1317,6 +1290,7 @@ angular.module("profile", [
     $anchorScroll,
     $cacheFactory,
     $window,
+    Users,
     UsersProducts,
     Product,
     UserProfile,
@@ -1440,8 +1414,6 @@ angular.module("profile", [
       analytics.track("Clicked signup link on profile")
     }
 
-    $scope.profile = UserProfile.loadProfile($scope, userSlug, currentUserOwnsProfile);
-
     $scope.profileAwards = ProfileAwards.query(
       {id:userSlug},
       function(resp){
@@ -1497,54 +1469,61 @@ angular.module("profile", [
 
 
 
-    var renderProducts = function(){
-      Timer.start("getProducts")
-      loadingProducts = true
-      if (UserProfile.useCache() === false){
-        // generally this will happen, since the default is falst
-        // and we set it back to false either way once this function
-        // has run once.
-        $httpDefaultCache.removeAll()
-      }
+    // render the profile
 
-      UsersProducts.query({
-        id: userSlug,
-        includeHeadingProducts: true,
-        embedded: Page.isEmbedded(),
-        idType: "url_slug"
-      },
-        function(resp){
-          console.log("loaded products in " + Timer.elapsed("getProducts") + "ms")
-
-          // we only cache things one time
-          UserProfile.useCache(false)
-
-          var anythingStillUpdating =  !_.all(resp, function(product){
-            return (!!product.is_heading || !!_(product.update_status).startsWith("SUCCESS"))
-          })
-
-          if (anythingStillUpdating) {
-            Update.showUpdate(userSlug, renderProducts)
-          }
-          else {
-            $scope.products = resp
-          }
-
-
-          Timer.start("renderProducts")
-          loadingProducts = false
-
-          // scroll to any hash-specified anchors on page. in a timeout because
-          // must happen after page is totally rendered.
-          $timeout(function(){
-            UserProfile.scrollToCorrectLocation()
-          }, 0)
-
-        },
-        function(resp){loadingProducts = false}
-      );
+    Timer.start("getProfile")
+    if (UserProfile.useCache() === false){
+      // generally this will happen, since the default is false
+      // and we set it back to false either way once this function
+      // has run once.
+      $httpDefaultCache.removeAll()
     }
-    $timeout(renderProducts, 100)
+
+    Users.query({
+      id: userSlug,
+      embedded: Page.isEmbedded()
+    },
+      function(resp){
+        console.log("got /user resp back in " + Timer.elapsed("getProfile") + "ms: ", resp)
+
+        // we only cache things one time
+        UserProfile.useCache(false)
+
+        // populate the user-about stuff
+        $scope.profile = resp.about
+        Page.setTitle(resp.given_name + " " + resp.surname)
+
+//          if (!about.products_count && currentUserOwnsProfile){
+//            Tour.start(about)
+//          }
+
+
+        $scope.products = resp.products
+
+
+//        var anythingStillUpdating =  !_.all(resp.products, function(product){
+//          return (!!product.is_heading || !!_(product.update_status).startsWith("SUCCESS"))
+//        })
+//
+//        if (anythingStillUpdating) {
+//          Update.showUpdate(userSlug, renderProducts)
+//        }
+//        else {
+//          $scope.products = resp.products
+//        }
+
+
+        Timer.start("renderProducts")
+
+        // scroll to any hash-specified anchors on page. in a timeout because
+        // must happen after page is totally rendered.
+        $timeout(function(){
+          UserProfile.scrollToCorrectLocation()
+        }, 0)
+
+      },
+      function(resp){console.log("problem loading the profile!", resp)}
+    );
 })
 
 
@@ -2791,7 +2770,15 @@ angular.module('resources.users',['ngResource'])
   .factory('Users', function ($resource) {
 
     return $resource(
-      "/user/:id"
+      "/user/:id",
+      {},
+      {
+        query:{
+          method: "GET",
+          cache: true,
+          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@"}
+        }
+      }
     )
   })
 
@@ -5484,49 +5471,49 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
   $templateCache.put("profile/profile.tpl.html",
     "<div class=\"profile-header\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
-    "      <div class=\"loading\" ng-show=\"!profile.about.id\">\n" +
+    "      <div class=\"loading\" ng-show=\"!profile.id\">\n" +
     "         <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
     "      </div>\n" +
-    "      <div class=\"my-picture\" ng-show=\"profile.about.id\">\n" +
+    "      <div class=\"my-picture\" ng-show=\"profile.id\">\n" +
     "         <a href=\"http://www.gravatar.com\" >\n" +
-    "            <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "            <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "         </a>\n" +
     "      </div>\n" +
     "      <div class=\"my-vitals\">\n" +
     "         <h2 class='page-title editable-name' id=\"profile-owner-name\">\n" +
-    "            <span class=\"given-name editable\" data-name=\"given_name\">{{ profile.about.given_name }}</span>\n" +
-    "            <span class=\"surname editable\" data-name=\"surname\">{{ profile.about.surname }}</span>\n" +
+    "            <span class=\"given-name editable\" data-name=\"given_name\">{{ profile.given_name }}</span>\n" +
+    "            <span class=\"surname editable\" data-name=\"surname\">{{ profile.surname }}</span>\n" +
     "         </h2>\n" +
     "         <div class=\"connected-accounts\">\n" +
     "            <ul>\n" +
     "\n" +
-    "               <li ng-show=\"profile.about.figshare_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"{{ profile.about.figshare_id }}\">\n" +
+    "               <li ng-show=\"profile.figshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"{{ profile.figshare_id }}\">\n" +
     "                     <img src=\"/static/img/favicons/figshare.ico\">\n" +
     "                     <span class=\"service\">figshare</span>\n" +
     "                  </a>\n" +
     "               </li>           \n" +
-    "               <li ng-show=\"profile.about.github_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://github.com/{{ profile.about.github_id }}\">\n" +
+    "               <li ng-show=\"profile.github_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://github.com/{{ profile.github_id }}\">\n" +
     "                     <img src=\"/static/img/favicons/github.ico\">\n" +
     "                     <span class=\"service\">GitHub</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
-    "               <li ng-show=\"profile.about.google_scholar_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"{{ profile.about.google_scholar_id }}\">\n" +
+    "               <li ng-show=\"profile.google_scholar_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"{{ profile.google_scholar_id }}\">\n" +
     "                     <img src=\"/static/img/favicons/google_scholar.ico\">\n" +
     "                     <span class=\"service\">Google Scholar</span>\n" +
     "                  </a>\n" +
     "               </li>     \n" +
-    "               <li ng-show=\"profile.about.orcid_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://orcid.org/{{ profile.about.orcid_id }}\">\n" +
+    "               <li ng-show=\"profile.orcid_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://orcid.org/{{ profile.orcid_id }}\">\n" +
     "                     <img src=\"/static/img/favicons/orcid.ico\">\n" +
     "                     <span class=\"service\">ORCID</span>\n" +
     "                  </a>\n" +
     "               </li>\n" +
     "\n" +
-    "               <li ng-show=\"profile.about.slideshare_id\" style=\"display: none;\">\n" +
-    "                  <a href=\"https://www.slideshare.net/{{ profile.about.slideshare_id }}\">\n" +
+    "               <li ng-show=\"profile.slideshare_id\" style=\"display: none;\">\n" +
+    "                  <a href=\"https://www.slideshare.net/{{ profile.slideshare_id }}\">\n" +
     "                     <img src=\"/static/img/favicons/slideshare.ico\">\n" +
     "                     <span class=\"service\">Slideshare</span>\n" +
     "                  </a>\n" +
@@ -5536,7 +5523,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            </ul>\n" +
     "\n" +
     "            <div class=\"add-connected-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
-    "               <a href=\"/{{ profile.about.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
+    "               <a href=\"/{{ profile.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
     "                  <i class=\"icon-link left\"></i>\n" +
     "                  <span ng-show=\"!hasConnectedAccounts()\" class=\"first\">Import from accounts</span>\n" +
     "                  <span ng-show=\"hasConnectedAccounts()\" class=\"more\">Connect more accounts</span>\n" +
@@ -5546,7 +5533,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "      <div class=\"my-metrics\">\n" +
     "         <!-- advisor badge -->\n" +
-    "         <div class=\"advisor\" ng-show=\"profile.about.is_advisor\">\n" +
+    "         <div class=\"advisor\" ng-show=\"profile.is_advisor\">\n" +
     "            <img src=\"/static/img/advisor-badge.png\">\n" +
     "         </div>\n" +
     "         <ul class=\"profile-award-list\">\n" +
@@ -5599,7 +5586,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
-    "            <a href=\"/{{ profile.about.url_slug }}/products/add\">\n" +
+    "            <a href=\"/{{ profile.url_slug }}/products/add\">\n" +
     "               <i class=\"icon-upload\"></i>Import individual products\n" +
     "            </a>\n" +
     "         </div>\n" +
@@ -5611,8 +5598,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"dropdown download\">\n" +
     "               <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "               <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "                  <li><a tabindex=\"-1\" href=\"/user/{{ profile.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "                  <li><a tabindex=\"-1\" href=\"/user/{{ profile.about.url_slug }}/products?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/user/{{ profile.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/user/{{ profile.url_slug }}/products?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "               </ul>\n" +
     "            </span>\n" +
     "         </div>\n" +
@@ -5622,10 +5609,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div class=\"products\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
-    "      <div class=\"loading\" ng-show=\"loadingProducts()\">\n" +
-    "         <div class=\"working products-loading\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading products...</span></div>\n" +
-    "      </div>\n" +
-    "\n" +
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product genre-{{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
@@ -5662,7 +5645,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "     ng-if=\"!hideSignupBanner\"\n" +
     "     ng-animate=\"{leave: 'animated fadeOutDown'}\">\n" +
     "\n" +
-    "   <span class=\"msg\">Join {{ profile.about.given_name }} and thousands of other scientists on Impactstory!</span>\n" +
+    "   <span class=\"msg\">Join {{ profile.given_name }} and thousands of other scientists on Impactstory!</span>\n" +
     "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Make your free profile</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>\n" +

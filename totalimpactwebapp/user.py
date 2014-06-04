@@ -1,5 +1,5 @@
 from totalimpactwebapp import db
-from totalimpactwebapp import cache
+from totalimpactwebapp import heading_product
 from totalimpactwebapp import profile_award
 from totalimpactwebapp.product import Product
 
@@ -357,6 +357,30 @@ class User(db.Model):
         return u'<User {name} (id {id})>'.format(name=self.full_name, id=self.id)
 
 
+    def get_products_markup(self, markup, hide_keys=None, add_heading_products=True):
+        markup.set_template("product.html")
+        markup.context["profile"] = self
+
+        product_dicts = [p.to_markup_dict(markup, hide_keys)
+                for p in self.product_objects]
+
+        if add_heading_products:
+            headings = heading_product.make_list(self.product_objects)
+            markup.set_template("heading-product.html")
+            product_dicts += [hp.to_markup_dict(markup) for hp in headings]
+
+        return product_dicts
+
+
+    def get_single_product_markup(self, tiid, markup):
+        markup.set_template("single-product.html")
+        markup.context["profile"] = self
+        product = [p for p in self.product_objects if p.tiid == tiid][0]
+        return product.to_markup_dict(markup)
+
+
+
+
     def dict_about(self, include_stripe=False):
 
         properties_to_return = [
@@ -401,6 +425,10 @@ class User(db.Model):
             ret_dict[property] = val
 
         ret_dict["products_count"] = len(self.tiids)
+
+        # include product dicts
+
+
 
         if include_stripe:
             try:

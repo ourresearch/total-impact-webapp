@@ -76,33 +76,6 @@ angular.module("profile", [
         $window.scrollTo(0, lastScrollPos)
       }
     },
-    loadProfile: function($scope, slug, currentUserOwnsProfile) {
-      return UsersAbout.get(
-        {
-          id: slug,
-          idType: "url_slug"
-        },
-        function(resp) { // success
-          console.log("got /about call back: ", resp.about)
-          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
-          about = resp.about
-
-          hasConnectedAccounts = _.some(about, function(v, k){
-            return (k.match(/_id$/) && v)
-          })
-
-          if (!about.products_count && currentUserOwnsProfile){
-            Tour.start(about)
-          }
-        },
-        function(resp) { // fail
-          if (resp.status == 404) {
-            $scope.userExists = false;
-            $scope.slug = slug;
-          }
-        }
-      );
-    },
     makeSlug: function(){
       about.url_slug = Slug.make(about.givenName, about.surname)
     },
@@ -132,6 +105,7 @@ angular.module("profile", [
     $anchorScroll,
     $cacheFactory,
     $window,
+    Users,
     UsersProducts,
     Product,
     UserProfile,
@@ -255,8 +229,6 @@ angular.module("profile", [
       analytics.track("Clicked signup link on profile")
     }
 
-    $scope.profile = UserProfile.loadProfile($scope, userSlug, currentUserOwnsProfile);
-
     $scope.profileAwards = ProfileAwards.query(
       {id:userSlug},
       function(resp){
@@ -312,54 +284,61 @@ angular.module("profile", [
 
 
 
-    var renderProducts = function(){
-      Timer.start("getProducts")
-      loadingProducts = true
-      if (UserProfile.useCache() === false){
-        // generally this will happen, since the default is falst
-        // and we set it back to false either way once this function
-        // has run once.
-        $httpDefaultCache.removeAll()
-      }
+    // render the profile
 
-      UsersProducts.query({
-        id: userSlug,
-        includeHeadingProducts: true,
-        embedded: Page.isEmbedded(),
-        idType: "url_slug"
-      },
-        function(resp){
-          console.log("loaded products in " + Timer.elapsed("getProducts") + "ms")
-
-          // we only cache things one time
-          UserProfile.useCache(false)
-
-          var anythingStillUpdating =  !_.all(resp, function(product){
-            return (!!product.is_heading || !!_(product.update_status).startsWith("SUCCESS"))
-          })
-
-          if (anythingStillUpdating) {
-            Update.showUpdate(userSlug, renderProducts)
-          }
-          else {
-            $scope.products = resp
-          }
-
-
-          Timer.start("renderProducts")
-          loadingProducts = false
-
-          // scroll to any hash-specified anchors on page. in a timeout because
-          // must happen after page is totally rendered.
-          $timeout(function(){
-            UserProfile.scrollToCorrectLocation()
-          }, 0)
-
-        },
-        function(resp){loadingProducts = false}
-      );
+    Timer.start("getProfile")
+    if (UserProfile.useCache() === false){
+      // generally this will happen, since the default is false
+      // and we set it back to false either way once this function
+      // has run once.
+      $httpDefaultCache.removeAll()
     }
-    $timeout(renderProducts, 100)
+
+    Users.query({
+      id: userSlug,
+      embedded: Page.isEmbedded()
+    },
+      function(resp){
+        console.log("got /user resp back in " + Timer.elapsed("getProfile") + "ms: ", resp)
+
+        // we only cache things one time
+        UserProfile.useCache(false)
+
+        // populate the user-about stuff
+        $scope.profile = resp.about
+        Page.setTitle(resp.given_name + " " + resp.surname)
+
+//          if (!about.products_count && currentUserOwnsProfile){
+//            Tour.start(about)
+//          }
+
+
+        $scope.products = resp.products
+
+
+//        var anythingStillUpdating =  !_.all(resp.products, function(product){
+//          return (!!product.is_heading || !!_(product.update_status).startsWith("SUCCESS"))
+//        })
+//
+//        if (anythingStillUpdating) {
+//          Update.showUpdate(userSlug, renderProducts)
+//        }
+//        else {
+//          $scope.products = resp.products
+//        }
+
+
+        Timer.start("renderProducts")
+
+        // scroll to any hash-specified anchors on page. in a timeout because
+        // must happen after page is totally rendered.
+        $timeout(function(){
+          UserProfile.scrollToCorrectLocation()
+        }, 0)
+
+      },
+      function(resp){console.log("problem loading the profile!", resp)}
+    );
 })
 
 
