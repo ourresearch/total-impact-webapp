@@ -50,12 +50,17 @@ def sort_cards(cards):
 def filter_cards(cards):
     ret = []
     for card in cards:
-        if int(card.diff_value) <= 0:
+        try:
+            if int(card.diff_value) <= 0:
+                pass
+            elif "pubmed" in card.metric_name:
+                pass
+            else:
+                ret.append(card)
+
+        # no integerable diff_value        
+        except (ValueError, TypeError):
             pass
-        elif "pubmed" in card.metric_name:
-            pass
-        else:
-            ret.append(card)
 
     return ret
 

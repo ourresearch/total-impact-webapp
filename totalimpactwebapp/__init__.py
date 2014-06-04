@@ -49,7 +49,7 @@ app.wsgi_app = HTTPMethodOverrideMiddleware(app.wsgi_app)
 
 # database stuff
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-app.config["SQLALCHEMY_POOL_SIZE"] = 20
+app.config["SQLALCHEMY_POOL_SIZE"] = 60
 
 db = SQLAlchemy(app)
 
