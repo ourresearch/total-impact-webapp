@@ -77,7 +77,7 @@
                {% if award.is_highly %}
                That's more than {{award.top_metric_by_count.percentiles.CI95_lower}}%
                of {{ biblio.year }}
-               {{ genre }}s
+               {{ biblio.display_genre_plural }}
                in {{award.top_metric_by_count.percentiles.refset}},
                suggesting it's highly {{award.engagement_type}}
                by {{award.display_audience }}.

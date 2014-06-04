@@ -23,9 +23,22 @@ class Biblio(object):
     @property
     def display_genre(self):
         try:
-            return self.genre
+            genre=self.genre
         except AttributeError:
-            return "other"
+            genre = "other"
+        if genre=="unknown":
+            genre = "other"
+        return genre
+
+    @property
+    def display_genre_plural(self):
+        # for use in phrases like "79 - 91 percentile of articles from 2013"
+        genre_plural = self.display_genre + u"s"
+        if genre_plural.startswith("other"):
+            genre_plural = "other products"
+        elif genre_plural.startswith("slides"):
+            genre_plural = "slides"
+        return genre_plural
 
     @property
     def display_authors(self):
