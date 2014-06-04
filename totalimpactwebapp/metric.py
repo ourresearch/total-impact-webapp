@@ -22,9 +22,9 @@ class Metric(object):
         self.metric_name = metric_name
 
         # temporary for until we get this from the db via sqlalchemy
-        del raw_dict["static_meta"]
         for k, v in raw_dict.iteritems():
-            setattr(self, k, v)
+            if k not in ["static_meta"]:
+                setattr(self, k, v)
 
     @property
     def is_highly(self):

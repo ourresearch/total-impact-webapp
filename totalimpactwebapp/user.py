@@ -1,6 +1,7 @@
 from totalimpactwebapp import db
 from totalimpactwebapp import heading_product
 from totalimpactwebapp import profile_award
+from totalimpactwebapp import util
 from totalimpactwebapp.product import Product
 
 from totalimpactwebapp.views import g
@@ -20,6 +21,7 @@ import logging
 import unicodedata
 import string
 import hashlib
+import pickle
 
 logger = logging.getLogger("tiwebapp.user")
 stripe.api_key = os.getenv("STRIPE_API_KEY")
@@ -42,20 +44,23 @@ class ProductsFromCore(object):
     def __init__(self):
         pass
 
-    def clear_cache(self):
-        del self.__class__.cache[:]
+    @classmethod
+    def clear_cache(cls):
+        del cls.cache[:]
 
     def get(self, tiids):
+        timer = util.Timer()
         if not tiids:
             return []
 
         if len(self.__class__.cache):
             ret = self.__class__.cache
-            logger.debug("ProuctsFromCore returning {num_products} products from cache".format(
-                num_products=len(ret)
+            logger.debug("ProductsFromCore returning {num_products} products from cache (too {elapsed}ms)".format(
+                num_products=len(ret),
+                elapsed=timer.elapsed()
             ))
         else:
-            query = u"{core_api_root}/v1/products?api_admin_key={api_admin_key}".format(
+            query = u"{core_api_root}/v1/products.json?api_admin_key={api_admin_key}".format(
                 core_api_root=os.getenv("API_ROOT"),
                 api_admin_key=os.getenv("API_ADMIN_KEY")
             )
@@ -71,13 +76,15 @@ class ProductsFromCore(object):
                         }),
                     headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-            products = r.json()["products"]
+            obj_resp = r.json()
+            products = obj_resp["products"]
             ret = products.values()
-
-            logger.debug("ProductsFromCore got {num_products} products from core because there was nothing cached. It took {elapsed}ms".format(
+            logger.debug("ProductsFromCore had nothing cached, so got {num_products} products from core (took {elapsed}ms)".format(
                 num_products=len(ret),
-                elapsed=12
+                elapsed=timer.elapsed()
             ))
+
+            self.__class__.cache = ret
 
         return ret
 

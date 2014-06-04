@@ -24,6 +24,7 @@ from totalimpactwebapp.user import User
 from totalimpactwebapp.user import create_user_from_slug
 from totalimpactwebapp.user import get_user_from_id
 from totalimpactwebapp.user import delete_user
+from totalimpactwebapp.user import ProductsFromCore
 
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import emailer
@@ -152,10 +153,9 @@ def setup_db_tables():
 @app.before_request
 def clear_cache():
     """
-    On local, some users seem to persist in the cache across requests.
-    This is a hack to do fix that.
+    We don't want the cache to persist across requests.
     """
-    cache.clear()
+    ProductsFromCore.clear_cache()
 
 
 @app.before_request
@@ -166,7 +166,8 @@ def redirect_to_https():
         else:
             return redirect(request.url.replace("http://", "https://"), 301)  # permanent
     except KeyError:
-        logger.debug(u"There's no X-Forwarded-Proto header; assuming localhost, serving http.")
+        #logger.debug(u"There's no X-Forwarded-Proto header; assuming localhost, serving http.")
+        pass
 
 
 @app.before_request
@@ -328,6 +329,7 @@ def user_profile(profile_id):
         request
     )
 
+    resp_constr_timer = util.Timer()
     markup = product.Markup(g.user_id, embed=request.args.get("embed"))
     hide_keys = request.args.get("hide", "").split(",")
 
@@ -340,6 +342,10 @@ def user_profile(profile_id):
             add_heading_products=True
         )
     }
+    logger.debug("/user/{slug} built the response; took {elapsed}ms".format(
+        slug=profile.url_slug,
+        elapsed=resp_constr_timer.elapsed()
+    ))
     return json_resp_from_thing(resp)
 
 

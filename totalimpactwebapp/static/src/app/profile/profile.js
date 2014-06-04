@@ -124,6 +124,9 @@ angular.module("profile", [
     $scope.doneLoading = false
     $scope.doneRendering = false
 
+    Timer.start("profileViewRender")
+    Timer.start("profileViewRender.load")
+
 
     // filtering stuff
     $scope.productFilter = {
@@ -181,7 +184,7 @@ angular.module("profile", [
 
       console.log(
         "finished rendering products in "
-          + Timer.elapsed("renderProducts")
+          + Timer.elapsed("profileViewRender.render")
           + "ms"
       )
 
@@ -278,7 +281,6 @@ angular.module("profile", [
 
     // render the profile
 
-    Timer.start("getProfile")
     if (UserProfile.useCache() === false){
       // generally this will happen, since the default is false
       // and we set it back to false either way once this function
@@ -291,7 +293,9 @@ angular.module("profile", [
       embedded: Page.isEmbedded()
     },
       function(resp){
-        console.log("got /user resp back in " + Timer.elapsed("getProfile") + "ms: ", resp)
+        console.log("got /user resp back in "
+          + Timer.elapsed("profileViewRender.load")
+          + "ms: ", resp)
 
         // we only cache things one time
         UserProfile.useCache(false)
@@ -322,7 +326,7 @@ angular.module("profile", [
 //        }
 
 
-        Timer.start("renderProducts")
+        Timer.start("profileViewRender.render")
 
         // scroll to any hash-specified anchors on page. in a timeout because
         // must happen after page is totally rendered.

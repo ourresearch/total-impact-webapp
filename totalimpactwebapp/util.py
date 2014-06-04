@@ -171,5 +171,9 @@ class Timer(object):
     def __init__(self):
         self.start = datetime.datetime.now()
 
-    def finish(self):
-        pass
+    def elapsed(self):
+        finish_time = datetime.datetime.now()
+        elapsed = finish_time - self.start
+
+        # from http://stackoverflow.com/a/1905423/226013
+        return elapsed.seconds * 1000 + elapsed.microseconds / 1000.0
