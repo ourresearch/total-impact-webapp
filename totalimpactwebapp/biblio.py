@@ -25,9 +25,7 @@ class Biblio(object):
         try:
             genre=self.genre
         except AttributeError:
-            genre = "other"
-        if genre=="unknown":
-            genre = "other"
+            genre = "unknown"
         return genre
 
     @property
