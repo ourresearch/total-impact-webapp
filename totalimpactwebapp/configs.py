@@ -83,7 +83,7 @@ genre_icons = {
     'video': "icon-facetime-video",
     'webpage': "icon-globe",
     'other': "icon-ellipsis-horizontal",
-    'unknown': "icon-question-sign"
+    'unknown': "icon-ellipsis-horizontal"
 }
 
 
