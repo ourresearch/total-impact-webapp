@@ -349,6 +349,12 @@ def user_profile(profile_id):
     return json_resp_from_thing(resp)
 
 
+@app.route("/user/<profile_id>/update_status")
+def update_status(profile_id):
+    profile = get_user_for_response(profile_id, request)
+    return json_resp_from_thing(profile.update_status)
+
+
 
 @app.route("/user/<slug>", methods=["POST"])
 def create_new_user_profile(slug):
@@ -449,10 +455,13 @@ def user_profile_awards(profile_id):
 
 #------------------ user/:userId/products -----------------
 
-@app.route("/user/<id>/products", methods=["GET"])
-def user_products_get(id):
+@app.route("/user/<profile_id>/products", methods=["GET"])
+def user_products_get(profile_id):
 
-    profile = get_user_for_response(id, request)
+    profile = get_user_for_response(
+        profile_id,
+        request
+    )
 
     try:
         if current_user.url_slug == profile.url_slug:
@@ -460,16 +469,15 @@ def user_products_get(id):
     except AttributeError:   #AnonymousUser
         pass
 
+    resp_constr_timer = util.Timer()
     markup = product.Markup(g.user_id, embed=request.args.get("embed"))
     hide_keys = request.args.get("hide", "").split(",")
-    add_heading_products = request.args.get("include_headings") in [1, "true", "True"]
 
-    products_decorator = ProductsDecorator(profile, markup)
-    products = products_decorator.list_of_dicts(
+    resp = profile.get_products_markup(
+        markup=markup,
         hide_keys=hide_keys,
-        add_heading_products=add_heading_products
+        add_heading_products=False
     )
-
     #products = profile.products  # straight from core, for debugging.
 
     return json_resp_from_thing(products)

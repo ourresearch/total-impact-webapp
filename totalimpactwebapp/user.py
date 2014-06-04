@@ -21,7 +21,6 @@ import logging
 import unicodedata
 import string
 import hashlib
-import pickle
 
 logger = logging.getLogger("tiwebapp.user")
 stripe.api_key = os.getenv("STRIPE_API_KEY")
@@ -36,6 +35,35 @@ class EmailExistsError(Exception):
 
 class UrlSlugExistsError(Exception):
     pass
+
+
+
+class UpdateStatus(object):
+    def __init__(self, products):
+        self.products = products
+
+    @property
+    def num_updating(self):
+        return len([p for p in self.products if p.currently_updating])
+
+    @property
+    def num_complete(self):
+        return len(self.products) - self.num_updating
+
+    @property
+    def percent_complete(self):
+        try:
+            precise = float(self.num_complete) / len(self.products) * 100
+        except ZeroDivisionError:
+            precise = 100
+
+        return int(precise)
+
+
+    def to_dict(self):
+        return util.dict_from_dir(self, "products")
+
+
 
 
 class ProductsFromCore(object):
@@ -210,6 +238,10 @@ class User(db.Model):
     @property
     def awards(self):
         return profile_award.make_awards_list(self)
+
+    @property
+    def update_status(self):
+        return UpdateStatus(self.product_objects)
 
     @property
     def email_hash(self):
