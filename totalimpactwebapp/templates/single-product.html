@@ -116,9 +116,9 @@ on the profile page.
       {# the text after the badge #}
       <span class="metric-text">
          <a class="value-and-name"
-            href="{{ metric.provenance_url }}"
+            href="{{ metric.provenance_url | e }}"
             target="_blank"
-            data-content="{{ metric.config.description }}. Click to see more details on {{ metric.display_provider }}.">
+            data-content="{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.">
             <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
             <span class="raw-value">{{ metric.display_count }}</span>
             <span class="environment">{{ metric.display_provider }}</span>
