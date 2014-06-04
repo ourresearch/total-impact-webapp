@@ -82,7 +82,7 @@ genre_icons = {
     'twitter': "icon-twitter",
     'video': "icon-facetime-video",
     'webpage': "icon-globe",
-    'other': "icon-question-sign",
+    'other': "icon-ellipsis-h",
     'unknown': "icon-question-sign"
 }
 
