@@ -1,4 +1,4 @@
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'product/metrics-table.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/premium-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'header.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/premium-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -783,7 +783,7 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "            with these weather-resistant vinyl stickers.\n" +
     "         </p>\n" +
     "         <p>\n" +
-    "            We'll send you a pack for free...just <a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">email us</a> us with your address!\n" +
+    "            We'll send you a pack for free...just <a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">email us</a> with your address!\n" +
     "         </p>\n" +
     "      </div>\n" +
     "      <div class=\"content\">\n" +
@@ -870,70 +870,6 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
     "\n" +
     "   </form>\n" +
     "</div>");
-}]);
-
-angular.module("product/metrics-table.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product/metrics-table.tpl.html",
-    "<ul class=\"metric-details-list\">\n" +
-    "   <li ng-repeat=\"metric in metrics | orderBy: ['-award.isHighly', '-award.audience']\" class=\"metric-detail\">\n" +
-    "      <span class=\"badge-container\">\n" +
-    "         <span\n" +
-    "               class=\"ti-badge lil-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
-    "               ng-show=\"!metric.award.isHighly\"\n" +
-    "               popover-trigger=\"mouseenter\"\n" +
-    "               popover-placement=\"bottom\"\n" +
-    "               popover-title=\"{{metric.award.engagementType}} by {{metric.award.displayAudience}}\"\n" +
-    "               popover=\"This item has {{metric.actualCount}} {{metric.environment}}\n" +
-    "               {{metric.displayInteraction}}, suggesting it's been\n" +
-    "               {{metric.award.engagementType}} by {{metric.award.displayAudience}}.\">\n" +
-    "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
-    "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "          </span>\n" +
-    "\n" +
-    "         <span\n" +
-    "               class=\"ti-badge big-badge {{metric.award.audience}} {{metric.award.engagementType}}\"\n" +
-    "               ng-show=\"metric.award.isHighly\"\n" +
-    "               popover-trigger=\"mouseenter\"\n" +
-    "               popover-placement=\"bottom\"\n" +
-    "               popover-title=\"Highly {{metric.award.engagementType}} by {{metric.award.displayAudience}}\"\n" +
-    "               popover=\"This item has {{metric.actualCount}} {{metric.environment}}\n" +
-    "               {{metric.displayInteraction}}. That's better than\n" +
-    "               {{metric.percentiles.CI95_lower}}% of items\n" +
-    "               {{metric.referenceSetStorageVerb}} {{metric.refSet}} in {{metric.referenceSetYear}},\n" +
-    "               suggesting it's highly {{metric.award.engagementType}} by {{metric.award.displayAudience }}.\">\n" +
-    "            <span class=\"modifier\">highly</span>\n" +
-    "            <span class=\"engagement-type\">{{metric.award.engagementType}}</span>\n" +
-    "            <span class=\"audience\">by {{metric.award.audience}}</span>\n" +
-    "         </span>\n" +
-    "\n" +
-    "      </span>\n" +
-    "      <span class=\"text\">\n" +
-    "         <a class=\"value-and-name\"\n" +
-    "            href=\"{{ metric.provenance_url }}\"\n" +
-    "            target=\"_blank\"\n" +
-    "            popover-trigger='mouseenter'\n" +
-    "            popover-placement=\"bottom\"\n" +
-    "            popover=\"{{ metric.static_meta.description }}. Click to see more details on {{ metric.environment }}.\">\n" +
-    "            <img ng-src=\"{{ metric.static_meta.icon }}\">\n" +
-    "            <span class=\"raw-value\">{{ metric.actualCount }}</span>\n" +
-    "            <span class=\"environment\">{{ metric.environment }}</span>\n" +
-    "            <span class=\"interaction\">{{ metric.displayInteraction }}</span>\n" +
-    "            <i class=\"icon-external-link-sign\"></i>\n" +
-    "         </a>\n" +
-    "         <span class=\"percentile\" ng-show=\"metric.percentiles\">\n" +
-    "            <span class=\"values\">\n" +
-    "               <span class=\"lower\">{{ metric.percentiles.CI95_lower }}</span>\n" +
-    "               <span class=\"dash\">-</span>\n" +
-    "               <span class=\"upper\">{{ metric.percentiles.CI95_upper }}</span>\n" +
-    "               <span class=\"unit\">percentile</span>\n" +
-    "               <i class=\"icon-info-sign\" ng-click=\"openInfoModal()\"></i>\n" +
-    "            </span>\n" +
-    "            <span class=\"descr\">of {{ biblio.genre }}s published in {{ biblio.year }}</span>\n" +
-    "         </span>\n" +
-    "      </span>\n" +
-    "\n" +
-    "   </li>\n" +
-    "</ul>");
 }]);
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
