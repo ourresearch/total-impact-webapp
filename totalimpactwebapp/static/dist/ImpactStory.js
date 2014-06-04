@@ -1381,10 +1381,10 @@ angular.module("profile", [
 
     $scope.hasConnectedAccounts = UserProfile.hasConnectedAccounts
 
-    var userSlug = $routeParams.url_slug;
+    var url_slug = $routeParams.url_slug;
     var loadingProducts = true
 
-    $scope.url_slug = userSlug
+    $scope.url_slug = url_slug
     $scope.loadingProducts = function(){
       return loadingProducts
     }
@@ -1398,7 +1398,7 @@ angular.module("profile", [
 
     $scope.refresh = function(){
 
-      var url = "/user/"+ userSlug +"/products?action=refresh"
+      var url = "/user/"+ url_slug +"/products?action=refresh"
 
       console.log("POSTing to ", url)
       $http.post(url, {}).success(function(data, status, headers, config){
@@ -1425,8 +1425,8 @@ angular.module("profile", [
         templateUrl: "profile/profile-embed-modal.tpl.html",
         controller: "profileEmbedModalCtrl",
         resolve: {
-          userSlug: function($q){ // pass the userSlug to modal controller.
-            return $q.when(userSlug)
+          url_slug: function($q){ // pass the url_slug to modal controller.
+            return $q.when(url_slug)
           }
         }
       })
@@ -1453,7 +1453,7 @@ angular.module("profile", [
 
       // do the deletion in the background, without a progress spinner...
       UsersProducts.delete(
-        {id: userSlug},
+        {id: url_slug},
         {"tiids": [product._id]},
         function(){
           console.log("finished deleting", product.biblio.title)
@@ -1474,7 +1474,7 @@ angular.module("profile", [
     }
 
     Users.query({
-      id: userSlug,
+      id: url_slug,
       embedded: Page.isEmbedded()
     },
       function(resp){
@@ -1504,7 +1504,7 @@ angular.module("profile", [
 //        })
 //
 //        if (anythingStillUpdating) {
-//          Update.showUpdate(userSlug, renderProducts)
+//          Update.showUpdate(url_slug, renderProducts)
 //        }
 //        else {
 //          $scope.products = resp.products
@@ -1520,7 +1520,10 @@ angular.module("profile", [
         }, 0)
 
       },
-      function(resp){console.log("problem loading the profile!", resp)}
+      function(resp){
+        console.log("problem loading the profile!", resp)
+        $scope.userExists = false
+      }
     );
 })
 
@@ -1528,8 +1531,8 @@ angular.module("profile", [
 
 
 
-.controller("profileEmbedModalCtrl", function($scope, $location, Page, userSlug){
-  console.log("user slug is: ", userSlug)
+.controller("profileEmbedModalCtrl", function($scope, $location, Page, url_slug){
+  console.log("user slug is: ", url_slug)
 
   var baseUrl = $location.protocol() + "://"
   baseUrl += $location.host()
@@ -1540,7 +1543,7 @@ angular.module("profile", [
   console.log("base url is ", baseUrl)
 
 
-  $scope.userSlug = userSlug;
+  $scope.url_slug = url_slug;
   $scope.baseUrl = baseUrl
   $scope.embed = {}
   $scope.embed.type = "badge"
@@ -5449,11 +5452,11 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
     "   <div class=\"code\">\n" +
     "      <div class=\"embed-profile\" ng-show=\"embed.type=='profile'\">\n" +
     "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl }}/embed/{{ userSlug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</textarea>\n" +
+    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl }}/embed/{{ url_slug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</textarea>\n" +
     "      </div>\n" +
     "      <div class=\"embed-link\" ng-show=\"embed.type=='link'\">\n" +
     "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl }}/{{ userSlug }}\"&gt;&lt;img src=\"{{ baseUrl}}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</textarea>\n" +
+    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl }}/{{ url_slug }}\"&gt;&lt;img src=\"{{ baseUrl}}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</textarea>\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
@@ -5637,7 +5640,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div class=\"user-does-not-exist no-page\" ng-show=\"!userExists\">\n" +
     "   <h2>Whoops!</h2>\n" +
-    "   <p>We don't have a user account for <span class=\"slug\">'{{ slug }}.'</span><br> Would you like to <a href=\"/signup\">make one?</a></p>\n" +
+    "   <p>We don't have a user account for <span class=\"slug\">'{{ url_slug }}.'</span><br> Would you like to <a href=\"/signup\">make one?</a></p>\n" +
     "\n" +
     "</div>\n" +
     "\n" +
