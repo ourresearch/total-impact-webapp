@@ -19,7 +19,12 @@ angular.module("profile", [
 
   $routeProvider.when("/embed/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
-    controller:'ProfileCtrl'
+    controller:'ProfileCtrl',
+    resolve: {
+      currentUserOwnsProfile: function($route, $q, security){
+        return security.currentUserOwnsProfile($route.current.params.url_slug)
+      }
+    }
   })
 
 }])
