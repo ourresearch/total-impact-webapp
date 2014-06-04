@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-03
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-04
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1208,7 +1208,7 @@ angular.module("profile", [
 
 }])
 
-.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page, Tour){
+.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page){
   var about = {}
 
   var cacheProductsSetting = false
@@ -1296,6 +1296,7 @@ angular.module("profile", [
     UserMessage,
     Update,
     Loading,
+    Tour,
     Timer,
     currentUserOwnsProfile,
     Page) {
@@ -1485,19 +1486,16 @@ angular.module("profile", [
         // we only cache things one time
         UserProfile.useCache(false)
 
-        // populate the user-about stuff
+        // put our stuff in the scope
         $scope.profile = resp.about
         Page.setTitle(resp.about.given_name + " " + resp.about.surname)
-
-//          if (!about.products_count && currentUserOwnsProfile){
-//            Tour.start(about)
-//          }
-
-
         $scope.products = resp.products
         $scope.profileAwards = resp.awards
         $scope.doneLoading = true
 
+        if (resp.products.length == 0 && currentUserOwnsProfile){
+          Tour.start(resp.about)
+        }
 
 //        var anythingStillUpdating =  !_.all(resp.products, function(product){
 //          return (!!product.is_heading || !!_(product.update_status).startsWith("SUCCESS"))
