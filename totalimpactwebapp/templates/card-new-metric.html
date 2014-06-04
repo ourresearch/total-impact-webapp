@@ -11,7 +11,7 @@
    </div>
    <div class="body">
       <p>
-         That brings this {{ product.biblio.genre }} up to {{ current_value }}
+         That brings this {{ product.biblio.display_genre }} up to {{ current_value }}
          {{ this_metric.provider_name }} {{ this_metric.display_name }} total.
       </p>
 
@@ -23,7 +23,7 @@
             Not bad!
          {% endif %}
 
-         Only {{ 101 - percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.genre }}
+         Only {{ 101 - percentile_current_value }}% of {{ product.biblio.year }} {{ product.biblio.display_genre }}
                have reached that many {{ this_metric.display_name }}.
       </p>
       {% endif %}
@@ -35,6 +35,6 @@
    </div>
 
    <div class="footer">
-      <strong>{{ product.biblio.genre }}</strong> new metrics
+      <strong>{{ product.biblio.display_genre }}</strong> new metrics
    </div>
 </div>
