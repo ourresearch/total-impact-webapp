@@ -252,34 +252,3 @@ angular.module('settings', [
 
 
 
-  // not currently using this...LinkedAccounts page is hidden.
-  .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, Update, UsersProducts) {
-
-
-    $scope.onSave = function() {
-      var url_slug = security.getCurrentUserSlug()
-
-      console.log("saving linked account info. sending this: ", $scope.user)
-      Loading.start('saveButton')
-
-      UsersAbout.patch(
-        {id: url_slug},
-        {about: $scope.user},
-        function(resp) {
-          security.setCurrentUser(resp.about) // update the current authenticated user.
-          UserMessage.set('settings.wordpress_api_key.add.success', true);
-
-          Update.setUpdateStarted(false)
-          Update.showUpdate(url_slug, function(){
-            $location.path("/" + url_slug)
-          })
-
-          UsersProducts.refresh({id: url_slug}, {}, function(){
-            Update.setUpdateStarted(true)
-          })
-        }
-      )
-    };
-  })
-
-

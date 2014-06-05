@@ -289,55 +289,48 @@ angular.module("profile", [
       $httpDefaultCache.removeAll()
     }
 
-    Users.query({
-      id: url_slug,
-      embedded: Page.isEmbedded()
-    },
-      function(resp){
-        console.log("got /user resp back in "
-          + Timer.elapsed("profileViewRender.load")
-          + "ms: ", resp)
-
-        // we only cache things one time
-        UserProfile.useCache(false)
-
-        // put our stuff in the scope
-        $scope.profile = resp.about
-        Page.setTitle(resp.about.given_name + " " + resp.about.surname)
-        $scope.products = resp.products
-        $scope.profileAwards = resp.awards
-        $scope.doneLoading = true
-
-        if (resp.products.length == 0 && currentUserOwnsProfile){
-          Tour.start(resp.about)
-        }
-
-//        var anythingStillUpdating =  !_.all(resp.products, function(product){
-//          return (!!product.is_heading || !!_(product.update_status).startsWith("SUCCESS"))
-//        })
-//
-//        if (anythingStillUpdating) {
-//          Update.showUpdate(url_slug, renderProducts)
-//        }
-//        else {
-//          $scope.products = resp.products
-//        }
-
-
-        Timer.start("profileViewRender.render")
-
-        // scroll to any hash-specified anchors on page. in a timeout because
-        // must happen after page is totally rendered.
-        $timeout(function(){
-          UserProfile.scrollToCorrectLocation()
-        }, 0)
-
+    var renderProducts = function(){
+      Users.query({
+        id: url_slug,
+        embedded: Page.isEmbedded()
       },
-      function(resp){
-        console.log("problem loading the profile!", resp)
-        $scope.userExists = false
-      }
-    );
+        function(resp){
+          console.log("got /user resp back in "
+            + Timer.elapsed("profileViewRender.load")
+            + "ms: ", resp)
+
+          // we only cache things one time
+          UserProfile.useCache(false)
+
+          // put our stuff in the scope
+          $scope.profile = resp.about
+          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+          $scope.products = resp.products
+          $scope.profileAwards = resp.awards
+          $scope.doneLoading = true
+
+          if (resp.products.length == 0 && currentUserOwnsProfile){
+            Tour.start(resp.about)
+          }
+
+          Timer.start("profileViewRender.render")
+
+          // scroll to any hash-specified anchors on page. in a timeout because
+          // must happen after page is totally rendered.
+          $timeout(function(){
+            UserProfile.scrollToCorrectLocation()
+          }, 0)
+
+        },
+        function(resp){
+          console.log("problem loading the profile!", resp)
+          $scope.userExists = false
+        }
+      );
+    }
+
+    renderProducts()
+    Update.showUpdateModal(url_slug)
 })
 
 

@@ -6,6 +6,8 @@ _.mixin(_.str.exports());
 angular.module('app', [
   'placeholderShim',
   'ngCookies',
+  'ngRoute',
+  'emguo.poller',
   'services.loading',
   'services.userMessage',
   'services.uservoiceWidget',

@@ -9,7 +9,7 @@ angular.module('resources.users',['ngResource'])
         query:{
           method: "GET",
           cache: true,
-          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@"}
+          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
         }
       }
     )
@@ -39,7 +39,7 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: true,
-          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@"}
+          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
         },
         poll:{
           method: "GET",
@@ -68,6 +68,14 @@ angular.module('resources.users',['ngResource'])
           method: "PUT"
         }
       }
+    )
+  })
+
+  .factory('UsersUpdateStatus', function ($resource) {
+    return $resource(
+      "/user/:id/update_status",
+      {}, // default params
+      {}  // method definitions
     )
   })
 

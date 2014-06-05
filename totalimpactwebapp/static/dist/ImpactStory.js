@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-04
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-05
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -422,6 +422,8 @@ _.mixin(_.str.exports());
 angular.module('app', [
   'placeholderShim',
   'ngCookies',
+  'ngRoute',
+  'emguo.poller',
   'services.loading',
   'services.userMessage',
   'services.uservoiceWidget',
@@ -623,7 +625,7 @@ angular.module("googleScholar", [
     $scope.googleScholar = GoogleScholar
 
     $scope.sendToServer = function(){
-      GoogleScholar.sendToServer().$then(function(resp){
+      GoogleScholar.sendToServer().$promise.then(function(resp){
         console.log("finished with the upload, here's the resp", resp)
         $scope.importComplete = true
         $scope.importedProductsCount = resp.data.products.length
@@ -1474,55 +1476,48 @@ angular.module("profile", [
       $httpDefaultCache.removeAll()
     }
 
-    Users.query({
-      id: url_slug,
-      embedded: Page.isEmbedded()
-    },
-      function(resp){
-        console.log("got /user resp back in "
-          + Timer.elapsed("profileViewRender.load")
-          + "ms: ", resp)
-
-        // we only cache things one time
-        UserProfile.useCache(false)
-
-        // put our stuff in the scope
-        $scope.profile = resp.about
-        Page.setTitle(resp.about.given_name + " " + resp.about.surname)
-        $scope.products = resp.products
-        $scope.profileAwards = resp.awards
-        $scope.doneLoading = true
-
-        if (resp.products.length == 0 && currentUserOwnsProfile){
-          Tour.start(resp.about)
-        }
-
-//        var anythingStillUpdating =  !_.all(resp.products, function(product){
-//          return (!!product.is_heading || !!_(product.update_status).startsWith("SUCCESS"))
-//        })
-//
-//        if (anythingStillUpdating) {
-//          Update.showUpdate(url_slug, renderProducts)
-//        }
-//        else {
-//          $scope.products = resp.products
-//        }
-
-
-        Timer.start("profileViewRender.render")
-
-        // scroll to any hash-specified anchors on page. in a timeout because
-        // must happen after page is totally rendered.
-        $timeout(function(){
-          UserProfile.scrollToCorrectLocation()
-        }, 0)
-
+    var renderProducts = function(){
+      Users.query({
+        id: url_slug,
+        embedded: Page.isEmbedded()
       },
-      function(resp){
-        console.log("problem loading the profile!", resp)
-        $scope.userExists = false
-      }
-    );
+        function(resp){
+          console.log("got /user resp back in "
+            + Timer.elapsed("profileViewRender.load")
+            + "ms: ", resp)
+
+          // we only cache things one time
+          UserProfile.useCache(false)
+
+          // put our stuff in the scope
+          $scope.profile = resp.about
+          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+          $scope.products = resp.products
+          $scope.profileAwards = resp.awards
+          $scope.doneLoading = true
+
+          if (resp.products.length == 0 && currentUserOwnsProfile){
+            Tour.start(resp.about)
+          }
+
+          Timer.start("profileViewRender.render")
+
+          // scroll to any hash-specified anchors on page. in a timeout because
+          // must happen after page is totally rendered.
+          $timeout(function(){
+            UserProfile.scrollToCorrectLocation()
+          }, 0)
+
+        },
+        function(resp){
+          console.log("problem loading the profile!", resp)
+          $scope.userExists = false
+        }
+      );
+    }
+
+    renderProducts()
+    Update.showUpdateModal(url_slug)
 })
 
 
@@ -1866,37 +1861,6 @@ angular.module('settings', [
 
 
 
-  // not currently using this...LinkedAccounts page is hidden.
-  .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, Update, UsersProducts) {
-
-
-    $scope.onSave = function() {
-      var url_slug = security.getCurrentUserSlug()
-
-      console.log("saving linked account info. sending this: ", $scope.user)
-      Loading.start('saveButton')
-
-      UsersAbout.patch(
-        {id: url_slug},
-        {about: $scope.user},
-        function(resp) {
-          security.setCurrentUser(resp.about) // update the current authenticated user.
-          UserMessage.set('settings.wordpress_api_key.add.success', true);
-
-          Update.setUpdateStarted(false)
-          Update.showUpdate(url_slug, function(){
-            $location.path("/" + url_slug)
-          })
-
-          UsersProducts.refresh({id: url_slug}, {}, function(){
-            Update.setUpdateStarted(true)
-          })
-        }
-      )
-    };
-  })
-
-
 
 angular.module( 'signup', [
     'services.slug',
@@ -1970,78 +1934,34 @@ angular.module( 'signup', [
   })
 
 angular.module( 'update.update', [
+    'emguo.poller',
     'resources.users'
   ])
-  .factory("Update", function($rootScope, $cacheFactory, $location, UsersProducts, $timeout, $modal){
+  .factory("Update", function($modal,
+                              UsersUpdateStatus){
 
     var updateStatus = {}
-    var updateStarted = true
 
+    var showUpdateModal = function(url_slug){
+      UsersUpdateStatus.get({id:url_slug}).$promise.then(
+        function(a, b, c, d) {
+          console.log(a, b, c, d)
+        }
+      )
 
-    var keepPolling = function(url_slug, onFinish){
-
-
-      if (updateStatus.numNotDone > 0 || _.isNull(updateStatus.numNotDone)) {
-        UsersProducts.poll(
-          {id: url_slug, idType:"url_slug"},
-          function(resp){
-            updateStatus.numDone = numDone(resp, true)
-            updateStatus.numNotDone = numDone(resp, false)
-            updateStatus.percentComplete = updateStatus.numDone * 100 / (updateStatus.numDone + updateStatus.numNotDone)
-            $timeout(function(){keepPolling(url_slug, onFinish)}, 500);
-          })
-      }
-      else {
-
-        onFinish()
-      }
-    }
-
-    var numDone = function(products, completedStatus){
-       var productsDone =  _.filter(products, function(product){
-        return _(product.update_status).startsWith("SUCCESS")
-       })
-
-       if (!updateStarted){  // global var from above
-         productsDone = []
-       }
-
-       if (completedStatus) {
-         return productsDone.length
-       }
-       else {
-         return products.length - productsDone.length
-       }
-    };
-
-    var update = function(url_slug, onFinish){
-      // reset the updateStatus var defined up in the factory scope.
-      updateStatus.numDone = null
-      updateStatus.numNotDone = null
-      updateStatus.percentComplete = null
-      onFinish = onFinish || function(){}
-
-      var modal = $modal.open({
-        templateUrl: 'update/update-progress.tpl.html',
-        controller: 'updateProgressModalCtrl',
-        backdrop:"static",
-        keyboard: false
-      });
-
-      keepPolling(url_slug, function(){
-        modal.close()
-        onFinish()
-      })
+//      var modalInstance = $modal.open({
+//        templateUrl: 'update/update-progress.tpl.html',
+//        controller: 'updateProgressModalCtrl',
+//        backdrop:"static",
+//        keyboard: false
+//      });
 
     }
 
 
     return {
-      showUpdate: update,
-      'updateStatus': updateStatus,
-      'setUpdateStarted': function(started){
-        updateStarted = !!started
-      }
+      showUpdateModal: showUpdateModal,
+      updateStatus: updateStatus
     }
   })
   .controller("updateProgressModalCtrl", function($scope, Update){
@@ -2775,7 +2695,7 @@ angular.module('resources.users',['ngResource'])
         query:{
           method: "GET",
           cache: true,
-          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@"}
+          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
         }
       }
     )
@@ -2805,7 +2725,7 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: true,
-          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@"}
+          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
         },
         poll:{
           method: "GET",
@@ -2834,6 +2754,14 @@ angular.module('resources.users',['ngResource'])
           method: "PUT"
         }
       }
+    )
+  })
+
+  .factory('UsersUpdateStatus', function ($resource) {
+    return $resource(
+      "/user/:id/update_status",
+      {}, // default params
+      {}  // method definitions
     )
   })
 

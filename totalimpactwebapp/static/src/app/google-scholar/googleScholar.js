@@ -72,7 +72,7 @@ angular.module("googleScholar", [
     $scope.googleScholar = GoogleScholar
 
     $scope.sendToServer = function(){
-      GoogleScholar.sendToServer().$then(function(resp){
+      GoogleScholar.sendToServer().$promise.then(function(resp){
         console.log("finished with the upload, here's the resp", resp)
         $scope.importComplete = true
         $scope.importedProductsCount = resp.data.products.length
