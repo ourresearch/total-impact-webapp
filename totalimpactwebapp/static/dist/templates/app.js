@@ -1393,12 +1393,13 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
+    "\n" +
     "<div class=\"products\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product genre-{{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
-    "             ng-repeat=\"product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title'] | filter: productFilter)\"\n" +
+    "             ng-repeat=\"product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title']) | filter: productFilter\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             id=\"{{ product.tiid }}\"\n" +
     "             on-repeat-finished>\n" +
@@ -1412,7 +1413,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </span>\n" +
     "            </div>\n" +
-    "            <div class=\"product-container\" ng-bind-html-unsafe=\"product.markup\"></div>\n" +
+    "\n" +
+    "            <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +

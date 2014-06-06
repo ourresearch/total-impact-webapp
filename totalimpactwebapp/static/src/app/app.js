@@ -7,6 +7,7 @@ angular.module('app', [
   'placeholderShim',
   'ngCookies',
   'ngRoute',
+  'ngSanitize',
   'emguo.poller',
   'services.loading',
   'services.userMessage',
@@ -71,6 +72,7 @@ angular.module('app').run(function(security, $window, Page, $location) {
 angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
+                                                     $sce,
                                                      UserMessage,
                                                      UservoiceWidget,
                                                      $location,
@@ -91,6 +93,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.tiMixpanel = TiMixpanel
   $scope.modalOpen = function(){
     return $rootScope.modalOpen
+  }
+
+  $scope.trustHtml = function(str){
+    return $sce.trustAsHtml(str)
   }
 
 

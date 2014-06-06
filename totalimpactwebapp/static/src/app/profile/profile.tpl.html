@@ -139,12 +139,13 @@
    </div>
 </div>
 
+
 <div class="products" ng-show="userExists">
    <div class="wrapper">
       <ul class="products-list">
          <li class="product genre-{{ product.genre }}"
              ng-class="{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}"
-             ng-repeat="product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title'] | filter: productFilter)"
+             ng-repeat="product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title']) | filter: productFilter"
              ng-controller="productCtrl"
              id="{{ product.tiid }}"
              on-repeat-finished>
@@ -158,7 +159,9 @@
                   </a>
                </span>
             </div>
-            <div class="product-container" ng-bind-html-unsafe="product.markup"></div>
+
+            <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
+
          </li>
       </ul>
    </div>

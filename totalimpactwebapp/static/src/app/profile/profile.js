@@ -104,6 +104,7 @@ angular.module("profile", [
     $anchorScroll,
     $cacheFactory,
     $window,
+    $sce,
     Users,
     UsersProducts,
     Product,
@@ -131,8 +132,8 @@ angular.module("profile", [
 
     // filtering stuff
     $scope.productFilter = {
-      has_new_metric: null,
-      has_metrics: true
+      has_new_metric: undefined,
+      has_metrics: undefined
     }
 
     if ($location.search().filter == "has_new_metric") {
@@ -143,12 +144,12 @@ angular.module("profile", [
     $scope.setProductFilter = function(setting){
 
       if (setting == "all") {
-        $scope.productFilter.has_new_metric = null
-        $scope.productFilter.has_metrics = null
+        $scope.productFilter.has_new_metric = undefined
+        $scope.productFilter.has_metrics = undefined
         $location.search("filter", null)
       }
       else if (setting == "has_metrics"){
-        $scope.productFilter.has_new_metric = null
+        $scope.productFilter.has_new_metric = undefined
         $scope.productFilter.has_metrics = true
         $location.search("filter", null)
       }
@@ -288,6 +289,9 @@ angular.module("profile", [
       // has run once.
       $httpDefaultCache.removeAll()
     }
+
+
+
 
     var renderProducts = function(){
       Users.query({

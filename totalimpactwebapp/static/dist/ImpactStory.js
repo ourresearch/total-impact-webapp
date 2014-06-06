@@ -423,6 +423,7 @@ angular.module('app', [
   'placeholderShim',
   'ngCookies',
   'ngRoute',
+  'ngSanitize',
   'emguo.poller',
   'services.loading',
   'services.userMessage',
@@ -487,6 +488,7 @@ angular.module('app').run(function(security, $window, Page, $location) {
 angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
+                                                     $sce,
                                                      UserMessage,
                                                      UservoiceWidget,
                                                      $location,
@@ -507,6 +509,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.tiMixpanel = TiMixpanel
   $scope.modalOpen = function(){
     return $rootScope.modalOpen
+  }
+
+  $scope.trustHtml = function(str){
+    return $sce.trustAsHtml(str)
   }
 
 
@@ -1291,6 +1297,7 @@ angular.module("profile", [
     $anchorScroll,
     $cacheFactory,
     $window,
+    $sce,
     Users,
     UsersProducts,
     Product,
@@ -1318,8 +1325,8 @@ angular.module("profile", [
 
     // filtering stuff
     $scope.productFilter = {
-      has_new_metric: null,
-      has_metrics: true
+      has_new_metric: undefined,
+      has_metrics: undefined
     }
 
     if ($location.search().filter == "has_new_metric") {
@@ -1330,12 +1337,12 @@ angular.module("profile", [
     $scope.setProductFilter = function(setting){
 
       if (setting == "all") {
-        $scope.productFilter.has_new_metric = null
-        $scope.productFilter.has_metrics = null
+        $scope.productFilter.has_new_metric = undefined
+        $scope.productFilter.has_metrics = undefined
         $location.search("filter", null)
       }
       else if (setting == "has_metrics"){
-        $scope.productFilter.has_new_metric = null
+        $scope.productFilter.has_new_metric = undefined
         $scope.productFilter.has_metrics = true
         $location.search("filter", null)
       }
@@ -1475,6 +1482,9 @@ angular.module("profile", [
       // has run once.
       $httpDefaultCache.removeAll()
     }
+
+
+
 
     var renderProducts = function(){
       Users.query({
@@ -5537,12 +5547,13 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
+    "\n" +
     "<div class=\"products\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <ul class=\"products-list\">\n" +
     "         <li class=\"product genre-{{ product.genre }}\"\n" +
     "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
-    "             ng-repeat=\"product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title'] | filter: productFilter)\"\n" +
+    "             ng-repeat=\"product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title']) | filter: productFilter\"\n" +
     "             ng-controller=\"productCtrl\"\n" +
     "             id=\"{{ product.tiid }}\"\n" +
     "             on-repeat-finished>\n" +
@@ -5556,7 +5567,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </span>\n" +
     "            </div>\n" +
-    "            <div class=\"product-container\" ng-bind-html-unsafe=\"product.markup\"></div>\n" +
+    "\n" +
+    "            <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
