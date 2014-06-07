@@ -1,6 +1,6 @@
 angular.module("profile", [
   'resources.users',
-  'product.product',
+//  'resources.products',
   'services.page',
   'ui.bootstrap',
   'security',
@@ -250,28 +250,18 @@ angular.module("profile", [
     }
 
 
-    $scope.getSortScore = function(product) {
-      return Product.getSortScore(product) * -1;
-    }
-
-    $scope.getMetricSum = function(product) {
-      return Product.getMetricSum(product) * -1;
-    }
-
-
     $scope.removeProduct = function(product){
       console.log("removing product: ", product)
       $scope.products.splice($scope.products.indexOf(product),1)
       UserMessage.set(
         "profile.removeProduct.success",
         false,
-        {title: product.biblio.title}
+        {title: product.biblio.display_title}
       )
 
       // do the deletion in the background, without a progress spinner...
-      UsersProducts.delete(
-        {id: url_slug},
-        {"tiids": [product._id]},
+      Product.delete(
+        {id: product._tiid},
         function(){
           console.log("finished deleting", product.biblio.title)
         }

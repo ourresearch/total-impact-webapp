@@ -342,10 +342,6 @@ class User(db.Model):
 
         return add_tiids_to_user(self.id, tiids)
 
-    def delete_products(self, tiids_to_delete):
-        delete_products_from_user(self.id, tiids_to_delete)
-        return {"deleted_tiids": tiids_to_delete}
-
     def refresh_products(self, source="webapp"):
         save_user_last_refreshed_timestamp(self.id)
         analytics_credentials = self.get_analytics_credentials()        
@@ -531,11 +527,12 @@ def add_tiids_to_user(user_id, tiids):
     return tiids
 
 
-def delete_products_from_user(user_id, tiids_to_delete):
-    user_object = User.query.get(user_id)
+def delete_products_from_user(profile, tiids_to_delete):
+    # this is confusing now, waiting to refactor for when we
+    # move core stuff to webapp though.
 
     number_deleted = 0
-    for user_tiid_obj in user_object.tiid_links:
+    for user_tiid_obj in profile.tiid_links:
         if user_tiid_obj.tiid in tiids_to_delete:
             number_deleted += 1
             user_tiid_obj.removed = now_in_utc()
@@ -545,7 +542,7 @@ def delete_products_from_user(user_id, tiids_to_delete):
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
         logger.warning(u"Fails Integrity check in delete_products_from_user for {user_id}, rolling back.  Message: {message}".format(
-            user_id=user_id,
+            user_id=profile.id,
             message=e.message))
 
     return True

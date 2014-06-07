@@ -22,3 +22,17 @@ angular.module('resources.products',['ngResource'])
   )
 })
 
+
+
+
+.factory('Product', function ($resource) {
+
+  return $resource(
+    "/product/:tiid",
+    {},
+    {}
+  )
+})
+
+
+

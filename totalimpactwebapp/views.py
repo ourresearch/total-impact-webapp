@@ -406,39 +406,10 @@ def patch_user_about(profile_id):
     profile = get_user_for_response(profile_id, request)
     abort_if_user_not_logged_in(profile)
 
-    # logger.debug(
-    #     u"got patch request for profile {profile_id} (PK {pk}): '{log}'. {json}".format(
-    #     profile_id=profile_id,
-    #     pk=profile.id,
-    #     log=request.args.get("log", "").replace("+", " "),
-    #     json=request.json)
-    # )
-
     profile.patch(request.json["about"])
     db.session.commit()
 
     return json_resp_from_thing({"about": profile.dict_about()})
-
-
-@app.route("/user/<profile_id>/credit_card/<stripe_token>", methods=["POST"])
-def user_credit_card(profile_id, stripe_token):
-    profile = get_user_for_response(profile_id, request)
-    abort_if_user_not_logged_in(profile)
-
-    ret = user.upgrade_to_premium(profile, stripe_token)
-    return json_resp_from_thing({"result": ret})
-
-
-@app.route("/user/<profile_id>/subscription", methods=["DELETE"])
-def user_subscription(profile_id):
-    profile = get_user_for_response(profile_id, request)
-    abort_if_user_not_logged_in(profile)
-
-    if request.method == "DELETE":
-        ret = user.cancel_premium(profile)
-
-    return json_resp_from_thing({"result": ret})
-
 
 
 @app.route("/user/<profile_id>/awards", methods=['GET'])
@@ -450,37 +421,6 @@ def user_profile_awards(profile_id):
 
     return json_resp_from_thing(user.profile_awards)
 
-
-
-
-#------------------ user/:userId/products -----------------
-
-@app.route("/user/<profile_id>/products", methods=["GET"])
-def user_products_get(profile_id):
-
-    profile = get_user_for_response(
-        profile_id,
-        request
-    )
-
-    try:
-        if current_user.url_slug == profile.url_slug:
-            profile.update_last_viewed_profile()
-    except AttributeError:   #AnonymousUser
-        pass
-
-    resp_constr_timer = util.Timer()
-    markup = product.Markup(g.user_id, embed=request.args.get("embed"))
-    hide_keys = request.args.get("hide", "").split(",")
-
-    resp = profile.get_products_markup(
-        markup=markup,
-        hide_keys=hide_keys,
-        add_heading_products=False
-    )
-    #products = profile.products  # straight from core, for debugging.
-
-    return json_resp_from_thing(products)
 
 
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
@@ -509,7 +449,7 @@ def product_biblio_modify(tiid):
     return json_resp_from_thing(r.json())
 
 
-@app.route("/user/<id>/products", methods=["POST", "DELETE", "PATCH"])
+@app.route("/user/<id>/products", methods=["POST", "PATCH"])
 def user_products_modify(id):
 
     action = request.args.get("action", "refresh")
@@ -536,32 +476,35 @@ def user_products_modify(id):
             added_products = user.add_products(request.json)
             resp = {"products": added_products}
 
-        elif request.method == "DELETE":
-            tiids_to_delete = request.json.get("tiids")
-            resp = user.delete_products(tiids_to_delete)
-
         else:
             abort(405)  # method not supported.  We shouldn't get here.
 
     return json_resp_from_thing(resp)
 
 
-@app.route("/user/<user_id>/product/<tiid>", methods=['GET'])
+@app.route("/user/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
 def user_product(user_id, tiid):
 
     if user_id == "embed":
         abort(410)
 
     profile = get_user_for_response(user_id, request)
-    markup = product.Markup(g.user_id, embed=False)
 
-    try:
-        products_decorator = ProductsDecorator(profile, markup)
-        ret = products_decorator.single_dict(tiid)
-    except IndexError:
-        abort_json(404, "That product doesn't exist.")
+    if request.method == "GET":
+        markup = product.Markup(g.user_id, embed=False)
+        try:
+            resp = profile.get_single_product_markup(tiid, markup)
+        except IndexError:
+            abort_json(404, "That product doesn't exist.")
 
-    return json_resp_from_thing(ret)
+    elif request.method == "POST":
+        # kind of confusing now, waiting for core-to-webapp refactor
+        # to improve it though.
+        resp = user.delete_products_from_user(profile, [tiid])
+
+    return json_resp_from_thing(resp)
+
+
 
 
 @app.route("/user/<id>/products.csv", methods=["GET"])
@@ -580,6 +523,15 @@ def user_products_csv(id):
     resp.headers.add("Content-Encoding", "UTF-8")
 
     return resp
+
+
+
+
+
+
+
+
+
 
 
 

@@ -4,7 +4,6 @@ angular.module("profileProduct", [
     'profileAward.profileAward',
     'services.page',
     'profile',
-    'product.product',
     'services.loading',
     'ui.bootstrap',
     'security'
@@ -34,7 +33,6 @@ angular.module("profileProduct", [
     UsersProducts,
     ProfileAwards,
     UserProfile,
-    Product,
     Loading,
     Page) {
 

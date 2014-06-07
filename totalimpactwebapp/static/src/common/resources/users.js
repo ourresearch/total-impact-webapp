@@ -15,6 +15,17 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+
+
+  .factory('UserProduct', function ($resource) {
+
+    return $resource(
+     "/user/:id/product/:tiid",
+     {}
+    )
+  })
+
+
   .factory('UsersProducts', function ($resource) {
 
     return $resource(
