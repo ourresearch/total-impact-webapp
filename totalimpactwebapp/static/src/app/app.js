@@ -8,6 +8,7 @@ angular.module('app', [
   'ngCookies',
   'ngRoute',
   'ngSanitize',
+  'ngAnimate',
   'emguo.poller',
   'services.loading',
   'services.userMessage',

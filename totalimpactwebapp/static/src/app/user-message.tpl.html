@@ -2,7 +2,7 @@
         ng-if="userMessage.get().message && userMessage.showOnTop()"
         ng-animate="{enter: 'animated fadeInDown', leave: 'animated fadeOutUp'}">
    <span class="wrapper">
-      <span class="text" ng-bind-html-unsafe="userMessage.get().message"></span>
+      <span class="text" ng-bind-html="userMessage.get().message"></span>
    </span>
    <button class="close" ng-click="userMessage.remove()">&times;</button>
 </div>

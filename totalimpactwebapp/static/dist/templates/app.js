@@ -111,7 +111,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "         </form>\n" +
     "\n" +
-    "         <div class=\"extra\" ng-show=\"account.extra\" ng-bind-html-unsafe=\"account.extra\"></div>\n" +
+    "         <div class=\"extra\" ng-show=\"account.extra\" ng-bind-html=\"account.extra\"></div>\n" +
     "\n" +
     "         <div class=\"google-scholar-stuff\"\n" +
     "              ng-show=\"account.accountHost=='google_scholar' && isLinked\">\n" +
@@ -1150,7 +1150,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         <span class=\"text\">Loading product...</span>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div  class=\"product\" ng-bind-html-unsafe=\"productMarkup\"></div>\n" +
+    "      <div class=\"product\" ng-bind-html=\"trustHtml(productMarkup)\"></div>\n" +
     "\n" +
     "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
     "         ng-show=\"!loading.is('profileProduct') && product.has_percentiles\">\n" +
@@ -1429,10 +1429,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"signup-banner\"\n" +
+    "<div class=\"signup-banner animated fadeOutDown\"\n" +
     "     ng-show=\"userExists && !isAuthenticated()\"\n" +
     "     ng-if=\"!hideSignupBanner\"\n" +
-    "     ng-animate=\"{leave: 'animated fadeOutDown'}\">\n" +
     "\n" +
     "   <span class=\"msg\">Join {{ profile.given_name }} and thousands of other scientists on Impactstory!</span>\n" +
     "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Make your free profile</a>\n" +
@@ -2169,7 +2168,7 @@ angular.module("user-message.tpl.html", []).run(["$templateCache", function($tem
     "        ng-if=\"userMessage.get().message && userMessage.showOnTop()\"\n" +
     "        ng-animate=\"{enter: 'animated fadeInDown', leave: 'animated fadeOutUp'}\">\n" +
     "   <span class=\"wrapper\">\n" +
-    "      <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
+    "      <span class=\"text\" ng-bind-html=\"userMessage.get().message\"></span>\n" +
     "   </span>\n" +
     "   <button class=\"close\" ng-click=\"userMessage.remove()\">&times;</button>\n" +
     "</div>\n" +

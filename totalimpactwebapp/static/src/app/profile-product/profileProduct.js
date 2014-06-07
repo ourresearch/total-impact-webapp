@@ -28,6 +28,7 @@ angular.module("profileProduct", [
     $modal,
     $cacheFactory,
     $compile,
+    $sce,
     security,
     UsersProduct,
     UsersProducts,
@@ -96,7 +97,9 @@ angular.module("profileProduct", [
     function(data){
       Loading.finish('profileProduct')
       Page.setTitle(data.biblio.title)
-      $scope.productMarkup = $compile(data.markup)($scope)
+
+//      $scope.productMarkup = $compile(data.markup)($scope)
+      $scope.productMarkup = data.markup
 
     },
     function(data){

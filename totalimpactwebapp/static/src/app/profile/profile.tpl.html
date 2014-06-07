@@ -175,10 +175,9 @@
 
 </div>
 
-<div class="signup-banner"
+<div class="signup-banner animated fadeOutDown"
      ng-show="userExists && !isAuthenticated()"
      ng-if="!hideSignupBanner"
-     ng-animate="{leave: 'animated fadeOutDown'}">
 
    <span class="msg">Join {{ profile.given_name }} and thousands of other scientists on Impactstory!</span>
    <a class="signup-button btn btn-primary btn-sm" ng-click="clickSignupLink()" href="/signup">Make your free profile</a>

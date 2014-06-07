@@ -9,8 +9,8 @@ angular.module( 'update.update', [
 
     var showUpdateModal = function(url_slug){
       UsersUpdateStatus.get({id:url_slug}).$promise.then(
-        function(a, b, c, d) {
-          console.log(a, b, c, d)
+        function(resp) {
+          console.log("showUpdateModal", resp)
         }
       )
 
