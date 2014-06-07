@@ -33,14 +33,12 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"overlay\"\n" +
+    "<div class=\"overlay animated fadeIn fadeOut\"\n" +
     "     ng-click=\"onCancel()\"\n" +
     "     ng-if=\"accountWindowOpen\"\n" +
-    "     ng-animate=\"{enter: 'animated fadeIn', leave: 'animated fadeOut'}\"></div>\n" +
     "\n" +
-    "<div class=\"account-window-wrapper\"\n" +
+    "<div class=\"account-window-wrapper animated slideInRight slideOutRight\"\n" +
     "     ng-if=\"accountWindowOpen\"\n" +
-    "     ng-animate=\"{enter: 'animated slideInRight', leave: 'animated slideOutRight'}\">\n" +
     "   <div class=\"account-window\">\n" +
     "\n" +
     "      <div class=\"top-tab-wrapper\">\n" +
@@ -2165,8 +2163,8 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
 angular.module("user-message.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("user-message.tpl.html",
     "<div ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
+    "        class=\"animated fadeInDown fadeOutUp\"\n" +
     "        ng-if=\"userMessage.get().message && userMessage.showOnTop()\"\n" +
-    "        ng-animate=\"{enter: 'animated fadeInDown', leave: 'animated fadeOutUp'}\">\n" +
     "   <span class=\"wrapper\">\n" +
     "      <span class=\"text\" ng-bind-html=\"userMessage.get().message\"></span>\n" +
     "   </span>\n" +

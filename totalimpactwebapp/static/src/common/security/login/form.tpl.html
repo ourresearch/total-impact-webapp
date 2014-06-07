@@ -5,8 +5,8 @@
 
 <div class="modal-body">
    <div id="user-message-modal">
-      <div ng-class="['alert', 'alert-'+userMessage.get().type]"
-           ng-animate="{enter: 'animated fadeInDown', leave:'animated fadeOutUp'}"
+      <div class="animated fadeInDown fadeOutUp"
+           ng-class="['alert', 'alert-'+userMessage.get().type]"
            ng-if="userMessage.get().message">
              <span class="text" ng-bind-html-unsafe="userMessage.get().message"></span>
       </div>

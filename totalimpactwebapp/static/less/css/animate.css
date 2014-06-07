@@ -1230,7 +1230,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeInDown.ng-leave {
+.fadeInDown.ng-enter {
   -webkit-animation-name: fadeInDown;
   animation-name: fadeInDown;
 }
