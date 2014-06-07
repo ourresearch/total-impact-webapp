@@ -4276,7 +4276,7 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "            <li><a href=\"http://twitter.com/Impactstory\">Twitter</a></li>\n" +
     "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
     "            <li><a href=\"/advisors\">Advisors</a></li>\n" +
-    "            <li><a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">Free stickers!</a></li>\n" +
+    "            <li><a href=\"https://docs.google.com/forms/d/1gpIGnifvh0YBGgMAGozBEWhBUP1EZGMYRn2X6U25XzM/viewform?usp=send_form\" target=\"_blank\">Free stickers!</a></li>\n" +
     "\n" +
     "         </ul>\n" +
     "      </div>\n" +
@@ -4895,8 +4895,7 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "            with these weather-resistant vinyl stickers.\n" +
     "         </p>\n" +
     "         <p>\n" +
-    "            We'll send you a pack for free...just <a href=\"mailto:team@impactstory.org?subject=Send me some free stickers!&Body=I'd like some of those keen Impactstory stickers all the kids are talking about. You can send them (for free!) to this address:\" target=\"_blank\">email us</a> us with your address!\n" +
-    "         </p>\n" +
+    "           For a limited time we'll send you a pack for free! <br> <a href=\"https://docs.google.com/forms/d/1gpIGnifvh0YBGgMAGozBEWhBUP1EZGMYRn2X6U25XzM/viewform?usp=send_form\" target=\"_blank\">Get my free stickers</a>        </p>\n" +
     "      </div>\n" +
     "      <div class=\"content\">\n" +
     "         <img id=\"stickers-pic\" src=\"/static/img/stickers-sheet.jpg\" alt=\"many impactstory stickers\"/>\n" +
