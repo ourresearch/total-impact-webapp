@@ -1,6 +1,6 @@
 angular.module("profile", [
   'resources.users',
-//  'resources.products',
+  'resources.products',
   'services.page',
   'ui.bootstrap',
   'security',
@@ -261,9 +261,9 @@ angular.module("profile", [
 
       // do the deletion in the background, without a progress spinner...
       Product.delete(
-        {id: product._tiid},
+        {user_id: url_slug, tiid: product._tiid},
         function(){
-          console.log("finished deleting", product.biblio.title)
+          console.log("finished deleting", product.biblio.display_title)
         }
       )
 

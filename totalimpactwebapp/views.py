@@ -497,7 +497,7 @@ def user_product(user_id, tiid):
         except IndexError:
             abort_json(404, "That product doesn't exist.")
 
-    elif request.method == "POST":
+    elif request.method == "DELETE":
         # kind of confusing now, waiting for core-to-webapp refactor
         # to improve it though.
         resp = user.delete_products_from_user(profile, [tiid])
