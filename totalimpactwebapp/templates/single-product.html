@@ -58,7 +58,7 @@
 {# free-fulltext stuff; not in profile page at all.
 #  it includes the openFulltextLocationModal() function for angular to use.
 #}
-{% if biblio.display_genre in ['article', 'report'] %}
+{% if biblio.display_genre in ['article', 'report', 'unknown', 'other', 'thesis', 'dissertation'] %}
 <div class="free-fulltext-url">
 
    {% if biblio.free_fulltext_url %}
