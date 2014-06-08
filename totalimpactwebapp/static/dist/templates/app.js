@@ -1084,7 +1084,9 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         <span class=\"text\">Loading product...</span>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"product\" ng-bind-html=\"trustHtml(productMarkup)\"></div>\n" +
+    "      <!--<div class=\"product\" ng-bind-html=\"trustHtml(productMarkup)\"></div>-->\n" +
+    "\n" +
+    "      <div class=\"product\" dynamic=\"productMarkup\"></div>\n" +
     "\n" +
     "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
     "         ng-show=\"!loading.is('profileProduct') && product.has_percentiles\">\n" +

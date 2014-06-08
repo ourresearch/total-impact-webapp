@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-07
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-08
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -975,11 +975,13 @@ angular.module("profileProduct", [
       Page.setTitle(data.biblio.title)
 
 
-      var compiled = $compile(data.markup)($scope)
-      console.log("markup: ", data.markup)
-      console.log("compiled: ", compiled)
-      $scope.productMarkup = $compile(data.markup)($scope)
-//      $scope.productMarkup = data.markup
+//      var compiled = $compile(data.markup)($scope)
+//      console.log("markup: ", data.markup)
+//      console.log("compiled: ", compiled)
+//
+//      console.log("type of compiled: ", typeof compiled)
+//      $scope.productMarkup = compiled.join(" ")
+      $scope.productMarkup = data.markup
 
     },
     function(data){
@@ -1046,9 +1048,18 @@ angular.module("profileProduct", [
 .controller("editProductFormCtrl", function(){
 })
 
-
-
-
+.directive('dynamic', function ($compile) {
+  return {
+    restrict: 'A',
+    replace: true,
+    link: function (scope, ele, attrs) {
+      scope.$watch(attrs.dynamic, function(html) {
+        ele.html(html);
+        $compile(ele.contents())(scope);
+      });
+    }
+  };
+});
 
 
 
@@ -5185,7 +5196,9 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         <span class=\"text\">Loading product...</span>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"product\" ng-bind-html=\"trustHtml(productMarkup)\"></div>\n" +
+    "      <!--<div class=\"product\" ng-bind-html=\"trustHtml(productMarkup)\"></div>-->\n" +
+    "\n" +
+    "      <div class=\"product\" dynamic=\"productMarkup\"></div>\n" +
     "\n" +
     "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
     "         ng-show=\"!loading.is('profileProduct') && product.has_percentiles\">\n" +

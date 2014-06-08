@@ -89,11 +89,13 @@ angular.module("profileProduct", [
       Page.setTitle(data.biblio.title)
 
 
-      var compiled = $compile(data.markup)($scope)
-      console.log("markup: ", data.markup)
-      console.log("compiled: ", compiled)
-      $scope.productMarkup = $compile(data.markup)($scope)
-//      $scope.productMarkup = data.markup
+//      var compiled = $compile(data.markup)($scope)
+//      console.log("markup: ", data.markup)
+//      console.log("compiled: ", compiled)
+//
+//      console.log("type of compiled: ", typeof compiled)
+//      $scope.productMarkup = compiled.join(" ")
+      $scope.productMarkup = data.markup
 
     },
     function(data){
@@ -160,9 +162,18 @@ angular.module("profileProduct", [
 .controller("editProductFormCtrl", function(){
 })
 
-
-
-
+.directive('dynamic', function ($compile) {
+  return {
+    restrict: 'A',
+    replace: true,
+    link: function (scope, ele, attrs) {
+      scope.$watch(attrs.dynamic, function(html) {
+        ele.html(html);
+        $compile(ele.contents())(scope);
+      });
+    }
+  };
+});
 
 
 

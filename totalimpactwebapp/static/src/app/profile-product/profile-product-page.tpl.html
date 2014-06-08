@@ -35,7 +35,9 @@
          <span class="text">Loading product...</span>
       </div>
 
-      <div class="product" ng-bind-html="trustHtml(productMarkup)"></div>
+      <!--<div class="product" ng-bind-html="trustHtml(productMarkup)"></div>-->
+
+      <div class="product" dynamic="productMarkup"></div>
 
       <a class="percentile-info" ng-click="openInfoModal()"
          ng-show="!loading.is('profileProduct') && product.has_percentiles">
