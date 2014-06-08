@@ -60,7 +60,7 @@
 {% raw %}
 <body class="{{ page.getBodyClasses() }}" jq-popover jq-tooltip>
 
-{#   inline styles to fix modal rendering bug. see http://stackoverflow.com/a/6962904/226013#}
+   <!--inline styles to fix modal rendering bug. see http://stackoverflow.com/a/6962904/226013 -->
    <div class="blur-container"
         style="-webkit-transform: translate3d(0px, 0px, 0px);"
         ng-class="{blur: modalOpen()}">

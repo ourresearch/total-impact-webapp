@@ -31,8 +31,8 @@ angular.module("profileProduct", [
     security,
     UsersProduct,
     UsersProducts,
-    ProfileAwards,
     UserProfile,
+    Product,
     Loading,
     Page) {
 
@@ -49,27 +49,19 @@ angular.module("profileProduct", [
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
     $scope.openFulltextLocationModal = function(){
+      console.log("opening the modal")
       $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
     }
 
 
-    $scope.profileAwards = ProfileAwards.query(
-      {id:slug},
-      function(resp){
-      }
-    )
-
     $scope.deleteProduct = function(){
-
       Loading.start("deleteProduct")
       UserProfile.useCache(false)
 
-      // do the deletion in the background, without a progress spinner...
-      UsersProducts.delete(
-        {id: slug, idType:"url_slug"},  // the url
-        {"tiids": [$routeParams.tiid]},  // the body data
+      Product.delete(
+        {user_id: slug, tiid: $routeParams.tiid},
         function(){
-          console.log("finished deleting", $routeParams.tiid)
+          Loading.finish("deleteProduct")
           security.redirectToProfile()
         }
       )
@@ -96,8 +88,12 @@ angular.module("profileProduct", [
       Loading.finish('profileProduct')
       Page.setTitle(data.biblio.title)
 
-//      $scope.productMarkup = $compile(data.markup)($scope)
-      $scope.productMarkup = data.markup
+
+      var compiled = $compile(data.markup)($scope)
+      console.log("markup: ", data.markup)
+      console.log("compiled: ", compiled)
+      $scope.productMarkup = $compile(data.markup)($scope)
+//      $scope.productMarkup = data.markup
 
     },
     function(data){

@@ -161,12 +161,3 @@ angular.module('resources.users',['ngResource'])
   })
 
 
-
-  .factory('ProfileAwards', function ($resource) {
-
-    return $resource(
-      "/user/:id/awards",
-      {},
-      {}
-    )
-  })
