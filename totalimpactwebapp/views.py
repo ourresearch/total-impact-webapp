@@ -33,13 +33,11 @@ from totalimpactwebapp import configs
 from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import get_products_from_core_as_csv
 from totalimpactwebapp.user import EmailExistsError
-from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring
 from totalimpactwebapp import notification_report
-from totalimpactwebapp.products_decorator import ProductsDecorator
 
 
 import newrelic.agent

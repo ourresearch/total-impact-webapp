@@ -62,12 +62,23 @@
 
 
    <div ng-include="'user-message.tpl.html'" id="user-message"></div>
-   <div ng-include="'header.tpl.html'" id="page-header"></div>
+
+   <div id="page-header">
+      <div class="main-header header" ng-show="page.showHeader()">
+         <div class="wrapper">
+            <a class="brand" href="/">
+               <img src="/static/img/impactstory-logo-sideways.png" alt="Impactstory" />
+            </a>
+            <login-toolbar></login-toolbar>
+         </div>
+      </div>
+   </div>
+
    <div class="main-view-container">
       <div ng-view class="main-view"></div>
    </div>
-   <div ng-include="'footer.tpl.html'" id="page-footer"></div>
 
+   <div ng-include="'footer.tpl.html'" id="page-footer"></div>
 
    <script src="/bottom.js"></script>
 </body>
