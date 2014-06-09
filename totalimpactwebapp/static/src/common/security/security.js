@@ -6,8 +6,11 @@ angular.module('security.service', [
 ])
 
 .factory('security', function($http, $q, $location, $modal, UserMessage) {
-  var useCachedUser = false
-  var currentUser
+  var useCachedUser = true
+  var currentUser = globalCurrentUser || null
+  console.log("logging in from object: ", currentUser)
+
+
 
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
@@ -130,10 +133,12 @@ angular.module('security.service', [
     },
 
     loginFromCookie: function(){
+      console.log("logging in from cookie")
       return $http.get('/user/current')
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
+          console.log("successfully logged in from cookie.")
         })
         .then(function(){return currentUser})
     },

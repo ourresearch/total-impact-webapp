@@ -696,11 +696,18 @@ def get_js_top():
     newrelic_header = views_helpers.remove_script_tags(
         newrelic.agent.get_browser_timing_header()
     )
+
+    try:
+        current_user_dict = current_user.dict_about()
+    except AttributeError:
+        current_user_dict = None
+
     return make_js_response(
         "top.js",
         segmentio_key=os.getenv("SEGMENTIO_KEY"),
         mixpanel_token=os.getenv("MIXPANEL_TOKEN"),
-        newrelic_header=newrelic_header
+        newrelic_header=newrelic_header,
+        current_user=current_user_dict
     )
 
 

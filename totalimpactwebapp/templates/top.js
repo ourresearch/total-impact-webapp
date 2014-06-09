@@ -26,3 +26,5 @@ window.analytics||(window.analytics=[]),window.analytics.methods=["identify","tr
 window.analytics.load("{{ segmentio_key }}")
 
 
+// load the current user
+var globalCurrentUser = JSON.parse('{{ current_user | tojson | safe }}')

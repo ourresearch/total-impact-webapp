@@ -38,6 +38,8 @@ angular.module('app').constant('TEST', {
 angular.module('app').config(function ($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
 
+
+
   // want to make sure the user profile route loads last, because it's super greedy.
   $routeProvider.when("/:url_slug", {
     templateUrl:'profile/profile.tpl.html',

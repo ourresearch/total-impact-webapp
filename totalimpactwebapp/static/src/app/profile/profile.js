@@ -120,6 +120,7 @@ angular.module("profile", [
       // do embedded stuff. i don't think we're using this any more?
     }
 
+    console.log("loaded profile controller.")
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
