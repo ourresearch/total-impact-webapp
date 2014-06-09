@@ -60,16 +60,15 @@
 {% raw %}
 <body class="{{ page.getBodyClasses() }}" jq-popover jq-tooltip>
 
-   <!--inline styles to fix modal rendering bug. see http://stackoverflow.com/a/6962904/226013 -->
-   <div class="blur-container"
-        style="-webkit-transform: translate3d(0px, 0px, 0px);"
-        ng-class="{blur: modalOpen()}">
 
-      <div ng-include="'user-message.tpl.html'" id="user-message"></div>
-      <div ng-include="'header.tpl.html'" id="page-header"></div>
+   <div ng-include="'user-message.tpl.html'" id="user-message"></div>
+   <div ng-include="'header.tpl.html'" id="page-header"></div>
+   <div class="main-view-container">
       <div ng-view class="main-view"></div>
-      <div ng-include="'footer.tpl.html'" id="page-footer"></div>
    </div>
+   <div ng-include="'footer.tpl.html'" id="page-footer"></div>
+
+
    <script src="/bottom.js"></script>
 </body>
 {% endraw %}

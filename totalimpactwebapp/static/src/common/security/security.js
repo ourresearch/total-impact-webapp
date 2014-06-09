@@ -45,7 +45,7 @@ angular.module('security.service', [
     },
 
     login: function(email, password) {
-      return $http.post('/user/login', {email: email, password: password})
+      return $http.post('/user/current/login', {email: email, password: password})
         .success(function(data, status) {
           currentUser = data.user;
           console.log("user just logged in: ", currentUser)
@@ -142,7 +142,7 @@ angular.module('security.service', [
     logout: function() {
       console.log("logging out user.", currentUser)
       currentUser = null;
-      $http.get('/user/logout').success(function(data, status, headers, config) {
+      $http.get('/user/current/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")
       });
     },

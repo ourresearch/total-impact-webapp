@@ -23,7 +23,7 @@ angular.module("profile", [
 
 }])
 
-.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page){
+.factory('UserProfile', function($window, $anchorScroll, $location, security, Slug, Page){
   var about = {}
 
   var cacheProductsSetting = false

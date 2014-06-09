@@ -3,11 +3,8 @@ body {
    min-width:1159px;
    font-family: Lato, Helvetica, Arial, sans-serif;
    font-size: 18px;
-   div.blur-container {
-      width: 100%;
-      &.blur {
-         -webkit-filter: blur(3px) grayscale(50%);
-      }
+   .main-view-container {
+      min-height: 500px;
    }
 
    &.show-tab-on-right {
@@ -213,9 +210,6 @@ i {
 
 
 
-div.main-view {
-   min-height: 500px;
-}
 
 
 
@@ -363,45 +357,6 @@ div.modal {
 
 }
 
-
-// manage the staging warning
-div.staging-warning { display:none;}
-body.staging {
-   @stagingBarWidth: 30px;
-   div.staging-warning {
-      position: fixed;
-      opacity: .9;
-      display:block;
-      position: fixed;
-      top: 0;
-      bottom:0;
-      width: @stagingBarWidth;
-      z-index: 100000;
-      text-align: center;
-      border-right: 3px dotted #333;
-      div.content {
-         position: absolute;
-         background: #333;
-         top: 0;
-         bottom: 0;
-         left: 0;
-         width: @stagingBarWidth;
-         span {
-            .rotation(270deg);
-            display: block;
-            color: #fff;
-            font-weight: bold;
-            width:  200px;
-            height: 200px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin:300px 0 0 4px;
-            font-family: Lato, Helvetica;
-            text-shadow: 1px 0 0 #000;
-         }
-      }
-   }
-}
 
 div#user-message {
    position: fixed;
@@ -705,30 +660,6 @@ div.tooltip {
 code {
    color: #000;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-//.vertical-centered-container {
-//  position: fixed;
-//	top:0;
-//	left:0;
-//	height:100%;
-//	width:100%;
-//	display:table;
-//	pointer-events: none;
-//    z-index:9999;
-//}
-
 
 
 

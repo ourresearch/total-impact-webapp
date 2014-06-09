@@ -114,7 +114,7 @@ angular.module('directives.forms', ["services.loading"])
 
         canceler = $q.defer()
         Loading.start('requireUnique');
-        var url = '/user/' + value + '/about?id_type=' + userPropertyToCheck;
+        var url = '/user/' + value + '?id_type=' + userPropertyToCheck;
 
         $http.get(url, {timeout: canceler.promise})
         .success(function(data) {

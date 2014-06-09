@@ -66,8 +66,6 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 
 
-
-
 def json_resp_from_thing(thing):
 
     my_dict = util.todict(thing)
@@ -134,6 +132,15 @@ def abort_if_user_not_logged_in(profile):
 
 
 
+
+
+
+
+
+
+
+
+
 ###############################################################################
 #
 #   BEFORE AND AFTER REQUESTS
@@ -152,9 +159,7 @@ def setup_db_tables():
 
 @app.before_request
 def clear_cache():
-    """
-    We don't want the cache to persist across requests.
-    """
+    # We don't want the cache to persist across requests.
     ProductsFromCore.clear_cache()
 
 
@@ -183,7 +188,6 @@ def redirect_www_to_naked_domain():
 
 
 
-
 @app.before_request
 def load_globals():
     g.user = current_user
@@ -196,18 +200,6 @@ def load_globals():
     g.api_key = os.getenv("API_KEY")
     g.webapp_root = os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
 
-
-@app.before_request
-def log_ip_address():
-    pass
-    # if request.endpoint != "static":
-    #     try:
-    #         logger.info(u"{ip_address} IP address calling {method} {url}".format(
-    #             ip_address=request.remote_addr, 
-    #             method=request.method, 
-    #             url=to_unicode_or_bust(request.url)))
-    #     except UnicodeDecodeError:
-    #         logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
 
 
 @app.after_request
@@ -228,10 +220,13 @@ def extract_filename(s):
         return res[0].split(".")[0]
     return None
 
-#@app.after_request
-#def local_sleep_a_bit_for_everything(resp):
-#    local_sleep(.8)
-#    return resp
+
+
+
+
+
+
+
 
 
 
@@ -242,19 +237,14 @@ def extract_filename(s):
 
 ###############################################################################
 #
-#   JSON VIEWS (API)
+#   /user/current
 #
 ###############################################################################
-
-
-#------------------ /user/:actions -----------------
-
-
 
 
 @app.route("/user/current")
 def get_current_user():
-    #local_sleep(5)
+    local_sleep(1)
     try:
         user_info = g.user.dict_about(include_stripe=True)
     except AttributeError:  # anon user has no as_dict()
@@ -269,6 +259,7 @@ def current_user_notifications(notification_name):
     # hardcode for now
     notification_name = "new_metrics_notification_dismissed"
 
+    # it's Not RESTful to do this in a GET, but, whatevs.
     if request.args.get("action") == "dismiss":
         g.user.new_metrics_notification_dismissed = datetime.datetime.now()
         db.session.merge(g.user)
@@ -278,11 +269,7 @@ def current_user_notifications(notification_name):
 
 
 
-
-
-
-
-@app.route('/user/logout', methods=["POST", "GET"])
+@app.route('/user/current/logout', methods=["POST", "GET"])
 def logout():
     #sleep(1)
     logout_user()
@@ -290,7 +277,7 @@ def logout():
 
 
 
-@app.route("/user/login", methods=["POST"])
+@app.route("/user/current/login", methods=["POST"])
 def login():
 
     email = unicode(request.json["email"]).lower()
@@ -310,17 +297,22 @@ def login():
 
 
 
-@app.route("/user/current/dismiss/new_metrics_notification", methods=["GET", "POST"])
-def user_new_metrics_notification(profile_id):
-    user = get_user_for_response(
-        profile_id,
-        request
-    )
 
 
 
-#------------------ /user/:id   -----------------
 
+
+
+
+
+
+
+
+###############################################################################
+#
+#   /user/:id
+#
+###############################################################################
 
 @app.route("/user/<profile_id>", methods=['GET'])
 def user_profile(profile_id):
@@ -349,19 +341,13 @@ def user_profile(profile_id):
     return json_resp_from_thing(resp)
 
 
-@app.route("/user/<profile_id>/update_status")
-def update_status(profile_id):
-    profile = get_user_for_response(profile_id, request)
-    return json_resp_from_thing(profile.update_status)
 
-
-
-@app.route("/user/<slug>", methods=["POST"])
-def create_new_user_profile(slug):
+@app.route("/user/<profile_id>", methods=["POST"])
+def create_new_user_profile(profile_id):
     userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
 
     try:
-        new_profile = create_user_from_slug(slug, userdict, db)
+        new_profile = create_user_from_slug(profile_id, userdict, db)
 
     except EmailExistsError:
         abort_json(409, "That email already exists.")
@@ -384,23 +370,7 @@ def user_delete(profile_id):
 
 
 
-#------------------ /user/:id/about   -----------------
-
-
-@app.route("/user/<profile_id>/about", methods=['GET'])
-def user_about(profile_id):
-    user = get_user_for_response(profile_id, request)
-    dict_about = user.dict_about()
-    # logger.debug(u"got the user dict out: {user}".format(
-    #     user=dict_about))
-
-    local_sleep(1)
-
-
-    return json_resp_from_thing({"about": dict_about})
-
-
-@app.route("/user/<profile_id>/about", methods=['PATCH'])
+@app.route("/user/<profile_id>", methods=['PATCH'])
 def patch_user_about(profile_id):
 
     profile = get_user_for_response(profile_id, request)
@@ -412,41 +382,31 @@ def patch_user_about(profile_id):
     return json_resp_from_thing({"about": profile.dict_about()})
 
 
-@app.route("/user/<profile_id>/awards", methods=['GET'])
-def user_profile_awards(profile_id):
-    user = get_user_for_response(
-        profile_id,
-        request
-    )
 
-    return json_resp_from_thing(user.profile_awards)
+@app.route("/user/<profile_id>/update_status", methods=["GET"])
+def update_status(profile_id):
+    profile = get_user_for_response(profile_id, request)
+    return json_resp_from_thing(profile.update_status)
 
 
 
-@app.route("/product/<tiid>/biblio", methods=["PATCH"])
-def product_biblio_modify(tiid):
 
-    try:
-        if tiid not in current_user.tiids:
-            abort_json(401, "You have to own this product to modify it.")
-    except AttributeError:
-        abort_json(405, "You musts be logged in to modify products.")
 
-    query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
-        core_api_root=os.getenv("API_ROOT"),
-        tiid=tiid,
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    data_dict = json.loads(request.data)
-    r = requests.patch(
-        query,
-        data=json.dumps(data_dict),
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
-    )
 
-    local_sleep(1)
-    
-    return json_resp_from_thing(r.json())
+
+
+
+
+
+
+
+
+
+###############################################################################
+#
+#   /user/:id/products
+#
+###############################################################################
 
 
 @app.route("/user/<id>/products", methods=["POST", "PATCH"])
@@ -526,6 +486,31 @@ def user_products_csv(id):
 
 
 
+@app.route("/product/<tiid>/biblio", methods=["PATCH"])
+def product_biblio_modify(tiid):
+    # This should actually be like /user/:id/product/:tiid/biblio
+
+    try:
+        if tiid not in current_user.tiids:
+            abort_json(401, "You have to own this product to modify it.")
+    except AttributeError:
+        abort_json(405, "You musts be logged in to modify products.")
+
+    query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
+        core_api_root=os.getenv("API_ROOT"),
+        tiid=tiid,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    data_dict = json.loads(request.data)
+    r = requests.patch(
+        query,
+        data=json.dumps(data_dict),
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
+    )
+
+    local_sleep(1)
+
+    return json_resp_from_thing(r.json())
 
 
 
@@ -535,14 +520,25 @@ def user_products_csv(id):
 
 
 
-#------------------ user/:id/password -----------------
+
+
+
+
+###############################################################################
+#
+#   misc endpoints
+#
+###############################################################################
+
+
+
 
 @app.route("/user/<id>/password", methods=["POST"])
 def user_password_modify(id):
 
     current_password = request.json.get("currentPassword", None)
     new_password = request.json.get("newPassword", None)
-    id_type = request.args.get("id_type")
+    id_type = request.args.get("id_type", "url_slug")  # url_slug is default
 
     try:
         if id_type == "reset_token":
@@ -557,7 +553,6 @@ def user_password_modify(id):
     return json_resp_from_thing({"about": user.dict_about()})
 
 
-
 @app.route("/user/<id>/password", methods=["GET"])
 def get_password_reset_link(id):
     if request.args.get("id_type") != "email":
@@ -567,10 +562,6 @@ def get_password_reset_link(id):
 
     ret = send_reset_token(retrieved_user.email, request.url_root)
     return json_resp_from_thing({"sent_reset_email": ret})
-
-
-
-#------------------ importers/:importer -----------------
 
 
 
@@ -587,8 +578,7 @@ def user_linked_accounts_update(id, account):
 
 
 
-#------------------ /providers  (information about providers) -----------------
-@app.route('/providers', methods=["GET"])
+@app.route('/providers', methods=["GET"])  # information about providers
 def providers():
     try:
         url = u"{api_root}/v1/provider?key={api_key}".format(
@@ -609,13 +599,7 @@ def providers():
 
 
 
-
-
-
-#------------------ /tests  (supports functional testing) -----------------
-
-
-@app.route("/tests", methods=["DELETE"])
+@app.route("/tests", methods=["DELETE"])  # supports functional testing
 def delete_all_test_users():
     if not has_admin_authorization():
         abort_json(401, "Need admin key to delete all test users")
@@ -627,6 +611,16 @@ def delete_all_test_users():
         user_slugs_deleted.append(user.url_slug)
         delete_user(user)
     return json_resp_from_thing({"test_users": user_slugs_deleted})
+
+
+
+
+
+
+
+
+
+
 
 
 

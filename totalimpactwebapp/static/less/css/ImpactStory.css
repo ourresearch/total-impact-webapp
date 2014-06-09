@@ -6031,11 +6031,8 @@ body {
   font-family: Lato, Helvetica, Arial, sans-serif;
   font-size: 18px;
 }
-body div.blur-container {
-  width: 100%;
-}
-body div.blur-container.blur {
-  -webkit-filter: blur(3px) grayscale(50%);
+body .main-view-container {
+  min-height: 500px;
 }
 body.show-tab-on-right .uv-tab.uv-slide-bottom {
   display: none !important;
@@ -6207,9 +6204,6 @@ i.left {
 i.right {
   margin-left: .3em;
 }
-div.main-view {
-  min-height: 500px;
-}
 /* modals
 *****************************************************************************
 *****************************************************************************
@@ -6347,43 +6341,6 @@ div.modal.creds .modal-footer a {
   display: inline-block;
   color: #999;
   font-size: 14px;
-}
-div.staging-warning {
-  display: none;
-}
-body.staging div.staging-warning {
-  opacity: .9;
-  display: block;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  width: 30px;
-  z-index: 100000;
-  text-align: center;
-  border-right: 3px dotted #333;
-}
-body.staging div.staging-warning div.content {
-  position: absolute;
-  background: #333;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 30px;
-}
-body.staging div.staging-warning div.content span {
-  -webkit-transform: rotate(270deg);
-  -moz-transform: rotate(270deg);
-  transform: rotate(270deg);
-  display: block;
-  color: #fff;
-  font-weight: bold;
-  width: 200px;
-  height: 200px;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  margin: 300px 0 0 4px;
-  font-family: Lato, Helvetica;
-  text-shadow: 1px 0 0 #000;
 }
 div#user-message {
   position: fixed;
@@ -7080,6 +7037,7 @@ div.signup-banner {
   font-weight: normal;
   font-size: 17px;
   text-align: center;
+  z-index: 100;
 }
 div.signup-banner a.signup-button {
   background: #ff4000;
@@ -8638,6 +8596,31 @@ div.accounts {
   width: 100%;
   float: left;
   border-top: 2px solid #ddd;
+  clear: both;
+}
+div.accounts:before,
+div.accounts:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+div.accounts:after {
+  clear: both;
+}
+div.accounts:before,
+div.accounts:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+div.accounts:after {
+  clear: both;
 }
 div.accounts div.overlay {
   position: fixed;

@@ -10,6 +10,11 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           cache: true,
           params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
+        },
+        patch:{
+          method: "POST",
+          headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'},
+          params:{id:"@about.id"} // use the 'id' property of submitted data obj
         }
       }
     )
@@ -70,10 +75,8 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersProduct', function ($resource) {
 
     return $resource(
-      "/user/:id/product/:tiid?id_type=:idType",
-      {
-        idType: "url_slug"
-      },
+      "/user/:id/product/:tiid",
+      {},  // defaults go here
       {
         update:{
           method: "PUT"
@@ -90,20 +93,6 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
-  .factory('UsersAbout', function ($resource) {
-
-    return $resource(
-      "/user/:id/about?id_type=:idType",
-      {idType: "url_slug"},
-      {
-        patch:{
-          method: "POST",
-          headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'},
-          params:{id:"@about.id"} // use the 'id' property of submitted data obj
-        }
-      }
-    )
-  })
 
   .factory('UsersLinkedAccounts', function($resource){
 
@@ -125,8 +114,8 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersPassword', function ($resource) {
 
     return $resource(
-      "/user/:id/password?id_type=:idType",
-      {idType: "url_slug"}
+      "/user/:id/password",
+      {} // defaults
     )
   })
 

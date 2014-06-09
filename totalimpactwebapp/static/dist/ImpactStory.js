@@ -19,7 +19,7 @@ angular.module('accounts.account', [
     Products,
     UsersProducts,
     UsersLinkedAccounts,
-    UsersAbout){
+    Users){
 
     var tiidsAdded = []
 
@@ -33,7 +33,7 @@ angular.module('accounts.account', [
 
       Loading.start("saveButton")
       console.log("unlinking account " + accountObj.accountHost)
-      UsersAbout.patch(
+      Users.patch(
         {id:url_slug},
         {about: about},
         function(resp){
@@ -61,7 +61,7 @@ angular.module('accounts.account', [
 
 
       Loading.start("saveButton")
-      UsersAbout.patch(
+      Users.patch(
         {id:url_slug},
         {about: about},
 
@@ -814,7 +814,7 @@ angular.module('passwordReset', [
     console.log("submitting password to change", $scope.password)
     Loading.start("saveButton")
     UsersPassword.save(
-      {id: $routeParams.resetToken, idType:"reset_token"},
+      {id: $routeParams.resetToken, id_type:"reset_token"},
       {newPassword: $scope.password},
       function(resp) {
         UserMessage.set('passwordReset.success', true);
@@ -1167,7 +1167,7 @@ angular.module("profile", [
 
 }])
 
-.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page){
+.factory('UserProfile', function($window, $anchorScroll, $location, security, Slug, Page){
   var about = {}
 
   var cacheProductsSetting = false
@@ -1619,10 +1619,10 @@ angular.module('settings', [
 
   })
 
-  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, UserMessage, Loading) {
+  .controller('profileSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
     $scope.onSave = function() {
       Loading.start('saveButton')
-      UsersAbout.patch(
+      Users.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
@@ -1635,7 +1635,7 @@ angular.module('settings', [
   })
 
 
-  .controller('NotificationsSettingsCtrl', function ($scope, UsersAbout, security, UserMessage, Loading) {
+  .controller('NotificationsSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
     $scope.onSave = function() {
       var messageKey = "settings.notifications."
         + $scope.user.notification_email_frequency
@@ -1643,7 +1643,7 @@ angular.module('settings', [
 
 
       Loading.start('saveButton')
-      UsersAbout.patch(
+      Users.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
@@ -1685,12 +1685,12 @@ angular.module('settings', [
 
 
 
-  .controller('urlSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {
+  .controller('urlSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
-      UsersAbout.patch(
-        {id: $scope.user.id, idType:"id"},
+      Users.patch(
+        {id: $scope.user.id, id_type:"id"},
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
@@ -1703,7 +1703,7 @@ angular.module('settings', [
 
 
 
-  .controller('premiumSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
+  .controller('premiumSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
 
 
     $scope.planStatus = function(statusToTest){
@@ -1790,11 +1790,11 @@ angular.module('settings', [
   })
 
 
-  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {
+  .controller('emailSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
-      UsersAbout.patch(
+      Users.patch(
         {id: $scope.user.url_slug, log:"changing email from settings"},
         {about: $scope.user},
         function(resp) {
@@ -2589,7 +2589,7 @@ angular.module('directives.forms', ["services.loading"])
 
         canceler = $q.defer()
         Loading.start('requireUnique');
-        var url = '/user/' + value + '/about?id_type=' + userPropertyToCheck;
+        var url = '/user/' + value + '?id_type=' + userPropertyToCheck;
 
         $http.get(url, {timeout: canceler.promise})
         .success(function(data) {
@@ -2661,6 +2661,11 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           cache: true,
           params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
+        },
+        patch:{
+          method: "POST",
+          headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'},
+          params:{id:"@about.id"} // use the 'id' property of submitted data obj
         }
       }
     )
@@ -2721,10 +2726,8 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersProduct', function ($resource) {
 
     return $resource(
-      "/user/:id/product/:tiid?id_type=:idType",
-      {
-        idType: "url_slug"
-      },
+      "/user/:id/product/:tiid",
+      {},  // defaults go here
       {
         update:{
           method: "PUT"
@@ -2741,20 +2744,6 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
-  .factory('UsersAbout', function ($resource) {
-
-    return $resource(
-      "/user/:id/about?id_type=:idType",
-      {idType: "url_slug"},
-      {
-        patch:{
-          method: "POST",
-          headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'},
-          params:{id:"@about.id"} // use the 'id' property of submitted data obj
-        }
-      }
-    )
-  })
 
   .factory('UsersLinkedAccounts', function($resource){
 
@@ -2776,8 +2765,8 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersPassword', function ($resource) {
 
     return $resource(
-      "/user/:id/password?id_type=:idType",
-      {idType: "url_slug"}
+      "/user/:id/password",
+      {} // defaults
     )
   })
 
@@ -2927,7 +2916,7 @@ angular.module('security.login.toolbar', [
 
 // The loginToolbar directive is a reusable widget that can show login or logout buttons
 // and information the current authenticated user
-.directive('loginToolbar', function($http, Page, UsersAbout, security) {
+.directive('loginToolbar', function($http, Page, security) {
   var directive = {
     templateUrl: 'security/login/toolbar.tpl.html',
     restrict: 'E',
@@ -3026,7 +3015,7 @@ angular.module('security.service', [
     },
 
     login: function(email, password) {
-      return $http.post('/user/login', {email: email, password: password})
+      return $http.post('/user/current/login', {email: email, password: password})
         .success(function(data, status) {
           currentUser = data.user;
           console.log("user just logged in: ", currentUser)
@@ -3123,7 +3112,7 @@ angular.module('security.service', [
     logout: function() {
       console.log("logging out user.", currentUser)
       currentUser = null;
-      $http.get('/user/logout').success(function(data, status, headers, config) {
+      $http.get('/user/current/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")
       });
     },
