@@ -158,7 +158,8 @@ def setup_db_tables():
 @app.before_request
 def clear_cache():
     # We don't want the cache to persist across requests.
-    ProductsFromCore.clear_cache()
+    #ProductsFromCore.clear_cache()
+    pass
 
 
 @app.before_request
