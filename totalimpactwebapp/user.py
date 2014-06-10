@@ -2,6 +2,7 @@ from totalimpactwebapp import db
 from totalimpactwebapp import heading_product
 from totalimpactwebapp import profile_award
 from totalimpactwebapp import util
+from totalimpactwebapp import configs
 from totalimpactwebapp.product import Product
 
 from totalimpactwebapp.views import g
@@ -240,6 +241,32 @@ class User(db.Model):
         return profile_award.make_awards_list(self)
 
     @property
+    def has_linked_account(self):
+        return True
+
+    @property
+    def linked_accounts(self):
+        ret = []
+        for k, v in self.__dict__.iteritems():
+            if k.endswith("_id"):
+                service = k.replace("_id", "")
+                if v and (service in configs.linked_accounts):
+                    profile_url = configs.linked_accounts[service].format(
+                        id=v
+                    )
+                else:
+                    profile_url = None
+
+                linked_account_dict = {
+                    "service": service,
+                    "username": v,
+                    "profile_url": profile_url
+                }
+                ret.append(linked_account_dict)
+        return ret
+
+
+    @property
     def update_status(self):
         return UpdateStatus(self.product_objects)
 
@@ -447,7 +474,8 @@ class User(db.Model):
             "stripe_id",
             "new_metrics_notification_dismissed",
             "notification_email_frequency",
-            "is_advisor"
+            "is_advisor",
+            "linked_accounts"
         ]
 
         ret_dict = {}

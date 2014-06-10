@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-09
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-10
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -1173,7 +1173,6 @@ angular.module("profile", [
   var about = {}
 
   var cacheProductsSetting = false
-  var hasConnectedAccounts = false
 
   return {
 
@@ -1186,9 +1185,7 @@ angular.module("profile", [
 
       return cacheProductsSetting
     },
-    hasConnectedAccounts: function(){
-      return hasConnectedAccounts
-    },
+
     makeAnchorLink: function(genre, account){
       var anchor = genre
       if (account) {
@@ -1342,8 +1339,6 @@ angular.module("profile", [
         twttr.widgets.load()
 
     });
-
-    $scope.hasConnectedAccounts = UserProfile.hasConnectedAccounts
 
     var url_slug = $routeParams.url_slug;
     var loadingProducts = true
@@ -5302,46 +5297,19 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            </h2>\n" +
     "            <div class=\"connected-accounts\">\n" +
     "               <ul>\n" +
-    "\n" +
-    "                  <li ng-show=\"profile.figshare_id\" style=\"display: none;\">\n" +
-    "                     <a href=\"{{ profile.figshare_id }}\">\n" +
-    "                        <img src=\"/static/img/favicons/figshare.ico\">\n" +
-    "                        <span class=\"service\">figshare</span>\n" +
+    "                  <li ng-repeat=\"linkedAccount in filteredLinkedAccounts = (profile.linked_accounts | filter: {profile_url: '!!'})\">\n" +
+    "                     <a href=\"{{ linkedAccount.profile_url }}\" target=\"_blank\">\n" +
+    "                        <img ng-src=\"/static/img/favicons/{{ linkedAccount.service }}.ico\">\n" +
+    "                        <span class=\"service\">{{ linkedAccount.service }}</span>\n" +
     "                     </a>\n" +
     "                  </li>\n" +
-    "                  <li ng-show=\"profile.github_id\" style=\"display: none;\">\n" +
-    "                     <a href=\"https://github.com/{{ profile.github_id }}\">\n" +
-    "                        <img src=\"/static/img/favicons/github.ico\">\n" +
-    "                        <span class=\"service\">GitHub</span>\n" +
-    "                     </a>\n" +
-    "                  </li>\n" +
-    "                  <li ng-show=\"profile.google_scholar_id\" style=\"display: none;\">\n" +
-    "                     <a href=\"{{ profile.google_scholar_id }}\">\n" +
-    "                        <img src=\"/static/img/favicons/google_scholar.ico\">\n" +
-    "                        <span class=\"service\">Google Scholar</span>\n" +
-    "                     </a>\n" +
-    "                  </li>\n" +
-    "                  <li ng-show=\"profile.orcid_id\" style=\"display: none;\">\n" +
-    "                     <a href=\"https://orcid.org/{{ profile.orcid_id }}\">\n" +
-    "                        <img src=\"/static/img/favicons/orcid.ico\">\n" +
-    "                        <span class=\"service\">ORCID</span>\n" +
-    "                     </a>\n" +
-    "                  </li>\n" +
-    "\n" +
-    "                  <li ng-show=\"profile.slideshare_id\" style=\"display: none;\">\n" +
-    "                     <a href=\"https://www.slideshare.net/{{ profile.slideshare_id }}\">\n" +
-    "                        <img src=\"/static/img/favicons/slideshare.ico\">\n" +
-    "                        <span class=\"service\">Slideshare</span>\n" +
-    "                     </a>\n" +
-    "                  </li>\n" +
-    "\n" +
     "               </ul>\n" +
     "\n" +
     "               <div class=\"add-connected-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
     "                  <a href=\"/{{ profile.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
-    "                     <span ng-show=\"!hasConnectedAccounts()\" class=\"first\">Import from accounts</span>\n" +
-    "                     <span ng-show=\"hasConnectedAccounts()\" class=\"more\">Connect more accounts</span>\n" +
+    "                     <span ng-show=\"filteredLinkedAccounts.length==0\" class=\"first\">Import from accounts</span>\n" +
+    "                     <span ng-show=\"filteredLinkedAccounts.length>0\" class=\"more\">Connect more accounts</span>\n" +
     "                  </a>\n" +
     "               </div>\n" +
     "            </div>\n" +

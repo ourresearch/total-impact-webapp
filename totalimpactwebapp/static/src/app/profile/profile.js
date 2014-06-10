@@ -27,7 +27,6 @@ angular.module("profile", [
   var about = {}
 
   var cacheProductsSetting = false
-  var hasConnectedAccounts = false
 
   return {
 
@@ -40,9 +39,7 @@ angular.module("profile", [
 
       return cacheProductsSetting
     },
-    hasConnectedAccounts: function(){
-      return hasConnectedAccounts
-    },
+
     makeAnchorLink: function(genre, account){
       var anchor = genre
       if (account) {
@@ -196,8 +193,6 @@ angular.module("profile", [
         twttr.widgets.load()
 
     });
-
-    $scope.hasConnectedAccounts = UserProfile.hasConnectedAccounts
 
     var url_slug = $routeParams.url_slug;
     var loadingProducts = true

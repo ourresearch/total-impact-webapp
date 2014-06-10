@@ -17,46 +17,19 @@
             </h2>
             <div class="connected-accounts">
                <ul>
-
-                  <li ng-show="profile.figshare_id" style="display: none;">
-                     <a href="{{ profile.figshare_id }}">
-                        <img src="/static/img/favicons/figshare.ico">
-                        <span class="service">figshare</span>
+                  <li ng-repeat="linkedAccount in filteredLinkedAccounts = (profile.linked_accounts | filter: {profile_url: '!!'})">
+                     <a href="{{ linkedAccount.profile_url }}" target="_blank">
+                        <img ng-src="/static/img/favicons/{{ linkedAccount.service }}.ico">
+                        <span class="service">{{ linkedAccount.service }}</span>
                      </a>
                   </li>
-                  <li ng-show="profile.github_id" style="display: none;">
-                     <a href="https://github.com/{{ profile.github_id }}">
-                        <img src="/static/img/favicons/github.ico">
-                        <span class="service">GitHub</span>
-                     </a>
-                  </li>
-                  <li ng-show="profile.google_scholar_id" style="display: none;">
-                     <a href="{{ profile.google_scholar_id }}">
-                        <img src="/static/img/favicons/google_scholar.ico">
-                        <span class="service">Google Scholar</span>
-                     </a>
-                  </li>
-                  <li ng-show="profile.orcid_id" style="display: none;">
-                     <a href="https://orcid.org/{{ profile.orcid_id }}">
-                        <img src="/static/img/favicons/orcid.ico">
-                        <span class="service">ORCID</span>
-                     </a>
-                  </li>
-
-                  <li ng-show="profile.slideshare_id" style="display: none;">
-                     <a href="https://www.slideshare.net/{{ profile.slideshare_id }}">
-                        <img src="/static/img/favicons/slideshare.ico">
-                        <span class="service">Slideshare</span>
-                     </a>
-                  </li>
-
                </ul>
 
                <div class="add-connected-account" ng-show="currentUserIsProfileOwner()">
                   <a href="/{{ profile.url_slug }}/accounts" class="btn btn-xs btn-info">
                      <i class="icon-link left"></i>
-                     <span ng-show="!hasConnectedAccounts()" class="first">Import from accounts</span>
-                     <span ng-show="hasConnectedAccounts()" class="more">Connect more accounts</span>
+                     <span ng-show="filteredLinkedAccounts.length==0" class="first">Import from accounts</span>
+                     <span ng-show="filteredLinkedAccounts.length>0" class="more">Connect more accounts</span>
                   </a>
                </div>
             </div>
