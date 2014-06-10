@@ -445,7 +445,13 @@ class User(db.Model):
 
 
 
-    def dict_about(self, include_stripe=False):
+    def dict_about(self, show_secrets=True):
+
+        secrets = [
+            "email",
+            "wordpress_api_key",
+            "password_hash"
+        ]
 
         properties_to_return = [
             "id",
@@ -479,32 +485,27 @@ class User(db.Model):
         ]
 
         ret_dict = {}
-        for property in properties_to_return:
-            val = getattr(self, property, None)
+        for prop in properties_to_return:
+            val = getattr(self, prop, None)
             try:
                 # if we want dict, we probably want something json-serializable
                 val = val.isoformat()
             except AttributeError:
                 pass
 
-            ret_dict[property] = val
+            if show_secrets:
+                ret_dict[prop] = val
+            elif not show_secrets and not prop in secrets:
+                ret_dict[prop] = val
+            else:
+                pass  # hide_secrets=True, and this is a secret. don't return it.
+
 
         ret_dict["products_count"] = len(self.tiids)
-
-        # include product dicts
-
-
-
-        if include_stripe:
-            try:
-                cu = stripe.Customer.retrieve(self.stripe_id)
-                ret_dict["subscription"] = cu.subscriptions.data[0].to_dict()
-                ret_dict["subscription"]["user_has_card"] = bool(cu.default_card)
-            except (IndexError, InvalidRequestError):
-                ret_dict["subscription"] = None
-
         ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.product_objects])
         ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
+
+
 
         return ret_dict
 

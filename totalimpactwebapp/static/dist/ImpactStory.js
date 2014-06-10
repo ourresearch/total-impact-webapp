@@ -2976,8 +2976,6 @@ angular.module('security.service', [
 .factory('security', function($http, $q, $location, $modal, UserMessage) {
   var useCachedUser = true
   var currentUser = globalCurrentUser || null
-  console.log("logging in from object: ", currentUser)
-
 
 
   // Redirect to the given url (defaults to '/')

@@ -129,7 +129,11 @@ def abort_if_user_not_logged_in(profile):
         abort_json(405, "You can't do this because you're not logged in.")
 
 
-
+def is_logged_in(profile):
+    try:
+        return current_user.id != profile.id
+    except AttributeError:
+        return False
 
 
 
@@ -244,7 +248,7 @@ def extract_filename(s):
 def get_current_user():
     local_sleep(1)
     try:
-        user_info = g.user.dict_about(include_stripe=True)
+        user_info = g.user.dict_about()
     except AttributeError:  # anon user has no as_dict()
         user_info = None
 
@@ -291,7 +295,7 @@ def login():
         # Yay, no errors! Log the user in.
         login_user(user)
 
-    return json_resp_from_thing({"user": user.dict_about(include_stripe=True)})
+    return json_resp_from_thing({"user": user.dict_about()})
 
 
 
@@ -324,14 +328,17 @@ def user_profile(profile_id):
     hide_keys = request.args.get("hide", "").split(",")
 
     resp = {
-        "about": profile.dict_about(),
-        "awards": profile.awards,
         "products": profile.get_products_markup(
             markup=markup,
             hide_keys=hide_keys,
             add_heading_products=True
         )
     }
+
+    if not "about" in hide_keys:
+        resp["about"] = profile.dict_about(show_secrets=False)
+        resp["awards"] = profile.awards
+
     logger.debug("/user/{slug} built the response; took {elapsed}ms".format(
         slug=profile.url_slug,
         elapsed=resp_constr_timer.elapsed()
