@@ -10,6 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
+from util import local_sleep
 from stripe import InvalidRequestError
 
 import requests
@@ -79,6 +80,7 @@ class ProductsFromCore(object):
 
     def get(self, tiids):
         timer = util.Timer()
+        #local_sleep(5)
         if not tiids:
             return []
 
@@ -502,10 +504,10 @@ class User(db.Model):
 
 
         ret_dict["products_count"] = len(self.tiids)
-        ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.product_objects])
-        ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
 
-
+        # commenting these out for now because they make the /user/current call too slow.
+        #ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.product_objects])
+        #ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
 
         return ret_dict
 

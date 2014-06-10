@@ -2976,6 +2976,8 @@ angular.module('security.service', [
 .factory('security', function($http, $q, $location, $modal, UserMessage) {
   var useCachedUser = true
   var currentUser = globalCurrentUser || null
+  console.log("logging in from object: ", currentUser)
+
 
 
   // Redirect to the given url (defaults to '/')
@@ -6308,6 +6310,8 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "      <span class=\"or\"></span>\n" +
     "\n" +
+    "      <!-- made security load too slow.\n" +
+    "\n" +
     "      <span class=\"new-metrics control no-new-metrics\"\n" +
     "         tooltip=\"No new metrics.\"\n" +
     "         tooltip-placement=\"bottom\"\n" +
@@ -6324,6 +6328,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      </a>\n" +
     "\n" +
     "      <span class=\"or\"></span>\n" +
+    "      -->\n" +
     "\n" +
     "      <a class=\"preferences control\"\n" +
     "         href=\"/settings/profile\"\n" +
