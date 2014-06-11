@@ -320,7 +320,15 @@ angular.module("profile", [
     }
 
     renderProducts()
-    Update.showUpdateModal(url_slug)
+    Update.showUpdateModal(url_slug).then(
+      function(reason){
+        console.log("update told us it's done.")
+        renderProducts()
+      },
+      function(resp){
+        console.log("update modal told us it didn't need to run: ", resp)
+      }
+    )
 })
 
 

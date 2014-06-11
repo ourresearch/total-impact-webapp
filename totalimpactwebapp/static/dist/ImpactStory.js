@@ -1466,7 +1466,15 @@ angular.module("profile", [
     }
 
     renderProducts()
-    Update.showUpdateModal(url_slug)
+    Update.showUpdateModal(url_slug).then(
+      function(reason){
+        console.log("update told us it's done.")
+        renderProducts()
+      },
+      function(resp){
+        console.log("update modal told us it didn't need to run: ", resp)
+      }
+    )
 })
 
 
@@ -1887,34 +1895,71 @@ angular.module( 'update.update', [
     'resources.users'
   ])
   .factory("Update", function($modal,
+                              $timeout,
+                              $q,
+                              poller,
                               UsersUpdateStatus){
 
-    var updateStatus = {}
+    var status = {}
+    var modalInstance
+    var pollingInterval = 100
+    var deferred = $q.defer()
+
+    var tick = function(url_slug){
+      UsersUpdateStatus.get({id:url_slug}).$promise.then(function(resp){
+          if (resp.percent_complete == 100){
+            deferred.resolve("Update finished!")
+            modalInstance.close()
+          }
+          else {
+            $timeout(tick, pollingInterval)
+          }
+        }
+      )
+    }
 
     var showUpdateModal = function(url_slug){
+
       UsersUpdateStatus.get({id:url_slug}).$promise.then(
         function(resp) {
           console.log("showUpdateModal", resp)
+          status = resp
+
+          if (status.percent_complete < 100){
+            // open the modal
+            modalInstance = $modal.open({
+              templateUrl: 'update/update-progress.tpl.html',
+              controller: 'updateProgressModalCtrl',
+              backdrop:"static",
+              keyboard: false
+            });
+
+            // start polling
+            tick(url_slug)
+          }
+          else {
+            // nothing to see here, this profile is all up to date.
+            deferred.reject("Everything is already up to date.")
+          }
         }
       )
 
-//      var modalInstance = $modal.open({
-//        templateUrl: 'update/update-progress.tpl.html',
-//        controller: 'updateProgressModalCtrl',
-//        backdrop:"static",
-//        keyboard: false
-//      });
+      return deferred.promise
 
     }
+
+
 
 
     return {
       showUpdateModal: showUpdateModal,
-      updateStatus: updateStatus
+      status: function(){
+        return status
+      }
     }
   })
   .controller("updateProgressModalCtrl", function($scope, Update){
-    $scope.updateStatus = Update.updateStatus
+    $scope.update = Update
   })
 
 angular.module('directives.crud', ['directives.crud.buttons', 'directives.crud.edit']);
@@ -6142,17 +6187,17 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "   <div class=\"update-progress\">\n" +
     "      <div class=\"products not-done\">\n" +
-    "         <div class=\"content\" ng-show=\"updateStatus.numNotDone\"></div>\n" +
-    "            <span class=\"count still-working\">{{ updateStatus.numNotDone }}</span>\n" +
+    "         <div class=\"content\" ng-show=\"update.status().num_complete\"></div>\n" +
+    "            <span class=\"count still-working\">{{ update.status().num_updating }}</span>\n" +
     "            <span class=\"descr\">products updating</span>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <progress percent=\"updateStatus.percentComplete\" class=\"progress-striped active\"></progress>\n" +
+    "      <progress percent=\"update.status().percent_complete\" class=\"progress-striped active\"></progress>\n" +
     "\n" +
     "      <div class=\"products done\">\n" +
-    "         <div class=\"content\" ng-show=\"updateStatus.numNotDone\"></div>\n" +
-    "            <span class=\"count finished\">{{ updateStatus.numDone}}</span>\n" +
+    "         <div class=\"content\" ng-show=\"update.status().num_updating\"></div>\n" +
+    "            <span class=\"count finished\">{{ update.status().num_complete}}</span>\n" +
     "            <span class=\"descr\">products <br>done</span>\n" +
     "         </div>\n" +
     "      </div>\n" +
