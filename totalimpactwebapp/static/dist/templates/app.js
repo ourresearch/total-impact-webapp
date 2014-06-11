@@ -2038,17 +2038,17 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "   <div class=\"update-progress\">\n" +
     "      <div class=\"products not-done\">\n" +
-    "         <div class=\"content\" ng-show=\"update.status().num_complete\"></div>\n" +
-    "            <span class=\"count still-working\">{{ update.status().num_updating }}</span>\n" +
+    "         <div class=\"content\" ng-show=\"status.getNumUpdating()\"></div>\n" +
+    "            <span class=\"count still-working\">{{ status.getNumUpdating() }}</span>\n" +
     "            <span class=\"descr\">products updating</span>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <progress percent=\"update.status().percent_complete\" class=\"progress-striped active\"></progress>\n" +
+    "      <progress percent=\"status.getPercentComplete()\" class=\"progress-striped active\"></progress>\n" +
     "\n" +
     "      <div class=\"products done\">\n" +
-    "         <div class=\"content\" ng-show=\"update.status().num_updating\"></div>\n" +
-    "            <span class=\"count finished\">{{ update.status().num_complete}}</span>\n" +
+    "         <div class=\"content\" ng-show=\"status.getNumUpdating()\"></div>\n" +
+    "            <span class=\"count finished\">{{ status.getNumComplete()}}</span>\n" +
     "            <span class=\"descr\">products <br>done</span>\n" +
     "         </div>\n" +
     "      </div>\n" +
