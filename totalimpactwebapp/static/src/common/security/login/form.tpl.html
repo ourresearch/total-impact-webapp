@@ -8,7 +8,7 @@
       <div class="animated fadeInDown fadeOutUp"
            ng-class="['alert', 'alert-'+userMessage.get().type]"
            ng-if="userMessage.get().message">
-             <span class="text" ng-bind-html-unsafe="userMessage.get().message"></span>
+             <span class="text" ng-bind-html="userMessage.get().message"></span>
       </div>
    </div>
 

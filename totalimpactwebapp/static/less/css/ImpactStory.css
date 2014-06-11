@@ -6031,6 +6031,9 @@ body {
   font-family: Lato, Helvetica, Arial, sans-serif;
   font-size: 18px;
 }
+body.modal-open {
+  margin-right: 0;
+}
 body .main-view-container {
   min-height: 500px;
 }
@@ -6211,41 +6214,48 @@ i.right {
 div.modal-backdrop {
   opacity: .7;
 }
-div.modal {
-  display: block;
-  width: 600px;
-  background: #fff;
-  top: 50%;
-  bottom: auto;
-  left: 50%;
-  margin: -250px 0 0 -300px;
-  padding-bottom: 20px;
+div.modal div.modal-content {
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomright: 0;
+  -moz-border-radius-bottomleft: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
 }
-div.modal div.modal-header {
+div.modal div.modal-content div.modal-header {
   background: #fafafa;
   background: #fff;
   position: relative;
 }
-div.modal div.modal-header h3,
-div.modal div.modal-header h4 {
+div.modal div.modal-content div.modal-header h3,
+div.modal div.modal-content div.modal-header h4 {
   border-bottom: none;
   font-weight: bolder;
   text-align: center;
   color: #555;
   margin: 8px;
 }
-div.modal div.modal-header a.dismiss {
+div.modal div.modal-content div.modal-header a.dismiss {
   position: absolute;
   top: 22px;
   right: 30px;
   color: #ddd;
   font-size: 25px;
 }
-div.modal div.modal-body {
+div.modal div.modal-content div.modal-body {
   position: relative;
   padding: 20px 50px;
 }
-div.modal div.modal-body textarea {
+div.modal div.modal-content div.modal-body textarea {
   width: 100%;
   font-size: 15px;
   color: #555;
@@ -6269,18 +6279,18 @@ div.modal div.modal-body textarea {
   background-clip: padding-box;
   background: #fafafa;
 }
-div.modal div.modal-body div#user-message-modal .alert {
+div.modal div.modal-content div.modal-body div#user-message-modal .alert {
   margin-bottom: 0;
   background: transparent;
   border: none;
   text-align: center;
 }
-div.modal .modal-footer {
+div.modal div.modal-content .modal-footer {
   border: none;
   text-align: center;
   margin-top: 0;
 }
-div.modal .modal-footer button {
+div.modal div.modal-content .modal-footer button {
   min-width: 150px;
 }
 div.modal.error {
@@ -6298,43 +6308,42 @@ div.modal#edit-not-logged-in div.modal-body span.news {
   float: left;
   width: 76%;
 }
-div.modal.creds {
+div.modal.creds .modal-dialog {
   width: 400px;
-  margin-left: -200px;
 }
-div.modal.creds .modal-body {
+div.modal.creds .modal-dialog .modal-body {
   padding-left: 30px;
   padding-right: 30px;
 }
-div.modal.creds .modal-body .form-group {
+div.modal.creds .modal-dialog .modal-body .form-group {
   width: 100%;
   margin-top: 20px;
 }
-div.modal.creds .modal-body .inst {
+div.modal.creds .modal-dialog .modal-body .inst {
   color: #999;
   font-size: 18px;
   line-height: 1.6;
 }
-div.modal.creds .modal-footer {
+div.modal.creds .modal-dialog .modal-footer {
   border: none;
   padding: 0;
   text-align: center;
 }
-div.modal.creds .modal-footer button.btn {
+div.modal.creds .modal-dialog .modal-footer button.btn {
   width: 66%;
   height: 50px;
   margin: 20px auto 0;
   float: none;
   display: block;
 }
-div.modal.creds .modal-footer div.working {
+div.modal.creds .modal-dialog .modal-footer div.working {
   margin: 20px auto 0;
   height: 50px;
   font-size: 20px;
   padding-top: 10px;
   color: #999;
 }
-div.modal.creds .modal-footer a {
+div.modal.creds .modal-dialog .modal-footer a {
   clear: both;
   text-align: center;
   margin-top: 10px;
@@ -7249,12 +7258,12 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-a
 }
 div.modal-body.embed label {
   float: left;
-  width: 250px;
+  width: 235px;
   font-weight: normal;
   text-align: center;
 }
 div.modal-body.embed label:first-child img {
-  margin-top: 50px;
+  margin-top: 10px;
 }
 div.modal-body.embed label strong {
   font-weight: 900;

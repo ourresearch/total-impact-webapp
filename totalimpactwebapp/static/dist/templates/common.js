@@ -36,7 +36,7 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "      <div class=\"animated fadeInDown fadeOutUp\"\n" +
     "           ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
     "           ng-if=\"userMessage.get().message\">\n" +
-    "             <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
+    "             <span class=\"text\" ng-bind-html=\"userMessage.get().message\"></span>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +

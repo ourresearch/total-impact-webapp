@@ -3,6 +3,11 @@ body {
    min-width:1159px;
    font-family: Lato, Helvetica, Arial, sans-serif;
    font-size: 18px;
+
+   &.modal-open {
+      margin-right:0; // wierd. have to override margin-right: 15px coming from...bootstrap, i guess?
+   }
+
    .main-view-container {
       min-height: 500px;
    }
@@ -222,72 +227,72 @@ div.modal-backdrop {
    opacity: .7;
 }
 div.modal {
-   display:block;
-   width: 600px;
-   background: #fff;
-   top:  50%;
-   bottom: auto;
-   left: 50%;
-   margin: -250px 0 0 -300px;
-   padding-bottom: 20px;
 
+   div.modal-content {
 
-   div.modal-header {
-      background: #fafafa;
-      background: #fff;
-      position: relative;
-      h3, h4 {
-         border-bottom: none;
-         font-weight: bolder;
-         text-align:center;
-         color:  #555;
-         margin: 8px;
-      }
-      a.dismiss {
-         position: absolute;
-         top: 22px;
-         right: 30px;
-         color: #ddd;
-         font-size: 25px;
-      }
+      .border-radius(0, 0, 0, 0);
 
-   }
-   div.modal-body {
-      position: relative;
-      padding: 20px 50px;
-
-      textarea {
-         width: 100%;
-         font-size: 15px;
-         color: #555;
-         font-family: consolas, menlo, monaco, monospace;
-         padding: 10px;
-         border: 2px solid #999;
-         .border-radius(3px, 3px, 3px, 3px);
+      div.modal-header {
          background: #fafafa;
+         background: #fff;
+         position: relative;
+         h3, h4 {
+            border-bottom: none;
+            font-weight: bolder;
+            text-align:center;
+            color:  #555;
+            margin: 8px;
+         }
+         a.dismiss {
+            position: absolute;
+            top: 22px;
+            right: 30px;
+            color: #ddd;
+            font-size: 25px;
+         }
+
       }
 
-      div#user-message-modal {
-         .alert {
-            margin-bottom: 0;
-            background: transparent;
-            border:none;
-            text-align: center;
+      div.modal-body {
+         position: relative;
+         padding: 20px 50px;
+
+         textarea {
+            width: 100%;
+            font-size: 15px;
+            color: #555;
+            font-family: consolas, menlo, monaco, monospace;
+            padding: 10px;
+            border: 2px solid #999;
+            .border-radius(3px, 3px, 3px, 3px);
+            background: #fafafa;
+         }
+
+         div#user-message-modal {
+            .alert {
+               margin-bottom: 0;
+               background: transparent;
+               border:none;
+               text-align: center;
+            }
          }
       }
-   }
 
-   .modal-footer {
-      border:none;
-      text-align:center;
-      margin-top: 0;
-      button {
-         min-width: 150px;
+      .modal-footer {
+         border:none;
+         text-align:center;
+         margin-top: 0;
+         button {
+            min-width: 150px;
+         }
       }
+
+
    }
 
 
    // stuff for particular modals:
+   // this should probably be refactored
 
    &.error {
       div.modal-header {
@@ -311,46 +316,48 @@ div.modal {
    }
 
    &.creds {
-      width:  400px;
-      margin-left:-200px;
-      .modal-body{
-         padding-left: 30px;
-         padding-right: 30px;
-         .form-group {
-            width:  100%;
-            margin-top: 20px;
+      // we want this one to be less wide.
+      .modal-dialog {
+         width: 400px;
+         .modal-body{
+            padding-left: 30px;
+            padding-right: 30px;
+            .form-group {
+               width:  100%;
+               margin-top: 20px;
+            }
+            .inst {
+               color: #999;
+               font-size: 18px;
+               line-height: 1.6;
+            }
          }
-         .inst {
-            color: #999;
-            font-size: 18px;
-            line-height: 1.6;
-         }
-      }
-      .modal-footer {
-         border: none;
-         padding: 0;
-         text-align:  center;
-         button.btn {
-            width: 66%;
-            height: 50px;
-            margin: 20px auto 0;
-            float:none;
-            display:block;
-         }
-         div.working { // similar as possible to button above...
-            margin: 20px auto 0;
-            height: 50px;
-            font-size: 20px;
-            padding-top:10px;
-            color: #999;
-         }
-         a {
-            clear:both;
-            text-align: center;
-            margin-top: 10px;
-            display:inline-block;
-            color: #999;
-            font-size: 14px;
+         .modal-footer {
+            border: none;
+            padding: 0;
+            text-align:  center;
+            button.btn {
+               width: 66%;
+               height: 50px;
+               margin: 20px auto 0;
+               float:none;
+               display:block;
+            }
+            div.working { // similar as possible to button above...
+               margin: 20px auto 0;
+               height: 50px;
+               font-size: 20px;
+               padding-top:10px;
+               color: #999;
+            }
+            a {
+               clear:both;
+               text-align: center;
+               margin-top: 10px;
+               display:inline-block;
+               color: #999;
+               font-size: 14px;
+            }
          }
       }
    }
