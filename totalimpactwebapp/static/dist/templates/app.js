@@ -748,6 +748,9 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "            download them as PDF or Powerpoint, or check them out on\n" +
     "            <a href=\"https://docs.google.com/presentation/d/1WhE8yNwQ1grOffBoXSbbpNJo8oY7YdOBy83x8NPVU7s\">Google Slides.</a>\n" +
     "         </p>\n" +
+    "         <p class=\"translations\">\n" +
+    "            <a href=\"https://docs.google.com/presentation/d/1hl1MbX80g2Pnt2KAzBmZrC29e3udzto96l-ZxLo19Uk\">En Espa&ntilde;ol</a>, courtesy Carlos Rodr&iacute;guez Rell&aacute;n\n" +
+    "         </p>\n" +
     "      </div>\n" +
     "      <div class=\"content\">\n" +
     "         <iframe src=\"https://docs.google.com/presentation/d/1WhE8yNwQ1grOffBoXSbbpNJo8oY7YdOBy83x8NPVU7s/embed?start=false&loop=false&delayms=3000\"\n" +
