@@ -280,6 +280,7 @@ angular.module("profile", [
 
 
     var renderProducts = function(){
+      console.log("rendering products")
       Users.query({
         id: url_slug,
         embedded: Page.isEmbedded()
@@ -328,7 +329,10 @@ angular.module("profile", [
 
     renderProducts()
     Update.showUpdateModal(url_slug).then(
-      renderProducts
+      renderProducts,
+      function(msg){
+        console.log("updater:", msg)
+      }
     )
 })
 

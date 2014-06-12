@@ -12,10 +12,9 @@ angular.module( 'update.update', [
     var url_slug
     var modalInstance
     var pollingInterval = 10  // 10ms...as soon as we get server resp, ask again.
-    var deferred = $q.defer()
+    var deferred
 
     var tick = function(){
-      console.log("running tick()")
       UsersUpdateStatus.get({id:url_slug}).$promise.then(function(resp){
           console.log("tick() got response back from server", resp)
           status = resp
@@ -25,14 +24,15 @@ angular.module( 'update.update', [
             modalInstance.close()
           }
           else {
-            console.log("tick() has not satistifed success criteria, calling self again with interval set for" + pollingInterval + "ms")
             $timeout(tick, pollingInterval)
           }
         }
       )
     }
 
+
     var showUpdateModal = function(url_slug_arg){
+      deferred = $q.defer()
       url_slug = url_slug_arg
 
       UsersUpdateStatus.get({id:url_slug}).$promise.then(
@@ -40,6 +40,7 @@ angular.module( 'update.update', [
           status = resp
 
           if (status.percent_complete < 100){
+
             // open the modal
             modalInstance = $modal.open({
               templateUrl: 'update/update-progress.tpl.html',
