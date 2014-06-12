@@ -480,9 +480,14 @@ def user_products_csv(id):
     tiids = user.tiids
 
     r = get_products_from_core_as_csv(tiids)
-    csv_contents = r.text
+    if r:
+        csv_contents = r.text
+        status_code = r.status_code
+    else:
+        csv_contents = ""
+        status_code = 200
 
-    resp = make_response(unicode(csv_contents), r.status_code)
+    resp = make_response(unicode(csv_contents), status_code)
     resp.mimetype = "text/csv;charset=UTF-8"
     resp.headers.add("Content-Disposition",
                      "attachment; filename=impactstory.csv")
