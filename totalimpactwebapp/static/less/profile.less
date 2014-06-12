@@ -24,6 +24,7 @@ div.signup-banner {
    font-weight: normal;
    font-size: 17px;
    text-align: center;
+   z-index: 100;
    a.signup-button{
       background: @linkColor;
       border:none;
@@ -152,6 +153,10 @@ div.profile-header {
                      font-family: Lato;
                      font-weight: normal;
                   }
+                  .call-to-action {
+                     color: @btn-info-border;
+                     font-style: italic;
+                  }
                }
 
                // the profile award proper
@@ -243,12 +248,12 @@ div.profile-header {
 div.modal-body.embed {
    label {
       float:left;
-      width: 250px;
+      width: 235px;
       font-weight: normal;
       text-align: center;
       &:first-child {
          img {
-            margin-top: 50px;
+            margin-top: 10px;
          }
       }
       strong {

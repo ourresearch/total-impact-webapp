@@ -24,7 +24,7 @@ angular.module('passwordReset', [
     console.log("submitting password to change", $scope.password)
     Loading.start("saveButton")
     UsersPassword.save(
-      {id: $routeParams.resetToken, idType:"reset_token"},
+      {id: $routeParams.resetToken, id_type:"reset_token"},
       {newPassword: $scope.password},
       function(resp) {
         UserMessage.set('passwordReset.success', true);

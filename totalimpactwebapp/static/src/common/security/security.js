@@ -6,8 +6,11 @@ angular.module('security.service', [
 ])
 
 .factory('security', function($http, $q, $location, $modal, UserMessage) {
-  var useCachedUser = false
-  var currentUser
+  var useCachedUser = true
+  var currentUser = globalCurrentUser || null
+  console.log("logging in from object: ", currentUser)
+
+
 
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
@@ -45,7 +48,7 @@ angular.module('security.service', [
     },
 
     login: function(email, password) {
-      return $http.post('/user/login', {email: email, password: password})
+      return $http.post('/user/current/login', {email: email, password: password})
         .success(function(data, status) {
           currentUser = data.user;
           console.log("user just logged in: ", currentUser)
@@ -129,11 +132,14 @@ angular.module('security.service', [
       }
     },
 
+
     loginFromCookie: function(){
+      console.log("logging in from cookie")
       return $http.get('/user/current')
         .success(function(data, status, headers, config) {
           useCachedUser = true
           currentUser = data.user;
+          console.log("successfully logged in from cookie.")
         })
         .then(function(){return currentUser})
     },
@@ -142,7 +148,7 @@ angular.module('security.service', [
     logout: function() {
       console.log("logging out user.", currentUser)
       currentUser = null;
-      $http.get('/user/logout').success(function(data, status, headers, config) {
+      $http.get('/user/current/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")
       });
     },
@@ -182,6 +188,10 @@ angular.module('security.service', [
     clearCachedUser: function(){
       currentUser = null
       useCachedUser = false
+    },
+
+    isLoggedIn: function(url_slug){
+      return currentUser && currentUser.url_slug && currentUser.url_slug==url_slug
     },
 
 

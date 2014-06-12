@@ -16,7 +16,6 @@ angular.module('profileLinkedAccounts', [
             return security.testUserAuthenticationLevel("ownsThisProfile")
           },
           currentUser: function(security){
-            security.clearCachedUser()
             return security.requestCurrentUser()
           }
         }

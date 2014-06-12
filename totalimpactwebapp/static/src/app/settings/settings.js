@@ -59,10 +59,10 @@ angular.module('settings', [
 
   })
 
-  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, UserMessage, Loading) {
+  .controller('profileSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
     $scope.onSave = function() {
       Loading.start('saveButton')
-      UsersAbout.patch(
+      Users.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
@@ -75,7 +75,7 @@ angular.module('settings', [
   })
 
 
-  .controller('NotificationsSettingsCtrl', function ($scope, UsersAbout, security, UserMessage, Loading) {
+  .controller('NotificationsSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
     $scope.onSave = function() {
       var messageKey = "settings.notifications."
         + $scope.user.notification_email_frequency
@@ -83,7 +83,7 @@ angular.module('settings', [
 
 
       Loading.start('saveButton')
-      UsersAbout.patch(
+      Users.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
@@ -125,12 +125,12 @@ angular.module('settings', [
 
 
 
-  .controller('urlSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {
+  .controller('urlSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
-      UsersAbout.patch(
-        {id: $scope.user.id, idType:"id"},
+      Users.patch(
+        {id: $scope.user.id, id_type:"id"},
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
@@ -143,7 +143,7 @@ angular.module('settings', [
 
 
 
-  .controller('premiumSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
+  .controller('premiumSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
 
 
     $scope.planStatus = function(statusToTest){
@@ -230,11 +230,11 @@ angular.module('settings', [
   })
 
 
-  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading) {
+  .controller('emailSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
-      UsersAbout.patch(
+      Users.patch(
         {id: $scope.user.url_slug, log:"changing email from settings"},
         {about: $scope.user},
         function(resp) {
@@ -250,36 +250,5 @@ angular.module('settings', [
     };
   })
 
-
-
-  // not currently using this...LinkedAccounts page is hidden.
-  .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, UserMessage, Loading, Update, UsersProducts) {
-
-
-    $scope.onSave = function() {
-      var url_slug = security.getCurrentUserSlug()
-
-      console.log("saving linked account info. sending this: ", $scope.user)
-      Loading.start('saveButton')
-
-      UsersAbout.patch(
-        {id: url_slug},
-        {about: $scope.user},
-        function(resp) {
-          security.setCurrentUser(resp.about) // update the current authenticated user.
-          UserMessage.set('settings.wordpress_api_key.add.success', true);
-
-          Update.setUpdateStarted(false)
-          Update.showUpdate(url_slug, function(){
-            $location.path("/" + url_slug)
-          })
-
-          UsersProducts.refresh({id: url_slug}, {}, function(){
-            Update.setUpdateStarted(true)
-          })
-        }
-      )
-    };
-  })
 
 

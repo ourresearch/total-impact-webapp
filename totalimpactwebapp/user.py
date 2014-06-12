@@ -1,6 +1,8 @@
 from totalimpactwebapp import db
-from totalimpactwebapp import cache
+from totalimpactwebapp import heading_product
 from totalimpactwebapp import profile_award
+from totalimpactwebapp import util
+from totalimpactwebapp import configs
 from totalimpactwebapp.product import Product
 
 from totalimpactwebapp.views import g
@@ -8,6 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
+from util import local_sleep
 from stripe import InvalidRequestError
 
 import requests
@@ -28,11 +31,41 @@ def now_in_utc():
     return datetime.datetime.utcnow()
 
 
+
 class EmailExistsError(Exception):
     pass
 
 class UrlSlugExistsError(Exception):
     pass
+
+
+
+class UpdateStatus(object):
+    def __init__(self, products):
+        self.products = products
+
+    @property
+    def num_updating(self):
+        return len([p for p in self.products if p.currently_updating])
+
+    @property
+    def num_complete(self):
+        return len(self.products) - self.num_updating
+
+    @property
+    def percent_complete(self):
+        try:
+            precise = float(self.num_complete) / len(self.products) * 100
+        except ZeroDivisionError:
+            precise = 100
+
+        return int(precise)
+
+
+    def to_dict(self):
+        return util.dict_from_dir(self, "products")
+
+
 
 
 class ProductsFromCore(object):
@@ -41,35 +74,50 @@ class ProductsFromCore(object):
     def __init__(self):
         pass
 
+    @classmethod
+    def clear_cache(cls):
+        del cls.cache[:]
+
     def get(self, tiids):
-
-        print "get products from core!"
-
+        timer = util.Timer()
+        #local_sleep(5)
         if not tiids:
             return []
 
-        query = u"{core_api_root}/v1/products?api_admin_key={api_admin_key}".format(
-            core_api_root=os.getenv("API_ROOT"),
-            api_admin_key=os.getenv("API_ADMIN_KEY")
-        )
-        # logger.debug(u"in get_products_from_core with query {query}".format(
-        #     query=query))
+        if len(self.__class__.cache):
+            ret = self.__class__.cache
+            logger.debug("ProductsFromCore returning {num_products} products from cache (too {elapsed}ms)".format(
+                num_products=len(ret),
+                elapsed=timer.elapsed()
+            ))
+        else:
+            query = u"{core_api_root}/v1/products.json?api_admin_key={api_admin_key}".format(
+                core_api_root=os.getenv("API_ROOT"),
+                api_admin_key=os.getenv("API_ADMIN_KEY")
+            )
 
-        most_recent_metric_date = os.getenv("most_recent_metric_date", now_in_utc().isoformat())
-        most_recent_diff_metric_date = os.getenv("most_recent_diff_metric_date", (now_in_utc() - datetime.timedelta(days=7)).isoformat())
+            most_recent_metric_date = os.getenv("most_recent_metric_date", now_in_utc().isoformat())
+            most_recent_diff_metric_date = os.getenv("most_recent_diff_metric_date", (now_in_utc() - datetime.timedelta(days=7)).isoformat())
 
-        r = requests.post(query,
-                data=json.dumps({
-                    "tiids": tiids,
-                    "most_recent_metric_date": most_recent_metric_date,
-                    "most_recent_diff_metric_date": most_recent_diff_metric_date
-                    }),
-                headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+            r = requests.post(query,
+                    data=json.dumps({
+                        "tiids": tiids,
+                        "most_recent_metric_date": most_recent_metric_date,
+                        "most_recent_diff_metric_date": most_recent_diff_metric_date
+                        }),
+                    headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
-        products = r.json()["products"]
-        products_list = products.values()
+            obj_resp = r.json()
+            products = obj_resp["products"]
+            ret = products.values()
+            logger.debug("ProductsFromCore had nothing cached, so got {num_products} products from core (took {elapsed}ms)".format(
+                num_products=len(ret),
+                elapsed=timer.elapsed()
+            ))
 
-        return products_list
+            self.__class__.cache = ret
+
+        return ret
 
 
 
@@ -143,8 +191,6 @@ class User(db.Model):
     wordpress_api_key = db.Column(db.Text)
     stripe_id = db.Column(db.Text)
 
-    #awards = []
-
     tips = db.Column(db.Text)  # ALTER TABLE "user" ADD tips text
     last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
     next_refresh = db.Column(db.DateTime()) # ALTER TABLE "user" ADD next_refresh timestamp; update "user" set next_refresh=last_refreshed + interval '7 days'
@@ -176,15 +222,11 @@ class User(db.Model):
 
     @property
     def product_objects(self):
-
-        print "get user.product_objects"
-
         # this is a hack to imitate what sqlalchemy will give us naturally
         products_from_core = ProductsFromCore()
         product_dicts = products_from_core.get(self.tiids)
 
         return [Product(product_dict) for product_dict in product_dicts]
-
 
 
     @property
@@ -197,10 +239,38 @@ class User(db.Model):
 
 
     @property
-    def profile_awards(self):
+    def awards(self):
         return profile_award.make_awards_list(self)
 
+    @property
+    def has_linked_account(self):
+        return True
 
+    @property
+    def linked_accounts(self):
+        ret = []
+        for k, v in self.__dict__.iteritems():
+            if k.endswith("_id"):
+                service = k.replace("_id", "")
+                if v and (service in configs.linked_accounts):
+                    profile_url = configs.linked_accounts[service].format(
+                        id=v
+                    )
+                else:
+                    profile_url = None
+
+                linked_account_dict = {
+                    "service": service,
+                    "username": v,
+                    "profile_url": profile_url
+                }
+                ret.append(linked_account_dict)
+        return ret
+
+
+    @property
+    def update_status(self):
+        return UpdateStatus(self.product_objects)
 
     @property
     def email_hash(self):
@@ -301,10 +371,6 @@ class User(db.Model):
 
         return add_tiids_to_user(self.id, tiids)
 
-    def delete_products(self, tiids_to_delete):
-        delete_products_from_user(self.id, tiids_to_delete)
-        return {"deleted_tiids": tiids_to_delete}
-
     def refresh_products(self, source="webapp"):
         save_user_last_refreshed_timestamp(self.id)
         analytics_credentials = self.get_analytics_credentials()        
@@ -357,7 +423,37 @@ class User(db.Model):
         return u'<User {name} (id {id})>'.format(name=self.full_name, id=self.id)
 
 
-    def dict_about(self, include_stripe=False):
+    def get_products_markup(self, markup, hide_keys=None, add_heading_products=True):
+        markup.set_template("product.html")
+        markup.context["profile"] = self
+
+        product_dicts = [p.to_markup_dict(markup, hide_keys)
+                for p in self.product_objects]
+
+        if add_heading_products:
+            headings = heading_product.make_list(self.product_objects)
+            markup.set_template("heading-product.html")
+            product_dicts += [hp.to_markup_dict(markup) for hp in headings]
+
+        return product_dicts
+
+
+    def get_single_product_markup(self, tiid, markup):
+        markup.set_template("single-product.html")
+        markup.context["profile"] = self
+        product = [p for p in self.product_objects if p.tiid == tiid][0]
+        return product.to_markup_dict(markup)
+
+
+
+
+    def dict_about(self, show_secrets=True):
+
+        secrets = [
+            "email",
+            "wordpress_api_key",
+            "password_hash"
+        ]
 
         properties_to_return = [
             "id",
@@ -386,32 +482,32 @@ class User(db.Model):
             "stripe_id",
             "new_metrics_notification_dismissed",
             "notification_email_frequency",
-            "is_advisor"
+            "is_advisor",
+            "linked_accounts"
         ]
 
         ret_dict = {}
-        for property in properties_to_return:
-            val = getattr(self, property, None)
+        for prop in properties_to_return:
+            val = getattr(self, prop, None)
             try:
                 # if we want dict, we probably want something json-serializable
                 val = val.isoformat()
             except AttributeError:
                 pass
 
-            ret_dict[property] = val
+            if show_secrets:
+                ret_dict[prop] = val
+            elif not show_secrets and not prop in secrets:
+                ret_dict[prop] = val
+            else:
+                pass  # hide_secrets=True, and this is a secret. don't return it.
+
 
         ret_dict["products_count"] = len(self.tiids)
 
-        if include_stripe:
-            try:
-                cu = stripe.Customer.retrieve(self.stripe_id)
-                ret_dict["subscription"] = cu.subscriptions.data[0].to_dict()
-                ret_dict["subscription"]["user_has_card"] = bool(cu.default_card)
-            except (IndexError, InvalidRequestError):
-                ret_dict["subscription"] = None
-
-        ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.product_objects])
-        ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
+        # commenting these out for now because they make the /user/current call too slow.
+        #ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.product_objects])
+        #ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
 
         return ret_dict
 
@@ -462,11 +558,12 @@ def add_tiids_to_user(user_id, tiids):
     return tiids
 
 
-def delete_products_from_user(user_id, tiids_to_delete):
-    user_object = User.query.get(user_id)
+def delete_products_from_user(profile, tiids_to_delete):
+    # this is confusing now, waiting to refactor for when we
+    # move core stuff to webapp though.
 
     number_deleted = 0
-    for user_tiid_obj in user_object.tiid_links:
+    for user_tiid_obj in profile.tiid_links:
         if user_tiid_obj.tiid in tiids_to_delete:
             number_deleted += 1
             user_tiid_obj.removed = now_in_utc()
@@ -476,7 +573,7 @@ def delete_products_from_user(user_id, tiids_to_delete):
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
         logger.warning(u"Fails Integrity check in delete_products_from_user for {user_id}, rolling back.  Message: {message}".format(
-            user_id=user_id,
+            user_id=profile.id,
             message=e.message))
 
     return True

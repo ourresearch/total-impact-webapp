@@ -14,7 +14,7 @@ angular.module('accounts.account', [
     Products,
     UsersProducts,
     UsersLinkedAccounts,
-    UsersAbout){
+    Users){
 
     var tiidsAdded = []
 
@@ -28,7 +28,7 @@ angular.module('accounts.account', [
 
       Loading.start("saveButton")
       console.log("unlinking account " + accountObj.accountHost)
-      UsersAbout.patch(
+      Users.patch(
         {id:url_slug},
         {about: about},
         function(resp){
@@ -56,7 +56,7 @@ angular.module('accounts.account', [
 
 
       Loading.start("saveButton")
-      UsersAbout.patch(
+      Users.patch(
         {id:url_slug},
         {about: about},
 

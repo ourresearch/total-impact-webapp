@@ -109,6 +109,7 @@ def dict_from_dir(obj, keys_to_ignore=None):
     return ret
 
 
+
 def todict(obj, classkey=None):
     # from http://stackoverflow.com/a/1118038/226013
     if isinstance(obj, dict):
@@ -164,3 +165,15 @@ class HTTPMethodOverrideMiddleware(object):
         return self.app(environ, start_response)
 
 
+
+
+class Timer(object):
+    def __init__(self):
+        self.start = datetime.datetime.now()
+
+    def elapsed(self):
+        finish_time = datetime.datetime.now()
+        elapsed = finish_time - self.start
+
+        # from http://stackoverflow.com/a/1905423/226013
+        return elapsed.seconds * 1000 + elapsed.microseconds / 1000.0

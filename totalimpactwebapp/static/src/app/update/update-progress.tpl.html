@@ -6,17 +6,18 @@
 
    <div class="update-progress">
       <div class="products not-done">
-         <div class="content" ng-show="updateStatus.numNotDone"></div>
-            <span class="count still-working">{{ updateStatus.numNotDone }}</span>
+         <div class="content" ng-show="status.getNumUpdating()"></div>
+            <span class="count still-working">{{ status.getNumUpdating() }}</span>
             <span class="descr">products updating</span>
          </div>
       </div>
 
-      <progress percent="updateStatus.percentComplete" class="progress-striped active"></progress>
+      <progressbar value="status.getPercentComplete()" type="info" class="progress-striped active">
+      </progressbar>
 
       <div class="products done">
-         <div class="content" ng-show="updateStatus.numNotDone"></div>
-            <span class="count finished">{{ updateStatus.numDone}}</span>
+         <div class="content" ng-show="status.getNumUpdating()"></div>
+            <span class="count finished">{{ status.getNumComplete()}}</span>
             <span class="descr">products <br>done</span>
          </div>
       </div>

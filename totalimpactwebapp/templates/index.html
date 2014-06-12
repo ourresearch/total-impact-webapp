@@ -19,12 +19,14 @@
    <!--[if lt IE 9]>
    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
    <![endif]-->
-   <link href='//fonts.googleapis.com/css?family=Rokkitt:400' rel='stylesheet' type='text/css' />
    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
 
    <!-- stylesheet is in less/css dir; it's a hack to get around limitations of CodeKit -->
    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='less/css/ImpactStory.css') }}" />
    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='img/favicon.ico') }}" />
+
+
+
 
 
 
@@ -39,16 +41,20 @@
    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.string/2.3.3/underscore.string.min.js"></script>
    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
-   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script>
-   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular-cookies.js"></script>
-   <script src="https://js.stripe.com/v2/"></script>
+
+   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-route.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-resource.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-cookies.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-sanitize.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-animate.min.js"></script>
+   <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
 
 
 
    <!-- compiled scripts from our sources -->
    <script type="text/javascript" src="{{ url_for('static', filename='dist/libs.js') }}"></script>
    <script type="text/javascript" src="{{ url_for('static', filename='dist/jquery-plugins.js') }}"></script>
-   <script type="text/javascript" src="{{ url_for('static', filename='dist/bootstrap.js') }}"></script>
    <script type="text/javascript" src="{{ url_for('static', filename='dist/angular.js') }}"></script> <!-- extra Angular modules -->
    <script type="text/javascript" src="{{ url_for('static', filename='dist/ImpactStory.js') }}"></script>
 
@@ -56,12 +62,27 @@
 </head>
 {% raw %}
 <body class="{{ page.getBodyClasses() }}" jq-popover jq-tooltip>
-   <div class="blur-container" ng-class="{blur: modalOpen()}">
-      <div ng-include="'user-message.tpl.html'" id="user-message"></div>
-      <div ng-include="'header.tpl.html'" id="page-header"></div>
-      <div ng-view class="main-view"></div>
-      <div ng-include="'footer.tpl.html'" id="page-footer"></div>
+
+
+   <div ng-include="'user-message.tpl.html'" id="user-message"></div>
+
+   <div id="page-header">
+      <div class="main-header header" ng-show="page.showHeader()">
+         <div class="wrapper">
+            <a class="brand" href="/">
+               <img src="/static/img/impactstory-logo-sideways.png" alt="Impactstory" />
+            </a>
+            <login-toolbar></login-toolbar>
+         </div>
+      </div>
    </div>
+
+   <div class="main-view-container">
+      <div ng-view class="main-view"></div>
+   </div>
+
+   <div ng-include="'footer.tpl.html'" id="page-footer"></div>
+
    <script src="/bottom.js"></script>
 </body>
 {% endraw %}

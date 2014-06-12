@@ -1,78 +1,85 @@
 angular.module( 'update.update', [
+    'emguo.poller',
     'resources.users'
   ])
-  .factory("Update", function($rootScope, $cacheFactory, $location, UsersProducts, $timeout, $modal){
+  .factory("Update", function($modal,
+                              $timeout,
+                              $q,
+                              poller,
+                              UsersUpdateStatus){
 
-    var updateStatus = {}
-    var updateStarted = true
+    var status = {}
+    var url_slug
+    var modalInstance
+    var pollingInterval = 10  // 10ms...as soon as we get server resp, ask again.
+    var deferred = $q.defer()
 
-
-    var keepPolling = function(url_slug, onFinish){
-
-
-      if (updateStatus.numNotDone > 0 || _.isNull(updateStatus.numNotDone)) {
-        UsersProducts.poll(
-          {id: url_slug, idType:"url_slug"},
-          function(resp){
-            updateStatus.numDone = numDone(resp, true)
-            updateStatus.numNotDone = numDone(resp, false)
-            updateStatus.percentComplete = updateStatus.numDone * 100 / (updateStatus.numDone + updateStatus.numNotDone)
-            $timeout(function(){keepPolling(url_slug, onFinish)}, 500);
-          })
-      }
-      else {
-
-        onFinish()
-      }
+    var tick = function(){
+      console.log("running tick()")
+      UsersUpdateStatus.get({id:url_slug}).$promise.then(function(resp){
+          console.log("tick() got response back from server", resp)
+          status = resp
+          if (resp.percent_complete == 100){
+            console.log("tick() satisfied success criteria, breaking out of recursion loop")
+            deferred.resolve("Update finished!")
+            modalInstance.close()
+          }
+          else {
+            console.log("tick() has not satistifed success criteria, calling self again with interval set for" + pollingInterval + "ms")
+            $timeout(tick, pollingInterval)
+          }
+        }
+      )
     }
 
-    var numDone = function(products, completedStatus){
-       var productsDone =  _.filter(products, function(product){
-        return _(product.update_status).startsWith("SUCCESS")
-       })
+    var showUpdateModal = function(url_slug_arg){
+      url_slug = url_slug_arg
 
-       if (!updateStarted){  // global var from above
-         productsDone = []
-       }
+      UsersUpdateStatus.get({id:url_slug}).$promise.then(
+        function(resp) {
+          console.log("running showUpdateModal()", resp)
+          status = resp
 
-       if (completedStatus) {
-         return productsDone.length
-       }
-       else {
-         return products.length - productsDone.length
-       }
-    };
+          if (status.percent_complete < 100){
+            // open the modal
+            modalInstance = $modal.open({
+              templateUrl: 'update/update-progress.tpl.html',
+              controller: 'updateProgressModalCtrl',
+              backdrop:"static",
+              keyboard: false
+            });
 
-    var update = function(url_slug, onFinish){
-      // reset the updateStatus var defined up in the factory scope.
-      updateStatus.numDone = null
-      updateStatus.numNotDone = null
-      updateStatus.percentComplete = null
-      onFinish = onFinish || function(){}
+            // start polling
+            tick()
+          }
+          else {
+            // nothing to see here, this profile is all up to date.
+            deferred.reject("Everything is already up to date.")
+          }
+        }
+      )
 
-      var modal = $modal.open({
-        templateUrl: 'update/update-progress.tpl.html',
-        controller: 'updateProgressModalCtrl',
-        backdrop:"static",
-        keyboard: false
-      });
-
-      keepPolling(url_slug, function(){
-        modal.close()
-        onFinish()
-      })
+      return deferred.promise
 
     }
+
+
 
 
     return {
-      showUpdate: update,
-      'updateStatus': updateStatus,
-      'setUpdateStarted': function(started){
-        updateStarted = !!started
+      showUpdateModal: showUpdateModal,
+      status: status,
+      getPercentComplete: function(){
+        return status.percent_complete
+      },
+      getNumComplete: function(){
+        return status.num_complete
+      },
+      getNumUpdating: function() {
+        return status.num_updating
       }
     }
   })
   .controller("updateProgressModalCtrl", function($scope, Update){
-    $scope.updateStatus = Update.updateStatus
+    $scope.status = Update
   })

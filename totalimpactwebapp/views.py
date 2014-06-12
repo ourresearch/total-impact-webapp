@@ -24,6 +24,7 @@ from totalimpactwebapp.user import User
 from totalimpactwebapp.user import create_user_from_slug
 from totalimpactwebapp.user import get_user_from_id
 from totalimpactwebapp.user import delete_user
+from totalimpactwebapp.user import ProductsFromCore
 
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import emailer
@@ -32,13 +33,11 @@ from totalimpactwebapp import configs
 from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.user import get_products_from_core_as_csv
 from totalimpactwebapp.user import EmailExistsError
-from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring
 from totalimpactwebapp import notification_report
-from totalimpactwebapp.products_decorator import ProductsDecorator
 
 
 import newrelic.agent
@@ -62,8 +61,6 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 #   CONVENIENCE FUNCTIONS
 #
 ###############################################################################
-
-
 
 
 
@@ -132,6 +129,19 @@ def abort_if_user_not_logged_in(profile):
         abort_json(405, "You can't do this because you're not logged in.")
 
 
+def is_logged_in(profile):
+    try:
+        return current_user.id != profile.id
+    except AttributeError:
+        return False
+
+
+
+
+
+
+
+
 
 ###############################################################################
 #
@@ -151,11 +161,8 @@ def setup_db_tables():
 
 @app.before_request
 def clear_cache():
-    """
-    On local, some users seem to persist in the cache across requests.
-    This is a hack to do fix that.
-    """
-    cache.clear()
+    # We don't want the cache to persist across requests.
+    ProductsFromCore.clear_cache()
 
 
 @app.before_request
@@ -166,7 +173,8 @@ def redirect_to_https():
         else:
             return redirect(request.url.replace("http://", "https://"), 301)  # permanent
     except KeyError:
-        logger.debug(u"There's no X-Forwarded-Proto header; assuming localhost, serving http.")
+        #logger.debug(u"There's no X-Forwarded-Proto header; assuming localhost, serving http.")
+        pass
 
 
 @app.before_request
@@ -182,7 +190,6 @@ def redirect_www_to_naked_domain():
 
 
 
-
 @app.before_request
 def load_globals():
     g.user = current_user
@@ -195,18 +202,6 @@ def load_globals():
     g.api_key = os.getenv("API_KEY")
     g.webapp_root = os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
 
-
-@app.before_request
-def log_ip_address():
-    pass
-    # if request.endpoint != "static":
-    #     try:
-    #         logger.info(u"{ip_address} IP address calling {method} {url}".format(
-    #             ip_address=request.remote_addr, 
-    #             method=request.method, 
-    #             url=to_unicode_or_bust(request.url)))
-    #     except UnicodeDecodeError:
-    #         logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
 
 
 @app.after_request
@@ -227,10 +222,13 @@ def extract_filename(s):
         return res[0].split(".")[0]
     return None
 
-#@app.after_request
-#def local_sleep_a_bit_for_everything(resp):
-#    local_sleep(.8)
-#    return resp
+
+
+
+
+
+
+
 
 
 
@@ -241,21 +239,16 @@ def extract_filename(s):
 
 ###############################################################################
 #
-#   JSON VIEWS (API)
+#   /user/current
 #
 ###############################################################################
-
-
-#------------------ /user/:actions -----------------
-
-
 
 
 @app.route("/user/current")
 def get_current_user():
-    #local_sleep(5)
+    local_sleep(1)
     try:
-        user_info = g.user.dict_about(include_stripe=True)
+        user_info = g.user.dict_about()
     except AttributeError:  # anon user has no as_dict()
         user_info = None
 
@@ -268,6 +261,7 @@ def current_user_notifications(notification_name):
     # hardcode for now
     notification_name = "new_metrics_notification_dismissed"
 
+    # it's Not RESTful to do this in a GET, but, whatevs.
     if request.args.get("action") == "dismiss":
         g.user.new_metrics_notification_dismissed = datetime.datetime.now()
         db.session.merge(g.user)
@@ -277,11 +271,7 @@ def current_user_notifications(notification_name):
 
 
 
-
-
-
-
-@app.route('/user/logout', methods=["POST", "GET"])
+@app.route('/user/current/logout', methods=["POST", "GET"])
 def logout():
     #sleep(1)
     logout_user()
@@ -289,7 +279,7 @@ def logout():
 
 
 
-@app.route("/user/login", methods=["POST"])
+@app.route("/user/current/login", methods=["POST"])
 def login():
 
     email = unicode(request.json["email"]).lower()
@@ -305,38 +295,64 @@ def login():
         # Yay, no errors! Log the user in.
         login_user(user)
 
-    return json_resp_from_thing({"user": user.dict_about(include_stripe=True)})
+    return json_resp_from_thing({"user": user.dict_about()})
 
 
 
-@app.route("/user/current/dismiss/new_metrics_notification", methods=["GET", "POST"])
-def user_new_metrics_notification(profile_id):
-    user = get_user_for_response(
-        profile_id,
-        request
-    )
 
 
 
-#------------------ /user/:id   -----------------
 
+
+
+
+
+
+
+
+###############################################################################
+#
+#   /user/:id
+#
+###############################################################################
 
 @app.route("/user/<profile_id>", methods=['GET'])
 def user_profile(profile_id):
-    user = get_user_for_response(
+    profile = get_user_for_response(
         profile_id,
         request
     )
-    return json_resp_from_thing(user)
+
+    resp_constr_timer = util.Timer()
+    markup = product.Markup(g.user_id, embed=request.args.get("embed"))
+    hide_keys = request.args.get("hide", "").split(",")
+
+    resp = {
+        "products": profile.get_products_markup(
+            markup=markup,
+            hide_keys=hide_keys,
+            add_heading_products=True
+        )
+    }
+
+    if not "about" in hide_keys:
+        resp["about"] = profile.dict_about(show_secrets=False)
+        resp["awards"] = profile.awards
+
+    logger.debug("/user/{slug} built the response; took {elapsed}ms".format(
+        slug=profile.url_slug,
+        elapsed=resp_constr_timer.elapsed()
+    ))
+    return json_resp_from_thing(resp)
 
 
 
-@app.route("/user/<slug>", methods=["POST"])
-def create_new_user_profile(slug):
+@app.route("/user/<profile_id>", methods=["POST"])
+def create_new_user_profile(profile_id):
     userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
 
     try:
-        new_profile = create_user_from_slug(slug, userdict, db)
+        new_profile = create_user_from_slug(profile_id, userdict, db)
 
     except EmailExistsError:
         abort_json(409, "That email already exists.")
@@ -359,35 +375,11 @@ def user_delete(profile_id):
 
 
 
-#------------------ /user/:id/about   -----------------
-
-
-@app.route("/user/<profile_id>/about", methods=['GET'])
-def user_about(profile_id):
-    user = get_user_for_response(profile_id, request)
-    dict_about = user.dict_about()
-    # logger.debug(u"got the user dict out: {user}".format(
-    #     user=dict_about))
-
-    local_sleep(1)
-
-
-    return json_resp_from_thing({"about": dict_about})
-
-
-@app.route("/user/<profile_id>/about", methods=['PATCH'])
+@app.route("/user/<profile_id>", methods=['PATCH'])
 def patch_user_about(profile_id):
 
     profile = get_user_for_response(profile_id, request)
     abort_if_user_not_logged_in(profile)
-
-    # logger.debug(
-    #     u"got patch request for profile {profile_id} (PK {pk}): '{log}'. {json}".format(
-    #     profile_id=profile_id,
-    #     pk=profile.id,
-    #     log=request.args.get("log", "").replace("+", " "),
-    #     json=request.json)
-    # )
 
     profile.patch(request.json["about"])
     db.session.commit()
@@ -395,94 +387,35 @@ def patch_user_about(profile_id):
     return json_resp_from_thing({"about": profile.dict_about()})
 
 
-@app.route("/user/<profile_id>/credit_card/<stripe_token>", methods=["POST"])
-def user_credit_card(profile_id, stripe_token):
-    profile = get_user_for_response(profile_id, request)
-    abort_if_user_not_logged_in(profile)
 
-    ret = user.upgrade_to_premium(profile, stripe_token)
-    return json_resp_from_thing({"result": ret})
-
-
-@app.route("/user/<profile_id>/subscription", methods=["DELETE"])
-def user_subscription(profile_id):
-    profile = get_user_for_response(profile_id, request)
-    abort_if_user_not_logged_in(profile)
-
-    if request.method == "DELETE":
-        ret = user.cancel_premium(profile)
-
-    return json_resp_from_thing({"result": ret})
-
-
-
-@app.route("/user/<profile_id>/awards", methods=['GET'])
-def user_profile_awards(profile_id):
-    user = get_user_for_response(
-        profile_id,
-        request
-    )
-
-    return json_resp_from_thing(user.profile_awards)
-
-
-
-
-#------------------ user/:userId/products -----------------
-
-@app.route("/user/<id>/products", methods=["GET"])
-def user_products_get(id):
-
-    profile = get_user_for_response(id, request)
-
-    try:
-        if current_user.url_slug == profile.url_slug:
-            profile.update_last_viewed_profile()
-    except AttributeError:   #AnonymousUser
-        pass
-
-    markup = product.Markup(g.user_id, embed=request.args.get("embed"))
-    hide_keys = request.args.get("hide", "").split(",")
-    add_heading_products = request.args.get("include_headings") in [1, "true", "True"]
-
-    products_decorator = ProductsDecorator(profile, markup)
-    products = products_decorator.list_of_dicts(
-        hide_keys=hide_keys,
-        add_heading_products=add_heading_products
-    )
-
-    #products = profile.products  # straight from core, for debugging.
-
-    return json_resp_from_thing(products)
-
-
-@app.route("/product/<tiid>/biblio", methods=["PATCH"])
-def product_biblio_modify(tiid):
-
-    try:
-        if tiid not in current_user.tiids:
-            abort_json(401, "You have to own this product to modify it.")
-    except AttributeError:
-        abort_json(405, "You musts be logged in to modify products.")
-
-    query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
-        core_api_root=os.getenv("API_ROOT"),
-        tiid=tiid,
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    data_dict = json.loads(request.data)
-    r = requests.patch(
-        query,
-        data=json.dumps(data_dict),
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
-    )
-
+@app.route("/user/<profile_id>/update_status", methods=["GET"])
+def update_status(profile_id):
     local_sleep(1)
-    
-    return json_resp_from_thing(r.json())
+    profile = get_user_for_response(profile_id, request)
+    return json_resp_from_thing(profile.update_status)
 
 
-@app.route("/user/<id>/products", methods=["POST", "DELETE", "PATCH"])
+
+
+
+
+
+
+
+
+
+
+
+
+
+###############################################################################
+#
+#   /user/:id/products
+#
+###############################################################################
+
+
+@app.route("/user/<id>/products", methods=["POST", "PATCH"])
 def user_products_modify(id):
 
     action = request.args.get("action", "refresh")
@@ -509,32 +442,35 @@ def user_products_modify(id):
             added_products = user.add_products(request.json)
             resp = {"products": added_products}
 
-        elif request.method == "DELETE":
-            tiids_to_delete = request.json.get("tiids")
-            resp = user.delete_products(tiids_to_delete)
-
         else:
             abort(405)  # method not supported.  We shouldn't get here.
 
     return json_resp_from_thing(resp)
 
 
-@app.route("/user/<user_id>/product/<tiid>", methods=['GET'])
+@app.route("/user/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
 def user_product(user_id, tiid):
 
     if user_id == "embed":
         abort(410)
 
     profile = get_user_for_response(user_id, request)
-    markup = product.Markup(g.user_id, embed=False)
 
-    try:
-        products_decorator = ProductsDecorator(profile, markup)
-        ret = products_decorator.single_dict(tiid)
-    except IndexError:
-        abort_json(404, "That product doesn't exist.")
+    if request.method == "GET":
+        markup = product.Markup(g.user_id, embed=False)
+        try:
+            resp = profile.get_single_product_markup(tiid, markup)
+        except IndexError:
+            abort_json(404, "That product doesn't exist.")
 
-    return json_resp_from_thing(ret)
+    elif request.method == "DELETE":
+        # kind of confusing now, waiting for core-to-webapp refactor
+        # to improve it though.
+        resp = user.delete_products_from_user(profile, [tiid])
+
+    return json_resp_from_thing(resp)
+
+
 
 
 @app.route("/user/<id>/products.csv", methods=["GET"])
@@ -556,14 +492,59 @@ def user_products_csv(id):
 
 
 
-#------------------ user/:id/password -----------------
+@app.route("/product/<tiid>/biblio", methods=["PATCH"])
+def product_biblio_modify(tiid):
+    # This should actually be like /user/:id/product/:tiid/biblio
+
+    try:
+        if tiid not in current_user.tiids:
+            abort_json(401, "You have to own this product to modify it.")
+    except AttributeError:
+        abort_json(405, "You musts be logged in to modify products.")
+
+    query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
+        core_api_root=os.getenv("API_ROOT"),
+        tiid=tiid,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    data_dict = json.loads(request.data)
+    r = requests.patch(
+        query,
+        data=json.dumps(data_dict),
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
+    )
+
+    local_sleep(1)
+
+    return json_resp_from_thing(r.json())
+
+
+
+
+
+
+
+
+
+
+
+
+
+###############################################################################
+#
+#   misc endpoints
+#
+###############################################################################
+
+
+
 
 @app.route("/user/<id>/password", methods=["POST"])
 def user_password_modify(id):
 
     current_password = request.json.get("currentPassword", None)
     new_password = request.json.get("newPassword", None)
-    id_type = request.args.get("id_type")
+    id_type = request.args.get("id_type", "url_slug")  # url_slug is default
 
     try:
         if id_type == "reset_token":
@@ -578,7 +559,6 @@ def user_password_modify(id):
     return json_resp_from_thing({"about": user.dict_about()})
 
 
-
 @app.route("/user/<id>/password", methods=["GET"])
 def get_password_reset_link(id):
     if request.args.get("id_type") != "email":
@@ -588,10 +568,6 @@ def get_password_reset_link(id):
 
     ret = send_reset_token(retrieved_user.email, request.url_root)
     return json_resp_from_thing({"sent_reset_email": ret})
-
-
-
-#------------------ importers/:importer -----------------
 
 
 
@@ -608,8 +584,7 @@ def user_linked_accounts_update(id, account):
 
 
 
-#------------------ /providers  (information about providers) -----------------
-@app.route('/providers', methods=["GET"])
+@app.route('/providers', methods=["GET"])  # information about providers
 def providers():
     try:
         url = u"{api_root}/v1/provider?key={api_key}".format(
@@ -630,13 +605,7 @@ def providers():
 
 
 
-
-
-
-#------------------ /tests  (supports functional testing) -----------------
-
-
-@app.route("/tests", methods=["DELETE"])
+@app.route("/tests", methods=["DELETE"])  # supports functional testing
 def delete_all_test_users():
     if not has_admin_authorization():
         abort_json(401, "Need admin key to delete all test users")
@@ -648,6 +617,16 @@ def delete_all_test_users():
         user_slugs_deleted.append(user.url_slug)
         delete_user(user)
     return json_resp_from_thing({"test_users": user_slugs_deleted})
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -725,11 +704,18 @@ def get_js_top():
     newrelic_header = views_helpers.remove_script_tags(
         newrelic.agent.get_browser_timing_header()
     )
+
+    try:
+        current_user_dict = current_user.dict_about()
+    except AttributeError:
+        current_user_dict = None
+
     return make_js_response(
         "top.js",
         segmentio_key=os.getenv("SEGMENTIO_KEY"),
         mixpanel_token=os.getenv("MIXPANEL_TOKEN"),
-        newrelic_header=newrelic_header
+        newrelic_header=newrelic_header,
+        current_user=current_user_dict
     )
 
 

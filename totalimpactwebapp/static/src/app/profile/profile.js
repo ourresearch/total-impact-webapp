@@ -1,7 +1,6 @@
 angular.module("profile", [
   'resources.users',
-  'product.product',
-  'profileAward.profileAward',
+  'resources.products',
   'services.page',
   'ui.bootstrap',
   'security',
@@ -29,11 +28,10 @@ angular.module("profile", [
 
 }])
 
-.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page, Tour){
+.factory('UserProfile', function($window, $anchorScroll, $location, security, Slug, Page){
   var about = {}
 
   var cacheProductsSetting = false
-  var hasConnectedAccounts = false
 
   return {
 
@@ -46,9 +44,7 @@ angular.module("profile", [
 
       return cacheProductsSetting
     },
-    hasConnectedAccounts: function(){
-      return hasConnectedAccounts
-    },
+
     makeAnchorLink: function(genre, account){
       var anchor = genre
       if (account) {
@@ -81,33 +77,6 @@ angular.module("profile", [
         $window.scrollTo(0, lastScrollPos)
       }
     },
-    loadProfile: function($scope, slug, currentUserOwnsProfile) {
-      return UsersAbout.get(
-        {
-          id: slug,
-          idType: "url_slug"
-        },
-        function(resp) { // success
-          console.log("got /about call back: ", resp.about)
-          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
-          about = resp.about
-
-          hasConnectedAccounts = _.some(about, function(v, k){
-            return (k.match(/_id$/) && v)
-          })
-
-          if (!about.products_count && currentUserOwnsProfile){
-            Tour.start(about)
-          }
-        },
-        function(resp) { // fail
-          if (resp.status == 404) {
-            $scope.userExists = false;
-            $scope.slug = slug;
-          }
-        }
-      );
-    },
     makeSlug: function(){
       about.url_slug = Slug.make(about.givenName, about.surname)
     },
@@ -137,31 +106,37 @@ angular.module("profile", [
     $anchorScroll,
     $cacheFactory,
     $window,
+    $sce,
+    Users,
     UsersProducts,
     Product,
     UserProfile,
-    ProfileAwards,
     UserMessage,
     Update,
     Loading,
+    Tour,
     Timer,
-    currentUserOwnsProfile,
+    security,
     Page) {
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
     }
 
+    console.log("loaded profile controller.")
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
-    // hack to make it easy to tell when update is done from selenium
-    $scope.productsStillUpdating = true
+    $scope.doneLoading = false
+    $scope.doneRendering = false
+
+    Timer.start("profileViewRender")
+    Timer.start("profileViewRender.load")
 
 
     // filtering stuff
     $scope.productFilter = {
-      has_new_metric: null,
-      has_metrics: true
+      has_new_metric: undefined,
+      has_metrics: undefined
     }
 
     if ($location.search().filter == "has_new_metric") {
@@ -172,12 +147,12 @@ angular.module("profile", [
     $scope.setProductFilter = function(setting){
 
       if (setting == "all") {
-        $scope.productFilter.has_new_metric = null
-        $scope.productFilter.has_metrics = null
+        $scope.productFilter.has_new_metric = undefined
+        $scope.productFilter.has_metrics = undefined
         $location.search("filter", null)
       }
       else if (setting == "has_metrics"){
-        $scope.productFilter.has_new_metric = null
+        $scope.productFilter.has_new_metric = undefined
         $scope.productFilter.has_metrics = true
         $location.search("filter", null)
       }
@@ -210,11 +185,11 @@ angular.module("profile", [
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
 
-      $scope.productsStillUpdating = false
+      $scope.doneRendering = true
 
       console.log(
         "finished rendering products in "
-          + Timer.elapsed("renderProducts")
+          + Timer.elapsed("profileViewRender.render")
           + "ms"
       )
 
@@ -224,12 +199,10 @@ angular.module("profile", [
 
     });
 
-    $scope.hasConnectedAccounts = UserProfile.hasConnectedAccounts
-
-    var userSlug = $routeParams.url_slug;
+    var url_slug = $routeParams.url_slug;
     var loadingProducts = true
 
-    $scope.url_slug = userSlug
+    $scope.url_slug = url_slug
     $scope.loadingProducts = function(){
       return loadingProducts
     }
@@ -242,13 +215,17 @@ angular.module("profile", [
     }
 
     $scope.refresh = function(){
-
-      var url = "/user/"+ userSlug +"/products?action=refresh"
-
+      var url = "/user/"+ url_slug +"/products?action=refresh"
       console.log("POSTing to ", url)
       $http.post(url, {}).success(function(data, status, headers, config){
         console.log("POST returned. We're refreshing these tiids: ", data)
+
+        // show the update modal
+        Update.showUpdateModal(url_slug).then(
+          renderProducts
+        )
       })
+
     }
 
     $scope.humanDate = function(isoStr) {
@@ -260,38 +237,25 @@ angular.module("profile", [
       analytics.track("Clicked signup link on profile")
     }
 
-    $scope.profile = UserProfile.loadProfile($scope, userSlug, currentUserOwnsProfile);
-
-    $scope.profileAwards = ProfileAwards.query(
-      {id:userSlug},
-      function(resp){
-        console.log("we got profile awards back: ", resp)
-      }
-    )
 
     $scope.currentUserIsProfileOwner = function(){
+      return true
       return currentUserOwnsProfile
     }
+
+
+
 
     $scope.openProfileEmbedModal = function(){
       $modal.open({
         templateUrl: "profile/profile-embed-modal.tpl.html",
         controller: "profileEmbedModalCtrl",
         resolve: {
-          userSlug: function($q){ // pass the userSlug to modal controller.
-            return $q.when(userSlug)
+          url_slug: function($q){ // pass the url_slug to modal controller.
+            return $q.when(url_slug)
           }
         }
       })
-    }
-
-
-    $scope.getSortScore = function(product) {
-      return Product.getSortScore(product) * -1;
-    }
-
-    $scope.getMetricSum = function(product) {
-      return Product.getMetricSum(product) * -1;
     }
 
 
@@ -301,15 +265,14 @@ angular.module("profile", [
       UserMessage.set(
         "profile.removeProduct.success",
         false,
-        {title: product.biblio.title}
+        {title: product.biblio.display_title}
       )
 
       // do the deletion in the background, without a progress spinner...
-      UsersProducts.delete(
-        {id: userSlug},
-        {"tiids": [product._id]},
+      Product.delete(
+        {user_id: url_slug, tiid: product._tiid},
         function(){
-          console.log("finished deleting", product.biblio.title)
+          console.log("finished deleting", product.biblio.display_title)
         }
       )
 
@@ -317,42 +280,43 @@ angular.module("profile", [
 
 
 
-    var renderProducts = function(){
-      Timer.start("getProducts")
-      loadingProducts = true
-      if (UserProfile.useCache() === false){
-        // generally this will happen, since the default is falst
-        // and we set it back to false either way once this function
-        // has run once.
-        $httpDefaultCache.removeAll()
-      }
+    // render the profile
 
-      UsersProducts.query({
-        id: userSlug,
-        includeHeadingProducts: true,
-        embedded: Page.isEmbedded(),
-        idType: "url_slug"
+    if (UserProfile.useCache() === false){
+      // generally this will happen, since the default is false
+      // and we set it back to false either way once this function
+      // has run once.
+      $httpDefaultCache.removeAll()
+    }
+
+
+
+
+    var renderProducts = function(){
+      Users.query({
+        id: url_slug,
+        embedded: Page.isEmbedded()
       },
         function(resp){
-          console.log("loaded products in " + Timer.elapsed("getProducts") + "ms")
+          console.log("got /user resp back in "
+            + Timer.elapsed("profileViewRender.load")
+            + "ms: ", resp)
 
           // we only cache things one time
           UserProfile.useCache(false)
 
-          var anythingStillUpdating =  !_.all(resp, function(product){
-            return (!!product.is_heading || !!_(product.update_status).startsWith("SUCCESS"))
-          })
+          // put our stuff in the scope
+          $scope.profile = resp.about
+          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+          $scope.products = resp.products
+          $scope.profileAwards = resp.awards
+          $scope.doneLoading = true
 
-          if (anythingStillUpdating) {
-            Update.showUpdate(userSlug, renderProducts)
+          if (resp.products.length == 0 && currentUserOwnsProfile){
+            Tour.start(resp.about)
           }
-          else {
-            $scope.products = resp
-          }
 
-
-          Timer.start("renderProducts")
-          loadingProducts = false
+          Timer.start("profileViewRender.render")
 
           // scroll to any hash-specified anchors on page. in a timeout because
           // must happen after page is totally rendered.
@@ -361,18 +325,25 @@ angular.module("profile", [
           }, 0)
 
         },
-        function(resp){loadingProducts = false}
+        function(resp){
+          console.log("problem loading the profile!", resp)
+          $scope.userExists = false
+        }
       );
     }
-    $timeout(renderProducts, 100)
+
+    renderProducts()
+    Update.showUpdateModal(url_slug).then(
+      renderProducts
+    )
 })
 
 
 
 
 
-.controller("profileEmbedModalCtrl", function($scope, $location, Page, userSlug){
-  console.log("user slug is: ", userSlug)
+.controller("profileEmbedModalCtrl", function($scope, $location, Page, url_slug){
+  console.log("user slug is: ", url_slug)
 
   var baseUrl = $location.protocol() + "://"
   baseUrl += $location.host()
@@ -383,7 +354,7 @@ angular.module("profile", [
   console.log("base url is ", baseUrl)
 
 
-  $scope.userSlug = userSlug;
+  $scope.url_slug = url_slug;
   $scope.baseUrl = baseUrl
   $scope.embed = {}
   $scope.embed.type = "badge"

@@ -3,9 +3,33 @@ angular.module('resources.users',['ngResource'])
   .factory('Users', function ($resource) {
 
     return $resource(
-      "/user/:id"
+      "/user/:id",
+      {},
+      {
+        query:{
+          method: "GET",
+          cache: true,
+          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
+        },
+        patch:{
+          method: "POST",
+          headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'},
+          params:{id:"@about.id"} // use the 'id' property of submitted data obj
+        }
+      }
     )
   })
+
+
+
+  .factory('UserProduct', function ($resource) {
+
+    return $resource(
+     "/user/:id/product/:tiid",
+     {}
+    )
+  })
+
 
   .factory('UsersProducts', function ($resource) {
 
@@ -31,7 +55,7 @@ angular.module('resources.users',['ngResource'])
           method: "GET",
           isArray: true,
           cache: true,
-          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@"}
+          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
         },
         poll:{
           method: "GET",
@@ -51,10 +75,8 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersProduct', function ($resource) {
 
     return $resource(
-      "/user/:id/product/:tiid?id_type=:idType",
-      {
-        idType: "url_slug"
-      },
+      "/user/:id/product/:tiid",
+      {},  // defaults go here
       {
         update:{
           method: "PUT"
@@ -63,20 +85,14 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
-  .factory('UsersAbout', function ($resource) {
-
+  .factory('UsersUpdateStatus', function ($resource) {
     return $resource(
-      "/user/:id/about?id_type=:idType",
-      {idType: "url_slug"},
-      {
-        patch:{
-          method: "POST",
-          headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'},
-          params:{id:"@about.id"} // use the 'id' property of submitted data obj
-        }
-      }
+      "/user/:id/update_status",
+      {}, // default params
+      {}  // method definitions
     )
   })
+
 
   .factory('UsersLinkedAccounts', function($resource){
 
@@ -98,8 +114,8 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersPassword', function ($resource) {
 
     return $resource(
-      "/user/:id/password?id_type=:idType",
-      {idType: "url_slug"}
+      "/user/:id/password",
+      {} // defaults
     )
   })
 
@@ -134,12 +150,3 @@ angular.module('resources.users',['ngResource'])
   })
 
 
-
-  .factory('ProfileAwards', function ($resource) {
-
-    return $resource(
-      "/user/:id/awards",
-      {},
-      {}
-    )
-  })

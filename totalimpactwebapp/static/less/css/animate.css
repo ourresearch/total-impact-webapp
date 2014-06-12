@@ -1,512 +1,3 @@
-
-
-/*********************************************************************
-**********************************************************************
-**********************************************************************
-**********************************************************************
-
-I'm pretty sure that the first part of this file is completely unused;
-all the way up the MIT-licensed stuff below. but not positive and don't
-have time to test it right now. so leaving.
-
-**********************************************************************
-**********************************************************************
-**********************************************************************
-*********************************************************************/
-
-
-.animated{-webkit-animation-fill-mode:both;-moz-animation-fill-mode:both;-ms-animation-fill-mode:both;-o-animation-fill-mode:both;animation-fill-mode:both;-webkit-animation-duration:0.5s;-moz-animation-duration:0.5s;-ms-animation-duration:0.5s;-o-animation-duration:0.5s;animation-duration:0.5s;}.animated.hinge{-webkit-animation-duration:0.5s;-moz-animation-duration:0.5s;-ms-animation-duration:0.5s;-o-animation-duration:0.5s;animation-duration:0.5s;}@-webkit-keyframes pulse {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                         0% { -webkit-transform: scale(1); }	50% { -webkit-transform: scale(1.1); }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                         100% { -webkit-transform: scale(1); }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                     }
-@-moz-keyframes pulse {
-    0% { -moz-transform: scale(1); }
-    50% { -moz-transform: scale(1.1); }
-    100% { -moz-transform: scale(1); }
-}
-@-o-keyframes pulse {
-    0% { -o-transform: scale(1); }
-    50% { -o-transform: scale(1.1); }
-    100% { -o-transform: scale(1); }
-}
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-.pulse {
-    -webkit-animation-name: pulse;
-    -moz-animation-name: pulse;
-    -o-animation-name: pulse;
-    animation-name: pulse;
-}
-@-webkit-keyframes fadeIn {
-    0% {opacity: 0;}
-    100% {opacity: 1;}
-}
-
-@-moz-keyframes fadeIn {
-    0% {opacity: 0;}
-    100% {opacity: 1;}
-}
-
-@-o-keyframes fadeIn {
-    0% {opacity: 0;}
-    100% {opacity: 1;}
-}
-
-@keyframes fadeIn {
-    0% {opacity: 0;}
-    100% {opacity: 1;}
-}
-
-.fadeIn {
-    -webkit-animation-name: fadeIn;
-    -moz-animation-name: fadeIn;
-    -o-animation-name: fadeIn;
-    animation-name: fadeIn;
-}
-@-webkit-keyframes fadeOut {
-    0% {opacity: 1;}
-    100% {opacity: 0;}
-}
-
-@-moz-keyframes fadeOut {
-    0% {opacity: 1;}
-    100% {opacity: 0;}
-}
-
-@-o-keyframes fadeOut {
-    0% {opacity: 1;}
-    100% {opacity: 0;}
-}
-
-@keyframes fadeOut {
-    0% {opacity: 1;}
-    100% {opacity: 0;}
-}
-
-.fadeOut {
-    -webkit-animation-name: fadeOut;
-    -moz-animation-name: fadeOut;
-    -o-animation-name: fadeOut;
-    animation-name: fadeOut;
-}
-
-
-@-webkit-keyframes fadeOutDown {
-  0% {
-    opacity: 1;
-    -webkit-transform: translateY(0);
-    transform: translateY(0);
-  }
-
-  100% {
-    opacity: 0;
-    -webkit-transform: translateY(20px);
-    transform: translateY(20px);
-  }
-}
-
-@keyframes fadeOutDown {
-  0% {
-    opacity: 1;
-    -webkit-transform: translateY(0);
-    -ms-transform: translateY(0);
-    transform: translateY(0);
-  }
-
-  100% {
-    opacity: 0;
-    -webkit-transform: translateY(20px);
-    -ms-transform: translateY(20px);
-    transform: translateY(20px);
-  }
-}
-
-.fadeOutDown {
-  -webkit-animation-name: fadeOutDown;
-  animation-name: fadeOutDown;
-}
-
-
-
-@-webkit-keyframes slideInDown {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateY(-2000px);
-    }
-
-    100% {
-        -webkit-transform: translateY(0);
-    }
-}
-
-@-moz-keyframes slideInDown {
-    0% {
-        opacity: 0;
-        -moz-transform: translateY(-2000px);
-    }
-
-    100% {
-        -moz-transform: translateY(0);
-    }
-}
-
-@-o-keyframes slideInDown {
-    0% {
-        opacity: 0;
-        -o-transform: translateY(-2000px);
-    }
-
-    100% {
-        -o-transform: translateY(0);
-    }
-}
-
-@keyframes slideInDown {
-    0% {
-        opacity: 0;
-        transform: translateY(-2000px);
-    }
-
-    100% {
-        transform: translateY(0);
-    }
-}
-
-.slideInDown {
-    -webkit-animation-name: slideInDown;
-    -moz-animation-name: slideInDown;
-    -o-animation-name: slideInDown;
-    animation-name: slideInDown;
-}
-@-webkit-keyframes slideInLeft {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateX(-2000px);
-    }
-
-    100% {
-        -webkit-transform: translateX(0);
-    }
-}
-
-@-moz-keyframes slideInLeft {
-    0% {
-        opacity: 0;
-        -moz-transform: translateX(-2000px);
-    }
-
-    100% {
-        -moz-transform: translateX(0);
-    }
-}
-
-@-o-keyframes slideInLeft {
-    0% {
-        opacity: 0;
-        -o-transform: translateX(-2000px);
-    }
-
-    100% {
-        -o-transform: translateX(0);
-    }
-}
-
-@keyframes slideInLeft {
-    0% {
-        opacity: 0;
-        transform: translateX(-2000px);
-    }
-
-    100% {
-        transform: translateX(0);
-    }
-}
-
-.slideInLeft {
-    -webkit-animation-name: slideInLeft;
-    -moz-animation-name: slideInLeft;
-    -o-animation-name: slideInLeft;
-    animation-name: slideInLeft;
-}
-@-webkit-keyframes slideInRight {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateX(2000px);
-    }
-
-    100% {
-        -webkit-transform: translateX(0);
-    }
-}
-
-@-moz-keyframes slideInRight {
-    0% {
-        opacity: 0;
-        -moz-transform: translateX(2000px);
-    }
-
-    100% {
-        -moz-transform: translateX(0);
-    }
-}
-
-@-o-keyframes slideInRight {
-    0% {
-        opacity: 0;
-        -o-transform: translateX(2000px);
-    }
-
-    100% {
-        -o-transform: translateX(0);
-    }
-}
-
-@keyframes slideInRight {
-    0% {
-        opacity: 0;
-        transform: translateX(2000px);
-    }
-
-    100% {
-        transform: translateX(0);
-    }
-}
-
-.slideInRight {
-    -webkit-animation-name: slideInRight;
-    -moz-animation-name: slideInRight;
-    -o-animation-name: slideInRight;
-    animation-name: slideInRight;
-}
-@-webkit-keyframes slideOutUp {
-    0% {
-        -webkit-transform: translateY(0);
-    }
-
-    100% {
-        opacity: 0;
-        -webkit-transform: translateY(-2000px);
-    }
-}
-
-@-moz-keyframes slideOutUp {
-    0% {
-        -moz-transform: translateY(0);
-    }
-
-    100% {
-        opacity: 0;
-        -moz-transform: translateY(-2000px);
-    }
-}
-
-@-o-keyframes slideOutUp {
-    0% {
-        -o-transform: translateY(0);
-    }
-
-    100% {
-        opacity: 0;
-        -o-transform: translateY(-2000px);
-    }
-}
-
-@keyframes slideOutUp {
-    0% {
-        transform: translateY(0);
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateY(-2000px);
-    }
-}
-
-.slideOutUp {
-    -webkit-animation-name: slideOutUp;
-    -moz-animation-name: slideOutUp;
-    -o-animation-name: slideOutUp;
-    animation-name: slideOutUp;
-}
-@-webkit-keyframes slideOutLeft {
-    0% {
-        -webkit-transform: translateX(0);
-    }
-
-    100% {
-        opacity: 0;
-        -webkit-transform: translateX(-2000px);
-    }
-}
-
-@-moz-keyframes slideOutLeft {
-    0% {
-        -moz-transform: translateX(0);
-    }
-
-    100% {
-        opacity: 0;
-        -moz-transform: translateX(-2000px);
-    }
-}
-
-@-o-keyframes slideOutLeft {
-    0% {
-        -o-transform: translateX(0);
-    }
-
-    100% {
-        opacity: 0;
-        -o-transform: translateX(-2000px);
-    }
-}
-
-@keyframes slideOutLeft {
-    0% {
-        transform: translateX(0);
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateX(-2000px);
-    }
-}
-
-.slideOutLeft {
-    -webkit-animation-name: slideOutLeft;
-    -moz-animation-name: slideOutLeft;
-    -o-animation-name: slideOutLeft;
-    animation-name: slideOutLeft;
-}
-@-webkit-keyframes slideOutRight {
-    0% {
-        -webkit-transform: translateX(0);
-    }
-
-    100% {
-        opacity: 0;
-        -webkit-transform: translateX(2000px);
-    }
-}
-
-@-moz-keyframes slideOutRight {
-    0% {
-        -moz-transform: translateX(0);
-    }
-
-    100% {
-        opacity: 0;
-        -moz-transform: translateX(2000px);
-    }
-}
-
-@-o-keyframes slideOutRight {
-    0% {
-        -o-transform: translateX(0);
-    }
-
-    100% {
-        opacity: 0;
-        -o-transform: translateX(2000px);
-    }
-}
-
-@keyframes slideOutRight {
-    0% {
-        transform: translateX(0);
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateX(2000px);
-    }
-}
-
-.slideOutRight {
-    -webkit-animation-name: slideOutRight;
-    -moz-animation-name: slideOutRight;
-    -o-animation-name: slideOutRight;
-    animation-name: slideOutRight;
-}
-
-
-.waitThenSlideRight {
-    -webkit-animation-delay: .1s;
-    animation-delay: .1s;
-
-    -webkit-animation-name: slideOutRight;
-    -moz-animation-name: slideOutRight;
-    -o-animation-name: slideOutRight;
-    animation-name: slideOutRight;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*********************************************************************
-**********************************************************************
-**********************************************************************
-**********************************************************************
-
-I'm pretty sure we're only using the stuff below here...not worth
-deleting the stuff above for now, though, no time to test.
-
-**********************************************************************
-**********************************************************************
-**********************************************************************
-*********************************************************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @charset "UTF-8";
 
 
@@ -534,6 +25,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   -webkit-animation-duration: 2s;
   animation-duration: 2s;
 }
+
+
+
+
+
+
+
+/*                   bounce                        */
+/**************************************************/
+
 
 @-webkit-keyframes bounce {
   0%, 20%, 50%, 80%, 100% {
@@ -572,10 +73,27 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.bounce {
+.bounce.ng-enter {
   -webkit-animation-name: bounce;
   animation-name: bounce;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   flash                        */
+/**************************************************/
 
 @-webkit-keyframes flash {
   0%, 50%, 100% {
@@ -597,10 +115,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.flash {
+.flash.ng-enter {
   -webkit-animation-name: flash;
   animation-name: flash;
 }
+
+
+
+
+
+
+
+/*                   pulse                        */
+/**************************************************/
 
 /* originally authored by Nick Pettit - https://github.com/nickpettit/glide */
 
@@ -641,11 +168,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.pulse {
+.pulse.ng-enter {
   -webkit-animation-name: pulse;
   animation-name: pulse;
 }
 
+
+
+
+
+
+
+
+
+/*                   shake                        */
+/**************************************************/
 @-webkit-keyframes shake {
   0%, 100% {
     -webkit-transform: translateX(0);
@@ -683,11 +220,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.shake {
+.shake.ng-enter {
   -webkit-animation-name: shake;
   animation-name: shake;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   swing                        */
+/**************************************************/
 @-webkit-keyframes swing {
   20% {
     -webkit-transform: rotate(15deg);
@@ -747,7 +299,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.swing {
+.swing.ng-enter {
   -webkit-transform-origin: top center;
   -ms-transform-origin: top center;
   transform-origin: top center;
@@ -755,6 +307,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   animation-name: swing;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/*                   tada                        */
+/**************************************************/
 @-webkit-keyframes tada {
   0% {
     -webkit-transform: scale(1);
@@ -814,11 +379,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.tada {
+.tada.ng-enter {
   -webkit-animation-name: tada;
   animation-name: tada;
 }
 
+
+
+
+
+
+
+
+
+/*                   wobble                        */
+/**************************************************/
 /* originally authored by Nick Pettit - https://github.com/nickpettit/glide */
 
 @-webkit-keyframes wobble {
@@ -902,11 +477,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.wobble {
+.wobble.ng-enter {
   -webkit-animation-name: wobble;
   animation-name: wobble;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   bouncein                        */
+/**************************************************/
 @-webkit-keyframes bounceIn {
   0% {
     opacity: 0;
@@ -959,11 +548,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.bounceIn {
+.bounceIn.ng-enter {
   -webkit-animation-name: bounceIn;
   animation-name: bounceIn;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/*                   bounceindown                        */
+/**************************************************/
 @-webkit-keyframes bounceInDown {
   0% {
     opacity: 0;
@@ -1016,10 +618,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.bounceInDown {
+.bounceInDown.ng-enter {
   -webkit-animation-name: bounceInDown;
   animation-name: bounceInDown;
 }
+
+
+
+
+
+
+
+
+
+
+
+/*                   bounceInLeft                        */
+/**************************************************/
 
 @-webkit-keyframes bounceInLeft {
   0% {
@@ -1073,10 +688,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.bounceInLeft {
+.bounceInLeft.ng-enter {
   -webkit-animation-name: bounceInLeft;
   animation-name: bounceInLeft;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   bounceInRight                        */
+/**************************************************/
 
 @-webkit-keyframes bounceInRight {
   0% {
@@ -1130,10 +759,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.bounceInRight {
+.bounceInRight.ng-enter {
   -webkit-animation-name: bounceInRight;
   animation-name: bounceInRight;
 }
+
+
+
+
+
+
+
+/*                   bounceinup                        */
+/**************************************************/
 
 @-webkit-keyframes bounceInUp {
   0% {
@@ -1187,10 +825,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.bounceInUp {
+.bounceInUp.ng-enter {
   -webkit-animation-name: bounceInUp;
   animation-name: bounceInUp;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   bounceout                        */
+/**************************************************/
 
 @-webkit-keyframes bounceOut {
   0% {
@@ -1244,10 +896,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.bounceOut {
+.bounceOut.ng-leave {
   -webkit-animation-name: bounceOut;
   animation-name: bounceOut;
 }
+
+
+
+
+
+
+
+
+
+
+
+/*                   bounceoutdown                        */
+/**************************************************/
 
 @-webkit-keyframes bounceOutDown {
   0% {
@@ -1290,10 +955,29 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.bounceOutDown {
+.bounceOutDown.ng-leave {
   -webkit-animation-name: bounceOutDown;
   animation-name: bounceOutDown;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   bounceOutLeft                        */
+/**************************************************/
+
 
 @-webkit-keyframes bounceOutLeft {
   0% {
@@ -1336,10 +1020,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.bounceOutLeft {
+.bounceOutLeft.ng-leave {
   -webkit-animation-name: bounceOutLeft;
   animation-name: bounceOutLeft;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   bounceOutRight                        */
+/**************************************************/
 
 @-webkit-keyframes bounceOutRight {
   0% {
@@ -1382,10 +1080,27 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.bounceOutRight {
+.bounceOutRight.ng-leave {
   -webkit-animation-name: bounceOutRight;
   animation-name: bounceOutRight;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   bounceOutUp                        */
+/**************************************************/
 
 @-webkit-keyframes bounceOutUp {
   0% {
@@ -1428,10 +1143,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.bounceOutUp {
+.bounceOutUp.ng-leave {
   -webkit-animation-name: bounceOutUp;
   animation-name: bounceOutUp;
 }
+
+
+
+
+
+
+
+
+
+/*                   FadeIn                        */
+/**************************************************/
 
 @-webkit-keyframes fadeIn {
   0% {
@@ -1453,10 +1179,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeIn {
+.fadeIn.ng-enter {
   -webkit-animation-name: fadeIn;
   animation-name: fadeIn;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   FadeInDown                     */
+/**************************************************/
+
 
 @-webkit-keyframes fadeInDown {
   0% {
@@ -1488,10 +1230,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeInDown {
+.fadeInDown.ng-enter {
   -webkit-animation-name: fadeInDown;
   animation-name: fadeInDown;
 }
+
+
+
+
+
+
+
+
+
+/*                   FadeDownBig                        */
+/**************************************************/
 
 @-webkit-keyframes fadeInDownBig {
   0% {
@@ -1523,10 +1276,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeInDownBig {
+.fadeInDownBig.ng-enter {
   -webkit-animation-name: fadeInDownBig;
   animation-name: fadeInDownBig;
 }
+
+
+
+
+
+
+
+
+
+
+
+/*                   FadeInLeft                       */
+/**************************************************/
 
 @-webkit-keyframes fadeInLeft {
   0% {
@@ -1558,10 +1324,27 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeInLeft {
+.fadeInLeft.ng-enter {
   -webkit-animation-name: fadeInLeft;
   animation-name: fadeInLeft;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   FadeInLeftBig                        */
+/**************************************************/
 
 @-webkit-keyframes fadeInLeftBig {
   0% {
@@ -1593,10 +1376,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeInLeftBig {
+.fadeInLeftBig.ng-enter {
   -webkit-animation-name: fadeInLeftBig;
   animation-name: fadeInLeftBig;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   FadeInRight                        */
+/**************************************************/
 
 @-webkit-keyframes fadeInRight {
   0% {
@@ -1628,10 +1427,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeInRight {
+.fadeInRight.ng-enter {
   -webkit-animation-name: fadeInRight;
   animation-name: fadeInRight;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes fadeInRightBig {
   0% {
@@ -1663,10 +1477,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeInRightBig {
+.fadeInRightBig.ng-enter {
   -webkit-animation-name: fadeInRightBig;
   animation-name: fadeInRightBig;
 }
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes fadeInUp {
   0% {
@@ -1698,10 +1525,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeInUp {
+.fadeInUp.ng-enter {
   -webkit-animation-name: fadeInUp;
   animation-name: fadeInUp;
 }
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes fadeInUpBig {
   0% {
@@ -1733,10 +1571,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeInUpBig {
+.fadeInUpBig.ng-enter {
   -webkit-animation-name: fadeInUpBig;
   animation-name: fadeInUpBig;
 }
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes fadeOut {
   0% {
@@ -1758,7 +1609,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeOut {
+.fadeOut.ng-leave {
   -webkit-animation-name: fadeOut;
   animation-name: fadeOut;
 }
@@ -1777,6 +1628,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
+
 @keyframes fadeOutDown {
   0% {
     opacity: 1;
@@ -1793,7 +1656,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeOutDown {
+.fadeOutDown.ng-leave {
   -webkit-animation-name: fadeOutDown;
   animation-name: fadeOutDown;
 }
@@ -1812,6 +1675,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
+
 @keyframes fadeOutDownBig {
   0% {
     opacity: 1;
@@ -1828,10 +1702,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeOutDownBig {
+.fadeOutDownBig.ng-leave {
   -webkit-animation-name: fadeOutDownBig;
   animation-name: fadeOutDownBig;
 }
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes fadeOutLeft {
   0% {
@@ -1863,10 +1748,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeOutLeft {
+.fadeOutLeft.ng-leave {
   -webkit-animation-name: fadeOutLeft;
   animation-name: fadeOutLeft;
 }
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes fadeOutLeftBig {
   0% {
@@ -1898,10 +1795,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeOutLeftBig {
+.fadeOutLeftBig.ng-leave {
   -webkit-animation-name: fadeOutLeftBig;
   animation-name: fadeOutLeftBig;
 }
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes fadeOutRight {
   0% {
@@ -1933,10 +1841,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeOutRight {
+.fadeOutRight.ng-leave {
   -webkit-animation-name: fadeOutRight;
   animation-name: fadeOutRight;
 }
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes fadeOutRightBig {
   0% {
@@ -1968,10 +1885,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeOutRightBig {
+.fadeOutRightBig.ng-leave {
   -webkit-animation-name: fadeOutRightBig;
   animation-name: fadeOutRightBig;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes fadeOutUp {
   0% {
@@ -2003,10 +1934,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeOutUp {
+.fadeOutUp.ng-leave {
   -webkit-animation-name: fadeOutUp;
   animation-name: fadeOutUp;
 }
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes fadeOutUpBig {
   0% {
@@ -2038,10 +1981,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.fadeOutUpBig {
+.fadeOutUpBig.ng-leave {
   -webkit-animation-name: fadeOutUpBig;
   animation-name: fadeOutUpBig;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes flip {
   0% {
@@ -2130,6 +2088,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   animation-name: flip;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 @-webkit-keyframes flipInX {
   0% {
     -webkit-transform: perspective(400px) rotateX(90deg);
@@ -2182,13 +2153,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.flipInX {
+.flipInX.ng-enter {
   -webkit-backface-visibility: visible !important;
   -ms-backface-visibility: visible !important;
   backface-visibility: visible !important;
   -webkit-animation-name: flipInX;
   animation-name: flipInX;
 }
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes flipInY {
   0% {
@@ -2242,7 +2226,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.flipInY {
+.flipInY.ng-enter {
   -webkit-backface-visibility: visible !important;
   -ms-backface-visibility: visible !important;
   backface-visibility: visible !important;
@@ -2250,6 +2234,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   animation-name: flipInY;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 @-webkit-keyframes flipOutX {
   0% {
     -webkit-transform: perspective(400px) rotateX(0deg);
@@ -2280,13 +2278,28 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.flipOutX {
+.flipOutX.ng-leave {
   -webkit-animation-name: flipOutX;
   animation-name: flipOutX;
   -webkit-backface-visibility: visible !important;
   -ms-backface-visibility: visible !important;
   backface-visibility: visible !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes flipOutY {
   0% {
@@ -2318,13 +2331,27 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.flipOutY {
+.flipOutY.ng-leave {
   -webkit-backface-visibility: visible !important;
   -ms-backface-visibility: visible !important;
   backface-visibility: visible !important;
   -webkit-animation-name: flipOutY;
   animation-name: flipOutY;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes lightSpeedIn {
   0% {
@@ -2382,13 +2409,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.lightSpeedIn {
+.lightSpeedIn.ng-enter {
   -webkit-animation-name: lightSpeedIn;
   animation-name: lightSpeedIn;
   -webkit-animation-timing-function: ease-out;
   animation-timing-function: ease-out;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 @-webkit-keyframes lightSpeedOut {
   0% {
     -webkit-transform: translateX(0%) skewX(0deg);
@@ -2419,13 +2459,28 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.lightSpeedOut {
+.lightSpeedOut.ng-leave {
   -webkit-animation-name: lightSpeedOut;
   animation-name: lightSpeedOut;
   -webkit-animation-timing-function: ease-in;
   animation-timing-function: ease-in;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 @-webkit-keyframes rotateIn {
   0% {
     -webkit-transform-origin: center center;
@@ -2466,11 +2521,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.rotateIn {
+.rotateIn.ng-enter {
   -webkit-animation-name: rotateIn;
   animation-name: rotateIn;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 @-webkit-keyframes rotateInDownLeft {
   0% {
     -webkit-transform-origin: left bottom;
@@ -2511,11 +2579,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.rotateInDownLeft {
+.rotateInDownLeft.ng-enter {
   -webkit-animation-name: rotateInDownLeft;
   animation-name: rotateInDownLeft;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 @-webkit-keyframes rotateInDownRight {
   0% {
     -webkit-transform-origin: right bottom;
@@ -2556,11 +2639,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.rotateInDownRight {
+.rotateInDownRight.ng-enter {
   -webkit-animation-name: rotateInDownRight;
   animation-name: rotateInDownRight;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 @-webkit-keyframes rotateInUpLeft {
   0% {
     -webkit-transform-origin: left bottom;
@@ -2601,10 +2697,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.rotateInUpLeft {
+.rotateInUpLeft.ng-enter {
   -webkit-animation-name: rotateInUpLeft;
   animation-name: rotateInUpLeft;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 @-webkit-keyframes rotateInUpRight {
   0% {
@@ -2646,11 +2754,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.rotateInUpRight {
+.rotateInUpRight.ng-enter {
   -webkit-animation-name: rotateInUpRight;
   animation-name: rotateInUpRight;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 @-webkit-keyframes rotateOut {
   0% {
     -webkit-transform-origin: center center;
@@ -2691,10 +2814,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.rotateOut {
+.rotateOut.ng-leave {
   -webkit-animation-name: rotateOut;
   animation-name: rotateOut;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes rotateOutDownLeft {
   0% {
@@ -2736,10 +2873,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.rotateOutDownLeft {
+.rotateOutDownLeft.ng-leave {
   -webkit-animation-name: rotateOutDownLeft;
   animation-name: rotateOutDownLeft;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes rotateOutDownRight {
   0% {
@@ -2781,10 +2932,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.rotateOutDownRight {
+.rotateOutDownRight.ng-leave {
   -webkit-animation-name: rotateOutDownRight;
   animation-name: rotateOutDownRight;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes rotateOutUpLeft {
   0% {
@@ -2826,10 +2991,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.rotateOutUpLeft {
+.rotateOutUpLeft.ng-leave {
   -webkit-animation-name: rotateOutUpLeft;
   animation-name: rotateOutUpLeft;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes rotateOutUpRight {
   0% {
@@ -2871,10 +3050,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.rotateOutUpRight {
+.rotateOutUpRight.ng-leave {
   -webkit-animation-name: rotateOutUpRight;
   animation-name: rotateOutUpRight;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes slideInDown {
   0% {
@@ -2904,11 +3097,27 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.slideInDown {
+.slideInDown.ng-enter {
   -webkit-animation-name: slideInDown;
   animation-name: slideInDown;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 @-webkit-keyframes slideInLeft {
   0% {
     opacity: 0;
@@ -2937,10 +3146,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.slideInLeft {
+.slideInLeft.ng-enter {
   -webkit-animation-name: slideInLeft;
   animation-name: slideInLeft;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes slideInRight {
   0% {
@@ -2970,10 +3193,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.slideInRight {
+.slideInRight.ng-enter {
   -webkit-animation-name: slideInRight;
   animation-name: slideInRight;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes slideOutLeft {
   0% {
@@ -3003,10 +3241,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.slideOutLeft {
+.slideOutLeft.ng-leave {
   -webkit-animation-name: slideOutLeft;
   animation-name: slideOutLeft;
 }
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 
 @-webkit-keyframes slideOutRight {
   0% {
@@ -3036,11 +3287,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.slideOutRight {
+.slideOutRight.ng-leave {
   -webkit-animation-name: slideOutRight;
   animation-name: slideOutRight;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
 @-webkit-keyframes slideOutUp {
   0% {
     -webkit-transform: translateY(0);
@@ -3069,10 +3333,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-.slideOutUp {
+.slideOutUp.ng-leave {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp;
 }
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/*  not really sure what to to about this one, leaving .ng off */
+/**************************************************/
 
 @-webkit-keyframes hinge {
   0% {
@@ -3194,65 +3470,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
 
-@keyframes rollIn {
-  0% {
-    opacity: 0;
-    -webkit-transform: translateX(-100%) rotate(-120deg);
-    -ms-transform: translateX(-100%) rotate(-120deg);
-    transform: translateX(-100%) rotate(-120deg);
-  }
 
-  100% {
-    opacity: 1;
-    -webkit-transform: translateX(0px) rotate(0deg);
-    -ms-transform: translateX(0px) rotate(0deg);
-    transform: translateX(0px) rotate(0deg);
-  }
+
+
+
+
+
+/*       WaitThenSlideRight (custom)         */
+/**************************************************/
+
+.waitThenSlideRight.ng-leave {
+    -webkit-animation-delay: .1s;
+    animation-delay: .1s;
+
+    -webkit-animation-name: slideOutRight;
+    -moz-animation-name: slideOutRight;
+    -o-animation-name: slideOutRight;
+    animation-name: slideOutRight;
 }
-
-.rollIn {
-  -webkit-animation-name: rollIn;
-  animation-name: rollIn;
-}
-
-/* originally authored by Nick Pettit - https://github.com/nickpettit/glide */
-
-@-webkit-keyframes rollOut {
-  0% {
-    opacity: 1;
-    -webkit-transform: translateX(0px) rotate(0deg);
-    transform: translateX(0px) rotate(0deg);
-  }
-
-  100% {
-    opacity: 0;
-    -webkit-transform: translateX(100%) rotate(120deg);
-    transform: translateX(100%) rotate(120deg);
-  }
-}
-
-@keyframes rollOut {
-  0% {
-    opacity: 1;
-    -webkit-transform: translateX(0px) rotate(0deg);
-    -ms-transform: translateX(0px) rotate(0deg);
-    transform: translateX(0px) rotate(0deg);
-  }
-
-  100% {
-    opacity: 0;
-    -webkit-transform: translateX(100%) rotate(120deg);
-    -ms-transform: translateX(100%) rotate(120deg);
-    transform: translateX(100%) rotate(120deg);
-  }
-}
-
-.rollOut {
-  -webkit-animation-name: rollOut;
-  animation-name: rollOut;
-}
-
-
-
 
 

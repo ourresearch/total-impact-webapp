@@ -6,6 +6,10 @@ _.mixin(_.str.exports());
 angular.module('app', [
   'placeholderShim',
   'ngCookies',
+  'ngRoute',
+  'ngSanitize',
+  'ngAnimate',
+  'emguo.poller',
   'services.loading',
   'services.userMessage',
   'services.uservoiceWidget',
@@ -34,16 +38,13 @@ angular.module('app').constant('TEST', {
 angular.module('app').config(function ($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
 
+
+
   // want to make sure the user profile route loads last, because it's super greedy.
   $routeProvider.when("/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
     controller:'ProfileCtrl',
-    reloadOnSearch: false,
-    resolve: {
-      currentUserOwnsProfile: function($route, $q, security){
-        return security.currentUserOwnsProfile($route.current.params.url_slug)
-      }
-    }
+    reloadOnSearch: false
   })
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
@@ -69,6 +70,7 @@ angular.module('app').run(function(security, $window, Page, $location) {
 angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
+                                                     $sce,
                                                      UserMessage,
                                                      UservoiceWidget,
                                                      $location,
@@ -78,6 +80,11 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $rootScope,
                                                      TiMixpanel,
                                                      RouteChangeErrorHandler) {
+
+//  TiMixpanel.clearCookie()
+  TiMixpanel.get("foo").then(function(x){
+    console.log("got mixpanel cookie!", x)
+  })
 
   $scope.userMessage = UserMessage
   $rootScope.security = security
@@ -89,6 +96,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.tiMixpanel = TiMixpanel
   $scope.modalOpen = function(){
     return $rootScope.modalOpen
+  }
+
+  $scope.trustHtml = function(str){
+    return $sce.trustAsHtml(str)
   }
 
 

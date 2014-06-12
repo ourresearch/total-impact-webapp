@@ -144,6 +144,9 @@ class ProfileDeets(db.Model):
             tiid=self.tiid)
 
 
+# this commented stuff is all really out of date as of jun 8,
+# but i'm leaving alone because it's commented out. -j
+
 # @task(ignore_result=True, base=TaskThatSavesState)
 # def add_profile_deets(user):
 #     product_dicts = products_list.prep(

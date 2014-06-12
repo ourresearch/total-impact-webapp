@@ -4,7 +4,6 @@ angular.module("profileProduct", [
     'profileAward.profileAward',
     'services.page',
     'profile',
-    'product.product',
     'services.loading',
     'ui.bootstrap',
     'security'
@@ -28,10 +27,10 @@ angular.module("profileProduct", [
     $modal,
     $cacheFactory,
     $compile,
+    $sce,
     security,
     UsersProduct,
     UsersProducts,
-    ProfileAwards,
     UserProfile,
     Product,
     Loading,
@@ -50,27 +49,19 @@ angular.module("profileProduct", [
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
     $scope.openFulltextLocationModal = function(){
+      console.log("opening the modal")
       $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
     }
 
 
-    $scope.profileAwards = ProfileAwards.query(
-      {id:slug},
-      function(resp){
-      }
-    )
-
     $scope.deleteProduct = function(){
-
       Loading.start("deleteProduct")
       UserProfile.useCache(false)
 
-      // do the deletion in the background, without a progress spinner...
-      UsersProducts.delete(
-        {id: slug, idType:"url_slug"},  // the url
-        {"tiids": [$routeParams.tiid]},  // the body data
+      Product.delete(
+        {user_id: slug, tiid: $routeParams.tiid},
         function(){
-          console.log("finished deleting", $routeParams.tiid)
+          Loading.finish("deleteProduct")
           security.redirectToProfile()
         }
       )
@@ -96,7 +87,15 @@ angular.module("profileProduct", [
     function(data){
       Loading.finish('profileProduct')
       Page.setTitle(data.biblio.title)
-      $scope.productMarkup = $compile(data.markup)($scope)
+
+
+//      var compiled = $compile(data.markup)($scope)
+//      console.log("markup: ", data.markup)
+//      console.log("compiled: ", compiled)
+//
+//      console.log("type of compiled: ", typeof compiled)
+//      $scope.productMarkup = compiled.join(" ")
+      $scope.productMarkup = data.markup
 
     },
     function(data){
@@ -163,9 +162,18 @@ angular.module("profileProduct", [
 .controller("editProductFormCtrl", function(){
 })
 
-
-
-
+.directive('dynamic', function ($compile) {
+  return {
+    restrict: 'A',
+    replace: true,
+    link: function (scope, ele, attrs) {
+      scope.$watch(attrs.dynamic, function(html) {
+        ele.html(html);
+        $compile(ele.contents())(scope);
+      });
+    }
+  };
+});
 
 
 

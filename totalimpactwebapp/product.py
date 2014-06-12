@@ -4,6 +4,9 @@ from totalimpactwebapp import metric
 from totalimpactwebapp import award
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
+from totalimpactwebapp.util import dict_from_dir
+
+
 
 from util import jinja_render
 
@@ -47,6 +50,10 @@ class Product():
     @property
     def update_status(self):
         return self.raw_dict["update_status"]
+
+    @property
+    def currently_updating(self):
+        return not self.update_status.startswith("SUCCESS")
 
     @property
     def has_metrics(self):
@@ -116,15 +123,7 @@ class Product():
 
 
     def to_dict(self):
-
-        ret = {}
-        for k in dir(self):
-            if k.startswith("_"):
-                pass
-            else:
-                ret[k] = getattr(self, k)
-
-        del ret["raw_dict"]
+        ret = dict_from_dir(self, "raw_dict")
         ret["_tiid"] = self.tiid
         return ret
 

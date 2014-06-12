@@ -33,10 +33,10 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "\n" +
     "<div class=\"modal-body\">\n" +
     "   <div id=\"user-message-modal\">\n" +
-    "      <div ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
-    "           ng-animate=\"{enter: 'animated fadeInDown', leave:'animated fadeOutUp'}\"\n" +
+    "      <div class=\"animated fadeInDown fadeOutUp\"\n" +
+    "           ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
     "           ng-if=\"userMessage.get().message\">\n" +
-    "             <span class=\"text\" ng-bind-html-unsafe=\"userMessage.get().message\"></span>\n" +
+    "             <span class=\"text\" ng-bind-html=\"userMessage.get().message\"></span>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
@@ -135,6 +135,8 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "      <span class=\"or\"></span>\n" +
     "\n" +
+    "      <!-- made security load too slow.\n" +
+    "\n" +
     "      <span class=\"new-metrics control no-new-metrics\"\n" +
     "         tooltip=\"No new metrics.\"\n" +
     "         tooltip-placement=\"bottom\"\n" +
@@ -151,6 +153,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      </a>\n" +
     "\n" +
     "      <span class=\"or\"></span>\n" +
+    "      -->\n" +
     "\n" +
     "      <a class=\"preferences control\"\n" +
     "         href=\"/settings/profile\"\n" +
