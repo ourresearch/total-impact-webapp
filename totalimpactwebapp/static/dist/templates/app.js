@@ -2044,7 +2044,8 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <progress percent=\"status.getPercentComplete()\" class=\"progress-striped active\"></progress>\n" +
+    "      <progressbar value=\"status.getPercentComplete()\" type=\"info\" class=\"progress-striped active\">\n" +
+    "      </progressbar>\n" +
     "\n" +
     "      <div class=\"products done\">\n" +
     "         <div class=\"content\" ng-show=\"status.getNumUpdating()\"></div>\n" +
