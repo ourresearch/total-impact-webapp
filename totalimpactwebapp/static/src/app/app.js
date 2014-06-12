@@ -44,12 +44,7 @@ angular.module('app').config(function ($routeProvider, $locationProvider) {
   $routeProvider.when("/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
     controller:'ProfileCtrl',
-    reloadOnSearch: false,
-    resolve: {
-      currentUserOwnsProfile: function($route, $q, security){
-        return security.currentUserOwnsProfile($route.current.params.url_slug)
-      }
-    }
+    reloadOnSearch: false
   })
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'

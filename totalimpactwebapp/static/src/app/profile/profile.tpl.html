@@ -25,7 +25,7 @@
                   </li>
                </ul>
 
-               <div class="add-connected-account" ng-show="currentUserIsProfileOwner()">
+               <div class="add-connected-account" ng-show="security.isLoggedIn(url_slug)">
                   <a href="/{{ profile.url_slug }}/accounts" class="btn btn-xs btn-info">
                      <i class="icon-link left"></i>
                      <span ng-show="filteredLinkedAccounts.length==0" class="first">Import from accounts</span>
@@ -90,7 +90,7 @@
       </div>
       <div class="view-controls">
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
-         <div class="admin-controls" ng-show="currentUserIsProfileOwner() && !page.isEmbedded()">
+         <div class="admin-controls" ng-show="security.isLoggedIn(url_slug) && !page.isEmbedded()">
             <a href="/{{ profile.url_slug }}/products/add">
                <i class="icon-upload"></i>Import individual products
             </a>
@@ -124,7 +124,7 @@
 
 
             <!-- users must be logged in, and product can't be a heading product -->
-            <div class="product-margin" ng-show="currentUserIsProfileOwner() && !product.is_heading">
+            <div class="product-margin" ng-show="security.isLoggedIn(url_slug) && !product.is_heading">
                <span class="single-product-controls">
                   <a class="remove-product"
                      tooltip="Delete this product"

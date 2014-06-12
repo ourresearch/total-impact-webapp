@@ -132,6 +132,7 @@ angular.module('security.service', [
       }
     },
 
+
     loginFromCookie: function(){
       console.log("logging in from cookie")
       return $http.get('/user/current')
@@ -187,6 +188,10 @@ angular.module('security.service', [
     clearCachedUser: function(){
       currentUser = null
       useCachedUser = false
+    },
+
+    isLoggedIn: function(url_slug){
+      return currentUser && currentUser.url_slug && currentUser.url_slug==url_slug
     },
 
 

@@ -111,7 +111,7 @@ angular.module("profile", [
     Loading,
     Tour,
     Timer,
-    currentUserOwnsProfile,
+    security,
     Page) {
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
@@ -234,8 +234,12 @@ angular.module("profile", [
 
 
     $scope.currentUserIsProfileOwner = function(){
+      return true
       return currentUserOwnsProfile
     }
+
+
+
 
     $scope.openProfileEmbedModal = function(){
       $modal.open({

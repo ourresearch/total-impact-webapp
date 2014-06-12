@@ -1197,7 +1197,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </li>\n" +
     "               </ul>\n" +
     "\n" +
-    "               <div class=\"add-connected-account\" ng-show=\"currentUserIsProfileOwner()\">\n" +
+    "               <div class=\"add-connected-account\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
     "                  <a href=\"/{{ profile.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
     "                     <span ng-show=\"filteredLinkedAccounts.length==0\" class=\"first\">Import from accounts</span>\n" +
@@ -1262,7 +1262,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "      <div class=\"view-controls\">\n" +
     "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
-    "         <div class=\"admin-controls\" ng-show=\"currentUserIsProfileOwner() && !page.isEmbedded()\">\n" +
+    "         <div class=\"admin-controls\" ng-show=\"security.isLoggedIn(url_slug) && !page.isEmbedded()\">\n" +
     "            <a href=\"/{{ profile.url_slug }}/products/add\">\n" +
     "               <i class=\"icon-upload\"></i>Import individual products\n" +
     "            </a>\n" +
@@ -1296,7 +1296,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "            <!-- users must be logged in, and product can't be a heading product -->\n" +
-    "            <div class=\"product-margin\" ng-show=\"currentUserIsProfileOwner() && !product.is_heading\">\n" +
+    "            <div class=\"product-margin\" ng-show=\"security.isLoggedIn(url_slug) && !product.is_heading\">\n" +
     "               <span class=\"single-product-controls\">\n" +
     "                  <a class=\"remove-product\"\n" +
     "                     tooltip=\"Delete this product\"\n" +
