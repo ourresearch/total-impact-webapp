@@ -5023,7 +5023,7 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "<div class=\"award-container\" ng-show=\"!currentUserOwnsProfile && profileAward.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
     "        ng-controller=\"ProfileAwardCtrl\"\n" +
-    "        popover=\"{{ user.about.given_name }} has made {{ profileAward.level_justification }}\"\n" +
+    "        popover=\"{{ profile.given_name }} has made {{ profileAward.level_justification }}\"\n" +
     "        popover-title=\"{{ profileAward.level_name }} level award\"\n" +
     "        popover-trigger=\"hover\"\n" +
     "        popover-placement=\"bottom\"\n" +
