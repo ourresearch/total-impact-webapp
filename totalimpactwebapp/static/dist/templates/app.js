@@ -858,13 +858,11 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-award/profile-award.tpl.html",
-    "<div class=\"award-container\" ng-show=\"!currentUserOwnsProfile && profileAward.award_badge\">\n" +
+    "<div class=\"award-container\" ng-show=\"!currentUserIsProfileOwner() && profileAward.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
     "        ng-controller=\"ProfileAwardCtrl\"\n" +
-    "        popover=\"{{ profile.given_name }} has made {{ profileAward.level_justification }}\"\n" +
-    "        popover-title=\"{{ profileAward.level_name }} level award\"\n" +
-    "        popover-trigger=\"hover\"\n" +
-    "        popover-placement=\"bottom\"\n" +
+    "        data-content=\"{{ profile.given_name }} has made {{ profileAward.level_justification }}\"\n" +
+    "        data-original-title=\"{{ profileAward.level_name }} level award\"\n" +
     "        ng-show=\"profileAward.level>0\">\n" +
     "\n" +
     "      <span class=\"icon level-{{ profileAward.level }}\">\n" +
@@ -875,13 +873,11 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "   </span>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"award-container\" ng-show=\"currentUserOwnsProfile && profileAward.award_badge\">\n" +
+    "<div class=\"award-container\" ng-show=\"currentUserIsProfileOwner() && profileAward.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
     "        ng-controller=\"ProfileAwardCtrl\"\n" +
-    "        popover=\"You've made {{ profileAward.level_justification }} Nice work! <div class='call-to-action'>{{ profileAward.needed_for_next_level }} {{ profileAward.call_to_action }}</div>\"\n" +
-    "        popover-title=\"{{ profileAward.level_name }} level award\"\n" +
-    "        popover-trigger=\"hover\"\n" +
-    "        popover-placement=\"bottom\"\n" +
+    "        data-content=\"You've made {{ profileAward.level_justification }} Nice work! <div class='call-to-action'>{{ profileAward.needed_for_next_level }} {{ profileAward.call_to_action }}</div>\"\n" +
+    "        data-original-title=\"{{ profileAward.level_name }} level award\"\n" +
     "        ng-show=\"profileAward.level>0\">\n" +
     "\n" +
     "      <span class=\"icon level-{{ profileAward.level }}\">\n" +
@@ -1298,7 +1294,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             id=\"{{ product.tiid }}\"\n" +
     "             on-repeat-finished>\n" +
     "\n" +
-    "            <div class=\"product-margin\" ng-show=\"currentUserIsProfileOwner()\">\n" +
+    "\n" +
+    "            <!-- users must be logged in, and product can't be a heading product -->\n" +
+    "            <div class=\"product-margin\" ng-show=\"currentUserIsProfileOwner() && !product.is_heading\">\n" +
     "               <span class=\"single-product-controls\">\n" +
     "                  <a class=\"remove-product\"\n" +
     "                     tooltip=\"Delete this product\"\n" +

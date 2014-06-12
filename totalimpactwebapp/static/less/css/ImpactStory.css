@@ -7054,6 +7054,10 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-a
   font-family: Lato;
   font-weight: normal;
 }
+div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover .call-to-action {
+  color: #46b8da;
+  font-style: italic;
+}
 div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award {
   color: #fff;
   font-size: 14px;

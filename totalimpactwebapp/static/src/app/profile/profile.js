@@ -210,13 +210,17 @@ angular.module("profile", [
     }
 
     $scope.refresh = function(){
-
       var url = "/user/"+ url_slug +"/products?action=refresh"
-
       console.log("POSTing to ", url)
       $http.post(url, {}).success(function(data, status, headers, config){
         console.log("POST returned. We're refreshing these tiids: ", data)
+
+        // show the update modal
+        Update.showUpdateModal(url_slug).then(
+          renderProducts
+        )
       })
+
     }
 
     $scope.humanDate = function(isoStr) {
@@ -321,13 +325,7 @@ angular.module("profile", [
 
     renderProducts()
     Update.showUpdateModal(url_slug).then(
-      function(reason){
-        console.log("update told us it's done.")
-        renderProducts()
-      },
-      function(resp){
-        console.log("update modal told us it didn't need to run: ", resp)
-      }
+      renderProducts
     )
 })
 

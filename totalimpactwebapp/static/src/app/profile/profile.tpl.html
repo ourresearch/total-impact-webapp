@@ -122,7 +122,9 @@
              id="{{ product.tiid }}"
              on-repeat-finished>
 
-            <div class="product-margin" ng-show="currentUserIsProfileOwner()">
+
+            <!-- users must be logged in, and product can't be a heading product -->
+            <div class="product-margin" ng-show="currentUserIsProfileOwner() && !product.is_heading">
                <span class="single-product-controls">
                   <a class="remove-product"
                      tooltip="Delete this product"
