@@ -14,7 +14,7 @@ logger.setLevel(logging.DEBUG)
 
 
 def get_user_about_dict(url_slug, webapp_api_endpoint):
-    url = webapp_api_endpoint + u"/user/{url_slug}/about".format(
+    url = webapp_api_endpoint + u"/user/{url_slug}".format(
         url_slug=url_slug)
     about = requests.get(url).json()["about"]
     return about
