@@ -1163,12 +1163,7 @@ angular.module("profile", [
 
   $routeProvider.when("/embed/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
-    controller:'ProfileCtrl',
-    resolve: {
-      currentUserOwnsProfile: function($route, $q, security){
-        return security.currentUserOwnsProfile($route.current.params.url_slug)
-      }
-    }
+    controller:'ProfileCtrl'
   })
 
 }])
@@ -1266,8 +1261,6 @@ angular.module("profile", [
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
     }
-
-    console.log("loaded profile controller.")
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
@@ -1383,12 +1376,6 @@ angular.module("profile", [
     }
 
 
-    $scope.currentUserIsProfileOwner = function(){
-      return true
-      return currentUserOwnsProfile
-    }
-
-
 
 
     $scope.openProfileEmbedModal = function(){
@@ -1457,9 +1444,16 @@ angular.module("profile", [
           $scope.profileAwards = resp.awards
           $scope.doneLoading = true
 
-          if (resp.products.length == 0 && currentUserOwnsProfile){
-            Tour.start(resp.about)
-          }
+          // do this async, in case security is taking a long time to load,
+          // and the products load first.
+          security.isLoggedInPromise(url_slug).then(
+            function(){
+              if (resp.products.length == 0){
+                console.log("logged-in user looking at own profile with no products. showing tour.")
+                Tour.start(resp.about)
+              }
+            }
+          )
 
           Timer.start("profileViewRender.render")
 
@@ -1935,7 +1929,6 @@ angular.module( 'update.update', [
 
       UsersUpdateStatus.get({id:url_slug}).$promise.then(
         function(resp) {
-          console.log("running showUpdateModal()", resp)
           status = resp
 
           if (status.percent_complete < 100){
@@ -3227,6 +3220,24 @@ angular.module('security.service', [
       return currentUser && currentUser.url_slug && currentUser.url_slug==url_slug
     },
 
+    isLoggedInPromise: function(url_slug){
+      var deferred = $q.defer();
+
+      service.requestCurrentUser().then(
+        function(userObj){
+          if (!userObj){
+            deferred.reject("user not logged in")
+          }
+          else if (userObj.url_slug == url_slug ) {
+            deferred.resolve("user is logged in!")
+          }
+          else {
+            deferred.reject("user not logged in")
+          }
+        }
+      )
+      return deferred.promise
+    },
 
     getCurrentUser: function(attr){
       if (currentUser && attr) {
@@ -4025,14 +4036,12 @@ angular.module("services.tiMixpanel", [])
     var getFromCookie = function(keyToGet){
       var deferred = $q.defer()
       if (_.isUndefined(mixpanel.cookie)){
-        console.log("cookie was undefined.")
         $timeout(
           function(){return getFromCookie(keyToGet)},
           1
         )
       }
       else {
-        console.log("found a cookie!", mixpanel.cookie)
         deferred.resolve(mixpanel.cookie.props[keyToGet])
       }
       return deferred.promise
@@ -5478,8 +5487,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
-    "\n" +
-    "\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"user-does-not-exist no-page\" ng-show=\"!userExists\">\n" +

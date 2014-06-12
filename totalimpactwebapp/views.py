@@ -711,7 +711,7 @@ def get_js_top():
         current_user_dict = None
 
     return make_js_response(
-        "top.js",
+        "top.js.tpl",
         segmentio_key=os.getenv("SEGMENTIO_KEY"),
         mixpanel_token=os.getenv("MIXPANEL_TOKEN"),
         newrelic_header=newrelic_header,

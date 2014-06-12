@@ -18,12 +18,7 @@ angular.module("profile", [
 
   $routeProvider.when("/embed/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
-    controller:'ProfileCtrl',
-    resolve: {
-      currentUserOwnsProfile: function($route, $q, security){
-        return security.currentUserOwnsProfile($route.current.params.url_slug)
-      }
-    }
+    controller:'ProfileCtrl'
   })
 
 }])
@@ -121,8 +116,6 @@ angular.module("profile", [
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
     }
-
-    console.log("loaded profile controller.")
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
@@ -238,12 +231,6 @@ angular.module("profile", [
     }
 
 
-    $scope.currentUserIsProfileOwner = function(){
-      return true
-      return currentUserOwnsProfile
-    }
-
-
 
 
     $scope.openProfileEmbedModal = function(){
@@ -312,9 +299,16 @@ angular.module("profile", [
           $scope.profileAwards = resp.awards
           $scope.doneLoading = true
 
-          if (resp.products.length == 0 && currentUserOwnsProfile){
-            Tour.start(resp.about)
-          }
+          // do this async, in case security is taking a long time to load,
+          // and the products load first.
+          security.isLoggedInPromise(url_slug).then(
+            function(){
+              if (resp.products.length == 0){
+                console.log("logged-in user looking at own profile with no products. showing tour.")
+                Tour.start(resp.about)
+              }
+            }
+          )
 
           Timer.start("profileViewRender.render")
 

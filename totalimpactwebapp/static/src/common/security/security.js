@@ -194,6 +194,24 @@ angular.module('security.service', [
       return currentUser && currentUser.url_slug && currentUser.url_slug==url_slug
     },
 
+    isLoggedInPromise: function(url_slug){
+      var deferred = $q.defer();
+
+      service.requestCurrentUser().then(
+        function(userObj){
+          if (!userObj){
+            deferred.reject("user not logged in")
+          }
+          else if (userObj.url_slug == url_slug ) {
+            deferred.resolve("user is logged in!")
+          }
+          else {
+            deferred.reject("user not logged in")
+          }
+        }
+      )
+      return deferred.promise
+    },
 
     getCurrentUser: function(attr){
       if (currentUser && attr) {

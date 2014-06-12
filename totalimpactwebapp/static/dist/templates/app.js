@@ -1312,8 +1312,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
-    "\n" +
-    "\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"user-does-not-exist no-page\" ng-show=\"!userExists\">\n" +

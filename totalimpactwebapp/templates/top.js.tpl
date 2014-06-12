@@ -2,7 +2,12 @@
  * js to run at the top of the page. generated w jinja so Flask can change
  * stuff depending on the environment (local, staging, production) where it's
  * running.
+ * The funky file ext is to keep js syntax checking from complaining about
+ * jinja's double-bracket tokens.
+ *
  */
+
+
 
 // shim console.log for IE
 if (typeof console === "undefined"){
@@ -31,4 +36,4 @@ window.analytics.load("{{ segmentio_key }}")
 
 
 // load the current user
-var globalCurrentUser = JSON.parse('{{ current_user | tojson | safe }}')
+var globalCurrentUser = {{ current_user | tojson | safe }}

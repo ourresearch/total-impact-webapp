@@ -37,7 +37,6 @@ angular.module( 'update.update', [
 
       UsersUpdateStatus.get({id:url_slug}).$promise.then(
         function(resp) {
-          console.log("running showUpdateModal()", resp)
           status = resp
 
           if (status.percent_complete < 100){

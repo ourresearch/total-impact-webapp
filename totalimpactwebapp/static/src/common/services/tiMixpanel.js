@@ -4,14 +4,12 @@ angular.module("services.tiMixpanel", [])
     var getFromCookie = function(keyToGet){
       var deferred = $q.defer()
       if (_.isUndefined(mixpanel.cookie)){
-        console.log("cookie was undefined.")
         $timeout(
           function(){return getFromCookie(keyToGet)},
           1
         )
       }
       else {
-        console.log("found a cookie!", mixpanel.cookie)
         deferred.resolve(mixpanel.cookie.props[keyToGet])
       }
       return deferred.promise
