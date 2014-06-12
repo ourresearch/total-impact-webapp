@@ -497,6 +497,8 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      TiMixpanel,
                                                      RouteChangeErrorHandler) {
 
+  console.log("mixpanel!", TiMixpanel.get("show link to example profile on landing page"))
+
   $scope.userMessage = UserMessage
   $rootScope.security = security
 
@@ -733,10 +735,10 @@ angular.module( 'infopages', [
   }])
 
   .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page, TiMixpanel ) {
-    TiMixpanel.registerOnceRandom(
-      "landingPage.sampleProfileButton.show",
-      [true, false]
-    )
+    TiMixpanel.registerOnce({
+      "show link to example profile on landing page": _.sample([true, false])
+    })
+
     var signupFormShowing = false
     $scope.landingPageType = "main"
     Page.showHeader(false)
@@ -4011,11 +4013,7 @@ angular.module('services.slug')
 })
 angular.module("services.tiMixpanel", [])
 .factory("TiMixpanel", function($cookieStore){
-    var superProperties = {
-      local: {},
-      user: {}
-    }
-    var currentUser = "anon"
+    var superProperties = {}
 
     return {
 
@@ -4030,40 +4028,25 @@ angular.module("services.tiMixpanel", [])
       identify: function(myId){
         return mixpanel.alias(myId)
       },
-
-
-      // wrappers around mixpanel methods, that also maintain (essentially) a
-      // shadow version of the mixpanel cookie so we can access it easier
-
       register: function(obj){
-        _.extend(superProperties, obj) // new values win conflicts (overwrite)
-        $cookieStore.set("tiMixpanel", superProperties)
         return mixpanel.register(obj)
       },
       registerOnce: function(obj){
-        _.defaults(superProperties, obj) // old values win conflicts
         return mixpanel.register_once(obj)
       },
-      registerOnceRandom: function(key, potentialValues){
-        if (typeof superProperties[key] === "undefined") {
-          var sampled = _.sample(potentialValues)
 
-          var objToRegister = {}
-          objToRegister[key] = sampled
-          mixpanel.register_once(objToRegister)
-          return sampled
-        }
-        else {
-          // this key has already been set, leave it alone.
-          return false
-        }
-      },
 
 
       // methods just for tiMixpanel, not wrappers around mixpanel methods.
 
-      get: function(key){
-        return superProperties[key]
+      get: function(keyToGet){
+        var mixpanelCookie = $cookieStore.get("mp_impactstory")
+        if (mixpanelCookie && _.has(mixpanelCookie, keyToGet)){
+          return mixpanelCookie[keyToGet]
+        }
+        else {
+          return undefined
+        }
       },
       clear: function(){
         for (var k in superProperties) delete superProperties[k];
@@ -5469,9 +5452,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </span>\n" +
     "            </div>\n" +
-    "\n" +
     "            <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
-    "\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +

@@ -1305,9 +1305,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </span>\n" +
     "            </div>\n" +
-    "\n" +
     "            <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
-    "\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
