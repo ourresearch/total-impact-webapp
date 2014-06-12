@@ -1360,7 +1360,10 @@ angular.module("profile", [
 
         // show the update modal
         Update.showUpdateModal(url_slug).then(
-          renderProducts
+          function(){
+            $httpDefaultCache.removeAll()
+            renderProducts()
+          }
         )
       })
 
@@ -1474,7 +1477,10 @@ angular.module("profile", [
 
     renderProducts()
     Update.showUpdateModal(url_slug).then(
-      renderProducts,
+      function(){
+        $httpDefaultCache.removeAll()
+        renderProducts()
+      },
       function(msg){
         console.log("updater:", msg)
       }
