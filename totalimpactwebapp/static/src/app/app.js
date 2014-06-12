@@ -81,7 +81,10 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      TiMixpanel,
                                                      RouteChangeErrorHandler) {
 
-  console.log("mixpanel!", TiMixpanel.get("show link to example profile on landing page"))
+//  TiMixpanel.clearCookie()
+  TiMixpanel.get("foo").then(function(x){
+    console.log("got mixpanel cookie!", x)
+  })
 
   $scope.userMessage = UserMessage
   $rootScope.security = security

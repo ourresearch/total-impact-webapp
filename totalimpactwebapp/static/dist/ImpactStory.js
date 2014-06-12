@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-11
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-12
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -497,7 +497,10 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      TiMixpanel,
                                                      RouteChangeErrorHandler) {
 
-  console.log("mixpanel!", TiMixpanel.get("show link to example profile on landing page"))
+//  TiMixpanel.clearCookie()
+  TiMixpanel.get("foo").then(function(x){
+    console.log("got mixpanel cookie!", x)
+  })
 
   $scope.userMessage = UserMessage
   $rootScope.security = security
@@ -4012,8 +4015,23 @@ angular.module('services.slug')
 
 })
 angular.module("services.tiMixpanel", [])
-.factory("TiMixpanel", function($cookieStore){
-    var superProperties = {}
+.factory("TiMixpanel", function($cookieStore, $q, $timeout){
+
+    var getFromCookie = function(keyToGet){
+      var deferred = $q.defer()
+      if (_.isUndefined(mixpanel.cookie)){
+        console.log("cookie was undefined.")
+        $timeout(
+          function(){return getFromCookie(keyToGet)},
+          1
+        )
+      }
+      else {
+        console.log("found a cookie!", mixpanel.cookie)
+        deferred.resolve(mixpanel.cookie.props[keyToGet])
+      }
+      return deferred.promise
+    }
 
     return {
 
@@ -4034,21 +4052,17 @@ angular.module("services.tiMixpanel", [])
       registerOnce: function(obj){
         return mixpanel.register_once(obj)
       },
+      clearCookie: function(){
+        return mixpanel.cookie.clear()
+      },
 
 
 
       // methods just for tiMixpanel, not wrappers around mixpanel methods.
 
-      get: function(keyToGet){
-        var mixpanelCookie = $cookieStore.get("mp_impactstory")
-        if (mixpanelCookie && _.has(mixpanelCookie, keyToGet)){
-          return mixpanelCookie[keyToGet]
-        }
-        else {
-          return undefined
-        }
-      },
+      get: getFromCookie,
       clear: function(){
+
         for (var k in superProperties) delete superProperties[k];
         return true
       }
