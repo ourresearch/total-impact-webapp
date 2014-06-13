@@ -82,20 +82,20 @@ def email_report_to_everyone_who_needs_one():
 
         ProductsFromCore.clear_cache()
 
-        try:
-            if not user.email or (u"@" not in user.email):
-                logger.info(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))
-            elif user.notification_email_frequency == "none":
-                logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
-            elif user.last_email_sent and ((datetime.datetime.utcnow() - user.last_email_sent).days < 7):
-                logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=user.url_slug))
-            else:
-                logger.info(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=user.url_slug))
-                status = tasks.send_email_if_new_diffs.delay(user.id)
-        except Exception as e:
-            logger.warning(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next user.  Error {e}".format(
-                url_slug=user.url_slug, e=e))
-            pass
+        # try:
+        if not user.email or (u"@" not in user.email):
+            logger.info(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))
+        elif user.notification_email_frequency == "none":
+            logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
+        elif user.last_email_sent and ((datetime.datetime.utcnow() - user.last_email_sent).days < 7):
+            logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=user.url_slug))
+        else:
+            logger.info(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=user.url_slug))
+            status = tasks.send_email_if_new_diffs.delay(user.id)
+        # except Exception as e:
+        #     logger.warning(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next user.  Error {e}".format(
+        #         url_slug=user.url_slug, e=e))
+        #     pass
     return
 
 
