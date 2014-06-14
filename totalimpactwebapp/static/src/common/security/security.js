@@ -59,7 +59,7 @@ angular.module('security.service', [
           console.log("user just logged in: ", currentUser)
           currentUser = data.user;
           TiMixpanel.identify(currentUser.id)
-
+          TiMixpanel.register(currentUser)
         })
     },
 
@@ -148,6 +148,8 @@ angular.module('security.service', [
           useCachedUser = true
           currentUser = data.user;
           console.log("successfully logged in from cookie.")
+          TiMixpanel.identify(currentUser.id)
+          TiMixpanel.register(currentUser)
         })
         .then(function(){return currentUser})
     },
@@ -158,6 +160,7 @@ angular.module('security.service', [
       currentUser = null;
       $http.get('/user/current/logout').success(function(data, status, headers, config) {
         UserMessage.set("logout.success")
+        TiMixpanel.clearCookie()
       });
     },
 
