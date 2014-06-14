@@ -215,9 +215,13 @@ angular.module("profile", [
 
         // show the update modal
         Update.showUpdateModal(url_slug).then(
-          function(){
+          function(msg){
+            console.log("updater (resolved):", msg)
             $httpDefaultCache.removeAll()
             renderProducts()
+          },
+          function(msg){
+            console.log("updater (rejected):", msg)
           }
         )
       })
@@ -332,12 +336,13 @@ angular.module("profile", [
 
     renderProducts()
     Update.showUpdateModal(url_slug).then(
-      function(){
+      function(msg){
+        console.log("updater (resolved):", msg)
         $httpDefaultCache.removeAll()
         renderProducts()
       },
       function(msg){
-        console.log("updater:", msg)
+        console.log("updater (rejected):", msg)
       }
     )
 })
