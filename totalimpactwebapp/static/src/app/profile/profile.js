@@ -309,8 +309,9 @@ angular.module("profile", [
           // and the products load first.
           security.isLoggedInPromise(url_slug).then(
             function(){
+              var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
               TiMixpanel.track("viewed own profile", {
-                num_products: resp.products.length
+                num_products: numTrueProducts
               })
               if (resp.products.length == 0){
                 console.log("logged-in user looking at own profile with no products. showing tour.")
