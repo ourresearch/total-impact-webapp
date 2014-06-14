@@ -16,6 +16,8 @@ from totalimpactwebapp.user import remove_duplicates_from_user
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import notification_report
 from totalimpactwebapp import emailer
+from totalimpactwebapp.user import ProductsFromCore
+
 
 logger = logging.getLogger("webapp.tasks")
 
@@ -191,12 +193,14 @@ def deduplicate(user):
 def send_email_if_new_diffs(user_id):
 
     user = db.session.query(User).get(user_id)
+    ProductsFromCore.clear_cache()
 
     status = "started"
     now = datetime.datetime.utcnow()    
     logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
     latest_diff_timestamp = user.latest_diff_ts
     status = "checking diffs"
+
     if (not user.last_email_check) or (latest_diff_timestamp > user.last_email_check.isoformat()):
         logger.info(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
         send_email_report(user, now)
