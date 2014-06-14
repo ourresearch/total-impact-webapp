@@ -21,8 +21,8 @@ eventlet==0.14.0
 gunicorn==0.14.3
 iso8601==0.1.4
 itsdangerous==0.21
-libsaas==0.2
 kombu==3.0.16 
+libsaas==0.2
 mandrill==1.0.37
 newrelic==1.9.0.21
 nose==1.3.0
