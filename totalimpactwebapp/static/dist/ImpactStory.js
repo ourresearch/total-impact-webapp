@@ -1341,11 +1341,7 @@ angular.module("profile", [
     var loadingProducts = true
 
 
-    security.isLoggedInPromise(url_slug).then(
-      function(){
-        TiMixpanel.track("viewed own profile")
-      }
-    )
+
 
     $scope.url_slug = url_slug
     $scope.loadingProducts = function(){
@@ -1388,7 +1384,7 @@ angular.module("profile", [
       return moment(isoStr).fromNow()
     }
     $scope.clickSignupLink = function(){
-      TiMixpanel.track("Clicked signup link on profile")
+      TiMixpanel.track("Clicked profile footer signup link")
     }
 
 
@@ -1465,6 +1461,9 @@ angular.module("profile", [
           // and the products load first.
           security.isLoggedInPromise(url_slug).then(
             function(){
+              TiMixpanel.track("viewed own profile", {
+                num_products: resp.products.length
+              })
               if (resp.products.length == 0){
                 console.log("logged-in user looking at own profile with no products. showing tour.")
                 Tour.start(resp.about)
@@ -4111,8 +4110,8 @@ angular.module("services.tiMixpanel", [])
 
       // purely wrappers around mixpanel methods
 
-      track: function(obj){
-        return mixpanel.track(obj)
+      track: function(event, obj){
+        return mixpanel.track(event, obj)
       },
       alias: function(myAlias){
         return mixpanel.alias(myAlias)

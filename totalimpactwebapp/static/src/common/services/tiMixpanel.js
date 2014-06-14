@@ -19,8 +19,8 @@ angular.module("services.tiMixpanel", [])
 
       // purely wrappers around mixpanel methods
 
-      track: function(obj){
-        return mixpanel.track(obj)
+      track: function(event, obj){
+        return mixpanel.track(event, obj)
       },
       alias: function(myAlias){
         return mixpanel.alias(myAlias)

@@ -232,7 +232,7 @@ angular.module("profile", [
       return moment(isoStr).fromNow()
     }
     $scope.clickSignupLink = function(){
-      TiMixpanel.track("Clicked signup link on profile")
+      TiMixpanel.track("Clicked profile footer signup link")
     }
 
 
