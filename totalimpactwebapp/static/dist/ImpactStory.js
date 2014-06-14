@@ -1320,14 +1320,6 @@ angular.module("profile", [
       }
     })
 
-
-
-
-
-
-
-
-
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
 
@@ -1348,6 +1340,13 @@ angular.module("profile", [
     var url_slug = $routeParams.url_slug;
     var loadingProducts = true
 
+
+    security.isLoggedInPromise(url_slug).then(
+      function(){
+        TiMixpanel.track("viewed own profile")
+      }
+    )
+
     $scope.url_slug = url_slug
     $scope.loadingProducts = function(){
       return loadingProducts
@@ -1359,6 +1358,8 @@ angular.module("profile", [
       $scope.hideSignupBanner = true
 
     }
+
+
 
     $scope.refresh = function(){
       var url = "/user/"+ url_slug +"/products?action=refresh"
@@ -4162,8 +4163,7 @@ angular.module("services.tiMixpanel", [])
 
       var objToRegister = _.pick(userObject, keysToRegister)
       objToRegister.linkedAccounts = _.compact(activeLinkedAccountServices).join(",")
-
-      console.log("TiMixpanel is going to register this user: ", objToRegister)
+      mixpanel.register(objToRegister)
 
       return true
     },
