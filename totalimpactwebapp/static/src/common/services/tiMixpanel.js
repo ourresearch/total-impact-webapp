@@ -71,8 +71,7 @@ angular.module("services.tiMixpanel", [])
 
       var objToRegister = _.pick(userObject, keysToRegister)
       objToRegister.linkedAccounts = _.compact(activeLinkedAccountServices).join(",")
-
-      console.log("TiMixpanel is going to register this user: ", objToRegister)
+      mixpanel.register(objToRegister)
 
       return true
     },
