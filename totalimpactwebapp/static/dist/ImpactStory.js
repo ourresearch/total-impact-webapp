@@ -1417,10 +1417,7 @@ angular.module("profile", [
         {user_id: url_slug, tiid: product._tiid},
         function(){
           console.log("finished deleting", product.biblio.display_title)
-          TiMixpanel.track("deleted a product", {
-            tiid: product._tiid,
-            title: product.biblio.display_title
-          })
+          TiMixpanel.track("deleted a product")
         }
       )
 
