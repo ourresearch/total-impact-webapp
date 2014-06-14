@@ -15,6 +15,8 @@ angular.module('security.service', [
   var useCachedUser = true
   var currentUser = globalCurrentUser || null
   console.log("logging in from object: ", currentUser)
+  TiMixpanel.register(currentUser)
+
 
 
 
