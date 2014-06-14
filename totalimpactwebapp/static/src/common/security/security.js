@@ -1,11 +1,17 @@
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
   'services.userMessage',
+  'services.tiMixpanel',
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', function($http, $q, $location, $modal, UserMessage) {
+.factory('security', function($http,
+                              $q,
+                              $location,
+                              $modal,
+                              TiMixpanel,
+                              UserMessage) {
   var useCachedUser = true
   var currentUser = globalCurrentUser || null
   console.log("logging in from object: ", currentUser)
@@ -50,8 +56,10 @@ angular.module('security.service', [
     login: function(email, password) {
       return $http.post('/user/current/login', {email: email, password: password})
         .success(function(data, status) {
-          currentUser = data.user;
           console.log("user just logged in: ", currentUser)
+          currentUser = data.user;
+          TiMixpanel.identify(currentUser.id)
+
         })
     },
 

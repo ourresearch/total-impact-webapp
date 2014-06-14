@@ -123,11 +123,11 @@ angular.module('accounts.account', [
     UsersProducts,
     Account,
     Loading,
-    Update){
+    TiMixpanel){
 
   $scope.showAccountWindow = function(){
     $scope.accountWindowOpen = true;
-    analytics.track("Opened an account window", {
+    TiMixpanel.track("Opened an account window", {
       "Account name": $scope.account.displayName
     })
 
@@ -161,7 +161,7 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
-        analytics.track("Unlinked an account", {
+        TiMixpanel.track("Unlinked an account", {
           "Account name": $scope.account.displayName
         })
 
@@ -186,7 +186,7 @@ angular.module('accounts.account', [
       function(resp){
         console.log("successfully saved linked account", resp)
         $scope.isLinked = true
-        analytics.track("Linked an account", {
+        TiMixpanel.track("Linked an account", {
           "Account name": $scope.account.displayName
         })
 

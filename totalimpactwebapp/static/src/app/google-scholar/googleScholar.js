@@ -3,7 +3,11 @@ angular.module("googleScholar", [
  "resources.users"
 
 ])
-.factory("GoogleScholar", function($modal, $q, UsersProducts, security){
+.factory("GoogleScholar", function($modal,
+                                   $q,
+                                   UsersProducts,
+                                   TiMixpanel,
+                                   security){
   var bibtex = ""
   var tiids = []
   var bibtexArticlesCount = function(){
@@ -44,7 +48,7 @@ angular.module("googleScholar", [
         bibtex.substring(0, 50) + "..."
       )
 
-      analytics.track("Uploaded Google Scholar", {
+      TiMixpanel.track("Uploaded Google Scholar", {
         "Number of products": bibtexArticlesCount()
       })
 

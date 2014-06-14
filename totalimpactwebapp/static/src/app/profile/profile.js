@@ -105,6 +105,7 @@ angular.module("profile", [
     Users,
     UsersProducts,
     Product,
+    TiMixpanel,
     UserProfile,
     UserMessage,
     Update,
@@ -234,7 +235,7 @@ angular.module("profile", [
       return moment(isoStr).fromNow()
     }
     $scope.clickSignupLink = function(){
-      analytics.track("Clicked signup link on profile")
+      TiMixpanel.track("Clicked signup link on profile")
     }
 
 

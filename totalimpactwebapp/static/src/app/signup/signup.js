@@ -1,6 +1,7 @@
 angular.module( 'signup', [
     'services.slug',
     'services.page',
+    'services.tiMixpanel',
     'resources.users',
     'update.update',
     'security.service'
@@ -20,7 +21,7 @@ angular.module( 'signup', [
     })
 }])
 
-  .controller('signupCtrl', function($scope, Page, security){
+  .controller('signupCtrl', function($scope, Page){
 
     Page.setUservoiceTabLoc("bottom")
     Page.showHeader(false)
@@ -28,7 +29,13 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupFormCtrl', function ($scope, $location, security, Slug, Users, Loading) {
+  .controller( 'signupFormCtrl', function ($scope,
+                                           $location,
+                                           security,
+                                           Slug,
+                                           Users,
+                                           TiMixpanel,
+                                           Loading) {
     var emailThatIsAlreadyTaken = "aaaaaaaaaaaa@foo.com"
 
     $scope.newUser = {}
@@ -53,8 +60,8 @@ angular.module( 'signup', [
 
           // so mixpanel will start tracking this user via her userid from here
           // on out.
-          analytics.alias(resp.user.id)
-          analytics.track("Signed up new user")
+          TiMixpanel.alias(resp.user.id)
+          TiMixpanel.track("Signed up new user")
         },
         function(resp){
           if (resp.status === 409) {

@@ -128,11 +128,11 @@ angular.module('accounts.account', [
     UsersProducts,
     Account,
     Loading,
-    Update){
+    TiMixpanel){
 
   $scope.showAccountWindow = function(){
     $scope.accountWindowOpen = true;
-    analytics.track("Opened an account window", {
+    TiMixpanel.track("Opened an account window", {
       "Account name": $scope.account.displayName
     })
 
@@ -166,7 +166,7 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
-        analytics.track("Unlinked an account", {
+        TiMixpanel.track("Unlinked an account", {
           "Account name": $scope.account.displayName
         })
 
@@ -191,7 +191,7 @@ angular.module('accounts.account', [
       function(resp){
         console.log("successfully saved linked account", resp)
         $scope.isLinked = true
-        analytics.track("Linked an account", {
+        TiMixpanel.track("Linked an account", {
           "Account name": $scope.account.displayName
         })
 
@@ -497,10 +497,6 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      TiMixpanel,
                                                      RouteChangeErrorHandler) {
 
-//  TiMixpanel.clearCookie()
-  TiMixpanel.get("foo").then(function(x){
-    console.log("got mixpanel cookie!", x)
-  })
 
   $scope.userMessage = UserMessage
   $rootScope.security = security
@@ -565,7 +561,11 @@ angular.module("googleScholar", [
  "resources.users"
 
 ])
-.factory("GoogleScholar", function($modal, $q, UsersProducts, security){
+.factory("GoogleScholar", function($modal,
+                                   $q,
+                                   UsersProducts,
+                                   TiMixpanel,
+                                   security){
   var bibtex = ""
   var tiids = []
   var bibtexArticlesCount = function(){
@@ -606,7 +606,7 @@ angular.module("googleScholar", [
         bibtex.substring(0, 50) + "..."
       )
 
-      analytics.track("Uploaded Google Scholar", {
+      TiMixpanel.track("Uploaded Google Scholar", {
         "Number of products": bibtexArticlesCount()
       })
 
@@ -1103,7 +1103,14 @@ angular.module('profileSingleProducts', [
     Page.showFooter(false)
 
   })
-  .controller("ImportSingleProductsFormCtrl", function($scope, $location, $routeParams, $cacheFactory, Loading, UsersProducts, security){
+  .controller("ImportSingleProductsFormCtrl", function($scope,
+                                                       $location,
+                                                       $routeParams,
+                                                       $cacheFactory,
+                                                       Loading,
+                                                       UsersProducts,
+                                                       TiMixpanel,
+                                                       security){
 
     $scope.newlineDelimitedProductIds = ""
     $scope.onCancel = function(){
@@ -1121,7 +1128,7 @@ angular.module('profileSingleProducts', [
         {product_id_strings: productIds},
         function(resp){
           console.log("saved some single products!", resp)
-          analytics.track(
+          TiMixpanel.track(
             "Added single products",
             {productsCount: resp.products.length}
           )
@@ -1250,6 +1257,7 @@ angular.module("profile", [
     Users,
     UsersProducts,
     Product,
+    TiMixpanel,
     UserProfile,
     UserMessage,
     Update,
@@ -1379,7 +1387,7 @@ angular.module("profile", [
       return moment(isoStr).fromNow()
     }
     $scope.clickSignupLink = function(){
-      analytics.track("Clicked signup link on profile")
+      TiMixpanel.track("Clicked signup link on profile")
     }
 
 
@@ -1837,6 +1845,7 @@ angular.module('settings', [
 angular.module( 'signup', [
     'services.slug',
     'services.page',
+    'services.tiMixpanel',
     'resources.users',
     'update.update',
     'security.service'
@@ -1856,7 +1865,7 @@ angular.module( 'signup', [
     })
 }])
 
-  .controller('signupCtrl', function($scope, Page, security){
+  .controller('signupCtrl', function($scope, Page){
 
     Page.setUservoiceTabLoc("bottom")
     Page.showHeader(false)
@@ -1864,7 +1873,13 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupFormCtrl', function ($scope, $location, security, Slug, Users, Loading) {
+  .controller( 'signupFormCtrl', function ($scope,
+                                           $location,
+                                           security,
+                                           Slug,
+                                           Users,
+                                           TiMixpanel,
+                                           Loading) {
     var emailThatIsAlreadyTaken = "aaaaaaaaaaaa@foo.com"
 
     $scope.newUser = {}
@@ -1889,8 +1904,8 @@ angular.module( 'signup', [
 
           // so mixpanel will start tracking this user via her userid from here
           // on out.
-          analytics.alias(resp.user.id)
-          analytics.track("Signed up new user")
+          TiMixpanel.alias(resp.user.id)
+          TiMixpanel.track("Signed up new user")
         },
         function(resp){
           if (resp.status === 409) {
@@ -3057,11 +3072,17 @@ angular.module('security.login.toolbar', [
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
   'services.userMessage',
+  'services.tiMixpanel',
   'security.login',         // Contains the login form template and controller
   'ui.bootstrap'     // Used to display the login form as a modal dialog.
 ])
 
-.factory('security', function($http, $q, $location, $modal, UserMessage) {
+.factory('security', function($http,
+                              $q,
+                              $location,
+                              $modal,
+                              TiMixpanel,
+                              UserMessage) {
   var useCachedUser = true
   var currentUser = globalCurrentUser || null
   console.log("logging in from object: ", currentUser)
@@ -3106,8 +3127,10 @@ angular.module('security.service', [
     login: function(email, password) {
       return $http.post('/user/current/login', {email: email, password: password})
         .success(function(data, status) {
-          currentUser = data.user;
           console.log("user just logged in: ", currentUser)
+          currentUser = data.user;
+          TiMixpanel.identify(currentUser.id)
+
         })
     },
 
@@ -4104,12 +4127,7 @@ angular.module("services.tiMixpanel", [])
 
       // methods just for tiMixpanel, not wrappers around mixpanel methods.
 
-      get: getFromCookie,
-      clear: function(){
-
-        for (var k in superProperties) delete superProperties[k];
-        return true
-      }
+      get: getFromCookie
     }
 
   })
