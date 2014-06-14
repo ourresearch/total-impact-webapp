@@ -189,11 +189,7 @@ angular.module("profile", [
     var loadingProducts = true
 
 
-    security.isLoggedInPromise(url_slug).then(
-      function(){
-        TiMixpanel.track("viewed own profile")
-      }
-    )
+
 
     $scope.url_slug = url_slug
     $scope.loadingProducts = function(){
@@ -313,6 +309,9 @@ angular.module("profile", [
           // and the products load first.
           security.isLoggedInPromise(url_slug).then(
             function(){
+              TiMixpanel.track("viewed own profile", {
+                num_products: resp.products.length
+              })
               if (resp.products.length == 0){
                 console.log("logged-in user looking at own profile with no products. showing tour.")
                 Tour.start(resp.about)
