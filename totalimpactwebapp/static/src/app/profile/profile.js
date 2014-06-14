@@ -315,7 +315,7 @@ angular.module("profile", [
             function(){
               var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
               TiMixpanel.track("viewed own profile", {
-                "Products count": numTrueProducts
+                "Number of products": numTrueProducts
               })
               if (resp.products.length == 0){
                 console.log("logged-in user looking at own profile with no products. showing tour.")
