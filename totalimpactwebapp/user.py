@@ -771,7 +771,7 @@ def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=T
 
 def mint_stripe_id(user_dict):
     # make the Stripe customer so we can get their customer number:
-    full_name = "{first} {last}".format(first=user_dict["given_name"], last=user_dict["surname"])
+    full_name = u"{first} {last}".format(first=user_dict["given_name"], last=user_dict["surname"])
     stripe_customer = stripe.Customer.create(
         description=full_name,
         email=user_dict["email"],
