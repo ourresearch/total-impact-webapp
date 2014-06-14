@@ -197,7 +197,7 @@ def send_email_if_new_diffs(user_id):
     logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
     latest_diff_timestamp = user.latest_diff_ts
     status = "checking diffs"
-    if not user.last_email_check or (latest_diff_timestamp > user.last_email_check.isoformat()):
+    if (not user.last_email_check) or (latest_diff_timestamp > user.last_email_check.isoformat()):
         logger.info(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
         send_email_report(user, now)
         status = "email sent"
@@ -232,7 +232,7 @@ def send_email_report(user, now=None):
         if os.getenv("ENVIRONMENT", "testing") == "production":
             email = user.email
         else:
-            email = "heather@impactstory.org"
+            email = "team@impactstory.org"
         user.last_email_sent = now
 
         try:
