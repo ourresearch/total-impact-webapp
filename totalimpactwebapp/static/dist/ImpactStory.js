@@ -166,10 +166,7 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
-        TiMixpanel.track("Unlinked an account", {
-          "Account name": $scope.account.displayName
-        })
-
+        TiMixpanel.track("delete product")
       }
     )
   }
@@ -942,6 +939,7 @@ angular.module("profileProduct", [
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
+
     $scope.openFulltextLocationModal = function(){
       UserProfile.useCache(false)
       $modal.open(
@@ -949,11 +947,13 @@ angular.module("profileProduct", [
         // controller specified in the template :/
       )
       .result.then(function(resp){
-          console.log("closed the free fulltext modal; re-rendering product")
+          console.log("closed the free fulltext modal; re-rendering product", resp)
+          TiMixpanel.track("added free fulltext url",{
+            url: resp.product.biblio.free_fulltext_url
+          })
           renderProduct()
       })
     }
-
 
     $scope.deleteProduct = function(){
       Loading.start("deleteProduct")
@@ -963,6 +963,7 @@ angular.module("profileProduct", [
         {user_id: slug, tiid: $routeParams.tiid},
         function(){
           Loading.finish("deleteProduct")
+          TiMixpanel.track("delete product")
           security.redirectToProfile()
         }
       )
@@ -1445,7 +1446,7 @@ angular.module("profile", [
         {user_id: url_slug, tiid: product._tiid},
         function(){
           console.log("finished deleting", product.biblio.display_title)
-          TiMixpanel.track("deleted a product", {
+          TiMixpanel.track("delete product", {
             tiid: product._tiid,
             title: product.biblio.display_title
           })

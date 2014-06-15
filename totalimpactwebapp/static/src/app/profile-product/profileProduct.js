@@ -55,6 +55,7 @@ angular.module("profileProduct", [
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
+
     $scope.openFulltextLocationModal = function(){
       UserProfile.useCache(false)
       $modal.open(
@@ -62,11 +63,13 @@ angular.module("profileProduct", [
         // controller specified in the template :/
       )
       .result.then(function(resp){
-          console.log("closed the free fulltext modal; re-rendering product")
+          console.log("closed the free fulltext modal; re-rendering product", resp)
+          TiMixpanel.track("added free fulltext url",{
+            url: resp.product.biblio.free_fulltext_url
+          })
           renderProduct()
       })
     }
-
 
     $scope.deleteProduct = function(){
       Loading.start("deleteProduct")
@@ -76,6 +79,7 @@ angular.module("profileProduct", [
         {user_id: slug, tiid: $routeParams.tiid},
         function(){
           Loading.finish("deleteProduct")
+          TiMixpanel.track("delete product")
           security.redirectToProfile()
         }
       )

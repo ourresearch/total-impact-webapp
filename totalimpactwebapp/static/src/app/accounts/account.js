@@ -161,10 +161,7 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
-        TiMixpanel.track("Unlinked an account", {
-          "Account name": $scope.account.displayName
-        })
-
+        TiMixpanel.track("delete product")
       }
     )
   }
