@@ -105,6 +105,7 @@ angular.module("profile", [
     Users,
     UsersProducts,
     Product,
+    TiMixpanel,
     UserProfile,
     UserMessage,
     Update,
@@ -215,9 +216,13 @@ angular.module("profile", [
 
         // show the update modal
         Update.showUpdateModal(url_slug).then(
-          function(){
+          function(msg){
+            console.log("updater (resolved):", msg)
             $httpDefaultCache.removeAll()
             renderProducts()
+          },
+          function(msg){
+            console.log("updater (rejected):", msg)
           }
         )
       })
@@ -230,7 +235,7 @@ angular.module("profile", [
       return moment(isoStr).fromNow()
     }
     $scope.clickSignupLink = function(){
-      analytics.track("Clicked signup link on profile")
+      TiMixpanel.track("Clicked signup link on profile")
     }
 
 
@@ -332,12 +337,13 @@ angular.module("profile", [
 
     renderProducts()
     Update.showUpdateModal(url_slug).then(
-      function(){
+      function(msg){
+        console.log("updater (resolved):", msg)
         $httpDefaultCache.removeAll()
         renderProducts()
       },
       function(msg){
-        console.log("updater:", msg)
+        console.log("updater (rejected):", msg)
       }
     )
 })

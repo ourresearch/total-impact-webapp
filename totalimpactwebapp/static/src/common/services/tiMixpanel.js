@@ -42,12 +42,7 @@ angular.module("services.tiMixpanel", [])
 
       // methods just for tiMixpanel, not wrappers around mixpanel methods.
 
-      get: getFromCookie,
-      clear: function(){
-
-        for (var k in superProperties) delete superProperties[k];
-        return true
-      }
+      get: getFromCookie
     }
 
   })

@@ -81,10 +81,6 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      TiMixpanel,
                                                      RouteChangeErrorHandler) {
 
-//  TiMixpanel.clearCookie()
-  TiMixpanel.get("foo").then(function(x){
-    console.log("got mixpanel cookie!", x)
-  })
 
   $scope.userMessage = UserMessage
   $rootScope.security = security

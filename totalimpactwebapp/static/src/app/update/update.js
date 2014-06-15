@@ -14,14 +14,22 @@ angular.module( 'update.update', [
     var pollingInterval = 10  // 10ms...as soon as we get server resp, ask again.
     var deferred
 
+    var clear = function(){
+      status = {}
+      url_slug = null
+      deferred = null
+      modalInstance = null
+    }
+
     var tick = function(){
       UsersUpdateStatus.get({id:url_slug}).$promise.then(function(resp){
           console.log("tick() got response back from server", resp)
           status = resp
           if (resp.percent_complete == 100){
             console.log("tick() satisfied success criteria, breaking out of recursion loop")
-            deferred.resolve("Update finished!")
             modalInstance.close()
+            deferred.resolve("Update finished!")
+            clear()
           }
           else {
             $timeout(tick, pollingInterval)
@@ -30,10 +38,16 @@ angular.module( 'update.update', [
       )
     }
 
-
     var showUpdateModal = function(url_slug_arg){
       deferred = $q.defer()
       url_slug = url_slug_arg
+
+      if (modalInstance){
+        // we can only have one modal instance running at once...otherwise, it breaks.
+        deferred.reject("there's already an update modal up.")
+        return deferred.promise
+      }
+
 
       UsersUpdateStatus.get({id:url_slug}).$promise.then(
         function(resp) {
