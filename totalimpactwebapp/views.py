@@ -339,7 +339,7 @@ def user_profile(profile_id):
         resp["about"] = profile.dict_about(show_secrets=False)
         resp["awards"] = profile.awards
 
-    logger.debug("/user/{slug} built the response; took {elapsed}ms".format(
+    logger.debug(u"/user/{slug} built the response; took {elapsed}ms".format(
         slug=profile.url_slug,
         elapsed=resp_constr_timer.elapsed()
     ))

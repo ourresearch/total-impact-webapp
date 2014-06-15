@@ -1,4 +1,5 @@
 from totalimpactwebapp.user import User
+from totalimpactwebapp.user import ProductsFromCore
 from totalimpactwebapp import db
 import tasks
 
@@ -39,12 +40,14 @@ def page_query(q):
 
 def add_profile_deets_for_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
+        ProductsFromCore.clear_cache()
         logger.info(u"add_profile_deets_for_everyone: {url_slug}".format(url_slug=user.url_slug))
         response = tasks.add_profile_deets.delay(user)
 
 
 def deduplicate_everyone():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
+        ProductsFromCore.clear_cache()
         logger.info(u"deduplicate_everyone: {url_slug}".format(url_slug=user.url_slug))
         response = tasks.deduplicate.delay(user)
 
@@ -54,10 +57,12 @@ def create_cards_for_everyone(url_slug=None):
     cards = []
     if url_slug:
         user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
+        ProductsFromCore.clear_cache()
         # print user.url_slug        
         cards = tasks.create_cards(user)
     else:    
         for user in page_query(User.query.order_by(User.url_slug.asc())):
+            ProductsFromCore.clear_cache()
             # print user.url_slug        
             cards = tasks.create_cards.delay(user)
     return cards
@@ -67,12 +72,21 @@ def create_cards_for_everyone(url_slug=None):
 def email_report_to_url_slug(url_slug=None):
     if url_slug:
         user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
+        ProductsFromCore.clear_cache()
         # print user.url_slug        
-        tasks.send_email_report(user, override_with_send=True)
+        tasks.send_email_report(user)
 
 
 def email_report_to_everyone_who_needs_one():
     for user in page_query(User.query.order_by(User.url_slug.asc())):
+
+        logger.info(u"clearing user cache for {url_slug}".format(
+            url_slug=user.url_slug))
+
+        print len(user.product_objects)
+
+        ProductsFromCore.clear_cache()
+
         try:
             if not user.email or (u"@" not in user.email):
                 logger.info(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))

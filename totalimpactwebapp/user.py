@@ -86,7 +86,7 @@ class ProductsFromCore(object):
 
         if len(self.__class__.cache):
             ret = self.__class__.cache
-            logger.debug("ProductsFromCore returning {num_products} products from cache (too {elapsed}ms)".format(
+            logger.debug(u"ProductsFromCore returning {num_products} products from cache (too {elapsed}ms)".format(
                 num_products=len(ret),
                 elapsed=timer.elapsed()
             ))
@@ -110,7 +110,7 @@ class ProductsFromCore(object):
             obj_resp = r.json()
             products = obj_resp["products"]
             ret = products.values()
-            logger.debug("ProductsFromCore had nothing cached, so got {num_products} products from core (took {elapsed}ms)".format(
+            logger.debug(u"ProductsFromCore had nothing cached, so got {num_products} products from core (took {elapsed}ms)".format(
                 num_products=len(ret),
                 elapsed=timer.elapsed()
             ))
