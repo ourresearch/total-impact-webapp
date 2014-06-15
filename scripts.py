@@ -72,7 +72,7 @@ def write_500_random_profile_urls():
 
     sampled_urls = random.sample(urls, sample_size)
 
-    logger.info("writing our {sample_size} sampled profile URLs".format(
+    logger.info(u"writing our {sample_size} sampled profile URLs".format(
         sample_size=sample_size
     ))
 
