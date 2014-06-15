@@ -20,6 +20,12 @@ angular.module("profileProduct", [
 
   }])
 
+  .factory('ProfileProduct', function(){
+    return {
+
+    }
+  })
+
   .controller('ProfileProductPageCtrl', function (
     $scope,
     $routeParams,
@@ -34,6 +40,7 @@ angular.module("profileProduct", [
     UserProfile,
     Product,
     Loading,
+    TiMixpanel,
     Page) {
 
     var slug = $routeParams.url_slug
@@ -49,8 +56,15 @@ angular.module("profileProduct", [
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
     $scope.openFulltextLocationModal = function(){
-      console.log("opening the modal")
-      $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
+      UserProfile.useCache(false)
+      $modal.open(
+        {templateUrl: "profile-product/fulltext-location-modal.tpl.html"}
+        // controller specified in the template :/
+      )
+      .result.then(function(resp){
+          console.log("closed the free fulltext modal; re-rendering product")
+          renderProduct()
+      })
     }
 
 
@@ -67,6 +81,7 @@ angular.module("profileProduct", [
       )
     }
 
+
     $scope.editProduct = function(){
       UserProfile.useCache(false)
       $modal.open({
@@ -78,37 +93,46 @@ angular.module("profileProduct", [
           }
         }
       })
+      .result.then(
+        function(resp){
+          console.log("closed the editProduct modal; re-rendering product")
+          renderProduct()
+        }
+      )
     }
 
-    $scope.product = UsersProduct.get({
-      id: slug,
-      tiid: $routeParams.tiid
-    },
-    function(data){
-      Loading.finish('profileProduct')
-      Page.setTitle(data.biblio.title)
+    var renderProduct = function(){
+      $scope.product = UsersProduct.get({
+        id: $routeParams.url_slug,
+        tiid: $routeParams.tiid
+      },
+      function(data){
+        Loading.finish('profileProduct')
+        Page.setTitle(data.biblio.title)
+        $scope.productMarkup = data.markup
 
-
-//      var compiled = $compile(data.markup)($scope)
-//      console.log("markup: ", data.markup)
-//      console.log("compiled: ", compiled)
-//
-//      console.log("type of compiled: ", typeof compiled)
-//      $scope.productMarkup = compiled.join(" ")
-      $scope.productMarkup = data.markup
-
-    },
-    function(data){
-      $location.path("/"+slug) // replace this with "product not found" message...
+      },
+      function(data){
+        $location.path("/"+slug) // replace this with "product not found" message...
+      }
+      )
     }
-    )
+
+    renderProduct()
+
   })
 
 
-.controller("editProductModalCtrl", function($scope, $location, $modalInstance, Loading, product, ProductBiblio){
+.controller("editProductModalCtrl", function($scope,
+                                             $location,
+                                             $modalInstance,
+                                             $routeParams,
+                                             Loading,
+                                             product,
+                                             UsersProduct,
+                                             ProductBiblio){
 
     // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
-
     $scope.product = product
     var tiid = $location.path().match(/\/product\/(.+)$/)[1]
     $scope.onCancel = function(){
@@ -125,32 +149,36 @@ angular.module("profileProduct", [
           authors: $scope.product.biblio.authors
         },
         function(resp){
+          console.log("saved new product biblio", resp)
           Loading.finish("saveButton")
-          $scope.$close()
+          console.log("got a response back from the UsersProduct.get() call", resp)
+          return $scope.$close(resp)
 
-          // this is overkill, but works for now.
-          location.reload()
         }
       )
     }
-
   })
 
 
-.controller("freeFulltextUrlFormCtrl", function($scope, $location, Loading, ProductBiblio){
+.controller("freeFulltextUrlFormCtrl", function($scope,
+                                                $location,
+                                                Loading,
+                                                TiMixpanel,
+                                                ProductBiblio){
   var tiid = $location.path().match(/\/product\/(.+)$/)[1]
 
   $scope.free_fulltext_url = ""
   $scope.onSave = function() {
     Loading.start("saveButton")
     console.log("saving...", tiid)
+
+
     ProductBiblio.patch(
       {'tiid': tiid},
       {free_fulltext_url: $scope.free_fulltext_url},
       function(resp){
         Loading.finish("saveButton")
-        $scope.$close()
-        location.reload() // hack to make the linkout icon appear right away.
+        return $scope.$close(resp)
       }
     )
   }

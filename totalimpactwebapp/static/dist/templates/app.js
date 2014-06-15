@@ -919,7 +919,7 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
 angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/edit-product-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
     "   <h3>Edit product</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body edit-product\">\n" +
@@ -961,7 +961,7 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
 angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/fulltext-location-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
     "   <h3>Add link to free fulltext</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body free-fulltext-url\">\n" +
