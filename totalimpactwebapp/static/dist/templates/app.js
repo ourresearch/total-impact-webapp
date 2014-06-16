@@ -615,8 +615,6 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='main'\">\n" +
-    "               <h1>i am new! uniquephraselikethis!</h1>\n" +
-    "\n" +
     "               <h1>Uncover your full research impact.</h1>\n" +
     "               <h2>Impactstory is a place to learn and share all the ways your research is making a difference.</h2>\n" +
     "            </div>\n" +
@@ -953,8 +951,24 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
     "           class=\"form-control\"\n" +
     "           name=\"productAuthors\"\n" +
     "           ng-model=\"product.biblio.authors\">\n" +
+    "      </div>\n" +
     "\n" +
+    "      <div class=\"form-group\" ng-if=\"product.biblio.journal\">\n" +
+    "         <label>Journal</label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productJournal\"\n" +
+    "           ng-model=\"product.biblio.journal\">\n" +
+    "      </div>\n" +
     "\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label>Year</label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productYear\"\n" +
+    "           ng-model=\"product.biblio.year\">\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
