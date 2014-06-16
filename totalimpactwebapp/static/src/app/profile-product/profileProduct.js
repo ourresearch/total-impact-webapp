@@ -114,6 +114,7 @@ angular.module("profileProduct", [
         Loading.finish('profileProduct')
         Page.setTitle(data.biblio.title)
         $scope.productMarkup = data.markup
+        console.log("loaded a product", data)
 
       },
       function(data){
@@ -148,10 +149,7 @@ angular.module("profileProduct", [
       console.log("saving...", tiid)
       ProductBiblio.patch(
         {'tiid': tiid},
-        {
-          title: $scope.product.biblio.title,
-          authors: $scope.product.biblio.authors
-        },
+        $scope.product.biblio,
         function(resp){
           console.log("saved new product biblio", resp)
           Loading.finish("saveButton")

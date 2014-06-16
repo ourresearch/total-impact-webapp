@@ -27,8 +27,24 @@
            class="form-control"
            name="productAuthors"
            ng-model="product.biblio.authors">
+      </div>
 
+      <div class="form-group" ng-if="product.biblio.journal">
+         <label>Journal</label>
+         <input
+           type="text"
+           class="form-control"
+           name="productJournal"
+           ng-model="product.biblio.journal">
+      </div>
 
+      <div class="form-group">
+         <label>Year</label>
+         <input
+           type="text"
+           class="form-control"
+           name="productYear"
+           ng-model="product.biblio.year">
       </div>
 
 
