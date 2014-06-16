@@ -6570,8 +6570,14 @@ div.infopage.landing div.top-screen div#tagline div.wrapper h1 {
   margin: 20px auto 30px;
 }
 div.infopage.landing div.top-screen div#tagline div.wrapper h2 {
-  color: #ff4000;
   margin-top: -20px;
+  font-weight: 300;
+  color: #555;
+  font-size: 30px;
+  line-height: 1.4;
+  width: 650px;
+  text-align: center;
+  margin: 0 auto;
 }
 div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action {
   margin: 40px auto;

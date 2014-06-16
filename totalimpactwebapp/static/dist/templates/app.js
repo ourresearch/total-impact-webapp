@@ -612,7 +612,8 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='main'\">\n" +
-    "               <h1>Discover the full impact<br> of your research.</h1>\n" +
+    "               <h1>Uncover your full research impact.</h1>\n" +
+    "               <h2>Impactstory is a place to learn and share all ways your research is making a difference.</h2>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='h-index'\">\n" +
