@@ -5268,10 +5268,11 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
     "\n" +
     "      <div class=\"from-group\">\n" +
     "         <label>Authors</label>\n" +
-    "         <textarea\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
     "           class=\"form-control\"\n" +
     "           name=\"productAuthors\"\n" +
-    "           ng-model=\"product.biblio.authors\"></textarea>\n" +
+    "           ng-model=\"product.biblio.authors\">\n" +
     "\n" +
     "\n" +
     "      </div>\n" +
