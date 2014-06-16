@@ -1,4 +1,4 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-15
+/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-16
  * http://impactstory.org
  * Copyright (c) 2014 ImpactStory;
  * Licensed MIT
@@ -72,6 +72,8 @@ angular.module('accounts.account', [
           UsersLinkedAccounts.update(
             {id: url_slug, account: accountObj.accountHost},
             {},
+
+            // got products back for this linked account
             function(updateResp){
               // we've kicked off a slurp for this account type. we'll add
               // as many products we find in that account, then dedup.
@@ -84,11 +86,22 @@ angular.module('accounts.account', [
                 patchResp: patchResp
               })
             },
+
+            // ruh-roh, this linked account had no products with it.
             function(updateResp){
-              Loading.finish("saveButton")
-              deferred.reject({
-                msg: "attempt to slurp in products from linked account failed",
-                resp: updateResp
+
+              // unlink this account from the user, since it's useless.
+              about[accountObj.accountHost + "_id"] = null
+              Users.patch(
+                {id:url_slug},
+                {about:about}
+              ).$promise.then(function(resp){
+                // now that this is cleaned out of the user, we can finish up.
+                Loading.finish("saveButton")
+                deferred.reject({
+                  msg: "attempt to slurp in products from linked account failed",
+                  resp: updateResp
+                })
               })
             }
 
@@ -173,9 +186,9 @@ angular.module('accounts.account', [
 
   $scope.onLink = function(){
     console.log(
-      _.sprintf("calling /importer/%s updating '%s' with userInput:",
-        $scope.account.accountHost,
-        $routeParams.url_slug),
+      _.sprintf("calling /user/%s/linked-accounts/%s with userInput:",
+        $routeParams.url_slug,
+        $scope.account.accountHost),
       $scope.account
     )
 
@@ -198,12 +211,18 @@ angular.module('accounts.account', [
           console.log("opening google scholar modal")
           GoogleScholar.showImportModal()
         }
-
-
       },
+
+      // couldn't link to account
       function(resp){
         console.log("failure at saving inputs :(", resp)
         Loading.finish($scope.account.accountHost)
+        var failureMsg = _.sprintf(
+          "Sorry, it seems the %s account '%s' has no products associated with it.",
+          $scope.account.accountHost,
+          $scope.account.username.value
+        )
+        alert(failureMsg)
       }
     )
   }
@@ -4368,7 +4387,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "         <div class=\"descr\">{{ account.descr }}</div>\n" +
     "\n" +
-    "         <form name=\"{{ account.name }}accountForm\"\n" +
+    "         <form name=\"accountForm\"\n" +
     "               novalidate class=\"form\"\n" +
     "               ng-submit=\"onLink()\">\n" +
     "\n" +
@@ -4384,6 +4403,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "                          id=\"{{ account.CSSname }}-account-username-input\"\n" +
     "                          ng-model=\"account.username.value\"\n" +
     "                          ng-disabled=\"isLinked\"\n" +
+    "                          required\n" +
     "                          type=\"text\"\n" +
     "                          autofocus=\"autofocus\"\n" +
     "                          placeholder=\"{{ account.username.placeholder }}\">\n" +
@@ -4394,7 +4414,9 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"!isLinked\" type=\"submit\"\n" +
+    "                  <button ng-show=\"!isLinked\"\n" +
+    "                          type=\"submit\"\n" +
+    "                          ng-disabled=\"accountForm.$invalid\"\n" +
     "                          id=\"{{ account.CSSname }}-account-username-submit\",                  \n" +
     "                          ng-class=\"{'btn-success': account.sync, 'btn-primary': !account.sync }\" class=\"btn\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
@@ -4916,7 +4938,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='main'\">\n" +
     "               <h1>Uncover your full research impact.</h1>\n" +
-    "               <h2>Impactstory is a place to learn and share all ways your research is making a difference.</h2>\n" +
+    "               <h2>Impactstory is a place to learn and share all the ways your research is making a difference.</h2>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='h-index'\">\n" +

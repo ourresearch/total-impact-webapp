@@ -587,6 +587,9 @@ def user_linked_accounts_update(id, account):
     update_even_removed_products = (source=="webapp")
 
     tiids = user.update_products_from_linked_account(account, update_even_removed_products)
+    if len(tiids) == 0:
+        abort_json(404, "That account has no products")
+
     return json_resp_from_thing({"products": tiids})
 
 

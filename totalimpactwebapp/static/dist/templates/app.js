@@ -65,7 +65,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "         <div class=\"descr\">{{ account.descr }}</div>\n" +
     "\n" +
-    "         <form name=\"{{ account.name }}accountForm\"\n" +
+    "         <form name=\"accountForm\"\n" +
     "               novalidate class=\"form\"\n" +
     "               ng-submit=\"onLink()\">\n" +
     "\n" +
@@ -81,6 +81,7 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "                          id=\"{{ account.CSSname }}-account-username-input\"\n" +
     "                          ng-model=\"account.username.value\"\n" +
     "                          ng-disabled=\"isLinked\"\n" +
+    "                          required\n" +
     "                          type=\"text\"\n" +
     "                          autofocus=\"autofocus\"\n" +
     "                          placeholder=\"{{ account.username.placeholder }}\">\n" +
@@ -91,7 +92,9 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "            <div class=\"buttons-group save\">\n" +
     "               <div class=\"buttons\" ng-show=\"!loading.is('saveButton')\">\n" +
-    "                  <button ng-show=\"!isLinked\" type=\"submit\"\n" +
+    "                  <button ng-show=\"!isLinked\"\n" +
+    "                          type=\"submit\"\n" +
+    "                          ng-disabled=\"accountForm.$invalid\"\n" +
     "                          id=\"{{ account.CSSname }}-account-username-submit\",                  \n" +
     "                          ng-class=\"{'btn-success': account.sync, 'btn-primary': !account.sync }\" class=\"btn\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
@@ -613,7 +616,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='main'\">\n" +
     "               <h1>Uncover your full research impact.</h1>\n" +
-    "               <h2>Impactstory is a place to learn and share all ways your research is making a difference.</h2>\n" +
+    "               <h2>Impactstory is a place to learn and share all the ways your research is making a difference.</h2>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='h-index'\">\n" +

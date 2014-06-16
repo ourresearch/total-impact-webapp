@@ -67,6 +67,8 @@ angular.module('accounts.account', [
           UsersLinkedAccounts.update(
             {id: url_slug, account: accountObj.accountHost},
             {},
+
+            // got products back for this linked account
             function(updateResp){
               // we've kicked off a slurp for this account type. we'll add
               // as many products we find in that account, then dedup.
@@ -79,11 +81,22 @@ angular.module('accounts.account', [
                 patchResp: patchResp
               })
             },
+
+            // ruh-roh, this linked account had no products with it.
             function(updateResp){
-              Loading.finish("saveButton")
-              deferred.reject({
-                msg: "attempt to slurp in products from linked account failed",
-                resp: updateResp
+
+              // unlink this account from the user, since it's useless.
+              about[accountObj.accountHost + "_id"] = null
+              Users.patch(
+                {id:url_slug},
+                {about:about}
+              ).$promise.then(function(resp){
+                // now that this is cleaned out of the user, we can finish up.
+                Loading.finish("saveButton")
+                deferred.reject({
+                  msg: "attempt to slurp in products from linked account failed",
+                  resp: updateResp
+                })
               })
             }
 
@@ -168,9 +181,9 @@ angular.module('accounts.account', [
 
   $scope.onLink = function(){
     console.log(
-      _.sprintf("calling /importer/%s updating '%s' with userInput:",
-        $scope.account.accountHost,
-        $routeParams.url_slug),
+      _.sprintf("calling /user/%s/linked-accounts/%s with userInput:",
+        $routeParams.url_slug,
+        $scope.account.accountHost),
       $scope.account
     )
 
@@ -193,12 +206,18 @@ angular.module('accounts.account', [
           console.log("opening google scholar modal")
           GoogleScholar.showImportModal()
         }
-
-
       },
+
+      // couldn't link to account
       function(resp){
         console.log("failure at saving inputs :(", resp)
         Loading.finish($scope.account.accountHost)
+        var failureMsg = _.sprintf(
+          "Sorry, it seems the %s account '%s' has no products associated with it.",
+          $scope.account.accountHost,
+          $scope.account.username.value
+        )
+        alert(failureMsg)
       }
     )
   }
