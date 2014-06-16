@@ -92,6 +92,8 @@ angular.module( 'infopages', [
 //      ])
 //    })
 
+    TiMixpanel.track("viewed landing page")
+
     var signupFormShowing = false
     $scope.landingPageType = "main"
     Page.showHeader(false)

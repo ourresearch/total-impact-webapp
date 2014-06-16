@@ -742,6 +742,8 @@ angular.module( 'infopages', [
 //      ])
 //    })
 
+    TiMixpanel.track("viewed landing page")
+
     var signupFormShowing = false
     $scope.landingPageType = "main"
     Page.showHeader(false)
@@ -4979,7 +4981,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            <p>Your profile is free, the data behind it is open, and our code is open-source.</p>\n" +
     "         </li>\n" +
     "      </ul>\n" +
-    "   </div> \n" +
+    "   </div>\n" +
     "\n" +
     "\n" +
     "   <div id=\"testimonials\">\n" +
