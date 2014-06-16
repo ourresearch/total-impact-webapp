@@ -735,9 +735,12 @@ angular.module( 'infopages', [
   }])
 
   .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page, TiMixpanel ) {
-    TiMixpanel.registerOnce({
-      "show link to example profile on landing page": _.sample([true, false])
-    })
+//    TiMixpanel.registerOnce({
+//      "selling points": _.sample([
+//        "impacts, products, free",
+//        "impacts, products, notifications"
+//      ])
+//    })
 
     var signupFormShowing = false
     $scope.landingPageType = "main"
@@ -4976,7 +4979,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            <p>Your profile is free, the data behind it is open, and our code is open-source.</p>\n" +
     "         </li>\n" +
     "      </ul>\n" +
-    "   </div>\n" +
+    "   </div> \n" +
     "\n" +
     "\n" +
     "   <div id=\"testimonials\">\n" +

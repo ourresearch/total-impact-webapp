@@ -85,9 +85,12 @@ angular.module( 'infopages', [
   }])
 
   .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page, TiMixpanel ) {
-    TiMixpanel.registerOnce({
-      "show link to example profile on landing page": _.sample([true, false])
-    })
+//    TiMixpanel.registerOnce({
+//      "selling points": _.sample([
+//        "impacts, products, free",
+//        "impacts, products, notifications"
+//      ])
+//    })
 
     var signupFormShowing = false
     $scope.landingPageType = "main"
