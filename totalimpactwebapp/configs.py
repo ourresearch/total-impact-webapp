@@ -98,16 +98,16 @@ genre_icons = {
 #*
 #***************************************************************************
 linked_accounts = {
-    'orcid': "https://orcid.org/{id}",
-    "github": "https://github.com/{id}",
-    "slideshare": "http://www.slideshare.net/{id}",
-    "twitter": "http://twitter.com/{id}",
-    "figshare": "http://figshare.com/{id}",
-    "google_scholar": "http://scholar.google.com/{id}",
-    "mendeley": "http://mendeley.com/{id}",
-    "researchgate": "http://researchgate.com/{id}",
-    "academia_edu": "http://academia.edu/{id}",
-    "linkedin": "http://linkedin.com/{id}"
+    "orcid": u"https://orcid.org/{id}",
+    "github": u"https://github.com/{id}",
+    "slideshare": u"http://www.slideshare.net/{id}",
+    "twitter": u"http://twitter.com/{id}",
+    "figshare": u"http://figshare.com/{id}",
+    "google_scholar": u"http://scholar.google.com/{id}",
+    "mendeley": u"http://mendeley.com/{id}",
+    "researchgate": u"http://researchgate.com/{id}",
+    "academia_edu": u"http://academia.edu/{id}",
+    "linkedin": u"http://linkedin.com/{id}"
 }
 
 
