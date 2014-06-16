@@ -271,7 +271,6 @@ angular.module("profile", [
           })
         }
       )
-
     }
 
 

@@ -1,6 +1,6 @@
-/*! ImpactStory - v0.0.1-SNAPSHOT - 2014-06-16
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-06-16
  * http://impactstory.org
- * Copyright (c) 2014 ImpactStory;
+ * Copyright (c) 2014 Impactstory;
  * Licensed MIT
  */
 angular.module('accounts.account', [
@@ -1476,7 +1476,6 @@ angular.module("profile", [
           })
         }
       )
-
     }
 
 
@@ -4937,6 +4936,8 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='main'\">\n" +
+    "               <h1>i am new! uniquephraselikethis!</h1>\n" +
+    "\n" +
     "               <h1>Uncover your full research impact.</h1>\n" +
     "               <h2>Impactstory is a place to learn and share all the ways your research is making a difference.</h2>\n" +
     "            </div>\n" +
@@ -5511,6 +5512,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "            </a>\n" +
     "         </div>\n" +
+    "\n" +
     "         <div class=\"my-vitals\">\n" +
     "            <h2 class='page-title editable-name' id=\"profile-owner-name\">\n" +
     "               <span class=\"given-name editable\" data-name=\"given_name\">{{ profile.given_name }}</span>\n" +

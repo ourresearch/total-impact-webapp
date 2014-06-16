@@ -16,3 +16,4 @@ venv
 packed.css
 packed.js
 codekit-config.json
+static/dist/templates
