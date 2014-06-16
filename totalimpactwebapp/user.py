@@ -249,8 +249,9 @@ class User(db.Model):
     @property
     def linked_accounts(self):
         ret = []
+        ignore_keys = ["collection_id", "stripe_id"]
         for k, v in self.__dict__.iteritems():
-            if k.endswith("_id"):
+            if k.endswith("_id") and k not in ignore_keys:
                 service = k.replace("_id", "")
                 if v and (service in configs.linked_accounts):
                     profile_url = configs.linked_accounts[service].format(

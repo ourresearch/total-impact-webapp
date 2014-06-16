@@ -612,7 +612,8 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='main'\">\n" +
-    "               <h1>Discover the full impact<br> of your research.</h1>\n" +
+    "               <h1>Uncover your full research impact.</h1>\n" +
+    "               <h2>Impactstory is a place to learn and share all ways your research is making a difference.</h2>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='h-index'\">\n" +
@@ -919,7 +920,7 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
 angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/edit-product-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
     "   <h3>Edit product</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body edit-product\">\n" +
@@ -961,7 +962,7 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
 angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/fulltext-location-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
     "   <h3>Add link to free fulltext</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body free-fulltext-url\">\n" +

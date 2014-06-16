@@ -168,14 +168,6 @@ angular.module("profile", [
       }
     })
 
-
-
-
-
-
-
-
-
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
 
@@ -196,6 +188,9 @@ angular.module("profile", [
     var url_slug = $routeParams.url_slug;
     var loadingProducts = true
 
+
+
+
     $scope.url_slug = url_slug
     $scope.loadingProducts = function(){
       return loadingProducts
@@ -207,6 +202,8 @@ angular.module("profile", [
       $scope.hideSignupBanner = true
 
     }
+
+
 
     $scope.refresh = function(){
       var url = "/user/"+ url_slug +"/products?action=refresh"
@@ -235,7 +232,7 @@ angular.module("profile", [
       return moment(isoStr).fromNow()
     }
     $scope.clickSignupLink = function(){
-      TiMixpanel.track("Clicked signup link on profile")
+      TiMixpanel.track("Clicked profile footer signup link")
     }
 
 
@@ -268,6 +265,10 @@ angular.module("profile", [
         {user_id: url_slug, tiid: product._tiid},
         function(){
           console.log("finished deleting", product.biblio.display_title)
+          TiMixpanel.track("delete product", {
+            tiid: product._tiid,
+            title: product.biblio.display_title
+          })
         }
       )
 
@@ -312,6 +313,10 @@ angular.module("profile", [
           // and the products load first.
           security.isLoggedInPromise(url_slug).then(
             function(){
+              var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
+              TiMixpanel.track("viewed own profile", {
+                "Number of products": numTrueProducts
+              })
               if (resp.products.length == 0){
                 console.log("logged-in user looking at own profile with no products. showing tour.")
                 Tour.start(resp.about)

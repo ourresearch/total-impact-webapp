@@ -500,6 +500,8 @@ def user_products_csv(id):
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
 def product_biblio_modify(tiid):
     # This should actually be like /user/:id/product/:tiid/biblio
+    # and it should return the newly-modified product, instead of the
+    # part-product it gets from core now.
 
     try:
         if tiid not in current_user.tiids:

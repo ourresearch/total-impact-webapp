@@ -19,8 +19,8 @@ angular.module("services.tiMixpanel", [])
 
       // purely wrappers around mixpanel methods
 
-      track: function(obj){
-        return mixpanel.track(obj)
+      track: function(event, obj){
+        return mixpanel.track(event, obj)
       },
       alias: function(myAlias){
         return mixpanel.alias(myAlias)
@@ -40,7 +40,42 @@ angular.module("services.tiMixpanel", [])
 
 
 
-      // methods just for tiMixpanel, not wrappers around mixpanel methods.
+    // methods just for tiMixpanel, not wrappers around mixpanel methods.
+    registerFromUserObject: function(userObject){
+      if (!userObject){
+        return false
+      }
+
+      var keysToRegister = [
+        "created",
+        "email",
+        "given_name",
+        "is_advisor",
+        "last_email_sent",
+        "last_viewed_profile",
+        "products_count",
+        "surname",
+        "url_slug"
+      ]
+
+      var activeLinkedAccountServices = _.map(
+        userObject.linked_accounts,
+        function(linkedAccount){
+          if (linkedAccount.username){
+            return linkedAccount.service
+          }
+          else {
+            return false
+          }
+      })
+
+      var objToRegister = _.pick(userObject, keysToRegister)
+      objToRegister.linkedAccounts = _.compact(activeLinkedAccountServices).join(",")
+      mixpanel.register(objToRegister)
+
+      return true
+    },
+
 
       get: getFromCookie
     }

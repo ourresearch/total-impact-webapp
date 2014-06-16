@@ -166,10 +166,7 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
-        TiMixpanel.track("Unlinked an account", {
-          "Account name": $scope.account.displayName
-        })
-
+        TiMixpanel.track("delete product")
       }
     )
   }
@@ -651,7 +648,6 @@ angular.module("googleScholar", [
 
   })
 
-angular.module("importers.allTheImporters",["importers.importer"]);angular.module("importers.allTheImporters").factory("AllTheImporters",function(){var e=[],t=[{displayName:"GitHub",url:"http://github.com",descr:"GitHub is an online code repository emphasizing community collaboration features.",tabs:[{label:"account"},{label:"additional repositories"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:"Your GitHub account ID is at the top right of your screen when you're logged in.",saveUsername:"github_id"},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other github repositories here.",placeholder:"https://github.com/your_username/your_repository",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"https://"+t}).join("\n")}}]},{displayName:"ORCID",inputs:[{inputType:"username",inputNeeded:"ID",placeholder:"http://orcid.org/xxxx-xxxx-xxxx-xxxx",saveUsername:"orcid_id",cleanupFunction:function(e){return e.replace("http://orcid.org/","")},help:"You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."}],url:"http://orcid.org",signupUrl:"http://orcid.org/register",descr:"ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into ImpactStory.",extra:"If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."},{displayName:"SlideShare",url:"http://slideshare.net",descr:"SlideShare is community for sharing presentations online.",tabs:[{label:"account"},{label:"additional products"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:'Your username is right after "slideshare.net/" in your profile\'s URL.',saveUsername:"slideshare_id"},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other SlideShare products here.",placeholder:"http://www.slideshare.net/your-username/your-presentation",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");return"http://"+t}).join("\n")}}]},{displayName:"Twitter",url:"http://twitter.com",descr:"Twitter is a social networking site for sharing short messages.",endpoint:"twitter_account",tabs:[{label:"account"},{label:"additional tweets"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"username",help:"Your Twitter username is often written starting with @.",saveUsername:"twitter_account_id",placeholder:"@username",cleanupFunction:function(e){return typeof e=="undefined"?e:"@"+e.replace("@","")}},{tab:1,name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Paste URLs for other Tweets here.",placeholder:"https://twitter.com/username/status/123456",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/https*:\/\//,"");return"http://"+t}).join("\n")}}]},{displayName:"Google Scholar",inputs:[{inputType:"file",inputNeeded:"BibTeX file"}],endpoint:"bibtex",url:"http://scholar.google.com/citations",descr:"Google Scholar profiles find and show researchers' articles as well as their citation impact.",extra:'<h3>How to import your Google Scholar profile:</h3><ol><li>Visit (or <a target="_blank" href="http://scholar.google.com/intl/en/scholar/citations.html">make</a>) your Google Scholar Citations <a target="_blank" href="http://scholar.google.com/citations">author profile</a>.</li><li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li><li>Click <code>Export all my articles</code>, then save the BibTex file.</li><li>Return to ImpactStory. Click "upload" in this window, select your previously saved file, and upload.</ol>'},{displayName:"figshare",url:"http://figshare.com",descr:"Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",tabs:[{label:"account"},{label:"additional products"}],inputs:[{tab:0,name:"account_name",inputType:"username",inputNeeded:"author page URL",placeholder:"http://figshare.com/authors/your_username/12345",cleanupFunction:function(e){return"http://"+e.replace("http://","")},saveUsername:"figshare_id"},{tab:1,name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"Paste DOIs for other figshare products here.",placeholder:"http://dx.doi.org/10.6084/m9.figshare.12345"}]},{displayName:"Blogs",descr:"Blogs and websites",endpoint:"wordpresscom",tabs:[{label:"blog url"},{label:"additional posts"}],inputs:[{tab:0,name:"blogUrl",inputType:"username",inputNeeded:"Blog URL",help:"The URL for your blog (such as http://retractionwatch.wordpress.com or http://blog.impactstory.org)",placeholder:"yourblogname.com",cleanupFunction:function(e){if(typeof e=="undefined")return e;var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"http://"+t}},{tab:1,name:"blog_post_urls",inputType:"idList",inputNeeded:"Blog post URLs",help:"Paste URLs for individual blog posts here.",placeholder:"http://yourblog.com/your-awesome-post",cleanupFunction:function(e){return typeof e=="undefined"?e:_.map(e.split("\n"),function(e){var t=e.replace(/^https*:\/\//,"");t=t.replace(/\/$/,"");return"http://"+t}).join("\n")}}]},{displayName:"YouTube",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Copy the URLs for the videos you want to add, then paste them here.",placeholder:"http://www.youtube.com/watch?v=12345"}],endpoint:"urls",url:"http://youtube.com",descr:"YouTube is an online video-sharing site."},{displayName:"Vimeo",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs",help:"Copy the URL for the video you want to add, then paste it here.",placeholder:"http://vimeo.com/12345"}],endpoint:"urls",url:"http://vimeo.com",descr:"Vimeo is an online video-sharing site."},{displayName:"arXiv",inputs:[{name:"arxiv_id_input",inputType:"idList",inputNeeded:"arXiv IDs",help:"A typical arXiv ID looks like this: 1305.3328",placeholder:"arXiv:1234.5678"}],endpoint:"arxiv",url:"http://arXiv.org",descr:"arXiv is an e-print service in the fields of physics, mathematics, computer science, quantitative biology, quantitative finance and statistics."},{displayName:"Dryad",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:'You can find Dryad DOIs on each dataset\'s individual Dryad webpage, inside the <strong>"please cite the Dryad data package"</strong> section.',placeholder:"doi:10.5061/dryad.example"}],endpoint:"dois",url:"http://datadryad.org",descr:"The Dryad Digital Repository is a curated resource that makes the data underlying scientific publications discoverable, freely reusable, and citable."},{displayName:"Dataset DOIs",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"You can often find dataset DOIs (when they exist; alas, often they don't) on their repository pages.",placeholder:"http://doi.org/10.example/example"}],endpoint:"dois",descr:"Datasets can often be identified by their DOI, a unique ID assigned by the repository to a given dataset."},{displayName:"Article DOIs",inputs:[{name:"standard_dois_input",inputType:"idList",inputNeeded:"DOIs",help:"You can (generally) find article DOIs wherever the publishers have made the articles available online.",placeholder:"http://doi.org/10.example/example"}],endpoint:"dois",descr:"Articles can often be identified by their DOI: a unique ID most publishers assign to the articles they publish."},{displayName:"PubMed IDs",inputs:[{name:"standard_pmids_input",inputType:"idList",inputNeeded:"IDs",placeholder:"123456789",help:"You can find PubMed IDs (PMIDs) beneath each article's abstract on the PubMed site."}],endpoint:"pmids",url:"http://www.ncbi.nlm.nih.gov/pubmed",descr:"PubMed is a large database of biomedical literature. Every article in PubMed has a unique PubMed ID."},{displayName:"Products by URL",inputs:[{name:"standard_urls_input",inputType:"idList",inputNeeded:"URLs"}],endpoint:"urls",descr:"Our service-specific importers (DOI, blogs, GitHub, etc) give the most comprehensive results. But if you've got a product not handled by any of those, you can import it here, via URL."}],n={name:"primary",cleanupFunction:function(e){return e},tab:0},r=function(e){return"/static/img/logos/"+_(e.toLowerCase()).dasherize()+".png"},i=function(e){return e.endpoint?e.endpoint:s(e.displayName)},s=function(e){var t=e.split(" "),n=_.map(t,function(e){return e.charAt(0).toUpperCase()+e.toLowerCase().slice(1)});n[0]=n[0].toLowerCase();return n.join("")};return{addProducts:function(t){e=e.concat(t)},getProducts:function(){return e},get:function(){var e=angular.copy(t),o=_.map(e,function(e){e.name=s(e.displayName);e.logoPath=r(e.displayName);e.endpoint=i(e);e.inputs=_.map(e.inputs,function(e){return _.defaults(e,n)});return e});return _.sortBy(o,function(e){return e.displayName.toLocaleLowerCase()})}}});
 angular.module( 'infopages', [
     'security',
     'services.page',
@@ -739,9 +735,14 @@ angular.module( 'infopages', [
   }])
 
   .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page, TiMixpanel ) {
-    TiMixpanel.registerOnce({
-      "show link to example profile on landing page": _.sample([true, false])
-    })
+//    TiMixpanel.registerOnce({
+//      "selling points": _.sample([
+//        "impacts, products, free",
+//        "impacts, products, notifications"
+//      ])
+//    })
+
+    TiMixpanel.track("viewed landing page")
 
     var signupFormShowing = false
     $scope.landingPageType = "main"
@@ -886,7 +887,6 @@ angular.module('profileLinkedAccounts', [
 
 
   })
-angular.module("profileProduct",["resources.users","services.page","product.product","services.loading","ui.bootstrap","security"]).config(["$routeProvider",function(e){e.when("/:url_slug/product/:tiid",{templateUrl:"profile-product/profile-product-page.tpl.html",controller:"ProfileProductPageCtrl"})}]).controller("ProfileProductPageCtrl",function(e,t,n,r,i,s,o,u,a,f,l){var c=t.url_slug,h=i.get("$http");f.start("profileProduct");e.userSlug=c;e.loading=f;e.userOwnsThisProfile=s.testUserAuthenticationLevel("ownsThisProfile");e.openInfoModal=function(){r.open({templateUrl:"profile-product/percentilesInfoModal.tpl.html"})};e.deleteProduct=function(){f.start("deleteProduct");u.delete({id:c,idType:"url_slug"},{tiids:[t.tiid]},function(){console.log("finished deleting",t.tiid);h.removeAll();s.redirectToProfile()})};e.product=o.get({id:c,tiid:t.tiid},function(t){console.log("data",t);e.biblio=a.makeBiblio(t);e.metrics=a.makeMetrics(t);f.finish("profileProduct");l.setTitle(t.biblio.title)},function(e){n.path("/"+c)})}).controller("modalCtrl");
 angular.module("profileProduct", [
     'resources.users',
     'resources.products',
@@ -909,6 +909,12 @@ angular.module("profileProduct", [
 
   }])
 
+  .factory('ProfileProduct', function(){
+    return {
+
+    }
+  })
+
   .controller('ProfileProductPageCtrl', function (
     $scope,
     $routeParams,
@@ -923,6 +929,7 @@ angular.module("profileProduct", [
     UserProfile,
     Product,
     Loading,
+    TiMixpanel,
     Page) {
 
     var slug = $routeParams.url_slug
@@ -937,11 +944,21 @@ angular.module("profileProduct", [
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
-    $scope.openFulltextLocationModal = function(){
-      console.log("opening the modal")
-      $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
-    }
 
+    $scope.openFulltextLocationModal = function(){
+      UserProfile.useCache(false)
+      $modal.open(
+        {templateUrl: "profile-product/fulltext-location-modal.tpl.html"}
+        // controller specified in the template :/
+      )
+      .result.then(function(resp){
+          console.log("closed the free fulltext modal; re-rendering product", resp)
+          TiMixpanel.track("added free fulltext url",{
+            url: resp.product.biblio.free_fulltext_url
+          })
+          renderProduct()
+      })
+    }
 
     $scope.deleteProduct = function(){
       Loading.start("deleteProduct")
@@ -951,10 +968,12 @@ angular.module("profileProduct", [
         {user_id: slug, tiid: $routeParams.tiid},
         function(){
           Loading.finish("deleteProduct")
+          TiMixpanel.track("delete product")
           security.redirectToProfile()
         }
       )
     }
+
 
     $scope.editProduct = function(){
       UserProfile.useCache(false)
@@ -967,37 +986,46 @@ angular.module("profileProduct", [
           }
         }
       })
+      .result.then(
+        function(resp){
+          console.log("closed the editProduct modal; re-rendering product")
+          renderProduct()
+        }
+      )
     }
 
-    $scope.product = UsersProduct.get({
-      id: slug,
-      tiid: $routeParams.tiid
-    },
-    function(data){
-      Loading.finish('profileProduct')
-      Page.setTitle(data.biblio.title)
+    var renderProduct = function(){
+      $scope.product = UsersProduct.get({
+        id: $routeParams.url_slug,
+        tiid: $routeParams.tiid
+      },
+      function(data){
+        Loading.finish('profileProduct')
+        Page.setTitle(data.biblio.title)
+        $scope.productMarkup = data.markup
 
-
-//      var compiled = $compile(data.markup)($scope)
-//      console.log("markup: ", data.markup)
-//      console.log("compiled: ", compiled)
-//
-//      console.log("type of compiled: ", typeof compiled)
-//      $scope.productMarkup = compiled.join(" ")
-      $scope.productMarkup = data.markup
-
-    },
-    function(data){
-      $location.path("/"+slug) // replace this with "product not found" message...
+      },
+      function(data){
+        $location.path("/"+slug) // replace this with "product not found" message...
+      }
+      )
     }
-    )
+
+    renderProduct()
+
   })
 
 
-.controller("editProductModalCtrl", function($scope, $location, $modalInstance, Loading, product, ProductBiblio){
+.controller("editProductModalCtrl", function($scope,
+                                             $location,
+                                             $modalInstance,
+                                             $routeParams,
+                                             Loading,
+                                             product,
+                                             UsersProduct,
+                                             ProductBiblio){
 
     // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
-
     $scope.product = product
     var tiid = $location.path().match(/\/product\/(.+)$/)[1]
     $scope.onCancel = function(){
@@ -1014,32 +1042,36 @@ angular.module("profileProduct", [
           authors: $scope.product.biblio.authors
         },
         function(resp){
+          console.log("saved new product biblio", resp)
           Loading.finish("saveButton")
-          $scope.$close()
+          console.log("got a response back from the UsersProduct.get() call", resp)
+          return $scope.$close(resp)
 
-          // this is overkill, but works for now.
-          location.reload()
         }
       )
     }
-
   })
 
 
-.controller("freeFulltextUrlFormCtrl", function($scope, $location, Loading, ProductBiblio){
+.controller("freeFulltextUrlFormCtrl", function($scope,
+                                                $location,
+                                                Loading,
+                                                TiMixpanel,
+                                                ProductBiblio){
   var tiid = $location.path().match(/\/product\/(.+)$/)[1]
 
   $scope.free_fulltext_url = ""
   $scope.onSave = function() {
     Loading.start("saveButton")
     console.log("saving...", tiid)
+
+
     ProductBiblio.patch(
       {'tiid': tiid},
       {free_fulltext_url: $scope.free_fulltext_url},
       function(resp){
         Loading.finish("saveButton")
-        $scope.$close()
-        location.reload() // hack to make the linkout icon appear right away.
+        return $scope.$close(resp)
       }
     )
   }
@@ -1152,7 +1184,6 @@ angular.module('profileSingleProducts', [
     }
 
   })
-angular.module("profile",["resources.users","product.product","services.page","update.update","ui.bootstrap","security","services.loading","services.timer","tips","profile.addProducts","services.i18nNotifications"]).config(["$routeProvider",function(e,t){e.when("/embed/:url_slug",{templateUrl:"profile/profile.tpl.html",controller:"ProfileCtrl"})}]).factory("UserProfile",function(e,t,n,r,i,s,o){var u={};return{makeAnchorLink:function(e,t){var r=e;t&&(r+=":"+encodeURIComponent(t));return n.path()+"#"+r},filterProducts:function(e,t){var n=_.filter(e,function(e){return _.size(e.metrics)}),r=_.filter(e,function(e){return e.metrics&&_.size(e.metrics)==0});return t=="withMetrics"?n:t==="withoutMetrics"?r:n.concat(r)},scrollToCorrectLocation:function(){if(n.hash())t();else{var r=o.getLastScrollPosition(n.path());e.scrollTo(0,r)}},loadUser:function(e,t){return r.get({id:t,idType:"url_slug"},function(e){o.setTitle(e.about.given_name+" "+e.about.surname)},function(n){if(n.status==404){e.userExists=!1;e.slug=t}})},slugIsCurrentUser:function(e){return i.getCurrentUser()?i.getCurrentUser().url_slug==e:!1},makeSlug:function(){u.url_slug=s.make(u.givenName,u.surname)},readyToCreateOnServer:function(){return u.url_slug&&!id},reset:function(){u={}},setId:function(e){id=e},getId:function(){return id},getSlug:function(){return u.url_slug},about:u}}).controller("ProfileCtrl",function(e,t,n,r,i,s,o,u,a,f,l,c,h,p,d,v,m,g){g.isEmbedded();var y=a.get("$http");e.$on("ngRepeatFinished",function(e){console.log("finished rendering products in "+m.elapsed("renderProducts")+"ms");twttr.widgets.load()});var b=r.url_slug,w=!0;e.loadingProducts=function(){return w};e.userExists=!0;e.showProductsWithoutMetrics=!1;e.filterProducts=h.filterProducts;e.user=h.loadUser(e,b);e.currentUserIsProfileOwner=function(){return h.slugIsCurrentUser(b)};e.openProfileEmbedModal=function(){i.open({templateUrl:"profile/profile-embed-modal.tpl.html",controller:"profileEmbedModalCtrl",resolve:{userSlug:function(e){return e.when(b)}}})};e.getSortScore=function(e){return c.getSortScore(e)*-1};e.getMetricSum=function(e){return c.getMetricSum(e)*-1};e.dedup=function(){v.start("dedup");l.dedup({id:b},{},function(e){console.log("deduped!",e);v.finish("dedup");p.removeAll();p.pushForCurrentRoute("dedup.success","success",{numDuplicates:e.deleted_tiids.length});E(!0)})};var E=function(t){m.start("getProducts");w=!0;t&&y.removeAll();e.products=l.query({id:b,includeHeadingProducts:!0,embedded:g.isEmbedded(),idType:"url_slug"},function(e){console.log("loaded products in "+m.elapsed("getProducts")+"ms");m.start("renderProducts");w=!1;s(function(){h.scrollToCorrectLocation()},0)},function(e){w=!1})};s(E,100)}).controller("profileEmbedModalCtrl",function(e,t,n){console.log("user slug is: ",n);e.userSlug=n;e.baseUrl=t.getBaseUrl;e.embed={};e.embed.type="badge"}).directive("backToProfile",function(e){return{restrict:"A",replace:!0,template:"<a ng-show='returnLink' class='back-to-profile' href='/{{ returnLink }}'><i class='icon-chevron-left'></i>back to profile</a>",link:function(t,n){var r=/^\/([-\w\.]+)\/product\/(\w+)/,i=r.exec(e.path());t.returnLink=null;if(i){var s=i[1];s!="embed"&&(t.returnLink=s)}}}});
 angular.module("profile", [
   'resources.users',
   'resources.products',
@@ -1323,14 +1354,6 @@ angular.module("profile", [
       }
     })
 
-
-
-
-
-
-
-
-
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
 
@@ -1351,6 +1374,9 @@ angular.module("profile", [
     var url_slug = $routeParams.url_slug;
     var loadingProducts = true
 
+
+
+
     $scope.url_slug = url_slug
     $scope.loadingProducts = function(){
       return loadingProducts
@@ -1362,6 +1388,8 @@ angular.module("profile", [
       $scope.hideSignupBanner = true
 
     }
+
+
 
     $scope.refresh = function(){
       var url = "/user/"+ url_slug +"/products?action=refresh"
@@ -1390,7 +1418,7 @@ angular.module("profile", [
       return moment(isoStr).fromNow()
     }
     $scope.clickSignupLink = function(){
-      TiMixpanel.track("Clicked signup link on profile")
+      TiMixpanel.track("Clicked profile footer signup link")
     }
 
 
@@ -1423,6 +1451,10 @@ angular.module("profile", [
         {user_id: url_slug, tiid: product._tiid},
         function(){
           console.log("finished deleting", product.biblio.display_title)
+          TiMixpanel.track("delete product", {
+            tiid: product._tiid,
+            title: product.biblio.display_title
+          })
         }
       )
 
@@ -1467,6 +1499,10 @@ angular.module("profile", [
           // and the products load first.
           security.isLoggedInPromise(url_slug).then(
             function(){
+              var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
+              TiMixpanel.track("viewed own profile", {
+                "Number of products": numTrueProducts
+              })
               if (resp.products.length == 0){
                 console.log("logged-in user looking at own profile with no products. showing tour.")
                 Tour.start(resp.about)
@@ -1845,7 +1881,6 @@ angular.module('settings', [
 
 
 
-angular.module("signup",["services.slug","services.page","resources.users","update.update","security.service","tips","importers.allTheImporters","importers.importer"]).factory("Signup",function(e){var t=["name","url","products","password"],n=function(n){var r="name";_.each(t,function(t){e.path().indexOf("/"+t)>0&&(r=t)});n&&(r=r.charAt(0).toUpperCase()+r.slice(1));return r},r=function(){return _.indexOf(t,n())};return{signupSteps:function(){return t},onSignupStep:function(t){return t==n()},isBeforeCurrentSignupStep:function(e){var n=_.indexOf(t,e);return r()>-1&&n<r()},getTemplatePath:function(){return"signup/signup-"+n()+".tpl.html"}}}).config(["$routeProvider",function(e){e.when("/signup/:url_slug/products/add",{templateUrl:"signup/signup.tpl.html",controller:"signupCtrl",resolve:{userOwnsThisProfile:function(e){return e.testUserAuthenticationLevel("ownsThisProfile")}}}).when("/signup/:url_slug/password",{templateUrl:"signup/signup.tpl.html",controller:"signupCtrl",resolve:{userOwnsThisProfile:function(e){return e.testUserAuthenticationLevel("ownsThisProfile")}}}).when("/signup/*rest",{templateUrl:"signup/signup.tpl.html",controller:"signupCtrl",resolve:{userNotLoggedIn:function(e){return e.testUserAuthenticationLevel("loggedIn",!1)}}}).when("/signup",{redirectTo:"/signup/name"})}]).controller("signupCtrl",function(e,t,n,r){n.setUservoiceTabLoc("bottom");n.setTemplates("signup/signup-header","");e.input={};e.include=t.getTemplatePath();e.nav={goToNextStep:function(){console.log("we should be overriding me.")}}}).controller("signupNameCtrl",function(e,t,n,r){e.nav.goToNextStep=function(){var n=r.asciify(e.input.givenName+"/"+e.input.surname).replace(/\s/g,"_");t.path("signup/"+n+"/url")}}).controller("signupUrlCtrl",function(e,t,n,r,i,s,o){var u=/\/(\w+)\/(\w+)\/url/,a=u.exec(s.path());e.givenName=a[1];e.input.url_slug=i.make(a[1],a[2]);e.nav.goToNextStep=function(){n.save({id:e.input.url_slug,idType:"url_slug"},{givenName:a[1],surname:a[2],url_slug:e.input.url_slug,tips:r.keysStr()},function(t,n){console.log("got response back from save user",t);o.clearCachedUser();s.path("signup/"+e.input.url_slug+"/products/add")})}}).controller("signupProductsCtrl",function(e,t,n,r,i){var s=/\/signup\/(\w+)\//.exec(e.path());t.importers=r.get();t.nav.goToNextStep=function(){e.path("signup/"+s[1]+"/password")}}).controller("signupPasswordCtrl",function(e,t,n,r,i,s){var o=/\/signup\/(\w+)\//.exec(t.path())[1],u=function(){t.path("/"+o);n.requestCurrentUser()};e.nav.goToNextStep=function(){r.patch({id:o,idType:"url_slug"},{about:{email:e.input.email}},function(e){console.log("we set the email",e)});i.save({id:o,idType:"url_slug"},{newPassword:e.input.password},function(e){console.log("we set the password; showing the 'updating' modal.");n.clearCachedUser();s.showUpdate(o,u)})}}).controller("signupHeaderCtrl",function(e,t,n){n.setTitle("signup");e.signupSteps=t.signupSteps();e.isStepCurrent=t.onSignupStep;e.isStepCompleted=t.isBeforeCurrentSignupStep});
 angular.module( 'signup', [
     'services.slug',
     'services.page',
@@ -1924,7 +1959,6 @@ angular.module( 'signup', [
     }
   })
 
-angular.module("update.update",["resources.users"]).factory("Update",function(e,t,n,r,i){var s={},o=function(e,t){s.numNotDone>0||_.isNull(s.numNotDone)?n.query({id:e,idType:"url_slug"},function(n){s.numDone=u(n,!0);s.numNotDone=u(n,!1);s.percentComplete=s.numDone*100/(s.numDone+s.numNotDone);console.log("in keepPolling");console.log(s);r(function(){o(e,t)},500)}):t()},u=function(e,t){var n=_.filter(e,function(e){return!e.currently_updating});return t?n.length:e.length-n.length},a=function(e,t){s.numDone=null;s.numNotDone=null;s.percentComplete=null;var n=i.open({templateUrl:"update/update-progress.tpl.html",controller:"updateProgressModalCtrl",backdrop:"static",keyboard:!1});o(e,function(){n.close();t()})};return{showUpdate:a,updateStatus:s}}).controller("updateProgressModalCtrl",function(e,t){e.updateStatus=t.updateStatus});
 angular.module( 'update.update', [
     'emguo.poller',
     'resources.users'
@@ -2755,7 +2789,6 @@ angular.module('resources.products',['ngResource'])
 
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -3077,259 +3110,265 @@ angular.module('security.login.toolbar', [
 });
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
-  'services.userMessage',
-  'services.tiMixpanel',
-  'security.login',         // Contains the login form template and controller
-  'ui.bootstrap'     // Used to display the login form as a modal dialog.
-])
+    'services.userMessage',
+    'services.tiMixpanel',
+    'security.login',         // Contains the login form template and controller
+    'ui.bootstrap'     // Used to display the login form as a modal dialog.
+  ])
 
-.factory('security', function($http,
-                              $q,
-                              $location,
-                              $modal,
-                              TiMixpanel,
-                              UserMessage) {
-  var useCachedUser = true
-  var currentUser = globalCurrentUser || null
-  console.log("logging in from object: ", currentUser)
-
-
-
-  // Redirect to the given url (defaults to '/')
-  function redirect(url) {
-    url = url || '/';
-    $location.path(url);
-  }
-
-  // Login form dialog stuff
-  var loginDialog = null;
-  function openLoginDialog() {
-    console.log("openLoginDialog() fired.")
-    loginDialog = $modal.open({
-      templateUrl: "security/login/form.tpl.html",
-      controller: "LoginFormController",
-      windowClass: "creds"
-    });
-    loginDialog.result.then();
-  }
+  .factory('security', function($http,
+                                $q,
+                                $location,
+                                $modal,
+                                TiMixpanel,
+                                UserMessage) {
+    var useCachedUser = true
+    var currentUser = globalCurrentUser || null
+    console.log("logging in from object: ", currentUser)
+    TiMixpanel.registerFromUserObject(currentUser)
 
 
 
-  var currentUrlSlug = function(){
-    var m = /^(\/signup)?\/([-\w\.]+)\//.exec($location.path())
-    var current_slug = (m) ? m[2] : false;
-    console.log("current slug is", current_slug)
-    return current_slug
-  }
+    // Redirect to the given url (defaults to '/')
+    function redirect(url) {
+      url = url || '/';
+      $location.path(url);
+    }
+
+    // Login form dialog stuff
+    var loginDialog = null;
+    function openLoginDialog() {
+      console.log("openLoginDialog() fired.")
+      loginDialog = $modal.open({
+        templateUrl: "security/login/form.tpl.html",
+        controller: "LoginFormController",
+        windowClass: "creds"
+      });
+      loginDialog.result.then();
+    }
 
 
-  // The public API of the service
-  var service = {
 
-    showLogin: function() {
-      openLoginDialog();
-    },
+    var currentUrlSlug = function(){
+      var m = /^(\/signup)?\/([-\w\.]+)\//.exec($location.path())
+      var current_slug = (m) ? m[2] : false;
+      console.log("current slug is", current_slug)
+      return current_slug
+    }
 
-    login: function(email, password) {
-      return $http.post('/user/current/login', {email: email, password: password})
-        .success(function(data, status) {
-          console.log("user just logged in: ", currentUser)
-          currentUser = data.user;
-          TiMixpanel.identify(currentUser.id)
 
-        })
-    },
+    // The public API of the service
+    var service = {
 
-    currentUserOwnsProfile: function(profileSlug){
-      var deferred = $q.defer()
+      showLogin: function() {
+        openLoginDialog();
+      },
 
-      service.requestCurrentUser().then(
-        function(user){
-          if (user && user.url_slug && user.url_slug == profileSlug){
-            deferred.resolve(true)
+      login: function(email, password) {
+        return $http.post('/user/current/login', {email: email, password: password})
+          .success(function(data, status) {
+            console.log("user just logged in: ", currentUser)
+            currentUser = data.user;
+            TiMixpanel.identify(currentUser.id)
+            TiMixpanel.registerFromUserObject(currentUser)
+          })
+      },
+
+      currentUserOwnsProfile: function(profileSlug){
+        var deferred = $q.defer()
+
+        service.requestCurrentUser().then(
+          function(user){
+            if (user && user.url_slug && user.url_slug == profileSlug){
+              deferred.resolve(true)
+            }
+            else {
+              deferred.resolve(false)
+            }
           }
-          else {
-            deferred.resolve(false)
+        )
+
+        return deferred.promise
+      },
+
+      testUserAuthenticationLevel: function(level, falseToNegate){
+
+        var negateIfToldTo  = function(arg){
+          return (falseToNegate === false) ? !arg : arg
+        }
+
+        var makeErrorMsg = function(msg){
+          if (falseToNegate === false) { // it was supposed to NOT be this level, but it was.
+            return msg
           }
+          return "not" + _.capitalize(level) // it was supposed to be this level, but wasn't.
         }
-      )
 
-      return deferred.promise
-    },
-
-    testUserAuthenticationLevel: function(level, falseToNegate){
-
-      var negateIfToldTo  = function(arg){
-        return (falseToNegate === false) ? !arg : arg
-      }
-
-      var makeErrorMsg = function(msg){
-        if (falseToNegate === false) { // it was supposed to NOT be this level, but it was.
-          return msg
-        }
-        return "not" + _.capitalize(level) // it was supposed to be this level, but wasn't.
-      }
-
-      var levelRules = {
-        anon: function(user){
-          return !user
-        },
-        partlySignedUp: function(user){
-          return (user && user.url_slug && !user.email)
-        },
-        loggedIn: function(user){
-          return (user && user.url_slug && user.email)
-        },
-        ownsThisProfile: function(user){
+        var levelRules = {
+          anon: function(user){
+            return !user
+          },
+          partlySignedUp: function(user){
+            return (user && user.url_slug && !user.email)
+          },
+          loggedIn: function(user){
+            return (user && user.url_slug && user.email)
+          },
+          ownsThisProfile: function(user){
 //          return true
 
-          return (user && user.url_slug && user.url_slug == currentUrlSlug())
+            return (user && user.url_slug && user.url_slug == currentUrlSlug())
 
-        }
-      }
-
-
-      var deferred = $q.defer()
-      service.requestCurrentUser().then(
-        function(user){
-          var shouldResolve = negateIfToldTo(levelRules[level](user))
-
-          if (shouldResolve){
-            deferred.resolve(level)
           }
-          else {
-            deferred.reject(makeErrorMsg(level))
-          }
-
         }
-      )
-      return deferred.promise
-    },
 
 
-    // Ask the backend to see if a user is already authenticated - this may be from a previous session.
-    requestCurrentUser: function() {
-      if (useCachedUser) {
-        return $q.when(currentUser);
+        var deferred = $q.defer()
+        service.requestCurrentUser().then(
+          function(user){
+            var shouldResolve = negateIfToldTo(levelRules[level](user))
 
-      } else {
-        return service.loginFromCookie()
-      }
-    },
+            if (shouldResolve){
+              deferred.resolve(level)
+            }
+            else {
+              deferred.reject(makeErrorMsg(level))
+            }
+
+          }
+        )
+        return deferred.promise
+      },
 
 
-    loginFromCookie: function(){
-      console.log("logging in from cookie")
-      return $http.get('/user/current')
-        .success(function(data, status, headers, config) {
-          useCachedUser = true
-          currentUser = data.user;
-          console.log("successfully logged in from cookie.")
+      // Ask the backend to see if a user is already authenticated - this may be from a previous session.
+      requestCurrentUser: function() {
+        if (useCachedUser) {
+          return $q.when(currentUser);
+
+        } else {
+          return service.loginFromCookie()
+        }
+      },
+
+
+      // i think we don't use this anymore, since we inject the user json from
+      // flask on the pageload?
+      loginFromCookie: function(){
+        console.log("logging in from cookie")
+        return $http.get('/user/current')
+          .success(function(data, status, headers, config) {
+            useCachedUser = true
+            currentUser = data.user;
+            console.log("successfully logged in from cookie.")
+            TiMixpanel.identify(currentUser.id)
+            TiMixpanel.registerFromUserObject(currentUser)
+          })
+          .then(function(){return currentUser})
+      },
+
+
+      logout: function() {
+        console.log("logging out user.", currentUser)
+        currentUser = null;
+        $http.get('/user/current/logout').success(function(data, status, headers, config) {
+          UserMessage.set("logout.success")
+          TiMixpanel.clearCookie()
+        });
+      },
+
+
+
+
+      userIsLoggedIn: function(){
+        var deferred = $q.defer();
+
+        service.requestCurrentUser().then(
+          function(user){
+            if (!user){
+              deferred.reject("userNotLoggedIn")
+              deferred.reject("userNotLoggedIn")
+            }
+            else {
+              deferred.resolve(user)
+            }
+          }
+        )
+        return deferred.promise
+      },
+
+
+      hasNewMetrics: function(){
+        return currentUser && currentUser.has_new_metrics
+      },
+
+
+      redirectToProfile: function(){
+        service.requestCurrentUser().then(function(user){
+          redirect("/" + user.url_slug)
         })
-        .then(function(){return currentUser})
-    },
+      },
 
+      clearCachedUser: function(){
+        currentUser = null
+        useCachedUser = false
+      },
 
-    logout: function() {
-      console.log("logging out user.", currentUser)
-      currentUser = null;
-      $http.get('/user/current/logout').success(function(data, status, headers, config) {
-        UserMessage.set("logout.success")
-      });
-    },
+      isLoggedIn: function(url_slug){
+        return currentUser && currentUser.url_slug && currentUser.url_slug==url_slug
+      },
 
+      isLoggedInPromise: function(url_slug){
+        var deferred = $q.defer();
 
-
-
-    userIsLoggedIn: function(){
-      var deferred = $q.defer();
-
-      service.requestCurrentUser().then(
-        function(user){
-          if (!user){
-            deferred.reject("userNotLoggedIn")
-            deferred.reject("userNotLoggedIn")
+        service.requestCurrentUser().then(
+          function(userObj){
+            if (!userObj){
+              deferred.reject("user not logged in")
+            }
+            else if (userObj.url_slug == url_slug ) {
+              deferred.resolve("user is logged in!")
+            }
+            else {
+              deferred.reject("user not logged in")
+            }
           }
-          else {
-            deferred.resolve(user)
-          }
+        )
+        return deferred.promise
+      },
+
+      getCurrentUser: function(attr){
+        if (currentUser && attr) {
+          return currentUser[attr]
         }
-      )
-      return deferred.promise
-    },
-
-
-    hasNewMetrics: function(){
-      return currentUser && currentUser.has_new_metrics
-    },
-
-
-    redirectToProfile: function(){
-      service.requestCurrentUser().then(function(user){
-        redirect("/" + user.url_slug)
-      })
-    },
-
-    clearCachedUser: function(){
-      currentUser = null
-      useCachedUser = false
-    },
-
-    isLoggedIn: function(url_slug){
-      return currentUser && currentUser.url_slug && currentUser.url_slug==url_slug
-    },
-
-    isLoggedInPromise: function(url_slug){
-      var deferred = $q.defer();
-
-      service.requestCurrentUser().then(
-        function(userObj){
-          if (!userObj){
-            deferred.reject("user not logged in")
-          }
-          else if (userObj.url_slug == url_slug ) {
-            deferred.resolve("user is logged in!")
-          }
-          else {
-            deferred.reject("user not logged in")
-          }
+        else {
+          return currentUser
         }
-      )
-      return deferred.promise
-    },
 
-    getCurrentUser: function(attr){
-      if (currentUser && attr) {
-        return currentUser[attr]
+      },
+
+      getCurrentUserSlug: function() {
+        if (currentUser) {
+          return currentUser.url_slug
+        }
+        else {
+          return null
+        }
+      },
+
+      setCurrentUser: function(user){
+        currentUser = user
+      },
+
+      // Is the current user authenticated?
+      isAuthenticated: function(){
+        return !!currentUser;
       }
-      else {
-        return currentUser
-      }
 
-    },
+    };
 
-    getCurrentUserSlug: function() {
-      if (currentUser) {
-        return currentUser.url_slug
-      }
-      else {
-        return null
-      }
-    },
-
-    setCurrentUser: function(user){
-      currentUser = user
-    },
-
-    // Is the current user authenticated?
-    isAuthenticated: function(){
-      return !!currentUser;
-    }
-    
-  };
-
-  return service;
-});
+    return service;
+  });
 angular.module('services.userMessage', [])
   .factory('UserMessage', function ($interpolate, $rootScope) {
 
@@ -3744,7 +3783,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -4111,8 +4149,8 @@ angular.module("services.tiMixpanel", [])
 
       // purely wrappers around mixpanel methods
 
-      track: function(obj){
-        return mixpanel.track(obj)
+      track: function(event, obj){
+        return mixpanel.track(event, obj)
       },
       alias: function(myAlias){
         return mixpanel.alias(myAlias)
@@ -4132,7 +4170,42 @@ angular.module("services.tiMixpanel", [])
 
 
 
-      // methods just for tiMixpanel, not wrappers around mixpanel methods.
+    // methods just for tiMixpanel, not wrappers around mixpanel methods.
+    registerFromUserObject: function(userObject){
+      if (!userObject){
+        return false
+      }
+
+      var keysToRegister = [
+        "created",
+        "email",
+        "given_name",
+        "is_advisor",
+        "last_email_sent",
+        "last_viewed_profile",
+        "products_count",
+        "surname",
+        "url_slug"
+      ]
+
+      var activeLinkedAccountServices = _.map(
+        userObject.linked_accounts,
+        function(linkedAccount){
+          if (linkedAccount.username){
+            return linkedAccount.service
+          }
+          else {
+            return false
+          }
+      })
+
+      var objToRegister = _.pick(userObject, keysToRegister)
+      objToRegister.linkedAccounts = _.compact(activeLinkedAccountServices).join(",")
+      mixpanel.register(objToRegister)
+
+      return true
+    },
+
 
       get: getFromCookie
     }
@@ -4842,7 +4915,8 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='main'\">\n" +
-    "               <h1>Discover the full impact<br> of your research.</h1>\n" +
+    "               <h1>Uncover your full research impact.</h1>\n" +
+    "               <h2>Impactstory is a place to learn and share all ways your research is making a difference.</h2>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='h-index'\">\n" +
@@ -5149,7 +5223,7 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
 angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/edit-product-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
     "   <h3>Edit product</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body edit-product\">\n" +
@@ -5191,7 +5265,7 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
 angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-product/fulltext-location-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
     "   <h3>Add link to free fulltext</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body free-fulltext-url\">\n" +
