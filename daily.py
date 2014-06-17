@@ -83,8 +83,6 @@ def email_report_to_everyone_who_needs_one():
         logger.info(u"clearing user cache for {url_slug}".format(
             url_slug=user.url_slug))
 
-        print len(user.product_objects)
-
         ProductsFromCore.clear_cache()
 
         try:
