@@ -1162,6 +1162,8 @@ angular.module('profileSingleProducts', [
   .controller("addSingleProductsCtrl", function($scope, Page, $routeParams){
     Page.showHeader(false)
     Page.showFooter(false)
+    $scope.url_slug = $routeParams.url_slug
+
 
   })
   .controller("ImportSingleProductsFormCtrl", function($scope,
@@ -5440,8 +5442,8 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
     "         <h1 class=\"instr\">Import individual products</h1>\n" +
-    "         <h2>Add products to Impactstory profile one-by-one. For easier importing,\n" +
-    "            link your external accounts and we'll sync them automatically.</h2>\n" +
+    "         <h2>(For faster importing, you can also\n" +
+    "            <a href=\"/{{ url_slug }}/accounts\">link your external accounts</a> to Impactstory, and we'll sync them automatically)</h2>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +

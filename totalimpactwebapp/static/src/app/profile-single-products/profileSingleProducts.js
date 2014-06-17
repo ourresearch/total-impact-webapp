@@ -22,6 +22,8 @@ angular.module('profileSingleProducts', [
   .controller("addSingleProductsCtrl", function($scope, Page, $routeParams){
     Page.showHeader(false)
     Page.showFooter(false)
+    $scope.url_slug = $routeParams.url_slug
+
 
   })
   .controller("ImportSingleProductsFormCtrl", function($scope,

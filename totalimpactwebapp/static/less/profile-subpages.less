@@ -3,6 +3,12 @@ div.profile-subpage {
    .profile-subpage-header {
       background: #555;
       color: #fff;
+      a {
+         &:hover {
+            color: @linkColor;
+            text-decoration: underline;
+         }
+      }
       .wrapper {
          position:relative;
          text-align: center;

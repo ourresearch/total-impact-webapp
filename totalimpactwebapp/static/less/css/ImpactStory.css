@@ -7366,6 +7366,10 @@ div.profile-subpage .profile-subpage-header {
   background: #555;
   color: #fff;
 }
+div.profile-subpage .profile-subpage-header a:hover {
+  color: #ff4000;
+  text-decoration: underline;
+}
 div.profile-subpage .profile-subpage-header .wrapper {
   position: relative;
   text-align: center;
