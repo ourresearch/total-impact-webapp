@@ -44,6 +44,8 @@ angular.module("profileProduct", [
     Page) {
 
     var slug = $routeParams.url_slug
+    window.scrollTo(0,0)  // hack. not sure why this is needed.
+
 
     Loading.start('profileProduct')
     UserProfile.useCache(true)
@@ -115,6 +117,8 @@ angular.module("profileProduct", [
         Page.setTitle(data.biblio.title)
         $scope.productMarkup = data.markup
         console.log("loaded a product", data)
+        window.scrollTo(0,0)  // hack. not sure why this is needed.
+
 
       },
       function(data){
