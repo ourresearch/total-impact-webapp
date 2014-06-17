@@ -149,7 +149,13 @@ angular.module("profileProduct", [
       console.log("saving...", tiid)
       ProductBiblio.patch(
         {'tiid': tiid},
-        $scope.product.biblio,
+        {
+          title: $scope.product.biblio.title,
+          authors: $scope.product.biblio.authors,
+          journal: $scope.product.biblio.journal,
+          year: $scope.product.biblio.year
+
+        },
         function(resp){
           console.log("saved new product biblio", resp)
           Loading.finish("saveButton")
