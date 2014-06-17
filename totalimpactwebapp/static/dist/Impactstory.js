@@ -5266,7 +5266,6 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
     "           required\n" +
     "           name=\"productTitle\"\n" +
     "           ng-model=\"product.biblio.title\">\n" +
-    "\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"from-group\">\n" +
