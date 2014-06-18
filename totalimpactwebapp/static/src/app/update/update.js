@@ -22,7 +22,8 @@ angular.module( 'update.update', [
     }
 
     var tick = function(){
-      UsersUpdateStatus.get({id:url_slug}).$promise.then(function(resp){
+      UsersUpdateStatus.get({id:url_slug}).$promise.then(
+        function(resp){
           console.log("tick() got response back from server", resp)
           status = resp
           if (resp.percent_complete == 100){
@@ -34,6 +35,10 @@ angular.module( 'update.update', [
           else {
             $timeout(tick, pollingInterval)
           }
+        },
+        function(resp){
+          console.log("failed to get update status; trying again.", resp)
+          $timeout(tick, pollingInterval)
         }
       )
     }
