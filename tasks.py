@@ -1,13 +1,9 @@
-import os
-import datetime
-import time
 import logging
 import celery
 from celery.decorators import task
 from celery.signals import task_postrun, task_prerun, task_failure, worker_process_init
 
 from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
-from sqlalchemy.orm.exc import FlushError
 
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp import db
@@ -42,7 +38,7 @@ def task_failure_handler(sender=None, task_id=None, task=None, args=None, kwargs
 
 class CeleryStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)    
-    user_id = db.Column(db.Integer)
+    profile_id = db.Column(db.Integer)
     url_slug = db.Column(db.Text)
     task_uuid = db.Column(db.Text)
     task_name = db.Column(db.Text)
@@ -59,8 +55,8 @@ class CeleryStatus(db.Model):
         super(CeleryStatus, self).__init__(**kwargs)
 
     def __repr__(self):
-        return u'<CeleryStatus {user_id} {task_name}>'.format(
-            user_id=self.user_id, 
+        return u'<CeleryStatus {profile_id} {task_name}>'.format(
+            profile_id=self.profile_id,
             task_name=self.task_name)
 
 
@@ -74,10 +70,10 @@ class TaskAlertIfFail(celery.Task):
         return self.run(*args, **kwargs)
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
-        if not "user_id" in args:
-            user_id = "unknown"
-        logger.error(u"Celery task failed on {task_name}, user {user_id}, task_id={task_id}".format(
-            task_name=self.name, user_id=user_id, task_id=task_id))
+        if not "profile_id" in args:
+            profile_id = "unknown"
+        logger.error(u"Celery task failed on {task_name}, profile {profile_id}, task_id={task_id}".format(
+            task_name=self.name, profile_id=profile_id, task_id=task_id))
 
 
 # from http://stackoverflow.com/questions/6393879/celery-task-and-customize-decorator
@@ -92,18 +88,18 @@ class TaskThatSavesState(celery.Task):
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         #exit point of the task whatever is the state
         # logger.info(u"Ending run")
-        user_id = None
+        profile_id = None
         url_slug = None
         args_to_save = []
         for arg in args:
-            args_to_save.append(u"{user_object}".format(user_object=arg))
+            args_to_save.append(u"{profile_object}".format(profile_object=arg))
             if isinstance(arg, Profile):
-                user_id = arg.id
+                profile_id = arg.id
                 url_slug = arg.url_slug
         celery_status = CeleryStatus(
             task_name = self.name,
             task_uuid = task_id,
-            user_id = user_id,
+            profile_id = profile_id,
             url_slug = url_slug,
             state = status,
             args = args_to_save,
@@ -124,7 +120,7 @@ class TaskThatSavesState(celery.Task):
 
 class ProfileDeets(db.Model):
     id = db.Column(db.Integer, primary_key=True)    
-    user_id = db.Column(db.Integer)
+    profile_id = db.Column(db.Integer)
     tiid = db.Column(db.Text)
     provider = db.Column(db.Text)
     metric = db.Column(db.Text)
@@ -141,8 +137,8 @@ class ProfileDeets(db.Model):
         super(ProfileDeets, self).__init__(**kwargs)
 
     def __repr__(self):
-        return u'<ProfileDeets {user_id} {tiid}>'.format(
-            user_id=self.user_id, 
+        return u'<ProfileDeets {profile_id} {tiid}>'.format(
+            profile_id=self.profile_id,
             tiid=self.tiid)
 
 
@@ -150,9 +146,9 @@ class ProfileDeets(db.Model):
 # but i'm leaving alone because it's commented out. -j
 
 # @task(ignore_result=True, base=TaskThatSavesState)
-# def add_profile_deets(user):
+# def add_profile_deets(profile):
 #     product_dicts = products_list.prep(
-#             user.products,
+#             profile.products,
 #             include_headings=False,
 #             display_debug=True
 #         )
@@ -164,7 +160,7 @@ class ProfileDeets(db.Model):
 #                 (provider, metric) = full_metric_name.split(":")
 #                 if hist["diff"]["raw"]:
 #                     profile_deets = ProfileDeets(
-#                         user_id=user.id, 
+#                         profile_id=profile.id,
 #                         tiid=tiid,
 #                         provider=provider, 
 #                         metric=metric,
@@ -178,10 +174,10 @@ class ProfileDeets(db.Model):
 
 
 @task(ignore_result=True, base=TaskThatSavesState)
-def deduplicate(user):
+def deduplicate(profile):
     removed_tiids = []
     try:
-        removed_tiids = remove_duplicates_from_profile(user.id)
+        removed_tiids = remove_duplicates_from_profile(profile.id)
         logger.debug(removed_tiids)
     except Exception as e:
         logger.warning(u"EXCEPTION!!!!!!!!!!!!!!!! deduplicating")
@@ -190,103 +186,103 @@ def deduplicate(user):
 
 
 @task(base=TaskAlertIfFail)
-def send_email_if_new_diffs(user_id):
+def send_email_if_new_diffs(profile_id):
 
-    user = db.session.query(Profile).get(user_id)
+    profile = db.session.query(Profile).get(profile_id)
     ProductsFromCore.clear_cache()
 
     status = "started"
     now = datetime.datetime.utcnow()    
-    logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
-    latest_diff_timestamp = user.latest_diff_ts
+    logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=profile.url_slug))
+    latest_diff_timestamp = profile.latest_diff_ts
     status = "checking diffs"
 
-    if (not user.last_email_check) or (latest_diff_timestamp > user.last_email_check.isoformat()):
-        logger.info(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=user.url_slug))
-        send_email_report(user, now)
+    if (not profile.last_email_check) or (latest_diff_timestamp > profile.last_email_check.isoformat()):
+        logger.info(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=profile.url_slug))
+        send_email_report(profile, now)
         status = "email sent"
     else:
-        logger.info(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=profile.url_slug))
         status = "no new diffs"
 
     # set last email check date
-    db.session.merge(user)
-    user.last_email_check = now
+    db.session.merge(profile)
+    profile.last_email_check = now
     try:
         db.session.commit()
-        logger.info(u"updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"updated profile object in send_email_if_new_diffs for {url_slug}".format(url_slug=profile.url_slug))
     except InvalidRequestError:
-        logger.info(u"rollback, trying again to update user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"rollback, trying again to update profile object in send_email_if_new_diffs for {url_slug}".format(url_slug=profile.url_slug))
         db.session.rollback()
         db.session.commit()
-        logger.info(u"after rollback updated user object in send_email_if_new_diffs for {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"after rollback updated profile object in send_email_if_new_diffs for {url_slug}".format(url_slug=profile.url_slug))
 
     return status
 
 
 
-def send_email_report(user, now=None):    
+def send_email_report(profile, now=None):
     status = "started"
     if not now:
         now = datetime.datetime.utcnow()
-    template_filler_dict = notification_report.make(user)
-    db.session.merge(user)
+    template_filler_dict = notification_report.make(profile)
+    db.session.merge(profile)
 
     if template_filler_dict["cards"]:
         if os.getenv("ENVIRONMENT", "testing") == "production":
-            email = user.email
+            email = profile.email
         else:
             email = "team@impactstory.org"
-        user.last_email_sent = now
+        profile.last_email_sent = now
 
         try:
             db.session.commit()
-            logger.info(u"updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            logger.info(u"updated profile object in send_email_report for {url_slug}".format(url_slug=profile.url_slug))
         except InvalidRequestError:
-            logger.info(u"rollback, trying again to update user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            logger.info(u"rollback, trying again to update profile object in send_email_report for {url_slug}".format(url_slug=profile.url_slug))
             db.session.rollback()
             db.session.commit()
-            logger.info(u"after rollback updated user object in send_email_report for {url_slug}".format(url_slug=user.url_slug))
+            logger.info(u"after rollback updated profile object in send_email_report for {url_slug}".format(url_slug=profile.url_slug))
 
         msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
         status = "emailed"
-        logger.info(u"SENT EMAIL to {url_slug}!!".format(url_slug=user.url_slug))
+        logger.info(u"SENT EMAIL to {url_slug}!!".format(url_slug=profile.url_slug))
     else:
         status = "not emailed, no cards made"
-        logger.info(u"not sending email, no cards made for {url_slug}".format(url_slug=user.url_slug))
+        logger.info(u"not sending email, no cards made for {url_slug}".format(url_slug=profile.url_slug))
 
     return status
 
 
 # @task(base=TaskThatSavesState)
-# def update_from_linked_account(user, account):
-#     tiids = user.update_products_from_linked_account(account, update_even_removed_products=False)
+# def update_from_linked_account(profile, account):
+#     tiids = profile.update_products_from_linked_account(account, update_even_removed_products=False)
 #     return tiids
 
 
 
 # @task(base=TaskThatSavesState)
-# def link_accounts_and_update(user):
+# def link_accounts_and_update(profile):
 #     all_tiids = []
 #     for account in ["github", "slideshare", "figshare", "orcid"]:
-#         all_tiids += update_from_linked_account(user, account)  
-#     all_tiids += user.refresh_products(source="scheduled")
+#         all_tiids += update_from_linked_account(profile, account)
+#     all_tiids += profile.refresh_products(source="scheduled")
 #     return all_tiids  
 
 
 # @task(base=TaskThatSavesState)
-# def dedup_and_create_cards_and_email(user, override_with_send=True):
-#     deduplicate(user)
-#     # create_cards(user)
-#     send_email_report(user, override_with_send=True)
+# def dedup_and_create_cards_and_email(profile, override_with_send=True):
+#     deduplicate(profile)
+#     # create_cards(profile)
+#     send_email_report(profile, override_with_send=True)
 
 
 # @task(base=TaskThatSavesState)
-# def create_cards(user):
+# def create_cards(profile):
 #     timestamp = datetime.datetime.utcnow()
 #     cards = []
-#     cards += ProductNewMetricCardGenerator.make(user, timestamp)
-#     cards += ProfileNewMetricCardGenerator.make(user, timestamp)
+#     cards += ProductNewMetricCardGenerator.make(profile, timestamp)
+#     cards += ProfileNewMetricCardGenerator.make(profile, timestamp)
 
 #     for card in cards:
 #         db.session.add(card)
