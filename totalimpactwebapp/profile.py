@@ -167,7 +167,7 @@ def sqla_object_to_dict(inst, cls):
     return d
 
 
-class User(db.Model):
+class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     given_name = db.Column(db.Text)
     surname = db.Column(db.Text)
@@ -285,7 +285,7 @@ class User(db.Model):
             return None  # there's no email to hash.
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)  # @todo change to Profile
+        super(Profile, self).__init__(**kwargs)
         self.created = now_in_utc()
         self.last_refreshed = now_in_utc()
         self.last_email_check = now_in_utc()
@@ -545,7 +545,7 @@ def add_tiids_to_profile(profile_id, tiids):
     #     profile_id=profile_id,
     #     tiids=tiids))
 
-    profile_object = User.query.get(profile_id)  # @todo change this to Profile
+    profile_object = Profile.query.get(profile_id)
     db.session.merge(profile_object)
 
     for tiid in tiids:
@@ -627,7 +627,7 @@ def tiids_to_remove_from_duplicates_list(duplicates_list):
 
 
 def remove_duplicates_from_profile(profile_id):
-    profile = User.query.get(profile_id)  # @todo change to Profile
+    profile = Profile.query.get(profile_id)
     db.session.merge(profile)
 
     duplicates_list = get_duplicates_list_from_tiids(profile.tiids)
@@ -668,7 +668,7 @@ def save_profile_last_refreshed_timestamp(profile_id, timestamp=None):
     # logger.debug(u"In save_profile_last_refreshed_timestamp with profile {profile_id}".format(
     #     profile_id=profile_id))
 
-    profile = User.query.get(profile_id)  # @todo replace w Profile
+    profile = Profile.query.get(profile_id)
     db.session.merge(profile)
     if not timestamp:
         timestamp = now_in_utc()
@@ -687,7 +687,7 @@ def save_profile_last_viewed_profile_timestamp(profile_id, timestamp=None):
     # logger.debug(u"In save_profile_last_viewed_profile_timestamp with profile {profile_id}".format(
     #     profile_id=profile_id))
 
-    profile = User.query.get(profile_id)  # @todo change to Profile
+    profile = Profile.query.get(profile_id)
     db.session.merge(profile)
     if not timestamp:
         timestamp = now_in_utc()    
@@ -719,15 +719,15 @@ def create_profile_from_slug(url_slug, profile_request_dict, db):
     del profile_dict["password"]
 
     # make sure this slug isn't being used yet, in any upper/lower case combo
-    profile_with_this_slug = User.query.filter(  # @todo change to Profile
-        func.lower(User.url_slug) == func.lower(profile_dict["url_slug"])
+    profile_with_this_slug = Profile.query.filter(
+        func.lower(Profile.url_slug) == func.lower(profile_dict["url_slug"])
     ).first()
     if profile_with_this_slug is not None:
         profile_dict["url_slug"] += str(random.randint(1, 9999))
 
     # make sure this email isn't being used yet
-    profile_with_this_email = User.query.filter(  # @todo change to Profile
-        User.email == profile_dict["email"]
+    profile_with_this_email = Profile.query.filter(
+        Profile.email == profile_dict["email"]
     ).first()
     if profile_with_this_email is not None:
         raise EmailExistsError  # the caller needs to deal with this.
@@ -736,8 +736,8 @@ def create_profile_from_slug(url_slug, profile_request_dict, db):
 
 
     # ok, let's make a profile:
-    profile = User(**profile_dict)  # @todo change to Profile
-    db.session.add(user)
+    profile = Profile(**profile_dict)
+    db.session.add(profile)
     profile.set_password(password)
     db.session.commit()
 
@@ -746,24 +746,23 @@ def create_profile_from_slug(url_slug, profile_request_dict, db):
         slug=profile.url_slug
     ))
 
-
     return profile
 
 
 def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_items=True):
     if id_type == "id":
         try:
-            profile = User.query.get(id)  # @todo change to Profile
+            profile = Profile.query.get(id)
         except DataError:  # id has to be an int
             logger.debug(u"get_profile_from_id no profile found from profile id {id}".format(
                 id=id))
             profile = None
 
     elif id_type == "email":
-        profile = User.query.filter(func.lower(User.email) == func.lower(id)).first()  # @todo change to Profile
+        profile = Profile.query.filter(func.lower(Profile.email) == func.lower(id)).first()
 
     elif id_type == "url_slug":
-        profile = User.query.filter(func.lower(User.url_slug) == func.lower(id)).first() # @todo change to Profile
+        profile = Profile.query.filter(func.lower(Profile.url_slug) == func.lower(id)).first()
 
     if not show_secrets:
         profile = hide_profile_secrets(profile)
@@ -811,7 +810,7 @@ def cancel_premium(profile):
     return cu.subscriptions.data[0].delete()
 
 def get_profiles():
-    res = User.query.all()  # @todo change to Profile
+    res = Profile.query.all()
     return res
 
 

@@ -19,20 +19,20 @@ from totalimpactwebapp.password_reset import reset_password_from_token
 from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
-from totalimpactwebapp import user
-from totalimpactwebapp.user import User
-from totalimpactwebapp.user import create_user_from_slug
-from totalimpactwebapp.user import get_user_from_id
-from totalimpactwebapp.user import delete_user
-from totalimpactwebapp.user import ProductsFromCore
+from totalimpactwebapp import profile
+from totalimpactwebapp.profile import Profile
+from totalimpactwebapp.profile import create_profile_from_slug
+from totalimpactwebapp.profile import get_profile_from_id
+from totalimpactwebapp.profile import delete_profile
+from totalimpactwebapp.profile import ProductsFromCore
 
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
 
-from totalimpactwebapp.user import remove_duplicates_from_user
-from totalimpactwebapp.user import get_products_from_core_as_csv
-from totalimpactwebapp.user import EmailExistsError
+from totalimpactwebapp.profile import remove_duplicates_from_profile
+from totalimpactwebapp.profile import get_products_from_core_as_csv
+from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
@@ -97,7 +97,7 @@ def get_user_for_response(id, request):
     except AttributeError:
         logged_in = False
 
-    retrieved_user = get_user_from_id(id, id_type, logged_in)
+    retrieved_user = get_profile_from_id(id, id_type, logged_in)
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -151,7 +151,7 @@ def is_logged_in(profile):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return Profile.query.get(int(user_id))
 
 
 @app.before_first_request
@@ -285,7 +285,7 @@ def login():
     email = unicode(request.json["email"]).lower()
     password = unicode(request.json["password"])
 
-    user = User.query.filter_by(email=email).first()
+    user = Profile.query.filter_by(email=email).first()
 
     if user is None:
         abort(404, "Email doesn't exist")
@@ -352,7 +352,7 @@ def create_new_user_profile(profile_id):
     userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
 
     try:
-        new_profile = create_user_from_slug(profile_id, userdict, db)
+        new_profile = create_profile_from_slug(profile_id, userdict, db)
 
     except EmailExistsError:
         abort_json(409, "That email already exists.")
@@ -370,7 +370,7 @@ def user_delete(profile_id):
         abort_json(401, "Need admin key to delete users")
 
     user = get_user_for_response(profile_id, request)
-    delete_user(user)
+    delete_profile(user)
     return json_resp_from_thing({"user": "deleted"})
 
 
@@ -426,7 +426,7 @@ def user_products_modify(id):
     source = request.args.get("source", "webapp")
 
     if request.method == "POST" and action == "deduplicate":
-        deleted_tiids = remove_duplicates_from_user(user.id)
+        deleted_tiids = remove_duplicates_from_profile(user.id)
         resp = {"deleted_tiids": deleted_tiids}
 
     elif request.method == "POST" and (action == "refresh"):
@@ -621,11 +621,11 @@ def delete_all_test_users():
         abort_json(401, "Need admin key to delete all test users")
 
     email_suffex_for_text_accounts = "@test-impactstory.org"
-    users = User.query.filter(User.email.like("%"+email_suffex_for_text_accounts)).all()
+    users = Profile.query.filter(Profile.email.like("%"+email_suffex_for_text_accounts)).all()
     user_slugs_deleted = []
     for user in users:
         user_slugs_deleted.append(user.url_slug)
-        delete_user(user)
+        delete_profile(user)
     return json_resp_from_thing({"test_users": user_slugs_deleted})
 
 

@@ -16,7 +16,7 @@ liTemplate = """
 
 
 # make the new file as a list
-newUsersList = []
+newProfilesList = []
 with open('../../user-email-info.csv', 'rb') as csvfile:
     users = csv.reader(csvfile, delimiter=',')
     for row in users:
@@ -32,13 +32,13 @@ with open('../../user-email-info.csv', 'rb') as csvfile:
         collUrlsLis = [liTemplate.format(id=id) for id in collIds]
         collUrlsUl = "<ul>" + "\n".join(collUrlsLis) + "</ul>\n"
         row.append(collUrlsUl)
-        newUsersList.append(row)
+        newProfilesList.append(row)
 
 
 # write the new file as CSV
 with open('../../user-email-info-plus.csv', 'wb') as csvfile:
     newCsv = csv.writer(csvfile, delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    for row in newUsersList:
+    for row in newProfilesList:
         newCsv.writerow(row)
 

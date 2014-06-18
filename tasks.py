@@ -9,14 +9,14 @@ from celery.signals import task_postrun, task_prerun, task_failure, worker_proce
 from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 from sqlalchemy.orm.exc import FlushError
 
-from totalimpactwebapp.user import User
+from totalimpactwebapp.profile import Profile
 from totalimpactwebapp import db
 from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
-from totalimpactwebapp.user import remove_duplicates_from_user
+from totalimpactwebapp.profile import remove_duplicates_from_profile
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import notification_report
 from totalimpactwebapp import emailer
-from totalimpactwebapp.user import ProductsFromCore
+from totalimpactwebapp.profile import ProductsFromCore
 
 
 logger = logging.getLogger("webapp.tasks")
@@ -97,7 +97,7 @@ class TaskThatSavesState(celery.Task):
         args_to_save = []
         for arg in args:
             args_to_save.append(u"{user_object}".format(user_object=arg))
-            if isinstance(arg, User):
+            if isinstance(arg, Profile):
                 user_id = arg.id
                 url_slug = arg.url_slug
         celery_status = CeleryStatus(
@@ -181,7 +181,7 @@ class ProfileDeets(db.Model):
 def deduplicate(user):
     removed_tiids = []
     try:
-        removed_tiids = remove_duplicates_from_user(user.id)
+        removed_tiids = remove_duplicates_from_profile(user.id)
         logger.debug(removed_tiids)
     except Exception as e:
         logger.warning(u"EXCEPTION!!!!!!!!!!!!!!!! deduplicating")
@@ -192,7 +192,7 @@ def deduplicate(user):
 @task(base=TaskAlertIfFail)
 def send_email_if_new_diffs(user_id):
 
-    user = db.session.query(User).get(user_id)
+    user = db.session.query(Profile).get(user_id)
     ProductsFromCore.clear_cache()
 
     status = "started"

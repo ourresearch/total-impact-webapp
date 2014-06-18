@@ -2,7 +2,7 @@ import stripe
 import csv
 import random
 import logging
-from totalimpactwebapp.user import User
+from totalimpactwebapp.profile import Profile
 from totalimpactwebapp import db
 
 logger = logging.getLogger("tiwebapp.scripts")
@@ -28,7 +28,7 @@ def page_query(q):
 
 def mint_stripe_customers_for_all_users():
 
-    for user in page_query(User.query):
+    for user in page_query(Profile.query):
 
         if user.stripe_id:
             print "Already a Stripe customer for {email}; skipping".format(
@@ -61,7 +61,7 @@ def mint_stripe_customers_for_all_users():
 def write_500_random_profile_urls():
     urls = []
     sample_size = 500
-    for user in page_query(User.query):
+    for user in page_query(Profile.query):
         products_count = len(user.tiids)
         if products_count > 0:
             url = "https://staging-impactstory.org/" + user.url_slug
