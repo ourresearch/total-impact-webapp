@@ -74,7 +74,7 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
 
 
 def get_url_slugs_with_past_next_refresh_date(number_to_update, max_days_since_updated, now=datetime.datetime.utcnow()):
-    raw_sql = text(u"""SELECT url_slug FROM "user" u
+    raw_sql = text(u"""SELECT url_slug FROM profile
                         WHERE next_refresh <= now()::date
                         ORDER BY next_refresh ASC, url_slug
                         LIMIT :number_to_update""")
