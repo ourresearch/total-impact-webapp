@@ -14,8 +14,8 @@ logger.setLevel(logging.DEBUG)
 
 
 def get_user_about_dict(url_slug, webapp_api_endpoint):
-    url = webapp_api_endpoint + u"/user/{url_slug}".format(
-        url_slug=url_slug)
+    url = u"{webapp_api_endpoint}/user/{url_slug}".format(
+        webapp_api_endpoint=webapp_api_endpoint, url_slug=url_slug)
     about = requests.get(url).json()["about"]
     return about
 
@@ -23,8 +23,8 @@ def get_num_products_by_url_slug(url_slug, webapp_api_endpoint):
     return get_user_about_dict(url_slug, webapp_api_endpoint)["products_count"]
 
 def refresh_by_url_slug(url_slug, webapp_api_endpoint):
-    url = webapp_api_endpoint + u"/user/{url_slug}/products?action=refresh&source=scheduled".format(
-        url_slug=url_slug)
+    url = u"{webapp_api_endpoint}/user/{url_slug}/products?action=refresh&source=scheduled".format(
+        webapp_api_endpoint=webapp_api_endpoint, url_slug=url_slug)
     # try:
     #     logger.debug(u"REFRESH POST to {url}".format(
     #         url=url))
@@ -34,8 +34,8 @@ def refresh_by_url_slug(url_slug, webapp_api_endpoint):
     return r
 
 def deduplicate_by_url_slug(url_slug, webapp_api_endpoint):
-    url = webapp_api_endpoint + u"/user/{url_slug}/products?action=deduplicate&source=scheduled".format(
-        url_slug=url_slug)
+    url = u"{webapp_api_endpoint}/user/{url_slug}/products?action=deduplicate&source=scheduled".format(
+        webapp_api_endpoint=webapp_api_endpoint, url_slug=url_slug)
     # try:
     #     logger.debug(u"DEDUP POST to {url}".format(
     #         url=url))
@@ -51,8 +51,8 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
     for account_type in ["github", "slideshare", "figshare", "orcid"]:
         user_account_value = user_about[account_type+"_id"]
         if user_account_value:
-            url = webapp_api_endpoint + u"/user/{url_slug}/linked-accounts/{account_type}?action=update&source=scheduled".format(
-                url_slug=url_slug,
+            url = u"{webapp_api_endpoint}/user/{url_slug}/linked-accounts/{account_type}?action=update&source=scheduled".format(
+                webapp_api_endpoint=webapp_api_endpoint, url_slug=url_slug,
                 account_type=account_type)
             try:
                 logger.debug(u"LINKED-ACCOUNTS POST to {url} with value {user_account_value}".format(
@@ -64,6 +64,8 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
 
             if r.status_code==200:
                 print r.json()
+            elif r.status_code==404:
+                print "after import, no new products"
             else:
                 print "error importing products with url {url}, status={status}".format(
                     url=url, status=r.status_code)
@@ -118,9 +120,9 @@ def main(number_to_update=3, max_days_since_updated=7, url_slugs=[None]):
                         number_products_after=number_products_after,
                         percent=100.0*(number_products_after-number_products_before)/number_products_before,
                         url_slug=url_slug))
-            except Exception:
-                logger.warning(u"Exception in main loop on {url_slug}, so skipping".format(url_slug=url_slug))
-
+            except Exception as e:
+                logger.exception(e)
+                logger.debug(u"Exception in main loop on {url_slug}, so skipping".format(url_slug=url_slug))
 
     except (KeyboardInterrupt, SystemExit): 
         # this approach is per http://stackoverflow.com/questions/2564137/python-how-to-terminate-a-thread-when-main-program-ends
