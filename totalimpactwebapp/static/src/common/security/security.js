@@ -55,7 +55,7 @@ angular.module('security.service', [
       },
 
       login: function(email, password) {
-        return $http.post('/user/current/login', {email: email, password: password})
+        return $http.post('/profile/current/login', {email: email, password: password})
           .success(function(data, status) {
             console.log("user just logged in: ", currentUser)
             currentUser = data.user;
@@ -146,7 +146,7 @@ angular.module('security.service', [
       // flask on the pageload?
       loginFromCookie: function(){
         console.log("logging in from cookie")
-        return $http.get('/user/current')
+        return $http.get('/profile/current')
           .success(function(data, status, headers, config) {
             useCachedUser = true
             currentUser = data.user;
@@ -161,7 +161,7 @@ angular.module('security.service', [
       logout: function() {
         console.log("logging out user.", currentUser)
         currentUser = null;
-        $http.get('/user/current/logout').success(function(data, status, headers, config) {
+        $http.get('/profile/current/logout').success(function(data, status, headers, config) {
           UserMessage.set("logout.success")
           TiMixpanel.clearCookie()
         });

@@ -3,7 +3,7 @@ angular.module('resources.users',['ngResource'])
   .factory('Users', function ($resource) {
 
     return $resource(
-      "/user/:id",
+      "/profile/:id",
       {},
       {
         query:{
@@ -25,7 +25,7 @@ angular.module('resources.users',['ngResource'])
   .factory('UserProduct', function ($resource) {
 
     return $resource(
-     "/user/:id/product/:tiid",
+     "/profile/:id/product/:tiid",
      {}
     )
   })
@@ -34,7 +34,7 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersProducts', function ($resource) {
 
     return $resource(
-      "/user/:id/products",
+      "/profile/:id/products",
       {
         // default params go here
       },
@@ -75,7 +75,7 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersProduct', function ($resource) {
 
     return $resource(
-      "/user/:id/product/:tiid",
+      "/profile/:id/product/:tiid",
       {},  // defaults go here
       {
         update:{
@@ -87,7 +87,7 @@ angular.module('resources.users',['ngResource'])
 
   .factory('UsersUpdateStatus', function ($resource) {
     return $resource(
-      "/user/:id/update_status",
+      "/profile/:id/update_status",
       {}, // default params
       {}  // method definitions
     )
@@ -97,7 +97,7 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersLinkedAccounts', function($resource){
 
     return $resource(
-      "/user/:id/linked-accounts/:account",
+      "/profile/:id/linked-accounts/:account",
       {},
       {
         update:{
@@ -114,7 +114,7 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersPassword', function ($resource) {
 
     return $resource(
-      "/user/:id/password",
+      "/profile/:id/password",
       {} // defaults
     )
   })
@@ -129,7 +129,7 @@ angular.module('resources.users',['ngResource'])
 
   .factory("UsersCreditCard", function($resource){
     return $resource(
-      "/user/:id/credit_card/:stripeToken",
+      "/profile/:id/credit_card/:stripeToken",
       {},
       {}
     )
@@ -138,7 +138,7 @@ angular.module('resources.users',['ngResource'])
 
   .factory("UsersSubscription", function($resource){
     return $resource(
-      "/user/:id/subscription",
+      "/profile/:id/subscription",
       {},
       {
         delete: {

@@ -239,12 +239,12 @@ def extract_filename(s):
 
 ###############################################################################
 #
-#   /user/current
+#   /profile/current
 #
 ###############################################################################
 
 
-@app.route("/user/current")
+@app.route("/profile/current")
 def get_current_user():
     local_sleep(1)
     try:
@@ -255,7 +255,7 @@ def get_current_user():
     return json_resp_from_thing({"user": user_info})
 
 
-@app.route("/user/current/notifications/<notification_name>", methods=["GET"])
+@app.route("/profile/current/notifications/<notification_name>", methods=["GET"])
 def current_user_notifications(notification_name):
 
     # hardcode for now
@@ -271,7 +271,7 @@ def current_user_notifications(notification_name):
 
 
 
-@app.route('/user/current/logout', methods=["POST", "GET"])
+@app.route('/profile/current/logout', methods=["POST", "GET"])
 def logout():
     #sleep(1)
     logout_user()
@@ -279,7 +279,7 @@ def logout():
 
 
 
-@app.route("/user/current/login", methods=["POST"])
+@app.route("/profile/current/login", methods=["POST"])
 def login():
 
     email = unicode(request.json["email"]).lower()
@@ -312,11 +312,11 @@ def login():
 
 ###############################################################################
 #
-#   /user/:id
+#   /profile/:id
 #
 ###############################################################################
 
-@app.route("/user/<profile_id>", methods=['GET'])
+@app.route("/profile/<profile_id>", methods=['GET'])
 def user_profile(profile_id):
     profile = get_user_for_response(
         profile_id,
@@ -339,7 +339,7 @@ def user_profile(profile_id):
         resp["about"] = profile.dict_about(show_secrets=False)
         resp["awards"] = profile.awards
 
-    logger.debug(u"/user/{slug} built the response; took {elapsed}ms".format(
+    logger.debug(u"/profile/{slug} built the response; took {elapsed}ms".format(
         slug=profile.url_slug,
         elapsed=resp_constr_timer.elapsed()
     ))
@@ -347,7 +347,7 @@ def user_profile(profile_id):
 
 
 
-@app.route("/user/<profile_id>", methods=["POST"])
+@app.route("/profile/<profile_id>", methods=["POST"])
 def create_new_user_profile(profile_id):
     userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
 
@@ -364,7 +364,7 @@ def create_new_user_profile(profile_id):
 
 
 
-@app.route("/user/<profile_id>", methods=["DELETE"])
+@app.route("/profile/<profile_id>", methods=["DELETE"])
 def user_delete(profile_id):
     if not has_admin_authorization():
         abort_json(401, "Need admin key to delete users")
@@ -375,7 +375,7 @@ def user_delete(profile_id):
 
 
 
-@app.route("/user/<profile_id>", methods=['PATCH'])
+@app.route("/profile/<profile_id>", methods=['PATCH'])
 def patch_user_about(profile_id):
 
     profile = get_user_for_response(profile_id, request)
@@ -388,7 +388,7 @@ def patch_user_about(profile_id):
 
 
 
-@app.route("/user/<profile_id>/update_status", methods=["GET"])
+@app.route("/profile/<profile_id>/update_status", methods=["GET"])
 def update_status(profile_id):
     local_sleep(1)
     profile = get_user_for_response(profile_id, request)
@@ -410,12 +410,12 @@ def update_status(profile_id):
 
 ###############################################################################
 #
-#   /user/:id/products
+#   /profile/:id/products
 #
 ###############################################################################
 
 
-@app.route("/user/<id>/products", methods=["POST", "PATCH"])
+@app.route("/profile/<id>/products", methods=["POST", "PATCH"])
 def user_products_modify(id):
 
     action = request.args.get("action", "refresh")
@@ -448,7 +448,7 @@ def user_products_modify(id):
     return json_resp_from_thing(resp)
 
 
-@app.route("/user/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
+@app.route("/profile/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
 def user_product(user_id, tiid):
 
     if user_id == "embed":
@@ -473,7 +473,7 @@ def user_product(user_id, tiid):
 
 
 
-@app.route("/user/<id>/products.csv", methods=["GET"])
+@app.route("/profile/<id>/products.csv", methods=["GET"])
 def user_products_csv(id):
 
     user = get_user_for_response(id, request)
@@ -499,7 +499,7 @@ def user_products_csv(id):
 
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
 def product_biblio_modify(tiid):
-    # This should actually be like /user/:id/product/:tiid/biblio
+    # This should actually be like /profile/:id/product/:tiid/biblio
     # and it should return the newly-modified product, instead of the
     # part-product it gets from core now.
 
@@ -546,7 +546,7 @@ def product_biblio_modify(tiid):
 
 
 
-@app.route("/user/<id>/password", methods=["POST"])
+@app.route("/profile/<id>/password", methods=["POST"])
 def user_password_modify(id):
 
     current_password = request.json.get("currentPassword", None)
@@ -566,7 +566,7 @@ def user_password_modify(id):
     return json_resp_from_thing({"about": user.dict_about()})
 
 
-@app.route("/user/<id>/password", methods=["GET"])
+@app.route("/profile/<id>/password", methods=["GET"])
 def get_password_reset_link(id):
     if request.args.get("id_type") != "email":
         abort_json(400, "id_type param must be 'email' for this endpoint.")
@@ -578,7 +578,7 @@ def get_password_reset_link(id):
 
 
 
-@app.route("/user/<id>/linked-accounts/<account>", methods=["POST"])
+@app.route("/profile/<id>/linked-accounts/<account>", methods=["POST"])
 def user_linked_accounts_update(id, account):
     user = get_user_for_response(id, request)
 

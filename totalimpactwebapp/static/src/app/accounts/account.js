@@ -181,7 +181,7 @@ angular.module('accounts.account', [
 
   $scope.onLink = function(){
     console.log(
-      _.sprintf("calling /user/%s/linked-accounts/%s with userInput:",
+      _.sprintf("calling /profile/%s/linked-accounts/%s with userInput:",
         $routeParams.url_slug,
         $scope.account.accountHost),
       $scope.account

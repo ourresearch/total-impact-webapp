@@ -9,7 +9,7 @@ angular.module('security.login.resetPassword',
   }
   $scope.sendEmail = function(){
     emailSubmittedBool = true
-    var url = "/user/" + $scope.user.email + "/password?id_type=email"
+    var url = "/profile/" + $scope.user.email + "/password?id_type=email"
     $http.get(url).then(function(resp){
       console.log("response!", resp)
     })

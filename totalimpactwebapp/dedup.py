@@ -19,7 +19,7 @@ def update_by_url_slugs(url_slugs, webapp_api_endpoint):
     count = 0
     for url_slug in url_slugs:
         count += 1
-        url = webapp_api_endpoint + u"/user/{url_slug}/products?action=deduplicate&source=scheduled".format(
+        url = webapp_api_endpoint + u"/profile/{url_slug}/products?action=deduplicate&source=scheduled".format(
             url_slug=url_slug)
         try:
             print u"going to post to this url", url

@@ -206,7 +206,7 @@ angular.module("profile", [
 
 
     $scope.refresh = function(){
-      var url = "/user/"+ url_slug +"/products?action=refresh"
+      var url = "/profile/"+ url_slug +"/products?action=refresh"
       console.log("POSTing to ", url)
       $http.post(url, {}).success(function(data, status, headers, config){
         console.log("POST returned. We're refreshing these tiids: ", data)
