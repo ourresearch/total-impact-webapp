@@ -142,29 +142,3 @@ if __name__ == "__main__":
     main(args["number_to_update"], args["max_days_since_updated"], [args["url_slug"]])
     db.session.remove()
 
-
-
-
-# (WITH max_collect AS 
-#     (SELECT tiid, provider, metric_name, max(collected_date) AS collected_date
-#         FROM metric
-#         WHERE tiid in ('000f5d8btzu1ytmgidsa7kae', '00097c5mm59qiht6tyoa4h5c')
-#         GROUP BY tiid, provider, metric_name)
-# SELECT 'max' as q, max_collect.*,m.raw_value, m.drilldown_url
-#     FROM metric m
-#     NATURAL JOIN max_collect)
-# UNION ALL
-# (WITH min_collect AS 
-#     (SELECT tiid, provider, metric_name, max(collected_date) AS collected_date
-#         FROM metric
-#         WHERE tiid in ('000f5d8btzu1ytmgidsa7kae', '00097c5mm59qiht6tyoa4h5c')
-#         AND collected_date < now()::date - 7
-#         GROUP BY tiid, provider, metric_name)
-# SELECT 'min' as q, min_collect.*,m.raw_value, m.drilldown_url
-#     FROM metric m
-#     NATURAL JOIN min_collect )
-# order by tiid, provider, metric_name, q
-
-
-
-
