@@ -28,7 +28,7 @@ angular.module('resources.products',['ngResource'])
 .factory('Product', function ($resource) {
 
   return $resource(
-    "/user/:user_id/product/:tiid",
+    "/profile/:user_id/product/:tiid",
     {},
     {}
   )

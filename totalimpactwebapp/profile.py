@@ -24,7 +24,7 @@ import unicodedata
 import string
 import hashlib
 
-logger = logging.getLogger("tiwebapp.user")
+logger = logging.getLogger("tiwebapp.profile")
 stripe.api_key = os.getenv("STRIPE_API_KEY")
 
 def now_in_utc():
@@ -124,22 +124,22 @@ class ProductsFromCore(object):
 
 
 
-class UserTiid(db.Model):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+class ProfileTiid(db.Model):
+    profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'), primary_key=True)
     tiid = db.Column(db.Text, primary_key=True)
-    created = db.Column(db.DateTime())  # ALTER TABLE "user_tiid" ADD created timestamp;
-    removed = db.Column(db.DateTime())  # ALTER TABLE "user_tiid" ADD removed timestamp;
+    created = db.Column(db.DateTime())  # ALTER TABLE "profile_tiid" ADD created timestamp;
+    removed = db.Column(db.DateTime())  # ALTER TABLE "profile_tiid" ADD removed timestamp;
 
     def __init__(self, **kwargs):
-        # logger.debug(u"new UserTiid {kwargs}".format(
+        # logger.debug(u"new ProfileTiid {kwargs}".format(
         #     kwargs=kwargs))        
         self.created = now_in_utc()     
         self.removed = None   
-        super(UserTiid, self).__init__(**kwargs)
+        super(ProfileTiid, self).__init__(**kwargs)
 
     def __repr__(self):
-        return u'<UserTiid {user_id} {tiid}>'.format(
-            user_id=self.user_id, 
+        return u'<ProfileTiid {profile_id} {tiid}>'.format(
+            profile_id=self.profile_id,
             tiid=self.tiid)
 
 
@@ -167,7 +167,7 @@ def sqla_object_to_dict(inst, cls):
     return d
 
 
-class User(db.Model):
+class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     given_name = db.Column(db.Text)
     surname = db.Column(db.Text)
@@ -191,18 +191,22 @@ class User(db.Model):
     wordpress_api_key = db.Column(db.Text)
     stripe_id = db.Column(db.Text)
 
-    tips = db.Column(db.Text)  # ALTER TABLE "user" ADD tips text
-    last_refreshed = db.Column(db.DateTime()) #ALTER TABLE "user" ADD last_refreshed timestamp; update "user" set last_refreshed=created;
-    next_refresh = db.Column(db.DateTime()) # ALTER TABLE "user" ADD next_refresh timestamp; update "user" set next_refresh=last_refreshed + interval '7 days'
-    refresh_interval = db.Column(db.Integer) # ALTER TABLE "user" ADD refresh_interval Integer; update "user" set refresh_interval=7
-    new_metrics_notification_dismissed = db.Column(db.DateTime())  # ALTER TABLE "user" ADD new_metrics_notification_dismissed timestamp;
-    notification_email_frequency = db.Column(db.Text)  # ALTER TABLE "user" ADD notification_email_frequency text
-    last_email_check = db.Column(db.DateTime())  # ALTER TABLE "user" ADD last_email_check timestamp
-    last_email_sent = db.Column(db.DateTime())  # ALTER TABLE "user" ADD last_email_sent timestamp
-    is_advisor = db.Column(db.Boolean)  # ALTER TABLE "user" ADD is_advisor bool
+    tips = db.Column(db.Text)  # ALTER TABLE profile ADD tips text
+    last_refreshed = db.Column(db.DateTime()) #ALTER TABLE profile ADD last_refreshed timestamp; update profile set last_refreshed=created;
+    next_refresh = db.Column(db.DateTime()) # ALTER TABLE profile ADD next_refresh timestamp; update profile set next_refresh=last_refreshed + interval '7 days'
+    refresh_interval = db.Column(db.Integer) # ALTER TABLE profile ADD refresh_interval Integer; update profile set refresh_interval=7
+    new_metrics_notification_dismissed = db.Column(db.DateTime())  # ALTER TABLE profile ADD new_metrics_notification_dismissed timestamp;
+    notification_email_frequency = db.Column(db.Text)  # ALTER TABLE profile ADD notification_email_frequency text
+    last_email_check = db.Column(db.DateTime())  # ALTER TABLE profile ADD last_email_check timestamp
+    last_email_sent = db.Column(db.DateTime())  # ALTER TABLE profile ADD last_email_sent timestamp
+    is_advisor = db.Column(db.Boolean)  # ALTER TABLE profile ADD is_advisor bool
 
-    tiid_links = db.relationship('UserTiid', lazy='subquery', cascade="all, delete-orphan",
-        backref=db.backref("user", lazy="subquery"))
+    tiid_links = db.relationship(
+        'ProfileTiid',
+        lazy='subquery',
+        cascade="all, delete-orphan",
+        backref=db.backref("profile", lazy="subquery")
+    )
 
 
     @property
@@ -281,7 +285,7 @@ class User(db.Model):
             return None  # there's no email to hash.
 
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+        super(Profile, self).__init__(**kwargs)
         self.created = now_in_utc()
         self.last_refreshed = now_in_utc()
         self.last_email_check = now_in_utc()
@@ -332,7 +336,7 @@ class User(db.Model):
         return False
 
     def update_last_viewed_profile(self):
-        save_user_last_viewed_profile_timestamp(self.id)
+        save_profile_last_viewed_profile_timestamp(self.id)
         return True
 
     def is_authenticated(self):
@@ -370,10 +374,10 @@ class User(db.Model):
                 existing_tiids)
         tiids = import_response["products"].keys()
 
-        return add_tiids_to_user(self.id, tiids)
+        return add_tiids_to_profile(self.id, tiids)
 
     def refresh_products(self, source="webapp"):
-        save_user_last_refreshed_timestamp(self.id)
+        save_profile_last_refreshed_timestamp(self.id)
         analytics_credentials = self.get_analytics_credentials()        
         return refresh_products_from_tiids(self.tiids, analytics_credentials, source)
 
@@ -396,7 +400,7 @@ class User(db.Model):
                     analytics_credentials,
                     existing_tiids)
             tiids_to_add = import_response["products"].keys()
-            resp = add_tiids_to_user(self.id, tiids_to_add)
+            resp = add_tiids_to_profile(self.id, tiids_to_add)
         return tiids_to_add
 
     def patch(self, newValuesDict):
@@ -410,7 +414,7 @@ class User(db.Model):
             if isinstance(v, basestring):
                 v = unicode(v)
 
-            # if this User has this property, overwrite it with the supplied val
+            # if this Profile has this property, overwrite it with the supplied val
             if hasattr(self, k):
                 try:
                     setattr(self, k, v)
@@ -421,7 +425,7 @@ class User(db.Model):
 
 
     def __repr__(self):
-        return u'<User {name} (id {id})>'.format(name=self.full_name, id=self.id)
+        return u'<Profile {name} (id {id})>'.format(name=self.full_name, id=self.id)
 
 
     def get_products_markup(self, markup, hide_keys=None, add_heading_products=True):
@@ -506,7 +510,7 @@ class User(db.Model):
 
         ret_dict["products_count"] = len(self.tiids)
 
-        # commenting these out for now because they make the /user/current call too slow.
+        # commenting these out for now because they make the /profile/current call too slow.
         #ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.product_objects])
         #ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
 
@@ -536,45 +540,45 @@ def get_products_from_core_as_csv(tiids):
 
 
 
-def add_tiids_to_user(user_id, tiids):
-    # logger.info(u"in add_tiids_to_user {user_id} with {tiids}".format(
-    #     user_id=user_id,
+def add_tiids_to_profile(profile_id, tiids):
+    # logger.info(u"in add_tiids_to_profile {profile_id} with {tiids}".format(
+    #     profile_id=profile_id,
     #     tiids=tiids))
 
-    user_object = User.query.get(user_id)
-    db.session.merge(user_object)
+    profile_object = Profile.query.get(profile_id)
+    db.session.merge(profile_object)
 
     for tiid in tiids:
-        if tiid not in user_object.tiids:
-            user_object.tiid_links += [UserTiid(user_id=user_id, tiid=tiid)]
+        if tiid not in profile_object.tiids:
+            profile_object.tiid_links += [ProfileTiid(profile_id=profile_id, tiid=tiid)]
 
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in add_tiids_to_user for {user_id}, rolling back.  Message: {message}".format(
-            user_id=user_id,
+        logger.warning(u"Fails Integrity check in add_tiids_to_profile for {profile_id}, rolling back.  Message: {message}".format(
+            profile_id=profile_id,
             message=e.message))
 
     return tiids
 
 
-def delete_products_from_user(profile, tiids_to_delete):
+def delete_products_from_profile(profile, tiids_to_delete):
     # this is confusing now, waiting to refactor for when we
     # move core stuff to webapp though.
 
     number_deleted = 0
-    for user_tiid_obj in profile.tiid_links:
-        if user_tiid_obj.tiid in tiids_to_delete:
+    for profile_tiid_obj in profile.tiid_links:
+        if profile_tiid_obj.tiid in tiids_to_delete:
             number_deleted += 1
-            user_tiid_obj.removed = now_in_utc()
+            profile_tiid_obj.removed = now_in_utc()
 
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in delete_products_from_user for {user_id}, rolling back.  Message: {message}".format(
-            user_id=profile.id,
+        logger.warning(u"Fails Integrity check in delete_products_from_profile for {profile_id}, rolling back.  Message: {message}".format(
+            profile_id=profile.id,
             message=e.message))
 
     return True
@@ -622,18 +626,18 @@ def tiids_to_remove_from_duplicates_list(duplicates_list):
     return [tiid_dict["tiid"] for tiid_dict in tiids_to_remove]
 
 
-def remove_duplicates_from_user(user_id):
-    user = User.query.get(user_id)
-    db.session.merge(user)
+def remove_duplicates_from_profile(profile_id):
+    profile = Profile.query.get(profile_id)
+    db.session.merge(profile)
 
-    duplicates_list = get_duplicates_list_from_tiids(user.tiids)
+    duplicates_list = get_duplicates_list_from_tiids(profile.tiids)
     tiids_to_remove = tiids_to_remove_from_duplicates_list(duplicates_list)
 
-    user.delete_products(tiids_to_remove) 
+    profile.delete_products(tiids_to_remove)
 
     # important to keep this logging in so we can recover if necessary
-    logger.debug(u"removed duplicate tiids from {url_slug} {user_id}: {tiids_to_remove}".format(
-        url_slug=user.url_slug, user_id=user_id, tiids_to_remove=tiids_to_remove))
+    logger.debug(u"removed duplicate tiids from {url_slug} {profile_id}: {tiids_to_remove}".format(
+        url_slug=profile.url_slug, profile_id=profile_id, tiids_to_remove=tiids_to_remove))
 
     return tiids_to_remove
 
@@ -660,141 +664,137 @@ def get_duplicates_list_from_tiids(tiids):
 
 
 
-def save_user_last_refreshed_timestamp(user_id, timestamp=None):
-    # logger.debug(u"In save_user_last_refreshed_timestamp with user {user_id}".format(
-    #     user_id=user_id))
+def save_profile_last_refreshed_timestamp(profile_id, timestamp=None):
+    # logger.debug(u"In save_profile_last_refreshed_timestamp with profile {profile_id}".format(
+    #     profile_id=profile_id))
 
-    user = User.query.get(user_id)
-    db.session.merge(user)
+    profile = Profile.query.get(profile_id)
+    db.session.merge(profile)
     if not timestamp:
         timestamp = now_in_utc()
-    user.last_refreshed = timestamp
-    user.next_refresh = user.last_refreshed + datetime.timedelta(days=user.refresh_interval)
+    profile.last_refreshed = timestamp
+    profile.next_refresh = profile.last_refreshed + datetime.timedelta(days=profile.refresh_interval)
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in save_user_last_refreshed_timestamp for {user_id}, rolling back.  Message: {message}".format(
-            user_id=user_id,
+        logger.warning(u"Fails Integrity check in save_profile_last_refreshed_timestamp for {profile_id}, rolling back.  Message: {message}".format(
+            profile_id=profile_id,
             message=e.message))
     return True
 
-def save_user_last_viewed_profile_timestamp(user_id, timestamp=None):
-    # logger.debug(u"In save_user_last_viewed_profile_timestamp with user {user_id}".format(
-    #     user_id=user_id))
+def save_profile_last_viewed_profile_timestamp(profile_id, timestamp=None):
+    # logger.debug(u"In save_profile_last_viewed_profile_timestamp with profile {profile_id}".format(
+    #     profile_id=profile_id))
 
-    user = User.query.get(user_id)
-    db.session.merge(user)
+    profile = Profile.query.get(profile_id)
+    db.session.merge(profile)
     if not timestamp:
         timestamp = now_in_utc()    
-    user.last_viewed_profile = timestamp
+    profile.last_viewed_profile = timestamp
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in save_user_last_viewed_profile_timestamp for {user_id}, rolling back.  Message: {message}".format(
-            user_id=user_id,
+        logger.warning(u"Fails Integrity check in save_profile_last_viewed_profile_timestamp for {profile_id}, rolling back.  Message: {message}".format(
+            profile_id=profile_id,
             message=e.message))
     return True
 
-def create_user_from_slug(url_slug, user_request_dict, db):
-    logger.debug(u"create_user_from_slug new user {url_slug} with user_dict {user_request_dict}".format(
-        url_slug=url_slug, user_request_dict=user_request_dict))
+def create_profile_from_slug(url_slug, profile_request_dict, db):
+    logger.debug(u"create_may be functional_from_slug new may be functional {url_slug} with profile_dict {profile_request_dict}".format(
+        url_slug=url_slug, profile_request_dict=profile_request_dict))
 
     # have to explicitly unicodify ascii-looking strings even when encoding
     # is set by client, it seems:
-    user_dict = {k: unicode(v) for k, v in user_request_dict.iteritems()}
-    user_dict["url_slug"] = unicode(url_slug)
+    profile_dict = {k: unicode(v) for k, v in profile_request_dict.iteritems()}
+    profile_dict["url_slug"] = unicode(url_slug)
 
     # all emails should be lowercase
-    user_dict["email"] = user_dict["email"].lower()
+    profile_dict["email"] = profile_dict["email"].lower()
 
-    # move password to temp var so we don't instantiate the User with it...
+    # move password to temp var so we don't instantiate the Profile with it...
     # passwords have to be set with a special setter method.
-    password = user_dict["password"]
-    del user_dict["password"]
+    password = profile_dict["password"]
+    del profile_dict["password"]
 
     # make sure this slug isn't being used yet, in any upper/lower case combo
-    user_with_this_slug = User.query.filter(
-        func.lower(User.url_slug) == func.lower(user_dict["url_slug"])
+    profile_with_this_slug = Profile.query.filter(
+        func.lower(Profile.url_slug) == func.lower(profile_dict["url_slug"])
     ).first()
-    if user_with_this_slug is not None:
-        user_dict["url_slug"] += str(random.randint(1, 9999))
+    if profile_with_this_slug is not None:
+        profile_dict["url_slug"] += str(random.randint(1, 9999))
 
     # make sure this email isn't being used yet
-    user_with_this_email = User.query.filter(
-        User.email == user_dict["email"]
+    profile_with_this_email = Profile.query.filter(
+        Profile.email == profile_dict["email"]
     ).first()
-    if user_with_this_email is not None:
+    if profile_with_this_email is not None:
         raise EmailExistsError  # the caller needs to deal with this.
 
+    profile_dict["stripe_id"] = mint_stripe_id(profile_dict)
 
 
-
-    user_dict["stripe_id"] = mint_stripe_id(user_dict)
-
-
-    # ok, let's make a user:
-    user = User(**user_dict)
-    db.session.add(user)
-    user.set_password(password)
+    # ok, let's make a profile:
+    profile = Profile(**profile_dict)
+    db.session.add(profile)
+    profile.set_password(password)
     db.session.commit()
 
-    logger.debug(u"Finished creating user {id} with slug '{slug}'".format(
-        id=user.id,
-        slug=user.url_slug
+    logger.debug(u"Finished creating profile {id} with slug '{slug}'".format(
+        id=profile.id,
+        slug=profile.url_slug
     ))
 
+    return profile
 
-    return user
 
-
-def get_user_from_id(id, id_type="url_slug", show_secrets=False, include_items=True):
+def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_items=True):
     if id_type == "id":
         try:
-            user = User.query.get(id)
+            profile = Profile.query.get(id)
         except DataError:  # id has to be an int
-            logger.debug(u"get_user_from_id no user found from userid {id}".format(
+            logger.debug(u"get_profile_from_id no profile found from profile id {id}".format(
                 id=id))
-            user = None
+            profile = None
 
     elif id_type == "email":
-        user = User.query.filter(func.lower(User.email) == func.lower(id)).first()
+        profile = Profile.query.filter(func.lower(Profile.email) == func.lower(id)).first()
 
     elif id_type == "url_slug":
-        user = User.query.filter(func.lower(User.url_slug) == func.lower(id)).first()
+        profile = Profile.query.filter(func.lower(Profile.url_slug) == func.lower(id)).first()
 
     if not show_secrets:
-        user = hide_user_secrets(user)
+        profile = hide_profile_secrets(profile)
 
-    return user
+    return profile
 
 
-def mint_stripe_id(user_dict):
+def mint_stripe_id(profile_dict):
     # make the Stripe customer so we can get their customer number:
-    full_name = u"{first} {last}".format(first=user_dict["given_name"], last=user_dict["surname"])
+    full_name = u"{first} {last}".format(first=profile_dict["given_name"], last=profile_dict["surname"])
     stripe_customer = stripe.Customer.create(
         description=full_name,
-        email=user_dict["email"],
+        email=profile_dict["email"],
         plan="Premium"
     )
-    logger.debug(u"Made a Stripe ID '{stripe_id}' for user '{slug}'".format(
+    logger.debug(u"Made a Stripe ID '{stripe_id}' for profile '{slug}'".format(
         stripe_id=stripe_customer.id,
-        slug=user_dict["url_slug"]
+        slug=profile_dict["url_slug"]
     ))
 
     return stripe_customer.id
 
 
-def upgrade_to_premium(user, stripe_token):
+def upgrade_to_premium(profile, stripe_token):
 
-    if user.stripe_id is None:
+    if profile.stripe_id is None:
         # shouldn't be needed in production
-        user.stripe_id = mint_stripe_id(user.dict_about())
-        db.session.merge(user)
+        profile.stripe_id = mint_stripe_id(profile.dict_about())
+        db.session.merge(profile)
         db.session.commit()
 
-    customer = stripe.Customer.retrieve(user.stripe_id)
+    customer = stripe.Customer.retrieve(profile.stripe_id)
     customer.card = stripe_token
     if len(customer.subscriptions.data) == 0:
         # if the subscription was cancelled before
@@ -805,12 +805,12 @@ def upgrade_to_premium(user, stripe_token):
 
 
 
-def cancel_premium(user):
-    cu = stripe.Customer.retrieve(user.stripe_id)
+def cancel_premium(profile):
+    cu = stripe.Customer.retrieve(profile.stripe_id)
     return cu.subscriptions.data[0].delete()
 
-def get_users():
-    res = User.query.all()
+def get_profiles():
+    res = Profile.query.all()
     return res
 
 
@@ -864,21 +864,21 @@ def make_products_for_product_id_strings(product_id_type, product_id_strings, an
         return {"products": {}}
 
 
-def hide_user_secrets(user):
+def hide_profile_secrets(profile):
     secrets = [
         "wordpress_api_key"
     ]
     try:
         for key in secrets:
-            delattr(user, key)
+            delattr(profile, key)
     except AttributeError:
         pass
 
-    return user
+    return profile
 
 
-def delete_user(user):
-    db.session.delete(user)
+def delete_profile(profile):
+    db.session.delete(profile)
     db.session.commit()  
 
 

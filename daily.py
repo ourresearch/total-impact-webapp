@@ -1,11 +1,9 @@
-from totalimpactwebapp.user import User
-from totalimpactwebapp.user import ProductsFromCore
+from totalimpactwebapp.profile import Profile
+from totalimpactwebapp.profile import ProductsFromCore
 from totalimpactwebapp import db
 import tasks
 
 from sqlalchemy import func
-from celery import chain
-import time
 import datetime
 import argparse
 import logging
@@ -39,65 +37,65 @@ def page_query(q):
             break
 
 def add_profile_deets_for_everyone():
-    for user in page_query(User.query.order_by(User.url_slug.asc())):
+    for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
         ProductsFromCore.clear_cache()
-        logger.info(u"add_profile_deets_for_everyone: {url_slug}".format(url_slug=user.url_slug))
-        response = tasks.add_profile_deets.delay(user)
+        logger.info(u"add_profile_deets_for_everyone: {url_slug}".format(url_slug=profile.url_slug))
+        response = tasks.add_profile_deets.delay(profile)
 
 
 def deduplicate_everyone():
-    for user in page_query(User.query.order_by(User.url_slug.asc())):
+    for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
         ProductsFromCore.clear_cache()
-        logger.info(u"deduplicate_everyone: {url_slug}".format(url_slug=user.url_slug))
-        response = tasks.deduplicate.delay(user)
+        logger.info(u"deduplicate_everyone: {url_slug}".format(url_slug=profile.url_slug))
+        response = tasks.deduplicate.delay(profile)
 
 
 
 def create_cards_for_everyone(url_slug=None):
     cards = []
     if url_slug:
-        user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
+        profile = Profile.query.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
         ProductsFromCore.clear_cache()
-        # print user.url_slug        
-        cards = tasks.create_cards(user)
+        # print profile.url_slug
+        cards = tasks.create_cards(profile)
     else:    
-        for user in page_query(User.query.order_by(User.url_slug.asc())):
+        for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
             ProductsFromCore.clear_cache()
-            # print user.url_slug        
-            cards = tasks.create_cards.delay(user)
+            # print profile.url_slug
+            cards = tasks.create_cards.delay(profile)
     return cards
 
 
 
 def email_report_to_url_slug(url_slug=None):
     if url_slug:
-        user = User.query.filter(func.lower(User.url_slug) == func.lower(url_slug)).first()
+        profile = Profile.query.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
         ProductsFromCore.clear_cache()
-        # print user.url_slug        
-        tasks.send_email_report(user)
+        # print profile.url_slug
+        tasks.send_email_report(profile)
 
 
 def email_report_to_everyone_who_needs_one():
-    for user in page_query(User.query.order_by(User.url_slug.asc())):
+    for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
 
-        logger.info(u"clearing user cache for {url_slug}".format(
-            url_slug=user.url_slug))
+        logger.info(u"clearing profile cache for {url_slug}".format(
+            url_slug=profile.url_slug))
 
         ProductsFromCore.clear_cache()
 
         try:
-            if not user.email or (u"@" not in user.email):
-                logger.info(u"not sending, no email address for {url_slug}".format(url_slug=user.url_slug))
-            elif user.notification_email_frequency == "none":
-                logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=user.url_slug))
-            elif user.last_email_sent and ((datetime.datetime.utcnow() - user.last_email_sent).days < 7):
-                logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=user.url_slug))
+            if not profile.email or (u"@" not in profile.email):
+                logger.info(u"not sending, no email address for {url_slug}".format(url_slug=profile.url_slug))
+            elif profile.notification_email_frequency == "none":
+                logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=profile.url_slug))
+            elif profile.last_email_sent and ((datetime.datetime.utcnow() - profile.last_email_sent).days < 7):
+                logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=profile.url_slug))
             else:
-                logger.info(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=user.url_slug))
-                status = tasks.send_email_if_new_diffs.delay(user.id)
+                logger.info(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=profile.url_slug))
+                status = tasks.send_email_if_new_diffs.delay(profile.id)
         except Exception as e:
-            logger.warning(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next user.  Error {e}".format(
-                url_slug=user.url_slug, e=e))
+            logger.warning(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next profile.  Error {e}".format(
+                url_slug=profile.url_slug, e=e))
             pass
     return
 

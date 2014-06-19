@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-06-16
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-06-18
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -186,7 +186,7 @@ angular.module('accounts.account', [
 
   $scope.onLink = function(){
     console.log(
-      _.sprintf("calling /user/%s/linked-accounts/%s with userInput:",
+      _.sprintf("calling /profile/%s/linked-accounts/%s with userInput:",
         $routeParams.url_slug,
         $scope.account.accountHost),
       $scope.account
@@ -1421,7 +1421,7 @@ angular.module("profile", [
 
 
     $scope.refresh = function(){
-      var url = "/user/"+ url_slug +"/products?action=refresh"
+      var url = "/profile/"+ url_slug +"/products?action=refresh"
       console.log("POSTing to ", url)
       $http.post(url, {}).success(function(data, status, headers, config){
         console.log("POST returned. We're refreshing these tiids: ", data)
@@ -2011,7 +2011,8 @@ angular.module( 'update.update', [
     }
 
     var tick = function(){
-      UsersUpdateStatus.get({id:url_slug}).$promise.then(function(resp){
+      UsersUpdateStatus.get({id:url_slug}).$promise.then(
+        function(resp){
           console.log("tick() got response back from server", resp)
           status = resp
           if (resp.percent_complete == 100){
@@ -2023,6 +2024,10 @@ angular.module( 'update.update', [
           else {
             $timeout(tick, pollingInterval)
           }
+        },
+        function(resp){
+          console.log("failed to get update status; trying again.", resp)
+          $timeout(tick, pollingInterval)
         }
       )
     }
@@ -2757,7 +2762,7 @@ angular.module('directives.forms', ["services.loading"])
 
         canceler = $q.defer()
         Loading.start('requireUnique');
-        var url = '/user/' + value + '?id_type=' + userPropertyToCheck;
+        var url = '/profile/' + value + '?id_type=' + userPropertyToCheck;
 
         $http.get(url, {timeout: canceler.promise})
         .success(function(data) {
@@ -2808,7 +2813,7 @@ angular.module('resources.products',['ngResource'])
 .factory('Product', function ($resource) {
 
   return $resource(
-    "/user/:user_id/product/:tiid",
+    "/profile/:user_id/product/:tiid",
     {},
     {}
   )
@@ -2822,7 +2827,7 @@ angular.module('resources.users',['ngResource'])
   .factory('Users', function ($resource) {
 
     return $resource(
-      "/user/:id",
+      "/profile/:id",
       {},
       {
         query:{
@@ -2844,7 +2849,7 @@ angular.module('resources.users',['ngResource'])
   .factory('UserProduct', function ($resource) {
 
     return $resource(
-     "/user/:id/product/:tiid",
+     "/profile/:id/product/:tiid",
      {}
     )
   })
@@ -2853,7 +2858,7 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersProducts', function ($resource) {
 
     return $resource(
-      "/user/:id/products",
+      "/profile/:id/products",
       {
         // default params go here
       },
@@ -2894,7 +2899,7 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersProduct', function ($resource) {
 
     return $resource(
-      "/user/:id/product/:tiid",
+      "/profile/:id/product/:tiid",
       {},  // defaults go here
       {
         update:{
@@ -2906,7 +2911,7 @@ angular.module('resources.users',['ngResource'])
 
   .factory('UsersUpdateStatus', function ($resource) {
     return $resource(
-      "/user/:id/update_status",
+      "/profile/:id/update_status",
       {}, // default params
       {}  // method definitions
     )
@@ -2916,7 +2921,7 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersLinkedAccounts', function($resource){
 
     return $resource(
-      "/user/:id/linked-accounts/:account",
+      "/profile/:id/linked-accounts/:account",
       {},
       {
         update:{
@@ -2933,7 +2938,7 @@ angular.module('resources.users',['ngResource'])
   .factory('UsersPassword', function ($resource) {
 
     return $resource(
-      "/user/:id/password",
+      "/profile/:id/password",
       {} // defaults
     )
   })
@@ -2948,7 +2953,7 @@ angular.module('resources.users',['ngResource'])
 
   .factory("UsersCreditCard", function($resource){
     return $resource(
-      "/user/:id/credit_card/:stripeToken",
+      "/profile/:id/credit_card/:stripeToken",
       {},
       {}
     )
@@ -2957,7 +2962,7 @@ angular.module('resources.users',['ngResource'])
 
   .factory("UsersSubscription", function($resource){
     return $resource(
-      "/user/:id/subscription",
+      "/profile/:id/subscription",
       {},
       {
         delete: {
@@ -3063,7 +3068,7 @@ angular.module('security.login.resetPassword',
   }
   $scope.sendEmail = function(){
     emailSubmittedBool = true
-    var url = "/user/" + $scope.user.email + "/password?id_type=email"
+    var url = "/profile/" + $scope.user.email + "/password?id_type=email"
     $http.get(url).then(function(resp){
       console.log("response!", resp)
     })
@@ -3120,7 +3125,7 @@ angular.module('security.login.toolbar', [
 
       $scope.dismissProfileNewProductsNotification = function(){
 
-        $http.get("/user/current/notifications/new_metrics_notification_dismissed?action=dismiss").success(function(data, status){
+        $http.get("/profile/current/notifications/new_metrics_notification_dismissed?action=dismiss").success(function(data, status){
           console.log("new metrics notification dismissed", data.user)
           security.setCurrentUser(data.user)
         })
@@ -3193,7 +3198,7 @@ angular.module('security.service', [
       },
 
       login: function(email, password) {
-        return $http.post('/user/current/login', {email: email, password: password})
+        return $http.post('/profile/current/login', {email: email, password: password})
           .success(function(data, status) {
             console.log("user just logged in: ", currentUser)
             currentUser = data.user;
@@ -3284,7 +3289,7 @@ angular.module('security.service', [
       // flask on the pageload?
       loginFromCookie: function(){
         console.log("logging in from cookie")
-        return $http.get('/user/current')
+        return $http.get('/profile/current')
           .success(function(data, status, headers, config) {
             useCachedUser = true
             currentUser = data.user;
@@ -3299,7 +3304,7 @@ angular.module('security.service', [
       logout: function() {
         console.log("logging out user.", currentUser)
         currentUser = null;
-        $http.get('/user/current/logout').success(function(data, status, headers, config) {
+        $http.get('/profile/current/logout').success(function(data, status, headers, config) {
           UserMessage.set("logout.success")
           TiMixpanel.clearCookie()
         });
@@ -5631,8 +5636,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"dropdown download\">\n" +
     "               <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "               <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "                  <li><a tabindex=\"-1\" href=\"/user/{{ profile.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "                  <li><a tabindex=\"-1\" href=\"/user/{{ profile.url_slug }}?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/profile/{{ profile.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "                  <li><a tabindex=\"-1\" href=\"/profile/{{ profile.url_slug }}?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "               </ul>\n" +
     "            </span>\n" +
     "         </div>\n" +

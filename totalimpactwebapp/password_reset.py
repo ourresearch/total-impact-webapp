@@ -2,7 +2,7 @@ import mandrill
 import os
 import logging
 from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature, BadSignature
-from totalimpactwebapp.user import User, get_user_from_id
+from totalimpactwebapp.profile import Profile, get_profile_from_id
 
 
 logger = logging.getLogger("tiwebapp.password_reset")
@@ -62,13 +62,13 @@ def reset_password_from_token(reset_token, new_password):
     except (BadTimeSignature, BadSignature):
         raise PasswordResetError("invalid-token")
 
-    user = get_user_from_id(email, "email", include_items=False)
+    user = get_profile_from_id(email, "email", include_items=False)
     user.set_password(new_password)
     return user
 
 
 def reset_password(id, id_type, current_password, new_password):
-    user = get_user_from_id(id, id_type, include_items=False)
+    user = get_profile_from_id(id, id_type, include_items=False)
     if user.check_password(current_password):
         user.set_password(new_password)
     else:

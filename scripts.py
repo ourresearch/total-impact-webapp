@@ -1,8 +1,7 @@
 import stripe
-import csv
 import random
 import logging
-from totalimpactwebapp.user import User
+from totalimpactwebapp.profile import Profile
 from totalimpactwebapp import db
 
 logger = logging.getLogger("tiwebapp.scripts")
@@ -26,34 +25,34 @@ def page_query(q):
             break
 
 
-def mint_stripe_customers_for_all_users():
+def mint_stripe_customers_for_all_profiles():
 
-    for user in page_query(User.query):
+    for profile in page_query(Profile.query):
 
-        if user.stripe_id:
+        if profile.stripe_id:
             print "Already a Stripe customer for {email}; skipping".format(
-                email=user.email
+                email=profile.email
             )
             continue
 
 
-        print "making a Stripe customer for {email} ".format(email=user.email)
+        print "making a Stripe customer for {email} ".format(email=profile.email)
         full_name = "{first} {last}".format(
-            first=user.given_name,
-            last=user.surname
+            first=profile.given_name,
+            last=profile.surname
         )
         stripe_customer = stripe.Customer.create(
             description=full_name,
-            email=user.email,
+            email=profile.email,
             plan="Premium"
         )
 
         print "Successfully made stripe id " + stripe_customer.id
 
-        user.stripe_id = stripe_customer.id
-        db.session.merge(user)
+        profile.stripe_id = stripe_customer.id
+        db.session.merge(profile)
 
-    print "Done minting Stripe customer; committing users to db."
+    print "Done minting Stripe customer; committing profiles to db."
     db.session.commit()
     print "Comitted to db. All donesies!"
 
@@ -61,10 +60,10 @@ def mint_stripe_customers_for_all_users():
 def write_500_random_profile_urls():
     urls = []
     sample_size = 500
-    for user in page_query(User.query):
-        products_count = len(user.tiids)
+    for profile in page_query(Profile.query):
+        products_count = len(profile.tiids)
         if products_count > 0:
-            url = "https://staging-impactstory.org/" + user.url_slug
+            url = "https://staging-impactstory.org/" + profile.url_slug
             urls.append([products_count, url])
             logger.info(u"getting a new profile url out: {url}".format(
                 url=url

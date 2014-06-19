@@ -14,7 +14,7 @@ logger.setLevel(logging.DEBUG)
 
 
 def get_user_about_dict(url_slug, webapp_api_endpoint):
-    url = u"{webapp_api_endpoint}/user/{url_slug}".format(
+    url = u"{webapp_api_endpoint}/profile/{url_slug}".format(
         webapp_api_endpoint=webapp_api_endpoint, url_slug=url_slug)
     about = requests.get(url).json()["about"]
     return about
@@ -23,7 +23,7 @@ def get_num_products_by_url_slug(url_slug, webapp_api_endpoint):
     return get_user_about_dict(url_slug, webapp_api_endpoint)["products_count"]
 
 def refresh_by_url_slug(url_slug, webapp_api_endpoint):
-    url = u"{webapp_api_endpoint}/user/{url_slug}/products?action=refresh&source=scheduled".format(
+    url = u"{webapp_api_endpoint}/profile/{url_slug}/products?action=refresh&source=scheduled".format(
         webapp_api_endpoint=webapp_api_endpoint, url_slug=url_slug)
     # try:
     #     logger.debug(u"REFRESH POST to {url}".format(
@@ -34,7 +34,7 @@ def refresh_by_url_slug(url_slug, webapp_api_endpoint):
     return r
 
 def deduplicate_by_url_slug(url_slug, webapp_api_endpoint):
-    url = u"{webapp_api_endpoint}/user/{url_slug}/products?action=deduplicate&source=scheduled".format(
+    url = u"{webapp_api_endpoint}/profile/{url_slug}/products?action=deduplicate&source=scheduled".format(
         webapp_api_endpoint=webapp_api_endpoint, url_slug=url_slug)
     # try:
     #     logger.debug(u"DEDUP POST to {url}".format(
@@ -51,7 +51,7 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
     for account_type in ["github", "slideshare", "figshare", "orcid"]:
         user_account_value = user_about[account_type+"_id"]
         if user_account_value:
-            url = u"{webapp_api_endpoint}/user/{url_slug}/linked-accounts/{account_type}?action=update&source=scheduled".format(
+            url = u"{webapp_api_endpoint}/profile/{url_slug}/linked-accounts/{account_type}?action=update&source=scheduled".format(
                 webapp_api_endpoint=webapp_api_endpoint, url_slug=url_slug,
                 account_type=account_type)
             try:
@@ -141,30 +141,4 @@ if __name__ == "__main__":
     print u"updater.py starting."
     main(args["number_to_update"], args["max_days_since_updated"], [args["url_slug"]])
     db.session.remove()
-
-
-
-
-# (WITH max_collect AS 
-#     (SELECT tiid, provider, metric_name, max(collected_date) AS collected_date
-#         FROM metric
-#         WHERE tiid in ('000f5d8btzu1ytmgidsa7kae', '00097c5mm59qiht6tyoa4h5c')
-#         GROUP BY tiid, provider, metric_name)
-# SELECT 'max' as q, max_collect.*,m.raw_value, m.drilldown_url
-#     FROM metric m
-#     NATURAL JOIN max_collect)
-# UNION ALL
-# (WITH min_collect AS 
-#     (SELECT tiid, provider, metric_name, max(collected_date) AS collected_date
-#         FROM metric
-#         WHERE tiid in ('000f5d8btzu1ytmgidsa7kae', '00097c5mm59qiht6tyoa4h5c')
-#         AND collected_date < now()::date - 7
-#         GROUP BY tiid, provider, metric_name)
-# SELECT 'min' as q, min_collect.*,m.raw_value, m.drilldown_url
-#     FROM metric m
-#     NATURAL JOIN min_collect )
-# order by tiid, provider, metric_name, q
-
-
-
 

@@ -19,20 +19,20 @@ from totalimpactwebapp.password_reset import reset_password_from_token
 from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
-from totalimpactwebapp import user
-from totalimpactwebapp.user import User
-from totalimpactwebapp.user import create_user_from_slug
-from totalimpactwebapp.user import get_user_from_id
-from totalimpactwebapp.user import delete_user
-from totalimpactwebapp.user import ProductsFromCore
+from totalimpactwebapp import profile
+from totalimpactwebapp.profile import Profile
+from totalimpactwebapp.profile import create_profile_from_slug
+from totalimpactwebapp.profile import get_profile_from_id
+from totalimpactwebapp.profile import delete_profile
+from totalimpactwebapp.profile import ProductsFromCore
 
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
 
-from totalimpactwebapp.user import remove_duplicates_from_user
-from totalimpactwebapp.user import get_products_from_core_as_csv
-from totalimpactwebapp.user import EmailExistsError
+from totalimpactwebapp.profile import remove_duplicates_from_profile
+from totalimpactwebapp.profile import get_products_from_core_as_csv
+from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
@@ -97,7 +97,7 @@ def get_user_for_response(id, request):
     except AttributeError:
         logged_in = False
 
-    retrieved_user = get_user_from_id(id, id_type, logged_in)
+    retrieved_user = get_profile_from_id(id, id_type, logged_in)
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -151,7 +151,7 @@ def is_logged_in(profile):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return Profile.query.get(int(user_id))
 
 
 @app.before_first_request
@@ -239,12 +239,12 @@ def extract_filename(s):
 
 ###############################################################################
 #
-#   /user/current
+#   /profile/current
 #
 ###############################################################################
 
 
-@app.route("/user/current")
+@app.route("/profile/current")
 def get_current_user():
     local_sleep(1)
     try:
@@ -255,7 +255,7 @@ def get_current_user():
     return json_resp_from_thing({"user": user_info})
 
 
-@app.route("/user/current/notifications/<notification_name>", methods=["GET"])
+@app.route("/profile/current/notifications/<notification_name>", methods=["GET"])
 def current_user_notifications(notification_name):
 
     # hardcode for now
@@ -271,7 +271,7 @@ def current_user_notifications(notification_name):
 
 
 
-@app.route('/user/current/logout', methods=["POST", "GET"])
+@app.route('/profile/current/logout', methods=["POST", "GET"])
 def logout():
     #sleep(1)
     logout_user()
@@ -279,13 +279,13 @@ def logout():
 
 
 
-@app.route("/user/current/login", methods=["POST"])
+@app.route("/profile/current/login", methods=["POST"])
 def login():
 
     email = unicode(request.json["email"]).lower()
     password = unicode(request.json["password"])
 
-    user = User.query.filter_by(email=email).first()
+    user = Profile.query.filter_by(email=email).first()
 
     if user is None:
         abort(404, "Email doesn't exist")
@@ -312,11 +312,11 @@ def login():
 
 ###############################################################################
 #
-#   /user/:id
+#   /profile/:id
 #
 ###############################################################################
 
-@app.route("/user/<profile_id>", methods=['GET'])
+@app.route("/profile/<profile_id>", methods=['GET'])
 def user_profile(profile_id):
     profile = get_user_for_response(
         profile_id,
@@ -339,7 +339,7 @@ def user_profile(profile_id):
         resp["about"] = profile.dict_about(show_secrets=False)
         resp["awards"] = profile.awards
 
-    logger.debug(u"/user/{slug} built the response; took {elapsed}ms".format(
+    logger.debug(u"/profile/{slug} built the response; took {elapsed}ms".format(
         slug=profile.url_slug,
         elapsed=resp_constr_timer.elapsed()
     ))
@@ -347,12 +347,12 @@ def user_profile(profile_id):
 
 
 
-@app.route("/user/<profile_id>", methods=["POST"])
+@app.route("/profile/<profile_id>", methods=["POST"])
 def create_new_user_profile(profile_id):
     userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
 
     try:
-        new_profile = create_user_from_slug(profile_id, userdict, db)
+        new_profile = create_profile_from_slug(profile_id, userdict, db)
 
     except EmailExistsError:
         abort_json(409, "That email already exists.")
@@ -364,18 +364,18 @@ def create_new_user_profile(profile_id):
 
 
 
-@app.route("/user/<profile_id>", methods=["DELETE"])
+@app.route("/profile/<profile_id>", methods=["DELETE"])
 def user_delete(profile_id):
     if not has_admin_authorization():
         abort_json(401, "Need admin key to delete users")
 
     user = get_user_for_response(profile_id, request)
-    delete_user(user)
+    delete_profile(user)
     return json_resp_from_thing({"user": "deleted"})
 
 
 
-@app.route("/user/<profile_id>", methods=['PATCH'])
+@app.route("/profile/<profile_id>", methods=['PATCH'])
 def patch_user_about(profile_id):
 
     profile = get_user_for_response(profile_id, request)
@@ -388,7 +388,7 @@ def patch_user_about(profile_id):
 
 
 
-@app.route("/user/<profile_id>/update_status", methods=["GET"])
+@app.route("/profile/<profile_id>/update_status", methods=["GET"])
 def update_status(profile_id):
     local_sleep(1)
     profile = get_user_for_response(profile_id, request)
@@ -410,12 +410,12 @@ def update_status(profile_id):
 
 ###############################################################################
 #
-#   /user/:id/products
+#   /profile/:id/products
 #
 ###############################################################################
 
 
-@app.route("/user/<id>/products", methods=["POST", "PATCH"])
+@app.route("/profile/<id>/products", methods=["POST", "PATCH"])
 def user_products_modify(id):
 
     action = request.args.get("action", "refresh")
@@ -426,7 +426,7 @@ def user_products_modify(id):
     source = request.args.get("source", "webapp")
 
     if request.method == "POST" and action == "deduplicate":
-        deleted_tiids = remove_duplicates_from_user(user.id)
+        deleted_tiids = remove_duplicates_from_profile(user.id)
         resp = {"deleted_tiids": deleted_tiids}
 
     elif request.method == "POST" and (action == "refresh"):
@@ -448,7 +448,7 @@ def user_products_modify(id):
     return json_resp_from_thing(resp)
 
 
-@app.route("/user/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
+@app.route("/profile/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
 def user_product(user_id, tiid):
 
     if user_id == "embed":
@@ -473,7 +473,7 @@ def user_product(user_id, tiid):
 
 
 
-@app.route("/user/<id>/products.csv", methods=["GET"])
+@app.route("/profile/<id>/products.csv", methods=["GET"])
 def user_products_csv(id):
 
     user = get_user_for_response(id, request)
@@ -499,7 +499,7 @@ def user_products_csv(id):
 
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
 def product_biblio_modify(tiid):
-    # This should actually be like /user/:id/product/:tiid/biblio
+    # This should actually be like /profile/:id/product/:tiid/biblio
     # and it should return the newly-modified product, instead of the
     # part-product it gets from core now.
 
@@ -546,7 +546,7 @@ def product_biblio_modify(tiid):
 
 
 
-@app.route("/user/<id>/password", methods=["POST"])
+@app.route("/profile/<id>/password", methods=["POST"])
 def user_password_modify(id):
 
     current_password = request.json.get("currentPassword", None)
@@ -566,7 +566,7 @@ def user_password_modify(id):
     return json_resp_from_thing({"about": user.dict_about()})
 
 
-@app.route("/user/<id>/password", methods=["GET"])
+@app.route("/profile/<id>/password", methods=["GET"])
 def get_password_reset_link(id):
     if request.args.get("id_type") != "email":
         abort_json(400, "id_type param must be 'email' for this endpoint.")
@@ -578,7 +578,7 @@ def get_password_reset_link(id):
 
 
 
-@app.route("/user/<id>/linked-accounts/<account>", methods=["POST"])
+@app.route("/profile/<id>/linked-accounts/<account>", methods=["POST"])
 def user_linked_accounts_update(id, account):
     user = get_user_for_response(id, request)
 
@@ -588,7 +588,7 @@ def user_linked_accounts_update(id, account):
 
     tiids = user.update_products_from_linked_account(account, update_even_removed_products)
     if len(tiids) == 0:
-        abort_json(404, "That account has no products")
+        abort_json(404, "That account has no new products")
 
     return json_resp_from_thing({"products": tiids})
 
@@ -621,11 +621,11 @@ def delete_all_test_users():
         abort_json(401, "Need admin key to delete all test users")
 
     email_suffex_for_text_accounts = "@test-impactstory.org"
-    users = User.query.filter(User.email.like("%"+email_suffex_for_text_accounts)).all()
+    users = Profile.query.filter(Profile.email.like("%"+email_suffex_for_text_accounts)).all()
     user_slugs_deleted = []
     for user in users:
         user_slugs_deleted.append(user.url_slug)
-        delete_user(user)
+        delete_profile(user)
     return json_resp_from_thing({"test_users": user_slugs_deleted})
 
 

@@ -7366,10 +7366,6 @@ div.profile-subpage .profile-subpage-header {
   background: #555;
   color: #fff;
 }
-div.profile-subpage .profile-subpage-header a:hover {
-  color: #ff4000;
-  text-decoration: underline;
-}
 div.profile-subpage .profile-subpage-header .wrapper {
   position: relative;
   text-align: center;
@@ -7394,6 +7390,10 @@ div.profile-subpage .profile-subpage-header .wrapper h2 {
   color: #fff;
   max-width: 600px;
   line-height: 1.5;
+}
+div.profile-subpage .profile-subpage-header .wrapper h2 a:hover {
+  color: #ff4000;
+  text-decoration: underline;
 }
 div.profile-subpage.profile-linked-accounts {
   position: fixed;
