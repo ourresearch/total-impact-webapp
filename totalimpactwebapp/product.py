@@ -1,5 +1,6 @@
 import logging
 import jinja2
+from totalimpactwebapp import snap
 from totalimpactwebapp import metric
 from totalimpactwebapp import award
 from totalimpactwebapp.biblio import Biblio
@@ -37,8 +38,8 @@ class Product(db.Model):
         backref=db.backref("item", lazy="subquery")
     )
 
-    biblio_assertions = db.relationship(
-        'BiblioAssertion',
+    biblio_rows = db.relationship(
+        'BiblioRow',
         lazy='subquery',
         cascade="all, delete-orphan",
         backref=db.backref("item", lazy="subquery")
@@ -64,7 +65,7 @@ class Product(db.Model):
 
     @property
     def biblio(self):
-        return Biblio(self.biblio_assertions)
+        return Biblio(self.biblio_rows)
 
     @property
     def aliases(self):
@@ -156,7 +157,7 @@ class Product(db.Model):
         attributes_to_ignore = [
             "profile",
             "alias_rows",
-            "biblio_assertions"
+            "biblio_rows"
         ]
         ret = dict_from_dir(self, attributes_to_ignore)
         #ret["_tiid"] = self.tiid

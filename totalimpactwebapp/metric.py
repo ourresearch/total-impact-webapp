@@ -6,7 +6,7 @@ from totalimpactwebapp import db
 
 logger = logging.getLogger("tiwebapp.metric_snap")
 
-
+#
 
 
 def make(raw_dict, metric_name):
@@ -17,19 +17,18 @@ def make(raw_dict, metric_name):
 
 class Metric(db.Model):
 
-    __tablename__ = 'metric2'
-    tiid = db.Column(db.Integer, db.ForeignKey('item.tiid'))
-    provider = db.Column(db.Text)
-    interaction = db.Column(db.Text)
+    __tablename__ = 'product_metric'
+    tiid = db.Column(db.Integer, db.ForeignKey('item.tiid'), primary_key=True)
+    provider = db.Column(db.Text, primary_key=True)
+    interaction = db.Column(db.Text, primary_key=True)
     most_recent_snap_id = db.Column(db.Text)
-    metric_id = db.Column(db.Text, primary_key=True)
 
-    #snaps = db.relationship(
-    #    'Snap',
-    #    lazy='subquery',
-    #    cascade='all, delete-orphan',
-    #    backref=db.backref("metric2", lazy="subquery")
-    #)
+    snaps = db.relationship(
+        'Snap',
+        lazy='subquery',
+        cascade='all, delete-orphan',
+        backref=db.backref("product_metric", lazy="subquery")
+    )
 
 
 

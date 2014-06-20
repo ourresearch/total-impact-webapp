@@ -1,8 +1,8 @@
 from totalimpactwebapp import db
 from totalimpactwebapp import json_sqlalchemy
+from totalimpactwebapp.metric import Metric
 
-
-class Metric(db.Model):
+class Snap(db.Model):
 
     last_collected_date = db.Column(db.DateTime())
     raw_value = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
@@ -11,10 +11,17 @@ class Metric(db.Model):
     first_collected_date = db.Column(db.DateTime())
     snap_id = db.Column(db.Text, primary_key=True)
 
+    # foreign keys
+    provider = db.Column(db.Text)
+    interaction = db.Column(db.Text)
+    tiid = db.Column(db.Text)
 
-    #metric_id = db.Column(db.Text, db.ForeignKey('metric2.metric_id'))
+    __table_args__ = (db.ForeignKeyConstraint(
+        [provider, interaction, tiid],
+        [Metric.provider, Metric.interaction, Metric.tiid]
+    ), {})
 
 
 
     def __init__(self, **kwargs):
-        super(Metric, self).__init__(**kwargs)
+        super(Snap, self).__init__(**kwargs)

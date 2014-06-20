@@ -5,7 +5,7 @@ from totalimpactwebapp import json_sqlalchemy
 
 
 
-class BiblioAssertion(db.Model):
+class BiblioRow(db.Model):
 
     __tablename__ = 'biblio'
     tiid = db.Column(db.Integer, db.ForeignKey('item.tiid'), primary_key=True)
@@ -15,7 +15,7 @@ class BiblioAssertion(db.Model):
     collected_date = db.Column(db.DateTime())
 
     def __init__(self, **kwargs):
-        super(BiblioAssertion, self).__init__(**kwargs)
+        super(BiblioRow, self).__init__(**kwargs)
 
         #if aliases.best_url is not None:
         #    self.url = aliases.best_url
@@ -24,18 +24,18 @@ class BiblioAssertion(db.Model):
 
 class Biblio(object):
 
-    def __init__(self, biblio_assertions):
+    def __init__(self, biblio_rows):
 
         # build out the properties of this object
-        for assertion in biblio_assertions:
+        for row in biblio_rows:
 
             # if we don't have it already, write it.
-            if not hasattr(self, assertion.biblio_name):
-                setattr(self, assertion.biblio_name, assertion.biblio_value)
+            if not hasattr(self, row.biblio_name):
+                setattr(self, row.biblio_name, row.biblio_value)
 
             # if it's from the user, write it; those always win.
-            elif assertion.provider == "user_provided":
-                setattr(self, assertion.biblio_name, assertion.biblio_value)
+            elif row.provider == "user_provided":
+                setattr(self, row.biblio_name, row.biblio_value)
 
             else:
                 pass
@@ -117,7 +117,7 @@ class Biblio(object):
 
 
     def to_dict(self):
-        ret = util.dict_from_dir(self, "assertions")
+        ret = util.dict_from_dir(self, "rows")
         return ret
 
 
