@@ -94,7 +94,6 @@ def as_int_or_float_if_possible(input_value):
 
 def dict_from_dir(obj, keys_to_ignore=None):
 
-
     if keys_to_ignore is None:
         keys_to_ignore = []
     elif isinstance(keys_to_ignore, basestring):
@@ -113,13 +112,7 @@ def dict_from_dir(obj, keys_to_ignore=None):
         elif k in ["query", "query_class", "metadata"]:
             pass
         else:
-            print "success in getting k", k
             ret[k] = getattr(obj, k)
-
-
-
-    print "====================================================\n\n\n"
-    print ret
 
     return ret
 
@@ -134,7 +127,6 @@ def todict(obj, classkey=None):
         return data
 
     elif hasattr(obj, "to_dict"):
-        print "to dict!"
         data = dict([(key, todict(value, classkey))
             for key, value in obj.to_dict().iteritems()
             if not callable(value) and not key.startswith('_')])

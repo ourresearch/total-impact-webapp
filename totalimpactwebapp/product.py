@@ -1,8 +1,12 @@
 import logging
 import jinja2
+
+# these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
 from totalimpactwebapp import metric
 from totalimpactwebapp import award
+
+# regular ol' imports
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.util import dict_from_dir

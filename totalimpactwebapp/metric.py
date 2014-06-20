@@ -2,11 +2,11 @@ import configs
 import logging
 from totalimpactwebapp import util
 from totalimpactwebapp import db
+import arrow
 
 
 logger = logging.getLogger("tiwebapp.metric_snap")
-
-#
+utc_now = arrow.utcnow()
 
 
 def make(raw_dict, metric_name):
@@ -23,11 +23,20 @@ class Metric(db.Model):
     interaction = db.Column(db.Text, primary_key=True)
     most_recent_snap_id = db.Column(db.Text)
 
+    ignore_snaps_older_than = utc_now.replace(days=-30).datetime
+
+    snaps_join_string = "and_(Metric.tiid==Snap.tiid, " \
+                        "Metric.provider==Snap.provider, " \
+                        "Metric.interaction==Snap.interaction, " \
+                        "Snap.last_collected_date > '{ignore_snaps_older_than}')".format(
+        ignore_snaps_older_than=ignore_snaps_older_than)
+
     snaps = db.relationship(
         'Snap',
         lazy='subquery',
         cascade='all, delete-orphan',
-        backref=db.backref("product_metric", lazy="subquery")
+        backref=db.backref("product_metric", lazy="subquery"),
+        primaryjoin=snaps_join_string
     )
 
 
