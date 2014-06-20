@@ -30,12 +30,12 @@ class Product(db.Model):
     removed = db.Column(db.DateTime())
 
 
-    #aliases = db.relationship(
-    #    'Alias',
-    #    lazy='subquery',
-    #    cascade="all, delete-orphan",
-    #    backref=db.backref("item", lazy="subquery")
-    #)
+    alias_rows = db.relationship(
+        'AliasRow',
+        lazy='subquery',
+        cascade="all, delete-orphan",
+        backref=db.backref("item", lazy="subquery")
+    )
 
     biblio_assertions = db.relationship(
         'BiblioAssertion',
@@ -66,6 +66,9 @@ class Product(db.Model):
     def biblio(self):
         return Biblio(self.biblio_assertions)
 
+    @property
+    def aliases(self):
+        return Aliases(self.alias_rows)
 
     #@property
     #def genre(self):
@@ -150,7 +153,11 @@ class Product(db.Model):
 
 
     def to_dict(self):
-        ret = dict_from_dir(self, ["profile", "biblio_assertions"])
+        attributes_to_ignore = [
+            "profile",
+            "biblio_assertions"
+        ]
+        ret = dict_from_dir(self, attributes_to_ignore)
         #ret["_tiid"] = self.tiid
         return ret
 

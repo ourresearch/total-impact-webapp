@@ -17,24 +17,17 @@ class BiblioAssertion(db.Model):
     def __init__(self, **kwargs):
         super(BiblioAssertion, self).__init__(**kwargs)
 
-        # temporary for until we get this from the db via sqlalchemy
-        #self.raw_dict = raw_dict
-        #for k, v in raw_dict.iteritems():
-        #    setattr(self, k, v)
-        #
         #if aliases.best_url is not None:
         #    self.url = aliases.best_url
-        pass
 
 
 
 class Biblio(object):
 
     def __init__(self, biblio_assertions):
-        self.assertions = biblio_assertions
 
         # build out the properties of this object
-        for assertion in self.assertions:
+        for assertion in biblio_assertions:
 
             # if we don't have it already, write it.
             if not hasattr(self, assertion.biblio_name):
