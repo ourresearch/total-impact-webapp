@@ -155,6 +155,7 @@ class Product(db.Model):
     def to_dict(self):
         attributes_to_ignore = [
             "profile",
+            "alias_rows",
             "biblio_assertions"
         ]
         ret = dict_from_dir(self, attributes_to_ignore)
