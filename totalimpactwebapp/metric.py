@@ -8,22 +8,47 @@ logger = logging.getLogger("tiwebapp.metric")
 utc_now = arrow.utcnow()
 
 
-def make(raw_dict, metric_name):
-    return Metric(raw_dict, metric_name)
+#def make(raw_dict, metric_name):
+#    return Metric(raw_dict, metric_name)
+
+
+def make_metrics_list(snaps):
+    metrics = []
+    for fully_qualified_metric_name, my_config in configs.metrics().iteritems():
+        my_provider, my_interaction = fully_qualified_metric_name.split(":")
+        my_metric = Metric(my_provider, my_interaction, my_config)
+        my_metric.add_snaps_from_list(snaps)
+
+        if len(my_metric.snaps):
+            metrics.append(my_metric)
+
+    return metrics
+
+
+
 
 
 class Metric(object):
 
+    def __init__(self, provider, interaction, config):
+        self.provider = provider
+        self.interaction = interaction
+        self.snaps = []
+        self.config = config
 
-    def __init__(self, **kwargs):
-        pass
+
+    def add_snaps_from_list(self, snaps_list):
+        for snap in snaps_list:
+            self.add_snap(snap)
 
 
-
-    @property
-    def config(self):
-        fully_qualified_metric_name = self.provider + ":" + self.interaction
-        return configs.metrics()[fully_qualified_metric_name]
+    def add_snap(self, snap):
+        if snap.provider == self.provider and snap.interaction == self.interaction:
+            self.snaps.append(snap)
+            return True
+        else:
+            return False
+        
 
     @property
     def most_recent_snap(self):
@@ -102,7 +127,6 @@ class Metric(object):
 
     @property
     def display_count(self):
-        return 42
         try:
             return int(self.most_recent_snap.raw_value)
         except ValueError:
@@ -170,7 +194,7 @@ class Metric(object):
     #
 
     def to_dict(self):
-        ret = util.dict_from_dir(self, ["config", "item"])
+        ret = util.dict_from_dir(self, ["config", "snaps"])
         return ret
 
 

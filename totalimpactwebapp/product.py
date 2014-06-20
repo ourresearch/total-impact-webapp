@@ -8,6 +8,8 @@ from totalimpactwebapp import metric
 from totalimpactwebapp import award
 
 # regular ol' imports
+from totalimpactwebapp.metric import make_metrics_list
+from totalimpactwebapp.metric import Metric
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.util import dict_from_dir
@@ -88,6 +90,11 @@ class Product(db.Model):
     @property
     def aliases(self):
         return Aliases(self.alias_rows)
+
+    @property
+    def metrics(self):
+        my_metrics = make_metrics_list(self.snaps)
+        return my_metrics
 
     @property
     def genre(self):
@@ -181,7 +188,8 @@ class Product(db.Model):
         attributes_to_ignore = [
             "profile",
             "alias_rows",
-            "biblio_rows"
+            "biblio_rows",
+            "snaps"
         ]
         ret = dict_from_dir(self, attributes_to_ignore)
         #ret["_tiid"] = self.tiid
