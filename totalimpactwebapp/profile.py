@@ -208,6 +208,13 @@ class Profile(db.Model):
         backref=db.backref("profile", lazy="subquery")
     )
 
+    product_objects = db.relationship(
+        'Product',
+        lazy='subquery',
+        cascade='all, delete-orphan',
+        backref=db.backref("profile", lazy="subquery")
+    )
+
 
     @property
     def full_name(self):
@@ -224,13 +231,13 @@ class Profile(db.Model):
         return [tiid_link.tiid for tiid_link in self.tiid_links]
 
 
-    @property
-    def product_objects(self):
-        # this is a hack to imitate what sqlalchemy will give us naturally
-        products_from_core = ProductsFromCore()
-        product_dicts = products_from_core.get(self.tiids)
-
-        return [Product(product_dict) for product_dict in product_dicts]
+    #@property
+    #def product_objects(self):
+    #    # this is a hack to imitate what sqlalchemy will give us naturally
+    #    products_from_core = ProductsFromCore()
+    #    product_dicts = products_from_core.get(self.tiids)
+    #
+    #    return [Product(product_dict) for product_dict in product_dicts]
 
 
     @property
@@ -244,6 +251,9 @@ class Profile(db.Model):
 
     @property
     def awards(self):
+
+        return ["award", "award2"]
+
         return profile_award.make_awards_list(self)
 
     @property
@@ -429,6 +439,9 @@ class Profile(db.Model):
 
 
     def get_products_markup(self, markup, hide_keys=None, add_heading_products=True):
+
+        return self.product_objects
+
         markup.set_template("product.html")
         markup.context["profile"] = self
 

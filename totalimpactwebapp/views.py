@@ -150,8 +150,8 @@ def is_logged_in(profile):
 ###############################################################################
 
 @login_manager.user_loader
-def load_user(user_id):
-    return Profile.query.get(int(user_id))
+def load_user(profile_id):
+    return Profile.query.get(int(profile_id))
 
 
 @app.before_first_request

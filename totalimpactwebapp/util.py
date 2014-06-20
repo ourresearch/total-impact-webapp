@@ -93,6 +93,8 @@ def as_int_or_float_if_possible(input_value):
 
 
 def dict_from_dir(obj, keys_to_ignore=None):
+
+
     if keys_to_ignore is None:
         keys_to_ignore = []
     elif isinstance(keys_to_ignore, basestring):
@@ -100,12 +102,25 @@ def dict_from_dir(obj, keys_to_ignore=None):
 
     ret = {}
     for k in dir(obj):
+        pass
+
         if k.startswith("_"):
             pass
         elif k in keys_to_ignore:
             pass
+
+        # hide sqlalchemy stuff
+        elif k in ["query", "query_class", "metadata"]:
+            pass
         else:
+            print "success in getting k", k
             ret[k] = getattr(obj, k)
+
+
+
+    print "====================================================\n\n\n"
+    print ret
+
     return ret
 
 
@@ -117,14 +132,23 @@ def todict(obj, classkey=None):
         for (k, v) in obj.items():
             data[k] = todict(v, classkey)
         return data
+
     elif hasattr(obj, "to_dict"):
-        return todict(obj.to_dict(), classkey)
+        print "to dict!"
+        data = dict([(key, todict(value, classkey))
+            for key, value in obj.to_dict().iteritems()
+            if not callable(value) and not key.startswith('_')])
+        if classkey is not None and hasattr(obj, "__class__"):
+            data[classkey] = obj.__class__.__name__
+        return data
+
     elif hasattr(obj, "_ast"):
         return todict(obj._ast())
     elif type(obj) is datetime.datetime:  # convert datetimes to strings; jason added this bit
         return obj.isoformat()
     elif hasattr(obj, "__iter__"):
         return [todict(v, classkey) for v in obj]
+
     elif hasattr(obj, "__dict__"):
         data = dict([(key, todict(value, classkey))
             for key, value in obj.__dict__.iteritems()
