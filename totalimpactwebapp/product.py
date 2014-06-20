@@ -1,5 +1,6 @@
 import logging
 import jinja2
+import arrow
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
@@ -17,6 +18,11 @@ from totalimpactwebapp import db
 logger = logging.getLogger("tiwebapp.product")
 deprecated_genres = ["twitter", "blog"]
 
+ignore_snaps_older_than = arrow.utcnow().replace(days=-30).datetime
+
+snaps_join_string = "and_(Product.tiid==Snap.tiid, " \
+                    "Snap.last_collected_date > '{ignore_snaps_older_than}')".format(
+    ignore_snaps_older_than=ignore_snaps_older_than)
 
 
 def make(raw_dict):
@@ -49,12 +55,20 @@ class Product(db.Model):
         backref=db.backref("item", lazy="subquery")
     )
 
-    metrics = db.relationship(
-        'Metric',
+    snaps = db.relationship(
+        'Snap',
         lazy='subquery',
-        cascade="all, delete-orphan",
-        backref=db.backref("item", lazy="subquery")
+        cascade='all, delete-orphan',
+        backref=db.backref("item", lazy="subquery"),
+        primaryjoin=snaps_join_string
     )
+
+    #metrics = db.relationship(
+    #    'Metric',
+    #    lazy='subquery',
+    #    cascade="all, delete-orphan",
+    #    backref=db.backref("item", lazy="subquery")
+    #)
 
     #metrics_query = db.relationship(
     #    'Metric',
@@ -75,19 +89,23 @@ class Product(db.Model):
     def aliases(self):
         return Aliases(self.alias_rows)
 
-    #@property
-    #def genre(self):
-    #    # need this here to help the client sort category/real products
-    #    return self.biblio.genre
-    #
-    #@property
-    #def update_status(self):
-    #    return self.raw_dict["update_status"]
-    #
-    #@property
-    #def currently_updating(self):
-    #    return not self.update_status.startswith("SUCCESS")
-    #
+    @property
+    def genre(self):
+        # need this here to help the client sort category/real products
+        try:
+            return self.biblio.genre
+        except AttributeError:
+            return None
+
+    @property
+    def update_status(self):
+        #return self.raw_dict["update_status"]
+        return "SUCCESS:"  # @todo change
+
+    @property
+    def currently_updating(self):
+        return not self.update_status.startswith("SUCCESS")
+
     #@property
     #def has_metrics(self):
     #    return len(self.metrics) > 0
@@ -95,23 +113,25 @@ class Product(db.Model):
     #@property
     #def has_new_metric(self):
     #    return any([m.has_new_metric for m in self.metrics])
-    #
-    #@property
-    #def is_true_product(self):
-    #    return True
-    #
+
+    @property
+    def is_true_product(self):
+        return True
+
     #@property
     #def awards(self):
+    #   @todo make this work once Metric works
     #    return award.make_list(self.metrics)
-    #
+
     #@property
     #def metrics_raw_sum(self):
     #    return sum(m.display_count for m in self.metrics)
-    #
+
     #@property
     #def awardedness_score(self):
     #    return sum([a.sort_score for a in self.awards])
     #
+
     #@property
     #def latest_diff_timestamp(self):
     #    ts_list = [m.latest_nonzero_refresh_timestamp for m in self.metrics]

@@ -440,7 +440,7 @@ class Profile(db.Model):
 
     def get_products_markup(self, markup, hide_keys=None, add_heading_products=True):
 
-        return self.product_objects
+        return self.product_objects  # @todo remove this
 
         markup.set_template("product.html")
         markup.context["profile"] = self

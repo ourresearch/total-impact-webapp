@@ -10,16 +10,13 @@ class Snap(db.Model):
     number_times_collected = db.Column(db.Integer)
     first_collected_date = db.Column(db.DateTime())
     snap_id = db.Column(db.Text, primary_key=True)
-
-    # foreign keys
     provider = db.Column(db.Text)
     interaction = db.Column(db.Text)
-    tiid = db.Column(db.Text)
 
-    __table_args__ = (db.ForeignKeyConstraint(
-        [provider, interaction, tiid],
-        [Metric.provider, Metric.interaction, Metric.tiid]
-    ), {})
+    # foreign keys
+    tiid = db.Column(db.Text, db.ForeignKey("item.tiid"),)
+
+
 
 
 

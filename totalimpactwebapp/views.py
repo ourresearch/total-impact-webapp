@@ -318,12 +318,13 @@ def login():
 
 @app.route("/profile/<profile_id>", methods=['GET'])
 def user_profile(profile_id):
+    resp_constr_timer = util.Timer()
+
     profile = get_user_for_response(
         profile_id,
         request
     )
 
-    resp_constr_timer = util.Timer()
     markup = product.Markup(g.user_id, embed=request.args.get("embed"))
     hide_keys = request.args.get("hide", "").split(",")
 
