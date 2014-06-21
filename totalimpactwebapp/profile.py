@@ -12,6 +12,7 @@ from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
 from util import local_sleep
 from stripe import InvalidRequestError
+from celery.result import AsyncResult
 
 import requests
 import stripe
@@ -23,9 +24,11 @@ import logging
 import unicodedata
 import string
 import hashlib
+import redis
 
 logger = logging.getLogger("tiwebapp.profile")
 stripe.api_key = os.getenv("STRIPE_API_KEY")
+redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
 
 def now_in_utc():
     return datetime.datetime.utcnow()
@@ -40,22 +43,79 @@ class UrlSlugExistsError(Exception):
 
 
 
+def get_update_status(tiid):
+    key = "provider_tiid_task_id:{tiid}".format(
+        tiid=tiid)
+    task_ids = list(redis_client.smembers(key))
+
+    if not task_ids:
+        return "SUCCESS: no recent update"
+
+    provider_statuses = {}
+
+    if "STARTED" in task_ids:
+        if (len(task_ids) > 1):
+            task_ids.remove("STARTED")
+        else:
+            return "started_queueing"
+
+    for task_id in task_ids:
+        task_result = AsyncResult(task_id)
+        try:
+            state = task_result.state
+        except AttributeError:
+            state = "unknown_state" 
+        
+        provider_statuses[task_id] = state
+
+    # logger.debug(u"update_status statuses: tiid={tiid}, provider_statuses={provider_statuses}".format(
+    #     tiid=tiid, provider_statuses=provider_statuses))
+
+    done_updating = all([(status.startswith("SUCCESS") or status.startswith("FAILURE")) for status in provider_statuses.values()])
+    has_failures = any([status.startswith("FAILURE") for status in provider_statuses.values()])
+    has_pending = any([status.startswith("PENDING") for status in provider_statuses.values()])
+    has_started = any([status.startswith("STARTED") for status in provider_statuses.values()])
+
+    update_status = "unknown"
+    if done_updating and not has_failures:
+        update_status = u"SUCCESS: update finished"
+    elif done_updating and has_failures:
+        update_status = u"SUCCESS with FAILURES"
+    elif has_failures:
+        update_status = u"SUCCESS with FAILURES (and not all providers ran)"
+    elif has_pending:
+        update_status = u"PENDING"
+    elif has_started:
+        update_status = u"STARTED"
+
+    update_status += u"; task_ids: {provider_statuses}".format(
+        provider_statuses = provider_statuses)
+
+    return update_status
+
+
 class UpdateStatus(object):
-    def __init__(self, products):
-        self.products = products
+    def __init__(self, tiids):
+        self.tiids = tiids
 
     @property
     def num_updating(self):
-        return len([p for p in self.products if p.currently_updating])
+        return len(self.tiids) - self.num_complete
 
     @property
     def num_complete(self):
-        return len(self.products) - self.num_updating
+        return sum([status.startswith("SUCCESS") for status in self.product_statuses])
+
+    @property
+    def product_statuses(self):
+        product_statuses = [get_update_status(tiid) for tiid in self.tiids]
+        return product_statuses
+
 
     @property
     def percent_complete(self):
         try:
-            precise = float(self.num_complete) / len(self.products) * 100
+            precise = float(self.num_complete) / len(self.tiids) * 100
         except ZeroDivisionError:
             precise = 100
 
@@ -63,7 +123,7 @@ class UpdateStatus(object):
 
 
     def to_dict(self):
-        return util.dict_from_dir(self, "products")
+        return util.dict_from_dir(self, "tiids")
 
 
 
@@ -284,10 +344,6 @@ class Profile(db.Model):
 
 
     @property
-    def update_status(self):
-        return UpdateStatus(self.product_objects)
-
-    @property
     def email_hash(self):
         try:
             return hashlib.md5(self.email).hexdigest()
@@ -368,6 +424,8 @@ class Profile(db.Model):
             creds["wordpress_api_key"] = self.wordpress_api_key
         return creds
 
+    def get_update_status(self):
+        return UpdateStatus(self.tiids)
 
     def add_products(self, product_id_dict):
         try:
@@ -378,6 +436,7 @@ class Profile(db.Model):
         product_id_type = product_id_dict.keys()[0]
         existing_tiids = self.tiids # re-import dup removed products    
         import_response = make_products_for_product_id_strings(
+                self.id,
                 product_id_type, 
                 product_id_dict[product_id_type], 
                 analytics_credentials,
@@ -405,6 +464,7 @@ class Profile(db.Model):
             else:
                 existing_tiids = self.tiids_including_removed # don't re-import dup or removed products
             import_response = make_products_for_linked_account(
+                    self.id,                
                     account, 
                     account_value, 
                     analytics_credentials,
@@ -827,13 +887,14 @@ def get_profiles():
     return res
 
 
-def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}, existing_tiids={}):
+def make_products_for_linked_account(profile_id, importer_name, importer_value, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
         core_api_root=os.getenv("API_ROOT"),
         importer_name=importer_name,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     data_dict = {
+        "profile_id": profile_id, 
         "account_name": importer_value, 
         "analytics_credentials": analytics_credentials,
         "existing_tiids": existing_tiids
@@ -852,13 +913,14 @@ def make_products_for_linked_account(importer_name, importer_value, analytics_cr
         return {"products": {}}
 
 
-def make_products_for_product_id_strings(product_id_type, product_id_strings, analytics_credentials={}, existing_tiids={}):
+def make_products_for_product_id_strings(profile_id, product_id_type, product_id_strings, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{product_id_type}?api_admin_key={api_admin_key}".format(
         product_id_type=product_id_type,
         core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     data_dict = {
+        "profile_id": profile_id,     
         product_id_type: product_id_strings, 
         "analytics_credentials": analytics_credentials,
         "existing_tiids": existing_tiids        
