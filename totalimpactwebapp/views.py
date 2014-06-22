@@ -393,7 +393,7 @@ def patch_user_about(profile_id):
 def update_status(profile_id):
     local_sleep(1)
     profile = get_user_for_response(profile_id, request)
-    return json_resp_from_thing(profile.update_status)
+    return json_resp_from_thing(profile.get_update_status())
 
 
 

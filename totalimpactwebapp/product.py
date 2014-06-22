@@ -184,6 +184,8 @@ class Product(db.Model):
     #
     #
 
+    
+
 
     def to_dict(self):
         attributes_to_ignore = [
