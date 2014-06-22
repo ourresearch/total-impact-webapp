@@ -55,23 +55,21 @@ class Biblio(object):
 
 
     @property
-    def display_genre(self):
-        try:
-            genre = self.genre
-        except AttributeError:
-            genre = "unknown"
-        return genre
-
+    def calculated_genre(self):
+        if hasattr(self, "journal"):
+            return "article"
+        elif hasattr(self, "genre"):
+            if self.genre not in ["undefined", "other"]:
+                return self.genre
+        else:
+            return None
 
     @property
-    def display_genre_plural(self):
-        # for use in phrases like "79 - 91 percentile of articles from 2013"
-        genre_plural = self.display_genre + u"s"
-        if genre_plural.startswith("other"):
-            genre_plural = "other products"
-        elif genre_plural.startswith("slides"):
-            genre_plural = "slides"
-        return genre_plural
+    def calculated_host(self):
+        try:
+            return self.repository.split(" ")[0].lower()
+        except AttributeError:
+            return None
 
     @property
     def display_authors(self):
@@ -114,6 +112,13 @@ class Biblio(object):
             host = parsed.netloc
 
         return host
+
+
+
+
+
+
+
 
 
     def to_dict(self):

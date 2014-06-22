@@ -65,19 +65,6 @@ class Product(db.Model):
         primaryjoin=snaps_join_string
     )
 
-    #metrics = db.relationship(
-    #    'Metric',
-    #    lazy='subquery',
-    #    cascade="all, delete-orphan",
-    #    backref=db.backref("item", lazy="subquery")
-    #)
-
-    #metrics_query = db.relationship(
-    #    'Metric',
-    #    lazy='dynamic'
-    #)
-
-
 
     def __init__(self, **kwargs):
         super(Product, self).__init__(**kwargs)
@@ -97,12 +84,22 @@ class Product(db.Model):
         return my_metrics
 
     @property
+    def is_true_product(self):
+        return True
+
+    @property
     def genre(self):
-        # need this here to help the client sort category/real products
-        try:
-            return self.biblio.genre
-        except AttributeError:
-            return None
+        if self.biblio.calculated_genre is not None:
+            return self.biblio.calculated_genre
+        else:
+            return self.aliases.get_genre()
+
+    @property
+    def host(self):
+        if self.biblio.calculated_host is not None:
+            return self.biblio.calculated_host
+        else:
+            return self.aliases.get_host()
 
     @property
     def mendeley_discipline(self):
@@ -113,6 +110,16 @@ class Product(db.Model):
                 pass
         return None
 
+    @property
+    def display_genre_plural(self):
+        # for use in phrases like "79 - 91 percentile of articles from 2013"
+        genre_plural = self.genre + u"s"
+        if genre_plural.startswith("other"):
+            genre_plural = "other products"
+        elif genre_plural.startswith("slides"):
+            genre_plural = "slides"
+        return genre_plural
+
 
     #@property
     #def has_metrics(self):
@@ -121,10 +128,6 @@ class Product(db.Model):
     #@property
     #def has_new_metric(self):
     #    return any([m.has_new_metric for m in self.metrics])
-
-    @property
-    def is_true_product(self):
-        return True
 
     #@property
     #def awards(self):
@@ -184,7 +187,19 @@ class Product(db.Model):
     #
     #
 
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     def to_dict(self):

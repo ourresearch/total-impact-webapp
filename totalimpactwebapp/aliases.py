@@ -38,6 +38,69 @@ class Aliases(object):
             return None
 
 
+    def get_genre(self):
+        return self._decide_genre_and_host()[0]
+
+    def get_host(self):
+        return self._decide_genre_and_host()[1]
+
+
+
+    def _decide_genre_and_host(self):
+        """Uses available aliases to decide the item's genre"""
+
+        # logger.debug(u"in decide_genre with {alias_dict}".format(
+        #     alias_dict=alias_dict))
+
+
+        genre = "unknown"
+        host = "unknown"
+
+        if hasattr(self, "pmid"):
+            genre = "article"
+
+        elif hasattr(self, "arxiv"):
+            genre = "article"
+            host = "arxiv"
+
+        elif hasattr(self, "blog"):
+            genre = "blog"
+            host = "wordpresscom"
+
+        elif hasattr(self, "blog_post"):
+            genre = "blog"
+            host = "blog_post"
+
+        elif hasattr(self, "url"):
+            joined_url_string = "".join(self.url).lower()
+            if "slideshare.net" in joined_url_string:
+                genre = "slides"
+                host = "slideshare"
+            elif "github.com" in joined_url_string:
+                genre = "software"
+                host = "github"
+            elif "twitter.com" in joined_url_string:
+                if "/status/" in joined_url_string:
+                    genre = "twitter"
+                    host = "twitter_tweet"
+                else:
+                    genre = "twitter"
+                    host = "twitter_account"
+            elif "youtube.com" in joined_url_string:
+                genre = "video"
+                host = "youtube"
+            elif "vimeo.com" in joined_url_string:
+                genre = "video"
+                host = "vimeo"
+            else:
+                genre = "webpage"
+
+        if "article" in genre:
+            genre = "article"  #disregard whether journal article or conference article for now
+
+        return genre, host
+
+
     def to_dict(self):
         ret = util.dict_from_dir(self)
         return ret
