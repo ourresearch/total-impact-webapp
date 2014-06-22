@@ -12,12 +12,12 @@ utc_now = arrow.utcnow()
 #    return Metric(raw_dict, metric_name)
 
 
-def make_metrics_list(snaps):
+def make_metrics_list(product):
     metrics = []
     for fully_qualified_metric_name, my_config in configs.metrics().iteritems():
         my_provider, my_interaction = fully_qualified_metric_name.split(":")
-        my_metric = Metric(my_provider, my_interaction, my_config)
-        my_metric.add_snaps_from_list(snaps)
+        my_metric = make_single_metric(my_provider, my_interaction, my_config)
+        my_metric.add_snaps_from_list(product.snaps)
 
         if len(my_metric.snaps):
             metrics.append(my_metric)
@@ -25,6 +25,11 @@ def make_metrics_list(snaps):
     return metrics
 
 
+def make_single_metric(provider, interaction, config):
+    if provider == "mendeley" and interaction == "discipline":
+        return MendeleyDisciplineMetric(provider, interaction, config)
+    else:
+        return Metric(provider, interaction, config)
 
 
 
@@ -35,6 +40,7 @@ class Metric(object):
         self.interaction = interaction
         self.snaps = []
         self.config = config
+        self.diff = {}
 
 
     def add_snaps_from_list(self, snaps_list):
@@ -52,14 +58,11 @@ class Metric(object):
 
     @property
     def most_recent_snap(self):
-        try:
-            return sorted(
-                self.snaps,
-                key=lambda x: x.last_collected_date,
-                reverse=True
-            )[0]
-        except IndexError:
-            return None
+        return sorted(
+            self.snaps,
+            key=lambda x: x.last_collected_date,
+            reverse=True
+        )[0]
 
     #@property
     #def is_highly(self):
@@ -91,6 +94,32 @@ class Metric(object):
     #    return ret
     #
 
+    def get_window_start_snap(self, window_must_start_after):
+        most_recent_snap_time = arrow.get(self.most_recent_snap.last_collected_date)
+        window_starts_right_before = most_recent_snap_time.replace(days=-7)
+        sorted_snaps = sorted(
+            self.snaps,
+            key=lambda x: x.last_collected_date,
+            reverse=True
+        )
+
+        for snap in sorted_snaps:
+            my_snap_time = arrow.get(snap.last_collected_date)
+            if window_must_start_after < my_snap_time < window_starts_right_before:
+                return snap
+
+        return None
+
+    def set_diff(self, window_must_start_after):
+        window_start_snap = self.get_window_start_snap(window_must_start_after)
+        if window_start_snap is None:
+            return None
+        else:
+            diff_value = "foo"
+
+
+
+
     @property
     def has_new_metric(self):
         #return self.historical_values["diff"]["raw"] > 0
@@ -105,10 +134,7 @@ class Metric(object):
 
     @property
     def latest_nonzero_refresh_timestamp(self):
-        try:
-            return self.most_recent_snap.last_collected_date
-        except AttributeError:
-            return None
+        return self.most_recent_snap.last_collected_date
 
 
     @property
@@ -127,14 +153,7 @@ class Metric(object):
 
     @property
     def display_count(self):
-        try:
-            return int(self.most_recent_snap.raw_value)
-        except ValueError:
-            # deal with F1000's troublesome "count" of "Yes."
-            # currently ALL strings are transformed to 1.
-            return 1
-        except TypeError:
-            return 0  # ignore lists and dicts
+        return self.most_recent_snap.display_count
 
 
     @property
@@ -200,9 +219,22 @@ class Metric(object):
 
 
 
+class MendeleyDisciplineMetric(Metric):
 
+    def __init__(self, *args):
+        super(MendeleyDisciplineMetric, self).__init__(*args)
 
+    @property
+    def mendeley_discipine(self):
+        disciplines = self.most_recent_snap.raw_value
 
+        by_name = sorted(disciplines, key=lambda d: d["name"])
+        by_value_then_name = sorted(
+            by_name,
+            key=lambda d: d["value"],
+            reverse=True
+        )
+        return by_value_then_name[0]
 
 
 

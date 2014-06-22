@@ -22,3 +22,30 @@ class Snap(db.Model):
 
     def __init__(self, **kwargs):
         super(Snap, self).__init__(**kwargs)
+
+
+    def to_dict(self):
+        return {
+            "collected_date": self.last_collected_date,
+            "value": self.raw_value,
+            "drilldown_url": self.drilldown_url
+        }
+
+    @property
+    def can_diff(self):
+        try:
+            _ = int(self.raw_value)
+            return True
+        except (ValueError, TypeError):
+            return False
+
+    @property
+    def display_count(self):
+        try:
+            return int(self.raw_value)
+        except ValueError:
+            # deal with F1000's troublesome "count" of "Yes."
+            # currently ALL strings are transformed to 1.
+            return 1
+        except TypeError:
+            return 0  # ignore lists and dicts

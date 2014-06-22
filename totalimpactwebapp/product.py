@@ -93,7 +93,7 @@ class Product(db.Model):
 
     @property
     def metrics(self):
-        my_metrics = make_metrics_list(self.snaps)
+        my_metrics = make_metrics_list(self)
         return my_metrics
 
     @property
@@ -105,13 +105,14 @@ class Product(db.Model):
             return None
 
     @property
-    def update_status(self):
-        #return self.raw_dict["update_status"]
-        return "SUCCESS:"  # @todo change
+    def mendeley_discipline(self):
+        for m in self.metrics:
+            try:
+                return m.mendeley_discipine
+            except AttributeError:
+                pass
+        return None
 
-    @property
-    def currently_updating(self):
-        return not self.update_status.startswith("SUCCESS")
 
     #@property
     #def has_metrics(self):
