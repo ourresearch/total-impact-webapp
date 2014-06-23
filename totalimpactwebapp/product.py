@@ -9,11 +9,14 @@ from totalimpactwebapp import award
 
 # regular ol' imports
 from totalimpactwebapp.metric import make_metrics_list
-from totalimpactwebapp.metric import Metric
+from totalimpactwebapp.metric import make_mendeley_metric
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp import db
+from totalimpactwebapp.reference_set import ReferenceSet
+from totalimpactwebapp.snap import PercentileSnap
+
 
 
 
@@ -66,10 +69,10 @@ class Product(db.Model):
     )
 
 
-    def __init__(self, **kwargs):
-        super(Product, self).__init__(**kwargs)
-
-
+    #def __init__(self, **kwargs):
+    #    super(Product, self).__init__(**kwargs)
+    #
+    #
     @property
     def biblio(self):
         return Biblio(self.biblio_rows)
@@ -80,13 +83,13 @@ class Product(db.Model):
 
     @property
     def metrics(self):
-        my_metrics = make_metrics_list(self)
+        my_metrics = make_metrics_list(self.snaps, self.created)
         return my_metrics
 
-    @property
-    def is_true_product(self):
-        return True
-
+    #@property
+    #def is_true_product(self):
+    #    return True
+    #
     @property
     def genre(self):
         if self.biblio.calculated_genre is not None:
@@ -103,12 +106,7 @@ class Product(db.Model):
 
     @property
     def mendeley_discipline(self):
-        for m in self.metrics:
-            try:
-                return m.mendeley_discipine
-            except AttributeError:
-                pass
-        return None
+        return make_mendeley_metric(self.snaps, self.created)
 
     @property
     def display_genre_plural(self):
@@ -128,11 +126,29 @@ class Product(db.Model):
     #@property
     #def has_new_metric(self):
     #    return any([m.has_new_metric for m in self.metrics])
-
+    #
     #@property
     #def awards(self):
-    #   @todo make this work once Metric works
+    #    return []
     #    return award.make_list(self.metrics)
+    #
+
+    @property
+    def percentile_snaps(self):
+
+        ret = []
+        for snap in self.snaps:
+            my_refset = ReferenceSet()
+            my_refset.year = self.biblio.display_year
+            my_refset.genre = self.genre
+            my_refset.host = self.host
+
+            my_percentile_snap = PercentileSnap(snap, my_refset)
+
+            ret.append(my_percentile_snap)
+
+        return ret
+
 
     #@property
     #def metrics_raw_sum(self):

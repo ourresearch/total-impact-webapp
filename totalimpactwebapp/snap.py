@@ -49,3 +49,45 @@ class Snap(db.Model):
             return 1
         except TypeError:
             return 0  # ignore lists and dicts
+
+
+
+
+class PercentileSnap(object):
+    def __init__(self, snap, reference_set):
+        self.snap = snap
+        self.reference_set = reference_set
+
+    @property
+    def percentile(self):
+        return self.reference_set.get_percentile(self.snap.raw_value)
+
+    def is_highly(self):
+        return True  # @todo replace with real value
+    #    try:
+    #        percentile_high_enough = self.percentiles["CI95_lower"] > 75
+    #    except TypeError:  # no percentiles listed
+    #        percentile_high_enough = False
+    #
+    #    raw_high_enough = self.display_count >= 3
+    #
+    #    if percentile_high_enough and raw_high_enough:
+    #        return True
+    #    else:
+    #        return False
+
+    def __getattr__(self, name):
+        return getattr(self.snap, name)
+
+    def to_dict(self):
+        ret = self.snap.to_dict()
+        self.reference_set.provider = self.snap.provider
+        self.reference_set.interaction = self.snap.interaction
+
+        ret["percentile"] = self.percentile
+        return ret
+
+
+
+
+
