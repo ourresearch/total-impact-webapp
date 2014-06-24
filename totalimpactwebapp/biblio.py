@@ -44,12 +44,10 @@ class Biblio(object):
         #if aliases.best_url is not None:
         #    self.url = aliases.best_url
 
-
-
     @property
     def display_year(self):
         try:
-            return self.year
+            return str(self.year)
         except AttributeError:
             return None
 
@@ -66,6 +64,11 @@ class Biblio(object):
 
     @property
     def calculated_host(self):
+
+        if self.calculated_genre == "article":
+            # don't return repositories for articles
+            return None
+
         try:
             return self.repository.split(" ")[0].lower()
         except AttributeError:

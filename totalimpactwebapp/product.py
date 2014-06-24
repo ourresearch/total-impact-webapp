@@ -112,6 +112,10 @@ class Product(db.Model):
             return None
 
     @property
+    def year(self):
+        return self.biblio.display_year
+
+    @property
     def display_genre_plural(self):
         # for use in phrases like "79 - 91 percentile of articles from 2013"
         genre_plural = self.genre + u"s"
