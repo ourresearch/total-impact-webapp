@@ -114,7 +114,7 @@ class Product(db.Model):
     @property
     def mendeley_discipline_name(self):
         try:
-            return = self.mendeley_discipline["name"]
+            return self.mendeley_discipline["name"]
         except TypeError:
             return None
 
