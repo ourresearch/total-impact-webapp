@@ -5,7 +5,7 @@ class ReferenceSet(object):
     def __init__(self):
         pass
 
-    def get_percentile(self, raw_value):
+    def get_percentile(self, provider, interaction, raw_value):
         return 50
 
 

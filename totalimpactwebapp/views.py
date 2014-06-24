@@ -67,7 +67,10 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 def json_resp_from_thing(thing):
 
     my_dict = util.todict(thing)
+
     json_str = json.dumps(my_dict, sort_keys=True, indent=4)
+
+
     resp = make_response(json_str, 200)
     resp.mimetype = "application/json"
     return views_helpers.bust_caches(resp)
@@ -326,6 +329,7 @@ def user_profile(profile_id):
     )
 
     markup = product.Markup(g.user_id, embed=request.args.get("embed"))
+
     hide_keys = request.args.get("hide", "").split(",")
 
     resp = {
@@ -336,6 +340,7 @@ def user_profile(profile_id):
         )
     }
 
+
     if not "about" in hide_keys:
         resp["about"] = profile.dict_about(show_secrets=False)
         resp["awards"] = profile.awards
@@ -344,7 +349,10 @@ def user_profile(profile_id):
         slug=profile.url_slug,
         elapsed=resp_constr_timer.elapsed()
     ))
-    return json_resp_from_thing(resp)
+
+
+    resp = json_resp_from_thing(resp)
+    return resp
 
 
 

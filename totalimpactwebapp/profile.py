@@ -525,6 +525,7 @@ class Profile(db.Model):
 
 
 
+
     def dict_about(self, show_secrets=True):
 
         secrets = [

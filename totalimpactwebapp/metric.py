@@ -78,9 +78,9 @@ class Metric(object):
             reverse=True
         )[0]
 
-    #@property
-    #def is_highly(self):
-    #    return self.most_recent_snap.is_highly
+    @property
+    def is_highly(self):
+        return self.most_recent_snap.is_highly
 
 
     def get_window_start_snap(self, window_must_start_after):
@@ -165,17 +165,17 @@ class Metric(object):
         else:
             return self.config["interaction"]
 
-    #@property
-    #def top_percentile(self):
-    #    return self.most_recent_snap.percentile
-    #
-    #@property
-    #def percentile(self):
-    #    return self.most_recent_snap.percentile
+    @property
+    def top_percentile(self):
+        return self.most_recent_snap.percentile
+
+    @property
+    def percentile(self):
+        return self.most_recent_snap.percentile
 
     def to_dict(self):
         ret = util.dict_from_dir(self, ["config", "snaps"])
-        ret = {"foo": 1}
+        #ret = {"foo": 1}
         return ret
 
 

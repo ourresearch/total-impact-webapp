@@ -117,7 +117,6 @@ def dict_from_dir(obj, keys_to_ignore=None):
     return ret
 
 
-
 def todict(obj, classkey=None):
     # from http://stackoverflow.com/a/1118038/226013
     if isinstance(obj, dict):
@@ -192,4 +191,4 @@ class Timer(object):
         elapsed = finish_time - self.start
 
         # from http://stackoverflow.com/a/1905423/226013
-        return elapsed.seconds * 1000 + elapsed.microseconds / 1000.0
+        return int(elapsed.seconds * 1000 + elapsed.microseconds / 1000.0)

@@ -21,14 +21,20 @@ class Snap(db.Model):
 
 
     def __init__(self, **kwargs):
+        self.refset = None
         super(Snap, self).__init__(**kwargs)
+
+
+    def set_refset(self, refset):
+        self.refset = refset
 
 
     def to_dict(self):
         return {
             "collected_date": self.last_collected_date,
             "value": self.raw_value,
-            "drilldown_url": self.drilldown_url
+            "drilldown_url": self.drilldown_url,
+            "percentile": self.percentile
         }
 
     @property
@@ -51,17 +57,15 @@ class Snap(db.Model):
             return 0  # ignore lists and dicts
 
 
-
-
-class PercentileSnap(object):
-    def __init__(self, snap, reference_set):
-        self.snap = snap
-        self.reference_set = reference_set
-
     @property
     def percentile(self):
-        return self.reference_set.get_percentile(self.snap.raw_value)
+        return self.refset.get_percentile(
+            self.provider,
+            self.interaction,
+            self.raw_value
+        )
 
+    @property
     def is_highly(self):
         return True  # @todo replace with real value
     #    try:
@@ -76,16 +80,6 @@ class PercentileSnap(object):
     #    else:
     #        return False
 
-    def __getattr__(self, name):
-        return getattr(self.snap, name)
-
-    def to_dict(self):
-        ret = self.snap.to_dict()
-        self.reference_set.provider = self.snap.provider
-        self.reference_set.interaction = self.snap.interaction
-
-        ret["percentile"] = self.percentile
-        return ret
 
 
 

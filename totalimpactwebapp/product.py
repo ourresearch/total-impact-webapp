@@ -15,10 +15,9 @@ from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp import db
 from totalimpactwebapp.reference_set import ReferenceSet
-from totalimpactwebapp.snap import PercentileSnap
 
 
-
+percentile_snap_creations = 0
 
 logger = logging.getLogger("tiwebapp.product")
 deprecated_genres = ["twitter", "blog"]
@@ -83,7 +82,7 @@ class Product(db.Model):
 
     @property
     def metrics(self):
-        my_metrics = make_metrics_list(self.snaps, self.created)
+        my_metrics = make_metrics_list(self.percentile_snaps, self.created)
         return my_metrics
 
     #@property
@@ -106,7 +105,11 @@ class Product(db.Model):
 
     @property
     def mendeley_discipline(self):
-        return make_mendeley_metric(self.snaps, self.created)
+        mendeley_metric = make_mendeley_metric(self.snaps, self.created)
+        try:
+            return mendeley_metric.mendeley_discipine
+        except AttributeError:
+            return None
 
     @property
     def display_genre_plural(self):
@@ -135,17 +138,19 @@ class Product(db.Model):
 
     @property
     def percentile_snaps(self):
+        my_refset = ReferenceSet()
+        my_refset.year = self.biblio.display_year
+        my_refset.genre = self.genre
+        my_refset.host = self.host
+        my_refset.title = self.biblio.display_title
+        my_refset.mendeley_discipline = self.mendeley_discipline
 
         ret = []
         for snap in self.snaps:
-            my_refset = ReferenceSet()
-            my_refset.year = self.biblio.display_year
-            my_refset.genre = self.genre
-            my_refset.host = self.host
+            snap.set_refset(my_refset)
+            ret.append(snap)
 
-            my_percentile_snap = PercentileSnap(snap, my_refset)
 
-            ret.append(my_percentile_snap)
 
         return ret
 
@@ -219,13 +224,22 @@ class Product(db.Model):
 
 
     def to_dict(self):
-        attributes_to_ignore = [
-            "profile",
-            "alias_rows",
-            "biblio_rows",
-            "snaps"
-        ]
-        ret = dict_from_dir(self, attributes_to_ignore)
+
+        ret = {
+            "biblio": self.biblio.to_dict(),
+            "aliases": self.aliases.to_dict(),
+            "metrics": [m.to_dict() for m in self.metrics]
+        }
+
+
+        #attributes_to_ignore = [
+        #    "profile",
+        #    "alias_rows",
+        #    "biblio_rows",
+        #    "snaps"
+        #]
+        #
+        #ret = dict_from_dir(self, attributes_to_ignore)
         #ret["_tiid"] = self.tiid
         return ret
 
