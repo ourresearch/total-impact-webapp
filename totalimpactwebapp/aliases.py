@@ -79,6 +79,12 @@ class Aliases(object):
             elif "github.com" in joined_url_string:
                 genre = "software"
                 host = "github"
+            elif "10.5061/dryad." in joined_url_string:
+                genre = "dataset"
+                host = "dryad"
+            elif ".figshare." in joined_url_string:
+                host = "figshare"
+                genre = "dataset"  # default.  if something else it'd already be stored
             elif "twitter.com" in joined_url_string:
                 if "/status/" in joined_url_string:
                     genre = "twitter"
