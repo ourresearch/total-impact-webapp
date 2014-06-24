@@ -35,17 +35,33 @@ class RefsetBuilder():
 
     def percentiles(self, metric_key):
         product_key = self.product_key_from_metric_key(metric_key)
+
+        # expand the accumulations
         elements = list(self.counters[metric_key].elements())
         n_non_zero = len(elements)
         n_total = self.counters[product_key]["N_distinct_products"]
-        n_zero = n_total - n_non_zero
+
+        # zero pad for all metrics except for PLOS ALM views and downloads
+        if ("plosalm" in metric_key) and (("pdf_views" in metric_key) or ("html_views" in metric_key)):
+            n_zero = 0
+            n_total = n_non_zero
+        else:
+            n_zero = n_total - n_non_zero
         elements += [0 for i in range(n_zero)]
-        number_bins = 10  #100
+
+        # decide the precision
+        if n_total >= 100:
+            number_bins = 100
+        else:
+            number_bins = 10
+
+        # find the cutoffs
         index_interval_size = len(elements)/number_bins
         if index_interval_size > 0:
             percentiles = sorted(elements)[::index_interval_size]
         else:
             percentiles = None
+
         return {"percentiles": percentiles, "N": n_total}
            
     def metric_key_to_dict(self, metric_key):
