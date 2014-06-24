@@ -4,7 +4,7 @@ from totalimpactwebapp import db
 from totalimpactwebapp import refset
 import tasks
 
-from sqlalchemy import func
+from sqlalchemy import and_, func
 import datetime
 import argparse
 import logging
@@ -36,6 +36,67 @@ def page_query(q):
         offset += 50
         if not r:
             break
+
+# from https://bitbucket.org/zzzeek/sqlalchemy/wiki/UsageRecipes/WindowedRangeQuery
+# cited from many webpages as good way to do paging
+def column_windows(session, column, windowsize):
+    """Return a series of WHERE clauses against 
+    a given column that break it into windows.
+
+    Result is an iterable of tuples, consisting of
+    ((start, end), whereclause), where (start, end) are the ids.
+
+    Requires a database that supports window functions, 
+    i.e. Postgresql, SQL Server, Oracle.
+
+    Enhance this yourself !  Add a "where" argument
+    so that windows of just a subset of rows can
+    be computed.
+
+    """
+    def int_for_range(start_id, end_id):
+        if end_id:
+            return and_(
+                column>=start_id,
+                column<end_id
+            )
+        else:
+            return column>=start_id
+
+    q = session.query(
+                column, 
+                func.row_number().\
+                        over(order_by=column).\
+                        label('rownum')
+                ).\
+                from_self(column)
+    if windowsize > 1:
+        q = q.filter("rownum %% %d=1" % windowsize)
+
+    intervals = [id for id, in q]
+
+    while intervals:
+        start = intervals.pop(0)
+        if intervals:
+            end = intervals[0]
+        else:
+            end = None
+        yield int_for_range(start, end)
+
+
+
+def windowed_query(q, column, windowsize):
+    """"Break a Query into windows on a given column."""
+
+    for whereclause in column_windows(
+                                        q.session, 
+                                        column, windowsize):
+        for row in q.filter(whereclause).order_by(column):
+            yield row
+
+
+
+
 
 def add_profile_deets_for_everyone():
     for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
@@ -106,7 +167,11 @@ def email_report_to_everyone_who_needs_one():
 
 def build_refsets():
     refset_builder = refset.RefsetBuilder()
-    for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
+
+    q = db.session.query(Profile)
+    for profile in windowed_query(q, Profile.url_slug, 50):
+    # for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
+            
         ProductsFromCore.clear_cache()
         logger.info(u"build_refsets: on {url_slug}".format(url_slug=profile.url_slug))
 
@@ -122,8 +187,8 @@ def build_refsets():
             for metric in product.metrics:
                 try:
                     raw_value = metric.most_recent_snap.raw_value
+                    # only add to histogram if it is a number, not a string or mendeley dict etc
                     if not isinstance(raw_value, (int, long, float)):
-                        # is a dict or something, so histograms don't make sense.  skip.
                         continue
                 except AttributeError:
                     raw_value = 0
