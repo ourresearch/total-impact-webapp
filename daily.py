@@ -1,7 +1,7 @@
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.profile import ProductsFromCore
 from totalimpactwebapp import db
-from totalimpactwebapp import refset
+from totalimpactwebapp import reference_set
 import tasks
 
 from sqlalchemy import and_, func
@@ -166,10 +166,10 @@ def email_report_to_everyone_who_needs_one():
 
 
 def build_refsets():
-    refset_builder = refset.RefsetBuilder()
+    refset_builder = reference_set.RefsetBuilder()
 
     q = db.session.query(Profile)
-    for profile in windowed_query(q, Profile.url_slug, 50):
+    for profile in windowed_query(q, Profile.url_slug, 25):
     # for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
             
         ProductsFromCore.clear_cache()
@@ -197,24 +197,25 @@ def build_refsets():
                 refset_builder.record_metric(metric_key, raw_value)
 
     print "************"
-    # for metric_key in refset_builder.metric_keys:
-    #     print metric_key, "=", refset_builder.counters[metric_key].most_common()
+    if refset_builder.counters:
+        # for metric_key in refset_builder.metric_keys:
+        #     print metric_key, "=", refset_builder.counters[metric_key].most_common()
 
-    # for metric_key in refset_builder.metric_keys:
-    #     print metric_key, "=", refset_builder.percentiles(metric_key)
+        # for metric_key in refset_builder.metric_keys:
+        #     print metric_key, "=", refset_builder.percentiles(metric_key)
 
-    print "remvoving old ones"
-    # as per http://stackoverflow.com/questions/16573802/flask-sqlalchemy-how-to-delete-all-rows-in-a-single-table
-    refset.Refset.query.delete()
-    db.session.commit()
+        print "remvoving old ones"
+        # as per http://stackoverflow.com/questions/16573802/flask-sqlalchemy-how-to-delete-all-rows-in-a-single-table
+        reference_set.ReferenceSetList.query.delete()
+        db.session.commit()
 
-    #adding new ones
-    print "adding new ones"
-    refset_objects = refset_builder.export_histograms()
-    for refset_obj in refset_objects:
-        db.session.add(refset_obj)
-    db.session.commit()
-    print "done adding"
+        #adding new ones
+        print "adding new ones"
+        refset_list_objects = refset_builder.export_histograms()
+        for refset_list_obj in refset_list_objects:
+            db.session.add(refset_list_obj)
+        db.session.commit()
+        print "done adding"
 
 
 def main(function, url_slug):

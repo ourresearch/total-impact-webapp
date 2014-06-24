@@ -162,8 +162,6 @@ class Product(db.Model):
             snap.set_refset(my_refset)
             ret.append(snap)
 
-
-
         return ret
 
 
