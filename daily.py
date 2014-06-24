@@ -1,6 +1,7 @@
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.profile import ProductsFromCore
 from totalimpactwebapp import db
+from totalimpactwebapp import refset
 import tasks
 
 from sqlalchemy import func
@@ -29,10 +30,10 @@ def page_query(q):
     offset = 0
     while True:
         r = False
-        for elem in q.limit(5).offset(offset):
+        for elem in q.limit(50).offset(offset):
            r = True
            yield elem
-        offset += 5
+        offset += 50
         if not r:
             break
 
@@ -100,6 +101,57 @@ def email_report_to_everyone_who_needs_one():
     return
 
 
+
+
+
+def build_refsets():
+    refset_builder = refset.RefsetBuilder()
+    for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
+        ProductsFromCore.clear_cache()
+        logger.info(u"build_refsets: on {url_slug}".format(url_slug=profile.url_slug))
+
+        for product in profile.product_objects:
+            year = product.year
+            if year < "2000":
+                year = "pre2000"
+
+            product_key = (year, product.genre, product.host, product.mendeley_discipline_name)                
+
+            refset_builder.record_product(product_key)
+
+            for metric in product.metrics:
+                try:
+                    raw_value = metric.most_recent_snap.raw_value
+                    if not isinstance(raw_value, (int, long, float)):
+                        # is a dict or something, so histograms don't make sense.  skip.
+                        continue
+                except AttributeError:
+                    raw_value = 0
+
+                metric_key = product_key + (metric.provider, metric.interaction)
+                refset_builder.record_metric(metric_key, raw_value)
+
+    print "************"
+    # for metric_key in refset_builder.metric_keys:
+    #     print metric_key, "=", refset_builder.counters[metric_key].most_common()
+
+    # for metric_key in refset_builder.metric_keys:
+    #     print metric_key, "=", refset_builder.percentiles(metric_key)
+
+    print "remvoving old ones"
+    # as per http://stackoverflow.com/questions/16573802/flask-sqlalchemy-how-to-delete-all-rows-in-a-single-table
+    refset.Refset.query.delete()
+    db.session.commit()
+
+    #adding new ones
+    print "adding new ones"
+    refset_objects = refset_builder.export_histograms()
+    for refset_obj in refset_objects:
+        db.session.add(refset_obj)
+    db.session.commit()
+    print "done adding"
+
+
 def main(function, url_slug):
     if function=="email_report":
         if url_slug:
@@ -110,6 +162,8 @@ def main(function, url_slug):
         deduplicate_everyone()
     elif function=="profile_deets":
         add_profile_deets_for_everyone()
+    elif function=="refsets":
+        build_refsets()
 
 
 
