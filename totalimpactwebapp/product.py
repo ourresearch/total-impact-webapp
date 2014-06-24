@@ -112,6 +112,15 @@ class Product(db.Model):
             return None
 
     @property
+    def mendeley_discipline_name(self):
+        try:
+            discipline_name = product.mendeley_discipline["name"]
+        except (TypeError):
+            discipline_name = None
+        return discipline_name
+
+
+    @property
     def year(self):
         return self.biblio.display_year
 
