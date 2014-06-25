@@ -18,8 +18,6 @@ class Snap(db.Model):
 
 
 
-
-
     def __init__(self, **kwargs):
         self.refset = None
         super(Snap, self).__init__(**kwargs)
