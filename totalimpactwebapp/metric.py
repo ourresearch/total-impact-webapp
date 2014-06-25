@@ -108,9 +108,20 @@ class Metric(object):
         if window_start_snap is None:
             return None
         else:
-            return "foo"
+            window_start = arrow.get(window_start_snap.last_collected_date)
+            window_end = arrow.get(self.most_recent_snap.last_collected_date)
+            window_length_timedelta = window_end - window_start
 
+            try:
+                value_diff = window_start_snap.raw_value - self.most_recent_snap.raw_value
+            except TypeError:
+                # complex values like mendeley discipline dicts
+                value_diff = None
 
+            return {
+                "window_length": window_length_timedelta.days,
+                "value": value_diff
+            }
 
     @property
     def has_new_metric(self):
