@@ -68,8 +68,15 @@ def json_resp_from_thing(thing):
 
     my_dict = util.todict(thing)
 
-    json_str = json.dumps(my_dict, sort_keys=True, indent=4)
+    if (os.getenv("FLASK_DEBUG", False) == "True"):
+        logger.info(u"rendering output through debug_api.html template")
+        resp = make_response(render_template(
+            'debug_api.html',
+            data=my_dict))
+        resp.mimetype = "text/html"
+        return views_helpers.bust_caches(resp)
 
+    json_str = json.dumps(my_dict, sort_keys=True, indent=4)
 
     resp = make_response(json_str, 200)
     resp.mimetype = "application/json"
