@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-06-18
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-06-25
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -193,38 +193,41 @@ angular.module('accounts.account', [
     )
 
     $scope.accountWindowOpen = false
-    Loading.start($scope.account.accountHost)
 
-    Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
+    if ($scope.account.accountHost == "google_scholar"){
+      console.log("opening google scholar modal")
+      GoogleScholar.showImportModal()
+    }
+    else {
+      console.log("linking an account other than google scholar")
+      Loading.start($scope.account.accountHost)
+      Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
 
-      // linked this account successfully
-      function(resp){
-        console.log("successfully saved linked account", resp)
-        $scope.isLinked = true
-        TiMixpanel.track("Linked an account", {
-          "Account name": $scope.account.displayName
-        })
+        // linked this account successfully
+        function(resp){
+          console.log("successfully saved linked account", resp)
+          $scope.isLinked = true
+          TiMixpanel.track("Linked an account", {
+            "Account name": $scope.account.displayName
+          })
 
-        Loading.finish($scope.account.accountHost)
+          Loading.finish($scope.account.accountHost)
 
-        if ($scope.account.accountHost == "google_scholar"){
-          console.log("opening google scholar modal")
-          GoogleScholar.showImportModal()
+        },
+
+        // couldn't link to account
+        function(resp){
+          console.log("failure at saving inputs :(", resp)
+          Loading.finish($scope.account.accountHost)
+          var failureMsg = _.sprintf(
+            "Sorry, it seems the %s account '%s' has no products associated with it.",
+            $scope.account.accountHost,
+            $scope.account.username.value
+          )
+          alert(failureMsg)
         }
-      },
-
-      // couldn't link to account
-      function(resp){
-        console.log("failure at saving inputs :(", resp)
-        Loading.finish($scope.account.accountHost)
-        var failureMsg = _.sprintf(
-          "Sorry, it seems the %s account '%s' has no products associated with it.",
-          $scope.account.accountHost,
-          $scope.account.username.value
-        )
-        alert(failureMsg)
-      }
-    )
+      )
+    }
   }
 })
 
