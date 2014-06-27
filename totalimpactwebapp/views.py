@@ -439,6 +439,7 @@ def user_products_modify(id):
         abort_if_user_not_logged_in(user)
 
         if request.method == "PATCH":
+            local_sleep(2)
             added_products = user.add_products(request.json)
             resp = {"products": added_products}
 

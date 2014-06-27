@@ -199,7 +199,7 @@ angular.module('accounts.account', [
       GoogleScholar.showImportModal()
     }
     else {
-      console.log("linking an account other than google scholar") 
+      console.log("linking an account other than google scholar")
       Loading.start($scope.account.accountHost)
       Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
 
@@ -583,6 +583,7 @@ angular.module("googleScholar", [
 .factory("GoogleScholar", function($modal,
                                    $q,
                                    UsersProducts,
+                                   Loading,
                                    TiMixpanel,
                                    security){
   var bibtex = ""
@@ -625,6 +626,8 @@ angular.module("googleScholar", [
         bibtex.substring(0, 50) + "..."
       )
 
+      Loading.start("bibtex")
+
       TiMixpanel.track("Uploaded Google Scholar", {
         "Number of products": bibtexArticlesCount()
       })
@@ -634,9 +637,15 @@ angular.module("googleScholar", [
         {bibtex: bibtex},
         function(resp){
           console.log("successfully uploaded bibtex!", resp)
+          Loading.finish("bibtex")
+
         },
         function(resp){
           console.log("bibtex import failed :(")
+          Loading.finish("bibtex")
+          alert("Sorry, we weren't able to load your Google Scholar data! " +
+            "Could you fill out a support ticket for us (click the orange tab " +
+            "on the right of your screen). That way we can fix it right away.")
         }
       )
     },
@@ -647,16 +656,18 @@ angular.module("googleScholar", [
 
   })
 
-  .controller("GoogleScholarModalCtrl", function($scope, GoogleScholar, currentUser){
+  .controller("GoogleScholarModalCtrl", function($scope, GoogleScholar, currentUser, Loading){
     console.log("modal controller activated!")
     $scope.currentUser = currentUser
     $scope.googleScholar = GoogleScholar
+    $scope.loading = Loading
 
     $scope.sendToServer = function(){
       GoogleScholar.sendToServer().$promise.then(function(resp){
         console.log("finished with the upload, here's the resp", resp)
         $scope.importComplete = true
-        $scope.importedProductsCount = resp.data.products.length
+//        $scope.importedProductsCount = resp.data.products.length
+        $scope.importedProductsCount = null
       })
     }
 
@@ -1470,6 +1481,7 @@ angular.module("profile", [
 
 
     $scope.removeProduct = function(product){
+//      alert("Sorry! Product deletion is temporarily disabled. It'll be back soon.")
       console.log("removing product: ", product)
       $scope.products.splice($scope.products.indexOf(product),1)
       UserMessage.set(
@@ -4567,16 +4579,18 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "            <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
     "         </div>\n" +
     "\n" +
-    "         <div class=\"submit\" ng-show=\"fileLoaded && !loading.is('bibtex')\">\n" +
-    "            <a class=\"btn btn-primary\" ng-click=\"sendToServer()\">\n" +
+    "         <div class=\"submit\">\n" +
+    "            <a class=\"btn btn-primary\"\n" +
+    "               ng-show=\"fileLoaded && !loading.is('bibtex')\"\n" +
+    "               ng-click=\"sendToServer()\">\n" +
     "               Import {{ googleScholar.bibtexArticlesCount() }} articles\n" +
     "            </a>\n" +
+    "            <div class=\"working\" ng-show=\"loading.is('bibtex')\">\n" +
+    "               <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "               <span class=\"text\">Adding articles...</span>\n" +
+    "            </div>\n" +
     "         </div>\n" +
     "\n" +
-    "         <div class=\"working\" ng-show=\"loading.is('bibtex')\">\n" +
-    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "            <span class=\"text\">Adding articles...</span>\n" +
-    "         </div>\n" +
     "      </div>\n" +
     "\n" +
     "   <div class=\"import-complete\" ng-show=\"importComplete\">\n" +

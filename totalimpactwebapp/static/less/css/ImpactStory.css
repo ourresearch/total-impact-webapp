@@ -8419,6 +8419,11 @@ div.modal-body.google-scholar-import .submit {
   margin-top: 30px;
   text-align: center;
 }
+div.modal-body.google-scholar-import .submit .working {
+  font-size: 20px;
+  height: 50px;
+  color: #555;
+}
 div.modal-body.google-scholar-import div.import-complete {
   text-align: center;
 }

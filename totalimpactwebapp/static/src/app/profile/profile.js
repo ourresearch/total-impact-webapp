@@ -252,6 +252,7 @@ angular.module("profile", [
 
 
     $scope.removeProduct = function(product){
+//      alert("Sorry! Product deletion is temporarily disabled. It'll be back soon.")
       console.log("removing product: ", product)
       $scope.products.splice($scope.products.indexOf(product),1)
       UserMessage.set(
