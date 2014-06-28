@@ -107,7 +107,8 @@ app.config["ASSETS_DEBUG"] = (os.getenv("PACK_ASSETS") != "True")
 try:
 	from totalimpactwebapp import views
 except exc.ProgrammingError:
-	logger.info(u"SQLAlchemy database tables not found, so creating them")
-	db.session.rollback()
-	db.create_all()
-	from totalimpactwebapp import views
+    logger.critical(u"SQLAlchemy database tables not found.  THEY SHOULD BE HERE SO NOT CREATING THEM.")
+	# logger.info(u"SQLAlchemy database tables not found, so creating them")
+	# db.session.rollback()
+	# db.create_all()
+	# from totalimpactwebapp import views
