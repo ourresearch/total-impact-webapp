@@ -11,10 +11,10 @@ class ProductsDecorator(object):
         self.markup.set_template("product.html")
 
         product_dicts = [p.to_markup_dict(self.markup, hide_keys)
-                for p in self.profile.product_objects]
+                for p in self.profile.products]
 
         if add_heading_products:
-            headings = heading_product.make_list(self.profile.product_objects)
+            headings = heading_product.make_list(self.profile.products)
             self.markup.set_template("heading-product.html")
             product_dicts += [hp.to_markup_dict(self.markup) for hp in headings]
 
@@ -22,7 +22,7 @@ class ProductsDecorator(object):
 
     def single_dict(self, tiid):
         self.markup.set_template("single-product.html")
-        product = [p for p in self.profile.product_objects if p.tiid == tiid][0]
+        product = [p for p in self.profile.products if p.tiid == tiid][0]
         return product.to_markup_dict(self.markup)
 
 

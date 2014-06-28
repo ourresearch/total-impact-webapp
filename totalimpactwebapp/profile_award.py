@@ -9,7 +9,7 @@ def make_awards_list(user):
     award = OAAward()
     # eventually the first param here is user.about...
     # but right now that doesn't exist.
-    award.calculate({}, user.product_objects)
+    award.calculate({}, user.products)
 
     awards_list.append(award)
     return awards_list

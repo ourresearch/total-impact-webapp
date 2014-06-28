@@ -179,7 +179,7 @@ def build_refsets():
             
         logger.info(u"build_refsets: on {url_slug}".format(url_slug=profile.url_slug))
 
-        for product in profile.product_objects:
+        for product in profile.products:
             year = product.year
             if year < "2000":
                 year = "pre2000"

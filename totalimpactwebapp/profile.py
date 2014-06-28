@@ -161,7 +161,7 @@ class Profile(db.Model):
     last_email_sent = db.Column(db.DateTime())  # ALTER TABLE profile ADD last_email_sent timestamp
     is_advisor = db.Column(db.Boolean)  # ALTER TABLE profile ADD is_advisor bool
 
-    product_objects = db.relationship(
+    products = db.relationship(
         'Product',
         lazy='subquery',
         cascade='all, delete-orphan',
@@ -185,7 +185,7 @@ class Profile(db.Model):
 
     @property
     def latest_diff_ts(self):
-        ts_list = [p.latest_diff_timestamp for p in self.product_objects]
+        ts_list = [p.latest_diff_timestamp for p in self.products]
         try:
             return sorted(ts_list, reverse=True)[0]
         except IndexError:
@@ -383,16 +383,16 @@ class Profile(db.Model):
 
     def get_products_markup(self, markup, hide_keys=None, add_heading_products=True):
 
-        return self.product_objects  # @todo remove this
+        return self.products  # @todo remove this
 
         markup.set_template("product.html")
         markup.context["profile"] = self
 
         product_dicts = [p.to_markup_dict(markup, hide_keys)
-                for p in self.product_objects]
+                for p in self.products]
 
         if add_heading_products:
-            headings = heading_product.make_list(self.product_objects)
+            headings = heading_product.make_list(self.products)
             markup.set_template("heading-product.html")
             product_dicts += [hp.to_markup_dict(markup) for hp in headings]
 
@@ -402,7 +402,7 @@ class Profile(db.Model):
     def get_single_product_markup(self, tiid, markup):
         markup.set_template("single-product.html")
         markup.context["profile"] = self
-        product = [p for p in self.product_objects if p.tiid == tiid][0]
+        product = [p for p in self.products if p.tiid == tiid][0]
         return product.to_markup_dict(markup)
 
 
@@ -468,7 +468,7 @@ class Profile(db.Model):
         ret_dict["products_count"] = len(self.tiids)
 
         # commenting these out for now because they make the /profile/current call too slow.
-        #ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.product_objects])
+        #ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.products])
         #ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
 
         return ret_dict
