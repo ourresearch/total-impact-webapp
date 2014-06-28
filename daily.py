@@ -164,13 +164,29 @@ def email_report_to_everyone_who_needs_one():
 
 
 
+def save_refset(refset_builder):
+    print "************"
+    if refset_builder.counters:
+        print "removing old refsets"
+        # as per http://stackoverflow.com/questions/16573802/flask-sqlalchemy-how-to-delete-all-rows-in-a-single-table
+        reference_set.ReferenceSetList.query.delete()
+        db.session.commit()
+
+        #add new refests
+        print "adding new ones"
+        refset_list_objects = refset_builder.export_histograms()
+        for refset_list_obj in refset_list_objects:
+            print refset_list_obj
+            db.session.add(refset_list_obj)
+        db.session.commit()
+        print "done adding"
+
 
 def build_refsets():
     refset_builder = reference_set.RefsetBuilder()
 
     q = db.session.query(Profile)
     for profile in windowed_query(q, Profile.url_slug, 25):
-    # for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
             
         ProductsFromCore.clear_cache()
         logger.info(u"build_refsets: on {url_slug}".format(url_slug=profile.url_slug))
@@ -181,7 +197,6 @@ def build_refsets():
                 year = "pre2000"
 
             product_key = (year, product.genre, product.host, product.mendeley_discipline)                
-
             refset_builder.record_product(product_key)
 
             for metric in product.metrics:
@@ -196,26 +211,8 @@ def build_refsets():
                 metric_key = product_key + (metric.provider, metric.interaction)
                 refset_builder.record_metric(metric_key, raw_value)
 
-    print "************"
-    if refset_builder.counters:
-        # for metric_key in refset_builder.metric_keys:
-        #     print metric_key, "=", refset_builder.counters[metric_key].most_common()
+    save_refset(refset_builder)
 
-        # for metric_key in refset_builder.metric_keys:
-        #     print metric_key, "=", refset_builder.percentiles(metric_key)
-
-        print "remvoving old ones"
-        # as per http://stackoverflow.com/questions/16573802/flask-sqlalchemy-how-to-delete-all-rows-in-a-single-table
-        reference_set.ReferenceSetList.query.delete()
-        db.session.commit()
-
-        #adding new ones
-        print "adding new ones"
-        refset_list_objects = refset_builder.export_histograms()
-        for refset_list_obj in refset_list_objects:
-            db.session.add(refset_list_obj)
-        db.session.commit()
-        print "done adding"
 
 
 def main(function, url_slug):

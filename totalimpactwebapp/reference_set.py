@@ -89,6 +89,17 @@ class ReferenceSetList(db.Model):
             )
         return lookup_key
 
+    @classmethod
+    def lookup_key_to_dict(self, metric_key):
+        return dict(zip((
+            "year", 
+            "genre", 
+            "host", 
+            "mendeley_discipline", 
+            "provider", 
+            "interaction"
+            ), metric_key))
+
     def get_lookup_key(self):
         return self.build_lookup_key(
             year=self.year, 
@@ -131,15 +142,11 @@ class RefsetBuilder(object):
     def record_product(self, product_key):
         self.counters[product_key]["N_distinct_products"] += 1
 
-    def most_common(self, metric_key, n=None):
-        self.counters[metric_key].most_common(n)
-
-    def percentiles(self, metric_key):
-        product_key = self.product_key_from_metric_key(metric_key)
-
-        # expand the accumulations
+    def percentiles_Ns(self, metric_key):
         elements = list(self.counters[metric_key].elements())
         n_non_zero = len(elements)
+
+        product_key = self.product_key_from_metric_key(metric_key)
         n_total = self.counters[product_key]["N_distinct_products"]
 
         # zero pad for all metrics except for PLOS ALM views and downloads
@@ -148,37 +155,44 @@ class RefsetBuilder(object):
             n_total = n_non_zero
         else:
             n_zero = n_total - n_non_zero
-            if n_zero:
-                elements += [0 for i in range(n_zero)]
 
-        percentiles = None
+        return {"n_total": n_total, "n_zero": n_zero}
+
+
+    def percentiles(self, metric_key):
+        # expand the accumulations
+        elements = list(self.counters[metric_key].elements())
+
+        # add the zeros
+        n_total = self.percentiles_Ns(metric_key)["n_total"]
+        n_zero = self.percentiles_Ns(metric_key)["n_zero"]
+        if n_zero:
+            elements += [0 for i in range(n_zero)]
 
         # decide the precision
         number_bins = None
         if n_total >= 100:
             number_bins = 100.0
-        # elif n_total > 25:
-        #     number_bins = 10.0
 
+        percentiles = None
         if number_bins:
             # find the cutoffs
             index_interval_size = int(round(len(elements)/number_bins))
             if index_interval_size > 0:
                 percentiles = sorted(elements)[::index_interval_size]
 
-        return {"percentiles": percentiles, "N": n_total}
+        return percentiles
            
-    def metric_key_to_dict(self, metric_key):
-        return dict(zip(("year", "genre", "host", "mendeley_discipline", "provider", "interaction"), metric_key))
-
     def export_histograms(self):
         refset_lists = []
         for metric_key in self.metric_keys:
-            print metric_key, "=", self.percentiles(metric_key)
-            new_refset_list = ReferenceSetList(**self.metric_key_to_dict(metric_key))
-            new_refset_list.percentiles = self.percentiles(metric_key)["percentiles"]
-            new_refset_list.N = self.percentiles(metric_key)["N"]
-            refset_lists.append(new_refset_list)
+            percentiles = self.percentiles(metric_key)
+            if percentiles:
+                print metric_key, "=", percentiles
+                new_refset_list = ReferenceSetList(**ReferenceSetList.lookup_key_to_dict(metric_key))
+                new_refset_list.percentiles = percentiles
+                new_refset_list.N = self.percentiles_Ns(metric_key)["n_total"]
+                refset_lists.append(new_refset_list)
         return(refset_lists)
 
 
