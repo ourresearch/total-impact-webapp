@@ -55,33 +55,6 @@ class ReferenceSet(object):
         return ret
 
 
-        #ret = {}
-        #refsets_config = {
-        #    "WoS": ["Web of Science", "indexed by"],
-        #    "dryad": ["Dryad", "added to"],
-        #    "figshare": ["figshare", "added to"],
-        #    "github": ["GitHub", "added to"]
-        #}
-        #
-        #for refset_key, normalized_values in self.values.iteritems():
-        #    if refset_key == "raw":
-        #        continue
-        #    else:
-        #        # This will arbitrarily pick on percentile reference set and
-        #        # make it be the only one that counts. Works fine as long as
-        #        # there is just one.
-        #
-        #        ret.update(normalized_values)
-        #        ret["top_percent"] = 100 - normalized_values["CI95_lower"]
-        #        ret["refset"] = refsets_config[refset_key][0]
-        #        ret["refset_storage_verb"] = refsets_config[refset_key][1]
-        #
-        #if ret:
-        #    return ret
-        #else:
-        #    return None
-
-
 
 class ReferenceSetList(db.Model):
     refset_id = db.Column(db.Text, primary_key=True)
@@ -104,19 +77,6 @@ class ReferenceSetList(db.Model):
             self.created = datetime.datetime.utcnow()
         super(ReferenceSetList, self).__init__(**kwargs)
 
-    def get(self, provider, interaction, year, genre, host, mendeley_discipline):
-        return ReferenceSet()
-
-    def get_lookup_key(self):
-        return self.build_lookup_key(
-            year=self.year, 
-            genre=self.genre, 
-            host=self.host, 
-            mendeley_discipline=self.mendeley_discipline,
-            provider=self.provider, 
-            interaction=self.interaction, 
-            )
-
     @classmethod
     def build_lookup_key(cls, year=None, genre=None, host=None, mendeley_discipline=None, provider=None, interaction=None):
         lookup_key = (
@@ -127,8 +87,17 @@ class ReferenceSetList(db.Model):
             provider, 
             interaction, 
             )
-
         return lookup_key
+
+    def get_lookup_key(self):
+        return self.build_lookup_key(
+            year=self.year, 
+            genre=self.genre, 
+            host=self.host, 
+            mendeley_discipline=self.mendeley_discipline,
+            provider=self.provider, 
+            interaction=self.interaction, 
+            )
 
     def get_percentile(self, raw_value):
         if not self.percentiles:
