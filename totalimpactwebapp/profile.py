@@ -176,12 +176,12 @@ class Profile(db.Model):
     @property
     def tiids(self):
         # return all tiids that have not been removed
-        return [tiid_link.tiid for tiid_link in self.tiid_links if not tiid_link.removed]
+        return [product.tiid for product in self.products if not product.removed]
 
     @property
     def tiids_including_removed(self):
         # return all tiids even those that have been removed
-        return [tiid_link.tiid for tiid_link in self.tiid_links]
+        return [product.tiid for product in self.products]
 
     @property
     def latest_diff_ts(self):
@@ -326,7 +326,7 @@ class Profile(db.Model):
                 existing_tiids)
         tiids = import_response["products"].keys()
 
-        return add_tiids_to_profile(self.id, tiids)
+        return tiids
 
     def refresh_products(self, source="webapp"):
         save_profile_last_refreshed_timestamp(self.id)
@@ -353,7 +353,6 @@ class Profile(db.Model):
                     analytics_credentials,
                     existing_tiids)
             tiids_to_add = import_response["products"].keys()
-            resp = add_tiids_to_profile(self.id, tiids_to_add)
         return tiids_to_add
 
     def patch(self, newValuesDict):
@@ -475,40 +474,14 @@ class Profile(db.Model):
 
 
 
-
-
-def add_tiids_to_profile(profile_id, tiids):
-    # logger.info(u"in add_tiids_to_profile {profile_id} with {tiids}".format(
-    #     profile_id=profile_id,
-    #     tiids=tiids))
-
-    profile_object = Profile.query.get(profile_id)
-    db.session.merge(profile_object)
-
-    for tiid in tiids:
-        if tiid not in profile_object.tiids:
-            profile_object.tiid_links += [ProfileTiid(profile_id=profile_id, tiid=tiid)]
-
-    try:
-        db.session.commit()
-    except (IntegrityError, FlushError) as e:
-        db.session.rollback()
-        logger.warning(u"Fails Integrity check in add_tiids_to_profile for {profile_id}, rolling back.  Message: {message}".format(
-            profile_id=profile_id,
-            message=e.message))
-
-    return tiids
-
-
 def delete_products_from_profile(profile, tiids_to_delete):
-    # this is confusing now, waiting to refactor for when we
-    # move core stuff to webapp though.
 
     number_deleted = 0
-    for profile_tiid_obj in profile.tiid_links:
-        if profile_tiid_obj.tiid in tiids_to_delete:
+    for product in profile.products:
+        if product.tiid in tiids_to_delete:
             number_deleted += 1
-            profile_tiid_obj.removed = now_in_utc()
+            product.removed = now_in_utc()
+            db.session.add(product)
 
     try:
         db.session.commit()
