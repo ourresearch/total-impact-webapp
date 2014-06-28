@@ -180,7 +180,7 @@ def build_refsets():
             if year < "2000":
                 year = "pre2000"
 
-            product_key = (year, product.genre, product.host, product.mendeley_discipline_name)                
+            product_key = (year, product.genre, product.host, product.mendeley_discipline)                
 
             refset_builder.record_product(product_key)
 

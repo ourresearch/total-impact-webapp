@@ -4,15 +4,48 @@ import shortuuid
 import datetime
 
 from totalimpactwebapp.util import dict_from_dir
+from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp import db
 
 logger = logging.getLogger("tiwebapp.reference_set")
 
 
 class ReferenceSet(object):
+    def __init__(self):
+        self.lookup_list = None
+
+    def set_lookup_list(self, provider, interaction):
+        global reference_set_lists
+        lookup_key = ReferenceSetList.build_lookup_key(
+            provider=provider, 
+            interaction=interaction, 
+            year=self.year, 
+            genre=self.genre, 
+            host=self.host, 
+            mendeley_discipline=self.mendeley_discipline
+            )
+        try:
+            self.lookup_list = reference_set_lists[lookup_key]
+        except KeyError:
+            return None
+
 
     def get_percentile(self, provider, interaction, raw_value):
-        return 50
+        if not self.lookup_list:
+            self.set_lookup_list(provider, interaction)
+
+        if not self.lookup_list or not self.lookup_list.percentiles:
+            return None
+
+        percentile = 0
+        percentile_step = 100.0/len(self.lookup_list.percentiles)
+        for p in self.lookup_list.percentiles:
+            if p > raw_value:
+                break
+            percentile += percentile_step
+
+        return round(percentile, 0)
+
 
     def to_dict(self):
         attributes_to_ignore = [
@@ -59,7 +92,7 @@ class ReferenceSetList(db.Model):
     provider = db.Column(db.Text)
     interaction = db.Column(db.Text)
     created = db.Column(db.DateTime())
-    percentiles = db.Column(db.Text)
+    percentiles = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
     N = db.Column(db.Integer)
 
     def __init__(self, **kwargs):
@@ -71,8 +104,42 @@ class ReferenceSetList(db.Model):
             self.created = datetime.datetime.utcnow()
         super(ReferenceSetList, self).__init__(**kwargs)
 
-    def get(self, provider, interaction, year, genre, host):
+    def get(self, provider, interaction, year, genre, host, mendeley_discipline):
         return ReferenceSet()
+
+    def get_lookup_key(self):
+        return self.build_lookup_key(
+            year=self.year, 
+            genre=self.genre, 
+            host=self.host, 
+            mendeley_discipline=self.mendeley_discipline,
+            provider=self.provider, 
+            interaction=self.interaction, 
+            )
+
+    @classmethod
+    def build_lookup_key(cls, year=None, genre=None, host=None, mendeley_discipline=None, provider=None, interaction=None):
+        lookup_key = (
+            year, 
+            genre, 
+            host, 
+            mendeley_discipline,
+            provider, 
+            interaction, 
+            )
+
+        return lookup_key
+
+    def get_percentile(self, raw_value):
+        if not self.percentiles:
+            return None
+
+        for p in self.percentiles:
+            if p >= raw_value:
+                percentile = p
+                break
+
+        return percentile
 
 
 
@@ -146,8 +213,19 @@ class RefsetBuilder(object):
         return(refset_lists)
 
 
+def load_all_reference_set_lists():
+    global reference_set_lists
+    reference_set_lists = {}
+    for refset_list_obj in db.session.query(ReferenceSetList).all():
+        # we want it to persist across sessions, and is read-only, so detached from session works great
+        db.session.expunge(refset_list_obj)
+        lookup_key = refset_list_obj.get_lookup_key()
+        reference_set_lists[lookup_key] = refset_list_obj
+    print "just loaded reference sets, n=", len(reference_set_lists)
+    return reference_set_lists
 
-
+# load once
+reference_set_lists = load_all_reference_set_lists()
 
 
 

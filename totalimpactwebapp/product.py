@@ -107,17 +107,9 @@ class Product(db.Model):
     def mendeley_discipline(self):
         mendeley_metric = make_mendeley_metric(self.snaps, self.created)
         try:
-            return mendeley_metric.mendeley_discipine
-        except AttributeError:
+            return mendeley_metric.mendeley_discipine["name"]
+        except (AttributeError, TypeError):
             return None
-
-    @property
-    def mendeley_discipline_name(self):
-        try:
-            return self.mendeley_discipline["name"]
-        except TypeError:
-            return None
-
 
     @property
     def year(self):
