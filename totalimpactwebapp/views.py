@@ -475,7 +475,7 @@ def user_product(user_id, tiid):
     elif request.method == "DELETE":
         # kind of confusing now, waiting for core-to-webapp refactor
         # to improve it though.
-        resp = user.delete_products_from_user(profile, [tiid])
+        resp = profile.delete_products_from_user(profile, [tiid])
 
     return json_resp_from_thing(resp)
 
