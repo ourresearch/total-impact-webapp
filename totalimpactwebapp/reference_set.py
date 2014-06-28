@@ -157,8 +157,8 @@ class RefsetBuilder(object):
         number_bins = None
         if n_total >= 100:
             number_bins = 100.0
-        elif n_total > 25:
-            number_bins = 10.0
+        # elif n_total > 25:
+        #     number_bins = 10.0
 
         if number_bins:
             # find the cutoffs
