@@ -82,6 +82,11 @@ class Metric(object):
     def is_highly(self):
         return self.most_recent_snap.is_highly
 
+    @property
+    def fully_qualified_metric_name(self):
+        return u"{provider}:{interaction}".format(
+            provider=self.provider, interaction=self.interaction)
+
 
     def get_window_start_snap(self, window_must_start_after):
         most_recent_snap_time = arrow.get(self.most_recent_snap.last_collected_date)

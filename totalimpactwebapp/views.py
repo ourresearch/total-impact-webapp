@@ -482,10 +482,20 @@ def user_product(user_id, tiid):
 
 
 
-@app.route("/profile/<id>/products.csv", methods=["GET"])
-def user_products_csv(id):
-    abort_json(501, "sorry!  CSV export is not currently available")
+@app.route("/profile/<profile_id>/products.csv", methods=["GET"])
+def profile_products_csv(profile_id):
+    profile = get_user_for_response(profile_id, request)
 
+    csv = profile.csv_of_products()
+
+    resp = make_response(csv, 200)
+    resp.mimetype = "text/csv;charset=UTF-8"
+    resp.headers.add("Content-Disposition",
+                     "attachment; filename=impactstory-{profile_id}.csv".format(
+                        profile_id=profile_id))
+    resp.headers.add("Content-Encoding",
+                     "UTF-8")
+    return resp
 
 
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])

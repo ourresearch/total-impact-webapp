@@ -13,6 +13,7 @@ from sqlalchemy import func
 from util import local_sleep
 from stripe import InvalidRequestError
 from celery.result import AsyncResult
+from collections import OrderedDict, defaultdict
 
 import requests
 import stripe
@@ -25,6 +26,9 @@ import unicodedata
 import string
 import hashlib
 import redis
+import csv
+import StringIO
+
 
 logger = logging.getLogger("tiwebapp.profile")
 stripe.api_key = os.getenv("STRIPE_API_KEY")
@@ -33,6 +37,12 @@ redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABAS
 def now_in_utc():
     return datetime.datetime.utcnow()
 
+def clean_value_for_csv(value_to_store):
+    try:
+        value_to_store = value_to_store.encode("utf-8").strip()
+    except AttributeError:
+        pass
+    return value_to_store
 
 
 class EmailExistsError(Exception):
@@ -405,6 +415,53 @@ class Profile(db.Model):
         return product.to_markup_dict(markup)
 
 
+    def csv_of_products(self):
+        (header, rows) = self.build_csv_rows()
+
+        mystream = StringIO.StringIO()
+        dw = csv.DictWriter(mystream, delimiter=',', dialect=csv.excel, fieldnames=header)
+        dw.writeheader()
+        for row in rows:
+            dw.writerow(row)
+        contents = mystream.getvalue()
+        mystream.close()
+        return contents
+
+    def build_csv_rows(self):
+        header_metric_names = []
+        for product in self.products:
+            for metric in product.metrics:
+                header_metric_names += [metric.fully_qualified_metric_name]
+        header_metric_names = sorted(list(set(header_metric_names)))
+
+        header_alias_names = ["title", "doi"]
+
+        # make header row
+        header_list = ["tiid"] + header_alias_names + header_metric_names
+        ordered_fieldnames = OrderedDict([(col, None) for col in header_list])
+
+        # body rows
+        rows = []
+        for product in self.products:
+            ordered_fieldnames = OrderedDict()
+            ordered_fieldnames["tiid"] = product.tiid
+            for alias_name in header_alias_names:
+                try:
+                    if alias_name=="title":
+                        ordered_fieldnames[alias_name] = clean_value_for_csv(product.biblio.title)
+                    else:
+                        ordered_fieldnames[alias_name] = clean_value_for_csv(product.aliases.doi)
+                except (AttributeError, KeyError):
+                    ordered_fieldnames[alias_name] = ""
+            for fully_qualified_metric_name in header_metric_names:
+                # metric_value = product.get_most_recent_snap_by_fully_qualified_metric_name(fully_qualified_metric_name)
+                most_recent_snap_value_for_my_fully_qualified_metric_name = 87
+                try:
+                    ordered_fieldnames[fully_qualified_metric_name] = clean_value_for_csv(most_recent_snap_value_for_my_fully_qualified_metric_name)
+                except (AttributeError, KeyError):
+                    ordered_fieldnames[fully_qualified_metric_name] = ""
+            rows += [ordered_fieldnames]
+        return(ordered_fieldnames, rows)
 
 
 
