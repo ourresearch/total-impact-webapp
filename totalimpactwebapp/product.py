@@ -6,6 +6,7 @@ import arrow
 from totalimpactwebapp import snap
 from totalimpactwebapp import metric
 from totalimpactwebapp import award
+from totalimpactwebapp import reference_set
 
 # regular ol' imports
 from totalimpactwebapp.metric import make_metrics_list
@@ -14,7 +15,6 @@ from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp import db
-from totalimpactwebapp.reference_set import ReferenceSet
 
 
 percentile_snap_creations = 0
@@ -142,7 +142,7 @@ class Product(db.Model):
 
     @property
     def percentile_snaps(self):
-        my_refset = ReferenceSet()
+        my_refset = reference_set.ReferenceSet()
         my_refset.year = self.biblio.display_year
         my_refset.genre = self.genre
         my_refset.host = self.host
