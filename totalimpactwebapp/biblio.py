@@ -1,42 +1,78 @@
 import util
 from urlparse import urlparse
+from totalimpactwebapp import db
+from totalimpactwebapp import json_sqlalchemy
+
+
+
+class BiblioRow(db.Model):
+
+    __tablename__ = 'biblio'
+    tiid = db.Column(db.Integer, db.ForeignKey('item.tiid'), primary_key=True)
+    provider = db.Column(db.Text, primary_key=True)
+    biblio_name = db.Column(db.Text, primary_key=True)
+    biblio_value = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
+    collected_date = db.Column(db.DateTime())
+
+    def __init__(self, **kwargs):
+        super(BiblioRow, self).__init__(**kwargs)
+
+        #if aliases.best_url is not None:
+        #    self.url = aliases.best_url
+
+
 
 class Biblio(object):
-    def __init__(self, raw_dict, aliases):
 
-        # temporary for until we get this from the db via sqlalchemy
-        self.raw_dict = raw_dict
-        for k, v in raw_dict.iteritems():
-            setattr(self, k, v)
+    def __init__(self, biblio_rows):
 
-        if aliases.best_url is not None:
-            self.url = aliases.best_url
+        # build out the properties of this object
+        for row in biblio_rows:
 
+            # if we don't have it already, write it.
+            if not hasattr(self, row.biblio_name):
+                setattr(self, row.biblio_name, row.biblio_value)
+
+            # if it's from the user, write it; those always win.
+            elif row.provider == "user_provided":
+                setattr(self, row.biblio_name, row.biblio_value)
+
+            else:
+                pass
+
+
+        #if aliases.best_url is not None:
+        #    self.url = aliases.best_url
 
     @property
     def display_year(self):
         try:
-            return self.year
+            return str(self.year)
         except AttributeError:
             return None
 
-    @property
-    def display_genre(self):
-        try:
-            genre=self.genre
-        except AttributeError:
-            genre = "unknown"
-        return genre
 
     @property
-    def display_genre_plural(self):
-        # for use in phrases like "79 - 91 percentile of articles from 2013"
-        genre_plural = self.display_genre + u"s"
-        if genre_plural.startswith("other"):
-            genre_plural = "other products"
-        elif genre_plural.startswith("slides"):
-            genre_plural = "slides"
-        return genre_plural
+    def calculated_genre(self):
+        if hasattr(self, "journal"):
+            return "article"
+        elif hasattr(self, "genre"):
+            if self.genre not in ["undefined", "other"]:
+                return self.genre
+        else:
+            return None
+
+    @property
+    def calculated_host(self):
+
+        if self.calculated_genre == "article":
+            # don't return repositories for articles
+            return None
+
+        try:
+            return self.repository.split(" ")[0].lower()
+        except AttributeError:
+            return None
 
     @property
     def display_authors(self):
@@ -56,16 +92,13 @@ class Biblio(object):
         except AttributeError:
             return "no title"
 
+
     @property
     def free_fulltext_host(self):
         try:
             return self._get_url_host(self.free_fulltext_url)
         except AttributeError:
             return None
-
-    def to_dict(self):
-        ret = util.dict_from_dir(self)
-        return ret
 
     def _get_url_host(self, url):
         # this should actually be done upstream, where we have a list of
@@ -82,5 +115,21 @@ class Biblio(object):
             host = parsed.netloc
 
         return host
+
+
+
+
+
+
+
+
+
+    def to_dict(self):
+        ret = util.dict_from_dir(self, "rows")
+        return ret
+
+
+
+
 
 

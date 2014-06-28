@@ -12,7 +12,6 @@ from totalimpactwebapp.profile import remove_duplicates_from_profile
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import notification_report
 from totalimpactwebapp import emailer
-from totalimpactwebapp.profile import ProductsFromCore
 
 
 logger = logging.getLogger("webapp.tasks")
@@ -75,7 +74,6 @@ def deduplicate(profile):
 def send_email_if_new_diffs(profile_id):
 
     profile = db.session.query(Profile).get(profile_id)
-    ProductsFromCore.clear_cache()
 
     status = "started"
     now = datetime.datetime.utcnow()    

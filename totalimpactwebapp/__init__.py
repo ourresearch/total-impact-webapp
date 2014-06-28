@@ -7,6 +7,7 @@ from flask.ext.compress import Compress
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from flask.ext.cache import Cache
+from flask_debugtoolbar import DebugToolbarExtension
 
 from sqlalchemy import exc
 from sqlalchemy import event
@@ -35,6 +36,18 @@ stripe_log.propagate = True
 
 # set up application
 app = Flask(__name__)
+
+# config and debugging stuff
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+
+# set up Flask-DebugToolbar
+if (os.getenv("FLASK_DEBUG", False) == "True"):
+    logger.info("Setting app.debug=True; Flask-DebugToolbar will display")
+    app.debug = True
+    app.config['DEBUG'] = True
+    app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = True
+    app.config["SQLALCHEMY_RECORD_QUERIES"] = True
+    toolbar = DebugToolbarExtension(app)
 
 # gzip responses and make it similar on staging and production
 Compress(app)
@@ -82,14 +95,12 @@ login_manager = LoginManager()
 login_manager.setup_app(app)
 
 
-# config and debugging stuff
-
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 # Set env PACK_ASSETS=True to pack/minimize assets.
 # Set env PACK_ASSETS=False (default) to keep them in separate files.
 # Production should be PACK_ASSETS=True
 app.config["ASSETS_DEBUG"] = (os.getenv("PACK_ASSETS") != "True")
+
 
 
 

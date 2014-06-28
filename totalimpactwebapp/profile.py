@@ -12,6 +12,8 @@ from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
 from util import local_sleep
 from stripe import InvalidRequestError
+from celery.result import AsyncResult
+from collections import OrderedDict, defaultdict
 
 import requests
 import stripe
@@ -23,13 +25,24 @@ import logging
 import unicodedata
 import string
 import hashlib
+import redis
+import csv
+import StringIO
+
 
 logger = logging.getLogger("tiwebapp.profile")
 stripe.api_key = os.getenv("STRIPE_API_KEY")
+redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
 
 def now_in_utc():
     return datetime.datetime.utcnow()
 
+def clean_value_for_csv(value_to_store):
+    try:
+        value_to_store = value_to_store.encode("utf-8").strip()
+    except AttributeError:
+        pass
+    return value_to_store
 
 
 class EmailExistsError(Exception):
@@ -40,22 +53,79 @@ class UrlSlugExistsError(Exception):
 
 
 
+def get_update_status(tiid):
+    key = "provider_tiid_task_id:{tiid}".format(
+        tiid=tiid)
+    task_ids = list(redis_client.smembers(key))
+
+    if not task_ids:
+        return "SUCCESS: no recent update"
+
+    provider_statuses = {}
+
+    if "STARTED" in task_ids:
+        if (len(task_ids) > 1):
+            task_ids.remove("STARTED")
+        else:
+            return "started_queueing"
+
+    for task_id in task_ids:
+        task_result = AsyncResult(task_id)
+        try:
+            state = task_result.state
+        except AttributeError:
+            state = "unknown_state" 
+        
+        provider_statuses[task_id] = state
+
+    # logger.debug(u"update_status statuses: tiid={tiid}, provider_statuses={provider_statuses}".format(
+    #     tiid=tiid, provider_statuses=provider_statuses))
+
+    done_updating = all([(status.startswith("SUCCESS") or status.startswith("FAILURE")) for status in provider_statuses.values()])
+    has_failures = any([status.startswith("FAILURE") for status in provider_statuses.values()])
+    has_pending = any([status.startswith("PENDING") for status in provider_statuses.values()])
+    has_started = any([status.startswith("STARTED") for status in provider_statuses.values()])
+
+    update_status = "unknown"
+    if done_updating and not has_failures:
+        update_status = u"SUCCESS: update finished"
+    elif done_updating and has_failures:
+        update_status = u"SUCCESS with FAILURES"
+    elif has_failures:
+        update_status = u"SUCCESS with FAILURES (and not all providers ran)"
+    elif has_pending:
+        update_status = u"PENDING"
+    elif has_started:
+        update_status = u"STARTED"
+
+    update_status += u"; task_ids: {provider_statuses}".format(
+        provider_statuses = provider_statuses)
+
+    return update_status
+
+
 class UpdateStatus(object):
-    def __init__(self, products):
-        self.products = products
+    def __init__(self, tiids):
+        self.tiids = tiids
 
     @property
     def num_updating(self):
-        return len([p for p in self.products if p.currently_updating])
+        return len(self.tiids) - self.num_complete
 
     @property
     def num_complete(self):
-        return len(self.products) - self.num_updating
+        return sum([status.startswith("SUCCESS") for status in self.product_statuses])
+
+    @property
+    def product_statuses(self):
+        product_statuses = [get_update_status(tiid) for tiid in self.tiids]
+        return product_statuses
+
 
     @property
     def percent_complete(self):
         try:
-            precise = float(self.num_complete) / len(self.products) * 100
+            precise = float(self.num_complete) / len(self.tiids) * 100
         except ZeroDivisionError:
             precise = 100
 
@@ -63,108 +133,8 @@ class UpdateStatus(object):
 
 
     def to_dict(self):
-        return util.dict_from_dir(self, "products")
+        return util.dict_from_dir(self, "tiids")
 
-
-
-
-class ProductsFromCore(object):
-    cache = []
-
-    def __init__(self):
-        pass
-
-    @classmethod
-    def clear_cache(cls):
-        del cls.cache[:]
-
-    def get(self, tiids):
-        timer = util.Timer()
-        #local_sleep(5)
-        if not tiids:
-            return []
-
-        if len(self.__class__.cache):
-            ret = self.__class__.cache
-            logger.debug(u"ProductsFromCore returning {num_products} products from cache (too {elapsed}ms)".format(
-                num_products=len(ret),
-                elapsed=timer.elapsed()
-            ))
-        else:
-            query = u"{core_api_root}/v1/products.json?api_admin_key={api_admin_key}".format(
-                core_api_root=os.getenv("API_ROOT"),
-                api_admin_key=os.getenv("API_ADMIN_KEY")
-            )
-
-            most_recent_metric_date = os.getenv("most_recent_metric_date", now_in_utc().isoformat())
-            most_recent_diff_metric_date = os.getenv("most_recent_diff_metric_date", (now_in_utc() - datetime.timedelta(days=7)).isoformat())
-
-            r = requests.post(query,
-                    data=json.dumps({
-                        "tiids": tiids,
-                        "most_recent_metric_date": most_recent_metric_date,
-                        "most_recent_diff_metric_date": most_recent_diff_metric_date
-                        }),
-                    headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-
-            obj_resp = r.json()
-            products = obj_resp["products"]
-            ret = products.values()
-            logger.debug(u"ProductsFromCore had nothing cached, so got {num_products} products from core (took {elapsed}ms)".format(
-                num_products=len(ret),
-                elapsed=timer.elapsed()
-            ))
-
-            self.__class__.cache = ret
-
-        return ret
-
-
-
-
-
-
-class ProfileTiid(db.Model):
-    profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'), primary_key=True)
-    tiid = db.Column(db.Text, primary_key=True)
-    created = db.Column(db.DateTime())  # ALTER TABLE "profile_tiid" ADD created timestamp;
-    removed = db.Column(db.DateTime())  # ALTER TABLE "profile_tiid" ADD removed timestamp;
-
-    def __init__(self, **kwargs):
-        # logger.debug(u"new ProfileTiid {kwargs}".format(
-        #     kwargs=kwargs))        
-        self.created = now_in_utc()     
-        self.removed = None   
-        super(ProfileTiid, self).__init__(**kwargs)
-
-    def __repr__(self):
-        return u'<ProfileTiid {profile_id} {tiid}>'.format(
-            profile_id=self.profile_id,
-            tiid=self.tiid)
-
-
-def sqla_object_to_dict(inst, cls):
-    """
-    from http://stackoverflow.com/questions/7102754/jsonify-a-sqlalchemy-result-set-in-flask
-    dict-ify the sql alchemy query result, so it can be exported to json via json.dumps
-    """
-    convert = dict()
-    # add your coversions for things like datetime's 
-    # and what-not that aren't serializable.
-    d = dict()
-    for c in cls.__table__.columns:
-        v = getattr(inst, c.name)
-        if c.type in convert.keys() and v is not None:
-            try:
-                d[c.name] = convert[c.type](v)
-            except:
-                d[c.name] = "Error:  Failed to covert using ", str(convert[c.type])
-        elif v is None:
-            d[c.name] = str()
-        else:
-            d[c.name] = v
-    #json.dumps(d)
-    return d
 
 
 class Profile(db.Model):
@@ -201,10 +171,10 @@ class Profile(db.Model):
     last_email_sent = db.Column(db.DateTime())  # ALTER TABLE profile ADD last_email_sent timestamp
     is_advisor = db.Column(db.Boolean)  # ALTER TABLE profile ADD is_advisor bool
 
-    tiid_links = db.relationship(
-        'ProfileTiid',
+    products = db.relationship(
+        'Product',
         lazy='subquery',
-        cascade="all, delete-orphan",
+        cascade='all, delete-orphan',
         backref=db.backref("profile", lazy="subquery")
     )
 
@@ -216,26 +186,16 @@ class Profile(db.Model):
     @property
     def tiids(self):
         # return all tiids that have not been removed
-        return [tiid_link.tiid for tiid_link in self.tiid_links if not tiid_link.removed]
+        return [product.tiid for product in self.products if not product.removed]
 
     @property
     def tiids_including_removed(self):
         # return all tiids even those that have been removed
-        return [tiid_link.tiid for tiid_link in self.tiid_links]
-
-
-    @property
-    def product_objects(self):
-        # this is a hack to imitate what sqlalchemy will give us naturally
-        products_from_core = ProductsFromCore()
-        product_dicts = products_from_core.get(self.tiids)
-
-        return [Product(product_dict) for product_dict in product_dicts]
-
+        return [product.tiid for product in self.products]
 
     @property
     def latest_diff_ts(self):
-        ts_list = [p.latest_diff_timestamp for p in self.product_objects]
+        ts_list = [p.latest_diff_timestamp for p in self.products]
         try:
             return sorted(ts_list, reverse=True)[0]
         except IndexError:
@@ -244,6 +204,9 @@ class Profile(db.Model):
 
     @property
     def awards(self):
+
+        return ["award", "award2"]
+
         return profile_award.make_awards_list(self)
 
     @property
@@ -272,10 +235,6 @@ class Profile(db.Model):
                 ret.append(linked_account_dict)
         return ret
 
-
-    @property
-    def update_status(self):
-        return UpdateStatus(self.product_objects)
 
     @property
     def email_hash(self):
@@ -358,6 +317,8 @@ class Profile(db.Model):
             creds["wordpress_api_key"] = self.wordpress_api_key
         return creds
 
+    def get_update_status(self):
+        return UpdateStatus(self.tiids)
 
     def add_products(self, product_id_dict):
         try:
@@ -368,13 +329,14 @@ class Profile(db.Model):
         product_id_type = product_id_dict.keys()[0]
         existing_tiids = self.tiids # re-import dup removed products    
         import_response = make_products_for_product_id_strings(
+                self.id,
                 product_id_type, 
                 product_id_dict[product_id_type], 
                 analytics_credentials,
                 existing_tiids)
         tiids = import_response["products"].keys()
 
-        return add_tiids_to_profile(self.id, tiids)
+        return tiids
 
     def refresh_products(self, source="webapp"):
         save_profile_last_refreshed_timestamp(self.id)
@@ -395,12 +357,12 @@ class Profile(db.Model):
             else:
                 existing_tiids = self.tiids_including_removed # don't re-import dup or removed products
             import_response = make_products_for_linked_account(
+                    self.id,                
                     account, 
                     account_value, 
                     analytics_credentials,
                     existing_tiids)
             tiids_to_add = import_response["products"].keys()
-            resp = add_tiids_to_profile(self.id, tiids_to_add)
         return tiids_to_add
 
     def patch(self, newValuesDict):
@@ -429,14 +391,17 @@ class Profile(db.Model):
 
 
     def get_products_markup(self, markup, hide_keys=None, add_heading_products=True):
+
+        return self.products  # @todo remove this
+
         markup.set_template("product.html")
         markup.context["profile"] = self
 
         product_dicts = [p.to_markup_dict(markup, hide_keys)
-                for p in self.product_objects]
+                for p in self.products]
 
         if add_heading_products:
-            headings = heading_product.make_list(self.product_objects)
+            headings = heading_product.make_list(self.products)
             markup.set_template("heading-product.html")
             product_dicts += [hp.to_markup_dict(markup) for hp in headings]
 
@@ -446,9 +411,57 @@ class Profile(db.Model):
     def get_single_product_markup(self, tiid, markup):
         markup.set_template("single-product.html")
         markup.context["profile"] = self
-        product = [p for p in self.product_objects if p.tiid == tiid][0]
+        product = [p for p in self.products if p.tiid == tiid][0]
         return product.to_markup_dict(markup)
 
+
+    def csv_of_products(self):
+        (header, rows) = self.build_csv_rows()
+
+        mystream = StringIO.StringIO()
+        dw = csv.DictWriter(mystream, delimiter=',', dialect=csv.excel, fieldnames=header)
+        dw.writeheader()
+        for row in rows:
+            dw.writerow(row)
+        contents = mystream.getvalue()
+        mystream.close()
+        return contents
+
+    def build_csv_rows(self):
+        header_metric_names = []
+        for product in self.products:
+            for metric in product.metrics:
+                header_metric_names += [metric.fully_qualified_metric_name]
+        header_metric_names = sorted(list(set(header_metric_names)))
+
+        header_alias_names = ["title", "doi"]
+
+        # make header row
+        header_list = ["tiid"] + header_alias_names + header_metric_names
+        ordered_fieldnames = OrderedDict([(col, None) for col in header_list])
+
+        # body rows
+        rows = []
+        for product in self.products:
+            ordered_fieldnames = OrderedDict()
+            ordered_fieldnames["tiid"] = product.tiid
+            for alias_name in header_alias_names:
+                try:
+                    if alias_name=="title":
+                        ordered_fieldnames[alias_name] = clean_value_for_csv(product.biblio.title)
+                    else:
+                        ordered_fieldnames[alias_name] = clean_value_for_csv(product.aliases.doi)
+                except (AttributeError, KeyError):
+                    ordered_fieldnames[alias_name] = ""
+            for fully_qualified_metric_name in header_metric_names:
+                # metric_value = product.get_most_recent_snap_by_fully_qualified_metric_name(fully_qualified_metric_name)
+                most_recent_snap_value_for_my_fully_qualified_metric_name = 87
+                try:
+                    ordered_fieldnames[fully_qualified_metric_name] = clean_value_for_csv(most_recent_snap_value_for_my_fully_qualified_metric_name)
+                except (AttributeError, KeyError):
+                    ordered_fieldnames[fully_qualified_metric_name] = ""
+            rows += [ordered_fieldnames]
+        return(ordered_fieldnames, rows)
 
 
 
@@ -511,67 +524,21 @@ class Profile(db.Model):
         ret_dict["products_count"] = len(self.tiids)
 
         # commenting these out for now because they make the /profile/current call too slow.
-        #ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.product_objects])
+        #ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.products])
         #ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
 
         return ret_dict
 
 
-def get_products_from_core_as_csv(tiids):
-    if not tiids:
-        return None
-
-    query = u"{core_api_root}/v1/products.csv?api_admin_key={api_admin_key}".format(
-        core_api_root=os.getenv("API_ROOT"),
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    # logger.debug(u"in get_products_from_core_as_csv with query {query}".format(
-    #     query=query))
-
-    r = requests.post(query,
-            data=json.dumps({
-                "tiids": tiids
-                }),
-            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-    return r
-
-
-
-
-
-
-def add_tiids_to_profile(profile_id, tiids):
-    # logger.info(u"in add_tiids_to_profile {profile_id} with {tiids}".format(
-    #     profile_id=profile_id,
-    #     tiids=tiids))
-
-    profile_object = Profile.query.get(profile_id)
-    db.session.merge(profile_object)
-
-    for tiid in tiids:
-        if tiid not in profile_object.tiids:
-            profile_object.tiid_links += [ProfileTiid(profile_id=profile_id, tiid=tiid)]
-
-    try:
-        db.session.commit()
-    except (IntegrityError, FlushError) as e:
-        db.session.rollback()
-        logger.warning(u"Fails Integrity check in add_tiids_to_profile for {profile_id}, rolling back.  Message: {message}".format(
-            profile_id=profile_id,
-            message=e.message))
-
-    return tiids
-
 
 def delete_products_from_profile(profile, tiids_to_delete):
-    # this is confusing now, waiting to refactor for when we
-    # move core stuff to webapp though.
 
     number_deleted = 0
-    for profile_tiid_obj in profile.tiid_links:
-        if profile_tiid_obj.tiid in tiids_to_delete:
+    for product in profile.products:
+        if product.tiid in tiids_to_delete:
             number_deleted += 1
-            profile_tiid_obj.removed = now_in_utc()
+            product.removed = now_in_utc()
+            db.session.add(product)
 
     try:
         db.session.commit()
@@ -814,13 +781,14 @@ def get_profiles():
     return res
 
 
-def make_products_for_linked_account(importer_name, importer_value, analytics_credentials={}, existing_tiids={}):
+def make_products_for_linked_account(profile_id, importer_name, importer_value, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
         core_api_root=os.getenv("API_ROOT"),
         importer_name=importer_name,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     data_dict = {
+        "profile_id": profile_id, 
         "account_name": importer_value, 
         "analytics_credentials": analytics_credentials,
         "existing_tiids": existing_tiids
@@ -839,13 +807,14 @@ def make_products_for_linked_account(importer_name, importer_value, analytics_cr
         return {"products": {}}
 
 
-def make_products_for_product_id_strings(product_id_type, product_id_strings, analytics_credentials={}, existing_tiids={}):
+def make_products_for_product_id_strings(profile_id, product_id_type, product_id_strings, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{product_id_type}?api_admin_key={api_admin_key}".format(
         product_id_type=product_id_type,
         core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
     data_dict = {
+        "profile_id": profile_id,     
         product_id_type: product_id_strings, 
         "analytics_credentials": analytics_credentials,
         "existing_tiids": existing_tiids        
