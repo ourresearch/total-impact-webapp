@@ -7,8 +7,9 @@ from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp import db
 
-logger = logging.getLogger("tiwebapp.reference_set")
 
+logger = logging.getLogger("tiwebapp.reference_set")
+reference_set_lists = None
 
 class ReferenceSet(object):
     def __init__(self):
@@ -16,6 +17,11 @@ class ReferenceSet(object):
 
     def set_lookup_list(self, provider, interaction):
         global reference_set_lists
+
+        # if it has never been loaded, then load it
+        if reference_set_lists is None:
+            reference_set_lists = load_all_reference_set_lists()
+        
         lookup_key = ReferenceSetList.build_lookup_key(
             provider=provider, 
             interaction=interaction, 
@@ -198,8 +204,9 @@ class RefsetBuilder(object):
 
 def load_all_reference_set_lists():
     global reference_set_lists
+    #reset it
     reference_set_lists = {}
-    for refset_list_obj in db.session.query(ReferenceSetList).all():
+    for refset_list_obj in ReferenceSetList.query.all():
         # we want it to persist across sessions, and is read-only, so detached from session works great
         db.session.expunge(refset_list_obj)
         lookup_key = refset_list_obj.get_lookup_key()
@@ -207,8 +214,6 @@ def load_all_reference_set_lists():
     print "just loaded reference sets, n=", len(reference_set_lists)
     return reference_set_lists
 
-# load once
-reference_set_lists = load_all_reference_set_lists()
 
 
 
