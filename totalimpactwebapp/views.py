@@ -24,14 +24,12 @@ from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.profile import create_profile_from_slug
 from totalimpactwebapp.profile import get_profile_from_id
 from totalimpactwebapp.profile import delete_profile
-from totalimpactwebapp.profile import ProductsFromCore
 
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
 
 from totalimpactwebapp.profile import remove_duplicates_from_profile
-from totalimpactwebapp.profile import get_products_from_core_as_csv
 from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
@@ -168,11 +166,6 @@ def load_user(profile_id):
 def setup_db_tables():
     logger.info(u"first request; setting up db tables.")
     db.create_all()
-
-@app.before_request
-def clear_cache():
-    # We don't want the cache to persist across requests.
-    ProductsFromCore.clear_cache()
 
 
 @app.before_request
@@ -491,25 +484,7 @@ def user_product(user_id, tiid):
 
 @app.route("/profile/<id>/products.csv", methods=["GET"])
 def user_products_csv(id):
-
-    user = get_user_for_response(id, request)
-    tiids = user.tiids
-
-    r = get_products_from_core_as_csv(tiids)
-    if r:
-        csv_contents = r.text
-        status_code = r.status_code
-    else:
-        csv_contents = ""
-        status_code = 200
-
-    resp = make_response(unicode(csv_contents), status_code)
-    resp.mimetype = "text/csv;charset=UTF-8"
-    resp.headers.add("Content-Disposition",
-                     "attachment; filename=impactstory.csv")
-    resp.headers.add("Content-Encoding", "UTF-8")
-
-    return resp
+    abort_json(501, "sorry!  CSV export is not currently available")
 
 
 

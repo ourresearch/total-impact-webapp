@@ -1,5 +1,4 @@
 from totalimpactwebapp.profile import Profile
-from totalimpactwebapp.profile import ProductsFromCore
 from totalimpactwebapp import db
 from totalimpactwebapp import reference_set
 import tasks
@@ -100,14 +99,12 @@ def windowed_query(q, column, windowsize):
 
 def add_profile_deets_for_everyone():
     for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
-        ProductsFromCore.clear_cache()
         logger.info(u"add_profile_deets_for_everyone: {url_slug}".format(url_slug=profile.url_slug))
         response = tasks.add_profile_deets.delay(profile)
 
 
 def deduplicate_everyone():
     for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
-        ProductsFromCore.clear_cache()
         logger.info(u"deduplicate_everyone: {url_slug}".format(url_slug=profile.url_slug))
         response = tasks.deduplicate.delay(profile)
 
@@ -117,12 +114,10 @@ def create_cards_for_everyone(url_slug=None):
     cards = []
     if url_slug:
         profile = Profile.query.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
-        ProductsFromCore.clear_cache()
         # print profile.url_slug
         cards = tasks.create_cards(profile)
     else:    
         for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
-            ProductsFromCore.clear_cache()
             # print profile.url_slug
             cards = tasks.create_cards.delay(profile)
     return cards
@@ -132,18 +127,12 @@ def create_cards_for_everyone(url_slug=None):
 def email_report_to_url_slug(url_slug=None):
     if url_slug:
         profile = Profile.query.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
-        ProductsFromCore.clear_cache()
         # print profile.url_slug
         tasks.send_email_report(profile)
 
 
 def email_report_to_everyone_who_needs_one():
     for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
-
-        logger.info(u"clearing profile cache for {url_slug}".format(
-            url_slug=profile.url_slug))
-
-        ProductsFromCore.clear_cache()
 
         try:
             if not profile.email or (u"@" not in profile.email):
@@ -188,7 +177,6 @@ def build_refsets():
     q = db.session.query(Profile)
     for profile in windowed_query(q, Profile.url_slug, 25):
             
-        ProductsFromCore.clear_cache()
         logger.info(u"build_refsets: on {url_slug}".format(url_slug=profile.url_slug))
 
         for product in profile.product_objects:

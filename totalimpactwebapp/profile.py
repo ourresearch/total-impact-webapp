@@ -127,106 +127,6 @@ class UpdateStatus(object):
 
 
 
-
-class ProductsFromCore(object):
-    cache = []
-
-    def __init__(self):
-        pass
-
-    @classmethod
-    def clear_cache(cls):
-        del cls.cache[:]
-
-    def get(self, tiids):
-        timer = util.Timer()
-        #local_sleep(5)
-        if not tiids:
-            return []
-
-        if len(self.__class__.cache):
-            ret = self.__class__.cache
-            logger.debug(u"ProductsFromCore returning {num_products} products from cache (too {elapsed}ms)".format(
-                num_products=len(ret),
-                elapsed=timer.elapsed()
-            ))
-        else:
-            query = u"{core_api_root}/v1/products.json?api_admin_key={api_admin_key}".format(
-                core_api_root=os.getenv("API_ROOT"),
-                api_admin_key=os.getenv("API_ADMIN_KEY")
-            )
-
-            most_recent_metric_date = os.getenv("most_recent_metric_date", now_in_utc().isoformat())
-            most_recent_diff_metric_date = os.getenv("most_recent_diff_metric_date", (now_in_utc() - datetime.timedelta(days=7)).isoformat())
-
-            r = requests.post(query,
-                    data=json.dumps({
-                        "tiids": tiids,
-                        "most_recent_metric_date": most_recent_metric_date,
-                        "most_recent_diff_metric_date": most_recent_diff_metric_date
-                        }),
-                    headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-
-            obj_resp = r.json()
-            products = obj_resp["products"]
-            ret = products.values()
-            logger.debug(u"ProductsFromCore had nothing cached, so got {num_products} products from core (took {elapsed}ms)".format(
-                num_products=len(ret),
-                elapsed=timer.elapsed()
-            ))
-
-            self.__class__.cache = ret
-
-        return ret
-
-
-
-
-
-
-class ProfileTiid(db.Model):
-    profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'), primary_key=True)
-    tiid = db.Column(db.Text, primary_key=True)
-    created = db.Column(db.DateTime())  # ALTER TABLE "profile_tiid" ADD created timestamp;
-    removed = db.Column(db.DateTime())  # ALTER TABLE "profile_tiid" ADD removed timestamp;
-
-    def __init__(self, **kwargs):
-        # logger.debug(u"new ProfileTiid {kwargs}".format(
-        #     kwargs=kwargs))        
-        self.created = now_in_utc()     
-        self.removed = None   
-        super(ProfileTiid, self).__init__(**kwargs)
-
-    def __repr__(self):
-        return u'<ProfileTiid {profile_id} {tiid}>'.format(
-            profile_id=self.profile_id,
-            tiid=self.tiid)
-
-
-def sqla_object_to_dict(inst, cls):
-    """
-    from http://stackoverflow.com/questions/7102754/jsonify-a-sqlalchemy-result-set-in-flask
-    dict-ify the sql alchemy query result, so it can be exported to json via json.dumps
-    """
-    convert = dict()
-    # add your coversions for things like datetime's 
-    # and what-not that aren't serializable.
-    d = dict()
-    for c in cls.__table__.columns:
-        v = getattr(inst, c.name)
-        if c.type in convert.keys() and v is not None:
-            try:
-                d[c.name] = convert[c.type](v)
-            except:
-                d[c.name] = "Error:  Failed to covert using ", str(convert[c.type])
-        elif v is None:
-            d[c.name] = str()
-        else:
-            d[c.name] = v
-    #json.dumps(d)
-    return d
-
-
 class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     given_name = db.Column(db.Text)
@@ -261,13 +161,6 @@ class Profile(db.Model):
     last_email_sent = db.Column(db.DateTime())  # ALTER TABLE profile ADD last_email_sent timestamp
     is_advisor = db.Column(db.Boolean)  # ALTER TABLE profile ADD is_advisor bool
 
-    tiid_links = db.relationship(
-        'ProfileTiid',
-        lazy='subquery',
-        cascade="all, delete-orphan",
-        backref=db.backref("profile", lazy="subquery")
-    )
-
     product_objects = db.relationship(
         'Product',
         lazy='subquery',
@@ -289,16 +182,6 @@ class Profile(db.Model):
     def tiids_including_removed(self):
         # return all tiids even those that have been removed
         return [tiid_link.tiid for tiid_link in self.tiid_links]
-
-
-    #@property
-    #def product_objects(self):
-    #    # this is a hack to imitate what sqlalchemy will give us naturally
-    #    products_from_core = ProductsFromCore()
-    #    product_dicts = products_from_core.get(self.tiids)
-    #
-    #    return [Product(product_dict) for product_dict in product_dicts]
-
 
     @property
     def latest_diff_ts(self):
@@ -589,26 +472,6 @@ class Profile(db.Model):
         #ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
 
         return ret_dict
-
-
-def get_products_from_core_as_csv(tiids):
-    if not tiids:
-        return None
-
-    query = u"{core_api_root}/v1/products.csv?api_admin_key={api_admin_key}".format(
-        core_api_root=os.getenv("API_ROOT"),
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    # logger.debug(u"in get_products_from_core_as_csv with query {query}".format(
-    #     query=query))
-
-    r = requests.post(query,
-            data=json.dumps({
-                "tiids": tiids
-                }),
-            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-    return r
-
 
 
 
