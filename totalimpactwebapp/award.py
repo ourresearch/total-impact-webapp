@@ -1,4 +1,3 @@
-from copy import deepcopy
 import logging
 import util
 import configs
@@ -67,7 +66,7 @@ class Award(object):
     def top_metric_by_diff(self):
         s = sorted(
             self.metrics,
-            key=lambda metric: metric.historical_values["diff"]["raw"],
+            key=lambda metric: metric.diff,
             reverse=True
         )
         return s[0]

@@ -85,10 +85,10 @@ class Product(db.Model):
         my_metrics = make_metrics_list(self.percentile_snaps, self.created)
         return my_metrics
 
-    #@property
-    #def is_true_product(self):
-    #    return True
-    #
+    @property
+    def is_true_product(self):
+        return True
+
     @property
     def genre(self):
         if self.biblio.calculated_genre is not None:
@@ -134,11 +134,12 @@ class Product(db.Model):
     #def has_new_metric(self):
     #    return any([m.has_new_metric for m in self.metrics])
     #
-    #@property
-    #def awards(self):
-    #    return []
-    #    return award.make_list(self.metrics)
-    #
+
+
+    @property
+    def awards(self):
+        return award.make_list(self.metrics)
+
 
     @property
     def percentile_snaps(self):
@@ -227,22 +228,23 @@ class Product(db.Model):
 
     def to_dict(self):
 
-        ret = {
-            "biblio": self.biblio.to_dict(),
-            "aliases": self.aliases.to_dict(),
-            "metrics": [m.to_dict() for m in self.metrics]
-        }
+        #ret = {
+        #    "biblio": self.biblio.to_dict(),
+        #    "aliases": self.aliases.to_dict(),
+        #    "metrics": [m.to_dict() for m in self.metrics]
+        #}
 
 
-        #attributes_to_ignore = [
-        #    "profile",
-        #    "alias_rows",
-        #    "biblio_rows",
-        #    "snaps"
-        #]
-        #
-        #ret = dict_from_dir(self, attributes_to_ignore)
-        #ret["_tiid"] = self.tiid
+        attributes_to_ignore = [
+            "profile",
+            "alias_rows",
+            "biblio_rows",
+            "percentile_snaps",
+            "snaps"
+        ]
+
+        ret = dict_from_dir(self, attributes_to_ignore)
+        ret["_tiid"] = self.tiid
         return ret
 
 
