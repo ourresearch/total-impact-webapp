@@ -165,7 +165,6 @@ def save_refset(refset_builder):
         print "adding new ones"
         refset_list_objects = refset_builder.export_histograms()
         for refset_list_obj in refset_list_objects:
-            print refset_list_obj
             db.session.add(refset_list_obj)
         db.session.commit()
         print "done adding"
