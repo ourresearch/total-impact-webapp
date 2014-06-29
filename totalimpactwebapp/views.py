@@ -460,7 +460,7 @@ def user_product(user_id, tiid):
     if request.method == "GET":
         markup = product.Markup(g.user_id, embed=False)
         try:
-            resp = profile.get_single_product_markup(tiid, markup)
+            resp = user.get_single_product_markup(tiid, markup)
         except IndexError:
             abort_json(404, "That product doesn't exist.")
 

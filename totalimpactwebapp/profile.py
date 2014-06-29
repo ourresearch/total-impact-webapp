@@ -563,7 +563,7 @@ def add_tiids_to_profile(profile_id, tiids):
     return tiids
 
 
-def delete_products_from_profile(profile, tiids_to_delete):
+def delete_products_from_user(profile, tiids_to_delete):
     # this is confusing now, waiting to refactor for when we
     # move core stuff to webapp though.
 
@@ -577,7 +577,7 @@ def delete_products_from_profile(profile, tiids_to_delete):
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
-        logger.warning(u"Fails Integrity check in delete_products_from_profile for {profile_id}, rolling back.  Message: {message}".format(
+        logger.warning(u"Fails Integrity check in delete_products_from_user for {profile_id}, rolling back.  Message: {message}".format(
             profile_id=profile.id,
             message=e.message))
 
