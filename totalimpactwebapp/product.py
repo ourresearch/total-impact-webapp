@@ -68,10 +68,6 @@ class Product(db.Model):
     )
 
 
-    #def __init__(self, **kwargs):
-    #    super(Product, self).__init__(**kwargs)
-    #
-    #
     @property
     def biblio(self):
         return Biblio(self.biblio_rows)
@@ -171,46 +167,28 @@ class Product(db.Model):
     def metrics_raw_sum(self):
         return sum(m.display_count for m in self.metrics)
 
-    #@property
-    #def awardedness_score(self):
-    #    return sum([a.sort_score for a in self.awards])
-    #
+    @property
+    def awardedness_score(self):
+        return sum([a.sort_score for a in self.awards])
 
-    #@property
-    #def latest_diff_timestamp(self):
-    #    ts_list = [m.latest_nonzero_refresh_timestamp for m in self.metrics]
-    #    try:
-    #        return sorted(ts_list, reverse=True)[0]
-    #    except IndexError:
-    #        return None
-    #
-    #@property
-    #def markup(self):
-    #    try:
-    #        return self.markup_object.make(self.to_dict())
-    #    except AttributeError:
-    #        return None
-    #
-    #@property
-    #def has_percentiles(self):
-    #    return any([m.percentiles for m in self.metrics])
-    #
-    #
-    #def metric_by_name(self, metric_name):
-    #    for metric in self.metrics:
-    #        if metric.metric_name==metric_name:
-    #            return metric
-    #    return None
-    #
+
+    @property
+    def latest_diff_timestamp(self):
+        ts_list = [m.latest_nonzero_refresh_timestamp for m in self.metrics]
+        try:
+            return sorted(ts_list, reverse=True)[0]
+        except IndexError:
+            return None
+
+
+    def metric_by_name(self, metric_name):
+        for metric in self.metrics:
+            if metric.metric_name==metric_name:
+                return metric
+        return None
+
 
     def to_dict(self):
-
-        #ret = {
-        #    "biblio": self.biblio.to_dict(),
-        #    "aliases": self.aliases.to_dict(),
-        #    "metrics": [m.to_dict() for m in self.metrics]
-        #}
-
 
         attributes_to_ignore = [
             "profile",

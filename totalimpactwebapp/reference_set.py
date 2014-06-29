@@ -50,7 +50,11 @@ class ReferenceSet(object):
                 break
             percentile += percentile_step
 
-        return round(percentile, 0)
+        int_percentile = int(percentile)
+        if int_percentile == 100:
+            int_percentile = 99
+
+        return int_percentile
 
 
     def to_dict(self):

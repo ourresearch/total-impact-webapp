@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-06-28
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-06-29
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5434,7 +5434,7 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "      <div class=\"product\" dynamic=\"productMarkup\"></div>\n" +
     "\n" +
     "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
-    "         ng-show=\"!loading.is('profileProduct') && product.has_percentiles\">\n" +
+    "         ng-show=\"!loading.is('profileProduct')\">\n" +
     "         <icon class=\"icon-question-sign\"></icon>\n" +
     "         Where do these percentiles come from?\n" +
     "      </a>\n" +
