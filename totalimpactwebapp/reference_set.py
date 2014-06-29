@@ -260,8 +260,6 @@ class RefsetBuilder(object):
 
             for metric in product.metrics:
 
-                print product.tiid, product.year, year
-
                 raw_value = metric.most_recent_snap.raw_value
                 # only add to histogram if it is a number, not a string or mendeley dict etc
                 if not isinstance(raw_value, (int, long, float)):
