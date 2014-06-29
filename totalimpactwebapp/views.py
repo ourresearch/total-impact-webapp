@@ -455,7 +455,7 @@ def user_product(user_id, tiid):
     if user_id == "embed":
         abort(410)
 
-    profile = get_user_for_response(user_id, request)
+    user = get_user_for_response(user_id, request)
 
     if request.method == "GET":
         markup = product.Markup(g.user_id, embed=False)
@@ -467,7 +467,7 @@ def user_product(user_id, tiid):
     elif request.method == "DELETE":
         # kind of confusing now, waiting for core-to-webapp refactor
         # to improve it though.
-        resp = user.delete_products_from_user(profile, [tiid])
+        resp = profile.delete_products_from_user(user, [tiid])
 
     return json_resp_from_thing(resp)
 
