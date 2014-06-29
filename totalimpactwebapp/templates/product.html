@@ -75,10 +75,10 @@
                {{award.top_metric_by_count.display_provider}}
                {{award.top_metric_by_count.display_interaction}}.
                {% if award.is_highly %}
-               That's more than {{award.top_metric_by_count.percentiles.CI95_lower}}%
-               of {{ biblio.year }}
-               {{ biblio.display_genre_plural }}
-               in {{award.top_metric_by_count.percentiles.refset}},
+               That's more than {{award.top_metric_by_count.percentile}}%
+               of {{ year }}
+               {{ display_genre_plural }}
+               on Impactstory,
                suggesting it's highly {{award.engagement_type}}
                by {{award.display_audience }}.
                {% endif %}
@@ -89,7 +89,7 @@
                      <li>
                         <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
                         <span class='text'>
-                           <span class='count'>{{ metric.historical_values.diff.raw }}</span> new
+                           <span class='count'>{{ metric.diff_value }}</span> new
                            {{ metric.display_provider }}
                            {{ metric.display_interaction }} in the last week.
                         </span>
@@ -104,7 +104,7 @@
                   <span class="audience">by {{award.audience}}</span>
                </span>
                <span class="new-this-week badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ award.has_new_metric | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
-                  <span class="plus-sign">+</span>{{ award.top_metric_by_diff.historical_values.diff.raw }}
+                  <span class="plus-sign">+</span>{{ award.top_metric_by_diff.diff_value }}
                </span>
             </a> {# ending <a> tag. #}
          </li>
