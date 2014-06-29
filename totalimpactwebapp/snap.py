@@ -14,7 +14,7 @@ class Snap(db.Model):
     interaction = db.Column(db.Text)
 
     # foreign keys
-    tiid = db.Column(db.Text, db.ForeignKey("item.tiid"),)
+    tiid = db.Column(db.Text, db.ForeignKey("item.tiid"))
 
 
 
@@ -25,6 +25,15 @@ class Snap(db.Model):
 
     def set_refset(self, refset):
         self.refset = refset
+
+
+    @property
+    def raw_value_cleaned_for_export(self):
+        PROVIDERS_WHO_DONT_ALLOW_EXPORT = ["scopus", "citeulike"]
+        if self.provider in PROVIDERS_WHO_DONT_ALLOW_EXPORT:
+            return "redacted"
+        else:
+            return self.raw_value
 
 
     def to_dict(self):

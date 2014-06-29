@@ -125,6 +125,11 @@ class Product(db.Model):
             genre_plural = "slides"
         return genre_plural
 
+    def get_metric_by_name(self, provider, interaction):
+        for metric in self.metrics:
+            if metric.provider==provider and metric.interaction==interaction:
+                return metric
+        return None
 
     #@property
     #def has_metrics(self):
