@@ -19,18 +19,17 @@ from totalimpactwebapp.password_reset import reset_password_from_token
 from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
-from totalimpactwebapp import profile
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.profile import create_profile_from_slug
 from totalimpactwebapp.profile import get_profile_from_id
 from totalimpactwebapp.profile import delete_profile
+from totalimpactwebapp.profile import remove_duplicates_from_profile
+from totalimpactwebapp.profile import EmailExistsError
 
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
 
-from totalimpactwebapp.profile import remove_duplicates_from_profile
-from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email

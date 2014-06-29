@@ -454,10 +454,11 @@ class Profile(db.Model):
                 except (AttributeError, KeyError):
                     ordered_fieldnames[alias_name] = ""
             for fully_qualified_metric_name in header_metric_names:
-                # metric_value = product.get_most_recent_snap_by_fully_qualified_metric_name(fully_qualified_metric_name)
-                most_recent_snap_value_for_my_fully_qualified_metric_name = 87
                 try:
-                    ordered_fieldnames[fully_qualified_metric_name] = clean_value_for_csv(most_recent_snap_value_for_my_fully_qualified_metric_name)
+                    (provider, interaction) = fully_qualified_metric_name.split(":")
+                    most_recent_snap = product.get_metric_by_name(provider, interaction).most_recent_snap
+                    value = most_recent_snap.raw_value_cleaned_for_export
+                    ordered_fieldnames[fully_qualified_metric_name] = clean_value_for_csv(value)
                 except (AttributeError, KeyError):
                     ordered_fieldnames[fully_qualified_metric_name] = ""
             rows += [ordered_fieldnames]
