@@ -66,7 +66,6 @@ class Snap(db.Model):
 
     @property
     def percentile(self):
-        return 42
         return self.refset.get_percentile(
             self.provider,
             self.interaction,

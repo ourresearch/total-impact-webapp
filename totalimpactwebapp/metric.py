@@ -195,6 +195,22 @@ class Metric(object):
     def percentile(self):
         return self.most_recent_snap.percentile
 
+    @property
+    def display_order(self):
+        try:
+            ret = self.most_recent_snap.raw_value + 0
+        except TypeError:
+            ret = 0
+
+
+        if self.audience == "scholars":
+            ret += 10
+
+        if self.is_highly:
+            ret += 100
+
+        return ret
+
     def to_dict(self):
         ret = util.dict_from_dir(self, ["config", "snaps"])
         return ret
