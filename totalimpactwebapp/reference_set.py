@@ -245,11 +245,11 @@ class RefsetBuilder(object):
             #     continue
 
             year = product.year
-            if year:
+            try:
                 year = year.replace("'", "").replace('"', '')
-                if int(year) < 2000:
+                if int(year[0:4]) < 2000:
                     year = "pre2000"
-            else:
+            except (ValueError, AttributeError)
                 year = "unknown"
 
             self.record_product(
