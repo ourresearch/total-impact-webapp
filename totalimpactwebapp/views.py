@@ -464,7 +464,7 @@ def user_product(user_id, tiid):
     if user_id == "embed":
         abort(410)
 
-    user = get_user_for_response(user_id, request)
+    profile = get_user_for_response(user_id, request)
 
     if request.method == "GET":
         markup = product.Markup(g.user_id, embed=False)

@@ -54,7 +54,7 @@ class Award(object):
 
     @property
     def top_metric_by_percentile(self):
-        s = sorted(self.metrics, key=lambda metric: metric.top_percentile, reverse=True)
+        s = sorted(self.metrics, key=lambda metric: metric.percentile, reverse=True)
         return s[0]
 
     @property
@@ -66,7 +66,7 @@ class Award(object):
     def top_metric_by_diff(self):
         s = sorted(
             self.metrics,
-            key=lambda metric: metric.diff,
+            key=lambda metric: metric.diff_value,
             reverse=True
         )
         return s[0]

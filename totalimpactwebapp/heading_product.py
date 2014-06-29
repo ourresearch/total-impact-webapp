@@ -1,5 +1,3 @@
-import re
-from flask import render_template
 from totalimpactwebapp import configs
 
 
@@ -10,7 +8,7 @@ def make_list(products):
     Works the same way as award.awards_list.make_list()
     """
     heading_products = []
-    genres = set([p.biblio.display_genre for p in products])
+    genres = set([p.genre for p in products])
     for genre in genres:
         this_heading_product = HeadingProduct(genre, products)
         if len(this_heading_product.products):
@@ -28,7 +26,7 @@ class HeadingProduct(object):
             self.add_product_if_it_belongs_here(product)
 
     def add_product_if_it_belongs_here(self, product):
-        if product.biblio.display_genre == self.genre:
+        if product.genre == self.genre:
             self.products.append(product)
             return True
         else:

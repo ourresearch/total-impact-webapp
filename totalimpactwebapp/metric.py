@@ -105,13 +105,15 @@ class Metric(object):
         return None
 
 
-    @property
-    def diff(self):
+    def _diff(self):
         window_start_snap = self.get_window_start_snap(
             self.diff_window_must_start_after
         )
         if window_start_snap is None:
-            return None
+            return {
+                "window_length": None,
+                "value": None
+            }
         else:
             window_start = arrow.get(window_start_snap.last_collected_date)
             window_end = arrow.get(self.most_recent_snap.last_collected_date)
@@ -127,6 +129,14 @@ class Metric(object):
                 "window_length": window_length_timedelta.days,
                 "value": value_diff
             }
+
+    @property
+    def diff_value(self):
+        return self._diff()["value"]
+
+    @property
+    def diff_window_length(self):
+        return self._diff()["window_length"]
 
     @property
     def has_new_metric(self):
@@ -182,16 +192,27 @@ class Metric(object):
             return self.config["interaction"]
 
     @property
-    def top_percentile(self):
-        return self.most_recent_snap.percentile
-
-    @property
     def percentile(self):
         return self.most_recent_snap.percentile
 
+    @property
+    def display_order(self):
+        try:
+            ret = self.most_recent_snap.raw_value + 0
+        except TypeError:
+            ret = 0
+
+
+        if self.audience == "scholars":
+            ret += 10
+
+        if self.is_highly:
+            ret += 100
+
+        return ret
+
     def to_dict(self):
         ret = util.dict_from_dir(self, ["config", "snaps"])
-        #ret = {"foo": 1}
         return ret
 
 

@@ -131,14 +131,18 @@ class Product(db.Model):
                 return metric
         return None
 
-    #@property
-    #def has_metrics(self):
-    #    return len(self.metrics) > 0
-    #
-    #@property
-    #def has_new_metric(self):
-    #    return any([m.has_new_metric for m in self.metrics])
-    #
+    @property
+    def has_metrics(self):
+        return len(self.metrics) > 0
+
+
+    def has_diff(self):
+        return any([m.diff["value"]])
+
+    @property
+    def has_new_metric(self):
+        return any([m.has_new_metric for m in self.metrics])
+
 
 
     @property
@@ -163,9 +167,9 @@ class Product(db.Model):
         return ret
 
 
-    #@property
-    #def metrics_raw_sum(self):
-    #    return sum(m.display_count for m in self.metrics)
+    @property
+    def metrics_raw_sum(self):
+        return sum(m.display_count for m in self.metrics)
 
     #@property
     #def awardedness_score(self):
@@ -198,38 +202,6 @@ class Product(db.Model):
     #            return metric
     #    return None
     #
-    #def to_markup_dict(self, markup, hide_keys=None):
-    #    ret = self.to_dict()
-    #
-    #    ret["markup"] = markup.make(self.to_dict())
-    #
-    #    try:
-    #        for key_to_hide in hide_keys:
-    #            try:
-    #                del ret[key_to_hide]
-    #            except KeyError:
-    #                pass
-    #    except TypeError:  # hide_keys=None is not iterable
-    #        pass
-    #
-    #    return ret
-    #
-    #
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     def to_dict(self):
 
@@ -252,6 +224,21 @@ class Product(db.Model):
         ret["_tiid"] = self.tiid
         return ret
 
+    def to_markup_dict(self, markup, hide_keys=None):
+        ret = self.to_dict()
+
+        ret["markup"] = markup.make(ret)
+
+        try:
+            for key_to_hide in hide_keys:
+                try:
+                    del ret[key_to_hide]
+                except KeyError:
+                    pass
+        except TypeError:  # hide_keys=None is not iterable
+            pass
+
+        return ret
 
 
 
