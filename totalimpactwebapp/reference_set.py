@@ -50,7 +50,7 @@ class ReferenceSet(object):
                 break
             percentile += percentile_step
 
-        return round(percentile, 0)
+        return int(round(percentile, 0))
 
 
     def to_dict(self):
@@ -116,44 +116,77 @@ class ReferenceSetList(db.Model):
             interaction=self.interaction, 
             )
 
-    def get_percentile(self, raw_value):
-        if not self.percentiles:
-            return None
-
-        for p in self.percentiles:
-            if p >= raw_value:
-                percentile = p
-                break
-
-        return percentile
-
 
 
 class RefsetBuilder(object):
     def __init__(self):
-        self.counters = defaultdict(Counter)
+        self.metric_counters = defaultdict(Counter)
+        self.product_counter = Counter()
 
     @property
     def metric_keys(self):
-        product_key_length = min([len(k) for k in self.counters.keys()])
-        return [c for c in self.counters.keys() if len(c) > product_key_length]
+        return self.metric_counters.keys()
+
+    def record_metric(self, year=None, genre=None, host=None, mendeley_discipline=None, provider=None, interaction=None, raw_value=None):
+        metric_key_with_mendeley = ReferenceSetList.build_lookup_key(
+            year=year, 
+            genre=genre, 
+            host=host, 
+            mendeley_discipline=mendeley_discipline, 
+            provider=provider, 
+            interaction=interaction)
+
+        self.metric_counters[metric_key_with_mendeley][raw_value] += 1
+
+        metric_key_no_mendeley = ReferenceSetList.build_lookup_key(
+            year=year, 
+            genre=genre, 
+            host=host, 
+            mendeley_discipline=u"ALL", 
+            provider=provider, 
+            interaction=interaction)
+
+        self.metric_counters[metric_key_no_mendeley][raw_value] += 1
+
+
+
+    def record_product(self, year=None, genre=None, host=None, mendeley_discipline=None):
+        product_key_with_mendeley = ReferenceSetList.build_lookup_key(
+            year=year, 
+            genre=genre, 
+            host=host, 
+            mendeley_discipline=mendeley_discipline, 
+            provider=None, 
+            interaction=None)
+        self.product_counter[product_key_with_mendeley] += 1
+
+        product_key_no_mendeley = ReferenceSetList.build_lookup_key(
+            year=year, 
+            genre=genre, 
+            host=host, 
+            mendeley_discipline=u"ALL",
+            provider=None, 
+            interaction=None)
+        self.product_counter[product_key_no_mendeley] += 1
+
 
     def product_key_from_metric_key(self, metric_key):
-        product_key_length = min([len(k) for k in self.counters.keys()])
-        return metric_key[0:product_key_length]
-
-    def record_metric(self, metric_key, raw_value):
-        self.counters[metric_key][raw_value] += 1
-
-    def record_product(self, product_key):
-        self.counters[product_key]["N_distinct_products"] += 1
+        (year, genre, host, mendeley_discipline, provider, interaction) = metric_key
+        product_key = ReferenceSetList.build_lookup_key(
+            year=year, 
+            genre=genre, 
+            host=host, 
+            mendeley_discipline=mendeley_discipline, 
+            provider=None, 
+            interaction=None)
+        return product_key
 
     def percentiles_Ns(self, metric_key):
-        elements = list(self.counters[metric_key].elements())
+        elements = list(self.metric_counters[metric_key].elements())
         n_non_zero = len(elements)
 
         product_key = self.product_key_from_metric_key(metric_key)
-        n_total = self.counters[product_key]["N_distinct_products"]
+        n_total = self.product_counter[product_key]
 
         # zero pad for all metrics except for PLOS ALM views and downloads
         if ("plosalm" in metric_key) and (("pdf_views" in metric_key) or ("html_views" in metric_key)):
@@ -167,7 +200,7 @@ class RefsetBuilder(object):
 
     def percentiles(self, metric_key):
         # expand the accumulations
-        elements = list(self.counters[metric_key].elements())
+        elements = list(self.metric_counters[metric_key].elements())
 
         # add the zeros
         n_total = self.percentiles_Ns(metric_key)["n_total"]
@@ -194,28 +227,92 @@ class RefsetBuilder(object):
         for metric_key in self.metric_keys:
             percentiles = self.percentiles(metric_key)
             if percentiles:
-                print metric_key, "=", percentiles
+                logger.info(u"metric_key={percentiles}".format(
+                    percentiles=percentiles))
                 new_refset_list = ReferenceSetList(**ReferenceSetList.lookup_key_to_dict(metric_key))
                 new_refset_list.percentiles = percentiles
                 new_refset_list.N = self.percentiles_Ns(metric_key)["n_total"]
                 refset_lists.append(new_refset_list)
         return(refset_lists)
 
+    def process_profile(self, profile):
+        logger.info(u"build_refsets: on {url_slug}".format(url_slug=profile.url_slug))
+
+        for product in profile.products:
+            # if product.biblio.display_title == "no title":
+            #     # logger.info("no good biblio for tiid {tiid}".format(
+            #     #     tiid=product.tiid))
+            #     continue
+
+            year = product.year
+            if year:
+                year = year.replace("'", "").replace('"', '')
+                if int(year) < 2000:
+                    year = "pre2000"
+            else:
+                year = "unknown"
+
+            self.record_product(
+                year=year, 
+                genre=product.genre, 
+                host=product.host, 
+                mendeley_discipline=product.mendeley_discipline)
+
+            for metric in product.metrics:
+
+                print product.tiid, product.year, year
+
+                raw_value = metric.most_recent_snap.raw_value
+                # only add to histogram if it is a number, not a string or mendeley dict etc
+                if not isinstance(raw_value, (int, long, float)):
+                    continue
+
+                self.record_metric(
+                    year=year, 
+                    genre=product.genre, 
+                    host=product.host, 
+                    mendeley_discipline=product.mendeley_discipline, 
+                    provider=metric.provider, 
+                    interaction=metric.interaction, 
+                    raw_value=raw_value)
+
 
 def load_all_reference_set_lists():
     global reference_set_lists
+
     #reset it
     reference_set_lists = {}
+
     for refset_list_obj in ReferenceSetList.query.all():
         # we want it to persist across sessions, and is read-only, so detached from session works great
         db.session.expunge(refset_list_obj)
         lookup_key = refset_list_obj.get_lookup_key()
         reference_set_lists[lookup_key] = refset_list_obj
-    print "just loaded reference sets, n=", len(reference_set_lists)
+
+    logger.info(u"just loaded reference sets, n={n}".format(
+        n=len(reference_set_lists)))
+
     return reference_set_lists
 
 
 
+def save_all_reference_set_lists(refset_builder):
+    if not refset_builder.product_counter:
+        return None
+
+    logger.info(u"removing old refsets")
+    # as per http://stackoverflow.com/questions/16573802/flask-sqlalchemy-how-to-delete-all-rows-in-a-single-table
+    ReferenceSetList.query.delete()
+    db.session.commit()
+
+    #add new refests
+    logger.info(u"adding new reference sets")
+    refset_list_objects = refset_builder.export_histograms()
+    for refset_list_obj in refset_list_objects:
+        db.session.add(refset_list_obj)
+
+    db.session.commit()
+    logger.info("done adding")
 
 
 

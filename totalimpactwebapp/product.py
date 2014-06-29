@@ -22,7 +22,7 @@ percentile_snap_creations = 0
 logger = logging.getLogger("tiwebapp.product")
 deprecated_genres = ["twitter", "blog"]
 
-ignore_snaps_older_than = arrow.utcnow().replace(days=-10).datetime
+ignore_snaps_older_than = arrow.utcnow().replace(days=-14).datetime
 
 snaps_join_string = "and_(Product.tiid==Snap.tiid, " \
                     "Snap.last_collected_date > '{ignore_snaps_older_than}')".format(
@@ -153,7 +153,7 @@ class Product(db.Model):
     @property
     def percentile_snaps(self):
         my_refset = reference_set.ReferenceSet()
-        my_refset.year = self.biblio.display_year
+        my_refset.year = self.year
         my_refset.genre = self.genre
         my_refset.host = self.host
         my_refset.title = self.biblio.display_title
