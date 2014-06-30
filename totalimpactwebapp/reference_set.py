@@ -30,6 +30,7 @@ class ReferenceSet(object):
             host=self.host, 
             mendeley_discipline=self.mendeley_discipline
             )
+
         try:
             self.lookup_list = reference_set_lists[lookup_key]
         except KeyError:

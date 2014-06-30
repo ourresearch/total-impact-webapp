@@ -189,6 +189,10 @@ class Metric(object):
             return self.config["interaction"]
 
     @property
+    def drilldown_url(self):
+        return self.most_recent_snap.drilldown_url
+
+    @property
     def percentile(self):
         return self.most_recent_snap.percentile
 
