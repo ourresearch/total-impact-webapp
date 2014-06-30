@@ -131,15 +131,9 @@ class Product(db.Model):
     def has_metrics(self):
         return len(self.metrics) > 0
 
-
-    def has_diff(self):
-        return any([m.diff["value"]])
-
     @property
-    def has_new_metric(self):
-        return any([m.has_new_metric for m in self.metrics])
-
-
+    def has_diff(self):
+        return any([m.diff_value > 0 for m in self.metrics])
 
     @property
     def awards(self):

@@ -120,7 +120,7 @@ class Metric(object):
             window_length_timedelta = window_end - window_start
 
             try:
-                value_diff = window_start_snap.raw_value - self.most_recent_snap.raw_value
+                value_diff = self.most_recent_snap.raw_value - window_start_snap.raw_value
             except TypeError:
                 # complex values like mendeley discipline dicts
                 value_diff = None
@@ -132,16 +132,13 @@ class Metric(object):
 
     @property
     def diff_value(self):
+        print "diff value:", self._diff()["value"]
         return self._diff()["value"]
 
     @property
     def diff_window_length(self):
         return self._diff()["window_length"]
 
-    @property
-    def has_new_metric(self):
-        #return self.historical_values["diff"]["raw"] > 0
-        return False  # @todo return actual value
 
     @property
     def hide_badge(self):

@@ -72,12 +72,12 @@ class Award(object):
         return s[0]
 
     @property
-    def metrics_with_new(self):
-        return [m for m in self.metrics if m.has_new_metric]
+    def metrics_with_diff(self):
+        return [m for m in self.metrics if m.diff_value > 0]
 
     @property
-    def has_new_metric(self):
-        return len(self.metrics_with_new) > 0
+    def has_diff(self):
+        return len(self.metrics_with_diff) > 0
 
     @property
     def is_highly_classname(self):
