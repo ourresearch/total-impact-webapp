@@ -203,16 +203,16 @@ class Metric(object):
     @property
     def display_order(self):
         try:
-            ret = self.most_recent_snap.raw_value + 0
+            ret = self.most_recent_snap.raw_value + 0  # just for tiebreaks
         except TypeError:
             ret = 0
 
 
         if self.audience == "scholars":
-            ret += 10
+            ret += 100000  # big numbers to overcome high downloads
 
         if self.is_highly:
-            ret += 100
+            ret += 100000000
 
         return ret
 
