@@ -209,9 +209,6 @@ class Profile(db.Model):
 
     @property
     def awards(self):
-
-        return ["award", "award2"]
-
         return profile_award.make_awards_list(self)
 
     @property

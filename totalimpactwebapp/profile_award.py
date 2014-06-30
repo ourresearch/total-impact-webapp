@@ -114,7 +114,7 @@ class OAAward(ProfileAward):
 
     def calculate(self, about, products):
 
-        article_products = [p for p in products if p.biblio.genre == "article"]
+        article_products = [p for p in products if p.genre == "article"]
         article_count = len(article_products)
         self.extra["articles_count"] = article_count
 
