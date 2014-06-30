@@ -193,6 +193,10 @@ class Metric(object):
         return self.most_recent_snap.percentile
 
     @property
+    def percentile_string(self):
+        return self.most_recent_snap.percentile_string
+
+    @property
     def display_order(self):
         try:
             ret = self.most_recent_snap.raw_value + 0

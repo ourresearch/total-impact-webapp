@@ -1,4 +1,5 @@
 from totalimpactwebapp import db
+from totalimpactwebapp import util
 from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp.metric import Metric
 
@@ -71,6 +72,13 @@ class Snap(db.Model):
             self.interaction,
             self.raw_value
         )
+
+    @property
+    def percentile_string(self):
+        try:
+            return util.ordinal(self.percentile)
+        except TypeError:
+            return None
 
     @property
     def is_highly(self):
