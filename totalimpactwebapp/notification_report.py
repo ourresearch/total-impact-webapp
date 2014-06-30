@@ -9,7 +9,7 @@ import datetime
 
 def make(user):
 
-    products = user.products
+    products = user.products_not_removed
     user_dict_about = user.dict_about()
 
     cards = []
