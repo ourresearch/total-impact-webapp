@@ -22,6 +22,7 @@ def make_metrics_list(snaps, product_created):
             my_config)
 
         my_metric.add_snaps_from_list(snaps)
+
         my_metric.diff_window_must_start_after = arrow.get(product_created)
 
         if len(my_metric.snaps):

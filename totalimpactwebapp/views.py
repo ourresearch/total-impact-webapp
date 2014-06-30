@@ -25,6 +25,7 @@ from totalimpactwebapp.profile import get_profile_from_id
 from totalimpactwebapp.profile import delete_profile
 from totalimpactwebapp.profile import remove_duplicates_from_profile
 from totalimpactwebapp.profile import EmailExistsError
+from totalimpactwebapp.profile import delete_products_from_profile
 
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import emailer
@@ -447,6 +448,7 @@ def user_products_modify(id):
         abort_if_user_not_logged_in(user)
 
         if request.method == "PATCH":
+            local_sleep(2)
             added_products = user.add_products(request.json)
             resp = {"products": added_products}
 
@@ -467,14 +469,14 @@ def user_product(user_id, tiid):
     if request.method == "GET":
         markup = product.Markup(g.user_id, embed=False)
         try:
-            resp = profile.get_single_product_markup(tiid, markup)
+            resp = user.get_single_product_markup(tiid, markup)
         except IndexError:
             abort_json(404, "That product doesn't exist.")
 
     elif request.method == "DELETE":
         # kind of confusing now, waiting for core-to-webapp refactor
         # to improve it though.
-        resp = profile.delete_products_from_user(user, [tiid])
+        resp = delete_products_from_profile(user, [tiid])
 
     return json_resp_from_thing(resp)
 

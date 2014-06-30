@@ -85,6 +85,7 @@ class Biblio(object):
 
         return auths
 
+
     @property
     def display_title(self):
         try:

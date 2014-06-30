@@ -1,6 +1,7 @@
 from totalimpactwebapp.profile import Profile
+from totalimpactwebapp.reference_set import save_all_reference_set_lists
+from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp import db
-from totalimpactwebapp import reference_set
 import tasks
 
 from sqlalchemy import and_, func
@@ -153,53 +154,15 @@ def email_report_to_everyone_who_needs_one():
 
 
 
-def save_refset(refset_builder):
-    print "************"
-    if refset_builder.counters:
-        print "removing old refsets"
-        # as per http://stackoverflow.com/questions/16573802/flask-sqlalchemy-how-to-delete-all-rows-in-a-single-table
-        reference_set.ReferenceSetList.query.delete()
-        db.session.commit()
-
-        #add new refests
-        print "adding new ones"
-        refset_list_objects = refset_builder.export_histograms()
-        for refset_list_obj in refset_list_objects:
-            print refset_list_obj
-            db.session.add(refset_list_obj)
-        db.session.commit()
-        print "done adding"
-
-
 def build_refsets():
-    refset_builder = reference_set.RefsetBuilder()
+    refset_builder = RefsetBuilder()
 
     q = db.session.query(Profile)
+
     for profile in windowed_query(q, Profile.url_slug, 25):
-            
-        logger.info(u"build_refsets: on {url_slug}".format(url_slug=profile.url_slug))
+        refset_builder.process_profile(profile)
 
-        for product in profile.products_not_removed:
-            year = product.year
-            if year < "2000":
-                year = "pre2000"
-
-            product_key = (year, product.genre, product.host, product.mendeley_discipline)                
-            refset_builder.record_product(product_key)
-
-            for metric in product.metrics:
-                try:
-                    raw_value = metric.most_recent_snap.raw_value
-                    # only add to histogram if it is a number, not a string or mendeley dict etc
-                    if not isinstance(raw_value, (int, long, float)):
-                        continue
-                except AttributeError:
-                    raw_value = 0
-
-                metric_key = product_key + (metric.provider, metric.interaction)
-                refset_builder.record_metric(metric_key, raw_value)
-
-    save_refset(refset_builder)
+    save_all_reference_set_lists(refset_builder)
 
 
 
@@ -224,11 +187,12 @@ if __name__ == "__main__":
     
     # get args from the command line:
     parser = argparse.ArgumentParser(description="Run stuff")
+    parser.add_argument('function', default="refsets", type=str, help="function")
     parser.add_argument('--url_slug', default=None, type=str, help="url slug")
-    # parser.add_argument('--celery', default=True, type=bool, help="celery")
-    parser.add_argument('--function', default="email_report", type=str, help="function")
+
     args = vars(parser.parse_args())
     print args
+    
     print u"daily.py starting."
     main(args["function"], args["url_slug"])
 

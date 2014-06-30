@@ -143,7 +143,7 @@ class Product(db.Model):
     @property
     def percentile_snaps(self):
         my_refset = reference_set.ReferenceSet()
-        my_refset.year = self.biblio.display_year
+        my_refset.year = self.year
         my_refset.genre = self.genre
         my_refset.host = self.host
         my_refset.title = self.biblio.display_title
