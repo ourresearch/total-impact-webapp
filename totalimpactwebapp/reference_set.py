@@ -138,15 +138,16 @@ class RefsetBuilder(object):
 
         self.metric_counters[metric_key_with_mendeley][raw_value] += 1
 
-        metric_key_no_mendeley = ReferenceSetList.build_lookup_key(
-            year=year, 
-            genre=genre, 
-            host=host, 
-            mendeley_discipline=u"ALL", 
-            provider=provider, 
-            interaction=interaction)
+        if genre=="article":
+            metric_key_all_mendeley = ReferenceSetList.build_lookup_key(
+                year=year, 
+                genre=genre, 
+                host=host, 
+                mendeley_discipline=u"ALL", 
+                provider=provider, 
+                interaction=interaction)
 
-        self.metric_counters[metric_key_no_mendeley][raw_value] += 1
+            self.metric_counters[metric_key_all_mendeley][raw_value] += 1
 
 
 
@@ -160,14 +161,15 @@ class RefsetBuilder(object):
             interaction=None)
         self.product_counter[product_key_with_mendeley] += 1
 
-        product_key_no_mendeley = ReferenceSetList.build_lookup_key(
-            year=year, 
-            genre=genre, 
-            host=host, 
-            mendeley_discipline=u"ALL",
-            provider=None, 
-            interaction=None)
-        self.product_counter[product_key_no_mendeley] += 1
+        if genre=="article":
+            product_key_all_mendeley = ReferenceSetList.build_lookup_key(
+                year=year, 
+                genre=genre, 
+                host=host, 
+                mendeley_discipline=u"ALL",
+                provider=None, 
+                interaction=None)
+            self.product_counter[product_key_all_mendeley] += 1
 
 
     def product_key_from_metric_key(self, metric_key):
@@ -212,6 +214,8 @@ class RefsetBuilder(object):
         number_bins = None
         if n_total >= 100:
             number_bins = 100.0
+        elif n_total >= 25:
+            number_bins = 10.0
 
         percentiles = None
         if number_bins:
@@ -239,10 +243,10 @@ class RefsetBuilder(object):
         logger.info(u"build_refsets: on {url_slug}".format(url_slug=profile.url_slug))
 
         for product in profile.products:
-            # if product.biblio.display_title == "no title":
-            #     # logger.info("no good biblio for tiid {tiid}".format(
-            #     #     tiid=product.tiid))
-            #     continue
+            if product.biblio.display_title == "no title":
+                # logger.info("no good biblio for tiid {tiid}".format(
+                #     tiid=product.tiid))
+                continue
 
             year = product.year
             try:
