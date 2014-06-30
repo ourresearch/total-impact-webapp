@@ -242,7 +242,7 @@ class RefsetBuilder(object):
     def process_profile(self, profile):
         logger.info(u"build_refsets: on {url_slug}".format(url_slug=profile.url_slug))
 
-        for product in profile.products:
+        for product in profile.products_not_removed:
             # if product.biblio.display_title == "no title":
             #     # logger.info("no good biblio for tiid {tiid}".format(
             #     #     tiid=product.tiid))

@@ -469,14 +469,14 @@ def user_product(user_id, tiid):
     if request.method == "GET":
         markup = product.Markup(g.user_id, embed=False)
         try:
-            resp = user.get_single_product_markup(tiid, markup)
+            resp = profile.get_single_product_markup(tiid, markup)
         except IndexError:
             abort_json(404, "That product doesn't exist.")
 
     elif request.method == "DELETE":
         # kind of confusing now, waiting for core-to-webapp refactor
         # to improve it though.
-        resp = delete_products_from_profile(user, [tiid])
+        resp = delete_products_from_profile(profile, [tiid])
 
     return json_resp_from_thing(resp)
 

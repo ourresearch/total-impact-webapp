@@ -133,7 +133,6 @@ class Metric(object):
 
     @property
     def diff_value(self):
-        print "diff value:", self._diff()["value"]
         return self._diff()["value"]
 
     @property
