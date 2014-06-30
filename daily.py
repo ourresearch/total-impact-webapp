@@ -154,22 +154,24 @@ def email_report_to_everyone_who_needs_one():
 
 
 
-def build_refsets():
+def build_refsets(save_after_every_profile=False):
     refset_builder = RefsetBuilder()
 
     q = db.session.query(Profile)
 
     for profile in windowed_query(q, Profile.url_slug, 25):
         refset_builder.process_profile(profile)
+        if save_after_every_profile:
+            save_all_reference_set_lists(refset_builder)
 
     save_all_reference_set_lists(refset_builder)
 
 
 
-def main(function, url_slug):
+def main(function, args):
     if function=="email_report":
-        if url_slug:
-            email_report_to_url_slug(url_slug)
+        if "url_slug" in args:
+            email_report_to_url_slug(args["url_slug"])
         else:    
             email_report_to_everyone_who_needs_one()
     elif function=="dedup":
@@ -177,7 +179,7 @@ def main(function, url_slug):
     elif function=="profile_deets":
         add_profile_deets_for_everyone()
     elif function=="refsets":
-        build_refsets()
+        build_refsets(args["save_after_every_profile"])
 
 
 
@@ -189,12 +191,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run stuff")
     parser.add_argument('function', default="refsets", type=str, help="function")
     parser.add_argument('--url_slug', default=None, type=str, help="url slug")
+    parser.add_argument('--save_after_every_profile', default=False, type=bool)
 
     args = vars(parser.parse_args())
     print args
     
     print u"daily.py starting."
-    main(args["function"], args["url_slug"])
+    main(args["function"], args)
 
     db.session.remove()
     
