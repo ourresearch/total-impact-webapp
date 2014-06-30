@@ -1,4 +1,5 @@
 from totalimpactwebapp import db
+from totalimpactwebapp import util
 from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp.metric import Metric
 
@@ -73,19 +74,25 @@ class Snap(db.Model):
         )
 
     @property
+    def percentile_string(self):
+        try:
+            return util.ordinal(self.percentile)
+        except TypeError:
+            return None
+
+    @property
     def is_highly(self):
-        return True  # @todo replace with real value
-    #    try:
-    #        percentile_high_enough = self.percentiles["CI95_lower"] > 75
-    #    except TypeError:  # no percentiles listed
-    #        percentile_high_enough = False
-    #
-    #    raw_high_enough = self.display_count >= 3
-    #
-    #    if percentile_high_enough and raw_high_enough:
-    #        return True
-    #    else:
-    #        return False
+        try:
+            percentile_high_enough = self.percentile >= 75
+        except TypeError:  # no percentiles listed
+            percentile_high_enough = False
+
+        raw_high_enough = self.display_count >= 3
+
+        if percentile_high_enough and raw_high_enough:
+            return True
+        else:
+            return False
 
 
 

@@ -30,6 +30,7 @@ class ReferenceSet(object):
             host=self.host, 
             mendeley_discipline=self.mendeley_discipline
             )
+
         try:
             self.lookup_list = reference_set_lists[lookup_key]
         except KeyError:
@@ -50,7 +51,11 @@ class ReferenceSet(object):
                 break
             percentile += percentile_step
 
-        return int(round(percentile, 0))
+        int_percentile = int(percentile)
+        if int_percentile == 100:
+            int_percentile = 99
+
+        return int_percentile
 
 
     def to_dict(self):
@@ -242,7 +247,7 @@ class RefsetBuilder(object):
     def process_profile(self, profile):
         logger.info(u"build_refsets: on {url_slug}".format(url_slug=profile.url_slug))
 
-        for product in profile.products:
+        for product in profile.products_not_removed:
             if product.biblio.display_title == "no title":
                 # logger.info("no good biblio for tiid {tiid}".format(
                 #     tiid=product.tiid))

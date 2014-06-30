@@ -83,9 +83,9 @@
                by {{award.display_audience }}.
                {% endif %}
                Click for details.
-               {% if award.has_new_metric %}
+               {% if award.has_diff %}
                <ul class='new-metrics'>
-                  {% for metric in award.metrics if metric.has_new_metric %}
+                  {% for metric in award.metrics if metric.diff_value > 0 %}
                      <li>
                         <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
                         <span class='text'>
@@ -98,12 +98,12 @@
                   {% endif %}
                </ul>">  {# ok, now we're finally done with the opening <a> tag... #}
 
-               <span class="text badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ award.has_new_metric | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
+               <span class="text badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ award.has_diff | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
                   {% if award.is_highly %}<span class="modifier">highly</span>{% endif %}
                   <span class="engagement-type">{{award.engagement_type}}</span>
                   <span class="audience">by {{award.audience}}</span>
                </span>
-               <span class="new-this-week badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ award.has_new_metric | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
+               <span class="new-this-week badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ award.has_diff | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
                   <span class="plus-sign">+</span>{{ award.top_metric_by_diff.diff_value }}
                </span>
             </a> {# ending <a> tag. #}

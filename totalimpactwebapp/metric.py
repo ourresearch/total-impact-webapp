@@ -121,7 +121,7 @@ class Metric(object):
             window_length_timedelta = window_end - window_start
 
             try:
-                value_diff = window_start_snap.raw_value - self.most_recent_snap.raw_value
+                value_diff = self.most_recent_snap.raw_value - window_start_snap.raw_value
             except TypeError:
                 # complex values like mendeley discipline dicts
                 value_diff = None
@@ -139,10 +139,6 @@ class Metric(object):
     def diff_window_length(self):
         return self._diff()["window_length"]
 
-    @property
-    def has_new_metric(self):
-        #return self.historical_values["diff"]["raw"] > 0
-        return False  # @todo return actual value
 
     @property
     def hide_badge(self):
@@ -193,22 +189,30 @@ class Metric(object):
             return self.config["interaction"]
 
     @property
+    def drilldown_url(self):
+        return self.most_recent_snap.drilldown_url
+
+    @property
     def percentile(self):
         return self.most_recent_snap.percentile
 
     @property
+    def percentile_string(self):
+        return self.most_recent_snap.percentile_string
+
+    @property
     def display_order(self):
         try:
-            ret = self.most_recent_snap.raw_value + 0
+            ret = self.most_recent_snap.raw_value + 0  # just for tiebreaks
         except TypeError:
             ret = 0
 
 
         if self.audience == "scholars":
-            ret += 10
+            ret += 100000  # big numbers to overcome high downloads
 
         if self.is_highly:
-            ret += 100
+            ret += 100000000
 
         return ret
 

@@ -5,15 +5,12 @@ from totalimpactwebapp import util
 from totalimpactwebapp import configs
 from totalimpactwebapp.product import Product
 
-from totalimpactwebapp.views import g
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
-from util import local_sleep
-from stripe import InvalidRequestError
 from celery.result import AsyncResult
-from collections import OrderedDict, defaultdict
+from collections import OrderedDict
 
 import requests
 import stripe
@@ -184,9 +181,17 @@ class Profile(db.Model):
         return (self.given_name + " " + self.surname).strip()
 
     @property
+    def products_not_removed(self):
+        return [p for p in self.products if not p.removed]
+
+    @property
+    def display_products(self):
+        return self.products_not_removed
+
+    @property
     def tiids(self):
         # return all tiids that have not been removed
-        return [product.tiid for product in self.products if not product.removed]
+        return [product.tiid for product in self.products_not_removed]
 
     @property
     def tiids_including_removed(self):
@@ -195,7 +200,7 @@ class Profile(db.Model):
 
     @property
     def latest_diff_ts(self):
-        ts_list = [p.latest_diff_timestamp for p in self.products]
+        ts_list = [p.latest_diff_timestamp for p in self.products_not_removed]
         try:
             return sorted(ts_list, reverse=True)[0]
         except IndexError:
@@ -204,9 +209,6 @@ class Profile(db.Model):
 
     @property
     def awards(self):
-
-        return ["award", "award2"]
-
         return profile_award.make_awards_list(self)
 
     @property
@@ -396,10 +398,10 @@ class Profile(db.Model):
         markup.context["profile"] = self
 
         product_dicts = [p.to_markup_dict(markup, hide_keys)
-                for p in self.products]
+                for p in self.display_products]
 
         if add_heading_products:
-            headings = heading_product.make_list(self.products)
+            headings = heading_product.make_list(self.display_products)
             markup.set_template("heading-product.html")
             product_dicts += [hp.to_markup_dict(markup) for hp in headings]
 
@@ -409,7 +411,7 @@ class Profile(db.Model):
     def get_single_product_markup(self, tiid, markup):
         markup.set_template("single-product.html")
         markup.context["profile"] = self
-        product = [p for p in self.products if p.tiid == tiid][0]
+        product = [p for p in self.display_products if p.tiid == tiid][0]
         return product.to_markup_dict(markup)
 
 
@@ -427,7 +429,7 @@ class Profile(db.Model):
 
     def build_csv_rows(self):
         header_metric_names = []
-        for product in self.products:
+        for product in self.display_products:
             for metric in product.metrics:
                 header_metric_names += [metric.fully_qualified_metric_name]
         header_metric_names = sorted(list(set(header_metric_names)))
@@ -440,7 +442,7 @@ class Profile(db.Model):
 
         # body rows
         rows = []
-        for product in self.products:
+        for product in self.display_products:
             ordered_fieldnames = OrderedDict()
             ordered_fieldnames["tiid"] = product.tiid
             for alias_name in header_alias_names:

@@ -53,8 +53,8 @@ class HeadingProduct(object):
         return any([p.has_metrics for p in self.products])
 
     @property
-    def has_new_metric(self):
-        return any([p.has_new_metric for p in self.products])
+    def has_diff(self):
+        return any([p.has_diff for p in self.products])
 
 
     def to_dict(self):

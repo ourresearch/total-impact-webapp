@@ -116,7 +116,7 @@ on the profile page.
       {# the text after the badge #}
       <span class="metric-text">
          <a class="value-and-name"
-            href="{{ metric.provenance_url | e }}"
+            href="{{ metric.drilldown_url }}"
             target="_blank"
             data-content="{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.">
             <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
@@ -126,22 +126,20 @@ on the profile page.
             <i class="icon-external-link-sign"></i>
          </a>
 
-         {% if metric.has_new_metric %}
+         {% if metric.diff_value > 0 %}
          <span class="new-metrics"
-               data-content="{{ metric.historical_values.diff.raw }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week">
-          +{{ metric.historical_values.diff.raw }}
+               data-content="{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week">
+          +{{ metric.diff_value }}
          </span>
          {% endif %}
 
-         {% if metric.percentiles %}
+         {% if metric.percentile %}
          <span class="percentile">
             <span class="values">
-               <span class="lower">{{ metric.percentiles.CI95_lower }}</span>
-               <span class="dash">-</span>
-               <span class="upper">{{ metric.percentiles.CI95_upper }}</span>
+               <span class="value">{{ metric.percentile_string }}</span>
                <span class="unit">percentile</span>
             </span>
-            <span class="descr">of {{ biblio.display_genre_plural }} from {{ biblio.display_year }}</span>
+            <span class="descr">of Impactstory {{ display_genre_plural }} from {{ year }}</span>
          </span>
          {% endif %}
 
