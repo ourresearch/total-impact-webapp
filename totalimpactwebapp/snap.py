@@ -71,6 +71,14 @@ class Snap(db.Model):
             self.provider,
             self.interaction,
             self.raw_value
+        )["percentile"]
+
+    @property
+    def percentile_full_dict(self):
+        return self.refset.get_percentile(
+            self.provider,
+            self.interaction,
+            self.raw_value
         )
 
     @property
