@@ -42,7 +42,8 @@ class Snap(db.Model):
             "collected_date": self.last_collected_date,
             "value": self.raw_value,
             "drilldown_url": self.drilldown_url,
-            "percentile": self.percentile
+            "percentile": self.percentile,
+            "percentile_full_dict": self.percentile_full_dict
         }
 
     @property
