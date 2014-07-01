@@ -18,23 +18,44 @@ class ReferenceSet(object):
     def set_lookup_list(self, provider, interaction):
         global reference_set_lists
 
-        # if it has never been loaded, then load it
+        # if reference_set_lists has never been loaded, then load it
         if reference_set_lists is None:
             reference_set_lists = load_all_reference_set_lists()
         
+        if self.genre=="article" and not self.mendeley_discipline:
+            mendeley_discipline = u"ALL"
+        else:
+            mendeley_discipline = self.mendeley_discipline
+
         lookup_key = ReferenceSetList.build_lookup_key(
             provider=provider, 
             interaction=interaction, 
             year=self.year, 
             genre=self.genre, 
             host=self.host, 
-            mendeley_discipline=self.mendeley_discipline
+            mendeley_discipline=mendeley_discipline
             )
 
         try:
             self.lookup_list = reference_set_lists[lookup_key]
         except KeyError:
-            return None
+            pass
+
+        # maybe not enough in that discipline, so try again across all disciplines
+        if not self.lookup_list and self.genre=="article":
+            lookup_key = ReferenceSetList.build_lookup_key(
+                provider=provider, 
+                interaction=interaction, 
+                year=self.year, 
+                genre=self.genre, 
+                host=self.host, 
+                mendeley_discipline=u'ALL'
+                )
+
+            try:
+                self.lookup_list = reference_set_lists[lookup_key]
+            except KeyError:
+                pass
 
 
     def get_percentile(self, provider, interaction, raw_value):
@@ -51,7 +72,7 @@ class ReferenceSet(object):
                 break
             percentile += percentile_step
 
-        int_percentile = int(percentile)
+        int_percentile = int(round(percentile, 0))
         if int_percentile == 100:
             int_percentile = 99
 
@@ -217,17 +238,18 @@ class RefsetBuilder(object):
 
         # decide the precision
         number_bins = None
+        index_interval_size = 0
         if n_total >= 100:
             number_bins = 100.0
-        elif n_total >= 25:
+            index_interval_size = int(round(len(elements)/number_bins))
+
+        elif n_total >= 10:
             number_bins = 10.0
+            index_interval_size = 1
 
         percentiles = None
-        if number_bins:
-            # find the cutoffs
-            index_interval_size = int(round(len(elements)/number_bins))
-            if index_interval_size > 0:
-                percentiles = sorted(elements)[::index_interval_size]
+        if number_bins and (index_interval_size > 0):
+            percentiles = sorted(elements)[::index_interval_size]
 
         return percentiles
            

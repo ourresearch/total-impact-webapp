@@ -6,6 +6,7 @@ from totalimpactwebapp import configs
 from totalimpactwebapp.product import Product
 
 from werkzeug.security import generate_password_hash, check_password_hash
+from kombu.exceptions import DecodeError
 from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
@@ -70,7 +71,7 @@ def get_update_status(tiid):
         task_result = AsyncResult(task_id)
         try:
             state = task_result.state
-        except AttributeError:
+        except (AttributeError, DecodeError):
             state = "unknown_state" 
         
         provider_statuses[task_id] = state
