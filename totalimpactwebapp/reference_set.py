@@ -6,6 +6,7 @@ import datetime
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp import db
+from totalimpactwebapp import configs
 
 
 logger = logging.getLogger("tiwebapp.reference_set")
@@ -75,10 +76,30 @@ class ProductLevelReferenceSet(object):
         if int_percentile == 100:
             int_percentile = 99
 
-        response = percentile_list_dict.copy()
-        response["percentile"] = int_percentile
+        response = percentile_list_dict["lookup_dict"].copy()
+        response["value"] = int_percentile
+
+        if response["mendeley_discipline"] is None:
+            response["mendeley_discipline_str"] = ""
+        else:
+            response["mendeley_discipline_str"] = response["mendeley_discipline"]
+
+        response["genre_plural"] = configs.pluralize_genre(response["genre"])
 
         return response
+
+
+    def pluralize_genre(self, genre):
+        """ this is flagrantly copy-pasted from product.py...refactor later.
+        """
+        genre_plural = genre + u"s"
+        if genre_plural.startswith("other"):
+            genre_plural = "other products"
+        elif genre_plural.startswith("slides"):
+            genre_plural = "slides"
+        elif genre_plural.startswith("software"):
+            genre_plural = "software products"
+        return genre_plural
 
 
     def to_dict(self):

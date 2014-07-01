@@ -903,7 +903,18 @@ def metrics(this_key_only=None):
 
 
 
+def pluralize_genre(genre):
+    # for use in phrases like "79 - 91 percentile of articles from 2013"
+    # this is a dumb way to do it. refactor later.
+    genre_plural = genre + u"s"
 
+    if genre_plural.startswith("other"):
+        genre_plural = "other products"
+    elif genre_plural.startswith("slides"):
+        genre_plural = "slides"
+    elif genre_plural.startswith("software"):
+        genre_plural = "software products"
+    return genre_plural
 
 
 
