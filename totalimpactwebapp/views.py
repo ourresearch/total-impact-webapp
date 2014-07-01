@@ -437,6 +437,7 @@ def user_products_modify(id):
     if request.method == "POST" and action == "deduplicate":
         deleted_tiids = remove_duplicates_from_profile(user.id)
         resp = {"deleted_tiids": deleted_tiids}
+        local_sleep(30)
 
     elif request.method == "POST" and (action == "refresh"):
         tiids_being_refreshed = user.refresh_products(source)

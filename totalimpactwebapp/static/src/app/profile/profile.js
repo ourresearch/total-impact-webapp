@@ -285,6 +285,22 @@ angular.module("profile", [
       $httpDefaultCache.removeAll()
     }
 
+    $scope.dedup = function(){
+      console.log("dedup!")
+      UsersProducts.dedup(
+        {id: url_slug},
+        {}
+      )
+      .$promise.then(
+        function(resp){
+          console.log("dedup success:", resp)
+        },
+        function(resp){
+          console.log("dedup failure:", resp)
+        }
+      )
+    }
+
 
 
 

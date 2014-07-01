@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-06-29
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-06-30
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1514,6 +1514,22 @@ angular.module("profile", [
       $httpDefaultCache.removeAll()
     }
 
+    $scope.dedup = function(){
+      console.log("dedup!")
+      UsersProducts.dedup(
+        {id: url_slug},
+        {}
+      )
+      .$promise.then(
+        function(resp){
+          console.log("dedup success:", resp)
+        },
+        function(resp){
+          console.log("dedup failure:", resp)
+        }
+      )
+    }
+
 
 
 
@@ -2010,6 +2026,7 @@ angular.module( 'update.update', [
                               $timeout,
                               $q,
                               poller,
+                              UsersProducts,
                               UsersUpdateStatus){
 
     var status = {}
@@ -2017,6 +2034,7 @@ angular.module( 'update.update', [
     var modalInstance
     var pollingInterval = 10  // 10ms...as soon as we get server resp, ask again.
     var deferred
+    var isDeduping
 
     var clear = function(){
       status = {}
@@ -2031,11 +2049,23 @@ angular.module( 'update.update', [
           console.log("tick() got response back from server", resp)
           status = resp
           if (resp.percent_complete == 100){
-            console.log("tick() satisfied success criteria, breaking out of recursion loop")
-            modalInstance.close()
-            deferred.resolve("Update finished!")
-            clear()
+            console.log("tick() satisfied success criteria, calling dedup")
+            status.isDeduping = true
+            UsersProducts.dedup({id: url_slug}, {}).$promise.then(
+              function(resp){
+                console.log("dedup successful!", resp)
+              },
+              function(resp){
+                console.log("dedup failed :(", resp)
+              }
+            ).finally(function(resp){
+                console.log("cleaning up after dedup"),
+                modalInstance.close()
+                deferred.resolve("Update finished!")
+                clear()
+            })
           }
+
           else {
             $timeout(tick, pollingInterval)
           }
@@ -2100,6 +2130,9 @@ angular.module( 'update.update', [
       },
       getNumUpdating: function() {
         return status.num_updating
+      },
+      isDeduping: function(){
+        return status.isDeduping
       }
     }
   })
@@ -5644,6 +5677,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <a href=\"/{{ profile.url_slug }}/products/add\">\n" +
     "               <i class=\"icon-upload\"></i>Import individual products\n" +
     "            </a>\n" +
+    "            <a ng-click=\"dedup()\">\n" +
+    "               <i class=\"icon-copy\"></i>dedup\n" +
+    "            </a>\n" +
     "         </div>\n" +
     "         <div class=\"everyone-controls\">\n" +
     "            <a ng-click=\"openProfileEmbedModal()\" ng-show=\"!page.isEmbedded()\">\n" +
@@ -5661,7 +5697,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
-    "\n" +
     "\n" +
     "<div class=\"products\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
@@ -6406,11 +6441,18 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "   <h3 id=\"finding-impact-data-header\">Finding impact data</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body update\">\n" +
-    "   <div class=\"intro\"><br>We're scouring the web to discover the impacts of all your research products...</div>\n" +
+    "   <div class=\"intro\" ng-if=\"status.getNumUpdating()\">\n" +
+    "      <br>We're scouring the web to discover the impacts of all your research products...\n" +
+    "   </div>\n" +
     "\n" +
-    "   <div class=\"update-progress\">\n" +
+    "   <div class=\"intro dedup\" ng-if=\"!status.getNumUpdating()\"><br>\n" +
+    "      <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "      Now removing duplicates...\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"update-progress animated fadeOutUp\" ng-if=\"status.getNumUpdating()\">\n" +
     "      <div class=\"products not-done\">\n" +
-    "         <div class=\"content\" ng-show=\"status.getNumUpdating()\"></div>\n" +
+    "         <div class=\"content\">\n" +
     "            <span class=\"count still-working\">{{ status.getNumUpdating() }}</span>\n" +
     "            <span class=\"descr\">products updating</span>\n" +
     "         </div>\n" +
@@ -6420,13 +6462,16 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "      </progressbar>\n" +
     "\n" +
     "      <div class=\"products done\">\n" +
-    "         <div class=\"content\" ng-show=\"status.getNumUpdating()\"></div>\n" +
+    "         <div class=\"content\">\n" +
     "            <span class=\"count finished\">{{ status.getNumComplete()}}</span>\n" +
     "            <span class=\"descr\">products <br>done</span>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "</div>");
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "");
 }]);
 
 angular.module("user-message.tpl.html", []).run(["$templateCache", function($templateCache) {

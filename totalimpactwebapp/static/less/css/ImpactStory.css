@@ -8781,13 +8781,36 @@ div.accounts div.account-tile div.linked-info div.connected-toggle .toggle-housi
   width: 80%;
   margin: 0 auto 50px;
 }
+.modal-body.update div.intro.dedup {
+  font-size: 25px;
+  font-weight: bold;
+}
+.modal-body.update div.update-progress {
+  clear: both;
+  padding-bottom: 20px;
+}
+.modal-body.update div.update-progress:before,
+.modal-body.update div.update-progress:after {
+  content: " ";
+  display: table;
+}
+.modal-body.update div.update-progress:after {
+  clear: both;
+}
+.modal-body.update div.update-progress:before,
+.modal-body.update div.update-progress:after {
+  content: " ";
+  display: table;
+}
+.modal-body.update div.update-progress:after {
+  clear: both;
+}
 .modal-body.update div.progress {
   float: left;
   width: 69%;
 }
 .modal-body.update div.products {
   float: left;
-  margin-bottom: 50px;
   width: 15%;
   line-height: .9;
   text-align: center;

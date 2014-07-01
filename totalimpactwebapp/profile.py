@@ -340,6 +340,10 @@ class Profile(db.Model):
 
         return tiids
 
+    def delete_products(self, tiids_to_delete):
+        delete_products_from_profile(self, tiids_to_delete)
+        return {"deleted_tiids": tiids_to_delete}
+
     def refresh_products(self, source="webapp"):
         save_profile_last_refreshed_timestamp(self.id)
         analytics_credentials = self.get_analytics_credentials()        
