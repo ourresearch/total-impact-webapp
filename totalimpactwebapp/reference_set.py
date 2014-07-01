@@ -11,63 +11,62 @@ from totalimpactwebapp import db
 logger = logging.getLogger("tiwebapp.reference_set")
 reference_set_lists = None
 
-class ReferenceSet(object):
+
+class ProductLevelReferenceSet(object):
     def __init__(self):
-        self.lookup_list = None
-
-    def set_lookup_list(self, provider, interaction):
-        global reference_set_lists
-
         # if reference_set_lists has never been loaded, then load it
+        global reference_set_lists
         if reference_set_lists is None:
             reference_set_lists = load_all_reference_set_lists()
+
+
+    def get_percentile_lookup_list(self, provider, interaction):
+        global reference_set_lists
         
         if self.genre=="article" and not self.mendeley_discipline:
             mendeley_discipline = u"ALL"
         else:
             mendeley_discipline = self.mendeley_discipline
 
-        lookup_key = ReferenceSetList.build_lookup_key(
-            provider=provider, 
-            interaction=interaction, 
-            year=self.year, 
-            genre=self.genre, 
-            host=self.host, 
-            mendeley_discipline=mendeley_discipline
-            )
+        lookup_dict = dict(provider=provider, 
+                    interaction=interaction, 
+                    year=self.year, 
+                    genre=self.genre, 
+                    host=self.host, 
+                    mendeley_discipline=mendeley_discipline)
 
+        lookup_key = ReferenceSetList.build_lookup_key(**lookup_dict)
+
+        percentile_list = None
         try:
-            self.lookup_list = reference_set_lists[lookup_key]
+            percentile_list = reference_set_lists[lookup_key]
         except KeyError:
             pass
 
         # maybe not enough in that discipline, so try again across all disciplines
-        if not self.lookup_list and self.genre=="article":
-            lookup_key = ReferenceSetList.build_lookup_key(
-                provider=provider, 
-                interaction=interaction, 
-                year=self.year, 
-                genre=self.genre, 
-                host=self.host, 
-                mendeley_discipline=u'ALL'
-                )
+        if not percentile_list and lookup_dict["genre"]=="article":
+            lookup_dict["mendeley_discipline"] = u'ALL'
+            lookup_key = ReferenceSetList.build_lookup_key(**lookup_dict)
 
             try:
-                self.lookup_list = reference_set_lists[lookup_key]
+                percentile_list = reference_set_lists[lookup_key]
             except KeyError:
                 pass
 
+        return {"lookup_dict":lookup_dict, "percentile_list":percentile_list}
+
 
     def get_percentile(self, provider, interaction, raw_value):
-        if not self.lookup_list:
-            self.set_lookup_list(provider, interaction)
+        percentile_list_dict = self.get_percentile_lookup_list(provider, interaction)
 
-        if not self.lookup_list or not self.lookup_list.percentiles:
+        if not percentile_list_dict or not percentile_list_dict["percentile_list"]:
             return None
 
+        percentiles = percentile_list_dict["percentile_list"].percentiles
+
         percentile = 0
-        percentile_step = 100.0/len(self.lookup_list.percentiles)
-        for p in self.lookup_list.percentiles:
+        percentile_step = 100.0/len(percentiles)
+        for p in percentiles:
             if p > raw_value:
                 break
             percentile += percentile_step
@@ -76,7 +75,10 @@ class ReferenceSet(object):
         if int_percentile == 100:
             int_percentile = 99
 
-        return int_percentile
+        response = percentile_list_dict.copy()
+        response["percentile"] = int_percentile
+
+        return response
 
 
     def to_dict(self):

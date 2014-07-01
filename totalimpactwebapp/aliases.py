@@ -20,8 +20,10 @@ class AliasRow(db.Model):
 class Aliases(object):
     def __init__(self, alias_rows):
         ignore_namepaces = ["biblio"]
+        self.tiid = None
         for alias_row in alias_rows:
             if alias_row.namespace not in ignore_namepaces:
+                self.tiid = alias_row.tiid
                 # each namespace has a list of various IDs. We can at some point
                 # be smart about picking which on is best. For now we just
                 # use the first one.
@@ -104,6 +106,7 @@ class Aliases(object):
         if "article" in genre:
             genre = "article"  #disregard whether journal article or conference article for now
 
+        print "*******", self.tiid, genre, host
         return genre, host
 
 
