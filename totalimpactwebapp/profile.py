@@ -341,6 +341,10 @@ class Profile(db.Model):
 
         return tiids
 
+    def delete_products(self, tiids_to_delete):
+        delete_products_from_profile(self, tiids_to_delete)
+        return {"deleted_tiids": tiids_to_delete}
+
     def refresh_products(self, source="webapp"):
         save_profile_last_refreshed_timestamp(self.id)
         analytics_credentials = self.get_analytics_credentials()        
@@ -524,10 +528,6 @@ class Profile(db.Model):
 
 
         ret_dict["products_count"] = len(self.tiids)
-
-        # commenting these out for now because they make the /profile/current call too slow.
-        #ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.products])
-        #ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
 
         return ret_dict
 

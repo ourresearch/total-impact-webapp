@@ -189,7 +189,7 @@ angular.module('security.service', [
 
 
       hasNewMetrics: function(){
-        return currentUser && currentUser.has_new_metrics
+        return currentUser && currentUser.has_diff
       },
 
 
