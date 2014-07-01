@@ -80,7 +80,7 @@ angular.module("googleScholar", [
   })
 
   .controller("GoogleScholarModalCtrl", function($scope, GoogleScholar, currentUser, Loading){
-    console.log("modal controller activated!")
+    console.log("google scholar modal controller activated!")
     $scope.currentUser = currentUser
     $scope.googleScholar = GoogleScholar
     $scope.loading = Loading
