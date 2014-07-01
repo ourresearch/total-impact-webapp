@@ -140,6 +140,7 @@ angular.module('accounts.account', [
     UserProfile,
     UsersProducts,
     Account,
+    security,
     Loading,
     TiMixpanel){
 
@@ -179,7 +180,8 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
-        TiMixpanel.track("delete product")
+        security.refreshCurrentUser() // the current user looks different now, no account
+
       }
     )
   }
@@ -201,7 +203,8 @@ angular.module('accounts.account', [
     else {
       console.log("linking an account other than google scholar")
       Loading.start($scope.account.accountHost)
-      Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
+      Account.saveAccountInput($routeParams.url_slug, $scope.account)
+        .then(
 
         // linked this account successfully
         function(resp){
@@ -210,21 +213,20 @@ angular.module('accounts.account', [
           TiMixpanel.track("Linked an account", {
             "Account name": $scope.account.displayName
           })
-
-          Loading.finish($scope.account.accountHost)
-
+           // make sure everyone can see the new linked account
+          security.refreshCurrentUser().then(
+            function(resp){
+              console.log("update the client's current user with our new linked account", resp)
+              Loading.finish($scope.account.accountHost)
+            }
+          )
         },
 
         // couldn't link to account
         function(resp){
           console.log("failure at saving inputs :(", resp)
           Loading.finish($scope.account.accountHost)
-          var failureMsg = _.sprintf(
-            "Sorry, it seems the %s account '%s' has no products associated with it.",
-            $scope.account.accountHost,
-            $scope.account.username.value
-          )
-          alert(failureMsg)
+          alert("Sorry, we weren't able to link this account. You may want to fill out a support ticket.")
         }
       )
     }
@@ -912,7 +914,7 @@ angular.module('profileLinkedAccounts', [
     Page.showHeader(false)
     Page.showFooter(false)
 
-    console.log("current user: ", currentUser)
+    console.log("linked accounts page. current user: ", currentUser)
 
     $scope.accounts = AllTheAccounts.get(currentUser)
     $scope.returnLink = "/"+$routeParams.url_slug
@@ -1879,7 +1881,7 @@ angular.module('settings', [
         {},
         function(resp){
           console.log("subscription successfully cancelled", resp)
-          security.loginFromCookie() // refresh the currentUser from server
+          security.refreshCurrentUser() // refresh the currentUser from server
           UserMessage.set("settings.premium.delete.success")
         },
         function(resp){
@@ -1900,7 +1902,7 @@ angular.module('settings', [
             {},
             function(resp){
               console.log("success!", resp)
-              security.loginFromCookie() // refresh the currentUser from server
+              security.refreshCurrentUser() // refresh the currentUser from server
               window.scrollTo(0,0)
               UserMessage.set("settings.premium.subscribe.success")
               Loading.finish("subscribeToPremium")
@@ -3328,14 +3330,11 @@ angular.module('security.service', [
           return $q.when(currentUser);
 
         } else {
-          return service.loginFromCookie()
+          return service.refreshCurrentUser()
         }
       },
 
-
-      // i think we don't use this anymore, since we inject the user json from
-      // flask on the pageload?
-      loginFromCookie: function(){
+      refreshCurrentUser: function(){
         console.log("logging in from cookie")
         return $http.get('/profile/current')
           .success(function(data, status, headers, config) {

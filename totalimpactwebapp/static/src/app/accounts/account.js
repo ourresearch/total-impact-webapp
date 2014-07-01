@@ -135,6 +135,7 @@ angular.module('accounts.account', [
     UserProfile,
     UsersProducts,
     Account,
+    security,
     Loading,
     TiMixpanel){
 
@@ -174,7 +175,8 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
-        TiMixpanel.track("delete product")
+        security.refreshCurrentUser() // the current user looks different now, no account
+
       }
     )
   }
@@ -196,7 +198,8 @@ angular.module('accounts.account', [
     else {
       console.log("linking an account other than google scholar")
       Loading.start($scope.account.accountHost)
-      Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
+      Account.saveAccountInput($routeParams.url_slug, $scope.account)
+        .then(
 
         // linked this account successfully
         function(resp){
@@ -205,21 +208,20 @@ angular.module('accounts.account', [
           TiMixpanel.track("Linked an account", {
             "Account name": $scope.account.displayName
           })
-
-          Loading.finish($scope.account.accountHost)
-
+           // make sure everyone can see the new linked account
+          security.refreshCurrentUser().then(
+            function(resp){
+              console.log("update the client's current user with our new linked account", resp)
+              Loading.finish($scope.account.accountHost)
+            }
+          )
         },
 
         // couldn't link to account
         function(resp){
           console.log("failure at saving inputs :(", resp)
           Loading.finish($scope.account.accountHost)
-          var failureMsg = _.sprintf(
-            "Sorry, it seems the %s account '%s' has no products associated with it.",
-            $scope.account.accountHost,
-            $scope.account.username.value
-          )
-          alert(failureMsg)
+          alert("Sorry, we weren't able to link this account. You may want to fill out a support ticket.")
         }
       )
     }

@@ -369,6 +369,9 @@ class Profile(db.Model):
                     account_value, 
                     analytics_credentials,
                     existing_tiids)
+
+            print "update_products_from_linked_account resp:", import_response
+
             tiids_to_add = import_response["products"].keys()
         return tiids_to_add
 
