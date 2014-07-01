@@ -529,10 +529,6 @@ class Profile(db.Model):
 
         ret_dict["products_count"] = len(self.tiids)
 
-        # commenting these out for now because they make the /profile/current call too slow.
-        #ret_dict["has_new_metrics"] = any([p.has_new_metric for p in self.products])
-        #ret_dict["latest_diff_timestamp"] = self.latest_diff_ts
-
         return ret_dict
 
 

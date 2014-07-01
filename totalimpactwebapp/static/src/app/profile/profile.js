@@ -129,31 +129,31 @@ angular.module("profile", [
 
     // filtering stuff
     $scope.productFilter = {
-      has_new_metric: undefined,
+      has_diff: undefined,
       has_metrics: undefined
     }
 
-    if ($location.search().filter == "has_new_metric") {
-      $scope.productFilter.has_new_metric = true
+    if ($location.search().filter == "has_diff") {
+      $scope.productFilter.has_diff = true
     }
 
 
     $scope.setProductFilter = function(setting){
 
       if (setting == "all") {
-        $scope.productFilter.has_new_metric = undefined
+        $scope.productFilter.has_diff = undefined
         $scope.productFilter.has_metrics = undefined
         $location.search("filter", null)
       }
       else if (setting == "has_metrics"){
-        $scope.productFilter.has_new_metric = undefined
+        $scope.productFilter.has_diff = undefined
         $scope.productFilter.has_metrics = true
         $location.search("filter", null)
       }
-      else if (setting == "has_new_metric"){
-        $scope.productFilter.has_new_metric = true
+      else if (setting == "has_diff"){
+        $scope.productFilter.has_diff = true
         $scope.productFilter.has_metrics = true
-        $location.search("filter", "has_new_metric")
+        $location.search("filter", "has_diff")
       }
 
       console.log($scope.productFilter)
@@ -161,9 +161,9 @@ angular.module("profile", [
     }
 
     $scope.$on('$locationChangeStart', function(event, next, current){
-      if ($location.search().filter == "has_new_metric"){
-        console.log("filter=has_new_metric")
-        $scope.productFilter.has_new_metric = true
+      if ($location.search().filter == "has_diff"){
+        console.log("filter=has_diff")
+        $scope.productFilter.has_diff = true
         $scope.productFilter.has_metrics = true
       }
     })

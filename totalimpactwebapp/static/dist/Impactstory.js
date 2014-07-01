@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-06-30
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-01
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1358,31 +1358,31 @@ angular.module("profile", [
 
     // filtering stuff
     $scope.productFilter = {
-      has_new_metric: undefined,
+      has_diff: undefined,
       has_metrics: undefined
     }
 
-    if ($location.search().filter == "has_new_metric") {
-      $scope.productFilter.has_new_metric = true
+    if ($location.search().filter == "has_diff") {
+      $scope.productFilter.has_diff = true
     }
 
 
     $scope.setProductFilter = function(setting){
 
       if (setting == "all") {
-        $scope.productFilter.has_new_metric = undefined
+        $scope.productFilter.has_diff = undefined
         $scope.productFilter.has_metrics = undefined
         $location.search("filter", null)
       }
       else if (setting == "has_metrics"){
-        $scope.productFilter.has_new_metric = undefined
+        $scope.productFilter.has_diff = undefined
         $scope.productFilter.has_metrics = true
         $location.search("filter", null)
       }
-      else if (setting == "has_new_metric"){
-        $scope.productFilter.has_new_metric = true
+      else if (setting == "has_diff"){
+        $scope.productFilter.has_diff = true
         $scope.productFilter.has_metrics = true
-        $location.search("filter", "has_new_metric")
+        $location.search("filter", "has_diff")
       }
 
       console.log($scope.productFilter)
@@ -1390,9 +1390,9 @@ angular.module("profile", [
     }
 
     $scope.$on('$locationChangeStart', function(event, next, current){
-      if ($location.search().filter == "has_new_metric"){
-        console.log("filter=has_new_metric")
-        $scope.productFilter.has_new_metric = true
+      if ($location.search().filter == "has_diff"){
+        console.log("filter=has_diff")
+        $scope.productFilter.has_diff = true
         $scope.productFilter.has_metrics = true
       }
     })
@@ -3380,7 +3380,7 @@ angular.module('security.service', [
 
 
       hasNewMetrics: function(){
-        return currentUser && currentUser.has_new_metrics
+        return currentUser && currentUser.has_diff
       },
 
 
@@ -5643,14 +5643,14 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <!-- filter products -->\n" +
     "            <div class=\"filters\">\n" +
     "\n" +
-    "               <div class=\"filter\" ng-class=\"{active: !productFilter.has_metrics && !productFilter.has_new_metric}\">\n" +
+    "               <div class=\"filter\" ng-class=\"{active: !productFilter.has_metrics && !productFilter.has_diff}\">\n" +
     "                  <a ng-click=\"setProductFilter('all')\">\n" +
     "                     Products\n" +
     "                     <span class=\"count\">({{ (products|filter:{is_true_product:true}).length }})</span>\n" +
     "                  </a>\n" +
     "               </div>\n" +
     "\n" +
-    "               <div class=\"filter\" ng-class=\"{active: (productFilter.has_metrics && !productFilter.has_new_metric)}\">\n" +
+    "               <div class=\"filter\" ng-class=\"{active: (productFilter.has_metrics && !productFilter.has_diff)}\">\n" +
     "                  <i class=\"icon-chevron-right left\"></i>\n" +
     "                  <a ng-click=\"setProductFilter('has_metrics')\">\n" +
     "                     with metrics\n" +
@@ -5658,12 +5658,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </div>\n" +
     "               <div class=\"filter this-week\"\n" +
-    "                    ng-show=\"(products|filter:{has_new_metric: true}).length > 0\"\n" +
-    "                    ng-class=\"{active: productFilter.has_new_metric}\">\n" +
+    "                    ng-show=\"(products|filter:{has_diff: true}).length > 0\"\n" +
+    "                    ng-class=\"{active: productFilter.has_diff}\">\n" +
     "                  <i class=\"icon-chevron-right left\"></i>\n" +
-    "                  <a ng-click=\"setProductFilter('has_new_metric')\">\n" +
+    "                  <a ng-click=\"setProductFilter('has_diff')\">\n" +
     "                     this week\n" +
-    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_new_metric: true}).length }})</span>\n" +
+    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_diff: true}).length }})</span>\n" +
     "\n" +
     "                  </a>\n" +
     "               </div>\n" +
@@ -6637,7 +6637,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         tooltip-placement=\"bottom\"\n" +
     "         ng-show=\"illuminateNotificationIcon()\"\n" +
     "         ng-click=\"dismissProfileNewProductsNotification()\"\n" +
-    "         href=\"/{{ currentUser.url_slug }}?filter=has_new_metrics\">\n" +
+    "         href=\"/{{ currentUser.url_slug }}?filter=has_diff\">\n" +
     "         <i class=\"icon-bell-alt\"></i>\n" +
     "      </a>\n" +
     "\n" +
