@@ -583,15 +583,13 @@ def get_password_reset_link(id):
 
 @app.route("/profile/<id>/linked-accounts/<account>", methods=["POST"])
 def user_linked_accounts_update(id, account):
-    user = get_user_for_response(id, request)
+    profile = get_user_for_response(id, request)
 
     # if add products is coming from a scheduled source, don't add if previously removed
     source = request.args.get("source", "webapp")    
     update_even_removed_products = (source=="webapp")
 
-    tiids = user.update_products_from_linked_account(account, update_even_removed_products)
-    if len(tiids) == 0:
-        abort_json(404, "That account has no new products")
+    tiids = profile.update_products_from_linked_account(account, update_even_removed_products)
 
     return json_resp_from_thing({"products": tiids})
 
