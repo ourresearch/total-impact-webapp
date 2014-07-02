@@ -94,6 +94,10 @@ class Product(db.Model):
 
     @property
     def host(self):
+        if self.genre == "article":
+            # don't return repositories for articles
+            return None
+
         if self.biblio.calculated_host is not None:
             return self.biblio.calculated_host
         else:
