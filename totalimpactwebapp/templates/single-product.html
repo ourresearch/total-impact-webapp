@@ -136,6 +136,7 @@ on the profile page.
          {% if metric.percentile %}
          <a class="percentile"
             href="/faq#percentiles"
+            target="_self"
             data-content="Click to read more about how we determine percentiles.">
             <span class="values">
                <span class="value">{{ metric.percentile_value_string }}</span>
@@ -154,3 +155,5 @@ on the profile page.
 
    {% endfor %}
 </ul>
+
+<!-- put an a.percentile-info here to explain the reference set -->
