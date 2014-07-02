@@ -19,20 +19,18 @@ from totalimpactwebapp.password_reset import reset_password_from_token
 from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
-from totalimpactwebapp import profile
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.profile import create_profile_from_slug
 from totalimpactwebapp.profile import get_profile_from_id
 from totalimpactwebapp.profile import delete_profile
-from totalimpactwebapp.profile import ProductsFromCore
+from totalimpactwebapp.profile import remove_duplicates_from_profile
+from totalimpactwebapp.profile import EmailExistsError
+from totalimpactwebapp.profile import delete_products_from_profile
 
 from totalimpactwebapp.card_generate import *
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
 
-from totalimpactwebapp.profile import remove_duplicates_from_profile
-from totalimpactwebapp.profile import get_products_from_core_as_csv
-from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
@@ -67,7 +65,17 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 def json_resp_from_thing(thing):
 
     my_dict = util.todict(thing)
+
+    if (os.getenv("FLASK_DEBUG", False) == "True"):
+        logger.info(u"rendering output through debug_api.html template")
+        resp = make_response(render_template(
+            'debug_api.html',
+            data=my_dict))
+        resp.mimetype = "text/html"
+        return views_helpers.bust_caches(resp)
+
     json_str = json.dumps(my_dict, sort_keys=True, indent=4)
+
     resp = make_response(json_str, 200)
     resp.mimetype = "application/json"
     return views_helpers.bust_caches(resp)
@@ -150,19 +158,14 @@ def is_logged_in(profile):
 ###############################################################################
 
 @login_manager.user_loader
-def load_user(user_id):
-    return Profile.query.get(int(user_id))
+def load_user(profile_id):
+    return Profile.query.get(int(profile_id))
 
 
 @app.before_first_request
 def setup_db_tables():
     logger.info(u"first request; setting up db tables.")
     db.create_all()
-
-@app.before_request
-def clear_cache():
-    # We don't want the cache to persist across requests.
-    ProductsFromCore.clear_cache()
 
 
 @app.before_request
@@ -318,13 +321,15 @@ def login():
 
 @app.route("/profile/<profile_id>", methods=['GET'])
 def user_profile(profile_id):
+    resp_constr_timer = util.Timer()
+
     profile = get_user_for_response(
         profile_id,
         request
     )
 
-    resp_constr_timer = util.Timer()
     markup = product.Markup(g.user_id, embed=request.args.get("embed"))
+
     hide_keys = request.args.get("hide", "").split(",")
 
     resp = {
@@ -335,6 +340,7 @@ def user_profile(profile_id):
         )
     }
 
+
     if not "about" in hide_keys:
         resp["about"] = profile.dict_about(show_secrets=False)
         resp["awards"] = profile.awards
@@ -343,7 +349,10 @@ def user_profile(profile_id):
         slug=profile.url_slug,
         elapsed=resp_constr_timer.elapsed()
     ))
-    return json_resp_from_thing(resp)
+
+
+    resp = json_resp_from_thing(resp)
+    return resp
 
 
 
@@ -392,7 +401,7 @@ def patch_user_about(profile_id):
 def update_status(profile_id):
     local_sleep(1)
     profile = get_user_for_response(profile_id, request)
-    return json_resp_from_thing(profile.update_status)
+    return json_resp_from_thing(profile.get_update_status())
 
 
 
@@ -428,6 +437,7 @@ def user_products_modify(id):
     if request.method == "POST" and action == "deduplicate":
         deleted_tiids = remove_duplicates_from_profile(user.id)
         resp = {"deleted_tiids": deleted_tiids}
+        local_sleep(30)
 
     elif request.method == "POST" and (action == "refresh"):
         tiids_being_refreshed = user.refresh_products(source)
@@ -467,35 +477,27 @@ def user_product(user_id, tiid):
     elif request.method == "DELETE":
         # kind of confusing now, waiting for core-to-webapp refactor
         # to improve it though.
-        resp = user.delete_products_from_user(profile, [tiid])
+        resp = delete_products_from_profile(profile, [tiid])
 
     return json_resp_from_thing(resp)
 
 
 
 
-@app.route("/profile/<id>/products.csv", methods=["GET"])
-def user_products_csv(id):
+@app.route("/profile/<profile_id>/products.csv", methods=["GET"])
+def profile_products_csv(profile_id):
+    profile = get_user_for_response(profile_id, request)
 
-    user = get_user_for_response(id, request)
-    tiids = user.tiids
+    csv = profile.csv_of_products()
 
-    r = get_products_from_core_as_csv(tiids)
-    if r:
-        csv_contents = r.text
-        status_code = r.status_code
-    else:
-        csv_contents = ""
-        status_code = 200
-
-    resp = make_response(unicode(csv_contents), status_code)
+    resp = make_response(csv, 200)
     resp.mimetype = "text/csv;charset=UTF-8"
     resp.headers.add("Content-Disposition",
-                     "attachment; filename=impactstory.csv")
-    resp.headers.add("Content-Encoding", "UTF-8")
-
+                     "attachment; filename=impactstory-{profile_id}.csv".format(
+                        profile_id=profile_id))
+    resp.headers.add("Content-Encoding",
+                     "UTF-8")
     return resp
-
 
 
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
@@ -581,15 +583,13 @@ def get_password_reset_link(id):
 
 @app.route("/profile/<id>/linked-accounts/<account>", methods=["POST"])
 def user_linked_accounts_update(id, account):
-    user = get_user_for_response(id, request)
+    profile = get_user_for_response(id, request)
 
     # if add products is coming from a scheduled source, don't add if previously removed
     source = request.args.get("source", "webapp")    
     update_even_removed_products = (source=="webapp")
 
-    tiids = user.update_products_from_linked_account(account, update_even_removed_products)
-    if len(tiids) == 0:
-        abort_json(404, "That account has no new products")
+    tiids = profile.update_products_from_linked_account(account, update_even_removed_products)
 
     return json_resp_from_thing({"products": tiids})
 

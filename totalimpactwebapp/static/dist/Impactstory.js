@@ -140,6 +140,7 @@ angular.module('accounts.account', [
     UserProfile,
     UsersProducts,
     Account,
+    security,
     Loading,
     TiMixpanel){
 
@@ -179,7 +180,8 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
-        TiMixpanel.track("delete product")
+        security.refreshCurrentUser() // the current user looks different now, no account
+
       }
     )
   }
@@ -194,40 +196,39 @@ angular.module('accounts.account', [
 
     $scope.accountWindowOpen = false
 
-    if ($scope.account.accountHost == "google_scholar"){
-      console.log("opening google scholar modal")
-      GoogleScholar.showImportModal()
-    }
-    else {
-      console.log("linking an account other than google scholar")
-      Loading.start($scope.account.accountHost)
-      Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
+    console.log("linking an account other than google scholar")
+    Loading.start($scope.account.accountHost)
+    Account.saveAccountInput($routeParams.url_slug, $scope.account)
+      .then(
 
-        // linked this account successfully
-        function(resp){
-          console.log("successfully saved linked account", resp)
-          $scope.isLinked = true
-          TiMixpanel.track("Linked an account", {
-            "Account name": $scope.account.displayName
-          })
+      // linked this account successfully
+      function(resp){
+        console.log("successfully saved linked account", resp)
 
-          Loading.finish($scope.account.accountHost)
-
-        },
-
-        // couldn't link to account
-        function(resp){
-          console.log("failure at saving inputs :(", resp)
-          Loading.finish($scope.account.accountHost)
-          var failureMsg = _.sprintf(
-            "Sorry, it seems the %s account '%s' has no products associated with it.",
-            $scope.account.accountHost,
-            $scope.account.username.value
-          )
-          alert(failureMsg)
+        if ($scope.account.accountHost == "google_scholar"){
+          GoogleScholar.showImportModal()
         }
-      )
-    }
+
+        $scope.isLinked = true
+        TiMixpanel.track("Linked an account", {
+          "Account name": $scope.account.displayName
+        })
+         // make sure everyone can see the new linked account
+        security.refreshCurrentUser().then(
+          function(resp){
+            console.log("update the client's current user with our new linked account", resp)
+            Loading.finish($scope.account.accountHost)
+          }
+        )
+      },
+
+      // couldn't link to account
+      function(resp){
+        console.log("failure at saving inputs :(", resp)
+        Loading.finish($scope.account.accountHost)
+        alert("Sorry, we weren't able to link this account. You may want to fill out a support ticket.")
+      }
+    )
   }
 })
 
@@ -657,7 +658,7 @@ angular.module("googleScholar", [
   })
 
   .controller("GoogleScholarModalCtrl", function($scope, GoogleScholar, currentUser, Loading){
-    console.log("modal controller activated!")
+    console.log("google scholar modal controller activated!")
     $scope.currentUser = currentUser
     $scope.googleScholar = GoogleScholar
     $scope.loading = Loading
@@ -912,7 +913,7 @@ angular.module('profileLinkedAccounts', [
     Page.showHeader(false)
     Page.showFooter(false)
 
-    console.log("current user: ", currentUser)
+    console.log("linked accounts page. current user: ", currentUser)
 
     $scope.accounts = AllTheAccounts.get(currentUser)
     $scope.returnLink = "/"+$routeParams.url_slug
@@ -1358,31 +1359,31 @@ angular.module("profile", [
 
     // filtering stuff
     $scope.productFilter = {
-      has_new_metric: undefined,
+      has_diff: undefined,
       has_metrics: undefined
     }
 
-    if ($location.search().filter == "has_new_metric") {
-      $scope.productFilter.has_new_metric = true
+    if ($location.search().filter == "has_diff") {
+      $scope.productFilter.has_diff = true
     }
 
 
     $scope.setProductFilter = function(setting){
 
       if (setting == "all") {
-        $scope.productFilter.has_new_metric = undefined
+        $scope.productFilter.has_diff = undefined
         $scope.productFilter.has_metrics = undefined
         $location.search("filter", null)
       }
       else if (setting == "has_metrics"){
-        $scope.productFilter.has_new_metric = undefined
+        $scope.productFilter.has_diff = undefined
         $scope.productFilter.has_metrics = true
         $location.search("filter", null)
       }
-      else if (setting == "has_new_metric"){
-        $scope.productFilter.has_new_metric = true
+      else if (setting == "has_diff"){
+        $scope.productFilter.has_diff = true
         $scope.productFilter.has_metrics = true
-        $location.search("filter", "has_new_metric")
+        $location.search("filter", "has_diff")
       }
 
       console.log($scope.productFilter)
@@ -1390,9 +1391,9 @@ angular.module("profile", [
     }
 
     $scope.$on('$locationChangeStart', function(event, next, current){
-      if ($location.search().filter == "has_new_metric"){
-        console.log("filter=has_new_metric")
-        $scope.productFilter.has_new_metric = true
+      if ($location.search().filter == "has_diff"){
+        console.log("filter=has_diff")
+        $scope.productFilter.has_diff = true
         $scope.productFilter.has_metrics = true
       }
     })
@@ -1512,6 +1513,22 @@ angular.module("profile", [
       // and we set it back to false either way once this function
       // has run once.
       $httpDefaultCache.removeAll()
+    }
+
+    $scope.dedup = function(){
+      console.log("dedup!")
+      UsersProducts.dedup(
+        {id: url_slug},
+        {}
+      )
+      .$promise.then(
+        function(resp){
+          console.log("dedup success:", resp)
+        },
+        function(resp){
+          console.log("dedup failure:", resp)
+        }
+      )
     }
 
 
@@ -1863,7 +1880,7 @@ angular.module('settings', [
         {},
         function(resp){
           console.log("subscription successfully cancelled", resp)
-          security.loginFromCookie() // refresh the currentUser from server
+          security.refreshCurrentUser() // refresh the currentUser from server
           UserMessage.set("settings.premium.delete.success")
         },
         function(resp){
@@ -1884,7 +1901,7 @@ angular.module('settings', [
             {},
             function(resp){
               console.log("success!", resp)
-              security.loginFromCookie() // refresh the currentUser from server
+              security.refreshCurrentUser() // refresh the currentUser from server
               window.scrollTo(0,0)
               UserMessage.set("settings.premium.subscribe.success")
               Loading.finish("subscribeToPremium")
@@ -2010,6 +2027,7 @@ angular.module( 'update.update', [
                               $timeout,
                               $q,
                               poller,
+                              UsersProducts,
                               UsersUpdateStatus){
 
     var status = {}
@@ -2017,6 +2035,7 @@ angular.module( 'update.update', [
     var modalInstance
     var pollingInterval = 10  // 10ms...as soon as we get server resp, ask again.
     var deferred
+    var isDeduping
 
     var clear = function(){
       status = {}
@@ -2031,11 +2050,23 @@ angular.module( 'update.update', [
           console.log("tick() got response back from server", resp)
           status = resp
           if (resp.percent_complete == 100){
-            console.log("tick() satisfied success criteria, breaking out of recursion loop")
-            modalInstance.close()
-            deferred.resolve("Update finished!")
-            clear()
+            console.log("tick() satisfied success criteria, calling dedup")
+            status.isDeduping = true
+            UsersProducts.dedup({id: url_slug}, {}).$promise.then(
+              function(resp){
+                console.log("dedup successful!", resp)
+              },
+              function(resp){
+                console.log("dedup failed :(", resp)
+              }
+            ).finally(function(resp){
+                console.log("cleaning up after dedup"),
+                modalInstance.close()
+                deferred.resolve("Update finished!")
+                clear()
+            })
           }
+
           else {
             $timeout(tick, pollingInterval)
           }
@@ -2100,6 +2131,9 @@ angular.module( 'update.update', [
       },
       getNumUpdating: function() {
         return status.num_updating
+      },
+      isDeduping: function(){
+        return status.isDeduping
       }
     }
   })
@@ -3295,14 +3329,11 @@ angular.module('security.service', [
           return $q.when(currentUser);
 
         } else {
-          return service.loginFromCookie()
+          return service.refreshCurrentUser()
         }
       },
 
-
-      // i think we don't use this anymore, since we inject the user json from
-      // flask on the pageload?
-      loginFromCookie: function(){
+      refreshCurrentUser: function(){
         console.log("logging in from cookie")
         return $http.get('/profile/current')
           .success(function(data, status, headers, config) {
@@ -3347,7 +3378,7 @@ angular.module('security.service', [
 
 
       hasNewMetrics: function(){
-        return currentUser && currentUser.has_new_metrics
+        return currentUser && currentUser.has_diff
       },
 
 
@@ -4828,6 +4859,10 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   </span>\n" +
     "\n" +
     "\n" +
+    "   <h3 id=\"percentiles\">Impactstory reports \"percentiles\" a lot. How are these calculated?</h3>\n" +
+    "   <p>Stay tuned, we're writing this now...</p>\n" +
+    "\n" +
+    "\n" +
     "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
     "\n" +
@@ -5447,11 +5482,6 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "\n" +
     "      <div class=\"product\" dynamic=\"productMarkup\"></div>\n" +
     "\n" +
-    "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
-    "         ng-show=\"!loading.is('profileProduct') && product.has_percentiles\">\n" +
-    "         <icon class=\"icon-question-sign\"></icon>\n" +
-    "         Where do these percentiles come from?\n" +
-    "      </a>\n" +
     "\n" +
     "   </div>\n" +
     "</div>");
@@ -5610,14 +5640,14 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <!-- filter products -->\n" +
     "            <div class=\"filters\">\n" +
     "\n" +
-    "               <div class=\"filter\" ng-class=\"{active: !productFilter.has_metrics && !productFilter.has_new_metric}\">\n" +
+    "               <div class=\"filter\" ng-class=\"{active: !productFilter.has_metrics && !productFilter.has_diff}\">\n" +
     "                  <a ng-click=\"setProductFilter('all')\">\n" +
     "                     Products\n" +
     "                     <span class=\"count\">({{ (products|filter:{is_true_product:true}).length }})</span>\n" +
     "                  </a>\n" +
     "               </div>\n" +
     "\n" +
-    "               <div class=\"filter\" ng-class=\"{active: (productFilter.has_metrics && !productFilter.has_new_metric)}\">\n" +
+    "               <div class=\"filter\" ng-class=\"{active: (productFilter.has_metrics && !productFilter.has_diff)}\">\n" +
     "                  <i class=\"icon-chevron-right left\"></i>\n" +
     "                  <a ng-click=\"setProductFilter('has_metrics')\">\n" +
     "                     with metrics\n" +
@@ -5625,12 +5655,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </div>\n" +
     "               <div class=\"filter this-week\"\n" +
-    "                    ng-show=\"(products|filter:{has_new_metric: true}).length > 0\"\n" +
-    "                    ng-class=\"{active: productFilter.has_new_metric}\">\n" +
+    "                    ng-show=\"(products|filter:{has_diff: true}).length > 0\"\n" +
+    "                    ng-class=\"{active: productFilter.has_diff}\">\n" +
     "                  <i class=\"icon-chevron-right left\"></i>\n" +
-    "                  <a ng-click=\"setProductFilter('has_new_metric')\">\n" +
+    "                  <a ng-click=\"setProductFilter('has_diff')\">\n" +
     "                     this week\n" +
-    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_new_metric: true}).length }})</span>\n" +
+    "                     <span class=\"count\">({{ (products|filter:{is_true_product:true, has_diff: true}).length }})</span>\n" +
     "\n" +
     "                  </a>\n" +
     "               </div>\n" +
@@ -5643,6 +5673,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <div class=\"admin-controls\" ng-show=\"security.isLoggedIn(url_slug) && !page.isEmbedded()\">\n" +
     "            <a href=\"/{{ profile.url_slug }}/products/add\">\n" +
     "               <i class=\"icon-upload\"></i>Import individual products\n" +
+    "            </a>\n" +
+    "            <a ng-click=\"dedup()\">\n" +
+    "               <i class=\"icon-copy\"></i>dedup\n" +
     "            </a>\n" +
     "         </div>\n" +
     "         <div class=\"everyone-controls\">\n" +
@@ -5661,7 +5694,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
-    "\n" +
     "\n" +
     "<div class=\"products\" ng-show=\"userExists\">\n" +
     "   <div class=\"wrapper\">\n" +
@@ -6406,11 +6438,18 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "   <h3 id=\"finding-impact-data-header\">Finding impact data</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body update\">\n" +
-    "   <div class=\"intro\"><br>We're scouring the web to discover the impacts of all your research products...</div>\n" +
+    "   <div class=\"intro\" ng-if=\"status.getNumUpdating()\">\n" +
+    "      <br>We're scouring the web to discover the impacts of all your research products...\n" +
+    "   </div>\n" +
     "\n" +
-    "   <div class=\"update-progress\">\n" +
+    "   <div class=\"intro dedup\" ng-if=\"!status.getNumUpdating()\"><br>\n" +
+    "      <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "      Now removing duplicates...\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"update-progress animated fadeOutUp\" ng-if=\"status.getNumUpdating()\">\n" +
     "      <div class=\"products not-done\">\n" +
-    "         <div class=\"content\" ng-show=\"status.getNumUpdating()\"></div>\n" +
+    "         <div class=\"content\">\n" +
     "            <span class=\"count still-working\">{{ status.getNumUpdating() }}</span>\n" +
     "            <span class=\"descr\">products updating</span>\n" +
     "         </div>\n" +
@@ -6420,13 +6459,16 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "      </progressbar>\n" +
     "\n" +
     "      <div class=\"products done\">\n" +
-    "         <div class=\"content\" ng-show=\"status.getNumUpdating()\"></div>\n" +
+    "         <div class=\"content\">\n" +
     "            <span class=\"count finished\">{{ status.getNumComplete()}}</span>\n" +
     "            <span class=\"descr\">products <br>done</span>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "</div>");
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "");
 }]);
 
 angular.module("user-message.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -6592,7 +6634,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         tooltip-placement=\"bottom\"\n" +
     "         ng-show=\"illuminateNotificationIcon()\"\n" +
     "         ng-click=\"dismissProfileNewProductsNotification()\"\n" +
-    "         href=\"/{{ currentUser.url_slug }}?filter=has_new_metrics\">\n" +
+    "         href=\"/{{ currentUser.url_slug }}?filter=has_diff\">\n" +
     "         <i class=\"icon-bell-alt\"></i>\n" +
     "      </a>\n" +
     "\n" +

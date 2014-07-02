@@ -61,14 +61,14 @@
             <!-- filter products -->
             <div class="filters">
 
-               <div class="filter" ng-class="{active: !productFilter.has_metrics && !productFilter.has_new_metric}">
+               <div class="filter" ng-class="{active: !productFilter.has_metrics && !productFilter.has_diff}">
                   <a ng-click="setProductFilter('all')">
                      Products
                      <span class="count">({{ (products|filter:{is_true_product:true}).length }})</span>
                   </a>
                </div>
 
-               <div class="filter" ng-class="{active: (productFilter.has_metrics && !productFilter.has_new_metric)}">
+               <div class="filter" ng-class="{active: (productFilter.has_metrics && !productFilter.has_diff)}">
                   <i class="icon-chevron-right left"></i>
                   <a ng-click="setProductFilter('has_metrics')">
                      with metrics
@@ -76,12 +76,12 @@
                   </a>
                </div>
                <div class="filter this-week"
-                    ng-show="(products|filter:{has_new_metric: true}).length > 0"
-                    ng-class="{active: productFilter.has_new_metric}">
+                    ng-show="(products|filter:{has_diff: true}).length > 0"
+                    ng-class="{active: productFilter.has_diff}">
                   <i class="icon-chevron-right left"></i>
-                  <a ng-click="setProductFilter('has_new_metric')">
+                  <a ng-click="setProductFilter('has_diff')">
                      this week
-                     <span class="count">({{ (products|filter:{is_true_product:true, has_new_metric: true}).length }})</span>
+                     <span class="count">({{ (products|filter:{is_true_product:true, has_diff: true}).length }})</span>
 
                   </a>
                </div>
@@ -94,6 +94,9 @@
          <div class="admin-controls" ng-show="security.isLoggedIn(url_slug) && !page.isEmbedded()">
             <a href="/{{ profile.url_slug }}/products/add">
                <i class="icon-upload"></i>Import individual products
+            </a>
+            <a ng-click="dedup()">
+               <i class="icon-copy"></i>dedup
             </a>
          </div>
          <div class="everyone-controls">
@@ -112,7 +115,6 @@
       </div>
    </div>
 </div>
-
 
 <div class="products" ng-show="userExists">
    <div class="wrapper">

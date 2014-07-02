@@ -28,7 +28,7 @@ angular.module('profileLinkedAccounts', [
     Page.showHeader(false)
     Page.showFooter(false)
 
-    console.log("current user: ", currentUser)
+    console.log("linked accounts page. current user: ", currentUser)
 
     $scope.accounts = AllTheAccounts.get(currentUser)
     $scope.returnLink = "/"+$routeParams.url_slug

@@ -137,14 +137,11 @@ angular.module('security.service', [
           return $q.when(currentUser);
 
         } else {
-          return service.loginFromCookie()
+          return service.refreshCurrentUser()
         }
       },
 
-
-      // i think we don't use this anymore, since we inject the user json from
-      // flask on the pageload?
-      loginFromCookie: function(){
+      refreshCurrentUser: function(){
         console.log("logging in from cookie")
         return $http.get('/profile/current')
           .success(function(data, status, headers, config) {
@@ -189,7 +186,7 @@ angular.module('security.service', [
 
 
       hasNewMetrics: function(){
-        return currentUser && currentUser.has_new_metrics
+        return currentUser && currentUser.has_diff
       },
 
 

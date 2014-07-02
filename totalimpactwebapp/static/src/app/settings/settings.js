@@ -192,7 +192,7 @@ angular.module('settings', [
         {},
         function(resp){
           console.log("subscription successfully cancelled", resp)
-          security.loginFromCookie() // refresh the currentUser from server
+          security.refreshCurrentUser() // refresh the currentUser from server
           UserMessage.set("settings.premium.delete.success")
         },
         function(resp){
@@ -213,7 +213,7 @@ angular.module('settings', [
             {},
             function(resp){
               console.log("success!", resp)
-              security.loginFromCookie() // refresh the currentUser from server
+              security.refreshCurrentUser() // refresh the currentUser from server
               window.scrollTo(0,0)
               UserMessage.set("settings.premium.subscribe.success")
               Loading.finish("subscribeToPremium")

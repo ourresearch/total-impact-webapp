@@ -1,18 +1,33 @@
 import logging
 import jinja2
+import arrow
+
+# these imports need to be here for sqlalchemy
+from totalimpactwebapp import snap
 from totalimpactwebapp import metric
 from totalimpactwebapp import award
+from totalimpactwebapp import reference_set
+
+# regular ol' imports
+from totalimpactwebapp.metric import make_metrics_list
+from totalimpactwebapp.metric import make_mendeley_metric
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.util import dict_from_dir
+from totalimpactwebapp import db
+from totalimpactwebapp import configs
 
 
-
-from util import jinja_render
+percentile_snap_creations = 0
 
 logger = logging.getLogger("tiwebapp.product")
 deprecated_genres = ["twitter", "blog"]
 
+ignore_snaps_older_than = arrow.utcnow().replace(days=-14).datetime
+
+snaps_join_string = "and_(Product.tiid==Snap.tiid, " \
+                    "Snap.last_collected_date > '{ignore_snaps_older_than}')".format(
+    ignore_snaps_older_than=ignore_snaps_older_than)
 
 
 def make(raw_dict):
@@ -20,56 +35,122 @@ def make(raw_dict):
 
 
 
-class Product():
-    def __init__(self, raw_dict):
-        self.raw_dict = raw_dict
+class Product(db.Model):
 
-        # in constructor for now; in future, sqlachemy will do w magic
-        self.aliases = Aliases(raw_dict["aliases"])
-
-        # in constructor for now; in future, sqlachemy will do w magic
-        self.biblio = Biblio(raw_dict["biblio"], self.aliases)
-
-        # in constructor for now; in future, sqlachemy will do w magic
-        self.metrics = []
-        for metric_name, snap_dict in self.raw_dict["metrics"].iteritems():
-            new_metric = metric.make(snap_dict, metric_name)
-            self.metrics.append(new_metric)
+    __tablename__ = 'item'
+    profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
+    tiid = db.Column(db.Text, primary_key=True)
+    created = db.Column(db.DateTime())
+    last_modified = db.Column(db.DateTime())
+    last_update_run = db.Column(db.DateTime())
+    removed = db.Column(db.DateTime())
 
 
+    alias_rows = db.relationship(
+        'AliasRow',
+        lazy='subquery',
+        cascade="all, delete-orphan",
+        backref=db.backref("item", lazy="subquery")
+    )
 
-    @property
-    def tiid(self):
-        return self.raw_dict["_id"]
+    biblio_rows = db.relationship(
+        'BiblioRow',
+        lazy='subquery',
+        cascade="all, delete-orphan",
+        backref=db.backref("item", lazy="subquery")
+    )
 
-    @property
-    def genre(self):
-        # need this here to help the client sort category/real products
-        return self.biblio.genre
+    snaps = db.relationship(
+        'Snap',
+        lazy='subquery',
+        cascade='all, delete-orphan',
+        backref=db.backref("item", lazy="subquery"),
+        primaryjoin=snaps_join_string
+    )
 
-    @property
-    def update_status(self):
-        return self.raw_dict["update_status"]
-
-    @property
-    def currently_updating(self):
-        return not self.update_status.startswith("SUCCESS")
-
-    @property
-    def has_metrics(self):
-        return len(self.metrics) > 0
 
     @property
-    def has_new_metric(self):
-        return any([m.has_new_metric for m in self.metrics])
+    def biblio(self):
+        return Biblio(self.biblio_rows)
+
+    @property
+    def aliases(self):
+        return Aliases(self.alias_rows)
+
+    @property
+    def metrics(self):
+        my_metrics = make_metrics_list(self.percentile_snaps, self.created)
+        return my_metrics
 
     @property
     def is_true_product(self):
         return True
 
     @property
+    def genre(self):
+        if self.biblio.calculated_genre is not None:
+            return self.biblio.calculated_genre
+        else:
+            return self.aliases.get_genre()
+
+    @property
+    def host(self):
+        if self.biblio.calculated_host is not None:
+            return self.biblio.calculated_host
+        else:
+            return self.aliases.get_host()
+
+    @property
+    def mendeley_discipline(self):
+        mendeley_metric = make_mendeley_metric(self.snaps, self.created)
+        try:
+            return mendeley_metric.mendeley_discipine["name"]
+        except (AttributeError, TypeError):
+            return None
+
+    @property
+    def year(self):
+        return self.biblio.display_year
+
+    @property
+    def display_genre_plural(self):
+        return configs.pluralize_genre(self.genre)
+
+    def get_metric_by_name(self, provider, interaction):
+        for metric in self.metrics:
+            if metric.provider==provider and metric.interaction==interaction:
+                return metric
+        return None
+
+    @property
+    def has_metrics(self):
+        return len(self.metrics) > 0
+
+    @property
+    def has_diff(self):
+        return any([m.diff_value > 0 for m in self.metrics])
+
+    @property
     def awards(self):
         return award.make_list(self.metrics)
+
+
+    @property
+    def percentile_snaps(self):
+        my_refset = reference_set.ProductLevelReferenceSet()
+        my_refset.year = self.year
+        my_refset.genre = self.genre
+        my_refset.host = self.host
+        my_refset.title = self.biblio.display_title
+        my_refset.mendeley_discipline = self.mendeley_discipline
+
+        ret = []
+        for snap in self.snaps:
+            snap.set_refset(my_refset)
+            ret.append(snap)
+
+        return ret
+
 
     @property
     def metrics_raw_sum(self):
@@ -79,6 +160,7 @@ class Product():
     def awardedness_score(self):
         return sum([a.sort_score for a in self.awards])
 
+
     @property
     def latest_diff_timestamp(self):
         ts_list = [m.latest_nonzero_refresh_timestamp for m in self.metrics]
@@ -87,17 +169,6 @@ class Product():
         except IndexError:
             return None
 
-    @property
-    def markup(self):
-        try:
-            return self.markup_object.make(self.to_dict())
-        except AttributeError:
-            return None
-
-    @property
-    def has_percentiles(self):
-        return any([m.percentiles for m in self.metrics])
-
 
     def metric_by_name(self, metric_name):
         for metric in self.metrics:
@@ -105,10 +176,25 @@ class Product():
                 return metric
         return None
 
+
+    def to_dict(self):
+
+        attributes_to_ignore = [
+            "profile",
+            "alias_rows",
+            "biblio_rows",
+            "percentile_snaps",
+            "snaps"
+        ]
+
+        ret = dict_from_dir(self, attributes_to_ignore)
+        ret["_tiid"] = self.tiid
+        return ret
+
     def to_markup_dict(self, markup, hide_keys=None):
         ret = self.to_dict()
 
-        ret["markup"] = markup.make(self.to_dict())
+        ret["markup"] = markup.make(ret)
 
         try:
             for key_to_hide in hide_keys:
@@ -120,13 +206,6 @@ class Product():
             pass
 
         return ret
-
-
-    def to_dict(self):
-        ret = dict_from_dir(self, "raw_dict")
-        ret["_tiid"] = self.tiid
-        return ret
-
 
 
 

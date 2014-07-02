@@ -1,4 +1,3 @@
-from copy import deepcopy
 import logging
 import util
 import configs
@@ -55,7 +54,7 @@ class Award(object):
 
     @property
     def top_metric_by_percentile(self):
-        s = sorted(self.metrics, key=lambda metric: metric.top_percentile, reverse=True)
+        s = sorted(self.metrics, key=lambda metric: metric.percentile, reverse=True)
         return s[0]
 
     @property
@@ -67,18 +66,18 @@ class Award(object):
     def top_metric_by_diff(self):
         s = sorted(
             self.metrics,
-            key=lambda metric: metric.historical_values["diff"]["raw"],
+            key=lambda metric: metric.diff_value,
             reverse=True
         )
         return s[0]
 
     @property
-    def metrics_with_new(self):
-        return [m for m in self.metrics if m.has_new_metric]
+    def metrics_with_diff(self):
+        return [m for m in self.metrics if m.diff_value > 0]
 
     @property
-    def has_new_metric(self):
-        return len(self.metrics_with_new) > 0
+    def has_diff(self):
+        return len(self.metrics_with_diff) > 0
 
     @property
     def is_highly_classname(self):

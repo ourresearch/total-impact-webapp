@@ -9,7 +9,7 @@ def make_awards_list(user):
     award = OAAward()
     # eventually the first param here is user.about...
     # but right now that doesn't exist.
-    award.calculate({}, user.product_objects)
+    award.calculate({}, user.display_products)
 
     awards_list.append(award)
     return awards_list
@@ -114,7 +114,7 @@ class OAAward(ProfileAward):
 
     def calculate(self, about, products):
 
-        article_products = [p for p in products if p.biblio.genre == "article"]
+        article_products = [p for p in products if p.genre == "article"]
         article_count = len(article_products)
         self.extra["articles_count"] = article_count
 
