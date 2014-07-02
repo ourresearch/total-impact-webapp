@@ -134,13 +134,15 @@ on the profile page.
          {% endif %}
 
          {% if metric.percentile %}
-         <span class="percentile">
+         <a class="percentile"
+            href="/faq#percentiles"
+            data-content="Click to read more about how we determine percentiles.">
             <span class="values">
                <span class="value">{{ metric.percentile_value_string }}</span>
                <span class="unit">percentile</span>
             </span>
-            <span class="descr">of Impactstory {{ metric.percentile.mendeley_discipline_str }} {{ display_genre_plural }} from {{ year }}</span>
-         </span>
+            <span class="descr">of {{ metric.percentile.mendeley_discipline_str }} {{ display_genre_plural }} from {{ year }} on Impactstory.</span>
+         </a>
          {% endif %}
 
       </span>

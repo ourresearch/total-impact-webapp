@@ -4859,6 +4859,10 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   </span>\n" +
     "\n" +
     "\n" +
+    "   <h3 id=\"percentiles\">Impactstory reports \"percentiles\" a lot. How are these calculated?</h3>\n" +
+    "   <p>Stay tuned, we're writing this now...</p>\n" +
+    "\n" +
+    "\n" +
     "\n" +
     "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
     "\n" +
@@ -5478,11 +5482,6 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "\n" +
     "      <div class=\"product\" dynamic=\"productMarkup\"></div>\n" +
     "\n" +
-    "      <a class=\"percentile-info\" ng-click=\"openInfoModal()\"\n" +
-    "         ng-show=\"!loading.is('profileProduct')\">\n" +
-    "         <icon class=\"icon-question-sign\"></icon>\n" +
-    "         Where do these percentiles come from?\n" +
-    "      </a>\n" +
     "\n" +
     "   </div>\n" +
     "</div>");
