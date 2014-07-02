@@ -41,24 +41,35 @@ class Aliases(object):
 
 
     def get_genre(self):
-        return self._decide_genre_and_host()[0]
+        return self._guess_genre_and_host_from_aliases()[0]
 
     def get_host(self):
-        return self._decide_genre_and_host()[1]
+        return self._guess_genre_and_host_from_aliases()[1]
 
 
 
-    def _decide_genre_and_host(self):
+    def _guess_genre_and_host_from_aliases(self):
         """Uses available aliases to decide the item's genre"""
 
         # logger.debug(u"in decide_genre with {alias_dict}".format(
         #     alias_dict=alias_dict))
 
-
         genre = "unknown"
         host = "unknown"
 
-        if hasattr(self, "pmid"):
+        if hasattr(self, "doi"):
+            joined_doi_string = "".join(self.doi).lower()
+            if "10.5061/dryad." in joined_doi_string:
+                genre = "dataset"
+                host = "dryad"
+            elif ".figshare." in joined_doi_string:
+                # if was already set to something, wouldn't be here
+                host = "figshare"
+                genre = "dataset"
+            else:
+                genre = "article"
+
+        elif hasattr(self, "pmid"):
             genre = "article"
 
         elif hasattr(self, "arxiv"):
@@ -81,19 +92,6 @@ class Aliases(object):
             elif "github.com" in joined_url_string:
                 genre = "software"
                 host = "github"
-            elif "10.5061/dryad." in joined_url_string:
-                genre = "dataset"
-                host = "dryad"
-            elif ".figshare." in joined_url_string:
-                host = "figshare"
-                genre = "dataset"  # default.  if something else it'd already be stored
-            elif "twitter.com" in joined_url_string:
-                if "/status/" in joined_url_string:
-                    genre = "twitter"
-                    host = "twitter_tweet"
-                else:
-                    genre = "twitter"
-                    host = "twitter_account"
             elif "youtube.com" in joined_url_string:
                 genre = "video"
                 host = "youtube"
@@ -106,7 +104,6 @@ class Aliases(object):
         if "article" in genre:
             genre = "article"  #disregard whether journal article or conference article for now
 
-        print "*******", self.tiid, genre, host
         return genre, host
 
 
