@@ -54,21 +54,17 @@ class Biblio(object):
 
     @property
     def calculated_genre(self):
-        if hasattr(self, "journal"):
-            return "article"
-        elif hasattr(self, "genre"):
+        if hasattr(self, "genre") and self.genre:
             if self.genre not in ["undefined", "other"]:
                 return self.genre
-        else:
-            return None
+
+        if hasattr(self, "journal") and self.journal:
+            return "article"
+
+        return None
 
     @property
     def calculated_host(self):
-
-        if self.calculated_genre == "article":
-            # don't return repositories for articles
-            return None
-
         try:
             return self.repository.split(" ")[0].lower()
         except AttributeError:
