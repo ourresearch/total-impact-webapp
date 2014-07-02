@@ -71,16 +71,15 @@
 
                data-original-title="{{ award.highly_string }} {{award.engagement_type}} by <span class='{{award.display_audience}}'>{{award.display_audience}}</span>"
 
-               data-content="This item has {{award.top_metric_by_count.display_count}}
+               data-content="This product has {{award.top_metric_by_count.display_count}}
                {{award.top_metric_by_count.display_provider}}
                {{award.top_metric_by_count.display_interaction}}.
                {% if award.is_highly %}
-               That's more than {{award.top_metric_by_count.percentile}}%
+               That's more than {{ award.top_metric_by_count.percentile.value }}%
                of {{ year }}
+               {{ award.top_metric_by_count.percentile.mendeley_discipline_str }}
                {{ display_genre_plural }}
-               on Impactstory,
-               suggesting it's highly {{award.engagement_type}}
-               by {{award.display_audience }}.
+               on Impactstory.
                {% endif %}
                Click for details.
                {% if award.has_diff %}

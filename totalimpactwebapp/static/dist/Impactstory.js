@@ -196,40 +196,39 @@ angular.module('accounts.account', [
 
     $scope.accountWindowOpen = false
 
-    if ($scope.account.accountHost == "google_scholar"){
-      console.log("opening google scholar modal")
-      GoogleScholar.showImportModal()
-    }
-    else {
-      console.log("linking an account other than google scholar")
-      Loading.start($scope.account.accountHost)
-      Account.saveAccountInput($routeParams.url_slug, $scope.account)
-        .then(
+    console.log("linking an account other than google scholar")
+    Loading.start($scope.account.accountHost)
+    Account.saveAccountInput($routeParams.url_slug, $scope.account)
+      .then(
 
-        // linked this account successfully
-        function(resp){
-          console.log("successfully saved linked account", resp)
-          $scope.isLinked = true
-          TiMixpanel.track("Linked an account", {
-            "Account name": $scope.account.displayName
-          })
-           // make sure everyone can see the new linked account
-          security.refreshCurrentUser().then(
-            function(resp){
-              console.log("update the client's current user with our new linked account", resp)
-              Loading.finish($scope.account.accountHost)
-            }
-          )
-        },
+      // linked this account successfully
+      function(resp){
+        console.log("successfully saved linked account", resp)
 
-        // couldn't link to account
-        function(resp){
-          console.log("failure at saving inputs :(", resp)
-          Loading.finish($scope.account.accountHost)
-          alert("Sorry, we weren't able to link this account. You may want to fill out a support ticket.")
+        if ($scope.account.accountHost == "google_scholar"){
+          GoogleScholar.showImportModal()
         }
-      )
-    }
+
+        $scope.isLinked = true
+        TiMixpanel.track("Linked an account", {
+          "Account name": $scope.account.displayName
+        })
+         // make sure everyone can see the new linked account
+        security.refreshCurrentUser().then(
+          function(resp){
+            console.log("update the client's current user with our new linked account", resp)
+            Loading.finish($scope.account.accountHost)
+          }
+        )
+      },
+
+      // couldn't link to account
+      function(resp){
+        console.log("failure at saving inputs :(", resp)
+        Loading.finish($scope.account.accountHost)
+        alert("Sorry, we weren't able to link this account. You may want to fill out a support ticket.")
+      }
+    )
   }
 })
 
@@ -659,7 +658,7 @@ angular.module("googleScholar", [
   })
 
   .controller("GoogleScholarModalCtrl", function($scope, GoogleScholar, currentUser, Loading){
-    console.log("modal controller activated!")
+    console.log("google scholar modal controller activated!")
     $scope.currentUser = currentUser
     $scope.googleScholar = GoogleScholar
     $scope.loading = Loading

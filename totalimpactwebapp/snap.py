@@ -42,8 +42,7 @@ class Snap(db.Model):
             "collected_date": self.last_collected_date,
             "value": self.raw_value,
             "drilldown_url": self.drilldown_url,
-            "percentile": self.percentile,
-            "percentile_full_dict": self.percentile_full_dict
+            "percentile": self.percentile
         }
 
     @property
@@ -69,22 +68,18 @@ class Snap(db.Model):
     @property
     def percentile(self):
         try:
-            return self.percentile_full_dict["percentile"]
+            return self.refset.get_percentile(
+                self.provider,
+                self.interaction,
+                self.raw_value
+            )
         except TypeError:
             return None
 
     @property
-    def percentile_full_dict(self):
-        return self.refset.get_percentile(
-            self.provider,
-            self.interaction,
-            self.raw_value
-        )
-
-    @property
-    def percentile_string(self):
+    def percentile_value_string(self):
         try:
-            return util.ordinal(self.percentile)
+            return util.ordinal(self.percentile["value"])
         except TypeError:
             return None
 

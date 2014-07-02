@@ -15,6 +15,7 @@ from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp import db
+from totalimpactwebapp import configs
 
 
 percentile_snap_creations = 0
@@ -117,13 +118,7 @@ class Product(db.Model):
 
     @property
     def display_genre_plural(self):
-        # for use in phrases like "79 - 91 percentile of articles from 2013"
-        genre_plural = self.genre + u"s"
-        if genre_plural.startswith("other"):
-            genre_plural = "other products"
-        elif genre_plural.startswith("slides"):
-            genre_plural = "slides"
-        return genre_plural
+        return configs.pluralize_genre(self.genre)
 
     def get_metric_by_name(self, provider, interaction):
         for metric in self.metrics:
