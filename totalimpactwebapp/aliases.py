@@ -101,9 +101,6 @@ class Aliases(object):
             else:
                 genre = "webpage"
 
-        if "article" in genre:
-            genre = "article"  #disregard whether journal article or conference article for now
-
         return genre, host
 
 

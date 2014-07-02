@@ -89,9 +89,15 @@ class Product(db.Model):
     @property
     def genre(self):
         if self.biblio.calculated_genre is not None:
-            return self.biblio.calculated_genre
+            genre = self.biblio.calculated_genre
         else:
-            return self.aliases.get_genre()
+            genre = self.aliases.get_genre()
+
+        if "article" in genre:
+            genre = "article"  #disregard whether journal article or conference article for now
+
+        return genre
+
 
     @property
     def host(self):
