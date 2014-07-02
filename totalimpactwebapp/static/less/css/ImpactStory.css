@@ -8028,28 +8028,29 @@ div.product-page .content .product ul.metric-details-list li.metric-detail span.
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile {
   display: block;
   float: left;
   border-bottom: 1px solid #eee;
+  color: #555;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.values {
   font-weight: bold;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values span.upper,
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values span.lower {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.upper,
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.lower {
   font-size: 16px;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values i {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.values i {
   opacity: .5;
   cursor: pointer;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.values i:hover {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.values i:hover {
   opacity: .8;
 }
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.percentile span.descr {
+div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.descr {
   font-weight: 100;
-  font-size: 80%;
+  font-size: 90%;
 }
 div.signup-page {
   position: fixed;
