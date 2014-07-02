@@ -5674,9 +5674,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <a href=\"/{{ profile.url_slug }}/products/add\">\n" +
     "               <i class=\"icon-upload\"></i>Import individual products\n" +
     "            </a>\n" +
-    "            <a ng-click=\"dedup()\">\n" +
+    "            <!--<a ng-click=\"dedup()\">\n" +
     "               <i class=\"icon-copy\"></i>dedup\n" +
-    "            </a>\n" +
+    "            </a>-->\n" +
     "         </div>\n" +
     "         <div class=\"everyone-controls\">\n" +
     "            <a ng-click=\"openProfileEmbedModal()\" ng-show=\"!page.isEmbedded()\">\n" +
