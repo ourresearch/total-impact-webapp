@@ -165,7 +165,8 @@ def is_logged_in(profile):
 @login_manager.user_loader
 def load_user(profile_id):
     # load just the profile table contents
-    return db.session.query(Profile).options(orm.noload('*')).get(int(profile_id))
+
+    return db.session.query(Profile).get(int(profile_id))
 
 
 @app.before_first_request
