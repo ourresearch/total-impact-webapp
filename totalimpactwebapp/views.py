@@ -37,6 +37,9 @@ from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring
 from totalimpactwebapp import notification_report
 
+from totalimpactwebapp.reference_set import reference_set_lists
+from totalimpactwebapp.reference_set import load_all_reference_set_lists
+
 
 import newrelic.agent
 
@@ -397,11 +400,11 @@ def patch_user_about(profile_id):
 
 
 
-@app.route("/profile/<profile_id>/update_status", methods=["GET"])
-def update_status(profile_id):
+@app.route("/profile/<profile_id>/refresh_status", methods=["GET"])
+def refresh_status(profile_id):
     local_sleep(1)
     profile = get_user_for_response(profile_id, request)
-    return json_resp_from_thing(profile.get_update_status())
+    return json_resp_from_thing(profile.get_refresh_status())
 
 
 
@@ -632,9 +635,48 @@ def delete_all_test_users():
 
 
 
+###############################################################################
+#
+#   REFERENCE SETS
+#
+###############################################################################
 
 
 
+
+@app.route("/reference-set-histograms")
+def reference_sets():
+    if not reference_set_lists:
+        load_all_reference_set_lists()
+
+    rows = []
+    header_added = False
+    for refsetlist in reference_set_lists:
+        lookup_key_list = refsetlist.get_lookup_key()
+        for p in refsetlist.percentiles:
+            row = lookup_key_list
+            row += [p]
+            print row
+            rows.append(",".join(row))
+
+
+    #     if not header_added:
+    #         first_metric_name = myrefsets_histograms[genre][refset][year].keys()[0]
+    #         data_labels = [str(i)+"th" for i in range(len(myrefsets_histograms[genre][refset][year][first_metric_name]))]
+    #         header = ",".join(["genre", "refset", "year", "metric_name"] + data_labels)
+    #         rows.append(header)
+    #         header_added = True
+    #     for metric_name in myrefsets_histograms[genre][refset][year]:
+    #         metadata = [genre, refset, str(year), metric_name]
+    #         metrics = [str(i) for i in myrefsets_histograms[genre][refset][year][metric_name]]
+    #         rows.append(",".join(metadata+metrics))
+    # resp = make_response("\n".join(rows), 200)
+    # Do we want it to pop up to save?  kinda nice to just see it in browser
+    #resp.mimetype = "text/csv;charset=UTF-8"
+    #resp.headers.add("Content-Disposition", "attachment; filename=refsets.csv")
+    #resp.headers.add("Content-Encoding", "UTF-8")
+
+    return resp
 
 
 

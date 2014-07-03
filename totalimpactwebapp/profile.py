@@ -51,7 +51,7 @@ class UrlSlugExistsError(Exception):
 
 
 
-def get_update_status(tiid):
+def get_refresh_status(tiid):
     key = "provider_tiid_task_id:{tiid}".format(
         tiid=tiid)
     task_ids = list(redis_client.smembers(key))
@@ -102,7 +102,7 @@ def get_update_status(tiid):
     return update_status
 
 
-class UpdateStatus(object):
+class RefreshStatus(object):
     def __init__(self, tiids):
         self.tiids = tiids
 
@@ -116,7 +116,7 @@ class UpdateStatus(object):
 
     @property
     def product_statuses(self):
-        product_statuses = [get_update_status(tiid) for tiid in self.tiids]
+        product_statuses = [get_refresh_status(tiid) for tiid in self.tiids]
         return product_statuses
 
 
@@ -320,8 +320,8 @@ class Profile(db.Model):
             creds["wordpress_api_key"] = self.wordpress_api_key
         return creds
 
-    def get_update_status(self):
-        return UpdateStatus(self.tiids)
+    def get_refresh_status(self):
+        return RefreshStatus(self.tiids)
 
     def add_products(self, product_id_dict):
         try:

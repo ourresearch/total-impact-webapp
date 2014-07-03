@@ -2028,7 +2028,7 @@ angular.module( 'update.update', [
                               $q,
                               poller,
                               UsersProducts,
-                              UsersUpdateStatus){
+                              UsersRefreshStatus){
 
     var status = {}
     var url_slug
@@ -2045,7 +2045,7 @@ angular.module( 'update.update', [
     }
 
     var tick = function(){
-      UsersUpdateStatus.get({id:url_slug}).$promise.then(
+      UsersRefreshStatus.get({id:url_slug}).$promise.then(
         function(resp){
           console.log("tick() got response back from server", resp)
           status = resp
@@ -2089,7 +2089,7 @@ angular.module( 'update.update', [
       }
 
 
-      UsersUpdateStatus.get({id:url_slug}).$promise.then(
+      UsersRefreshStatus.get({id:url_slug}).$promise.then(
         function(resp) {
           status = resp
 
@@ -2958,9 +2958,9 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
-  .factory('UsersUpdateStatus', function ($resource) {
+  .factory('UsersRefreshStatus', function ($resource) {
     return $resource(
-      "/profile/:id/update_status",
+      "/profile/:id/refresh_status",
       {}, // default params
       {}  // method definitions
     )
