@@ -109,7 +109,7 @@ angular.module( 'update.update', [
         return status.num_complete
       },
       getNumUpdating: function() {
-        return status.num_updating
+        return status.num_refreshing
       },
       isDeduping: function(){
         return status.isDeduping

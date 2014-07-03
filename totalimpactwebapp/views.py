@@ -405,7 +405,7 @@ def patch_user_about(profile_id):
 
 @app.route("/profile/<profile_id>/refresh_status", methods=["GET"])
 def refresh_status(profile_id):
-    local_sleep(1)
+    local_sleep(0.5) # client to webapp plus one trip to database
     id_type = request.args.get("id_type", "url_slug")  # url_slug is default    
     profile_bare_products = get_profile_from_id(profile_id, id_type, include_product_relationships=False)
     print profile_bare_products
