@@ -1,10 +1,9 @@
 from totalimpactwebapp.card import Card
+from totalimpactwebapp.card import ProductNewMetricCard
+from totalimpactwebapp.card import ProfileNewMetricCard
 from totalimpactwebapp.util import as_int_or_float_if_possible
 from totalimpactwebapp import configs
 
-import requests
-import os
-import json
 import datetime
 import arrow
 
@@ -36,15 +35,9 @@ def get_threshold_just_crossed(current_value, diff_value, thresholds):
             return threshold
     return None
 
-def get_median(metric, medians_lookup, year, genre):
-    try:
-        median = medians_lookup[genre][metric.percentiles["refset"]][year][metric.metric_name]
-    except (KeyError, TypeError, AttributeError):
-        median = None
-    return median
 
 
-def populate_card(user_id, tiid, metric, metric_name, thresholds_lookup=[], medians_lookup={}, timestamp=None):
+def populate_card(user_id, tiid, metric, metric_name, thresholds_lookup=[], timestamp=None):
     hist = metric.historical_values
     current_value = as_int_or_float_if_possible(hist["current"]["raw"])
     diff_value = as_int_or_float_if_possible(hist["diff"]["raw"])
@@ -73,80 +66,50 @@ def populate_card(user_id, tiid, metric, metric_name, thresholds_lookup=[], medi
 
 
 
-def get_medians_lookup():
-    api_root = os.getenv("API_ROOT", "http://total-impact-core.herokuapp.com")
-    url = api_root + "/collections/reference-sets-medians"
-    resp = requests.get(url)
-    return json.loads(resp.text)
 
 
-class CardGenerator:
-    pass
+def make_product_new_metrics_cards(profile, timestamp=None):
+    thresholds_lookup = configs.metrics(this_key_only="milestones")
+
+    if not timestamp:
+        timestamp = datetime.datetime.utcnow()
+
+    cards = []
+
+    for product in profile.products_not_removed:
+        for metric in product.metrics:
+
+            if ProductNewMetricCard.test(metric):
+                print "new card time"
+                new_card = ProductNewMetricCard(profile, product, metric)
+                cards.append(new_card)
 
 
+            # this card generator only makes cards with weekly diffs
+            #if metric.diff_value:
+            #    new_card = populate_card(user.id, product.tiid, metric, metric.metric_name, thresholds_lookup, timestamp)
+            #
+            #    # now populate with profile-level information
+            #    peers = products_above_threshold(products, metric.metric_name, new_card.current_value)
+            #    new_card.num_profile_products_this_good = len(peers)
+            #
+            #    cards.append(new_card)
 
+    return cards
 
-
-
-
-
-
-
-
-"""
- ProductNewMetricCardGenerator
- *************************************************************************** """
-
-
-class ProductNewMetricCardGenerator(CardGenerator):
-
-    @classmethod
-    def make(cls, user, products, timestamp=None):
-        thresholds_lookup = configs.metrics(this_key_only="milestones")
-
-        medians_lookup = get_medians_lookup()
-        if not timestamp:
-            timestamp = datetime.datetime.utcnow()
-
-        cards = []
-
-        for product in products:
-            for metric in product.metrics:
-                diff_value = metric.historical_values["diff"]["raw"]
-
-                # this card generator only makes cards with weekly diffs
-                if diff_value:
-                    new_card = populate_card(user.id, product.tiid, metric, metric.metric_name, thresholds_lookup, medians_lookup, timestamp)
-
-                    # now populate with profile-level information
-                    peers = products_above_threshold(products, metric.metric_name, new_card.current_value)
-                    new_card.num_profile_products_this_good = len(peers)
-                    try:
-                        new_card.median = get_median(metric, medians_lookup, product.biblio.year, product.genre)
-                    except AttributeError:
-                        new_card.median = None
-                    # and keep the card
-
-                    cards.append(new_card)
-
-        return cards
 
 
 
 
 """
- ProfileNewMetricCardGenerator
- *************************************************************************** """
 
-
-class ProfileNewMetricCardGenerator(CardGenerator):
+class ProfileNewMetricCardsFactory(CardsFactory):
 
     @classmethod
     def make(cls, user, products, timestamp=None):
         thresholds_lookup = configs.metrics(this_key_only="milestones")
 
 
-        medians_lookup = get_medians_lookup()
         if not timestamp:
             timestamp = datetime.datetime.utcnow()
 
@@ -168,9 +131,9 @@ class ProfileNewMetricCardGenerator(CardGenerator):
                     oldest_diff_timestamp=arrow.get(datetime.datetime.max).datetime,  #initiate with a very recent value
                     diff_value=0,
                     current_value=0,
-                    weight=0.8, 
+                    weight=0.8,
                     timestamp=timestamp
-                )            
+                )
 
             for product in products:
                 metric = product.metric_by_name(metric_name)
@@ -195,8 +158,8 @@ class ProfileNewMetricCardGenerator(CardGenerator):
             # only keep card if accumulating
             if accumulating_card.diff_value:
                 accumulating_card.threshold_awarded = get_threshold_just_crossed(
-                    accumulating_card.current_value, 
-                    accumulating_card.diff_value, 
+                    accumulating_card.current_value,
+                    accumulating_card.diff_value,
                     thresholds)
                 if accumulating_card.threshold_awarded:
                     accumulating_card.diff_window_days = (accumulating_card.newest_diff_timestamp - accumulating_card.oldest_diff_timestamp).days
@@ -205,7 +168,7 @@ class ProfileNewMetricCardGenerator(CardGenerator):
         return cards
 
 
-
+"""
 
 
 

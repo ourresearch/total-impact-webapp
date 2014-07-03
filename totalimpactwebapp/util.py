@@ -228,6 +228,8 @@ def ordinal(value):
         value = int(value)
     except ValueError:
         return value
+    except TypeError:
+        return value
 
     if value % 100//10 != 1:
         if value % 10 == 1:

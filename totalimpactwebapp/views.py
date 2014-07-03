@@ -27,7 +27,7 @@ from totalimpactwebapp.profile import remove_duplicates_from_profile
 from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.profile import delete_products_from_profile
 
-from totalimpactwebapp.card_generate import *
+from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
 
@@ -785,15 +785,28 @@ def render_cards(profile_id, granularity="all"):
     return json_resp_from_thing(card_dicts)
 
 
+
+@app.route("/<profile_id>/cards.json")
+def render_cards_json(profile_id):
+    user = get_user_for_response(
+        profile_id,
+        request
+    )
+    report = notification_report.make(user)
+    cards = report["cards"]
+    return json_resp_from_thing(cards)
+
+
 @app.route("/<profile_id>/report")
-def render_report(profile_id):
+def render_report(profile_id, format="html"):
     user = get_user_for_response(
         profile_id,
         request
     )
     report_context = notification_report.make(user)
-
     return render_template("report.html", **report_context)
+
+
 
 
 @app.route("/test/email")

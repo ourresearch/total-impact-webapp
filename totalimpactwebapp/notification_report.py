@@ -1,34 +1,22 @@
 from totalimpactwebapp.card import Card
 from totalimpactwebapp import configs
-from totalimpactwebapp.card_generate import *
+from totalimpactwebapp.cards_factory import *
 import os
 
-
-import datetime
-
-
-def make(user):
-
-    products = user.products_not_removed
-    user_dict_about = user.dict_about()
-
+def make(profile):
     cards = []
-    cards += ProductNewMetricCardGenerator.make(user, products)
-    cards += ProfileNewMetricCardGenerator.make(user, products)
+    #cards += ProductNewMetricCardsFactory.make(profile)
+    #cards += ProfileNewMetricCardsFactory.make(profile)
 
-    for card in cards:
-        card.set_product_from_list(products)
-        card.metrics_info = configs.metrics()[card.metric_name]
-        card.user = user_dict_about
+    cards += make_product_new_metrics_cards(profile)
 
-    cards = filter_cards(cards)
-    cards = sort_cards(cards)[0:10]
+    #cards = filter_cards(cards)
+    #cards = sort_cards(cards)[0:10]
 
     response = {
-        "user": user_dict_about,
+        "profile": profile,
         "cards": cards,
-        "css": get_css(),
-        "given_name": user.given_name
+        "css": get_css()
     }
     return response
 
