@@ -8,6 +8,7 @@ from totalimpactwebapp.product import Product
 from werkzeug.security import generate_password_hash, check_password_hash
 from kombu.exceptions import DecodeError
 from sqlalchemy.exc import IntegrityError, DataError
+from sqlalchemy import orm
 from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
 from celery.result import AsyncResult
@@ -51,79 +52,32 @@ class UrlSlugExistsError(Exception):
 
 
 
-def get_refresh_status(tiid):
-    key = "provider_tiid_task_id:{tiid}".format(
-        tiid=tiid)
-    task_ids = list(redis_client.smembers(key))
-
-    if not task_ids:
-        return "SUCCESS: no recent update"
-
-    provider_statuses = {}
-
-    if "STARTED" in task_ids:
-        if (len(task_ids) > 1):
-            task_ids.remove("STARTED")
-        else:
-            return "started_queueing"
-
-    for task_id in task_ids:
-        task_result = AsyncResult(task_id)
-        try:
-            state = task_result.state
-        except (AttributeError, DecodeError):
-            state = "unknown_state" 
-        
-        provider_statuses[task_id] = state
-
-    # logger.debug(u"update_status statuses: tiid={tiid}, provider_statuses={provider_statuses}".format(
-    #     tiid=tiid, provider_statuses=provider_statuses))
-
-    done_updating = all([(status.startswith("SUCCESS") or status.startswith("FAILURE")) for status in provider_statuses.values()])
-    has_failures = any([status.startswith("FAILURE") for status in provider_statuses.values()])
-    has_pending = any([status.startswith("PENDING") for status in provider_statuses.values()])
-    has_started = any([status.startswith("STARTED") for status in provider_statuses.values()])
-
-    update_status = "unknown"
-    if done_updating and not has_failures:
-        update_status = u"SUCCESS: update finished"
-    elif done_updating and has_failures:
-        update_status = u"SUCCESS with FAILURES"
-    elif has_failures:
-        update_status = u"SUCCESS with FAILURES (and not all providers ran)"
-    elif has_pending:
-        update_status = u"PENDING"
-    elif has_started:
-        update_status = u"STARTED"
-
-    update_status += u"; task_ids: {provider_statuses}".format(
-        provider_statuses = provider_statuses)
-
-    return update_status
-
-
 class RefreshStatus(object):
-    def __init__(self, tiids):
-        self.tiids = tiids
+    def __init__(self, products):
+        self.products = products
 
     @property
-    def num_updating(self):
-        return len(self.tiids) - self.num_complete
+    def num_refreshing(self):
+        return sum([product.is_refreshing for product in self.products])
 
     @property
     def num_complete(self):
-        return sum([status.startswith("SUCCESS") for status in self.product_statuses])
+        return len(self.products) - self.num_refreshing
 
     @property
-    def product_statuses(self):
-        product_statuses = [get_refresh_status(tiid) for tiid in self.tiids]
-        return product_statuses
+    def product_problem_statuses(self):
+        product_problem_statuses = [(product.tiid, product.last_refresh_status) for product in self.products if not product.was_successful_refresh]
+        return product_problem_statuses
 
+    @property
+    def product_refresh_failure_messages(self):
+        failure_messages = [(product.tiid, product.last_refresh_failure_message) for product in self.products if product.last_refresh_failure_message]
+        return failure_messages
 
     @property
     def percent_complete(self):
         try:
-            precise = float(self.num_complete) / len(self.tiids) * 100
+            precise = float(self.num_complete) / len(self.products) * 100
         except ZeroDivisionError:
             precise = 100
 
@@ -131,7 +85,7 @@ class RefreshStatus(object):
 
 
     def to_dict(self):
-        return util.dict_from_dir(self, "tiids")
+        return util.dict_from_dir(self, "products")
 
 
 
@@ -321,7 +275,7 @@ class Profile(db.Model):
         return creds
 
     def get_refresh_status(self):
-        return RefreshStatus(self.tiids)
+        return RefreshStatus(self.products_not_removed)
 
     def add_products(self, product_id_dict):
         try:
@@ -721,20 +675,28 @@ def create_profile_from_slug(url_slug, profile_request_dict, db):
     return profile
 
 
-def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_items=True):
+def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_products=True, include_product_relationships=True):
+    if include_products:
+        if include_product_relationships:
+            query_base = Profile.query
+        else:
+            query_base = db.session.query(Profile).options(orm.noload('*'), orm.subqueryload(Profile.products))
+    else:
+        query_base = db.session.query(Profile).options(orm.noload('*'))
+
     if id_type == "id":
         try:
-            profile = Profile.query.get(id)
+           profile = query_base.get(id)
         except DataError:  # id has to be an int
             logger.debug(u"get_profile_from_id no profile found from profile id {id}".format(
                 id=id))
             profile = None
 
     elif id_type == "email":
-        profile = Profile.query.filter(func.lower(Profile.email) == func.lower(id)).first()
+        profile = query_base.filter(func.lower(Profile.email) == func.lower(id)).first()
 
     elif id_type == "url_slug":
-        profile = Profile.query.filter(func.lower(Profile.url_slug) == func.lower(id)).first()
+        profile = query_base.filter(func.lower(Profile.url_slug) == func.lower(id)).first()
 
     if not show_secrets:
         profile = hide_profile_secrets(profile)

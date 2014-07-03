@@ -16,6 +16,7 @@ from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp import db
 from totalimpactwebapp import configs
+from totalimpactwebapp import json_sqlalchemy
 
 
 percentile_snap_creations = 0
@@ -44,6 +45,10 @@ class Product(db.Model):
     last_modified = db.Column(db.DateTime())
     last_update_run = db.Column(db.DateTime())
     removed = db.Column(db.DateTime())
+    last_refresh_started = db.Column(db.DateTime())  #ALTER TABLE item ADD last_refresh_started timestamp
+    last_refresh_finished = db.Column(db.DateTime()) #ALTER TABLE item ADD last_refresh_finished timestamp
+    last_refresh_status = db.Column(db.Text) #ALTER TABLE item ADD last_refresh_status text
+    last_refresh_failure_message = db.Column(json_sqlalchemy.JSONAlchemy(db.Text)) #ALTER TABLE item ADD last_refresh_failure_message text
 
 
     alias_rows = db.relationship(
@@ -85,6 +90,22 @@ class Product(db.Model):
     @property
     def is_true_product(self):
         return True
+
+    @property
+    def is_refreshing(self):
+        REFRESH_TIMEOUT_IN_SECONDS = 30
+        if self.last_refresh_started and not self.last_refresh_finished:
+            now = arrow.utcnow().datetime.replace(tzinfo=None) #http://stackoverflow.com/questions/796008/cant-subtract-offset-naive-and-offset-aware-datetimes
+            if (self.last_refresh_started - now).seconds < REFRESH_TIMEOUT_IN_SECONDS:
+                return True
+
+        return False
+
+    @property
+    def was_successful_refresh(self):
+        if self.last_refresh_status and self.last_refresh_status.startswith(u"SUCCESS"):
+           return True
+        return False
 
     @property
     def genre(self):

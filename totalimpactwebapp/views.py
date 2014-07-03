@@ -40,8 +40,8 @@ from totalimpactwebapp import notification_report
 from totalimpactwebapp.reference_set import reference_set_lists
 from totalimpactwebapp.reference_set import load_all_reference_set_lists
 
-
 import newrelic.agent
+from sqlalchemy import orm
 
 logger = logging.getLogger("tiwebapp.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
@@ -69,15 +69,15 @@ def json_resp_from_thing(thing):
 
     my_dict = util.todict(thing)
 
+    json_str = json.dumps(my_dict, sort_keys=True, indent=4)
+
     if (os.getenv("FLASK_DEBUG", False) == "True"):
         logger.info(u"rendering output through debug_api.html template")
         resp = make_response(render_template(
             'debug_api.html',
-            data=my_dict))
+            data=json_str))
         resp.mimetype = "text/html"
         return views_helpers.bust_caches(resp)
-
-    json_str = json.dumps(my_dict, sort_keys=True, indent=4)
 
     resp = make_response(json_str, 200)
     resp.mimetype = "application/json"
@@ -108,7 +108,7 @@ def get_user_for_response(id, request):
     except AttributeError:
         logged_in = False
 
-    retrieved_user = get_profile_from_id(id, id_type, logged_in)
+    retrieved_user = get_profile_from_id(id, id_type, show_secrets=logged_in)
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -118,6 +118,8 @@ def get_user_for_response(id, request):
     g.profile_slug = retrieved_user.url_slug
 
     return retrieved_user
+
+
 
 
 def make_js_response(template_name, **kwargs):
@@ -162,7 +164,8 @@ def is_logged_in(profile):
 
 @login_manager.user_loader
 def load_user(profile_id):
-    return Profile.query.get(int(profile_id))
+    # load just the profile table contents
+    return db.session.query(Profile).options(orm.noload('*')).get(int(profile_id))
 
 
 @app.before_first_request
@@ -403,8 +406,10 @@ def patch_user_about(profile_id):
 @app.route("/profile/<profile_id>/refresh_status", methods=["GET"])
 def refresh_status(profile_id):
     local_sleep(1)
-    profile = get_user_for_response(profile_id, request)
-    return json_resp_from_thing(profile.get_refresh_status())
+    id_type = request.args.get("id_type", "url_slug")  # url_slug is default    
+    profile_bare_products = get_profile_from_id(profile_id, id_type, include_product_relationships=False)
+    print profile_bare_products
+    return json_resp_from_thing(profile_bare_products.get_refresh_status())
 
 
 

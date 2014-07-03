@@ -62,13 +62,13 @@ def reset_password_from_token(reset_token, new_password):
     except (BadTimeSignature, BadSignature):
         raise PasswordResetError("invalid-token")
 
-    user = get_profile_from_id(email, "email", include_items=False)
+    user = get_profile_from_id(email, "email", include_products=False)
     user.set_password(new_password)
     return user
 
 
 def reset_password(id, id_type, current_password, new_password):
-    user = get_profile_from_id(id, id_type, include_items=False)
+    user = get_profile_from_id(id, id_type, include_products=False)
     if user.check_password(current_password):
         user.set_password(new_password)
     else:
