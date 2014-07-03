@@ -93,16 +93,18 @@ class Product(db.Model):
 
     @property
     def is_refreshing(self):
-        REFRESH_TIMEOUT_IN_SECONDS = 30
+        REFRESH_TIMEOUT_IN_SECONDS = 120
         if self.last_refresh_started and not self.last_refresh_finished:
-            now = arrow.utcnow().datetime.replace(tzinfo=None) #http://stackoverflow.com/questions/796008/cant-subtract-offset-naive-and-offset-aware-datetimes
-            if (self.last_refresh_started - now).seconds < REFRESH_TIMEOUT_IN_SECONDS:
+            last_refresh_started = arrow.get(self.last_refresh_started, 'utc')
+            start_time_theshold = arrow.utcnow().replace(seconds=-REFRESH_TIMEOUT_IN_SECONDS)
+            # print last_refresh_started.humanize, start_time_theshold.humanize
+            if start_time_theshold < last_refresh_started:
                 return True
 
         return False
 
     @property
-    def was_successful_refresh(self):
+    def finished_successful_refresh(self):
         if self.last_refresh_status and self.last_refresh_status.startswith(u"SUCCESS"):
            return True
         return False

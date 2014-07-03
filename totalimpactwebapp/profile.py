@@ -66,7 +66,7 @@ class RefreshStatus(object):
 
     @property
     def product_problem_statuses(self):
-        product_problem_statuses = [(product.tiid, product.last_refresh_status) for product in self.products if not product.was_successful_refresh]
+        product_problem_statuses = [(product.tiid, product.last_refresh_status) for product in self.products if not product.finished_successful_refresh]
         return product_problem_statuses
 
     @property
