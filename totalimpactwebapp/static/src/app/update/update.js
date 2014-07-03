@@ -61,8 +61,8 @@ angular.module( 'update.update', [
       deferred = $q.defer()
       url_slug = url_slug_arg
 
-      if (!profile_is_refreshing) 
-        deferred.reject("Everything is already up to date.")  {
+      if (!profile_is_refreshing){
+        deferred.reject("Everything is already up to date.")
         return deferred.promise
       }
 
