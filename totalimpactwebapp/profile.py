@@ -161,6 +161,9 @@ class Profile(db.Model):
         except IndexError:
             return None
 
+    @property
+    def is_refreshing(self):
+        return any([product.is_refreshing for product in self.products_not_removed])
 
     @property
     def awards(self):
@@ -169,6 +172,7 @@ class Profile(db.Model):
     @property
     def has_linked_account(self):
         return True
+
 
     @property
     def linked_accounts(self):
@@ -464,6 +468,7 @@ class Profile(db.Model):
             "new_metrics_notification_dismissed",
             "notification_email_frequency",
             "is_advisor",
+            "is_refreshing",
             "linked_accounts"
         ]
 
