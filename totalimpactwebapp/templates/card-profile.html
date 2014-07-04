@@ -1,0 +1,58 @@
+{#  these are only milestones...regular 'ol diffs are product-level only. #}
+
+
+
+{#  PROFILE getting a First Metric milestone #}
+{#  ########################################### #}
+{% if granularity == "profile" and threshold_awarded == 1 %}
+<div class="card milestone first-metric profile">
+   <div class="header">
+      <h3>
+            Welcome to the {{ this_metric.provider_name }} {{ this_metric.display_name }} club!
+      </h3>
+      <h4>
+         on <a href="https://impactstory.org/{{ user.url_slug }}">https://impactstory.org/{{ user.url_slug }}</a>
+      </h4>
+   </div>
+   <div class="body">
+      <p>
+         Congratulations, you just got your first {{ this_metric.provider_name }} {{ this_metric.display_name }}!
+      </p>
+   </div>
+   <div class="footer">
+      <strong>profile</strong> milestone
+   </div>
+</div>
+
+
+
+
+
+{#  PROFILE getting a milestone OTHER than First Metric #}
+{#  ################################################### #}
+{% elif granularity == "profile" and threshold_awarded > 1 %}
+<div class="card milestone profile">
+   <div class="header">
+      <h3>
+         <span class="value">{{ threshold_awarded }}+</span> profile {{ this_metric.provider_name }} {{ this_metric.display_name }}
+      </h3>
+      <h4>
+         on <a href="https://impactstory.org/{{ user.url_slug }}">https://impactstory.org/{{ user.url_slug }}</a>
+      </h4>
+   </div>
+
+   <div class="body">
+      <p>
+         You've now got a total of {{ current_value }} {{ this_metric.provider_name }}
+         {{ this_metric.display_name }} on your profile, thanks to {{ diff_value }}
+         new {{ this_metric.display_name }} this week!
+      </p>
+      <p>
+         Congrats on passing the {{ threshold_awarded }} mark!
+      </p>
+   </div>
+   <div class="footer">
+      <strong>profile</strong> milestone
+   </div>
+</div>
+

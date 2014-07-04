@@ -56,9 +56,9 @@ def pickWosItems(num_total_results, num_subset_results):
     return pages_and_ids
 
 
+
 _underscorer1 = re.compile(r'(.)([A-Z][a-z]+)')
 _underscorer2 = re.compile('([a-z0-9])([A-Z])')
-
 
 def camel_to_snake_case(s):
     """

@@ -3,6 +3,7 @@ from totalimpactwebapp.card import ProductNewMetricCard
 from totalimpactwebapp.card import ProfileNewMetricCard
 from totalimpactwebapp.util import as_int_or_float_if_possible
 from totalimpactwebapp import configs
+from copy import copy
 
 import datetime
 import arrow
@@ -80,8 +81,7 @@ def make_product_new_metrics_cards(profile, timestamp=None):
         for metric in product.metrics:
 
             if ProductNewMetricCard.test(metric):
-                print "new card time"
-                new_card = ProductNewMetricCard(profile, product, metric)
+                new_card = ProductNewMetricCard(copy(profile), copy(product), copy(metric))
                 cards.append(new_card)
 
 

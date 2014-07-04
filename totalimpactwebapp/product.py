@@ -69,6 +69,16 @@ class Product(db.Model):
     )
 
 
+    def __init__(self, **kwargs):
+        #super(Product, self).__init__(**kwargs)
+
+        print "i'm in the product init"
+
+        #print "here are my metrics", self.make_metrices_list(self.percentile_snaps, self.created)
+        #self.metrics = make_metrics_list(self.percentile_snaps, self.created)
+
+
+
     @property
     def biblio(self):
         return Biblio(self.biblio_rows)
@@ -92,6 +102,7 @@ class Product(db.Model):
             return self.biblio.calculated_genre
         else:
             return self.aliases.get_genre()
+
 
     @property
     def host(self):
@@ -141,6 +152,7 @@ class Product(db.Model):
 
     @property
     def percentile_snaps(self):
+
         my_refset = reference_set.ProductLevelReferenceSet()
         my_refset.year = self.year
         my_refset.genre = self.genre
@@ -174,11 +186,15 @@ class Product(db.Model):
             return None
 
 
-    def metric_by_name(self, metric_name):
-        for metric in self.metrics:
-            if metric.metric_name==metric_name:
-                return metric
-        return None
+
+
+    def has_metric_this_good(self, provider, interaction, count):
+        #requested_metric = self.get_metric_by_name(provider, interaction)
+        return True
+        try:
+            return requested_metric.display_count >= count
+        except AttributeError:
+            return False
 
 
     def to_dict(self):

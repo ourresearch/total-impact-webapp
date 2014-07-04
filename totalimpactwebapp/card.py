@@ -6,22 +6,6 @@ import jinja2
 
 
 class Card(object):
-    #id = db.Column(db.Integer, primary_key=True)
-    #granularity = db.Column(db.Text)  # profile or product
-    #metric_name = db.Column(db.Text)  # mendeley:views, scopus:citations
-    #card_type = db.Column(db.Text)  # readability, flags, new_metrics
-    #user_id = db.Column(db.Integer)
-    #tiid = db.Column(db.Text)
-    #diff_value = db.Column(db.Text)
-    #current_value = db.Column(db.Text)
-    #percentile_current_value = db.Column(db.Text)
-    #threshold_awarded = db.Column(db.Integer)
-    #num_profile_products_this_good = db.Column(db.Integer)
-    #timestamp = db.Column(db.DateTime())
-    #newest_diff_timestamp = db.Column(db.DateTime())
-    #oldest_diff_timestamp = db.Column(db.DateTime())
-    #diff_window_days = db.Column(db.Integer)
-    #weight = db.Column(db.Float)
 
 
     def __init__(self, **kwargs):
@@ -39,20 +23,14 @@ class Card(object):
     def get_template_name(self):
         raise NotImplementedError
 
-        #if self.threshold_awarded is not None:
-        #    return "card-milestone"
-        #else:
-        #    return "card-new-metric"
-
     def to_dict(self):
         properties_to_ignore = ["profile", "product", "metric"]
         ret = util.dict_from_dir(self, properties_to_ignore)
         return ret
 
-    #def set_product_from_list(self, products):
-    #    for product in products:
-    #        if product.tiid == self.tiid:
-    #            self.product = product
+    @property
+    def threshold_awarded(self):
+        return None
 
     @property
     def sort_by(self):
@@ -88,7 +66,7 @@ class Card(object):
         templateLoader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
         templateEnv = jinja2.Environment(loader=templateLoader)
         html_template = templateEnv.get_template(self.get_template_name() + ".html")
-        return html_template.render(self.to_dict())
+        return html_template.render({"card": self})
 
 
     def to_text(self):
@@ -108,7 +86,7 @@ class Card(object):
 
 class ProductNewMetricCard(Card):
 
-    def __init__(self, product, profile, metric, timestamp=None):
+    def __init__(self, profile, product, metric, timestamp=None):
         self.product = product
         self.profile = profile
         self.metric = metric
@@ -121,30 +99,42 @@ class ProductNewMetricCard(Card):
 
     @property
     def num_profile_products_this_good(self):
-        return
+
+
+        ret = 0
+        for product in self.profile.products:
+
+            if product.has_metric_this_good(
+                self.metric.provider,
+                self.metric.interaction,
+                self.metric.display_count
+            ):
+
+                ret += 1
+        return ret
 
     @property
-    def num_profile_products_this_good_string(self):
+    def num_profile_products_this_good_ordinal(self):
         return util.ordinal(self.num_profile_products_this_good)
+
+    @property
+    def threshold_awarded(self):
+        return None
 
 
     @property
     def sort_by(self):
         base_score = super(ProductNewMetricCard, self).sort_by
-        return base_score
 
-        try:
-            if self.metric.percentile["value"] > 50:
-                top_half = self.metric.percentile["value"] - 50
-                base_score += (top_half * 10)  # max 500
-        except TypeError:
-            pass
+        if self.metric.percentile and self.metric.percentile["value"] > 50:
+            top_half = self.metric.percentile["value"] - 50
+            base_score += (top_half * 10)  # max 500
 
         return base_score
 
 
     def get_template_name(self):
-        return "card-new_metric"
+        return "card-product"
 
 
 
@@ -156,7 +146,7 @@ class ProductNewMetricCard(Card):
 class ProfileNewMetricCard(Card):
 
     def get_template_name(self):
-        return "card-new_metric"
+        return "card-new-metric"
 
     @property
     def sort_by(self):

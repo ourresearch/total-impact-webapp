@@ -11,7 +11,7 @@ def make(profile):
     cards += make_product_new_metrics_cards(profile)
 
     #cards = filter_cards(cards)
-    #cards = sort_cards(cards)[0:10]
+    cards = sort_cards(cards)[0:10]
 
     response = {
         "profile": profile,
@@ -31,7 +31,7 @@ def get_css():
 
 
 def sort_cards(cards):
-    sorted_cards = sorted(cards, key=lambda card: card.sort_by(), reverse=True)
+    sorted_cards = sorted(cards, key=lambda card: card.sort_by, reverse=True)
     return sorted_cards
 
 

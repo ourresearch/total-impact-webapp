@@ -16,16 +16,16 @@ def make_metrics_list(snaps, product_created):
     for fully_qualified_metric_name, my_config in configs.metrics().iteritems():
         my_provider, my_interaction = fully_qualified_metric_name.split(":")
 
-        my_metric = Metric(
-            my_provider,
-            my_interaction,
-            my_config)
+        if Metric.test(my_provider, my_interaction, snaps):
 
-        my_metric.add_snaps_from_list(snaps)
+            my_metric = Metric(
+                my_provider,
+                my_interaction,
+                my_config)
 
-        my_metric.diff_window_must_start_after = arrow.get(product_created)
+            my_metric.add_snaps_from_list(snaps)
 
-        if len(my_metric.snaps):
+            my_metric.diff_window_must_start_after = arrow.get(product_created)
             metrics.append(my_metric)
 
     return metrics
@@ -69,6 +69,14 @@ class Metric(object):
             return True
         else:
             return False
+
+    @classmethod
+    def test(cls, provider, interaction, snaps):
+        for snap in snaps:
+            if snap.provider == provider and snap.interaction == interaction:
+                return True
+
+        return False
         
 
     @property
