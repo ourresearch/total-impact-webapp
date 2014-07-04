@@ -1,7 +1,8 @@
 import configs
 import logging
 import arrow
-from totalimpactwebapp import util
+from totalimpactwebapp.util import cached_property
+from totalimpactwebapp.util import dict_from_dir
 
 
 logger = logging.getLogger("tiwebapp.metric")
@@ -71,7 +72,7 @@ class Metric(object):
             return False
         
 
-    @property
+    @cached_property
     def most_recent_snap(self):
         return sorted(
             self.snaps,
@@ -79,11 +80,11 @@ class Metric(object):
             reverse=True
         )[0]
 
-    @property
+    @cached_property
     def is_highly(self):
         return self.most_recent_snap.is_highly
 
-    @property
+    @cached_property
     def fully_qualified_metric_name(self):
         return u"{provider}:{interaction}".format(
             provider=self.provider, interaction=self.interaction)
@@ -131,47 +132,47 @@ class Metric(object):
                 "value": value_diff
             }
 
-    @property
+    @cached_property
     def diff_value(self):
         return self._diff()["value"]
 
-    @property
+    @cached_property
     def diff_window_length(self):
         return self._diff()["window_length"]
 
 
-    @property
+    @cached_property
     def hide_badge(self):
         try:
             return self.config["hide_badge"]
         except KeyError:
             return False
 
-    @property
+    @cached_property
     def latest_nonzero_refresh_timestamp(self):
         return self.most_recent_snap.last_collected_date
 
 
-    @property
+    @cached_property
     def engagement_type(self):
         return self.config["engagement_type"]
 
 
-    @property
+    @cached_property
     def audience(self):
         return self.config["audience"]
 
-    @property
+    @cached_property
     def provider_name(self):  # for backward compatibility
         return self.provider
 
 
-    @property
+    @cached_property
     def display_count(self):
         return self.most_recent_snap.display_count
 
 
-    @property
+    @cached_property
     def display_provider(self):
         try:
             ret = self.config["display_provider"]
@@ -181,26 +182,26 @@ class Metric(object):
         ret.replace("Figshare", "figshare")  # hack
         return ret
 
-    @property
+    @cached_property
     def display_interaction(self):
         if self.display_count <= 1:
             return self.config["interaction"][:-1]  # de-pluralize
         else:
             return self.config["interaction"]
 
-    @property
+    @cached_property
     def drilldown_url(self):
         return self.most_recent_snap.drilldown_url
 
-    @property
+    @cached_property
     def percentile(self):
         return self.most_recent_snap.percentile
 
-    @property
+    @cached_property
     def percentile_value_string(self):
         return self.most_recent_snap.percentile_value_string
 
-    @property
+    @cached_property
     def display_order(self):
         try:
             ret = self.most_recent_snap.raw_value + 0  # just for tiebreaks
@@ -217,7 +218,7 @@ class Metric(object):
         return ret
 
     def to_dict(self):
-        ret = util.dict_from_dir(self, ["config", "snaps"])
+        ret = dict_from_dir(self, ["config", "snaps"])
         return ret
 
 
@@ -228,7 +229,7 @@ class MendeleyDisciplineMetric(Metric):
     def __init__(self, *args):
         super(MendeleyDisciplineMetric, self).__init__(*args)
 
-    @property
+    @cached_property
     def mendeley_discipine(self):
         disciplines = self.most_recent_snap.raw_value
 

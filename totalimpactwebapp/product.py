@@ -14,9 +14,11 @@ from totalimpactwebapp.metric import make_mendeley_metric
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.util import dict_from_dir
+from totalimpactwebapp.util import cached_property
 from totalimpactwebapp import db
 from totalimpactwebapp import configs
 from totalimpactwebapp import json_sqlalchemy
+
 
 
 percentile_snap_creations = 0
@@ -74,24 +76,24 @@ class Product(db.Model):
     )
 
 
-    @property
+    @cached_property
     def biblio(self):
         return Biblio(self.biblio_rows)
 
-    @property
+    @cached_property
     def aliases(self):
         return Aliases(self.alias_rows)
 
-    @property
+    @cached_property
     def metrics(self):
         my_metrics = make_metrics_list(self.percentile_snaps, self.created)
         return my_metrics
 
-    @property
+    @cached_property
     def is_true_product(self):
         return True
 
-    @property
+    @cached_property
     def is_refreshing(self):
         REFRESH_TIMEOUT_IN_SECONDS = 120
         if self.last_refresh_started and not self.last_refresh_finished:
@@ -103,13 +105,13 @@ class Product(db.Model):
 
         return False
 
-    @property
+    @cached_property
     def finished_successful_refresh(self):
         if self.last_refresh_status and self.last_refresh_status.startswith(u"SUCCESS"):
            return True
         return False
 
-    @property
+    @cached_property
     def genre(self):
         if self.biblio.calculated_genre is not None:
             genre = self.biblio.calculated_genre
@@ -122,7 +124,7 @@ class Product(db.Model):
         return genre
 
 
-    @property
+    @cached_property
     def host(self):
         if self.genre == "article":
             # don't return repositories for articles
@@ -133,7 +135,7 @@ class Product(db.Model):
         else:
             return self.aliases.get_host()
 
-    @property
+    @cached_property
     def mendeley_discipline(self):
         mendeley_metric = make_mendeley_metric(self.snaps, self.created)
         try:
@@ -141,11 +143,11 @@ class Product(db.Model):
         except (AttributeError, TypeError):
             return None
 
-    @property
+    @cached_property
     def year(self):
         return self.biblio.display_year
 
-    @property
+    @cached_property
     def display_genre_plural(self):
         return configs.pluralize_genre(self.genre)
 
@@ -155,20 +157,20 @@ class Product(db.Model):
                 return metric
         return None
 
-    @property
+    @cached_property
     def has_metrics(self):
         return len(self.metrics) > 0
 
-    @property
+    @cached_property
     def has_diff(self):
         return any([m.diff_value > 0 for m in self.metrics])
 
-    @property
+    @cached_property
     def awards(self):
         return award.make_list(self.metrics)
 
 
-    @property
+    @cached_property
     def percentile_snaps(self):
         my_refset = reference_set.ProductLevelReferenceSet()
         my_refset.year = self.year
@@ -185,16 +187,16 @@ class Product(db.Model):
         return ret
 
 
-    @property
+    @cached_property
     def metrics_raw_sum(self):
         return sum(m.display_count for m in self.metrics)
 
-    @property
+    @cached_property
     def awardedness_score(self):
         return sum([a.sort_score for a in self.awards])
 
 
-    @property
+    @cached_property
     def latest_diff_timestamp(self):
         ts_list = [m.latest_nonzero_refresh_timestamp for m in self.metrics]
         try:

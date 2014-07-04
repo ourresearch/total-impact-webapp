@@ -3,6 +3,7 @@ import logging
 import shortuuid
 import datetime
 
+from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp import db
@@ -172,7 +173,7 @@ class RefsetBuilder(object):
         self.metric_counters = defaultdict(Counter)
         self.product_counter = Counter()
 
-    @property
+    @cached_property
     def metric_keys(self):
         return self.metric_counters.keys()
 

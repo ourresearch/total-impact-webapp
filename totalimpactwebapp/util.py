@@ -7,6 +7,7 @@ from time import sleep
 import datetime
 
 
+
 # a slow decorator for tests, so can exclude them when necessary
 # put @slow on its own line above a slow test method
 # to exclude slow tests, run like this: nosetests -A "not slow"
@@ -242,3 +243,20 @@ def ordinal(value):
         ordval = u"%d%s" % (value, "th")
 
     return ordval
+
+
+# from http://code.activestate.com/recipes/576563-cached-property/
+def cached_property(property_name):
+    """A memoize decorator for class properties."""
+    @wraps(property_name)
+    def get(self):
+        try:
+            return self._cache[property_name]
+        except AttributeError:
+            self._cache = {}
+        except KeyError:
+            pass
+        ret = self._cache[property_name] = property_name(self)
+        return ret
+    return property(get)
+

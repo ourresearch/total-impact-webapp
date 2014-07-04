@@ -2,6 +2,8 @@ from __future__ import division
 import math
 import time
 
+from totalimpactwebapp.util import cached_property
+
 def make_awards_list(user):
 
     awards_list = []
@@ -34,31 +36,31 @@ class ProfileAward(object):
     def calculate(self, about, products):
         raise NotImplementedError  # override in children
 
-    @property
+    @cached_property
     def award_badge(self):
         return not self.is_bottom_level
 
-    @property
+    @cached_property
     def level_name(self):
         return self._value_for_level(self.level_names)
 
-    @property
+    @cached_property
     def next_level_name(self):
         return self._value_for_level(self.level_names, True)
 
-    @property
+    @cached_property
     def level_cutoff(self):
         return self._value_for_level(self.bins)
 
-    @property
+    @cached_property
     def next_level_cutoff(self):
         return self._value_for_level(self.bins, True)
 
-    @property
+    @cached_property
     def bottom_level(self):
         return len(self.bins) + 1
 
-    @property
+    @cached_property
     def is_bottom_level(self):
         return self.level == self.bottom_level
 
@@ -108,7 +110,7 @@ class OAAward(ProfileAward):
             .10   # 50%
         ]
 
-    @property
+    @cached_property
     def is_perfect(self):
         return self.extra["oa_articles_proportion"] == 1
 
