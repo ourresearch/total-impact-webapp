@@ -66,19 +66,8 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 
 def json_resp_from_thing(thing):
-
     my_dict = util.todict(thing)
-
     json_str = json.dumps(my_dict, sort_keys=True, indent=4)
-
-    if (os.getenv("FLASK_DEBUG", False) == "True"):
-        logger.info(u"rendering output through debug_api.html template")
-        resp = make_response(render_template(
-            'debug_api.html',
-            data=json_str))
-        resp.mimetype = "text/html"
-        return views_helpers.bust_caches(resp)
-
     resp = make_response(json_str, 200)
     resp.mimetype = "application/json"
     return views_helpers.bust_caches(resp)
@@ -166,7 +155,7 @@ def is_logged_in(profile):
 def load_user(profile_id):
     # load just the profile table contents
 
-    return db.session.query(Profile).get(int(profile_id))
+    return db.session.query(Profile).options(orm.noload('*')).get(int(profile_id))
 
 
 @app.before_first_request
@@ -326,8 +315,7 @@ def login():
 #
 ###############################################################################
 
-@app.route("/profile/<profile_id>", methods=['GET'])
-def user_profile(profile_id):
+def get_user_profile(profile_id):
     resp_constr_timer = util.Timer()
 
     profile = get_user_for_response(
@@ -356,10 +344,32 @@ def user_profile(profile_id):
         slug=profile.url_slug,
         elapsed=resp_constr_timer.elapsed()
     ))
+    return resp
 
 
+@app.route("/profile/<profile_id>", methods=['GET'])
+def user_profile(profile_id):
+    resp = get_user_profile(profile_id)
     resp = json_resp_from_thing(resp)
     return resp
+
+
+@app.route("/profile/<profile_id>.json", methods=['GET'])
+def user_profile_for_json_viewing(profile_id):
+    resp = get_user_profile(profile_id)
+
+    if (os.getenv("FLASK_DEBUG", False) == "True"):
+        my_dict = util.todict(resp)
+        json_str = json.dumps(my_dict, sort_keys=True, indent=4)
+        logger.info(u"rendering output through debug_api.html template")
+        resp = make_response(render_template(
+            'debug_api.html',
+            data=json_str))
+        resp.mimetype = "text/html"
+        return views_helpers.bust_caches(resp)
+    else:
+        resp = json_resp_from_thing(resp)
+        return resp
 
 
 
