@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-03
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-04
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1547,7 +1547,8 @@ angular.module("profile", [
           $scope.doneLoading = true
 
           // got user back with products. if still refreshing, show update modal
-          Update.showUpdateModal(url_slug, resp.is_refreshing).then(
+          console.log("here's the about before checking is_refreshing", resp.about)
+          Update.showUpdateModal(url_slug, resp.about.is_refreshing).then(
             function(msg){
               console.log("updater (resolved):", msg)
               $httpDefaultCache.removeAll()
