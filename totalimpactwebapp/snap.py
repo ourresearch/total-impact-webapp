@@ -1,5 +1,6 @@
 from totalimpactwebapp import db
-from totalimpactwebapp import util
+from totalimpactwebapp.util import cached_property
+from totalimpactwebapp.util import ordinal
 from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp.metric import Metric
 
@@ -28,7 +29,7 @@ class Snap(db.Model):
         self.refset = refset
 
 
-    @property
+    @cached_property
     def raw_value_cleaned_for_export(self):
         PROVIDERS_WHO_DONT_ALLOW_EXPORT = ["scopus", "citeulike"]
         if self.provider in PROVIDERS_WHO_DONT_ALLOW_EXPORT:
@@ -45,7 +46,7 @@ class Snap(db.Model):
             "percentile": self.percentile
         }
 
-    @property
+    @cached_property
     def can_diff(self):
         try:
             _ = int(self.raw_value)
@@ -53,7 +54,7 @@ class Snap(db.Model):
         except (ValueError, TypeError):
             return False
 
-    @property
+    @cached_property
     def display_count(self):
         try:
             return int(self.raw_value)
@@ -65,7 +66,7 @@ class Snap(db.Model):
             return 0  # ignore lists and dicts
 
 
-    @property
+    @cached_property
     def percentile(self):
         try:
             return self.refset.get_percentile(
@@ -76,14 +77,14 @@ class Snap(db.Model):
         except TypeError:
             return None
 
-    @property
+    @cached_property
     def percentile_value_string(self):
         try:
-            return util.ordinal(self.percentile["value"])
+            return ordinal(self.percentile["value"])
         except TypeError:
             return None
 
-    @property
+    @cached_property
     def is_highly(self):
         try:
             percentile_high_enough = self.percentile["value"] >= 75

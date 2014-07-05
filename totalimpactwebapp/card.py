@@ -89,14 +89,12 @@ class ProductNewMetricCard(Card):
     @property
     def num_profile_products_this_good(self):
         ret = 0
-        for product in self.profile.products:
+        for product in self.profile.products_not_removed:
 
             if product.has_metric_this_good(
-                self.metric.provider,
-                self.metric.interaction,
-                self.metric.display_count
-            ):
-
+                    self.metric.provider,
+                    self.metric.interaction,
+                    self.metric.display_count):
                 ret += 1
         return ret
 

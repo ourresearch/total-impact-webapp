@@ -1,5 +1,7 @@
+from totalimpactwebapp.util import cached_property
+from totalimpactwebapp.util import dict_from_dir
+
 import logging
-import util
 import configs
 
 logger = logging.getLogger("tiwebapp.metric_snap")
@@ -47,22 +49,22 @@ class Award(object):
         else:
             return False
 
-    @property
+    @cached_property
     def is_highly(self):
         return self.top_metric_by_percentile.is_highly
 
 
-    @property
+    @cached_property
     def top_metric_by_percentile(self):
         s = sorted(self.metrics, key=lambda metric: metric.percentile, reverse=True)
         return s[0]
 
-    @property
+    @cached_property
     def top_metric_by_count(self):
         s = sorted(self.metrics, key=lambda metric: metric.display_count, reverse=True)
         return s[0]
 
-    @property
+    @cached_property
     def top_metric_by_diff(self):
         s = sorted(
             self.metrics,
@@ -71,40 +73,40 @@ class Award(object):
         )
         return s[0]
 
-    @property
+    @cached_property
     def metrics_with_diff(self):
         return [m for m in self.metrics if m.diff_value > 0]
 
-    @property
+    @cached_property
     def has_diff(self):
         return len(self.metrics_with_diff) > 0
 
-    @property
+    @cached_property
     def is_highly_classname(self):
         if self.is_highly:
             return "is-highly"
         else:
             return "is-not-highly"
 
-    @property
+    @cached_property
     def highly_string(self):
         if self.is_highly:
             return "highly"
         else:
             return ""
 
-    @property
+    @cached_property
     def sort_score(self):
         if self.is_highly:
             return 3
         else:
             return 1
 
-    @property
+    @cached_property
     def display_audience(self):
         return self.audience.replace("public", "the public")
 
-    @property
+    @cached_property
     def display_order(self):
         ret = configs.award_configs["engagement_types"][self.engagement_type][1]
         if self.audience == "scholars":
@@ -116,7 +118,7 @@ class Award(object):
         return ret
 
     def to_dict(self):
-        return util.dict_from_dir(self)
+        return dict_from_dir(self)
 
 
 

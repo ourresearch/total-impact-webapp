@@ -498,7 +498,7 @@ class Profile(db.Model):
 def delete_products_from_profile(profile, tiids_to_delete):
 
     number_deleted = 0
-    for product in profile.products:
+    for product in profile.products_not_removed:
         if product.tiid in tiids_to_delete:
             number_deleted += 1
             product.removed = now_in_utc()
