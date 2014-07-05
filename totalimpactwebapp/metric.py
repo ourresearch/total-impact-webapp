@@ -200,17 +200,17 @@ class Metric(object):
         try:
             ret = self.config["display_provider"]
         except KeyError:
-            ret = self.config["provider_name"].capitalize()
+            # don't automatically cap because messes up PLOS and figshare
+            ret = self.config["provider_name"]
 
-        ret.replace("Figshare", "figshare")  # hack
         return ret
 
     @cached_property
     def display_interaction(self):
         if self.display_count <= 1:
-            return self.config["interaction"][:-1]  # de-pluralize
+            return self.config["display_interaction"][:-1]  # de-pluralize
         else:
-            return self.config["interaction"]
+            return self.config["display_interaction"]
 
     @cached_property
     def drilldown_url(self):

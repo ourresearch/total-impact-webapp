@@ -1,24 +1,25 @@
-{#  these are only milestones...regular 'ol diffs are product-level only. #}
 
 
-
-{#  PROFILE getting a First Metric milestone #}
+{#  this profile is getting a First Metric milestone #}
 {#  ########################################### #}
-{% if granularity == "profile" and threshold_awarded == 1 %}
+{% if card.milestone_awarded == 1 %}
 <div class="card milestone first-metric profile">
    <div class="header">
       <h3>
-            Welcome to the {{ this_metric.provider_name }} {{ this_metric.display_name }} club!
+         Welcome to the {{ card.exemplar_metric.display_provider }} {{ card.exemplar_metric.display_interaction }} club!
       </h3>
       <h4>
-         on <a href="https://impactstory.org/{{ user.url_slug }}">https://impactstory.org/{{ user.url_slug }}</a>
+         on <a href="https://impactstory.org/{{ card.profile.url_slug }}">https://impactstory.org/{{ card.profile.url_slug }}</a>
       </h4>
    </div>
+
    <div class="body">
       <p>
-         Congratulations, you just got your first {{ this_metric.provider_name }} {{ this_metric.display_name }}!
+         Congratulations, you just got your first {{ card.exemplar_metric.display_provider }} {{ card.exemplar_metric.display_interaction }}!
       </p>
+
    </div>
+
    <div class="footer">
       <strong>profile</strong> milestone
    </div>
@@ -26,33 +27,33 @@
 
 
 
-
-
-{#  PROFILE getting a milestone OTHER than First Metric #}
-{#  ################################################### #}
-{% elif granularity == "profile" and threshold_awarded > 1 %}
+{#  this profile is hitting a milestone other than First Metric #}
+{#  ##################################################### #}
+{% elif card.milestone_awarded > 1 %}
 <div class="card milestone profile">
    <div class="header">
       <h3>
-         <span class="value">{{ threshold_awarded }}+</span> profile {{ this_metric.provider_name }} {{ this_metric.display_name }}
+         <span class="value">{{ card.milestone_awarded }}+</span> profile {{ card.exemplar_metric.display_provider }} {{ card.exemplar_metric.display_interaction }}
       </h3>
       <h4>
-         on <a href="https://impactstory.org/{{ user.url_slug }}">https://impactstory.org/{{ user.url_slug }}</a>
+         on <a href="https://impactstory.org/{{ card.profile.url_slug }}">https://impactstory.org/{{ card.profile.url_slug }}</a>
       </h4>
    </div>
-
    <div class="body">
       <p>
-         You've now got a total of {{ current_value }} {{ this_metric.provider_name }}
-         {{ this_metric.display_name }} on your profile, thanks to {{ diff_value }}
-         new {{ this_metric.display_name }} this week!
+         You've now got a total of {{ card.current_value }} {{ card.exemplar_metric.display_provider }} {{ card.exemplar_metric.display_interaction }} on your profile, thanks to {{ card.diff_value }}
+         new {{ card.exemplar_metric.display_provider }} {{ card.exemplar_metric.display_interaction }} this week!
       </p>
       <p>
-         Congrats on passing the {{ threshold_awarded }} mark!
+         Congrats on passing the {{ card.milestone_awarded }} mark!
       </p>
    </div>
+
    <div class="footer">
       <strong>profile</strong> milestone
    </div>
 </div>
+
+{% endif %}
+
 

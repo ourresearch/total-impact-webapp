@@ -7,7 +7,6 @@ import jinja2
 
 class Card(object):
 
-
     def __init__(self, **kwargs):
         if not "timestamp" in kwargs:
             self.timestamp = kwargs["timestamp"]
@@ -16,17 +15,16 @@ class Card(object):
 
 
     @classmethod
-    def test(cls, **kwargs):
-        return False
-
+    def would_generate_a_card(self):
+        raise NotImplementedError
 
     def get_template_name(self):
         raise NotImplementedError
 
-    def to_dict(self):
-        properties_to_ignore = ["profile", "product", "metric"]
-        ret = util.dict_from_dir(self, properties_to_ignore)
-        return ret
+    @property
+    def card_type(self):
+        return type(self).__name__
+
 
     @property
     def sort_by(self):
@@ -53,19 +51,23 @@ class Card(object):
         html_template = templateEnv.get_template(self.get_template_name() + ".html")
         return html_template.render({"card": self})
 
-
     def to_text(self):
         templateLoader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
         templateEnv = jinja2.Environment(loader=templateLoader)
         html_template = templateEnv.get_template(self.get_template_name() + ".txt")
         return html_template.render(self)
 
-    #
-    #def __repr__(self):
-    #    return u'<Card {id} {user_id} {tiid} {granularity} {metric_name} {card_type}>'.format(
-    #        id=self.id, user_id=self.user_id, tiid=self.tiid, granularity=self.granularity, metric_name=self.metric_name, card_type=self.card_type)
+    def to_dict(self):
+        # ignore some properties to keep dict small.   
+        properties_to_ignore = ["profile", "product", "metric"]
+        ret = util.dict_from_dir(self, properties_to_ignore)
 
+        # individual cards can add in more subelements to help with debugging
+        ret["url_slug"] = self.profile.url_slug
 
+        print "returning to_dict", ret
+
+        return ret
 
 
 
@@ -78,9 +80,8 @@ class ProductNewMetricCard(Card):
         super(ProductNewMetricCard, self).__init__(timestamp=timestamp)
 
     @classmethod
-    def test(cls, metric):
+    def would_generate_a_card(cls, metric):
         return metric.diff_value > 0
-
 
     @property
     def num_profile_products_this_good(self):
@@ -103,6 +104,10 @@ class ProductNewMetricCard(Card):
         return self.metric.milestone_just_reached
 
     @property
+    def provider(self):
+        return self.metric.provider
+
+    @property
     def sort_by(self):
         score = super(ProductNewMetricCard, self).sort_by
 
@@ -123,6 +128,14 @@ class ProductNewMetricCard(Card):
     def get_template_name(self):
         return "card-product"
 
+    def to_dict(self):
+        mydict = super(ProductNewMetricCard, self).to_dict()
+        mydict.update({
+            "tiid": self.product.tiid,
+            "provider": self.metric.provider,
+            "interaction": self.metric.interaction
+            })
+        return mydict
 
 
 
@@ -132,13 +145,51 @@ class ProductNewMetricCard(Card):
 
 class ProfileNewMetricCard(Card):
 
-    def get_template_name(self):
-        return "card-new-metric"
+    def __init__(self, profile, provider, interaction, timestamp=None):
+        self.profile = profile
+        self.provider = provider
+        self.interaction = interaction
+
+        # this card doesn't have a solo metric object, but it helps to 
+        # save an exemplar metric so that it can be used to access relevant display properies
+        self.exemplar_metric = profile.get_metrics_by_name(provider, interaction)[0] #exemplar metric 
+        super(ProfileNewMetricCard, self).__init__(timestamp=timestamp)
+
+
+    @classmethod
+    def would_generate_a_card(cls, profile, provider, interaction):
+        return profile.metric_milestone_just_reached(provider, interaction) is not None
+
+    @property
+    def milestone_awarded(self):
+        try:
+            return self.profile.metric_milestone_just_reached(self.provider, self.interaction)["milestone"]
+        except KeyError:
+            return None
+
+    @property
+    def current_value(self):
+        try:
+            return self.profile.metric_milestone_just_reached(self.provider, self.interaction)["accumulated_most_recent"]
+        except KeyError:
+            return None
+
+    @property
+    def diff_value(self):
+        try:
+            return self.profile.metric_milestone_just_reached(self.provider, self.interaction)["accumulated_diff"]
+        except KeyError:
+            return None                        
 
     @property
     def sort_by(self):
-        base_score = super(ProfileNewMetricCard, self).sort_by
-        return base_score + 1000
+        score = super(ProfileNewMetricCard, self).sort_by
+        return score + 1000
+
+    def get_template_name(self):
+        return "card-profile"
+
+
 
 
 

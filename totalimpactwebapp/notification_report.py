@@ -3,8 +3,15 @@ from totalimpactwebapp import configs
 from totalimpactwebapp.cards_factory import *
 import os
 
+def get_all_cards(profile):
+    cards = []
+    cards += make_product_new_metrics_cards(profile)
+    cards += make_profile_new_metrics_cards(profile)
+    return cards
+
+
 def make(profile):
-    cards = make_product_new_metrics_cards(profile)
+    cards = get_all_cards(profile)
 
     cards = filter_cards(cards)
     cards = sort_cards(cards)
@@ -12,8 +19,8 @@ def make(profile):
 
     response = {
         "profile": profile,
-        "cards": cards,
-        "css": get_css()
+        "css": get_css(),
+        "cards": cards
     }
     return response
 
@@ -36,13 +43,10 @@ def filter_cards(cards):
     ret = []
     for card in cards:
         try:
-            if card.metric.provider == "pubmed":
-                pass
-            else:
+            if card.provider != "pubmed":
                 ret.append(card)
-
-        # no integerable diff_value        
-        except (ValueError, TypeError):
+        except AttributeError:
+            # no provider method
             pass
 
     return ret

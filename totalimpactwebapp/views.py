@@ -836,17 +836,16 @@ def render_cards(profile_id, granularity="all"):
 
 @app.route("/<profile_id>/cards.json")
 def render_cards_json(profile_id):
-    user = get_user_for_response(
+    profile = get_user_for_response(
         profile_id,
         request
     )
-    report = notification_report.make(user)
-    cards = report["cards"]
+    cards = notification_report.get_all_cards(profile)
     return json_resp_from_thing(cards)
 
 
 @app.route("/<profile_id>/report")
-def render_report(profile_id, format="html"):
+def render_notification_report(profile_id, format="html"):
     user = get_user_for_response(
         profile_id,
         request

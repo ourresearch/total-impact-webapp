@@ -880,12 +880,15 @@ def metrics(this_key_only=None):
             # first, add constructed keys to the the metric config
             new_key = provider["name"] + ":" + metric_name
             metric_config["provider"] = provider["name"]
+            metric_config["interaction"] = metric_name
 
             metric_config["display_audience"] = \
                 metric_config["audience"].replace("public", "the public")
 
             if "interaction" not in metric_config.keys():
-                metric_config["interaction"] = metric_name.replace("_", " ")
+                metric_config["interaction"] = metric_name
+            if "display_interaction" not in metric_config.keys():
+                metric_config["display_interaction"] = metric_config["interaction"].replace("_", " ")
 
             # next, handle the this_key_only stuff:
             if this_key_only is None:
