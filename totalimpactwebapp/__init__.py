@@ -45,7 +45,7 @@ if (os.getenv("FLASK_DEBUG", False) == "True"):
     logger.info("Setting app.debug=True; Flask-DebugToolbar will display")
     app.debug = True
     app.config['DEBUG'] = True
-    app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = True
+    app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
     app.config["SQLALCHEMY_RECORD_QUERIES"] = True
     toolbar = DebugToolbarExtension(app)
 
