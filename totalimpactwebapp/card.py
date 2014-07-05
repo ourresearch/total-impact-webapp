@@ -29,19 +29,15 @@ class Card(object):
         return ret
 
     @property
-    def threshold_awarded(self):
-        return None
-
-    @property
     def sort_by(self):
         score = 0
         return score
 
-        if self.threshold_awarded == 1:
+        if self.milestone_awarded == 1:
             score += 500  # as good as a 75th percentile
 
-        if self.threshold_awarded > 1:
-            score += (self.threshold_awarded + 500)
+        if self.milestone_awarded > 1:
+            score += (self.milestone_awarded + 500)
 
         if "youtube"==self.metric.provider:
             score += 1000
@@ -104,8 +100,7 @@ class ProductNewMetricCard(Card):
 
     @property
     def milestone_awarded(self):
-        return None
-
+        return self.metric.milestone_just_reached
 
     @property
     def sort_by(self):

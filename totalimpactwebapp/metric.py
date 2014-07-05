@@ -101,17 +101,17 @@ class Metric(object):
         return u"{provider}:{interaction}".format(
             provider=self.provider, interaction=self.interaction)
 
-    @property
+    @cached_property
     def can_diff(self):
         return self.most_recent_snap.can_diff
 
-    @property
+    @cached_property
     def milestone_just_reached(self):
         if not self.can_diff:
             return None
 
         for milestone in sorted(self.config["milestones"], reverse=True):
-            if self.window_start_snap.raw_value < milestone <= self.most_recent_snap.raw_value:
+            if self.window_start_snap.raw_value_int < milestone <= self.most_recent_snap.raw_value_int:
                 return milestone
 
         return None

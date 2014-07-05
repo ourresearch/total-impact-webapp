@@ -56,6 +56,11 @@ class Snap(db.Model):
 
     @cached_property
     def display_count(self):
+        # right now display as raw value int, may change in future
+        return self.raw_value_int
+
+    @cached_property
+    def raw_value_int(self):
         try:
             return int(self.raw_value)
         except ValueError:
@@ -64,7 +69,6 @@ class Snap(db.Model):
             return 1
         except TypeError:
             return 0  # ignore lists and dicts
-
 
     @cached_property
     def percentile(self):
