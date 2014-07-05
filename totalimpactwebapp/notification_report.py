@@ -4,14 +4,11 @@ from totalimpactwebapp.cards_factory import *
 import os
 
 def make(profile):
-    cards = []
-    #cards += ProductNewMetricCardsFactory.make(profile)
-    #cards += ProfileNewMetricCardsFactory.make(profile)
+    cards = make_product_new_metrics_cards(profile)
 
-    cards += make_product_new_metrics_cards(profile)
-
-    #cards = filter_cards(cards)
-    cards = sort_cards(cards)[0:10]
+    cards = filter_cards(cards)
+    cards = sort_cards(cards)
+    # cards = cards[0:10]
 
     response = {
         "profile": profile,
@@ -39,9 +36,7 @@ def filter_cards(cards):
     ret = []
     for card in cards:
         try:
-            if int(card.diff_value) <= 0:
-                pass
-            elif "pubmed" in card.metric_name:
+            if card.metric.provider == "pubmed":
                 pass
             else:
                 ret.append(card)
