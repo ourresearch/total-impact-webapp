@@ -98,7 +98,6 @@ class Product(db.Model):
         if self.last_refresh_started and not self.last_refresh_finished:
             last_refresh_started = arrow.get(self.last_refresh_started, 'utc')
             start_time_theshold = arrow.utcnow().replace(seconds=-REFRESH_TIMEOUT_IN_SECONDS)
-            # print last_refresh_started.humanize, start_time_theshold.humanize
             if start_time_theshold < last_refresh_started:
                 return True
 

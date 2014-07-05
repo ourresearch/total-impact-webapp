@@ -359,8 +359,6 @@ class Profile(db.Model):
                     analytics_credentials,
                     existing_tiids)
 
-            print "update_products_from_linked_account resp:", import_response
-
             tiids_to_add = import_response["products"].keys()
         return tiids_to_add
 
@@ -618,7 +616,7 @@ def get_duplicates_list_from_tiids(tiids):
     try:
         duplicates_list = r.json()["duplicates_list"]
     except ValueError:
-        print "got ValueError in get_duplicates_list_from_tiids, maybe decode error?"
+        logger.warning(u"got ValueError in get_duplicates_list_from_tiids, maybe decode error?")
         duplicates_list = []
 
     return duplicates_list

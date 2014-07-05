@@ -65,8 +65,6 @@ class Card(object):
         # individual cards can add in more subelements to help with debugging
         ret["url_slug"] = self.profile.url_slug
 
-        print "returning to_dict", ret
-
         return ret
 
 
