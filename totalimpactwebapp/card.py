@@ -37,28 +37,17 @@ class Card(object):
         score = 0
         return score
 
-
         if self.threshold_awarded == 1:
             score += 500  # as good as a 75th percentile
 
         if self.threshold_awarded > 1:
             score += (self.threshold_awarded + 500)
 
-        if self.diff_value:
-            if "plos" in self.metric_name or "slideshare" in self.metric_name:
-                score += int(self.diff_value)
-
-            elif "wikipedia" in self.metric_name:
-                score += 10000
-
-            elif "scopus" in self.metric_name:
-                score += (int(self.diff_value) * 100)
-
-            else:
-                score += (int(self.diff_value) * 10)
-
-        if "youtube" in self.metric_name:
+        if "youtube"==self.metric.provider:
             score += 1000
+        elif "wikipedia"==self.metric.provider:
+            score += 10000
+
         return score
 
 
@@ -99,8 +88,6 @@ class ProductNewMetricCard(Card):
 
     @property
     def num_profile_products_this_good(self):
-
-
         ret = 0
         for product in self.profile.products:
 
@@ -124,13 +111,20 @@ class ProductNewMetricCard(Card):
 
     @property
     def sort_by(self):
-        base_score = super(ProductNewMetricCard, self).sort_by
+        score = super(ProductNewMetricCard, self).sort_by
 
         if self.metric.percentile and self.metric.percentile["value"] > 50:
             top_half = self.metric.percentile["value"] - 50
-            base_score += (top_half * 10)  # max 500
+            score += (top_half * 10)  # max 500
 
-        return base_score
+        if "plos"==self.metric.provider or "slideshare"==self.metric.provider:
+            score += int(self.metric.diff_value)
+        elif "scopus"==self.metric.provider:
+            score += (int(self.metric.diff_value) * 100)
+        else:
+            score += (int(self.metric.diff_value) * 10)
+
+        return score
 
 
     def get_template_name(self):
