@@ -172,11 +172,6 @@ def load_user(profile_id):
     return db.session.query(Profile).options(orm.noload('*')).get(int(profile_id))
 
 
-@app.before_first_request
-def setup_db_tables():
-    logger.info(u"first request; setting up db tables.")
-    db.create_all()
-
 
 @app.before_request
 def redirect_to_https():
