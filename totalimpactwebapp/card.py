@@ -118,7 +118,7 @@ class ProductNewMetricCard(Card):
         return util.ordinal(self.num_profile_products_this_good)
 
     @property
-    def threshold_awarded(self):
+    def milestone_awarded(self):
         return None
 
 

@@ -97,6 +97,11 @@ class Metric(object):
             provider=self.provider, interaction=self.interaction)
 
 
+    @property
+    def just_passed_a_milestone(self):
+        pass
+
+
     def get_window_start_snap(self, window_must_start_after):
         most_recent_snap_time = arrow.get(self.most_recent_snap.last_collected_date)
         window_starts_right_before = most_recent_snap_time.replace(days=-7)
