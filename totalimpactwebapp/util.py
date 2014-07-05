@@ -249,7 +249,7 @@ def ordinal(value):
 def cached_property(property_name):
     """A memoize decorator for class properties."""
     @wraps(property_name)
-    def get(self):
+    def cached_propery_get(self):
         try:
             return self._cache[property_name]
         except AttributeError:
@@ -258,5 +258,5 @@ def cached_property(property_name):
             pass
         ret = self._cache[property_name] = property_name(self)
         return ret
-    return property(get)
+    return property(cached_propery_get)
 
