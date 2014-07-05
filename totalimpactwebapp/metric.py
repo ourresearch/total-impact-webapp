@@ -88,6 +88,10 @@ class Metric(object):
         )[0]
 
     @property
+    def window_start_snap(self):
+        return self.get_window_start_snap(self.diff_window_must_start_after)
+
+    @property
     def is_highly(self):
         return self.most_recent_snap.is_highly
 
@@ -96,11 +100,20 @@ class Metric(object):
         return u"{provider}:{interaction}".format(
             provider=self.provider, interaction=self.interaction)
 
+    @property
+    def can_diff(self):
+        return self.most_recent_snap.can_diff
 
     @property
-    def just_passed_a_milestone(self):
-        pass
+    def milestone_just_reached(self):
+        if not self.can_diff:
+            return None
 
+        for milestone in sorted(self.config["milestones"], reverse=True):
+            if self.window_start_snap.raw_value < milestone <= self.most_recent_snap.raw_value:
+                return milestone
+
+        return None
 
     def get_window_start_snap(self, window_must_start_after):
         most_recent_snap_time = arrow.get(self.most_recent_snap.last_collected_date)
@@ -120,21 +133,18 @@ class Metric(object):
 
 
     def _diff(self):
-        window_start_snap = self.get_window_start_snap(
-            self.diff_window_must_start_after
-        )
-        if window_start_snap is None:
+        if self.window_start_snap is None or not self.can_diff:
             return {
                 "window_length": None,
                 "value": None
             }
         else:
-            window_start = arrow.get(window_start_snap.last_collected_date)
+            window_start = arrow.get(self.window_start_snap.last_collected_date)
             window_end = arrow.get(self.most_recent_snap.last_collected_date)
             window_length_timedelta = window_end - window_start
 
             try:
-                value_diff = self.most_recent_snap.raw_value - window_start_snap.raw_value
+                value_diff = self.most_recent_snap.raw_value - self.window_start_snap.raw_value
             except TypeError:
                 # complex values like mendeley discipline dicts
                 value_diff = None
