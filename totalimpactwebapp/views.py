@@ -68,6 +68,15 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 def json_resp_from_thing(thing):
     my_dict = util.todict(thing)
     json_str = json.dumps(my_dict, sort_keys=True, indent=4)
+
+    if request.path.endswith(".json") and (os.getenv("FLASK_DEBUG", False) == "True"):
+        logger.info(u"rendering output through debug_api.html template")
+        resp = make_response(render_template(
+            'debug_api.html',
+            data=json_str))
+        resp.mimetype = "text/html"
+        return views_helpers.bust_caches(resp)
+
     resp = make_response(json_str, 200)
     resp.mimetype = "application/json"
     return views_helpers.bust_caches(resp)
@@ -89,7 +98,7 @@ def abort_json(status_code, msg):
     abort(resp)
 
 
-def get_user_for_response(id, request):
+def get_user_for_response(id, request, expunge=True):
     id_type = unicode(request.args.get("id_type", "url_slug"))
 
     try:
@@ -105,6 +114,11 @@ def get_user_for_response(id, request):
         abort(404, "That user doesn't exist.")
 
     g.profile_slug = retrieved_user.url_slug
+
+    if expunge and os.getenv("EXPUNGE", "False")=="True":
+        logger.debug(u"expunging")
+
+        db.session.expunge_all()
 
     return retrieved_user
 
@@ -349,32 +363,16 @@ def get_user_profile(profile_id):
 
 
 @app.route("/profile/<profile_id>", methods=['GET'])
+@app.route("/profile/<profile_id>.json", methods=['GET'])
 def user_profile(profile_id):
     resp = get_user_profile(profile_id)
     resp = json_resp_from_thing(resp)
     return resp
 
 
-@app.route("/profile/<profile_id>.json", methods=['GET'])
-def user_profile_for_json_viewing(profile_id):
-    resp = get_user_profile(profile_id)
-
-    if (os.getenv("FLASK_DEBUG", False) == "True"):
-        my_dict = util.todict(resp)
-        json_str = json.dumps(my_dict, sort_keys=True, indent=4)
-        logger.info(u"rendering output through debug_api.html template")
-        resp = make_response(render_template(
-            'debug_api.html',
-            data=json_str))
-        resp.mimetype = "text/html"
-        return views_helpers.bust_caches(resp)
-    else:
-        resp = json_resp_from_thing(resp)
-        return resp
-
-
 
 @app.route("/profile/<profile_id>", methods=["POST"])
+@app.route("/profile/<profile_id>.json", methods=["POST"])
 def create_new_user_profile(profile_id):
     userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
 
@@ -392,6 +390,7 @@ def create_new_user_profile(profile_id):
 
 
 @app.route("/profile/<profile_id>", methods=["DELETE"])
+@app.route("/profile/<profile_id>.json", methods=["DELETE"])
 def user_delete(profile_id):
     if not has_admin_authorization():
         abort_json(401, "Need admin key to delete users")
@@ -403,6 +402,7 @@ def user_delete(profile_id):
 
 
 @app.route("/profile/<profile_id>", methods=['PATCH'])
+@app.route("/profile/<profile_id>.json", methods=['PATCH'])
 def patch_user_about(profile_id):
 
     profile = get_user_for_response(profile_id, request)
@@ -416,6 +416,7 @@ def patch_user_about(profile_id):
 
 
 @app.route("/profile/<profile_id>/refresh_status", methods=["GET"])
+@app.route("/profile/<profile_id>/refresh_status.json", methods=["GET"])
 def refresh_status(profile_id):
     local_sleep(0.5) # client to webapp plus one trip to database
     id_type = request.args.get("id_type", "url_slug")  # url_slug is default    
@@ -445,6 +446,7 @@ def refresh_status(profile_id):
 
 
 @app.route("/profile/<id>/products", methods=["POST", "PATCH"])
+@app.route("/profile/<id>/products.json", methods=["POST", "PATCH"])
 def user_products_modify(id):
 
     action = request.args.get("action", "refresh")
@@ -480,6 +482,7 @@ def user_products_modify(id):
 
 
 @app.route("/profile/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
+@app.route("/profile/<user_id>/product/<tiid>.json", methods=['GET', 'DELETE'])
 def user_product(user_id, tiid):
 
     if user_id == "embed":
@@ -521,6 +524,7 @@ def profile_products_csv(profile_id):
 
 
 @app.route("/product/<tiid>/biblio", methods=["PATCH"])
+@app.route("/product/<tiid>/biblio.json", methods=["PATCH"])
 def product_biblio_modify(tiid):
     # This should actually be like /profile/:id/product/:tiid/biblio
     # and it should return the newly-modified product, instead of the
