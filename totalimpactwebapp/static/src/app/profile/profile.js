@@ -211,20 +211,11 @@ angular.module("profile", [
       $http.post(url, {}).success(function(data, status, headers, config){
         console.log("POST returned. We're refreshing these tiids: ", data)
 
-        // show the update modal
-        Update.showUpdateModal(url_slug).then(
-          function(msg){
-            console.log("updater (resolved):", msg)
-            $httpDefaultCache.removeAll()
-            renderProducts()
-          },
-          function(msg){
-            console.log("updater (rejected):", msg)
-          }
-        )
+        // show the updated products
+        renderProducts()
       })
-
     }
+
 
     $scope.humanDate = function(isoStr) {
       // using moment.js library imported from cdnjs at runtime. not encapsulated,
@@ -325,6 +316,19 @@ angular.module("profile", [
           $scope.profileAwards = resp.awards
           $scope.doneLoading = true
 
+          // got user back with products. if still refreshing, show update modal
+          console.log("here's the about before checking is_refreshing", resp.about)
+          Update.showUpdateModal(url_slug, resp.about.is_refreshing).then(
+            function(msg){
+              console.log("updater (resolved):", msg)
+              $httpDefaultCache.removeAll()
+              renderProducts()
+            },
+            function(msg){
+              console.log("updater (rejected):", msg)
+            }
+          )
+
           // do this async, in case security is taking a long time to load,
           // and the products load first.
           security.isLoggedInPromise(url_slug).then(
@@ -357,16 +361,6 @@ angular.module("profile", [
     }
 
     renderProducts()
-    Update.showUpdateModal(url_slug).then(
-      function(msg){
-        console.log("updater (resolved):", msg)
-        $httpDefaultCache.removeAll()
-        renderProducts()
-      },
-      function(msg){
-        console.log("updater (rejected):", msg)
-      }
-    )
 })
 
 

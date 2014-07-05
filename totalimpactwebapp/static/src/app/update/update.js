@@ -26,7 +26,7 @@ angular.module( 'update.update', [
     var tick = function(){
       UsersUpdateStatus.get({id:url_slug}).$promise.then(
         function(resp){
-          console.log("tick() got response back from server", resp)
+          console.log("tick() got /refresh_status response back from server", resp)
           status = resp
           if (resp.percent_complete == 100){
             console.log("tick() satisfied success criteria, calling dedup")
@@ -51,15 +51,20 @@ angular.module( 'update.update', [
           }
         },
         function(resp){
-          console.log("failed to get update status; trying again.", resp)
+          console.log("failed to get /refresh_status; trying again.", resp)
           $timeout(tick, pollingInterval)
         }
       )
     }
 
-    var showUpdateModal = function(url_slug_arg){
+    var showUpdateModal = function(url_slug_arg, profile_is_refreshing){
       deferred = $q.defer()
       url_slug = url_slug_arg
+
+      if (!profile_is_refreshing){
+        deferred.reject("Everything is already up to date.")
+        return deferred.promise
+      }
 
       if (modalInstance){
         // we can only have one modal instance running at once...otherwise, it breaks.
@@ -67,35 +72,18 @@ angular.module( 'update.update', [
         return deferred.promise
       }
 
+      modalInstance = $modal.open({
+        templateUrl: 'update/update-progress.tpl.html',
+        controller: 'updateProgressModalCtrl',
+        backdrop:"static",
+        keyboard: false
+      });
 
-      UsersUpdateStatus.get({id:url_slug}).$promise.then(
-        function(resp) {
-          status = resp
-
-          if (status.percent_complete < 100){
-
-            // open the modal
-            modalInstance = $modal.open({
-              templateUrl: 'update/update-progress.tpl.html',
-              controller: 'updateProgressModalCtrl',
-              backdrop:"static",
-              keyboard: false
-            });
-
-            // start polling
-            tick()
-          }
-          else {
-            // nothing to see here, this profile is all up to date.
-            deferred.reject("Everything is already up to date.")
-          }
-        }
-      )
+      // start polling
+      tick()
 
       return deferred.promise
-
     }
-
 
 
 
@@ -109,7 +97,7 @@ angular.module( 'update.update', [
         return status.num_complete
       },
       getNumUpdating: function() {
-        return status.num_updating
+        return status.num_refreshing
       },
       isDeduping: function(){
         return status.isDeduping

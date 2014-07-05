@@ -16,6 +16,7 @@ from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp import db
 from totalimpactwebapp import configs
+from totalimpactwebapp import json_sqlalchemy
 
 
 percentile_snap_creations = 0
@@ -44,6 +45,10 @@ class Product(db.Model):
     last_modified = db.Column(db.DateTime())
     last_update_run = db.Column(db.DateTime())
     removed = db.Column(db.DateTime())
+    last_refresh_started = db.Column(db.DateTime())  #ALTER TABLE item ADD last_refresh_started timestamp
+    last_refresh_finished = db.Column(db.DateTime()) #ALTER TABLE item ADD last_refresh_finished timestamp
+    last_refresh_status = db.Column(db.Text) #ALTER TABLE item ADD last_refresh_status text
+    last_refresh_failure_message = db.Column(json_sqlalchemy.JSONAlchemy(db.Text)) #ALTER TABLE item ADD last_refresh_failure_message text
 
 
     alias_rows = db.relationship(
@@ -97,11 +102,35 @@ class Product(db.Model):
         return True
 
     @property
+    def is_refreshing(self):
+        REFRESH_TIMEOUT_IN_SECONDS = 120
+        if self.last_refresh_started and not self.last_refresh_finished:
+            last_refresh_started = arrow.get(self.last_refresh_started, 'utc')
+            start_time_theshold = arrow.utcnow().replace(seconds=-REFRESH_TIMEOUT_IN_SECONDS)
+            # print last_refresh_started.humanize, start_time_theshold.humanize
+            if start_time_theshold < last_refresh_started:
+                return True
+
+        return False
+
+    @property
+    def finished_successful_refresh(self):
+        if self.last_refresh_status and self.last_refresh_status.startswith(u"SUCCESS"):
+           return True
+        return False
+
+    @property
     def genre(self):
         if self.biblio.calculated_genre is not None:
-            return self.biblio.calculated_genre
+            genre = self.biblio.calculated_genre
         else:
-            return self.aliases.get_genre()
+            genre = self.aliases.get_genre()
+
+        if "article" in genre:
+            genre = "article"  #disregard whether journal article or conference article for now
+
+        return genre
+
 
 
     @property

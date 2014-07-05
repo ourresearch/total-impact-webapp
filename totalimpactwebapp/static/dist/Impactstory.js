@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-01
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-04
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1441,20 +1441,11 @@ angular.module("profile", [
       $http.post(url, {}).success(function(data, status, headers, config){
         console.log("POST returned. We're refreshing these tiids: ", data)
 
-        // show the update modal
-        Update.showUpdateModal(url_slug).then(
-          function(msg){
-            console.log("updater (resolved):", msg)
-            $httpDefaultCache.removeAll()
-            renderProducts()
-          },
-          function(msg){
-            console.log("updater (rejected):", msg)
-          }
-        )
+        // show the updated products
+        renderProducts()
       })
-
     }
+
 
     $scope.humanDate = function(isoStr) {
       // using moment.js library imported from cdnjs at runtime. not encapsulated,
@@ -1555,6 +1546,19 @@ angular.module("profile", [
           $scope.profileAwards = resp.awards
           $scope.doneLoading = true
 
+          // got user back with products. if still refreshing, show update modal
+          console.log("here's the about before checking is_refreshing", resp.about)
+          Update.showUpdateModal(url_slug, resp.about.is_refreshing).then(
+            function(msg){
+              console.log("updater (resolved):", msg)
+              $httpDefaultCache.removeAll()
+              renderProducts()
+            },
+            function(msg){
+              console.log("updater (rejected):", msg)
+            }
+          )
+
           // do this async, in case security is taking a long time to load,
           // and the products load first.
           security.isLoggedInPromise(url_slug).then(
@@ -1587,16 +1591,6 @@ angular.module("profile", [
     }
 
     renderProducts()
-    Update.showUpdateModal(url_slug).then(
-      function(msg){
-        console.log("updater (resolved):", msg)
-        $httpDefaultCache.removeAll()
-        renderProducts()
-      },
-      function(msg){
-        console.log("updater (rejected):", msg)
-      }
-    )
 })
 
 
@@ -2047,7 +2041,7 @@ angular.module( 'update.update', [
     var tick = function(){
       UsersUpdateStatus.get({id:url_slug}).$promise.then(
         function(resp){
-          console.log("tick() got response back from server", resp)
+          console.log("tick() got /refresh_status response back from server", resp)
           status = resp
           if (resp.percent_complete == 100){
             console.log("tick() satisfied success criteria, calling dedup")
@@ -2072,15 +2066,20 @@ angular.module( 'update.update', [
           }
         },
         function(resp){
-          console.log("failed to get update status; trying again.", resp)
+          console.log("failed to get /refresh_status; trying again.", resp)
           $timeout(tick, pollingInterval)
         }
       )
     }
 
-    var showUpdateModal = function(url_slug_arg){
+    var showUpdateModal = function(url_slug_arg, profile_is_refreshing){
       deferred = $q.defer()
       url_slug = url_slug_arg
+
+      if (!profile_is_refreshing){
+        deferred.reject("Everything is already up to date.")
+        return deferred.promise
+      }
 
       if (modalInstance){
         // we can only have one modal instance running at once...otherwise, it breaks.
@@ -2088,35 +2087,18 @@ angular.module( 'update.update', [
         return deferred.promise
       }
 
+      modalInstance = $modal.open({
+        templateUrl: 'update/update-progress.tpl.html',
+        controller: 'updateProgressModalCtrl',
+        backdrop:"static",
+        keyboard: false
+      });
 
-      UsersUpdateStatus.get({id:url_slug}).$promise.then(
-        function(resp) {
-          status = resp
-
-          if (status.percent_complete < 100){
-
-            // open the modal
-            modalInstance = $modal.open({
-              templateUrl: 'update/update-progress.tpl.html',
-              controller: 'updateProgressModalCtrl',
-              backdrop:"static",
-              keyboard: false
-            });
-
-            // start polling
-            tick()
-          }
-          else {
-            // nothing to see here, this profile is all up to date.
-            deferred.reject("Everything is already up to date.")
-          }
-        }
-      )
+      // start polling
+      tick()
 
       return deferred.promise
-
     }
-
 
 
 
@@ -2130,7 +2112,7 @@ angular.module( 'update.update', [
         return status.num_complete
       },
       getNumUpdating: function() {
-        return status.num_updating
+        return status.num_refreshing
       },
       isDeduping: function(){
         return status.isDeduping
@@ -2871,6 +2853,7 @@ angular.module('resources.products',['ngResource'])
 
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -2960,7 +2943,7 @@ angular.module('resources.users',['ngResource'])
 
   .factory('UsersUpdateStatus', function ($resource) {
     return $resource(
-      "/profile/:id/update_status",
+      "/profile/:id/refresh_status",
       {}, // default params
       {}  // method definitions
     )
@@ -3862,6 +3845,7 @@ angular.module("services.loading")
     }
   }
 })
+angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])

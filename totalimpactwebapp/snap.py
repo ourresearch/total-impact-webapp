@@ -86,7 +86,7 @@ class Snap(db.Model):
     @property
     def is_highly(self):
         try:
-            percentile_high_enough = self.percentile >= 75
+            percentile_high_enough = self.percentile["value"] >= 75
         except TypeError:  # no percentiles listed
             percentile_high_enough = False
 

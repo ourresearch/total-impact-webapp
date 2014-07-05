@@ -37,8 +37,11 @@ from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring
 from totalimpactwebapp import notification_report
 
+from totalimpactwebapp.reference_set import reference_set_lists
+from totalimpactwebapp.reference_set import load_all_reference_set_lists
 
 import newrelic.agent
+from sqlalchemy import orm
 
 logger = logging.getLogger("tiwebapp.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
@@ -66,15 +69,15 @@ def json_resp_from_thing(thing):
 
     my_dict = util.todict(thing)
 
+    json_str = json.dumps(my_dict, sort_keys=True, indent=4)
+
     if (os.getenv("FLASK_DEBUG", False) == "True"):
         logger.info(u"rendering output through debug_api.html template")
         resp = make_response(render_template(
             'debug_api.html',
-            data=my_dict))
+            data=json_str))
         resp.mimetype = "text/html"
         return views_helpers.bust_caches(resp)
-
-    json_str = json.dumps(my_dict, sort_keys=True, indent=4)
 
     resp = make_response(json_str, 200)
     resp.mimetype = "application/json"
@@ -105,7 +108,7 @@ def get_user_for_response(id, request):
     except AttributeError:
         logged_in = False
 
-    retrieved_user = get_profile_from_id(id, id_type, logged_in)
+    retrieved_user = get_profile_from_id(id, id_type, show_secrets=logged_in)
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -115,6 +118,8 @@ def get_user_for_response(id, request):
     g.profile_slug = retrieved_user.url_slug
 
     return retrieved_user
+
+
 
 
 def make_js_response(template_name, **kwargs):
@@ -159,7 +164,9 @@ def is_logged_in(profile):
 
 @login_manager.user_loader
 def load_user(profile_id):
-    return Profile.query.get(int(profile_id))
+    # load just the profile table contents
+
+    return db.session.query(Profile).get(int(profile_id))
 
 
 @app.before_first_request
@@ -397,11 +404,13 @@ def patch_user_about(profile_id):
 
 
 
-@app.route("/profile/<profile_id>/update_status", methods=["GET"])
-def update_status(profile_id):
-    local_sleep(1)
-    profile = get_user_for_response(profile_id, request)
-    return json_resp_from_thing(profile.get_update_status())
+@app.route("/profile/<profile_id>/refresh_status", methods=["GET"])
+def refresh_status(profile_id):
+    local_sleep(0.5) # client to webapp plus one trip to database
+    id_type = request.args.get("id_type", "url_slug")  # url_slug is default    
+    profile_bare_products = get_profile_from_id(profile_id, id_type, include_product_relationships=False)
+    print profile_bare_products
+    return json_resp_from_thing(profile_bare_products.get_refresh_status())
 
 
 
@@ -632,9 +641,48 @@ def delete_all_test_users():
 
 
 
+###############################################################################
+#
+#   REFERENCE SETS
+#
+###############################################################################
 
 
 
+
+@app.route("/reference-set-histograms")
+def reference_sets():
+    if not reference_set_lists:
+        load_all_reference_set_lists()
+
+    rows = []
+    header_added = False
+    for refsetlist in reference_set_lists:
+        lookup_key_list = refsetlist.get_lookup_key()
+        for p in refsetlist.percentiles:
+            row = lookup_key_list
+            row += [p]
+            print row
+            rows.append(",".join(row))
+
+
+    #     if not header_added:
+    #         first_metric_name = myrefsets_histograms[genre][refset][year].keys()[0]
+    #         data_labels = [str(i)+"th" for i in range(len(myrefsets_histograms[genre][refset][year][first_metric_name]))]
+    #         header = ",".join(["genre", "refset", "year", "metric_name"] + data_labels)
+    #         rows.append(header)
+    #         header_added = True
+    #     for metric_name in myrefsets_histograms[genre][refset][year]:
+    #         metadata = [genre, refset, str(year), metric_name]
+    #         metrics = [str(i) for i in myrefsets_histograms[genre][refset][year][metric_name]]
+    #         rows.append(",".join(metadata+metrics))
+    # resp = make_response("\n".join(rows), 200)
+    # Do we want it to pop up to save?  kinda nice to just see it in browser
+    #resp.mimetype = "text/csv;charset=UTF-8"
+    #resp.headers.add("Content-Disposition", "attachment; filename=refsets.csv")
+    #resp.headers.add("Content-Encoding", "UTF-8")
+
+    return resp
 
 
 
