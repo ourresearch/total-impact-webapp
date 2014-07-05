@@ -468,7 +468,6 @@ class Profile(db.Model):
             "new_metrics_notification_dismissed",
             "notification_email_frequency",
             "is_advisor",
-            "is_refreshing",
             "linked_accounts"
         ]
 

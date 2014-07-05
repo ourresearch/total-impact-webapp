@@ -335,6 +335,7 @@ def get_user_profile(profile_id):
         )
     }
 
+    resp["is_refreshing"] = profile.is_refreshing
 
     if not "about" in hide_keys:
         resp["about"] = profile.dict_about(show_secrets=False)
