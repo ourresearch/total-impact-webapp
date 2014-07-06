@@ -79,12 +79,6 @@ class ProductNewMetricCard(Card):
 
     @classmethod
     def would_generate_a_card(cls, metric):
-        print metric.tiid, metric.provider, metric.interaction, metric.diff_value > 0
-
-        if metric.tiid=='zyn3iayzz8dc5gntujax7ndy':
-            import pprint
-            pprint.pprint(metric.to_dict())
-
         # a milestone can be awarded if the previous value was 0, 
         # which would mean there is no diff_value
         return (metric.diff_value > 0) or metric.milestone_just_reached
