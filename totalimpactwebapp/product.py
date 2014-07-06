@@ -85,7 +85,7 @@ class Product(db.Model):
 
     @cached_property
     def metrics(self):
-        my_metrics = make_metrics_list(self.percentile_snaps, self.created)
+        my_metrics = make_metrics_list(self.tiid, self.percentile_snaps, self.created)
         return my_metrics
 
     @cached_property
@@ -135,7 +135,7 @@ class Product(db.Model):
 
     @cached_property
     def mendeley_discipline(self):
-        mendeley_metric = make_mendeley_metric(self.snaps, self.created)
+        mendeley_metric = make_mendeley_metric(self.tiid, self.snaps, self.created)
         try:
             return mendeley_metric.mendeley_discipine["name"]
         except (AttributeError, TypeError):

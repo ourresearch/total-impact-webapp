@@ -11,7 +11,7 @@ utc_now = arrow.utcnow()
 
 
 
-def make_metrics_list(snaps, product_created):
+def make_metrics_list(tiid, snaps, product_created):
     metrics = []
 
     for fully_qualified_metric_name, my_config in configs.metrics().iteritems():
@@ -20,6 +20,7 @@ def make_metrics_list(snaps, product_created):
         if Metric.test(my_provider, my_interaction, snaps):
 
             my_metric = Metric(
+                tiid,
                 my_provider,
                 my_interaction,
                 my_config)
@@ -33,8 +34,9 @@ def make_metrics_list(snaps, product_created):
 
 
 
-def make_mendeley_metric(snaps, product_created):
+def make_mendeley_metric(tiid, snaps, product_created):
     metric = MendeleyDisciplineMetric(
+        tiid,
         "mendeley",
         "discipline",
         configs.metrics()["mendeley:discipline"]
@@ -51,7 +53,8 @@ def make_mendeley_metric(snaps, product_created):
 
 class Metric(object):
 
-    def __init__(self, provider, interaction, config):
+    def __init__(self, tiid, provider, interaction, config):
+        self.tiid = tiid
         self.provider = provider
         self.interaction = interaction
         self.snaps = []
@@ -111,8 +114,12 @@ class Metric(object):
             return None
 
         for milestone in sorted(self.config["milestones"], reverse=True):
-            if self.window_start_snap.raw_value_int < milestone <= self.most_recent_snap.raw_value_int:
-                return milestone
+            try:
+                if self.window_start_snap.raw_value_int < milestone <= self.most_recent_snap.raw_value_int:
+                    return milestone
+            except AttributeError:
+                if not self.window_start_snap and (milestone <= self.most_recent_snap.raw_value_int):
+                    return milestone
 
         return None
 
@@ -145,7 +152,7 @@ class Metric(object):
             window_length_timedelta = window_end - window_start
 
             try:
-                value_diff = self.most_recent_snap.raw_value - self.window_start_snap.raw_value
+                value_diff = self.most_recent_snap.raw_value_int - self.window_start_snap.raw_value_int
             except TypeError:
                 # complex values like mendeley discipline dicts
                 value_diff = None
@@ -200,7 +207,6 @@ class Metric(object):
         try:
             ret = self.config["display_provider"]
         except KeyError:
-            # don't automatically cap because messes up PLOS and figshare
             ret = self.config["provider_name"]
 
         return ret
@@ -227,7 +233,7 @@ class Metric(object):
     @cached_property
     def display_order(self):
         try:
-            ret = self.most_recent_snap.raw_value + 0  # just for tiebreaks
+            ret = self.most_recent_snap.raw_value_int + 0  # just for tiebreaks
         except TypeError:
             ret = 0
 

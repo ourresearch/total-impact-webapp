@@ -17,7 +17,7 @@ sort by: {{ card.sort_by }}
    </div>
    <div class="body">
       <p>
-         That brings this {{ card.product.genre }} up to {{ card.metric.most_recent_snap.raw_value }}
+         That brings this {{ card.product.genre }} up to {{ card.metric.most_recent_snap.raw_value_int }}
          {{ card.metric.display_provider }} {{ card.metric.display_interaction }} total.
 
       {% if card.metric.percentile and card.metric.percentile.value > 50 %}
@@ -52,18 +52,18 @@ sort by: {{ card.sort_by }}
 <div class="card milestone first-metric product">
    <div class="header">
       <h3>
-         <span class="value">First</span> {{ card.metric.display_provider }} {{ card.metric.interaction }}
+         <span class="value">First</span> {{ card.metric.display_provider }} {{ card.metric.display_interaction }}
       </h3>
       <h4>
-         on <em>{{ card.product.biblio.title }}</em>
+         on <em><a href="https://impactstory.org/{{ card.profile.url_slug }}/product/{{ card.product.tiid }}">{{ card.product.biblio.title }}</a></em>
       </h4>
    </div>
 
    <div class="body">
       <p>
-         This {{ card.product.genre }} attracted {{ card.metric.diff }} new
-         {{ card.metric.display_provider }} {{ card.metric.interaction }}
-         this week, bringing it up to {{ card.metric.most_recent_snap.raw_value }} total.
+         This {{ card.product.genre }} attracted {{ card.metric.most_recent_snap.raw_value_int }} new
+         {{ card.metric.display_provider }} {{ card.metric.display_interaction }}
+         this week!
 
       {% if card.metric.percentile and card.metric.percentile.value > 50 %}
             That's good--only {{ 101 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.genre_plural }}
@@ -71,7 +71,7 @@ sort by: {{ card.sort_by }}
       {% endif %}
 
          It marks your {{ card.num_profile_products_this_good_ordinal }} unique product to get
-         {{ card.metric.interaction }} on {{ card.metric.display_provider }}. Nice work!
+         {{ card.metric.display_interaction }} on {{ card.metric.display_provider }}. Nice work!
       </p>
 
    </div>
@@ -92,7 +92,7 @@ sort by: {{ card.sort_by }}
 <div class="card milestone product">
    <div class="header">
       <h3>
-         <span class="value">{{ card.milestone_awarded }}+</span> {{ card.metric.display_provider }} {{ card.metric.interaction }}
+         <span class="value">{{ card.milestone_awarded }}+</span> {{ card.metric.display_provider }} {{ card.metric.display_interaction }}
       </h3>
       <h4>
          on <em><a href="https://impactstory.org/{{ card.profile.url_slug }}/product/{{ card.product.tiid }}">{{ card.product.biblio.title }}</a></em>
@@ -100,16 +100,15 @@ sort by: {{ card.sort_by }}
    </div>
    <div class="body">
       <p>
-         This {{ card.product.genre }} attracted {{ card.metric.diff }} new
-         {{ card.metric.display_provider }} {{ card.metric.interaction }}
-         this week, bringing it up to {{ card.metric.most_recent_snap.raw_value }} total.
+         This {{ card.product.genre }} attracted {{ card.metric.diff_value }} new
+         {{ card.metric.display_provider }} {{ card.metric.display_interaction }}
+         this week, bringing it up to {{ card.metric.most_recent_snap.raw_value_int }} total.
 
       {% if card.metric.percentile and card.metric.percentile.value > 50 %}
-         That's good--only {{ 101 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.genre_plural }}
-               have that many.
+         That's good--only {{ 101 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.genre_plural }} have that many.
       {% endif %}
 
-         It marks your {{ card.num_profile_products_this_good_ordinal }} product to get this many {{ card.metric.interaction }} on {{ card.metric.display_provider }}. Nice work!
+         It marks your {{ card.num_profile_products_this_good_ordinal }} product to get this many {{ card.metric.display_interaction }} on {{ card.metric.display_provider }}. Nice work!
       </p>
    </div>
 

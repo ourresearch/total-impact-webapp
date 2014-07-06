@@ -715,7 +715,7 @@ providers = [
             "blog_posts": {
                 "description": "Number of blog posts mentioning the product",
                 "display_name": "blog posts",
-                "display_provider": '',
+                "display_provider": 'science blogs',
                 "icon": "http://impactstory.org/static/img/blogs-icon.png",
                 "provider_name": "Altmetric.com",
                 "provider_url": "http://plus.google.com",
@@ -914,7 +914,7 @@ def pluralize_genre(genre):
     if genre_plural.startswith("other"):
         genre_plural = "other products"
     elif genre_plural.startswith("slides"):
-        genre_plural = "slides"
+        genre_plural = "slide decks"
     elif genre_plural.startswith("software"):
         genre_plural = "software products"
     return genre_plural

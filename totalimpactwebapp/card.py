@@ -79,7 +79,15 @@ class ProductNewMetricCard(Card):
 
     @classmethod
     def would_generate_a_card(cls, metric):
-        return metric.diff_value > 0
+        print metric.tiid, metric.provider, metric.interaction, metric.diff_value > 0
+
+        if metric.tiid=='zyn3iayzz8dc5gntujax7ndy':
+            import pprint
+            pprint.pprint(metric.to_dict())
+
+        # a milestone can be awarded if the previous value was 0, 
+        # which would mean there is no diff_value
+        return (metric.diff_value > 0) or metric.milestone_just_reached
 
     @property
     def num_profile_products_this_good(self):
@@ -113,12 +121,16 @@ class ProductNewMetricCard(Card):
             top_half = self.metric.percentile["value"] - 50
             score += (top_half * 10)  # max 500
 
-        if "plos"==self.metric.provider or "slideshare"==self.metric.provider:
-            score += int(self.metric.diff_value)
-        elif "scopus"==self.metric.provider:
-            score += (int(self.metric.diff_value) * 100)
-        else:
-            score += (int(self.metric.diff_value) * 10)
+        try:
+            if "plos"==self.metric.provider or "slideshare"==self.metric.provider:
+                score += int(self.metric.diff_value)
+            elif "scopus"==self.metric.provider:
+                score += (int(self.metric.diff_value) * 100)
+            else:
+                score += (int(self.metric.diff_value) * 10)
+        except TypeError:
+            # no diff value because is first metric card
+            pass
 
         return score
 
@@ -131,7 +143,9 @@ class ProductNewMetricCard(Card):
         mydict.update({
             "tiid": self.product.tiid,
             "provider": self.metric.provider,
-            "interaction": self.metric.interaction
+            "interaction": self.metric.interaction,
+            "display_count": self.metric.display_count,
+            "diff_value": self.metric.diff_value
             })
         return mydict
 
@@ -188,7 +202,15 @@ class ProfileNewMetricCard(Card):
         return "card-profile"
 
 
+    def to_dict(self):
+        # ignore some properties to keep dict small.   
+        properties_to_ignore = ["profile", "exemplar_metric"]
+        ret = util.dict_from_dir(self, properties_to_ignore)
 
+        # add to help with debugging
+        ret["url_slug"] = self.profile.url_slug
+
+        return ret
 
 
 
