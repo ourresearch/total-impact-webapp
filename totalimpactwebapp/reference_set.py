@@ -289,6 +289,36 @@ class RefsetBuilder(object):
                 refset_lists.append(new_refset_list)
         return(refset_lists)
 
+
+    @classmethod
+    def export_csv_rows(cls):
+        global reference_set_lists
+        if not reference_set_lists:
+            reference_set_lists = load_all_reference_set_lists()
+
+        rows = []
+        heading = ReferenceSetList.build_lookup_key(
+                year="year", 
+                genre="genre", 
+                host="host", 
+                mendeley_discipline="mendeley_discipline", 
+                provider="provider", 
+                interaction="interaction")
+        heading = heading + ("percentile", "value")
+        rows.append(u",".join(list(heading)))
+
+        for refset_list_key, refset_list in reference_set_lists.iteritems():
+            i = 0
+            number_percentile_values = len(refset_list.percentiles) + 0.0
+            for p in refset_list.percentiles:
+                i += 1
+                row = [column if column else "" for column in refset_list_key]
+                row.append(str(int(round(100*i/number_percentile_values, 0))))
+                row.append(str(p))
+                rows.append(u",".join(row))
+        return rows
+
+
     def process_profile(self, profile):
         logger.info(u"build_refsets: on {url_slug}".format(url_slug=profile.url_slug))
 

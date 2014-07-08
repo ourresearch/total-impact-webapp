@@ -37,8 +37,7 @@ from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring
 from totalimpactwebapp import notification_report
 
-from totalimpactwebapp.reference_set import reference_set_lists
-from totalimpactwebapp.reference_set import load_all_reference_set_lists
+from totalimpactwebapp.reference_set import RefsetBuilder
 
 import newrelic.agent
 from sqlalchemy import orm
@@ -652,35 +651,16 @@ def delete_all_test_users():
 
 @app.route("/reference-set-histograms")
 def reference_sets():
-    if not reference_set_lists:
-        load_all_reference_set_lists()
+    rows = RefsetBuilder.export_csv_rows()
 
-    rows = []
-    header_added = False
-    for refsetlist in reference_set_lists:
-        lookup_key_list = refsetlist.get_lookup_key()
-        for p in refsetlist.percentiles:
-            row = lookup_key_list
-            row += [p]
-            print row
-            rows.append(",".join(row))
+    resp = make_response("\n".join(rows), 200)
 
+    # resp.mimetype = "text/text;charset=UTF-8"
 
-    #     if not header_added:
-    #         first_metric_name = myrefsets_histograms[genre][refset][year].keys()[0]
-    #         data_labels = [str(i)+"th" for i in range(len(myrefsets_histograms[genre][refset][year][first_metric_name]))]
-    #         header = ",".join(["genre", "refset", "year", "metric_name"] + data_labels)
-    #         rows.append(header)
-    #         header_added = True
-    #     for metric_name in myrefsets_histograms[genre][refset][year]:
-    #         metadata = [genre, refset, str(year), metric_name]
-    #         metrics = [str(i) for i in myrefsets_histograms[genre][refset][year][metric_name]]
-    #         rows.append(",".join(metadata+metrics))
-    # resp = make_response("\n".join(rows), 200)
     # Do we want it to pop up to save?  kinda nice to just see it in browser
-    #resp.mimetype = "text/csv;charset=UTF-8"
+    resp.mimetype = "text/csv;charset=UTF-8"
     #resp.headers.add("Content-Disposition", "attachment; filename=refsets.csv")
-    #resp.headers.add("Content-Encoding", "UTF-8")
+    resp.headers.add("Content-Encoding", "UTF-8")
 
     return resp
 
