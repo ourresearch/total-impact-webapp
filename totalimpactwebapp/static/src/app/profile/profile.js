@@ -302,7 +302,7 @@ angular.module("profile", [
         embedded: Page.isEmbedded()
       },
         function(resp){
-          console.log("got /user resp back in "
+          console.log("got /profile resp back in "
             + Timer.elapsed("profileViewRender.load")
             + "ms: ", resp)
 
