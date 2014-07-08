@@ -1,34 +1,26 @@
 from totalimpactwebapp.card import Card
 from totalimpactwebapp import configs
-from totalimpactwebapp.card_generate import *
+from totalimpactwebapp.cards_factory import *
 import os
 
-
-import datetime
-
-
-def make(user):
-
-    products = user.products_not_removed
-    user_dict_about = user.dict_about()
-
+def get_all_cards(profile):
     cards = []
-    cards += ProductNewMetricCardGenerator.make(user, products)
-    cards += ProfileNewMetricCardGenerator.make(user, products)
+    cards += make_product_new_metrics_cards(profile)
+    cards += make_profile_new_metrics_cards(profile)
+    return cards
 
-    for card in cards:
-        card.set_product_from_list(products)
-        card.metrics_info = configs.metrics()[card.metric_name]
-        card.user = user_dict_about
+
+def make(profile):
+    cards = get_all_cards(profile)
 
     cards = filter_cards(cards)
-    cards = sort_cards(cards)[0:10]
+    cards = sort_cards(cards)
+    # cards = cards[0:10]
 
     response = {
-        "user": user_dict_about,
-        "cards": cards,
+        "profile": profile,
         "css": get_css(),
-        "given_name": user.given_name
+        "cards": cards
     }
     return response
 
@@ -43,7 +35,7 @@ def get_css():
 
 
 def sort_cards(cards):
-    sorted_cards = sorted(cards, key=lambda card: card.sort_by(), reverse=True)
+    sorted_cards = sorted(cards, key=lambda card: card.sort_by, reverse=True)
     return sorted_cards
 
 
@@ -51,15 +43,10 @@ def filter_cards(cards):
     ret = []
     for card in cards:
         try:
-            if int(card.diff_value) <= 0:
-                pass
-            elif "pubmed" in card.metric_name:
-                pass
-            else:
+            if card.provider != "pubmed":
                 ret.append(card)
-
-        # no integerable diff_value        
-        except (ValueError, TypeError):
+        except AttributeError:
+            # no provider method
             pass
 
     return ret

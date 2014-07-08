@@ -1,0 +1,120 @@
+sort by: {{ card.sort_by }}
+
+
+{#  no milestones for this product, just garden-variety diff #}
+{#  ########################################### #}
+
+{% if not card.milestone_awarded %}
+
+<div class="card new-metric product">
+   <div class="header">
+      <h3>
+         <span class="value">{{ card.metric.diff_value }}</span> new {{ card.metric.display_provider }} {{ card.metric.display_interaction }}
+      </h3>
+      <h4>
+         on <em><a href="https://impactstory.org/{{ card.profile.url_slug }}/product/{{ card.product.tiid }}">{{ card.product.biblio.title }}</a></em>
+      </h4>
+   </div>
+   <div class="body">
+      <p>
+         That brings this {{ card.product.genre }} up to {{ card.metric.most_recent_snap.raw_value_int }}
+         {{ card.metric.display_provider }} {{ card.metric.display_interaction }} total.
+
+      {% if card.metric.percentile and card.metric.percentile.value > 50 %}
+         {% if card.metric.percentile.value > 80 %}
+            Impressive!
+         {% else %}
+            Not bad!
+         {% endif %}
+
+         Only {{ 101 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.display_genre_plural }}
+               have reached that many {{ card.metric.display_interaction }}.
+      {% endif %}
+
+         It's your {{ card.num_profile_products_this_good_ordinal }} product to get this many
+         {{ card.metric.display_interaction }} on {{ card.metric.display_provider }}. Nice work!
+      </p>
+   </div>
+
+   <div class="footer">
+      <strong>{{ card.product.genre }}</strong> new metrics
+   </div>
+</div>
+
+
+
+
+
+
+{#  this product is getting its First Metric milestone #}
+{#  ########################################### #}
+{% elif card.milestone_awarded == 1 %}
+<div class="card milestone first-metric product">
+   <div class="header">
+      <h3>
+         <span class="value">First</span> {{ card.metric.display_provider }} {{ card.metric.display_interaction }}
+      </h3>
+      <h4>
+         on <em><a href="https://impactstory.org/{{ card.profile.url_slug }}/product/{{ card.product.tiid }}">{{ card.product.biblio.title }}</a></em>
+      </h4>
+   </div>
+
+   <div class="body">
+      <p>
+         This {{ card.product.genre }} attracted {{ card.metric.most_recent_snap.raw_value_int }} new
+         {{ card.metric.display_provider }} {{ card.metric.display_interaction }}
+         this week!
+
+      {% if card.metric.percentile and card.metric.percentile.value > 50 %}
+            That's good--only {{ 101 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.genre_plural }}
+            have that many!
+      {% endif %}
+
+         It marks your {{ card.num_profile_products_this_good_ordinal }} unique product to get
+         {{ card.metric.display_interaction }} on {{ card.metric.display_provider }}. Nice work!
+      </p>
+
+   </div>
+
+   <div class="footer">
+      <strong>{{ card.product.genre }}</strong> milestone
+   </div>
+</div>
+
+
+
+
+
+
+{#  this product is hitting a milestone other than First Metric #}
+{#  ##################################################### #}
+{% elif card.milestone_awarded > 1 %}
+<div class="card milestone product">
+   <div class="header">
+      <h3>
+         <span class="value">{{ card.milestone_awarded }}+</span> {{ card.metric.display_provider }} {{ card.metric.display_interaction }}
+      </h3>
+      <h4>
+         on <em><a href="https://impactstory.org/{{ card.profile.url_slug }}/product/{{ card.product.tiid }}">{{ card.product.biblio.title }}</a></em>
+      </h4>
+   </div>
+   <div class="body">
+      <p>
+         This {{ card.product.genre }} attracted {{ card.metric.diff_value }} new
+         {{ card.metric.display_provider }} {{ card.metric.display_interaction }}
+         this week, bringing it up to {{ card.metric.most_recent_snap.raw_value_int }} total.
+
+      {% if card.metric.percentile and card.metric.percentile.value > 50 %}
+         That's good--only {{ 101 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.genre_plural }} have that many.
+      {% endif %}
+
+         It marks your {{ card.num_profile_products_this_good_ordinal }} product to get this many {{ card.metric.display_interaction }} on {{ card.metric.display_provider }}. Nice work!
+      </p>
+   </div>
+
+   <div class="footer">
+      <strong>{{ card.product.genre }}</strong> milestone
+   </div>
+</div>
+
+{% endif %}

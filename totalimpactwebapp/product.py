@@ -75,7 +75,6 @@ class Product(db.Model):
         primaryjoin=snaps_join_string
     )
 
-
     @cached_property
     def biblio(self):
         return Biblio(self.biblio_rows)
@@ -86,7 +85,7 @@ class Product(db.Model):
 
     @cached_property
     def metrics(self):
-        my_metrics = make_metrics_list(self.percentile_snaps, self.created)
+        my_metrics = make_metrics_list(self.tiid, self.percentile_snaps, self.created)
         return my_metrics
 
     @cached_property
@@ -99,7 +98,6 @@ class Product(db.Model):
         if self.last_refresh_started and not self.last_refresh_finished:
             last_refresh_started = arrow.get(self.last_refresh_started, 'utc')
             start_time_theshold = arrow.utcnow().replace(seconds=-REFRESH_TIMEOUT_IN_SECONDS)
-            # print last_refresh_started.humanize, start_time_theshold.humanize
             if start_time_theshold < last_refresh_started:
                 return True
 
@@ -137,7 +135,7 @@ class Product(db.Model):
 
     @cached_property
     def mendeley_discipline(self):
-        mendeley_metric = make_mendeley_metric(self.snaps, self.created)
+        mendeley_metric = make_mendeley_metric(self.tiid, self.snaps, self.created)
         try:
             return mendeley_metric.mendeley_discipine["name"]
         except (AttributeError, TypeError):
@@ -172,6 +170,7 @@ class Product(db.Model):
 
     @cached_property
     def percentile_snaps(self):
+
         my_refset = reference_set.ProductLevelReferenceSet()
         my_refset.year = self.year
         my_refset.genre = self.genre
@@ -205,15 +204,16 @@ class Product(db.Model):
             return None
 
 
-    def metric_by_name(self, metric_name):
-        for metric in self.metrics:
-            if metric.metric_name==metric_name:
-                return metric
-        return None
+    def has_metric_this_good(self, provider, interaction, count):
+        # return True
+        requested_metric = self.get_metric_by_name(provider, interaction)
+        try:
+            return requested_metric.display_count >= count
+        except AttributeError:
+            return False
 
 
     def to_dict(self):
-
         attributes_to_ignore = [
             "profile",
             "alias_rows",

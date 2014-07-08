@@ -715,7 +715,7 @@ providers = [
             "blog_posts": {
                 "description": "Number of blog posts mentioning the product",
                 "display_name": "blog posts",
-                "display_provider": '',
+                "display_provider": 'science blogs',
                 "icon": "http://impactstory.org/static/img/blogs-icon.png",
                 "provider_name": "Altmetric.com",
                 "provider_url": "http://plus.google.com",
@@ -880,12 +880,15 @@ def metrics(this_key_only=None):
             # first, add constructed keys to the the metric config
             new_key = provider["name"] + ":" + metric_name
             metric_config["provider"] = provider["name"]
+            metric_config["interaction"] = metric_name
 
             metric_config["display_audience"] = \
                 metric_config["audience"].replace("public", "the public")
 
             if "interaction" not in metric_config.keys():
-                metric_config["interaction"] = metric_name.replace("_", " ")
+                metric_config["interaction"] = metric_name
+            if "display_interaction" not in metric_config.keys():
+                metric_config["display_interaction"] = metric_config["interaction"].replace("_", " ")
 
             # next, handle the this_key_only stuff:
             if this_key_only is None:
@@ -911,7 +914,7 @@ def pluralize_genre(genre):
     if genre_plural.startswith("other"):
         genre_plural = "other products"
     elif genre_plural.startswith("slides"):
-        genre_plural = "slides"
+        genre_plural = "slide decks"
     elif genre_plural.startswith("software"):
         genre_plural = "software products"
     return genre_plural

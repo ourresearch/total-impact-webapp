@@ -284,6 +284,37 @@ class Profile(db.Model):
     def get_refresh_status(self):
         return RefreshStatus(self.products_not_removed)
 
+    def get_metrics_by_name(self, provider, interaction):
+        matching_metrics = []
+        for product in self.products_not_removed:
+            metric = product.get_metric_by_name(provider, interaction)
+            if metric:
+                matching_metrics.append(metric)
+        return matching_metrics
+
+    def metric_milestone_just_reached(self, provider, interaction):
+        matching_metrics = self.get_metrics_by_name(provider, interaction)
+        if not matching_metrics:
+            return None
+
+        accumulated_most_recent = sum([metric.most_recent_snap.raw_value_int for metric in matching_metrics])
+        accumulated_diff = sum([metric.diff_value for metric in matching_metrics if metric.diff_value])
+        accumulated_window_start = accumulated_most_recent - accumulated_diff
+
+        # milestones will be the same in all the metrics so just grab the first one
+        milestones = matching_metrics[0].config["milestones"]
+
+        # see if we just passed any of them
+        for milestone in sorted(milestones, reverse=True):
+            if accumulated_window_start < milestone <= accumulated_most_recent:
+                return ({
+                    "milestone": milestone, 
+                    "accumulated_most_recent": accumulated_most_recent,
+                    "accumulated_diff": accumulated_diff
+                    })
+        return None
+
+
     def add_products(self, product_id_dict):
         try:
             analytics_credentials = self.get_analytics_credentials()
@@ -331,8 +362,6 @@ class Profile(db.Model):
                     analytics_credentials,
                     existing_tiids)
 
-            print "update_products_from_linked_account resp:", import_response
-
             tiids_to_add = import_response["products"].keys()
         return tiids_to_add
 
@@ -378,7 +407,6 @@ class Profile(db.Model):
         markup.context["profile"] = self
         product = [p for p in self.display_products if p.tiid == tiid][0]
         return product.to_markup_dict(markup)
-
 
     def csv_of_products(self):
         (header, rows) = self.build_csv_rows()
@@ -496,7 +524,7 @@ class Profile(db.Model):
 def delete_products_from_profile(profile, tiids_to_delete):
 
     number_deleted = 0
-    for product in profile.products:
+    for product in profile.products_not_removed:
         if product.tiid in tiids_to_delete:
             number_deleted += 1
             product.removed = now_in_utc()
@@ -586,7 +614,7 @@ def get_duplicates_list_from_tiids(tiids):
     try:
         duplicates_list = r.json()["duplicates_list"]
     except ValueError:
-        print "got ValueError in get_duplicates_list_from_tiids, maybe decode error?"
+        logger.warning(u"got ValueError in get_duplicates_list_from_tiids, maybe decode error?")
         duplicates_list = []
 
     return duplicates_list

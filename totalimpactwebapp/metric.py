@@ -11,30 +11,32 @@ utc_now = arrow.utcnow()
 
 
 
-def make_metrics_list(snaps, product_created):
+def make_metrics_list(tiid, snaps, product_created):
     metrics = []
 
     for fully_qualified_metric_name, my_config in configs.metrics().iteritems():
         my_provider, my_interaction = fully_qualified_metric_name.split(":")
 
-        my_metric = Metric(
-            my_provider,
-            my_interaction,
-            my_config)
+        if Metric.test(my_provider, my_interaction, snaps):
 
-        my_metric.add_snaps_from_list(snaps)
+            my_metric = Metric(
+                tiid,
+                my_provider,
+                my_interaction,
+                my_config)
 
-        my_metric.diff_window_must_start_after = arrow.get(product_created)
+            my_metric.add_snaps_from_list(snaps)
 
-        if len(my_metric.snaps):
+            my_metric.diff_window_must_start_after = arrow.get(product_created)
             metrics.append(my_metric)
 
     return metrics
 
 
 
-def make_mendeley_metric(snaps, product_created):
+def make_mendeley_metric(tiid, snaps, product_created):
     metric = MendeleyDisciplineMetric(
+        tiid,
         "mendeley",
         "discipline",
         configs.metrics()["mendeley:discipline"]
@@ -51,7 +53,8 @@ def make_mendeley_metric(snaps, product_created):
 
 class Metric(object):
 
-    def __init__(self, provider, interaction, config):
+    def __init__(self, tiid, provider, interaction, config):
+        self.tiid = tiid
         self.provider = provider
         self.interaction = interaction
         self.snaps = []
@@ -70,6 +73,14 @@ class Metric(object):
             return True
         else:
             return False
+
+    @classmethod
+    def test(cls, provider, interaction, snaps):
+        for snap in snaps:
+            if snap.provider == provider and snap.interaction == interaction:
+                return True
+
+        return False
         
 
     @cached_property
@@ -81,6 +92,10 @@ class Metric(object):
         )[0]
 
     @cached_property
+    def window_start_snap(self):
+        return self.get_window_start_snap(self.diff_window_must_start_after)
+
+    @cached_property
     def is_highly(self):
         return self.most_recent_snap.is_highly
 
@@ -89,6 +104,24 @@ class Metric(object):
         return u"{provider}:{interaction}".format(
             provider=self.provider, interaction=self.interaction)
 
+    @cached_property
+    def can_diff(self):
+        return self.most_recent_snap.can_diff
+
+    @cached_property
+    def milestone_just_reached(self):
+        if not self.can_diff:
+            return None
+
+        for milestone in sorted(self.config["milestones"], reverse=True):
+            try:
+                if self.window_start_snap.raw_value_int < milestone <= self.most_recent_snap.raw_value_int:
+                    return milestone
+            except AttributeError:
+                if not self.window_start_snap and (milestone <= self.most_recent_snap.raw_value_int):
+                    return milestone
+
+        return None
 
     def get_window_start_snap(self, window_must_start_after):
         most_recent_snap_time = arrow.get(self.most_recent_snap.last_collected_date)
@@ -108,21 +141,18 @@ class Metric(object):
 
 
     def _diff(self):
-        window_start_snap = self.get_window_start_snap(
-            self.diff_window_must_start_after
-        )
-        if window_start_snap is None:
+        if self.window_start_snap is None or not self.can_diff:
             return {
                 "window_length": None,
                 "value": None
             }
         else:
-            window_start = arrow.get(window_start_snap.last_collected_date)
+            window_start = arrow.get(self.window_start_snap.last_collected_date)
             window_end = arrow.get(self.most_recent_snap.last_collected_date)
             window_length_timedelta = window_end - window_start
 
             try:
-                value_diff = self.most_recent_snap.raw_value - window_start_snap.raw_value
+                value_diff = self.most_recent_snap.raw_value_int - self.window_start_snap.raw_value_int
             except TypeError:
                 # complex values like mendeley discipline dicts
                 value_diff = None
@@ -177,17 +207,16 @@ class Metric(object):
         try:
             ret = self.config["display_provider"]
         except KeyError:
-            ret = self.config["provider_name"].capitalize()
+            ret = self.config["provider_name"]
 
-        ret.replace("Figshare", "figshare")  # hack
         return ret
 
     @cached_property
     def display_interaction(self):
         if self.display_count <= 1:
-            return self.config["interaction"][:-1]  # de-pluralize
+            return self.config["display_interaction"][:-1]  # de-pluralize
         else:
-            return self.config["interaction"]
+            return self.config["display_interaction"]
 
     @cached_property
     def drilldown_url(self):
@@ -204,7 +233,7 @@ class Metric(object):
     @cached_property
     def display_order(self):
         try:
-            ret = self.most_recent_snap.raw_value + 0  # just for tiebreaks
+            ret = self.most_recent_snap.raw_value_int + 0  # just for tiebreaks
         except TypeError:
             ret = 0
 

@@ -9,7 +9,7 @@ from totalimpactwebapp.profile import Profile
 from totalimpactwebapp import db
 from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
 from totalimpactwebapp.profile import remove_duplicates_from_profile
-from totalimpactwebapp.card_generate import *
+from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import notification_report
 from totalimpactwebapp import emailer
 
