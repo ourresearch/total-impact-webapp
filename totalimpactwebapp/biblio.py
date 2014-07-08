@@ -1,4 +1,5 @@
-import util
+from totalimpactwebapp.util import cached_property
+from totalimpactwebapp.util import dict_from_dir
 from urlparse import urlparse
 from totalimpactwebapp import db
 from totalimpactwebapp import json_sqlalchemy
@@ -44,7 +45,7 @@ class Biblio(object):
         #if aliases.best_url is not None:
         #    self.url = aliases.best_url
 
-    @property
+    @cached_property
     def display_year(self):
         try:
             return str(self.year)
@@ -52,7 +53,7 @@ class Biblio(object):
             return None
 
 
-    @property
+    @cached_property
     def calculated_genre(self):
         if hasattr(self, "genre") and self.genre:
             if self.genre not in ["undefined", "other"]:
@@ -63,14 +64,14 @@ class Biblio(object):
 
         return None
 
-    @property
+    @cached_property
     def calculated_host(self):
         try:
             return self.repository.split(" ")[0].lower()
         except AttributeError:
             return None
 
-    @property
+    @cached_property
     def display_authors(self):
         try:
             auths = ",".join(self.authors.split(",")[0:3])
@@ -82,7 +83,7 @@ class Biblio(object):
         return auths
 
 
-    @property
+    @cached_property
     def display_title(self):
         try:
             return self.title
@@ -90,7 +91,7 @@ class Biblio(object):
             return "no title"
 
 
-    @property
+    @cached_property
     def free_fulltext_host(self):
         try:
             return self._get_url_host(self.free_fulltext_url)
@@ -122,7 +123,7 @@ class Biblio(object):
 
 
     def to_dict(self):
-        ret = util.dict_from_dir(self, "rows")
+        ret = dict_from_dir(self, "rows")
         return ret
 
 

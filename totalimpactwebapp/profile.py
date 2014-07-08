@@ -3,6 +3,7 @@ from totalimpactwebapp import heading_product
 from totalimpactwebapp import profile_award
 from totalimpactwebapp import util
 from totalimpactwebapp import configs
+from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.product import Product
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -130,51 +131,27 @@ class Profile(db.Model):
         backref=db.backref("profile", lazy="subquery")
     )
 
+    def __init__(self, **kwargs):
+        super(Profile, self).__init__(**kwargs)
+        self.created = now_in_utc()
+        self.last_refreshed = now_in_utc()
+        self.last_email_check = now_in_utc()
+        self.refresh_interval = self.refresh_interval or 7
+        self.next_refresh = self.last_refreshed + datetime.timedelta(days=self.refresh_interval)
+        self.given_name = self.given_name or u"Anonymous"
+        self.surname = self.surname or u"User"
+        self.password_hash = None
+        self.notification_email_frequency = "every_week_or_two"
 
-    @property
+    @cached_property
     def full_name(self):
         return (self.given_name + " " + self.surname).strip()
 
-    @property
-    def products_not_removed(self):
-        return [p for p in self.products if not p.removed]
-
-    @property
-    def display_products(self):
-        return self.products_not_removed
-
-    @property
-    def tiids(self):
-        # return all tiids that have not been removed
-        return [product.tiid for product in self.products_not_removed]
-
-    @property
-    def tiids_including_removed(self):
-        # return all tiids even those that have been removed
-        return [product.tiid for product in self.products]
-
-    @property
-    def latest_diff_ts(self):
-        ts_list = [p.latest_diff_timestamp for p in self.products_not_removed]
-        try:
-            return sorted(ts_list, reverse=True)[0]
-        except IndexError:
-            return None
-
-    @property
-    def is_refreshing(self):
-        return any([product.is_refreshing for product in self.products_not_removed])
-
-    @property
-    def awards(self):
-        return profile_award.make_awards_list(self)
-
-    @property
+    @cached_property
     def has_linked_account(self):
         return True
 
-
-    @property
+    @cached_property
     def linked_accounts(self):
         ret = []
         ignore_keys = ["collection_id", "stripe_id"]
@@ -196,25 +173,51 @@ class Profile(db.Model):
                 ret.append(linked_account_dict)
         return ret
 
-
-    @property
+    @cached_property
     def email_hash(self):
         try:
             return hashlib.md5(self.email).hexdigest()
         except TypeError:
             return None  # there's no email to hash.
 
-    def __init__(self, **kwargs):
-        super(Profile, self).__init__(**kwargs)
-        self.created = now_in_utc()
-        self.last_refreshed = now_in_utc()
-        self.last_email_check = now_in_utc()
-        self.refresh_interval = self.refresh_interval or 7
-        self.next_refresh = self.last_refreshed + datetime.timedelta(days=self.refresh_interval)
-        self.given_name = self.given_name or u"Anonymous"
-        self.surname = self.surname or u"User"
-        self.password_hash = None
-        self.notification_email_frequency = "every_week_or_two"
+    @cached_property
+    def products_not_removed(self):
+        return [p for p in self.products if not p.removed]
+
+    @cached_property
+    def display_products(self):
+        return self.products_not_removed
+
+    @cached_property
+    def tiids(self):
+        # return all tiids that have not been removed
+        return [product.tiid for product in self.products_not_removed]
+
+    @cached_property
+    def tiids_including_removed(self):
+        # return all tiids even those that have been removed
+        return [product.tiid for product in self.products]
+
+    @cached_property
+    def latest_diff_ts(self):
+        ts_list = [p.latest_diff_timestamp for p in self.products_not_removed]
+        try:
+            return sorted(ts_list, reverse=True)[0]
+        except IndexError:
+            return None
+
+    @cached_property
+    def is_refreshing(self):
+        return any([product.is_refreshing for product in self.products_not_removed])
+
+    @cached_property
+    def product_count(self):
+        return len(self.products_not_remoted)
+
+    @cached_property
+    def awards(self):
+        return profile_award.make_awards_list(self)
+
 
     def make_url_slug(self, surname, given_name):
         slug = (surname + given_name).replace(" ", "")
@@ -354,10 +357,6 @@ class Profile(db.Model):
         return self
 
 
-    def __repr__(self):
-        return u'<Profile {name} (id {id})>'.format(name=self.full_name, id=self.id)
-
-
     def get_products_markup(self, markup, hide_keys=None, add_heading_products=True):
 
         markup.set_template("product.html")
@@ -468,7 +467,6 @@ class Profile(db.Model):
             "new_metrics_notification_dismissed",
             "notification_email_frequency",
             "is_advisor",
-            "is_refreshing",
             "linked_accounts"
         ]
 
@@ -488,10 +486,10 @@ class Profile(db.Model):
             else:
                 pass  # hide_secrets=True, and this is a secret. don't return it.
 
-
-        ret_dict["products_count"] = len(self.tiids)
-
         return ret_dict
+
+    def __repr__(self):
+        return u'<Profile {name} (id {id})>'.format(name=self.full_name, id=self.id)
 
 
 

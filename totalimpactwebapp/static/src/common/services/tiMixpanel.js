@@ -53,7 +53,6 @@ angular.module("services.tiMixpanel", [])
         "is_advisor",
         "last_email_sent",
         "last_viewed_profile",
-        "products_count",
         "surname",
         "url_slug"
       ]

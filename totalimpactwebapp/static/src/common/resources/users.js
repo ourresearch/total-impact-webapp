@@ -9,7 +9,7 @@ angular.module('resources.users',['ngResource'])
         query:{
           method: "GET",
           cache: true,
-          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
+          params: {hide: "biblio,metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
         },
         patch:{
           method: "POST",

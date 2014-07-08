@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-04
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-08
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1532,7 +1532,7 @@ angular.module("profile", [
         embedded: Page.isEmbedded()
       },
         function(resp){
-          console.log("got /user resp back in "
+          console.log("got /profile resp back in "
             + Timer.elapsed("profileViewRender.load")
             + "ms: ", resp)
 
@@ -1547,8 +1547,8 @@ angular.module("profile", [
           $scope.doneLoading = true
 
           // got user back with products. if still refreshing, show update modal
-          console.log("here's the about before checking is_refreshing", resp.about)
-          Update.showUpdateModal(url_slug, resp.about.is_refreshing).then(
+          console.log("here's the is_refreshing before checking it", resp.is_refreshing)
+          Update.showUpdateModal(url_slug, resp.is_refreshing).then(
             function(msg){
               console.log("updater (resolved):", msg)
               $httpDefaultCache.removeAll()
@@ -2865,7 +2865,7 @@ angular.module('resources.users',['ngResource'])
         query:{
           method: "GET",
           cache: true,
-          params: {hide: "metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
+          params: {hide: "biblio,metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
         },
         patch:{
           method: "POST",
@@ -4246,7 +4246,6 @@ angular.module("services.tiMixpanel", [])
         "is_advisor",
         "last_email_sent",
         "last_viewed_profile",
-        "products_count",
         "surname",
         "url_slug"
       ]

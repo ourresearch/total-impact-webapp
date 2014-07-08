@@ -1,3 +1,4 @@
+from totalimpactwebapp.util import cached_property
 from totalimpactwebapp import configs
 
 
@@ -32,27 +33,27 @@ class HeadingProduct(object):
         else:
             return False
 
-    @property
+    @cached_property
     def is_heading(self):
         return True
 
-    @property
+    @cached_property
     def anchor(self):
         anchor = self.genre  # will get more complex if account headings return
         return anchor
 
-    @property
+    @cached_property
     def icon(self):
         try:
             return configs.genre_icons[self.genre]
         except KeyError:
             return configs.genre_icons["unknown"]
 
-    @property
+    @cached_property
     def has_metrics(self):
         return any([p.has_metrics for p in self.products])
 
-    @property
+    @cached_property
     def has_diff(self):
         return any([p.has_diff for p in self.products])
 

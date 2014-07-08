@@ -13,14 +13,13 @@ logger.setLevel(logging.DEBUG)
 # heroku run python totalimpact/updater.py
 
 
-def get_user_about_dict(url_slug, webapp_api_endpoint):
+def get_profile(url_slug, webapp_api_endpoint):
     url = u"{webapp_api_endpoint}/profile/{url_slug}".format(
         webapp_api_endpoint=webapp_api_endpoint, url_slug=url_slug)
-    about = requests.get(url).json()["about"]
-    return about
+    return requests.get(url).json()
 
 def get_num_products_by_url_slug(url_slug, webapp_api_endpoint):
-    return get_user_about_dict(url_slug, webapp_api_endpoint)["products_count"]
+    return get_profile(url_slug, webapp_api_endpoint)["products_count"]
 
 def refresh_by_url_slug(url_slug, webapp_api_endpoint):
     url = u"{webapp_api_endpoint}/profile/{url_slug}/products?action=refresh&source=scheduled".format(
@@ -46,10 +45,10 @@ def deduplicate_by_url_slug(url_slug, webapp_api_endpoint):
 
 
 def import_products_by_url_slug(url_slug, webapp_api_endpoint):
-    user_about = get_user_about_dict(url_slug, webapp_api_endpoint)
+    profile_dict = get_profile(url_slug, webapp_api_endpoint)
 
     for account_type in ["github", "slideshare", "figshare", "orcid"]:
-        user_account_value = user_about[account_type+"_id"]
+        user_account_value = profile_dict["about"][account_type+"_id"]
         if user_account_value:
             url = u"{webapp_api_endpoint}/profile/{url_slug}/linked-accounts/{account_type}?action=update&source=scheduled".format(
                 webapp_api_endpoint=webapp_api_endpoint, url_slug=url_slug,

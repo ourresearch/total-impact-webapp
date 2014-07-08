@@ -302,7 +302,7 @@ angular.module("profile", [
         embedded: Page.isEmbedded()
       },
         function(resp){
-          console.log("got /user resp back in "
+          console.log("got /profile resp back in "
             + Timer.elapsed("profileViewRender.load")
             + "ms: ", resp)
 
@@ -317,8 +317,8 @@ angular.module("profile", [
           $scope.doneLoading = true
 
           // got user back with products. if still refreshing, show update modal
-          console.log("here's the about before checking is_refreshing", resp.about)
-          Update.showUpdateModal(url_slug, resp.about.is_refreshing).then(
+          console.log("here's the is_refreshing before checking it", resp.is_refreshing)
+          Update.showUpdateModal(url_slug, resp.is_refreshing).then(
             function(msg){
               console.log("updater (resolved):", msg)
               $httpDefaultCache.removeAll()

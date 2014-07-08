@@ -45,7 +45,7 @@ if (os.getenv("FLASK_DEBUG", False) == "True"):
     logger.info("Setting app.debug=True; Flask-DebugToolbar will display")
     app.debug = True
     app.config['DEBUG'] = True
-    app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = True
+    app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
     app.config["SQLALCHEMY_RECORD_QUERIES"] = True
     toolbar = DebugToolbarExtension(app)
 
@@ -104,13 +104,9 @@ app.config["ASSETS_DEBUG"] = (os.getenv("PACK_ASSETS") != "True")
 
 
 
-try:
-    from totalimpactwebapp import views
-except exc.ProgrammingError:    
-    # logger.critical(u"SQLAlchemy database tables not found.  THEY SHOULD BE HERE SO NOT CREATING THEM.")
-    logger.info(u"SQLAlchemy database tables not found, so creating them")
-    db.session.rollback()
-    from totalimpactwebapp import views
-    db.create_all()
+from totalimpactwebapp import views
+logger.info(u"calling create_all on SQLAlchemy database tables")
+db.create_all()
+
 
 

@@ -1,4 +1,5 @@
 import util
+from totalimpactwebapp.util import cached_property
 from totalimpactwebapp import db
 
 
@@ -32,7 +33,7 @@ class Aliases(object):
                 except AttributeError:
                     setattr(self, alias_row.namespace, [alias_row.nid])
 
-    @property
+    @cached_property
     def best_url(self):
         try:
             return self.url[0]
