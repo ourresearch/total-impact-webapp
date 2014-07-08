@@ -56,7 +56,7 @@ class ProductLevelReferenceSet(object):
             except KeyError:
                 pass
 
-        return {"percentile_list":percentile_list}
+        return {"percentile_list": percentile_list, "lookup_dict": lookup_dict}
 
 
     def get_percentile(self, provider, interaction, raw_value):
