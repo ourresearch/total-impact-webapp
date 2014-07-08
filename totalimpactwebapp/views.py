@@ -167,9 +167,10 @@ def is_logged_in(profile):
 
 @login_manager.user_loader
 def load_user(profile_id):
-    # load just the profile table contents
-
-    return db.session.query(Profile).options(orm.noload('*')).get(int(profile_id))
+    # load just the profile table, and don't keep it hooked up to sqlalchemy
+    profile = db.session.query(Profile).options(orm.noload('*')).get(int(profile_id))
+    db.session.expunge(profile)
+    return profile
 
 
 
