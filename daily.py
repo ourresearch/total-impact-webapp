@@ -191,7 +191,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run stuff")
     parser.add_argument('function', type=str, help="one of email_report, refsets, dedup")
     parser.add_argument('--url_slug', default=None, type=str, help="url slug")
-    parser.add_argument('--save_after_every_profile', default=False, type=bool, help="set to 1 for debugging refsets, saves refsets to db after every profile.  slow.")
+    parser.add_argument('--save_after_every_profile', action='store_true', help="use to debug refsets, saves refsets to db after every profile.  slow.")
 
     args = vars(parser.parse_args())
     print args
