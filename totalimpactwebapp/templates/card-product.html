@@ -27,7 +27,7 @@ sort by: {{ card.sort_by }}
             Not bad!
          {% endif %}
 
-         Only {{ 101 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.display_genre_plural }}
+         Only {{ 100 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.display_genre_plural }}
                have reached that many {{ card.metric.display_interaction }}.
       {% endif %}
 
@@ -66,7 +66,7 @@ sort by: {{ card.sort_by }}
          this week!
 
       {% if card.metric.percentile and card.metric.percentile.value > 50 %}
-            That's good--only {{ 101 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.genre_plural }}
+            That's good--only {{ 100 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.genre_plural }}
             have that many!
       {% endif %}
 
@@ -105,7 +105,7 @@ sort by: {{ card.sort_by }}
          this week, bringing it up to {{ card.metric.most_recent_snap.raw_value_int }} total.
 
       {% if card.metric.percentile and card.metric.percentile.value > 50 %}
-         That's good--only {{ 101 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.genre_plural }} have that many.
+         That's good--only {{ 100 - card.metric.percentile.value }}% of {{ card.product.year }} {{ card.product.genre_plural }} have that many.
       {% endif %}
 
          It marks your {{ card.num_profile_products_this_good_ordinal }} product to get this many {{ card.metric.display_interaction }} on {{ card.metric.display_provider }}. Nice work!

@@ -59,7 +59,7 @@ class Card(object):
 
     def to_dict(self):
         # ignore some properties to keep dict small.   
-        properties_to_ignore = ["profile", "product", "metric"]
+        properties_to_ignore = ["profile", "product"]
         ret = util.dict_from_dir(self, properties_to_ignore)
 
         # individual cards can add in more subelements to help with debugging
@@ -136,10 +136,6 @@ class ProductNewMetricCard(Card):
         mydict = super(ProductNewMetricCard, self).to_dict()
         mydict.update({
             "tiid": self.product.tiid,
-            "provider": self.metric.provider,
-            "interaction": self.metric.interaction,
-            "display_count": self.metric.display_count,
-            "diff_value": self.metric.diff_value
             })
         return mydict
 

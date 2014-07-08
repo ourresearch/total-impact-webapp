@@ -67,11 +67,11 @@ class ProductLevelReferenceSet(object):
 
         percentile = 0
         for p in percentile_list_dict["percentile_list"].percentiles:
-            if p > raw_value:
-                break
             percentile += 1
+            if p >= raw_value:
+                break
 
-        if percentile == 100:
+        if percentile >= 100:
             percentile = 99
 
         lookup_mendeley_discipline = percentile_list_dict["lookup_dict"]["mendeley_discipline"]
