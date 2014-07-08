@@ -2,6 +2,7 @@ from collections import Counter, namedtuple, defaultdict
 import logging
 import shortuuid
 import datetime
+import numpy
 
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp import json_sqlalchemy
@@ -54,7 +55,7 @@ class ProductLevelReferenceSet(object):
             except KeyError:
                 pass
 
-        return {"lookup_dict":lookup_dict, "percentile_list":percentile_list}
+        return {"percentile_list":percentile_list}
 
 
     def get_percentile(self, provider, interaction, raw_value):
@@ -63,43 +64,27 @@ class ProductLevelReferenceSet(object):
         if not percentile_list_dict or not percentile_list_dict["percentile_list"]:
             return None
 
-        percentiles = percentile_list_dict["percentile_list"].percentiles
-
         percentile = 0
-        percentile_step = 100.0/len(percentiles)
-        for p in percentiles:
+        for p in percentile_list_dict["percentile_list"].percentiles:
             if p > raw_value:
                 break
-            percentile += percentile_step
+            percentile += 1
 
-        int_percentile = int(round(percentile, 0))
-        if int_percentile == 100:
-            int_percentile = 99
+        if percentile == 100:
+            percentile = 99
 
-        response = percentile_list_dict["lookup_dict"].copy()
-        response["value"] = int_percentile
+        lookup_mendeley_discipline = percentile_list_dict["lookup_dict"]["mendeley_discipline"]
+        if not lookup_mendeley_discipline:
+            lookup_mendeley_discipline = ""
+        lookup_genre = percentile_list_dict["lookup_dict"]["genre"]
 
-        if response["mendeley_discipline"] is None:
-            response["mendeley_discipline_str"] = ""
-        else:
-            response["mendeley_discipline_str"] = response["mendeley_discipline"]
-
-        response["genre_plural"] = configs.pluralize_genre(response["genre"])
+        response = {  
+            "value": percentile,
+            "mendeley_discipline_str": lookup_mendeley_discipline,
+            "genre_plural": configs.pluralize_genre(lookup_genre)
+            }
 
         return response
-
-
-    def pluralize_genre(self, genre):
-        """ this is flagrantly copy-pasted from product.py...refactor later.
-        """
-        genre_plural = genre + u"s"
-        if genre_plural.startswith("other"):
-            genre_plural = "other products"
-        elif genre_plural.startswith("slides"):
-            genre_plural = "slides"
-        elif genre_plural.startswith("software"):
-            genre_plural = "software products"
-        return genre_plural
 
 
     def to_dict(self):
@@ -259,23 +244,12 @@ class RefsetBuilder(object):
         if n_zero:
             elements += [0 for i in range(n_zero)]
 
-        # decide the precision
-        number_bins = None
-        index_interval_size = 0
-        if n_total >= 100:
-            number_bins = 100.0
-            index_interval_size = int(round(len(elements)/number_bins))
-
-        elif n_total >= 10:
-            number_bins = 10.0
-            index_interval_size = 1
-
-        percentiles = None
-        if number_bins and (index_interval_size > 0):
-            percentiles = sorted(elements)[::index_interval_size]
+        percentiles = numpy.percentile(elements, q=range(101))
+        percentiles = [int(round(p, 0)) for p in percentiles]
 
         return percentiles
            
+
     def export_histograms(self):
         refset_lists = []
         for metric_key in self.metric_keys:
