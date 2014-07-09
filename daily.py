@@ -99,7 +99,7 @@ def windowed_query(q, column, windowsize):
 
 
 
-def add_product_deets_for_everyone(url_slug=None):
+def add_product_deets_for_everyone(url_slug=None, skip_until_url_slug=None):
     if url_slug:
         profile_iterator = [Profile.query.filter_by(url_slug=url_slug).first()]
     else:
@@ -107,6 +107,11 @@ def add_product_deets_for_everyone(url_slug=None):
 
     run_id = datetime.datetime.utcnow().isoformat()
     for profile in profile_iterator:
+        if skip_until_url_slug and skip_until_url_slug.lower() > profile.url_slug.lower():
+            logger.info(u"in add_product_deets_for_everyone and skipping {url_slug}".format(
+                url_slug=profile.url_slug))
+            continue
+
         logger.info(u"add_product_deets_for_everyone: {url_slug}".format(
             url_slug=profile.url_slug))
 
@@ -192,7 +197,7 @@ def main(function, args):
     elif function=="dedup":
         deduplicate_everyone()
     elif function=="productdeets":
-        add_product_deets_for_everyone(args["url_slug"])
+        add_product_deets_for_everyone(args["url_slug"], args["skip_until_url_slug"])
     elif function=="refsets":
         build_refsets(args["save_after_every_profile"])
 
@@ -207,6 +212,7 @@ if __name__ == "__main__":
     parser.add_argument('function', type=str, help="one of emailreport, refsets, dedup, productdeets")
     parser.add_argument('--url_slug', default=None, type=str, help="url slug")
     parser.add_argument('--save_after_every_profile', action='store_true', help="use to debug refsets, saves refsets to db after every profile.  slow.")
+    parser.add_argument('--skip_until_url_slug', default=None, help="when looping don't process till past this url_slug")
 
     args = vars(parser.parse_args())
     print args
