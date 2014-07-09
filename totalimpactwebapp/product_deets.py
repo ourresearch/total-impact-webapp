@@ -25,8 +25,8 @@ class ProductDeets(db.Model):
     run_id = db.Column(db.Text)
 
     def __init__(self, **kwargs):
-        print(u"new ProductDeets {kwargs}".format(
-            kwargs=kwargs))        
+        # print(u"new ProductDeets {kwargs}".format(
+        #     kwargs=kwargs))        
         self.deets_collected_date = datetime.datetime.utcnow()    
         super(ProductDeets, self).__init__(**kwargs)
 
