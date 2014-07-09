@@ -105,11 +105,13 @@ def add_product_deets_for_everyone(url_slug=None):
     else:
         profile_iterator = page_query(Profile.query.order_by(Profile.url_slug.asc()))
 
+    run_id = datetime.datetime.utcnow().isoformat()
     for profile in profile_iterator:
         for product in profile.products_not_removed:
             logger.info(u"add_product_deets_for_everyone: {url_slug}, tiid={tiid}".format(
                 url_slug=profile.url_slug, tiid=product.tiid))
             product_deets = populate_product_deets(profile, product)  # not delayed
+            product_deets.run_id = run_id
             db.session.add(product_deets)
         db.session.commit()
 

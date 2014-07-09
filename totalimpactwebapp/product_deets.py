@@ -22,6 +22,7 @@ class ProductDeets(db.Model):
     has_metrics = db.Column(db.Text)
     title = db.Column(db.Text)
     deets_collected_date = db.Column(db.DateTime())
+    run_id = db.Column(db.Text)
 
     def __init__(self, **kwargs):
         print(u"new ProductDeets {kwargs}".format(
