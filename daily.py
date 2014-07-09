@@ -1,6 +1,7 @@
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
+from totalimpactwebapp.product_deets import populate_product_deets
 from totalimpactwebapp import db
 import tasks
 
@@ -98,10 +99,19 @@ def windowed_query(q, column, windowsize):
 
 
 
-def add_profile_deets_for_everyone():
-    for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
-        logger.info(u"add_profile_deets_for_everyone: {url_slug}".format(url_slug=profile.url_slug))
-        response = tasks.add_profile_deets.delay(profile)
+def add_product_deets_for_everyone(url_slug=None):
+    if url_slug:
+        profile_iterator = [Profile.query.filter_by(url_slug=url_slug).first()]
+    else:
+        profile_iterator = page_query(Profile.query.order_by(Profile.url_slug.asc()))
+
+    for profile in profile_iterator:
+        for product in profile.products_not_removed:
+            logger.info(u"add_product_deets_for_everyone: {url_slug}, tiid={tiid}".format(
+                url_slug=profile.url_slug, tiid=product.tiid))
+            product_deets = populate_product_deets(profile, product)  # not delayed
+            db.session.add(product_deets)
+        db.session.commit()
 
 
 def deduplicate_everyone():
@@ -169,15 +179,15 @@ def build_refsets(save_after_every_profile=False):
 
 
 def main(function, args):
-    if function=="email_report":
+    if function=="emailreport":
         if "url_slug" in args:
             email_report_to_url_slug(args["url_slug"])
         else:    
             email_report_to_everyone_who_needs_one()
     elif function=="dedup":
         deduplicate_everyone()
-    elif function=="profile_deets":
-        add_profile_deets_for_everyone()
+    elif function=="productdeets":
+        add_product_deets_for_everyone(args["url_slug"])
     elif function=="refsets":
         build_refsets(args["save_after_every_profile"])
 
@@ -188,8 +198,8 @@ if __name__ == "__main__":
     db.create_all()
     
     # get args from the command line:
-    parser = argparse.ArgumentParser(description="Run stuff")
-    parser.add_argument('function', type=str, help="one of email_report, refsets, dedup")
+    parser = argparse.ArgumentParser(description="Run stuff.")
+    parser.add_argument('function', type=str, help="one of emailreport, refsets, dedup, productdeets")
     parser.add_argument('--url_slug', default=None, type=str, help="url slug")
     parser.add_argument('--save_after_every_profile', action='store_true', help="use to debug refsets, saves refsets to db after every profile.  slow.")
 

@@ -102,10 +102,8 @@ login_manager.setup_app(app)
 app.config["ASSETS_DEBUG"] = (os.getenv("PACK_ASSETS") != "True")
 
 
-
-
 from totalimpactwebapp import views
-logger.info(u"calling create_all on SQLAlchemy database tables")
+logger.info(u"calling create_all on SQLAlchemy database tables to make any new ones")
 db.create_all()
 
 
