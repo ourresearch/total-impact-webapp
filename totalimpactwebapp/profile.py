@@ -212,7 +212,7 @@ class Profile(db.Model):
 
     @cached_property
     def product_count(self):
-        return len(self.products_not_remoted)
+        return len(self.products_not_removed)
 
     @cached_property
     def awards(self):

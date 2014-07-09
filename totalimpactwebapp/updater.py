@@ -19,7 +19,7 @@ def get_profile(url_slug, webapp_api_endpoint):
     return requests.get(url).json()
 
 def get_num_products_by_url_slug(url_slug, webapp_api_endpoint):
-    return get_profile(url_slug, webapp_api_endpoint)["products_count"]
+    return get_profile(url_slug, webapp_api_endpoint)["product_count"]
 
 def refresh_by_url_slug(url_slug, webapp_api_endpoint):
     url = u"{webapp_api_endpoint}/profile/{url_slug}/products?action=refresh&source=scheduled".format(

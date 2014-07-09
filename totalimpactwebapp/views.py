@@ -332,9 +332,9 @@ def get_user_profile(profile_id):
         request
     )
 
-    markup = product.Markup(g.user_id, embed=request.args.get("embed"))
-
     hide_keys = request.args.get("hide", "").split(",")
+
+    markup = product.Markup(g.user_id, embed=request.args.get("embed"))
 
     resp = {
         "products": profile.get_products_markup(
@@ -344,7 +344,9 @@ def get_user_profile(profile_id):
         )
     }
 
+    # things that would be in about, but require products
     resp["is_refreshing"] = profile.is_refreshing
+    resp["product_count"] = profile.product_count
 
     if not "about" in hide_keys:
         resp["about"] = profile.dict_about(show_secrets=False)

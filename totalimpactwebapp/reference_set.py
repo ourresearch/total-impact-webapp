@@ -75,7 +75,7 @@ class ProductLevelReferenceSet(object):
             percentile = 99
 
         lookup_mendeley_discipline = percentile_list_dict["lookup_dict"]["mendeley_discipline"]
-        if not lookup_mendeley_discipline:
+        if not lookup_mendeley_discipline or lookup_mendeley_discipline==u'ALL':
             lookup_mendeley_discipline = ""
         lookup_genre = percentile_list_dict["lookup_dict"]["genre"]
 
