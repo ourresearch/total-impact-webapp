@@ -59,10 +59,10 @@ class TaskAlertIfFail(celery.Task):
 
 
 @task(ignore_result=True)
-def deduplicate(profile):
+def deduplicate(profile_id):
     removed_tiids = []
     try:
-        removed_tiids = remove_duplicates_from_profile(profile.id)
+        removed_tiids = remove_duplicates_from_profile(profile_id)
         logger.debug(removed_tiids)
     except Exception as e:
         logger.warning(u"EXCEPTION!!!!!!!!!!!!!!!! deduplicating")
