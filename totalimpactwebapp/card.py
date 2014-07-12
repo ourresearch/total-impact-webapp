@@ -29,7 +29,6 @@ class Card(object):
     @property
     def sort_by(self):
         score = 0
-        return score
 
         if self.milestone_awarded == 1:
             score += 500  # as good as a 75th percentile

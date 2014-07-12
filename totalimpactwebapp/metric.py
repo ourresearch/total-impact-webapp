@@ -27,7 +27,7 @@ def make_metrics_list(tiid, snaps, product_created):
 
             my_metric.add_snaps_from_list(snaps)
 
-            my_metric.diff_window_must_start_after = arrow.get(product_created)
+            my_metric.product_create_date = arrow.get(product_created)
             metrics.append(my_metric)
 
     return metrics
@@ -42,7 +42,7 @@ def make_mendeley_metric(tiid, snaps, product_created):
         configs.metrics()["mendeley:discipline"]
     )
     metric.add_snaps_from_list(snaps)
-    metric.diff_window_must_start_after = arrow.get(product_created)
+    metric.product_create_date = arrow.get(product_created)
 
     if len(metric.snaps):
         return metric
@@ -53,13 +53,17 @@ def make_mendeley_metric(tiid, snaps, product_created):
 
 class Metric(object):
 
+    window_start_min_days_ago = 7
+    product_min_age_for_diff_minutes = 60
+    assume_we_have_first_snap_by_minutes = 60
+
     def __init__(self, tiid, provider, interaction, config):
         self.tiid = tiid
         self.provider = provider
         self.interaction = interaction
         self.snaps = []
         self.config = config
-        self.diff_window_must_start_after = None
+        self.product_create_date = None
 
 
     def add_snaps_from_list(self, snaps_list):
@@ -91,9 +95,15 @@ class Metric(object):
             reverse=True
         )[0]
 
+
     @cached_property
-    def window_start_snap(self):
-        return self.get_window_start_snap(self.diff_window_must_start_after)
+    def oldest_snap(self):
+        return sorted(
+            self.snaps,
+            key=lambda x: x.last_collected_date,
+            reverse=False
+        )[0]
+
 
     @cached_property
     def is_highly(self):
@@ -115,44 +125,106 @@ class Metric(object):
 
         for milestone in sorted(self.config["milestones"], reverse=True):
             try:
-                if self.window_start_snap.raw_value_int < milestone <= self.most_recent_snap.raw_value_int:
+                if self._window_start_snap.raw_value_int < milestone <= self.most_recent_snap.raw_value_int:
                     return milestone
             except AttributeError:
-                if not self.window_start_snap and (milestone <= self.most_recent_snap.raw_value_int):
+                if not self._window_start_snap and (milestone <= self.most_recent_snap.raw_value_int):
                     return milestone
 
         return None
 
-    def get_window_start_snap(self, window_must_start_after):
+    @cached_property
+    def _window_start_snap(self):
         most_recent_snap_time = arrow.get(self.most_recent_snap.last_collected_date)
-        window_starts_right_before = most_recent_snap_time.replace(days=-7)
-        sorted_snaps = sorted(
-            self.snaps,
-            key=lambda x: x.last_collected_date,
-            reverse=True
+        window_start_time = arrow.utcnow().replace(days=self.window_start_min_days_ago)
+
+        # all our data is super old
+        if most_recent_snap_time < window_start_time:
+            return None
+
+        min_for_diff = self.product_create_date.replace(
+            minutes=self.product_min_age_for_diff_minutes
         )
 
-        for snap in sorted_snaps:
-            my_snap_time = arrow.get(snap.last_collected_date)
-            if window_must_start_after < my_snap_time < window_starts_right_before:
-                return snap
+        # we're currently in the first minutes of this product's life
+        if arrow.utcnow() < min_for_diff:
+            return None
 
-        return None
+         # it's a newish product, but we can get get diffs still
+        if self.product_create_date < window_start_time:
+
+            oldest_snap_date = arrow.get(self.oldest_snap.last_collected_date)
+            if self.product_create_date.replace(minutes=self.assume_we_have_first_snap_by_minutes) < oldest_snap_date:
+                pass
+                # return a virtual snap with a zero
+            else:
+                return self.oldest_snap
+
+         # this is a product we've had for a while, we've (hopefully)
+         # done multiple updates
+        else:
+
+            newest_snap_older_than_window = None
+            sorted_snaps = sorted(
+                self.snaps,
+                key=lambda x: x.last_collected_date,
+                reverse=True
+            )
+
+            for snap in sorted_snaps:
+                my_snap_time = arrow.get(snap.last_collected_date)
+                if my_snap_time < window_start_time:
+                    newest_snap_older_than_window = snap
+
+            if newest_snap_older_than_window:
+                return newest_snap_older_than_window
+            else:
+                pass
+                # return a virtual zero snap
+
+
+
+    @cached_property
+    def diff_window_start_value(self):
+        pass
+
+    @cached_property
+    def diff_window_start_date(self):
+        pass
+
+    @cached_property
+    def diff_window_end_value(self):
+        return self.most_recent_snap.raw_value_int
+
+    @cached_property
+    def diff_window_end_date(self):
+        return self.most_recent_snap.last_collected_date
+
+    @cached_property
+    def diff_value(self):
+        try:
+            return self.diff_window_end_value - self.diff_window_start_value
+        except TypeError:
+            return None
+
+    #@cached_property
+    #def diff_window_length(self):
+    #    return self._diff()["window_length"]
 
 
     def _diff(self):
-        if self.window_start_snap is None or not self.can_diff:
+        if self._window_start_snap is None or not self.can_diff:
             return {
                 "window_length": None,
                 "value": None
             }
         else:
-            window_start = arrow.get(self.window_start_snap.last_collected_date)
+            window_start = arrow.get(self._window_start_snap.last_collected_date)
             window_end = arrow.get(self.most_recent_snap.last_collected_date)
             window_length_timedelta = window_end - window_start
 
             try:
-                value_diff = self.most_recent_snap.raw_value_int - self.window_start_snap.raw_value_int
+                value_diff = self.most_recent_snap.raw_value_int - self._window_start_snap.raw_value_int
             except TypeError:
                 # complex values like mendeley discipline dicts
                 value_diff = None
@@ -162,13 +234,6 @@ class Metric(object):
                 "value": value_diff
             }
 
-    @cached_property
-    def diff_value(self):
-        return self._diff()["value"]
-
-    @cached_property
-    def diff_window_length(self):
-        return self._diff()["window_length"]
 
 
     @cached_property
