@@ -171,7 +171,7 @@ class ProfileNewMetricCard(Card):
     @property
     def current_value(self):
         try:
-            return self.profile.metric_milestone_just_reached(self.provider, self.interaction)["accumulated_most_recent"]
+            return self.profile.metric_milestone_just_reached(self.provider, self.interaction)["accumulated_diff_end_value"]
         except KeyError:
             return None
 
