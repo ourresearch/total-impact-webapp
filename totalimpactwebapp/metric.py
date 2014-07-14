@@ -210,35 +210,6 @@ class Metric(object):
         except TypeError:
             return None
 
-    #@cached_property
-    #def diff_window_length(self):
-    #    return self._diff()["window_length"]
-
-
-    def _diff(self):
-        if self._window_start_snap is None or not self.can_diff:
-            return {
-                "window_length": None,
-                "value": None
-            }
-        else:
-            window_start = arrow.get(self._window_start_snap.last_collected_date)
-            window_end = arrow.get(self.most_recent_snap.last_collected_date)
-            window_length_timedelta = window_end - window_start
-
-            try:
-                value_diff = self.most_recent_snap.raw_value_int - self._window_start_snap.raw_value_int
-            except TypeError:
-                # complex values like mendeley discipline dicts
-                value_diff = None
-
-            return {
-                "window_length": window_length_timedelta.days,
-                "value": value_diff
-            }
-
-
-
     @cached_property
     def hide_badge(self):
         try:
