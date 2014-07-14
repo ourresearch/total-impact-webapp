@@ -2,7 +2,6 @@ from totalimpactwebapp import db
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import ordinal
 from totalimpactwebapp import json_sqlalchemy
-from totalimpactwebapp.metric import Metric
 
 class Snap(db.Model):
 
@@ -104,6 +103,14 @@ class Snap(db.Model):
 
 
 
+class ZeroSnap(object):
+    """
+    Stub for the Metric object to use internally, when there's no real snap.
+    """
+
+    def __init__(self, date):
+        self.last_collected_date = date
+        self.raw_value_int = 0
 
 
 
