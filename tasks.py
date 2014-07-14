@@ -1,3 +1,4 @@
+import os
 import logging
 import celery
 from celery.decorators import task
@@ -79,6 +80,10 @@ def send_email_if_new_diffs(profile_id):
     now = datetime.datetime.utcnow()    
     logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=profile.url_slug))
     latest_diff_timestamp = profile.latest_diff_ts
+    if not latest_diff_timestamp:
+        status = "no diff timestamp"
+        return status
+
     status = "checking diffs"
 
     if (not profile.last_email_check) or (latest_diff_timestamp > profile.last_email_check.isoformat()):
@@ -116,7 +121,7 @@ def send_email_report(profile, now=None):
         if os.getenv("ENVIRONMENT", "testing") == "production":
             email = profile.email
         else:
-            email = "team@impactstory.org"
+            email = "heather@impactstory.org"
         profile.last_email_sent = now
 
         try:

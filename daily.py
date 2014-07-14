@@ -153,7 +153,14 @@ def email_report_to_url_slug(url_slug=None):
 
 
 def email_report_to_everyone_who_needs_one():
-    for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
+    max_emails_sent = 1000
+    number_emails_sent = 0
+
+    q = db.session.query(Profile)
+    for profile in windowed_query(q, Profile.url_slug, 25):
+
+        # logger.debug(u"in email_report_to_everyone_who_needs_one for {url_slug}".format(
+        #     url_slug=profile.url_slug))
 
         try:
             if not profile.email or (u"@" not in profile.email):
@@ -163,12 +170,23 @@ def email_report_to_everyone_who_needs_one():
             elif profile.last_email_sent and ((datetime.datetime.utcnow() - profile.last_email_sent).days < 7):
                 logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=profile.url_slug))
             else:
-                logger.info(u"adding ASYNC notification check to celery for {url_slug}".format(url_slug=profile.url_slug))
-                status = tasks.send_email_if_new_diffs.delay(profile.id)
+                logger.info(u"checking email for {url_slug}".format(url_slug=profile.url_slug))
+                # status = tasks.send_email_if_new_diffs.delay(profile.id)
+                status = tasks.send_email_if_new_diffs(profile.id)
+                if status=="email sent":
+                    number_emails_sent += 1    
+                logger.info(u"checked email for {url_slug}, status={status}".format(
+                    url_slug=profile.url_slug, status=status))
+
         except Exception as e:
             logger.warning(u"EXCEPTION in email_report_to_everyone_who_needs_one for {url_slug}, skipping to next profile.  Error {e}".format(
                 url_slug=profile.url_slug, e=e))
             pass
+
+        if number_emails_sent >= max_emails_sent:
+            logger.info(u"Reached max_number_profiles_to_consider, so no done queueing email")
+            break
+
     return
 
 
@@ -190,7 +208,7 @@ def build_refsets(save_after_every_profile=False):
 
 def main(function, args):
     if function=="emailreport":
-        if "url_slug" in args:
+        if "url_slug" in args and args["url_slug"]:
             email_report_to_url_slug(args["url_slug"])
         else:    
             email_report_to_everyone_who_needs_one()
