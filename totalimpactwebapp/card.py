@@ -36,9 +36,9 @@ class Card(object):
         if self.milestone_awarded > 1:
             score += (self.milestone_awarded + 500)
 
-        if "youtube"==self.metric.provider:
+        if "youtube"==self.provider:
             score += 1000
-        elif "wikipedia"==self.metric.provider:
+        elif "wikipedia"==self.provider:
             score += 10000
 
         return score
