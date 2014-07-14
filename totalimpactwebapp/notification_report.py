@@ -1,5 +1,3 @@
-from totalimpactwebapp.card import Card
-from totalimpactwebapp import configs
 from totalimpactwebapp.cards_factory import *
 import os
 

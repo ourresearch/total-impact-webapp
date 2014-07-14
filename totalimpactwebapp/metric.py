@@ -3,6 +3,7 @@ import logging
 import arrow
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import dict_from_dir
+from totalimpactwebapp.snap import ZeroSnap
 
 
 logger = logging.getLogger("tiwebapp.metric")
@@ -116,7 +117,7 @@ class Metric(object):
 
     @cached_property
     def can_diff(self):
-        return self.most_recent_snap.can_diff
+        return self.most_recent_snap.can_diff and self.diff_window_start_value is not None
 
     @cached_property
     def milestone_just_reached(self):
@@ -124,12 +125,8 @@ class Metric(object):
             return None
 
         for milestone in sorted(self.config["milestones"], reverse=True):
-            try:
-                if self._window_start_snap.raw_value_int < milestone <= self.most_recent_snap.raw_value_int:
-                    return milestone
-            except AttributeError:
-                if not self._window_start_snap and (milestone <= self.most_recent_snap.raw_value_int):
-                    return milestone
+            if self.diff_window_start_value < milestone <= self.diff_window_end_value:
+                return milestone
 
         return None
 
@@ -155,8 +152,8 @@ class Metric(object):
 
             oldest_snap_date = arrow.get(self.oldest_snap.last_collected_date)
             if self.product_create_date.replace(minutes=self.assume_we_have_first_snap_by_minutes) < oldest_snap_date:
-                pass
-                # return a virtual snap with a zero
+                snap_to_return = ZeroSnap(self.product_create_date)
+                return snap_to_return
             else:
                 return self.oldest_snap
 
@@ -179,18 +176,24 @@ class Metric(object):
             if newest_snap_older_than_window:
                 return newest_snap_older_than_window
             else:
-                pass
-                # return a virtual zero snap
+                snap_to_return = ZeroSnap(self.product_create_date)
+                return snap_to_return
 
 
 
     @cached_property
     def diff_window_start_value(self):
-        pass
+        try:
+            return self._window_start_snap.raw_value_int
+        except AttributeError:  # there is no window start snap
+            return None
 
     @cached_property
     def diff_window_start_date(self):
-        pass
+        try:
+            return self._window_start_snap.last_collected_date
+        except AttributeError:  # there is no window start snap
+            return None
 
     @cached_property
     def diff_window_end_value(self):

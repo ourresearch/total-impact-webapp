@@ -297,19 +297,26 @@ class Profile(db.Model):
         if not matching_metrics:
             return None
 
-        accumulated_most_recent = sum([metric.most_recent_snap.raw_value_int for metric in matching_metrics])
-        accumulated_diff = sum([metric.diff_value for metric in matching_metrics if metric.diff_value])
-        accumulated_window_start = accumulated_most_recent - accumulated_diff
+        # get values with None filtered out
+        diff_start_values = filter(None, [metric.diff_window_start_value for metric in matching_metrics])
+        diff_end_values = filter(None, [metric.diff_window_end_value for metric in matching_metrics])
+
+        if not len(diff_start_values):  # there's no info about window start
+            return None
+
+        accumulated_diff_start_value = sum(diff_start_values)
+        accumulated_diff_end_value = sum(diff_end_values)
+        accumulated_diff = accumulated_diff_end_value - accumulated_diff_start_value
 
         # milestones will be the same in all the metrics so just grab the first one
         milestones = matching_metrics[0].config["milestones"]
 
         # see if we just passed any of them
         for milestone in sorted(milestones, reverse=True):
-            if accumulated_window_start < milestone <= accumulated_most_recent:
+            if accumulated_diff_start_value < milestone <= accumulated_diff_end_value:
                 return ({
                     "milestone": milestone, 
-                    "accumulated_most_recent": accumulated_most_recent,
+                    "accumulated_diff_end_value": accumulated_diff_end_value,
                     "accumulated_diff": accumulated_diff
                     })
         return None

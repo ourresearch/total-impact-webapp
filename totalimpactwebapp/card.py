@@ -71,16 +71,22 @@ class Card(object):
 class ProductNewMetricCard(Card):
 
     def __init__(self, profile, product, metric, timestamp=None):
+
+        print "\n\n\n\nProductNewMetricCard.init()\n\n\n\n"
+
         self.product = product
         self.profile = profile
         self.metric = metric
+
+        print "self.metric: ", self.metric
+
         super(ProductNewMetricCard, self).__init__(timestamp=timestamp)
 
     @classmethod
     def would_generate_a_card(cls, metric):
         # a milestone can be awarded if the previous value was 0, 
         # which would mean there is no diff_value
-        return (metric.diff_value > 0) or metric.milestone_just_reached
+        return metric.diff_value > 0
 
     @property
     def num_profile_products_this_good(self):
