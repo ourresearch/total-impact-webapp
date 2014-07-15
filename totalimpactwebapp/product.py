@@ -198,6 +198,8 @@ class Product(db.Model):
     @cached_property
     def latest_diff_timestamp(self):
         ts_list = [m.latest_nonzero_refresh_timestamp for m in self.metrics]
+        if not ts_list:
+            return None
         try:
             return sorted(ts_list, reverse=True)[0]
         except IndexError:

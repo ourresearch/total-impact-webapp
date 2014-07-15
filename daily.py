@@ -162,7 +162,7 @@ def email_report_to_everyone_who_needs_one():
             else:
                 logger.info(u"checking email for {url_slug}".format(url_slug=profile.url_slug))
                 # status = tasks.send_email_if_new_diffs.delay(profile.id)
-                status = tasks.send_email_if_new_diffs(profile.id)
+                status = tasks.send_email_if_new_diffs(profile)
                 if status=="email sent":
                     number_emails_sent += 1    
                 logger.info(u"checked email for {url_slug}, status={status}".format(
