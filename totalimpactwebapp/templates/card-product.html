@@ -32,7 +32,7 @@ sort by: {{ card.sort_by }}
 
          Only {{ 100 - card.metric.percentile.value }}%
          of {{ card.product.year }}
-         {{ award.top_metric_by_count.percentile.mendeley_discipline_str }}
+         {{ card.metric.percentile.mendeley_discipline_str }}
          {{ card.product.display_genre_plural }}
          on Impactstory have reached that many
          {{ card.metric.display_interaction }}.
@@ -76,7 +76,7 @@ threshold, y'all.
       {% if card.metric.percentile and card.metric.percentile.value > 50 %}
          That's good--only {{ 100 - card.metric.percentile.value }}%
          of {{ card.product.year }}
-         {{ award.top_metric_by_count.percentile.mendeley_discipline_str }}
+         {{ card.metric.percentile.mendeley_discipline_str }}
          {{ card.product.display_genre_plural }}
          on Impactstory have that many!.
       {% endif %}
@@ -118,7 +118,7 @@ threshold, y'all.
       {% if card.metric.percentile and card.metric.percentile.value > 50 %}
          That's good--only {{ 100 - card.metric.percentile.value }}%
          of {{ card.product.year }}
-         {{ award.top_metric_by_count.percentile.mendeley_discipline_str }}
+         {{ card.metric.percentile.mendeley_discipline_str }}
          {{ card.product.display_genre_plural }}
          on Impactstory have that many.
       {% endif %}
