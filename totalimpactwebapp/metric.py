@@ -180,6 +180,7 @@ class Metric(object):
                 my_snap_time = arrow.get(snap.last_collected_date)
                 if my_snap_time < window_start_time:
                     newest_snap_older_than_window = snap
+                    break
 
             if newest_snap_older_than_window:
                 return newest_snap_older_than_window
