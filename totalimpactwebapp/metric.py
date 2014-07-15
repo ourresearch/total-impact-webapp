@@ -55,8 +55,8 @@ def make_mendeley_metric(tiid, snaps, product_created):
 class Metric(object):
 
     window_start_min_days_ago = 8
-    product_min_age_for_diff_minutes = 60
-    assume_we_have_first_snap_by_minutes = 60
+    product_min_age_for_diff_minutes = 60*6  # 6 hrs
+    assume_we_have_first_snap_by_minutes = 60*6  # 6hrs
 
     def __init__(self, tiid, provider, interaction, config):
         self.tiid = tiid
