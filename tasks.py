@@ -88,8 +88,7 @@ def send_email_if_new_diffs(profile):
 
     if (not profile.last_email_check) or (latest_diff_timestamp > profile.last_email_check):
         logger.info(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=profile.url_slug))
-        send_email_report(profile, now)
-        status = "email sent"
+        status = send_email_report(profile, now)
     else:
         logger.info(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=profile.url_slug))
         status = "no new diffs"
@@ -117,7 +116,7 @@ def send_email_report(profile, now=None):
     report = notification_report.make(profile)
     db.session.merge(profile)
 
-    if template_filler_dict["cards"]:
+    if report["cards"]:
         if os.getenv("ENVIRONMENT", "testing") == "production":
             email = profile.email
         else:
@@ -134,7 +133,7 @@ def send_email_report(profile, now=None):
             logger.info(u"after rollback updated profile object in send_email_report for {url_slug}".format(url_slug=profile.url_slug))
 
         msg = emailer.send(email, "Your latest research impacts", "report", report)
-        status = "emailed"
+        status = "email sent"
         logger.info(u"SENT EMAIL to {url_slug}!!".format(url_slug=profile.url_slug))
     else:
         status = "not emailed, no cards made"

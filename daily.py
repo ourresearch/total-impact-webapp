@@ -142,8 +142,7 @@ def email_report_to_url_slug(url_slug=None):
         tasks.send_email_report(profile)
 
 
-def email_report_to_everyone_who_needs_one():
-    max_emails_sent = 1000
+def email_report_to_everyone_who_needs_one(max_emails=None):
     number_emails_sent = 0
 
     q = db.session.query(Profile)
@@ -165,6 +164,9 @@ def email_report_to_everyone_who_needs_one():
                 status = tasks.send_email_if_new_diffs(profile)
                 if status=="email sent":
                     number_emails_sent += 1    
+                    if max_emails:
+                        logger.info(u"sent an email, have {num} left before hitting max".format(
+                        num = max_emails-number_emails_sent))
                 logger.info(u"checked email for {url_slug}, status={status}".format(
                     url_slug=profile.url_slug, status=status))
 
@@ -173,7 +175,7 @@ def email_report_to_everyone_who_needs_one():
                 url_slug=profile.url_slug, e=e))
             pass
 
-        if number_emails_sent >= max_emails_sent:
+        if max_emails and number_emails_sent >= max_emails:
             logger.info(u"Reached max_number_profiles_to_consider, so no done queueing email")
             break
 
@@ -196,11 +198,11 @@ def build_refsets(save_after_every_profile=False):
 
 
 def main(function, args):
-    if function=="emailreport":
+    if function=="emailreports":
         if "url_slug" in args and args["url_slug"]:
             email_report_to_url_slug(args["url_slug"])
         else:    
-            email_report_to_everyone_who_needs_one()
+            email_report_to_everyone_who_needs_one(args["max_emails"])
     elif function=="dedup":
         deduplicate_everyone()
     elif function=="productdeets":
@@ -216,10 +218,11 @@ if __name__ == "__main__":
     
     # get args from the command line:
     parser = argparse.ArgumentParser(description="Run stuff.")
-    parser.add_argument('function', type=str, help="one of emailreport, refsets, dedup, productdeets")
+    parser.add_argument('function', type=str, help="one of emailreports, refsets, dedup, productdeets")
     parser.add_argument('--url_slug', default=None, type=str, help="url slug")
     parser.add_argument('--save_after_every_profile', action='store_true', help="use to debug refsets, saves refsets to db after every profile.  slow.")
     parser.add_argument('--skip_until_url_slug', default=None, help="when looping don't process till past this url_slug")
+    parser.add_argument('--max_emails', default=None, type=int, help="max number of emails to send")
 
     args = vars(parser.parse_args())
     print args
