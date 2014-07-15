@@ -88,13 +88,14 @@ class Metric(object):
         return False
         
 
-    @cached_property
-    def all_snaps_oldest_to_youngest(self):
-        return sorted(
-            self.snaps,
-            key=lambda x: x.last_collected_date,
-            reverse=False
-        )
+    # useful for debugging
+    # @cached_property
+    # def all_snaps_oldest_to_youngest(self):
+    #     return sorted(
+    #         self.snaps,
+    #         key=lambda x: x.last_collected_date,
+    #         reverse=False
+    #     )
 
 
     @cached_property

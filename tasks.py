@@ -60,10 +60,10 @@ class TaskAlertIfFail(celery.Task):
 
 
 @task(ignore_result=True)
-def deduplicate(profile):
+def deduplicate(profile_id):
     removed_tiids = []
     try:
-        removed_tiids = remove_duplicates_from_profile(profile.id)
+        removed_tiids = remove_duplicates_from_profile(profile_id)
         logger.debug(removed_tiids)
     except Exception as e:
         logger.warning(u"EXCEPTION!!!!!!!!!!!!!!!! deduplicating")
@@ -72,9 +72,9 @@ def deduplicate(profile):
 
 
 @task(base=TaskAlertIfFail)
-def send_email_if_new_diffs(profile_id):
+def send_email_if_new_diffs(profile):
 
-    profile = db.session.query(Profile).get(profile_id)
+    # profile = db.session.query(Profile).get(profile_id)
 
     status = "started"
     now = datetime.datetime.utcnow()    
@@ -86,7 +86,7 @@ def send_email_if_new_diffs(profile_id):
 
     status = "checking diffs"
 
-    if (not profile.last_email_check) or (latest_diff_timestamp > profile.last_email_check.isoformat()):
+    if (not profile.last_email_check) or (latest_diff_timestamp > profile.last_email_check):
         logger.info(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=profile.url_slug))
         send_email_report(profile, now)
         status = "email sent"
@@ -114,7 +114,7 @@ def send_email_report(profile, now=None):
     status = "started"
     if not now:
         now = datetime.datetime.utcnow()
-    template_filler_dict = notification_report.make(profile)
+    report = notification_report.make(profile)
     db.session.merge(profile)
 
     if template_filler_dict["cards"]:
@@ -133,7 +133,7 @@ def send_email_report(profile, now=None):
             db.session.commit()
             logger.info(u"after rollback updated profile object in send_email_report for {url_slug}".format(url_slug=profile.url_slug))
 
-        msg = emailer.send(email, "Your latest research impacts", "report", template_filler_dict)
+        msg = emailer.send(email, "Your latest research impacts", "report", report)
         status = "emailed"
         logger.info(u"SENT EMAIL to {url_slug}!!".format(url_slug=profile.url_slug))
     else:

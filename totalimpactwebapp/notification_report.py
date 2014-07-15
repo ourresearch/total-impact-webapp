@@ -13,7 +13,7 @@ def make(profile):
 
     cards = filter_cards(cards)
     cards = sort_cards(cards)
-    # cards = cards[0:10]
+    cards = cards[0:10]
 
     response = {
         "profile": profile,

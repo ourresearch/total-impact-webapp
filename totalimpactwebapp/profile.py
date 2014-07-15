@@ -200,7 +200,7 @@ class Profile(db.Model):
 
     @cached_property
     def latest_diff_ts(self):
-        ts_list = [p.latest_diff_timestamp for p in self.products_not_removed]
+        ts_list = [p.latest_diff_timestamp for p in self.products_not_removed if p.latest_diff_timestamp]
         try:
             return sorted(ts_list, reverse=True)[0]
         except IndexError:
