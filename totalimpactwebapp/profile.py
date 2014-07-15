@@ -297,7 +297,7 @@ class Profile(db.Model):
 
         metrics_with_diffs = [m for m in matching_metrics if m.can_diff]
 
-         # quit if there's no matching metrics or they have no diffs
+         # quit if there's no matching metrics or they dont' have no diffs
         if not len(metrics_with_diffs):
             return None
 
