@@ -89,6 +89,15 @@ class Metric(object):
         
 
     @cached_property
+    def all_snaps_oldest_to_youngest(self):
+        return sorted(
+            self.snaps,
+            key=lambda x: x.last_collected_date,
+            reverse=False
+        )
+
+
+    @cached_property
     def most_recent_snap(self):
         return sorted(
             self.snaps,
@@ -225,6 +234,7 @@ class Metric(object):
 
     @cached_property
     def latest_nonzero_refresh_timestamp(self):
+        # print self.tiid, most_recent_snap.last_collected_date
         return self.most_recent_snap.last_collected_date
 
 
