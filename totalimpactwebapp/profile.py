@@ -301,7 +301,8 @@ class Profile(db.Model):
         diff_start_values = filter(None, [metric.diff_window_start_value for metric in matching_metrics])
         diff_end_values = filter(None, [metric.diff_window_end_value for metric in matching_metrics])
 
-        if not len(diff_start_values):  # there's no info about window start
+         # there's no info about window start
+        if not len(diff_start_values) or not len(diff_end_values):
             return None
 
         accumulated_diff_start_value = sum(diff_start_values)
