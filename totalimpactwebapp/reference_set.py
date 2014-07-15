@@ -23,14 +23,7 @@ class ProductLevelReferenceSet(object):
             reference_set_lists = load_all_reference_set_lists()
 
 
-    def get_percentile_lookup_list(self, provider, interaction):
-        global reference_set_lists
-        
-        if self.genre=="article" and not self.mendeley_discipline:
-            mendeley_discipline = u"ALL"
-        else:
-            mendeley_discipline = self.mendeley_discipline
-
+    def get_specific_reference_set_list(self, mendeley_discipline, provider, interaction):
         lookup_dict = dict(provider=provider, 
                     interaction=interaction, 
                     year=self.year, 
@@ -40,23 +33,34 @@ class ProductLevelReferenceSet(object):
 
         lookup_key = ReferenceSetList.build_lookup_key(**lookup_dict)
 
-        percentile_list = None
         try:
             percentile_list = reference_set_lists[lookup_key]
+            return {"percentile_list": percentile_list, "mendeley_discipline": mendeley_discipline}
         except KeyError:
-            pass
+            return None
 
-        # maybe not enough in that discipline, so try again across all disciplines
-        if not percentile_list and lookup_dict["genre"]=="article":
-            lookup_dict["mendeley_discipline"] = u'ALL'
-            lookup_key = ReferenceSetList.build_lookup_key(**lookup_dict)
 
-            try:
-                percentile_list = reference_set_lists[lookup_key]
-            except KeyError:
-                pass
+    def get_percentile_lookup_list(self, provider, interaction):
+        global reference_set_lists
+        
+        if self.genre=="article":
+            if self.mendeley_discipline:
+                response = self.get_specific_reference_set_list(self.mendeley_discipline, provider, interaction)
+                if not response:
+                    # if not found, try again across all mendeley disciplines
+                    response = self.get_specific_reference_set_list(u"ALL", provider, interaction)
+            else:
+                response = self.get_specific_reference_set_list(u"ALL", provider, interaction)
+        else:
+            # a few products have a mendeley discipline even though not an article
+            # (some figshare posters etc added to mendeley)
+            # so don't use stored mendeley discipline because won't find the right refset, use None instead
+            response = self.get_specific_reference_set_list(None, provider, interaction)
 
-        return {"percentile_list": percentile_list, "lookup_dict": lookup_dict}
+        # logger.info(u"found get_percentile_lookup_list={percentile_list} for key {mendeley_discipline}".format(
+        #     percentile_list=response["percentile_list"], mendeley_discipline=response["mendeley_discipline"]))
+
+        return response
 
 
     def get_percentile(self, provider, interaction, raw_value):
@@ -74,15 +78,14 @@ class ProductLevelReferenceSet(object):
         if percentile >= 100:
             percentile = 99
 
-        lookup_mendeley_discipline = percentile_list_dict["lookup_dict"]["mendeley_discipline"]
+        lookup_mendeley_discipline = percentile_list_dict["mendeley_discipline"]
         if not lookup_mendeley_discipline or lookup_mendeley_discipline==u'ALL':
             lookup_mendeley_discipline = ""
-        lookup_genre = percentile_list_dict["lookup_dict"]["genre"]
 
         response = {  
             "value": percentile,
             "mendeley_discipline_str": lookup_mendeley_discipline,
-            "genre_plural": configs.pluralize_genre(lookup_genre)
+            "genre_plural": configs.pluralize_genre(self.genre)
             }
 
         return response
@@ -232,12 +235,12 @@ class RefsetBuilder(object):
         else:
             n_zero = n_total - n_non_zero
 
-        return {"n_total": n_total, "n_zero": n_zero, "n_non_zero": n_non_zero}
+        return {"n_total": n_total, "n_zero": n_zero}
 
 
     def percentiles(self, metric_key):
-        # if fewer than 10 points, return none
-        if self.percentiles_Ns(metric_key)["n_non_zero"] < 10:
+        # if fewer than 10 points, don't save percentiles
+        if self.percentiles_Ns(metric_key)["n_total"] < 10:
             return None
 
         # expand the accumulations
