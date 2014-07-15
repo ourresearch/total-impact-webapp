@@ -232,16 +232,21 @@ class RefsetBuilder(object):
         else:
             n_zero = n_total - n_non_zero
 
-        return {"n_total": n_total, "n_zero": n_zero}
+        return {"n_total": n_total, "n_zero": n_zero, "n_non_zero": n_non_zero}
 
 
     def percentiles(self, metric_key):
+        # if fewer than 10 points, return none
+        if self.percentiles_Ns(metric_key)["n_non_zero"] < 10:
+            return None
+
         # expand the accumulations
         elements = list(self.metric_counters[metric_key].elements())
 
         # add the zeros
         n_total = self.percentiles_Ns(metric_key)["n_total"]
         n_zero = self.percentiles_Ns(metric_key)["n_zero"]
+
         if n_zero:
             elements += [0 for i in range(n_zero)]
 

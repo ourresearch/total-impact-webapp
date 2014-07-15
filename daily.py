@@ -103,7 +103,9 @@ def add_product_deets_for_everyone(url_slug=None, skip_until_url_slug=None):
     if url_slug:
         profile_iterator = [Profile.query.filter_by(url_slug=url_slug).first()]
     else:
-        profile_iterator = page_query(Profile.query.order_by(Profile.url_slug.asc()))
+        q = db.session.query(Profile)
+        profile_iterator = windowed_query(q, Profile.url_slug, 25)
+        # profile_iterator = page_query(Profile.query.order_by(Profile.url_slug.asc()))
 
     run_id = datetime.datetime.utcnow().isoformat()
     for profile in profile_iterator:
@@ -125,23 +127,11 @@ def add_product_deets_for_everyone(url_slug=None, skip_until_url_slug=None):
 
 
 def deduplicate_everyone():
-    for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
+    q = db.session.query(Profile)
+    for profile in windowed_query(q, Profile.url_slug, 25):
         logger.info(u"deduplicate_everyone: {url_slug}".format(url_slug=profile.url_slug))
-        response = tasks.deduplicate.delay(profile)
+        response = tasks.deduplicate.delay(profile.id)
 
-
-
-def create_cards_for_everyone(url_slug=None):
-    cards = []
-    if url_slug:
-        profile = Profile.query.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
-        # print profile.url_slug
-        cards = tasks.create_cards(profile)
-    else:    
-        for profile in page_query(Profile.query.order_by(Profile.url_slug.asc())):
-            # print profile.url_slug
-            cards = tasks.create_cards.delay(profile)
-    return cards
 
 
 
@@ -196,7 +186,6 @@ def build_refsets(save_after_every_profile=False):
     refset_builder = RefsetBuilder()
 
     q = db.session.query(Profile)
-
     for profile in windowed_query(q, Profile.url_slug, 25):
         refset_builder.process_profile(profile)
         if save_after_every_profile:
