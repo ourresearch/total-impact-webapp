@@ -294,19 +294,15 @@ class Profile(db.Model):
 
     def metric_milestone_just_reached(self, provider, interaction):
         matching_metrics = self.get_metrics_by_name(provider, interaction)
-        if not matching_metrics:
+
+        metrics_with_diffs = [m for m in matching_metrics if m.can_diff]
+
+         # quit if there's no matching metrics or they have no diffs
+        if not len(metrics_with_diffs):
             return None
 
-        # get values with None filtered out
-        diff_start_values = filter(None, [metric.diff_window_start_value for metric in matching_metrics])
-        diff_end_values = filter(None, [metric.diff_window_end_value for metric in matching_metrics])
-
-         # there's no info about window start
-        if not len(diff_start_values) or not len(diff_end_values):
-            return None
-
-        accumulated_diff_start_value = sum(diff_start_values)
-        accumulated_diff_end_value = sum(diff_end_values)
+        accumulated_diff_start_value = sum([m.diff_window_start_value for m in metrics_with_diffs])
+        accumulated_diff_end_value = sum([m.diff_window_end_value for m in metrics_with_diffs])
         accumulated_diff = accumulated_diff_end_value - accumulated_diff_start_value
 
         # milestones will be the same in all the metrics so just grab the first one
