@@ -5132,8 +5132,10 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "            <a href=\"/static/downloads/share-the-word-poster.pdf\" target=\"_self\">PDF, </a> or\n" +
     "            <a href=\"/static/downloads/share-the-word-poster.png\" target=\"_self\">PNG.</a>\n" +
     "         </p>\n" +
-    "         <p class=\"translations\"> \n" +
-    "            <a href=\"/static/downloads/share-the-word-poster-german.pdf\" target=\"_self\">PDF in German, </a> courtesy Timo L&uuml;ke\n" +
+    "         <p class=\"translations\">\n" +
+    "            Translations (PDF):\n" +
+    "            <a href=\"/static/downloads/share-the-word-poster-german.pdf\" target=\"_self\">German, </a> courtesy Timo L&uuml;ke;\n" +
+    "            <a href=\"/static/downloads/share-the-word-poster_PTBR.pdf\" target=\"_self\">Portuguese, </a> courtesy Atila Iamarino.\n" +
     "         </p>\n" +
     "      </div>\n" +
     "      <div class=\"content\">\n" +
