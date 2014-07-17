@@ -105,7 +105,6 @@ angular.module('security.service', [
             return (user && user.url_slug && user.email)
           },
           ownsThisProfile: function(user){
-            return false
 //          return true
 
             return (user && user.url_slug && user.url_slug == currentUrlSlug())

@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-16
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-17
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -3289,7 +3289,6 @@ angular.module('security.service', [
             return (user && user.url_slug && user.email)
           },
           ownsThisProfile: function(user){
-            return false
 //          return true
 
             return (user && user.url_slug && user.url_slug == currentUrlSlug())
