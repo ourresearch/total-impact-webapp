@@ -2,12 +2,12 @@
    <div class="header profile-subpage-header product-page-header">
       <div class="wrapper">
          <a back-to-profile></a>
-         <div class="product-page-controls" ng-show="userOwnsThisProfile">
+         <div class="product-page-controls" ng-show="userOwnsThisProfile && !loading.is()">
             <a class="edit-product"
                ng-click="editProduct()"
                tooltip="Make changes to this product's title or authors"
                tooltip-placement="bottom">
-               <span class="ready" ng-show="!loading.is()">
+               <span class="ready">
                   <i class="icon-edit"></i>
                   Edit
                </span>

@@ -152,7 +152,10 @@ def is_logged_in(profile):
 
 
 
-
+def current_user_owns_tiid(tiid):
+    profile = db.session.query(Profile).get(int(current_user.id))
+    db.session.expunge(profile)
+    return tiid in profile.tiids
 
 
 
@@ -497,6 +500,7 @@ def user_product(user_id, tiid):
     elif request.method == "DELETE":
         # kind of confusing now, waiting for core-to-webapp refactor
         # to improve it though.
+        abort_if_user_not_logged_in(profile)
         resp = delete_products_from_profile(profile, [tiid])
 
     return json_resp_from_thing(resp)
@@ -528,7 +532,7 @@ def product_biblio_modify(tiid):
     # part-product it gets from core now.
 
     try:
-        if tiid not in current_user.tiids:
+        if not current_user_owns_tiid(tiid):
             abort_json(401, "You have to own this product to modify it.")
     except AttributeError:
         abort_json(405, "You musts be logged in to modify products.")

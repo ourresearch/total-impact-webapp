@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-15
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-16
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -975,7 +975,17 @@ angular.module("profileProduct", [
 
     $scope.userSlug = slug
     $scope.loading = Loading
-    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
+//    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
+//    $scope.userOwnsThisProfile = false
+
+    security.isLoggedInPromise(slug).then(
+      function(resp){
+        $scope.userOwnsThisProfile = true
+      },
+      function(resp){
+        $scope.userOwnsThisProfile = false
+      }
+    )
 
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
@@ -3279,6 +3289,7 @@ angular.module('security.service', [
             return (user && user.url_slug && user.email)
           },
           ownsThisProfile: function(user){
+            return false
 //          return true
 
             return (user && user.url_slug && user.url_slug == currentUrlSlug())
@@ -5431,12 +5442,12 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "   <div class=\"header profile-subpage-header product-page-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
-    "         <div class=\"product-page-controls\" ng-show=\"userOwnsThisProfile\">\n" +
+    "         <div class=\"product-page-controls\" ng-show=\"userOwnsThisProfile && !loading.is()\">\n" +
     "            <a class=\"edit-product\"\n" +
     "               ng-click=\"editProduct()\"\n" +
     "               tooltip=\"Make changes to this product's title or authors\"\n" +
     "               tooltip-placement=\"bottom\">\n" +
-    "               <span class=\"ready\" ng-show=\"!loading.is()\">\n" +
+    "               <span class=\"ready\">\n" +
     "                  <i class=\"icon-edit\"></i>\n" +
     "                  Edit\n" +
     "               </span>\n" +

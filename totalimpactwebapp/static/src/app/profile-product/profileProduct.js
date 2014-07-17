@@ -52,7 +52,17 @@ angular.module("profileProduct", [
 
     $scope.userSlug = slug
     $scope.loading = Loading
-    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
+//    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
+//    $scope.userOwnsThisProfile = false
+
+    security.isLoggedInPromise(slug).then(
+      function(resp){
+        $scope.userOwnsThisProfile = true
+      },
+      function(resp){
+        $scope.userOwnsThisProfile = false
+      }
+    )
 
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
