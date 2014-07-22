@@ -171,7 +171,8 @@ def current_user_owns_tiid(tiid):
 def load_user(profile_id):
     # load just the profile table, and don't keep it hooked up to sqlalchemy
     profile = db.session.query(Profile).options(orm.noload('*')).get(int(profile_id))
-    db.session.expunge(profile)
+    if profile:
+        db.session.expunge(profile)
     return profile
 
 
