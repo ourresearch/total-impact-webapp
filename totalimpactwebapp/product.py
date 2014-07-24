@@ -160,6 +160,10 @@ class Product(db.Model):
         return len(self.metrics) > 0
 
     @cached_property
+    def display_title(self):
+        return self.biblio.display_title
+
+    @cached_property
     def has_diff(self):
         return any([m.diff_value > 0 for m in self.metrics])
 

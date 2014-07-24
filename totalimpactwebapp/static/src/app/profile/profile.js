@@ -249,17 +249,17 @@ angular.module("profile", [
       UserMessage.set(
         "profile.removeProduct.success",
         false,
-        {title: product.biblio.display_title}
+        {title: product.display_title}
       )
 
       // do the deletion in the background, without a progress spinner...
       Product.delete(
         {user_id: url_slug, tiid: product._tiid},
         function(){
-          console.log("finished deleting", product.biblio.display_title)
+          console.log("finished deleting", product.display_title)
           TiMixpanel.track("delete product", {
             tiid: product._tiid,
-            title: product.biblio.display_title
+            title: product.display_title
           })
         }
       )
