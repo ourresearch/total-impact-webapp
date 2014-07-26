@@ -51,18 +51,28 @@ div.signup-page {
                }
 
             }
-            button.btn {
-               background: @linkColor;
-               border:none;
-               &[disabled] {
-                  opacity: .8;
+            div.submit-button {
+               button.btn {
+                  background: @linkColor;
+                  border:none;
+                  &[disabled] {
+                     opacity: .8;
+                  }
+                  font-weight: 900;
+                  padding: 15px 20px;
+                  margin-top: 20px;
+                  i {
+                     margin-left: 10px;
+                  }
                }
-               font-weight: 900;
-               padding: 15px 20px;
-               margin-top: 20px;
-               i {
-                  margin-left: 10px;
+               div.working {
+                  padding-left: 20px;
+                  padding-top: 20px;
+                  font-weight: 900;
+                  font-size: 25px;
+                  color: @gray-light;
                }
+
             }
          }
       }

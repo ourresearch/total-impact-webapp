@@ -1,7 +1,0 @@
-<ul class="notifications">
-   <li ng-class="['alert', 'alert-'+notification.type]"
-       ng-repeat="notification in notifications.getCurrent()">
-       <span class="text" ng-bind-html-unsafe="notification.message"></span>
-       <button class="close" ng-click="removeNotification(notification)">&times;</button>
-   </li>
-</ul>

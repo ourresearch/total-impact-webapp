@@ -1,0 +1,74 @@
+<div class="settings-header">
+   <h1>Notifications</h1>
+   <p>Change how often you get emails about new impacts</p>
+</div>
+
+
+<div class="notifications-form-container">
+   <form novalidate name="userNotificationsForm"
+         class="form-horizontal custom-url"
+         ng-submit="onSave()"
+         ng-controller="NotificationsSettingsCtrl">
+
+      <div class="form-group">
+         <div class="radio">
+           <label>
+             <input type="radio"
+                    name="notifications-options"
+                    id="notifications-as-they-happen"
+                    ng-model="user.notification_email_frequency"
+                    value="as_they_happen">
+             <h3>As they happen</h3>
+              <p>Whenever your research makes new impacts, we'll let you know right away.</p>
+           </label>
+         </div>
+
+         <div class="radio">
+           <label>
+             <input type="radio"
+                    name="notifications-options"
+                    id="notifications-every-week-or-two"
+                    ng-model="user.notification_email_frequency"
+                    value="every_week_or_two">
+             <h3>Every week or two</h3>
+              <p>Get a digest of all your latest impacts a few times each month.</p>
+           </label>
+         </div>
+
+         <div class="radio">
+           <label>
+             <input type="radio"
+                    name="notifications-options"
+                    id="notifications-monthly"
+                    ng-model="user.notification_email_frequency"
+                    value="monthly">
+              <h3>Monthly</h3>
+              <p>Get a report on your biggest research impacts that month.</p>
+           </label>
+         </div>
+
+         <div class="radio">
+           <label>
+             <input type="radio"
+                    name="notifications-options"
+                    id="notifications-none"
+                    ng-model="user.notification_email_frequency"
+                    value="none">
+              <h3>None</h3>
+              <p>Don't get any impact reports.</p>
+           </label>
+         </div>
+
+      </div>
+
+
+
+      <div class="form-group submit">
+         <div class=" col-xs-10">
+            <save-buttons valid="userNotificationsForm.$valid"></save-buttons>
+         </div>
+      </div>
+
+   </form>
+
+</div>

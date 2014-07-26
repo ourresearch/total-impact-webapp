@@ -29,14 +29,13 @@
    </div>
 </div>
 
-<div class="overlay"
+<div class="overlay animated fadeIn fadeOut"
      ng-click="onCancel()"
-     ng-if="accountWindowOpen"
-     ng-animate="{enter: 'animated fadeIn', leave: 'animated fadeOut'}"></div>
+     ng-if="accountWindowOpen"></div>
 
-<div class="account-window-wrapper"
-     ng-if="accountWindowOpen"
-     ng-animate="{enter: 'animated slideInRight', leave: 'animated slideOutRight'}">
+<div class="account-window-wrapper animated slideInRight slideOutRight"
+     ng-if="accountWindowOpen">
+
    <div class="account-window">
 
       <div class="top-tab-wrapper">
@@ -62,7 +61,7 @@
 
          <div class="descr">{{ account.descr }}</div>
 
-         <form name="{{ account.name }}accountForm"
+         <form name="accountForm"
                novalidate class="form"
                ng-submit="onLink()">
 
@@ -78,6 +77,7 @@
                           id="{{ account.CSSname }}-account-username-input"
                           ng-model="account.username.value"
                           ng-disabled="isLinked"
+                          required
                           type="text"
                           autofocus="autofocus"
                           placeholder="{{ account.username.placeholder }}">
@@ -88,7 +88,9 @@
 
             <div class="buttons-group save">
                <div class="buttons" ng-show="!loading.is('saveButton')">
-                  <button ng-show="!isLinked" type="submit"
+                  <button ng-show="!isLinked"
+                          type="submit"
+                          ng-disabled="accountForm.$invalid"
                           id="{{ account.CSSname }}-account-username-submit",                  
                           ng-class="{'btn-success': account.sync, 'btn-primary': !account.sync }" class="btn">
                      <i class="icon-link left"></i>
@@ -107,7 +109,7 @@
 
          </form>
 
-         <div class="extra" ng-show="account.extra" ng-bind-html-unsafe="account.extra"></div>
+         <div class="extra" ng-show="account.extra" ng-bind-html="account.extra"></div>
 
          <div class="google-scholar-stuff"
               ng-show="account.accountHost=='google_scholar' && isLinked">

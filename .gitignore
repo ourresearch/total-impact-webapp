@@ -16,3 +16,5 @@ venv
 packed.css
 packed.js
 codekit-config.json
+app.js
+common.js

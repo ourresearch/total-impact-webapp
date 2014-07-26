@@ -1,0 +1,178 @@
+<div class="settings-header">
+   <h1>Premium</h1>
+
+   <p class="expl">Get weekly updates revealing your latest impacts.</p>
+</div>
+
+<div class="upgrade-form-container"  ng-controller="premiumSettingsCtrl">
+
+   <div class="current-plan-status paid" ng-if="planStatus('paid')">
+      <span class="setup">
+         Your Impactstory Premium subscription has been active
+         since {{ paidSince() }}.
+      </span>
+      <span class="thanks">Thanks for helping to keep Impactstory nonprofit and open source!</span>
+   </div>
+
+   <div class="current-plan-status trial" ng-if="planStatus('trial')">
+      <span class="setup" ng-if="daysLeftInTrial()>0">Your Premium trial ends in {{ daysLeftInTrial() }} days</span>
+      <span class="setup" ng-if="daysLeftInTrial()==0">Your Premium trial ends today!</span>
+
+      <div class="email-example">
+         <img src="http://i.imgur.com/S38ECK5.png" alt="Impactstory Premium email"/>
+      </div>
+      <div class="pitch">
+         <p>Your research is making impacts all the time.
+         And with Impactstory Premium, you're getting the latest news on those
+         impacts&mdash;everything from citations to downloads to tweets
+         and more&mdash;delivered straight to your inbox. </p>
+         <p>By extending your free trial today, you won't miss a single
+         notification&mdash;and   you'll be helping to keep
+         Impactstory a sustainable, open-source nonprofit. And all for less than than the
+         cost of a latte every month.</p>
+      </div>
+
+   </div>
+
+   <div class="current-plan-status free" ng-if="planStatus('free')">
+      <span class="setup">You don't have Premium yet.</span>
+
+      <div class="email-example">
+         <img src="http://i.imgur.com/S38ECK5.png" alt="Impactstory Premium email"/>
+      </div>
+      <div class="pitch">
+         <p>But you should. Because your research is making impacts all the time.
+         And with Impactstory Premium, you'll get the latest news on <em>your</em>
+         most exciting impacts&mdash;everything from citations to downloads to tweets
+         and more&mdash;delivered straight to your inbox. </p>
+         <p>Plus you get to help keep
+         Impactstory a sustainable, open-source nonprofit&hellip;all for less than than the
+         cost of a latte every month.</p>
+      </div>
+
+
+   </div>
+
+
+   <form stripe-form="handleStripe"
+         name="upgradeForm"
+         novalidate
+         ng-if="!planStatus('paid')"
+         class="form-horizontal upgrade-form">
+
+      <div class="form-title free" ng-show="planStatus('free')">
+         <h3>Upgrade to Premium for $5/mo</h3>
+
+      </div>
+      <div class="form-title trial"ng-show="planStatus('trial')">
+         <h3>Continue Premium for $5/mo</h3>
+         <h4 ng-if="daysLeftInTrial()>0">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>
+      </div>
+
+
+
+      <!-- name on card -->
+      <div class="form-group">
+         <label class="col-sm-3 control-label" for="card-holder-name">Name</label>
+         <div class="col-sm-9">
+            <input type="text"
+                   class="form-control"
+                   name="card-holder-name"
+                   id="card-holder-name"
+                   required
+                   placeholder="Card Holder's Name">
+         </div>
+      </div>
+
+      <!-- card number -->
+      <div class="form-group">
+        <label class="col-sm-3 control-label" for="card-number">Card Number</label>
+        <div class="col-sm-9">
+          <input type="text"
+                 class="form-control"
+                 name="card-number"
+                 id="card-number"
+                 required
+                 ng-model="number"
+                 payments-validate="card"
+                 payments-format="card"
+                 payments-type-model="type"
+                 ng-class="type"
+                 placeholder="Debit/Credit Card Number">
+        </div>
+      </div>
+
+
+      <!-- expiration date -->
+      <div class="form-group">
+         <label class="col-sm-3 control-label" for="card-expiry">Expiration</label>
+         <div class="col-sm-3">
+            <input type="text"
+                   class="form-control"
+                   name="card-expiry"
+                   id="card-expiry"
+                   required
+                   ng-model="expiry"
+                   payments-validate="expiry"
+                   payments-format="expiry"
+                   placeholder="MM/YY">
+         </div>
+      </div>
+
+
+      <!-- CVV -->
+      <div class="form-group">
+         <label class="col-sm-3 control-label" for="cvv">Security code</label>
+        <div class="col-sm-3">
+          <input type="text"
+                 class="form-control"
+                 name="cvv"
+                 id="cvv"
+                 ng-model="cvc"
+                 required
+                 payments-validate="cvc"
+                 payments-format="cvc"
+                 payments-type-model="type"
+                 placeholder="CVV">
+        </div>
+        <div class="col-sm-2 cvv-graphic">
+           <img src="static/img/cvv-graphic.png" alt="cvv graphic"/>
+        </div>
+      </div>
+
+
+
+
+      <div class="form-group">
+         <div class="col-sm-offset-3 col-sm-9">
+               <button type="submit"
+                       ng-show="!loading.is('subscribeToPremium')"
+                       ng-disabled="upgradeForm.$invalid || upgradeForm.$pristine"
+                       class="btn btn-success">
+                  Upgrade me for $5/mo!
+               </button>
+               <div class="working" ng-show="loading.is('subscribeToPremium')">
+                  <i class="icon-refresh icon-spin"></i>
+                  <span class="text">Subscribing you to Premium&hellip;</span>
+               </div>
+         </div>
+         <div class="col-sm-offset-3 col-sm-9 money-help">
+            Trouble affording $5/mo? No worries, we've been through some lean times
+            ourselves. <a href="mailto:team@impactstory.org">Drop us a line</a> and we'll work something out for you.
+         </div>
+      </div>
+   </form>
+
+   <div class="subscriber-buttons" ng-if="planStatus('paid')">
+      <button ng-click="editCard()" class="btn btn-primary edit-credit-card">
+         <i class="icon-credit-card left"></i>
+         Change my credit card info
+      </button>
+      <button ng-click="cancelPremium()" class="btn btn-danger">
+         <i class="icon-warning-sign left"></i>
+         Cancel Premium
+      </button>
+   </div>
+
+</div>
+

@@ -14,7 +14,7 @@ angular.module('accounts.account', [
     Products,
     UsersProducts,
     UsersLinkedAccounts,
-    UsersAbout){
+    Users){
 
     var tiidsAdded = []
 
@@ -28,7 +28,7 @@ angular.module('accounts.account', [
 
       Loading.start("saveButton")
       console.log("unlinking account " + accountObj.accountHost)
-      UsersAbout.patch(
+      Users.patch(
         {id:url_slug},
         {about: about},
         function(resp){
@@ -56,7 +56,7 @@ angular.module('accounts.account', [
 
 
       Loading.start("saveButton")
-      UsersAbout.patch(
+      Users.patch(
         {id:url_slug},
         {about: about},
 
@@ -67,6 +67,8 @@ angular.module('accounts.account', [
           UsersLinkedAccounts.update(
             {id: url_slug, account: accountObj.accountHost},
             {},
+
+            // got products back for this linked account
             function(updateResp){
               // we've kicked off a slurp for this account type. we'll add
               // as many products we find in that account, then dedup.
@@ -79,11 +81,22 @@ angular.module('accounts.account', [
                 patchResp: patchResp
               })
             },
+
+            // ruh-roh, this linked account had no products with it.
             function(updateResp){
-              Loading.finish("saveButton")
-              deferred.reject({
-                msg: "attempt to slurp in products from linked account failed",
-                resp: updateResp
+
+              // unlink this account from the user, since it's useless.
+              about[accountObj.accountHost + "_id"] = null
+              Users.patch(
+                {id:url_slug},
+                {about:about}
+              ).$promise.then(function(resp){
+                // now that this is cleaned out of the user, we can finish up.
+                Loading.finish("saveButton")
+                deferred.reject({
+                  msg: "attempt to slurp in products from linked account failed",
+                  resp: updateResp
+                })
               })
             }
 
@@ -122,12 +135,13 @@ angular.module('accounts.account', [
     UserProfile,
     UsersProducts,
     Account,
+    security,
     Loading,
-    Update){
+    TiMixpanel){
 
   $scope.showAccountWindow = function(){
     $scope.accountWindowOpen = true;
-    analytics.track("Opened an account window", {
+    TiMixpanel.track("Opened an account window", {
       "Account name": $scope.account.displayName
     })
 
@@ -161,9 +175,7 @@ angular.module('accounts.account', [
       function(resp){
         console.log("finished unlinking!", resp)
         $scope.account.username.value = null
-        analytics.track("Unlinked an account", {
-          "Account name": $scope.account.displayName
-        })
+        security.refreshCurrentUser() // the current user looks different now, no account
 
       }
     )
@@ -171,37 +183,45 @@ angular.module('accounts.account', [
 
   $scope.onLink = function(){
     console.log(
-      _.sprintf("calling /importer/%s updating '%s' with userInput:",
-        $scope.account.accountHost,
-        $routeParams.url_slug),
+      _.sprintf("calling /profile/%s/linked-accounts/%s with userInput:",
+        $routeParams.url_slug,
+        $scope.account.accountHost),
       $scope.account
     )
 
     $scope.accountWindowOpen = false
-    Loading.start($scope.account.accountHost)
 
-    Account.saveAccountInput($routeParams.url_slug, $scope.account).then(
+    console.log("linking an account other than google scholar")
+    Loading.start($scope.account.accountHost)
+    Account.saveAccountInput($routeParams.url_slug, $scope.account)
+      .then(
 
       // linked this account successfully
       function(resp){
         console.log("successfully saved linked account", resp)
-        $scope.isLinked = true
-        analytics.track("Linked an account", {
-          "Account name": $scope.account.displayName
-        })
-
-        Loading.finish($scope.account.accountHost)
 
         if ($scope.account.accountHost == "google_scholar"){
-          console.log("opening google scholar modal")
           GoogleScholar.showImportModal()
         }
 
-
+        $scope.isLinked = true
+        TiMixpanel.track("Linked an account", {
+          "Account name": $scope.account.displayName
+        })
+         // make sure everyone can see the new linked account
+        security.refreshCurrentUser().then(
+          function(resp){
+            console.log("update the client's current user with our new linked account", resp)
+            Loading.finish($scope.account.accountHost)
+          }
+        )
       },
+
+      // couldn't link to account
       function(resp){
         console.log("failure at saving inputs :(", resp)
         Loading.finish($scope.account.accountHost)
+        alert("Sorry, we weren't able to link this account. You may want to fill out a support ticket.")
       }
     )
   }

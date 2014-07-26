@@ -1,40 +1,129 @@
+<div class="biblio">
+   <h5 class="title">
+      <!-- if embedded, open product page in a new tab -->
+      <a class="title-text target-blank"
+
+         {% if embed %}
+         target="_blank"
+         {% endif %}
+
+         title="Click to view impact details"
+         data-toggle='tooltip'
+
+         href="/{{ profile.url_slug }}/product/{{ tiid }}">
+
+         {{biblio.display_title}}
+      </a>
+
+
+      {% if aliases.best_url %}
+      <a class="linkout url title"
+         target="_blank"
+         title="Click to view on publisher site"
+         data-toggle='tooltip's
+         href="{{ aliases.best_url }}">
+         <i class="icon-external-link-sign"></i>
+      </a>
+      {% endif %}
+
+      {% if biblio.free_fulltext_url %}
+      <a class="linkout free-fulltext-url"
+         target="_blank"
+         title="Free fulltext available at {{ biblio.free_fulltext_host }}"
+         data-toggle='tooltip'
+         href="{{ biblio.free_fulltext_url }}">
+         <i class="icon-unlock-alt"></i>
+      </a>
+      {% endif %}
+   </h5>
+
+   <div class="optional-biblio">
+      {% if biblio.display_year %}
+      <span class="year">({{ biblio.display_year }})</span>
+      {% endif %}
+
+      {% if biblio.display_authors %}
+      <span class="authors">{{ biblio.display_authors }}.</span>
+      {% endif %}
+
+
+      {% if biblio.repository and not biblio.journal %}
+      <span class="repository">{{ biblio.repository }}.</span>
+      {% endif %}
+
+
+      {% if biblio.journal %}
+      <span class="journal">{{ biblio.journal }}</span>
+      {% endif %}
+
+      {% if biblio.description %}
+      <span class="description">{{ biblio.description }}</span>
+      {% endif %}
+   </div>
+</div>
+
 <div class="awards">
    <ul class="awards-list">
-      {% for award in product.awards | sort(reverse=True, attribute='display_order') %}
+      {% for award in awards | sort(reverse=True, attribute="display_order") %}
          <li class="award">
-            {% if award.is_highly %}
+            <a href="/{{ profile.url_slug }}/product/{{ tiid }}"
+               class="ti-badge"
 
-            <a href="{{ request.url_root }}{{ g.profile_slug }}/product/{{ product._id }}"
-                  class="ti-badge is-highly {{award.audience}} {{award.engagement_type}}"
-                  data-original-title="Highly {{award.engagement_type}} by <span class='{{award.display_audience}}'>{{award.display_audience}}</span>"
-                  data-content="This item has {{award.top_metric.actual_count}} {{award.top_metric.environment}}
-                  {{award.top_metric.display_interaction}}. That's better than
-                  {{award.top_metric.percentiles.CI95_lower}}% of items
-                  {{award.top_metric.refset_storage_verb}} {{award.top_metric.refset}} in {{award.top_metric.refset_year}},
-                  suggesting it's highly {{award.engagement_type}} by {{award.display_audience }}.
-                  Click to learn more.">
+               data-original-title="{{ award.highly_string }} {{award.engagement_type}} by <span class='{{award.display_audience}}'>{{award.display_audience}}</span>"
 
-               <span class="modifier">highly</span>
-               <span class="engagement-type">{{award.engagement_type}}</span>
-               <span class="audience">by {{award.audience}}</span>
-            </a>
+               data-content="This product has {{award.top_metric_by_count.display_count}}
+               {{award.top_metric_by_count.display_provider}}
+               {{award.top_metric_by_count.display_interaction}}.
+               {% if award.is_highly %}
+               That's more than {{ award.top_metric_by_count.percentile.value }}%
+               of {{ year }}
+               {{ award.top_metric_by_count.percentile.mendeley_discipline_str }}
+               {{ display_genre_plural }}
+               on Impactstory.
+               {% endif %}
+               Click for details.
+               {% if award.has_diff %}
+               <ul class='new-metrics'>
+                  {% for metric in award.metrics if metric.diff_value > 0 %}
+                     <li>
+                        <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
+                        <span class='text'>
+                           <span class='count'>{{ metric.diff_value }}</span> new
+                           {{ metric.display_provider }}
+                           {{ metric.display_interaction }} in the last week.
+                        </span>
+                     </li>
+                  {% endfor %}
+                  {% endif %}
+               </ul>">  {# ok, now we're finally done with the opening <a> tag... #}
 
-            {% else %}
-
-            <a href="{{ request.url_root }}{{ g.profile_slug }}/product/{{ product._id }}"
-               class="ti-badge is-not-highly {{award.audience}} {{award.engagement_type}}"
-               data-original-title="{{award.engagement_type}} by <span class='{{award.display_audience}}'>{{award.display_audience}}</span>"
-               data-content="This item has {{award.top_metric.actual_count}} {{award.top_metric.environment}}
-               {{award.top_metric.display_interaction}}, suggesting it's been
-               {{award.engagement_type}} by {{award.display_audience}}.
-               Click to learn more.">
-               <span class="engagement-type">{{award.engagement_type}}</span>
-               <span class="audience">by {{award.audience}}</span>
-            </a>
-
-            {% endif %}
-
+               <span class="text badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ award.has_diff | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
+                  {% if award.is_highly %}<span class="modifier">highly</span>{% endif %}
+                  <span class="engagement-type">{{award.engagement_type}}</span>
+                  <span class="audience">by {{award.audience}}</span>
+               </span>
+               <span class="new-this-week badge-part is-highly-{{ award.is_highly | lower() }} new-metrics-{{ award.has_diff | string() | lower() }} {{award.audience}} {{award.engagement_type}}">
+                  <span class="plus-sign">+</span>{{ award.top_metric_by_diff.diff_value }}
+               </span>
+            </a> {# ending <a> tag. #}
          </li>
       {% endfor %}
    </ul>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

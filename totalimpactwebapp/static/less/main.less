@@ -4,6 +4,14 @@ body {
    font-family: Lato, Helvetica, Arial, sans-serif;
    font-size: 18px;
 
+   &.modal-open {
+      margin-right:0; // wierd. have to override margin-right: 15px coming from...bootstrap, i guess?
+   }
+
+   .main-view-container {
+      min-height: 500px;
+   }
+
    &.show-tab-on-right {
       .uv-tab.uv-slide-bottom {
          display:none !important;
@@ -135,12 +143,18 @@ form {
 
    div.working {
       i {margin-right: 5px;}
+      font-size: 20px;
+      color: @gray-light;
+      span.text {
+
+      }
    }
    div.buttons-group.save {
       div.working {
          font-size: 24px;
          padding-left: 10px;
          color:  #999;
+         height: 47px; // same as default button height.
       }
    }
    i.icon-check-empty {
@@ -201,9 +215,6 @@ i {
 
 
 
-div.main-view {
-   min-height: 500px;
-}
 
 
 
@@ -216,93 +227,73 @@ div.modal-backdrop {
    opacity: .7;
 }
 div.modal {
-   display:block;
-   width: 600px;
-   background: #fff;
-   top:  50%;
-   bottom: auto;
-   left: 50%;
-   margin: -250px 0 0 -300px;
-   padding-bottom: 20px;
 
+   div.modal-content {
 
-   div.modal-header {
-      background: #fafafa;
-      background: #fff;
-      position: relative;
-      h3, h4 {
-         border-bottom: none;
-         font-weight: bolder;
-         text-align:center;
-         color:  #555;
-         margin: 8px;
-      }
-      a.dismiss {
-         position: absolute;
-         top: 22px;
-         right: 30px;
-         color: #ddd;
-         font-size: 25px;
-      }
+      .border-radius(0, 0, 0, 0);
+      .clearfix();
 
-   }
-   div.modal-body {
-      position: relative;
-      padding: 20px 50px;
-
-      textarea {
-         width: 100%;
-         font-size: 15px;
-         color: #555;
-         font-family: consolas, menlo, monaco, monospace;
-         padding: 10px;
-         border: 2px solid #999;
-         .border-radius(3px, 3px, 3px, 3px);
+      div.modal-header {
          background: #fafafa;
+         background: #fff;
+         position: relative;
+         h3, h4 {
+            border-bottom: none;
+            font-weight: bolder;
+            text-align:center;
+            color:  #555;
+            margin: 8px;
+         }
+         a.dismiss {
+            position: absolute;
+            top: 22px;
+            right: 30px;
+            color: #ddd;
+            font-size: 25px;
+         }
+
       }
 
-      // modal notifications...header notifications styled elsewhere.
-      ul.modal-notifications {
-         text-align: center;
-         li{
-            .border-radius(0, 0, 0, 0);
-            margin: 0 -10px;
-            padding: 0;
-            border: none;
-            background: #fff;
-            a {
-               color: @linkColor;
-               font-size: 90%;
-               margin: 0 10px;
-               font-weight: bold;
-               &:hover{
-                  text-decoration: underline;
-               }
-            }
-            &.alert-danger {
-               color: @alert-danger-bg;
-            }
-            &.alert-success {
-               color: @alert-success-bg;
-            }
-            &.alert-warning {
-               color: @alert-warning-border;
+      div.modal-body {
+         position: relative;
+         padding: 20px 50px;
+
+         textarea {
+            width: 100%;
+            font-size: 15px;
+            color: #555;
+            font-family: consolas, menlo, monaco, monospace;
+            padding: 10px;
+            border: 2px solid #999;
+            .border-radius(3px, 3px, 3px, 3px);
+            background: #fafafa;
+         }
+
+         div#user-message-modal {
+            .alert {
+               margin-bottom: 0;
+               background: transparent;
+               border:none;
+               text-align: center;
             }
          }
       }
-   }
 
-   .modal-footer {
-      border:none;
-      text-align:center;
-      margin-top: 0;
-      button {
-         min-width: 150px;
+      .modal-footer {
+         border:none;
+         text-align:center;
+         margin-top: 0;
+         button {
+            min-width: 150px;
+         }
       }
+
+
    }
 
 
    // stuff for particular modals:
+   // this should probably be refactored
 
    &.error {
       div.modal-header {
@@ -326,46 +317,48 @@ div.modal {
    }
 
    &.creds {
-      width:  400px;
-      margin-left:-200px;
-      .modal-body{
-         padding-left: 30px;
-         padding-right: 30px;
-         .form-group {
-            width:  100%;
-            margin-top: 20px;
+      // we want this one to be less wide.
+      .modal-dialog {
+         width: 400px;
+         .modal-body{
+            padding-left: 30px;
+            padding-right: 30px;
+            .form-group {
+               width:  100%;
+               margin-top: 20px;
+            }
+            .inst {
+               color: #999;
+               font-size: 18px;
+               line-height: 1.6;
+            }
          }
-         .inst {
-            color: #999;
-            font-size: 18px;
-            line-height: 1.6;
-         }
-      }
-      .modal-footer {
-         border: none;
-         padding: 0;
-         text-align:  center;
-         button.btn {
-            width: 66%;
-            height: 50px;
-            margin: 20px auto 0;
-            float:none;
-            display:block;
-         }
-         div.working { // similar as possible to button above...
-            margin: 20px auto 0;
-            height: 50px;
-            font-size: 20px;
-            padding-top:10px;
-            color: #999;
-         }
-         a {
-            clear:both;
-            text-align: center;
-            margin-top: 10px;
-            display:inline-block;
-            color: #999;
-            font-size: 14px;
+         .modal-footer {
+            border: none;
+            padding: 0;
+            text-align:  center;
+            button.btn {
+               width: 66%;
+               height: 50px;
+               margin: 20px auto 0;
+               float:none;
+               display:block;
+            }
+            div.working { // similar as possible to button above...
+               margin: 20px auto 0;
+               height: 50px;
+               font-size: 20px;
+               padding-top:10px;
+               color: #999;
+            }
+            a {
+               clear:both;
+               text-align: center;
+               margin-top: 10px;
+               display:inline-block;
+               color: #999;
+               font-size: 14px;
+            }
          }
       }
    }
@@ -373,68 +366,29 @@ div.modal {
 }
 
 
-// manage the staging warning
-div.staging-warning { display:none;}
-body.staging {
-   @stagingBarWidth: 30px;
-   div.staging-warning {
-      position: fixed;
-      opacity: .9;
-      display:block;
-      position: fixed;
-      top: 0;
-      bottom:0;
-      width: @stagingBarWidth;
-      z-index: 100000;
-      text-align: center;
-      border-right: 3px dotted #333;
-      div.content {
-         position: absolute;
-         background: #333;
-         top: 0;
-         bottom: 0;
-         left: 0;
-         width: @stagingBarWidth;
-         span {
-            .rotation(270deg);
-            display: block;
-            color: #fff;
-            font-weight: bold;
-            width:  200px;
-            height: 200px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin:300px 0 0 4px;
-            font-family: Lato, Helvetica;
-            text-shadow: 1px 0 0 #000;
-         }
-      }
-   }
-}
-
-// really complicated to position. seems like it's in the right spot now,
-// but i honestly have no idea why.
-ul.notifications {
+div#user-message {
+   position: fixed;
    width: 100%;
-   margin-bottom: 0;
-   li.alert {
-      height: 60px;
-      border-radius: 0;
-      margin-bottom:-30px; // ?
-      padding-top: 15px;
-      border:none;
-      border-top: 1px solid #fff;
-      border-bottom: 1px solid #fff;
+   z-index: 1000;
+   button.close {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+   }
+   .alert {
+      opacity: .95;
       text-align: center;
-      position: relative; // make sure it's above stuff pulled up by neg margin.
-      z-index: 10;
+      padding-top: 7px;
+      padding-bottom: 7px;
+      margin-bottom: 0;
+      font-size: 16px;
       a {
          font-weight: bold;
-         text-decoration: underline;
+         text-decoration: none;
          font-size: 90%;
-         margin: 0 20px;
          &:hover {
-            color: #fff;
+            text-decoration: underline;
+            color: @linkColor;
          }
       }
       span.count {
@@ -443,6 +397,7 @@ ul.notifications {
       }
    }
 }
+
 
 
 /**
@@ -540,17 +495,30 @@ div.main-header {
             }
             &.logged-in-user {
                a{
-                  &:hover{color:darken(@linkColor, 10%);}
-                  padding: 2px;
+                  color: #999;
+                  &:hover{color: #333;}
+                  padding: 5px;
                   margin: 0 3px;
                }
             }
-            &.preferences {
-               a.preference {
-                  padding: 2px 0;
-                  margin: 0 2px;
-                  font-size: 16px;
+            &.controls {
+               a {
+                  color: #999;
+                  padding: 5px;
+                  &:hover {color: #333;}
+                  &.new-metrics.has-new-metrics i {
+                     color: @linkColor;
+                  }
+                  &.preferences {
+                     padding: 2px 0;
+                     margin: 0 2px;
+                     font-size: 16px;
+                  }
                   &.logout { font-size: 15px;}
+
+               }
+               span.new-metrics {
+                  color: #999;
                }
             }
          }
@@ -580,6 +548,8 @@ div#footer {
    float:left;
    margin-top: 100px;
    font-size: 16px;
+   position:relative;
+
 
    p {
       margin:6px 0 0 0;
@@ -698,30 +668,6 @@ div.tooltip {
 code {
    color: #000;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-//.vertical-centered-container {
-//  position: fixed;
-//	top:0;
-//	left:0;
-//	height:100%;
-//	width:100%;
-//	display:table;
-//	pointer-events: none;
-//    z-index:9999;
-//}
-
 
 
 

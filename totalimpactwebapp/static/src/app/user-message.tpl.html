@@ -1,0 +1,8 @@
+<div ng-class="['alert', 'alert-'+userMessage.get().type]"
+        class="animated fadeInDown fadeOutUp"
+        ng-if="userMessage.get().message && userMessage.showOnTop()"
+   <span class="wrapper">
+      <span class="text" ng-bind-html="userMessage.get().message"></span>
+   </span>
+   <button class="close" ng-click="userMessage.remove()">&times;</button>
+</div>

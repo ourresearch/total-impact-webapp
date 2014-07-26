@@ -1,375 +1,327 @@
-from copy import deepcopy
 import logging
-from flask import render_template
-from totalimpactwebapp import product_configs
+import jinja2
+import arrow
+
+# these imports need to be here for sqlalchemy
+from totalimpactwebapp import snap
+from totalimpactwebapp import metric
+from totalimpactwebapp import award
+from totalimpactwebapp import reference_set
+
+# regular ol' imports
+from totalimpactwebapp.metric import make_metrics_list
+from totalimpactwebapp.metric import make_mendeley_metric
+from totalimpactwebapp.biblio import Biblio
+from totalimpactwebapp.aliases import Aliases
+from totalimpactwebapp.util import dict_from_dir
+from totalimpactwebapp.util import cached_property
+from totalimpactwebapp import db
+from totalimpactwebapp import configs
+from totalimpactwebapp import json_sqlalchemy
+
+
+
+percentile_snap_creations = 0
 
 logger = logging.getLogger("tiwebapp.product")
-
-
 deprecated_genres = ["twitter", "blog"]
 
+ignore_snaps_older_than = arrow.utcnow().replace(days=-25).datetime
 
-class GenreDeprecatedError(Exception):
-    pass
+snaps_join_string = "and_(Product.tiid==Snap.tiid, " \
+                    "Snap.last_collected_date > '{ignore_snaps_older_than}')".format(
+    ignore_snaps_older_than=ignore_snaps_older_than)
 
 
-def prep_product(product, verbose=False):
+def make(raw_dict):
+    return Product(raw_dict)
 
-    if product["biblio"]["genre"] in deprecated_genres:
-        raise GenreDeprecatedError
 
 
+class Product(db.Model):
 
-    product["biblio"] = make_biblio(product)
-    product["metrics"] = make_metrics(product)
-    product["awards"] = make_awards(product)
-    product["markup"] = make_markup(product, verbose)
-    product = add_sort_keys(product)
+    __tablename__ = 'item'
+    profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
+    tiid = db.Column(db.Text, primary_key=True)
+    created = db.Column(db.DateTime())
+    last_modified = db.Column(db.DateTime())
+    last_update_run = db.Column(db.DateTime())
+    removed = db.Column(db.DateTime())
+    last_refresh_started = db.Column(db.DateTime())  #ALTER TABLE item ADD last_refresh_started timestamp
+    last_refresh_finished = db.Column(db.DateTime()) #ALTER TABLE item ADD last_refresh_finished timestamp
+    last_refresh_status = db.Column(db.Text) #ALTER TABLE item ADD last_refresh_status text
+    last_refresh_failure_message = db.Column(json_sqlalchemy.JSONAlchemy(db.Text)) #ALTER TABLE item ADD last_refresh_failure_message text
 
-    return product
 
-
-
-
-
-
-
-
-
-
-
-
-"""
-biblio stuff
-"""
-
-def make_biblio(product_dict):
-    biblio = product_dict["biblio"]
-
-
-    try:
-        biblio["url"] = product_dict["aliases"]["url"][0]
-    except KeyError:
-        if not "url" in biblio:
-            biblio["url"] = False    
-    if "title" not in biblio.keys():
-        biblio["title"] = "no title"
-
-    try:
-        auths = ",".join(biblio["authors"].split(",")[0:3])
-        if len(auths) < len(biblio["authors"]):
-            auths += " et al."
-        biblio["authors"] = auths
-    except KeyError:
-        pass
-
-    return biblio
-
-
-
-
-
-
-
-
-
-
-
-"""
-Metrics stuff
-"""
-
-def make_metrics(product_dict):
-    metrics = product_dict["metrics"]
-    config_dict = product_configs.get_metric_configs()
-
-    try:
-        year = product_dict["biblio"]["year"]
-    except KeyError:
-        year = None
-
-    ret = {}
-    for metric_name, metric in metrics.iteritems():
-        try:
-            audience = config_dict[metric_name]["audience"]
-        except KeyError:
-            logger.warning("couldn't find audience for {metric_name}".format(
-                metric_name=metric_name))
-            return ret
-
-        if audience is not None:
-            metric.update(config_dict[metric_name])
-            metric.update(metric_metadata(metric, year))
-            metric.update(metric_percentiles(metric))
-            metric["award"] = make_award_for_single_metric(metric)
-            ret[metric_name] = metric
-
-    return ret
-
-
-def metric_metadata(metric, year):
-    interaction_display_names = {
-        "f1000": "recommendations",
-        "pmc_citations": "citations"
-    }
-
-    ret = {}
-
-    raw_count = metric["values"]["raw"]
-    ret["display_count"] = raw_count
-
-    # deal with F1000's troublesome "count" of "Yes." Can add others later.
-    # currently ALL strings are transformed to 1.
-    if isinstance(raw_count, basestring):
-        ret["actual_count"] = 1
-    else:
-        ret["actual_count"] = raw_count
-
-    ret["environment"] = metric["static_meta"]["provider"]
-    interaction = metric["name"].split(":")[1].replace("_", " ")
-
-    try:
-        interaction = interaction_display_names[interaction]
-    except KeyError:
-        pass
-
-    if ret["actual_count"] <= 1:
-        ret["display_interaction"] = interaction[:-1]  # de-pluralize
-    else:
-        ret["display_interaction"] = interaction
-
-    ret["refset_year"] = year
-
-    return ret
-
-
-def metric_percentiles(metric):
-    ret = {}
-    refsets_config = {
-        "WoS": ["Web of Science", "indexed by"],
-        "dryad": ["Dryad", "added to"],
-        "figshare": ["figshare", "added to"],
-        "github": ["GitHub", "added to"]
-    }
-
-    for refset_key, normalized_values in metric["values"].iteritems():
-        if refset_key == "raw":
-            continue
-        else:
-            # This will arbitrarily pick on percentile reference set and
-            # make it be the only one that counts. Works fine as long as
-            # there is just one.
-
-            ret["percentiles"] = normalized_values
-            ret["top_percent"] = 100 - normalized_values["CI95_lower"]
-            ret["refset"] = refsets_config[refset_key][0]
-            ret["refset_storage_verb"] = refsets_config[refset_key][1]
-
-    return ret
-
-
-
-
-
-
-
-
-
-
-
-"""
-Awards stuff
-"""
-
-def make_awards(product):
-    metrics = product["metrics"]
-    awards_dict = {}
-
-    for metric_name, metric in metrics.iteritems():
-        this_award = deepcopy(metric["award"])
-        this_award["metrics"] = [metric]
-        this_award_key = (this_award["audience"], this_award["engagement_type"])
-        this_award["top_metric"] = None
-
-        if this_award_key in awards_dict:
-            # we've got this award. add to its metrics
-            awards_dict[this_award_key]["metrics"].append(metric)
-
-        else:
-            awards_dict[this_award_key] = this_award
-
-    for k, award in awards_dict.iteritems():
-        award["top_metric"] = get_top_metric(award["metrics"])
-
-
-        # this is a horrible hack on top of more horrible hacks. i understand
-        # neither why we need it nor how it works...this whole awards/metric
-        # logic is ghastly.
-        if award["top_metric"]["award"]["is_highly"]:
-            award["is_highly"] = True
-        else:
-            award["is_highly"] = False
-
-
-    return awards_dict.values()
-
-
-def get_top_metric(metrics):
-
-    max_actual_count = max([m["actual_count"] for m in metrics])
-
-    def sort_key(m):
-        raw_count_contribution = m["actual_count"] / max_actual_count
-        raw_count_contribution -= .0001  # always <1
-
-        try:
-            return m["percentiles"]["CI95_lower"] + raw_count_contribution
-        except KeyError:
-            return raw_count_contribution
-
-    sorted_by_metric_percentile_then_raw_counts = sorted(
-        metrics,
-        key=sort_key,
-        reverse=True
+    alias_rows = db.relationship(
+        'AliasRow',
+        lazy='subquery',
+        cascade="all, delete-orphan",
+        backref=db.backref("item", lazy="subquery")
     )
-    return sorted_by_metric_percentile_then_raw_counts[0]
 
+    biblio_rows = db.relationship(
+        'BiblioRow',
+        lazy='subquery',
+        cascade="all, delete-orphan",
+        backref=db.backref("item", lazy="subquery")
+    )
 
+    snaps = db.relationship(
+        'Snap',
+        lazy='subquery',
+        cascade='all, delete-orphan',
+        backref=db.backref("item", lazy="subquery"),
+        primaryjoin=snaps_join_string
+    )
 
-def make_award_for_single_metric(metric):
-    config = product_configs.award_configs
+    @cached_property
+    def biblio(self):
+        return Biblio(self.biblio_rows)
 
-    display_order = config[metric["engagement_type"]][1]
-    is_highly = calculate_is_highly(metric)
+    @cached_property
+    def aliases(self):
+        return Aliases(self.alias_rows)
 
-    if metric["audience"] == "scholars":
-        display_order += 10
+    @cached_property
+    def metrics(self):
+        my_metrics = make_metrics_list(self.tiid, self.percentile_snaps, self.created)
+        return my_metrics
 
-    if is_highly:
-        display_order += 100
+    @cached_property
+    def is_true_product(self):
+        return True
 
+    @cached_property
+    def is_refreshing(self):
+        REFRESH_TIMEOUT_IN_SECONDS = 120
+        if self.last_refresh_started and not self.last_refresh_finished:
+            last_refresh_started = arrow.get(self.last_refresh_started, 'utc')
+            start_time_theshold = arrow.utcnow().replace(seconds=-REFRESH_TIMEOUT_IN_SECONDS)
+            if start_time_theshold < last_refresh_started:
+                return True
 
-    return {
-        "engagement_type_noun": config[metric["engagement_type"]][0],
-        "engagement_type": metric["engagement_type"],
-        "audience": metric["audience"],
-        "display_order": display_order,
-        "is_highly": is_highly,
-        "display_audience": metric["audience"].replace("public", "the public")
-    }
-
-
-def calculate_is_highly(metric):
-    try:
-        percentile_high_enough = metric["percentiles"]["CI95_lower"] > 75
-        raw_high_enough = metric["actual_count"] >= metric["min_for_award"]
-
-        if percentile_high_enough and raw_high_enough:
-            return True
-        else:
-            return False
-
-    except KeyError:  # no percentiles listed
         return False
 
+    @cached_property
+    def finished_successful_refresh(self):
+        if self.last_refresh_status and self.last_refresh_status.startswith(u"SUCCESS"):
+           return True
+        return False
 
-
-
-
-
-
-
-
-
-
-
-
-"""
-Sorting stuff
-"""
-
-def add_sort_keys(product):
-    try:
-        product["genre"] = product["biblio"]["genre"]
-    except KeyError:
-        product["genre"] = "unknown"
-
-    try:
-        product["account"] = product["biblio"]["account"]
-    except KeyError:
-        product["account"] = None
-
-    product["metric_raw_sum"] = sum_metric_raw_values(product)
-    product["awardedness_score"] = get_awardedness_score(product)
-    product["has_metrics"] = bool(product["metrics"])
-    product["has_percentiles"] = has_percentiles(product)
-
-    return product
-
-
-def get_awardedness_score(product):
-    one_highly_award_is_as_good_as_this_many_regular_awards = 3
-    score = 0
-
-    for award in product["awards"]:
-        if award["is_highly"]:
-            score += one_highly_award_is_as_good_as_this_many_regular_awards
+    @cached_property
+    def genre(self):
+        if self.biblio.calculated_genre is not None:
+            genre = self.biblio.calculated_genre
         else:
-            score += 1
+            genre = self.aliases.get_genre()
 
-    return score
+        if "article" in genre:
+            genre = "article"  #disregard whether journal article or conference article for now
 
-
-def sum_metric_raw_values(product):
-    raw_values_sum = 0
-    try:
-        for metric_name, metric in product["metrics"].iteritems():
-            raw_values_sum += metric["actual_count"]
-    except KeyError:
-        pass
-
-    return raw_values_sum
-
-def has_percentiles(product):
-    for metric_name, metric in product["metrics"].iteritems():
-
-        for refset_value in metric["values"].values():
-            try:
-                if "CI95_lower" in refset_value.keys():
-                    return True
-            except AttributeError:
-                pass
-
-    return False
+        return genre
 
 
+    @cached_property
+    def host(self):
+        if self.genre == "article":
+            # don't return repositories for articles
+            return "unknown"
+
+        if self.biblio.calculated_host is not None:
+            return self.biblio.calculated_host
+        else:
+            return self.aliases.get_host()
+
+    @cached_property
+    def mendeley_discipline(self):
+        mendeley_metric = make_mendeley_metric(self.tiid, self.snaps, self.created)
+        try:
+            return mendeley_metric.mendeley_discipine["name"]
+        except (AttributeError, TypeError):
+            return None
+
+    @cached_property
+    def year(self):
+        return self.biblio.display_year
+
+    @cached_property
+    def display_genre_plural(self):
+        return configs.pluralize_genre(self.genre)
+
+    def get_metric_by_name(self, provider, interaction):
+        for metric in self.metrics:
+            if metric.provider==provider and metric.interaction==interaction:
+                return metric
+        return None
+
+    @cached_property
+    def has_metrics(self):
+        return len(self.metrics) > 0
+
+    @cached_property
+    def display_title(self):
+        return self.biblio.display_title
+
+    @cached_property
+    def has_diff(self):
+        return any([m.diff_value > 0 for m in self.metrics])
+
+    @cached_property
+    def awards(self):
+        return award.make_list(self.metrics)
+
+
+    @cached_property
+    def percentile_snaps(self):
+
+        my_refset = reference_set.ProductLevelReferenceSet()
+        my_refset.year = self.year
+        my_refset.genre = self.genre
+        my_refset.host = self.host
+        my_refset.title = self.biblio.display_title
+        my_refset.mendeley_discipline = self.mendeley_discipline
+
+        ret = []
+        for snap in self.snaps:
+            snap.set_refset(my_refset)
+            ret.append(snap)
+
+        return ret
+
+
+    @cached_property
+    def metrics_raw_sum(self):
+        return sum(m.display_count for m in self.metrics)
+
+    @cached_property
+    def awardedness_score(self):
+        return sum([a.sort_score for a in self.awards])
+
+
+    @cached_property
+    def latest_diff_timestamp(self):
+        ts_list = [m.latest_nonzero_refresh_timestamp for m in self.metrics]
+        if not ts_list:
+            return None
+        try:
+            return sorted(ts_list, reverse=True)[0]
+        except IndexError:
+            return None
+
+
+    def has_metric_this_good(self, provider, interaction, count):
+        # return True
+        requested_metric = self.get_metric_by_name(provider, interaction)
+        try:
+            return requested_metric.display_count >= count
+        except AttributeError:
+            return False
+
+
+    def to_dict(self):
+        attributes_to_ignore = [
+            "profile",
+            "alias_rows",
+            "biblio_rows",
+            "percentile_snaps",
+            "snaps"
+        ]
+
+        ret = dict_from_dir(self, attributes_to_ignore)
+        ret["_tiid"] = self.tiid
+        return ret
+
+    def to_markup_dict(self, markup, hide_keys=None):
+        ret = self.to_dict()
+
+        ret["markup"] = markup.make(ret)
+
+        try:
+            for key_to_hide in hide_keys:
+                try:
+                    del ret[key_to_hide]
+                except KeyError:
+                    pass
+        except TypeError:  # hide_keys=None is not iterable
+            pass
+
+        return ret
 
 
 
 
 
 
-"""
-Markup stuff
-"""
 
-def make_markup(product_dict, verbose):
-    template_root = "product"
-    if verbose:
-        template_root += "-verbose"
 
-    ret = {
-        "biblio": render_template(
-            "biblio.html",
-            product=product_dict
-        ),
-        "metrics": render_template(
-            template_root + ".html",
-            product=product_dict
-        )
-    }
 
-    return ret
+
+
+
+class Markup():
+    def __init__(self, user_id, embed=False):
+        self.user_id = user_id
+
+        self.template = self._create_template("product.html")
+
+        self.context = {
+            "embed": embed,
+            "user_id": user_id
+        }
+
+
+    def _create_template(self, template_name):
+        template_loader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
+        template_env = jinja2.Environment(loader=template_loader)
+        return template_env.get_template(template_name)
+
+    def set_template(self, template_name):
+        self.template = self._create_template(template_name)
+
+    def make(self, local_context):
+        # the local context overwrites the Self on if there are conflicts.
+        full_context = dict(self.context, **local_context)
+
+        return self.template.render(full_context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

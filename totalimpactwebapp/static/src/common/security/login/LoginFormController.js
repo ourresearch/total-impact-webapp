@@ -1,48 +1,44 @@
 angular.module('security.login.form', [
-    'services.localizedMessages',
     'directives.forms',
     'services.page',
     'services.loading',
-    'services.i18nNotifications',
+    'services.userMessage',
     'security.login.resetPassword',
     'ui.bootstrap'
   ])
 
 // The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
 // This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
-.controller('LoginFormController', function($scope, security, localizedMessages, $modalInstance, $modal, i18nNotifications, Page, Loading) {
+.controller('LoginFormController', function($scope, security, $modalInstance, $modal, UserMessage, Page, Loading) {
   var reportError = function(status){
     var key
     if (status == 401) {
-      key = "login.error.invalidPassword"
+      UserMessage.set("login.error.invalidPassword")
     }
     else if (status == 404) {
-      key = "login.error.invalidUser"
+      UserMessage.set("login.error.invalidUser")
     }
     else {
-      key = "login.error.serverError"
+      UserMessage.set("login.error.serverError")
     }
-    i18nNotifications.pushForCurrentRoute(key, "danger")
 
   }
   var dismissModal = function(){
-    i18nNotifications.removeAll()
-    Page.setNotificationsLoc("header")
+    UserMessage.remove()
+    UserMessage.showOnTop(true)
     $modalInstance.dismiss('cancel');
     Loading.finish('login')
   }
 
-  console.log("setting notifications to modal")
-  Page.setNotificationsLoc("modal")
+  UserMessage.showOnTop(false)
   $scope.user = {};
-  $scope.notifications = i18nNotifications
   $scope.loading = Loading
+  $scope.userMessage = UserMessage
 
 
 
   $scope.login = function () {
     // Clear any previous security errors
-    i18nNotifications.removeAll()
     Loading.start('login')
 
     // Try to login

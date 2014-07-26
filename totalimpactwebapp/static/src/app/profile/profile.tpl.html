@@ -1,111 +1,103 @@
 <div class="profile-header" ng-show="userExists">
    <div class="wrapper">
-      <div class="loading" ng-show="!user.about.id">
+      <div class="loading" ng-show="!doneLoading">
          <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
       </div>
-      <div class="my-picture" ng-show="user.about.id">
-         <a href="http://www.gravatar.com" >
-            <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ user.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
-         </a>
-      </div>
-      <div class="my-vitals">
-         <h2 class='page-title editable-name' id="profile-owner-name">
-            <span class="given-name editable" data-name="given_name">{{ user.about.given_name }}</span>
-            <span class="surname editable" data-name="surname">{{ user.about.surname }}</span>
-         </h2>
-         <div class="connected-accounts">
-            <ul>
 
-               <li ng-show="user.about.figshare_id" style="display: none;">
-                  <a href="{{ user.about.figshare_id }}">
-                     <img src="/static/img/favicons/figshare.ico">
-                     <span class="service">figshare</span>
-                  </a>
-               </li>           
-               <li ng-show="user.about.github_id" style="display: none;">
-                  <a href="https://github.com/{{ user.about.github_id }}">
-                     <img src="/static/img/favicons/github.ico">
-                     <span class="service">GitHub</span>
-                  </a>
-               </li>
-               <li ng-show="user.about.google_scholar_id" style="display: none;">
-                  <a href="{{ user.about.google_scholar_id }}">
-                     <img src="/static/img/favicons/google_scholar.ico">
-                     <span class="service">Google Scholar</span>
-                  </a>
-               </li>     
-               <li ng-show="user.about.orcid_id" style="display: none;">
-                  <a href="https://orcid.org/{{ user.about.orcid_id }}">
-                     <img src="/static/img/favicons/orcid.ico">
-                     <span class="service">ORCID</span>
-                  </a>
-               </li>
+      <div class="profile-header-loaded" ng-show="doneLoading">
+         <div class="my-picture" ng-show="profile.id">
+            <a href="http://www.gravatar.com" >
+               <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
+            </a>
+         </div>
 
-               <li ng-show="user.about.slideshare_id" style="display: none;">
-                  <a href="https://www.slideshare.net/{{ user.about.slideshare_id }}">
-                     <img src="/static/img/favicons/slideshare.ico">
-                     <span class="service">Slideshare</span>
+         <div class="my-vitals">
+            <h2 class='page-title editable-name' id="profile-owner-name">
+               <span class="given-name editable" data-name="given_name">{{ profile.given_name }}</span>
+               <span class="surname editable" data-name="surname">{{ profile.surname }}</span>
+            </h2>
+            <div class="connected-accounts">
+               <ul>
+                  <li ng-repeat="linkedAccount in filteredLinkedAccounts = (profile.linked_accounts | filter: {profile_url: '!!'})">
+                     <a href="{{ linkedAccount.profile_url }}" target="_blank">
+                        <img ng-src="/static/img/favicons/{{ linkedAccount.service }}.ico">
+                        <span class="service">{{ linkedAccount.service }}</span>
+                     </a>
+                  </li>
+               </ul>
+
+               <div class="add-connected-account" ng-show="security.isLoggedIn(url_slug)">
+                  <a href="/{{ profile.url_slug }}/accounts" class="btn btn-xs btn-info">
+                     <i class="icon-link left"></i>
+                     <span ng-show="filteredLinkedAccounts.length==0" class="first">Import from accounts</span>
+                     <span ng-show="filteredLinkedAccounts.length>0" class="more">Connect more accounts</span>
                   </a>
-               </li>
-
-               </li>
-            </ul>
-
-            <div class="add-connected-account" ng-show="currentUserIsProfileOwner()">
-               <a href="/{{ user.about.url_slug }}/accounts" class="btn btn-xs btn-info">
-                  <i class="icon-link left"></i>
-                  <span ng-show="!hasConnectedAccounts()" class="first">Import from accounts</span>
-                  <span ng-show="hasConnectedAccounts()" class="more">Connect more accounts</span>
-               </a>
+               </div>
             </div>
          </div>
+         <div class="my-metrics">
+            <!-- advisor badge -->
+            <div class="advisor" ng-show="profile.is_advisor">
+               <img src="/static/img/advisor-badge.png">
+            </div>
+            <ul class="profile-award-list">
+               <li class="profile-award-container level-{{ profileAward.level }}"
+                   ng-include="'profile-award/profile-award.tpl.html'"
+                   ng-repeat="profileAward in profileAwards">
+               </li>
+            </ul>
+         </div>
       </div>
-      <div class="my-metrics">
-         <ul class="profile-award-list">
-            <li class="profile-award-container level-{{ profileAward.level }}"
-                ng-include="'profile-award/profile-award.tpl.html'"
-                ng-repeat="profileAward in profileAwards">
-            </li>
-         </ul>
-      </div>
+
    </div>
 </div>
 
-<div class="product-controls" ng-show="userExists">
+<div class="product-controls" ng-show="userExists && doneLoading">
    <div class="wrapper">
-      <div class="edit-controls btn-group">
-         <div class="num-items">
-            <span class="products-done-updating" ng-show="!productsStillUpdating">
-               <span ng-hide="loadingProducts()" class="val-plus-text">
-                  <span class="value" id="number-products">{{ filterProducts(products).length }}</span> research products
-               </span>
-               <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics" ng-show="showProductsWithoutMetrics">
-                  (hide <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> without metrics)
-               </a>
-            </span>
-            <span ng-show="productsStillUpdating" class="products-still-updating" id="products-still-updating">
-               Products still updating...
-            </span>
+      <div class="products-info">
+
+         <div class="products-done-updating">
+
+            <!-- filter products -->
+            <div class="filters">
+
+               <div class="filter" ng-class="{active: !productFilter.has_metrics && !productFilter.has_diff}">
+                  <a ng-click="setProductFilter('all')">
+                     Products
+                     <span class="count">({{ (products|filter:{is_true_product:true}).length }})</span>
+                  </a>
+               </div>
+
+               <div class="filter" ng-class="{active: (productFilter.has_metrics && !productFilter.has_diff)}">
+                  <i class="icon-chevron-right left"></i>
+                  <a ng-click="setProductFilter('has_metrics')">
+                     with metrics
+                     <span class="count">({{ (products|filter:{is_true_product:true, has_metrics: true}).length }})</span>
+                  </a>
+               </div>
+               <div class="filter this-week"
+                    ng-show="(products|filter:{has_diff: true}).length > 0"
+                    ng-class="{active: productFilter.has_diff}">
+                  <i class="icon-chevron-right left"></i>
+                  <a ng-click="setProductFilter('has_diff')">
+                     this week
+                     <span class="count">({{ (products|filter:{is_true_product:true, has_diff: true}).length }})</span>
+
+                  </a>
+               </div>
+            </div>
          </div>
+
       </div>
       <div class="view-controls">
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
-         <div class="admin-controls" ng-show="currentUserIsProfileOwner() && !page.isEmbedded()">
-            <a href="/{{ user.about.url_slug }}/products/add">
-               <i class="icon-upload"></i>Import products one-by-one
+         <div class="admin-controls" ng-show="security.isLoggedIn(url_slug) && !page.isEmbedded()">
+            <a href="/{{ profile.url_slug }}/products/add">
+               <i class="icon-upload"></i>Import individual products
             </a>
-            <a ng-click="dedup()"
-               ng-class="{working: loading.is('dedup')}"
-               class="dedup-button">
-               <span class="content ready" ng-show="!loading.is('dedup')">
-                  <i class="icon-copy"></i>
-                  <span class="text">Merge duplicates</span>
-               </span>
-               <span class="content working" ng-show="loading.is('dedup')">
-                  <i class="icon-refresh icon-spin" ng-show="loading.is('dedup')"></i>
-                  <span class="text">Merging duplicates</span>
-               </span>
-            </a>
+            <!--<a ng-click="dedup()">
+               <i class="icon-copy"></i>dedup
+            </a>-->
          </div>
          <div class="everyone-controls">
             <a ng-click="openProfileEmbedModal()" ng-show="!page.isEmbedded()">
@@ -115,8 +107,8 @@
             <span class="dropdown download">
                <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>
                <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
-                  <li><a tabindex="-1" href="/user/{{ user.about.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
-                  <li><a tabindex="-1" href="/user/{{ user.about.url_slug }}/products" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
+                  <li><a tabindex="-1" href="/profile/{{ profile.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
+                  <li><a tabindex="-1" href="/profile/{{ profile.url_slug }}?hide=markup,awards" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
                </ul>
             </span>
          </div>
@@ -126,49 +118,44 @@
 
 <div class="products" ng-show="userExists">
    <div class="wrapper">
-      <div class="loading" ng-show="loadingProducts()">
-         <div class="working products-loading"><i class="icon-refresh icon-spin"></i><span class="text">Loading products...</span></div>
-      </div>
-
       <ul class="products-list">
-         <li class="product {{ product.genre }}"
+         <li class="product genre-{{ product.genre }}"
              ng-class="{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}"
-             ng-repeat="product in products | orderBy:['genre', 'account', 'is_heading', '-awardedness_score', '-metric_raw_sum']"
-             ng-controller="productCtrl"
-             ng-show="product.has_metrics || showProductsWithoutMetrics || product.is_heading"
-             id="{{ product._id }}"
+             ng-repeat="product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title']) | filter: productFilter"
+             id="{{ product.tiid }}"
              on-repeat-finished>
 
-            <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
-            <div class="metrics-container" ng-bind-html-unsafe="product.markup.metrics"></div>
 
+            <!-- users must be logged in, and product can't be a heading product -->
+            <div class="product-margin" ng-show="security.isLoggedIn(url_slug) && !product.is_heading">
+               <span class="single-product-controls">
+                  <a class="remove-product"
+                     tooltip="Delete this product"
+                     ng-click="removeProduct(product)">
+                     <i class="icon-trash icon"></i>
+                  </a>
+               </span>
+            </div>
+            <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
          </li>
       </ul>
    </div>
-
-   <div class="products-without-metrics wrapper"
-        ng-show="!loadingProducts() && !showProductsWithoutMetrics && filterProducts(products, 'withoutMetrics').length">
-      <div class="well">
-         Another <span class="value">{{ filterProducts(products, "withoutMetrics").length }}</span> products aren't shown, because we couldn't find any impact data for them.
-         <a ng-click="showProductsWithoutMetrics = !showProductsWithoutMetrics">Show these, too.</a>
-      </div>
-   </div>
-
-
 </div>
 
 <div class="user-does-not-exist no-page" ng-show="!userExists">
    <h2>Whoops!</h2>
-   <p>We don't have a user account for <span class="slug">'{{ slug }}.'</span><br> Would you like to <a href="/signup">make one?</a></p>
+   <p>We don't have a user account for <span class="slug">'{{ url_slug }}.'</span><br> Would you like to <a href="/signup">make one?</a></p>
 
 </div>
 
-<div class="signup-banner"
+<div class="signup-banner animated fadeOutDown"
      ng-show="userExists && !isAuthenticated()"
      ng-if="!hideSignupBanner"
-     ng-animate="{leave: 'animated fadeOutDown'}">
 
-   <span class="msg">Join {{ user.about.given_name }} and thousands of other scientists on Impactstory!</span>
+   <span class="msg">Join {{ profile.given_name }} and thousands of other scientists on Impactstory!</span>
    <a class="signup-button btn btn-primary btn-sm" ng-click="clickSignupLink()" href="/signup">Make your free profile</a>
    <a class="close-link" ng-click="hideSignupBannerNow()">&times;</a>
 </div>
+
+<a class="refresh" ng-click="refresh()"></a>
+

@@ -7,7 +7,7 @@ from nose.tools import assert_true
 from totalimpactwebapp import user
 import random
 
-class TestUser(unittest.TestCase):
+class TestProfile(unittest.TestCase):
 
     def test_tiids_to_remove_from_deduplication_list(self):
         duplicates_list = [[{'tiid': u'a1', 'has_user_provided_biblio': False}, {'tiid': u'e1', 'has_user_provided_biblio': False}], [{'tiid': u'b2', 'has_user_provided_biblio': False}, {'tiid': u'c2', 'has_user_provided_biblio': False}, {'tiid': u'd2', 'has_user_provided_biblio': False}], [{'tiid': u'f3', 'has_user_provided_biblio': False}], [{'tiid': u'g4', 'has_user_provided_biblio': False}, {'tiid': u'h4', 'has_user_provided_biblio': True}]]

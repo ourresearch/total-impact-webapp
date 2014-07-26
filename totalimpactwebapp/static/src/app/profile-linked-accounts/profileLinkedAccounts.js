@@ -16,7 +16,6 @@ angular.module('profileLinkedAccounts', [
             return security.testUserAuthenticationLevel("ownsThisProfile")
           },
           currentUser: function(security){
-            security.clearCachedUser()
             return security.requestCurrentUser()
           }
         }
@@ -29,7 +28,7 @@ angular.module('profileLinkedAccounts', [
     Page.showHeader(false)
     Page.showFooter(false)
 
-    console.log("current user: ", currentUser)
+    console.log("linked accounts page. current user: ", currentUser)
 
     $scope.accounts = AllTheAccounts.get(currentUser)
     $scope.returnLink = "/"+$routeParams.url_slug

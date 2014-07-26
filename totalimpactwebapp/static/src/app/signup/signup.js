@@ -1,6 +1,7 @@
 angular.module( 'signup', [
     'services.slug',
     'services.page',
+    'services.tiMixpanel',
     'resources.users',
     'update.update',
     'security.service'
@@ -20,7 +21,7 @@ angular.module( 'signup', [
     })
 }])
 
-  .controller('signupCtrl', function($scope, Page, security){
+  .controller('signupCtrl', function($scope, Page){
 
     Page.setUservoiceTabLoc("bottom")
     Page.showHeader(false)
@@ -28,7 +29,13 @@ angular.module( 'signup', [
 
   })
 
-  .controller( 'signupFormCtrl', function ( $scope, $location, security, Slug, Users) {
+  .controller( 'signupFormCtrl', function ($scope,
+                                           $location,
+                                           security,
+                                           Slug,
+                                           Users,
+                                           TiMixpanel,
+                                           Loading) {
     var emailThatIsAlreadyTaken = "aaaaaaaaaaaa@foo.com"
 
     $scope.newUser = {}
@@ -38,6 +45,7 @@ angular.module( 'signup', [
 
     $scope.signup = function(){
       var slug = Slug.make($scope.newUser.givenName, $scope.newUser.surname)
+      Loading.start("signup")
       Users.save(
         {id: slug},
         {
@@ -47,17 +55,17 @@ angular.module( 'signup', [
           password: $scope.newUser.password
         },
         function(resp, headers){
-          console.log("got response back from save user", resp)
           security.clearCachedUser()
           $location.path(resp.user.url_slug)
 
           // so mixpanel will start tracking this user via her userid from here
           // on out.
-          analytics.alias(resp.user.id)
-          analytics.track("Signed up new user")
+          TiMixpanel.alias(resp.user.id)
+          TiMixpanel.track("Signed up new user")
         },
         function(resp){
           if (resp.status === 409) {
+            Loading.finish("signup")
             emailThatIsAlreadyTaken = angular.copy($scope.newUser.email)
             console.log("oops, email already taken...")
             console.log("resp", resp)

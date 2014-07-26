@@ -21,21 +21,23 @@
             <input type="file" ng-file-select="google_scholar_bibtex">
          </div>
 
-         <div class="submit" ng-show="fileLoaded && !loading.is('bibtex')">
-            <a class="btn btn-primary" ng-click="sendToServer()">
+         <div class="submit">
+            <a class="btn btn-primary"
+               ng-show="fileLoaded && !loading.is('bibtex')"
+               ng-click="sendToServer()">
                Import {{ googleScholar.bibtexArticlesCount() }} articles
             </a>
+            <div class="working" ng-show="loading.is('bibtex')">
+               <i class="icon-refresh icon-spin"></i>
+               <span class="text">Adding articles...</span>
+            </div>
          </div>
 
-         <div class="working" ng-show="loading.is('bibtex')">
-            <i class="icon-refresh icon-spin"></i>
-            <span class="text">Adding articles...</span>
-         </div>
       </div>
 
    <div class="import-complete" ng-show="importComplete">
       <div class="msg">
-      Successfully imported {{ importedProductsCount }} articles!
+      Successfully imported {{ importedProductsCount }} new articles!
       </div>
       <a class="btn btn-info" ng-click="$close()">ok</a>
    </div>

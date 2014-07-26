@@ -12,7 +12,7 @@ def get_slugs():
 
 
 def get_awards(slug):
-    url = "https://impactstory.org/user/{slug}/awards".format(
+    url = "https://impactstory.org/profile/{slug}/awards".format(
         slug=slug
     )
     print "requesting this url: ", url
@@ -49,7 +49,6 @@ def write_to_csv(slugs):
                                 quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for row in rows:
             newCsv.writerow(row)
-
 
 
 

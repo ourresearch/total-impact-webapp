@@ -24,6 +24,7 @@ div.signup-banner {
    font-weight: normal;
    font-size: 17px;
    text-align: center;
+   z-index: 100;
    a.signup-button{
       background: @linkColor;
       border:none;
@@ -62,11 +63,20 @@ div.signup-banner {
    }
 }
 
+a.refresh {
+   position:absolute;
+   width: 20px;
+   height: 20px;
+   text-indent: -1000px;
+   top:20px;
+   left:0;
+}
+
 
 div.profile-header {
    margin-bottom: 35px;
    margin-top: -20px;
-   height: 110px;
+   height: 150px;
    .clearfix();
    div.wrapper {
       div.my-picture {
@@ -116,6 +126,9 @@ div.profile-header {
       }
       div.my-metrics {
          float:left;
+         div.advisor {
+            margin-bottom: 20px;
+         }
          ul.profile-award-list {
 
             li.profile-award-container {
@@ -140,9 +153,9 @@ div.profile-header {
                      font-family: Lato;
                      font-weight: normal;
                   }
-                  div.call-to-action {
+                  .call-to-action {
+                     color: @btn-info-border;
                      font-style: italic;
-                     margin-top: 20px;
                   }
                }
 
@@ -235,12 +248,12 @@ div.profile-header {
 div.modal-body.embed {
    label {
       float:left;
-      width: 250px;
+      width: 235px;
       font-weight: normal;
       text-align: center;
       &:first-child {
          img {
-            margin-top: 50px;
+            margin-top: 10px;
          }
       }
       strong {
@@ -275,80 +288,132 @@ div.product-controls {
    font-size:  16px;
    border-bottom:  5px solid #eee;
    color: #777;
-
    .clearfix();
-   a {
-      &:hover {color: #333;}
 
-      &.dedup-button {
-         &.working {color: @linkColor;}
-         i {margin-right: 0;}
-         i.icon-refresh {margin-right: 2px;}
+   div.wrapper {
+      position:relative;
+      a {
+         &:hover {color: #333;}
+         font-size: 16px;
       }
-   }
-   div.view-controls {
-      float:right;
-      margin: 0 30px 0 0;
-      div.admin-controls {
-         float:left;
-      }
-      div.everyone-controls{
-         float:left;
-      }
-      span.dropdown {
-         ul.dropdown-menu {
-            border: none;
-            .drop-shadow(0, 0, 0, 0);
-            .border-radius(0, 3px, 3px, 0);
-            padding: 0;
-            background: #eee;
-            top: 22px;
-            min-width:  120px;
-            a {
-               margin: 0;
-               width: 100%;
-               &:hover {
-                  color: #fff;
-               }
-            }
-            i {
-               font-style: normal;
-               margin-right: 5px;
-            }
-            i.json {
-               font-weight: 900;
-               font-size: 14px;
-            }
+      div.view-controls {
+         position: absolute;
+         right:0;
+         bottom: 0;
+         margin: 0 30px 0 0;
+         div.admin-controls {
+            float:left;
          }
-
-      }
-   }
-   div.edit-controls {
-      float:left;
-      div.num-items {
-         float:left;
-         span.val-plus-text {
-            font-weight: 300;
-            margin: 0;
-            span.value {
-               font-weight: bold;
-               margin-right: 3px;
-            }
+         div.everyone-controls{
+            float:left;
          }
          a {
-            font-size: 14px;
-            margin-left: 5px;
-            color: @linkColor;
-            &:hover {text-decoration: underline;}
+            margin-left: 15px;
+            color: #777;
+            display:inline-block;
+            i {
+               margin-right:5px;
+            }
+         }
+         span.dropdown {
+            ul.dropdown-menu {
+               border: none;
+               .drop-shadow(0, 0, 0, 0);
+               .border-radius(0, 3px, 3px, 0);
+               padding: 0;
+               background: #eee;
+               top: 22px;
+               min-width:  120px;
+               a {
+                  margin: 0;
+                  width: 100%;
+                  &:hover {
+                     color: #fff;
+                  }
+               }
+               i {
+                  font-style: normal;
+                  margin-right: 5px;
+               }
+               i.json {
+                  font-weight: 900;
+                  font-size: 14px;
+               }
+            }
+
          }
       }
-   }
-   a {
-      margin-left: 15px;
-      color: #777;
-      display:inline-block;
-      i {
-         margin-right:5px;
+
+
+      // filters and counts on right side of profile
+      div.products-info {
+         position: absolute;
+         bottom: 0;
+         left: 0;
+         div.products-done-updating {
+
+            div.last-collected {
+               font-size: 13px;
+               font-weight: 300;
+               display:none;
+            }
+
+            div.products-count-info {
+               font-weight: 300;
+               margin: 0;
+               span.showing {
+                  font-weight: normal;
+                  display:none;
+               }
+               span.value {
+                  font-weight: bold;
+                  margin-right: 3px;
+               }
+            }
+            div.filters-label {
+               color: #777;
+               font-weight: normal;
+               font-size: 16px;
+               float:left;
+            }
+            div.filters {
+               float:left;
+               i.icon-chevron-right {
+                  vertical-align: -2px;
+                  color: #aaa;
+               }
+               .filters-label {
+                  float:left;
+                  font-weight: normal;
+               }
+               .filter {
+                  font-size: 15px;
+                  &.active {
+                     a {
+                        font-weight: normal;
+                        color: #555;
+                        cursor: default;
+                     }
+                     &.this-week {
+                        a {
+                           font-weight: 900;
+                           color: @linkColor;
+                        }
+                     }
+                  }
+                  float:left;
+                  padding-left: 10px;
+                  a {
+                     font-weight: 100;
+                     color: @gray-light;
+                     span.count {
+                        font-size: 80%;
+                     }
+                  }
+               }
+
+            }
+         }
       }
    }
 }
@@ -367,19 +432,6 @@ div.products {
          }
 
       }
-      div.products-without-metrics {
-         div.well {
-            margin: 0 20px 70px;
-            text-align: center;
-            font-size: 16px;
-            color:  #777;
-            a {
-               font-size: 80%;
-               margin-left: 8px;
-            }
-         }
-      }
-
    }
 }
 

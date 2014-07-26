@@ -4,8 +4,9 @@ angular.module('settings', [
     'update.update',
     'directives.spinner',
     'settings.pageDescriptions',
-    'services.i18nNotifications',
+    'services.userMessage',
     'security',
+    'angularPayments',
     'directives.forms'])
 
   .config(function ($routeProvider) {
@@ -49,7 +50,6 @@ angular.module('settings', [
     }
 
     var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
-    console.log(currentPageDescr)
 
     $scope.resetUser()
     Loading.finish()
@@ -59,22 +59,44 @@ angular.module('settings', [
 
   })
 
-  .controller('profileSettingsCtrl', function ($scope, UsersAbout, security, i18nNotifications, Loading) {
+  .controller('profileSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
     $scope.onSave = function() {
       Loading.start('saveButton')
-      UsersAbout.patch(
+      Users.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute('settings.profile.change.success', 'success');
+          UserMessage.set('settings.profile.change.success', true);
           $scope.home();
         }
       )
     };
   })
 
-  .controller('passwordSettingsCtrl', function ($scope, $location, UsersPassword, security, i18nNotifications, Loading) {
+
+  .controller('NotificationsSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
+    $scope.onSave = function() {
+      var messageKey = "settings.notifications."
+        + $scope.user.notification_email_frequency
+        + ".success"
+
+
+      Loading.start('saveButton')
+      Users.patch(
+        {id: $scope.user.url_slug},
+        {about: $scope.user},
+        function(resp) {
+          security.setCurrentUser(resp.about) // update the current authenticated user.
+          UserMessage.set(messageKey, true);
+          $scope.home();
+        }
+      )
+    };
+  })
+
+
+  .controller('passwordSettingsCtrl', function ($scope, $location, UsersPassword, security, UserMessage, Loading) {
 
     $scope.showPassword = false;
     var resetToken =  $location.search()["reset_token"]
@@ -87,11 +109,11 @@ angular.module('settings', [
         {id: $scope.user.url_slug},
         $scope.user,
         function(resp) {
-          i18nNotifications.pushForNextRoute('settings.password.change.success', 'success');
+          UserMessage.set('settings.password.change.success', true);
           $scope.home()
         },
         function(resp) {
-          i18nNotifications.pushForCurrentRoute('settings.password.change.error.unauthenticated', 'danger');
+          UserMessage.set('settings.password.change.error.unauthenticated');
           Loading.finish('saveButton')
           $scope.resetUser();  // reset the form
           $scope.wrongPassword = true;
@@ -103,16 +125,16 @@ angular.module('settings', [
 
 
 
-  .controller('urlSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+  .controller('urlSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
-      UsersAbout.patch(
-        {id: $scope.user.id, idType:"id"},
+      Users.patch(
+        {id: $scope.user.id, id_type:"id"},
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute('settings.url.change.success', 'success');
+          UserMessage.set('settings.url.change.success', true);
           $location.path('/' + resp.about.url_slug)
         }
       )
@@ -121,18 +143,105 @@ angular.module('settings', [
 
 
 
-  .controller('emailSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading) {
+  .controller('premiumSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
+
+
+    $scope.planStatus = function(statusToTest){
+
+      var subscription = security.getCurrentUser("subscription")
+
+      var actualStatus
+      if (!subscription){
+        // on the free plan
+        actualStatus = "free"
+      }
+      else if (!subscription.user_has_card) {
+        // trial user with working premium plan
+        actualStatus = "trial"
+      }
+      else {
+        // paid user with working premium plan
+        actualStatus = "paid"
+      }
+      return actualStatus == statusToTest
+    }
+
+    $scope.daysLeftInTrial = function(){
+      var subscription = security.getCurrentUser("subscription")
+
+      if (!subscription){
+        return null
+      }
+
+      var trialEnd = moment.unix(subscription.trial_end)
+      return trialEnd.diff(moment(), "days") // days from now
+    }
+
+    $scope.paidSince = function(){
+      var su = security.getCurrentUser("subscription")
+      return "May 2014"
+    }
+
+    $scope.editCard = function(){
+      alert("Sorry--we're actually still working on the form for this! But drop us a line at team@impactstory.org and we'll be glad to modify your credit card information manually.")
+    }
+
+    $scope.cancelPremium = function(){
+      UsersSubscription.delete(
+        {id: $scope.user.url_slug},
+        {},
+        function(resp){
+          console.log("subscription successfully cancelled", resp)
+          security.refreshCurrentUser() // refresh the currentUser from server
+          UserMessage.set("settings.premium.delete.success")
+        },
+        function(resp){
+          console.log("there was a problem; subscription not cancelled", resp)
+        }
+      )
+    }
+
+    $scope.handleStripe = function(status, response){
+        Loading.start("subscribeToPremium")
+        console.log("calling handleStripe()")
+        if(response.error) {
+          console.log("ack, there was an error!", status, response)
+        } else {
+          console.log("yay, the charge worked!", status, response)
+          UsersCreditCard.save(
+            {id: $scope.user.url_slug, stripeToken: response.id},
+            {},
+            function(resp){
+              console.log("success!", resp)
+              security.refreshCurrentUser() // refresh the currentUser from server
+              window.scrollTo(0,0)
+              UserMessage.set("settings.premium.subscribe.success")
+              Loading.finish("subscribeToPremium")
+
+            },
+            function(resp){
+              console.log("failure!", resp)
+              UserMessage.set("settings.premium.subscribe.error")
+              Loading.finish("subscribeToPremium")
+            }
+          )
+        }
+      }
+  })
+
+
+  .controller('emailSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
-      UsersAbout.patch(
+      Users.patch(
         {id: $scope.user.url_slug, log:"changing email from settings"},
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute(
+          UserMessage.set(
             'settings.email.change.success',
-            'success',
+            true,
             {email: resp.about.email}
           );
           $location.path('/' + resp.about.url_slug)
@@ -141,35 +250,5 @@ angular.module('settings', [
     };
   })
 
-
-  // not currently using this...LinkedAccounts page is hidden.
-  .controller('linkedAccountsSettingsCtrl', function ($scope, UsersAbout, security, $location, i18nNotifications, Loading, Update, UsersProducts) {
-
-
-    $scope.onSave = function() {
-      var url_slug = security.getCurrentUserSlug()
-
-      console.log("saving linked account info. sending this: ", $scope.user)
-      Loading.start('saveButton')
-
-      UsersAbout.patch(
-        {id: url_slug},
-        {about: $scope.user},
-        function(resp) {
-          security.setCurrentUser(resp.about) // update the current authenticated user.
-          i18nNotifications.pushForNextRoute('settings.wordpress_api_key.add.success', 'success');
-
-          Update.setUpdateStarted(false)
-          Update.showUpdate(url_slug, function(){
-            $location.path("/" + url_slug)
-          })
-
-          UsersProducts.refresh({id: url_slug}, {}, function(){
-            Update.setUpdateStarted(true)
-          })
-        }
-      )
-    };
-  })
 
 

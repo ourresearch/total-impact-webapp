@@ -3,7 +3,12 @@ angular.module("googleScholar", [
  "resources.users"
 
 ])
-.factory("GoogleScholar", function($modal, $q, UsersProducts, security){
+.factory("GoogleScholar", function($modal,
+                                   $q,
+                                   UsersProducts,
+                                   Loading,
+                                   TiMixpanel,
+                                   security){
   var bibtex = ""
   var tiids = []
   var bibtexArticlesCount = function(){
@@ -44,7 +49,9 @@ angular.module("googleScholar", [
         bibtex.substring(0, 50) + "..."
       )
 
-      analytics.track("Uploaded Google Scholar", {
+      Loading.start("bibtex")
+
+      TiMixpanel.track("Uploaded Google Scholar", {
         "Number of products": bibtexArticlesCount()
       })
 
@@ -53,9 +60,15 @@ angular.module("googleScholar", [
         {bibtex: bibtex},
         function(resp){
           console.log("successfully uploaded bibtex!", resp)
+          Loading.finish("bibtex")
+
         },
         function(resp){
           console.log("bibtex import failed :(")
+          Loading.finish("bibtex")
+          alert("Sorry, we weren't able to load your Google Scholar data! " +
+            "Could you fill out a support ticket for us (click the orange tab " +
+            "on the right of your screen). That way we can fix it right away.")
         }
       )
     },
@@ -66,16 +79,18 @@ angular.module("googleScholar", [
 
   })
 
-  .controller("GoogleScholarModalCtrl", function($scope, GoogleScholar, currentUser){
-    console.log("modal controller activated!")
+  .controller("GoogleScholarModalCtrl", function($scope, GoogleScholar, currentUser, Loading){
+    console.log("google scholar modal controller activated!")
     $scope.currentUser = currentUser
     $scope.googleScholar = GoogleScholar
+    $scope.loading = Loading
 
     $scope.sendToServer = function(){
-      GoogleScholar.sendToServer().$then(function(resp){
+      GoogleScholar.sendToServer().$promise.then(function(resp){
         console.log("finished with the upload, here's the resp", resp)
         $scope.importComplete = true
-        $scope.importedProductsCount = resp.data.products.length
+//        $scope.importedProductsCount = resp.data.products.length
+        $scope.importedProductsCount = null
       })
     }
 

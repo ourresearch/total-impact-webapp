@@ -1,7 +1,6 @@
 angular.module("profile", [
   'resources.users',
-  'product.product',
-  'profileAward.profileAward',
+  'resources.products',
   'services.page',
   'ui.bootstrap',
   'security',
@@ -9,7 +8,7 @@ angular.module("profile", [
   'services.timer',
   'profileSingleProducts',
   'profileLinkedAccounts',
-  'services.i18nNotifications',
+  'services.userMessage',
   'services.tour',
   'directives.jQueryTools',
   'update.update'
@@ -24,15 +23,10 @@ angular.module("profile", [
 
 }])
 
-.factory('UserProfile', function($window, $anchorScroll, $location, UsersAbout, security, Slug, Page, Tour){
+.factory('UserProfile', function($window, $anchorScroll, $location, security, Slug, Page){
   var about = {}
-  var slugIsCurrentUser = function(slug){
-    if (!security.getCurrentUser()) return false;
-    return (security.getCurrentUser().url_slug == slug);
-  }
 
   var cacheProductsSetting = false
-  var hasConnectedAccounts = false
 
   return {
 
@@ -45,9 +39,7 @@ angular.module("profile", [
 
       return cacheProductsSetting
     },
-    hasConnectedAccounts: function(){
-      return hasConnectedAccounts
-    },
+
     makeAnchorLink: function(genre, account){
       var anchor = genre
       if (account) {
@@ -80,34 +72,6 @@ angular.module("profile", [
         $window.scrollTo(0, lastScrollPos)
       }
     },
-    loadUser: function($scope, slug) {
-      return UsersAbout.get(
-        {
-          id: slug,
-          idType: "url_slug"
-        },
-        function(resp) { // success
-          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
-          about = resp.about
-
-          hasConnectedAccounts = _.some(about, function(v, k){
-            return (k.match(/_id$/) && v)
-          })
-
-
-          if (!about.products_count && slugIsCurrentUser(about.url_slug)){
-            Tour.start(about)
-          }
-        },
-        function(resp) { // fail
-          if (resp.status == 404) {
-            $scope.userExists = false;
-            $scope.slug = slug;
-          }
-        }
-      );
-    },
-    'slugIsCurrentUser': slugIsCurrentUser,
     makeSlug: function(){
       about.url_slug = Slug.make(about.givenName, about.surname)
     },
@@ -137,14 +101,18 @@ angular.module("profile", [
     $anchorScroll,
     $cacheFactory,
     $window,
+    $sce,
+    Users,
     UsersProducts,
     Product,
+    TiMixpanel,
     UserProfile,
-    ProfileAwards,
-    i18nNotifications,
+    UserMessage,
     Update,
     Loading,
+    Tour,
     Timer,
+    security,
     Page) {
     if (Page.isEmbedded()){
       // do embedded stuff. i don't think we're using this any more?
@@ -152,19 +120,62 @@ angular.module("profile", [
 
     var $httpDefaultCache = $cacheFactory.get('$http')
 
-    // hack to make it easy to tell when update is done from selenium
-    $scope.productsStillUpdating = true
+    $scope.doneLoading = false
+    $scope.doneRendering = false
+
+    Timer.start("profileViewRender")
+    Timer.start("profileViewRender.load")
 
 
+    // filtering stuff
+    $scope.productFilter = {
+      has_diff: undefined,
+      has_metrics: undefined
+    }
+
+    if ($location.search().filter == "has_diff") {
+      $scope.productFilter.has_diff = true
+    }
+
+
+    $scope.setProductFilter = function(setting){
+
+      if (setting == "all") {
+        $scope.productFilter.has_diff = undefined
+        $scope.productFilter.has_metrics = undefined
+        $location.search("filter", null)
+      }
+      else if (setting == "has_metrics"){
+        $scope.productFilter.has_diff = undefined
+        $scope.productFilter.has_metrics = true
+        $location.search("filter", null)
+      }
+      else if (setting == "has_diff"){
+        $scope.productFilter.has_diff = true
+        $scope.productFilter.has_metrics = true
+        $location.search("filter", "has_diff")
+      }
+
+      console.log($scope.productFilter)
+
+    }
+
+    $scope.$on('$locationChangeStart', function(event, next, current){
+      if ($location.search().filter == "has_diff"){
+        console.log("filter=has_diff")
+        $scope.productFilter.has_diff = true
+        $scope.productFilter.has_metrics = true
+      }
+    })
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
 
-      $scope.productsStillUpdating = false
+      $scope.doneRendering = true
 
       console.log(
         "finished rendering products in "
-          + Timer.elapsed("renderProducts")
+          + Timer.elapsed("profileViewRender.render")
           + "ms"
       )
 
@@ -174,17 +185,17 @@ angular.module("profile", [
 
     });
 
-    $scope.hasConnectedAccounts = UserProfile.hasConnectedAccounts
-
-    var userSlug = $routeParams.url_slug;
+    var url_slug = $routeParams.url_slug;
     var loadingProducts = true
 
-    $scope.url_slug = userSlug
+
+
+
+    $scope.url_slug = url_slug
     $scope.loadingProducts = function(){
       return loadingProducts
     }
     $scope.userExists = true;
-    $scope.showProductsWithoutMetrics = false;
     $scope.filterProducts =  UserProfile.filterProducts;
 
     $scope.hideSignupBannerNow = function(){
@@ -192,100 +203,148 @@ angular.module("profile", [
 
     }
 
+
+
+    $scope.refresh = function(){
+      var url = "/profile/"+ url_slug +"/products?action=refresh"
+      console.log("POSTing to ", url)
+      $http.post(url, {}).success(function(data, status, headers, config){
+        console.log("POST returned. We're refreshing these tiids: ", data)
+
+        // show the updated products
+        renderProducts()
+      })
+    }
+
+
+    $scope.humanDate = function(isoStr) {
+      // using moment.js library imported from cdnjs at runtime. not encapsulated,
+      // so will break in unit testing...
+      return moment(isoStr).fromNow()
+    }
     $scope.clickSignupLink = function(){
-      analytics.track("Clicked signup link on profile")
+      TiMixpanel.track("Clicked profile footer signup link")
     }
 
-    $scope.user = UserProfile.loadUser($scope, userSlug);
 
-    $scope.profileAwards = ProfileAwards.query(
-      {id:userSlug},
-      function(resp){
-      }
-    )
 
-    $scope.currentUserIsProfileOwner = function(){
-      return UserProfile.slugIsCurrentUser(userSlug);
-    }
 
     $scope.openProfileEmbedModal = function(){
       $modal.open({
         templateUrl: "profile/profile-embed-modal.tpl.html",
         controller: "profileEmbedModalCtrl",
         resolve: {
-          userSlug: function($q){ // pass the userSlug to modal controller.
-            return $q.when(userSlug)
+          url_slug: function($q){ // pass the url_slug to modal controller.
+            return $q.when(url_slug)
           }
         }
       })
     }
 
 
-    $scope.getSortScore = function(product) {
-      return Product.getSortScore(product) * -1;
+    $scope.removeProduct = function(product){
+//      alert("Sorry! Product deletion is temporarily disabled. It'll be back soon.")
+      console.log("removing product: ", product)
+      $scope.products.splice($scope.products.indexOf(product),1)
+      UserMessage.set(
+        "profile.removeProduct.success",
+        false,
+        {title: product.display_title}
+      )
+
+      // do the deletion in the background, without a progress spinner...
+      Product.delete(
+        {user_id: url_slug, tiid: product._tiid},
+        function(){
+          console.log("finished deleting", product.display_title)
+          TiMixpanel.track("delete product", {
+            tiid: product._tiid,
+            title: product.display_title
+          })
+        }
+      )
     }
 
-    $scope.getMetricSum = function(product) {
-      return Product.getMetricSum(product) * -1;
+
+
+    // render the profile
+
+    if (UserProfile.useCache() === false){
+      // generally this will happen, since the default is false
+      // and we set it back to false either way once this function
+      // has run once.
+      $httpDefaultCache.removeAll()
     }
-
-
-
 
     $scope.dedup = function(){
-      Loading.start("dedup")
-
-
-      UsersProducts.dedup({id: userSlug}, {}, function(resp){
-        console.log("deduped!", resp)
-        Loading.finish("dedup")
-        i18nNotifications.removeAll()
-        i18nNotifications.pushForCurrentRoute(
-          "dedup.success",
-          "success",
-          {numDuplicates: resp.deleted_tiids.length}
-        )
-        renderProducts()
-      })
+      console.log("dedup!")
+      UsersProducts.dedup(
+        {id: url_slug},
+        {}
+      )
+      .$promise.then(
+        function(resp){
+          console.log("dedup success:", resp)
+        },
+        function(resp){
+          console.log("dedup failure:", resp)
+        }
+      )
     }
+
+
 
 
     var renderProducts = function(){
-      Timer.start("getProducts")
-      loadingProducts = true
-      if (UserProfile.useCache() === false){
-        // generally this will happen, since the default is falst
-        // and we set it back to false either way once this function
-        // has run once.
-        $httpDefaultCache.removeAll()
-      }
-
-      UsersProducts.query({
-        id: userSlug,
-        includeHeadingProducts: true,
-        embedded: Page.isEmbedded(),
-        idType: "url_slug"
+      console.log("rendering products")
+      Users.query({
+        id: url_slug,
+        embedded: Page.isEmbedded()
       },
         function(resp){
-          console.log("loaded products in " + Timer.elapsed("getProducts") + "ms")
+          console.log("got /profile resp back in "
+            + Timer.elapsed("profileViewRender.load")
+            + "ms: ", resp)
 
           // we only cache things one time
           UserProfile.useCache(false)
 
-          var anythingStillUpdating = !!_.find(resp, function(product){
-            return product.currently_updating
-          })
+          // put our stuff in the scope
+          $scope.profile = resp.about
+          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+          $scope.products = resp.products
+          $scope.profileAwards = resp.awards
+          $scope.doneLoading = true
 
-          if (anythingStillUpdating) {
-            Update.showUpdate(userSlug, renderProducts)
-          }
-          else {
-            $scope.products = resp
-          }
+          // got user back with products. if still refreshing, show update modal
+          console.log("here's the is_refreshing before checking it", resp.is_refreshing)
+          Update.showUpdateModal(url_slug, resp.is_refreshing).then(
+            function(msg){
+              console.log("updater (resolved):", msg)
+              $httpDefaultCache.removeAll()
+              renderProducts()
+            },
+            function(msg){
+              console.log("updater (rejected):", msg)
+            }
+          )
 
+          // do this async, in case security is taking a long time to load,
+          // and the products load first.
+          security.isLoggedInPromise(url_slug).then(
+            function(){
+              var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
+              TiMixpanel.track("viewed own profile", {
+                "Number of products": numTrueProducts
+              })
+              if (resp.products.length == 0){
+                console.log("logged-in user looking at own profile with no products. showing tour.")
+                Tour.start(resp.about)
+              }
+            }
+          )
 
-          Timer.start("renderProducts")
-          loadingProducts = false
+          Timer.start("profileViewRender.render")
 
           // scroll to any hash-specified anchors on page. in a timeout because
           // must happen after page is totally rendered.
@@ -294,30 +353,38 @@ angular.module("profile", [
           }, 0)
 
         },
-        function(resp){loadingProducts = false}
+        function(resp){
+          console.log("problem loading the profile!", resp)
+          $scope.userExists = false
+        }
       );
     }
-    $timeout(renderProducts, 100)
+
+    renderProducts()
 })
 
 
 
 
 
+.controller("profileEmbedModalCtrl", function($scope, $location, Page, url_slug){
+  console.log("user slug is: ", url_slug)
+
+  var baseUrl = $location.protocol() + "://"
+  baseUrl += $location.host()
+  if ($location.port() === 5000){ // handle localhost special
+    baseUrl += (":5000")
+  }
+
+  console.log("base url is ", baseUrl)
 
 
-
-.controller("profileEmbedModalCtrl", function($scope, Page, userSlug){
-  console.log("user slug is: ", userSlug)
-  $scope.userSlug = userSlug;
+  $scope.url_slug = url_slug;
+  $scope.baseUrl = baseUrl
   $scope.embed = {}
   $scope.embed.type = "badge"
 
 })
-
-
-
-
 
 .directive("backToProfile",function($location, Loading){
  return {

@@ -5,12 +5,17 @@ _.mixin(_.str.exports());
 
 angular.module('app', [
   'placeholderShim',
-  'services.abTesting',
+  'ngCookies',
+  'ngRoute',
+  'ngSanitize',
+  'ngAnimate',
+  'emguo.poller',
   'services.loading',
-  'services.i18nNotifications',
+  'services.userMessage',
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
+  'services.tiMixpanel',
   'security',
   'directives.crud',
   'directives.jQueryTools',
@@ -33,10 +38,13 @@ angular.module('app').constant('TEST', {
 angular.module('app').config(function ($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
 
+
+
   // want to make sure the user profile route loads last, because it's super greedy.
   $routeProvider.when("/:url_slug", {
     templateUrl:'profile/profile.tpl.html',
-    controller:'ProfileCtrl'
+    controller:'ProfileCtrl',
+    reloadOnSearch: false
   })
   $routeProvider.otherwise({
     template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
@@ -62,31 +70,34 @@ angular.module('app').run(function(security, $window, Page, $location) {
 angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
                                                      $route,
-                                                     i18nNotifications,
-                                                     AbTesting,
-                                                     localizedMessages,
+                                                     $sce,
+                                                     UserMessage,
                                                      UservoiceWidget,
                                                      $location,
                                                      Loading,
                                                      Page,
                                                      security,
+                                                     $rootScope,
+                                                     TiMixpanel,
                                                      RouteChangeErrorHandler) {
 
-  $scope.notifications = i18nNotifications;
+
+  $scope.userMessage = UserMessage
+  $rootScope.security = security
+
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
   $scope.isAuthenticated =  security.isAuthenticated
+  $scope.tiMixpanel = TiMixpanel
+  $scope.modalOpen = function(){
+    return $rootScope.modalOpen
+  }
 
+  $scope.trustHtml = function(str){
+    return $sce.trustAsHtml(str)
+  }
 
-
-  // these will be the user's test states forever (or until she clears our cookie)
-  AbTesting.assignTestStates()
-  $scope.abTesting = AbTesting
-
-  $scope.removeNotification = function (notification) {
-    i18nNotifications.remove(notification);
-  };
 
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
     RouteChangeErrorHandler.handle(event, current, previous, rejection)
@@ -94,15 +105,6 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$routeChangeSuccess', function(next, current){
     security.requestCurrentUser().then(function(currentUser){
-      var userData = AbTesting.getTestStates()
-      if (currentUser){
-        userData = _.extend(userData, currentUser)
-        analytics.identify(currentUser.id, userData);
-      }
-      else {
-        analytics.identify()
-      }
-
       Page.sendPageloadToSegmentio()
     })
 

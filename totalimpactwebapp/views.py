@@ -1,31 +1,46 @@
 import requests, os, json, logging, re, datetime
 import analytics
 from util import local_sleep
+from totalimpactwebapp import util
 
 from flask import request, send_file, abort, make_response, g, redirect
 from flask import render_template
 from flask import render_template_string
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
-from sqlalchemy.exc import IntegrityError
-
-
-from totalimpactwebapp import app, db, login_manager, products_list, product
+from totalimpactwebapp import app
+from totalimpactwebapp import db
+from totalimpactwebapp import login_manager
+from totalimpactwebapp import product
+from totalimpactwebapp import cache
 
 from totalimpactwebapp.password_reset import send_reset_token
 from totalimpactwebapp.password_reset import reset_password_from_token
 from totalimpactwebapp.password_reset import reset_password
 from totalimpactwebapp.password_reset import PasswordResetError
 
-from totalimpactwebapp.user import User, create_user_from_slug, get_user_from_id, delete_user
-from totalimpactwebapp.user import remove_duplicates_from_user
-from totalimpactwebapp.user import EmailExistsError
-from totalimpactwebapp.utils.unicode_helpers import to_unicode_or_bust
+from totalimpactwebapp.profile import Profile
+from totalimpactwebapp.profile import create_profile_from_slug
+from totalimpactwebapp.profile import get_profile_from_id
+from totalimpactwebapp.profile import delete_profile
+from totalimpactwebapp.profile import remove_duplicates_from_profile
+from totalimpactwebapp.profile import EmailExistsError
+from totalimpactwebapp.profile import delete_products_from_profile
+
+from totalimpactwebapp.cards_factory import *
+from totalimpactwebapp import emailer
+from totalimpactwebapp import configs
+
 from totalimpactwebapp.util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
+from totalimpactwebapp import event_monitoring
+from totalimpactwebapp import notification_report
+
+from totalimpactwebapp.reference_set import RefsetBuilder
 
 import newrelic.agent
+from sqlalchemy import orm
 
 logger = logging.getLogger("tiwebapp.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
@@ -49,44 +64,23 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 
 
+def json_resp_from_thing(thing):
+    my_dict = util.todict(thing)
+    json_str = json.dumps(my_dict, sort_keys=True, indent=4)
 
-def json_resp_from_jsonable_thing(jsonable_thing):
-    json_str = json.dumps(jsonable_thing, sort_keys=True, indent=4)
+    if request.path.endswith(".json") and (os.getenv("FLASK_DEBUG", False) == "True"):
+        logger.info(u"rendering output through debug_api.html template")
+        resp = make_response(render_template(
+            'debug_api.html',
+            data=json_str))
+        resp.mimetype = "text/html"
+        return views_helpers.bust_caches(resp)
+
     resp = make_response(json_str, 200)
     resp.mimetype = "application/json"
     return views_helpers.bust_caches(resp)
 
 
-def json_resp_from_thing(thing):
-    """
-    JSON-serialize an obj or dict and put it in a Flask response.
-    This should be converted to an object and moved out of here...
-
-    :param obj: the obj you want to serialize to json and send back
-    :return: a flask json response, ready to send to client
-    """
-
-    try:
-        return json_resp_from_jsonable_thing(thing)
-    except TypeError:
-        pass
-
-    try:
-        return json_resp_from_jsonable_thing(thing.as_dict())
-    except AttributeError:
-        pass
-
-    temp_dict = thing.__dict__
-    obj_dict = {}
-    for k, v in temp_dict.iteritems():
-        if k[0] != "_":  # we don't care to serialize private attributes
-
-            if type(v) is datetime.datetime:  # convert datetimes to strings
-                obj_dict[k] = v.isoformat()
-            else:
-                obj_dict[k] = v
-
-    return json_resp_from_jsonable_thing(obj_dict)
 
 
 def abort_json(status_code, msg):
@@ -103,7 +97,7 @@ def abort_json(status_code, msg):
     abort(resp)
 
 
-def get_user_for_response(id, request):
+def get_user_for_response(id, request, expunge=True):
     id_type = unicode(request.args.get("id_type", "url_slug"))
 
     try:
@@ -111,7 +105,7 @@ def get_user_for_response(id, request):
     except AttributeError:
         logged_in = False
 
-    retrieved_user = get_user_from_id(id, id_type, logged_in)
+    retrieved_user = get_profile_from_id(id, id_type, show_secrets=logged_in)
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -120,7 +114,14 @@ def get_user_for_response(id, request):
 
     g.profile_slug = retrieved_user.url_slug
 
+    if expunge and os.getenv("EXPUNGE", "False")=="True":
+        logger.debug(u"expunging")
+
+        db.session.expunge_all()
+
     return retrieved_user
+
+
 
 
 def make_js_response(template_name, **kwargs):
@@ -134,6 +135,30 @@ def has_admin_authorization():
     return request.args.get("key", "") == os.getenv("API_ADMIN_KEY")
 
 
+def abort_if_user_not_logged_in(profile):
+    allowed = True
+    try:
+        if current_user.id != profile.id:
+            abort_json(401, "You can't do this because it's not your profile.")
+    except AttributeError:
+        abort_json(405, "You can't do this because you're not logged in.")
+
+
+def is_logged_in(profile):
+    try:
+        return current_user.id != profile.id
+    except AttributeError:
+        return False
+
+
+
+def current_user_owns_tiid(tiid):
+    profile = db.session.query(Profile).get(int(current_user.id))
+    db.session.expunge(profile)
+    return tiid in profile.tiids
+
+
+
 
 
 ###############################################################################
@@ -142,50 +167,53 @@ def has_admin_authorization():
 #
 ###############################################################################
 
-
-
 @login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+def load_user(profile_id):
+    # load just the profile table, and don't keep it hooked up to sqlalchemy
+    profile = db.session.query(Profile).options(orm.noload('*')).get(int(profile_id))
+    if profile:
+        db.session.expunge(profile)
+    return profile
 
 
-@app.before_first_request
-def setup_db_tables():
-    logger.info(u"first request; setting up db tables.")
-    db.create_all()
+
+@app.before_request
+def redirect_to_https():
+    try:
+        if request.headers["X-Forwarded-Proto"] == "https":
+            pass
+        else:
+            return redirect(request.url.replace("http://", "https://"), 301)  # permanent
+    except KeyError:
+        #logger.debug(u"There's no X-Forwarded-Proto header; assuming localhost, serving http.")
+        pass
 
 
-#@app.before_request
-#def redirect_to_https():
-#    try:
-#        if request.headers["X-Forwarded-Proto"] == "https":
-#            pass
-#        else:
-#            return redirect(request.url.replace("http://", "https://"))
-#
-#    except KeyError:
-#        logger.debug(u"There's no X-Forwarded-Proto header; assuming localhost, serving http.")
+@app.before_request
+def redirect_www_to_naked_domain():
+    if request.url.startswith("https://www.impactstory.org"):
+
+        new_url = request.url.replace(
+            "https://www.impactstory.org",
+            "https://impactstory.org"
+        )
+        logger.debug(u"URL starts with www; redirecting to " + new_url)
+        return redirect(new_url, 301)  # permanent
 
 
 
 @app.before_request
 def load_globals():
     g.user = current_user
+    try:
+        g.user_id = current_user.id
+    except AttributeError:
+        g.user_id = None
+
     g.api_root = os.getenv("API_ROOT")
     g.api_key = os.getenv("API_KEY")
     g.webapp_root = os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
 
-
-@app.before_request
-def log_ip_address():
-    if request.endpoint != "static":
-        try:
-            logger.info(u"{ip_address} IP address calling {method} {url}".format(
-                ip_address=request.remote_addr, 
-                method=request.method, 
-                url=to_unicode_or_bust(request.url)))
-        except UnicodeDecodeError:
-            logger.debug(u"UnicodeDecodeError logging request url. Caught exception but needs fixing")
 
 
 @app.after_request
@@ -206,10 +234,13 @@ def extract_filename(s):
         return res[0].split(".")[0]
     return None
 
-#@app.after_request
-#def local_sleep_a_bit_for_everything(resp):
-#    local_sleep(.8)
-#    return resp
+
+
+
+
+
+
+
 
 
 
@@ -220,31 +251,39 @@ def extract_filename(s):
 
 ###############################################################################
 #
-#   JSON VIEWS (API)
+#   /profile/current
 #
 ###############################################################################
 
 
-#------------------ /user/:actions -----------------
-
-
-
-
-@app.route("/user/current")
+@app.route("/profile/current")
 def get_current_user():
-    #sleep(1)
-
+    local_sleep(1)
     try:
-        ret = {"user": g.user.dict_about()}
-
+        user_info = g.user.dict_about()
     except AttributeError:  # anon user has no as_dict()
-        ret = {"user": None}
+        user_info = None
 
-    return json_resp_from_thing(ret)
+    return json_resp_from_thing({"user": user_info})
+
+
+@app.route("/profile/current/notifications/<notification_name>", methods=["GET"])
+def current_user_notifications(notification_name):
+
+    # hardcode for now
+    notification_name = "new_metrics_notification_dismissed"
+
+    # it's Not RESTful to do this in a GET, but, whatevs.
+    if request.args.get("action") == "dismiss":
+        g.user.new_metrics_notification_dismissed = datetime.datetime.now()
+        db.session.merge(g.user)
+        db.session.commit()
+
+    return json_resp_from_thing({"user": g.user.dict_about()})
 
 
 
-@app.route('/user/logout', methods=["POST", "GET"])
+@app.route('/profile/current/logout', methods=["POST", "GET"])
 def logout():
     #sleep(1)
     logout_user()
@@ -252,16 +291,13 @@ def logout():
 
 
 
-@app.route("/user/login", methods=["POST"])
+@app.route("/profile/current/login", methods=["POST"])
 def login():
-
-    logger.debug(u"user trying to log in.")
-
 
     email = unicode(request.json["email"]).lower()
     password = unicode(request.json["password"])
 
-    user = User.query.filter_by(email=email).first()
+    user = Profile.query.filter_by(email=email).first()
 
     if user is None:
         abort(404, "Email doesn't exist")
@@ -276,161 +312,234 @@ def login():
 
 
 
-#------------------ /user/:id   -----------------
 
 
-@app.route("/user/<profile_id>", methods=['GET'])
-def user_profile(profile_id):
-    user = get_user_for_response(
+
+
+
+
+
+
+
+
+###############################################################################
+#
+#   /profile/:id
+#
+###############################################################################
+
+def get_user_profile(profile_id):
+    resp_constr_timer = util.Timer()
+
+    profile = get_user_for_response(
         profile_id,
         request
     )
-    return json_resp_from_thing(user)
+
+    hide_keys = request.args.get("hide", "").split(",")
+
+    markup = product.Markup(g.user_id, embed=request.args.get("embed"))
+
+    resp = {
+        "products": profile.get_products_markup(
+            markup=markup,
+            hide_keys=hide_keys,
+            add_heading_products=True
+        )
+    }
+
+    # things that would be in about, but require products
+    resp["is_refreshing"] = profile.is_refreshing
+    resp["product_count"] = profile.product_count
+
+    if not "about" in hide_keys:
+        resp["about"] = profile.dict_about(show_secrets=False)
+        resp["awards"] = profile.awards
+
+    logger.debug(u"/profile/{slug} built the response; took {elapsed}ms".format(
+        slug=profile.url_slug,
+        elapsed=resp_constr_timer.elapsed()
+    ))
+    return resp
+
+
+@app.route("/profile/<profile_id>", methods=['GET'])
+@app.route("/profile/<profile_id>.json", methods=['GET'])
+def user_profile(profile_id):
+    resp = get_user_profile(profile_id)
+    resp = json_resp_from_thing(resp)
+    return resp
 
 
 
-@app.route("/user/<slug>", methods=["POST"])
-def create_new_user_profile(slug):
+@app.route("/profile/<profile_id>", methods=["POST"])
+@app.route("/profile/<profile_id>.json", methods=["POST"])
+def create_new_user_profile(profile_id):
     userdict = {camel_to_snake_case(k): v for k, v in request.json.iteritems()}
 
     try:
-        user = create_user_from_slug(slug, userdict, db)
+        new_profile = create_profile_from_slug(profile_id, userdict, db)
 
     except EmailExistsError:
         abort_json(409, "That email already exists.")
 
-    user_profile_url = u"{webapp_root}/{url_slug}".format(
-        webapp_root=g.webapp_root, url_slug=user.url_slug)
-    logger.debug(u"created new user {user_profile_url}".format(
-        user_profile_url=user_profile_url))
-
-
-    # refactor this and the mention in /tests some day
-    email_suffex_for_text_accounts = "@test-impactstory.org"
-    
-    if not user.email.endswith(email_suffex_for_text_accounts):
-        # send welcome email
-        welcome_email.send_welcome_email(user.email, user.given_name)
-
-        # send to alert
-        for webhook_slug in os.getenv("ZAPIER_ALERT_HOOKS", "").split(","):
-            zapier_webhook_url = "https://zapier.com/hooks/catch/n/{webhook_slug}/".format(
-                webhook_slug=webhook_slug)
-            r = requests.post(zapier_webhook_url,
-                data=json.dumps({
-                    "user_profile_url": user_profile_url
-                    }),
-                headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-
-    logger.debug(u"new user {url_slug} has id {id}".format(
-        url_slug=user.url_slug, id=user.id))
-
-    login_user(user)
-
-    return json_resp_from_thing({"user": user.dict_about()})
+    welcome_email.send_welcome_email(new_profile.email, new_profile.given_name)
+    event_monitoring.new_user(new_profile.url_slug, new_profile.given_name)
+    login_user(new_profile)
+    return json_resp_from_thing({"user": new_profile.dict_about()})
 
 
 
-@app.route("/user/<profile_id>", methods=["DELETE"])
+@app.route("/profile/<profile_id>", methods=["DELETE"])
+@app.route("/profile/<profile_id>.json", methods=["DELETE"])
 def user_delete(profile_id):
     if not has_admin_authorization():
         abort_json(401, "Need admin key to delete users")
 
     user = get_user_for_response(profile_id, request)
-    delete_user(user)
+    delete_profile(user)
     return json_resp_from_thing({"user": "deleted"})
 
 
 
-#------------------ /user/:id/about   -----------------
+@app.route("/profile/<profile_id>", methods=['PATCH'])
+@app.route("/profile/<profile_id>.json", methods=['PATCH'])
+def patch_user_about(profile_id):
 
+    profile = get_user_for_response(profile_id, request)
+    abort_if_user_not_logged_in(profile)
 
-@app.route("/user/<profile_id>/about", methods=['GET', 'PATCH'])
-def user_about(profile_id):
+    profile.patch(request.json["about"])
+    db.session.commit()
 
-    logger.debug(u"got request for user {profile_id}".format(
-        profile_id=profile_id))
-
-    user = get_user_for_response(
-        profile_id,
-        request
-    )
-    logger.debug(u"got the user out: {user}".format(
-        user=user.dict_about()))
-
-    if request.method == "GET":
-        pass
-
-    elif request.method == "PATCH":
-        logger.debug(
-            u"got patch request for user {profile_id} (PK {pk}): '{log}'. {json}".format(
-            profile_id=profile_id,
-            pk=user.id,
-            log=request.args.get("log", "").replace("+", " "),
-            json=request.json)
-        )
-
-        user.patch(request.json["about"])
-        logger.debug(u"patched the user: {user} ".format(
-            user=user.dict_about()))
-
-        db.session.commit()
-
-    return json_resp_from_thing({"about": user.dict_about()})
+    return json_resp_from_thing({"about": profile.dict_about()})
 
 
 
-
-@app.route("/user/<profile_id>/awards", methods=['GET'])
-def user_profile_awards(profile_id):
-    user = get_user_for_response(
-        profile_id,
-        request
-    )
-
-    return json_resp_from_thing(user.profile_awards_dicts)
+@app.route("/profile/<profile_id>/refresh_status", methods=["GET"])
+@app.route("/profile/<profile_id>/refresh_status.json", methods=["GET"])
+def refresh_status(profile_id):
+    local_sleep(0.5) # client to webapp plus one trip to database
+    id_type = request.args.get("id_type", "url_slug")  # url_slug is default    
+    profile_bare_products = get_profile_from_id(profile_id, id_type, include_product_relationships=False)
+    print profile_bare_products
+    return json_resp_from_thing(profile_bare_products.get_refresh_status())
 
 
 
 
 
 
-#------------------ user/:userId/products -----------------
 
-@app.route("/user/<id>/products", methods=["GET"])
-def user_products_get(id):
 
+
+
+
+
+
+
+
+###############################################################################
+#
+#   /profile/:id/products
+#
+###############################################################################
+
+
+@app.route("/profile/<id>/products", methods=["POST", "PATCH"])
+@app.route("/profile/<id>/products.json", methods=["POST", "PATCH"])
+def user_products_modify(id):
+
+    action = request.args.get("action", "refresh")
     user = get_user_for_response(id, request)
+    # logger.debug(u"got user {user}".format(
+    #     user=user))
 
-    try:
-        if current_user.url_slug == user.url_slug:
-            user.update_last_viewed_profile()
-    except AttributeError:   #AnonymousUser
-        pass
+    source = request.args.get("source", "webapp")
 
-    if request.args.get("group_by")=="duplicates":
-        resp = products_list.get_duplicates_list_from_tiids(user.tiids)
-    else:        
-        include_headings = request.args.get("include_heading_products") in [1, "true", "True"]
-        resp = products_list.prep(
-            user.products,
-            include_headings
-        )
+    if request.method == "POST" and action == "deduplicate":
+        deleted_tiids = remove_duplicates_from_profile(user.id)
+        resp = {"deleted_tiids": deleted_tiids}
+        local_sleep(30)
+
+    elif request.method == "POST" and (action == "refresh"):
+        tiids_being_refreshed = user.refresh_products(source)
+        resp = {"products": tiids_being_refreshed}
+
+    else:
+
+        # Actions that require authentication
+        abort_if_user_not_logged_in(user)
+
+        if request.method == "PATCH":
+            local_sleep(2)
+            added_products = user.add_products(request.json)
+            resp = {"products": added_products}
+
+        else:
+            abort(405)  # method not supported.  We shouldn't get here.
 
     return json_resp_from_thing(resp)
 
 
-@app.route("/product/<tiid>/biblio", methods=["PATCH"])
-def product_biblio_modify(tiid):
+@app.route("/profile/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
+@app.route("/profile/<user_id>/product/<tiid>.json", methods=['GET', 'DELETE'])
+def user_product(user_id, tiid):
 
-    #try:
-    #    if current_user.url_slug != user.url_slug:
-    #        abort_json(401, "Only profile owners can modify profiles.")
-    #except AttributeError:
-    #    abort_json(405, "You must be logged in to modify profiles.")
+    if user_id == "embed":
+        abort(410)
+
+    profile = get_user_for_response(user_id, request)
+
+    if request.method == "GET":
+        markup = product.Markup(g.user_id, embed=False)
+        try:
+            resp = profile.get_single_product_markup(tiid, markup)
+        except IndexError:
+            abort_json(404, "That product doesn't exist.")
+
+    elif request.method == "DELETE":
+        # kind of confusing now, waiting for core-to-webapp refactor
+        # to improve it though.
+        abort_if_user_not_logged_in(profile)
+        resp = delete_products_from_profile(profile, [tiid])
+
+    return json_resp_from_thing(resp)
+
+
+
+
+@app.route("/profile/<profile_id>/products.csv", methods=["GET"])
+def profile_products_csv(profile_id):
+    profile = get_user_for_response(profile_id, request)
+
+    csv = profile.csv_of_products()
+
+    resp = make_response(csv, 200)
+    resp.mimetype = "text/csv;charset=UTF-8"
+    resp.headers.add("Content-Disposition",
+                     "attachment; filename=impactstory-{profile_id}.csv".format(
+                        profile_id=profile_id))
+    resp.headers.add("Content-Encoding",
+                     "UTF-8")
+    return resp
+
+
+@app.route("/product/<tiid>/biblio", methods=["PATCH"])
+@app.route("/product/<tiid>/biblio.json", methods=["PATCH"])
+def product_biblio_modify(tiid):
+    # This should actually be like /profile/:id/product/:tiid/biblio
+    # and it should return the newly-modified product, instead of the
+    # part-product it gets from core now.
+
+    try:
+        if not current_user_owns_tiid(tiid):
+            abort_json(401, "You have to own this product to modify it.")
+    except AttributeError:
+        abort_json(405, "You musts be logged in to modify products.")
 
     query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
-        core_api_root=g.api_root,
+        core_api_root=os.getenv("API_ROOT"),
         tiid=tiid,
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
@@ -442,98 +551,36 @@ def product_biblio_modify(tiid):
     )
 
     local_sleep(1)
-    
+
     return json_resp_from_thing(r.json())
 
 
-@app.route("/user/<id>/products", methods=["POST", "DELETE", "PATCH"])
-def user_products_modify(id):
-
-    action = request.args.get("action", "refresh")
-    user = get_user_for_response(id, request)
-    logger.debug(u"got user {user}".format(
-        user=user))
-
-    if request.method == "POST" and action == "deduplicate":
-        deleted_tiids = remove_duplicates_from_user(user.id)
-        resp = {"deleted_tiids": deleted_tiids}
-
-    elif request.method == "POST" and (action == "refresh"):
-        source = request.args.get("source", "webapp")
-        tiids_being_refreshed = user.refresh_products(source)
-        resp = {"products": tiids_being_refreshed}
-
-    else:
-
-        # Actions that require authentication
-        try:
-            if current_user.url_slug != user.url_slug:
-                abort_json(401, "Only profile owners can modify profiles.")
-        except AttributeError:
-            abort_json(405, "You must be logged in to modify profiles.")
-
-        if request.method == "PATCH":
-            resp = {"products": user.add_products(request.json)}
-
-        elif request.method == "DELETE":
-            tiids_to_delete = request.json.get("tiids")
-            resp = user.delete_products(tiids_to_delete)
-
-        else:
-            abort(405)  # method not supported.  We shouldn't get here.
-
-    return json_resp_from_thing(resp)
-
-
-@app.route("/user/<user_id>/product/<tiid>", methods=['GET'])
-def user_product(user_id, tiid):
-
-    if user_id == "embed":
-        abort(410)
-
-    user = get_user_for_response(user_id, request)
-    try:
-        requested_product = [p for p in user.products if p["_id"] == tiid][0]
-    except IndexError:
-        abort_json(404, "That product doesn't exist.")
-
-    prepped = product.prep_product(requested_product, True)
-
-    return json_resp_from_thing(prepped)
 
 
 
-@app.route("/user/<id>/products.csv", methods=["GET"])
-def user_products_csv(id):
-
-    user = get_user_for_response(id, request)
-    tiids = user.tiids
-
-    url = u"{api_root}/v1/products.csv/{tiids_string}?key={api_key}".format(
-        api_key=g.api_key,
-        api_root=g.api_root,
-        tiids_string=",".join(tiids))
-    r = requests.get(url)
-    csv_contents = r.text
-
-    resp = make_response(unicode(csv_contents), r.status_code)
-    resp.mimetype = "text/csv;charset=UTF-8"
-    resp.headers.add("Content-Disposition",
-                     "attachment; filename=impactstory.csv")
-    resp.headers.add("Content-Encoding", "UTF-8")
-
-    return resp
 
 
 
-#------------------ user/:id/password -----------------
 
-@app.route("/user/<id>/password", methods=["POST"])
+
+
+
+
+###############################################################################
+#
+#   misc endpoints
+#
+###############################################################################
+
+
+
+
+@app.route("/profile/<id>/password", methods=["POST"])
 def user_password_modify(id):
 
     current_password = request.json.get("currentPassword", None)
     new_password = request.json.get("newPassword", None)
-    id_type = request.args.get("id_type")
+    id_type = request.args.get("id_type", "url_slug")  # url_slug is default
 
     try:
         if id_type == "reset_token":
@@ -548,8 +595,7 @@ def user_password_modify(id):
     return json_resp_from_thing({"about": user.dict_about()})
 
 
-
-@app.route("/user/<id>/password", methods=["GET"])
+@app.route("/profile/<id>/password", methods=["GET"])
 def get_password_reset_link(id):
     if request.args.get("id_type") != "email":
         abort_json(400, "id_type param must be 'email' for this endpoint.")
@@ -561,25 +607,26 @@ def get_password_reset_link(id):
 
 
 
-#------------------ importers/:importer -----------------
-
-
-
-@app.route("/user/<id>/linked-accounts/<account>", methods=["POST"])
+@app.route("/profile/<id>/linked-accounts/<account>", methods=["POST"])
 def user_linked_accounts_update(id, account):
-    user = get_user_for_response(id, request)
-    tiids = user.update_products_from_linked_account(account)
+    profile = get_user_for_response(id, request)
+
+    # if add products is coming from a scheduled source, don't add if previously removed
+    source = request.args.get("source", "webapp")    
+    update_even_removed_products = (source=="webapp")
+
+    tiids = profile.update_products_from_linked_account(account, update_even_removed_products)
+
     return json_resp_from_thing({"products": tiids})
 
 
 
-#------------------ /providers  (information about providers) -----------------
-@app.route('/providers', methods=["GET"])
+@app.route('/providers', methods=["GET"])  # information about providers
 def providers():
     try:
         url = u"{api_root}/v1/provider?key={api_key}".format(
-            api_key=g.api_key,
-            api_root=g.api_root)
+            api_key=os.getenv("API_KEY"),
+            api_root=os.getenv("API_ROOT"))
         r = requests.get(url)
         metadata = r.json()
     except requests.ConnectionError:
@@ -595,24 +642,48 @@ def providers():
 
 
 
-
-
-
-#------------------ /tests  (supports functional testing) -----------------
-
-
-@app.route("/tests", methods=["DELETE"])
+@app.route("/tests", methods=["DELETE"])  # supports functional testing
 def delete_all_test_users():
     if not has_admin_authorization():
         abort_json(401, "Need admin key to delete all test users")
 
     email_suffex_for_text_accounts = "@test-impactstory.org"
-    users = User.query.filter(User.email.like("%"+email_suffex_for_text_accounts)).all()
+    users = Profile.query.filter(Profile.email.like("%"+email_suffex_for_text_accounts)).all()
     user_slugs_deleted = []
     for user in users:
         user_slugs_deleted.append(user.url_slug)
-        delete_user(user)
+        delete_profile(user)
     return json_resp_from_thing({"test_users": user_slugs_deleted})
+
+
+
+
+###############################################################################
+#
+#   REFERENCE SETS
+#
+###############################################################################
+
+
+
+
+@app.route("/reference-set-histograms")
+def reference_sets():
+    rows = RefsetBuilder.export_csv_rows()
+
+    resp = make_response("\n".join(rows), 200)
+
+    # resp.mimetype = "text/text;charset=UTF-8"
+
+    # Do we want it to pop up to save?  kinda nice to just see it in browser
+    resp.mimetype = "text/csv;charset=UTF-8"
+    #resp.headers.add("Content-Disposition", "attachment; filename=refsets.csv")
+    resp.headers.add("Content-Encoding", "UTF-8")
+
+    return resp
+
+
+
 
 
 
@@ -653,7 +724,7 @@ def redirect_to_profile(dummy="index"):
 
 
 @app.route("/google6653442d2224e762.html")
-def google_verification():
+def google_verification_impactstory():
     # needed for https://support.google.com/webmasters/answer/35179?hl=en
     return send_file("static/rendered-pages/google6653442d2224e762.html")
 
@@ -672,7 +743,7 @@ def images():
 @app.route('/item/<namespace>/<path:nid>', methods=['GET'])
 def item_page(namespace, nid):
     url = u"{api_root}/v1/tiid/{namespace}/{nid}?api_admin_key={api_admin_key}".format(
-        api_root=g.api_root,
+        api_root=os.getenv("API_ROOT"),
         namespace=namespace,
         nid=nid,
         api_admin_key=os.getenv("API_ADMIN_KEY")
@@ -690,11 +761,18 @@ def get_js_top():
     newrelic_header = views_helpers.remove_script_tags(
         newrelic.agent.get_browser_timing_header()
     )
+
+    try:
+        current_user_dict = current_user.dict_about()
+    except AttributeError:
+        current_user_dict = None
+
     return make_js_response(
-        "top.js",
+        "top.js.tpl",
         segmentio_key=os.getenv("SEGMENTIO_KEY"),
         mixpanel_token=os.getenv("MIXPANEL_TOKEN"),
-        newrelic_header=newrelic_header
+        newrelic_header=newrelic_header,
+        current_user=current_user_dict
     )
 
 
@@ -734,10 +812,43 @@ def scratchpad():
 
 
 
+@app.route("/<profile_id>/cards.json")
+def render_cards_json(profile_id):
+    profile = get_user_for_response(
+        profile_id,
+        request
+    )
+    cards = notification_report.get_all_cards(profile)
+    return json_resp_from_thing(cards)
+
+
+@app.route("/<profile_id>/report")
+def render_notification_report(profile_id, format="html"):
+    user = get_user_for_response(
+        profile_id,
+        request
+    )
+    report_context = notification_report.make(user)
+    return render_template("report.html", **report_context)
 
 
 
 
+@app.route("/test/email")
+def test_emailer():
+
+    ret = emailer.send(
+        "wordslikethis@gmail.com",
+        "this is a test email",
+        "card",
+        {"title": "my wonderful paper about rabbits"}
+    )
+    return json_resp_from_thing(ret)
+
+
+@app.route("/configs/metrics")
+def get_configs():
+    return json_resp_from_thing(configs.metrics())
 
 ###############################################################################
 #
@@ -753,15 +864,19 @@ def impactstory_dot_js():
     abort(410)
 
 
-
 @app.route('/logo')
 def logo():
-    filename = "static/img/logos/impactstory-logo-big.png"
+    filename = "static/img/impactstory-logo-sideways-big.png"
     return send_file(filename, mimetype='image/png')
 
 @app.route('/logo/small')
 def logo_small():
     filename = "static/img/impactstory-logo.png"
+    return send_file(filename, mimetype='image/png')
+
+@app.route('/advisor.png')
+def advisor_badge():
+    filename = "static/img/advisor-badge.png"
     return send_file(filename, mimetype='image/png')
 
 

@@ -1,5 +1,5 @@
 <div class="modal-header">
-   <button type="button" class="close" ng-click="$close()">&times;</button>
+   <button type="button" class="close" ng-click="$dismiss()">&times;</button>
    <h3>Edit product</h3>
 </div>
 <div class="modal-body edit-product">
@@ -11,22 +11,39 @@
 
       <div class="form-group">
          <label>Title</label>
-         <textarea
+         <input
            class="form-control"
+           type="text"
            required
            name="productTitle"
-           ng-model="product.biblio.title"></textarea>
-
+           ng-model="product.biblio.title">
       </div>
 
       <div class="from-group">
          <label>Authors</label>
-         <textarea
+         <input
+           type="text"
            class="form-control"
            name="productAuthors"
-           ng-model="product.biblio.authors"></textarea>
+           ng-model="product.biblio.authors">
+      </div>
 
+      <div class="form-group" ng-if="product.biblio.journal">
+         <label>Journal</label>
+         <input
+           type="text"
+           class="form-control"
+           name="productJournal"
+           ng-model="product.biblio.journal">
+      </div>
 
+      <div class="form-group">
+         <label>Year</label>
+         <input
+           type="text"
+           class="form-control"
+           name="productYear"
+           ng-model="product.biblio.year">
       </div>
 
 

@@ -1,57 +1,17 @@
-<div class="category-heading {{ product.headingDimension }}" id="{{ product.anchor }}">
+<div class="category-heading genre-{{ genre }}" id="{{ anchor }}">
 
    <div class="category-heading-main">
       <h2>
          <span class="genre-and-icons">
-            <a class="genre-anchor" href="{{ g.profile_slug }}#{{ product.anchor }}">
+            <a class="genre-anchor" href="{{ profile.url_slug }}#{{ anchor }}">
                <span class="text">permalink</span>
                <i class="icon-link"></i>
             </a>
-            <i class="{{ product.icon }} {{ product.genre }} genre"></i>
-            <span class="genre">{{ product.genre }}</span>
+            <i class="{{ icon }} {{ genre }} genre"></i>
+            <span class="genre">{{ genre }}</span>
          </span>
-         {% if product.account %}
-
-            {% if product.account_url %}
-               <a class="account" href="{{ product.account_url }}">
-                  {{ product.account }}
-                  <i class="icon-external-link-sign"></i>
-               </a>
-            {% else %}
-               <span class="account">{{ product.account }}</span>
-            {% endif %}
-
-         {% endif %}
       </h2>
       <div class="clearfix"></div>
-
-      <div class="category-metrics">
-         <ul class="account-metrics">
-
-            {% for metric in product.metrics %}
-
-            <li class="category-metric">
-
-               <a href="{{ metric.provenance_url }}"
-                  target="_blank"
-                  data-toggle="tooltip"
-                  title="Visit {{ metric.static_meta.provider }} for more information"
-                  class="value">
-                  {{ metric.display_count }}
-               </a>
-               <span class="metric-descr"
-                     data-toggle="tooltip"
-                     title="{{ metric.static_meta.description }}">
-                  {{ metric.static_meta.display_name }}
-               </span>
-             </li>
-
-            {% endfor %}
-
-         </ul>
-         <ul class="summary-metrics"><!-- fill this later--></ul>
-      </div>
-
    </div>
 
 </div>

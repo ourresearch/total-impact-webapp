@@ -18,6 +18,8 @@ div.infopage {
    p {
       line-height: 1.6;
    }
+   .wrapper {
+   }
 
 }
 
@@ -79,8 +81,14 @@ div.infopage.landing {
                margin: 20px auto 30px;
             }
             h2 {
-               color: @linkColor;
                margin-top: -20px;
+               font-weight: 300;
+               color: #555;
+               font-size: 30px;
+               line-height: 1.4;
+               width: 650px;
+               text-align: center;
+               margin: 0 auto;
             }
 
             #call-to-action {
@@ -407,169 +415,71 @@ div#about div#contact p{
 
 
 
-/* "about" page
+
+/* "advisors" page
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
 
-#collections {
-   padding-top: 0;
-   h2 {
-//      font-size: 50px;
-//      font-weight: 900;
-//      color: #ccc;
+#advisors-infopage {
+   img#stickers-pic {
+      float:right;
+      margin-top: 50px;
+      margin-left: 50px;
    }
-}
+   ul{
+      li {
+         list-style-type:circle;
+         margin-left: 20px;
+         margin-top: 5px;
 
-
-
-
-
-
-
-
-
-/* "api" page
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-
-table {
-    border-collapse: collapse;
-    padding:2px;
-    border-color: #ccc;
-    width: 100%;
-   margin:50px 0;
-}
-td {
-    padding: 15px 8px;
-    border:1px solid #ccc;
-    border-left:none;
-    border-right:none;
-   pre.prettyprint {
-      padding-bottom:0;
+      }
    }
-   &.attr {
-      min-width: 150px;
-   }
-   &.example {
-      width: 100px;
-      div.impactstory-embed div {
-         font-size:12px;
-         color: red;
-         font-weight: bold;
-         margin: 5px 0;
-         clear:both;
+   div.call-to-action{
+      text-align: center;
+      h3 {
+         font-size: 40px;
+         margin-bottom: 20px;
       }
    }
 }
-th {
-    border:none;
-   background: #fff;
-   color:#555;
-   text-align:left;
-   padding-left:5px;
-}
-h3.apicall:first-of-type {
-    margin-top: 50px;
-}
-
-div.example {
-   clear:both;
-}
 
 
 
 
-div#api{
-    margin-top: 120px;
-}
-#toc {
-    border: 1px solid #333333;
-    float: right;
-    margin: 16px 21px 12px;
-    padding: 16px;
-    text-align: left;
-    -webkit-border-radius: 4px;    /* CSS3 rounded borders for Safari      */
-    -moz-border-radius: 4px;       /* CSS3 rounded borders for Firefox   */
-}
 
-a.tocBackLink {
-    text-align: right;
-    font-size: 10px;
-    font-weight: normal;
-    margin-left: 10px;
-}
-pre {
-   font-family:consolas, monospace;
-   display: block;
-   padding: 10px;
-   margin: 0 0 9px;
-   font-size: 14px;
-   line-height: 1.5;
-   word-break: break-all;
-   word-wrap: break-word;
-   white-space: pre;
-   white-space: pre-wrap;
-   background-color: #f5f5f5;
-   border: 1px solid #ccc;
-   border: 1px solid rgba(0, 0, 0, 0.15);
-   -webkit-border-radius: 4px;
-   -moz-border-radius: 4px;
-   border-radius: 4px;
+/* "spread the word" page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
 
-   &.prettyprint { // needed to overwrite prettyprint.css's imposed settings.
-      margin-bottom: 18px;
-      border: 1px solid #ccc;
-      padding:10px;
+#spread-the-word-infopage {
+   div.intro {
+      padding-right: 100px;
    }
-}
-.pre-scrollable {
-   max-height: 340px;
-   overflow-y: scroll;
-}
-
-h3.apicall {
-    white-space: normal !important;
-    font-family:consolas, monospace;
-    margin-top: 150px;
-    font-size:30px;
-    color: #555;
-    margin-bottom: 10px;
-}
-div#docs {
-   h4 {
-      font-size: 22px;
-      margin-bottom: 5px;
-   }
-   h3 { margin-top: 90px;}
-
-   h3.first {margin-top: 30px}
-
-   li {
-      margin-left: 1em;
-   }
-   ol {
-      padding-left:0;
-      margin-left:0;
-   }
-   ul li {
-      list-style-type: disc;
-   }
-   div.impactstory-embed {
+   div.descr {
+      width: 400px;
       float:left;
-      margin:22px 15px 17px 5px;
+      margin-right: 40px;
+      img {
+         margin: 0 5px;
+      }
+
    }
-   ul#required-attributes {
-      li{margin-bottom: 15px;}
+   div.content {
+      margin-top: -30px;
+      #poster-sample-image {
+         border: 1px solid #333;
+         height: 250px;
+      }
+      #stickers-pic {
+         width: 350px;
+      }
+
    }
 
 }
 
-
-.description {
-/*    margin-left: 50px;*/
-}
 
 
 

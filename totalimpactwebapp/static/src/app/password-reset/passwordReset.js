@@ -2,8 +2,8 @@ angular.module('passwordReset', [
     'resources.users',
     'services.loading',
     'services.page',
+    'services.userMessage',
     'directives.spinner',
-    'services.i18nNotifications',
     'security',
     'directives.forms'])
 
@@ -16,7 +16,7 @@ angular.module('passwordReset', [
   )
 })
 
-.controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, i18nNotifications, security){
+.controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, UserMessage, security){
   console.log("reset token", $routeParams.resetToken)
 
   $scope.password = ""
@@ -24,15 +24,15 @@ angular.module('passwordReset', [
     console.log("submitting password to change", $scope.password)
     Loading.start("saveButton")
     UsersPassword.save(
-      {id: $routeParams.resetToken, idType:"reset_token"},
+      {id: $routeParams.resetToken, id_type:"reset_token"},
       {newPassword: $scope.password},
       function(resp) {
-        i18nNotifications.pushForNextRoute('settings.password.change.success', 'success');
+        UserMessage.set('passwordReset.success', true);
         $location.path("/")
         security.showLogin()
       },
       function(resp) {
-        i18nNotifications.pushForCurrentRoute('settings.password.change.error.unauthenticated', 'danger');
+        UserMessage.set('passwordReset.error.invalidToken');
         Loading.finish('saveButton')
         $scope.password = "";  // reset the form
       }

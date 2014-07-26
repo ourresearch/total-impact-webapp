@@ -2,12 +2,12 @@
    <div class="header profile-subpage-header product-page-header">
       <div class="wrapper">
          <a back-to-profile></a>
-         <div class="product-page-controls" ng-show="userOwnsThisProfile">
+         <div class="product-page-controls" ng-show="userOwnsThisProfile && !loading.is()">
             <a class="edit-product"
                ng-click="editProduct()"
                tooltip="Make changes to this product's title or authors"
                tooltip-placement="bottom">
-               <span class="ready" ng-show="!loading.is()">
+               <span class="ready">
                   <i class="icon-edit"></i>
                   Edit
                </span>
@@ -35,45 +35,10 @@
          <span class="text">Loading product...</span>
       </div>
 
-      <div  class="product">
+      <!--<div class="product" ng-bind-html="trustHtml(productMarkup)"></div>-->
 
-         <div class="biblio-container" ng-bind-html-unsafe="product.markup.biblio"></div>
+      <div class="product" dynamic="productMarkup"></div>
 
-         <div class="free-fulltext-url well" ng-show="!loading.is('profileProduct') && (product.genre=='article' || product.genre=='report')">
-            <div class="no-free-fulltext-url" ng-show="!product.biblio.free_fulltext_url">
-               <div class="info">
-                  <i class="icon-warning-sign leader"></i>
-                  <div class="no-fulltext">
-                     Your article has no free fulltext available.
-                  </div>
-                  <div class="encouragement">
-                     <!-- @TODO FIX THIS. we can't depend on the OA award being first in awards list -->
-                     {{ profileAwards[0].extra.needed_for_next_level_product_page }}
-                  </div>
-               </div>
-               <div class="action">
-                  <a class="action btn btn-danger btn-xs" ng-click="openFulltextLocationModal()">Link to free fulltext</a>
-               </div>
-
-            </div>
-            <div class="has-free-fulltext-url" ng-show="product.biblio.free_fulltext_url">
-               <i class="icon-unlock-alt leader"></i>
-               Free fulltext available at
-               <a href="{{ product.biblio.free_fulltext_url }}" target="_blank">
-                  {{ getDomain(product.biblio.free_fulltext_url) }}
-                  <i class="icon-external-link-sign"></i>
-               </a>
-            </div>
-         </div>
-
-         <div class="metrics-container" ng-bind-html-unsafe="product.markup.metrics"></div>
-      </div>
-
-      <a class="percentile-info" ng-click="openInfoModal()"
-         ng-show="!loading.is('profileProduct') && product.has_percentiles">
-         <icon class="icon-question-sign"></icon>
-         Where do these percentiles come from?
-      </a>
 
    </div>
 </div>

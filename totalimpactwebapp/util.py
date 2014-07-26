@@ -2,7 +2,10 @@ from functools import wraps
 from flask import request, current_app
 import random, math
 import re
+import jinja2
 from time import sleep
+import datetime
+
 
 
 # a slow decorator for tests, so can exclude them when necessary
@@ -27,6 +30,14 @@ def jsonp(f):
 
 
 
+def jinja_render(template_name, context):
+    templateLoader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
+    templateEnv = jinja2.Environment(loader=templateLoader)
+    html_template = templateEnv.get_template(template_name)
+    return html_template.render(context)
+
+
+
 def pickWosItems(num_total_results, num_subset_results):
     num_in_final_sample = 100
     num_results_per_page = 50
@@ -46,9 +57,9 @@ def pickWosItems(num_total_results, num_subset_results):
     return pages_and_ids
 
 
+
 _underscorer1 = re.compile(r'(.)([A-Z][a-z]+)')
 _underscorer2 = re.compile('([a-z0-9])([A-Z])')
-
 
 def camel_to_snake_case(s):
     """
@@ -70,7 +81,81 @@ def local_sleep(interval, fuzz_proportion=.2):
     if "localhost:5000" in request.url_root:
         sleep(interval)
 
+def as_int_or_float_if_possible(input_value):
+    value = input_value
+    try:
+        value = int(input_value)
+    except (ValueError, TypeError):
+        try:
+            value = float(input_value)
+        except (ValueError, TypeError):
+            pass
+    return(value)
 
+
+def dict_from_dir(obj, keys_to_ignore=None):
+
+    if keys_to_ignore is None:
+        keys_to_ignore = []
+    elif isinstance(keys_to_ignore, basestring):
+        keys_to_ignore = [keys_to_ignore]
+
+    ret = {}
+    for k in dir(obj):
+        pass
+
+        if k.startswith("_"):
+            pass
+        elif k in keys_to_ignore:
+            pass
+
+        # hide sqlalchemy stuff
+        elif k in ["query", "query_class", "metadata"]:
+            pass
+        else:
+            ret[k] = getattr(obj, k)
+
+    return ret
+
+
+def todict(obj, classkey=None):
+    # from http://stackoverflow.com/a/1118038/226013
+    if isinstance(obj, dict):
+        data = {}
+        for (k, v) in obj.items():
+            data[k] = todict(v, classkey)
+        return data
+
+    elif hasattr(obj, "to_dict"):
+        data = dict([(key, todict(value, classkey))
+            for key, value in obj.to_dict().iteritems()
+            if not callable(value) and not key.startswith('_')])
+        if classkey is not None and hasattr(obj, "__class__"):
+            data[classkey] = obj.__class__.__name__
+        return data
+
+    elif hasattr(obj, "_ast"):
+        return todict(obj._ast())
+    elif type(obj) is datetime.datetime:  # convert datetimes to strings; jason added this bit
+        return obj.isoformat()
+    elif hasattr(obj, "__iter__"):
+        return [todict(v, classkey) for v in obj]
+
+    elif hasattr(obj, "__dict__"):
+        data = dict([(key, todict(value, classkey))
+            for key, value in obj.__dict__.iteritems()
+            if not callable(value) and not key.startswith('_')])
+        if classkey is not None and hasattr(obj, "__class__"):
+            data[classkey] = obj.__class__.__name__
+        return data
+    else:
+        return obj
+
+
+    
+# getting a "decoding Unicode is not supported" error in this function?  
+# might need to reinstall libaries as per 
+# http://stackoverflow.com/questions/17092849/flask-login-typeerror-decoding-unicode-is-not-supported
 class HTTPMethodOverrideMiddleware(object):
     allowed_methods = frozenset([
         'GET',
@@ -94,3 +179,86 @@ class HTTPMethodOverrideMiddleware(object):
         if method in self.bodyless_methods:
             environ['CONTENT_LENGTH'] = '0'
         return self.app(environ, start_response)
+
+
+
+
+class Timer(object):
+    def __init__(self):
+        self.start = datetime.datetime.now()
+
+    def elapsed(self):
+        finish_time = datetime.datetime.now()
+        elapsed = finish_time - self.start
+
+        # from http://stackoverflow.com/a/1905423/226013
+        return int(elapsed.seconds * 1000 + elapsed.microseconds / 1000.0)
+
+
+def ordinal(value):
+    """
+    Converts zero or a *postive* integer (or their string
+    representations) to an ordinal value.
+
+    >>> for i in range(1,13):
+    ...     ordinal(i)
+    ...
+    u'1st'
+    u'2nd'
+    u'3rd'
+    u'4th'
+    u'5th'
+    u'6th'
+    u'7th'
+    u'8th'
+    u'9th'
+    u'10th'
+    u'11th'
+    u'12th'
+
+    >>> for i in (100, '111', '112',1011):
+    ...     ordinal(i)
+    ...
+    u'100th'
+    u'111th'
+    u'112th'
+    u'1011th'
+
+    """
+    try:
+        value = int(value)
+    except ValueError:
+        return value
+    except TypeError:
+        return value
+
+    if value % 100//10 != 1:
+        if value % 10 == 1:
+            ordval = u"%d%s" % (value, "st")
+        elif value % 10 == 2:
+            ordval = u"%d%s" % (value, "nd")
+        elif value % 10 == 3:
+            ordval = u"%d%s" % (value, "rd")
+        else:
+            ordval = u"%d%s" % (value, "th")
+    else:
+        ordval = u"%d%s" % (value, "th")
+
+    return ordval
+
+
+# from http://code.activestate.com/recipes/576563-cached-property/
+def cached_property(property_name):
+    """A memoize decorator for class properties."""
+    @wraps(property_name)
+    def cached_propery_get(self):
+        try:
+            return self._cache[property_name]
+        except AttributeError:
+            self._cache = {}
+        except KeyError:
+            pass
+        ret = self._cache[property_name] = property_name(self)
+        return ret
+    return property(cached_propery_get)
+

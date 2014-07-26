@@ -100,25 +100,16 @@ div.product-page {
             float:none;
             width:  100%;
             h5 {
-               a {
-                  font-size: 30px;
-                  i {
-                     font-size: 80%;
-                     &:hover {cursor: pointer; color: @linkColor;}
-                  }
-                  &:hover { // hacky way to say: pretend you're not a link.
-                     color:  inherit;
-                     cursor: default;
-                     color:#333;
-                  }
-               }
+               font-size: 30px;
+               color: #333;
+               i {font-size: 80%;}
             }
             div.optional-biblio {
                font-size: 20px;
             }
          }
 
-         div.well.free-fulltext-url {
+         div.free-fulltext-url {
             .clearfix();
             margin-top: 20px;
             margin-left: -15px;
@@ -180,17 +171,37 @@ div.product-page {
                margin-bottom: 20px;
                clear:both;
                .clearfix;
-               .badge-container {
+               .product-page-badge-container {
                   width: 250px;
                   float:left;
                   margin-top: 8px;
                   display:inline-block;
-                  .ti-badge {
+
+                  .product-page-badge {
+                     // a lot of this is duplicated from ti-badge.less.
+                     // but there we've got the two parts, text and diff...
+                     // seemed better to not have to account for that stuff here.
+                     padding: 3px 9px;
+                     border-width: 1px;
+                     border-style: solid;
                      float:right;
-                     span.audience {display:inline;} // override
+                     font-size:13px;
+                     .border-radius(3px, 3px, 3px, 3px);
+                     &.scholars {border-color: @scholarsColor;}
+                     &.public {border-color: @publicColor;}
+                     &.is-highly-true{
+                        color:  #fff;
+                        &.scholars {background: @scholarsColor;}
+                        &.public {background: @publicColor;}
+                     }
+                     &.is-highly-false {
+                        &.scholars {color: @scholarsColor;}
+                        &.public {color: @publicColor;}
+                        background: #fff;
+                     }
                   }
                }
-               span.text {
+               span.metric-text {
                   float:left;
                   margin-left: 10px;
                   padding-top: 5px;
@@ -234,10 +245,11 @@ div.product-page {
                      .border-radius(3px, 3px, 3px, 3px);
                   }
 
-                  span.percentile {
+                  .percentile {
                      display:block;
                      float:left;
                      border-bottom: 1px solid #eee;
+                     color: #555;
                      span.values {
                         font-weight: bold;
                         span.upper, span.lower {
@@ -250,8 +262,8 @@ div.product-page {
                         }
                      }
                      span.descr {
-                        color:  #aaa;
-                        font-size: 80%;
+                        font-weight: 100;
+                        font-size: 90%;
                      }
                   }
                }

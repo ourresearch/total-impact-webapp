@@ -1,208 +1,258 @@
 // Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
 angular.module('security.service', [
-  'services.i18nNotifications',
-  'security.login',         // Contains the login form template and controller
-  'ui.bootstrap'     // Used to display the login form as a modal dialog.
-])
+    'services.userMessage',
+    'services.tiMixpanel',
+    'security.login',         // Contains the login form template and controller
+    'ui.bootstrap'     // Used to display the login form as a modal dialog.
+  ])
 
-.factory('security', function($http, $q, $location, $modal, i18nNotifications) {
-  var useCachedUser = false
-  var currentUser
-
-  // Redirect to the given url (defaults to '/')
-  function redirect(url) {
-    url = url || '/';
-    console.log("in security, redirectin' to " + url)
-    $location.path(url);
-  }
-
-  // Login form dialog stuff
-  var loginDialog = null;
-  function openLoginDialog() {
-    console.log("openLoginDialog() fired.")
-    loginDialog = $modal.open({
-      templateUrl: "security/login/form.tpl.html",
-      controller: "LoginFormController",
-      windowClass: "creds"
-    });
-    loginDialog.result.then();
-  }
+  .factory('security', function($http,
+                                $q,
+                                $location,
+                                $modal,
+                                TiMixpanel,
+                                UserMessage) {
+    var useCachedUser = true
+    var currentUser = globalCurrentUser || null
+    console.log("logging in from object: ", currentUser)
+    TiMixpanel.registerFromUserObject(currentUser)
 
 
 
-  var currentUrlSlug = function(){
-    var m = /^(\/signup)?\/([-\w\.]+)\//.exec($location.path())
-    var current_slug = (m) ? m[2] : false;
-    console.log("current slug is", current_slug)
-    return current_slug
-  }
+    // Redirect to the given url (defaults to '/')
+    function redirect(url) {
+      url = url || '/';
+      $location.path(url);
+    }
+
+    // Login form dialog stuff
+    var loginDialog = null;
+    function openLoginDialog() {
+      console.log("openLoginDialog() fired.")
+      loginDialog = $modal.open({
+        templateUrl: "security/login/form.tpl.html",
+        controller: "LoginFormController",
+        windowClass: "creds"
+      });
+      loginDialog.result.then();
+    }
 
 
-  // The public API of the service
-  var service = {
 
-    showLogin: function() {
-      openLoginDialog();
-    },
+    var currentUrlSlug = function(){
+      var m = /^(\/signup)?\/([-\w\.]+)\//.exec($location.path())
+      var current_slug = (m) ? m[2] : false;
+      console.log("current slug is", current_slug)
+      return current_slug
+    }
 
-    login: function(email, password) {
-      return $http.post('/user/login', {email: email, password: password})
-        .success(function(data, status) {
-            console.log("success in security.login()")
+
+    // The public API of the service
+    var service = {
+
+      showLogin: function() {
+        openLoginDialog();
+      },
+
+      login: function(email, password) {
+        return $http.post('/profile/current/login', {email: email, password: password})
+          .success(function(data, status) {
+            console.log("user just logged in: ", currentUser)
             currentUser = data.user;
-        })
-    },
+            TiMixpanel.identify(currentUser.id)
+            TiMixpanel.registerFromUserObject(currentUser)
+          })
+      },
 
+      currentUserOwnsProfile: function(profileSlug){
+        var deferred = $q.defer()
 
+        service.requestCurrentUser().then(
+          function(user){
+            if (user && user.url_slug && user.url_slug == profileSlug){
+              deferred.resolve(true)
+            }
+            else {
+              deferred.resolve(false)
+            }
+          }
+        )
 
-    testUserAuthenticationLevel: function(level, falseToNegate){
+        return deferred.promise
+      },
 
-      var negateIfToldTo  = function(arg){
-        return (falseToNegate === false) ? !arg : arg
-      }
+      testUserAuthenticationLevel: function(level, falseToNegate){
 
-      var makeErrorMsg = function(msg){
-        if (falseToNegate === false) { // it was supposed to NOT be this level, but it was.
-          return msg
+        var negateIfToldTo  = function(arg){
+          return (falseToNegate === false) ? !arg : arg
         }
-        return "not" + _.capitalize(level) // it was supposed to be this level, but wasn't.
-      }
 
-      var levelRules = {
-        anon: function(user){
-          return !user
-        },
-        partlySignedUp: function(user){
-          return (user && user.url_slug && !user.email)
-        },
-        loggedIn: function(user){
-          return (user && user.url_slug && user.email)
-        },
-        ownsThisProfile: function(user){
+        var makeErrorMsg = function(msg){
+          if (falseToNegate === false) { // it was supposed to NOT be this level, but it was.
+            return msg
+          }
+          return "not" + _.capitalize(level) // it was supposed to be this level, but wasn't.
+        }
+
+        var levelRules = {
+          anon: function(user){
+            return !user
+          },
+          partlySignedUp: function(user){
+            return (user && user.url_slug && !user.email)
+          },
+          loggedIn: function(user){
+            return (user && user.url_slug && user.email)
+          },
+          ownsThisProfile: function(user){
 //          return true
 
-          return (user && user.url_slug && user.url_slug == currentUrlSlug())
+            return (user && user.url_slug && user.url_slug == currentUrlSlug())
 
-        }
-      }
-
-      var deferred = $q.defer()
-      service.requestCurrentUser().then(
-        function(user){
-          var shouldResolve = negateIfToldTo(levelRules[level](user))
-
-          if (shouldResolve){
-            deferred.resolve(level)
           }
-          else {
-            deferred.reject(makeErrorMsg(level))
-          }
-
         }
-      )
-      return deferred.promise
-    },
 
 
-    // Ask the backend to see if a user is already authenticated - this may be from a previous session.
-    requestCurrentUser: function() {
-      if (useCachedUser) {
-        return $q.when(currentUser);
+        var deferred = $q.defer()
+        service.requestCurrentUser().then(
+          function(user){
+            var shouldResolve = negateIfToldTo(levelRules[level](user))
 
-      } else {
-        return service.loginFromCookie()
-      }
-    },
+            if (shouldResolve){
+              deferred.resolve(level)
+            }
+            else {
+              deferred.reject(makeErrorMsg(level))
+            }
 
-    loginFromCookie: function(){
-      return $http.get('/user/current')
-        .success(function(data, status, headers, config) {
-          useCachedUser = true
-          currentUser = data.user;
+          }
+        )
+        return deferred.promise
+      },
 
+
+      // Ask the backend to see if a user is already authenticated - this may be from a previous session.
+      requestCurrentUser: function() {
+        if (useCachedUser) {
+          return $q.when(currentUser);
+
+        } else {
+          return service.refreshCurrentUser()
+        }
+      },
+
+      refreshCurrentUser: function(){
+        console.log("logging in from cookie")
+        return $http.get('/profile/current')
+          .success(function(data, status, headers, config) {
+            useCachedUser = true
+            currentUser = data.user;
+            console.log("successfully logged in from cookie.")
+            TiMixpanel.identify(currentUser.id)
+            TiMixpanel.registerFromUserObject(currentUser)
+          })
+          .then(function(){return currentUser})
+      },
+
+
+      logout: function() {
+        console.log("logging out user.", currentUser)
+        currentUser = null;
+        $http.get('/profile/current/logout').success(function(data, status, headers, config) {
+          UserMessage.set("logout.success")
+          TiMixpanel.clearCookie()
+        });
+      },
+
+
+
+
+      userIsLoggedIn: function(){
+        var deferred = $q.defer();
+
+        service.requestCurrentUser().then(
+          function(user){
+            if (!user){
+              deferred.reject("userNotLoggedIn")
+              deferred.reject("userNotLoggedIn")
+            }
+            else {
+              deferred.resolve(user)
+            }
+          }
+        )
+        return deferred.promise
+      },
+
+
+      hasNewMetrics: function(){
+        return currentUser && currentUser.has_diff
+      },
+
+
+      redirectToProfile: function(){
+        service.requestCurrentUser().then(function(user){
+          redirect("/" + user.url_slug)
         })
-        .then(function(){return currentUser})
-    },
+      },
 
+      clearCachedUser: function(){
+        currentUser = null
+        useCachedUser = false
+      },
 
-    logout: function(redirectTo) {
-      currentUser = null;
-      $http.get('/user/logout').success(function(data, status, headers, config) {
-        console.log("logout message: ", data)
-        i18nNotifications.pushForCurrentRoute("logout.success", "success")
-//        redirect(redirectTo);
-      });
-    },
+      isLoggedIn: function(url_slug){
+        return currentUser && currentUser.url_slug && currentUser.url_slug==url_slug
+      },
 
+      isLoggedInPromise: function(url_slug){
+        var deferred = $q.defer();
 
-
-
-    userIsLoggedIn: function(){
-      var deferred = $q.defer();
-
-      service.requestCurrentUser().then(
-        function(user){
-          if (!user){
-            deferred.reject("userNotLoggedIn")
-            deferred.reject("userNotLoggedIn")
+        service.requestCurrentUser().then(
+          function(userObj){
+            if (!userObj){
+              deferred.reject("user not logged in")
+            }
+            else if (userObj.url_slug == url_slug ) {
+              deferred.resolve("user is logged in!")
+            }
+            else {
+              deferred.reject("user not logged in")
+            }
           }
-          else {
-            deferred.resolve(user)
-          }
+        )
+        return deferred.promise
+      },
+
+      getCurrentUser: function(attr){
+        if (currentUser && attr) {
+          return currentUser[attr]
         }
-      )
-      return deferred.promise
-    },
+        else {
+          return currentUser
+        }
 
+      },
 
+      getCurrentUserSlug: function() {
+        if (currentUser) {
+          return currentUser.url_slug
+        }
+        else {
+          return null
+        }
+      },
 
+      setCurrentUser: function(user){
+        currentUser = user
+      },
 
-    redirectToProfile: function(){
-      service.requestCurrentUser().then(function(user){
-        console.log("redirect to profile.")
-        redirect("/" + user.url_slug)
-      })
-    },
-
-    clearCachedUser: function(){
-      currentUser = null
-      useCachedUser = false
-    },
-
-
-    getCurrentUser: function(attr){
-      if (currentUser && attr) {
-        return currentUser[attr]
-      }
-      else {
-        return currentUser
+      // Is the current user authenticated?
+      isAuthenticated: function(){
+        return !!currentUser;
       }
 
-    },
+    };
 
-    getCurrentUserSlug: function() {
-      if (currentUser) {
-        return currentUser.url_slug
-      }
-      else {
-        return null
-      }
-    },
-
-    setCurrentUser: function(user){
-      currentUser = user
-    },
-
-    // Is the current user authenticated?
-    isAuthenticated: function(){
-      return !!currentUser;
-    },
-    
-    // Is the current user an adminstrator?
-    isAdmin: function() {
-      return !!(currentUser && currentUser.admin);
-    }
-  };
-
-  return service;
-});
+    return service;
+  });

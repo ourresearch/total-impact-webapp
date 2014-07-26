@@ -4,11 +4,13 @@
 </div>
 
 <div class="modal-body">
-   <ul class="modal-notifications">
-      <li ng-class="['alert', 'alert-'+notification.type]" ng-repeat="notification in notifications.getCurrent()">
-         <span class="text" ng-bind-html-unsafe="notification.message"></span>
-      </li>
-   </ul>
+   <div id="user-message-modal">
+      <div class="animated fadeInDown fadeOutUp"
+           ng-class="['alert', 'alert-'+userMessage.get().type]"
+           ng-if="userMessage.get().message">
+             <span class="text" ng-bind-html="userMessage.get().message"></span>
+      </div>
+   </div>
 
    <form name="loginForm" novalidate class="login-form form-inline" autocomplete="off">
       <div class="form-group" >

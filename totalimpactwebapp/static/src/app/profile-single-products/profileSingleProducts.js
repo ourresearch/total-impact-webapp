@@ -22,9 +22,18 @@ angular.module('profileSingleProducts', [
   .controller("addSingleProductsCtrl", function($scope, Page, $routeParams){
     Page.showHeader(false)
     Page.showFooter(false)
+    $scope.url_slug = $routeParams.url_slug
+
 
   })
-  .controller("ImportSingleProductsFormCtrl", function($scope, $location, $routeParams, $cacheFactory, Loading, UsersProducts, security){
+  .controller("ImportSingleProductsFormCtrl", function($scope,
+                                                       $location,
+                                                       $routeParams,
+                                                       $cacheFactory,
+                                                       Loading,
+                                                       UsersProducts,
+                                                       TiMixpanel,
+                                                       security){
 
     $scope.newlineDelimitedProductIds = ""
     $scope.onCancel = function(){
@@ -42,7 +51,7 @@ angular.module('profileSingleProducts', [
         {product_id_strings: productIds},
         function(resp){
           console.log("saved some single products!", resp)
-          analytics.track(
+          TiMixpanel.track(
             "Added single products",
             {productsCount: resp.products.length}
           )

@@ -4,7 +4,6 @@ angular.module("profileProduct", [
     'profileAward.profileAward',
     'services.page',
     'profile',
-    'product.product',
     'services.loading',
     'ui.bootstrap',
     'security'
@@ -21,63 +20,83 @@ angular.module("profileProduct", [
 
   }])
 
+  .factory('ProfileProduct', function(){
+    return {
+
+    }
+  })
+
   .controller('ProfileProductPageCtrl', function (
     $scope,
     $routeParams,
     $location,
     $modal,
     $cacheFactory,
+    $compile,
+    $sce,
     security,
     UsersProduct,
     UsersProducts,
-    ProfileAwards,
     UserProfile,
     Product,
     Loading,
+    TiMixpanel,
     Page) {
 
     var slug = $routeParams.url_slug
+    window.scrollTo(0,0)  // hack. not sure why this is needed.
+
 
     Loading.start('profileProduct')
     UserProfile.useCache(true)
 
     $scope.userSlug = slug
     $scope.loading = Loading
-    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
+//    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
+//    $scope.userOwnsThisProfile = false
+
+    security.isLoggedInPromise(slug).then(
+      function(resp){
+        $scope.userOwnsThisProfile = true
+      },
+      function(resp){
+        $scope.userOwnsThisProfile = false
+      }
+    )
 
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
     }
+
     $scope.openFulltextLocationModal = function(){
-      $modal.open({templateUrl: "profile-product/fulltext-location-modal.tpl.html"})
+      UserProfile.useCache(false)
+      $modal.open(
+        {templateUrl: "profile-product/fulltext-location-modal.tpl.html"}
+        // controller specified in the template :/
+      )
+      .result.then(function(resp){
+          console.log("closed the free fulltext modal; re-rendering product", resp)
+          TiMixpanel.track("added free fulltext url",{
+            url: resp.product.biblio.free_fulltext_url
+          })
+          renderProduct()
+      })
     }
-
-    $scope.getDomain = function(fullUri){
-      var uri = new URI(fullUri);
-      return uri.domain()
-    }
-
-    $scope.profileAwards = ProfileAwards.query(
-      {id:slug},
-      function(resp){
-      }
-    )
 
     $scope.deleteProduct = function(){
-
       Loading.start("deleteProduct")
       UserProfile.useCache(false)
 
-      // do the deletion in the background, without a progress spinner...
-      UsersProducts.delete(
-        {id: slug, idType:"url_slug"},  // the url
-        {"tiids": [$routeParams.tiid]},  // the body data
+      Product.delete(
+        {user_id: slug, tiid: $routeParams.tiid},
         function(){
-          console.log("finished deleting", $routeParams.tiid)
+          Loading.finish("deleteProduct")
+          TiMixpanel.track("delete product")
           security.redirectToProfile()
         }
       )
     }
+
 
     $scope.editProduct = function(){
       UserProfile.useCache(false)
@@ -90,29 +109,49 @@ angular.module("profileProduct", [
           }
         }
       })
+      .result.then(
+        function(resp){
+          console.log("closed the editProduct modal; re-rendering product")
+          renderProduct()
+        }
+      )
     }
 
+    var renderProduct = function(){
+      $scope.product = UsersProduct.get({
+        id: $routeParams.url_slug,
+        tiid: $routeParams.tiid
+      },
+      function(data){
+        Loading.finish('profileProduct')
+        Page.setTitle(data.biblio.title)
+        $scope.productMarkup = data.markup
+        console.log("loaded a product", data)
+        window.scrollTo(0,0)  // hack. not sure why this is needed.
 
-    $scope.product = UsersProduct.get({
-      id: slug,
-      tiid: $routeParams.tiid
-    },
-    function(data){
-      Loading.finish('profileProduct')
-      Page.setTitle(data.biblio.title)
 
-    },
-    function(data){
-      $location.path("/"+slug) // replace this with "product not found" message...
+      },
+      function(data){
+        $location.path("/"+slug) // replace this with "product not found" message...
+      }
+      )
     }
-    )
+
+    renderProduct()
+
   })
 
 
-.controller("editProductModalCtrl", function($scope, $location, $modalInstance, Loading, product, ProductBiblio){
+.controller("editProductModalCtrl", function($scope,
+                                             $location,
+                                             $modalInstance,
+                                             $routeParams,
+                                             Loading,
+                                             product,
+                                             UsersProduct,
+                                             ProductBiblio){
 
     // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
-
     $scope.product = product
     var tiid = $location.path().match(/\/product\/(.+)$/)[1]
     $scope.onCancel = function(){
@@ -126,35 +165,42 @@ angular.module("profileProduct", [
         {'tiid': tiid},
         {
           title: $scope.product.biblio.title,
-          authors: $scope.product.biblio.authors
+          authors: $scope.product.biblio.authors,
+          journal: $scope.product.biblio.journal,
+          year: $scope.product.biblio.year
+
         },
         function(resp){
+          console.log("saved new product biblio", resp)
           Loading.finish("saveButton")
-          $scope.$close()
+          console.log("got a response back from the UsersProduct.get() call", resp)
+          return $scope.$close(resp)
 
-          // this is overkill, but works for now.
-          location.reload()
         }
       )
     }
-
   })
 
 
-.controller("freeFulltextUrlFormCtrl", function($scope, $location, Loading, ProductBiblio){
+.controller("freeFulltextUrlFormCtrl", function($scope,
+                                                $location,
+                                                Loading,
+                                                TiMixpanel,
+                                                ProductBiblio){
   var tiid = $location.path().match(/\/product\/(.+)$/)[1]
 
   $scope.free_fulltext_url = ""
   $scope.onSave = function() {
     Loading.start("saveButton")
     console.log("saving...", tiid)
+
+
     ProductBiblio.patch(
       {'tiid': tiid},
       {free_fulltext_url: $scope.free_fulltext_url},
       function(resp){
         Loading.finish("saveButton")
-        $scope.$close()
-        location.reload() // hack to make the linkout icon appear right away.
+        return $scope.$close(resp)
       }
     )
   }
@@ -166,9 +212,18 @@ angular.module("profileProduct", [
 .controller("editProductFormCtrl", function(){
 })
 
-
-
-
+.directive('dynamic', function ($compile) {
+  return {
+    restrict: 'A',
+    replace: true,
+    link: function (scope, ele, attrs) {
+      scope.$watch(attrs.dynamic, function(html) {
+        ele.html(html);
+        $compile(ele.contents())(scope);
+      });
+    }
+  };
+});
 
 
 

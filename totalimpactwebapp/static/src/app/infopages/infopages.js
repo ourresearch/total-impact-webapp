@@ -1,8 +1,8 @@
 angular.module( 'infopages', [
     'security',
     'services.page',
-    'directives.fullscreen',
-    'services.charge'
+    'services.tiMixpanel',
+    'directives.fullscreen'
   ])
   .factory("InfoPages", function ($http) {
     var getProvidersInfo = function () {
@@ -66,6 +66,14 @@ angular.module( 'infopages', [
         templateUrl: 'infopages/about.tpl.html',
         controller: 'aboutPageCtrl'
       })
+      .when('/advisors', {
+        templateUrl: 'infopages/advisors.tpl.html',
+        controller: 'advisorsPageCtrl'
+      })
+      .when('/spread-the-word', {
+        templateUrl: 'infopages/spread-the-word.tpl.html',
+        controller: 'SpreadTheWordCtrl'
+      })
       .when('/collection/:cid', {
         templateUrl: 'infopages/collection.tpl.html',
         controller: 'collectionPageCtrl'
@@ -76,7 +84,16 @@ angular.module( 'infopages', [
       })
   }])
 
-  .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page ) {
+  .controller( 'landingPageCtrl', function landingPageCtrl ( $scope, Page, TiMixpanel ) {
+//    TiMixpanel.registerOnce({
+//      "selling points": _.sample([
+//        "impacts, products, free",
+//        "impacts, products, notifications"
+//      ])
+//    })
+
+    TiMixpanel.track("viewed landing page")
+
     var signupFormShowing = false
     $scope.landingPageType = "main"
     Page.showHeader(false)
@@ -99,23 +116,23 @@ angular.module( 'infopages', [
     Page.setTitle("Share the full story of your research impact.")
   })
 
-  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo, Charge) {
+  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
     Page.setTitle("FAQ")
     $scope.providers = providersInfo
     console.log("faq page controller running")
-    $scope.openDonateModal = function(){
-
-      Charge.open({
-        name: 'Donate to Impactstory',
-        description: '$10 per month',
-        amount: 10
-      });
-
-    }
   })
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
     Page.setTitle("about")
+
+  })
+
+  .controller('advisorsPageCtrl', function($scope, Page) {
+    Page.setTitle("advisors")
+
+  })
+  .controller('SpreadTheWordCtrl', function($scope, Page) {
+    Page.setTitle("Spread the word")
 
   })
 
