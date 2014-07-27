@@ -6,7 +6,7 @@
 
 <div class="upgrade-form-container"  ng-controller="subscriptionSettingsCtrl">
 
-   <div class="current-plan-status paid" ng-if="planStatus('active')">
+   <div class="current-plan-status paid" ng-if="planStatus('paid')">
       <span class="setup">
          Your Impactstory subscription has been active
          since {{ paidSince() }}.
@@ -42,7 +42,7 @@
          ng-if="!planStatus('paid')"
          class="form-horizontal upgrade-form">
 
-      <div class="form-title trial"ng-show="planStatus('trialing')">
+      <div class="form-title trial">
          <h3>Continue your subscription for $5/mo</h3>
          <h4 ng-if="daysLeftInTrial()>0">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>
       </div>
@@ -124,12 +124,12 @@
       <div class="form-group">
          <div class="col-sm-offset-3 col-sm-9">
                <button type="submit"
-                       ng-show="!loading.is('subscribeToPremium')"
+                       ng-show="!loading.is('subscribe')"
                        ng-disabled="upgradeForm.$invalid || upgradeForm.$pristine"
                        class="btn btn-success">
                   Upgrade me for $5/mo!
                </button>
-               <div class="working" ng-show="loading.is('subscribeToPremium')">
+               <div class="working" ng-show="loading.is('subscribe')">
                   <i class="icon-refresh icon-spin"></i>
                   <span class="text">Subscribing you to Premium&hellip;</span>
                </div>

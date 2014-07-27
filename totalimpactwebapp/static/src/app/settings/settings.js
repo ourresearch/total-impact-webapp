@@ -150,12 +150,24 @@ angular.module('settings', [
 
       var subscription = security.getCurrentUser("subscription")
 
+      var actualStatus
       if (!subscription){
+        // on the free plan
         console.log("looks like the user has no subscription of any kind. this...shouldn't happen. returning False.")
+        return false
+      }
+      else if (!subscription.user_has_card) {
+        // trial user with working premium plan
+        actualStatus = "trial"
       }
       else {
-        return subscription.status == statusToTest
+        // paid user with working premium plan
+        actualStatus = "paid"
       }
+      return actualStatus == statusToTest
+
+
+
     }
 
     $scope.daysLeftInTrial = function(){
@@ -194,17 +206,19 @@ angular.module('settings', [
     }
 
     $scope.handleStripe = function(status, response){
-        Loading.start("subscribeToSubscription")
+        Loading.start("subscribe")
         console.log("calling handleStripe()")
         if(response.error) {
           console.log("ack, there was an error!", status, response)
+          UserMessage.set("settings.subscription.subscribe.error")
+
         } else {
-          console.log("yay, the charge worked!", status, response)
+          console.log("yay, token created successfully! Now let's save the card.", status, response)
           UsersCreditCard.save(
             {id: $scope.user.url_slug, stripeToken: response.id},
             {},
             function(resp){
-              console.log("success!", resp)
+              console.log("we saved this user's credit card, huzzah!", resp)
               security.refreshCurrentUser() // refresh the currentUser from server
               window.scrollTo(0,0)
               UserMessage.set("settings.subscription.subscribe.success")

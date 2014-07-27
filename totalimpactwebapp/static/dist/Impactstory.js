@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-26
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-27
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1843,12 +1843,24 @@ angular.module('settings', [
 
       var subscription = security.getCurrentUser("subscription")
 
+      var actualStatus
       if (!subscription){
+        // on the free plan
         console.log("looks like the user has no subscription of any kind. this...shouldn't happen. returning False.")
+        return false
+      }
+      else if (!subscription.user_has_card) {
+        // trial user with working premium plan
+        actualStatus = "trial"
       }
       else {
-        return subscription.status == statusToTest
+        // paid user with working premium plan
+        actualStatus = "paid"
       }
+      return actualStatus == statusToTest
+
+
+
     }
 
     $scope.daysLeftInTrial = function(){
@@ -1887,17 +1899,19 @@ angular.module('settings', [
     }
 
     $scope.handleStripe = function(status, response){
-        Loading.start("subscribeToSubscription")
+        Loading.start("subscribe")
         console.log("calling handleStripe()")
         if(response.error) {
           console.log("ack, there was an error!", status, response)
+          UserMessage.set("settings.subscription.subscribe.error")
+
         } else {
-          console.log("yay, the charge worked!", status, response)
+          console.log("yay, token created successfully! Now let's save the card.", status, response)
           UsersCreditCard.save(
             {id: $scope.user.url_slug, stripeToken: response.id},
             {},
             function(resp){
-              console.log("success!", resp)
+              console.log("we saved this user's credit card, huzzah!", resp)
               security.refreshCurrentUser() // refresh the currentUser from server
               window.scrollTo(0,0)
               UserMessage.set("settings.subscription.subscribe.success")
@@ -3452,8 +3466,8 @@ angular.module('services.userMessage', [])
       'settings.profile.change.success': ["Your profile's been updated.", 'success'],
       'settings.url.change.success': ["Your profile URL has been updated.", 'success'],
       'settings.email.change.success': ["Your email has been updated to {{email}}.", 'success'],
-      'settings.subscription.delete.success': ["We've cancelled your subscription to Premium.", 'success'],
-      'settings.subscription.subscribe.success': ["Congratulations: you're now subscribed to Impact Premium!", 'success'],
+      'settings.subscription.delete.success': ["We've cancelled your Impactstory subscription.", 'success'],
+      'settings.subscription.subscribe.success': ["Congratulations: you're now subscribed to Impactstory!", 'success'],
       'settings.subscription.subscribe.error': ["Sorry, looks like there was an error! Please check your credit card info.", 'danger'],
       'settings.notifications.as_they_happen.success': ["As-they-happen notifications are coming soon! We've changed your settings so that you'll get them as soon as we launch. In the meantime, we'll still send you emails every week or two. Can't wait? Got ideas? Drop us a line at <a href='http://twitter.com/impactstory'>@impactstory<a/> or <a href='mailto:team@impactstory.org'>team@impactstory.org</a>!", 'warning'],
       'settings.notifications.every_week_or_two.success':["Notification settings updated! You'll be getting emails every week or two with your latest impacts.", "success"],
@@ -6145,7 +6159,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "\n" +
     "<div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
     "\n" +
-    "   <div class=\"current-plan-status paid\" ng-if=\"planStatus('active')\">\n" +
+    "   <div class=\"current-plan-status paid\" ng-if=\"planStatus('paid')\">\n" +
     "      <span class=\"setup\">\n" +
     "         Your Impactstory subscription has been active\n" +
     "         since {{ paidSince() }}.\n" +
@@ -6181,7 +6195,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "         ng-if=\"!planStatus('paid')\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
-    "      <div class=\"form-title trial\"ng-show=\"planStatus('trialing')\">\n" +
+    "      <div class=\"form-title trial\">\n" +
     "         <h3>Continue your subscription for $5/mo</h3>\n" +
     "         <h4 ng-if=\"daysLeftInTrial()>0\">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>\n" +
     "      </div>\n" +
@@ -6263,12 +6277,12 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "      <div class=\"form-group\">\n" +
     "         <div class=\"col-sm-offset-3 col-sm-9\">\n" +
     "               <button type=\"submit\"\n" +
-    "                       ng-show=\"!loading.is('subscribeToPremium')\"\n" +
+    "                       ng-show=\"!loading.is('subscribe')\"\n" +
     "                       ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
     "                       class=\"btn btn-success\">\n" +
     "                  Upgrade me for $5/mo!\n" +
     "               </button>\n" +
-    "               <div class=\"working\" ng-show=\"loading.is('subscribeToPremium')\">\n" +
+    "               <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
     "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
     "                  <span class=\"text\">Subscribing you to Premium&hellip;</span>\n" +
     "               </div>\n" +

@@ -44,7 +44,7 @@ def mint_stripe_customers_for_all_profiles():
         stripe_customer = stripe.Customer.create(
             description=full_name,
             email=profile.email,
-            plan="Premium"
+            plan="base"
         )
 
         print "Successfully made stripe id " + stripe_customer.id

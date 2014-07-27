@@ -753,7 +753,7 @@ def mint_stripe_id(profile_dict):
     stripe_customer = stripe.Customer.create(
         description=full_name,
         email=profile_dict["email"],
-        plan="Premium"
+        plan="base"
     )
     logger.debug(u"Made a Stripe ID '{stripe_id}' for profile '{slug}'".format(
         stripe_id=stripe_customer.id,
@@ -763,10 +763,13 @@ def mint_stripe_id(profile_dict):
     return stripe_customer.id
 
 
-def upgrade_to_premium(profile, stripe_token):
+def subscribe(profile, stripe_token):
 
     if profile.stripe_id is None:
         # shouldn't be needed in production
+        logger.debug(u"Tried to subscribe a profile ('{slug}') that has no Stripe ID. Minting one now.".format(
+            slug=profile.url_slug
+        ))
         profile.stripe_id = mint_stripe_id(profile.dict_about())
         db.session.merge(profile)
         db.session.commit()
@@ -775,14 +778,13 @@ def upgrade_to_premium(profile, stripe_token):
     customer.card = stripe_token
     if len(customer.subscriptions.data) == 0:
         # if the subscription was cancelled before
-        customer.subscriptions.create(plan="Premium")
-
+        customer.subscriptions.create(plan="base")
 
     return customer.save()
 
 
 
-def cancel_premium(profile):
+def unsubscribe(profile):
     cu = stripe.Customer.retrieve(profile.stripe_id)
     return cu.subscriptions.data[0].delete()
 

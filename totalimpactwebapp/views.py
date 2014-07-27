@@ -26,7 +26,7 @@ from totalimpactwebapp.profile import delete_profile
 from totalimpactwebapp.profile import remove_duplicates_from_profile
 from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.profile import delete_products_from_profile
-from totalimpactwebapp.profile import upgrade_to_premium
+from totalimpactwebapp.profile import subscribe
 
 from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import emailer
@@ -407,7 +407,7 @@ def profile_credit_card(profile_id, stripe_token):
     profile = get_user_for_response(profile_id, request)
     abort_if_user_not_logged_in(profile)
 
-    ret = upgrade_to_premium(profile, stripe_token)
+    ret = subscribe(profile, stripe_token)
     return json_resp_from_thing({"result": ret})
 
 
