@@ -143,27 +143,19 @@ angular.module('settings', [
 
 
 
-  .controller('premiumSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
+  .controller('subscriptionSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
 
 
     $scope.planStatus = function(statusToTest){
 
       var subscription = security.getCurrentUser("subscription")
 
-      var actualStatus
       if (!subscription){
-        // on the free plan
-        actualStatus = "free"
-      }
-      else if (!subscription.user_has_card) {
-        // trial user with working premium plan
-        actualStatus = "trial"
+        console.log("looks like the user has no subscription of any kind. this...shouldn't happen. returning False.")
       }
       else {
-        // paid user with working premium plan
-        actualStatus = "paid"
+        return subscription.status == statusToTest
       }
-      return actualStatus == statusToTest
     }
 
     $scope.daysLeftInTrial = function(){
@@ -186,14 +178,14 @@ angular.module('settings', [
       alert("Sorry--we're actually still working on the form for this! But drop us a line at team@impactstory.org and we'll be glad to modify your credit card information manually.")
     }
 
-    $scope.cancelPremium = function(){
+    $scope.cancelSubscription = function(){
       UsersSubscription.delete(
         {id: $scope.user.url_slug},
         {},
         function(resp){
           console.log("subscription successfully cancelled", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
-          UserMessage.set("settings.premium.delete.success")
+          UserMessage.set("settings.subscription.delete.success")
         },
         function(resp){
           console.log("there was a problem; subscription not cancelled", resp)
@@ -202,7 +194,7 @@ angular.module('settings', [
     }
 
     $scope.handleStripe = function(status, response){
-        Loading.start("subscribeToPremium")
+        Loading.start("subscribeToSubscription")
         console.log("calling handleStripe()")
         if(response.error) {
           console.log("ack, there was an error!", status, response)
@@ -215,14 +207,14 @@ angular.module('settings', [
               console.log("success!", resp)
               security.refreshCurrentUser() // refresh the currentUser from server
               window.scrollTo(0,0)
-              UserMessage.set("settings.premium.subscribe.success")
-              Loading.finish("subscribeToPremium")
+              UserMessage.set("settings.subscription.subscribe.success")
+              Loading.finish("subscribe")
 
             },
             function(resp){
               console.log("failure!", resp)
-              UserMessage.set("settings.premium.subscribe.error")
-              Loading.finish("subscribeToPremium")
+              UserMessage.set("settings.subscription.subscribe.error")
+              Loading.finish("subscribe")
             }
           )
         }

@@ -5,7 +5,7 @@ angular.module('settings.pageDescriptions')
   var settingsPageDisplayNames = [
     "Profile",
     "Notifications",
-    "Premium",
+    "Subscription",
     "Custom URL",
     "Email",
     "Password"

@@ -1655,7 +1655,7 @@ angular.module('settings.pageDescriptions')
   var settingsPageDisplayNames = [
     "Profile",
     "Notifications",
-    "Premium",
+    "Subscription",
     "Custom URL",
     "Email",
     "Password"
@@ -1836,27 +1836,19 @@ angular.module('settings', [
 
 
 
-  .controller('premiumSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
+  .controller('subscriptionSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
 
 
     $scope.planStatus = function(statusToTest){
 
       var subscription = security.getCurrentUser("subscription")
 
-      var actualStatus
       if (!subscription){
-        // on the free plan
-        actualStatus = "free"
-      }
-      else if (!subscription.user_has_card) {
-        // trial user with working premium plan
-        actualStatus = "trial"
+        console.log("looks like the user has no subscription of any kind. this...shouldn't happen. returning False.")
       }
       else {
-        // paid user with working premium plan
-        actualStatus = "paid"
+        return subscription.status == statusToTest
       }
-      return actualStatus == statusToTest
     }
 
     $scope.daysLeftInTrial = function(){
@@ -1879,14 +1871,14 @@ angular.module('settings', [
       alert("Sorry--we're actually still working on the form for this! But drop us a line at team@impactstory.org and we'll be glad to modify your credit card information manually.")
     }
 
-    $scope.cancelPremium = function(){
+    $scope.cancelSubscription = function(){
       UsersSubscription.delete(
         {id: $scope.user.url_slug},
         {},
         function(resp){
           console.log("subscription successfully cancelled", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
-          UserMessage.set("settings.premium.delete.success")
+          UserMessage.set("settings.subscription.delete.success")
         },
         function(resp){
           console.log("there was a problem; subscription not cancelled", resp)
@@ -1895,7 +1887,7 @@ angular.module('settings', [
     }
 
     $scope.handleStripe = function(status, response){
-        Loading.start("subscribeToPremium")
+        Loading.start("subscribeToSubscription")
         console.log("calling handleStripe()")
         if(response.error) {
           console.log("ack, there was an error!", status, response)
@@ -1908,14 +1900,14 @@ angular.module('settings', [
               console.log("success!", resp)
               security.refreshCurrentUser() // refresh the currentUser from server
               window.scrollTo(0,0)
-              UserMessage.set("settings.premium.subscribe.success")
-              Loading.finish("subscribeToPremium")
+              UserMessage.set("settings.subscription.subscribe.success")
+              Loading.finish("subscribe")
 
             },
             function(resp){
               console.log("failure!", resp)
-              UserMessage.set("settings.premium.subscribe.error")
-              Loading.finish("subscribeToPremium")
+              UserMessage.set("settings.subscription.subscribe.error")
+              Loading.finish("subscribe")
             }
           )
         }
@@ -3460,9 +3452,9 @@ angular.module('services.userMessage', [])
       'settings.profile.change.success': ["Your profile's been updated.", 'success'],
       'settings.url.change.success': ["Your profile URL has been updated.", 'success'],
       'settings.email.change.success': ["Your email has been updated to {{email}}.", 'success'],
-      'settings.premium.delete.success': ["We've cancelled your subscription to Premium.", 'success'],
-      'settings.premium.subscribe.success': ["Congratulations: you're now subscribed to Impact Premium!", 'success'],
-      'settings.premium.subscribe.error': ["Sorry, looks like there was an error! Please check your credit card info.", 'danger'],
+      'settings.subscription.delete.success': ["We've cancelled your subscription to Premium.", 'success'],
+      'settings.subscription.subscribe.success': ["Congratulations: you're now subscribed to Impact Premium!", 'success'],
+      'settings.subscription.subscribe.error': ["Sorry, looks like there was an error! Please check your credit card info.", 'danger'],
       'settings.notifications.as_they_happen.success': ["As-they-happen notifications are coming soon! We've changed your settings so that you'll get them as soon as we launch. In the meantime, we'll still send you emails every week or two. Can't wait? Got ideas? Drop us a line at <a href='http://twitter.com/impactstory'>@impactstory<a/> or <a href='mailto:team@impactstory.org'>team@impactstory.org</a>!", 'warning'],
       'settings.notifications.every_week_or_two.success':["Notification settings updated! You'll be getting emails every week or two with your latest impacts.", "success"],
       'settings.notifications.monthly.success':["Monthly notifications are coming soon! We've changed your settings so you'll get monthly emails when we roll them out. <br> Can't wait? Got ideas? Drop us a line at <a href='http://twitter.com/impactstory'>@impactstory<a/> or <a href='mailto:team@impactstory.org'>team@impactstory.org</a>!", "warning"],
@@ -4372,7 +4364,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/premium-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -6076,62 +6068,111 @@ angular.module("settings/password-settings.tpl.html", []).run(["$templateCache",
     "");
 }]);
 
-angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("settings/premium-settings.tpl.html",
+angular.module("settings/profile-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/profile-settings.tpl.html",
     "<div class=\"settings-header\">\n" +
-    "   <h1>Premium</h1>\n" +
+    "   <h1>Profile</h1>\n" +
+    "   <p>Modify what's displayed in your profile.</p>\n" +
+    "</div>\n" +
+    "\n" +
+    "\n" +
+    "<form novalidate name=\"userProfileForm\" class=\"form-horizontal\" ng-submit=\"onSave()\" ng-controller=\"profileSettingsCtrl\">\n" +
+    "\n" +
+    "   <div class=\"form-group photo\">\n" +
+    "      <label class=\"control-label col-sm-3\">Photo</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
+    "         <div class=\"my-picture\">\n" +
+    "            <a href=\"http://www.gravatar.com\" >\n" +
+    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "            </a>\n" +
+    "            <p>You can change your profile image at <a href=\"http://www.gravatar.com\">Gravatar.com</a></p>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"form-group\">\n" +
+    "      <label class=\"control-label col-sm-3\">First name</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
+    "         <input ng-model=\"user.given_name\" name=\"givenname\" class=\"form-control\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"form-group\">\n" +
+    "      <label class=\"control-label col-sm-3\">Surname</label>\n" +
+    "      <div class=\"controls col-sm-7\">\n" +
+    "         <input ng-model=\"user.surname\" name=\"surname\" class=\"form-control\">\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"form-group submit\">\n" +
+    "      <div class=\" col-sm-offset-3 col-sm-7\">\n" +
+    "         <save-buttons valid=\"userProfileForm.$valid\"></save-buttons>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</form>\n" +
+    "");
+}]);
+
+angular.module("settings/settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/settings.tpl.html",
+    "<div class=\"wrapper settings\">\n" +
+    "   <div class=\"settings-nav \">\n" +
+    "      <ul nav-list nav>\n" +
+    "         <li ng-repeat=\"pageDescr in pageDescriptions\">\n" +
+    "            <a ng-class=\"{selected: isCurrentPath(pageDescr.urlPath)}\"\n" +
+    "               href=\"{{ pageDescr.urlPath }}\">\n" +
+    "               {{ pageDescr.displayName }}\n" +
+    "               <i class=\"icon-chevron-right\"></i>\n" +
+    "            </a>\n" +
+    "         </li>\n" +
+    "      </ul>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"settings-input\" ng-include='include'></div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/subscription-settings.tpl.html",
+    "<div class=\"settings-header\">\n" +
+    "   <h1>Subscription</h1>\n" +
     "\n" +
     "   <p class=\"expl\">Get weekly updates revealing your latest impacts.</p>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"upgrade-form-container\"  ng-controller=\"premiumSettingsCtrl\">\n" +
+    "<div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
     "\n" +
-    "   <div class=\"current-plan-status paid\" ng-if=\"planStatus('paid')\">\n" +
+    "   <div class=\"current-plan-status paid\" ng-if=\"planStatus('active')\">\n" +
     "      <span class=\"setup\">\n" +
-    "         Your Impactstory Premium subscription has been active\n" +
+    "         Your Impactstory subscription has been active\n" +
     "         since {{ paidSince() }}.\n" +
     "      </span>\n" +
     "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"current-plan-status trial\" ng-if=\"planStatus('trial')\">\n" +
-    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Premium trial ends in {{ daysLeftInTrial() }} days</span>\n" +
-    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Premium trial ends today!</span>\n" +
+    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
+    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
     "\n" +
     "      <div class=\"email-example\">\n" +
-    "         <img src=\"http://i.imgur.com/S38ECK5.png\" alt=\"Impactstory Premium email\"/>\n" +
+    "         <img src=\"http://i.imgur.com/S38ECK5.png\" alt=\"Impactstory notification email\"/>\n" +
     "      </div>\n" +
     "      <div class=\"pitch\">\n" +
     "         <p>Your research is making impacts all the time.\n" +
-    "         And with Impactstory Premium, you're getting the latest news on those\n" +
+    "         And with Impactstory, you're getting the latest news on those\n" +
     "         impacts&mdash;everything from citations to downloads to tweets\n" +
     "         and more&mdash;delivered straight to your inbox. </p>\n" +
     "         <p>By extending your free trial today, you won't miss a single\n" +
     "         notification&mdash;and   you'll be helping to keep\n" +
     "         Impactstory a sustainable, open-source nonprofit. And all for less than than the\n" +
-    "         cost of a latte every month.</p>\n" +
+    "         cost of a coffee once a month.</p>\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"current-plan-status free\" ng-if=\"planStatus('free')\">\n" +
-    "      <span class=\"setup\">You don't have Premium yet.</span>\n" +
-    "\n" +
-    "      <div class=\"email-example\">\n" +
-    "         <img src=\"http://i.imgur.com/S38ECK5.png\" alt=\"Impactstory Premium email\"/>\n" +
-    "      </div>\n" +
-    "      <div class=\"pitch\">\n" +
-    "         <p>But you should. Because your research is making impacts all the time.\n" +
-    "         And with Impactstory Premium, you'll get the latest news on <em>your</em>\n" +
-    "         most exciting impacts&mdash;everything from citations to downloads to tweets\n" +
-    "         and more&mdash;delivered straight to your inbox. </p>\n" +
-    "         <p>Plus you get to help keep\n" +
-    "         Impactstory a sustainable, open-source nonprofit&hellip;all for less than than the\n" +
-    "         cost of a latte every month.</p>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "   </div>\n" +
     "\n" +
     "\n" +
     "   <form stripe-form=\"handleStripe\"\n" +
@@ -6140,12 +6181,8 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "         ng-if=\"!planStatus('paid')\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
-    "      <div class=\"form-title free\" ng-show=\"planStatus('free')\">\n" +
-    "         <h3>Upgrade to Premium for $5/mo</h3>\n" +
-    "\n" +
-    "      </div>\n" +
-    "      <div class=\"form-title trial\"ng-show=\"planStatus('trial')\">\n" +
-    "         <h3>Continue Premium for $5/mo</h3>\n" +
+    "      <div class=\"form-title trial\"ng-show=\"planStatus('trialing')\">\n" +
+    "         <h3>Continue your subscription for $5/mo</h3>\n" +
     "         <h4 ng-if=\"daysLeftInTrial()>0\">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>\n" +
     "      </div>\n" +
     "\n" +
@@ -6256,73 +6293,6 @@ angular.module("settings/premium-settings.tpl.html", []).run(["$templateCache", 
     "\n" +
     "</div>\n" +
     "\n" +
-    "");
-}]);
-
-angular.module("settings/profile-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("settings/profile-settings.tpl.html",
-    "<div class=\"settings-header\">\n" +
-    "   <h1>Profile</h1>\n" +
-    "   <p>Modify what's displayed in your profile.</p>\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "<form novalidate name=\"userProfileForm\" class=\"form-horizontal\" ng-submit=\"onSave()\" ng-controller=\"profileSettingsCtrl\">\n" +
-    "\n" +
-    "   <div class=\"form-group photo\">\n" +
-    "      <label class=\"control-label col-sm-3\">Photo</label>\n" +
-    "      <div class=\"controls col-sm-7\">\n" +
-    "         <div class=\"my-picture\">\n" +
-    "            <a href=\"http://www.gravatar.com\" >\n" +
-    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ user.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
-    "            </a>\n" +
-    "            <p>You can change your profile image at <a href=\"http://www.gravatar.com\">Gravatar.com</a></p>\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <label class=\"control-label col-sm-3\">First name</label>\n" +
-    "      <div class=\"controls col-sm-7\">\n" +
-    "         <input ng-model=\"user.given_name\" name=\"givenname\" class=\"form-control\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group\">\n" +
-    "      <label class=\"control-label col-sm-3\">Surname</label>\n" +
-    "      <div class=\"controls col-sm-7\">\n" +
-    "         <input ng-model=\"user.surname\" name=\"surname\" class=\"form-control\">\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"form-group submit\">\n" +
-    "      <div class=\" col-sm-offset-3 col-sm-7\">\n" +
-    "         <save-buttons valid=\"userProfileForm.$valid\"></save-buttons>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</form>\n" +
-    "");
-}]);
-
-angular.module("settings/settings.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("settings/settings.tpl.html",
-    "<div class=\"wrapper settings\">\n" +
-    "   <div class=\"settings-nav \">\n" +
-    "      <ul nav-list nav>\n" +
-    "         <li ng-repeat=\"pageDescr in pageDescriptions\">\n" +
-    "            <a ng-class=\"{selected: isCurrentPath(pageDescr.urlPath)}\"\n" +
-    "               href=\"{{ pageDescr.urlPath }}\">\n" +
-    "               {{ pageDescr.displayName }}\n" +
-    "               <i class=\"icon-chevron-right\"></i>\n" +
-    "            </a>\n" +
-    "         </li>\n" +
-    "      </ul>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"settings-input\" ng-include='include'></div>\n" +
-    "</div>\n" +
     "");
 }]);
 

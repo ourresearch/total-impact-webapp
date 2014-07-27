@@ -1,57 +1,39 @@
 <div class="settings-header">
-   <h1>Premium</h1>
+   <h1>Subscription</h1>
 
    <p class="expl">Get weekly updates revealing your latest impacts.</p>
 </div>
 
-<div class="upgrade-form-container"  ng-controller="premiumSettingsCtrl">
+<div class="upgrade-form-container"  ng-controller="subscriptionSettingsCtrl">
 
-   <div class="current-plan-status paid" ng-if="planStatus('paid')">
+   <div class="current-plan-status paid" ng-if="planStatus('active')">
       <span class="setup">
-         Your Impactstory Premium subscription has been active
+         Your Impactstory subscription has been active
          since {{ paidSince() }}.
       </span>
       <span class="thanks">Thanks for helping to keep Impactstory nonprofit and open source!</span>
    </div>
 
    <div class="current-plan-status trial" ng-if="planStatus('trial')">
-      <span class="setup" ng-if="daysLeftInTrial()>0">Your Premium trial ends in {{ daysLeftInTrial() }} days</span>
-      <span class="setup" ng-if="daysLeftInTrial()==0">Your Premium trial ends today!</span>
+      <span class="setup" ng-if="daysLeftInTrial()>0">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>
+      <span class="setup" ng-if="daysLeftInTrial()==0">Your Impactstory trial ends today!</span>
 
       <div class="email-example">
-         <img src="http://i.imgur.com/S38ECK5.png" alt="Impactstory Premium email"/>
+         <img src="http://i.imgur.com/S38ECK5.png" alt="Impactstory notification email"/>
       </div>
       <div class="pitch">
          <p>Your research is making impacts all the time.
-         And with Impactstory Premium, you're getting the latest news on those
+         And with Impactstory, you're getting the latest news on those
          impacts&mdash;everything from citations to downloads to tweets
          and more&mdash;delivered straight to your inbox. </p>
          <p>By extending your free trial today, you won't miss a single
          notification&mdash;and   you'll be helping to keep
          Impactstory a sustainable, open-source nonprofit. And all for less than than the
-         cost of a latte every month.</p>
+         cost of a coffee once a month.</p>
       </div>
 
    </div>
 
-   <div class="current-plan-status free" ng-if="planStatus('free')">
-      <span class="setup">You don't have Premium yet.</span>
-
-      <div class="email-example">
-         <img src="http://i.imgur.com/S38ECK5.png" alt="Impactstory Premium email"/>
-      </div>
-      <div class="pitch">
-         <p>But you should. Because your research is making impacts all the time.
-         And with Impactstory Premium, you'll get the latest news on <em>your</em>
-         most exciting impacts&mdash;everything from citations to downloads to tweets
-         and more&mdash;delivered straight to your inbox. </p>
-         <p>Plus you get to help keep
-         Impactstory a sustainable, open-source nonprofit&hellip;all for less than than the
-         cost of a latte every month.</p>
-      </div>
-
-
-   </div>
 
 
    <form stripe-form="handleStripe"
@@ -60,12 +42,8 @@
          ng-if="!planStatus('paid')"
          class="form-horizontal upgrade-form">
 
-      <div class="form-title free" ng-show="planStatus('free')">
-         <h3>Upgrade to Premium for $5/mo</h3>
-
-      </div>
-      <div class="form-title trial"ng-show="planStatus('trial')">
-         <h3>Continue Premium for $5/mo</h3>
+      <div class="form-title trial"ng-show="planStatus('trialing')">
+         <h3>Continue your subscription for $5/mo</h3>
          <h4 ng-if="daysLeftInTrial()>0">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>
       </div>
 

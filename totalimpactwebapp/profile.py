@@ -4,16 +4,15 @@ from totalimpactwebapp import profile_award
 from totalimpactwebapp import util
 from totalimpactwebapp import configs
 from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.product import Product
 
 from werkzeug.security import generate_password_hash, check_password_hash
-from kombu.exceptions import DecodeError
 from sqlalchemy.exc import IntegrityError, DataError
 from sqlalchemy import orm
 from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
-from celery.result import AsyncResult
 from collections import OrderedDict
+from stripe import InvalidRequestError
+
 
 import requests
 import stripe
@@ -463,7 +462,7 @@ class Profile(db.Model):
 
 
 
-    def dict_about(self, show_secrets=True):
+    def dict_about(self, show_secrets=True, include_stripe=True):
 
         secrets = [
             "email",
@@ -517,6 +516,15 @@ class Profile(db.Model):
                 ret_dict[prop] = val
             else:
                 pass  # hide_secrets=True, and this is a secret. don't return it.
+
+        if include_stripe:
+            try:
+                cu = stripe.Customer.retrieve(self.stripe_id)
+                ret_dict["subscription"] = cu.subscriptions.data[0].to_dict()
+                ret_dict["subscription"]["user_has_card"] = bool(cu.default_card)
+            except (IndexError, InvalidRequestError):
+                ret_dict["subscription"] = None
+
 
         return ret_dict
 
