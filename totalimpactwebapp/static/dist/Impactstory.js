@@ -521,6 +521,17 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.userMessage = UserMessage
   $rootScope.security = security
 
+  security.requestCurrentUser().then(function(currentUser){
+    if (security.subscriptionStatus("trial")){
+      UserMessage.set(
+        'subscription.trialing',
+        true,
+        {daysLeft: security.daysLeftInTrial()}
+      );
+    }
+
+  })
+
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
@@ -1840,43 +1851,16 @@ angular.module('settings', [
 
 
     $scope.planStatus = function(statusToTest){
-
-      var subscription = security.getCurrentUser("subscription")
-
-      var actualStatus
-      if (!subscription){
-        // on the free plan
-        console.log("looks like the user has no subscription of any kind. this...shouldn't happen. returning False.")
-        return false
-      }
-      else if (!subscription.user_has_card) {
-        // trial user with working premium plan
-        actualStatus = "trial"
-      }
-      else {
-        // paid user with working premium plan
-        actualStatus = "paid"
-      }
-      return actualStatus == statusToTest
-
-
-
+      return security.subscriptionStatus(statusToTest)
     }
 
     $scope.daysLeftInTrial = function(){
-      var subscription = security.getCurrentUser("subscription")
-
-      if (!subscription){
-        return null
-      }
-
-      var trialEnd = moment.unix(subscription.trial_end)
-      return trialEnd.diff(moment(), "days") // days from now
+      return security.daysLeftInTrial()
     }
 
     $scope.paidSince = function(){
       var su = security.getCurrentUser("subscription")
-      return "May 2014"
+      return "July 2014"
     }
 
     $scope.editCard = function(){
@@ -3321,6 +3305,32 @@ angular.module('security.service', [
         return deferred.promise
       },
 
+      subscriptionStatus: function(statusToTest){
+        var actualStatus
+        if (!currentUser.subscription){
+          // not actually sure what we're going to do with cancelled subscriptions.
+          actualStatus = "cancelled"
+        }
+        else if (!currentUser.subscription.user_has_card) {
+          // trial user with working premium plan
+          actualStatus = "trial"
+        }
+        else {
+          // paid user with working premium plan
+          actualStatus = "paid"
+        }
+        return actualStatus == statusToTest
+      },
+
+      daysLeftInTrial: function(){
+        if (!currentUser.subscription){
+          return null
+        }
+
+        var trialEnd = moment.unix(currentUser.subscription.trial_end)
+        return trialEnd.diff(moment(), "days") // days from now
+      },
+
 
       // Ask the backend to see if a user is already authenticated - this may be from a previous session.
       requestCurrentUser: function() {
@@ -3481,7 +3491,9 @@ angular.module('services.userMessage', [])
       'profile.removeProduct.success': ["'<em>{{title}}</em>' has been deleted from your profile.", 'info'],
 
       'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
-      'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info']
+      'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info'],
+
+      'subscription.trialing': ["You've got {{daysLeft}} days left on your free trial. <a href='/settings/subscription'>Subscribe</a> to keep your profile going strong!", 'info']
     };
 
     var clear = function(){
@@ -6159,6 +6171,10 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "\n" +
     "<div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
     "\n" +
+    "   <div class=\"cancelled\" ng-if=\"planStatus('cancelled')\">\n" +
+    "      <h1>OH NOES your account is cancelled!</h1>\n" +
+    "   </div>\n" +
+    "\n" +
     "   <div class=\"current-plan-status paid\" ng-if=\"planStatus('paid')\">\n" +
     "      <span class=\"setup\">\n" +
     "         Your Impactstory subscription has been active\n" +
@@ -6192,7 +6208,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         novalidate\n" +
-    "         ng-if=\"!planStatus('paid')\"\n" +
+    "         ng-if=\"planStatus('trial')\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "      <div class=\"form-title trial\">\n" +
@@ -6284,7 +6300,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "               </button>\n" +
     "               <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
     "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "                  <span class=\"text\">Subscribing you to Premium&hellip;</span>\n" +
+    "                  <span class=\"text\">Subscribing you to Impactstory&hellip;</span>\n" +
     "               </div>\n" +
     "         </div>\n" +
     "         <div class=\"col-sm-offset-3 col-sm-9 money-help\">\n" +
@@ -6299,7 +6315,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "         <i class=\"icon-credit-card left\"></i>\n" +
     "         Change my credit card info\n" +
     "      </button>\n" +
-    "      <button ng-click=\"cancelPremium()\" class=\"btn btn-danger\">\n" +
+    "      <button ng-click=\"cancelSubscription()\" class=\"btn btn-danger\">\n" +
     "         <i class=\"icon-warning-sign left\"></i>\n" +
     "         Cancel Premium\n" +
     "      </button>\n" +

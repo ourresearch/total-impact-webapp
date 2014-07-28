@@ -27,6 +27,7 @@ from totalimpactwebapp.profile import remove_duplicates_from_profile
 from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.profile import delete_products_from_profile
 from totalimpactwebapp.profile import subscribe
+from totalimpactwebapp.profile import unsubscribe
 
 from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import emailer
@@ -408,6 +409,16 @@ def profile_credit_card(profile_id, stripe_token):
     abort_if_user_not_logged_in(profile)
 
     ret = subscribe(profile, stripe_token)
+    return json_resp_from_thing({"result": ret})
+
+@app.route("/profile/<profile_id>/subscription", methods=["DELETE"])
+def user_subscription(profile_id):
+    profile = get_user_for_response(profile_id, request)
+    abort_if_user_not_logged_in(profile)
+
+    if request.method == "DELETE":
+        ret = unsubscribe(profile)
+
     return json_resp_from_thing({"result": ret})
 
 

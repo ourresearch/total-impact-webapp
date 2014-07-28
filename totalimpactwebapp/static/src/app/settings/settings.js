@@ -147,43 +147,16 @@ angular.module('settings', [
 
 
     $scope.planStatus = function(statusToTest){
-
-      var subscription = security.getCurrentUser("subscription")
-
-      var actualStatus
-      if (!subscription){
-        // on the free plan
-        console.log("looks like the user has no subscription of any kind. this...shouldn't happen. returning False.")
-        return false
-      }
-      else if (!subscription.user_has_card) {
-        // trial user with working premium plan
-        actualStatus = "trial"
-      }
-      else {
-        // paid user with working premium plan
-        actualStatus = "paid"
-      }
-      return actualStatus == statusToTest
-
-
-
+      return security.subscriptionStatus(statusToTest)
     }
 
     $scope.daysLeftInTrial = function(){
-      var subscription = security.getCurrentUser("subscription")
-
-      if (!subscription){
-        return null
-      }
-
-      var trialEnd = moment.unix(subscription.trial_end)
-      return trialEnd.diff(moment(), "days") // days from now
+      return security.daysLeftInTrial()
     }
 
     $scope.paidSince = function(){
       var su = security.getCurrentUser("subscription")
-      return "May 2014"
+      return "July 2014"
     }
 
     $scope.editCard = function(){

@@ -85,6 +85,17 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.userMessage = UserMessage
   $rootScope.security = security
 
+  security.requestCurrentUser().then(function(currentUser){
+    if (security.subscriptionStatus("trial")){
+      UserMessage.set(
+        'subscription.trialing',
+        true,
+        {daysLeft: security.daysLeftInTrial()}
+      );
+    }
+
+  })
+
   $scope.page = Page;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()

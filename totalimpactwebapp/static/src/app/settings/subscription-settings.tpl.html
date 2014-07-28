@@ -6,6 +6,10 @@
 
 <div class="upgrade-form-container"  ng-controller="subscriptionSettingsCtrl">
 
+   <div class="cancelled" ng-if="planStatus('cancelled')">
+      <h1>OH NOES your account is cancelled!</h1>
+   </div>
+
    <div class="current-plan-status paid" ng-if="planStatus('paid')">
       <span class="setup">
          Your Impactstory subscription has been active
@@ -39,7 +43,7 @@
    <form stripe-form="handleStripe"
          name="upgradeForm"
          novalidate
-         ng-if="!planStatus('paid')"
+         ng-if="planStatus('trial')"
          class="form-horizontal upgrade-form">
 
       <div class="form-title trial">
@@ -131,7 +135,7 @@
                </button>
                <div class="working" ng-show="loading.is('subscribe')">
                   <i class="icon-refresh icon-spin"></i>
-                  <span class="text">Subscribing you to Premium&hellip;</span>
+                  <span class="text">Subscribing you to Impactstory&hellip;</span>
                </div>
          </div>
          <div class="col-sm-offset-3 col-sm-9 money-help">
@@ -146,7 +150,7 @@
          <i class="icon-credit-card left"></i>
          Change my credit card info
       </button>
-      <button ng-click="cancelPremium()" class="btn btn-danger">
+      <button ng-click="cancelSubscription()" class="btn btn-danger">
          <i class="icon-warning-sign left"></i>
          Cancel Premium
       </button>
