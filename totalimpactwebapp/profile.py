@@ -753,7 +753,7 @@ def mint_stripe_id(profile_dict):
     stripe_customer = stripe.Customer.create(
         description=full_name,
         email=profile_dict["email"],
-        plan="base"
+        plan="base-test"
     )
     logger.debug(u"Made a Stripe ID '{stripe_id}' for profile '{slug}'".format(
         stripe_id=stripe_customer.id,
@@ -778,7 +778,7 @@ def subscribe(profile, stripe_token):
     customer.card = stripe_token
     if len(customer.subscriptions.data) == 0:
         # if the subscription was cancelled before
-        customer.subscriptions.create(plan="base")
+        customer.subscriptions.create(plan="base-test")
 
     return customer.save()
 
