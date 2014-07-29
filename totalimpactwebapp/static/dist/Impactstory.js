@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-27
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-28
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6284,6 +6284,21 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "        </div>\n" +
     "        <div class=\"col-sm-2 cvv-graphic\">\n" +
     "           <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <!-- CVV -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"cvv\">Coupon code</label>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "          <input type=\"text\"\n" +
+    "                 class=\"form-control\"\n" +
+    "                 name=\"coupon-code\"\n" +
+    "                 id=\"coupon-code\"\n" +
+    "                 ng-model=\"couponCode\"\n" +
+    "                 placeholder=\"if you have one\">\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-2\">\n" +
     "        </div>\n" +
     "      </div>\n" +
     "\n" +
