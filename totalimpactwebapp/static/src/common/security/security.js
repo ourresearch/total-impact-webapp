@@ -147,15 +147,6 @@ angular.module('security.service', [
         return actualStatus == statusToTest
       },
 
-      daysLeftInTrial: function(){
-        if (!currentUser.subscription){
-          return null
-        }
-
-        var trialEnd = moment.unix(currentUser.subscription.trial_end)
-        return trialEnd.diff(moment(), "days") // days from now
-      },
-
 
       // Ask the backend to see if a user is already authenticated - this may be from a previous session.
       requestCurrentUser: function() {

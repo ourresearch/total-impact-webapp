@@ -27,6 +27,7 @@ import hashlib
 import redis
 import csv
 import StringIO
+import arrow
 
 
 logger = logging.getLogger("tiwebapp.profile")
@@ -147,10 +148,6 @@ class Profile(db.Model):
         return (self.given_name + " " + self.surname).strip()
 
     @cached_property
-    def has_linked_account(self):
-        return True
-
-    @cached_property
     def linked_accounts(self):
         ret = []
         ignore_keys = ["collection_id", "stripe_id"]
@@ -212,6 +209,25 @@ class Profile(db.Model):
     @cached_property
     def product_count(self):
         return len(self.products_not_removed)
+
+    @cached_property
+    def subscription(self):
+        try:
+            customer = stripe.Customer.retrieve(self.stripe_id)
+            ret_dict = customer.subscriptions.data[0].to_dict()
+            ret_dict["user_has_card"] = bool(customer.default_card)
+        except (IndexError, InvalidRequestError):
+            ret_dict = None
+        return ret_dict
+
+    @cached_property
+    def days_left_in_trial(self):
+        if not self.subscription:
+          return None
+
+        trial_end = arrow.get(self.subscription["trial_end"])
+        return (trial_end - arrow.utcnow()).days
+
 
     @cached_property
     def awards(self):
@@ -462,7 +478,7 @@ class Profile(db.Model):
 
 
 
-    def dict_about(self, show_secrets=True, include_stripe=True):
+    def dict_about(self, show_secrets=True):
 
         secrets = [
             "email",
@@ -495,6 +511,8 @@ class Profile(db.Model):
             "linkedin_id",
             "wordpress_api_key",
             "stripe_id",
+            "subscription",
+            "days_left_in_trial",
             "new_metrics_notification_dismissed",
             "notification_email_frequency",
             "is_advisor",
@@ -516,15 +534,6 @@ class Profile(db.Model):
                 ret_dict[prop] = val
             else:
                 pass  # hide_secrets=True, and this is a secret. don't return it.
-
-        if include_stripe:
-            try:
-                cu = stripe.Customer.retrieve(self.stripe_id)
-                ret_dict["subscription"] = cu.subscriptions.data[0].to_dict()
-                ret_dict["subscription"]["user_has_card"] = bool(cu.default_card)
-            except (IndexError, InvalidRequestError):
-                ret_dict["subscription"] = None
-
 
         return ret_dict
 

@@ -52,9 +52,9 @@ def mint_stripe_customers_for_all_profiles():
         profile.stripe_id = stripe_customer.id
         db.session.merge(profile)
 
-    print "Done minting Stripe customer; committing profiles to db."
-    db.session.commit()
-    print "Comitted to db. All donesies!"
+        print "Done minting Stripe customer; committing profiles to db."
+        db.session.commit()
+        print "Comitted to db. All donesies!"
 
 
 def write_500_random_profile_urls():

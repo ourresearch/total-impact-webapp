@@ -151,7 +151,7 @@ angular.module('settings', [
     }
 
     $scope.daysLeftInTrial = function(){
-      return security.daysLeftInTrial()
+      return security.getCurrentUser("days_left_in_trial")
     }
 
     $scope.paidSince = function(){
