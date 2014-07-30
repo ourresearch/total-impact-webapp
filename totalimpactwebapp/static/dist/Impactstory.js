@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-27
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-29
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -433,159 +433,6 @@ angular.module('accounts.allTheAccounts', [
 
 
 })
-
-// setup libs outside angular-land. this may break some unit tests at some point...#problemForLater
-// Underscore string functions: https://github.com/epeli/underscore.string
-_.mixin(_.str.exports());
-
-
-angular.module('app', [
-  'placeholderShim',
-  'ngCookies',
-  'ngRoute',
-  'ngSanitize',
-  'ngAnimate',
-  'emguo.poller',
-  'services.loading',
-  'services.userMessage',
-  'services.uservoiceWidget',
-  'services.routeChangeErrorHandler',
-  'services.page',
-  'services.tiMixpanel',
-  'security',
-  'directives.crud',
-  'directives.jQueryTools',
-  'templates.app',
-  'templates.common',
-  'infopages',
-  'signup',
-  'passwordReset',
-  'profileProduct',
-  'profile',
-  'settings'
-]);
-
-angular.module('app').constant('TEST', {
-  baseUrl: 'http://localhost:5000/',
-  otherKey: 'value'
-});
-
-
-angular.module('app').config(function ($routeProvider, $locationProvider) {
-  $locationProvider.html5Mode(true);
-
-
-
-  // want to make sure the user profile route loads last, because it's super greedy.
-  $routeProvider.when("/:url_slug", {
-    templateUrl:'profile/profile.tpl.html',
-    controller:'ProfileCtrl',
-    reloadOnSearch: false
-  })
-  $routeProvider.otherwise({
-    template:'<div class="no-page"><h2>Whoops!</h2><p>Sorry, this page doesn\'t exist. Perhaps the URL is mistyped?</p></div>'
-  });
-
-
-
-});
-
-
-angular.module('app').run(function(security, $window, Page, $location) {
-  // Get the current user when the application starts
-  // (in case they are still logged in from a previous session)
-  security.requestCurrentUser();
-
-  angular.element($window).bind("scroll", function(event) {
-    Page.setLastScrollPosition($(window).scrollTop(), $location.path())
-  })
-
-});
-
-
-angular.module('app').controller('AppCtrl', function($scope,
-                                                     $window,
-                                                     $route,
-                                                     $sce,
-                                                     UserMessage,
-                                                     UservoiceWidget,
-                                                     $location,
-                                                     Loading,
-                                                     Page,
-                                                     security,
-                                                     $rootScope,
-                                                     TiMixpanel,
-                                                     RouteChangeErrorHandler) {
-
-
-  $scope.userMessage = UserMessage
-  $rootScope.security = security
-
-  security.requestCurrentUser().then(function(currentUser){
-    if (security.subscriptionStatus("trial")){
-      UserMessage.set(
-        'subscription.trialing',
-        true,
-        {daysLeft: security.daysLeftInTrial()}
-      );
-    }
-
-  })
-
-  $scope.page = Page;
-  $scope.loading = Loading;
-  UservoiceWidget.insertTabs()
-  $scope.isAuthenticated =  security.isAuthenticated
-  $scope.tiMixpanel = TiMixpanel
-  $scope.modalOpen = function(){
-    return $rootScope.modalOpen
-  }
-
-  $scope.trustHtml = function(str){
-    return $sce.trustAsHtml(str)
-  }
-
-
-  $scope.$on('$routeChangeError', function(event, current, previous, rejection){
-    RouteChangeErrorHandler.handle(event, current, previous, rejection)
-  });
-
-  $scope.$on('$routeChangeSuccess', function(next, current){
-    security.requestCurrentUser().then(function(currentUser){
-      Page.sendPageloadToSegmentio()
-    })
-
-  })
-
-  $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.showHeader(true)
-    Page.showFooter(true)
-    Page.setUservoiceTabLoc("right")
-    Loading.clear()
-  })
-
-});
-
-
-angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'security', 'httpRequestTracker',
-  function ($scope, $location, $route, security, httpRequestTracker) {
-
-  $scope.location = $location;
-
-
-  $scope.home = function () {
-    console.log("home!")
-    if (security.isAuthenticated()) {
-      $location.path('/' + security.requestCurrentUser().url_slug);
-    } else {
-      $location.path('/');
-    }
-  };
-
-  $scope.hasPendingRequests = function () {
-    return httpRequestTracker.hasPendingRequests();
-  };
-}]);
 
 angular.module("googleScholar", [
  "security",
@@ -1855,7 +1702,7 @@ angular.module('settings', [
     }
 
     $scope.daysLeftInTrial = function(){
-      return security.daysLeftInTrial()
+      return security.getCurrentUser("days_left_in_trial")
     }
 
     $scope.paidSince = function(){
@@ -2854,6 +2701,7 @@ angular.module('resources.products',['ngResource'])
 
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -3320,15 +3168,6 @@ angular.module('security.service', [
           actualStatus = "paid"
         }
         return actualStatus == statusToTest
-      },
-
-      daysLeftInTrial: function(){
-        if (!currentUser.subscription){
-          return null
-        }
-
-        var trialEnd = moment.unix(currentUser.subscription.trial_end)
-        return trialEnd.diff(moment(), "days") // days from now
       },
 
 
@@ -3873,6 +3712,7 @@ angular.module("services.loading")
     }
   }
 })
+angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
