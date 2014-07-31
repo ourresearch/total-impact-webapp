@@ -33,18 +33,18 @@ def mint_stripe_customers_for_all_profiles():
     for profile in page_query(Profile.query.order_by(Profile.email.asc())):
 
         if profile.stripe_id:
-            print "Already a Stripe customer for {email}; skipping".format(
+            print u"Already a Stripe customer for {email}; skipping".format(
                 email=profile.email
             )
             continue
 
 
-        print "making a Stripe customer for {email} ".format(email=profile.email)
-        full_name = "{first} {last}".format(
+        full_name = u"{first} {last}".format(
             first=profile.given_name,
             last=profile.surname
         )
         if profile.is_advisor:
+            print u"making an Advisor Stripe customer for {email} ".format(email=profile.email)
             stripe_customer = stripe.Customer.create(
                 description=full_name,
                 email=profile.email,
@@ -52,20 +52,18 @@ def mint_stripe_customers_for_all_profiles():
                 coupon="ADVISOR_96309"
             )
         else:
+            print u"making a regular Stripe customer for {email} ".format(email=profile.email)            
             stripe_customer = stripe.Customer.create(
                 description=full_name,
                 email=profile.email,
                 plan="base" 
             )
 
-        print "Successfully made stripe id " + stripe_customer.id
+        print u"Successfully made stripe id " + stripe_customer.id
 
         profile.stripe_id = stripe_customer.id
         db.session.merge(profile)
-
-        print "Done minting Stripe customer; committing profiles to db."
         db.session.commit()
-        print "Comitted to db."
 
 
 def write_500_random_profile_urls():
