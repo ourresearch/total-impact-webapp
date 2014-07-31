@@ -5060,8 +5060,8 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            <p>Discover and share the impacts of your articles, slides, datasets, and software.</p>\n" +
     "         </li>\n" +
     "         <li>\n" +
-    "            <h3 id=\"its-open\"><i class=\"icon-unlock-alt icon-3x\"></i><span class=\"text\">Open and free</span></h3>\n" +
-    "            <p>Your profile is free, the data behind it is open, and our code is open-source.</p>\n" +
+    "            <h3 id=\"its-open\"><i class=\"icon-unlock-alt icon-3x\"></i><span class=\"text\">Open and nonprofit</span></h3>\n" +
+    "            <p>We're in this to improve science, not make a buck. Your data is open, and our code is open-source.</p>\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +

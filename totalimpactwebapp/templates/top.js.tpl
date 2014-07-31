@@ -39,4 +39,4 @@ window.analytics.load("{{ segmentio_key }}")
 var globalCurrentUser = {{ current_user | tojson | safe }}
 
 // set the Stripe publishable key. Different on staging and prod
-var stripePublishableKey = {{ stripe_publishable_key }}
+var stripePublishableKey = "{{ stripe_publishable_key }}"
