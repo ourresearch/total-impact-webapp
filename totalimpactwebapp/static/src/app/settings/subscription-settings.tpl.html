@@ -23,7 +23,7 @@
       <span class="setup" ng-if="daysLeftInTrial()==0">Your Impactstory trial ends today!</span>
 
       <div class="email-example">
-         <img src="http://i.imgur.com/S38ECK5.png" alt="Impactstory notification email"/>
+         <img src="/static/img/card-example.png" alt="Impactstory notification email"/>
       </div>
       <div class="pitch">
          <p>Your research is making impacts all the time.
@@ -47,7 +47,7 @@
          class="form-horizontal upgrade-form">
 
       <div class="form-title trial">
-         <h3>Continue your subscription for $5/mo</h3>
+         <h3>Continue your subscription for <br> $5 a month</h3>
          <h4 ng-if="daysLeftInTrial()>0">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>
       </div>
 
@@ -80,7 +80,7 @@
                  payments-format="card"
                  payments-type-model="type"
                  ng-class="type"
-                 placeholder="Debit/Credit Card Number">
+                 placeholder="Credit Card Number">
         </div>
       </div>
 
@@ -146,7 +146,7 @@
                        ng-show="!loading.is('subscribe')"
                        ng-disabled="upgradeForm.$invalid || upgradeForm.$pristine"
                        class="btn btn-success">
-                  Upgrade me for $5/mo!
+                  Subscribe me!
                </button>
                <div class="working" ng-show="loading.is('subscribe')">
                   <i class="icon-refresh icon-spin"></i>
@@ -155,7 +155,15 @@
          </div>
          <div class="col-sm-offset-3 col-sm-9 money-help">
             Trouble affording $5/mo? No worries, we've been through some lean times
-            ourselves. <a href="mailto:team@impactstory.org">Drop us a line</a> and we'll work something out for you.
+            ourselves. So we've got a <a ng-click="showFeeWaiverDetails=!showFeeWaiverDetails">no-questions-asked fee waiver for you.</a>
+
+            <div class="fee-waiver-details" ng-show="showFeeWaiverDetails">
+               <br>
+               To get your waiver, just <a href="mailto:team@impactstory.org">drop us a line</a> showing us how you’re linking to your Impactstory profile
+               in your email signature and we’ll send you a coupon for a free account.
+
+            </div>
+
          </div>
       </div>
    </form>

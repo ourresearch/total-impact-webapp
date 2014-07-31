@@ -1670,9 +1670,9 @@ angular.module('settings.pageDescriptions')
 .factory('SettingsPageDescriptions', function(){
            
   var settingsPageDisplayNames = [
+    "Subscription",
     "Profile",
     "Notifications",
-    "Subscription",
     "Custom URL",
     "Email",
     "Password"
@@ -6175,7 +6175,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
     "\n" +
     "      <div class=\"email-example\">\n" +
-    "         <img src=\"http://i.imgur.com/S38ECK5.png\" alt=\"Impactstory notification email\"/>\n" +
+    "         <img src=\"/static/img/card-example.png\" alt=\"Impactstory notification email\"/>\n" +
     "      </div>\n" +
     "      <div class=\"pitch\">\n" +
     "         <p>Your research is making impacts all the time.\n" +
@@ -6199,7 +6199,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "      <div class=\"form-title trial\">\n" +
-    "         <h3>Continue your subscription for $5/mo</h3>\n" +
+    "         <h3>Continue your subscription for <br> $5 a month</h3>\n" +
     "         <h4 ng-if=\"daysLeftInTrial()>0\">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>\n" +
     "      </div>\n" +
     "\n" +
@@ -6232,7 +6232,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                 payments-format=\"card\"\n" +
     "                 payments-type-model=\"type\"\n" +
     "                 ng-class=\"type\"\n" +
-    "                 placeholder=\"Debit/Credit Card Number\">\n" +
+    "                 placeholder=\"Credit Card Number\">\n" +
     "        </div>\n" +
     "      </div>\n" +
     "\n" +
@@ -6298,7 +6298,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                       ng-show=\"!loading.is('subscribe')\"\n" +
     "                       ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
     "                       class=\"btn btn-success\">\n" +
-    "                  Upgrade me for $5/mo!\n" +
+    "                  Subscribe me!\n" +
     "               </button>\n" +
     "               <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
     "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
@@ -6307,7 +6307,15 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "         </div>\n" +
     "         <div class=\"col-sm-offset-3 col-sm-9 money-help\">\n" +
     "            Trouble affording $5/mo? No worries, we've been through some lean times\n" +
-    "            ourselves. <a href=\"mailto:team@impactstory.org\">Drop us a line</a> and we'll work something out for you.\n" +
+    "            ourselves. So we've got a <a ng-click=\"showFeeWaiverDetails=!showFeeWaiverDetails\">no-questions-asked fee waiver for you.</a>\n" +
+    "\n" +
+    "            <div class=\"fee-waiver-details\" ng-show=\"showFeeWaiverDetails\">\n" +
+    "               <br>\n" +
+    "               To get your waiver, just <a href=\"mailto:team@impactstory.org\">drop us a line</a> showing us how you’re linking to your Impactstory profile\n" +
+    "               in your email signature and we’ll send you a coupon for a free account.\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
     "         </div>\n" +
     "      </div>\n" +
     "   </form>\n" +

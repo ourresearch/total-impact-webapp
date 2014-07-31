@@ -3,9 +3,9 @@ angular.module('settings.pageDescriptions')
 .factory('SettingsPageDescriptions', function(){
            
   var settingsPageDisplayNames = [
+    "Subscription",
     "Profile",
     "Notifications",
-    "Subscription",
     "Custom URL",
     "Email",
     "Password"
