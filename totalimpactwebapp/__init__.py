@@ -1,6 +1,7 @@
 import os
 import logging
 import sys
+import stripe
 
 from flask import Flask
 from flask.ext.compress import Compress
@@ -33,6 +34,7 @@ requests_log.propagate = True
 stripe_log = logging.getLogger("stripe")
 stripe_log.setLevel(logging.WARNING)
 stripe_log.propagate = True
+stripe.api_key = os.getenv("STRIPE_API_KEY")
 
 # set up application
 app = Flask(__name__)
