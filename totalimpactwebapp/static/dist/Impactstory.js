@@ -6153,7 +6153,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "<div class=\"settings-header\">\n" +
     "   <h1>Subscription</h1>\n" +
     "\n" +
-    "   <p class=\"expl\">Get weekly updates revealing your latest impacts.</p>\n" +
+    "   <p class=\"expl\">Update your payment information.</p>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
@@ -6179,11 +6179,11 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "      </div>\n" +
     "      <div class=\"pitch\">\n" +
     "         <p>Your research is making impacts all the time.\n" +
-    "         And with Impactstory, you're getting the latest news on those\n" +
-    "         impacts&mdash;everything from citations to downloads to tweets\n" +
-    "         and more&mdash;delivered straight to your inbox. </p>\n" +
-    "         <p>By extending your free trial today, you won't miss a single\n" +
-    "         notification&mdash;and   you'll be helping to keep\n" +
+    "         And with Impactstory, you can see and share them all&mdash;\n" +
+    "            everything from citations to downloads to tweets\n" +
+    "         and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
+    "         <p>By extending your free trial today, you'll keep benefiting from your impact profile and\n" +
+    "            email notifications&mdash;and   you'll be helping to keep\n" +
     "         Impactstory a sustainable, open-source nonprofit. And all for less than than the\n" +
     "         cost of a coffee once a month.</p>\n" +
     "      </div>\n" +
@@ -6283,7 +6283,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                 name=\"coupon-code\"\n" +
     "                 id=\"coupon-code\"\n" +
     "                 ng-model=\"couponCode\"\n" +
-    "                 placeholder=\"if you have one\">\n" +
+    "                 placeholder=\"If you have a coupon, it goes here\">\n" +
     "        </div>\n" +
     "        <div class=\"col-sm-2\">\n" +
     "        </div>\n" +

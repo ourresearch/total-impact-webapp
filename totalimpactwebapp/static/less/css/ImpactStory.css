@@ -8293,6 +8293,7 @@ div.settings div.settings-input div.upgrade-form-container div.current-plan-stat
 div.settings div.settings-input div.upgrade-form-container div.current-plan-status div.email-example {
   float: left;
   margin-right: 20px;
+  margin-bottom: 50px;
 }
 div.settings div.settings-input div.upgrade-form-container div.current-plan-status div.email-example img {
   width: 400px;
