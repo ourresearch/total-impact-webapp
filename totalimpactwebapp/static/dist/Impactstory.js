@@ -2868,6 +2868,7 @@ angular.module('resources.products',['ngResource'])
 
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -3860,6 +3861,7 @@ angular.module("services.loading")
     }
   }
 })
+angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -4822,11 +4824,13 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   </ul>\n" +
     "\n" +
+    "\n" +
     "   <h3 id=\"meaning\">what do these number actually mean?</h3>\n" +
     "\n" +
     "   <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sighted: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like Impactstory, can be found in the nascent scholarly literature on “altmetrics.”\n" +
     "\n" +
     "   <p><a href=\"http://altmetrics.org/manifesto/\">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">altmetrics library</a> on Mendeley for a growing list of relevant research.\n" +
+    "\n" +
     "\n" +
     "   <h3 id=\"you-are-not-geting-all-my-citations\">you're not getting all my citations!</h3>\n" +
     "   <p>We'd love to display citation information from Google Scholar and Thomson Reuter's Web of Science in Impactstory, but sadly neither Google Scholar nor Web of Science allow us to do this. We're really pleased that Scopus has been more open with their data, allowing us to display their citation data on our website.  PubMed and Crossref are exemplars of open data: we display their citation counts on our website, in Impactstory widgets, and through our API.  As more citation databases open up, we'll include their data as fully as we can.</p>\n" +
@@ -4928,6 +4932,41 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   </ul>\n" +
     "\n" +
     "   Tell us about bugs! <a href=\"http://twitter.com/#!/Impactstory\">@Impactstory</a> (or via email to team@impactstory.org)\n" +
+    "\n" +
+    "   <h3 id=\"what-do-i-get\">what do I get for the $5 a month?</h3>\n" +
+    "\n" +
+    "   <p>Currently, your subscription dollars buy you an Impactstory profile (featuring open metrics, with context, for diverse research products) that updates weekly, pulling in your new publications, datasets, slide decks, and other research outputs alongside their updated metrics. You also get notification emails that tell you when new metrics are added to your profile.</p>\n" +
+    "\n" +
+    "   <p>We&rsquo;ll continue to add new and useful features over time, and your subscription will include those features, too.</p>\n" +
+    "\n" +
+    "\n" +
+    "   <h3 id=\"why-charge\">Impactstory is a non-profit. Why are you charging for profiles?</h3>\n" +
+    "\n" +
+    "   <p>Impactstory is the best place in the world to learn and share your scholarly impact. With our new subscription model, we&rsquo;re able to offer you a profile not built on selling your personal data, or cramming your page with ads, or our ability to hustle up more funding, or on a hope Elsevier acquires us someday.</p>\n" +
+    "\n" +
+    "   <p>Impactstory profiles deliver real, practical value to real researchers every day. To continue doing so, we&rsquo;ve got to &ldquo;keep the lights on&rdquo; in a financially sustainable way.</p>\n" +
+    "\n" +
+    "\n" +
+    "   <h3 id=\"can-i-keep-data\">do I get to keep my data if I unsubscribe?</h3>\n" +
+    "\n" +
+    "   <p>Yes. We&rsquo;re big believers in Open Data--it&rsquo;s one of the reasons we decided to make Impactstory non-profit! And unlike most commercial sites for academics, we allow users full control over their data, including the ability to export it in multiple formats. You can <a href=\"http://feedback.impactstory.org/knowledgebase/articles/398552-exporting-your-impactstory-profile-data\">export your data</a>&nbsp;at any time prior to unsubscribing.</p>\n" +
+    "   <p>The only catch? We are bound by the terms of service of our data providers. We lobby them hard for the most open terms possible, but some still forbid anyone to download their data.</p>\n" +
+    "\n" +
+    "\n" +
+    "   <h3 id=\"waiver\">what if I can&rsquo;t afford $5 a month?</h3>\n" +
+    "\n" +
+    "   <p>We’ve got a no-questions-asked waiver; send us an email to team@impactstory.org showing us how you’re linking to your Impactstory profile in your email signature and we’ll send you a coupon for a free account.</p>\n" +
+    "\n" +
+    "   <h3 id=\"fee-but-open\">how can profiles still be Open if they cost money?</h3>\n" +
+    "\n" +
+    "   <p>Good question! Much like other open science non-profits PLOS and Dryad support their missions and daily operations by recovering costs up front, we&rsquo;re asking our users to pay $5/month for an app that both helps them discover and share their scholarly impact and supports a larger mission of making altmetrics Open.</p>\n" +
+    "\n" +
+    "   <p>On the other hand, there are services like Google Scholar that are free for authors to use, but are far from Open.They don&rsquo;t allow authors to download and reuse their own citation data; they won&rsquo;t open up their source code nor provide an API, so others can improve upon their service; and they lack transparency that allows their users to understand exactly how metrics are gathered.</p>\n" +
+    "\n" +
+    "   <p>These &ldquo;free&rdquo; services are often backed by larger commercial operations or venture capital funding that are required to make money for shareholders. They do this by selling your data, or putting ads on your profile, or getting bought out by Elsevier. </p>\n" +
+    "\n" +
+    "   <p>In contrast, we&rsquo;re a non-profit that&rsquo;s fiercely committed to independence, openness, and transparency. End users can access Impactstory profiles for free; anyone can fork our app and build a better one using our open source code; and trial users and subscribers alike can access and reuse the data behind their profiles, in JSON or CSV formats, as open as we can make it. That won&rsquo;t change. It&rsquo;s who we are. But we need to be financially sustainable to keep on doing it.</p>\n" +
+    "\n" +
     "\n" +
     "   <h3 id=\"isitopen\">is this data Open?</h3>\n" +
     "\n" +
