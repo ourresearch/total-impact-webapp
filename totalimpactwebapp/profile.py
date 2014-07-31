@@ -31,7 +31,6 @@ import arrow
 
 
 logger = logging.getLogger("tiwebapp.profile")
-stripe.api_key = os.getenv("STRIPE_API_KEY")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
 stripe_plan_name = "base-test"
 

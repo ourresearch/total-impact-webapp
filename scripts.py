@@ -1,6 +1,7 @@
 import stripe
 import random
 import logging
+import os
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp import db
 
@@ -27,7 +28,9 @@ def page_query(q):
 
 def mint_stripe_customers_for_all_profiles():
 
-    for profile in page_query(Profile.query):
+    stripe.api_key = os.getenv("STRIPE_API_KEY")
+
+    for profile in page_query(Profile.query.order_by(Profile.email.asc())):
 
         if profile.stripe_id:
             print "Already a Stripe customer for {email}; skipping".format(
@@ -41,11 +44,19 @@ def mint_stripe_customers_for_all_profiles():
             first=profile.given_name,
             last=profile.surname
         )
-        stripe_customer = stripe.Customer.create(
-            description=full_name,
-            email=profile.email,
-            plan="base"
-        )
+        if profile.is_advisor:
+            stripe_customer = stripe.Customer.create(
+                description=full_name,
+                email=profile.email,
+                plan="base",
+                coupon="ADVISOR_96309"
+            )
+        else:
+            stripe_customer = stripe.Customer.create(
+                description=full_name,
+                email=profile.email,
+                plan="base" 
+            )
 
         print "Successfully made stripe id " + stripe_customer.id
 
@@ -54,7 +65,7 @@ def mint_stripe_customers_for_all_profiles():
 
         print "Done minting Stripe customer; committing profiles to db."
         db.session.commit()
-        print "Comitted to db. All donesies!"
+        print "Comitted to db."
 
 
 def write_500_random_profile_urls():
@@ -86,4 +97,4 @@ def write_500_random_profile_urls():
 
 
 
-write_500_random_profile_urls()
+mint_stripe_customers_for_all_profiles()
