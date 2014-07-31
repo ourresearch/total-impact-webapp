@@ -32,7 +32,7 @@ import arrow
 
 logger = logging.getLogger("tiwebapp.profile")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
-stripe_plan_name = "base-test"
+stripe_plan_name = "base"
 
 
 def now_in_utc():
@@ -217,6 +217,7 @@ class Profile(db.Model):
             customer = stripe.Customer.retrieve(self.stripe_id)
             ret_dict = customer.subscriptions.data[0].to_dict()
             ret_dict["user_has_card"] = bool(customer.default_card)
+            ret_dict["user_has_coupon"] = bool(ret_dict["discount"]) or bool(customer.discount)
         except (IndexError, InvalidRequestError):
             ret_dict = None
         return ret_dict
@@ -232,7 +233,11 @@ class Profile(db.Model):
         if not self.subscription:
             return False
 
-        if (self.subscription["user_has_card"] and self.subscription["status"] == "trialing") or self.subscription["status"] == "active":
+        if (self.subscription["user_has_card"] and self.subscription["status"] == "trialing"):
+            return True
+        elif self.subscription["status"] == "active":
+            return True
+        elif self.subscription["user_has_coupon"]:
             return True
         else:
             return False
@@ -243,7 +248,7 @@ class Profile(db.Model):
         if not self.subscription:
             return False
 
-        if self.subscription["status"] == "trialing" and not self.subscription["user_has_card"]:
+        if self.subscription["status"] == "trialing" and not self.is_subscribed:
             return True
         else:
             return False
