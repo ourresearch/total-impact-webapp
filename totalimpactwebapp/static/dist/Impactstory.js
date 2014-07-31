@@ -4705,7 +4705,7 @@ angular.module("infopages/advisors.tpl.html", []).run(["$templateCache", functio
     "   <div class=\"wrapper\">\n" +
     "      <h2 class=\"infopage-heading\">Impactstory advisors</h2>\n" +
     "\n" +
-    "      <p>Do you love Impactstory and want to tell others about us? Are you already an advocate who wants cool perks like free premium features and high fives from our team?\n" +
+    "      <p>Do you love Impactstory and want to tell others about us? Are you already an advocate who wants cool perks like free subscriptions and high fives from our team?\n" +
     "      <strong>Become an Impactstory Advisor!</strong>\n" +
     "      We’re now accepting applications to be part of a select group of researchers and librarians who believe in Impactstory to help spread the word!</p>\n" +
     "      <img id=\"stickers-pic\" src=\"/static/img/many-stickers-2.jpg\" alt=\"many impactstory stickers\"/>\n" +
@@ -4727,7 +4727,7 @@ angular.module("infopages/advisors.tpl.html", []).run(["$templateCache", functio
     "      <ul>\n" +
     "         <li>Satisfaction that you’re helping to change academic research evaluation for the better!</li>\n" +
     "         <li>Free Impactstory swag--t-shirts, stickers, and more!</li>\n" +
-    "         <li>Premium Impactstory features (coming soon!) for free</li>\n" +
+    "         <li>Free subscription to Impactstory</li>\n" +
     "         <li>A shiny Advisor badge for your Impactstory profile and website</li>\n" +
     "         <li>Have pizza and drinks on us when you give a demo or talk at your institution</li>\n" +
     "         <li>A community of like-minded, cutting-edge Advisors </li>\n" +
@@ -6327,7 +6327,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "      </button>\n" +
     "      <button ng-click=\"cancelSubscription()\" class=\"btn btn-danger\">\n" +
     "         <i class=\"icon-warning-sign left\"></i>\n" +
-    "         Cancel Premium\n" +
+    "         Cancel subscription\n" +
     "      </button>\n" +
     "   </div>\n" +
     "\n" +
