@@ -814,14 +814,17 @@ def subscribe(profile, stripe_token, coupon_code=None):
     if profile.stripe_id is None:
         # shouldn't be needed in production
         logger.debug(u"Tried to subscribe a profile ('{slug}') that has no Stripe ID. Minting one now.".format(
-            slug=profile.url_slug
-        ))
+            slug=profile.url_slug))
         profile.stripe_id = mint_stripe_id(profile.dict_about())
         db.session.merge(profile)
         db.session.commit()
 
     customer = stripe.Customer.retrieve(profile.stripe_id)
     customer.card = stripe_token
+
+    logger.debug(u"Got a new subscriber!  Welcome {slug}!".format(
+        slug=profile.url_slug))
+
     if len(customer.subscriptions.data) == 0:
         # if the subscription was cancelled before
         customer.subscriptions.create(plan=stripe_plan_name)
@@ -831,8 +834,11 @@ def subscribe(profile, stripe_token, coupon_code=None):
 
 
 def unsubscribe(profile):
-    cu = stripe.Customer.retrieve(profile.stripe_id)
-    return cu.subscriptions.data[0].delete()
+    logger.debug(u"Unsubscribing {slug}".format(
+        slug=profile.url_slug))
+
+    customer = stripe.Customer.retrieve(profile.stripe_id)
+    return customer.subscriptions.data[0].delete()
 
 def get_profiles():
     res = Profile.query.all()
