@@ -86,11 +86,17 @@ angular.module('app').controller('AppCtrl', function($scope,
   $rootScope.security = security
 
   security.requestCurrentUser().then(function(currentUser){
-    if (security.subscriptionStatus("trial")){
+
+    console.log("got the current user: ", currentUser)
+
+    if (!currentUser.is_live){
+      console.log("deadbeat!")
+    }
+    else if (currentUser.is_trialing){
       UserMessage.set(
         'subscription.trialing',
         true,
-        {daysLeft: security.daysLeftInTrial()}
+        {daysLeft: currentUser.days_left_in_trial}
       );
     }
 

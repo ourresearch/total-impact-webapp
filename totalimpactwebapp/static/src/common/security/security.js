@@ -130,24 +130,6 @@ angular.module('security.service', [
         return deferred.promise
       },
 
-      subscriptionStatus: function(statusToTest){
-        var actualStatus
-        if (!currentUser.subscription){
-          // not actually sure what we're going to do with cancelled subscriptions.
-          actualStatus = "cancelled"
-        }
-        else if (!currentUser.subscription.user_has_card) {
-          // trial user with working premium plan
-          actualStatus = "trial"
-        }
-        else {
-          // paid user with working premium plan
-          actualStatus = "paid"
-        }
-        return actualStatus == statusToTest
-      },
-
-
       // Ask the backend to see if a user is already authenticated - this may be from a previous session.
       requestCurrentUser: function() {
         if (useCachedUser) {

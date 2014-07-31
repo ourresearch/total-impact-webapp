@@ -791,6 +791,7 @@ def get_js_top():
         "top.js.tpl",
         segmentio_key=os.getenv("SEGMENTIO_KEY"),
         mixpanel_token=os.getenv("MIXPANEL_TOKEN"),
+        stripe_publishable_key=os.getenv("STRIPE_PUBLISHABLE_KEY"),
         newrelic_header=newrelic_header,
         current_user=current_user_dict
     )

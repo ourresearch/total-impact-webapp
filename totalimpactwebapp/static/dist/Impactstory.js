@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-29
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-30
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -522,11 +522,17 @@ angular.module('app').controller('AppCtrl', function($scope,
   $rootScope.security = security
 
   security.requestCurrentUser().then(function(currentUser){
-    if (security.subscriptionStatus("trial")){
+
+    console.log("got the current user: ", currentUser)
+
+    if (!currentUser.is_live){
+      console.log("deadbeat!")
+    }
+    else if (currentUser.is_trialing){
       UserMessage.set(
         'subscription.trialing',
         true,
-        {daysLeft: security.daysLeftInTrial()}
+        {daysLeft: currentUser.days_left_in_trial}
       );
     }
 
@@ -1849,13 +1855,17 @@ angular.module('settings', [
 
   .controller('subscriptionSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
 
-
-    $scope.planStatus = function(statusToTest){
-      return security.subscriptionStatus(statusToTest)
+    $scope.isTrialing = function(){
+      return security.getCurrentUser("is_trialing")
     }
 
+    $scope.isSubscribed = function(){
+      return security.getCurrentUser("is_subscribed")
+    }
+
+
     $scope.daysLeftInTrial = function(){
-      return security.daysLeftInTrial()
+      return security.getCurrentUser("days_left_in_trial")
     }
 
     $scope.paidSince = function(){
@@ -1875,6 +1885,8 @@ angular.module('settings', [
           console.log("subscription successfully cancelled", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
           UserMessage.set("settings.subscription.delete.success")
+
+          // @todo refresh the page
         },
         function(resp){
           console.log("there was a problem; subscription not cancelled", resp)
@@ -3304,33 +3316,6 @@ angular.module('security.service', [
         )
         return deferred.promise
       },
-
-      subscriptionStatus: function(statusToTest){
-        var actualStatus
-        if (!currentUser.subscription){
-          // not actually sure what we're going to do with cancelled subscriptions.
-          actualStatus = "cancelled"
-        }
-        else if (!currentUser.subscription.user_has_card) {
-          // trial user with working premium plan
-          actualStatus = "trial"
-        }
-        else {
-          // paid user with working premium plan
-          actualStatus = "paid"
-        }
-        return actualStatus == statusToTest
-      },
-
-      daysLeftInTrial: function(){
-        if (!currentUser.subscription){
-          return null
-        }
-
-        var trialEnd = moment.unix(currentUser.subscription.trial_end)
-        return trialEnd.diff(moment(), "days") // days from now
-      },
-
 
       // Ask the backend to see if a user is already authenticated - this may be from a previous session.
       requestCurrentUser: function() {
@@ -5746,8 +5731,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "     ng-show=\"userExists && !isAuthenticated()\"\n" +
     "     ng-if=\"!hideSignupBanner\"\n" +
     "\n" +
-    "   <span class=\"msg\">Join {{ profile.given_name }} and thousands of other scientists on Impactstory!</span>\n" +
-    "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Make your free profile</a>\n" +
+    "   <span class=\"msg\">Join {{ profile.given_name }} and thousands of other scientists:</span>\n" +
+    "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Try Impactstory for free</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>\n" +
     "\n" +
@@ -6172,10 +6157,10 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "<div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
     "\n" +
     "   <div class=\"cancelled\" ng-if=\"planStatus('cancelled')\">\n" +
-    "      <h1>OH NOES your account is cancelled!</h1>\n" +
+    "      <h1>Your account is cancelled!</h1>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"current-plan-status paid\" ng-if=\"planStatus('paid')\">\n" +
+    "   <div class=\"current-plan-status paid\" ng-if=\"isSubscribed()\">\n" +
     "      <span class=\"setup\">\n" +
     "         Your Impactstory subscription has been active\n" +
     "         since {{ paidSince() }}.\n" +
@@ -6183,7 +6168,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"current-plan-status trial\" ng-if=\"planStatus('trial')\">\n" +
+    "   <div class=\"current-plan-status trial\" ng-if=\"isTrialing()\">\n" +
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
     "\n" +
@@ -6208,7 +6193,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         novalidate\n" +
-    "         ng-if=\"planStatus('trial')\"\n" +
+    "         ng-if=\"isTrialing()\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "      <div class=\"form-title trial\">\n" +
@@ -6325,7 +6310,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "      </div>\n" +
     "   </form>\n" +
     "\n" +
-    "   <div class=\"subscriber-buttons\" ng-if=\"planStatus('paid')\">\n" +
+    "   <div class=\"subscriber-buttons\" ng-if=\"isSubscribed()\">\n" +
     "      <button ng-click=\"editCard()\" class=\"btn btn-primary edit-credit-card\">\n" +
     "         <i class=\"icon-credit-card left\"></i>\n" +
     "         Change my credit card info\n" +
@@ -6347,7 +6332,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "   <div class=\"signup-main-page\">\n" +
     "      <div class=\"form-container\">\n" +
     "         <h1>Reveal your full scholarly impact.</h1>\n" +
-    "         <h2>Signup for your <strong>free</strong> Impactstory profile:</h2>\n" +
+    "         <h2>Try Impactstory <strong>free</strong> for 14 days:</h2>\n" +
     "         <form novalidate\n" +
     "               name=\"signupForm\"\n" +
     "               ng-controller=\"signupFormCtrl\"\n" +
