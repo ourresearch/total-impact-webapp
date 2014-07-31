@@ -32,7 +32,7 @@ import arrow
 
 logger = logging.getLogger("tiwebapp.profile")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
-stripe_plan_name = "base-test"
+stripe_plan_name = "base"
 
 
 def now_in_utc():
