@@ -1912,6 +1912,8 @@ angular.module('settings', [
               window.scrollTo(0,0)
               UserMessage.set("settings.subscription.subscribe.success")
               Loading.finish("subscribe")
+              TiMixpanel.track("User subscribed!")
+
 
             },
             function(resp){

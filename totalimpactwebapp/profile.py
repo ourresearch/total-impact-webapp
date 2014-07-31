@@ -217,7 +217,7 @@ class Profile(db.Model):
             customer = stripe.Customer.retrieve(self.stripe_id)
             ret_dict = customer.subscriptions.data[0].to_dict()
             ret_dict["user_has_card"] = bool(customer.default_card)
-            ret_dict["user_has_coupon"] = bool(ret_dict["discount"])
+            ret_dict["user_has_coupon"] = bool(ret_dict["discount"]) or bool(customer.discount)
         except (IndexError, InvalidRequestError):
             ret_dict = None
         return ret_dict
