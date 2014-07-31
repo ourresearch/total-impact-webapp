@@ -145,10 +145,14 @@ angular.module('settings', [
 
   .controller('subscriptionSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
 
-
-    $scope.planStatus = function(statusToTest){
-      return security.subscriptionStatus(statusToTest)
+    $scope.isTrialing = function(){
+      return security.getCurrentUser("is_trialing")
     }
+
+    $scope.isSubscribed = function(){
+      return security.getCurrentUser("is_subscribed")
+    }
+
 
     $scope.daysLeftInTrial = function(){
       return security.getCurrentUser("days_left_in_trial")
@@ -171,6 +175,8 @@ angular.module('settings', [
           console.log("subscription successfully cancelled", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
           UserMessage.set("settings.subscription.delete.success")
+
+          // @todo refresh the page
         },
         function(resp){
           console.log("there was a problem; subscription not cancelled", resp)

@@ -32,6 +32,8 @@ import arrow
 
 logger = logging.getLogger("tiwebapp.profile")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
+stripe_plan_name = "base-test"
+
 
 def now_in_utc():
     return datetime.datetime.utcnow()
@@ -218,6 +220,34 @@ class Profile(db.Model):
         except (IndexError, InvalidRequestError):
             ret_dict = None
         return ret_dict
+
+
+
+    @cached_property
+    def is_live(self):
+        return self.is_subscribed or self.is_trialing
+
+    @cached_property
+    def is_subscribed(self):
+        if not self.subscription:
+            return False
+
+        if (self.subscription["user_has_card"] and self.subscription["status"] == "trialing") or self.subscription["status"] == "active":
+            return True
+        else:
+            return False
+
+
+    @cached_property
+    def is_trialing(self):
+        if not self.subscription:
+            return False
+
+        if self.subscription["status"] == "trialing" and not self.subscription["user_has_card"]:
+            return True
+        else:
+            return False
+
 
     @cached_property
     def days_left_in_trial(self):
@@ -515,7 +545,10 @@ class Profile(db.Model):
             "new_metrics_notification_dismissed",
             "notification_email_frequency",
             "is_advisor",
-            "linked_accounts"
+            "linked_accounts",
+            "is_subscribed",
+            "is_trialing",
+            "is_live"
         ]
 
         ret_dict = {}
@@ -761,7 +794,7 @@ def mint_stripe_id(profile_dict):
     stripe_customer = stripe.Customer.create(
         description=full_name,
         email=profile_dict["email"],
-        plan="base-test"
+        plan=stripe_plan_name
     )
     logger.debug(u"Made a Stripe ID '{stripe_id}' for profile '{slug}'".format(
         stripe_id=stripe_customer.id,
@@ -771,7 +804,7 @@ def mint_stripe_id(profile_dict):
     return stripe_customer.id
 
 
-def subscribe(profile, stripe_token):
+def subscribe(profile, stripe_token, coupon_code=None):
 
     if profile.stripe_id is None:
         # shouldn't be needed in production
@@ -786,7 +819,7 @@ def subscribe(profile, stripe_token):
     customer.card = stripe_token
     if len(customer.subscriptions.data) == 0:
         # if the subscription was cancelled before
-        customer.subscriptions.create(plan="base-test")
+        customer.subscriptions.create(plan=stripe_plan_name)
 
     return customer.save()
 
