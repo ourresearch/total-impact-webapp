@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-30
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-04
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5162,7 +5162,10 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "            <a href=\"https://docs.google.com/presentation/d/1WhE8yNwQ1grOffBoXSbbpNJo8oY7YdOBy83x8NPVU7s\" target=\"_blank\">Google Slides.</a>\n" +
     "         </p>\n" +
     "         <p class=\"translations\">\n" +
-    "            <a href=\"https://docs.google.com/presentation/d/1hl1MbX80g2Pnt2KAzBmZrC29e3udzto96l-ZxLo19Uk\" target=\"_blank\">En Espa&ntilde;ol</a>, courtesy Carlos Rodr&iacute;guez Rell&aacute;n\n" +
+    "            Translations:\n" +
+    "            <a href=\"https://docs.google.com/presentation/d/1hl1MbX80g2Pnt2KAzBmZrC29e3udzto96l-ZxLo19Uk\" target=\"_blank\">Spanish</a>, courtesy Carlos Rodr&iacute;guez Rell&aacute;n;\n" +
+    "            <a href=\"https://docs.google.com/presentation/d/1-R2ESFCXKuhD7pMMDcvHb6BywOdYgR4X833DOykcghk/edit\" target=\"_blank\">German</a>, courtesy Timo Lüke;\n" +
+    "            <a href=\"https://docs.google.com/a/impactstory.org/file/d/0BzVyoVbp68fZSHIycHBGTlVtcEY1UmR6OXNXRXJ4dUtJdF9J/edit?pli=1\" target=\"_blank\">Persian</a>, courtesy Samad Keramatfar.\n" +
     "         </p>\n" +
     "      </div>\n" +
     "      <div class=\"content\">\n" +
@@ -5188,8 +5191,9 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "            <a href=\"/static/downloads/share-the-word-poster.png\" target=\"_self\">PNG.</a>\n" +
     "         </p>\n" +
     "         <p class=\"translations\">\n" +
-    "            Translations (PDF):\n" +
+    "            Translations:\n" +
     "            <a href=\"/static/downloads/share-the-word-poster-german.pdf\" target=\"_self\">German, </a> courtesy Timo L&uuml;ke;\n" +
+    "            <a href=\"https://docs.google.com/a/impactstory.org/document/d/1WCWxR7Q8SrZf5jUk_Kwt7vC6jklzu0zEdh-KPYvktOc/edit?pli=1\" target=\"_self\">Italian, </a> courtesy Giulia Nicolino and J Lawrence Dennis;\n" +
     "            <a href=\"/static/downloads/share-the-word-poster_PTBR.pdf\" target=\"_self\">Portuguese, </a> courtesy Atila Iamarino.\n" +
     "         </p>\n" +
     "      </div>\n" +
