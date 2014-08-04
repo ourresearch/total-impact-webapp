@@ -143,7 +143,15 @@ angular.module('settings', [
 
 
 
-  .controller('subscriptionSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
+  .controller('subscriptionSettingsCtrl', function ($scope,
+                                                    Users,
+                                                    security,
+                                                    $location,
+                                                    UserMessage,
+                                                    Loading,
+                                                    UsersCreditCard,
+                                                    TiMixpanel,
+                                                    UsersSubscription) {
 
     $scope.isTrialing = function(){
       return security.getCurrentUser("is_trialing")
@@ -202,7 +210,7 @@ angular.module('settings', [
               window.scrollTo(0,0)
               UserMessage.set("settings.subscription.subscribe.success")
               Loading.finish("subscribe")
-              TiMixpanel.track("User subscribed!")
+              TiMixpanel.track("User subscribed")
 
 
             },
