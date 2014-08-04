@@ -5,6 +5,7 @@ angular.module('settings', [
     'directives.spinner',
     'settings.pageDescriptions',
     'services.userMessage',
+    'services.tiMixpanel',
     'security',
     'angularPayments',
     'directives.forms'])
@@ -143,7 +144,15 @@ angular.module('settings', [
 
 
 
-  .controller('subscriptionSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
+  .controller('subscriptionSettingsCtrl', function ($scope,
+                                                    Users,
+                                                    security,
+                                                    $location,
+                                                    UserMessage,
+                                                    Loading,
+                                                    UsersCreditCard,
+                                                    TiMixpanel,
+                                                    UsersSubscription) {
 
     $scope.isTrialing = function(){
       return security.getCurrentUser("is_trialing")
