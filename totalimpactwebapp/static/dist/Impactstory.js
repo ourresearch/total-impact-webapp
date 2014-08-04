@@ -525,7 +525,10 @@ angular.module('app').controller('AppCtrl', function($scope,
 
     console.log("got the current user: ", currentUser)
 
-    if (!currentUser.is_live){
+    if (!currentUser){
+      // ain't no one logged in.
+    }
+    else if (!currentUser.is_live){
       console.log("deadbeat!")
     }
     else if (currentUser.is_trialing){
