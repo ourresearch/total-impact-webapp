@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-07-30
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-06
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1853,7 +1853,15 @@ angular.module('settings', [
 
 
 
-  .controller('subscriptionSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, UsersCreditCard, UsersSubscription) {
+  .controller('subscriptionSettingsCtrl', function ($scope,
+                                                    Users,
+                                                    security,
+                                                    $location,
+                                                    UserMessage,
+                                                    Loading,
+                                                    UsersCreditCard,
+                                                    TiMixpanel,
+                                                    UsersSubscription) {
 
     $scope.isTrialing = function(){
       return security.getCurrentUser("is_trialing")
@@ -1912,7 +1920,7 @@ angular.module('settings', [
               window.scrollTo(0,0)
               UserMessage.set("settings.subscription.subscribe.success")
               Loading.finish("subscribe")
-              TiMixpanel.track("User subscribed!")
+              TiMixpanel.track("User subscribed")
 
 
             },
