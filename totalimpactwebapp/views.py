@@ -1,5 +1,13 @@
-import requests, os, json, logging, re, datetime
+import requests
+import os
+import json
+import logging
+import re
+import datetime
 import analytics
+import stripe
+
+
 from util import local_sleep
 from totalimpactwebapp import util
 
@@ -412,12 +420,16 @@ def user_subscription(profile_id):
         ret = unsubscribe(profile)
 
     elif request.method == "POST":
-        ret = subscribe(
-            profile,
-            stripe_token=request.json["token"],
-            coupon=request.json["coupon"],
-            plan=request.json["token"]
-        )
+        try:
+            ret = subscribe(
+                profile,
+                stripe_token=request.json["token"],
+                coupon=request.json["coupon"],
+                plan=request.json["plan"]
+            )
+        except stripe.InvalidRequestError:
+            return abort_json(500, "error")  # @todo fix!
+
 
     return json_resp_from_thing({"result": ret})
 

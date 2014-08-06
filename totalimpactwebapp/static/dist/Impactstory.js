@@ -1881,7 +1881,7 @@ angular.module('settings', [
 
     $scope.paidSince = function(){
       var su = security.getCurrentUser("subscription")
-      return "July 2014"
+      return "August 2014"  // short-term hack
     }
 
     $scope.editCard = function(){
@@ -3010,15 +3010,6 @@ angular.module('resources.users',['ngResource'])
         query: function(){}
       }
     })
-
-//
-//  .factory("UsersCreditCard", function($resource){
-//    return $resource(
-//      "/profile/:id/credit_card/:stripeToken",
-//      {},
-//      {}
-//    )
-//  })
 
 
   .factory("UsersSubscription", function($resource){

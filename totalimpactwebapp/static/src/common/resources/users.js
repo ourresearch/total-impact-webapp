@@ -126,15 +126,6 @@ angular.module('resources.users',['ngResource'])
       }
     })
 
-//
-//  .factory("UsersCreditCard", function($resource){
-//    return $resource(
-//      "/profile/:id/credit_card/:stripeToken",
-//      {},
-//      {}
-//    )
-//  })
-
 
   .factory("UsersSubscription", function($resource){
     return $resource(

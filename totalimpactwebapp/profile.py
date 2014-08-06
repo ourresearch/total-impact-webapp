@@ -222,7 +222,8 @@ class Profile(db.Model):
     @cached_property
     def is_trialing(self):
         profile_age_timedelta = datetime.datetime.utcnow() - self.created
-        return profile_age_timedelta < free_trial_timedelta
+        in_trial_period = profile_age_timedelta < free_trial_timedelta
+        return in_trial_period and not self.is_subscribed
 
     @cached_property
     def days_left_in_trial(self):
@@ -759,18 +760,29 @@ def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_prod
 
 def subscribe(profile, stripe_token, coupon=None, plan="base-annual"):
     full_name = u"{first} {last}".format(first=profile.given_name, last=profile.surname)
-    stripe_customer = stripe.Customer.create(
-        description=full_name,
-        email=profile.email,
-        plan=plan,
-        coupon=coupon,
-        card=stripe_token
-    )
+    try:
+        stripe_customer = stripe.Customer.create(
+            description=full_name,
+            email=profile.email,
+            plan=plan,
+            coupon=coupon,
+            card=stripe_token
+        )
+        logger.debug(u"Made a Stripe ID '{stripe_id}' for profile '{slug}'".format(
+            stripe_id=stripe_customer.id,
+            slug=profile.url_slug
+        ))
 
-    logger.debug(u"Made a Stripe ID '{stripe_id}' for profile '{slug}'".format(
-        stripe_id=stripe_customer.id,
-        slug=profile.url_slug
-    ))
+    except InvalidRequestError as e:
+        logger.debug(u"Error making a Stripe ID for for profile '{slug}': {msg}".format(
+            stripe_id=stripe_customer.id,
+            slug=profile.url_slug,
+            msg=e.msg
+        ))
+        raise e  # pass the error along for the caller to deal with
+
+
+
 
     profile.stripe_id = stripe_customer.id
     db.session.merge(profile)
