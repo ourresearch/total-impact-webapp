@@ -32,7 +32,7 @@ import arrow
 
 logger = logging.getLogger("tiwebapp.profile")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
-stripe_plan_name = "base"
+free_trial_timedelta = datetime.timedelta(days=14)
 
 
 def now_in_utc():
@@ -212,56 +212,23 @@ class Profile(db.Model):
         return len(self.products_not_removed)
 
     @cached_property
-    def subscription(self):
-        try:
-            customer = stripe.Customer.retrieve(self.stripe_id)
-            ret_dict = customer.subscriptions.data[0].to_dict()
-            ret_dict["user_has_card"] = bool(customer.default_card)
-            ret_dict["user_has_coupon"] = bool(ret_dict["discount"]) or bool(customer.discount)
-        except (IndexError, InvalidRequestError):
-            ret_dict = None
-        return ret_dict
-
-
-
-    @cached_property
     def is_live(self):
         return self.is_subscribed or self.is_trialing
 
     @cached_property
     def is_subscribed(self):
-        if not self.subscription:
-            return False
-
-        if (self.subscription["user_has_card"] and self.subscription["status"] == "trialing"):
-            return True
-        elif self.subscription["status"] == "active":
-            return True
-        elif self.subscription["user_has_coupon"]:
-            return True
-        else:
-            return False
+        return bool(self.stripe_id)
 
 
     @cached_property
     def is_trialing(self):
-        if not self.subscription:
-            return False
-
-        if self.subscription["status"] == "trialing" and not self.is_subscribed:
-            return True
-        else:
-            return False
-
+        profile_age_timedelta = self.created - datetime.datetime.utcnow()
+        return profile_age_timedelta < free_trial_timedelta
 
     @cached_property
     def days_left_in_trial(self):
-        if not self.subscription:
-          return None
-
-        trial_end = arrow.get(self.subscription["trial_end"])
-        return (trial_end - arrow.utcnow()).days
-
+        profile_age_timedelta = self.created - datetime.datetime.utcnow()
+        return (free_trial_timedelta - profile_age_timedelta).days
 
     @cached_property
     def awards(self):
@@ -545,7 +512,6 @@ class Profile(db.Model):
             "linkedin_id",
             "wordpress_api_key",
             "stripe_id",
-            "subscription",
             "days_left_in_trial",
             "new_metrics_notification_dismissed",
             "notification_email_frequency",
@@ -747,8 +713,6 @@ def create_profile_from_slug(url_slug, profile_request_dict, db):
     if profile_with_this_email is not None:
         raise EmailExistsError  # the caller needs to deal with this.
 
-    profile_dict["stripe_id"] = mint_stripe_id(profile_dict)
-
 
     # ok, let's make a profile:
     profile = Profile(**profile_dict)
@@ -793,46 +757,33 @@ def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_prod
     return profile
 
 
-def mint_stripe_id(profile_dict):
-    # make the Stripe customer so we can get their customer number:
-    full_name = u"{first} {last}".format(first=profile_dict["given_name"], last=profile_dict["surname"])
+
+def subscribe(profile, stripe_token, coupon=None, plan="base-annual"):
+    full_name = u"{first} {last}".format(first=profile.given_name, last=profile.surname)
     stripe_customer = stripe.Customer.create(
         description=full_name,
-        email=profile_dict["email"],
-        plan=stripe_plan_name
+        email=profile.email,
+        plan=plan,
+        coupon=coupon,
+        card=stripe_token
     )
+
     logger.debug(u"Made a Stripe ID '{stripe_id}' for profile '{slug}'".format(
         stripe_id=stripe_customer.id,
-        slug=profile_dict["url_slug"]
+        slug=profile.url_slug
     ))
 
-    return stripe_customer.id
+    profile.stripe_id = stripe_customer.id
+    db.session.merge(profile)
+    db.session.commit()
 
-
-def subscribe(profile, stripe_token, coupon_code=None):
-
-    if profile.stripe_id is None:
-        # shouldn't be needed in production
-        logger.debug(u"Tried to subscribe a profile ('{slug}') that has no Stripe ID. Minting one now.".format(
-            slug=profile.url_slug
-        ))
-        profile.stripe_id = mint_stripe_id(profile.dict_about())
-        db.session.merge(profile)
-        db.session.commit()
-
-    customer = stripe.Customer.retrieve(profile.stripe_id)
-    customer.card = stripe_token
-    if len(customer.subscriptions.data) == 0:
-        # if the subscription was cancelled before
-        customer.subscriptions.create(plan=stripe_plan_name)
-
-    return customer.save()
+    return stripe_customer
 
 
 
 def unsubscribe(profile):
     cu = stripe.Customer.retrieve(profile.stripe_id)
-    return cu.subscriptions.data[0].delete()
+    return cu.delete()  # permadeletes the customer obj on Stripe; all data lost
 
 def get_profiles():
     res = Profile.query.all()

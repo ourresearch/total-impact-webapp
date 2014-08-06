@@ -419,7 +419,17 @@ def user_subscription(profile_id):
     if request.method == "DELETE":
         ret = unsubscribe(profile)
 
+    elif request.method == "POST":
+        ret = subscribe(
+            profile,
+            stripe_token=request.json["token"],
+            coupon=request.json["coupon"],
+            plan=request.json["token"]
+        )
+
     return json_resp_from_thing({"result": ret})
+
+
 
 
 @app.route("/profile/<profile_id>", methods=['PATCH'])
