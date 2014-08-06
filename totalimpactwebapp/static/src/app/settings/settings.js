@@ -150,7 +150,6 @@ angular.module('settings', [
                                                     $location,
                                                     UserMessage,
                                                     Loading,
-                                                    UsersCreditCard,
                                                     TiMixpanel,
                                                     UsersSubscription) {
 
@@ -202,9 +201,13 @@ angular.module('settings', [
 
         } else {
           console.log("yay, token created successfully! Now let's save the card.", status, response)
-          UsersCreditCard.save(
+          UsersSubscription.save(
             {id: $scope.user.url_slug, stripeToken: response.id},
-            {},
+            {
+              token: response.id,
+              plan: "base-annual", // @todo change this
+              coupon: null
+            },
             function(resp){
               console.log("we saved this user's credit card, huzzah!", resp)
               security.refreshCurrentUser() // refresh the currentUser from server

@@ -126,20 +126,24 @@ angular.module('resources.users',['ngResource'])
       }
     })
 
-
-  .factory("UsersCreditCard", function($resource){
-    return $resource(
-      "/profile/:id/credit_card/:stripeToken",
-      {},
-      {}
-    )
-  })
+//
+//  .factory("UsersCreditCard", function($resource){
+//    return $resource(
+//      "/profile/:id/credit_card/:stripeToken",
+//      {},
+//      {}
+//    )
+//  })
 
 
   .factory("UsersSubscription", function($resource){
     return $resource(
       "/profile/:id/subscription",
-      {},
+      {
+        token: null,
+        coupon: null,
+        plan: "base-annual"
+      },
       {
         delete: {
           method: "DELETE",

@@ -403,15 +403,7 @@ def user_delete(profile_id):
     return json_resp_from_thing({"user": "deleted"})
 
 
-@app.route("/profile/<profile_id>/credit_card/<stripe_token>", methods=["POST"])
-def profile_credit_card(profile_id, stripe_token):
-    profile = get_user_for_response(profile_id, request)
-    abort_if_user_not_logged_in(profile)
-
-    ret = subscribe(profile, stripe_token)
-    return json_resp_from_thing({"result": ret})
-
-@app.route("/profile/<profile_id>/subscription", methods=["DELETE"])
+@app.route("/profile/<profile_id>/subscription", methods=["DELETE", "POST"])
 def user_subscription(profile_id):
     profile = get_user_for_response(profile_id, request)
     abort_if_user_not_logged_in(profile)

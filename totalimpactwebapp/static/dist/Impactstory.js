@@ -1863,7 +1863,6 @@ angular.module('settings', [
                                                     $location,
                                                     UserMessage,
                                                     Loading,
-                                                    UsersCreditCard,
                                                     TiMixpanel,
                                                     UsersSubscription) {
 
@@ -1915,9 +1914,13 @@ angular.module('settings', [
 
         } else {
           console.log("yay, token created successfully! Now let's save the card.", status, response)
-          UsersCreditCard.save(
+          UsersSubscription.save(
             {id: $scope.user.url_slug, stripeToken: response.id},
-            {},
+            {
+              token: response.id,
+              plan: "base-annual", // @todo change this
+              coupon: null
+            },
             function(resp){
               console.log("we saved this user's credit card, huzzah!", resp)
               security.refreshCurrentUser() // refresh the currentUser from server
@@ -3008,20 +3011,24 @@ angular.module('resources.users',['ngResource'])
       }
     })
 
-
-  .factory("UsersCreditCard", function($resource){
-    return $resource(
-      "/profile/:id/credit_card/:stripeToken",
-      {},
-      {}
-    )
-  })
+//
+//  .factory("UsersCreditCard", function($resource){
+//    return $resource(
+//      "/profile/:id/credit_card/:stripeToken",
+//      {},
+//      {}
+//    )
+//  })
 
 
   .factory("UsersSubscription", function($resource){
     return $resource(
       "/profile/:id/subscription",
-      {},
+      {
+        token: null,
+        coupon: null,
+        plan: "base-annual"
+      },
       {
         delete: {
           method: "DELETE",

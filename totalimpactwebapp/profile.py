@@ -219,15 +219,14 @@ class Profile(db.Model):
     def is_subscribed(self):
         return bool(self.stripe_id)
 
-
     @cached_property
     def is_trialing(self):
-        profile_age_timedelta = self.created - datetime.datetime.utcnow()
+        profile_age_timedelta = datetime.datetime.utcnow() - self.created
         return profile_age_timedelta < free_trial_timedelta
 
     @cached_property
     def days_left_in_trial(self):
-        profile_age_timedelta = self.created - datetime.datetime.utcnow()
+        profile_age_timedelta = datetime.datetime.utcnow() - self.created
         return (free_trial_timedelta - profile_age_timedelta).days
 
     @cached_property
@@ -783,7 +782,12 @@ def subscribe(profile, stripe_token, coupon=None, plan="base-annual"):
 
 def unsubscribe(profile):
     cu = stripe.Customer.retrieve(profile.stripe_id)
-    return cu.delete()  # permadeletes the customer obj on Stripe; all data lost
+    cu.delete()  # permadeletes the customer obj on Stripe; all data lost
+
+    profile.stripe_id = None # now delete from our Profile
+    db.session.merge(profile)
+    db.session.commit()
+    return profile
 
 def get_profiles():
     res = Profile.query.all()
