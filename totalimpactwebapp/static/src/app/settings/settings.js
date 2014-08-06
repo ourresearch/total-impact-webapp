@@ -5,6 +5,7 @@ angular.module('settings', [
     'directives.spinner',
     'settings.pageDescriptions',
     'services.userMessage',
+    'services.tiMixpanel',
     'security',
     'angularPayments',
     'directives.forms'])
