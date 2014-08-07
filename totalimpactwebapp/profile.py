@@ -32,7 +32,10 @@ import arrow
 
 logger = logging.getLogger("tiwebapp.profile")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
+
 free_trial_timedelta = datetime.timedelta(days=14)
+trial_for_old_free_users_started_on = datetime.datetime(year=2014, month=7, day=31)
+
 
 
 def now_in_utc():
@@ -221,14 +224,18 @@ class Profile(db.Model):
 
     @cached_property
     def is_trialing(self):
-        profile_age_timedelta = datetime.datetime.utcnow() - self.created
-        in_trial_period = profile_age_timedelta < free_trial_timedelta
+        in_trial_period = self.trial_age_timedelta < free_trial_timedelta
         return in_trial_period and not self.is_subscribed
 
     @cached_property
     def days_left_in_trial(self):
-        profile_age_timedelta = datetime.datetime.utcnow() - self.created
-        return (free_trial_timedelta - profile_age_timedelta).days
+        return (free_trial_timedelta - self.trial_age_timedelta).days
+
+    @cached_property
+    def trial_age_timedelta(self):
+        trial_started = max(trial_for_old_free_users_started_on, self.created)
+        return datetime.datetime.utcnow() - trial_started
+
 
     @cached_property
     def awards(self):
