@@ -758,7 +758,7 @@ def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_prod
 
 
 
-def subscribe(profile, stripe_token, coupon=None, plan="base-annual"):
+def subscribe(profile, stripe_token, coupon=None, plan="base-yearly"):
     full_name = u"{first} {last}".format(first=profile.given_name, last=profile.surname)
     stripe_customer = stripe.Customer.create(
         description=full_name,

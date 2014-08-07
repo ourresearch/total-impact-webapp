@@ -1866,6 +1866,13 @@ angular.module('settings', [
                                                     TiMixpanel,
                                                     UsersSubscription) {
 
+
+    // important! this is how we get stuff out of the form from here
+    $scope.subscribeForm = {
+      plan: "base-yearly",
+      coupon: null
+    }
+
     $scope.isTrialing = function(){
       return security.getCurrentUser("is_trialing")
     }
@@ -1905,40 +1912,57 @@ angular.module('settings', [
       )
     }
 
-    $scope.handleStripe = function(status, response){
-        Loading.start("subscribe")
-        console.log("calling handleStripe()")
-        if(response.error) {
-          console.log("ack, there was an error!", status, response)
+    var subscribeUser = function(url_slug, plan, token, coupon) {
+      console.log("running subscribeUser()", url_slug, plan, token, coupon)
+      return UsersSubscription.save(
+        {id: url_slug},
+        {
+          token: token,
+          plan: plan,
+          coupon: coupon
+        },
+        function(resp){
+          console.log("we subscribed a user, huzzah!", resp)
+          security.refreshCurrentUser() // refresh the currentUser from server
+          window.scrollTo(0,0)
+          UserMessage.set("settings.subscription.subscribe.success")
+          Loading.finish("subscribe")
+          TiMixpanel.track("User subscribed")
+
+
+        },
+        function(resp){
+          console.log("we failed to subscribe a user.", resp)
           UserMessage.set("settings.subscription.subscribe.error")
-
-        } else {
-          console.log("yay, token created successfully! Now let's save the card.", status, response)
-          UsersSubscription.save(
-            {id: $scope.user.url_slug, stripeToken: response.id},
-            {
-              token: response.id,
-              plan: "base-annual", // @todo change this
-              coupon: null
-            },
-            function(resp){
-              console.log("we saved this user's credit card, huzzah!", resp)
-              security.refreshCurrentUser() // refresh the currentUser from server
-              window.scrollTo(0,0)
-              UserMessage.set("settings.subscription.subscribe.success")
-              Loading.finish("subscribe")
-              TiMixpanel.track("User subscribed")
-
-
-            },
-            function(resp){
-              console.log("failure!", resp)
-              UserMessage.set("settings.subscription.subscribe.error")
-              Loading.finish("subscribe")
-            }
-          )
+          Loading.finish("subscribe")
         }
+      )
+    }
+
+    $scope.handleStripe = function(status, response){
+
+      console.log("handleStripe() returned stuff from Stripe:", response)
+
+      Loading.start("subscribe")
+      console.log("in handleStripe(), got a response back from Stripe.js's call to the Stripe server:", status, response)
+      if (response.error && !$scope.subscribeForm.coupon) {
+
+        console.log("got an error instead of a token, and there ain't no coupon to fall back on.")
+        UserMessage.set("settings.subscription.subscribe.error")
+
       }
+
+      else if (response.error && $scope.subscribeForm.coupon){
+        console.log("got an error instead of a token--but that's ok, we've got a coupon!")
+        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, null, $scope.subscribeForm.coupon)
+      }
+
+      else {
+        console.log("yay, Stripe CC token created successfully! Now let's save the card.")
+        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, response.id, null)
+
+      }
+    }
   })
 
 
@@ -3018,7 +3042,7 @@ angular.module('resources.users',['ngResource'])
       {
         token: null,
         coupon: null,
-        plan: "base-annual"
+        plan: "base-yearly"
       },
       {
         delete: {
@@ -6250,11 +6274,30 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "      <div class=\"form-title trial\">\n" +
-    "         <h3>Continue your subscription for <br> $5 a month</h3>\n" +
-    "         <h4 ng-if=\"daysLeftInTrial()>0\">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>\n" +
+    "         <h3>Continue your subscription</h3>\n" +
+    "         <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
+    "\n" +
+    "      <!-- plan -->\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"col-sm-3 control-label\" for=\"plan-options\">Billing period</label>\n" +
+    "         <div class=\"col-sm-9\" id=\"plan-options\">\n" +
+    "            <div class=\"radio\">\n" +
+    "               <label>\n" +
+    "                  <input type=\"radio\" name=\"plan\" value=\"base-monthly\" ng-model=\"subscribeForm.plan\">\n" +
+    "                  $5 per month\n" +
+    "               </label>\n" +
+    "            </div>\n" +
+    "            <div class=\"radio\">\n" +
+    "               <label>\n" +
+    "                  <input type=\"radio\" name=\"plan\" value=\"base-yearly\" ng-model=\"subscribeForm.plan\">\n" +
+    "                  $45 per year <strong>(saves 25%)</strong>\n" +
+    "               </label>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
     "\n" +
     "      <!-- name on card -->\n" +
     "      <div class=\"form-group\">\n" +
@@ -6264,7 +6307,6 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                   class=\"form-control\"\n" +
     "                   name=\"card-holder-name\"\n" +
     "                   id=\"card-holder-name\"\n" +
-    "                   required\n" +
     "                   placeholder=\"Card Holder's Name\">\n" +
     "         </div>\n" +
     "      </div>\n" +
@@ -6277,7 +6319,6 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                 class=\"form-control\"\n" +
     "                 name=\"card-number\"\n" +
     "                 id=\"card-number\"\n" +
-    "                 required\n" +
     "                 ng-model=\"number\"\n" +
     "                 payments-validate=\"card\"\n" +
     "                 payments-format=\"card\"\n" +
@@ -6296,7 +6337,6 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                   class=\"form-control\"\n" +
     "                   name=\"card-expiry\"\n" +
     "                   id=\"card-expiry\"\n" +
-    "                   required\n" +
     "                   ng-model=\"expiry\"\n" +
     "                   payments-validate=\"expiry\"\n" +
     "                   payments-format=\"expiry\"\n" +
@@ -6314,7 +6354,6 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                 name=\"cvv\"\n" +
     "                 id=\"cvv\"\n" +
     "                 ng-model=\"cvc\"\n" +
-    "                 required\n" +
     "                 payments-validate=\"cvc\"\n" +
     "                 payments-format=\"cvc\"\n" +
     "                 payments-type-model=\"type\"\n" +
@@ -6333,7 +6372,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                 class=\"form-control\"\n" +
     "                 name=\"coupon-code\"\n" +
     "                 id=\"coupon-code\"\n" +
-    "                 ng-model=\"couponCode\"\n" +
+    "                 ng-model=\"subscribeForm.coupon\"\n" +
     "                 placeholder=\"If you have a coupon, it goes here\">\n" +
     "        </div>\n" +
     "        <div class=\"col-sm-2\">\n" +
@@ -6347,7 +6386,6 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "         <div class=\"col-sm-offset-3 col-sm-9\">\n" +
     "               <button type=\"submit\"\n" +
     "                       ng-show=\"!loading.is('subscribe')\"\n" +
-    "                       ng-disabled=\"upgradeForm.$invalid || upgradeForm.$pristine\"\n" +
     "                       class=\"btn btn-success\">\n" +
     "                  Subscribe me!\n" +
     "               </button>\n" +

@@ -133,7 +133,7 @@ angular.module('resources.users',['ngResource'])
       {
         token: null,
         coupon: null,
-        plan: "base-annual"
+        plan: "base-yearly"
       },
       {
         delete: {

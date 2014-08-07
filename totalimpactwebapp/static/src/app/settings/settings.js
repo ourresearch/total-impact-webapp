@@ -153,6 +153,13 @@ angular.module('settings', [
                                                     TiMixpanel,
                                                     UsersSubscription) {
 
+
+    // important! this is how we get stuff out of the form from here
+    $scope.subscribeForm = {
+      plan: "base-yearly",
+      coupon: null
+    }
+
     $scope.isTrialing = function(){
       return security.getCurrentUser("is_trialing")
     }
@@ -192,40 +199,57 @@ angular.module('settings', [
       )
     }
 
-    $scope.handleStripe = function(status, response){
-        Loading.start("subscribe")
-        console.log("calling handleStripe()")
-        if(response.error) {
-          console.log("ack, there was an error!", status, response)
+    var subscribeUser = function(url_slug, plan, token, coupon) {
+      console.log("running subscribeUser()", url_slug, plan, token, coupon)
+      return UsersSubscription.save(
+        {id: url_slug},
+        {
+          token: token,
+          plan: plan,
+          coupon: coupon
+        },
+        function(resp){
+          console.log("we subscribed a user, huzzah!", resp)
+          security.refreshCurrentUser() // refresh the currentUser from server
+          window.scrollTo(0,0)
+          UserMessage.set("settings.subscription.subscribe.success")
+          Loading.finish("subscribe")
+          TiMixpanel.track("User subscribed")
+
+
+        },
+        function(resp){
+          console.log("we failed to subscribe a user.", resp)
           UserMessage.set("settings.subscription.subscribe.error")
-
-        } else {
-          console.log("yay, token created successfully! Now let's save the card.", status, response)
-          UsersSubscription.save(
-            {id: $scope.user.url_slug, stripeToken: response.id},
-            {
-              token: response.id,
-              plan: "base-annual", // @todo change this
-              coupon: null
-            },
-            function(resp){
-              console.log("we saved this user's credit card, huzzah!", resp)
-              security.refreshCurrentUser() // refresh the currentUser from server
-              window.scrollTo(0,0)
-              UserMessage.set("settings.subscription.subscribe.success")
-              Loading.finish("subscribe")
-              TiMixpanel.track("User subscribed")
-
-
-            },
-            function(resp){
-              console.log("failure!", resp)
-              UserMessage.set("settings.subscription.subscribe.error")
-              Loading.finish("subscribe")
-            }
-          )
+          Loading.finish("subscribe")
         }
+      )
+    }
+
+    $scope.handleStripe = function(status, response){
+
+      console.log("handleStripe() returned stuff from Stripe:", response)
+
+      Loading.start("subscribe")
+      console.log("in handleStripe(), got a response back from Stripe.js's call to the Stripe server:", status, response)
+      if (response.error && !$scope.subscribeForm.coupon) {
+
+        console.log("got an error instead of a token, and there ain't no coupon to fall back on.")
+        UserMessage.set("settings.subscription.subscribe.error")
+
       }
+
+      else if (response.error && $scope.subscribeForm.coupon){
+        console.log("got an error instead of a token--but that's ok, we've got a coupon!")
+        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, null, $scope.subscribeForm.coupon)
+      }
+
+      else {
+        console.log("yay, Stripe CC token created successfully! Now let's save the card.")
+        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, response.id, null)
+
+      }
+    }
   })
 
 

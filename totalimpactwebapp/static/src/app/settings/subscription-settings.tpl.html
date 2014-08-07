@@ -47,11 +47,30 @@
          class="form-horizontal upgrade-form">
 
       <div class="form-title trial">
-         <h3>Continue your subscription for <br> $5 a month</h3>
-         <h4 ng-if="daysLeftInTrial()>0">(Don't worry, you'll still pay nothing till your trial ends in {{ daysLeftInTrial() }} days.)</h4>
+         <h3>Continue your subscription</h3>
+         <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>
       </div>
 
 
+
+      <!-- plan -->
+      <div class="form-group">
+         <label class="col-sm-3 control-label" for="plan-options">Billing period</label>
+         <div class="col-sm-9" id="plan-options">
+            <div class="radio">
+               <label>
+                  <input type="radio" name="plan" value="base-monthly" ng-model="subscribeForm.plan">
+                  $5 per month
+               </label>
+            </div>
+            <div class="radio">
+               <label>
+                  <input type="radio" name="plan" value="base-yearly" ng-model="subscribeForm.plan">
+                  $45 per year <strong>(saves 25%)</strong>
+               </label>
+            </div>
+         </div>
+      </div>
 
       <!-- name on card -->
       <div class="form-group">
@@ -61,7 +80,6 @@
                    class="form-control"
                    name="card-holder-name"
                    id="card-holder-name"
-                   required
                    placeholder="Card Holder's Name">
          </div>
       </div>
@@ -74,7 +92,6 @@
                  class="form-control"
                  name="card-number"
                  id="card-number"
-                 required
                  ng-model="number"
                  payments-validate="card"
                  payments-format="card"
@@ -93,7 +110,6 @@
                    class="form-control"
                    name="card-expiry"
                    id="card-expiry"
-                   required
                    ng-model="expiry"
                    payments-validate="expiry"
                    payments-format="expiry"
@@ -111,7 +127,6 @@
                  name="cvv"
                  id="cvv"
                  ng-model="cvc"
-                 required
                  payments-validate="cvc"
                  payments-format="cvc"
                  payments-type-model="type"
@@ -130,7 +145,7 @@
                  class="form-control"
                  name="coupon-code"
                  id="coupon-code"
-                 ng-model="couponCode"
+                 ng-model="subscribeForm.coupon"
                  placeholder="If you have a coupon, it goes here">
         </div>
         <div class="col-sm-2">
@@ -144,7 +159,6 @@
          <div class="col-sm-offset-3 col-sm-9">
                <button type="submit"
                        ng-show="!loading.is('subscribe')"
-                       ng-disabled="upgradeForm.$invalid || upgradeForm.$pristine"
                        class="btn btn-success">
                   Subscribe me!
                </button>
