@@ -427,8 +427,8 @@ def user_subscription(profile_id):
                 coupon=request.json["coupon"],
                 plan=request.json["plan"]
             )
-        except stripe.InvalidRequestError:
-            return abort_json(500, "error")  # @todo fix!
+        except (stripe.InvalidRequestError, stripe.CardError) as e:
+            return abort_json(400, e.message)
 
 
     return json_resp_from_thing({"result": ret})

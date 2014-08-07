@@ -760,29 +760,23 @@ def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_prod
 
 def subscribe(profile, stripe_token, coupon=None, plan="base-annual"):
     full_name = u"{first} {last}".format(first=profile.given_name, last=profile.surname)
-    try:
-        stripe_customer = stripe.Customer.create(
-            description=full_name,
-            email=profile.email,
-            plan=plan,
-            coupon=coupon,
-            card=stripe_token
-        )
-        logger.debug(u"Made a Stripe ID '{stripe_id}' for profile '{slug}'".format(
-            stripe_id=stripe_customer.id,
-            slug=profile.url_slug
-        ))
+    stripe_customer = stripe.Customer.create(
+        description=full_name,
+        email=profile.email,
+        plan=plan,
+        coupon=coupon,
+        card=stripe_token
+    )
 
-    except InvalidRequestError as e:
-        logger.debug(u"Error making a Stripe ID for for profile '{slug}': {msg}".format(
-            stripe_id=stripe_customer.id,
-            slug=profile.url_slug,
-            msg=e.msg
-        ))
-        raise e  # pass the error along for the caller to deal with
+    # the stripe.Customer.create() call can throw all sort of exceptions here,
+    # including InvalidRequestError and CardError. if it does, none of the code
+    # below will run of course. the caller is responsible for handling these
+    # errors.
 
-
-
+    logger.debug(u"Made a Stripe ID '{stripe_id}' for profile '{slug}'".format(
+        stripe_id=stripe_customer.id,
+        slug=profile.url_slug
+    ))
 
     profile.stripe_id = stripe_customer.id
     db.session.merge(profile)
