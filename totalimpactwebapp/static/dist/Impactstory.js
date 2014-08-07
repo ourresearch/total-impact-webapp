@@ -6394,7 +6394,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                  <span class=\"text\">Subscribing you to Impactstory&hellip;</span>\n" +
     "               </div>\n" +
     "         </div>\n" +
-    "         <div class=\"col-sm-offset-3 col-sm-9 money-help\">\n" +
+    "         <div class=\"col-sm-offset-3 col-sm-9 money-help\" ng-hide=\"loading.is('subscribe')\">\n" +
     "            Trouble affording $5/mo? No worries, we've been through some lean times\n" +
     "            ourselves. So we've got a <a ng-click=\"showFeeWaiverDetails=!showFeeWaiverDetails\">no-questions-asked fee waiver for you.</a>\n" +
     "\n" +
