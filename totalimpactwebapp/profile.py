@@ -33,7 +33,7 @@ import arrow
 logger = logging.getLogger("tiwebapp.profile")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
 
-free_trial_timedelta = datetime.timedelta(days=14)
+free_trial_timedelta = datetime.timedelta(days=30)
 trial_for_old_free_users_started_on = datetime.datetime(year=2014, month=7, day=31)
 
 
