@@ -167,6 +167,7 @@ class Profile(db.Model):
 
                 linked_account_dict = {
                     "service": service,
+                    "display_service": service.replace("_", " "),
                     "username": v,
                     "profile_url": profile_url
                 }

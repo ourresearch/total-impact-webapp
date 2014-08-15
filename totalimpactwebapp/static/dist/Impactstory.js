@@ -5707,7 +5707,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  <li ng-repeat=\"linkedAccount in filteredLinkedAccounts = (profile.linked_accounts | filter: {profile_url: '!!'})\">\n" +
     "                     <a href=\"{{ linkedAccount.profile_url }}\" target=\"_blank\">\n" +
     "                        <img ng-src=\"/static/img/favicons/{{ linkedAccount.service }}.ico\">\n" +
-    "                        <span class=\"service\">{{ linkedAccount.service }}</span>\n" +
+    "                        <span class=\"service\">{{ linkedAccount.display_service }}</span>\n" +
     "                     </a>\n" +
     "                  </li>\n" +
     "               </ul>\n" +
