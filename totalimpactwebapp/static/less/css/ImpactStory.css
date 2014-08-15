@@ -6850,11 +6850,13 @@ div#about h3 {
 div#about h3.first {
   margin-top: 10px;
 }
-div#about div.team-member {
-  margin-bottom: 50px;
+div#about div.team-member,
+div#about div.board-member {
+  margin-bottom: 60px;
 }
-div#about div.team-member img {
-  margin-bottom: 20px;
+div#about div.team-member img,
+div#about div.board-member img {
+  margin-bottom: 50px;
 }
 div#about div.team-member.subsequent {
   margin-top: 50px;
