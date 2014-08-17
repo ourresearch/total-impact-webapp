@@ -231,7 +231,7 @@ angular.module("profileProduct", [
     $scope.pdfUrl = 'http://localhost:5000/test-pdf';
     $scope.getNavStyle = function(scroll) {
       console.log(scroll)
-      if(scroll < 150) return 'fixed';
+      if(scroll < 80) return 'fixed';
     }
 })
 

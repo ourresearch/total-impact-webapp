@@ -7774,20 +7774,31 @@ div.modal-body.edit-product div.buttons-group .btn {
   width: 8em;
 }
 div.pdf-wrapper {
-  border: 3px solid #555;
   float: left;
+}
+div.pdf-wrapper canvas {
+  border: 3px solid #555;
 }
 div.pdf-wrapper div.pdf-nav {
   background: #555;
+  border: 3px solid #555;
+  border-bottom: none;
+  opacity: .95;
   color: #eee;
+  margin-top: -50px;
   height: 50px;
   text-align: center;
+}
+div.pdf-wrapper div.pdf-nav .page-count {
+  font-size: 70%;
+  font-weight: 100;
 }
 div.pdf-wrapper div.pdf-nav.fixed {
   position: fixed;
   top: 0;
   width: 100%;
   right: 0;
+  margin-top: 0;
 }
 div.pdf-wrapper div.pdf-nav .btn {
   padding: 5px;

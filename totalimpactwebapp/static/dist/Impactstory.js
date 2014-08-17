@@ -1174,7 +1174,7 @@ angular.module("profileProduct", [
     $scope.pdfUrl = 'http://localhost:5000/test-pdf';
     $scope.getNavStyle = function(scroll) {
       console.log(scroll)
-      if(scroll < 150) return 'fixed';
+      if(scroll < 80) return 'fixed';
     }
 })
 
@@ -5387,7 +5387,14 @@ angular.module("pdf/pdf-viewer.tpl.html", []).run(["$templateCache", function($t
   $templateCache.put("pdf/pdf-viewer.tpl.html",
     "<div id=\"pdf-nav\" class=\"pdf-nav\" ng-class=\"getNavStyle(scroll)\">\n" +
     "  <button class=\"btn\" ng-click=\"goPrevious()\"><span><i class=\"icon-chevron-left\"></i>prev</span></button>\n" +
-    "  <span>{{ pageNum }} of {{pageCount}}</span>\n" +
+    "  <span>\n" +
+    "     <span class=\"current-page\">\n" +
+    "        page {{ pageNum }}\n" +
+    "     </span>\n" +
+    "     <span class=\"page-count\">\n" +
+    "         of {{pageCount}}\n" +
+    "     </span>\n" +
+    "  </span>\n" +
     "  <button class=\"btn\" ng-click=\"goNext()\"><span>next <i class=\"icon-chevron-right\"></i></span></button>\n" +
     "</div>\n" +
     "\n" +
