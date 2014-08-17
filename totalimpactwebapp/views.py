@@ -610,6 +610,10 @@ def test_upload(tiid):
 
 
 
+@app.route("/test-pdf")
+def test_pdf():
+    filename = "static/SCIM-S-13-00955.pdf"
+    return send_file(filename, mimetype='application/pdf')
 
 
 

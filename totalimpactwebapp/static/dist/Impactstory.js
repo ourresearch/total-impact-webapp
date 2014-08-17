@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-16
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-17
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -950,6 +950,7 @@ angular.module("profileProduct", [
     'services.loading',
     'ui.bootstrap',
     'angularFileUpload',
+    'pdf',
     'security'
   ])
 
@@ -1152,9 +1153,7 @@ angular.module("profileProduct", [
 
 
 
-
 .controller("productUploadCtrl", function($scope, $upload){
-    console.log("productUploadCtrl ran")
     $scope.onFileSelect = function($files){
       console.log("trying to upload files", $files)
 
@@ -1167,10 +1166,18 @@ angular.module("profileProduct", [
       })
 
     }
-
 })
 
-.directive('dynamic', function ($compile) {
+
+.controller("pdfCtrl", function($scope){
+    $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
+
+    $scope.pdfUrl = 'http://localhost:5000/test-pdf';
+})
+
+
+
+  .directive('dynamic', function ($compile) {
   return {
     restrict: 'A',
     replace: true,
@@ -4426,7 +4433,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -5373,6 +5380,22 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
     "</div>");
 }]);
 
+angular.module("pdf/pdf-viewer.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("pdf/pdf-viewer.tpl.html",
+    "<div class=\"nav\" ng-class=\"getNavStyle(scroll)\">\n" +
+    "  <button ng-click=\"goPrevious()\"><span>prev</span></button>\n" +
+    "  <button ng-click=\"goNext()\"><span>next</span></button>\n" +
+    "\n" +
+    "\n" +
+    "  <span>Page: </span>\n" +
+    "  <input type=\"text\" min=1 ng-model=\"pageNum\">\n" +
+    "  <span> / {{pageCount}}</span>\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "<canvas id=\"pdf-canvas\" class=\"rotate0\" width=\"1100\"></canvas>");
+}]);
+
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-award/profile-award.tpl.html",
     "<div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && profileAward.award_badge\">\n" +
@@ -5607,6 +5630,10 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "      <!--<div class=\"product\" ng-bind-html=\"trustHtml(productMarkup)\"></div>-->\n" +
     "\n" +
     "      <div class=\"product\" dynamic=\"productMarkup\"></div>\n" +
+    "\n" +
+    "      <div class=\"pdf-wrapper\" ng-controller=\"pdfCtrl\">\n" +
+    "          <ng-pdf template-url=\"pdf/pdf-viewer.tpl.html\" canvasid=\"pdf-canvas\" scale=\"1\"></ng-pdf>\n" +
+    "      </div>\n" +
     "\n" +
     "\n" +
     "   </div>\n" +

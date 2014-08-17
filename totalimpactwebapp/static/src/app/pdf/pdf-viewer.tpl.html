@@ -1,0 +1,12 @@
+<div class="nav" ng-class="getNavStyle(scroll)">
+  <button ng-click="goPrevious()"><span>prev</span></button>
+  <button ng-click="goNext()"><span>next</span></button>
+
+
+  <span>Page: </span>
+  <input type="text" min=1 ng-model="pageNum">
+  <span> / {{pageCount}}</span>
+
+</div>
+
+<canvas id="pdf-canvas" class="rotate0" width="1100"></canvas>

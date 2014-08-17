@@ -7773,6 +7773,13 @@ div.modal-body.edit-product div.buttons-group {
 div.modal-body.edit-product div.buttons-group .btn {
   width: 8em;
 }
+div.pdf-wrapper {
+  border: 3px solid #555;
+  float: left;
+}
+div.pdf-wrapper div.nav {
+  background: #555;
+}
 div.product-page {
   min-height: 500px;
   padding-top: 50px;
