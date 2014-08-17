@@ -13,7 +13,6 @@ from sqlalchemy import func
 from collections import OrderedDict
 from stripe import InvalidRequestError
 
-
 import requests
 import stripe
 import json

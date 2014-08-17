@@ -35,9 +35,17 @@
          <span class="text">Loading product...</span>
       </div>
 
+      <div class="file-input-container" ng-controller="productUploadCtrl">
+        <input type="file" ng-file-select="onFileSelect($files)">
+      </div>
+
       <!--<div class="product" ng-bind-html="trustHtml(productMarkup)"></div>-->
 
       <div class="product" dynamic="productMarkup"></div>
+
+      <div class="pdf-wrapper" ng-controller="pdfCtrl">
+          <ng-pdf template-url="pdf/pdf-viewer.tpl.html" canvasid="pdf-canvas" scale="1"></ng-pdf>
+      </div>
 
 
    </div>

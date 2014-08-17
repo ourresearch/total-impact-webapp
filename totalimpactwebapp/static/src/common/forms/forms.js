@@ -1,7 +1,7 @@
 angular.module('directives.forms', ["services.loading"])
 
 
-  .directive("ngFileSelect",function(){
+  .directive("customFileSelect",function(){
     return {
       link: function($scope, el, attrs){
         el.bind("change", function(e){

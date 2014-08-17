@@ -6,6 +6,8 @@ angular.module("profileProduct", [
     'profile',
     'services.loading',
     'ui.bootstrap',
+    'angularFileUpload',
+    'pdf',
     'security'
   ])
 
@@ -208,11 +210,34 @@ angular.module("profileProduct", [
 
 
 
+.controller("productUploadCtrl", function($scope, $upload){
+    $scope.onFileSelect = function($files){
+      console.log("trying to upload files", $files)
 
-.controller("editProductFormCtrl", function(){
+      $scope.upload = $upload.upload({
+        url: "/product/123",
+        file: $files[0]
+      })
+      .success(function(data){
+        console.log("success on upload", data)
+      })
+
+    }
 })
 
-.directive('dynamic', function ($compile) {
+
+.controller("pdfCtrl", function($scope){
+    $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
+    $scope.pdfUrl = 'http://localhost:5000/test-pdf';
+    $scope.getNavStyle = function(scroll) {
+      console.log(scroll)
+      if(scroll < 80) return 'fixed';
+    }
+})
+
+
+
+  .directive('dynamic', function ($compile) {
   return {
     restrict: 'A',
     replace: true,
