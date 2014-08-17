@@ -19,7 +19,6 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from totalimpactwebapp import app
 from totalimpactwebapp import db
 from totalimpactwebapp import login_manager
-from totalimpactwebapp import product
 from totalimpactwebapp import cache
 
 from totalimpactwebapp.password_reset import send_reset_token
@@ -36,6 +35,8 @@ from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.profile import delete_products_from_profile
 from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
+from totalimpactwebapp.product import get_product
+from totalimpactwebapp.product import Markup
 
 from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import emailer
@@ -348,7 +349,7 @@ def get_user_profile(profile_id):
 
     hide_keys = request.args.get("hide", "").split(",")
 
-    markup = product.Markup(g.user_id, embed=request.args.get("embed"))
+    markup = Markup(g.user_id, embed=request.args.get("embed"))
 
     resp = {
         "products": profile.get_products_markup(
@@ -526,7 +527,7 @@ def user_product(user_id, tiid):
     profile = get_user_for_response(user_id, request)
 
     if request.method == "GET":
-        markup = product.Markup(g.user_id, embed=False)
+        markup = Markup(g.user_id, embed=False)
         try:
             resp = profile.get_single_product_markup(tiid, markup)
         except IndexError:
@@ -539,6 +540,34 @@ def user_product(user_id, tiid):
         resp = delete_products_from_profile(profile, [tiid])
 
     return json_resp_from_thing(resp)
+
+
+@app.route("/<profile_id>/product/<tiid>/file", methods=['GET', 'POST'])
+def product_file(profile_id, tiid):
+
+    if request.method == "GET":
+        try:
+            product_file = get_product(tiid).get_file()
+        except IndexError:
+            abort_json(404, "That product doesn't exist.")
+        resp = make_response(product_file, 200)
+        resp.mimetype = "application/pdf"
+        resp.headers.add("Content-Disposition",
+                         "attachment; filename=impactstory-{tiid}.pdf".format(
+                            tiid=tiid))
+        return resp
+
+    elif request.method == "POST":
+        # try:
+        #     if not current_user_owns_tiid(tiid):
+        #         abort_json(401, "You have to own this product to add files.")
+        # except AttributeError:
+        #     abort_json(405, "You musts be logged in to upload files.")
+
+        file_to_upload = request.files['file'].stream
+        resp = get_product(tiid).upload_file(file_to_upload)
+        return json_resp_from_thing(resp)
+
 
 
 

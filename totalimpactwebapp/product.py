@@ -1,6 +1,8 @@
 import logging
 import jinja2
 import arrow
+import os
+import boto
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
@@ -36,6 +38,8 @@ snaps_join_string = "and_(Product.tiid==Snap.tiid, " \
 def make(raw_dict):
     return Product(raw_dict)
 
+def get_product(tiid):
+    return Product.query.get(tiid)
 
 
 class Product(db.Model):
@@ -211,12 +215,44 @@ class Product(db.Model):
 
 
     def has_metric_this_good(self, provider, interaction, count):
-        # return True
         requested_metric = self.get_metric_by_name(provider, interaction)
         try:
             return requested_metric.display_count >= count
         except AttributeError:
             return False
+
+    def get_file(self):
+        conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
+        bucket_name = "impactstory-uploads-local"
+        bucket = conn.get_bucket(bucket_name, validate=False)
+
+        path = "active"
+        key_name = self.tiid + ".pdf"
+        full_key_name = os.path.join(path, key_name)
+        k = bucket.new_key(full_key_name)
+
+        file_contents = k.get_contents_as_string()
+        return file_contents
+
+
+    def upload_file(self, file_to_upload):
+        conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
+        bucket_name = "impactstory-uploads-local"
+        bucket = conn.get_bucket(bucket_name, validate=False)
+
+        path = "active"
+        key_name = self.tiid + ".pdf"
+        full_key_name = os.path.join(path, key_name)
+        k = bucket.new_key(full_key_name)
+
+        # testfile = "/Users/hpiwowar/Documents/Mendeley Desktop/Smalheiser, Swanson - 1998 - Using ARROWSMITH a computer-assisted approach to formulating and assessing scientific hypotheses.pdf"
+        # length = k.set_contents_from_filename(testfile)
+
+        length = k.set_contents_from_file(file_to_upload)
+
+        return length
+
+
 
 
     def to_dict(self):
