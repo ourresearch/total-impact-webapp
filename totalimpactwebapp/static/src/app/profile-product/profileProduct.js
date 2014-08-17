@@ -228,8 +228,11 @@ angular.module("profileProduct", [
 
 .controller("pdfCtrl", function($scope){
     $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
-
     $scope.pdfUrl = 'http://localhost:5000/test-pdf';
+    $scope.getNavStyle = function(scroll) {
+      console.log(scroll)
+      if(scroll < 150) return 'fixed';
+    }
 })
 
 

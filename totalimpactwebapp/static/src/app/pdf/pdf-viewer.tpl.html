@@ -1,12 +1,8 @@
-<div class="nav" ng-class="getNavStyle(scroll)">
-  <button ng-click="goPrevious()"><span>prev</span></button>
-  <button ng-click="goNext()"><span>next</span></button>
-
-
-  <span>Page: </span>
-  <input type="text" min=1 ng-model="pageNum">
-  <span> / {{pageCount}}</span>
-
+<div id="pdf-nav" class="pdf-nav" ng-class="getNavStyle(scroll)">
+  <button class="btn" ng-click="goPrevious()"><span><i class="icon-chevron-left"></i>prev</span></button>
+  <span>{{ pageNum }} of {{pageCount}}</span>
+  <button class="btn" ng-click="goNext()"><span>next <i class="icon-chevron-right"></i></span></button>
 </div>
 
 <canvas id="pdf-canvas" class="rotate0" width="1100"></canvas>
+

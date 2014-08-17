@@ -23,7 +23,8 @@
 
         windowEl.on('scroll', function() {
           scope.$apply(function() {
-            scope.scroll = windowEl[0].scrollY;
+            var viewportOffset = document.getElementById(attrs.canvasid).getBoundingClientRect()
+            scope.scroll = viewportOffset.top
           });
         });
 

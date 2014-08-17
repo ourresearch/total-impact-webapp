@@ -7777,8 +7777,31 @@ div.pdf-wrapper {
   border: 3px solid #555;
   float: left;
 }
-div.pdf-wrapper div.nav {
+div.pdf-wrapper div.pdf-nav {
   background: #555;
+  color: #eee;
+  height: 50px;
+  text-align: center;
+}
+div.pdf-wrapper div.pdf-nav.fixed {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  right: 0;
+}
+div.pdf-wrapper div.pdf-nav .btn {
+  padding: 5px;
+  margin: 5px 20px;
+  background: #777;
+}
+div.pdf-wrapper div.pdf-nav .btn:hover,
+div.pdf-wrapper div.pdf-nav .btn:focus {
+  background: #888;
+  color: #fff;
+}
+div.pdf-wrapper div.pdf-nav .btn i {
+  margin: 5px;
+  font-size: 75%;
 }
 div.product-page {
   min-height: 500px;

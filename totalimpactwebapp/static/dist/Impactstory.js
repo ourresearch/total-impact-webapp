@@ -1171,8 +1171,11 @@ angular.module("profileProduct", [
 
 .controller("pdfCtrl", function($scope){
     $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
-
     $scope.pdfUrl = 'http://localhost:5000/test-pdf';
+    $scope.getNavStyle = function(scroll) {
+      console.log(scroll)
+      if(scroll < 150) return 'fixed';
+    }
 })
 
 
@@ -5382,18 +5385,15 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
 
 angular.module("pdf/pdf-viewer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("pdf/pdf-viewer.tpl.html",
-    "<div class=\"nav\" ng-class=\"getNavStyle(scroll)\">\n" +
-    "  <button ng-click=\"goPrevious()\"><span>prev</span></button>\n" +
-    "  <button ng-click=\"goNext()\"><span>next</span></button>\n" +
-    "\n" +
-    "\n" +
-    "  <span>Page: </span>\n" +
-    "  <input type=\"text\" min=1 ng-model=\"pageNum\">\n" +
-    "  <span> / {{pageCount}}</span>\n" +
-    "\n" +
+    "<div id=\"pdf-nav\" class=\"pdf-nav\" ng-class=\"getNavStyle(scroll)\">\n" +
+    "  <button class=\"btn\" ng-click=\"goPrevious()\"><span><i class=\"icon-chevron-left\"></i>prev</span></button>\n" +
+    "  <span>{{ pageNum }} of {{pageCount}}</span>\n" +
+    "  <button class=\"btn\" ng-click=\"goNext()\"><span>next <i class=\"icon-chevron-right\"></i></span></button>\n" +
     "</div>\n" +
     "\n" +
-    "<canvas id=\"pdf-canvas\" class=\"rotate0\" width=\"1100\"></canvas>");
+    "<canvas id=\"pdf-canvas\" class=\"rotate0\" width=\"1100\"></canvas>\n" +
+    "\n" +
+    "");
 }]);
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {

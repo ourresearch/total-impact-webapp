@@ -35,8 +35,30 @@ div.modal-body.edit-product {
 div.pdf-wrapper {
    border: 3px solid #555;
    float:left;
-   div.nav {
+   div.pdf-nav {
       background: #555;
+      color: #eee;
+      height: 50px;
+      text-align: center;
+      &.fixed {
+         position:fixed;
+         top:0;
+         width:100%;
+         right:0;
+      }
+      .btn {
+         padding: 5px;
+         margin: 5px 20px;
+         background: #777;
+         &:hover, &:focus {
+            background: #888;
+            color: #fff;
+         }
+         i {
+            margin: 5px;
+            font-size: 75%;
+         }
+      }
    }
 }
 
