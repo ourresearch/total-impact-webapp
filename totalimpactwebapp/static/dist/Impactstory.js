@@ -1153,10 +1153,19 @@ angular.module("profileProduct", [
 
 
 
-.controller("productUploadCtrl", function($scope){
+.controller("productUploadCtrl", function($scope, $upload){
     console.log("productUploadCtrl ran")
     $scope.onFileSelect = function($files){
       console.log("trying to upload files", $files)
+
+      $scope.upload = $upload.upload({
+        url: "/product/123",
+        file: $files[0]
+      })
+      .success(function(data){
+        console.log("success on upload", data)
+      })
+
     }
 
 })

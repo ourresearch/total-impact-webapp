@@ -542,7 +542,6 @@ def user_product(user_id, tiid):
 
 
 
-
 @app.route("/profile/<profile_id>/products.csv", methods=["GET"])
 def profile_products_csv(profile_id):
     profile = get_user_for_response(profile_id, request)
@@ -589,6 +588,23 @@ def product_biblio_modify(tiid):
     return json_resp_from_thing(r.json())
 
 
+
+
+
+@app.route("/product/<tiid>", methods=["GET", "POST"])
+def test_upload(tiid):
+    import redis
+    redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
+    resp = {"upload result": "victory"}
+    if request.method == "POST":
+        file = request.files['file']
+        redis_client.set("test", file)
+        print file
+
+    elif request.method == "GET":
+        resp = redis_client.get("test")
+
+    return json_resp_from_thing(resp)
 
 
 
