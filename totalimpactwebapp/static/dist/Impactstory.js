@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-14
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-16
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -949,6 +949,7 @@ angular.module("profileProduct", [
     'profile',
     'services.loading',
     'ui.bootstrap',
+    'angularFileUpload',
     'security'
   ])
 
@@ -1152,7 +1153,12 @@ angular.module("profileProduct", [
 
 
 
-.controller("editProductFormCtrl", function(){
+.controller("productUploadCtrl", function($scope){
+    console.log("productUploadCtrl ran")
+    $scope.onFileSelect = function($files){
+      console.log("trying to upload files", $files)
+    }
+
 })
 
 .directive('dynamic', function ($compile) {
@@ -2734,7 +2740,7 @@ angular.module("directives.spinner")
 angular.module('directives.forms', ["services.loading"])
 
 
-  .directive("ngFileSelect",function(){
+  .directive("customFileSelect",function(){
     return {
       link: function($scope, el, attrs){
         el.bind("change", function(e){
@@ -4638,7 +4644,7 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "      </ol>\n" +
     "\n" +
     "         <div class=\"file-input-container\">\n" +
-    "            <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
+    "            <input type=\"file\" custom-file-select=\"google_scholar_bibtex\">\n" +
     "         </div>\n" +
     "\n" +
     "         <div class=\"submit\">\n" +
@@ -5583,6 +5589,10 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "      <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
     "         <i class=\"icon-refresh icon-spin\"></i>\n" +
     "         <span class=\"text\">Loading product...</span>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"file-input-container\" ng-controller=\"productUploadCtrl\">\n" +
+    "        <input type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
     "      </div>\n" +
     "\n" +
     "      <!--<div class=\"product\" ng-bind-html=\"trustHtml(productMarkup)\"></div>-->\n" +

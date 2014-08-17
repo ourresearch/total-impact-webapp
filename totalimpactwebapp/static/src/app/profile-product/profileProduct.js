@@ -6,6 +6,7 @@ angular.module("profileProduct", [
     'profile',
     'services.loading',
     'ui.bootstrap',
+    'angularFileUpload',
     'security'
   ])
 
@@ -209,7 +210,12 @@ angular.module("profileProduct", [
 
 
 
-.controller("editProductFormCtrl", function(){
+.controller("productUploadCtrl", function($scope){
+    console.log("productUploadCtrl ran")
+    $scope.onFileSelect = function($files){
+      console.log("trying to upload files", $files)
+    }
+
 })
 
 .directive('dynamic', function ($compile) {
