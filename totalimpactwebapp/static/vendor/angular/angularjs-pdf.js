@@ -19,8 +19,6 @@
           ctx = canvas.getContext('2d'),
           windowEl = angular.element($window);
 
-        console.log("angular pdf url", url)
-
         windowEl.on('scroll', function() {
           scope.$apply(function() {
             var viewportOffset = document.getElementById(attrs.canvasid).getBoundingClientRect()

@@ -1153,12 +1153,12 @@ angular.module("profileProduct", [
 
 
 
-.controller("productUploadCtrl", function($scope, $upload){
+.controller("productUploadCtrl", function($scope, $upload, $routeParams){
     $scope.onFileSelect = function($files){
       console.log("trying to upload files", $files)
 
       $scope.upload = $upload.upload({
-        url: "/product/123",
+        url: "/product/"+ $routeParams.tiid +"/file",
         file: $files[0]
       })
       .success(function(data){
@@ -1169,11 +1169,10 @@ angular.module("profileProduct", [
 })
 
 
-.controller("pdfCtrl", function($scope){
+.controller("pdfCtrl", function($scope, $routeParams){
     $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
-    $scope.pdfUrl = 'http://localhost:5000/test-pdf';
+    $scope.pdfUrl = '/product/'+ $routeParams.tiid +'/file';
     $scope.getNavStyle = function(scroll) {
-      console.log(scroll)
       if(scroll < 80) return 'fixed';
     }
 })

@@ -236,6 +236,8 @@ class Product(db.Model):
 
 
     def upload_file(self, file_to_upload):
+
+
         conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
         bucket_name = "impactstory-uploads-local"
         bucket = conn.get_bucket(bucket_name, validate=False)

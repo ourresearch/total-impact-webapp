@@ -16,6 +16,8 @@ from flask import render_template
 from flask import render_template_string
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
+from boto.s3.connection import S3ResponseError
+
 from totalimpactwebapp import app
 from totalimpactwebapp import db
 from totalimpactwebapp import login_manager
@@ -542,14 +544,17 @@ def user_product(user_id, tiid):
     return json_resp_from_thing(resp)
 
 
-@app.route("/<profile_id>/product/<tiid>/file", methods=['GET', 'POST'])
-def product_file(profile_id, tiid):
+@app.route("/product/<tiid>/file", methods=['GET', 'POST'])
+def product_file(tiid):
 
     if request.method == "GET":
         try:
             product_file = get_product(tiid).get_file()
         except IndexError:
             abort_json(404, "That product doesn't exist.")
+        except S3ResponseError:
+            abort_json(404, "This product exists, but has no file.")
+
         resp = make_response(product_file, 200)
         resp.mimetype = "application/pdf"
         resp.headers.add("Content-Disposition",
@@ -567,7 +572,6 @@ def product_file(profile_id, tiid):
         file_to_upload = request.files['file'].stream
         resp = get_product(tiid).upload_file(file_to_upload)
         return json_resp_from_thing(resp)
-
 
 
 
