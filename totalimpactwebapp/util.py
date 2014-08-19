@@ -262,3 +262,11 @@ def cached_property(property_name):
         return ret
     return property(cached_propery_get)
 
+
+def commit(db):
+    try:
+        db.session.commit()
+    except (IntegrityError, FlushError) as e:
+        db.session.rollback()
+        logger.warning(u"Error on commit, rolling back.  Message: {message}".format(
+            message=e.message))    

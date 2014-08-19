@@ -17,6 +17,8 @@ from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp.util import cached_property
+from totalimpactwebapp.util import commit
+
 from totalimpactwebapp import db
 from totalimpactwebapp import configs
 from totalimpactwebapp import json_sqlalchemy
@@ -55,6 +57,7 @@ class Product(db.Model):
     last_refresh_finished = db.Column(db.DateTime()) #ALTER TABLE item ADD last_refresh_finished timestamp
     last_refresh_status = db.Column(db.Text) #ALTER TABLE item ADD last_refresh_status text
     last_refresh_failure_message = db.Column(json_sqlalchemy.JSONAlchemy(db.Text)) #ALTER TABLE item ADD last_refresh_failure_message text
+    has_file = db.Column(db.Boolean, default=False)  # alter table item add has_file bool; alter table item alter has_file SET DEFAULT false;
 
 
     alias_rows = db.relationship(
@@ -222,6 +225,9 @@ class Product(db.Model):
             return False
 
     def get_file(self):
+        if not self.has_file:
+            return None
+
         conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
         bucket_name = "impactstory-uploads-local"
         bucket = conn.get_bucket(bucket_name, validate=False)
@@ -237,7 +243,6 @@ class Product(db.Model):
 
     def upload_file(self, file_to_upload):
 
-
         conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
         bucket_name = "impactstory-uploads-local"
         bucket = conn.get_bucket(bucket_name, validate=False)
@@ -247,10 +252,10 @@ class Product(db.Model):
         full_key_name = os.path.join(path, key_name)
         k = bucket.new_key(full_key_name)
 
-        # testfile = "/Users/hpiwowar/Documents/Mendeley Desktop/Smalheiser, Swanson - 1998 - Using ARROWSMITH a computer-assisted approach to formulating and assessing scientific hypotheses.pdf"
-        # length = k.set_contents_from_filename(testfile)
-
         length = k.set_contents_from_file(file_to_upload)
+
+        self.has_file = True
+        commit(db)
 
         return length
 

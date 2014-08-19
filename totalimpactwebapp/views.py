@@ -549,7 +549,8 @@ def product_file(tiid):
 
     if request.method == "GET":
         try:
-            product_file = get_product(tiid).get_file()
+            product = get_product(tiid)
+            product_file = product.get_file()
         except IndexError:
             abort_json(404, "That product doesn't exist.")
         except S3ResponseError:
@@ -567,10 +568,11 @@ def product_file(tiid):
         #     if not current_user_owns_tiid(tiid):
         #         abort_json(401, "You have to own this product to add files.")
         # except AttributeError:
-        #     abort_json(405, "You musts be logged in to upload files.")
+        #     abort_json(405, "You must be logged in to upload files.")
 
         file_to_upload = request.files['file'].stream
-        resp = get_product(tiid).upload_file(file_to_upload)
+        product = get_product(tiid)      
+        resp = product.upload_file(file_to_upload)
         return json_resp_from_thing(resp)
 
 

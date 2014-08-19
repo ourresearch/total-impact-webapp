@@ -4,6 +4,7 @@ from totalimpactwebapp import profile_award
 from totalimpactwebapp import util
 from totalimpactwebapp import configs
 from totalimpactwebapp.util import cached_property
+from totalimpactwebapp.util import commit
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError, DataError
@@ -561,13 +562,7 @@ def delete_products_from_profile(profile, tiids_to_delete):
             product.removed = now_in_utc()
             db.session.add(product)
 
-    try:
-        db.session.commit()
-    except (IntegrityError, FlushError) as e:
-        db.session.rollback()
-        logger.warning(u"Fails Integrity check in delete_products_from_profile for {profile_id}, rolling back.  Message: {message}".format(
-            profile_id=profile.id,
-            message=e.message))
+    commit(db)
 
     return True
 
@@ -662,13 +657,7 @@ def save_profile_last_refreshed_timestamp(profile_id, timestamp=None):
         timestamp = now_in_utc()
     profile.last_refreshed = timestamp
     profile.next_refresh = profile.last_refreshed + datetime.timedelta(days=profile.refresh_interval)
-    try:
-        db.session.commit()
-    except (IntegrityError, FlushError) as e:
-        db.session.rollback()
-        logger.warning(u"Fails Integrity check in save_profile_last_refreshed_timestamp for {profile_id}, rolling back.  Message: {message}".format(
-            profile_id=profile_id,
-            message=e.message))
+    commit(db)
     return True
 
 def save_profile_last_viewed_profile_timestamp(profile_id, timestamp=None):
@@ -680,13 +669,8 @@ def save_profile_last_viewed_profile_timestamp(profile_id, timestamp=None):
     if not timestamp:
         timestamp = now_in_utc()    
     profile.last_viewed_profile = timestamp
-    try:
-        db.session.commit()
-    except (IntegrityError, FlushError) as e:
-        db.session.rollback()
-        logger.warning(u"Fails Integrity check in save_profile_last_viewed_profile_timestamp for {profile_id}, rolling back.  Message: {message}".format(
-            profile_id=profile_id,
-            message=e.message))
+    commit(db)
+
     return True
 
 def create_profile_from_slug(url_slug, profile_request_dict, db):
@@ -725,7 +709,7 @@ def create_profile_from_slug(url_slug, profile_request_dict, db):
     profile = Profile(**profile_dict)
     db.session.add(profile)
     profile.set_password(password)
-    db.session.commit()
+    commit(db)
 
     logger.debug(u"Finished creating profile {id} with slug '{slug}'".format(
         id=profile.id,
@@ -787,7 +771,7 @@ def subscribe(profile, stripe_token, coupon=None, plan="base-yearly"):
 
     profile.stripe_id = stripe_customer.id
     db.session.merge(profile)
-    db.session.commit()
+    commit(db)
 
     return stripe_customer
 
@@ -799,7 +783,7 @@ def unsubscribe(profile):
 
     profile.stripe_id = None # now delete from our Profile
     db.session.merge(profile)
-    db.session.commit()
+    commit(db)
     return profile
 
 def get_profiles():
@@ -874,7 +858,7 @@ def hide_profile_secrets(profile):
 
 def delete_profile(profile):
     db.session.delete(profile)
-    db.session.commit()  
+    commit(db)
 
 
 def _make_id(len=6):
