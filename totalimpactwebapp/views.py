@@ -550,18 +550,24 @@ def product_file(tiid):
     if request.method == "GET":
         try:
             product = get_product(tiid)
-            product_file = product.get_file()
+
+            if product.has_file:
+                product_file = product.get_file()
+                resp = make_response(product_file, 200)
+                resp.mimetype = "application/pdf"
+                resp.headers.add("Content-Disposition",
+                                 "attachment; filename=impactstory-{tiid}.pdf".format(
+                                    tiid=tiid))   
+                return resp
+            else:
+                abort_json(404, "This product exists, but has no file.")
+
         except IndexError:
             abort_json(404, "That product doesn't exist.")
         except S3ResponseError:
             abort_json(404, "This product exists, but has no file.")
 
-        resp = make_response(product_file, 200)
-        resp.mimetype = "application/pdf"
-        resp.headers.add("Content-Disposition",
-                         "attachment; filename=impactstory-{tiid}.pdf".format(
-                            tiid=tiid))
-        return resp
+
 
     elif request.method == "POST":
         # try:
