@@ -2,6 +2,8 @@ angular.module( 'infopages', [
     'security',
     'services.page',
     'services.tiMixpanel',
+    'angularPayments',
+    'directives.forms',
     'directives.fullscreen'
   ])
   .factory("InfoPages", function ($http) {
@@ -70,6 +72,10 @@ angular.module( 'infopages', [
         templateUrl: 'infopages/advisors.tpl.html',
         controller: 'advisorsPageCtrl'
       })
+      .when('/donate', {
+        templateUrl: 'infopages/donate.tpl.html',
+        controller: 'donatePageCtrl'
+      })
       .when('/spread-the-word', {
         templateUrl: 'infopages/spread-the-word.tpl.html',
         controller: 'SpreadTheWordCtrl'
@@ -133,6 +139,69 @@ angular.module( 'infopages', [
   })
   .controller('SpreadTheWordCtrl', function($scope, Page) {
     Page.setTitle("Spread the word")
+
+  })
+
+  .controller('donatePageCtrl', function($scope,
+                                         $http,
+                                         Page,
+                                         TiMixpanel,
+                                         Loading,
+                                         UserMessage) {
+    Page.setTitle("Donate")
+
+
+    var subscribeUser = function(url_slug, plan, token, coupon) {
+      console.log("running subscribeUser()", url_slug, plan, token, coupon)
+      return UsersSubscription.save(
+        {id: url_slug},
+        {
+          token: token,
+          plan: plan,
+          coupon: coupon
+        },
+        function(resp){
+          console.log("we subscribed a user, huzzah!", resp)
+          security.refreshCurrentUser() // refresh the currentUser from server
+          window.scrollTo(0,0)
+          UserMessage.set("settings.subscription.subscribe.success")
+          Loading.finish("subscribe")
+          TiMixpanel.track("User subscribed")
+
+
+        },
+        function(resp){
+          console.log("we failed to subscribe a user.", resp)
+          UserMessage.set("settings.subscription.subscribe.error")
+          Loading.finish("subscribe")
+        }
+      )
+    }
+
+    var donate = function(token){
+      console.log("this is where the donate function works. sends this token: ", token)
+    }
+
+
+
+
+
+    $scope.handleStripe = function(status, response){
+
+      console.log("handleStripe() returned stuff from Stripe:", response)
+
+      Loading.start("donate")
+      console.log("in handleStripe(), got a response back from Stripe.js's call to the Stripe server:", status, response)
+      if (response.error) {
+        console.log("got an error instead of a token.")
+        UserMessage.set("settings.subscription.subscribe.error")
+
+      }
+      else {
+        console.log("yay, Stripe CC token created successfully! Now let's charge the card.")
+        donate(response.id)
+      }
+    }
 
   })
 

@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-17
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-19
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -706,6 +706,8 @@ angular.module( 'infopages', [
     'security',
     'services.page',
     'services.tiMixpanel',
+    'angularPayments',
+    'directives.forms',
     'directives.fullscreen'
   ])
   .factory("InfoPages", function ($http) {
@@ -774,6 +776,10 @@ angular.module( 'infopages', [
         templateUrl: 'infopages/advisors.tpl.html',
         controller: 'advisorsPageCtrl'
       })
+      .when('/donate', {
+        templateUrl: 'infopages/donate.tpl.html',
+        controller: 'donatePageCtrl'
+      })
       .when('/spread-the-word', {
         templateUrl: 'infopages/spread-the-word.tpl.html',
         controller: 'SpreadTheWordCtrl'
@@ -837,6 +843,69 @@ angular.module( 'infopages', [
   })
   .controller('SpreadTheWordCtrl', function($scope, Page) {
     Page.setTitle("Spread the word")
+
+  })
+
+  .controller('donatePageCtrl', function($scope,
+                                         $http,
+                                         Page,
+                                         TiMixpanel,
+                                         Loading,
+                                         UserMessage) {
+    Page.setTitle("Donate")
+
+
+    var subscribeUser = function(url_slug, plan, token, coupon) {
+      console.log("running subscribeUser()", url_slug, plan, token, coupon)
+      return UsersSubscription.save(
+        {id: url_slug},
+        {
+          token: token,
+          plan: plan,
+          coupon: coupon
+        },
+        function(resp){
+          console.log("we subscribed a user, huzzah!", resp)
+          security.refreshCurrentUser() // refresh the currentUser from server
+          window.scrollTo(0,0)
+          UserMessage.set("settings.subscription.subscribe.success")
+          Loading.finish("subscribe")
+          TiMixpanel.track("User subscribed")
+
+
+        },
+        function(resp){
+          console.log("we failed to subscribe a user.", resp)
+          UserMessage.set("settings.subscription.subscribe.error")
+          Loading.finish("subscribe")
+        }
+      )
+    }
+
+    var donate = function(token){
+      console.log("this is where the donate function works. sends this token: ", token)
+    }
+
+
+
+
+
+    $scope.handleStripe = function(status, response){
+
+      console.log("handleStripe() returned stuff from Stripe:", response)
+
+      Loading.start("donate")
+      console.log("in handleStripe(), got a response back from Stripe.js's call to the Stripe server:", status, response)
+      if (response.error) {
+        console.log("got an error instead of a token.")
+        UserMessage.set("settings.subscription.subscribe.error")
+
+      }
+      else {
+        console.log("yay, Stripe CC token created successfully! Now let's charge the card.")
+        donate(response.id)
+      }
+    }
 
   })
 
@@ -4435,7 +4504,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/donate.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -4851,6 +4920,130 @@ angular.module("infopages/collection.tpl.html", []).run(["$templateCache", funct
     "   </div>\n" +
     "</div>\n" +
     "");
+}]);
+
+angular.module("infopages/donate.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("infopages/donate.tpl.html",
+    "<div class=\"main infopage\" id=\"donate\">\n" +
+    "\n" +
+    "   <div class=\"wrapper\">\n" +
+    "      <h2 class=\"infopage-heading\">Donate</h2>\n" +
+    "      \n" +
+    "      <p>Here's where you donate.</p>\n" +
+    "\n" +
+    "      <form stripe-form=\"handleStripe\"\n" +
+    "            name=\"donateForm\"\n" +
+    "            novalidate\n" +
+    "            class=\"form-horizontal upgrade-form\">\n" +
+    "\n" +
+    "\n" +
+    "         <!-- amount to donate -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"donate-options\">Amount</label>\n" +
+    "            <div class=\"col-sm-9 input-group\">\n" +
+    "               <span class=\"input-group-addon\">USD $</span>\n" +
+    "               <input type=\"text\"\n" +
+    "                      required\n" +
+    "                      class=\"form-control\"\n" +
+    "                      name=\"card-holder-name\"\n" +
+    "                      id=\"card-holder-name\"\n" +
+    "                      placeholder=\"100\">\n" +
+    "               <span class=\"input-group-addon\">.00</span>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <!-- name on card -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
+    "            <div class=\"col-sm-9\">\n" +
+    "               <input type=\"text\"\n" +
+    "                      class=\"form-control\"\n" +
+    "                      required\n" +
+    "                      name=\"card-holder-name\"\n" +
+    "                      id=\"card-holder-name\"\n" +
+    "                      placeholder=\"Card Holder's Name\">\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <!-- card number -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "           <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
+    "           <div class=\"col-sm-9\">\n" +
+    "             <input type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    name=\"card-number\"\n" +
+    "                    id=\"card-number\"\n" +
+    "                    required\n" +
+    "                    ng-model=\"number\"\n" +
+    "                    payments-validate=\"card\"\n" +
+    "                    payments-format=\"card\"\n" +
+    "                    payments-type-model=\"type\"\n" +
+    "                    ng-class=\"type\"\n" +
+    "                    placeholder=\"Credit Card Number\">\n" +
+    "           </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "         <!-- expiration date -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
+    "            <div class=\"col-sm-3\">\n" +
+    "               <input type=\"text\"\n" +
+    "                      class=\"form-control\"\n" +
+    "                      required\n" +
+    "                      name=\"card-expiry\"\n" +
+    "                      id=\"card-expiry\"\n" +
+    "                      ng-model=\"expiry\"\n" +
+    "                      payments-validate=\"expiry\"\n" +
+    "                      payments-format=\"expiry\"\n" +
+    "                      placeholder=\"MM/YY\">\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "         <!-- CVV -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
+    "           <div class=\"col-sm-3\">\n" +
+    "             <input type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    required\n" +
+    "                    name=\"cvv\"\n" +
+    "                    id=\"cvv\"\n" +
+    "                    ng-model=\"cvc\"\n" +
+    "                    payments-validate=\"cvc\"\n" +
+    "                    payments-format=\"cvc\"\n" +
+    "                    payments-type-model=\"type\"\n" +
+    "                    placeholder=\"CVV\">\n" +
+    "           </div>\n" +
+    "           <div class=\"col-sm-2 cvv-graphic\">\n" +
+    "              <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
+    "           </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <div class=\"col-sm-offset-3 col-sm-9\">\n" +
+    "                  <button type=\"submit\"\n" +
+    "                          ng-disabled=\"donateForm.$invalid\"\n" +
+    "                          ng-show=\"!loading.is('subscribe')\"\n" +
+    "                          class=\"btn btn-success\">\n" +
+    "                     Donate\n" +
+    "                  </button>\n" +
+    "                  <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
+    "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                     <span class=\"text\">Processing&hellip;</span>\n" +
+    "                  </div>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "      </form>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "   </div><!-- end wrapper -->\n" +
+    "</div>");
 }]);
 
 angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($templateCache) {

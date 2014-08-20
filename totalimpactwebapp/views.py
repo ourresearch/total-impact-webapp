@@ -641,6 +641,11 @@ def test_pdf():
 
 
 
+@app.route("/donate", methods=["POST"])
+def donate():
+    pass
+
+
 
 @app.route("/profile/<id>/password", methods=["POST"])
 def user_password_modify(id):
