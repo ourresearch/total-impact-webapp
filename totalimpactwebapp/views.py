@@ -38,6 +38,7 @@ from totalimpactwebapp.profile import delete_products_from_profile
 from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.product import get_product
+from totalimpactwebapp.product import upload_file_and_commit
 from totalimpactwebapp.product import Markup
 
 from totalimpactwebapp.cards_factory import *
@@ -568,7 +569,6 @@ def product_file(tiid):
             abort_json(404, "This product exists, but has no file.")
 
 
-
     elif request.method == "POST":
         try:
             if not current_user_owns_tiid(tiid):
@@ -578,7 +578,8 @@ def product_file(tiid):
 
         file_to_upload = request.files['file'].stream
         product = get_product(tiid)      
-        resp = product.upload_file(file_to_upload)
+        resp = upload_file_and_commit(product, file_to_upload, db)
+
         return json_resp_from_thing(resp)
 
 
