@@ -180,6 +180,10 @@ angular.module( 'infopages', [
 
     var donate = function(token){
       console.log("this is where the donate function works. sends this token: ", token)
+      $http.post("/donate",
+        {stripe_token: token},
+        function(resp){}
+      )
     }
 
 
