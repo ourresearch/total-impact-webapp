@@ -570,11 +570,11 @@ def product_file(tiid):
 
 
     elif request.method == "POST":
-        # try:
-        #     if not current_user_owns_tiid(tiid):
-        #         abort_json(401, "You have to own this product to add files.")
-        # except AttributeError:
-        #     abort_json(405, "You must be logged in to upload files.")
+        try:
+            if not current_user_owns_tiid(tiid):
+                abort_json(401, "You have to own this product to add files.")
+        except AttributeError:
+            abort_json(405, "You must be logged in to upload files.")
 
         file_to_upload = request.files['file'].stream
         product = get_product(tiid)      
