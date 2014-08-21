@@ -43,6 +43,11 @@ def make(raw_dict):
 def get_product(tiid):
     return Product.query.get(tiid)
 
+def upload_file_and_commit(product, file_to_upload, db):
+    resp = product.upload_file(file_to_upload)
+    commit(db)
+    return resp
+
 
 class Product(db.Model):
 
