@@ -430,11 +430,17 @@ class Profile(db.Model):
         return product_dicts
 
 
-    def get_single_product_markup(self, tiid, markup):
-        markup.set_template("single-product.html")
-        markup.context["profile"] = self
+    def get_single_product_markup(self, tiid, markup_factory):
+
+        metadata_markup = markup_factory.make_markup()
+
+        metadata_markup.set_template("single-product.html")
+        metadata_markup.context["profile"] = self
+
+
+
         product = [p for p in self.display_products if p.tiid == tiid][0]
-        return product.to_markup_dict(markup)
+        return product.to_markup_dict_multi([metadata_markup])
 
     def csv_of_products(self):
         (header, rows) = self.build_csv_rows()

@@ -1,5 +1,4 @@
 import logging
-import jinja2
 import arrow
 import os
 import boto
@@ -30,7 +29,7 @@ percentile_snap_creations = 0
 logger = logging.getLogger("tiwebapp.product")
 deprecated_genres = ["twitter", "blog"]
 
-ignore_snaps_older_than = arrow.utcnow().replace(days=-25).datetime
+ignore_snaps_older_than = arrow.utcnow().replace(days=-125).datetime
 
 snaps_join_string = "and_(Product.tiid==Snap.tiid, " \
                     "Snap.last_collected_date > '{ignore_snaps_older_than}')".format(
@@ -297,41 +296,30 @@ class Product(db.Model):
         return ret
 
 
+    def to_markup_dict_multi(self, markups_list, hide_keys=None):
+        ret = self.to_dict()
+
+        ret["markups_list"] = []
+        for markup in markups_list:
+            ret["markups_list"].append(markup.make(ret))
+
+
+        try:
+            for key_to_hide in hide_keys:
+                try:
+                    del ret[key_to_hide]
+                except KeyError:
+                    pass
+        except TypeError:  # hide_keys=None is not iterable
+            pass
+
+        return ret
 
 
 
 
 
 
-
-
-
-
-class Markup():
-    def __init__(self, user_id, embed=False):
-        self.user_id = user_id
-
-        self.template = self._create_template("product.html")
-
-        self.context = {
-            "embed": embed,
-            "user_id": user_id
-        }
-
-
-    def _create_template(self, template_name):
-        template_loader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
-        template_env = jinja2.Environment(loader=template_loader)
-        return template_env.get_template(template_name)
-
-    def set_template(self, template_name):
-        self.template = self._create_template(template_name)
-
-    def make(self, local_context):
-        # the local context overwrites the Self on if there are conflicts.
-        full_context = dict(self.context, **local_context)
-
-        return self.template.render(full_context)
 
 
 
