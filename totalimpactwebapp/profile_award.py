@@ -120,7 +120,7 @@ class OAAward(ProfileAward):
         article_count = len(article_products)
         self.extra["articles_count"] = article_count
 
-        oa_articles = [p for p in article_products if p.biblio.free_fulltext_host]
+        oa_articles = [p for p in article_products if p.is_free_to_read]
         oa_article_count = len(oa_articles)
         self.extra["oa_articles_count"] = oa_article_count
 
@@ -171,12 +171,12 @@ class OAAward(ProfileAward):
                     next_level=self.next_level_name
                 )
 
-            self.extra["needed_for_next_level_product_page"] = "{thing_you_want} by adding free fulltext to this and {more_needed} more articles.".format(
+            self.extra["needed_for_next_level_product_page"] = "{thing_you_want} by uploading free fulltext to this and {more_needed} more articles.".format(
                 thing_you_want=thing_you_want,
                 more_needed=fulltext_urls_needed-1
             )
 
-            self.call_to_action = "To add more, click any article missing the <i class='icon-unlock-alt'></i> icon and add links to free fulltext."
+            self.call_to_action = "To add more, click any article missing the <i class='icon-unlock-alt'></i> icon and upload free fulltext."
 
         else:
             self.needed_for_next_level = "Congrats, that's the highest level we've got--you're one of the OA elite!"
