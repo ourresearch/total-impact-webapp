@@ -228,7 +228,7 @@ angular.module("profileProduct", [
 
 .controller("pdfCtrl", function($scope, $routeParams){
     $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
-    $scope.pdfUrl = '/product/'+ $routeParams.tiid +'/file';
+    $scope.pdfUrl = '/product/'+ $routeParams.tiid +'/pdf';
     $scope.getNavStyle = function(scroll) {
       if(scroll < 80) return 'fixed';
     }
