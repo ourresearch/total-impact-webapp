@@ -24,7 +24,7 @@ angular.module('app', [
   'infopages',
   'signup',
   'passwordReset',
-  'profileProduct',
+  'productPage',
   'profile',
   'settings'
 ]);

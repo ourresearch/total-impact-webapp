@@ -313,13 +313,14 @@ class Product(db.Model):
         return ret
 
 
-    def to_markup_dict_multi(self, markups_list, hide_keys=None):
+    def to_markup_dict_multi(self, markups_dict, hide_keys=None):
         ret = self.to_dict()
 
-        ret["markups_list"] = []
-        for markup in markups_list:
-            ret["markups_list"].append(markup.make(ret))
+        rendered_markups = {}
+        for name, markup in markups_dict.iteritems():
+            rendered_markups[name] = markup.make(ret)
 
+        ret["markups_dict"] = rendered_markups
 
         try:
             for key_to_hide in hide_keys:

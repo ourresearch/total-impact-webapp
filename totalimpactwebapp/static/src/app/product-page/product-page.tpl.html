@@ -34,13 +34,61 @@
    -->
 
    <div class="content wrapper">
-      <!--<div class="working" ng-show="loading.is('profileProduct')">
+      <!--<div class="working" ng-show="loading.is('productPage')">
          <i class="icon-refresh icon-spin"></i>
          <span class="text">Loading product...</span>
       </div>-->
 
       <div id="biblio">
-         <div class="contents" dynamic="biblioMarkup"></div>
+         <h5 class="title">
+            {{biblio.display_title}}
+
+            <a class="linkout url title"
+               ng-show="aliases.best_url"
+               target="_blank"
+               title="Click to view on publisher site"
+               data-toggle='tooltip'
+               href="{{ aliases.best_url }}">
+               <i class="icon-external-link-sign"></i>
+            </a>
+
+            <a class="linkout free-fulltext-url"
+               ng-show="biblio.free_fulltext_url"
+               target="_blank"
+               title="Free fulltext available!"
+               data-toggle='tooltip'
+               href="{{ free_fulltext_url }}">
+               <i class="icon-unlock-alt"></i>
+            </a>
+         </h5>
+
+         <div class="optional-biblio">
+            <span class="year">({{ biblioString("year", biblio.display_year) }})</span>
+
+            <span class="authors">{{ biblioString("authors", biblio.display_authors) }}.</span>
+
+            <span class="repository"
+                  ng-show="biblio.repository && !biblio.journal">
+               {{ biblioString("repository", biblio.repository) }}.
+            </span>
+
+
+            <span class="journal">{{ biblioString("journal", biblio.journal) }}</span>
+
+            <span class="description">{{ biblioString("abstract", biblio.description) }}</span>
+         </div>
+
+
+
+
+
+
+
+
+
+
+
+
       </div>
 
       <div id="sidebar">
@@ -60,7 +108,7 @@
 
 
             <div class="pdf-wrapper" ng-controller="pdfCtrl">
-                <ng-pdf template-url="pdf/pdf-viewer.tpl.html" canvasid="pdf-canvas" scale="1"></ng-pdf>
+               pdf goes here
             </div>
 
          </div>

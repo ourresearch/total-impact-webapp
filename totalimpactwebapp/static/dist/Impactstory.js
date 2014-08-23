@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-20
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-22
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -460,7 +460,7 @@ angular.module('app', [
   'infopages',
   'signup',
   'passwordReset',
-  'profileProduct',
+  'productPage',
   'profile',
   'settings'
 ]);
@@ -890,58 +890,7 @@ angular.module('passwordReset', [
     $location.path("/")
   }
 })
-angular.module('profileAward.profileAward', [])
-  .factory('ProfileAward', function() {
-    return {
-      test: function foo(){}
-    }
-
-})
-
-  .controller('ProfileAwardCtrl', function ($scope, ProfileAward) {
-
-  })
-
-
-angular.module('profileLinkedAccounts', [
-  'accounts.allTheAccounts',
-  'services.page',
-  'accounts.account',
-  'resources.users'
-])
-
-  .config(['$routeProvider', function($routeProvider, UserAbout) {
-
-    $routeProvider
-      .when("/:url_slug/accounts", {
-        templateUrl: 'profile-linked-accounts/profile-linked-accounts.tpl.html',
-        controller: 'profileLinkedAccountsCtrl',
-        resolve:{
-          userOwnsThisProfile: function(security){
-            return security.testUserAuthenticationLevel("ownsThisProfile")
-          },
-          currentUser: function(security){
-            return security.requestCurrentUser()
-          }
-        }
-      })
-
-  }])
-  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheAccounts, currentUser){
-
-
-    Page.showHeader(false)
-    Page.showFooter(false)
-
-    console.log("linked accounts page. current user: ", currentUser)
-
-    $scope.accounts = AllTheAccounts.get(currentUser)
-    $scope.returnLink = "/"+$routeParams.url_slug
-
-
-
-  })
-angular.module("profileProduct", [
+angular.module("productPage", [
     'resources.users',
     'resources.products',
     'profileAward.profileAward',
@@ -959,19 +908,19 @@ angular.module("profileProduct", [
   .config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.when("/:url_slug/product/:tiid", {
-      templateUrl:'profile-product/profile-product-page.tpl.html',
-      controller:'ProfileProductPageCtrl'
+      templateUrl:'product-page/product-page.tpl.html',
+      controller:'ProductPageCtrl'
     });
 
   }])
 
-  .factory('ProfileProduct', function(){
+  .factory('productPage', function(){
     return {
 
     }
   })
 
-  .controller('ProfileProductPageCtrl', function (
+  .controller('ProductPageCtrl', function (
     $scope,
     $routeParams,
     $location,
@@ -992,7 +941,7 @@ angular.module("profileProduct", [
     window.scrollTo(0,0)  // hack. not sure why this is needed.
 
 
-    Loading.start('profileProduct')
+    Loading.start('productPage')
     UserProfile.useCache(true)
 
     $scope.userSlug = slug
@@ -1010,13 +959,13 @@ angular.module("profileProduct", [
     )
 
     $scope.openInfoModal = function(){
-      $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
+      $modal.open({templateUrl: "product-page/percentilesInfoModal.tpl.html"})
     }
 
     $scope.openFulltextLocationModal = function(){
       UserProfile.useCache(false)
       $modal.open(
-        {templateUrl: "profile-product/fulltext-location-modal.tpl.html"}
+        {templateUrl: "product-page/fulltext-location-modal.tpl.html"}
         // controller specified in the template :/
       )
       .result.then(function(resp){
@@ -1046,7 +995,7 @@ angular.module("profileProduct", [
     $scope.editProduct = function(){
       UserProfile.useCache(false)
       $modal.open({
-        templateUrl: "profile-product/edit-product-modal.tpl.html",
+        templateUrl: "product-page/edit-product-modal.tpl.html",
         controller: "editProductModalCtrl",
         resolve: {
           product: function(){
@@ -1062,15 +1011,33 @@ angular.module("profileProduct", [
       )
     }
 
+
+    $scope.biblioString = function(biblioKey, biblioVal){
+      if (biblioVal){
+        return biblioVal
+      }
+      else {
+        return "no " + biblioKey + " available"
+      }
+    }
+
     var renderProduct = function(){
       $scope.product = UsersProduct.get({
         id: $routeParams.url_slug,
         tiid: $routeParams.tiid
       },
       function(data){
-        Loading.finish('profileProduct')
+        Loading.finish('productPage')
         Page.setTitle(data.biblio.title)
-        $scope.productMarkup = data.markup
+
+        $scope.biblioMarkup = data.markups_dict.biblio
+        $scope.metricsMarkup = data.markups_dict.metrics
+
+        $scope.aliases = data.aliases
+        $scope.biblio = data.biblio
+
+        $scope.foobar = "foobar"
+
         console.log("loaded a product", data)
         window.scrollTo(0,0)  // hack. not sure why this is needed.
 
@@ -1207,6 +1174,57 @@ angular.module("profileProduct", [
 
 
 
+angular.module('profileAward.profileAward', [])
+  .factory('ProfileAward', function() {
+    return {
+      test: function foo(){}
+    }
+
+})
+
+  .controller('ProfileAwardCtrl', function ($scope, ProfileAward) {
+
+  })
+
+
+angular.module('profileLinkedAccounts', [
+  'accounts.allTheAccounts',
+  'services.page',
+  'accounts.account',
+  'resources.users'
+])
+
+  .config(['$routeProvider', function($routeProvider, UserAbout) {
+
+    $routeProvider
+      .when("/:url_slug/accounts", {
+        templateUrl: 'profile-linked-accounts/profile-linked-accounts.tpl.html',
+        controller: 'profileLinkedAccountsCtrl',
+        resolve:{
+          userOwnsThisProfile: function(security){
+            return security.testUserAuthenticationLevel("ownsThisProfile")
+          },
+          currentUser: function(security){
+            return security.requestCurrentUser()
+          }
+        }
+      })
+
+  }])
+  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheAccounts, currentUser){
+
+
+    Page.showHeader(false)
+    Page.showFooter(false)
+
+    console.log("linked accounts page. current user: ", currentUser)
+
+    $scope.accounts = AllTheAccounts.get(currentUser)
+    $scope.returnLink = "/"+$routeParams.url_slug
+
+
+
+  })
 angular.module('profileSingleProducts', [
   'services.page',
   'resources.users',
@@ -2931,7 +2949,6 @@ angular.module('resources.products',['ngResource'])
 
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -3919,7 +3936,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -4437,7 +4453,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -5399,70 +5415,13 @@ angular.module("pdf/pdf-viewer.tpl.html", []).run(["$templateCache", function($t
     "  <button class=\"btn\" ng-click=\"goNext()\"><span>next <i class=\"icon-chevron-right\"></i></span></button>\n" +
     "</div>\n" +
     "\n" +
-    "<canvas id=\"pdf-canvas\" class=\"rotate0\" width=\"1100\"></canvas>\n" +
+    "<canvas id=\"pdf-canvas\" class=\"rotate0\" width=\"675\"></canvas>\n" +
     "\n" +
     "");
 }]);
 
-angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile-award/profile-award.tpl.html",
-    "<div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && profileAward.award_badge\">\n" +
-    "   <span class=\"profile-award\"\n" +
-    "        ng-controller=\"ProfileAwardCtrl\"\n" +
-    "        data-content=\"{{ profile.given_name }} has made {{ profileAward.level_justification }}\"\n" +
-    "        data-original-title=\"{{ profileAward.level_name }} level award\"\n" +
-    "        ng-show=\"profileAward.level>0\">\n" +
-    "\n" +
-    "      <span class=\"icon level-{{ profileAward.level }}\">\n" +
-    "         <i class=\"icon-unlock-alt\"></i>\n" +
-    "      </span>\n" +
-    "      <span class=\"text\">{{ profileAward.name }}</span>\n" +
-    "\n" +
-    "   </span>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && profileAward.award_badge\">\n" +
-    "   <span class=\"profile-award\"\n" +
-    "        ng-controller=\"ProfileAwardCtrl\"\n" +
-    "        data-content=\"You've made {{ profileAward.level_justification }} Nice work! <div class='call-to-action'>{{ profileAward.needed_for_next_level }} {{ profileAward.call_to_action }}</div>\"\n" +
-    "        data-original-title=\"{{ profileAward.level_name }} level award\"\n" +
-    "        ng-show=\"profileAward.level>0\">\n" +
-    "\n" +
-    "      <span class=\"icon level-{{ profileAward.level }}\">\n" +
-    "         <i class=\"icon-unlock-alt\"></i>\n" +
-    "      </span>\n" +
-    "      <span class=\"text\">{{ profileAward.name }}</span>\n" +
-    "\n" +
-    "   </span>\n" +
-    "   <a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"https://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter\" data-text=\"I got a new badge on my Impactstory profile: {{ profileAward.level_name }}-level {{ profileAward.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
-    "</div>");
-}]);
-
-angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile-linked-accounts/profile-linked-accounts.tpl.html",
-    "<div class=\"profile-linked-accounts profile-subpage\" >\n" +
-    "   <div class=\"profile-accounts-header profile-subpage-header\">\n" +
-    "      <div class=\"wrapper\">\n" +
-    "         <a back-to-profile></a>\n" +
-    "         <h1 class=\"instr\">Connect to other accounts</h1>\n" +
-    "         <h2>We'll automatically import your products from all over the web,\n" +
-    "            so your profile stays up to date.</h2>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"accounts\">\n" +
-    "      <div class=\"account\"\n" +
-    "           ng-repeat=\"account in accounts\"\n" +
-    "           ng-controller=\"accountCtrl\"\n" +
-    "           ng-include=\"'accounts/account.tpl.html'\">\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>");
-}]);
-
-angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile-product/edit-product-modal.tpl.html",
+angular.module("product-page/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-page/edit-product-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
     "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
     "   <h3>Edit product</h3>\n" +
@@ -5520,8 +5479,8 @@ angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templat
     "");
 }]);
 
-angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile-product/fulltext-location-modal.tpl.html",
+angular.module("product-page/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-page/fulltext-location-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
     "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
     "   <h3>Add link to free fulltext</h3>\n" +
@@ -5566,8 +5525,8 @@ angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$te
     "</div>");
 }]);
 
-angular.module("profile-product/percentilesInfoModal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile-product/percentilesInfoModal.tpl.html",
+angular.module("product-page/percentilesInfoModal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-page/percentilesInfoModal.tpl.html",
     "<div class=\"modal-header\">\n" +
     "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
     "   <h3>What do these numbers mean?</h3>\n" +
@@ -5592,9 +5551,11 @@ angular.module("profile-product/percentilesInfoModal.tpl.html", []).run(["$templ
     "</div>");
 }]);
 
-angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile-product/profile-product-page.tpl.html",
-    "<div class=\"product-page profile-subpage\">\n" +
+angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-page/product-page.tpl.html",
+    "<div class=\"product-page\">\n" +
+    "\n" +
+    "   <!--\n" +
     "   <div class=\"header profile-subpage-header product-page-header\">\n" +
     "      <div class=\"wrapper\">\n" +
     "         <a back-to-profile></a>\n" +
@@ -5625,26 +5586,153 @@ angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templ
     "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
+    "   -->\n" +
+    "\n" +
     "   <div class=\"content wrapper\">\n" +
-    "      <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
+    "      <!--<div class=\"working\" ng-show=\"loading.is('productPage')\">\n" +
     "         <i class=\"icon-refresh icon-spin\"></i>\n" +
     "         <span class=\"text\">Loading product...</span>\n" +
+    "      </div>-->\n" +
+    "\n" +
+    "      <div id=\"biblio\">\n" +
+    "         <h5 class=\"title\">\n" +
+    "            {{biblio.display_title}}\n" +
+    "\n" +
+    "            <a class=\"linkout url title\"\n" +
+    "               ng-show=\"aliases.best_url\"\n" +
+    "               target=\"_blank\"\n" +
+    "               title=\"Click to view on publisher site\"\n" +
+    "               data-toggle='tooltip'\n" +
+    "               href=\"{{ aliases.best_url }}\">\n" +
+    "               <i class=\"icon-external-link-sign\"></i>\n" +
+    "            </a>\n" +
+    "\n" +
+    "            <a class=\"linkout free-fulltext-url\"\n" +
+    "               ng-show=\"biblio.free_fulltext_url\"\n" +
+    "               target=\"_blank\"\n" +
+    "               title=\"Free fulltext available!\"\n" +
+    "               data-toggle='tooltip'\n" +
+    "               href=\"{{ free_fulltext_url }}\">\n" +
+    "               <i class=\"icon-unlock-alt\"></i>\n" +
+    "            </a>\n" +
+    "         </h5>\n" +
+    "\n" +
+    "         <div class=\"optional-biblio\">\n" +
+    "            <span class=\"year\">({{ biblioString(\"year\", biblio.display_year) }})</span>\n" +
+    "\n" +
+    "            <span class=\"authors\">{{ biblioString(\"authors\", biblio.display_authors) }}.</span>\n" +
+    "\n" +
+    "            <span class=\"repository\"\n" +
+    "                  ng-show=\"biblio.repository && !biblio.journal\">\n" +
+    "               {{ biblioString(\"repository\", biblio.repository) }}.\n" +
+    "            </span>\n" +
+    "\n" +
+    "\n" +
+    "            <span class=\"journal\">{{ biblioString(\"journal\", biblio.journal) }}</span>\n" +
+    "\n" +
+    "            <span class=\"description\">{{ biblioString(\"abstract\", biblio.description) }}</span>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"file-input-container\" ng-controller=\"productUploadCtrl\">\n" +
-    "        <input type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
+    "      <div id=\"sidebar\">\n" +
+    "         <div id=\"metrics\">\n" +
+    "            <div class=\"contents\" ng-bind-html=\"metricsMarkup\"></div>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <!--<div class=\"product\" ng-bind-html=\"trustHtml(productMarkup)\"></div>-->\n" +
     "\n" +
-    "      <div class=\"product\" dynamic=\"productMarkup\"></div>\n" +
+    "      <div id=\"file\">\n" +
+    "         <div class=\"contents\">\n" +
     "\n" +
-    "      <div class=\"pdf-wrapper\" ng-controller=\"pdfCtrl\">\n" +
-    "          <ng-pdf template-url=\"pdf/pdf-viewer.tpl.html\" canvasid=\"pdf-canvas\" scale=\"1\"></ng-pdf>\n" +
+    "            <div class=\"file-input-container well\" ng-controller=\"productUploadCtrl\">\n" +
+    "               <h4>upload your file</h4>\n" +
+    "              <input type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"pdf-wrapper\" ng-controller=\"pdfCtrl\">\n" +
+    "               pdf goes here\n" +
+    "            </div>\n" +
+    "\n" +
+    "         </div>\n" +
     "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "\n" +
     "\n" +
     "   </div>\n" +
+    "</div>");
+}]);
+
+angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-award/profile-award.tpl.html",
+    "<div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && profileAward.award_badge\">\n" +
+    "   <span class=\"profile-award\"\n" +
+    "        ng-controller=\"ProfileAwardCtrl\"\n" +
+    "        data-content=\"{{ profile.given_name }} has made {{ profileAward.level_justification }}\"\n" +
+    "        data-original-title=\"{{ profileAward.level_name }} level award\"\n" +
+    "        ng-show=\"profileAward.level>0\">\n" +
+    "\n" +
+    "      <span class=\"icon level-{{ profileAward.level }}\">\n" +
+    "         <i class=\"icon-unlock-alt\"></i>\n" +
+    "      </span>\n" +
+    "      <span class=\"text\">{{ profileAward.name }}</span>\n" +
+    "\n" +
+    "   </span>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && profileAward.award_badge\">\n" +
+    "   <span class=\"profile-award\"\n" +
+    "        ng-controller=\"ProfileAwardCtrl\"\n" +
+    "        data-content=\"You've made {{ profileAward.level_justification }} Nice work! <div class='call-to-action'>{{ profileAward.needed_for_next_level }} {{ profileAward.call_to_action }}</div>\"\n" +
+    "        data-original-title=\"{{ profileAward.level_name }} level award\"\n" +
+    "        ng-show=\"profileAward.level>0\">\n" +
+    "\n" +
+    "      <span class=\"icon level-{{ profileAward.level }}\">\n" +
+    "         <i class=\"icon-unlock-alt\"></i>\n" +
+    "      </span>\n" +
+    "      <span class=\"text\">{{ profileAward.name }}</span>\n" +
+    "\n" +
+    "   </span>\n" +
+    "   <a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"https://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter\" data-text=\"I got a new badge on my Impactstory profile: {{ profileAward.level_name }}-level {{ profileAward.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
+    "</div>");
+}]);
+
+angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-linked-accounts/profile-linked-accounts.tpl.html",
+    "<div class=\"profile-linked-accounts profile-subpage\" >\n" +
+    "   <div class=\"profile-accounts-header profile-subpage-header\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <a back-to-profile></a>\n" +
+    "         <h1 class=\"instr\">Connect to other accounts</h1>\n" +
+    "         <h2>We'll automatically import your products from all over the web,\n" +
+    "            so your profile stays up to date.</h2>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"accounts\">\n" +
+    "      <div class=\"account\"\n" +
+    "           ng-repeat=\"account in accounts\"\n" +
+    "           ng-controller=\"accountCtrl\"\n" +
+    "           ng-include=\"'accounts/account.tpl.html'\">\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
     "</div>");
 }]);
 

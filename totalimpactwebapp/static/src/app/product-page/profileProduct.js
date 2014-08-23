@@ -1,4 +1,4 @@
-angular.module("profileProduct", [
+angular.module("productPage", [
     'resources.users',
     'resources.products',
     'profileAward.profileAward',
@@ -16,19 +16,19 @@ angular.module("profileProduct", [
   .config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.when("/:url_slug/product/:tiid", {
-      templateUrl:'product-page/product-page-page.tpl.html',
-      controller:'ProfileProductPageCtrl'
+      templateUrl:'product-page/product-page.tpl.html',
+      controller:'ProductPageCtrl'
     });
 
   }])
 
-  .factory('ProfileProduct', function(){
+  .factory('productPage', function(){
     return {
 
     }
   })
 
-  .controller('ProfileProductPageCtrl', function (
+  .controller('ProductPageCtrl', function (
     $scope,
     $routeParams,
     $location,
@@ -49,7 +49,7 @@ angular.module("profileProduct", [
     window.scrollTo(0,0)  // hack. not sure why this is needed.
 
 
-    Loading.start('profileProduct')
+    Loading.start('productPage')
     UserProfile.useCache(true)
 
     $scope.userSlug = slug
@@ -119,17 +119,32 @@ angular.module("profileProduct", [
       )
     }
 
+
+    $scope.biblioString = function(biblioKey, biblioVal){
+      if (biblioVal){
+        return biblioVal
+      }
+      else {
+        return "no " + biblioKey + " available"
+      }
+    }
+
     var renderProduct = function(){
       $scope.product = UsersProduct.get({
         id: $routeParams.url_slug,
         tiid: $routeParams.tiid
       },
       function(data){
-        Loading.finish('profileProduct')
+        Loading.finish('productPage')
         Page.setTitle(data.biblio.title)
 
         $scope.biblioMarkup = data.markups_dict.biblio
         $scope.metricsMarkup = data.markups_dict.metrics
+
+        $scope.aliases = data.aliases
+        $scope.biblio = data.biblio
+
+        $scope.foobar = "foobar"
 
         console.log("loaded a product", data)
         window.scrollTo(0,0)  // hack. not sure why this is needed.

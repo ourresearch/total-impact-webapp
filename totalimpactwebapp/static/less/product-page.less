@@ -1,213 +1,37 @@
-div.modal-body.free-fulltext-url {
 
-   div.add-link {
-      div.buttons-group {
-         height: 40px;
-         margin: 20px;
-         text-align:center;
-         .btn-default {display:none;}
-         .btn-primary { width: 14em;}
-      }
-   }
-
-   div.archive-this {
-      margin-top: 50px;
-      a.btn {
-         display: block;
-         text-align: center;
-         width: 14em;
-         margin:20px auto 0;
-         span {margin-right: 5px;}
-      }
-   }
-}
-
-div.modal-body.edit-product {
-   div.buttons-group {
-      // duplicates same declaration block used above for other modal; fix.
-      height: 40px;
-      margin: 20px;
-      text-align:center;
-      .btn {width: 8em;}
-   }
-}
-
-div.pdf-wrapper {
-   float:left;
-   canvas {
-      border: 3px solid #555;
-   }
-   div.pdf-nav {
-      background: #555;
-      border: 3px solid #555;
-      border-bottom: none;
-      opacity: .95;
-      color: #eee;
-      margin-top: -50px;
-      height: 50px;
-      text-align: center;
-      .current-page {
-
-      }
-      .page-count {
-         font-size: 70%;
-         font-weight: 100;
-      }
-      &.fixed {
-         position:fixed;
-         top:0;
-         width:100%;
-         right:0;
-         margin-top: 0;
-      }
-      .btn {
-         padding: 5px;
-         margin: 5px 20px;
-         background: #777;
-         &:hover, &:focus {
-            background: #888;
-            color: #fff;
-         }
-         i {
-            margin: 5px;
-            font-size: 75%;
-         }
-      }
-   }
-}
 
 
 div.product-page {
    min-height: 500px;
-   padding-top: 50px;
-   div.header {
-      div.wrapper {
-         position:relative;
-         a.back-to-profile {
-            position:absolute;
-            bottom:0;
-            left: 0;
-         }
-         div.product-page-controls {
-            position:absolute;
-            right:0;
-            bottom:0;
-            width: 400px;
-            text-align: right;
-            a {
-               margin-left: 20px;
-               font-weight: 700;
-               font-size: 20px;
-               &.delete-product {
 
-               }
-            }
-
-         }
-
-      }
+   div.working {
+      color: #ddd;
+      font-size: 30px;
+      font-family: Lato;
+      font-weight: bolder;
+      text-align: center;
+      span.text { margin-left: 10px;}
+      padding-top: 100px;
    }
 
-   .content {
-      margin-bottom: 100px;
-      padding-top: 20px;
-      div.working {
-         color: #ddd;
-         font-size: 30px;
-         font-family: Lato;
-         font-weight: bolder;
-         text-align: center;
-         span.text { margin-left: 10px;}
-         padding-top: 100px;
-      }
 
 
-      a.percentile-info {
-         border-top: 1px solid #bbb;
-         color: #555;
-         font-size: 15px;
-         margin-left: 265px;
-         padding-top: 5px;
-         padding: 5px;
-         &:hover {
-            color: #333;
-         }
-      }
-
-      .product { // overrides the main .product styles
-   //      margin-left:200px;
-         width:  100%;
-         margin-bottom: 30px;
-
-
-         .biblio {
-            float:none;
-            width:  100%;
-            h5 {
-               font-size: 30px;
-               color: #333;
-               i {font-size: 80%;}
-            }
-            div.optional-biblio {
-               font-size: 20px;
-            }
-         }
-
-         div.free-fulltext-url {
-            .clearfix();
-            margin-top: 20px;
-            margin-left: -15px;
-            i.leader {
-               font-size: 110%;
-               margin-right: 5px;
-               float:left;
-            }
-            i.icon-external-link-sign {
-               font-size: 80%;
-               opacity: .5;
-            }
-            div.no-free-fulltext-url {
-               div.info{
-                  width: 400px;
-                  float:left;
-
-                  div.no-fulltext{
-                     font-weight: bold;
-                  }
-                  div.encouragement {
-                     margin-top: 5px;
-                     font-style: italic;
-                     font-size: 90%;
-                  }
-               }
-
-
-            }
-
-            div.action{
-               a.action {
-                  margin: -5px 0 0 25px;
-                  text-decoration: none;
-                  background: #777;
-                  border: none;
-                  padding: 3px 10px;
-                  &:hover{background: #555;}
-               }
-            }
-
-            div.has-free-fulltext-url {
-               a {
-                  color: #333;
-                  font-weight: normal;
-                  &:hover {text-decoration: underline;}
-               }
-            }
-         }
+   #biblio {
+      width: 700px;
+      float:left;
+   }
 
 
 
+   // SIDEBAR
+   // ************************************************************************
+   // ************************************************************************
 
+   #sidebar {
+      width: 400px;
+      float:right;
 
+      #metrics {
          ul.metric-details-list {
             margin-top: 40px;
             li.metric-detail {
@@ -273,7 +97,6 @@ div.product-page {
                         height: 16px;
                         margin: 0 3px 0 3px;
                         vertical-align: middle;
-   //                     .grayscale(.75);
                      }
                      i {color:  #ddd;}
 
@@ -315,4 +138,207 @@ div.product-page {
          }
       }
    }
+
+
+
+
+
+
+
+   // FILE
+   // ************************************************************************
+   // ************************************************************************
+
+   #file {
+      float:left;
+      margin-top: 20px;
+      width: 681px;
+      div.pdf-wrapper {
+         canvas {
+            border: 3px solid #555;
+         }
+         div.pdf-nav {
+            background: #555;
+            border: 3px solid #555;
+            border-bottom: none;
+            opacity: .95;
+            color: #eee;
+            height: 50px;
+            text-align: center;
+            .current-page {
+
+            }
+            .page-count {
+               font-size: 70%;
+               font-weight: 100;
+            }
+            &.fixed {
+               position:fixed;
+               top:0;
+               width:100%;
+               right:0;
+               margin-top: 0;
+            }
+            .btn {
+               padding: 5px;
+               margin: 5px 20px;
+               background: #777;
+               &:hover, &:focus {
+                  background: #888;
+                  color: #fff;
+               }
+               i {
+                  margin: 5px;
+                  font-size: 75%;
+               }
+            }
+         }
+      }
+
+
+      div.file-input-container {
+         display:none;  // temp while working on biblio section.
+      }
+
+
+
+
+
+
+      div.free-fulltext-url {
+         .clearfix();
+         margin-top: 20px;
+         margin-left: -15px;
+         i.leader {
+            font-size: 110%;
+            margin-right: 5px;
+            float:left;
+         }
+         i.icon-external-link-sign {
+            font-size: 80%;
+            opacity: .5;
+         }
+         div.no-free-fulltext-url {
+            div.info{
+               width: 400px;
+               float:left;
+
+               div.no-fulltext{
+                  font-weight: bold;
+               }
+               div.encouragement {
+                  margin-top: 5px;
+                  font-style: italic;
+                  font-size: 90%;
+               }
+            }
+         }
+
+         div.action{
+            a.action {
+               margin: -5px 0 0 25px;
+               text-decoration: none;
+               background: #777;
+               border: none;
+               padding: 3px 10px;
+               &:hover{background: #555;}
+            }
+         }
+
+         div.has-free-fulltext-url {
+            a {
+               color: #333;
+               font-weight: normal;
+               &:hover {text-decoration: underline;}
+            }
+         }
+      }
+   }
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+div.header {
+   div.wrapper {
+      position:relative;
+      a.back-to-profile {
+         position:absolute;
+         bottom:0;
+         left: 0;
+      }
+      div.product-page-controls {
+         position:absolute;
+         right:0;
+         bottom:0;
+         width: 400px;
+         text-align: right;
+         a {
+            margin-left: 20px;
+            font-weight: 700;
+            font-size: 20px;
+            &.delete-product {
+
+            }
+         }
+
+      }
+
+   }
+}
+
+
+
+div.modal-body.free-fulltext-url {
+
+   div.add-link {
+      div.buttons-group {
+         height: 40px;
+         margin: 20px;
+         text-align:center;
+         .btn-default {display:none;}
+         .btn-primary { width: 14em;}
+      }
+   }
+
+   div.archive-this {
+      margin-top: 50px;
+      a.btn {
+         display: block;
+         text-align: center;
+         width: 14em;
+         margin:20px auto 0;
+         span {margin-right: 5px;}
+      }
+   }
+}
+
+
+
+
+div.modal-body.edit-product {
+   div.buttons-group {
+      // duplicates same declaration block used above for other modal; fix.
+      height: 40px;
+      margin: 20px;
+      text-align:center;
+      .btn {width: 8em;}
+   }
+}
+
+
+

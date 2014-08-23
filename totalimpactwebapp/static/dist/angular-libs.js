@@ -1414,7 +1414,6 @@ pendingTimer = null;
 
 (function () {
 
-  console.log("running angular pdf")
 
   'use strict';
 

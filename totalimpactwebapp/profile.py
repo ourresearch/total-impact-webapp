@@ -429,18 +429,23 @@ class Profile(db.Model):
 
         return product_dicts
 
-
     def get_single_product_markup(self, tiid, markup_factory):
 
-        metadata_markup = markup_factory.make_markup()
+        biblio_markup = markup_factory.make_markup()
+        biblio_markup.set_template("product-markup-biblio.html")
+        biblio_markup.context["profile"] = self
 
-        metadata_markup.set_template("single-product.html")
-        metadata_markup.context["profile"] = self
+        metrics_markup = markup_factory.make_markup()
+        metrics_markup.set_template("product-markup-metrics.html")
+        metrics_markup.context["profile"] = self
 
-
+        markups = {
+            "biblio": biblio_markup,
+            "metrics": metrics_markup
+        }
 
         product = [p for p in self.display_products if p.tiid == tiid][0]
-        return product.to_markup_dict_multi([metadata_markup])
+        return product.to_markup_dict_multi(markups)
 
     def csv_of_products(self):
         (header, rows) = self.build_csv_rows()
