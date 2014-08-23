@@ -39,7 +39,8 @@ from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import upload_file_and_commit
-from totalimpactwebapp.product import Markup
+from totalimpactwebapp.product_markup import Markup
+from totalimpactwebapp.product_markup import MarkupFactory
 
 from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import emailer
@@ -530,9 +531,9 @@ def user_product(user_id, tiid):
     profile = get_user_for_response(user_id, request)
 
     if request.method == "GET":
-        markup = Markup(g.user_id, embed=False)
+        markup_factory = MarkupFactory(g.user_id, embed=False)
         try:
-            resp = profile.get_single_product_markup(tiid, markup)
+            resp = profile.get_single_product_markup(tiid, markup_factory)
         except IndexError:
             abort_json(404, "That product doesn't exist.")
 

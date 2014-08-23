@@ -1,0 +1,170 @@
+<div class="product-page">
+
+   <!--
+   <div class="header profile-subpage-header product-page-header">
+      <div class="wrapper">
+         <a back-to-profile></a>
+         <div class="product-page-controls" ng-show="userOwnsThisProfile && !loading.is()">
+            <a class="edit-product"
+               ng-click="editProduct()"
+               tooltip="Make changes to this product's title or authors"
+               tooltip-placement="bottom">
+               <span class="ready">
+                  <i class="icon-edit"></i>
+                  Edit
+               </span>
+               <span class="working" ng-show="loading.is('deleteProduct')">
+                  <i class="icon-refresh icon-spin"></i>
+                  Removing...
+               </span>
+            </a>
+
+            <a class="delete-product"
+               ng-click="deleteProduct()"
+               tooltip="Remove this product from your profile."
+               tooltip-placement="bottom">
+               <span class="ready">
+                  <i class="icon-trash"></i>
+                  Remove
+               </span>
+            </a>
+         </div>
+      </div>
+   </div>
+   -->
+
+   <div class="content wrapper">
+      <!--<div class="working" ng-show="loading.is('productPage')">
+         <i class="icon-refresh icon-spin"></i>
+         <span class="text">Loading product...</span>
+      </div>-->
+
+      <div id="biblio">
+         <h5 class="title">
+            <span class="title-text"
+                  e-rows="3"
+                  editable-textarea="biblio.display_title">
+               {{biblio.display_title}}
+               <i class="icon-edit" ng-show="userOwnsThisProfile"></i>
+            </span>
+
+            <a class="linkout url title"
+               ng-show="aliases.best_url"
+               target="_blank"
+               title="Click to view on publisher site"
+               data-toggle='tooltip'
+               href="{{ aliases.best_url }}">
+               <i class="icon-external-link-sign"></i>
+            </a>
+
+            <a class="linkout free-fulltext-url"
+               ng-show="biblio.free_fulltext_url"
+               target="_blank"
+               title="Free fulltext available!"
+               data-toggle='tooltip'
+               href="{{ free_fulltext_url }}">
+               <i class="icon-unlock-alt"></i>
+            </a>
+         </h5>
+
+         <div class="optional-biblio">
+
+            <div class="biblio-line">
+               <span class="biblio-field authors">
+                  <span class="value"
+                        onaftersave="updateBiblio('authors')"
+                        ng-show="!loading.is('updateBiblio')"
+                        editable-text="biblio.authors">
+                  {{ biblio.display_authors || "click to enter authors" }}
+                  </span>
+                  <span class="loading" ng-show="loading.is('updateBiblio')">
+                     <i class="icon-refresh icon-spin"></i>
+                     updating authors...
+                  </span>
+               </span>
+
+               <span class="biblio-field year">
+                  (<span class="value biblio-year"
+                        ng-show="!loading.is('updateBiblio')"
+                        onaftersave="updateBiblio('year')"
+                        editable-text="biblio.year">
+                     {{ biblio.display_year || "click to enter publication year" }}
+                  </span>)
+                  <span class="loading" ng-show="loading.is('updateBiblio')">
+                     <i class="icon-refresh icon-spin"></i>
+                     updating publication year...
+                  </span>
+               </span>
+            </div>
+
+            <div class="biblio-line">
+               <span class="biblio-field repository"
+                     ng-show="biblio.repository && !biblio.journal">
+                  <span class="value">
+                  {{ biblioString("repository", biblio.repository) }}.
+                  </span>
+               </span>
+
+               <span class="biblio-field journal">
+
+                  <span class="value">
+                  {{ biblioString("journal", biblio.journal) }}
+                  </span>
+               </span>
+            </div>
+
+            <div class="biblio-line">
+               <span class="biblio-field keywords">
+                  <span class="value">
+                  {{ biblioString("keywords", biblio.keywords) }}
+                  </span>
+               </span>
+            </div>
+
+            <div class="biblio-line">
+               <span class="biblio-field abstract">
+                  <span class="value">
+                  {{ biblioString("abstract", biblio.abstract) }}
+                  </span>
+               </span>
+            </div>
+
+
+
+
+         </div>
+
+      </div>
+
+      <div id="sidebar">
+         <div id="metrics">
+            <div class="contents" ng-bind-html="metricsMarkup"></div>
+         </div>
+      </div>
+
+
+      <div id="file">
+         <div class="contents">
+
+            <div class="file-input-container well" ng-controller="productUploadCtrl">
+               <h4>upload your file</h4>
+              <input type="file" ng-file-select="onFileSelect($files)">
+            </div>
+
+
+            <div class="pdf-wrapper" ng-controller="pdfCtrl">
+               pdf goes here
+
+            </div>
+
+         </div>
+      </div>
+
+
+
+
+
+
+
+   </div>
+</div>

@@ -1,4 +1,4 @@
-angular.module("profileProduct", [
+angular.module("productPage", [
     'resources.users',
     'resources.products',
     'profileAward.profileAward',
@@ -16,19 +16,19 @@ angular.module("profileProduct", [
   .config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.when("/:url_slug/product/:tiid", {
-      templateUrl:'profile-product/profile-product-page.tpl.html',
-      controller:'ProfileProductPageCtrl'
+      templateUrl:'product-page/product-page.tpl.html',
+      controller:'ProductPageCtrl'
     });
 
   }])
 
-  .factory('ProfileProduct', function(){
+  .factory('productPage', function(){
     return {
 
     }
   })
 
-  .controller('ProfileProductPageCtrl', function (
+  .controller('ProductPageCtrl', function (
     $scope,
     $routeParams,
     $location,
@@ -43,13 +43,14 @@ angular.module("profileProduct", [
     Product,
     Loading,
     TiMixpanel,
+    ProductBiblio,
     Page) {
 
     var slug = $routeParams.url_slug
     window.scrollTo(0,0)  // hack. not sure why this is needed.
 
 
-    Loading.start('profileProduct')
+    Loading.start('productPage')
     UserProfile.useCache(true)
 
     $scope.userSlug = slug
@@ -67,13 +68,13 @@ angular.module("profileProduct", [
     )
 
     $scope.openInfoModal = function(){
-      $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
+      $modal.open({templateUrl: "product-page/percentilesInfoModal.tpl.html"})
     }
 
     $scope.openFulltextLocationModal = function(){
       UserProfile.useCache(false)
       $modal.open(
-        {templateUrl: "profile-product/fulltext-location-modal.tpl.html"}
+        {templateUrl: "product-page/fulltext-location-modal.tpl.html"}
         // controller specified in the template :/
       )
       .result.then(function(resp){
@@ -99,15 +100,37 @@ angular.module("profileProduct", [
       )
     }
 
+    $scope.updateBiblio = function(propertyToUpdate){
+      Loading.start("updateBiblio")
+      updateObj = {}
+      updateObj[propertyToUpdate] = $scope.biblio[propertyToUpdate]
+      console.log("updating biblio with this:", updateObj)
+      ProductBiblio.patch(
+        {'tiid': $routeParams.tiid},
+        updateObj,
+        function(resp){
+          console.log("updated product biblio; re-rendering", resp)
+          renderProduct()
+        }
+      )
+    }
 
-    $scope.editProduct = function(){
+    $scope.afterSaveTest = function(){
+      console.log("running after save.")
+    }
+
+
+    $scope.editProduct = function(field){
       UserProfile.useCache(false)
       $modal.open({
-        templateUrl: "profile-product/edit-product-modal.tpl.html",
+        templateUrl: "product-page/edit-product-modal.tpl.html",
         controller: "editProductModalCtrl",
         resolve: {
           product: function(){
             return $scope.product
+          },
+          fieldToEdit: function(){
+            return field
           }
         }
       })
@@ -119,17 +142,34 @@ angular.module("profileProduct", [
       )
     }
 
+
+    $scope.biblioString = function(biblioKey, biblioVal){
+      if (biblioVal){
+        return biblioVal
+      }
+      else {
+        return "no " + biblioKey + " available"
+      }
+    }
+
     var renderProduct = function(){
       $scope.product = UsersProduct.get({
         id: $routeParams.url_slug,
         tiid: $routeParams.tiid
       },
       function(data){
-        Loading.finish('profileProduct')
+        Loading.finish('productPage')
         Page.setTitle(data.biblio.title)
-        $scope.productMarkup = data.markup
+
+        $scope.biblioMarkup = data.markups_dict.biblio
+        $scope.metricsMarkup = data.markups_dict.metrics
+
+        $scope.aliases = data.aliases
+        $scope.biblio = data.biblio
+
         console.log("loaded a product", data)
         window.scrollTo(0,0)  // hack. not sure why this is needed.
+        Loading.finish("updateBiblio") // hack for now, should do in promise...
 
 
       },
@@ -150,8 +190,13 @@ angular.module("profileProduct", [
                                              $routeParams,
                                              Loading,
                                              product,
+                                             fieldToEdit,
                                              UsersProduct,
                                              ProductBiblio){
+
+    console.log("editProductModalCtrl fieldToEdit", fieldToEdit)
+
+    $scope.fieldToEdit = fieldToEdit
 
     // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
     $scope.product = product
@@ -181,6 +226,11 @@ angular.module("profileProduct", [
         }
       )
     }
+  })
+
+
+.controller("editProductFormCtrl", function(){
+
   })
 
 

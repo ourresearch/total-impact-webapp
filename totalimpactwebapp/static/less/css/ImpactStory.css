@@ -1,6 +1,8 @@
 @import url("//fonts.googleapis.com/css?family=Lato:300,400,700,900,400italic");
 
 @import "animate.css";
+
+@import "xeditable.css";
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -6079,6 +6081,10 @@ i.left {
 i.right {
   margin-left: .3em;
 }
+.form-control.editable-input {
+  height: auto;
+  padding: 2px 5px;
+}
 /* modals
 *****************************************************************************
 *****************************************************************************
@@ -7742,6 +7748,319 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
 .ti-badge:hover {
   text-decoration: none;
 }
+div.product-page {
+  min-height: 500px;
+}
+div.product-page div.working {
+  color: #ddd;
+  font-size: 30px;
+  font-family: Lato;
+  font-weight: bolder;
+  text-align: center;
+  padding-top: 100px;
+}
+div.product-page div.working span.text {
+  margin-left: 10px;
+}
+div.product-page #biblio {
+  width: 700px;
+  float: left;
+}
+div.product-page #biblio .optional-biblio .biblio-line {
+  margin-top: 5px;
+}
+div.product-page #biblio .optional-biblio .biblio-line form.editable-text {
+  margin-top: -5px;
+  margin-bottom: -5px;
+}
+div.product-page #biblio .optional-biblio .biblio-line .biblio-field.authors input {
+  width: 20em;
+}
+div.product-page #biblio .optional-biblio .biblio-line .biblio-field.year input {
+  width: 4em;
+}
+div.product-page #sidebar {
+  width: 400px;
+  float: right;
+}
+div.product-page #sidebar #metrics ul.metric-details-list {
+  margin-top: 40px;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail {
+  font-size: 15px;
+  margin-bottom: 20px;
+  clear: both;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail:before,
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail:after {
+  content: " ";
+  display: table;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail:after {
+  clear: both;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail:before,
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail:after {
+  content: " ";
+  display: table;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail:after {
+  clear: both;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container {
+  width: 250px;
+  float: left;
+  margin-top: 8px;
+  display: inline-block;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge {
+  padding: 3px 9px;
+  border-width: 1px;
+  border-style: solid;
+  float: right;
+  font-size: 13px;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.scholars {
+  border-color: #377eb8;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.public {
+  border-color: #4daf4a;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true {
+  color: #fff;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true.scholars {
+  background: #377eb8;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true.public {
+  background: #4daf4a;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false {
+  background: #fff;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false.scholars {
+  color: #377eb8;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false.public {
+  color: #4daf4a;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text {
+  float: left;
+  margin-left: 10px;
+  padding-top: 5px;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name {
+  color: #333;
+  display: inline-block;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover {
+  text-decoration: none;
+  color: #ff4000;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover i {
+  color: #ff4000;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name span.raw-value {
+  margin-left: 5px;
+  display: inline-block;
+  text-align: right;
+  font-weight: bold;
+  font-size: 16px;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name img {
+  height: 16px;
+  margin: 0 3px 0 3px;
+  vertical-align: middle;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name i {
+  color: #ddd;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text span.new-metrics {
+  background: #5cb85c;
+  color: #fff;
+  font-size: 12px;
+  cursor: default;
+  margin-left: 5px;
+  padding: 0 5px;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile {
+  display: block;
+  float: left;
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values {
+  font-weight: bold;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.upper,
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.lower {
+  font-size: 16px;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values i {
+  opacity: .5;
+  cursor: pointer;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values i:hover {
+  opacity: .8;
+}
+div.product-page #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.descr {
+  font-weight: 100;
+  font-size: 90%;
+}
+div.product-page #file {
+  float: left;
+  margin-top: 20px;
+  width: 681px;
+}
+div.product-page #file div.pdf-wrapper canvas {
+  border: 3px solid #555;
+}
+div.product-page #file div.pdf-wrapper div.pdf-nav {
+  background: #555;
+  border: 3px solid #555;
+  border-bottom: none;
+  opacity: .95;
+  color: #eee;
+  height: 50px;
+  text-align: center;
+}
+div.product-page #file div.pdf-wrapper div.pdf-nav .page-count {
+  font-size: 70%;
+  font-weight: 100;
+}
+div.product-page #file div.pdf-wrapper div.pdf-nav.fixed {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  right: 0;
+  margin-top: 0;
+}
+div.product-page #file div.pdf-wrapper div.pdf-nav .btn {
+  padding: 5px;
+  margin: 5px 20px;
+  background: #777;
+}
+div.product-page #file div.pdf-wrapper div.pdf-nav .btn:hover,
+div.product-page #file div.pdf-wrapper div.pdf-nav .btn:focus {
+  background: #888;
+  color: #fff;
+}
+div.product-page #file div.pdf-wrapper div.pdf-nav .btn i {
+  margin: 5px;
+  font-size: 75%;
+}
+div.product-page #file div.file-input-container {
+  display: none;
+}
+div.product-page #file div.free-fulltext-url {
+  clear: both;
+  margin-top: 20px;
+  margin-left: -15px;
+}
+div.product-page #file div.free-fulltext-url:before,
+div.product-page #file div.free-fulltext-url:after {
+  content: " ";
+  display: table;
+}
+div.product-page #file div.free-fulltext-url:after {
+  clear: both;
+}
+div.product-page #file div.free-fulltext-url:before,
+div.product-page #file div.free-fulltext-url:after {
+  content: " ";
+  display: table;
+}
+div.product-page #file div.free-fulltext-url:after {
+  clear: both;
+}
+div.product-page #file div.free-fulltext-url i.leader {
+  font-size: 110%;
+  margin-right: 5px;
+  float: left;
+}
+div.product-page #file div.free-fulltext-url i.icon-external-link-sign {
+  font-size: 80%;
+  opacity: .5;
+}
+div.product-page #file div.free-fulltext-url div.no-free-fulltext-url div.info {
+  width: 400px;
+  float: left;
+}
+div.product-page #file div.free-fulltext-url div.no-free-fulltext-url div.info div.no-fulltext {
+  font-weight: bold;
+}
+div.product-page #file div.free-fulltext-url div.no-free-fulltext-url div.info div.encouragement {
+  margin-top: 5px;
+  font-style: italic;
+  font-size: 90%;
+}
+div.product-page #file div.free-fulltext-url div.action a.action {
+  margin: -5px 0 0 25px;
+  text-decoration: none;
+  background: #777;
+  border: none;
+  padding: 3px 10px;
+}
+div.product-page #file div.free-fulltext-url div.action a.action:hover {
+  background: #555;
+}
+div.product-page #file div.free-fulltext-url div.has-free-fulltext-url a {
+  color: #333;
+  font-weight: normal;
+}
+div.product-page #file div.free-fulltext-url div.has-free-fulltext-url a:hover {
+  text-decoration: underline;
+}
+div.header div.wrapper {
+  position: relative;
+}
+div.header div.wrapper a.back-to-profile {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+div.header div.wrapper div.product-page-controls {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  text-align: right;
+}
+div.header div.wrapper div.product-page-controls a {
+  margin-left: 20px;
+  font-weight: 700;
+  font-size: 20px;
+}
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
   height: 40px;
   margin: 20px;
@@ -7765,6 +8084,15 @@ div.modal-body.free-fulltext-url div.archive-this a.btn {
 div.modal-body.free-fulltext-url div.archive-this a.btn span {
   margin-right: 5px;
 }
+div.modal-body.edit-product div.form-group {
+  text-align: center;
+}
+div.modal-body.edit-product div.form-group label .sublabel {
+  display: block;
+  font-size: 70%;
+  color: #888;
+  font-weight: normal;
+}
 div.modal-body.edit-product div.buttons-group {
   height: 40px;
   margin: 20px;
@@ -7772,328 +8100,6 @@ div.modal-body.edit-product div.buttons-group {
 }
 div.modal-body.edit-product div.buttons-group .btn {
   width: 8em;
-}
-div.pdf-wrapper {
-  float: left;
-}
-div.pdf-wrapper canvas {
-  border: 3px solid #555;
-}
-div.pdf-wrapper div.pdf-nav {
-  background: #555;
-  border: 3px solid #555;
-  border-bottom: none;
-  opacity: .95;
-  color: #eee;
-  margin-top: -50px;
-  height: 50px;
-  text-align: center;
-}
-div.pdf-wrapper div.pdf-nav .page-count {
-  font-size: 70%;
-  font-weight: 100;
-}
-div.pdf-wrapper div.pdf-nav.fixed {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  right: 0;
-  margin-top: 0;
-}
-div.pdf-wrapper div.pdf-nav .btn {
-  padding: 5px;
-  margin: 5px 20px;
-  background: #777;
-}
-div.pdf-wrapper div.pdf-nav .btn:hover,
-div.pdf-wrapper div.pdf-nav .btn:focus {
-  background: #888;
-  color: #fff;
-}
-div.pdf-wrapper div.pdf-nav .btn i {
-  margin: 5px;
-  font-size: 75%;
-}
-div.product-page {
-  min-height: 500px;
-  padding-top: 50px;
-}
-div.product-page div.header div.wrapper {
-  position: relative;
-}
-div.product-page div.header div.wrapper a.back-to-profile {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
-div.product-page div.header div.wrapper div.product-page-controls {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 400px;
-  text-align: right;
-}
-div.product-page div.header div.wrapper div.product-page-controls a {
-  margin-left: 20px;
-  font-weight: 700;
-  font-size: 20px;
-}
-div.product-page .content {
-  margin-bottom: 100px;
-  padding-top: 20px;
-}
-div.product-page .content div.working {
-  color: #ddd;
-  font-size: 30px;
-  font-family: Lato;
-  font-weight: bolder;
-  text-align: center;
-  padding-top: 100px;
-}
-div.product-page .content div.working span.text {
-  margin-left: 10px;
-}
-div.product-page .content a.percentile-info {
-  border-top: 1px solid #bbb;
-  color: #555;
-  font-size: 15px;
-  margin-left: 265px;
-  padding-top: 5px;
-  padding: 5px;
-}
-div.product-page .content a.percentile-info:hover {
-  color: #333;
-}
-div.product-page .content .product {
-  width: 100%;
-  margin-bottom: 30px;
-}
-div.product-page .content .product .biblio {
-  float: none;
-  width: 100%;
-}
-div.product-page .content .product .biblio h5 {
-  font-size: 30px;
-  color: #333;
-}
-div.product-page .content .product .biblio h5 i {
-  font-size: 80%;
-}
-div.product-page .content .product .biblio div.optional-biblio {
-  font-size: 20px;
-}
-div.product-page .content .product div.free-fulltext-url {
-  clear: both;
-  margin-top: 20px;
-  margin-left: -15px;
-}
-div.product-page .content .product div.free-fulltext-url:before,
-div.product-page .content .product div.free-fulltext-url:after {
-  content: " ";
-  display: table;
-}
-div.product-page .content .product div.free-fulltext-url:after {
-  clear: both;
-}
-div.product-page .content .product div.free-fulltext-url:before,
-div.product-page .content .product div.free-fulltext-url:after {
-  content: " ";
-  display: table;
-}
-div.product-page .content .product div.free-fulltext-url:after {
-  clear: both;
-}
-div.product-page .content .product div.free-fulltext-url i.leader {
-  font-size: 110%;
-  margin-right: 5px;
-  float: left;
-}
-div.product-page .content .product div.free-fulltext-url i.icon-external-link-sign {
-  font-size: 80%;
-  opacity: .5;
-}
-div.product-page .content .product div.free-fulltext-url div.no-free-fulltext-url div.info {
-  width: 400px;
-  float: left;
-}
-div.product-page .content .product div.free-fulltext-url div.no-free-fulltext-url div.info div.no-fulltext {
-  font-weight: bold;
-}
-div.product-page .content .product div.free-fulltext-url div.no-free-fulltext-url div.info div.encouragement {
-  margin-top: 5px;
-  font-style: italic;
-  font-size: 90%;
-}
-div.product-page .content .product div.free-fulltext-url div.action a.action {
-  margin: -5px 0 0 25px;
-  text-decoration: none;
-  background: #777;
-  border: none;
-  padding: 3px 10px;
-}
-div.product-page .content .product div.free-fulltext-url div.action a.action:hover {
-  background: #555;
-}
-div.product-page .content .product div.free-fulltext-url div.has-free-fulltext-url a {
-  color: #333;
-  font-weight: normal;
-}
-div.product-page .content .product div.free-fulltext-url div.has-free-fulltext-url a:hover {
-  text-decoration: underline;
-}
-div.product-page .content .product ul.metric-details-list {
-  margin-top: 40px;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail {
-  font-size: 15px;
-  margin-bottom: 20px;
-  clear: both;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail:before,
-div.product-page .content .product ul.metric-details-list li.metric-detail:after {
-  content: " ";
-  display: table;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail:after {
-  clear: both;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail:before,
-div.product-page .content .product ul.metric-details-list li.metric-detail:after {
-  content: " ";
-  display: table;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail:after {
-  clear: both;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container {
-  width: 250px;
-  float: left;
-  margin-top: 8px;
-  display: inline-block;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge {
-  padding: 3px 9px;
-  border-width: 1px;
-  border-style: solid;
-  float: right;
-  font-size: 13px;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  -moz-border-radius-topright: 3px;
-  -moz-border-radius-bottomright: 3px;
-  -moz-border-radius-bottomleft: 3px;
-  -moz-border-radius-topleft: 3px;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.scholars {
-  border-color: #377eb8;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.public {
-  border-color: #4daf4a;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true {
-  color: #fff;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true.scholars {
-  background: #377eb8;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-true.public {
-  background: #4daf4a;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false {
-  background: #fff;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false.scholars {
-  color: #377eb8;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail .product-page-badge-container .product-page-badge.is-highly-false.public {
-  color: #4daf4a;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text {
-  float: left;
-  margin-left: 10px;
-  padding-top: 5px;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name {
-  color: #333;
-  display: inline-block;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover {
-  text-decoration: none;
-  color: #ff4000;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover i {
-  color: #ff4000;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name span.raw-value {
-  margin-left: 5px;
-  display: inline-block;
-  text-align: right;
-  font-weight: bold;
-  font-size: 16px;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name img {
-  height: 16px;
-  margin: 0 3px 0 3px;
-  vertical-align: middle;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text a.value-and-name i {
-  color: #ddd;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text span.new-metrics {
-  background: #5cb85c;
-  color: #fff;
-  font-size: 12px;
-  cursor: default;
-  margin-left: 5px;
-  padding: 0 5px;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  -moz-border-radius-topright: 3px;
-  -moz-border-radius-bottomright: 3px;
-  -moz-border-radius-bottomleft: 3px;
-  -moz-border-radius-topleft: 3px;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile {
-  display: block;
-  float: left;
-  border-bottom: 1px solid #eee;
-  color: #555;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.values {
-  font-weight: bold;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.upper,
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.lower {
-  font-size: 16px;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.values i {
-  opacity: .5;
-  cursor: pointer;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.values i:hover {
-  opacity: .8;
-}
-div.product-page .content .product ul.metric-details-list li.metric-detail span.metric-text .percentile span.descr {
-  font-weight: 100;
-  font-size: 90%;
 }
 div.signup-page {
   position: fixed;

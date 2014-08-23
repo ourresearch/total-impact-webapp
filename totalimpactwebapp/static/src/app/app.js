@@ -24,9 +24,10 @@ angular.module('app', [
   'infopages',
   'signup',
   'passwordReset',
-  'profileProduct',
+  'productPage',
   'profile',
-  'settings'
+  'settings',
+  'xeditable'
 ]);
 
 angular.module('app').constant('TEST', {
@@ -55,10 +56,12 @@ angular.module('app').config(function ($routeProvider, $locationProvider) {
 });
 
 
-angular.module('app').run(function(security, $window, Page, $location) {
+angular.module('app').run(function(security, $window, Page, $location, editableOptions) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
+
+  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 
   angular.element($window).bind("scroll", function(event) {
     Page.setLastScrollPosition($(window).scrollTop(), $location.path())
