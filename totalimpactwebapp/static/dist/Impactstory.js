@@ -992,7 +992,7 @@ angular.module("productPage", [
     }
 
 
-    $scope.editProduct = function(){
+    $scope.editProduct = function(field){
       UserProfile.useCache(false)
       $modal.open({
         templateUrl: "product-page/edit-product-modal.tpl.html",
@@ -1000,6 +1000,9 @@ angular.module("productPage", [
         resolve: {
           product: function(){
             return $scope.product
+          },
+          fieldToEdit: function(){
+            return field
           }
         }
       })
@@ -1060,8 +1063,11 @@ angular.module("productPage", [
                                              $routeParams,
                                              Loading,
                                              product,
+                                             fieldToEdit,
                                              UsersProduct,
                                              ProductBiblio){
+
+    console.log("editProductModalCtrl fieldToEdit", fieldToEdit)
 
     // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
     $scope.product = product
@@ -1091,6 +1097,11 @@ angular.module("productPage", [
         }
       )
     }
+  })
+
+
+.controller("editProductFormCtrl", function(){
+
   })
 
 
@@ -5427,6 +5438,9 @@ angular.module("product-page/edit-product-modal.tpl.html", []).run(["$templateCa
     "   <h3>Edit product</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body edit-product\">\n" +
+    "\n" +
+    "   <h1>{{ fieldToEdit }}</h1>\n" +
+    "\n" +
     "   <form\n" +
     "           name=\"editProductForm\"\n" +
     "           novalidate\n" +
@@ -5618,31 +5632,50 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "         </h5>\n" +
     "\n" +
     "         <div class=\"optional-biblio\">\n" +
-    "            <span class=\"year\">({{ biblioString(\"year\", biblio.display_year) }})</span>\n" +
     "\n" +
-    "            <span class=\"authors\">{{ biblioString(\"authors\", biblio.display_authors) }}.</span>\n" +
+    "            <div class=\"biblio-line\">\n" +
+    "               <span class=\"biblio-field authors\">\n" +
+    "                  <span class=\"value\">\n" +
+    "                  {{ biblioString(\"authors\", biblio.display_authors) }}\n" +
+    "                  </span>\n" +
+    "                  <span class=\"btn btn-xs btn-default\"\n" +
+    "                        ng-click=\"editProduct('year')\">edit</span>\n" +
+    "               </span>\n" +
     "\n" +
-    "            <span class=\"repository\"\n" +
-    "                  ng-show=\"biblio.repository && !biblio.journal\">\n" +
-    "               {{ biblioString(\"repository\", biblio.repository) }}.\n" +
-    "            </span>\n" +
+    "               <span class=\"biblio-field year\">\n" +
+    "                  <span class=\"value\">\n" +
+    "                     ({{ biblioString(\"year\", biblio.display_year) }})\n" +
+    "                  </span>\n" +
+    "               </span>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"biblio-line\">\n" +
+    "               <span class=\"biblio-field repository\"\n" +
+    "                     ng-show=\"biblio.repository && !biblio.journal\">\n" +
+    "                  <span class=\"value\">\n" +
+    "                  {{ biblioString(\"repository\", biblio.repository) }}.\n" +
+    "                  </span>\n" +
+    "               </span>\n" +
+    "\n" +
+    "               <span class=\"biblio-field journal\">\n" +
+    "                  <span class=\"value\">\n" +
+    "                  {{ biblioString(\"journal\", biblio.journal) }}\n" +
+    "                  </span>\n" +
+    "               </span>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"biblio-line\">\n" +
+    "               <span class=\"biblio-field description\">\n" +
+    "                  <span class=\"value\">\n" +
+    "                  {{ biblioString(\"abstract\", biblio.description) }}\n" +
+    "                  </span>\n" +
+    "               </span>\n" +
+    "            </div>\n" +
     "\n" +
     "\n" +
-    "            <span class=\"journal\">{{ biblioString(\"journal\", biblio.journal) }}</span>\n" +
     "\n" +
-    "            <span class=\"description\">{{ biblioString(\"abstract\", biblio.description) }}</span>\n" +
+    "\n" +
     "         </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "\n" +
     "      </div>\n" +
     "\n" +

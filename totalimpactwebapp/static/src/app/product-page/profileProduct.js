@@ -100,7 +100,7 @@ angular.module("productPage", [
     }
 
 
-    $scope.editProduct = function(){
+    $scope.editProduct = function(field){
       UserProfile.useCache(false)
       $modal.open({
         templateUrl: "product-page/edit-product-modal.tpl.html",
@@ -108,6 +108,9 @@ angular.module("productPage", [
         resolve: {
           product: function(){
             return $scope.product
+          },
+          fieldToEdit: function(){
+            return field
           }
         }
       })
@@ -168,8 +171,11 @@ angular.module("productPage", [
                                              $routeParams,
                                              Loading,
                                              product,
+                                             fieldToEdit,
                                              UsersProduct,
                                              ProductBiblio){
+
+    console.log("editProductModalCtrl fieldToEdit", fieldToEdit)
 
     // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
     $scope.product = product
@@ -199,6 +205,11 @@ angular.module("productPage", [
         }
       )
     }
+  })
+
+
+.controller("editProductFormCtrl", function(){
+
   })
 
 

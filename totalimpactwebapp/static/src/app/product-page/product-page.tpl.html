@@ -63,31 +63,50 @@
          </h5>
 
          <div class="optional-biblio">
-            <span class="year">({{ biblioString("year", biblio.display_year) }})</span>
 
-            <span class="authors">{{ biblioString("authors", biblio.display_authors) }}.</span>
+            <div class="biblio-line">
+               <span class="biblio-field authors">
+                  <span class="value">
+                  {{ biblioString("authors", biblio.display_authors) }}
+                  </span>
+                  <span class="btn btn-xs btn-default"
+                        ng-click="editProduct('year')">edit</span>
+               </span>
 
-            <span class="repository"
-                  ng-show="biblio.repository && !biblio.journal">
-               {{ biblioString("repository", biblio.repository) }}.
-            </span>
+               <span class="biblio-field year">
+                  <span class="value">
+                     ({{ biblioString("year", biblio.display_year) }})
+                  </span>
+               </span>
+            </div>
+
+            <div class="biblio-line">
+               <span class="biblio-field repository"
+                     ng-show="biblio.repository && !biblio.journal">
+                  <span class="value">
+                  {{ biblioString("repository", biblio.repository) }}.
+                  </span>
+               </span>
+
+               <span class="biblio-field journal">
+                  <span class="value">
+                  {{ biblioString("journal", biblio.journal) }}
+                  </span>
+               </span>
+            </div>
+
+            <div class="biblio-line">
+               <span class="biblio-field description">
+                  <span class="value">
+                  {{ biblioString("abstract", biblio.description) }}
+                  </span>
+               </span>
+            </div>
 
 
-            <span class="journal">{{ biblioString("journal", biblio.journal) }}</span>
 
-            <span class="description">{{ biblioString("abstract", biblio.description) }}</span>
+
          </div>
-
-
-
-
-
-
-
-
-
-
-
 
       </div>
 
