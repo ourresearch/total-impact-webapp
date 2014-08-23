@@ -939,6 +939,7 @@ angular.module("productPage", [
     Loading,
     TiMixpanel,
     ProductBiblio,
+    ProductInteraction,
     Page) {
 
     var slug = $routeParams.url_slug
@@ -961,6 +962,17 @@ angular.module("productPage", [
         $scope.userOwnsThisProfile = false
       }
     )
+
+    // this runs as soon as the page loads to send a View interaction to server
+    console.log("save the interaction.")
+    ProductInteraction.save(
+      {tiid: $routeParams.tiid},
+      {
+        timestamp: moment.utc().toISOString(),
+        event: "view"
+      }
+    )
+
 
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "product-page/percentilesInfoModal.tpl.html"})
@@ -1033,6 +1045,16 @@ angular.module("productPage", [
         function(resp){
           console.log("closed the editProduct modal; re-rendering product")
           renderProduct()
+        }
+      )
+    }
+
+    $scope.downloadFile = function(){
+      ProductInteraction.save(
+        {tiid: $routeParams.tiid},
+        {
+          timestamp: moment.utc().toISOString(),
+          event: "download"
         }
       )
     }
@@ -2966,6 +2988,14 @@ angular.module('resources.products',['ngResource'])
         headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'}
       }
     }
+  )
+})
+
+
+.factory("ProductInteraction", function($resource){
+  return $resource(
+    "/product/:tiid/interaction",
+    {}
   )
 })
 
@@ -5758,6 +5788,9 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "      </div>\n" +
     "\n" +
     "      <div id=\"sidebar\">\n" +
+    "         <div class=\"download-button-container\">\n" +
+    "            <div class=\"btn btn-default\" ng-click=\"downloadFile()\">Download</div>\n" +
+    "         </div>\n" +
     "         <div id=\"metrics\">\n" +
     "            <div class=\"contents\" ng-bind-html=\"metricsMarkup\"></div>\n" +
     "         </div>\n" +
@@ -5775,6 +5808,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "            <div class=\"pdf-wrapper\" ng-controller=\"pdfCtrl\">\n" +
     "               pdf goes here\n" +
+    "\n" +
     "\n" +
     "            </div>\n" +
     "\n" +

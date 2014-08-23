@@ -137,6 +137,9 @@
       </div>
 
       <div id="sidebar">
+         <div class="download-button-container">
+            <div class="btn btn-default" ng-click="downloadFile()">Download</div>
+         </div>
          <div id="metrics">
             <div class="contents" ng-bind-html="metricsMarkup"></div>
          </div>
@@ -154,6 +157,7 @@
 
             <div class="pdf-wrapper" ng-controller="pdfCtrl">
                pdf goes here
+
 
             </div>
 

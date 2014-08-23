@@ -44,6 +44,7 @@ angular.module("productPage", [
     Loading,
     TiMixpanel,
     ProductBiblio,
+    ProductInteraction,
     Page) {
 
     var slug = $routeParams.url_slug
@@ -66,6 +67,17 @@ angular.module("productPage", [
         $scope.userOwnsThisProfile = false
       }
     )
+
+    // this runs as soon as the page loads to send a View interaction to server
+    console.log("save the interaction.")
+    ProductInteraction.save(
+      {tiid: $routeParams.tiid},
+      {
+        timestamp: moment.utc().toISOString(),
+        event: "view"
+      }
+    )
+
 
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "product-page/percentilesInfoModal.tpl.html"})
@@ -138,6 +150,16 @@ angular.module("productPage", [
         function(resp){
           console.log("closed the editProduct modal; re-rendering product")
           renderProduct()
+        }
+      )
+    }
+
+    $scope.downloadFile = function(){
+      ProductInteraction.save(
+        {tiid: $routeParams.tiid},
+        {
+          timestamp: moment.utc().toISOString(),
+          event: "download"
         }
       )
     }

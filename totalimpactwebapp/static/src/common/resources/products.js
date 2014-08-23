@@ -23,6 +23,14 @@ angular.module('resources.products',['ngResource'])
 })
 
 
+.factory("ProductInteraction", function($resource){
+  return $resource(
+    "/product/:tiid/interaction",
+    {}
+  )
+})
+
+
 
 
 .factory('Product', function ($resource) {
