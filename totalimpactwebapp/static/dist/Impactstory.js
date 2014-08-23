@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-22
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-23
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -462,7 +462,8 @@ angular.module('app', [
   'passwordReset',
   'productPage',
   'profile',
-  'settings'
+  'settings',
+  'xeditable'
 ]);
 
 angular.module('app').constant('TEST', {
@@ -491,10 +492,12 @@ angular.module('app').config(function ($routeProvider, $locationProvider) {
 });
 
 
-angular.module('app').run(function(security, $window, Page, $location) {
+angular.module('app').run(function(security, $window, Page, $location, editableOptions) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
+
+  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 
   angular.element($window).bind("scroll", function(event) {
     Page.setLastScrollPosition($(window).scrollTop(), $location.path())
@@ -935,6 +938,7 @@ angular.module("productPage", [
     Product,
     Loading,
     TiMixpanel,
+    ProductBiblio,
     Page) {
 
     var slug = $routeParams.url_slug
@@ -991,6 +995,25 @@ angular.module("productPage", [
       )
     }
 
+    $scope.updateBiblio = function(propertyToUpdate){
+      Loading.start("updateBiblio")
+      updateObj = {}
+      updateObj[propertyToUpdate] = $scope.biblio[propertyToUpdate]
+      console.log("updating biblio with this:", updateObj)
+      ProductBiblio.patch(
+        {'tiid': $routeParams.tiid},
+        updateObj,
+        function(resp){
+          console.log("updated product biblio; re-rendering", resp)
+          renderProduct()
+        }
+      )
+    }
+
+    $scope.afterSaveTest = function(){
+      console.log("running after save.")
+    }
+
 
     $scope.editProduct = function(field){
       UserProfile.useCache(false)
@@ -1039,10 +1062,9 @@ angular.module("productPage", [
         $scope.aliases = data.aliases
         $scope.biblio = data.biblio
 
-        $scope.foobar = "foobar"
-
         console.log("loaded a product", data)
         window.scrollTo(0,0)  // hack. not sure why this is needed.
+        Loading.finish("updateBiblio") // hack for now, should do in promise...
 
 
       },
@@ -1068,6 +1090,8 @@ angular.module("productPage", [
                                              ProductBiblio){
 
     console.log("editProductModalCtrl fieldToEdit", fieldToEdit)
+
+    $scope.fieldToEdit = fieldToEdit
 
     // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
     $scope.product = product
@@ -5433,13 +5457,12 @@ angular.module("pdf/pdf-viewer.tpl.html", []).run(["$templateCache", function($t
 
 angular.module("product-page/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product-page/edit-product-modal.tpl.html",
-    "<div class=\"modal-header\">\n" +
+    "<!--<div class=\"modal-header\">\n" +
     "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
-    "   <h3>Edit product</h3>\n" +
-    "</div>\n" +
-    "<div class=\"modal-body edit-product\">\n" +
+    "   <h3>Edit {{ fieldToEdit }}</h3>\n" +
+    "</div>-->\n" +
     "\n" +
-    "   <h1>{{ fieldToEdit }}</h1>\n" +
+    "<div class=\"modal-body edit-product\">\n" +
     "\n" +
     "   <form\n" +
     "           name=\"editProductForm\"\n" +
@@ -5447,8 +5470,8 @@ angular.module("product-page/edit-product-modal.tpl.html", []).run(["$templateCa
     "           ng-submit=\"onSave()\"\n" +
     "           ng-controller=\"editProductFormCtrl\">\n" +
     "\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label>Title</label>\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='title'\">\n" +
+    "         <label>Edit publication title:</label>\n" +
     "         <input\n" +
     "           class=\"form-control\"\n" +
     "           type=\"text\"\n" +
@@ -5457,8 +5480,8 @@ angular.module("product-page/edit-product-modal.tpl.html", []).run(["$templateCa
     "           ng-model=\"product.biblio.title\">\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"from-group\">\n" +
-    "         <label>Authors</label>\n" +
+    "      <div class=\"from-group\" ng-show=\"fieldToEdit=='authors'\">\n" +
+    "         <label>Edit authors:</label>\n" +
     "         <input\n" +
     "           type=\"text\"\n" +
     "           class=\"form-control\"\n" +
@@ -5466,17 +5489,8 @@ angular.module("product-page/edit-product-modal.tpl.html", []).run(["$templateCa
     "           ng-model=\"product.biblio.authors\">\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"form-group\" ng-if=\"product.biblio.journal\">\n" +
-    "         <label>Journal</label>\n" +
-    "         <input\n" +
-    "           type=\"text\"\n" +
-    "           class=\"form-control\"\n" +
-    "           name=\"productJournal\"\n" +
-    "           ng-model=\"product.biblio.journal\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label>Year</label>\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='year'\">\n" +
+    "         <label>Edit publication year:</label>\n" +
     "         <input\n" +
     "           type=\"text\"\n" +
     "           class=\"form-control\"\n" +
@@ -5484,9 +5498,47 @@ angular.module("product-page/edit-product-modal.tpl.html", []).run(["$templateCa
     "           ng-model=\"product.biblio.year\">\n" +
     "      </div>\n" +
     "\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='journal'\">\n" +
+    "         <label>Edit journal:</label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productJournal\"\n" +
+    "           ng-model=\"product.biblio.journal\">\n" +
+    "      </div>\n" +
     "\n" +
-    "      <save-buttons ng-show=\"editProductForm.$valid && editProductForm.$dirty\"\n" +
-    "                    valid=\"editProductForm.$valid\"></save-buttons>\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='repository'\">\n" +
+    "         <label>Edit repository:</label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productJournal\"\n" +
+    "           ng-model=\"product.biblio.journal\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='keywords'\">\n" +
+    "         <label>\n" +
+    "            Edit publication keywords:\n" +
+    "            <span class=\"sublabel\">Separate keywords with semicolons</span>\n" +
+    "         </label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productYear\"\n" +
+    "           ng-model=\"product.biblio.keywords\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='abstract'\">\n" +
+    "         <label>Edit publication abstract:</label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productYear\"\n" +
+    "           ng-model=\"product.biblio.abstract\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <save-buttons valid=\"editProductForm.$valid\"></save-buttons>\n" +
     "\n" +
     "   </form>\n" +
     "</div>\n" +
@@ -5610,7 +5662,12 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "      <div id=\"biblio\">\n" +
     "         <h5 class=\"title\">\n" +
-    "            {{biblio.display_title}}\n" +
+    "            <span class=\"title-text\"\n" +
+    "                  e-rows=\"3\"\n" +
+    "                  editable-textarea=\"biblio.display_title\">\n" +
+    "               {{biblio.display_title}}\n" +
+    "               <i class=\"icon-edit\" ng-show=\"userOwnsThisProfile\"></i>\n" +
+    "            </span>\n" +
     "\n" +
     "            <a class=\"linkout url title\"\n" +
     "               ng-show=\"aliases.best_url\"\n" +
@@ -5638,13 +5695,19 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <span class=\"value\">\n" +
     "                  {{ biblioString(\"authors\", biblio.display_authors) }}\n" +
     "                  </span>\n" +
-    "                  <span class=\"btn btn-xs btn-default\"\n" +
-    "                        ng-click=\"editProduct('year')\">edit</span>\n" +
+    "                  <span class=\"btn btn-xs btn-default\" ng-click=\"editProduct('authors')\">edit</span>\n" +
     "               </span>\n" +
     "\n" +
     "               <span class=\"biblio-field year\">\n" +
-    "                  <span class=\"value\">\n" +
-    "                     ({{ biblioString(\"year\", biblio.display_year) }})\n" +
+    "                  <span class=\"value\"\n" +
+    "                        ng-show=\"!loading.is('updateBiblio')\"\n" +
+    "                        onaftersave=\"updateBiblio('year')\"\n" +
+    "                        editable-text=\"biblio.year\">\n" +
+    "                     {{ biblio.display_year || \"click to enter publication year\" }}\n" +
+    "                  </span>\n" +
+    "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio')\">\n" +
+    "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                     updating publication year...\n" +
     "                  </span>\n" +
     "               </span>\n" +
     "            </div>\n" +
@@ -5655,20 +5718,36 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <span class=\"value\">\n" +
     "                  {{ biblioString(\"repository\", biblio.repository) }}.\n" +
     "                  </span>\n" +
+    "                  <span class=\"btn btn-xs btn-default\" ng-click=\"editProduct('repository')\">edit</span>\n" +
     "               </span>\n" +
     "\n" +
     "               <span class=\"biblio-field journal\">\n" +
+    "\n" +
     "                  <span class=\"value\">\n" +
     "                  {{ biblioString(\"journal\", biblio.journal) }}\n" +
     "                  </span>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "                  <span class=\"btn btn-xs btn-default\" ng-click=\"editProduct('journal')\">edit</span>\n" +
     "               </span>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"biblio-line\">\n" +
-    "               <span class=\"biblio-field description\">\n" +
+    "               <span class=\"biblio-field keywords\">\n" +
     "                  <span class=\"value\">\n" +
-    "                  {{ biblioString(\"abstract\", biblio.description) }}\n" +
+    "                  {{ biblioString(\"keywords\", biblio.keywords) }}\n" +
     "                  </span>\n" +
+    "                  <span class=\"btn btn-xs btn-default\" ng-click=\"editProduct('keywords')\">edit</span>\n" +
+    "               </span>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"biblio-line\">\n" +
+    "               <span class=\"biblio-field abstract\">\n" +
+    "                  <span class=\"value\">\n" +
+    "                  {{ biblioString(\"abstract\", biblio.abstract) }}\n" +
+    "                  </span>\n" +
+    "                  <span class=\"btn btn-xs btn-default\" ng-click=\"editProduct('abstract')\">edit</span>\n" +
     "               </span>\n" +
     "            </div>\n" +
     "\n" +

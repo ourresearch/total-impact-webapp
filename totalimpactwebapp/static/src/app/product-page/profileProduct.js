@@ -43,6 +43,7 @@ angular.module("productPage", [
     Product,
     Loading,
     TiMixpanel,
+    ProductBiblio,
     Page) {
 
     var slug = $routeParams.url_slug
@@ -99,6 +100,25 @@ angular.module("productPage", [
       )
     }
 
+    $scope.updateBiblio = function(propertyToUpdate){
+      Loading.start("updateBiblio")
+      updateObj = {}
+      updateObj[propertyToUpdate] = $scope.biblio[propertyToUpdate]
+      console.log("updating biblio with this:", updateObj)
+      ProductBiblio.patch(
+        {'tiid': $routeParams.tiid},
+        updateObj,
+        function(resp){
+          console.log("updated product biblio; re-rendering", resp)
+          renderProduct()
+        }
+      )
+    }
+
+    $scope.afterSaveTest = function(){
+      console.log("running after save.")
+    }
+
 
     $scope.editProduct = function(field){
       UserProfile.useCache(false)
@@ -147,10 +167,9 @@ angular.module("productPage", [
         $scope.aliases = data.aliases
         $scope.biblio = data.biblio
 
-        $scope.foobar = "foobar"
-
         console.log("loaded a product", data)
         window.scrollTo(0,0)  // hack. not sure why this is needed.
+        Loading.finish("updateBiblio") // hack for now, should do in promise...
 
 
       },
@@ -176,6 +195,8 @@ angular.module("productPage", [
                                              ProductBiblio){
 
     console.log("editProductModalCtrl fieldToEdit", fieldToEdit)
+
+    $scope.fieldToEdit = fieldToEdit
 
     // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
     $scope.product = product

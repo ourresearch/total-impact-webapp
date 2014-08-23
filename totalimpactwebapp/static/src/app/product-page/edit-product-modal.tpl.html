@@ -1,10 +1,9 @@
-<div class="modal-header">
+<!--<div class="modal-header">
    <button type="button" class="close" ng-click="$dismiss()">&times;</button>
-   <h3>Edit product</h3>
-</div>
-<div class="modal-body edit-product">
+   <h3>Edit {{ fieldToEdit }}</h3>
+</div>-->
 
-   <h1>{{ fieldToEdit }}</h1>
+<div class="modal-body edit-product">
 
    <form
            name="editProductForm"
@@ -12,8 +11,8 @@
            ng-submit="onSave()"
            ng-controller="editProductFormCtrl">
 
-      <div class="form-group">
-         <label>Title</label>
+      <div class="form-group" ng-show="fieldToEdit=='title'">
+         <label>Edit publication title:</label>
          <input
            class="form-control"
            type="text"
@@ -22,8 +21,8 @@
            ng-model="product.biblio.title">
       </div>
 
-      <div class="from-group">
-         <label>Authors</label>
+      <div class="from-group" ng-show="fieldToEdit=='authors'">
+         <label>Edit authors:</label>
          <input
            type="text"
            class="form-control"
@@ -31,17 +30,8 @@
            ng-model="product.biblio.authors">
       </div>
 
-      <div class="form-group" ng-if="product.biblio.journal">
-         <label>Journal</label>
-         <input
-           type="text"
-           class="form-control"
-           name="productJournal"
-           ng-model="product.biblio.journal">
-      </div>
-
-      <div class="form-group">
-         <label>Year</label>
+      <div class="form-group" ng-show="fieldToEdit=='year'">
+         <label>Edit publication year:</label>
          <input
            type="text"
            class="form-control"
@@ -49,9 +39,47 @@
            ng-model="product.biblio.year">
       </div>
 
+      <div class="form-group" ng-show="fieldToEdit=='journal'">
+         <label>Edit journal:</label>
+         <input
+           type="text"
+           class="form-control"
+           name="productJournal"
+           ng-model="product.biblio.journal">
+      </div>
 
-      <save-buttons ng-show="editProductForm.$valid && editProductForm.$dirty"
-                    valid="editProductForm.$valid"></save-buttons>
+      <div class="form-group" ng-show="fieldToEdit=='repository'">
+         <label>Edit repository:</label>
+         <input
+           type="text"
+           class="form-control"
+           name="productJournal"
+           ng-model="product.biblio.journal">
+      </div>
+
+      <div class="form-group" ng-show="fieldToEdit=='keywords'">
+         <label>
+            Edit publication keywords:
+            <span class="sublabel">Separate keywords with semicolons</span>
+         </label>
+         <input
+           type="text"
+           class="form-control"
+           name="productYear"
+           ng-model="product.biblio.keywords">
+      </div>
+
+      <div class="form-group" ng-show="fieldToEdit=='abstract'">
+         <label>Edit publication abstract:</label>
+         <input
+           type="text"
+           class="form-control"
+           name="productYear"
+           ng-model="product.biblio.abstract">
+      </div>
+
+
+      <save-buttons valid="editProductForm.$valid"></save-buttons>
 
    </form>
 </div>

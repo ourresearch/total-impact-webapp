@@ -41,7 +41,12 @@
 
       <div id="biblio">
          <h5 class="title">
-            {{biblio.display_title}}
+            <span class="title-text"
+                  e-rows="3"
+                  editable-textarea="biblio.display_title">
+               {{biblio.display_title}}
+               <i class="icon-edit" ng-show="userOwnsThisProfile"></i>
+            </span>
 
             <a class="linkout url title"
                ng-show="aliases.best_url"
@@ -69,13 +74,19 @@
                   <span class="value">
                   {{ biblioString("authors", biblio.display_authors) }}
                   </span>
-                  <span class="btn btn-xs btn-default"
-                        ng-click="editProduct('year')">edit</span>
+                  <span class="btn btn-xs btn-default" ng-click="editProduct('authors')">edit</span>
                </span>
 
                <span class="biblio-field year">
-                  <span class="value">
-                     ({{ biblioString("year", biblio.display_year) }})
+                  <span class="value"
+                        ng-show="!loading.is('updateBiblio')"
+                        onaftersave="updateBiblio('year')"
+                        editable-text="biblio.year">
+                     {{ biblio.display_year || "click to enter publication year" }}
+                  </span>
+                  <span class="loading" ng-show="loading.is('updateBiblio')">
+                     <i class="icon-refresh icon-spin"></i>
+                     updating publication year...
                   </span>
                </span>
             </div>
@@ -86,20 +97,36 @@
                   <span class="value">
                   {{ biblioString("repository", biblio.repository) }}.
                   </span>
+                  <span class="btn btn-xs btn-default" ng-click="editProduct('repository')">edit</span>
                </span>
 
                <span class="biblio-field journal">
+
                   <span class="value">
                   {{ biblioString("journal", biblio.journal) }}
                   </span>
+
+
+
+                  <span class="btn btn-xs btn-default" ng-click="editProduct('journal')">edit</span>
                </span>
             </div>
 
             <div class="biblio-line">
-               <span class="biblio-field description">
+               <span class="biblio-field keywords">
                   <span class="value">
-                  {{ biblioString("abstract", biblio.description) }}
+                  {{ biblioString("keywords", biblio.keywords) }}
                   </span>
+                  <span class="btn btn-xs btn-default" ng-click="editProduct('keywords')">edit</span>
+               </span>
+            </div>
+
+            <div class="biblio-line">
+               <span class="biblio-field abstract">
+                  <span class="value">
+                  {{ biblioString("abstract", biblio.abstract) }}
+                  </span>
+                  <span class="btn btn-xs btn-default" ng-click="editProduct('abstract')">edit</span>
                </span>
             </div>
 

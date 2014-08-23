@@ -1,6 +1,8 @@
 @import url("//fonts.googleapis.com/css?family=Lato:300,400,700,900,400italic");
 
 @import "animate.css";
+
+@import "xeditable.css";
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -6079,6 +6081,10 @@ i.left {
 i.right {
   margin-left: .3em;
 }
+.form-control.editable-input {
+  height: auto;
+  padding: 2px 5px;
+}
 /* modals
 *****************************************************************************
 *****************************************************************************
@@ -8064,6 +8070,15 @@ div.modal-body.free-fulltext-url div.archive-this a.btn {
 }
 div.modal-body.free-fulltext-url div.archive-this a.btn span {
   margin-right: 5px;
+}
+div.modal-body.edit-product div.form-group {
+  text-align: center;
+}
+div.modal-body.edit-product div.form-group label .sublabel {
+  display: block;
+  font-size: 70%;
+  color: #888;
+  font-weight: normal;
 }
 div.modal-body.edit-product div.buttons-group {
   height: 40px;
