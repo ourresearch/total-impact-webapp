@@ -8,6 +8,7 @@ import requests
 from totalimpactwebapp import snap
 from totalimpactwebapp import metric
 from totalimpactwebapp import award
+from totalimpactwebapp import interaction
 from totalimpactwebapp import reference_set
 
 # regular ol' imports
@@ -85,6 +86,13 @@ class Product(db.Model):
         cascade='all, delete-orphan',
         backref=db.backref("item", lazy="subquery"),
         primaryjoin=snaps_join_string
+    )
+
+    interactions = db.relationship(
+        'Interaction',
+        lazy='subquery',
+        cascade='all, delete-orphan',
+        backref=db.backref("item", lazy="subquery")
     )
 
     @cached_property
@@ -251,7 +259,7 @@ class Product(db.Model):
             return None
 
         conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
-        bucket_name = "impactstory-uploads-local"
+        bucket_name = os.getenv("AWS_BUCKET", "impactstory-uploads-local")
         bucket = conn.get_bucket(bucket_name, validate=False)
 
         path = "active"
@@ -267,7 +275,7 @@ class Product(db.Model):
     def upload_file(self, file_to_upload):
 
         conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
-        bucket_name = "impactstory-uploads-local"
+        bucket_name = os.getenv("AWS_BUCKET", "impactstory-uploads-local")
         bucket = conn.get_bucket(bucket_name, validate=False)
 
         path = "active"
@@ -278,6 +286,7 @@ class Product(db.Model):
         length = k.set_contents_from_file(file_to_upload)
 
         self.has_file = True  #alters an attribute, so caller should commit
+
         return length
 
 

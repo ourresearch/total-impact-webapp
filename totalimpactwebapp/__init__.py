@@ -15,6 +15,7 @@ from sqlalchemy import event
 from sqlalchemy.pool import Pool
 
 from totalimpactwebapp.util import HTTPMethodOverrideMiddleware
+from totalimpactwebapp.util import commit
 from multiprocessing.util import register_after_fork
 
 
@@ -104,9 +105,19 @@ login_manager.setup_app(app)
 app.config["ASSETS_DEBUG"] = (os.getenv("PACK_ASSETS") != "True")
 
 
-from totalimpactwebapp import views
+from totalimpactwebapp import aliases
+from totalimpactwebapp import biblio
+from totalimpactwebapp import interaction
+from totalimpactwebapp import metric
+from totalimpactwebapp import product
+from totalimpactwebapp import profile
+from totalimpactwebapp import reference_set
+from totalimpactwebapp import snap
 logger.info(u"calling create_all on SQLAlchemy database tables to make any new ones")
 db.create_all()
+commit(db)
+
+from totalimpactwebapp import views
 
 
 
