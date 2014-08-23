@@ -577,6 +577,15 @@ def product_interaction(tiid):
 
 
 
+@app.route("/product/<tiid>", methods=["GET"])
+def product_interaction(tiid):
+    return json_resp_from_thing(request.json)
+
+
+
+
+
+
 @app.route("/product/<tiid>/file", methods=['GET', 'POST'])
 def product_file(tiid):
 

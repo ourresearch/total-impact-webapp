@@ -17,7 +17,15 @@ angular.module("productPage", [
 
     $routeProvider.when("/:url_slug/product/:tiid", {
       templateUrl:'product-page/product-page.tpl.html',
-      controller:'ProductPageCtrl'
+      controller:'ProductPageCtrl',
+      resolve: {
+        product: function(Product, $route){
+          return Product.get({
+            user_id: $route.current.params.url_slug,
+            tiid: $route.current.params.tiid
+          }).$promise
+        }
+      }
     });
 
   }])
@@ -45,17 +53,19 @@ angular.module("productPage", [
     TiMixpanel,
     ProductBiblio,
     ProductInteraction,
+    product,
     Page) {
 
     var slug = $routeParams.url_slug
     window.scrollTo(0,0)  // hack. not sure why this is needed.
 
-
-    Loading.start('productPage')
     UserProfile.useCache(true)
 
     $scope.userSlug = slug
     $scope.loading = Loading
+    $scope.aliases = product.aliases
+    $scope.biblio = product.biblio
+
 //    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
 //    $scope.userOwnsThisProfile = false
 
@@ -69,7 +79,6 @@ angular.module("productPage", [
     )
 
     // this runs as soon as the page loads to send a View interaction to server
-    console.log("save the interaction.")
     ProductInteraction.save(
       {tiid: $routeParams.tiid},
       {
@@ -201,7 +210,7 @@ angular.module("productPage", [
       )
     }
 
-    renderProduct()
+//    renderProduct()
 
   })
 
