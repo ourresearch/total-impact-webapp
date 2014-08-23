@@ -42,6 +42,8 @@ from totalimpactwebapp.product import upload_file_and_commit
 from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.product_markup import MarkupFactory
 
+from totalimpactwebapp.interaction import log_interaction_event
+
 from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
@@ -573,6 +575,16 @@ def product_pdf(tiid):
 
 @app.route("/product/<tiid>/interaction", methods=["POST"])
 def product_interaction(tiid):
+
+    logger.info(u"logging pageview for {tiid}".format(
+        tiid=tiid))
+
+    log_interaction_event(tiid=tiid, 
+        event=request.json.get("event", "view"),
+        headers=request.headers.to_list(), 
+        ip=request.remote_addr, 
+        timestamp=request.json.get("timestamp", datetime.datetime.utcnow()))
+
     return json_resp_from_thing(request.json)
 
 
@@ -801,9 +813,9 @@ def reference_sets():
 
 
 
-@app.route("/<path:dummy>")  # from http://stackoverflow.com/a/14023930/226013
+@app.route("/<path:page>")  # from http://stackoverflow.com/a/14023930/226013
 @app.route("/")
-def redirect_to_profile(dummy="index"):
+def redirect_to_profile(page="index"):
     """
     EVERYTHING not explicitly routed to another view function will end up here.
     """
@@ -814,7 +826,7 @@ def redirect_to_profile(dummy="index"):
 
     for useragent_fragment in crawer_useragent_fragments:
         if useragent_fragment in useragent:
-            page = dummy.replace("/", "_")
+            page = page.replace("/", "_")
             file_template = u"static/rendered-pages/{page}.html"
             try:
                 return send_file(file_template.format(page=page))
@@ -823,7 +835,7 @@ def redirect_to_profile(dummy="index"):
                 # for now, just return what the user sees
                 return render_template('index.html')  
 
-    # not a search engine?  return the page.
+    # not a search engine?  return the page
     return render_template('index.html')
 
 
