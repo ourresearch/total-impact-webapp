@@ -16,7 +16,7 @@ angular.module("profileProduct", [
   .config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider.when("/:url_slug/product/:tiid", {
-      templateUrl:'profile-product/profile-product-page.tpl.html',
+      templateUrl:'product-page/product-page-page.tpl.html',
       controller:'ProfileProductPageCtrl'
     });
 
@@ -67,13 +67,13 @@ angular.module("profileProduct", [
     )
 
     $scope.openInfoModal = function(){
-      $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
+      $modal.open({templateUrl: "product-page/percentilesInfoModal.tpl.html"})
     }
 
     $scope.openFulltextLocationModal = function(){
       UserProfile.useCache(false)
       $modal.open(
-        {templateUrl: "profile-product/fulltext-location-modal.tpl.html"}
+        {templateUrl: "product-page/fulltext-location-modal.tpl.html"}
         // controller specified in the template :/
       )
       .result.then(function(resp){
@@ -103,7 +103,7 @@ angular.module("profileProduct", [
     $scope.editProduct = function(){
       UserProfile.useCache(false)
       $modal.open({
-        templateUrl: "profile-product/edit-product-modal.tpl.html",
+        templateUrl: "product-page/edit-product-modal.tpl.html",
         controller: "editProductModalCtrl",
         resolve: {
           product: function(){
@@ -127,7 +127,10 @@ angular.module("profileProduct", [
       function(data){
         Loading.finish('profileProduct')
         Page.setTitle(data.biblio.title)
-        $scope.productMarkup = data.markup
+
+        $scope.biblioMarkup = data.markups_dict.biblio
+        $scope.metricsMarkup = data.markups_dict.metrics
+
         console.log("loaded a product", data)
         window.scrollTo(0,0)  // hack. not sure why this is needed.
 
@@ -228,7 +231,7 @@ angular.module("profileProduct", [
 
 .controller("pdfCtrl", function($scope, $routeParams){
     $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
-    $scope.pdfUrl = '/product/'+ $routeParams.tiid +'/file';
+    $scope.pdfUrl = '/product/'+ $routeParams.tiid +'/pdf';
     $scope.getNavStyle = function(scroll) {
       if(scroll < 80) return 'fixed';
     }

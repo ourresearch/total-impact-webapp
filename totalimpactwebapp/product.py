@@ -2,6 +2,7 @@ import logging
 import arrow
 import os
 import boto
+import requests
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
@@ -220,6 +221,9 @@ class Product(db.Model):
         except IndexError:
             return None
 
+    @cached_property
+    def is_free_to_read(self):
+        return self.has_file or self.biblio.free_fulltext_host
 
     def has_metric_this_good(self, provider, interaction, count):
         requested_metric = self.get_metric_by_name(provider, interaction)
@@ -227,6 +231,20 @@ class Product(db.Model):
             return requested_metric.display_count >= count
         except AttributeError:
             return False
+
+    def get_pdf(self):
+        if self.has_file:
+            return self.get_file()
+        try:
+            if self.aliases.pmc:
+                pdf_url = "http://ukpmc.ac.uk/articles/{pmcid}?pdf=render".format(
+                    pmcid=self.aliases.pmc[0])
+                r = requests.get(pdf_url)
+                return r.content
+        except AttributeError:
+            return None
+
+
 
     def get_file(self):
         if not self.has_file:
@@ -245,6 +263,7 @@ class Product(db.Model):
         return file_contents
 
 
+    # caller should commit because alters an attribute
     def upload_file(self, file_to_upload):
 
         conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
@@ -258,9 +277,7 @@ class Product(db.Model):
 
         length = k.set_contents_from_file(file_to_upload)
 
-        self.has_file = True
-        commit(db)
-
+        self.has_file = True  #alters an attribute, so caller should commit
         return length
 
 

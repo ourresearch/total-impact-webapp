@@ -546,6 +546,31 @@ def user_product(user_id, tiid):
     return json_resp_from_thing(resp)
 
 
+@app.route("/product/<tiid>/pdf", methods=['GET'])
+def product_pdf(tiid):
+
+    if request.method == "GET":
+        try:
+            product = get_product(tiid)
+            pdf = product.get_pdf()
+            if pdf:
+                resp = make_response(pdf, 200)
+                resp.mimetype = "application/pdf"
+                resp.headers.add("Content-Disposition",
+                                 "attachment; filename=impactstory-{tiid}.pdf".format(
+                                    tiid=tiid))   
+                return resp
+
+            else:
+                abort_json(404, "This product exists, but has no pdf.")
+
+        except IndexError:
+            abort_json(404, "That product doesn't exist.")
+        except S3ResponseError:
+            abort_json(404, "This product exists, but has no pdf.")
+
+
+
 @app.route("/product/<tiid>/file", methods=['GET', 'POST'])
 def product_file(tiid):
 
@@ -554,12 +579,8 @@ def product_file(tiid):
             product = get_product(tiid)
 
             if product.has_file:
-                product_file = product.get_file()
-                resp = make_response(product_file, 200)
-                resp.mimetype = "application/pdf"
-                resp.headers.add("Content-Disposition",
-                                 "attachment; filename=impactstory-{tiid}.pdf".format(
-                                    tiid=tiid))   
+                my_file = product.get_file()
+                resp = make_response(my_file, 200)
                 return resp
             else:
                 abort_json(404, "This product exists, but has no file.")

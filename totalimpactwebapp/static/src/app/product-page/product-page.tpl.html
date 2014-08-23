@@ -1,4 +1,6 @@
-<div class="product-page profile-subpage">
+<div class="product-page">
+
+   <!--
    <div class="header profile-subpage-header product-page-header">
       <div class="wrapper">
          <a back-to-profile></a>
@@ -29,23 +31,45 @@
          </div>
       </div>
    </div>
+   -->
+
    <div class="content wrapper">
-      <div class="working" ng-show="loading.is('profileProduct')">
+      <!--<div class="working" ng-show="loading.is('profileProduct')">
          <i class="icon-refresh icon-spin"></i>
          <span class="text">Loading product...</span>
+      </div>-->
+
+      <div id="biblio">
+         <div class="contents" dynamic="biblioMarkup"></div>
       </div>
 
-      <div class="file-input-container" ng-controller="productUploadCtrl">
-        <input type="file" ng-file-select="onFileSelect($files)">
+      <div id="sidebar">
+         <div id="metrics">
+            <div class="contents" ng-bind-html="metricsMarkup"></div>
+         </div>
       </div>
 
-      <!--<div class="product" ng-bind-html="trustHtml(productMarkup)"></div>-->
 
-      <div class="product" dynamic="productMarkup"></div>
+      <div id="file">
+         <div class="contents">
 
-      <div class="pdf-wrapper" ng-controller="pdfCtrl">
-          <ng-pdf template-url="pdf/pdf-viewer.tpl.html" canvasid="pdf-canvas" scale="1"></ng-pdf>
+            <div class="file-input-container well" ng-controller="productUploadCtrl">
+               <h4>upload your file</h4>
+              <input type="file" ng-file-select="onFileSelect($files)">
+            </div>
+
+
+            <div class="pdf-wrapper" ng-controller="pdfCtrl">
+                <ng-pdf template-url="pdf/pdf-viewer.tpl.html" canvasid="pdf-canvas" scale="1"></ng-pdf>
+            </div>
+
+         </div>
       </div>
+
+
+
+
+
 
 
    </div>
