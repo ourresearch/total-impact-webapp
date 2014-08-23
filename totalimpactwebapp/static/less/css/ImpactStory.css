@@ -7766,6 +7766,19 @@ div.product-page #biblio {
   width: 700px;
   float: left;
 }
+div.product-page #biblio .optional-biblio .biblio-line {
+  margin-top: 5px;
+}
+div.product-page #biblio .optional-biblio .biblio-line form.editable-text {
+  margin-top: -5px;
+  margin-bottom: -5px;
+}
+div.product-page #biblio .optional-biblio .biblio-line .biblio-field.authors input {
+  width: 20em;
+}
+div.product-page #biblio .optional-biblio .biblio-line .biblio-field.year input {
+  width: 4em;
+}
 div.product-page #sidebar {
   width: 400px;
   float: right;

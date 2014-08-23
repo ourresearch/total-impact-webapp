@@ -19,6 +19,23 @@ div.product-page {
    #biblio {
       width: 700px;
       float:left;
+      .optional-biblio {
+         .biblio-line {
+            margin-top: 5px;
+            form.editable-text {
+               margin-top: -5px;
+               margin-bottom: -5px;
+            }
+            .biblio-field {
+               &.authors {
+                  input {width: 20em;}
+               }
+               &.year {
+                  input { width: 4em;}  // years is short
+               }
+            }
+         }
+      }
    }
 
 

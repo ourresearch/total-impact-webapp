@@ -5692,19 +5692,25 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "            <div class=\"biblio-line\">\n" +
     "               <span class=\"biblio-field authors\">\n" +
-    "                  <span class=\"value\">\n" +
-    "                  {{ biblioString(\"authors\", biblio.display_authors) }}\n" +
+    "                  <span class=\"value\"\n" +
+    "                        onaftersave=\"updateBiblio('authors')\"\n" +
+    "                        ng-show=\"!loading.is('updateBiblio')\"\n" +
+    "                        editable-text=\"biblio.authors\">\n" +
+    "                  {{ biblio.display_authors || \"click to enter authors\" }}\n" +
     "                  </span>\n" +
-    "                  <span class=\"btn btn-xs btn-default\" ng-click=\"editProduct('authors')\">edit</span>\n" +
+    "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio')\">\n" +
+    "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                     updating authors...\n" +
+    "                  </span>\n" +
     "               </span>\n" +
     "\n" +
     "               <span class=\"biblio-field year\">\n" +
-    "                  <span class=\"value\"\n" +
+    "                  (<span class=\"value biblio-year\"\n" +
     "                        ng-show=\"!loading.is('updateBiblio')\"\n" +
     "                        onaftersave=\"updateBiblio('year')\"\n" +
     "                        editable-text=\"biblio.year\">\n" +
     "                     {{ biblio.display_year || \"click to enter publication year\" }}\n" +
-    "                  </span>\n" +
+    "                  </span>)\n" +
     "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio')\">\n" +
     "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
     "                     updating publication year...\n" +
@@ -5718,7 +5724,6 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <span class=\"value\">\n" +
     "                  {{ biblioString(\"repository\", biblio.repository) }}.\n" +
     "                  </span>\n" +
-    "                  <span class=\"btn btn-xs btn-default\" ng-click=\"editProduct('repository')\">edit</span>\n" +
     "               </span>\n" +
     "\n" +
     "               <span class=\"biblio-field journal\">\n" +
@@ -5726,10 +5731,6 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <span class=\"value\">\n" +
     "                  {{ biblioString(\"journal\", biblio.journal) }}\n" +
     "                  </span>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "                  <span class=\"btn btn-xs btn-default\" ng-click=\"editProduct('journal')\">edit</span>\n" +
     "               </span>\n" +
     "            </div>\n" +
     "\n" +
@@ -5738,7 +5739,6 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <span class=\"value\">\n" +
     "                  {{ biblioString(\"keywords\", biblio.keywords) }}\n" +
     "                  </span>\n" +
-    "                  <span class=\"btn btn-xs btn-default\" ng-click=\"editProduct('keywords')\">edit</span>\n" +
     "               </span>\n" +
     "            </div>\n" +
     "\n" +
@@ -5747,7 +5747,6 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <span class=\"value\">\n" +
     "                  {{ biblioString(\"abstract\", biblio.abstract) }}\n" +
     "                  </span>\n" +
-    "                  <span class=\"btn btn-xs btn-default\" ng-click=\"editProduct('abstract')\">edit</span>\n" +
     "               </span>\n" +
     "            </div>\n" +
     "\n" +
@@ -5776,6 +5775,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "            <div class=\"pdf-wrapper\" ng-controller=\"pdfCtrl\">\n" +
     "               pdf goes here\n" +
+    "\n" +
     "            </div>\n" +
     "\n" +
     "         </div>\n" +
