@@ -69,7 +69,7 @@ angular.module("productPage", [
     $scope.aliases = product.aliases
     $scope.biblio = product.biblio
     $scope.metrics = product.metrics
-
+    $scope.displayGenrePlural = product.display_genre_plural
 
 
     // these are just for testing!
@@ -95,11 +95,6 @@ angular.module("productPage", [
 
 
 
-
-//    $scope.fileUrl = "http://jasonpriem.org/self-archived/data-for-free.pdf"
-
-//    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
-//    $scope.userOwnsThisProfile = false
 
     security.isLoggedInPromise(slug).then(
       function(resp){

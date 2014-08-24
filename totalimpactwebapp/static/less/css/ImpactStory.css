@@ -6253,14 +6253,14 @@ div#user-message {
 }
 div#user-message button.close {
   position: absolute;
-  top: 5px;
-  right: 10px;
+  top: 25px;
+  right: 20px;
 }
 div#user-message .alert {
   opacity: .95;
   text-align: center;
-  padding-top: 7px;
-  padding-bottom: 7px;
+  padding-top: 30px;
+  padding-bottom: 25px;
   margin-bottom: 0;
   font-size: 16px;
 }
@@ -7762,171 +7762,171 @@ div.product-page div.working {
 div.product-page div.working span.text {
   margin-left: 10px;
 }
-div.product-page #biblio {
+div.product-page div.main-content {
   width: 700px;
   float: left;
 }
-div.product-page #biblio .editable-click {
+div.product-page div.main-content #biblio .editable-click {
   color: #333;
   border: none;
 }
-div.product-page #biblio .editable-click:hover {
+div.product-page div.main-content #biblio .editable-click:hover {
   color: #428bca;
 }
-div.product-page #biblio form.editable-text {
+div.product-page div.main-content #biblio form.editable-text {
   margin-top: -5px;
   margin-bottom: -5px;
 }
-div.product-page #biblio .loading {
+div.product-page div.main-content #biblio .loading {
   color: #999;
   margin: 0 5px;
 }
-div.product-page #biblio .loading i {
+div.product-page div.main-content #biblio .loading i {
   margin-right: 3px;
 }
-div.product-page #biblio span.biblio-field-label {
+div.product-page div.main-content #biblio span.biblio-field-label {
   font-weight: bold;
   margin-right: 5px;
   font-size: 16px;
 }
-div.product-page #biblio .tooltip-inner {
+div.product-page div.main-content #biblio .tooltip-inner {
   background: #428bca;
 }
-div.product-page #biblio .tooltip-arrow {
+div.product-page div.main-content #biblio .tooltip-arrow {
   border-right-color: #428bca;
   border-left-color: #428bca;
 }
-div.product-page #biblio h2.title {
+div.product-page div.main-content #biblio h2.title {
   font-size: 28px;
   line-height: 1.3;
   margin: 0 0 5px;
 }
-div.product-page #biblio h2.title textarea {
+div.product-page div.main-content #biblio h2.title textarea {
   width: 630px;
   height: 60px;
   font-weight: normal;
 }
-div.product-page #biblio span.biblio-field.authors {
+div.product-page div.main-content #biblio span.biblio-field.authors {
   font-size: 20px;
 }
-div.product-page #biblio span.biblio-field.authors input {
+div.product-page div.main-content #biblio span.biblio-field.authors input {
   width: 630px;
 }
-div.product-page #biblio div.biblio-line.date-and-source {
+div.product-page div.main-content #biblio div.biblio-line.date-and-source {
   font-size: 16px;
 }
-div.product-page #biblio div.biblio-line.date-and-source .editable-click {
+div.product-page div.main-content #biblio div.biblio-line.date-and-source .editable-click {
   color: #777;
 }
-div.product-page #biblio div.biblio-line.date-and-source .editable-click:hover {
+div.product-page div.main-content #biblio div.biblio-line.date-and-source .editable-click:hover {
   color: #428bca;
 }
-div.product-page #biblio div.biblio-line.date-and-source span.biblio-field.year form {
+div.product-page div.main-content #biblio div.biblio-line.date-and-source span.biblio-field.year form {
   margin-right: 10px;
 }
-div.product-page #biblio div.biblio-line.date-and-source span.biblio-field.year form input.editable-input {
+div.product-page div.main-content #biblio div.biblio-line.date-and-source span.biblio-field.year form input.editable-input {
   width: 4em;
 }
-div.product-page #biblio div.biblio-line.date-and-source span.biblio-field.journal,
-div.product-page #biblio div.biblio-line.date-and-source span.repository {
+div.product-page div.main-content #biblio div.biblio-line.date-and-source span.biblio-field.journal,
+div.product-page div.main-content #biblio div.biblio-line.date-and-source span.repository {
   font-style: italic;
 }
-div.product-page #biblio div.biblio-line.date-and-source span.biblio-field.journal input.editable-input,
-div.product-page #biblio div.biblio-line.date-and-source span.repository input.editable-input {
+div.product-page div.main-content #biblio div.biblio-line.date-and-source span.biblio-field.journal input.editable-input,
+div.product-page div.main-content #biblio div.biblio-line.date-and-source span.repository input.editable-input {
   width: 580px;
   margin-left: 10px;
 }
-div.product-page #biblio div.biblio-line.abstract {
+div.product-page div.main-content #biblio div.biblio-line.abstract {
   margin-top: 15px;
 }
-div.product-page #biblio div.biblio-line.abstract span.value {
+div.product-page div.main-content #biblio div.biblio-line.abstract span.value {
   font-size: 16px;
 }
-div.product-page #biblio div.biblio-line.abstract textarea {
+div.product-page div.main-content #biblio div.biblio-line.abstract textarea {
   width: 630px;
   height: 200px;
   font-size: 16px;
 }
-div.product-page #biblio div.biblio-line.abstract .more-abstract {
+div.product-page div.main-content #biblio div.biblio-line.abstract .more-abstract {
   font-size: 14px;
   cursor: pointer;
   color: #555;
 }
-div.product-page #biblio div.biblio-line.keywords {
+div.product-page div.main-content #biblio div.biblio-line.keywords {
   font-size: 16px;
   margin-top: 10px;
 }
-div.product-page #biblio div.biblio-line.keywords input.editable-input {
+div.product-page div.main-content #biblio div.biblio-line.keywords input.editable-input {
   width: 520px;
 }
-div.product-page #biblio div.biblio-line.keywords span.value {
+div.product-page div.main-content #biblio div.biblio-line.keywords span.value {
   font-wieght: bold;
 }
-div.product-page #file {
-  float: left;
+div.product-page div.main-content #resource {
   margin-top: 20px;
-  width: 681px;
+  width: 700px;
 }
-div.product-page #file div.file-input-container {
-  display: none;
+div.product-page div.main-content #resource .upload-cta {
+  margin-top: 50px;
+  width: 100%;
 }
-div.product-page #file div.free-fulltext-url {
+div.product-page div.main-content #resource div.free-fulltext-url {
   clear: both;
   margin-top: 20px;
   margin-left: -15px;
 }
-div.product-page #file div.free-fulltext-url:before,
-div.product-page #file div.free-fulltext-url:after {
+div.product-page div.main-content #resource div.free-fulltext-url:before,
+div.product-page div.main-content #resource div.free-fulltext-url:after {
   content: " ";
   display: table;
 }
-div.product-page #file div.free-fulltext-url:after {
+div.product-page div.main-content #resource div.free-fulltext-url:after {
   clear: both;
 }
-div.product-page #file div.free-fulltext-url:before,
-div.product-page #file div.free-fulltext-url:after {
+div.product-page div.main-content #resource div.free-fulltext-url:before,
+div.product-page div.main-content #resource div.free-fulltext-url:after {
   content: " ";
   display: table;
 }
-div.product-page #file div.free-fulltext-url:after {
+div.product-page div.main-content #resource div.free-fulltext-url:after {
   clear: both;
 }
-div.product-page #file div.free-fulltext-url i.leader {
+div.product-page div.main-content #resource div.free-fulltext-url i.leader {
   font-size: 110%;
   margin-right: 5px;
   float: left;
 }
-div.product-page #file div.free-fulltext-url i.icon-external-link-sign {
+div.product-page div.main-content #resource div.free-fulltext-url i.icon-external-link-sign {
   font-size: 80%;
   opacity: .5;
 }
-div.product-page #file div.free-fulltext-url div.no-free-fulltext-url div.info {
+div.product-page div.main-content #resource div.free-fulltext-url div.no-free-fulltext-url div.info {
   width: 400px;
   float: left;
 }
-div.product-page #file div.free-fulltext-url div.no-free-fulltext-url div.info div.no-fulltext {
+div.product-page div.main-content #resource div.free-fulltext-url div.no-free-fulltext-url div.info div.no-fulltext {
   font-weight: bold;
 }
-div.product-page #file div.free-fulltext-url div.no-free-fulltext-url div.info div.encouragement {
+div.product-page div.main-content #resource div.free-fulltext-url div.no-free-fulltext-url div.info div.encouragement {
   margin-top: 5px;
   font-style: italic;
   font-size: 90%;
 }
-div.product-page #file div.free-fulltext-url div.action a.action {
+div.product-page div.main-content #resource div.free-fulltext-url div.action a.action {
   margin: -5px 0 0 25px;
   text-decoration: none;
   background: #777;
   border: none;
   padding: 3px 10px;
 }
-div.product-page #file div.free-fulltext-url div.action a.action:hover {
+div.product-page div.main-content #resource div.free-fulltext-url div.action a.action:hover {
   background: #555;
 }
-div.product-page #file div.free-fulltext-url div.has-free-fulltext-url a {
+div.product-page div.main-content #resource div.free-fulltext-url div.has-free-fulltext-url a {
   color: #333;
   font-weight: normal;
 }
-div.product-page #file div.free-fulltext-url div.has-free-fulltext-url a:hover {
+div.product-page div.main-content #resource div.free-fulltext-url div.has-free-fulltext-url a:hover {
   text-decoration: underline;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
@@ -8046,8 +8046,11 @@ div.modal-body.free-fulltext-url div.archive-this a.btn span {
   float: left;
   color: #555;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values {
+#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.value {
   font-weight: bold;
+}
+#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.unit {
+  font-weight: 300;
 }
 #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.upper,
 #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.lower {
@@ -8062,7 +8065,6 @@ div.modal-body.free-fulltext-url div.archive-this a.btn span {
 }
 #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.descr {
   font-weight: 100;
-  font-size: 90%;
 }
 div.signup-page {
   position: fixed;

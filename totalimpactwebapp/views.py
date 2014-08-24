@@ -579,10 +579,10 @@ def product_interaction(tiid):
     logger.info(u"logging pageview for {tiid}".format(
         tiid=tiid))
 
-    log_interaction_event(tiid=tiid, 
+    log_interaction_event(tiid=tiid,
         event=request.json.get("event", "view"),
-        headers=request.headers.to_list(), 
-        ip=request.remote_addr, 
+        headers=request.headers.to_list(),
+        ip=request.remote_addr,
         timestamp=request.json.get("timestamp", datetime.datetime.utcnow()))
 
     return json_resp_from_thing(request.json)
