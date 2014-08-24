@@ -5,8 +5,8 @@ import re
 import jinja2
 from time import sleep
 import datetime
-
-
+from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
+from sqlalchemy.orm.exc import FlushError
 
 # a slow decorator for tests, so can exclude them when necessary
 # put @slow on its own line above a slow test method
