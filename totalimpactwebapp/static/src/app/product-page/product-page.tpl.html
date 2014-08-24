@@ -40,96 +40,139 @@
       </div>-->
 
       <div id="biblio">
-         <h5 class="title">
+         <h2 class="title">
             <span class="title-text"
+                  tooltip="click to edit"
+                  tooltip-placement="left"
                   e-rows="3"
+                  onaftersave="updateBiblio('title')"
+                  ng-show="!loading.is('updateBiblio.title')"
                   editable-textarea="biblio.display_title">
-               {{biblio.display_title}}
-               <i class="icon-edit" ng-show="userOwnsThisProfile"></i>
+               {{biblio.display_title || "click to enter title"}}
             </span>
-
-            <!--
-            <a class="linkout url title"
-               ng-show="aliases.best_url"
-               target="_blank"
-               title="Click to view on publisher site"
-               data-toggle='tooltip'
-               href="{{ aliases.best_url }}">
-               <i class="icon-external-link-sign"></i>
-            </a>
-
-            <a class="linkout free-fulltext-url"
-               ng-show="biblio.free_fulltext_url"
-               target="_blank"
-               title="Free fulltext available!"
-               data-toggle='tooltip'
-               href="{{ free_fulltext_url }}">
-               <i class="icon-unlock-alt"></i>
-            </a>
-            -->
-         </h5>
+            <span class="loading" ng-show="loading.is('updateBiblio.title')">
+               <i class="icon-refresh icon-spin"></i>
+               updating publication year...
+            </span>
+         </h2>
 
          <div class="optional-biblio">
 
+            <!-- authors line -->
             <div class="biblio-line">
                <span class="biblio-field authors">
                   <span class="value"
+                        tooltip="click to edit"
+                        tooltip-placement="right"
                         onaftersave="updateBiblio('authors')"
-                        ng-show="!loading.is('updateBiblio')"
+                        ng-show="!loading.is('updateBiblio.authors')"
                         editable-text="biblio.authors">
                   {{ biblio.display_authors || "click to enter authors" }}
                   </span>
-                  <span class="loading" ng-show="loading.is('updateBiblio')">
+                  <span class="loading" ng-show="loading.is('updateBiblio.authors')">
                      <i class="icon-refresh icon-spin"></i>
                      updating authors...
                   </span>
                </span>
 
+            </div>
+
+
+            <!-- date and journal/repo line -->
+            <div class="biblio-line date-and-source">
                <span class="biblio-field year">
-                  (<span class="value biblio-year"
-                        ng-show="!loading.is('updateBiblio')"
+                  <span class="value biblio-year"
+                        tooltip="click to edit"
+                        tooltip-placement="left"
+                        ng-show="!loading.is('updateBiblio.year')"
                         onaftersave="updateBiblio('year')"
                         editable-text="biblio.year">
                      {{ biblio.display_year || "click to enter publication year" }}
-                  </span>)
-                  <span class="loading" ng-show="loading.is('updateBiblio')">
+                  </span>
+                  <span class="loading" ng-show="loading.is('updateBiblio.year')">
                      <i class="icon-refresh icon-spin"></i>
                      updating publication year...
                   </span>
                </span>
-            </div>
 
-            <div class="biblio-line">
-               <span class="biblio-field repository"
-                     ng-show="biblio.repository && !biblio.journal">
-                  <span class="value">
-                  {{ biblioString("repository", biblio.repository) }}.
+               <span class="biblio-field repository">
+                  <span class="value"
+                     tooltip="click to edit"
+                     tooltip-placement="right"
+                     editable-text="biblio.repository"
+                     onaftersave="updateBiblio('repository')"
+                     ng-show="biblio.repository && !biblio.journal && !loading.is('updateBiblio.repository')">
+                     {{ biblio.repository || 'click to enter repository' }}.
+                  </span>
+                  <span class="loading" ng-show="loading.is('updateBiblio.repository')">
+                     <i class="icon-refresh icon-spin"></i>
+                     updating repository...
                   </span>
                </span>
 
                <span class="biblio-field journal">
-
-                  <span class="value">
-                  {{ biblioString("journal", biblio.journal) }}
+                  <span class="value"
+                     tooltip="click to edit"
+                     tooltip-placement="right"
+                     editable-text="biblio.journal"
+                     onaftersave="updateBiblio('journal')"
+                     ng-show="biblio.journal && !loading.is('updateBiblio.journal')">
+                     {{ biblio.journal || 'click to enter journal' }}
+                  </span>
+                  <span class="loading" ng-show="loading.is('updateBiblio.journal')">
+                     <i class="icon-refresh icon-spin"></i>
+                     updating journal...
                   </span>
                </span>
+
             </div>
 
-            <div class="biblio-line">
-               <span class="biblio-field keywords">
-                  <span class="value">
-                  {{ biblioString("keywords", biblio.keywords) }}
-                  </span>
-               </span>
-            </div>
 
-            <div class="biblio-line">
+            <!-- abstract line -->
+            <div class="biblio-line abstract">
                <span class="biblio-field abstract">
-                  <span class="value">
-                  {{ biblioString("abstract", biblio.abstract) }}
+                  <span class="biblio-field-label">Abstract:</span>
+
+                  <span class="value"
+                     tooltip="click to edit"
+                     tooltip-placement="right"
+                     ng-show="!loading.is('updateBiblio.abstract')"
+                     editable-textarea="biblio.abstract"
+                     onaftersave="updateBiblio('abstract')">
+                     {{ truncatedAbstract() || 'click to enter abstract'}}
+                  </span>
+
+                  <span class="more-abstract"
+                        ng-hide="loading.is('updateBiblio.abstract') || userWantsFullAbstract"
+                        ng-click="userWantsFullAbstract=true">(more)</span>
+
+                  <span class="loading" ng-show="loading.is('updateBiblio.abstract')">
+                     <i class="icon-refresh icon-spin"></i>
+                     updating abstract...
                   </span>
                </span>
             </div>
+
+
+            <!-- keywords line -->
+            <div class="biblio-line keywords">
+               <span class="biblio-field keywords">
+                  <span class="biblio-field-label">Keywords:</span>
+                  <span class="value"
+                     tooltip="click to edit"
+                     tooltip-placement="right"
+                     editable-text="biblio.keywords"
+                     onaftersave="updateBiblio('keywords')"
+                     ng-show="!loading.is('updateBiblio.keywords')">
+                     {{ biblio.keywords || 'click to enter keywords (separate with semicolons)'}}
+                  </span>
+                  <span class="loading" ng-show="loading.is('updateBiblio.keywords')">
+                     <i class="icon-refresh icon-spin"></i>
+                     updating keywords...
+                  </span>
+               </span>
+            </div>
+
 
 
 
@@ -156,13 +199,9 @@
               <input type="file" ng-file-select="onFileSelect($files)">
             </div>
 
-
-            <div class="pdf-wrapper" ng-controller="pdfCtrl">
-               pdf goes here
-
-
+            <div class="file-wrapper">
+               <div class="iframe-wrapper" dynamic="iframeToEmbed"></div>
             </div>
-
          </div>
       </div>
 

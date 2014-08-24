@@ -1,6 +1,3 @@
-
-
-
 div.product-page {
    min-height: 500px;
 
@@ -19,142 +16,124 @@ div.product-page {
    #biblio {
       width: 700px;
       float:left;
-      .optional-biblio {
-         .biblio-line {
-            margin-top: 5px;
-            form.editable-text {
-               margin-top: -5px;
-               margin-bottom: -5px;
+
+
+      // general stuff in biblio ************
+
+      .editable-click {
+         color: #333;
+         border:none;
+         &:hover {
+            color: #428bca;
+         }
+      }
+
+      form.editable-text {
+         margin-top: -5px;
+         margin-bottom: -5px;
+      }
+
+      .loading {
+         color: #999;
+         margin: 0 5px;
+         i {margin-right: 3px;}
+      }
+
+      span.biblio-field-label {
+         font-weight: bold;
+         margin-right: 5px;
+         font-size: 16px;
+      }
+
+      .tooltip-inner {
+         background: #428bca;
+      }
+      .tooltip-arrow {
+         border-right-color: #428bca;
+         border-left-color: #428bca;
+      }
+
+      // specific biblio sections ***********
+
+      h2.title {
+         font-size: 28px;
+         line-height: 1.3;
+         margin: 0 0 5px;
+         textarea{
+            width: 630px;
+            height: 60px;
+            font-weight: normal;
+         }
+
+      }
+
+
+      span.biblio-field.authors {
+         font-size: 20px;
+         input {width: 630px;}
+
+      }
+
+      div.biblio-line.date-and-source {
+         font-size: 16px;
+         .editable-click {
+            color: #777;
+            &:hover {
+               color: #428bca;
             }
-            .biblio-field {
-               &.authors {
-                  input {width: 20em;}
-               }
-               &.year {
-                  input { width: 4em;}  // years is short
-               }
+         }
+         span.biblio-field.year {
+            form {
+               input.editable-input { width: 4em;}  // years is short
+               margin-right: 10px;
+            }
+
+         }
+         span.biblio-field.journal, span.repository {
+            font-style: italic;
+            input.editable-input {
+               width: 580px;
+               margin-left: 10px;
             }
          }
       }
+
+      div.biblio-line.abstract {
+         margin-top: 15px;
+         span.value {
+            font-size: 16px;
+         }
+         textarea {
+            width: 630px;
+            height: 200px;
+            font-size: 16px;
+         }
+
+         .more-abstract {
+            font-size: 14px;
+            cursor: pointer;
+            color: #555;
+         }
+
+      }
+
+      div.biblio-line.keywords {
+         font-size: 16px;
+         margin-top: 10px;
+         input.editable-input {
+            width: 520px;
+         }
+         span.value {
+            font-wieght: bold;
+         }
+      }
+
+
+
    }
 
 
 
-   // SIDEBAR
-   // ************************************************************************
-   // ************************************************************************
-
-   #sidebar {
-      width: 400px;
-      float:right;
-
-      #metrics {
-         ul.metric-details-list {
-            margin-top: 40px;
-            li.metric-detail {
-               font-size:  15px;
-               margin-bottom: 20px;
-               clear:both;
-               .clearfix;
-               .product-page-badge-container {
-                  width: 250px;
-                  float:left;
-                  margin-top: 8px;
-                  display:inline-block;
-
-                  .product-page-badge {
-                     // a lot of this is duplicated from ti-badge.less.
-                     // but there we've got the two parts, text and diff...
-                     // seemed better to not have to account for that stuff here.
-                     padding: 3px 9px;
-                     border-width: 1px;
-                     border-style: solid;
-                     float:right;
-                     font-size:13px;
-                     .border-radius(3px, 3px, 3px, 3px);
-                     &.scholars {border-color: @scholarsColor;}
-                     &.public {border-color: @publicColor;}
-                     &.is-highly-true{
-                        color:  #fff;
-                        &.scholars {background: @scholarsColor;}
-                        &.public {background: @publicColor;}
-                     }
-                     &.is-highly-false {
-                        &.scholars {color: @scholarsColor;}
-                        &.public {color: @publicColor;}
-                        background: #fff;
-                     }
-                  }
-               }
-               span.metric-text {
-                  float:left;
-                  margin-left: 10px;
-                  padding-top: 5px;
-                  a.value-and-name {
-
-                     color:  #333;
-                     display: inline-block;
-                     &:hover {
-                        text-decoration: none;
-                        color:  @linkColor;
-                        i {color:  @linkColor;}
-                     }
-                     span.raw-value {
-                        margin-left:5px;
-                        display: inline-block;
-                        text-align: right;
-                        font-weight: bold;
-                        font-size:  16px;
-                     }
-                     span.environment {
-                     }
-                     span.interaction {
-                     }
-                     img {
-                        height: 16px;
-                        margin: 0 3px 0 3px;
-                        vertical-align: middle;
-                     }
-                     i {color:  #ddd;}
-
-                  }
-
-                  span.new-metrics {
-                     background: @btn-success-bg;
-                     color: #fff;
-                     font-size: 12px;
-                     cursor: default;
-                     margin-left: 5px;
-                     padding: 0 5px;
-                     .border-radius(3px, 3px, 3px, 3px);
-                  }
-
-                  .percentile {
-                     display:block;
-                     float:left;
-                     border-bottom: 1px solid #eee;
-                     color: #555;
-                     span.values {
-                        font-weight: bold;
-                        span.upper, span.lower {
-                           font-size:  16px;
-                        }
-                        i {
-                           opacity: .5;
-                           cursor: pointer;
-                           &:hover {opacity: .8;}
-                        }
-                     }
-                     span.descr {
-                        font-weight: 100;
-                        font-size: 90%;
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
 
 
 
@@ -170,47 +149,6 @@ div.product-page {
       float:left;
       margin-top: 20px;
       width: 681px;
-      div.pdf-wrapper {
-         canvas {
-            border: 3px solid #555;
-         }
-         div.pdf-nav {
-            background: #555;
-            border: 3px solid #555;
-            border-bottom: none;
-            opacity: .95;
-            color: #eee;
-            height: 50px;
-            text-align: center;
-            .current-page {
-
-            }
-            .page-count {
-               font-size: 70%;
-               font-weight: 100;
-            }
-            &.fixed {
-               position:fixed;
-               top:0;
-               width:100%;
-               right:0;
-               margin-top: 0;
-            }
-            .btn {
-               padding: 5px;
-               margin: 5px 20px;
-               background: #777;
-               &:hover, &:focus {
-                  background: #888;
-                  color: #fff;
-               }
-               i {
-                  margin: 5px;
-                  font-size: 75%;
-               }
-            }
-         }
-      }
 
 
       div.file-input-container {
@@ -287,39 +225,6 @@ div.product-page {
 
 
 
-
-
-
-div.header {
-   div.wrapper {
-      position:relative;
-      a.back-to-profile {
-         position:absolute;
-         bottom:0;
-         left: 0;
-      }
-      div.product-page-controls {
-         position:absolute;
-         right:0;
-         bottom:0;
-         width: 400px;
-         text-align: right;
-         a {
-            margin-left: 20px;
-            font-weight: 700;
-            font-size: 20px;
-            &.delete-product {
-
-            }
-         }
-
-      }
-
-   }
-}
-
-
-
 div.modal-body.free-fulltext-url {
 
    div.add-link {
@@ -343,31 +248,5 @@ div.modal-body.free-fulltext-url {
       }
    }
 }
-
-
-
-
-div.modal-body.edit-product {
-   div.form-group {
-      text-align:center;
-
-      label {
-         .sublabel {
-            display:block;
-            font-size: 70%;
-            color: #888;
-            font-weight: normal;
-         }
-      }
-   }
-   div.buttons-group {
-      // duplicates same declaration block used above for other modal; fix.
-      height: 40px;
-      margin: 20px;
-      text-align:center;
-      .btn {width: 8em;}
-   }
-}
-
 
 

@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-23
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-24
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -444,6 +444,7 @@ angular.module('app', [
   'ngCookies',
   'ngRoute',
   'ngSanitize',
+  'ngEmbedApp',
   'ngAnimate',
   'emguo.poller',
   'services.loading',
@@ -472,8 +473,19 @@ angular.module('app').constant('TEST', {
 });
 
 
-angular.module('app').config(function ($routeProvider, $locationProvider) {
+angular.module('app').config(function ($routeProvider,
+                                       $sceDelegateProvider,
+                                       $locationProvider) {
   $locationProvider.html5Mode(true);
+
+  $sceDelegateProvider.resourceUrlWhitelist([
+    // Allow same origin resource loads.
+    'self',
+    // Allow google docs embedding.  Notice the difference between * and **.
+    'http://docs.google.com/**',
+    'http://www.slideshare.net/**'
+
+  ]);
 
 
 
@@ -896,6 +908,7 @@ angular.module('passwordReset', [
 angular.module("productPage", [
     'resources.users',
     'resources.products',
+    'resources.embedly',
     'profileAward.profileAward',
     'services.page',
     'profile',
@@ -948,6 +961,7 @@ angular.module("productPage", [
     TiMixpanel,
     ProductBiblio,
     ProductInteraction,
+    Embedly,
     product,
     Page) {
 
@@ -956,10 +970,39 @@ angular.module("productPage", [
 
     UserProfile.useCache(true)
 
+
     $scope.userSlug = slug
     $scope.loading = Loading
     $scope.aliases = product.aliases
     $scope.biblio = product.biblio
+
+
+
+    // these are just for testing!
+    // once we've got a biblio.file_url set by the server,
+    // delete them.
+    product.biblio.file_url = "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
+    product.biblio.file_url = "http://jasonpriem.org/self-archived/data-for-free.pdf"
+
+
+    if (product.biblio.file_url){
+      Embedly.get(
+        {url: product.biblio.file_url},
+        function(resp){
+          console.log("successful resp from embedly: ", resp)
+          $scope.iframeToEmbed = resp.html
+        },
+        function(resp){
+          console.log("error response from embedly: ", resp)
+        }
+      )
+    }
+
+
+
+
+
+//    $scope.fileUrl = "http://jasonpriem.org/self-archived/data-for-free.pdf"
 
 //    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
 //    $scope.userOwnsThisProfile = false
@@ -1017,8 +1060,8 @@ angular.module("productPage", [
     }
 
     $scope.updateBiblio = function(propertyToUpdate){
-      Loading.start("updateBiblio")
-      updateObj = {}
+      Loading.start("updateBiblio." + propertyToUpdate )
+      var updateObj = {}
       updateObj[propertyToUpdate] = $scope.biblio[propertyToUpdate]
       console.log("updating biblio with this:", updateObj)
       ProductBiblio.patch(
@@ -1033,6 +1076,21 @@ angular.module("productPage", [
 
     $scope.afterSaveTest = function(){
       console.log("running after save.")
+    }
+
+    $scope.userWantsFullAbstract = false
+    $scope.truncatedAbstract = function(){
+
+      if (!product.biblio.abstract) {
+        return ""
+      }
+
+      if ($scope.userWantsFullAbstract) {
+        return product.biblio.abstract
+      }
+      else {
+        return product.biblio.abstract.substr(0, 75) + "..."
+      }
     }
 
 
@@ -1095,7 +1153,7 @@ angular.module("productPage", [
 
         console.log("loaded a product", data)
         window.scrollTo(0,0)  // hack. not sure why this is needed.
-        Loading.finish("updateBiblio") // hack for now, should do in promise...
+        Loading.clear() // hack for now, should do in promise...
 
 
       },
@@ -2975,6 +3033,19 @@ angular.module('directives.forms', ["services.loading"])
       })
     }
   }
+})
+angular.module('resources.embedly',['ngResource'])
+
+.factory('Embedly', function ($resource) {
+
+  return $resource(
+   "http://api.embed.ly/1/oembed",
+   {
+     key: "46010d661a874d8ab9d9bdb4da077d03",
+     maxwidth: 700,
+     width: 700
+   }
+  )
 })
 angular.module('resources.products',['ngResource'])
 
@@ -5700,96 +5771,139 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "      </div>-->\n" +
     "\n" +
     "      <div id=\"biblio\">\n" +
-    "         <h5 class=\"title\">\n" +
+    "         <h2 class=\"title\">\n" +
     "            <span class=\"title-text\"\n" +
+    "                  tooltip=\"click to edit\"\n" +
+    "                  tooltip-placement=\"left\"\n" +
     "                  e-rows=\"3\"\n" +
+    "                  onaftersave=\"updateBiblio('title')\"\n" +
+    "                  ng-show=\"!loading.is('updateBiblio.title')\"\n" +
     "                  editable-textarea=\"biblio.display_title\">\n" +
-    "               {{biblio.display_title}}\n" +
-    "               <i class=\"icon-edit\" ng-show=\"userOwnsThisProfile\"></i>\n" +
+    "               {{biblio.display_title || \"click to enter title\"}}\n" +
     "            </span>\n" +
-    "\n" +
-    "            <!--\n" +
-    "            <a class=\"linkout url title\"\n" +
-    "               ng-show=\"aliases.best_url\"\n" +
-    "               target=\"_blank\"\n" +
-    "               title=\"Click to view on publisher site\"\n" +
-    "               data-toggle='tooltip'\n" +
-    "               href=\"{{ aliases.best_url }}\">\n" +
-    "               <i class=\"icon-external-link-sign\"></i>\n" +
-    "            </a>\n" +
-    "\n" +
-    "            <a class=\"linkout free-fulltext-url\"\n" +
-    "               ng-show=\"biblio.free_fulltext_url\"\n" +
-    "               target=\"_blank\"\n" +
-    "               title=\"Free fulltext available!\"\n" +
-    "               data-toggle='tooltip'\n" +
-    "               href=\"{{ free_fulltext_url }}\">\n" +
-    "               <i class=\"icon-unlock-alt\"></i>\n" +
-    "            </a>\n" +
-    "            -->\n" +
-    "         </h5>\n" +
+    "            <span class=\"loading\" ng-show=\"loading.is('updateBiblio.title')\">\n" +
+    "               <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "               updating publication year...\n" +
+    "            </span>\n" +
+    "         </h2>\n" +
     "\n" +
     "         <div class=\"optional-biblio\">\n" +
     "\n" +
+    "            <!-- authors line -->\n" +
     "            <div class=\"biblio-line\">\n" +
     "               <span class=\"biblio-field authors\">\n" +
     "                  <span class=\"value\"\n" +
+    "                        tooltip=\"click to edit\"\n" +
+    "                        tooltip-placement=\"right\"\n" +
     "                        onaftersave=\"updateBiblio('authors')\"\n" +
-    "                        ng-show=\"!loading.is('updateBiblio')\"\n" +
+    "                        ng-show=\"!loading.is('updateBiblio.authors')\"\n" +
     "                        editable-text=\"biblio.authors\">\n" +
     "                  {{ biblio.display_authors || \"click to enter authors\" }}\n" +
     "                  </span>\n" +
-    "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio')\">\n" +
+    "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio.authors')\">\n" +
     "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
     "                     updating authors...\n" +
     "                  </span>\n" +
     "               </span>\n" +
     "\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <!-- date and journal/repo line -->\n" +
+    "            <div class=\"biblio-line date-and-source\">\n" +
     "               <span class=\"biblio-field year\">\n" +
-    "                  (<span class=\"value biblio-year\"\n" +
-    "                        ng-show=\"!loading.is('updateBiblio')\"\n" +
+    "                  <span class=\"value biblio-year\"\n" +
+    "                        tooltip=\"click to edit\"\n" +
+    "                        tooltip-placement=\"left\"\n" +
+    "                        ng-show=\"!loading.is('updateBiblio.year')\"\n" +
     "                        onaftersave=\"updateBiblio('year')\"\n" +
     "                        editable-text=\"biblio.year\">\n" +
     "                     {{ biblio.display_year || \"click to enter publication year\" }}\n" +
-    "                  </span>)\n" +
-    "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio')\">\n" +
+    "                  </span>\n" +
+    "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio.year')\">\n" +
     "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
     "                     updating publication year...\n" +
     "                  </span>\n" +
     "               </span>\n" +
-    "            </div>\n" +
     "\n" +
-    "            <div class=\"biblio-line\">\n" +
-    "               <span class=\"biblio-field repository\"\n" +
-    "                     ng-show=\"biblio.repository && !biblio.journal\">\n" +
-    "                  <span class=\"value\">\n" +
-    "                  {{ biblioString(\"repository\", biblio.repository) }}.\n" +
+    "               <span class=\"biblio-field repository\">\n" +
+    "                  <span class=\"value\"\n" +
+    "                     tooltip=\"click to edit\"\n" +
+    "                     tooltip-placement=\"right\"\n" +
+    "                     editable-text=\"biblio.repository\"\n" +
+    "                     onaftersave=\"updateBiblio('repository')\"\n" +
+    "                     ng-show=\"biblio.repository && !biblio.journal && !loading.is('updateBiblio.repository')\">\n" +
+    "                     {{ biblio.repository || 'click to enter repository' }}.\n" +
+    "                  </span>\n" +
+    "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio.repository')\">\n" +
+    "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                     updating repository...\n" +
     "                  </span>\n" +
     "               </span>\n" +
     "\n" +
     "               <span class=\"biblio-field journal\">\n" +
-    "\n" +
-    "                  <span class=\"value\">\n" +
-    "                  {{ biblioString(\"journal\", biblio.journal) }}\n" +
+    "                  <span class=\"value\"\n" +
+    "                     tooltip=\"click to edit\"\n" +
+    "                     tooltip-placement=\"right\"\n" +
+    "                     editable-text=\"biblio.journal\"\n" +
+    "                     onaftersave=\"updateBiblio('journal')\"\n" +
+    "                     ng-show=\"biblio.journal && !loading.is('updateBiblio.journal')\">\n" +
+    "                     {{ biblio.journal || 'click to enter journal' }}\n" +
+    "                  </span>\n" +
+    "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio.journal')\">\n" +
+    "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                     updating journal...\n" +
     "                  </span>\n" +
     "               </span>\n" +
+    "\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"biblio-line\">\n" +
-    "               <span class=\"biblio-field keywords\">\n" +
-    "                  <span class=\"value\">\n" +
-    "                  {{ biblioString(\"keywords\", biblio.keywords) }}\n" +
-    "                  </span>\n" +
-    "               </span>\n" +
-    "            </div>\n" +
     "\n" +
-    "            <div class=\"biblio-line\">\n" +
+    "            <!-- abstract line -->\n" +
+    "            <div class=\"biblio-line abstract\">\n" +
     "               <span class=\"biblio-field abstract\">\n" +
-    "                  <span class=\"value\">\n" +
-    "                  {{ biblioString(\"abstract\", biblio.abstract) }}\n" +
+    "                  <span class=\"biblio-field-label\">Abstract:</span>\n" +
+    "\n" +
+    "                  <span class=\"value\"\n" +
+    "                     tooltip=\"click to edit\"\n" +
+    "                     tooltip-placement=\"right\"\n" +
+    "                     ng-show=\"!loading.is('updateBiblio.abstract')\"\n" +
+    "                     editable-textarea=\"biblio.abstract\"\n" +
+    "                     onaftersave=\"updateBiblio('abstract')\">\n" +
+    "                     {{ truncatedAbstract() || 'click to enter abstract'}}\n" +
+    "                  </span>\n" +
+    "\n" +
+    "                  <span class=\"more-abstract\"\n" +
+    "                        ng-hide=\"loading.is('updateBiblio.abstract') || userWantsFullAbstract\"\n" +
+    "                        ng-click=\"userWantsFullAbstract=true\">(more)</span>\n" +
+    "\n" +
+    "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio.abstract')\">\n" +
+    "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                     updating abstract...\n" +
     "                  </span>\n" +
     "               </span>\n" +
     "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <!-- keywords line -->\n" +
+    "            <div class=\"biblio-line keywords\">\n" +
+    "               <span class=\"biblio-field keywords\">\n" +
+    "                  <span class=\"biblio-field-label\">Keywords:</span>\n" +
+    "                  <span class=\"value\"\n" +
+    "                     tooltip=\"click to edit\"\n" +
+    "                     tooltip-placement=\"right\"\n" +
+    "                     editable-text=\"biblio.keywords\"\n" +
+    "                     onaftersave=\"updateBiblio('keywords')\"\n" +
+    "                     ng-show=\"!loading.is('updateBiblio.keywords')\">\n" +
+    "                     {{ biblio.keywords || 'click to enter keywords (separate with semicolons)'}}\n" +
+    "                  </span>\n" +
+    "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio.keywords')\">\n" +
+    "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                     updating keywords...\n" +
+    "                  </span>\n" +
+    "               </span>\n" +
+    "            </div>\n" +
+    "\n" +
     "\n" +
     "\n" +
     "\n" +
@@ -5816,13 +5930,9 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "              <input type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
     "            </div>\n" +
     "\n" +
-    "\n" +
-    "            <div class=\"pdf-wrapper\" ng-controller=\"pdfCtrl\">\n" +
-    "               pdf goes here\n" +
-    "\n" +
-    "\n" +
+    "            <div class=\"file-wrapper\">\n" +
+    "               <div class=\"iframe-wrapper\" dynamic=\"iframeToEmbed\"></div>\n" +
     "            </div>\n" +
-    "\n" +
     "         </div>\n" +
     "      </div>\n" +
     "\n" +

@@ -1,0 +1,93 @@
+
+   // SIDEBAR
+   // ************************************************************************
+   // ************************************************************************
+
+   #sidebar {
+      width: 400px;
+      float:right;
+      padding-left: 20px;
+
+      #metrics {
+         ul.metric-details-list {
+            margin-top: 40px;
+            li.metric-detail {
+               font-size:  15px;
+               margin-bottom: 20px;
+               clear:both;
+               .clearfix;
+               .product-page-badge-container {
+                  width: 250px;
+                  float:left;
+                  margin-top: 8px;
+                  display:inline-block;
+               }
+               span.metric-text {
+                  float:left;
+                  margin-left: 10px;
+                  padding-top: 5px;
+                  a.value-and-name {
+
+                     color:  #333;
+                     display: inline-block;
+                     &:hover {
+                        text-decoration: none;
+                        color:  @linkColor;
+                        i {color:  @linkColor;}
+                     }
+                     span.raw-value {
+                        margin-left:5px;
+                        display: inline-block;
+                        text-align: right;
+                        font-weight: bold;
+                        font-size:  16px;
+                     }
+                     span.environment {
+                     }
+                     span.interaction {
+                     }
+                     img {
+                        height: 16px;
+                        margin: 0 3px 0 3px;
+                        vertical-align: middle;
+                     }
+                     i {color:  #ddd;}
+
+                  }
+
+                  span.new-metrics {
+                     background: @btn-success-bg;
+                     color: #fff;
+                     font-size: 12px;
+                     cursor: default;
+                     margin-left: 5px;
+                     padding: 0 5px;
+                     .border-radius(3px, 3px, 3px, 3px);
+                  }
+
+                  .percentile {
+                     display:block;
+                     float:left;
+                     border-bottom: 1px solid #eee;
+                     color: #555;
+                     span.values {
+                        font-weight: bold;
+                        span.upper, span.lower {
+                           font-size:  16px;
+                        }
+                        i {
+                           opacity: .5;
+                           cursor: pointer;
+                           &:hover {opacity: .8;}
+                        }
+                     }
+                     span.descr {
+                        font-weight: 100;
+                        font-size: 90%;
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }

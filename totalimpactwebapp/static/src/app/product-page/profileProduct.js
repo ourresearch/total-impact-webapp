@@ -1,6 +1,7 @@
 angular.module("productPage", [
     'resources.users',
     'resources.products',
+    'resources.embedly',
     'profileAward.profileAward',
     'services.page',
     'profile',
@@ -53,6 +54,7 @@ angular.module("productPage", [
     TiMixpanel,
     ProductBiblio,
     ProductInteraction,
+    Embedly,
     product,
     Page) {
 
@@ -61,10 +63,39 @@ angular.module("productPage", [
 
     UserProfile.useCache(true)
 
+
     $scope.userSlug = slug
     $scope.loading = Loading
     $scope.aliases = product.aliases
     $scope.biblio = product.biblio
+
+
+
+    // these are just for testing!
+    // once we've got a biblio.file_url set by the server,
+    // delete them.
+    product.biblio.file_url = "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
+    product.biblio.file_url = "http://jasonpriem.org/self-archived/data-for-free.pdf"
+
+
+    if (product.biblio.file_url){
+      Embedly.get(
+        {url: product.biblio.file_url},
+        function(resp){
+          console.log("successful resp from embedly: ", resp)
+          $scope.iframeToEmbed = resp.html
+        },
+        function(resp){
+          console.log("error response from embedly: ", resp)
+        }
+      )
+    }
+
+
+
+
+
+//    $scope.fileUrl = "http://jasonpriem.org/self-archived/data-for-free.pdf"
 
 //    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
 //    $scope.userOwnsThisProfile = false
@@ -122,8 +153,8 @@ angular.module("productPage", [
     }
 
     $scope.updateBiblio = function(propertyToUpdate){
-      Loading.start("updateBiblio")
-      updateObj = {}
+      Loading.start("updateBiblio." + propertyToUpdate )
+      var updateObj = {}
       updateObj[propertyToUpdate] = $scope.biblio[propertyToUpdate]
       console.log("updating biblio with this:", updateObj)
       ProductBiblio.patch(
@@ -138,6 +169,21 @@ angular.module("productPage", [
 
     $scope.afterSaveTest = function(){
       console.log("running after save.")
+    }
+
+    $scope.userWantsFullAbstract = false
+    $scope.truncatedAbstract = function(){
+
+      if (!product.biblio.abstract) {
+        return ""
+      }
+
+      if ($scope.userWantsFullAbstract) {
+        return product.biblio.abstract
+      }
+      else {
+        return product.biblio.abstract.substr(0, 75) + "..."
+      }
     }
 
 
@@ -200,7 +246,7 @@ angular.module("productPage", [
 
         console.log("loaded a product", data)
         window.scrollTo(0,0)  // hack. not sure why this is needed.
-        Loading.finish("updateBiblio") // hack for now, should do in promise...
+        Loading.clear() // hack for now, should do in promise...
 
 
       },

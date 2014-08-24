@@ -8,6 +8,7 @@ angular.module('app', [
   'ngCookies',
   'ngRoute',
   'ngSanitize',
+  'ngEmbedApp',
   'ngAnimate',
   'emguo.poller',
   'services.loading',
@@ -36,8 +37,19 @@ angular.module('app').constant('TEST', {
 });
 
 
-angular.module('app').config(function ($routeProvider, $locationProvider) {
+angular.module('app').config(function ($routeProvider,
+                                       $sceDelegateProvider,
+                                       $locationProvider) {
   $locationProvider.html5Mode(true);
+
+  $sceDelegateProvider.resourceUrlWhitelist([
+    // Allow same origin resource loads.
+    'self',
+    // Allow google docs embedding.  Notice the difference between * and **.
+    'http://docs.google.com/**',
+    'http://www.slideshare.net/**'
+
+  ]);
 
 
 
