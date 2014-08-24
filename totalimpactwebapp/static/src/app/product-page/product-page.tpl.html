@@ -185,10 +185,46 @@
          <div class="download-button-container">
             <div class="btn btn-default" ng-click="downloadFile()">Download</div>
          </div>
+
          <div id="metrics">
-            <div class="contents" ng-bind-html="metricsMarkup"></div>
+            <ul class="metric-details-list">
+
+               <li class="metric-detail" ng-repeat="metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}">
+                  <span class="metric-text">
+                     <a class="value-and-name"
+                        href="{{ metric.drilldown_url }}"
+                        target="_blank"
+                        data-content="{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.">
+                        <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
+                        <span class="raw-value">{{ metric.display_count }}</span>
+                        <span class="environment">{{ metric.display_provider }}</span>
+                        <span class="interaction">{{ metric.display_interaction }}</span>
+                        <i class="icon-external-link-sign"></i>
+                     </a>
+
+                     <span class="new-metrics"
+                           ng-show="metric.diff_value > 0"
+                           tooltip="{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week">
+                      +{{ metric.diff_value }}
+                     </span>
+
+                     <a class="percentile"
+                        ng-show="metric.percentile"
+                        href="/faq#percentiles"
+                        target="_self"
+                        tooltip="Click to read more about how we determine percentiles.">
+                        <span class="values">
+                           <span class="value">{{ metric.percentile_value_string }}</span>
+                           <span class="unit">percentile</span>
+                        </span>
+                        <span class="descr">of {{ metric.percentile.mendeley_discipline_str }} {{ display_genre_plural }} from {{ biblio.display_year }} on Impactstory.</span>
+                     </a>
+
+                  </span>
+               </li>
+            </ul>
          </div>
-      </div>
+      </div><!-- end sidebar -->
 
 
       <div id="file">
@@ -204,12 +240,6 @@
             </div>
          </div>
       </div>
-
-
-
-
-
-
 
    </div>
 </div>

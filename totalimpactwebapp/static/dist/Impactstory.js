@@ -975,6 +975,7 @@ angular.module("productPage", [
     $scope.loading = Loading
     $scope.aliases = product.aliases
     $scope.biblio = product.biblio
+    $scope.metrics = product.metrics
 
 
 
@@ -5916,10 +5917,46 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "         <div class=\"download-button-container\">\n" +
     "            <div class=\"btn btn-default\" ng-click=\"downloadFile()\">Download</div>\n" +
     "         </div>\n" +
+    "\n" +
     "         <div id=\"metrics\">\n" +
-    "            <div class=\"contents\" ng-bind-html=\"metricsMarkup\"></div>\n" +
+    "            <ul class=\"metric-details-list\">\n" +
+    "\n" +
+    "               <li class=\"metric-detail\" ng-repeat=\"metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}\">\n" +
+    "                  <span class=\"metric-text\">\n" +
+    "                     <a class=\"value-and-name\"\n" +
+    "                        href=\"{{ metric.drilldown_url }}\"\n" +
+    "                        target=\"_blank\"\n" +
+    "                        data-content=\"{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.\">\n" +
+    "                        <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >\n" +
+    "                        <span class=\"raw-value\">{{ metric.display_count }}</span>\n" +
+    "                        <span class=\"environment\">{{ metric.display_provider }}</span>\n" +
+    "                        <span class=\"interaction\">{{ metric.display_interaction }}</span>\n" +
+    "                        <i class=\"icon-external-link-sign\"></i>\n" +
+    "                     </a>\n" +
+    "\n" +
+    "                     <span class=\"new-metrics\"\n" +
+    "                           ng-show=\"metric.diff_value > 0\"\n" +
+    "                           tooltip=\"{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week\">\n" +
+    "                      +{{ metric.diff_value }}\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <a class=\"percentile\"\n" +
+    "                        ng-show=\"metric.percentile\"\n" +
+    "                        href=\"/faq#percentiles\"\n" +
+    "                        target=\"_self\"\n" +
+    "                        tooltip=\"Click to read more about how we determine percentiles.\">\n" +
+    "                        <span class=\"values\">\n" +
+    "                           <span class=\"value\">{{ metric.percentile_value_string }}</span>\n" +
+    "                           <span class=\"unit\">percentile</span>\n" +
+    "                        </span>\n" +
+    "                        <span class=\"descr\">of {{ metric.percentile.mendeley_discipline_str }} {{ display_genre_plural }} from {{ biblio.display_year }} on Impactstory.</span>\n" +
+    "                     </a>\n" +
+    "\n" +
+    "                  </span>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
     "         </div>\n" +
-    "      </div>\n" +
+    "      </div><!-- end sidebar -->\n" +
     "\n" +
     "\n" +
     "      <div id=\"file\">\n" +
@@ -5935,12 +5972,6 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "            </div>\n" +
     "         </div>\n" +
     "      </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "\n" +
     "   </div>\n" +
     "</div>");

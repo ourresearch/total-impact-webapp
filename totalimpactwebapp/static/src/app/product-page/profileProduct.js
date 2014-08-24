@@ -68,6 +68,7 @@ angular.module("productPage", [
     $scope.loading = Loading
     $scope.aliases = product.aliases
     $scope.biblio = product.biblio
+    $scope.metrics = product.metrics
 
 
 

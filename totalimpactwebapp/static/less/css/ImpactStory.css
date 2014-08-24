@@ -8004,16 +8004,16 @@ div.modal-body.free-fulltext-url div.archive-this a.btn span {
   color: #ff4000;
 }
 #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name span.raw-value {
-  margin-left: 5px;
+  margin-left: 2px;
   display: inline-block;
   text-align: right;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 25px;
 }
 #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name img {
   height: 16px;
   margin: 0 3px 0 3px;
-  vertical-align: middle;
+  vertical-align: 0;
 }
 #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name i {
   color: #ddd;
@@ -8044,7 +8044,6 @@ div.modal-body.free-fulltext-url div.archive-this a.btn span {
 #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile {
   display: block;
   float: left;
-  border-bottom: 1px solid #eee;
   color: #555;
 }
 #sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values {
