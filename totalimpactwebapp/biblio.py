@@ -97,6 +97,7 @@ class Biblio(object):
             return self._get_url_host(self.free_fulltext_url)
         except AttributeError:
             return None
+            
 
     def _get_url_host(self, url):
         # this should actually be done upstream, where we have a list of

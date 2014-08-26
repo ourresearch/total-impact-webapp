@@ -16,9 +16,10 @@ def make_metrics_list(tiid, snaps, product_created):
     metrics = []
 
     for fully_qualified_metric_name, my_config in configs.metrics().iteritems():
+
         my_provider, my_interaction = fully_qualified_metric_name.split(":")
 
-        if Metric.test(my_provider, my_interaction, snaps):
+        if Metric.would_make_a_metric(my_provider, my_interaction, snaps):
 
             my_metric = Metric(
                 tiid,
@@ -80,7 +81,7 @@ class Metric(object):
             return False
 
     @classmethod
-    def test(cls, provider, interaction, snaps):
+    def would_make_a_metric(cls, provider, interaction, snaps):
         for snap in snaps:
             if snap.provider == provider and snap.interaction == interaction:
                 return True

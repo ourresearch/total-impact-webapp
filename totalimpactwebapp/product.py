@@ -1,8 +1,12 @@
 import logging
 import arrow
+import datetime
 import os
 import boto
 import requests
+from collections import Counter
+from flask import url_for
+import flask
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
@@ -16,6 +20,7 @@ from totalimpactwebapp.metric import make_metrics_list
 from totalimpactwebapp.metric import make_mendeley_metric
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
+from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import commit
@@ -191,6 +196,22 @@ class Product(db.Model):
     def awards(self):
         return award.make_list(self.metrics)
 
+    @cached_property
+    def snaps_including_interactions(self):
+        counts = Counter()
+        for interaction in self.interactions:
+            counts[(interaction.tiid, interaction.event)] += 1
+
+        interaction_snaps = []
+        for (tiid, event) in dict(counts):
+            new_snap = Snap(tiid=tiid, 
+                            interaction=event, 
+                            raw_value=counts[(tiid, event)],
+                            provider="impactstory", 
+                            last_collected_date=datetime.datetime.utcnow())
+            interaction_snaps.append(new_snap)
+
+        return self.snaps + interaction_snaps
 
     @cached_property
     def percentile_snaps(self):
@@ -203,7 +224,7 @@ class Product(db.Model):
         my_refset.mendeley_discipline = self.mendeley_discipline
 
         ret = []
-        for snap in self.snaps:
+        for snap in self.snaps_including_interactions:
             snap.set_refset(my_refset)
             ret.append(snap)
 
@@ -252,6 +273,25 @@ class Product(db.Model):
         except AttributeError:
             return None
 
+    @cached_property
+    def file_url(self):
+        if self.genre in ("slides", "video", "dataset"):
+            return self.aliases.best_url
+
+        if self.genre=="software":
+            return self.aliases.best_url.replace("github", "gitprint") + "?download"
+
+        if self.has_file:
+            return flask.request.url_root.strip("/") + url_for("product_pdf", tiid=self.tiid)
+        try:
+            if self.aliases.pmc:
+                return flask.request.url_root.strip("/") + url_for("product_pdf", tiid=self.tiid)
+        except AttributeError:
+            return None
+
+        # print self.biblio.free_fulltext_url
+        # return self.biblio.free_fulltext_url
+        # return "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
 
 
     def get_file(self):

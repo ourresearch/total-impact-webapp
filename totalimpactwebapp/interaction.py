@@ -35,3 +35,7 @@ class Interaction(db.Model):
     def __init__(self, **kwargs):
         super(Interaction, self).__init__(**kwargs)
 
+    def __repr__(self):
+        return u'<Interaction {tiid} {event} {timestamp}>'.format(
+            tiid=self.tiid, event=self.event, timestamp=self.timestamp)
+
