@@ -72,6 +72,7 @@ angular.module("productPage", [
     UserProfile.useCache(true)
 
 
+    $scope.profileWithoutProducts = profileWithoutProducts
     $scope.userSlug = slug
     $scope.loading = Loading
     $scope.aliases = product.aliases

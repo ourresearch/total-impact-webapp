@@ -981,6 +981,7 @@ angular.module("productPage", [
     UserProfile.useCache(true)
 
 
+    $scope.profileWithoutProducts = profileWithoutProducts
     $scope.userSlug = slug
     $scope.loading = Loading
     $scope.aliases = product.aliases
@@ -5752,8 +5753,8 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "            <h2 class=\"title\">\n" +
     "               <span class=\"return-to-profile-link-container\">\n" +
     "                  <a class=\"return-to-profile\"\n" +
-    "                     tooltip=\"return to profile\"\n" +
-    "                     href=\"{{ page.getProfileUrl() }}\">\n" +
+    "                     tooltip=\"return to {{ profileWithoutProducts.given_name }}'s profile\"\n" +
+    "                     href=\"{{ profileWithoutProducts.url_slug }}\">\n" +
     "                     <i class=\"icon-chevron-left\"></i>\n" +
     "                  </a>\n" +
     "               </span>\n" +

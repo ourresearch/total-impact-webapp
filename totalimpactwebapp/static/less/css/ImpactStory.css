@@ -7824,9 +7824,9 @@ div.product-page div.main-content #biblio h2.title span.return-to-profile-link-c
 }
 div.product-page div.main-content #biblio h2.title span.return-to-profile-link-container a.return-to-profile {
   color: #999;
-  margin-left: -35px;
-  padding-right: 5px;
-  width: 30px;
+  margin-left: -45px;
+  padding-right: 15px;
+  width: 40px;
   display: inline-block;
   text-align: right;
 }
