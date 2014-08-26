@@ -95,7 +95,7 @@ angular.module("productPage", [
 
     if (product.file_url){
       Embedly.get(
-        {url: product.file_url},
+        {url: product.file_url, secure: true},
         function(resp){
           console.log("successful resp from embedly: ", resp)
           if (resp.html) {
