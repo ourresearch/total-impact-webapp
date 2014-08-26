@@ -5,7 +5,8 @@ import os
 import boto
 import requests
 from collections import Counter
-
+from flask import url_for
+import flask
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
@@ -272,6 +273,25 @@ class Product(db.Model):
         except AttributeError:
             return None
 
+    @cached_property
+    def file_url(self):
+        if self.genre in ("slides", "video", "dataset"):
+            return self.aliases.best_url
+
+        if self.genre=="software":
+            return self.aliases.best_url.replace("github", "gitprint") + "?download"
+
+        if self.has_file:
+            return flask.request.url_root.strip("/") + url_for("product_pdf", tiid=self.tiid)
+        try:
+            if self.aliases.pmc:
+                return flask.request.url_root.strip("/") + url_for("product_pdf", tiid=self.tiid)
+        except AttributeError:
+            return None
+
+        # print self.biblio.free_fulltext_url
+        # return self.biblio.free_fulltext_url
+        # return "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
 
 
     def get_file(self):
