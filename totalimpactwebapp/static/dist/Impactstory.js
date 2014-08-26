@@ -584,6 +584,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.$on('$locationChangeStart', function(event, next, current){
     Page.showHeader(true)
     Page.showFooter(true)
+    Page.setProfileUrl(false)
+    Page.setHeaderFullName(false)
     Page.setUservoiceTabLoc("right")
     Loading.clear()
   })
@@ -971,12 +973,8 @@ angular.module("productPage", [
     profileWithoutProducts,
     Page) {
 
-
-    console.log("we got a profile!", profileWithoutProducts)
-
-    Page.setHeaderFullName(
-      profileWithoutProducts.given_name
-    )
+    Page.setHeaderFullName(profileWithoutProducts.full_name)
+    Page.setProfileUrl(profileWithoutProducts.url_slug)
 
     var slug = $routeParams.url_slug
     window.scrollTo(0,0)  // hack. not sure why this is needed.
@@ -4046,6 +4044,7 @@ angular.module("services.page")
    var lastScrollPosition = {}
    var isEmbedded =  _($location.path()).startsWith("/embed/")
    var headerFullName
+   var profileUrl
 
    var showHeaderNow = true
    var showFooterNow = true
@@ -4138,6 +4137,13 @@ angular.module("services.page")
 
      getHeaderFullName: function(name){
        return headerFullName
+     },
+
+     setProfileUrl: function(url){
+       profileUrl = url
+     },
+     getProfileUrl: function(){
+       return profileUrl
      },
 
 
@@ -4777,16 +4783,11 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "   <div class=\"import-not-complete\" ng-show=\"!importComplete\">\n" +
     "\n" +
     "      <p>\n" +
-    "         Unfortunately, Google Scholar prevents automatic\n" +
-    "         syncing. However, you can manually import your data. Here's how:\n" +
+    "         Google Scholar prevents automatic\n" +
+    "         syncing. However, you can manually import your articles. <a\n" +
+    "              target=\"_blank\"\n" +
+    "              href=\"http://feedback.impactstory.org/knowledgebase/articles/368452-google-scholar\">Click here to learn how.</a>\n" +
     "      </p>\n" +
-    "\n" +
-    "      <ol>\n" +
-    "        <li>Go to <a class=\"your-google-scholar-profile\" target=\"_blank\" href=\"{{ currentUser.google_scholar_id }}\">your Google Scholar profile</a>.</li>\n" +
-    "        <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>\n" +
-    "        <li>Click <code>Export all my articles</code>, then save the BiBTeX file.</li>\n" +
-    "        <li>Return to Impactstory and upload your .bib file here.\n" +
-    "      </ol>\n" +
     "\n" +
     "         <div class=\"file-input-container\">\n" +
     "            <input type=\"file\" custom-file-select=\"google_scholar_bibtex\">\n" +

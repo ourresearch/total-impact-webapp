@@ -64,12 +64,8 @@ angular.module("productPage", [
     profileWithoutProducts,
     Page) {
 
-
-    console.log("we got a profile!", profileWithoutProducts)
-
-    Page.setHeaderFullName(
-      profileWithoutProducts.given_name
-    )
+    Page.setHeaderFullName(profileWithoutProducts.full_name)
+    Page.setProfileUrl(profileWithoutProducts.url_slug)
 
     var slug = $routeParams.url_slug
     window.scrollTo(0,0)  // hack. not sure why this is needed.

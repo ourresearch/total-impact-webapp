@@ -9,6 +9,7 @@ angular.module("services.page")
    var lastScrollPosition = {}
    var isEmbedded =  _($location.path()).startsWith("/embed/")
    var headerFullName
+   var profileUrl
 
    var showHeaderNow = true
    var showFooterNow = true
@@ -101,6 +102,13 @@ angular.module("services.page")
 
      getHeaderFullName: function(name){
        return headerFullName
+     },
+
+     setProfileUrl: function(url){
+       profileUrl = url
+     },
+     getProfileUrl: function(){
+       return profileUrl
      },
 
 
