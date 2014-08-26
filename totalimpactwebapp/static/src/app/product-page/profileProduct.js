@@ -89,7 +89,7 @@ angular.module("productPage", [
     // once we've got a product.file_url set by the server,
     // delete them.
     // product.file_url = "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
-    product.file_url = "http://jasonpriem.org/self-archived/data-for-free.pdf"
+//    product.file_url = "http://jasonpriem.org/self-archived/data-for-free.pdf"
     // product.file_url = "http://www.slideshare.net/hpiwowar/7-data-citation-challenges-illustrated-with-data-includes-elephants"
     // product.file_url = "https://gitprint.com/hpiwowar/Kira/blob/master/README.md?download"
 
