@@ -20,9 +20,8 @@ angular.module("productPage", [
       templateUrl:'product-page/product-page.tpl.html',
       controller:'ProductPageCtrl',
       resolve: {
-        product: function(Product, $route){
-          return Product.get({
-            user_id: $route.current.params.url_slug,
+        product: function(ProductWithoutProfile, $route){
+          return ProductWithoutProfile.get({
             tiid: $route.current.params.tiid
           }).$promise
         },

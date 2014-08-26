@@ -44,3 +44,14 @@ angular.module('resources.products',['ngResource'])
 
 
 
+.factory('ProductWithoutProfile', function ($resource) {
+
+  return $resource(
+    "/product/:tiid",
+    {},
+    {}
+  )
+})
+
+
+

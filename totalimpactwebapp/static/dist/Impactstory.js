@@ -929,9 +929,8 @@ angular.module("productPage", [
       templateUrl:'product-page/product-page.tpl.html',
       controller:'ProductPageCtrl',
       resolve: {
-        product: function(Product, $route){
-          return Product.get({
-            user_id: $route.current.params.url_slug,
+        product: function(ProductWithoutProfile, $route){
+          return ProductWithoutProfile.get({
             tiid: $route.current.params.tiid
           }).$promise
         },
@@ -3030,6 +3029,17 @@ angular.module('resources.products',['ngResource'])
 
   return $resource(
     "/profile/:user_id/product/:tiid",
+    {},
+    {}
+  )
+})
+
+
+
+.factory('ProductWithoutProfile', function ($resource) {
+
+  return $resource(
+    "/product/:tiid",
     {},
     {}
   )
