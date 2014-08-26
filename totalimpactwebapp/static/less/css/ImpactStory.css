@@ -6337,6 +6337,20 @@ div.main-header div.wrapper a.brand {
 div.main-header div.wrapper a.brand img {
   height: 50px;
 }
+div.main-header div.wrapper span.profile-owner-name {
+  font-weight: 300;
+  font-size: 25px;
+  position: absolute;
+  top: 7px;
+  left: 231px;
+  color: #333;
+}
+div.main-header div.wrapper span.profile-owner-name a {
+  color: #333;
+}
+div.main-header div.wrapper span.profile-owner-name a:hover {
+  color: #ff4000;
+}
 div.main-header div.wrapper ul.main-nav {
   position: absolute;
   bottom: -7px;
@@ -7956,9 +7970,6 @@ div.modal-body.free-fulltext-url div.archive-this a.btn span {
   width: 400px;
   float: right;
   padding-left: 20px;
-}
-#sidebar #metrics ul.metric-details-list {
-  margin-top: 40px;
 }
 #sidebar #metrics ul.metric-details-list li.metric-detail {
   font-size: 15px;

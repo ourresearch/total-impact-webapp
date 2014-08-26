@@ -8,6 +8,7 @@ angular.module("services.page")
    var uservoiceTabLoc = "right"
    var lastScrollPosition = {}
    var isEmbedded =  _($location.path()).startsWith("/embed/")
+   var headerFullName
 
    var showHeaderNow = true
    var showFooterNow = true
@@ -91,6 +92,15 @@ angular.module("services.page")
          showFooterNow = !!showFooterArg
          return showFooterNow
        }
+     },
+
+     setHeaderFullName: function(name){
+       headerFullName = name
+     },
+
+
+     getHeaderFullName: function(name){
+       return headerFullName
      },
 
 

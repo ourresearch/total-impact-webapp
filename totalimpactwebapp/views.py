@@ -114,7 +114,7 @@ def abort_json(status_code, msg):
     abort(resp)
 
 
-def get_user_for_response(id, request, expunge=True):
+def get_user_for_response(id, request, include_products=True):
     id_type = unicode(request.args.get("id_type", "url_slug"))
 
     try:
@@ -122,7 +122,12 @@ def get_user_for_response(id, request, expunge=True):
     except AttributeError:
         logged_in = False
 
-    retrieved_user = get_profile_from_id(id, id_type, show_secrets=logged_in)
+    retrieved_user = get_profile_from_id(
+        id,
+        id_type,
+        show_secrets=logged_in,
+        include_products=include_products
+    )
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -130,11 +135,6 @@ def get_user_for_response(id, request, expunge=True):
         abort(404, "That user doesn't exist.")
 
     g.profile_slug = retrieved_user.url_slug
-
-    if expunge and os.getenv("EXPUNGE", "False")=="True":
-        logger.debug(u"expunging")
-
-        db.session.expunge_all()
 
     return retrieved_user
 
@@ -386,6 +386,13 @@ def user_profile(profile_id):
     resp = get_user_profile(profile_id)
     resp = json_resp_from_thing(resp)
     return resp
+
+
+@app.route("/profile-without-products/<profile_id>", methods=["GET"])
+def profile_without_products(profile_id):
+    profile = get_user_for_response(profile_id, request, include_products=False)
+    dict_about = profile.dict_about(show_secrets=False)
+    return json_resp_from_thing(dict_about)
 
 
 

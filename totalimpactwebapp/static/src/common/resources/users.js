@@ -22,6 +22,14 @@ angular.module('resources.users',['ngResource'])
 
 
 
+  .factory("ProfileWithoutProducts", function($resource){
+    return $resource(
+      "/profile-without-products/:profile_id"
+    )
+  })
+
+
+
   .factory('UserProduct', function ($resource) {
 
     return $resource(

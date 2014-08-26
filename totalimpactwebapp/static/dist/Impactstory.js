@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-24
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-25
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -932,6 +932,11 @@ angular.module("productPage", [
             user_id: $route.current.params.url_slug,
             tiid: $route.current.params.tiid
           }).$promise
+        },
+        profileWithoutProducts: function(ProfileWithoutProducts, $route){
+          return ProfileWithoutProducts.get({
+            profile_id: $route.current.params.url_slug
+          }).$promise
         }
       }
     });
@@ -963,7 +968,15 @@ angular.module("productPage", [
     ProductInteraction,
     Embedly,
     product,
+    profileWithoutProducts,
     Page) {
+
+
+    console.log("we got a profile!", profileWithoutProducts)
+
+    Page.setHeaderFullName(
+      profileWithoutProducts.given_name
+    )
 
     var slug = $routeParams.url_slug
     window.scrollTo(0,0)  // hack. not sure why this is needed.
@@ -982,8 +995,8 @@ angular.module("productPage", [
     // these are just for testing!
     // once we've got a biblio.file_url set by the server,
     // delete them.
-    product.biblio.file_url = "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
     product.biblio.file_url = "http://jasonpriem.org/self-archived/data-for-free.pdf"
+    product.biblio.file_url = "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
 
 
     if (product.biblio.file_url){
@@ -1123,15 +1136,6 @@ angular.module("productPage", [
     }
 
 
-    $scope.biblioString = function(biblioKey, biblioVal){
-      if (biblioVal){
-        return biblioVal
-      }
-      else {
-        return "no " + biblioKey + " available"
-      }
-    }
-
     var renderProduct = function(){
       $scope.product = UsersProduct.get({
         id: $routeParams.url_slug,
@@ -1158,60 +1162,9 @@ angular.module("productPage", [
       }
       )
     }
-
-//    renderProduct()
-
   })
 
 
-.controller("editProductModalCtrl", function($scope,
-                                             $location,
-                                             $modalInstance,
-                                             $routeParams,
-                                             Loading,
-                                             product,
-                                             fieldToEdit,
-                                             UsersProduct,
-                                             ProductBiblio){
-
-    console.log("editProductModalCtrl fieldToEdit", fieldToEdit)
-
-    $scope.fieldToEdit = fieldToEdit
-
-    // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
-    $scope.product = product
-    var tiid = $location.path().match(/\/product\/(.+)$/)[1]
-    $scope.onCancel = function(){
-      $scope.$close()
-    }
-
-    $scope.onSave = function() {
-      Loading.start("saveButton")
-      console.log("saving...", tiid)
-      ProductBiblio.patch(
-        {'tiid': tiid},
-        {
-          title: $scope.product.biblio.title,
-          authors: $scope.product.biblio.authors,
-          journal: $scope.product.biblio.journal,
-          year: $scope.product.biblio.year
-
-        },
-        function(resp){
-          console.log("saved new product biblio", resp)
-          Loading.finish("saveButton")
-          console.log("got a response back from the UsersProduct.get() call", resp)
-          return $scope.$close(resp)
-
-        }
-      )
-    }
-  })
-
-
-.controller("editProductFormCtrl", function(){
-
-  })
 
 
 .controller("freeFulltextUrlFormCtrl", function($scope,
@@ -1252,15 +1205,6 @@ angular.module("productPage", [
         console.log("success on upload", data)
       })
 
-    }
-})
-
-
-.controller("pdfCtrl", function($scope, $routeParams){
-    $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
-    $scope.pdfUrl = '/product/'+ $routeParams.tiid +'/pdf';
-    $scope.getNavStyle = function(scroll) {
-      if(scroll < 80) return 'fixed';
     }
 })
 
@@ -3114,6 +3058,14 @@ angular.module('resources.users',['ngResource'])
 
 
 
+  .factory("ProfileWithoutProducts", function($resource){
+    return $resource(
+      "/profile-without-products/:profile_id"
+    )
+  })
+
+
+
   .factory('UserProduct', function ($resource) {
 
     return $resource(
@@ -4087,6 +4039,7 @@ angular.module("services.page")
    var uservoiceTabLoc = "right"
    var lastScrollPosition = {}
    var isEmbedded =  _($location.path()).startsWith("/embed/")
+   var headerFullName
 
    var showHeaderNow = true
    var showFooterNow = true
@@ -4170,6 +4123,15 @@ angular.module("services.page")
          showFooterNow = !!showFooterArg
          return showFooterNow
        }
+     },
+
+     setHeaderFullName: function(name){
+       headerFullName = name
+     },
+
+
+     getHeaderFullName: function(name){
+       return headerFullName
      },
 
 
@@ -5907,18 +5869,18 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "         <div id=\"resource\">\n" +
-    "\n" +
+    "            <!--\n" +
     "            <div id=\"file\">\n" +
     "               <div class=\"iframe-wrapper\" dynamic=\"iframeToEmbed\"></div>\n" +
     "            </div>\n" +
+    "            -->\n" +
     "\n" +
+    "            <!--\n" +
     "            <div class=\"upload-cta well\" ng-controller=\"productUploadCtrl\">\n" +
     "               <h4>upload your file</h4>\n" +
     "              <input type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
     "            </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
+    "            -->\n" +
     "         </div>\n" +
     "\n" +
     "\n" +
@@ -5932,9 +5894,12 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "      </div><!-- end main-content -->\n" +
     "\n" +
     "      <div id=\"sidebar\">\n" +
+    "\n" +
+    "         <!--\n" +
     "         <div class=\"download-button-container\">\n" +
     "            <div class=\"btn btn-default\" ng-click=\"downloadFile()\">Download</div>\n" +
     "         </div>\n" +
+    "         -->\n" +
     "\n" +
     "         <div id=\"metrics\">\n" +
     "            <ul class=\"metric-details-list\">\n" +

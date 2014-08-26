@@ -80,6 +80,16 @@
             <a class="brand" href="/">
                <img src="/static/img/impactstory-logo-sideways.png" alt="Impactstory" />
             </a>
+            <span class="profile-owner-name"
+               ng-show="page.getHeaderFullName()">
+
+               <span class="sep">/</span>
+               <a href="http://google.com">
+                  <span class="name">
+                     {{ page.getHeaderFullName() }}
+                  </span>
+               </a>
+            </span>
             <login-toolbar></login-toolbar>
          </div>
       </div>

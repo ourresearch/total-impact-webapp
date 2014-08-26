@@ -25,6 +25,11 @@ angular.module("productPage", [
             user_id: $route.current.params.url_slug,
             tiid: $route.current.params.tiid
           }).$promise
+        },
+        profileWithoutProducts: function(ProfileWithoutProducts, $route){
+          return ProfileWithoutProducts.get({
+            profile_id: $route.current.params.url_slug
+          }).$promise
         }
       }
     });
@@ -56,7 +61,15 @@ angular.module("productPage", [
     ProductInteraction,
     Embedly,
     product,
+    profileWithoutProducts,
     Page) {
+
+
+    console.log("we got a profile!", profileWithoutProducts)
+
+    Page.setHeaderFullName(
+      profileWithoutProducts.given_name
+    )
 
     var slug = $routeParams.url_slug
     window.scrollTo(0,0)  // hack. not sure why this is needed.
@@ -75,8 +88,8 @@ angular.module("productPage", [
     // these are just for testing!
     // once we've got a biblio.file_url set by the server,
     // delete them.
-    product.biblio.file_url = "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
     product.biblio.file_url = "http://jasonpriem.org/self-archived/data-for-free.pdf"
+    product.biblio.file_url = "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
 
 
     if (product.biblio.file_url){
@@ -216,15 +229,6 @@ angular.module("productPage", [
     }
 
 
-    $scope.biblioString = function(biblioKey, biblioVal){
-      if (biblioVal){
-        return biblioVal
-      }
-      else {
-        return "no " + biblioKey + " available"
-      }
-    }
-
     var renderProduct = function(){
       $scope.product = UsersProduct.get({
         id: $routeParams.url_slug,
@@ -251,60 +255,9 @@ angular.module("productPage", [
       }
       )
     }
-
-//    renderProduct()
-
   })
 
 
-.controller("editProductModalCtrl", function($scope,
-                                             $location,
-                                             $modalInstance,
-                                             $routeParams,
-                                             Loading,
-                                             product,
-                                             fieldToEdit,
-                                             UsersProduct,
-                                             ProductBiblio){
-
-    console.log("editProductModalCtrl fieldToEdit", fieldToEdit)
-
-    $scope.fieldToEdit = fieldToEdit
-
-    // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
-    $scope.product = product
-    var tiid = $location.path().match(/\/product\/(.+)$/)[1]
-    $scope.onCancel = function(){
-      $scope.$close()
-    }
-
-    $scope.onSave = function() {
-      Loading.start("saveButton")
-      console.log("saving...", tiid)
-      ProductBiblio.patch(
-        {'tiid': tiid},
-        {
-          title: $scope.product.biblio.title,
-          authors: $scope.product.biblio.authors,
-          journal: $scope.product.biblio.journal,
-          year: $scope.product.biblio.year
-
-        },
-        function(resp){
-          console.log("saved new product biblio", resp)
-          Loading.finish("saveButton")
-          console.log("got a response back from the UsersProduct.get() call", resp)
-          return $scope.$close(resp)
-
-        }
-      )
-    }
-  })
-
-
-.controller("editProductFormCtrl", function(){
-
-  })
 
 
 .controller("freeFulltextUrlFormCtrl", function($scope,
@@ -345,15 +298,6 @@ angular.module("productPage", [
         console.log("success on upload", data)
       })
 
-    }
-})
-
-
-.controller("pdfCtrl", function($scope, $routeParams){
-    $scope.pdfName = 'Relativity: The Special and General Theory by Albert Einstein';
-    $scope.pdfUrl = '/product/'+ $routeParams.tiid +'/pdf';
-    $scope.getNavStyle = function(scroll) {
-      if(scroll < 80) return 'fixed';
     }
 })
 
