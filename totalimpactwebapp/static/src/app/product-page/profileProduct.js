@@ -110,7 +110,7 @@ angular.module("productPage", [
       {tiid: $routeParams.tiid},
       {
         timestamp: moment.utc().toISOString(),
-        event: "view"
+        event: "views"
       }
     )
 

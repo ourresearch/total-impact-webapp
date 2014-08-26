@@ -131,11 +131,6 @@ def get_user_for_response(id, request, expunge=True):
 
     g.profile_slug = retrieved_user.url_slug
 
-    if expunge and os.getenv("EXPUNGE", "False")=="True":
-        logger.debug(u"expunging")
-
-        db.session.expunge_all()
-
     return retrieved_user
 
 
@@ -170,9 +165,12 @@ def is_logged_in(profile):
 
 
 def current_user_owns_tiid(tiid):
-    profile = db.session.query(Profile).get(int(current_user.id))
-    db.session.expunge(profile)
-    return tiid in profile.tiids
+    try:
+        profile = db.session.query(Profile).get(int(current_user.id))
+        db.session.expunge(profile)
+        return tiid in profile.tiids
+    except AttributeError:  #Anonymous
+        return False
 
 
 
@@ -463,7 +461,6 @@ def refresh_status(profile_id):
     local_sleep(0.5) # client to webapp plus one trip to database
     id_type = request.args.get("id_type", "url_slug")  # url_slug is default    
     profile_bare_products = get_profile_from_id(profile_id, id_type, include_product_relationships=False)
-    print profile_bare_products
     return json_resp_from_thing(profile_bare_products.get_refresh_status())
 
 
@@ -575,25 +572,19 @@ def product_pdf(tiid):
 
 @app.route("/product/<tiid>/interaction", methods=["POST"])
 def product_interaction(tiid):
-
-    logger.info(u"logging pageview for {tiid}".format(
-        tiid=tiid))
-
-    log_interaction_event(tiid=tiid,
-        event=request.json.get("event", "view"),
-        headers=request.headers.to_list(),
-        ip=request.remote_addr,
-        timestamp=request.json.get("timestamp", datetime.datetime.utcnow()))
+    if current_user_owns_tiid(tiid):
+        logger.info(u"not logging pageview for {tiid} because current user viewing own tiid".format(
+            tiid=tiid))
+    else:
+        logger.info(u"logging pageview for {tiid}".format(
+            tiid=tiid))
+        log_interaction_event(tiid=tiid,
+            event=request.json.get("event", "views"),
+            headers=request.headers.to_list(),
+            ip=request.remote_addr,
+            timestamp=request.json.get("timestamp", datetime.datetime.utcnow()))
 
     return json_resp_from_thing(request.json)
-
-
-
-@app.route("/product/<tiid>", methods=["GET"])
-def product_interaction(tiid):
-    return json_resp_from_thing(request.json)
-
-
 
 
 
