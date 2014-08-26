@@ -59,6 +59,27 @@ div.product-page {
             font-size: 28px;
             line-height: 1.3;
             margin: 0 0 5px;
+
+            span.return-to-profile-link-container {
+               .tooltip-inner {
+                  background: #000;
+               }
+               .tooltip-arrow {
+                  border-color: transparent;
+                  border-top-color: #000;
+               }
+               a.return-to-profile {
+                  color: #999;
+                  margin-left: -35px;
+                  padding-right: 5px;
+                  width: 30px;
+                  display:inline-block;
+                  text-align: right;
+                  &:hover {color: @linkColor}
+               }
+            }
+
+
             textarea{
                width: 630px;
                height: 60px;

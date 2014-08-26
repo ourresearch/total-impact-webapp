@@ -5750,6 +5750,13 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "         <div id=\"biblio\">\n" +
     "            <h2 class=\"title\">\n" +
+    "               <span class=\"return-to-profile-link-container\">\n" +
+    "                  <a class=\"return-to-profile\"\n" +
+    "                     tooltip=\"return to profile\"\n" +
+    "                     href=\"{{ page.getProfileUrl() }}\">\n" +
+    "                     <i class=\"icon-chevron-left\"></i>\n" +
+    "                  </a>\n" +
+    "               </span>\n" +
     "               <span class=\"title-text\"\n" +
     "                     tooltip=\"click to edit\"\n" +
     "                     tooltip-placement=\"left\"\n" +
