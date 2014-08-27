@@ -79,6 +79,9 @@ angular.module("productPage", [
     $scope.biblio = product.biblio
     $scope.metrics = product.metrics
     $scope.displayGenrePlural = product.display_genre_plural
+    $scope.genre = product.genre
+    $scope.fileUrl = product.file_url
+
 
 
     // these are just for testing!
@@ -108,7 +111,18 @@ angular.module("productPage", [
     }
 
 
+    $scope.productHost = parseHostname(product.aliases.best_url)
+    $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
 
+
+    // this should really be a directive...
+    // from http://stackoverflow.com/a/21516924
+    function parseHostname(url){
+      var urlParser = document.createElement('a')
+      urlParser.href = url
+      console.log("hostname" ,  urlParser.hostname)
+      return urlParser.hostname.replace("www.", "")
+    }
 
 
     security.isLoggedInPromise(slug).then(

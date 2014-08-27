@@ -187,16 +187,42 @@
 
 
          <div id="resource">
-            <div id="file">
+
+            <div id="file" ng-show="fileUrl">
                <div class="iframe-wrapper" dynamic="iframeToEmbed"></div>
             </div>
 
-            <!--
+
+            <div id="linkout" ng-show="!fileUrl">
+               <div class="icon">
+                  <i class="icon-link"></i>
+               </div>
+
+               <div class="content">
+                  <h3>{{ genre }} available at
+                     <span class="product-host">
+                        {{ productHost }}
+                     </span>
+                  </h3>
+                  <span class="full-url">{{ aliases.best_url }}</span>
+                  <div class="oa-version" ng-show="biblio.free_fulltext_url">
+                     <div class="oa-version-label">
+                        Open access version at
+                        <a href="{{ biblio.free_fulltext_url }}">{{ freeFulltextHost }}</a>
+                     </div>
+                  </div>
+
+               </div>
+            </div>
+
             <div class="upload-cta well" ng-controller="productUploadCtrl">
                <h4>upload your file</h4>
               <input type="file" ng-file-select="onFileSelect($files)">
+
+               <a ng-click="openFulltextLocationModal()">embed from url</a>
+
+
             </div>
-            -->
          </div>
 
 

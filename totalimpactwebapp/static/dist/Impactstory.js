@@ -988,6 +988,9 @@ angular.module("productPage", [
     $scope.biblio = product.biblio
     $scope.metrics = product.metrics
     $scope.displayGenrePlural = product.display_genre_plural
+    $scope.genre = product.genre
+    $scope.fileUrl = product.file_url
+
 
 
     // these are just for testing!
@@ -1017,7 +1020,18 @@ angular.module("productPage", [
     }
 
 
+    $scope.productHost = parseHostname(product.aliases.best_url)
+    $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
 
+
+    // this should really be a directive...
+    // from http://stackoverflow.com/a/21516924
+    function parseHostname(url){
+      var urlParser = document.createElement('a')
+      urlParser.href = url
+      console.log("hostname" ,  urlParser.hostname)
+      return urlParser.hostname.replace("www.", "")
+    }
 
 
     security.isLoggedInPromise(slug).then(
@@ -5894,16 +5908,42 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "         <div id=\"resource\">\n" +
-    "            <div id=\"file\">\n" +
+    "\n" +
+    "            <div id=\"file\" ng-show=\"fileUrl\">\n" +
     "               <div class=\"iframe-wrapper\" dynamic=\"iframeToEmbed\"></div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <!--\n" +
+    "\n" +
+    "            <div id=\"linkout\" ng-show=\"!fileUrl\">\n" +
+    "               <div class=\"icon\">\n" +
+    "                  <i class=\"icon-link\"></i>\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"content\">\n" +
+    "                  <h3>{{ genre }} available at\n" +
+    "                     <span class=\"product-host\">\n" +
+    "                        {{ productHost }}\n" +
+    "                     </span>\n" +
+    "                  </h3>\n" +
+    "                  <span class=\"full-url\">{{ aliases.best_url }}</span>\n" +
+    "                  <div class=\"oa-version\" ng-show=\"biblio.free_fulltext_url\">\n" +
+    "                     <div class=\"oa-version-label\">\n" +
+    "                        Open access version at\n" +
+    "                        <a href=\"{{ biblio.free_fulltext_url }}\">{{ freeFulltextHost }}</a>\n" +
+    "                     </div>\n" +
+    "                  </div>\n" +
+    "\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
     "            <div class=\"upload-cta well\" ng-controller=\"productUploadCtrl\">\n" +
     "               <h4>upload your file</h4>\n" +
     "              <input type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
+    "\n" +
+    "               <a ng-click=\"openFulltextLocationModal()\">embed from url</a>\n" +
+    "\n" +
+    "\n" +
     "            </div>\n" +
-    "            -->\n" +
     "         </div>\n" +
     "\n" +
     "\n" +
