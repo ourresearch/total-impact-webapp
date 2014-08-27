@@ -7902,64 +7902,41 @@ div.product-page div.main-content #resource .upload-cta {
   margin-top: 50px;
   width: 100%;
 }
-div.product-page div.main-content #resource div.free-fulltext-url {
-  clear: both;
-  margin-top: 20px;
-  margin-left: -15px;
+div.product-page div.main-content #resource #linkout {
+  min-height: 70px;
+  padding: 20px 20px;
 }
-div.product-page div.main-content #resource div.free-fulltext-url:before,
-div.product-page div.main-content #resource div.free-fulltext-url:after {
-  content: " ";
-  display: table;
-}
-div.product-page div.main-content #resource div.free-fulltext-url:after {
-  clear: both;
-}
-div.product-page div.main-content #resource div.free-fulltext-url:before,
-div.product-page div.main-content #resource div.free-fulltext-url:after {
-  content: " ";
-  display: table;
-}
-div.product-page div.main-content #resource div.free-fulltext-url:after {
-  clear: both;
-}
-div.product-page div.main-content #resource div.free-fulltext-url i.leader {
-  font-size: 110%;
-  margin-right: 5px;
+div.product-page div.main-content #resource #linkout div.icon {
   float: left;
+  font-size: 70px;
+  padding: 20px;
+  color: #ff4000;
 }
-div.product-page div.main-content #resource div.free-fulltext-url i.icon-external-link-sign {
-  font-size: 80%;
-  opacity: .5;
+div.product-page div.main-content #resource #linkout .content {
+  border: 1px solid #eee;
+  padding: 15px;
 }
-div.product-page div.main-content #resource div.free-fulltext-url div.no-free-fulltext-url div.info {
-  width: 400px;
-  float: left;
+div.product-page div.main-content #resource #linkout .content h3 {
+  font-size: 25px;
+  font-weight: 300;
+  color: #555555;
+  margin-bottom: 0;
 }
-div.product-page div.main-content #resource div.free-fulltext-url div.no-free-fulltext-url div.info div.no-fulltext {
+div.product-page div.main-content #resource #linkout .content h3 a.product-host {
   font-weight: bold;
+  color: #555555;
 }
-div.product-page div.main-content #resource div.free-fulltext-url div.no-free-fulltext-url div.info div.encouragement {
-  margin-top: 5px;
-  font-style: italic;
-  font-size: 90%;
+div.product-page div.main-content #resource #linkout .content h3 a.product-host:hover {
+  color: #ff4000;
 }
-div.product-page div.main-content #resource div.free-fulltext-url div.action a.action {
-  margin: -5px 0 0 25px;
-  text-decoration: none;
-  background: #777;
-  border: none;
-  padding: 3px 10px;
+div.product-page div.main-content #resource #linkout .content a.full-url {
+  font-wieght: 300;
+  font-size: 14px;
+  color: #999999;
 }
-div.product-page div.main-content #resource div.free-fulltext-url div.action a.action:hover {
-  background: #555;
-}
-div.product-page div.main-content #resource div.free-fulltext-url div.has-free-fulltext-url a {
-  color: #333;
-  font-weight: normal;
-}
-div.product-page div.main-content #resource div.free-fulltext-url div.has-free-fulltext-url a:hover {
-  text-decoration: underline;
+div.product-page div.main-content #resource #linkout .content div.oa-version {
+  margin-top: 10px;
+  font-weight: 300;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
   height: 40px;

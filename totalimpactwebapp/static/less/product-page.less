@@ -167,55 +167,44 @@ div.product-page {
             width: 100%;
          }
 
-
-         div.free-fulltext-url {
-            .clearfix();
-            margin-top: 20px;
-            margin-left: -15px;
-            i.leader {
-               font-size: 110%;
-               margin-right: 5px;
+         #linkout {
+            min-height: 70px;
+            padding: 20px 20px;
+            div.icon {
                float:left;
+               font-size: 70px;
+               padding: 20px;
+               color: @linkColor;
             }
-            i.icon-external-link-sign {
-               font-size: 80%;
-               opacity: .5;
-            }
-            div.no-free-fulltext-url {
-               div.info{
-                  width: 400px;
-                  float:left;
-
-                  div.no-fulltext{
+            .content {
+               border: 1px solid #eee;
+               padding: 15px;
+               h3 {
+                  font-size: 25px;
+                  font-weight: 300;
+                  color: @gray;
+                  margin-bottom: 0;
+                  a.product-host {
                      font-weight: bold;
-                  }
-                  div.encouragement {
-                     margin-top: 5px;
-                     font-style: italic;
-                     font-size: 90%;
+                     color: @gray;
+                     &:hover {color: @linkColor;}
                   }
                }
-            }
 
-            div.action{
-               a.action {
-                  margin: -5px 0 0 25px;
-                  text-decoration: none;
-                  background: #777;
-                  border: none;
-                  padding: 3px 10px;
-                  &:hover{background: #555;}
+               a.full-url {
+                  font-wieght: 300;
+                  font-size: 14px;
+                  color: @gray-light;
                }
-            }
 
-            div.has-free-fulltext-url {
-               a {
-                  color: #333;
-                  font-weight: normal;
-                  &:hover {text-decoration: underline;}
+               div.oa-version {
+                  margin-top: 10px;
+                  font-weight: 300;
                }
             }
          }
+
+
       }
    }
 
