@@ -1013,7 +1013,7 @@ angular.module("productPage", [
           } 
           else {
             console.log("no iframe to embed")
-            $scope.iframeToEmbed = "nothing to embed.  here's the link: " + resp.url
+            // $scope.iframeToEmbed = "nothing to embed.  here's the link: " + resp.url
           //   $scope.iframeToEmbed = '<iframe src="' + resp.thumbnail_url + '">' + resp.thumbnail_url + '</iframe>'   
           //   // http://api.embed.ly/1/oembed?url=https%3A%2F%2Fgithub.com%2Fhpiwowar%2FKira&maxwidth=500                 
           }
