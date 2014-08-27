@@ -82,7 +82,7 @@ angular.module("productPage", [
     $scope.displayGenrePlural = product.display_genre_plural
     $scope.genre = product.genre
     $scope.fileUrl = product.file_url
-
+    $scope.userWantsFullAbstract = true
 
 
     // these are just for testing!
@@ -101,9 +101,11 @@ angular.module("productPage", [
           console.log("successful resp from embedly: ", resp)
           if (resp.html) {
             $scope.iframeToEmbed = resp.html.replace("http://docs.google", "https://docs.google")
+            $scope.userWantsFullAbstract = false            
+            console.log("have something to embed, so don't include a full abstract", $scope.userWantsFullAbstract)
           } 
           else {
-            console.log("no iframe to embed")
+            console.log("no iframe to embed, so include a full absract")
             // $scope.iframeToEmbed = "nothing to embed.  here's the link: " + resp.url
           //   $scope.iframeToEmbed = '<iframe src="' + resp.thumbnail_url + '">' + resp.thumbnail_url + '</iframe>'   
           //   // http://api.embed.ly/1/oembed?url=https%3A%2F%2Fgithub.com%2Fhpiwowar%2FKira&maxwidth=500                 
@@ -201,7 +203,6 @@ angular.module("productPage", [
       console.log("running after save.")
     }
 
-    $scope.userWantsFullAbstract = false
     $scope.truncatedAbstract = function(){
 
       if (!product.biblio.abstract) {
