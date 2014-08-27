@@ -51,15 +51,21 @@
                      <i class="icon-chevron-left"></i>
                   </a>
                </span>
+
                <span class="title-text"
                      tooltip="click to edit"
                      tooltip-placement="left"
                      e-rows="3"
                      onaftersave="updateBiblio('title')"
-                     ng-show="!loading.is('updateBiblio.title')"
+                     ng-show="!loading.is('updateBiblio.title') && userOwnsThisProfile"
                      editable-textarea="biblio.display_title">
                   {{biblio.display_title || "click to enter title"}}
                </span>
+
+               <span class="title-text" ng-show="!userOwnsThisProfile">
+                  {{biblio.display_title }}
+               </span>
+
                <span class="loading" ng-show="loading.is('updateBiblio.title')">
                   <i class="icon-refresh icon-spin"></i>
                   updating publication year...
@@ -71,14 +77,19 @@
                <!-- authors line -->
                <div class="biblio-line">
                   <span class="biblio-field authors">
+
                      <span class="value"
                            tooltip="click to edit"
                            tooltip-placement="right"
                            onaftersave="updateBiblio('authors')"
-                           ng-show="!loading.is('updateBiblio.authors')"
+                           ng-show="!loading.is('updateBiblio.authors') && userOwnsThisProfile"
                            editable-text="biblio.authors">
                      {{ biblio.display_authors || "click to enter authors" }}
                      </span>
+                     <span class="value" ng-show="!userOwnsThisProfile">
+                     {{ biblio.display_authors }}
+                     </span>
+
                      <span class="loading" ng-show="loading.is('updateBiblio.authors')">
                         <i class="icon-refresh icon-spin"></i>
                         updating authors...
@@ -91,44 +102,60 @@
                <!-- date and journal/repo line -->
                <div class="biblio-line date-and-source">
                   <span class="biblio-field year">
+
                      <span class="value biblio-year"
                            tooltip="click to edit"
                            tooltip-placement="left"
-                           ng-show="!loading.is('updateBiblio.year')"
+                           ng-show="!loading.is('updateBiblio.year') && userOwnsThisProfile"
                            onaftersave="updateBiblio('year')"
                            editable-text="biblio.year">
                         {{ biblio.display_year || "click to enter publication year" }}
                      </span>
+                     <span class="value biblio-year" ng-show="!userOwnsThisProfile">
+                        {{ biblio.display_year }}
+                     </span>
+
                      <span class="loading" ng-show="loading.is('updateBiblio.year')">
                         <i class="icon-refresh icon-spin"></i>
                         updating publication year...
                      </span>
                   </span>
 
-                  <span class="biblio-field repository">
+                  <span class="biblio-field repository"
+                        ng-show="biblio.repository && !biblio.journal">
+
                      <span class="value"
                         tooltip="click to edit"
                         tooltip-placement="right"
                         editable-text="biblio.repository"
                         onaftersave="updateBiblio('repository')"
-                        ng-show="biblio.repository && !biblio.journal && !loading.is('updateBiblio.repository')">
+                        ng-show="!loading.is('updateBiblio.repository') && userOwnsThisProfile">
                         {{ biblio.repository || 'click to enter repository' }}.
                      </span>
+                     <span class="value" ng-show="!userOwnsThisProfile">
+                        {{ biblio.repository }}.
+                     </span>
+
                      <span class="loading" ng-show="loading.is('updateBiblio.repository')">
                         <i class="icon-refresh icon-spin"></i>
                         updating repository...
                      </span>
                   </span>
 
-                  <span class="biblio-field journal">
+                  <span class="biblio-field journal" ng-show="biblio.journal">
+
                      <span class="value"
                         tooltip="click to edit"
                         tooltip-placement="right"
                         editable-text="biblio.journal"
                         onaftersave="updateBiblio('journal')"
-                        ng-show="biblio.journal && !loading.is('updateBiblio.journal')">
+                        ng-show="!loading.is('updateBiblio.journal') && userOwnsThisProfile">
                         {{ biblio.journal || 'click to enter journal' }}
                      </span>
+                     <span class="value" ng-show="!userOwnsThisProfile">
+                        {{ biblio.journal }}
+                     </span>
+
                      <span class="loading" ng-show="loading.is('updateBiblio.journal')">
                         <i class="icon-refresh icon-spin"></i>
                         updating journal...
@@ -140,9 +167,8 @@
 
                <!-- abstract line -->
                <div class="biblio-line abstract">
-                  <span class="biblio-field abstract">
+                  <span class="biblio-field abstract" ng-show="userOwnsThisProfile">
                      <span class="biblio-field-label">Abstract:</span>
-
                      <span class="value"
                         tooltip="click to edit"
                         tooltip-placement="right"
@@ -153,20 +179,38 @@
                      </span>
 
                      <span class="more-abstract"
-                           ng-hide="loading.is('updateBiblio.abstract') || userWantsFullAbstract"
-                           ng-click="userWantsFullAbstract=true">(more)</span>
+                           ng-hide="loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract"
+                           ng-click="userWantsFullAbstract=true">
+                        (more)
+                     </span>
 
                      <span class="loading" ng-show="loading.is('updateBiblio.abstract')">
                         <i class="icon-refresh icon-spin"></i>
                         updating abstract...
                      </span>
                   </span>
+
+                  <!-- show this abstract markup if the user doesn't own this profile -->
+                  <span class="biblio-field abstract" ng-show="!userOwnsThisProfile && biblio.abstract">
+                     <span class="biblio-field-label">Abstract:</span>
+                     <span class="value">
+                        {{ truncatedAbstract() }}
+                     </span>
+                     <span class="more-abstract"
+                           ng-hide="loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract"
+                           ng-click="userWantsFullAbstract=true">
+                        (more)
+                     </span>
+                  </span>
+
+
                </div>
 
 
                <!-- keywords line -->
                <div class="biblio-line keywords">
-                  <span class="biblio-field keywords">
+
+                  <span class="biblio-field keywords" ng-show="userOwnsThisProfile">
                      <span class="biblio-field-label">Keywords:</span>
                      <span class="value"
                         tooltip="click to edit"
@@ -181,6 +225,17 @@
                         updating keywords...
                      </span>
                   </span>
+
+                  <span class="biblio-field keywords" ng-show="!userOwnsThisProfile && biblio.keywords">
+                     <span class="biblio-field-label">Keywords:</span>
+
+                     <span class="value">
+                        {{ biblio.keywords }}
+                     </span>
+                  </span>
+
+
+
                </div>
             </div>
          </div><!-- end biblio section -->
