@@ -7910,6 +7910,7 @@ div.product-page div.main-content #resource #linkout div.icon {
   float: left;
   font-size: 70px;
   padding: 20px;
+  color: #ff4000;
 }
 div.product-page div.main-content #resource #linkout .content {
   border: 1px solid #eee;
@@ -7918,14 +7919,24 @@ div.product-page div.main-content #resource #linkout .content {
 div.product-page div.main-content #resource #linkout .content h3 {
   font-size: 25px;
   font-weight: 300;
+  color: #555555;
+  margin-bottom: 0;
 }
-div.product-page div.main-content #resource #linkout .content h3 span.product-host {
+div.product-page div.main-content #resource #linkout .content h3 a.product-host {
   font-weight: bold;
+  color: #555555;
 }
-div.product-page div.main-content #resource #linkout .content span.full-url {
+div.product-page div.main-content #resource #linkout .content h3 a.product-host:hover {
+  color: #ff4000;
+}
+div.product-page div.main-content #resource #linkout .content a.full-url {
   font-wieght: 300;
   font-size: 14px;
   color: #999999;
+}
+div.product-page div.main-content #resource #linkout .content div.oa-version {
+  margin-top: 10px;
+  font-weight: 300;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
   height: 40px;

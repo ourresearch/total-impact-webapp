@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-26
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-27
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5909,6 +5909,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "         <div id=\"resource\">\n" +
     "\n" +
+    "\n" +
     "            <div id=\"file\" ng-show=\"fileUrl\">\n" +
     "               <div class=\"iframe-wrapper\" dynamic=\"iframeToEmbed\"></div>\n" +
     "            </div>\n" +
@@ -5921,11 +5922,13 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "               <div class=\"content\">\n" +
     "                  <h3>{{ genre }} available at\n" +
-    "                     <span class=\"product-host\">\n" +
+    "                     <a href=\"{{ aliases.best_url }}\" class=\"product-host\">\n" +
     "                        {{ productHost }}\n" +
-    "                     </span>\n" +
+    "                     </a>\n" +
     "                  </h3>\n" +
-    "                  <span class=\"full-url\">{{ aliases.best_url }}</span>\n" +
+    "                  <a class=\"full-url\" href=\"{{ biblio.free_fulltext_url }}\">\n" +
+    "                     {{ aliases.best_url }}\n" +
+    "                  </a>\n" +
     "                  <div class=\"oa-version\" ng-show=\"biblio.free_fulltext_url\">\n" +
     "                     <div class=\"oa-version-label\">\n" +
     "                        Open access version at\n" +

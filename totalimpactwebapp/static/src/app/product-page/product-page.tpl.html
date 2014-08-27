@@ -188,6 +188,7 @@
 
          <div id="resource">
 
+
             <div id="file" ng-show="fileUrl">
                <div class="iframe-wrapper" dynamic="iframeToEmbed"></div>
             </div>
@@ -200,11 +201,13 @@
 
                <div class="content">
                   <h3>{{ genre }} available at
-                     <span class="product-host">
+                     <a href="{{ aliases.best_url }}" class="product-host">
                         {{ productHost }}
-                     </span>
+                     </a>
                   </h3>
-                  <span class="full-url">{{ aliases.best_url }}</span>
+                  <a class="full-url" href="{{ biblio.free_fulltext_url }}">
+                     {{ aliases.best_url }}
+                  </a>
                   <div class="oa-version" ng-show="biblio.free_fulltext_url">
                      <div class="oa-version-label">
                         Open access version at

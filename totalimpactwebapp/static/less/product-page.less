@@ -174,6 +174,7 @@ div.product-page {
                float:left;
                font-size: 70px;
                padding: 20px;
+               color: @linkColor;
             }
             .content {
                border: 1px solid #eee;
@@ -181,15 +182,24 @@ div.product-page {
                h3 {
                   font-size: 25px;
                   font-weight: 300;
-                  span.product-host {
+                  color: @gray;
+                  margin-bottom: 0;
+                  a.product-host {
                      font-weight: bold;
+                     color: @gray;
+                     &:hover {color: @linkColor;}
                   }
                }
 
-               span.full-url {
+               a.full-url {
                   font-wieght: 300;
                   font-size: 14px;
                   color: @gray-light;
+               }
+
+               div.oa-version {
+                  margin-top: 10px;
+                  font-weight: 300;
                }
             }
          }
