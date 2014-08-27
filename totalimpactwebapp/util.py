@@ -5,8 +5,8 @@ import re
 import jinja2
 from time import sleep
 import datetime
-
-
+from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
+from sqlalchemy.orm.exc import FlushError
 
 # a slow decorator for tests, so can exclude them when necessary
 # put @slow on its own line above a slow test method
@@ -262,3 +262,11 @@ def cached_property(property_name):
         return ret
     return property(cached_propery_get)
 
+
+def commit(db):
+    try:
+        db.session.commit()
+    except (IntegrityError, FlushError) as e:
+        db.session.rollback()
+        logger.warning(u"Error on commit, rolling back.  Message: {message}".format(
+            message=e.message))    

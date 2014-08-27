@@ -1,3 +1,248 @@
+div.product-page {
+   min-height: 500px;
+
+   div.working {
+      color: #ddd;
+      font-size: 30px;
+      font-family: Lato;
+      font-weight: bolder;
+      text-align: center;
+      span.text { margin-left: 10px;}
+      padding-top: 100px;
+   }
+
+
+   div.main-content {
+         width: 700px;
+         float:left;
+      #biblio {
+
+
+         // general stuff in biblio ************
+
+         .editable-click {
+            color: #333;
+            border:none;
+            &:hover {
+               color: #428bca;
+            }
+         }
+
+         form.editable-text {
+            margin-top: -5px;
+            margin-bottom: -5px;
+         }
+
+         .loading {
+            color: #999;
+            margin: 0 5px;
+            i {margin-right: 3px;}
+         }
+
+         span.biblio-field-label {
+            font-weight: bold;
+            margin-right: 5px;
+            font-size: 16px;
+         }
+
+         .tooltip-inner {
+            background: #428bca;
+         }
+         .tooltip-arrow {
+            border-right-color: #428bca;
+            border-left-color: #428bca;
+         }
+
+         // specific biblio sections ***********
+
+         h2.title {
+            font-size: 28px;
+            line-height: 1.3;
+            margin: 0 0 5px;
+
+            span.return-to-profile-link-container {
+               .tooltip-inner {
+                  background: #000;
+               }
+               .tooltip-arrow {
+                  border-color: transparent;
+                  border-top-color: #000;
+               }
+               a.return-to-profile {
+                  color: #999;
+                  margin-left: -45px;
+                  padding-right: 15px;
+                  width: 40px;
+                  display:inline-block;
+                  text-align: right;
+                  &:hover {color: @linkColor}
+               }
+            }
+
+
+            textarea{
+               width: 630px;
+               height: 60px;
+               font-weight: normal;
+            }
+
+         }
+
+
+         span.biblio-field.authors {
+            font-size: 20px;
+            input {width: 630px;}
+
+         }
+
+         div.biblio-line.date-and-source {
+            font-size: 16px;
+            .editable-click {
+               color: #777;
+               &:hover {
+                  color: #428bca;
+               }
+            }
+            span.biblio-field.year {
+               form {
+                  input.editable-input { width: 4em;}  // years is short
+                  margin-right: 10px;
+               }
+
+            }
+            span.biblio-field.journal, span.repository {
+               font-style: italic;
+               input.editable-input {
+                  width: 580px;
+                  margin-left: 10px;
+               }
+            }
+         }
+
+         div.biblio-line.abstract {
+            margin-top: 15px;
+            span.value {
+               font-size: 16px;
+            }
+            textarea {
+               width: 630px;
+               height: 200px;
+               font-size: 16px;
+            }
+
+            .more-abstract {
+               font-size: 14px;
+               cursor: pointer;
+               color: #555;
+            }
+
+         }
+
+         div.biblio-line.keywords {
+            font-size: 16px;
+            margin-top: 10px;
+            input.editable-input {
+               width: 520px;
+            }
+            span.value {
+               font-wieght: bold;
+            }
+         }
+
+
+
+      }
+
+
+      // RESOURCE (link or embedded file)
+      // ************************************************************************
+      // ************************************************************************
+
+      #resource {
+         margin-top: 20px;
+         width: 700px;
+
+         .upload-cta {
+            margin-top: 50px;
+            width: 100%;
+         }
+
+         #linkout {
+            min-height: 70px;
+            padding: 20px 20px;
+            div.icon {
+               float:left;
+               font-size: 70px;
+               padding: 20px;
+               color: @linkColor;
+            }
+            .content {
+               border: 1px solid #eee;
+               padding: 15px;
+               h3 {
+                  font-size: 25px;
+                  font-weight: 300;
+                  color: @gray;
+                  margin-bottom: 0;
+                  a.product-host {
+                     font-weight: bold;
+                     color: @gray;
+                     &:hover {color: @linkColor;}
+                  }
+               }
+
+               a.full-url {
+                  font-wieght: 300;
+                  font-size: 14px;
+                  color: @gray-light;
+               }
+
+               div.oa-version {
+                  margin-top: 10px;
+                  font-weight: 300;
+               }
+            }
+         }
+
+      }
+
+
+      // CITATION INFO
+      // ************************************************************************
+      // ************************************************************************
+
+      #citation {
+         div.text-citation {
+
+         }
+         ul.aliases {
+
+         }
+      }
+
+
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
 div.modal-body.free-fulltext-url {
 
    div.add-link {
@@ -22,253 +267,4 @@ div.modal-body.free-fulltext-url {
    }
 }
 
-div.modal-body.edit-product {
-   div.buttons-group {
-      // duplicates same declaration block used above for other modal; fix.
-      height: 40px;
-      margin: 20px;
-      text-align:center;
-      .btn {width: 8em;}
-   }
-}
 
-
-div.product-page {
-   min-height: 500px;
-   padding-top: 50px;
-   div.header {
-      div.wrapper {
-         position:relative;
-         a.back-to-profile {
-            position:absolute;
-            bottom:0;
-            left: 0;
-         }
-         div.product-page-controls {
-            position:absolute;
-            right:0;
-            bottom:0;
-            width: 400px;
-            text-align: right;
-            a {
-               margin-left: 20px;
-               font-weight: 700;
-               font-size: 20px;
-               &.delete-product {
-
-               }
-            }
-
-         }
-
-      }
-   }
-
-   .content {
-      margin-bottom: 100px;
-      padding-top: 20px;
-      div.working {
-         color: #ddd;
-         font-size: 30px;
-         font-family: Lato;
-         font-weight: bolder;
-         text-align: center;
-         span.text { margin-left: 10px;}
-         padding-top: 100px;
-      }
-
-
-      a.percentile-info {
-         border-top: 1px solid #bbb;
-         color: #555;
-         font-size: 15px;
-         margin-left: 265px;
-         padding-top: 5px;
-         padding: 5px;
-         &:hover {
-            color: #333;
-         }
-      }
-
-      .product { // overrides the main .product styles
-   //      margin-left:200px;
-         width:  100%;
-         margin-bottom: 30px;
-
-
-         .biblio {
-            float:none;
-            width:  100%;
-            h5 {
-               font-size: 30px;
-               color: #333;
-               i {font-size: 80%;}
-            }
-            div.optional-biblio {
-               font-size: 20px;
-            }
-         }
-
-         div.free-fulltext-url {
-            .clearfix();
-            margin-top: 20px;
-            margin-left: -15px;
-            i.leader {
-               font-size: 110%;
-               margin-right: 5px;
-               float:left;
-            }
-            i.icon-external-link-sign {
-               font-size: 80%;
-               opacity: .5;
-            }
-            div.no-free-fulltext-url {
-               div.info{
-                  width: 400px;
-                  float:left;
-
-                  div.no-fulltext{
-                     font-weight: bold;
-                  }
-                  div.encouragement {
-                     margin-top: 5px;
-                     font-style: italic;
-                     font-size: 90%;
-                  }
-               }
-
-
-            }
-
-            div.action{
-               a.action {
-                  margin: -5px 0 0 25px;
-                  text-decoration: none;
-                  background: #777;
-                  border: none;
-                  padding: 3px 10px;
-                  &:hover{background: #555;}
-               }
-            }
-
-            div.has-free-fulltext-url {
-               a {
-                  color: #333;
-                  font-weight: normal;
-                  &:hover {text-decoration: underline;}
-               }
-            }
-         }
-
-
-
-
-
-         ul.metric-details-list {
-            margin-top: 40px;
-            li.metric-detail {
-               font-size:  15px;
-               margin-bottom: 20px;
-               clear:both;
-               .clearfix;
-               .product-page-badge-container {
-                  width: 250px;
-                  float:left;
-                  margin-top: 8px;
-                  display:inline-block;
-
-                  .product-page-badge {
-                     // a lot of this is duplicated from ti-badge.less.
-                     // but there we've got the two parts, text and diff...
-                     // seemed better to not have to account for that stuff here.
-                     padding: 3px 9px;
-                     border-width: 1px;
-                     border-style: solid;
-                     float:right;
-                     font-size:13px;
-                     .border-radius(3px, 3px, 3px, 3px);
-                     &.scholars {border-color: @scholarsColor;}
-                     &.public {border-color: @publicColor;}
-                     &.is-highly-true{
-                        color:  #fff;
-                        &.scholars {background: @scholarsColor;}
-                        &.public {background: @publicColor;}
-                     }
-                     &.is-highly-false {
-                        &.scholars {color: @scholarsColor;}
-                        &.public {color: @publicColor;}
-                        background: #fff;
-                     }
-                  }
-               }
-               span.metric-text {
-                  float:left;
-                  margin-left: 10px;
-                  padding-top: 5px;
-                  a.value-and-name {
-
-                     color:  #333;
-                     display: inline-block;
-                     &:hover {
-                        text-decoration: none;
-                        color:  @linkColor;
-                        i {color:  @linkColor;}
-                     }
-                     span.raw-value {
-                        margin-left:5px;
-                        display: inline-block;
-                        text-align: right;
-                        font-weight: bold;
-                        font-size:  16px;
-                     }
-                     span.environment {
-                     }
-                     span.interaction {
-                     }
-                     img {
-                        height: 16px;
-                        margin: 0 3px 0 3px;
-                        vertical-align: middle;
-   //                     .grayscale(.75);
-                     }
-                     i {color:  #ddd;}
-
-                  }
-
-                  span.new-metrics {
-                     background: @btn-success-bg;
-                     color: #fff;
-                     font-size: 12px;
-                     cursor: default;
-                     margin-left: 5px;
-                     padding: 0 5px;
-                     .border-radius(3px, 3px, 3px, 3px);
-                  }
-
-                  .percentile {
-                     display:block;
-                     float:left;
-                     border-bottom: 1px solid #eee;
-                     color: #555;
-                     span.values {
-                        font-weight: bold;
-                        span.upper, span.lower {
-                           font-size:  16px;
-                        }
-                        i {
-                           opacity: .5;
-                           cursor: pointer;
-                           &:hover {opacity: .8;}
-                        }
-                     }
-                     span.descr {
-                        font-weight: 100;
-                        font-size: 90%;
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-}

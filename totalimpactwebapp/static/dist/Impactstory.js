@@ -444,6 +444,7 @@ angular.module('app', [
   'ngCookies',
   'ngRoute',
   'ngSanitize',
+  'ngEmbedApp',
   'ngAnimate',
   'emguo.poller',
   'services.loading',
@@ -460,9 +461,10 @@ angular.module('app', [
   'infopages',
   'signup',
   'passwordReset',
-  'profileProduct',
+  'productPage',
   'profile',
-  'settings'
+  'settings',
+  'xeditable'
 ]);
 
 angular.module('app').constant('TEST', {
@@ -471,8 +473,19 @@ angular.module('app').constant('TEST', {
 });
 
 
-angular.module('app').config(function ($routeProvider, $locationProvider) {
+angular.module('app').config(function ($routeProvider,
+                                       $sceDelegateProvider,
+                                       $locationProvider) {
   $locationProvider.html5Mode(true);
+
+  $sceDelegateProvider.resourceUrlWhitelist([
+    // Allow same origin resource loads.
+    'self',
+    // Allow google docs embedding.  Notice the difference between * and **.
+    'http://docs.google.com/**',
+    'http://www.slideshare.net/**'
+
+  ]);
 
 
 
@@ -491,10 +504,12 @@ angular.module('app').config(function ($routeProvider, $locationProvider) {
 });
 
 
-angular.module('app').run(function(security, $window, Page, $location) {
+angular.module('app').run(function(security, $window, Page, $location, editableOptions) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
+
+  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 
   angular.element($window).bind("scroll", function(event) {
     Page.setLastScrollPosition($(window).scrollTop(), $location.path())
@@ -569,6 +584,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.$on('$locationChangeStart', function(event, next, current){
     Page.showHeader(true)
     Page.showFooter(true)
+    Page.setProfileUrl(false)
+    Page.setHeaderFullName(false)
     Page.setUservoiceTabLoc("right")
     Loading.clear()
   })
@@ -890,6 +907,360 @@ angular.module('passwordReset', [
     $location.path("/")
   }
 })
+angular.module("productPage", [
+    'resources.users',
+    'resources.products',
+    'resources.embedly',
+    'profileAward.profileAward',
+    'services.page',
+    'profile',
+    'services.loading',
+    'ui.bootstrap',
+    'angularFileUpload',
+    'pdf',
+    'security'
+  ])
+
+
+
+  .config(['$routeProvider', function ($routeProvider) {
+
+    $routeProvider.when("/:url_slug/product/:tiid", {
+      templateUrl:'product-page/product-page.tpl.html',
+      controller:'ProductPageCtrl',
+      resolve: {
+        product: function(ProductWithoutProfile, $route){
+          return ProductWithoutProfile.get({
+            tiid: $route.current.params.tiid
+          }).$promise
+        },
+        profileWithoutProducts: function(ProfileWithoutProducts, $route){
+          return ProfileWithoutProducts.get({
+            profile_id: $route.current.params.url_slug
+          }).$promise
+        }
+      }
+    });
+
+  }])
+
+  .factory('productPage', function(){
+    return {
+
+    }
+  })
+
+  .controller('ProductPageCtrl', function (
+    $scope,
+    $routeParams,
+    $location,
+    $modal,
+    $cacheFactory,
+    $compile,
+    $sce,
+    security,
+    UsersProduct,
+    UsersProducts,
+    UserProfile,
+    Product,
+    Loading,
+    TiMixpanel,
+    ProductBiblio,
+    ProductInteraction,
+    Embedly,
+    product,
+    profileWithoutProducts,
+    Page) {
+
+    Page.setHeaderFullName(profileWithoutProducts.full_name)
+    Page.setProfileUrl(profileWithoutProducts.url_slug)
+
+    var slug = $routeParams.url_slug
+    window.scrollTo(0,0)  // hack. not sure why this is needed.
+
+    UserProfile.useCache(true)
+
+    console.log("got profileWithoutProducts:", profileWithoutProducts)
+    console.log("got product:", product)
+    $scope.profileWithoutProducts = profileWithoutProducts
+    $scope.userSlug = slug
+    $scope.loading = Loading
+    $scope.aliases = product.aliases
+    $scope.biblio = product.biblio
+    $scope.metrics = product.metrics
+    $scope.displayGenrePlural = product.display_genre_plural
+    $scope.genre = product.genre
+    $scope.fileUrl = product.file_url
+
+
+
+    // these are just for testing!
+    // once we've got a product.file_url set by the server,
+    // delete them.
+    // product.file_url = "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
+//    product.file_url = "http://jasonpriem.org/self-archived/data-for-free.pdf"
+    // product.file_url = "http://www.slideshare.net/hpiwowar/7-data-citation-challenges-illustrated-with-data-includes-elephants"
+    // product.file_url = "https://gitprint.com/hpiwowar/Kira/blob/master/README.md?download"
+
+    if (product.file_url){
+
+      Embedly.get(
+        {url: product.file_url},
+        function(resp){
+          console.log("successful resp from embedly: ", resp)
+          if (resp.html) {
+            $scope.iframeToEmbed = resp.html.replace("http://docs.google", "https://docs.google")
+          } 
+          else {
+            console.log("no iframe to embed")
+            // $scope.iframeToEmbed = "nothing to embed.  here's the link: " + resp.url
+          //   $scope.iframeToEmbed = '<iframe src="' + resp.thumbnail_url + '">' + resp.thumbnail_url + '</iframe>'   
+          //   // http://api.embed.ly/1/oembed?url=https%3A%2F%2Fgithub.com%2Fhpiwowar%2FKira&maxwidth=500                 
+          }
+        },
+        function(resp){
+          console.log("error response from embedly: ", resp)
+        }
+      )
+    }
+
+
+    $scope.productHost = parseHostname(product.aliases.best_url)
+    $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
+
+
+    // this should really be a directive...
+    // from http://stackoverflow.com/a/21516924
+    function parseHostname(url){
+      var urlParser = document.createElement('a')
+      urlParser.href = url
+      console.log("hostname" ,  urlParser.hostname)
+      return urlParser.hostname.replace("www.", "")
+    }
+
+
+    security.isLoggedInPromise(slug).then(
+      function(resp){
+        $scope.userOwnsThisProfile = true
+      },
+      function(resp){
+        $scope.userOwnsThisProfile = false
+      }
+    )
+
+    // this runs as soon as the page loads to send a View interaction to server
+    ProductInteraction.save(
+      {tiid: $routeParams.tiid},
+      {
+        timestamp: moment.utc().toISOString(),
+        event: "views"
+      }
+    )
+
+
+    $scope.openInfoModal = function(){
+      $modal.open({templateUrl: "product-page/percentilesInfoModal.tpl.html"})
+    }
+
+    $scope.openFulltextLocationModal = function(){
+      UserProfile.useCache(false)
+      $modal.open(
+        {templateUrl: "product-page/fulltext-location-modal.tpl.html"}
+        // controller specified in the template :/
+      )
+      .result.then(function(resp){
+          console.log("closed the free fulltext modal; re-rendering product", resp)
+          TiMixpanel.track("added free fulltext url",{
+            url: resp.product.biblio.free_fulltext_url
+          })
+          renderProduct()
+      })
+    }
+
+    $scope.deleteProduct = function(){
+      Loading.start("deleteProduct")
+      UserProfile.useCache(false)
+
+      Product.delete(
+        {user_id: slug, tiid: $routeParams.tiid},
+        function(){
+          Loading.finish("deleteProduct")
+          TiMixpanel.track("delete product")
+          security.redirectToProfile()
+        }
+      )
+    }
+
+    $scope.updateBiblio = function(propertyToUpdate){
+      Loading.start("updateBiblio." + propertyToUpdate )
+      var updateObj = {}
+      updateObj[propertyToUpdate] = $scope.biblio[propertyToUpdate]
+      console.log("updating biblio with this:", updateObj)
+      ProductBiblio.patch(
+        {'tiid': $routeParams.tiid},
+        updateObj,
+        function(resp){
+          console.log("updated product biblio; re-rendering", resp)
+          renderProduct()
+        }
+      )
+    }
+
+    $scope.afterSaveTest = function(){
+      console.log("running after save.")
+    }
+
+    $scope.userWantsFullAbstract = false
+    $scope.truncatedAbstract = function(){
+
+      if (!product.biblio.abstract) {
+        return ""
+      }
+
+      if ($scope.userWantsFullAbstract) {
+        return product.biblio.abstract
+      }
+      else {
+        return product.biblio.abstract.substr(0, 75) + "..."
+      }
+    }
+
+
+    $scope.editProduct = function(field){
+      UserProfile.useCache(false)
+      $modal.open({
+        templateUrl: "product-page/edit-product-modal.tpl.html",
+        controller: "editProductModalCtrl",
+        resolve: {
+          product: function(){
+            return $scope.product
+          },
+          fieldToEdit: function(){
+            return field
+          }
+        }
+      })
+      .result.then(
+        function(resp){
+          console.log("closed the editProduct modal; re-rendering product")
+          renderProduct()
+        }
+      )
+    }
+
+    $scope.downloadFile = function(){
+      ProductInteraction.save(
+        {tiid: $routeParams.tiid},
+        {
+          timestamp: moment.utc().toISOString(),
+          event: "download"
+        }
+      )
+    }
+
+
+    var renderProduct = function(){
+      $scope.product = UsersProduct.get({
+        id: $routeParams.url_slug,
+        tiid: $routeParams.tiid
+      },
+      function(data){
+        Loading.finish('productPage')
+        Page.setTitle(data.biblio.title)
+
+        $scope.biblioMarkup = data.markups_dict.biblio
+        $scope.metricsMarkup = data.markups_dict.metrics
+
+        $scope.aliases = data.aliases
+        $scope.biblio = data.biblio
+
+        console.log("loaded a product", data)
+        window.scrollTo(0,0)  // hack. not sure why this is needed.
+        Loading.clear() // hack for now, should do in promise...
+
+
+      },
+      function(data){
+        $location.path("/"+slug) // replace this with "product not found" message...
+      }
+      )
+    }
+  })
+
+
+
+
+.controller("freeFulltextUrlFormCtrl", function($scope,
+                                                $location,
+                                                Loading,
+                                                TiMixpanel,
+                                                ProductBiblio){
+  var tiid = $location.path().match(/\/product\/(.+)$/)[1]
+
+  $scope.free_fulltext_url = ""
+  $scope.onSave = function() {
+    Loading.start("saveButton")
+    console.log("saving...", tiid)
+
+
+    ProductBiblio.patch(
+      {'tiid': tiid},
+      {free_fulltext_url: $scope.free_fulltext_url},
+      function(resp){
+        Loading.finish("saveButton")
+        return $scope.$close(resp)
+      }
+    )
+  }
+})
+
+
+
+.controller("productUploadCtrl", function($scope, $upload, $routeParams){
+    $scope.onFileSelect = function($files){
+      console.log("trying to upload files", $files)
+
+      $scope.upload = $upload.upload({
+        url: "/product/"+ $routeParams.tiid +"/file",
+        file: $files[0]
+      })
+      .success(function(data){
+        console.log("success on upload", data)
+      })
+
+    }
+})
+
+
+
+  .directive('dynamic', function ($compile) {
+  return {
+    restrict: 'A',
+    replace: true,
+    link: function (scope, ele, attrs) {
+      scope.$watch(attrs.dynamic, function(html) {
+        ele.html(html);
+        $compile(ele.contents())(scope);
+      });
+    }
+  };
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 angular.module('profileAward.profileAward', [])
   .factory('ProfileAward', function() {
     return {
@@ -941,248 +1312,6 @@ angular.module('profileLinkedAccounts', [
 
 
   })
-angular.module("profileProduct", [
-    'resources.users',
-    'resources.products',
-    'profileAward.profileAward',
-    'services.page',
-    'profile',
-    'services.loading',
-    'ui.bootstrap',
-    'security'
-  ])
-
-
-
-  .config(['$routeProvider', function ($routeProvider) {
-
-    $routeProvider.when("/:url_slug/product/:tiid", {
-      templateUrl:'profile-product/profile-product-page.tpl.html',
-      controller:'ProfileProductPageCtrl'
-    });
-
-  }])
-
-  .factory('ProfileProduct', function(){
-    return {
-
-    }
-  })
-
-  .controller('ProfileProductPageCtrl', function (
-    $scope,
-    $routeParams,
-    $location,
-    $modal,
-    $cacheFactory,
-    $compile,
-    $sce,
-    security,
-    UsersProduct,
-    UsersProducts,
-    UserProfile,
-    Product,
-    Loading,
-    TiMixpanel,
-    Page) {
-
-    var slug = $routeParams.url_slug
-    window.scrollTo(0,0)  // hack. not sure why this is needed.
-
-
-    Loading.start('profileProduct')
-    UserProfile.useCache(true)
-
-    $scope.userSlug = slug
-    $scope.loading = Loading
-//    $scope.userOwnsThisProfile = security.testUserAuthenticationLevel("ownsThisProfile")
-//    $scope.userOwnsThisProfile = false
-
-    security.isLoggedInPromise(slug).then(
-      function(resp){
-        $scope.userOwnsThisProfile = true
-      },
-      function(resp){
-        $scope.userOwnsThisProfile = false
-      }
-    )
-
-    $scope.openInfoModal = function(){
-      $modal.open({templateUrl: "profile-product/percentilesInfoModal.tpl.html"})
-    }
-
-    $scope.openFulltextLocationModal = function(){
-      UserProfile.useCache(false)
-      $modal.open(
-        {templateUrl: "profile-product/fulltext-location-modal.tpl.html"}
-        // controller specified in the template :/
-      )
-      .result.then(function(resp){
-          console.log("closed the free fulltext modal; re-rendering product", resp)
-          TiMixpanel.track("added free fulltext url",{
-            url: resp.product.biblio.free_fulltext_url
-          })
-          renderProduct()
-      })
-    }
-
-    $scope.deleteProduct = function(){
-      Loading.start("deleteProduct")
-      UserProfile.useCache(false)
-
-      Product.delete(
-        {user_id: slug, tiid: $routeParams.tiid},
-        function(){
-          Loading.finish("deleteProduct")
-          TiMixpanel.track("delete product")
-          security.redirectToProfile()
-        }
-      )
-    }
-
-
-    $scope.editProduct = function(){
-      UserProfile.useCache(false)
-      $modal.open({
-        templateUrl: "profile-product/edit-product-modal.tpl.html",
-        controller: "editProductModalCtrl",
-        resolve: {
-          product: function(){
-            return $scope.product
-          }
-        }
-      })
-      .result.then(
-        function(resp){
-          console.log("closed the editProduct modal; re-rendering product")
-          renderProduct()
-        }
-      )
-    }
-
-    var renderProduct = function(){
-      $scope.product = UsersProduct.get({
-        id: $routeParams.url_slug,
-        tiid: $routeParams.tiid
-      },
-      function(data){
-        Loading.finish('profileProduct')
-        Page.setTitle(data.biblio.title)
-        $scope.productMarkup = data.markup
-        console.log("loaded a product", data)
-        window.scrollTo(0,0)  // hack. not sure why this is needed.
-
-
-      },
-      function(data){
-        $location.path("/"+slug) // replace this with "product not found" message...
-      }
-      )
-    }
-
-    renderProduct()
-
-  })
-
-
-.controller("editProductModalCtrl", function($scope,
-                                             $location,
-                                             $modalInstance,
-                                             $routeParams,
-                                             Loading,
-                                             product,
-                                             UsersProduct,
-                                             ProductBiblio){
-
-    // this shares a lot of code with the freeFulltextUrlFormCtrl below...refactor.
-    $scope.product = product
-    var tiid = $location.path().match(/\/product\/(.+)$/)[1]
-    $scope.onCancel = function(){
-      $scope.$close()
-    }
-
-    $scope.onSave = function() {
-      Loading.start("saveButton")
-      console.log("saving...", tiid)
-      ProductBiblio.patch(
-        {'tiid': tiid},
-        {
-          title: $scope.product.biblio.title,
-          authors: $scope.product.biblio.authors,
-          journal: $scope.product.biblio.journal,
-          year: $scope.product.biblio.year
-
-        },
-        function(resp){
-          console.log("saved new product biblio", resp)
-          Loading.finish("saveButton")
-          console.log("got a response back from the UsersProduct.get() call", resp)
-          return $scope.$close(resp)
-
-        }
-      )
-    }
-  })
-
-
-.controller("freeFulltextUrlFormCtrl", function($scope,
-                                                $location,
-                                                Loading,
-                                                TiMixpanel,
-                                                ProductBiblio){
-  var tiid = $location.path().match(/\/product\/(.+)$/)[1]
-
-  $scope.free_fulltext_url = ""
-  $scope.onSave = function() {
-    Loading.start("saveButton")
-    console.log("saving...", tiid)
-
-
-    ProductBiblio.patch(
-      {'tiid': tiid},
-      {free_fulltext_url: $scope.free_fulltext_url},
-      function(resp){
-        Loading.finish("saveButton")
-        return $scope.$close(resp)
-      }
-    )
-  }
-})
-
-
-
-
-.controller("editProductFormCtrl", function(){
-})
-
-.directive('dynamic', function ($compile) {
-  return {
-    restrict: 'A',
-    replace: true,
-    link: function (scope, ele, attrs) {
-      scope.$watch(attrs.dynamic, function(html) {
-        ele.html(html);
-        $compile(ele.contents())(scope);
-      });
-    }
-  };
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 angular.module('profileSingleProducts', [
   'services.page',
   'resources.users',
@@ -2734,7 +2863,7 @@ angular.module("directives.spinner")
 angular.module('directives.forms', ["services.loading"])
 
 
-  .directive("ngFileSelect",function(){
+  .directive("customFileSelect",function(){
     return {
       link: function($scope, el, attrs){
         el.bind("change", function(e){
@@ -2868,6 +2997,19 @@ angular.module('directives.forms', ["services.loading"])
     }
   }
 })
+angular.module('resources.embedly',['ngResource'])
+
+.factory('Embedly', function ($resource) {
+
+  return $resource(
+   "http://api.embed.ly/1/oembed",
+   {
+     key: "46010d661a874d8ab9d9bdb4da077d03",
+     maxwidth: 700,
+     width: 700
+   }
+  )
+})
 angular.module('resources.products',['ngResource'])
 
 .factory('Products', function ($resource) {
@@ -2893,12 +3035,31 @@ angular.module('resources.products',['ngResource'])
 })
 
 
+.factory("ProductInteraction", function($resource){
+  return $resource(
+    "/product/:tiid/interaction",
+    {}
+  )
+})
+
+
 
 
 .factory('Product', function ($resource) {
 
   return $resource(
     "/profile/:user_id/product/:tiid",
+    {},
+    {}
+  )
+})
+
+
+
+.factory('ProductWithoutProfile', function ($resource) {
+
+  return $resource(
+    "/product/:tiid",
     {},
     {}
   )
@@ -2926,6 +3087,14 @@ angular.module('resources.users',['ngResource'])
           params:{id:"@about.id"} // use the 'id' property of submitted data obj
         }
       }
+    )
+  })
+
+
+
+  .factory("ProfileWithoutProducts", function($resource){
+    return $resource(
+      "/profile-without-products/:profile_id"
     )
   })
 
@@ -3904,6 +4073,8 @@ angular.module("services.page")
    var uservoiceTabLoc = "right"
    var lastScrollPosition = {}
    var isEmbedded =  _($location.path()).startsWith("/embed/")
+   var headerFullName
+   var profileUrl
 
    var showHeaderNow = true
    var showFooterNow = true
@@ -3987,6 +4158,22 @@ angular.module("services.page")
          showFooterNow = !!showFooterArg
          return showFooterNow
        }
+     },
+
+     setHeaderFullName: function(name){
+       headerFullName = name
+     },
+
+
+     getHeaderFullName: function(name){
+       return headerFullName
+     },
+
+     setProfileUrl: function(url){
+       profileUrl = url
+     },
+     getProfileUrl: function(){
+       return profileUrl
      },
 
 
@@ -4411,7 +4598,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-product/edit-product-modal.tpl.html', 'profile-product/fulltext-location-modal.tpl.html', 'profile-product/percentilesInfoModal.tpl.html', 'profile-product/profile-product-page.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -4626,19 +4813,14 @@ angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templa
     "   <div class=\"import-not-complete\" ng-show=\"!importComplete\">\n" +
     "\n" +
     "      <p>\n" +
-    "         Unfortunately, Google Scholar prevents automatic\n" +
-    "         syncing. However, you can manually import your data. Here's how:\n" +
+    "         Google Scholar prevents automatic\n" +
+    "         syncing. However, you can manually import your articles. <a\n" +
+    "              target=\"_blank\"\n" +
+    "              href=\"http://feedback.impactstory.org/knowledgebase/articles/368452-google-scholar\">Click here to learn how.</a>\n" +
     "      </p>\n" +
     "\n" +
-    "      <ol>\n" +
-    "        <li>Go to <a class=\"your-google-scholar-profile\" target=\"_blank\" href=\"{{ currentUser.google_scholar_id }}\">your Google Scholar profile</a>.</li>\n" +
-    "        <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>\n" +
-    "        <li>Click <code>Export all my articles</code>, then save the BiBTeX file.</li>\n" +
-    "        <li>Return to Impactstory and upload your .bib file here.\n" +
-    "      </ol>\n" +
-    "\n" +
     "         <div class=\"file-input-container\">\n" +
-    "            <input type=\"file\" ng-file-select=\"google_scholar_bibtex\">\n" +
+    "            <input type=\"file\" custom-file-select=\"google_scholar_bibtex\">\n" +
     "         </div>\n" +
     "\n" +
     "         <div class=\"submit\">\n" +
@@ -5358,6 +5540,564 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
     "</div>");
 }]);
 
+angular.module("pdf/pdf-viewer.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("pdf/pdf-viewer.tpl.html",
+    "<div id=\"pdf-nav\" class=\"pdf-nav\" ng-class=\"getNavStyle(scroll)\">\n" +
+    "  <button class=\"btn\" ng-click=\"goPrevious()\"><span><i class=\"icon-chevron-left\"></i>prev</span></button>\n" +
+    "  <span>\n" +
+    "     <span class=\"current-page\">\n" +
+    "        page {{ pageNum }}\n" +
+    "     </span>\n" +
+    "     <span class=\"page-count\">\n" +
+    "         of {{pageCount}}\n" +
+    "     </span>\n" +
+    "  </span>\n" +
+    "  <button class=\"btn\" ng-click=\"goNext()\"><span>next <i class=\"icon-chevron-right\"></i></span></button>\n" +
+    "</div>\n" +
+    "\n" +
+    "<canvas id=\"pdf-canvas\" class=\"rotate0\" width=\"675\"></canvas>\n" +
+    "\n" +
+    "");
+}]);
+
+angular.module("product-page/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-page/edit-product-modal.tpl.html",
+    "<!--<div class=\"modal-header\">\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
+    "   <h3>Edit {{ fieldToEdit }}</h3>\n" +
+    "</div>-->\n" +
+    "\n" +
+    "<div class=\"modal-body edit-product\">\n" +
+    "\n" +
+    "   <form\n" +
+    "           name=\"editProductForm\"\n" +
+    "           novalidate\n" +
+    "           ng-submit=\"onSave()\"\n" +
+    "           ng-controller=\"editProductFormCtrl\">\n" +
+    "\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='title'\">\n" +
+    "         <label>Edit publication title:</label>\n" +
+    "         <input\n" +
+    "           class=\"form-control\"\n" +
+    "           type=\"text\"\n" +
+    "           required\n" +
+    "           name=\"productTitle\"\n" +
+    "           ng-model=\"product.biblio.title\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"from-group\" ng-show=\"fieldToEdit=='authors'\">\n" +
+    "         <label>Edit authors:</label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productAuthors\"\n" +
+    "           ng-model=\"product.biblio.authors\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='year'\">\n" +
+    "         <label>Edit publication year:</label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productYear\"\n" +
+    "           ng-model=\"product.biblio.year\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='journal'\">\n" +
+    "         <label>Edit journal:</label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productJournal\"\n" +
+    "           ng-model=\"product.biblio.journal\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='repository'\">\n" +
+    "         <label>Edit repository:</label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productJournal\"\n" +
+    "           ng-model=\"product.biblio.journal\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='keywords'\">\n" +
+    "         <label>\n" +
+    "            Edit publication keywords:\n" +
+    "            <span class=\"sublabel\">Separate keywords with semicolons</span>\n" +
+    "         </label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productYear\"\n" +
+    "           ng-model=\"product.biblio.keywords\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='abstract'\">\n" +
+    "         <label>Edit publication abstract:</label>\n" +
+    "         <input\n" +
+    "           type=\"text\"\n" +
+    "           class=\"form-control\"\n" +
+    "           name=\"productYear\"\n" +
+    "           ng-model=\"product.biblio.abstract\">\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "      <save-buttons valid=\"editProductForm.$valid\"></save-buttons>\n" +
+    "\n" +
+    "   </form>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("product-page/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-page/fulltext-location-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
+    "   <h3>Add link to free fulltext</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body free-fulltext-url\">\n" +
+    "\n" +
+    "   <div class=\"add-link\">\n" +
+    "      <p>Is there a free version of this article, outside any paywalls?\n" +
+    "         <strong>Nice!</strong>\n" +
+    "      </p>\n" +
+    "\n" +
+    "      <form\n" +
+    "              name=\"freeFulltextUrlForm\"\n" +
+    "              novalidate\n" +
+    "              ng-submit=\"onSave()\"\n" +
+    "              ng-controller=\"freeFulltextUrlFormCtrl\">\n" +
+    "         <div class=\"input-group\">\n" +
+    "            <span class=\"input-group-addon icon-globe\"></span>\n" +
+    "            <input\n" +
+    "                    class=\"free-fulltext-url form-control\"\n" +
+    "                    type=\"url\"\n" +
+    "                    name=\"freeFulltextUrl\"\n" +
+    "                    required\n" +
+    "                    placeholder=\"Paste the link here\"\n" +
+    "                    ng-model=\"free_fulltext_url\" />\n" +
+    "         </div>\n" +
+    "         <save-buttons ng-show=\"freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty\"\n" +
+    "                       valid=\"freeFulltextUrlForm.$valid\"></save-buttons>\n" +
+    "\n" +
+    "      </form>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"archive-this\">\n" +
+    "      Is your work hidden behind a paywall? Let's fix that!\n" +
+    "      Upload a version to figshare, where everyone can read it for free:\n" +
+    "      <a class=\"btn btn-success\" href=\"http://figshare.com\" target=\"_blank\">\n" +
+    "         <span class=\"icon-unlock-alt\"></span>\n" +
+    "         upload a free version\n" +
+    "      </a>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>");
+}]);
+
+angular.module("product-page/percentilesInfoModal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-page/percentilesInfoModal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
+    "   <h3>What do these numbers mean?</h3>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body\">\n" +
+    "   <p>Impactstory classifies metrics along two dimensions: <strong>audience</strong> (<em>scholars</em> or the <em>public</em>) and <strong>type of engagement</strong> with research (<em>view</em>, <em>discuss</em>, <em>save</em>, <em>cite</em>, and <em>recommend</em>).</p>\n" +
+    "\n" +
+    "   <p>For each metric, the coloured bar shows its percentile relative to all articles indexed in the Web of Science that year.  The bars show a range, representing the 95% confidence interval around your percentile (and also accounting for ties).  Along with ranges, we show “Highly” badges for metrics above the 75th percentile that exceed a minimum frequency.</p>\n" +
+    "\n" +
+    "   <p>Each metric's raw count is shown to the left of its name.  Click the raw count to visit that metric source's external page for the item; there, you can explore the engagement in more detail.</p>\n" +
+    "\n" +
+    "   <p>For more information, see these blog posts and <a href=\"{{ url_for('faq') }}\">FAQ</a> sections:</p>\n" +
+    "\n" +
+    "   <ul>\n" +
+    "      <li><a href=\"http://blog.impactstory.org/2012/09/10/31256247948/\">What do we expect?</a></li>\n" +
+    "      <li><a href=\"http://blog.impactstory.org/2012/09/14/31524247207/\">Our framework for classifying altmetrics</a></li>\n" +
+    "      <li>Reference sets: <a href=\"http://blog.impactstory.org/2012/09/13/31461657926/\">Motivation</a>; Choosing Web of Science (TBA)</li>\n" +
+    "      <li>Percentiles: <a href=\"http://blog.impactstory.org/2012/09/11/31342582590/\">Part 1</a>, <a href=\"http://blog.impactstory.org/2012/09/12/31408899657/\">Part 2</a>, and <a href=\"http://blog.impactstory.org/2012/09/12/31411187588/\">Part 3</a></li>\n" +
+    "      <li>Why <a href=\"{{ url_for('faq') }}#toc_3_9\">citation counts may not be what you expect</a></li>\n" +
+    "      <li>Sampling and 95% confidence (TBA)</li>\n" +
+    "   </ul>\n" +
+    "</div>");
+}]);
+
+angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-page/product-page.tpl.html",
+    "<div class=\"product-page\">\n" +
+    "\n" +
+    "   <!--\n" +
+    "   <div class=\"header profile-subpage-header product-page-header\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "         <a back-to-profile></a>\n" +
+    "         <div class=\"product-page-controls\" ng-show=\"userOwnsThisProfile && !loading.is()\">\n" +
+    "            <a class=\"edit-product\"\n" +
+    "               ng-click=\"editProduct()\"\n" +
+    "               tooltip=\"Make changes to this product's title or authors\"\n" +
+    "               tooltip-placement=\"bottom\">\n" +
+    "               <span class=\"ready\">\n" +
+    "                  <i class=\"icon-edit\"></i>\n" +
+    "                  Edit\n" +
+    "               </span>\n" +
+    "               <span class=\"working\" ng-show=\"loading.is('deleteProduct')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  Removing...\n" +
+    "               </span>\n" +
+    "            </a>\n" +
+    "\n" +
+    "            <a class=\"delete-product\"\n" +
+    "               ng-click=\"deleteProduct()\"\n" +
+    "               tooltip=\"Remove this product from your profile.\"\n" +
+    "               tooltip-placement=\"bottom\">\n" +
+    "               <span class=\"ready\">\n" +
+    "                  <i class=\"icon-trash\"></i>\n" +
+    "                  Remove\n" +
+    "               </span>\n" +
+    "            </a>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "   -->\n" +
+    "\n" +
+    "   <div class=\"content wrapper\">\n" +
+    "      <!--<div class=\"working\" ng-show=\"loading.is('productPage')\">\n" +
+    "         <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "         <span class=\"text\">Loading product...</span>\n" +
+    "      </div>-->\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"main-content\">\n" +
+    "\n" +
+    "         <div id=\"biblio\">\n" +
+    "            <h2 class=\"title\">\n" +
+    "               <span class=\"return-to-profile-link-container\">\n" +
+    "                  <a class=\"return-to-profile\"\n" +
+    "                     tooltip=\"return to {{ profileWithoutProducts.given_name }}'s profile\"\n" +
+    "                     href=\"{{ profileWithoutProducts.url_slug }}\">\n" +
+    "                     <i class=\"icon-chevron-left\"></i>\n" +
+    "                  </a>\n" +
+    "               </span>\n" +
+    "\n" +
+    "               <span class=\"title-text\"\n" +
+    "                     tooltip=\"click to edit\"\n" +
+    "                     tooltip-placement=\"left\"\n" +
+    "                     e-rows=\"3\"\n" +
+    "                     onaftersave=\"updateBiblio('title')\"\n" +
+    "                     ng-show=\"!loading.is('updateBiblio.title') && userOwnsThisProfile\"\n" +
+    "                     editable-textarea=\"biblio.display_title\">\n" +
+    "                  {{biblio.display_title || \"click to enter title\"}}\n" +
+    "               </span>\n" +
+    "\n" +
+    "               <span class=\"title-text\" ng-show=\"!userOwnsThisProfile\">\n" +
+    "                  {{biblio.display_title }}\n" +
+    "               </span>\n" +
+    "\n" +
+    "               <span class=\"loading\" ng-show=\"loading.is('updateBiblio.title')\">\n" +
+    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                  updating publication year...\n" +
+    "               </span>\n" +
+    "            </h2>\n" +
+    "\n" +
+    "            <div class=\"optional-biblio\">\n" +
+    "\n" +
+    "               <!-- authors line -->\n" +
+    "               <div class=\"biblio-line\">\n" +
+    "                  <span class=\"biblio-field authors\">\n" +
+    "\n" +
+    "                     <span class=\"value\"\n" +
+    "                           tooltip=\"click to edit\"\n" +
+    "                           tooltip-placement=\"right\"\n" +
+    "                           onaftersave=\"updateBiblio('authors')\"\n" +
+    "                           ng-show=\"!loading.is('updateBiblio.authors') && userOwnsThisProfile\"\n" +
+    "                           editable-text=\"biblio.authors\">\n" +
+    "                     {{ biblio.display_authors || \"click to enter authors\" }}\n" +
+    "                     </span>\n" +
+    "                     <span class=\"value\" ng-show=\"!userOwnsThisProfile\">\n" +
+    "                     {{ biblio.display_authors }}\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <span class=\"loading\" ng-show=\"loading.is('updateBiblio.authors')\">\n" +
+    "                        <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                        updating authors...\n" +
+    "                     </span>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "               </div>\n" +
+    "\n" +
+    "\n" +
+    "               <!-- date and journal/repo line -->\n" +
+    "               <div class=\"biblio-line date-and-source\">\n" +
+    "                  <span class=\"biblio-field year\">\n" +
+    "\n" +
+    "                     <span class=\"value biblio-year\"\n" +
+    "                           tooltip=\"click to edit\"\n" +
+    "                           tooltip-placement=\"left\"\n" +
+    "                           ng-show=\"!loading.is('updateBiblio.year') && userOwnsThisProfile\"\n" +
+    "                           onaftersave=\"updateBiblio('year')\"\n" +
+    "                           editable-text=\"biblio.year\">\n" +
+    "                        {{ biblio.display_year || \"click to enter publication year\" }}\n" +
+    "                     </span>\n" +
+    "                     <span class=\"value biblio-year\" ng-show=\"!userOwnsThisProfile\">\n" +
+    "                        {{ biblio.display_year }}\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <span class=\"loading\" ng-show=\"loading.is('updateBiblio.year')\">\n" +
+    "                        <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                        updating publication year...\n" +
+    "                     </span>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "                  <span class=\"biblio-field repository\"\n" +
+    "                        ng-show=\"biblio.repository && !biblio.journal\">\n" +
+    "\n" +
+    "                     <span class=\"value\"\n" +
+    "                        tooltip=\"click to edit\"\n" +
+    "                        tooltip-placement=\"right\"\n" +
+    "                        editable-text=\"biblio.repository\"\n" +
+    "                        onaftersave=\"updateBiblio('repository')\"\n" +
+    "                        ng-show=\"!loading.is('updateBiblio.repository') && userOwnsThisProfile\">\n" +
+    "                        {{ biblio.repository || 'click to enter repository' }}.\n" +
+    "                     </span>\n" +
+    "                     <span class=\"value\" ng-show=\"!userOwnsThisProfile\">\n" +
+    "                        {{ biblio.repository }}.\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <span class=\"loading\" ng-show=\"loading.is('updateBiblio.repository')\">\n" +
+    "                        <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                        updating repository...\n" +
+    "                     </span>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "                  <span class=\"biblio-field journal\" ng-show=\"biblio.journal\">\n" +
+    "\n" +
+    "                     <span class=\"value\"\n" +
+    "                        tooltip=\"click to edit\"\n" +
+    "                        tooltip-placement=\"right\"\n" +
+    "                        editable-text=\"biblio.journal\"\n" +
+    "                        onaftersave=\"updateBiblio('journal')\"\n" +
+    "                        ng-show=\"!loading.is('updateBiblio.journal') && userOwnsThisProfile\">\n" +
+    "                        {{ biblio.journal || 'click to enter journal' }}\n" +
+    "                     </span>\n" +
+    "                     <span class=\"value\" ng-show=\"!userOwnsThisProfile\">\n" +
+    "                        {{ biblio.journal }}\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <span class=\"loading\" ng-show=\"loading.is('updateBiblio.journal')\">\n" +
+    "                        <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                        updating journal...\n" +
+    "                     </span>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "               </div>\n" +
+    "\n" +
+    "\n" +
+    "               <!-- abstract line -->\n" +
+    "               <div class=\"biblio-line abstract\">\n" +
+    "                  <span class=\"biblio-field abstract\" ng-show=\"userOwnsThisProfile\">\n" +
+    "                     <span class=\"biblio-field-label\">Abstract:</span>\n" +
+    "                     <span class=\"value\"\n" +
+    "                        tooltip=\"click to edit\"\n" +
+    "                        tooltip-placement=\"right\"\n" +
+    "                        ng-show=\"!loading.is('updateBiblio.abstract')\"\n" +
+    "                        editable-textarea=\"biblio.abstract\"\n" +
+    "                        onaftersave=\"updateBiblio('abstract')\">\n" +
+    "                        {{ truncatedAbstract() || 'click to enter abstract'}}\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <span class=\"more-abstract\"\n" +
+    "                           ng-hide=\"loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract\"\n" +
+    "                           ng-click=\"userWantsFullAbstract=true\">\n" +
+    "                        (more)\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <span class=\"loading\" ng-show=\"loading.is('updateBiblio.abstract')\">\n" +
+    "                        <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                        updating abstract...\n" +
+    "                     </span>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "                  <!-- show this abstract markup if the user doesn't own this profile -->\n" +
+    "                  <span class=\"biblio-field abstract\" ng-show=\"!userOwnsThisProfile && biblio.abstract\">\n" +
+    "                     <span class=\"biblio-field-label\">Abstract:</span>\n" +
+    "                     <span class=\"value\">\n" +
+    "                        {{ truncatedAbstract() }}\n" +
+    "                     </span>\n" +
+    "                     <span class=\"more-abstract\"\n" +
+    "                           ng-hide=\"loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract\"\n" +
+    "                           ng-click=\"userWantsFullAbstract=true\">\n" +
+    "                        (more)\n" +
+    "                     </span>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "\n" +
+    "               </div>\n" +
+    "\n" +
+    "\n" +
+    "               <!-- keywords line -->\n" +
+    "               <div class=\"biblio-line keywords\">\n" +
+    "\n" +
+    "                  <span class=\"biblio-field keywords\" ng-show=\"userOwnsThisProfile\">\n" +
+    "                     <span class=\"biblio-field-label\">Keywords:</span>\n" +
+    "                     <span class=\"value\"\n" +
+    "                        tooltip=\"click to edit\"\n" +
+    "                        tooltip-placement=\"right\"\n" +
+    "                        editable-text=\"biblio.keywords\"\n" +
+    "                        onaftersave=\"updateBiblio('keywords')\"\n" +
+    "                        ng-show=\"!loading.is('updateBiblio.keywords')\">\n" +
+    "                        {{ biblio.keywords || 'click to enter keywords (separate with semicolons)'}}\n" +
+    "                     </span>\n" +
+    "                     <span class=\"loading\" ng-show=\"loading.is('updateBiblio.keywords')\">\n" +
+    "                        <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                        updating keywords...\n" +
+    "                     </span>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "                  <span class=\"biblio-field keywords\" ng-show=\"!userOwnsThisProfile && biblio.keywords\">\n" +
+    "                     <span class=\"biblio-field-label\">Keywords:</span>\n" +
+    "\n" +
+    "                     <span class=\"value\">\n" +
+    "                        {{ biblio.keywords }}\n" +
+    "                     </span>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "         </div><!-- end biblio section -->\n" +
+    "\n" +
+    "\n" +
+    "         <div id=\"resource\">\n" +
+    "\n" +
+    "\n" +
+    "            <div id=\"file\" ng-show=\"fileUrl\">\n" +
+    "               <div class=\"iframe-wrapper\" dynamic=\"iframeToEmbed\"></div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <div id=\"linkout\" ng-show=\"!fileUrl\">\n" +
+    "               <div class=\"icon\">\n" +
+    "                  <i class=\"icon-link\"></i>\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"content\">\n" +
+    "                  <h3>{{ genre }} available at\n" +
+    "                     <a href=\"{{ aliases.best_url }}\" class=\"product-host\">\n" +
+    "                        {{ productHost }}\n" +
+    "                     </a>\n" +
+    "                  </h3>\n" +
+    "                  <a class=\"full-url\" href=\"{{ biblio.free_fulltext_url }}\">\n" +
+    "                     {{ aliases.best_url }}\n" +
+    "                  </a>\n" +
+    "                  <div class=\"oa-version\" ng-show=\"biblio.free_fulltext_url\">\n" +
+    "                     <div class=\"oa-version-label\">\n" +
+    "                        Open access version at\n" +
+    "                        <a href=\"{{ biblio.free_fulltext_url }}\">{{ freeFulltextHost }}</a>\n" +
+    "                     </div>\n" +
+    "                  </div>\n" +
+    "\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <!--\n" +
+    "            <div class=\"upload-cta well\" ng-controller=\"productUploadCtrl\">\n" +
+    "               <h4>upload your file</h4>\n" +
+    "              <input type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
+    "\n" +
+    "               <a ng-click=\"openFulltextLocationModal()\">embed from url</a>\n" +
+    "            </div>\n" +
+    "            -->\n" +
+    "\n" +
+    "            <div id=\"citation\">\n" +
+    "               <div class=\"text-citation\">\n" +
+    "                  <span class=\"authors\">{{ biblio.authors }}</span>\n" +
+    "                  <span class=\"year\">({{ biblio.display_year }})</span>\n" +
+    "                  <span class=\"title\">{{ biblio.display_title }}</span>\n" +
+    "                  <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
+    "               </div>\n" +
+    "               <ul class=\"aliases\">\n" +
+    "                  <li class=\"doi\" ng-show=\"aliases.display_best_doi\">\n" +
+    "                     <span class=\"key\">URL:</span>\n" +
+    "                     <a class=\"value\" href=\"{{ aliases.display_best_url }}\">{{ aliases.display_best_url }}</a>\n" +
+    "                  </li>\n" +
+    "\n" +
+    "                  <li class=\"doi\" ng-show=\"aliases.display_best_doi\">\n" +
+    "                     <span class=\"key\">DOI:</span>\n" +
+    "                     <a class=\"value\" href=\"http://dx.doi.org/{{ aliases.display_best_doi }}\">{{ aliases.display_best_doi }}</a>\n" +
+    "                  </li>\n" +
+    "                  <li class=\"pmid\" ng-show=\"aliases.display_best_pmid\">\n" +
+    "                     <span class=\"key\">PubMed ID:</span>\n" +
+    "                     <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/\">{{ aliases.display_best_doi }}</a>\n" +
+    "                  </li>\n" +
+    "               </ul>\n" +
+    "            </div>\n" +
+    "\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "      </div><!-- end main-content -->\n" +
+    "\n" +
+    "      <div id=\"sidebar\">\n" +
+    "\n" +
+    "         <!--\n" +
+    "         <div class=\"download-button-container\">\n" +
+    "            <div class=\"btn btn-default\" ng-click=\"downloadFile()\">Download</div>\n" +
+    "         </div>\n" +
+    "         -->\n" +
+    "\n" +
+    "         <div id=\"metrics\">\n" +
+    "            <ul class=\"metric-details-list\">\n" +
+    "\n" +
+    "               <li class=\"metric-detail\" ng-repeat=\"metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}\">\n" +
+    "                  <span class=\"metric-text\">\n" +
+    "                     <a class=\"value-and-name\"\n" +
+    "                        href=\"{{ metric.drilldown_url }}\"\n" +
+    "                        target=\"_blank\"\n" +
+    "                        tooltip-placement=\"left\"\n" +
+    "                        tooltip=\"{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.\">\n" +
+    "                        <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >\n" +
+    "                        <span class=\"raw-value\">{{ metric.display_count }}</span>\n" +
+    "                        <span class=\"environment\">{{ metric.display_provider }}</span>\n" +
+    "                        <span class=\"interaction\">{{ metric.display_interaction }}</span>\n" +
+    "                        <i class=\"icon-external-link-sign\"></i>\n" +
+    "                     </a>\n" +
+    "\n" +
+    "                     <span class=\"new-metrics\"\n" +
+    "                           ng-show=\"metric.diff_value > 0\"\n" +
+    "                           tooltip=\"{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week\">\n" +
+    "                      +{{ metric.diff_value }}\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <a class=\"percentile\"\n" +
+    "                        ng-show=\"metric.percentile\"\n" +
+    "                        href=\"/faq#percentiles\"\n" +
+    "                        target=\"_self\"\n" +
+    "                        tooltip-placement=\"left\"\n" +
+    "                        tooltip=\"Compared to other {{ metric.percentile.mendeley_discipline_str }} {{ displayGenrePlural }} from {{ biblio.display_year }}. Click to read more about how we determine percentiles.\">\n" +
+    "                        <span class=\"values\">\n" +
+    "                           <span class=\"value\">{{ metric.percentile_value_string }}</span>\n" +
+    "                           <span class=\"unit\">percentile</span>\n" +
+    "                        </span>\n" +
+    "                        <span class=\"descr\">on Impactstory.</span>\n" +
+    "                     </a>\n" +
+    "\n" +
+    "                  </span>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
+    "      </div><!-- end sidebar -->\n" +
+    "\n" +
+    "   </div>\n" +
+    "</div>");
+}]);
+
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-award/profile-award.tpl.html",
     "<div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && profileAward.award_badge\">\n" +
@@ -5412,185 +6152,6 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
-    "</div>");
-}]);
-
-angular.module("profile-product/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile-product/edit-product-modal.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
-    "   <h3>Edit product</h3>\n" +
-    "</div>\n" +
-    "<div class=\"modal-body edit-product\">\n" +
-    "   <form\n" +
-    "           name=\"editProductForm\"\n" +
-    "           novalidate\n" +
-    "           ng-submit=\"onSave()\"\n" +
-    "           ng-controller=\"editProductFormCtrl\">\n" +
-    "\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label>Title</label>\n" +
-    "         <input\n" +
-    "           class=\"form-control\"\n" +
-    "           type=\"text\"\n" +
-    "           required\n" +
-    "           name=\"productTitle\"\n" +
-    "           ng-model=\"product.biblio.title\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"from-group\">\n" +
-    "         <label>Authors</label>\n" +
-    "         <input\n" +
-    "           type=\"text\"\n" +
-    "           class=\"form-control\"\n" +
-    "           name=\"productAuthors\"\n" +
-    "           ng-model=\"product.biblio.authors\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"form-group\" ng-if=\"product.biblio.journal\">\n" +
-    "         <label>Journal</label>\n" +
-    "         <input\n" +
-    "           type=\"text\"\n" +
-    "           class=\"form-control\"\n" +
-    "           name=\"productJournal\"\n" +
-    "           ng-model=\"product.biblio.journal\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label>Year</label>\n" +
-    "         <input\n" +
-    "           type=\"text\"\n" +
-    "           class=\"form-control\"\n" +
-    "           name=\"productYear\"\n" +
-    "           ng-model=\"product.biblio.year\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "      <save-buttons ng-show=\"editProductForm.$valid && editProductForm.$dirty\"\n" +
-    "                    valid=\"editProductForm.$valid\"></save-buttons>\n" +
-    "\n" +
-    "   </form>\n" +
-    "</div>\n" +
-    "");
-}]);
-
-angular.module("profile-product/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile-product/fulltext-location-modal.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
-    "   <h3>Add link to free fulltext</h3>\n" +
-    "</div>\n" +
-    "<div class=\"modal-body free-fulltext-url\">\n" +
-    "\n" +
-    "   <div class=\"add-link\">\n" +
-    "      <p>Is there a free version of this article, outside any paywalls?\n" +
-    "         <strong>Nice!</strong>\n" +
-    "      </p>\n" +
-    "\n" +
-    "      <form\n" +
-    "              name=\"freeFulltextUrlForm\"\n" +
-    "              novalidate\n" +
-    "              ng-submit=\"onSave()\"\n" +
-    "              ng-controller=\"freeFulltextUrlFormCtrl\">\n" +
-    "         <div class=\"input-group\">\n" +
-    "            <span class=\"input-group-addon icon-globe\"></span>\n" +
-    "            <input\n" +
-    "                    class=\"free-fulltext-url form-control\"\n" +
-    "                    type=\"url\"\n" +
-    "                    name=\"freeFulltextUrl\"\n" +
-    "                    required\n" +
-    "                    placeholder=\"Paste the link here\"\n" +
-    "                    ng-model=\"free_fulltext_url\" />\n" +
-    "         </div>\n" +
-    "         <save-buttons ng-show=\"freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty\"\n" +
-    "                       valid=\"freeFulltextUrlForm.$valid\"></save-buttons>\n" +
-    "\n" +
-    "      </form>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"archive-this\">\n" +
-    "      Is your work hidden behind a paywall? Let's fix that!\n" +
-    "      Upload a version to figshare, where everyone can read it for free:\n" +
-    "      <a class=\"btn btn-success\" href=\"http://figshare.com\" target=\"_blank\">\n" +
-    "         <span class=\"icon-unlock-alt\"></span>\n" +
-    "         upload a free version\n" +
-    "      </a>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>");
-}]);
-
-angular.module("profile-product/percentilesInfoModal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile-product/percentilesInfoModal.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
-    "   <h3>What do these numbers mean?</h3>\n" +
-    "</div>\n" +
-    "<div class=\"modal-body\">\n" +
-    "   <p>Impactstory classifies metrics along two dimensions: <strong>audience</strong> (<em>scholars</em> or the <em>public</em>) and <strong>type of engagement</strong> with research (<em>view</em>, <em>discuss</em>, <em>save</em>, <em>cite</em>, and <em>recommend</em>).</p>\n" +
-    "\n" +
-    "   <p>For each metric, the coloured bar shows its percentile relative to all articles indexed in the Web of Science that year.  The bars show a range, representing the 95% confidence interval around your percentile (and also accounting for ties).  Along with ranges, we show “Highly” badges for metrics above the 75th percentile that exceed a minimum frequency.</p>\n" +
-    "\n" +
-    "   <p>Each metric's raw count is shown to the left of its name.  Click the raw count to visit that metric source's external page for the item; there, you can explore the engagement in more detail.</p>\n" +
-    "\n" +
-    "   <p>For more information, see these blog posts and <a href=\"{{ url_for('faq') }}\">FAQ</a> sections:</p>\n" +
-    "\n" +
-    "   <ul>\n" +
-    "      <li><a href=\"http://blog.impactstory.org/2012/09/10/31256247948/\">What do we expect?</a></li>\n" +
-    "      <li><a href=\"http://blog.impactstory.org/2012/09/14/31524247207/\">Our framework for classifying altmetrics</a></li>\n" +
-    "      <li>Reference sets: <a href=\"http://blog.impactstory.org/2012/09/13/31461657926/\">Motivation</a>; Choosing Web of Science (TBA)</li>\n" +
-    "      <li>Percentiles: <a href=\"http://blog.impactstory.org/2012/09/11/31342582590/\">Part 1</a>, <a href=\"http://blog.impactstory.org/2012/09/12/31408899657/\">Part 2</a>, and <a href=\"http://blog.impactstory.org/2012/09/12/31411187588/\">Part 3</a></li>\n" +
-    "      <li>Why <a href=\"{{ url_for('faq') }}#toc_3_9\">citation counts may not be what you expect</a></li>\n" +
-    "      <li>Sampling and 95% confidence (TBA)</li>\n" +
-    "   </ul>\n" +
-    "</div>");
-}]);
-
-angular.module("profile-product/profile-product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile-product/profile-product-page.tpl.html",
-    "<div class=\"product-page profile-subpage\">\n" +
-    "   <div class=\"header profile-subpage-header product-page-header\">\n" +
-    "      <div class=\"wrapper\">\n" +
-    "         <a back-to-profile></a>\n" +
-    "         <div class=\"product-page-controls\" ng-show=\"userOwnsThisProfile && !loading.is()\">\n" +
-    "            <a class=\"edit-product\"\n" +
-    "               ng-click=\"editProduct()\"\n" +
-    "               tooltip=\"Make changes to this product's title or authors\"\n" +
-    "               tooltip-placement=\"bottom\">\n" +
-    "               <span class=\"ready\">\n" +
-    "                  <i class=\"icon-edit\"></i>\n" +
-    "                  Edit\n" +
-    "               </span>\n" +
-    "               <span class=\"working\" ng-show=\"loading.is('deleteProduct')\">\n" +
-    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "                  Removing...\n" +
-    "               </span>\n" +
-    "            </a>\n" +
-    "\n" +
-    "            <a class=\"delete-product\"\n" +
-    "               ng-click=\"deleteProduct()\"\n" +
-    "               tooltip=\"Remove this product from your profile.\"\n" +
-    "               tooltip-placement=\"bottom\">\n" +
-    "               <span class=\"ready\">\n" +
-    "                  <i class=\"icon-trash\"></i>\n" +
-    "                  Remove\n" +
-    "               </span>\n" +
-    "            </a>\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "   <div class=\"content wrapper\">\n" +
-    "      <div class=\"working\" ng-show=\"loading.is('profileProduct')\">\n" +
-    "         <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "         <span class=\"text\">Loading product...</span>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <!--<div class=\"product\" ng-bind-html=\"trustHtml(productMarkup)\"></div>-->\n" +
-    "\n" +
-    "      <div class=\"product\" dynamic=\"productMarkup\"></div>\n" +
-    "\n" +
-    "\n" +
-    "   </div>\n" +
     "</div>");
 }]);
 

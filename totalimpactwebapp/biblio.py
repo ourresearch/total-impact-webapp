@@ -90,6 +90,16 @@ class Biblio(object):
         except AttributeError:
             return "no title"
 
+    @cached_property
+    def display_host(self):
+        try:
+            return self.journal
+        except AttributeError:
+            try:
+                return self.repository
+            except AttributeError:
+                return ''
+
 
     @cached_property
     def free_fulltext_host(self):
@@ -97,6 +107,7 @@ class Biblio(object):
             return self._get_url_host(self.free_fulltext_url)
         except AttributeError:
             return None
+            
 
     def _get_url_host(self, url):
         # this should actually be done upstream, where we have a list of

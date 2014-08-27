@@ -1,11 +1,18 @@
 import logging
-import jinja2
 import arrow
+import datetime
+import os
+import boto
+import requests
+from collections import Counter
+from flask import url_for
+import flask
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
 from totalimpactwebapp import metric
 from totalimpactwebapp import award
+from totalimpactwebapp import interaction
 from totalimpactwebapp import reference_set
 
 # regular ol' imports
@@ -13,8 +20,11 @@ from totalimpactwebapp.metric import make_metrics_list
 from totalimpactwebapp.metric import make_mendeley_metric
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
+from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp.util import cached_property
+from totalimpactwebapp.util import commit
+
 from totalimpactwebapp import db
 from totalimpactwebapp import configs
 from totalimpactwebapp import json_sqlalchemy
@@ -36,6 +46,13 @@ snaps_join_string = "and_(Product.tiid==Snap.tiid, " \
 def make(raw_dict):
     return Product(raw_dict)
 
+def get_product(tiid):
+    return Product.query.get(tiid)
+
+def upload_file_and_commit(product, file_to_upload, db):
+    resp = product.upload_file(file_to_upload)
+    commit(db)
+    return resp
 
 
 class Product(db.Model):
@@ -51,6 +68,7 @@ class Product(db.Model):
     last_refresh_finished = db.Column(db.DateTime()) #ALTER TABLE item ADD last_refresh_finished timestamp
     last_refresh_status = db.Column(db.Text) #ALTER TABLE item ADD last_refresh_status text
     last_refresh_failure_message = db.Column(json_sqlalchemy.JSONAlchemy(db.Text)) #ALTER TABLE item ADD last_refresh_failure_message text
+    has_file = db.Column(db.Boolean, default=False)  # alter table item add has_file bool; alter table item alter has_file SET DEFAULT false;
 
 
     alias_rows = db.relationship(
@@ -73,6 +91,13 @@ class Product(db.Model):
         cascade='all, delete-orphan',
         backref=db.backref("item", lazy="subquery"),
         primaryjoin=snaps_join_string
+    )
+
+    interactions = db.relationship(
+        'Interaction',
+        lazy='subquery',
+        cascade='all, delete-orphan',
+        backref=db.backref("item", lazy="subquery")
     )
 
     @cached_property
@@ -171,6 +196,22 @@ class Product(db.Model):
     def awards(self):
         return award.make_list(self.metrics)
 
+    @cached_property
+    def snaps_including_interactions(self):
+        counts = Counter()
+        for interaction in self.interactions:
+            counts[(interaction.tiid, interaction.event)] += 1
+
+        interaction_snaps = []
+        for (tiid, event) in dict(counts):
+            new_snap = Snap(tiid=tiid, 
+                            interaction=event, 
+                            raw_value=counts[(tiid, event)],
+                            provider="impactstory", 
+                            last_collected_date=datetime.datetime.utcnow())
+            interaction_snaps.append(new_snap)
+
+        return self.snaps + interaction_snaps
 
     @cached_property
     def percentile_snaps(self):
@@ -183,7 +224,7 @@ class Product(db.Model):
         my_refset.mendeley_discipline = self.mendeley_discipline
 
         ret = []
-        for snap in self.snaps:
+        for snap in self.snaps_including_interactions:
             snap.set_refset(my_refset)
             ret.append(snap)
 
@@ -209,14 +250,104 @@ class Product(db.Model):
         except IndexError:
             return None
 
+    @cached_property
+    def is_free_to_read(self):
+        return self.has_file or self.biblio.free_fulltext_host
 
     def has_metric_this_good(self, provider, interaction, count):
-        # return True
         requested_metric = self.get_metric_by_name(provider, interaction)
         try:
             return requested_metric.display_count >= count
         except AttributeError:
             return False
+
+    def get_pdf(self):
+        if self.has_file:
+            return self.get_file()
+        try:
+            if self.aliases.pmc:
+                pdf_url = "http://ukpmc.ac.uk/articles/{pmcid}?pdf=render".format(
+                    pmcid=self.aliases.pmc[0])
+                r = requests.get(pdf_url)
+                return r.content
+        except AttributeError:
+            return None
+
+    @cached_property
+    def file_url(self):
+        this_host = flask.request.url_root.strip("/")
+
+        # workaround for google docs viewer not supporting localhost urls
+        this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
+
+        if self.genre in ("slides", "video", "dataset"):
+            return self.aliases.best_url
+
+        if self.genre=="software":
+            return self.aliases.best_url.replace("github", "gitprint") + "?download"
+
+        if self.has_file:
+            return this_host + url_for("product_pdf", tiid=self.tiid)
+        try:
+            if hasattr(self.aliases, "pmc"):
+                return this_host + url_for("product_pdf", tiid=self.tiid)
+            if hasattr(self.aliases, "arxiv"):
+                print "in arxiv"
+                return "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
+                    arxiv_id=self.aliases.arxiv[0])
+            try:
+                # if self.biblio.free_fulltext_url and ("pdf" in self.biblio.free_fulltext_url):
+                if self.biblio.free_fulltext_url:
+                    return self.biblio.free_fulltext_url
+            except AttributeError:
+                pass
+            if self.aliases.best_url and ("pdf" in self.aliases.best_url):
+                return self.aliases.best_url
+
+        except AttributeError:
+            return None
+
+        # print self.biblio.free_fulltext_url
+        # return self.biblio.free_fulltext_url
+        # return "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
+
+
+    def get_file(self):
+        if not self.has_file:
+            return None
+
+        conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
+        bucket_name = os.getenv("AWS_BUCKET", "impactstory-uploads-local")
+        bucket = conn.get_bucket(bucket_name, validate=False)
+
+        path = "active"
+        key_name = self.tiid + ".pdf"
+        full_key_name = os.path.join(path, key_name)
+        k = bucket.new_key(full_key_name)
+
+        file_contents = k.get_contents_as_string()
+        return file_contents
+
+
+    # caller should commit because alters an attribute
+    def upload_file(self, file_to_upload):
+
+        conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
+        bucket_name = os.getenv("AWS_BUCKET", "impactstory-uploads-local")
+        bucket = conn.get_bucket(bucket_name, validate=False)
+
+        path = "active"
+        key_name = self.tiid + ".pdf"
+        full_key_name = os.path.join(path, key_name)
+        k = bucket.new_key(full_key_name)
+
+        length = k.set_contents_from_file(file_to_upload)
+
+        self.has_file = True  #alters an attribute, so caller should commit
+
+        return length
+
+
 
 
     def to_dict(self):
@@ -249,41 +380,31 @@ class Product(db.Model):
         return ret
 
 
+    def to_markup_dict_multi(self, markups_dict, hide_keys=None):
+        ret = self.to_dict()
+
+        rendered_markups = {}
+        for name, markup in markups_dict.iteritems():
+            rendered_markups[name] = markup.make(ret)
+
+        ret["markups_dict"] = rendered_markups
+
+        try:
+            for key_to_hide in hide_keys:
+                try:
+                    del ret[key_to_hide]
+                except KeyError:
+                    pass
+        except TypeError:  # hide_keys=None is not iterable
+            pass
+
+        return ret
 
 
 
 
 
 
-
-
-
-
-class Markup():
-    def __init__(self, user_id, embed=False):
-        self.user_id = user_id
-
-        self.template = self._create_template("product.html")
-
-        self.context = {
-            "embed": embed,
-            "user_id": user_id
-        }
-
-
-    def _create_template(self, template_name):
-        template_loader = jinja2.FileSystemLoader(searchpath="totalimpactwebapp/templates")
-        template_env = jinja2.Environment(loader=template_loader)
-        return template_env.get_template(template_name)
-
-    def set_template(self, template_name):
-        self.template = self._create_template(template_name)
-
-    def make(self, local_context):
-        # the local context overwrites the Self on if there are conflicts.
-        full_context = dict(self.context, **local_context)
-
-        return self.template.render(full_context)
 
 
 

@@ -16,10 +16,11 @@ from flask import render_template
 from flask import render_template_string
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
+from boto.s3.connection import S3ResponseError
+
 from totalimpactwebapp import app
 from totalimpactwebapp import db
 from totalimpactwebapp import login_manager
-from totalimpactwebapp import product
 from totalimpactwebapp import cache
 
 from totalimpactwebapp.password_reset import send_reset_token
@@ -36,6 +37,12 @@ from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.profile import delete_products_from_profile
 from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
+from totalimpactwebapp.product import get_product
+from totalimpactwebapp.product import upload_file_and_commit
+from totalimpactwebapp.product_markup import Markup
+from totalimpactwebapp.product_markup import MarkupFactory
+
+from totalimpactwebapp.interaction import log_interaction_event
 
 from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import emailer
@@ -107,7 +114,7 @@ def abort_json(status_code, msg):
     abort(resp)
 
 
-def get_user_for_response(id, request, expunge=True):
+def get_user_for_response(id, request, include_products=True):
     id_type = unicode(request.args.get("id_type", "url_slug"))
 
     try:
@@ -115,7 +122,12 @@ def get_user_for_response(id, request, expunge=True):
     except AttributeError:
         logged_in = False
 
-    retrieved_user = get_profile_from_id(id, id_type, show_secrets=logged_in)
+    retrieved_user = get_profile_from_id(
+        id,
+        id_type,
+        show_secrets=logged_in,
+        include_products=include_products
+    )
 
     if retrieved_user is None:
         logger.debug(u"in get_user_for_response, user {id} doesn't exist".format(
@@ -123,11 +135,6 @@ def get_user_for_response(id, request, expunge=True):
         abort(404, "That user doesn't exist.")
 
     g.profile_slug = retrieved_user.url_slug
-
-    if expunge and os.getenv("EXPUNGE", "False")=="True":
-        logger.debug(u"expunging")
-
-        db.session.expunge_all()
 
     return retrieved_user
 
@@ -163,9 +170,12 @@ def is_logged_in(profile):
 
 
 def current_user_owns_tiid(tiid):
-    profile = db.session.query(Profile).get(int(current_user.id))
-    db.session.expunge(profile)
-    return tiid in profile.tiids
+    try:
+        profile = db.session.query(Profile).get(int(current_user.id))
+        db.session.expunge(profile)
+        return tiid in profile.tiids
+    except AttributeError:  #Anonymous
+        return False
 
 
 
@@ -348,7 +358,7 @@ def get_user_profile(profile_id):
 
     hide_keys = request.args.get("hide", "").split(",")
 
-    markup = product.Markup(g.user_id, embed=request.args.get("embed"))
+    markup = Markup(g.user_id, embed=request.args.get("embed"))
 
     resp = {
         "products": profile.get_products_markup(
@@ -379,6 +389,13 @@ def user_profile(profile_id):
     resp = get_user_profile(profile_id)
     resp = json_resp_from_thing(resp)
     return resp
+
+
+@app.route("/profile-without-products/<profile_id>", methods=["GET"])
+def profile_without_products(profile_id):
+    profile = get_user_for_response(profile_id, request, include_products=False)
+    dict_about = profile.dict_about(show_secrets=False)
+    return json_resp_from_thing(dict_about)
 
 
 
@@ -456,7 +473,6 @@ def refresh_status(profile_id):
     local_sleep(0.5) # client to webapp plus one trip to database
     id_type = request.args.get("id_type", "url_slug")  # url_slug is default    
     profile_bare_products = get_profile_from_id(profile_id, id_type, include_product_relationships=False)
-    print profile_bare_products
     return json_resp_from_thing(profile_bare_products.get_refresh_status())
 
 
@@ -526,9 +542,9 @@ def user_product(user_id, tiid):
     profile = get_user_for_response(user_id, request)
 
     if request.method == "GET":
-        markup = product.Markup(g.user_id, embed=False)
+        markup_factory = MarkupFactory(g.user_id, embed=False)
         try:
-            resp = profile.get_single_product_markup(tiid, markup)
+            resp = profile.get_single_product_markup(tiid, markup_factory)
         except IndexError:
             abort_json(404, "That product doesn't exist.")
 
@@ -540,6 +556,87 @@ def user_product(user_id, tiid):
 
     return json_resp_from_thing(resp)
 
+
+@app.route("/product/<tiid>/pdf", methods=['GET'])
+def product_pdf(tiid):
+
+    if request.method == "GET":
+        try:
+            product = get_product(tiid)
+            pdf = product.get_pdf()
+            if pdf:
+                resp = make_response(pdf, 200)
+                resp.mimetype = "application/pdf"
+                resp.headers.add("Content-Disposition",
+                                 "attachment; filename=impactstory-{tiid}.pdf".format(
+                                    tiid=tiid))   
+                return resp
+
+            else:
+                abort_json(404, "This product exists, but has no pdf.")
+
+        except IndexError:
+            abort_json(404, "That product doesn't exist.")
+        except S3ResponseError:
+            abort_json(404, "This product exists, but has no pdf.")
+
+
+
+@app.route("/product/<tiid>/interaction", methods=["POST"])
+def product_interaction(tiid):
+    if current_user_owns_tiid(tiid):
+        logger.info(u"not logging pageview for {tiid} because current user viewing own tiid".format(
+            tiid=tiid))
+    else:
+        logger.info(u"logging pageview for {tiid}".format(
+            tiid=tiid))
+        log_interaction_event(tiid=tiid,
+            event=request.json.get("event", "views"),
+            headers=request.headers.to_list(),
+            ip=request.remote_addr,
+            timestamp=request.json.get("timestamp", datetime.datetime.utcnow()))
+
+    return json_resp_from_thing(request.json)
+
+
+@app.route("/product/<tiid>", methods=["GET"])
+def product_without_needing_profile(tiid):
+    product = get_product(tiid)
+    return json_resp_from_thing(product)
+
+
+@app.route("/product/<tiid>/file", methods=['GET', 'POST'])
+def product_file(tiid):
+
+    if request.method == "GET":
+        try:
+            product = get_product(tiid)
+
+            if product.has_file:
+                my_file = product.get_file()
+                resp = make_response(my_file, 200)
+                return resp
+            else:
+                abort_json(404, "This product exists, but has no file.")
+
+        except IndexError:
+            abort_json(404, "That product doesn't exist.")
+        except S3ResponseError:
+            abort_json(404, "This product exists, but has no file.")
+
+
+    elif request.method == "POST":
+        try:
+            if not current_user_owns_tiid(tiid):
+                abort_json(401, "You have to own this product to add files.")
+        except AttributeError:
+            abort_json(405, "You must be logged in to upload files.")
+
+        file_to_upload = request.files['file'].stream
+        product = get_product(tiid)      
+        resp = upload_file_and_commit(product, file_to_upload, db)
+
+        return json_resp_from_thing(resp)
 
 
 
@@ -591,9 +688,10 @@ def product_biblio_modify(tiid):
 
 
 
-
-
-
+@app.route("/test-pdf")
+def test_pdf():
+    filename = "static/SCIM-S-13-00955.pdf"
+    return send_file(filename, mimetype='application/pdf')
 
 
 
@@ -731,9 +829,9 @@ def reference_sets():
 
 
 
-@app.route("/<path:dummy>")  # from http://stackoverflow.com/a/14023930/226013
+@app.route("/<path:page>")  # from http://stackoverflow.com/a/14023930/226013
 @app.route("/")
-def redirect_to_profile(dummy="index"):
+def redirect_to_profile(page="index"):
     """
     EVERYTHING not explicitly routed to another view function will end up here.
     """
@@ -744,7 +842,7 @@ def redirect_to_profile(dummy="index"):
 
     for useragent_fragment in crawer_useragent_fragments:
         if useragent_fragment in useragent:
-            page = dummy.replace("/", "_")
+            page = page.replace("/", "_")
             file_template = u"static/rendered-pages/{page}.html"
             try:
                 return send_file(file_template.format(page=page))
@@ -753,7 +851,7 @@ def redirect_to_profile(dummy="index"):
                 # for now, just return what the user sees
                 return render_template('index.html')  
 
-    # not a search engine?  return the page.
+    # not a search engine?  return the page
     return render_template('index.html')
 
 

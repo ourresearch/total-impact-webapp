@@ -8,6 +8,7 @@ angular.module('app', [
   'ngCookies',
   'ngRoute',
   'ngSanitize',
+  'ngEmbedApp',
   'ngAnimate',
   'emguo.poller',
   'services.loading',
@@ -24,9 +25,10 @@ angular.module('app', [
   'infopages',
   'signup',
   'passwordReset',
-  'profileProduct',
+  'productPage',
   'profile',
-  'settings'
+  'settings',
+  'xeditable'
 ]);
 
 angular.module('app').constant('TEST', {
@@ -35,8 +37,19 @@ angular.module('app').constant('TEST', {
 });
 
 
-angular.module('app').config(function ($routeProvider, $locationProvider) {
+angular.module('app').config(function ($routeProvider,
+                                       $sceDelegateProvider,
+                                       $locationProvider) {
   $locationProvider.html5Mode(true);
+
+  $sceDelegateProvider.resourceUrlWhitelist([
+    // Allow same origin resource loads.
+    'self',
+    // Allow google docs embedding.  Notice the difference between * and **.
+    'http://docs.google.com/**',
+    'http://www.slideshare.net/**'
+
+  ]);
 
 
 
@@ -55,10 +68,12 @@ angular.module('app').config(function ($routeProvider, $locationProvider) {
 });
 
 
-angular.module('app').run(function(security, $window, Page, $location) {
+angular.module('app').run(function(security, $window, Page, $location, editableOptions) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
+
+  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 
   angular.element($window).bind("scroll", function(event) {
     Page.setLastScrollPosition($(window).scrollTop(), $location.path())
@@ -133,6 +148,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.$on('$locationChangeStart', function(event, next, current){
     Page.showHeader(true)
     Page.showFooter(true)
+    Page.setProfileUrl(false)
+    Page.setHeaderFullName(false)
     Page.setUservoiceTabLoc("right")
     Loading.clear()
   })

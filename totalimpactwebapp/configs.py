@@ -126,6 +126,41 @@ linked_accounts = {
 providers = [
 
     # *************************************************************************
+    #                             Impactstory
+    # *************************************************************************
+    {
+        "descr": "User interactions on Impactstory.",
+        "metrics": {
+            "views": {
+                "description": "the number of views of the product on Impactstory",
+                "display_name": "views",
+                "icon": "https://impactstory.org/static/img/favicon.ico",
+                "provider_name": "Impactstory",
+                "provider_url": "https://impactstory.org/",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            },
+            "downloads": {
+                "description": "the number of downloads of the product on Impactstory",
+                "display_name": "downloads",
+                "icon": "https://impactstory.org/static/img/favicon.ico",
+                "provider_name": "Impactstory",
+                "provider_url": "https://impactstory.org/",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            }
+        },
+        "name": "impactstory",
+        "provides_aliases": False,
+        "provides_metrics": True,
+        "url": "https://impactstory.org/"
+    },
+
+
+
+    # *************************************************************************
     #                             PLOS ALM
     # *************************************************************************
     {

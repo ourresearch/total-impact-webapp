@@ -1,0 +1,54 @@
+
+{# This div.metrics-details-list part is quite different from its counterpart
+on the profile page.
+#}
+<ul class="metric-details-list">
+   {% for metric in metrics | sort(reverse=True, attribute="display_order") | rejectattr("hide_badge") %}
+
+   <li class="metric-detail">
+      {# The badge #}
+      <div class="product-page-badge-container">
+         <span class="product-page-badge is-highly-{{ metric.is_highly | lower() }} {{ metric.audience }} {{ metric.engagement_type }}">
+               {% if metric.is_highly %}<span class="modifier">highly</span>{% endif %}
+               <span class="engagement-type">{{metric.engagement_type}}</span>
+               <span class="audience">by {{metric.audience}}</span>
+         </span>
+      </div>
+
+      {# the text after the badge #}
+      <span class="metric-text">
+         <a class="value-and-name"
+            href="{{ metric.drilldown_url }}"
+            target="_blank"
+            data-content="{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.">
+            <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
+            <span class="raw-value">{{ metric.display_count }}</span>
+            <span class="environment">{{ metric.display_provider }}</span>
+            <span class="interaction">{{ metric.display_interaction }}</span>
+            <i class="icon-external-link-sign"></i>
+         </a>
+
+         {% if metric.diff_value > 0 %}
+         <span class="new-metrics"
+               data-content="{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week">
+          +{{ metric.diff_value }}
+         </span>
+         {% endif %}
+
+         {% if metric.percentile %}
+         <a class="percentile"
+            href="/faq#percentiles"
+            target="_self"
+            data-content="Click to read more about how we determine percentiles.">
+            <span class="values">
+               <span class="value">{{ metric.percentile_value_string }}</span>
+               <span class="unit">percentile</span>
+            </span>
+            <span class="descr">of {{ metric.percentile.mendeley_discipline_str }} {{ display_genre_plural }} from {{ year }} on Impactstory.</span>
+         </a>
+         {% endif %}
+
+      </span>
+   </li>
+   {% endfor %}
+</ul>

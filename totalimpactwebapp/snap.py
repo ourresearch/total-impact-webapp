@@ -101,6 +101,9 @@ class Snap(db.Model):
         else:
             return False
 
+    def __repr__(self):
+        return u'<Snap {tiid} {provider} {interaction} {raw_value}>'.format(
+            tiid=self.tiid, provider=self.provider, interaction=self.interaction, raw_value=self.raw_value)
 
 
 class ZeroSnap(object):

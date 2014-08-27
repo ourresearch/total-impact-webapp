@@ -1,0 +1,15 @@
+<div id="pdf-nav" class="pdf-nav" ng-class="getNavStyle(scroll)">
+  <button class="btn" ng-click="goPrevious()"><span><i class="icon-chevron-left"></i>prev</span></button>
+  <span>
+     <span class="current-page">
+        page {{ pageNum }}
+     </span>
+     <span class="page-count">
+         of {{pageCount}}
+     </span>
+  </span>
+  <button class="btn" ng-click="goNext()"><span>next <i class="icon-chevron-right"></i></span></button>
+</div>
+
+<canvas id="pdf-canvas" class="rotate0" width="675"></canvas>
+

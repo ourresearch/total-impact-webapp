@@ -6,19 +6,14 @@
    <div class="import-not-complete" ng-show="!importComplete">
 
       <p>
-         Unfortunately, Google Scholar prevents automatic
-         syncing. However, you can manually import your data. Here's how:
+         Google Scholar prevents automatic
+         syncing. However, you can manually import your articles. <a
+              target="_blank"
+              href="http://feedback.impactstory.org/knowledgebase/articles/368452-google-scholar">Click here to learn how.</a>
       </p>
 
-      <ol>
-        <li>Go to <a class="your-google-scholar-profile" target="_blank" href="{{ currentUser.google_scholar_id }}">your Google Scholar profile</a>.</li>
-        <li>In the green bar above your articles, find the white dropdown box that says <code>Actions</code>.  Change this to <code>Export</code>. </li>
-        <li>Click <code>Export all my articles</code>, then save the BiBTeX file.</li>
-        <li>Return to Impactstory and upload your .bib file here.
-      </ol>
-
          <div class="file-input-container">
-            <input type="file" ng-file-select="google_scholar_bibtex">
+            <input type="file" custom-file-select="google_scholar_bibtex">
          </div>
 
          <div class="submit">

@@ -1,5 +1,4 @@
 angular.module('angularPayments', []);angular.module('angularPayments')
-
 .factory('Common', [function(){
 
   var ret = {};

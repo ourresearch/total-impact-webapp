@@ -72,6 +72,7 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
     return True
 
 
+
 def get_url_slugs_with_past_next_refresh_date(number_to_update, max_days_since_updated, now=datetime.datetime.utcnow()):
     raw_sql = text(u"""SELECT url_slug FROM profile
                         WHERE next_refresh <= now()::date
@@ -140,4 +141,5 @@ if __name__ == "__main__":
     print u"updater.py starting."
     main(args["number_to_update"], args["max_days_since_updated"], [args["url_slug"]])
     db.session.remove()
+
 
