@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-14
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-27
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
