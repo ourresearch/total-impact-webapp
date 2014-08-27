@@ -5999,14 +5999,14 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
+    "            <!--\n" +
     "            <div class=\"upload-cta well\" ng-controller=\"productUploadCtrl\">\n" +
     "               <h4>upload your file</h4>\n" +
     "              <input type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
     "\n" +
     "               <a ng-click=\"openFulltextLocationModal()\">embed from url</a>\n" +
-    "\n" +
-    "\n" +
     "            </div>\n" +
+    "            -->\n" +
     "         </div>\n" +
     "\n" +
     "\n" +
