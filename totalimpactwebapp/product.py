@@ -275,6 +275,11 @@ class Product(db.Model):
 
     @cached_property
     def file_url(self):
+        this_host = flask.request.url_root.strip("/")
+
+        # workaround for google docs viewer not supporting localhost urls
+        this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
+
         if self.genre in ("slides", "video", "dataset"):
             return self.aliases.best_url
 
@@ -282,10 +287,23 @@ class Product(db.Model):
             return self.aliases.best_url.replace("github", "gitprint") + "?download"
 
         if self.has_file:
-            return flask.request.url_root.strip("/") + url_for("product_pdf", tiid=self.tiid)
+            return this_host + url_for("product_pdf", tiid=self.tiid)
         try:
-            if self.aliases.pmc:
-                return flask.request.url_root.strip("/") + url_for("product_pdf", tiid=self.tiid)
+            if hasattr(self.aliases, "pmc"):
+                return this_host + url_for("product_pdf", tiid=self.tiid)
+            if hasattr(self.aliases, "arxiv"):
+                print "in arxiv"
+                return "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
+                    arxiv_id=self.aliases.arxiv[0])
+            try:
+                # if self.biblio.free_fulltext_url and ("pdf" in self.biblio.free_fulltext_url):
+                if self.biblio.free_fulltext_url:
+                    return self.biblio.free_fulltext_url
+            except AttributeError:
+                pass
+            if self.aliases.best_url and ("pdf" in self.aliases.best_url):
+                return self.aliases.best_url
+
         except AttributeError:
             return None
 
