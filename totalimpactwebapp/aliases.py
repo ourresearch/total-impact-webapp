@@ -40,6 +40,24 @@ class Aliases(object):
         except AttributeError:
             return None
 
+    @cached_property
+    def display_best_url(self):  # for consistency
+        return self.best_url
+
+    @cached_property
+    def display_best_pmid(self):
+        try:
+            return self.pmid[0]
+        except AttributeError:
+            return None
+
+    @cached_property
+    def display_best_doi(self):
+        try:
+            return self.doi[0]
+        except AttributeError:
+            return None
+
 
     def get_genre(self):
         return self._guess_genre_and_host_from_aliases()[0]

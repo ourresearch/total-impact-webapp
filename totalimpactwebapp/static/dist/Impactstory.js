@@ -6007,6 +6007,31 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "               <a ng-click=\"openFulltextLocationModal()\">embed from url</a>\n" +
     "            </div>\n" +
     "            -->\n" +
+    "\n" +
+    "            <div id=\"citation\">\n" +
+    "               <div class=\"text-citation\">\n" +
+    "                  <span class=\"authors\">{{ biblio.authors }}</span>\n" +
+    "                  <span class=\"year\">({{ biblio.display_year }})</span>\n" +
+    "                  <span class=\"title\">{{ biblio.display_title }}</span>\n" +
+    "                  <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
+    "               </div>\n" +
+    "               <ul class=\"aliases\">\n" +
+    "                  <li class=\"doi\" ng-show=\"aliases.display_best_doi\">\n" +
+    "                     <span class=\"key\">URL:</span>\n" +
+    "                     <a class=\"value\" href=\"{{ aliases.display_best_url }}\">{{ aliases.display_best_url }}</a>\n" +
+    "                  </li>\n" +
+    "\n" +
+    "                  <li class=\"doi\" ng-show=\"aliases.display_best_doi\">\n" +
+    "                     <span class=\"key\">DOI:</span>\n" +
+    "                     <a class=\"value\" href=\"http://dx.doi.org/{{ aliases.display_best_doi }}\">{{ aliases.display_best_doi }}</a>\n" +
+    "                  </li>\n" +
+    "                  <li class=\"pmid\" ng-show=\"aliases.display_best_pmid\">\n" +
+    "                     <span class=\"key\">PubMed ID:</span>\n" +
+    "                     <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/\">{{ aliases.display_best_doi }}</a>\n" +
+    "                  </li>\n" +
+    "               </ul>\n" +
+    "            </div>\n" +
+    "\n" +
     "         </div>\n" +
     "\n" +
     "\n" +
