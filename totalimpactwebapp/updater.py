@@ -72,8 +72,10 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
     return True
 
 
+
 def get_url_slugs_with_past_next_refresh_date(number_to_update, max_days_since_updated, now=datetime.datetime.utcnow()):
     raw_sql = text(u"""SELECT url_slug FROM profile
+                        WHERE next_refresh <= now()::date
                         ORDER BY next_refresh ASC, url_slug
                         LIMIT :number_to_update""")
 
@@ -84,19 +86,6 @@ def get_url_slugs_with_past_next_refresh_date(number_to_update, max_days_since_u
 
     return url_slugs
 
-#### TEMPORARILY COMMENT OUT THIS REAL VERSION WHILE BIBLIO_ONLY
-# def get_url_slugs_with_past_next_refresh_date(number_to_update, max_days_since_updated, now=datetime.datetime.utcnow()):
-#     raw_sql = text(u"""SELECT url_slug FROM profile
-#                         WHERE next_refresh <= now()::date
-#                         ORDER BY next_refresh ASC, url_slug
-#                         LIMIT :number_to_update""")
-
-#     result = db.session.execute(raw_sql, params={
-#         "number_to_update": number_to_update
-#         })
-#     url_slugs = [row["url_slug"] for row in result]
-
-#     return url_slugs
 
 
 def main(number_to_update=3, max_days_since_updated=7, url_slugs=[None]):
@@ -115,15 +104,22 @@ def main(number_to_update=3, max_days_since_updated=7, url_slugs=[None]):
 
         for url_slug in url_slugs:
             try:
-                # number_products_before = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
-                # import_products_by_url_slug(url_slug, webapp_api_endpoint)
+                number_products_before = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
+                import_products_by_url_slug(url_slug, webapp_api_endpoint)
                 # don't need to deduplicate any more
                 # deduplicate_by_url_slug(url_slug, webapp_api_endpoint)
-                logger.info(u"refreshing biblio_only for {url_slug}".format(
-                    url_slug=url_slug))
-
                 refresh_by_url_slug(url_slug, webapp_api_endpoint)
-
+                number_products_after = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
+                if number_products_before==number_products_after:
+                    logger.info(u"***NO CHANGE on update for {url_slug}, {number_products_before} products".format(
+                        number_products_before=number_products_before,
+                        url_slug=url_slug))
+                else:
+                    logger.info(u"***BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
+                        number_products_before=number_products_before,
+                        number_products_after=number_products_after,
+                        percent=100.0*(number_products_after-number_products_before)/number_products_before,
+                        url_slug=url_slug))
             except Exception as e:
                 logger.exception(e)
                 logger.debug(u"Exception in main loop on {url_slug}, so skipping".format(url_slug=url_slug))
@@ -131,47 +127,6 @@ def main(number_to_update=3, max_days_since_updated=7, url_slugs=[None]):
     except (KeyboardInterrupt, SystemExit): 
         # this approach is per http://stackoverflow.com/questions/2564137/python-how-to-terminate-a-thread-when-main-program-ends
         sys.exit()
-
-#### TEMPORARILY COMMENT OUT THIS REAL VERSION WHILE BIBLIO_ONLY
-# def main(number_to_update=3, max_days_since_updated=7, url_slugs=[None]):
-#     #35 every 10 minutes is 35*6perhour*24hours=5040 per day
-
-#     try:
-#         webapp_api_endpoint = os.getenv("WEBAPP_ROOT_PRETTY", "https://localhost:5000")
-#         now=datetime.datetime.utcnow()
-
-#         if url_slugs[0]==None:
-#             url_slugs = get_url_slugs_with_past_next_refresh_date(number_to_update, max_days_since_updated, now)
-#         try:    
-#             print u"got", len(url_slugs), url_slugs
-#         except UnicodeEncodeError:
-#             print u"got", len(url_slugs), "UnicodeEncodeError in by_profile"
-
-#         for url_slug in url_slugs:
-#             try:
-#                 number_products_before = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
-#                 import_products_by_url_slug(url_slug, webapp_api_endpoint)
-#                 # don't need to deduplicate any more
-#                 # deduplicate_by_url_slug(url_slug, webapp_api_endpoint)
-#                 refresh_by_url_slug(url_slug, webapp_api_endpoint)
-#                 number_products_after = get_num_products_by_url_slug(url_slug, webapp_api_endpoint)
-#                 if number_products_before==number_products_after:
-#                     logger.info(u"***NO CHANGE on update for {url_slug}, {number_products_before} products".format(
-#                         number_products_before=number_products_before,
-#                         url_slug=url_slug))
-#                 else:
-#                     logger.info(u"***BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
-#                         number_products_before=number_products_before,
-#                         number_products_after=number_products_after,
-#                         percent=100.0*(number_products_after-number_products_before)/number_products_before,
-#                         url_slug=url_slug))
-#             except Exception as e:
-#                 logger.exception(e)
-#                 logger.debug(u"Exception in main loop on {url_slug}, so skipping".format(url_slug=url_slug))
-
-#     except (KeyboardInterrupt, SystemExit): 
-#         # this approach is per http://stackoverflow.com/questions/2564137/python-how-to-terminate-a-thread-when-main-program-ends
-#         sys.exit()
  
 
 

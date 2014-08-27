@@ -980,7 +980,8 @@ angular.module("productPage", [
 
     UserProfile.useCache(true)
 
-
+    console.log("got profileWithoutProducts:", profileWithoutProducts)
+    console.log("got product:", product)
     $scope.profileWithoutProducts = profileWithoutProducts
     $scope.userSlug = slug
     $scope.loading = Loading
@@ -1002,15 +1003,19 @@ angular.module("productPage", [
     // product.file_url = "https://gitprint.com/hpiwowar/Kira/blob/master/README.md?download"
 
     if (product.file_url){
+
       Embedly.get(
         {url: product.file_url},
         function(resp){
           console.log("successful resp from embedly: ", resp)
           if (resp.html) {
             $scope.iframeToEmbed = resp.html.replace("http://docs.google", "https://docs.google")
-          } else {
-            $scope.iframeToEmbed = '<iframe>' + resp.thumbnail + '</iframe>'   
-            // http://api.embed.ly/1/oembed?url=https%3A%2F%2Fgithub.com%2Fhpiwowar%2FKira&maxwidth=500                 
+          } 
+          else {
+            console.log("no iframe to embed")
+            $scope.iframeToEmbed = "nothing to embed.  here's the link: " + resp.url
+          //   $scope.iframeToEmbed = '<iframe src="' + resp.thumbnail_url + '">' + resp.thumbnail_url + '</iframe>'   
+          //   // http://api.embed.ly/1/oembed?url=https%3A%2F%2Fgithub.com%2Fhpiwowar%2FKira&maxwidth=500                 
           }
         },
         function(resp){
@@ -3063,6 +3068,7 @@ angular.module('resources.products',['ngResource'])
 
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4058,6 +4064,7 @@ angular.module("services.loading")
     }
   }
 })
+angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -5977,7 +5984,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        target=\"_blank\"\n" +
     "                        tooltip-placement=\"left\"\n" +
     "                        tooltip=\"{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.\">\n" +
-    "                        <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >\n" +
+    "                        <img src=\"/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico\" class='icon' >\n" +
     "                        <span class=\"raw-value\">{{ metric.display_count }}</span>\n" +
     "                        <span class=\"environment\">{{ metric.display_provider }}</span>\n" +
     "                        <span class=\"interaction\">{{ metric.display_interaction }}</span>\n" +
