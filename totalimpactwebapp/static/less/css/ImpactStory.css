@@ -7904,7 +7904,25 @@ div.product-page div.main-content #resource .upload-cta {
 }
 div.product-page div.main-content #resource #linkout {
   min-height: 70px;
-  padding: 20px 20px;
+  padding: 0 20px;
+  clear: both;
+  border: 1px solid #eee;
+}
+div.product-page div.main-content #resource #linkout:before,
+div.product-page div.main-content #resource #linkout:after {
+  content: " ";
+  display: table;
+}
+div.product-page div.main-content #resource #linkout:after {
+  clear: both;
+}
+div.product-page div.main-content #resource #linkout:before,
+div.product-page div.main-content #resource #linkout:after {
+  content: " ";
+  display: table;
+}
+div.product-page div.main-content #resource #linkout:after {
+  clear: both;
 }
 div.product-page div.main-content #resource #linkout div.icon {
   float: left;
@@ -7913,7 +7931,6 @@ div.product-page div.main-content #resource #linkout div.icon {
   color: #ff4000;
 }
 div.product-page div.main-content #resource #linkout .content {
-  border: 1px solid #eee;
   padding: 15px;
 }
 div.product-page div.main-content #resource #linkout .content h3 {
@@ -7934,9 +7951,19 @@ div.product-page div.main-content #resource #linkout .content a.full-url {
   font-size: 14px;
   color: #999999;
 }
+div.product-page div.main-content #resource #linkout .content a.full-url:hover {
+  color: #ff4000;
+}
 div.product-page div.main-content #resource #linkout .content div.oa-version {
   margin-top: 10px;
   font-weight: 300;
+}
+div.product-page div.main-content #resource #linkout .content div.oa-version a {
+  font-weight: normal;
+}
+div.product-page div.main-content #resource #linkout .content div.oa-version a:hover {
+  text-decoration: underline;
+  color: #ff4000;
 }
 div.product-page div.main-content #citation {
   margin-top: 35px;
@@ -7949,12 +7976,7 @@ div.product-page div.main-content #citation .key {
   padding-right: 5px;
   color: #555555;
   font-size: 12px;
-}
-div.product-page div.main-content #citation div.text-citation {
-  border-top: 1px solid #eee;
-}
-div.product-page div.main-content #citation div.text-citation .key {
-  display: none;
+  font-weight: bold;
 }
 div.product-page div.main-content #citation div.text-citation .value {
   font-family: Monaco, Consolas, monospace;
@@ -7966,6 +7988,7 @@ div.product-page div.main-content #citation div.text-citation .value .host {
 }
 div.product-page div.main-content #citation ul.aliases {
   margin-top: 10px;
+  margin-bottom: 0;
 }
 div.product-page div.main-content #citation ul.aliases li {
   font-size: 12px;
@@ -7973,12 +7996,11 @@ div.product-page div.main-content #citation ul.aliases li {
 div.product-page div.main-content #citation ul.aliases li span.key {
   color: #555555;
 }
-div.product-page div.main-content #citation ul.aliases li a:hover {
-  text-decoration: underline;
-  color: #ff4000;
+div.product-page div.main-content #citation ul.aliases li a {
+  color: #555555;
 }
-div.product-page div.main-content #citation ul.aliases li a:hover i {
-  text-decoration: none;
+div.product-page div.main-content #citation ul.aliases li a:hover {
+  color: #ff4000;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
   height: 40px;

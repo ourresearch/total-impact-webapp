@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-27
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-28
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1003,6 +1003,8 @@ angular.module("productPage", [
     // product.file_url = "https://gitprint.com/hpiwowar/Kira/blob/master/README.md?download"
 
     if (product.file_url){
+      $scope.hasEmbeddedFile = true
+      $scope.userWantsFullAbstract = false
 
       Embedly.get(
         {url: product.file_url},
@@ -1010,11 +1012,14 @@ angular.module("productPage", [
           console.log("successful resp from embedly: ", resp)
           if (resp.html) {
             $scope.iframeToEmbed = resp.html.replace("http://docs.google", "https://docs.google")
-            $scope.userWantsFullAbstract = false            
+            $scope.userWantsFullAbstract = false
+            $scope.hasEmbeddedFile = true
             console.log("have something to embed, so don't include a full abstract", $scope.userWantsFullAbstract)
           } 
           else {
             console.log("no iframe to embed, so include a full absract")
+            $scope.hasEmbeddedFile = false
+
             // $scope.iframeToEmbed = "nothing to embed.  here's the link: " + resp.url
           //   $scope.iframeToEmbed = '<iframe src="' + resp.thumbnail_url + '">' + resp.thumbnail_url + '</iframe>'   
           //   // http://api.embed.ly/1/oembed?url=https%3A%2F%2Fgithub.com%2Fhpiwowar%2FKira&maxwidth=500                 
@@ -3069,7 +3074,6 @@ angular.module('resources.products',['ngResource'])
 
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4065,7 +4069,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -5978,13 +5981,13 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "            </div>\n" +
     "\n" +
     "\n" +
-    "            <div id=\"linkout\" ng-show=\"!fileUrl\">\n" +
+    "            <div id=\"linkout\" ng-show=\"!hasEmbeddedFile\">\n" +
     "               <div class=\"icon\">\n" +
     "                  <i class=\"icon-link\"></i>\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"content\">\n" +
-    "                  <h3>{{ genre }} available at\n" +
+    "                  <h3>{{ genre }} available via\n" +
     "                     <a href=\"{{ aliases.best_url }}\" class=\"product-host\">\n" +
     "                        {{ productHost }}\n" +
     "                     </a>\n" +
@@ -5994,7 +5997,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  </a>\n" +
     "                  <div class=\"oa-version\" ng-show=\"biblio.free_fulltext_url\">\n" +
     "                     <div class=\"oa-version-label\">\n" +
-    "                        Open access version at\n" +
+    "                        Open access version via\n" +
     "                        <a href=\"{{ biblio.free_fulltext_url }}\">{{ freeFulltextHost }}</a>\n" +
     "                     </div>\n" +
     "                  </div>\n" +
@@ -6012,12 +6015,6 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "            -->\n" +
     "\n" +
     "            <div id=\"citation\">\n" +
-    "               <div class=\"text-citation\">\n" +
-    "                  <span class=\"authors\">{{ biblio.authors }}</span>\n" +
-    "                  <span class=\"year\">({{ biblio.display_year }})</span>\n" +
-    "                  <span class=\"title\">{{ biblio.display_title }}</span>\n" +
-    "                  <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
-    "               </div>\n" +
     "               <ul class=\"aliases\">\n" +
     "                  <li class=\"doi\" ng-show=\"aliases.display_best_url && !aliases.display_doi\">\n" +
     "                     <span class=\"key\">URL:</span>\n" +
@@ -6033,6 +6030,16 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                     <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/\">{{ aliases.display_doi }}<i class=\"icon-external-link\"></i></a>\n" +
     "                  </li>\n" +
     "               </ul>\n" +
+    "\n" +
+    "               <div class=\"text-citation\">\n" +
+    "                  <span class=\"key\">Citation:</span>\n" +
+    "                  <span class=\"value\">\n" +
+    "                     <span class=\"authors\">{{ biblio.authors }}</span>\n" +
+    "                     <span class=\"year\">({{ biblio.display_year }})</span>\n" +
+    "                     <span class=\"title\">{{ biblio.display_title }}</span>\n" +
+    "                     <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
+    "                  </span>\n" +
+    "               </div>\n" +
     "            </div>\n" +
     "\n" +
     "         </div>\n" +
@@ -6098,7 +6105,8 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "      </div><!-- end sidebar -->\n" +
     "\n" +
     "   </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {

@@ -249,13 +249,13 @@
             </div>
 
 
-            <div id="linkout" ng-show="!fileUrl">
+            <div id="linkout" ng-show="!hasEmbeddedFile">
                <div class="icon">
                   <i class="icon-link"></i>
                </div>
 
                <div class="content">
-                  <h3>{{ genre }} available at
+                  <h3>{{ genre }} available via
                      <a href="{{ aliases.best_url }}" class="product-host">
                         {{ productHost }}
                      </a>
@@ -265,7 +265,7 @@
                   </a>
                   <div class="oa-version" ng-show="biblio.free_fulltext_url">
                      <div class="oa-version-label">
-                        Open access version at
+                        Open access version via
                         <a href="{{ biblio.free_fulltext_url }}">{{ freeFulltextHost }}</a>
                      </div>
                   </div>
@@ -283,12 +283,6 @@
             -->
 
             <div id="citation">
-               <div class="text-citation">
-                  <span class="authors">{{ biblio.authors }}</span>
-                  <span class="year">({{ biblio.display_year }})</span>
-                  <span class="title">{{ biblio.display_title }}</span>
-                  <span class="host"> {{ biblio.display_host }}</span>
-               </div>
                <ul class="aliases">
                   <li class="doi" ng-show="aliases.display_best_url && !aliases.display_doi">
                      <span class="key">URL:</span>
@@ -304,6 +298,16 @@
                      <a class="value" href="http://www.ncbi.nlm.nih.gov/pubmed/">{{ aliases.display_doi }}<i class="icon-external-link"></i></a>
                   </li>
                </ul>
+
+               <div class="text-citation">
+                  <span class="key">Citation:</span>
+                  <span class="value">
+                     <span class="authors">{{ biblio.authors }}</span>
+                     <span class="year">({{ biblio.display_year }})</span>
+                     <span class="title">{{ biblio.display_title }}</span>
+                     <span class="host"> {{ biblio.display_host }}</span>
+                  </span>
+               </div>
             </div>
 
          </div>

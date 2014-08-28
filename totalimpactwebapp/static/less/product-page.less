@@ -169,7 +169,10 @@ div.product-page {
 
          #linkout {
             min-height: 70px;
-            padding: 20px 20px;
+            padding: 0 20px;
+            .clearfix();
+            border: 1px solid #eee;
+
             div.icon {
                float:left;
                font-size: 70px;
@@ -177,7 +180,6 @@ div.product-page {
                color: @linkColor;
             }
             .content {
-               border: 1px solid #eee;
                padding: 15px;
                h3 {
                   font-size: 25px;
@@ -195,11 +197,21 @@ div.product-page {
                   font-wieght: 300;
                   font-size: 14px;
                   color: @gray-light;
+                  &:hover {
+                     color: @linkColor;
+                  }
                }
 
                div.oa-version {
                   margin-top: 10px;
                   font-weight: 300;
+                  a {
+                     font-weight: normal;
+                     &:hover {
+                        text-decoration: underline;
+                        color: @linkColor;
+                     }
+                  }
                }
             }
          }
@@ -221,11 +233,10 @@ div.product-page {
             padding-right: 5px;
             color: @gray;
             font-size: 12px;
+            font-weight: bold;
          }
          div.text-citation {
-            border-top: 1px solid #eee;
             .key {
-               display: none;
             }
             .value {
                font-family: Monaco, Consolas, monospace;
@@ -237,15 +248,18 @@ div.product-page {
          }
          ul.aliases {
             margin-top: 10px;
+            margin-bottom:0;
             li {
                font-size: 12px;
                span.key {
                   color: @gray;
                }
-               a:hover {
-                  text-decoration: underline;
-                  color: @linkColor;
-                  i {text-decoration:none;}
+               a {
+                  color: @gray;
+                  &:hover {
+                     color: @linkColor;
+                  }
+
                }
             }
          }
