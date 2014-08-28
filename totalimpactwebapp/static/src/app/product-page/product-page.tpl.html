@@ -283,12 +283,6 @@
             -->
 
             <div id="citation">
-               <div class="text-citation">
-                  <span class="authors">{{ biblio.authors }}</span>
-                  <span class="year">({{ biblio.display_year }})</span>
-                  <span class="title">{{ biblio.display_title }}</span>
-                  <span class="host"> {{ biblio.display_host }}</span>
-               </div>
                <ul class="aliases">
                   <li class="doi" ng-show="aliases.display_best_url && !aliases.display_doi">
                      <span class="key">URL:</span>
@@ -304,6 +298,17 @@
                      <a class="value" href="http://www.ncbi.nlm.nih.gov/pubmed/">{{ aliases.display_doi }}<i class="icon-external-link"></i></a>
                   </li>
                </ul>
+
+               <div class="text-citation">
+                  <span class="key">citation:</span>
+                  <span class="value">
+                     <span class="authors">{{ biblio.authors }}</span>
+                     <span class="year">({{ biblio.display_year }}).</span>
+                     <span class="title">{{ biblio.display_title }}.</span>
+                     <span class="host"> {{ biblio.display_host }}</span>
+                  </span>
+               </div>
+
             </div>
 
          </div>

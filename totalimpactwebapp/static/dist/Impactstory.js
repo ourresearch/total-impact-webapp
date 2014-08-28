@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-27
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-28
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6012,12 +6012,6 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "            -->\n" +
     "\n" +
     "            <div id=\"citation\">\n" +
-    "               <div class=\"text-citation\">\n" +
-    "                  <span class=\"authors\">{{ biblio.authors }}</span>\n" +
-    "                  <span class=\"year\">({{ biblio.display_year }})</span>\n" +
-    "                  <span class=\"title\">{{ biblio.display_title }}</span>\n" +
-    "                  <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
-    "               </div>\n" +
     "               <ul class=\"aliases\">\n" +
     "                  <li class=\"doi\" ng-show=\"aliases.display_best_url && !aliases.display_doi\">\n" +
     "                     <span class=\"key\">URL:</span>\n" +
@@ -6033,6 +6027,17 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                     <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/\">{{ aliases.display_doi }}<i class=\"icon-external-link\"></i></a>\n" +
     "                  </li>\n" +
     "               </ul>\n" +
+    "\n" +
+    "               <div class=\"text-citation\">\n" +
+    "                  <span class=\"key\">citation:</span>\n" +
+    "                  <span class=\"value\">\n" +
+    "                     <span class=\"authors\">{{ biblio.authors }}</span>\n" +
+    "                     <span class=\"year\">({{ biblio.display_year }}).</span>\n" +
+    "                     <span class=\"title\">{{ biblio.display_title }}.</span>\n" +
+    "                     <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
+    "                  </span>\n" +
+    "               </div>\n" +
+    "\n" +
     "            </div>\n" +
     "\n" +
     "         </div>\n" +
@@ -6098,7 +6103,8 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "      </div><!-- end sidebar -->\n" +
     "\n" +
     "   </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
