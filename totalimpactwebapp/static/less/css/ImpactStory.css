@@ -7938,6 +7938,48 @@ div.product-page div.main-content #resource #linkout .content div.oa-version {
   margin-top: 10px;
   font-weight: 300;
 }
+div.product-page div.main-content #citation {
+  margin-top: 35px;
+}
+div.product-page div.main-content #citation h4 {
+  font-size: 20px;
+}
+div.product-page div.main-content #citation .key {
+  text-align: right;
+  padding-right: 5px;
+  color: #555555;
+  font-size: 12px;
+}
+div.product-page div.main-content #citation div.text-citation {
+  border-top: 1px solid #eee;
+}
+div.product-page div.main-content #citation div.text-citation .key {
+  display: none;
+}
+div.product-page div.main-content #citation div.text-citation .value {
+  font-family: Monaco, Consolas, monospace;
+  font-size: 12px;
+  color: #555555;
+}
+div.product-page div.main-content #citation div.text-citation .value .host {
+  font-style: italic;
+}
+div.product-page div.main-content #citation ul.aliases {
+  margin-top: 10px;
+}
+div.product-page div.main-content #citation ul.aliases li {
+  font-size: 12px;
+}
+div.product-page div.main-content #citation ul.aliases li span.key {
+  color: #555555;
+}
+div.product-page div.main-content #citation ul.aliases li a:hover {
+  text-decoration: underline;
+  color: #ff4000;
+}
+div.product-page div.main-content #citation ul.aliases li a:hover i {
+  text-decoration: none;
+}
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
   height: 40px;
   margin: 20px;

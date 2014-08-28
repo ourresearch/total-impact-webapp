@@ -45,14 +45,14 @@ class Aliases(object):
         return self.best_url
 
     @cached_property
-    def display_best_pmid(self):
+    def display_pmid(self):
         try:
             return self.pmid[0]
         except AttributeError:
             return None
 
     @cached_property
-    def display_best_doi(self):
+    def display_doi(self):
         try:
             return self.doi[0]
         except AttributeError:

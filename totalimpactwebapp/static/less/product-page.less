@@ -212,11 +212,42 @@ div.product-page {
       // ************************************************************************
 
       #citation {
+         margin-top: 35px;
+         h4 {
+            font-size: 20px;
+         }
+         .key {
+            text-align:right;
+            padding-right: 5px;
+            color: @gray;
+            font-size: 12px;
+         }
          div.text-citation {
+            border-top: 1px solid #eee;
+            .key {
+               display: none;
+            }
+            .value {
+               font-family: Monaco, Consolas, monospace;
+               font-size: 12px;
+               color: @gray;
+               .host {font-style: italic;}
+            }
 
          }
          ul.aliases {
-
+            margin-top: 10px;
+            li {
+               font-size: 12px;
+               span.key {
+                  color: @gray;
+               }
+               a:hover {
+                  text-decoration: underline;
+                  color: @linkColor;
+                  i {text-decoration:none;}
+               }
+            }
          }
       }
 

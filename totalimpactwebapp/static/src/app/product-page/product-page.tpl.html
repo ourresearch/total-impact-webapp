@@ -283,27 +283,31 @@
             -->
 
             <div id="citation">
-               <div class="text-citation">
-                  <span class="authors">{{ biblio.authors }}</span>
-                  <span class="year">({{ biblio.display_year }})</span>
-                  <span class="title">{{ biblio.display_title }}</span>
-                  <span class="host"> {{ biblio.display_host }}</span>
-               </div>
                <ul class="aliases">
-                  <li class="doi" ng-show="aliases.display_best_doi">
+                  <li class="doi" ng-show="aliases.display_best_url && !aliases.display_doi">
                      <span class="key">URL:</span>
-                     <a class="value" href="{{ aliases.display_best_url }}">{{ aliases.display_best_url }}</a>
+                     <a class="value" href="{{ aliases.display_best_url }}">{{ aliases.display_best_url }} <i class="icon-external-link"></i></a>
                   </li>
 
-                  <li class="doi" ng-show="aliases.display_best_doi">
+                  <li class="doi" ng-show="aliases.display_doi">
                      <span class="key">DOI:</span>
-                     <a class="value" href="http://dx.doi.org/{{ aliases.display_best_doi }}">{{ aliases.display_best_doi }}</a>
+                     <a class="value" href="http://dx.doi.org/{{ aliases.display_doi }}">{{ aliases.display_doi }}<i class="icon-external-link right"></i></a>
                   </li>
-                  <li class="pmid" ng-show="aliases.display_best_pmid">
+                  <li class="pmid" ng-show="aliases.display_pmid">
                      <span class="key">PubMed ID:</span>
-                     <a class="value" href="http://www.ncbi.nlm.nih.gov/pubmed/">{{ aliases.display_best_doi }}</a>
+                     <a class="value" href="http://www.ncbi.nlm.nih.gov/pubmed/">{{ aliases.display_doi }}<i class="icon-external-link"></i></a>
                   </li>
                </ul>
+
+               <div class="text-citation">
+                  <span class="key">citation:</span>
+                  <span class="value">
+                     <span class="authors">{{ biblio.authors }}</span>
+                     <span class="year">({{ biblio.display_year }}).</span>
+                     <span class="title">{{ biblio.display_title }}.</span>
+                     <span class="host"> {{ biblio.display_host }}</span>
+                  </span>
+               </div>
             </div>
 
          </div>
