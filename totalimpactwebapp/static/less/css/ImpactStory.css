@@ -7896,10 +7896,10 @@ div.product-page div.main-content #biblio div.biblio-line.keywords span.value {
 }
 div.product-page div.main-content #resource {
   margin-top: 20px;
-  text-align: center;
   width: 700px;
 }
 div.product-page div.main-content #resource .upload-cta {
+  text-align: center;
   margin-top: 50px;
   width: 100%;
   padding: 10px;

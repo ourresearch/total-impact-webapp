@@ -5660,16 +5660,14 @@ angular.module("product-page/fulltext-location-modal.tpl.html", []).run(["$templ
   $templateCache.put("product-page/fulltext-location-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
     "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
-    "   <h3>Embed from URL</h3>\n" +
+    "   <h3>Embed your article</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body free-fulltext-url\">\n" +
     "\n" +
     "   <div class=\"add-link\">\n" +
-    "      <!--\n" +
     "      <p>Do you already have a free version of this article, outside any paywalls?\n" +
-    "         Nice! You can embed it via URL.\n" +
+    "         Nice! You can embed it on this page via URL.\n" +
     "      </p>\n" +
-    "      -->\n" +
     "\n" +
     "      <form\n" +
     "              name=\"freeFulltextUrlForm\"\n" +
