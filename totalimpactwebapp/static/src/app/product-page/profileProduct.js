@@ -94,6 +94,8 @@ angular.module("productPage", [
     // product.file_url = "https://gitprint.com/hpiwowar/Kira/blob/master/README.md?download"
 
     if (product.file_url){
+      $scope.hasEmbeddedFile = true
+      $scope.userWantsFullAbstract = false
 
       Embedly.get(
         {url: product.file_url},
@@ -101,11 +103,14 @@ angular.module("productPage", [
           console.log("successful resp from embedly: ", resp)
           if (resp.html) {
             $scope.iframeToEmbed = resp.html.replace("http://docs.google", "https://docs.google")
-            $scope.userWantsFullAbstract = false            
+            $scope.userWantsFullAbstract = false
+            $scope.hasEmbeddedFile = true
             console.log("have something to embed, so don't include a full abstract", $scope.userWantsFullAbstract)
           } 
           else {
             console.log("no iframe to embed, so include a full absract")
+            $scope.hasEmbeddedFile = false
+
             // $scope.iframeToEmbed = "nothing to embed.  here's the link: " + resp.url
           //   $scope.iframeToEmbed = '<iframe src="' + resp.thumbnail_url + '">' + resp.thumbnail_url + '</iframe>'   
           //   // http://api.embed.ly/1/oembed?url=https%3A%2F%2Fgithub.com%2Fhpiwowar%2FKira&maxwidth=500                 
