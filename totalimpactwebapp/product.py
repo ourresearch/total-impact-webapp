@@ -170,6 +170,7 @@ def get_file_url_to_embed(product):
 
 
 def get_file_embed_markup(product):
+    html = None
 
     if "github" in product.aliases.best_url:
         html = get_github_embed(product.aliases.best_url)
