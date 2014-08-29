@@ -35,10 +35,21 @@ class Aliases(object):
 
     @cached_property
     def best_url(self):
+        # try these first, in this order
+        if self.display_doi:
+            return u"http://doi.org/" + self.display_doi
+        if self.display_pmid:
+            return u"http://www.ncbi.nlm.nih.gov/pubmed/" + self.display_pmid
+        if self.display_pmc:
+            return u"http://www.ncbi.nlm.nih.gov/pmc/articles/" + self.display_pmc
+        if self.resolved_url:
+            return self.resolved_url
+
         try:
             return self.url[0]
         except AttributeError:
             return None
+
 
     @cached_property
     def display_best_url(self):  # for consistency
@@ -52,9 +63,41 @@ class Aliases(object):
             return None
 
     @cached_property
+    def display_pmc(self):
+        try:
+            return self.pmc[0]
+        except AttributeError:
+            return None
+
+    @cached_property
     def display_doi(self):
         try:
             return self.doi[0]
+        except AttributeError:
+            return None
+
+    @cached_property
+    def display_arxiv(self):
+        try:
+            return self.arxiv[0]
+        except AttributeError:
+            return None
+
+    @cached_property
+    def resolved_url(self):
+        try:
+            for url in self.url:
+                if "doi.org" in url:
+                    continue
+                elif "ncbi.nlm.nih.gov/" in url:
+                    continue
+                elif "mendeley.com" in url:
+                    continue
+                else:
+                    return url
+
+        # only had those, so return one of those
+            return self.url[0]
         except AttributeError:
             return None
 

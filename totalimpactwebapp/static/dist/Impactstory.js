@@ -1013,7 +1013,7 @@ angular.module("productPage", [
     )
 
 
-    $scope.productHost = parseHostname(product.aliases.best_url)
+    $scope.productHost = parseHostname(product.aliases.resolved_url)
     $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
 
 
@@ -1022,7 +1022,7 @@ angular.module("productPage", [
     function parseHostname(url){
       var urlParser = document.createElement('a')
       urlParser.href = url
-      console.log("hostname" ,  urlParser.hostname)
+      console.log("hostname", urlParser.hostname)
       return urlParser.hostname.replace("www.", "")
     }
 
@@ -5968,12 +5968,12 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "               <div class=\"content\">\n" +
     "                  <h3>{{ genre }} available via\n" +
-    "                     <a href=\"{{ aliases.best_url }}\" class=\"product-host\">\n" +
+    "                     <a href=\"{{ aliases.resolved_url }}\" class=\"product-host\">\n" +
     "                        {{ productHost }}\n" +
     "                     </a>\n" +
     "                  </h3>\n" +
-    "                  <a class=\"full-url\" href=\"{{ biblio.free_fulltext_url }}\">\n" +
-    "                     {{ aliases.best_url }}\n" +
+    "                  <a class=\"full-url\" href=\"{{ aliases.resolved_url }}\">\n" +
+    "                     {{ aliases.resolved_url }}\n" +
     "                  </a>\n" +
     "                  <div class=\"oa-version\" ng-show=\"biblio.free_fulltext_url\">\n" +
     "                     <div class=\"oa-version-label\">\n" +

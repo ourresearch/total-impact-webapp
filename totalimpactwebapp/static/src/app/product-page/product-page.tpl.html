@@ -256,12 +256,12 @@
 
                <div class="content">
                   <h3>{{ genre }} available via
-                     <a href="{{ aliases.best_url }}" class="product-host">
+                     <a href="{{ aliases.resolved_url }}" class="product-host">
                         {{ productHost }}
                      </a>
                   </h3>
-                  <a class="full-url" href="{{ biblio.free_fulltext_url }}">
-                     {{ aliases.best_url }}
+                  <a class="full-url" href="{{ aliases.resolved_url }}">
+                     {{ aliases.resolved_url }}
                   </a>
                   <div class="oa-version" ng-show="biblio.free_fulltext_url">
                      <div class="oa-version-label">

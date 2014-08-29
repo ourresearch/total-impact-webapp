@@ -5,9 +5,11 @@ import os
 import re
 import boto
 import requests
+from bs4 import BeautifulSoup
 from collections import Counter
 from flask import url_for
 import flask
+from urlparse import urljoin
 from embedly import Embedly
 
 # these imports need to be here for sqlalchemy
@@ -57,36 +59,30 @@ def upload_file_and_commit(product, file_to_upload, db):
     return resp
 
 
-from bs4 import BeautifulSoup
+
+def wrap_as_image(image_url):
+    return u"<img src='{image_url}' style='width: 550px;' />".format(
+        image_url=image_url)
 
 def get_github_embed(github_url):
     r = requests.get(github_url)
     soup = BeautifulSoup(r.text)
     return repr(soup.find(id="readme"))
 
-def wrap_as_image(image_url):
-    return u"<img src='{image_url}' style='width: 550px;' />".format(
-        image_url=image_url)
-
 def get_figshare_embed(figshare_doi):
     r = requests.get(u"http://doi.org/" + figshare_doi)
     soup = BeautifulSoup(r.text)
 
     # case insensitive on download because figshare does both upper and lower
-    figshare_resource_links = soup.find_all("a", text=re.compile(".ownload"))
+    figshare_resource_links = soup.find_all("a", text=re.compile(".ownload", re.IGNORECASE))
     figshare_resource_links = [link for link in figshare_resource_links if link]  #remove blanks
     if not figshare_resource_links:
         return None
-    logger.warning(u"got figshare url embed htmls {figshare_resource_links}".format(
-        figshare_resource_links=figshare_resource_links))
     url = None
 
     for match in figshare_resource_links:
         url = match.get("href")
         file_extension = url.rsplit(".")[-1]
-
-        logger.warning(u"figshare url embed html for {url}, {file_extension}".format(
-            url=url, file_extension=file_extension))
 
         if file_extension in ["png", "gif", "jpg"]:
             return wrap_as_image(url)
@@ -98,13 +94,17 @@ def get_figshare_embed(figshare_doi):
     return get_embedly_markup(figshare_resource_links[0].get("href"))
 
 
-def get_pdf_embed(url):
+def get_pdf_link_from_html(url):
     r = requests.get(url)
-    soup = BeautifulSoup(r.text.lower())
+    soup = BeautifulSoup(r.text)
     try:
-        href = soup.find("a", text="pdf").get("href")
+        href = soup.find("a", text=re.compile("pdf", re.IGNORECASE)).get("href")
     except AttributeError:
         href = None
+
+    if href and href.startswith("/"):
+        href = urljoin(r.url, href)  # see https://docs.python.org/2/library/urlparse.html#urlparse.urljoin
+
     return href
 
 def get_embedly_markup(url):
@@ -121,25 +121,64 @@ def get_embedly_markup(url):
         return None
 
 
+def get_file_url_to_embed(product):
+    this_host = flask.request.url_root.strip("/")
+
+    # workaround for google docs viewer not supporting localhost urls
+    this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
+
+    if product.genre in ("slides", "video", "dataset"):
+        return product.aliases.best_url
+
+    if product.genre=="software":
+        return product.aliases.best_url.replace("github", "gitprint") + "?download"
+
+    if product.has_file:
+        return this_host + url_for("product_pdf", tiid=product.tiid)
+
+    if product.aliases.display_pmc:
+        return this_host + url_for("product_pdf", tiid=product.tiid)
+
+    if product.aliases.display_arxiv:
+        return "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
+            arxiv_id=product.aliases.display_arxiv)
+
+    if hasattr(product.biblio, "free_fulltext_url") and product.biblio.free_fulltext_url:
+        print "has free full text"
+        # just return right away if pdf is in the link
+        if "pdf" in product.biblio.free_fulltext_url:
+            return product.biblio.free_fulltext_url
+
+        pdf_link = get_pdf_link_from_html(product.biblio.free_fulltext_url)
+        if pdf_link:
+            return pdf_link
+        else:
+            return product.biblio.free_fulltext_url
+
+    if product.aliases.resolved_url and ("pdf" in product.aliases.resolved_url):
+        return product.aliases.resolved_url
+
+    return None
+
+
 def get_file_embed_markup(product):
     if product.aliases.get_host() == "figshare":
-        html = get_figshare_embed(product.aliases.doi[0])
+        html = get_figshare_embed(product.aliases.display_doi)
+
     # elif "github" in product.aliases.best_url:
     #     html = get_github_embed(product.aliases.best_url)
-    else:
-        if product.file_url:
-            url = product.file_url
-        else:
-            url = product.aliases.best_url
 
+    else:
+        url = get_file_url_to_embed(product)
+        if not url:
+            url = product.aliases.best_url
         html = get_embedly_markup(url)
         
+
     # logger.debug(u"returning embed html for {tiid}, {html}".format(
     #     tiid=product.tiid, html=html))
 
     return {"html": html}
-
-
 
 
 
@@ -365,44 +404,6 @@ class Product(db.Model):
                 return r.content
         except AttributeError:
             return None
-
-    @cached_property
-    def file_url(self):
-        this_host = flask.request.url_root.strip("/")
-
-        # workaround for google docs viewer not supporting localhost urls
-        this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
-
-        if self.genre in ("slides", "video", "dataset"):
-            return self.aliases.best_url
-
-        if self.genre=="software":
-            return self.aliases.best_url.replace("github", "gitprint") + "?download"
-
-        if self.has_file:
-            return this_host + url_for("product_pdf", tiid=self.tiid)
-        try:
-            if hasattr(self.aliases, "pmc"):
-                return this_host + url_for("product_pdf", tiid=self.tiid)
-            if hasattr(self.aliases, "arxiv"):
-                print "in arxiv"
-                return "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
-                    arxiv_id=self.aliases.arxiv[0])
-            try:
-                # if self.biblio.free_fulltext_url and ("pdf" in self.biblio.free_fulltext_url):
-                if self.biblio.free_fulltext_url:
-                    return self.biblio.free_fulltext_url
-            except AttributeError:
-                pass
-            if self.aliases.best_url and ("pdf" in self.aliases.best_url):
-                return self.aliases.best_url
-
-        except AttributeError:
-            return None
-
-        # print self.biblio.free_fulltext_url
-        # return self.biblio.free_fulltext_url
-        # return "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
 
 
     def get_file(self):

@@ -104,7 +104,7 @@ angular.module("productPage", [
     )
 
 
-    $scope.productHost = parseHostname(product.aliases.best_url)
+    $scope.productHost = parseHostname(product.aliases.resolved_url)
     $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
 
 
@@ -113,7 +113,7 @@ angular.module("productPage", [
     function parseHostname(url){
       var urlParser = document.createElement('a')
       urlParser.href = url
-      console.log("hostname" ,  urlParser.hostname)
+      console.log("hostname", urlParser.hostname)
       return urlParser.hostname.replace("www.", "")
     }
 
