@@ -76,7 +76,7 @@ def get_figshare_embed(figshare_doi):
     figshare_resource_links = soup.find_all("a", text=re.compile(".ownload"))
     figshare_resource_links = [link for link in figshare_resource_links if link]  #remove blanks
     url = None
-    
+
     for match in figshare_resource_links:
         url = match.get("href")
         file_extension = url.rsplit(".")[-1]
@@ -115,17 +115,21 @@ def get_embedly_markup(url):
 
 
 def get_file_embed_markup(product):
-    html = None
-    try:
-        if "github" in product.aliases.best_url:
-            html = get_github_embed(product.aliases.best_url)
-        elif "figshare" in product.aliases.best_url:
-            html = get_figshare_embed(product.aliases.doi[0])
+    if "github" in product.aliases.best_url:
+        html = get_github_embed(product.aliases.best_url)
+    elif "figshare" in product.aliases.best_url:
+        html = get_figshare_embed(product.aliases.doi[0])
+    else:
+        if product.file_url:
+            url = product.file_url
         else:
-            html = get_embedly_markup(product.aliases.best_url)
-    except TypeError:
-        pass
+            url = product.aliases.best_url
+
+        html = get_embedly_markup(url)
         
+    # logger.debug(u"returning embed html for {tiid}, {html}".format(
+    #     tiid=product.tiid, html=html))
+
     return {"html": html}
 
 
