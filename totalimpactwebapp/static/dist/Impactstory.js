@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-28
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-29
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5660,14 +5660,16 @@ angular.module("product-page/fulltext-location-modal.tpl.html", []).run(["$templ
   $templateCache.put("product-page/fulltext-location-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
     "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
-    "   <h3>Add link to free fulltext</h3>\n" +
+    "   <h3>Embed from URL</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body free-fulltext-url\">\n" +
     "\n" +
     "   <div class=\"add-link\">\n" +
-    "      <p>Is there a free version of this article, outside any paywalls?\n" +
-    "         <strong>Nice!</strong>\n" +
+    "      <!--\n" +
+    "      <p>Do you already have a free version of this article, outside any paywalls?\n" +
+    "         Nice! You can embed it via URL.\n" +
     "      </p>\n" +
+    "      -->\n" +
     "\n" +
     "      <form\n" +
     "              name=\"freeFulltextUrlForm\"\n" +
@@ -5681,7 +5683,7 @@ angular.module("product-page/fulltext-location-modal.tpl.html", []).run(["$templ
     "                    type=\"url\"\n" +
     "                    name=\"freeFulltextUrl\"\n" +
     "                    required\n" +
-    "                    placeholder=\"Paste the link here\"\n" +
+    "                    placeholder=\"Paste the link to PDF or image file here\"\n" +
     "                    ng-model=\"free_fulltext_url\" />\n" +
     "         </div>\n" +
     "         <save-buttons ng-show=\"freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty\"\n" +
@@ -5689,16 +5691,6 @@ angular.module("product-page/fulltext-location-modal.tpl.html", []).run(["$templ
     "\n" +
     "      </form>\n" +
     "   </div>\n" +
-    "\n" +
-    "   <div class=\"archive-this\">\n" +
-    "      Is your work hidden behind a paywall? Let's fix that!\n" +
-    "      Upload a version to figshare, where everyone can read it for free:\n" +
-    "      <a class=\"btn btn-success\" href=\"http://figshare.com\" target=\"_blank\">\n" +
-    "         <span class=\"icon-unlock-alt\"></span>\n" +
-    "         upload a free version\n" +
-    "      </a>\n" +
-    "   </div>\n" +
-    "\n" +
     "</div>");
 }]);
 
@@ -6005,14 +5997,29 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <!--\n" +
-    "            <div class=\"upload-cta well\" ng-controller=\"productUploadCtrl\">\n" +
-    "               <h4>upload your file</h4>\n" +
-    "              <input type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
     "\n" +
-    "               <a ng-click=\"openFulltextLocationModal()\">embed from url</a>\n" +
+    "            <div class=\"upload-cta\" ng-controller=\"productUploadCtrl\">\n" +
+    "               <h4>Make this {{ genre }} more visible</h4>\n" +
+    "               <h5>\n" +
+    "                  Upload a copy here to make it freely available to everyone&mdash;and get readership stats you can use.\n" +
+    "               </h5>\n" +
+    "               <div class=\"file-upload-container\">\n" +
+    "                  <div class=\"file-upload-button btn btn-primary\"\n" +
+    "                       onclick=\"document.getElementById('file-upload-button').click();\">\n" +
+    "                     <span class=\"text\">Share your {{ genre }}</span>\n" +
+    "                  </div>\n" +
+    "                  <input id=\"file-upload-button\" type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
+    "                  <span class=\"or\">or</span>\n" +
+    "                  <a class=\"embed-from-url\" ng-click=\"openFulltextLocationModal()\">embed from url</a>\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"notes\">\n" +
+    "                  <span class=\"sherpa-romeo\">\n" +
+    "                     Learn more about your uploading rights and responsibilities at\n" +
+    "                     <a href=\"http://www.sherpa.ac.uk/romeo/\">SHERPA/RoMEO</a>\n" +
+    "                  </span>\n" +
+    "               </div>\n" +
     "            </div>\n" +
-    "            -->\n" +
     "\n" +
     "            <div id=\"citation\">\n" +
     "               <ul class=\"aliases\">\n" +

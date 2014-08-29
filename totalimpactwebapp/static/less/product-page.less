@@ -7,22 +7,22 @@ div.product-page {
       font-family: Lato;
       font-weight: bolder;
       text-align: center;
-      span.text { margin-left: 10px;}
+      span.text {
+         margin-left: 10px;
+      }
       padding-top: 100px;
    }
 
-
    div.main-content {
-         width: 700px;
-         float:left;
+      width: 700px;
+      float: left;
       #biblio {
-
 
          // general stuff in biblio ************
 
          .editable-click {
             color: #333;
-            border:none;
+            border: none;
             &:hover {
                color: #428bca;
             }
@@ -36,7 +36,9 @@ div.product-page {
          .loading {
             color: #999;
             margin: 0 5px;
-            i {margin-right: 3px;}
+            i {
+               margin-right: 3px;
+            }
          }
 
          span.biblio-field-label {
@@ -73,14 +75,15 @@ div.product-page {
                   margin-left: -45px;
                   padding-right: 15px;
                   width: 40px;
-                  display:inline-block;
+                  display: inline-block;
                   text-align: right;
-                  &:hover {color: @linkColor}
+                  &:hover {
+                     color: @linkColor
+                  }
                }
             }
 
-
-            textarea{
+            textarea {
                width: 630px;
                height: 60px;
                font-weight: normal;
@@ -88,24 +91,28 @@ div.product-page {
 
          }
 
-
          span.biblio-field.authors {
             font-size: 20px;
-            input {width: 630px;}
+            input {
+               width: 630px;
+            }
 
          }
 
          div.biblio-line.date-and-source {
             font-size: 16px;
             .editable-click {
-               color: #777;
+               color: #777;;
                &:hover {
                   color: #428bca;
                }
             }
             span.biblio-field.year {
                form {
-                  input.editable-input { width: 4em;}  // years is short
+                  input.editable-input {
+                     width: 4em;
+                  }
+                  // years is short
                   margin-right: 10px;
                }
 
@@ -145,14 +152,11 @@ div.product-page {
                width: 520px;
             }
             span.value {
-               font-wieght: bold;
+               font-weight: bold;
             }
          }
 
-
-
       }
-
 
       // RESOURCE (link or embedded file)
       // ************************************************************************
@@ -160,11 +164,54 @@ div.product-page {
 
       #resource {
          margin-top: 20px;
+         text-align: center;
          width: 700px;
 
          .upload-cta {
             margin-top: 50px;
             width: 100%;
+            padding: 10px;
+            border: 1px solid #eee;
+            background: #fafafa;
+            h4 {
+               font-size: 26px;
+            }
+            h5 {
+               font-size: 19px;
+               font-weight: 300;
+               padding: 0 50px;
+               strong {
+                  font-weight: normal;
+               }
+            }
+            div.file-upload-container {
+               width: 50%;
+               text-align:center;
+               margin: 20px auto 30px;
+               div.file-upload-button {
+                  display:inline-block;
+               }
+               input {
+                  display:none;
+               }
+               span.or {
+                  font-size: 14px;
+                  margin: 0 5px 0 10px;
+               }
+               a.embed-from-url {
+                  color: #428bca;
+                  &:hover {
+                     color: #428bca;
+                     text-decoration: underline;
+                  }
+               }
+            }
+            div.notes {
+               text-align:right;
+               font-size: 12px;
+               color: #777;
+            }
+
          }
 
          #linkout {
@@ -174,7 +221,7 @@ div.product-page {
             border: 1px solid #eee;
 
             div.icon {
-               float:left;
+               float: left;
                font-size: 70px;
                padding: 20px;
                color: @linkColor;
@@ -184,12 +231,14 @@ div.product-page {
                h3 {
                   font-size: 25px;
                   font-weight: 300;
-                  color: @gray;
+                  color: #777;
                   margin-bottom: 0;
                   a.product-host {
                      font-weight: bold;
-                     color: @gray;
-                     &:hover {color: @linkColor;}
+                     color: #777;
+                     &:hover {
+                        color: @linkColor;
+                     }
                   }
                }
 
@@ -218,7 +267,6 @@ div.product-page {
 
       }
 
-
       // CITATION INFO
       // ************************************************************************
       // ************************************************************************
@@ -229,9 +277,9 @@ div.product-page {
             font-size: 20px;
          }
          .key {
-            text-align:right;
+            text-align: right;
             padding-right: 5px;
-            color: @gray;
+            color: #555;
             font-size: 12px;
             font-weight: bold;
          }
@@ -241,21 +289,23 @@ div.product-page {
             .value {
                font-family: Monaco, Consolas, monospace;
                font-size: 12px;
-               color: @gray;
-               .host {font-style: italic;}
+               color: #777;
+               .host {
+                  font-style: italic;
+               }
             }
 
          }
          ul.aliases {
             margin-top: 10px;
-            margin-bottom:0;
+            margin-bottom: 0;
             li {
                font-size: 12px;
                span.key {
-                  color: @gray;
+                  color: #777;
                }
                a {
-                  color: @gray;
+                  color: #777;
                   &:hover {
                      color: @linkColor;
                   }
@@ -265,28 +315,9 @@ div.product-page {
          }
       }
 
-
    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
 
 div.modal-body.free-fulltext-url {
 
@@ -294,9 +325,13 @@ div.modal-body.free-fulltext-url {
       div.buttons-group {
          height: 40px;
          margin: 20px;
-         text-align:center;
-         .btn-default {display:none;}
-         .btn-primary { width: 14em;}
+         text-align: center;
+         .btn-default {
+            display: none;
+         }
+         .btn-primary {
+            width: 14em;
+         }
       }
    }
 
@@ -306,10 +341,11 @@ div.modal-body.free-fulltext-url {
          display: block;
          text-align: center;
          width: 14em;
-         margin:20px auto 0;
-         span {margin-right: 5px;}
+         margin: 20px auto 0;
+         span {
+            margin-right: 5px;
+         }
       }
    }
 }
-
 

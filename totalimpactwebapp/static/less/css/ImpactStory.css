@@ -7892,15 +7892,57 @@ div.product-page div.main-content #biblio div.biblio-line.keywords input.editabl
   width: 520px;
 }
 div.product-page div.main-content #biblio div.biblio-line.keywords span.value {
-  font-wieght: bold;
+  font-weight: bold;
 }
 div.product-page div.main-content #resource {
   margin-top: 20px;
+  text-align: center;
   width: 700px;
 }
 div.product-page div.main-content #resource .upload-cta {
   margin-top: 50px;
   width: 100%;
+  padding: 10px;
+  border: 1px solid #eee;
+  background: #fafafa;
+}
+div.product-page div.main-content #resource .upload-cta h4 {
+  font-size: 26px;
+}
+div.product-page div.main-content #resource .upload-cta h5 {
+  font-size: 19px;
+  font-weight: 300;
+  padding: 0 50px;
+}
+div.product-page div.main-content #resource .upload-cta h5 strong {
+  font-weight: normal;
+}
+div.product-page div.main-content #resource .upload-cta div.file-upload-container {
+  width: 50%;
+  text-align: center;
+  margin: 20px auto 30px;
+}
+div.product-page div.main-content #resource .upload-cta div.file-upload-container div.file-upload-button {
+  display: inline-block;
+}
+div.product-page div.main-content #resource .upload-cta div.file-upload-container input {
+  display: none;
+}
+div.product-page div.main-content #resource .upload-cta div.file-upload-container span.or {
+  font-size: 14px;
+  margin: 0 5px 0 10px;
+}
+div.product-page div.main-content #resource .upload-cta div.file-upload-container a.embed-from-url {
+  color: #428bca;
+}
+div.product-page div.main-content #resource .upload-cta div.file-upload-container a.embed-from-url:hover {
+  color: #428bca;
+  text-decoration: underline;
+}
+div.product-page div.main-content #resource .upload-cta div.notes {
+  text-align: right;
+  font-size: 12px;
+  color: #777;
 }
 div.product-page div.main-content #resource #linkout {
   min-height: 70px;
@@ -7936,12 +7978,12 @@ div.product-page div.main-content #resource #linkout .content {
 div.product-page div.main-content #resource #linkout .content h3 {
   font-size: 25px;
   font-weight: 300;
-  color: #555555;
+  color: #777;
   margin-bottom: 0;
 }
 div.product-page div.main-content #resource #linkout .content h3 a.product-host {
   font-weight: bold;
-  color: #555555;
+  color: #777;
 }
 div.product-page div.main-content #resource #linkout .content h3 a.product-host:hover {
   color: #ff4000;
@@ -7974,14 +8016,14 @@ div.product-page div.main-content #citation h4 {
 div.product-page div.main-content #citation .key {
   text-align: right;
   padding-right: 5px;
-  color: #555555;
+  color: #555;
   font-size: 12px;
   font-weight: bold;
 }
 div.product-page div.main-content #citation div.text-citation .value {
   font-family: Monaco, Consolas, monospace;
   font-size: 12px;
-  color: #555555;
+  color: #777;
 }
 div.product-page div.main-content #citation div.text-citation .value .host {
   font-style: italic;
@@ -7994,10 +8036,10 @@ div.product-page div.main-content #citation ul.aliases li {
   font-size: 12px;
 }
 div.product-page div.main-content #citation ul.aliases li span.key {
-  color: #555555;
+  color: #777;
 }
 div.product-page div.main-content #citation ul.aliases li a {
-  color: #555555;
+  color: #777;
 }
 div.product-page div.main-content #citation ul.aliases li a:hover {
   color: #ff4000;
