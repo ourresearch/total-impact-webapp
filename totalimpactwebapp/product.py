@@ -69,13 +69,14 @@ def wrap_as_image(image_url):
         image_url=image_url)
 
 def get_figshare_embed(figshare_doi):
-    print "hi heather"
     r = requests.get(u"http://doi.org/" + figshare_doi)
     soup = BeautifulSoup(r.text)
 
     # case insensitive on download because figshare does both upper and lower
     figshare_resource_links = soup.find_all("a", text=re.compile(".ownload"))
     figshare_resource_links = [link for link in figshare_resource_links if link]  #remove blanks
+    url = None
+    
     for match in figshare_resource_links:
         url = match.get("href")
         file_extension = url.rsplit(".")[-1]
