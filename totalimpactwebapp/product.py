@@ -245,7 +245,7 @@ class Product(db.Model):
         else:
             host = self.aliases.get_host()
 
-        if self.genre == "article" and host != "figshare":
+        if self.genre == "article":
             # don't return repositories for articles
             host = "unknown"
         return host
