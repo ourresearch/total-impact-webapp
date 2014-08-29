@@ -7899,23 +7899,7 @@ div.product-page div.main-content #resource {
   width: 700px;
 }
 div.product-page div.main-content #resource .embed-github-readme {
-  min-height: 70px;
-  padding: 0 20px;
-  margin-top: 50px;
-  width: 90%;
-  border: 1px solid #eee;  
-}
-div.product-page div.main-content #resource .embed-github-readme h1 {
-  font-size: 20px; 
-}
-div.product-page div.main-content #resource .embed-github-readme h2 {
-  font-size: 20px; 
-}
-div.product-page div.main-content #resource .embed-github-readme h3 {
-  font-size: 20px; 
-}
-div.product-page div.main-content #resource .embed-github-readme h4 {
-  font-size: 20px; 
+  border: 1px solid #eee;
 }
 div.product-page div.main-content #resource .upload-cta {
   text-align: center;

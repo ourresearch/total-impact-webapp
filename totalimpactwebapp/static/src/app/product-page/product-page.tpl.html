@@ -238,6 +238,12 @@
 
                </div>
             </div>
+            <!--
+            <div class="share-buttons">
+               <a href="https://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a>
+               <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+            </div>
+            -->
          </div><!-- end biblio section -->
 
 
@@ -274,7 +280,10 @@
             </div>
 
 
-            <div class="upload-cta" ng-controller="productUploadCtrl">
+            <div class="upload-cta"
+                 ng-show="!hasEmbeddedFile && userOwnsThisProfile"
+                 ng-controller="productUploadCtrl">
+
                <h4>Make this {{ genre }} more visible</h4>
                <h5>
                   Upload a copy here to make it freely available to everyone&mdash;and get readership stats you can use.
