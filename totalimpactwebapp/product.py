@@ -59,17 +59,26 @@ def upload_file_and_commit(product, file_to_upload, db):
     return resp
 
 
+def wrap_as_div(class_name, div_contents):
+    return u"<div class='{class_name}'>{div_contents}</div>".format(
+        class_name=class_name, div_contents=div_contents)
 
-def wrap_as_image(image_url):
-    return u"<img src='{image_url}' style='width: 550px;' />".format(
-        image_url=image_url)
+def wrap_as_image(class_name, image_url):
+    return u"<img src='{image_url}' class='{class_name}' style='width: 550px;' />".format(
+        class_name=class_name, image_url=image_url)
+
 
 def get_github_embed(github_url):
     r = requests.get(github_url)
     soup = BeautifulSoup(r.text)
-    return repr(soup.find(id="readme"))
+    html = repr(soup.find(id="readme"))
+    if html:
+        return wrap_as_div("embed-github-readme", html)
+    return None
 
-def get_figshare_embed(figshare_doi):
+
+
+def get_figshare_embed_html(figshare_doi):
     r = requests.get(u"http://doi.org/" + figshare_doi)
     soup = BeautifulSoup(r.text)
 
@@ -85,11 +94,10 @@ def get_figshare_embed(figshare_doi):
         file_extension = url.rsplit(".")[-1]
 
         if file_extension in ["png", "gif", "jpg"]:
-            return wrap_as_image(url)
+            return wrap_as_image("embed-picture", url)
         if file_extension in ["pdf"]:
             return get_embedly_markup(url)
 
-    logger.warning(u"didn't find good figshare url embed html so do default")
     # if got here, just use the first url and give it a shot with embedly
     return get_embedly_markup(figshare_resource_links[0].get("href"))
 
@@ -124,19 +132,16 @@ def get_embedly_markup(url):
 def get_file_url_to_embed(product):
     this_host = flask.request.url_root.strip("/")
 
-    # workaround for google docs viewer not supporting localhost urls
-    this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
-
-    if product.genre in ("slides", "video", "dataset"):
-        return product.aliases.best_url
-
-    if product.genre=="software":
-        return product.aliases.best_url.replace("github", "gitprint") + "?download"
-
     if product.has_file:
         return this_host + url_for("product_pdf", tiid=product.tiid)
 
+    if product.genre in ["slides", "video", "dataset"]:
+        return product.aliases.best_url
+
     if product.aliases.display_pmc:
+        # workaround for google docs viewer not supporting localhost urls
+        this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
+
         return this_host + url_for("product_pdf", tiid=product.tiid)
 
     if product.aliases.display_arxiv:
@@ -165,18 +170,25 @@ def get_file_url_to_embed(product):
 
 
 def get_file_embed_markup(product):
-    if product.aliases.get_host() == "figshare":
-        html = get_figshare_embed(product.aliases.display_doi)
 
-    # elif "github" in product.aliases.best_url:
-    #     html = get_github_embed(product.aliases.best_url)
+    if "github" in product.aliases.best_url:
+        html = get_github_embed(product.aliases.best_url)
+
+    elif "figshare" in product.aliases.best_url:
+        html = get_figshare_embed_html(product.aliases.display_doi)
 
     else:
         url = get_file_url_to_embed(product)
+        if "localhost" in url:
+            html = u"<p>Can't view uploaded file on localhost.  View it at <a href='{url}'>{url}</a>.</p>".format(
+                    url=url)
+        
         if not url:
             # didn't find anything we think is embeddable, but worth trying something anyway
             url = product.aliases.best_url
-        html = get_embedly_markup(url)
+
+        if url and not html:
+            html = get_embedly_markup(url)
 
     # logger.debug(u"returning embed html for {tiid}, {html}".format(
     #     tiid=product.tiid, html=html))
