@@ -1,7 +1,7 @@
 angular.module("productPage", [
     'resources.users',
     'resources.products',
-    'resources.embedly',
+    'resources.productEmbedMarkup',
     'profileAward.profileAward',
     'services.page',
     'profile',
@@ -58,7 +58,7 @@ angular.module("productPage", [
     TiMixpanel,
     ProductBiblio,
     ProductInteraction,
-    Embedly,
+    ProductEmbedMarkup,
     product,
     profileWithoutProducts,
     Page) {
@@ -81,49 +81,30 @@ angular.module("productPage", [
     $scope.metrics = product.metrics
     $scope.displayGenrePlural = product.display_genre_plural
     $scope.genre = product.genre
-    $scope.fileUrl = product.file_url
+    $scope.hasEmbeddedFile = false
     $scope.userWantsFullAbstract = true
 
-
-    // these are just for testing!
-    // once we've got a product.file_url set by the server,
-    // delete them.
-    // product.file_url = "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
-//    product.file_url = "http://jasonpriem.org/self-archived/data-for-free.pdf"
-    // product.file_url = "http://www.slideshare.net/hpiwowar/7-data-citation-challenges-illustrated-with-data-includes-elephants"
-    // product.file_url = "https://gitprint.com/hpiwowar/Kira/blob/master/README.md?download"
-
-    if (product.file_url){
-      $scope.hasEmbeddedFile = true
-      $scope.userWantsFullAbstract = false
-
-      Embedly.get(
-        {url: product.file_url},
-        function(resp){
-          console.log("successful resp from embedly: ", resp)
-          if (resp.html) {
-            $scope.iframeToEmbed = resp.html.replace("http://docs.google", "https://docs.google")
-            $scope.userWantsFullAbstract = false
-            $scope.hasEmbeddedFile = true
-            console.log("have something to embed, so don't include a full abstract", $scope.userWantsFullAbstract)
-          } 
-          else {
-            console.log("no iframe to embed, so include a full absract")
-            $scope.hasEmbeddedFile = false
-
-            // $scope.iframeToEmbed = "nothing to embed.  here's the link: " + resp.url
-          //   $scope.iframeToEmbed = '<iframe src="' + resp.thumbnail_url + '">' + resp.thumbnail_url + '</iframe>'   
-          //   // http://api.embed.ly/1/oembed?url=https%3A%2F%2Fgithub.com%2Fhpiwowar%2FKira&maxwidth=500                 
-          }
-        },
-        function(resp){
-          console.log("error response from embedly: ", resp)
+    ProductEmbedMarkup.get(
+      {tiid: product.tiid},
+      function(resp){
+        console.log("successful resp from embedded markup: ", resp)
+        if (resp.html) {
+          $scope.iframeToEmbed = resp.html
+          $scope.hasEmbeddedFile = true
+          $scope.userWantsFullAbstract = false
+          console.log("have something to embed, so don't include a full abstract")
+        } 
+        else {
+          console.log("nothing to embed, so include a full absract")
         }
-      )
-    }
+      },
+      function(resp){
+        console.log("error response from embedding endpoint: ", resp)
+      }
+    )
 
 
-    $scope.productHost = parseHostname(product.aliases.best_url)
+    $scope.productHost = parseHostname(product.aliases.resolved_url)
     $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
 
 
@@ -132,7 +113,7 @@ angular.module("productPage", [
     function parseHostname(url){
       var urlParser = document.createElement('a')
       urlParser.href = url
-      console.log("hostname" ,  urlParser.hostname)
+      console.log("hostname", urlParser.hostname)
       return urlParser.hostname.replace("www.", "")
     }
 

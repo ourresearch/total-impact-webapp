@@ -910,7 +910,7 @@ angular.module('passwordReset', [
 angular.module("productPage", [
     'resources.users',
     'resources.products',
-    'resources.embedly',
+    'resources.productEmbedMarkup',
     'profileAward.profileAward',
     'services.page',
     'profile',
@@ -967,7 +967,7 @@ angular.module("productPage", [
     TiMixpanel,
     ProductBiblio,
     ProductInteraction,
-    Embedly,
+    ProductEmbedMarkup,
     product,
     profileWithoutProducts,
     Page) {
@@ -990,49 +990,30 @@ angular.module("productPage", [
     $scope.metrics = product.metrics
     $scope.displayGenrePlural = product.display_genre_plural
     $scope.genre = product.genre
-    $scope.fileUrl = product.file_url
+    $scope.hasEmbeddedFile = false
     $scope.userWantsFullAbstract = true
 
-
-    // these are just for testing!
-    // once we've got a product.file_url set by the server,
-    // delete them.
-    // product.file_url = "http://www.slideshare.net/hpiwowar/right-time-right-place-to-change-the-world"
-//    product.file_url = "http://jasonpriem.org/self-archived/data-for-free.pdf"
-    // product.file_url = "http://www.slideshare.net/hpiwowar/7-data-citation-challenges-illustrated-with-data-includes-elephants"
-    // product.file_url = "https://gitprint.com/hpiwowar/Kira/blob/master/README.md?download"
-
-    if (product.file_url){
-      $scope.hasEmbeddedFile = true
-      $scope.userWantsFullAbstract = false
-
-      Embedly.get(
-        {url: product.file_url},
-        function(resp){
-          console.log("successful resp from embedly: ", resp)
-          if (resp.html) {
-            $scope.iframeToEmbed = resp.html.replace("http://docs.google", "https://docs.google")
-            $scope.userWantsFullAbstract = false
-            $scope.hasEmbeddedFile = true
-            console.log("have something to embed, so don't include a full abstract", $scope.userWantsFullAbstract)
-          } 
-          else {
-            console.log("no iframe to embed, so include a full absract")
-            $scope.hasEmbeddedFile = false
-
-            // $scope.iframeToEmbed = "nothing to embed.  here's the link: " + resp.url
-          //   $scope.iframeToEmbed = '<iframe src="' + resp.thumbnail_url + '">' + resp.thumbnail_url + '</iframe>'   
-          //   // http://api.embed.ly/1/oembed?url=https%3A%2F%2Fgithub.com%2Fhpiwowar%2FKira&maxwidth=500                 
-          }
-        },
-        function(resp){
-          console.log("error response from embedly: ", resp)
+    ProductEmbedMarkup.get(
+      {tiid: product.tiid},
+      function(resp){
+        console.log("successful resp from embedded markup: ", resp)
+        if (resp.html) {
+          $scope.iframeToEmbed = resp.html
+          $scope.hasEmbeddedFile = true
+          $scope.userWantsFullAbstract = false
+          console.log("have something to embed, so don't include a full abstract")
+        } 
+        else {
+          console.log("nothing to embed, so include a full absract")
         }
-      )
-    }
+      },
+      function(resp){
+        console.log("error response from embedding endpoint: ", resp)
+      }
+    )
 
 
-    $scope.productHost = parseHostname(product.aliases.best_url)
+    $scope.productHost = parseHostname(product.aliases.resolved_url)
     $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
 
 
@@ -1041,7 +1022,7 @@ angular.module("productPage", [
     function parseHostname(url){
       var urlParser = document.createElement('a')
       urlParser.href = url
-      console.log("hostname" ,  urlParser.hostname)
+      console.log("hostname", urlParser.hostname)
       return urlParser.hostname.replace("www.", "")
     }
 
@@ -3003,19 +2984,16 @@ angular.module('directives.forms', ["services.loading"])
     }
   }
 })
-angular.module('resources.embedly',['ngResource'])
+angular.module('resources.productEmbedMarkup',['ngResource'])
 
-.factory('Embedly', function ($resource) {
+.factory('ProductEmbedMarkup', function ($resource) {
 
   return $resource(
-   "http://api.embed.ly/1/oembed",
-   {
-     key: "46010d661a874d8ab9d9bdb4da077d03",
-     maxwidth: 700,
-     width: 700
-   }
+    "/product/:tiid/embed-markup",
+    {}
   )
 })
+
 angular.module('resources.products',['ngResource'])
 
 .factory('Products', function ($resource) {
@@ -3074,6 +3052,7 @@ angular.module('resources.products',['ngResource'])
 
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4069,6 +4048,7 @@ angular.module("services.loading")
     }
   }
 })
+angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -5966,7 +5946,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "         <div id=\"resource\">\n" +
     "\n" +
     "\n" +
-    "            <div id=\"file\" ng-show=\"fileUrl\">\n" +
+    "            <div id=\"file\" ng-show=\"hasEmbeddedFile\">\n" +
     "               <div class=\"iframe-wrapper\" dynamic=\"iframeToEmbed\"></div>\n" +
     "            </div>\n" +
     "\n" +
@@ -5978,12 +5958,12 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "               <div class=\"content\">\n" +
     "                  <h3>{{ genre }} available via\n" +
-    "                     <a href=\"{{ aliases.best_url }}\" class=\"product-host\">\n" +
+    "                     <a href=\"{{ aliases.resolved_url }}\" class=\"product-host\">\n" +
     "                        {{ productHost }}\n" +
     "                     </a>\n" +
     "                  </h3>\n" +
-    "                  <a class=\"full-url\" href=\"{{ biblio.free_fulltext_url }}\">\n" +
-    "                     {{ aliases.best_url }}\n" +
+    "                  <a class=\"full-url\" href=\"{{ aliases.resolved_url }}\">\n" +
+    "                     {{ aliases.resolved_url }}\n" +
     "                  </a>\n" +
     "                  <div class=\"oa-version\" ng-show=\"biblio.free_fulltext_url\">\n" +
     "                     <div class=\"oa-version-label\">\n" +
@@ -6040,11 +6020,12 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <span class=\"key\">Citation:</span>\n" +
     "                  <span class=\"value\">\n" +
     "                     <span class=\"authors\">{{ biblio.authors }}</span>\n" +
-    "                     <span class=\"year\">({{ biblio.display_year }})</span>\n" +
-    "                     <span class=\"title\">{{ biblio.display_title }}</span>\n" +
+    "                     <span class=\"year\">({{ biblio.display_year }}).</span>\n" +
+    "                     <span class=\"title\">{{ biblio.display_title }}.</span>\n" +
     "                     <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
     "                  </span>\n" +
     "               </div>\n" +
+    "\n" +
     "            </div>\n" +
     "\n" +
     "         </div>\n" +

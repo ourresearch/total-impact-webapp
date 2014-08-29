@@ -244,7 +244,7 @@
          <div id="resource">
 
 
-            <div id="file" ng-show="fileUrl">
+            <div id="file" ng-show="hasEmbeddedFile">
                <div class="iframe-wrapper" dynamic="iframeToEmbed"></div>
             </div>
 
@@ -256,12 +256,12 @@
 
                <div class="content">
                   <h3>{{ genre }} available via
-                     <a href="{{ aliases.best_url }}" class="product-host">
+                     <a href="{{ aliases.resolved_url }}" class="product-host">
                         {{ productHost }}
                      </a>
                   </h3>
-                  <a class="full-url" href="{{ biblio.free_fulltext_url }}">
-                     {{ aliases.best_url }}
+                  <a class="full-url" href="{{ aliases.resolved_url }}">
+                     {{ aliases.resolved_url }}
                   </a>
                   <div class="oa-version" ng-show="biblio.free_fulltext_url">
                      <div class="oa-version-label">
@@ -318,11 +318,12 @@
                   <span class="key">Citation:</span>
                   <span class="value">
                      <span class="authors">{{ biblio.authors }}</span>
-                     <span class="year">({{ biblio.display_year }})</span>
-                     <span class="title">{{ biblio.display_title }}</span>
+                     <span class="year">({{ biblio.display_year }}).</span>
+                     <span class="title">{{ biblio.display_title }}.</span>
                      <span class="host"> {{ biblio.display_host }}</span>
                   </span>
                </div>
+
             </div>
 
          </div>
