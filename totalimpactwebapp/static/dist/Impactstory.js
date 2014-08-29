@@ -990,31 +990,27 @@ angular.module("productPage", [
     $scope.metrics = product.metrics
     $scope.displayGenrePlural = product.display_genre_plural
     $scope.genre = product.genre
-    $scope.fileUrl = product.file_url
     $scope.hasEmbeddedFile = false
     $scope.userWantsFullAbstract = true
 
-    if (product.file_url){
-      
-      ProductEmbedMarkup.get(
-        {tiid: product.tiid},
-        function(resp){
-          console.log("successful resp from embedded markup: ", resp)
-          if (resp.html) {
-            $scope.iframeToEmbed = resp.html
-            $scope.hasEmbeddedFile = true
-            $scope.userWantsFullAbstract = false
-            console.log("have something to embed, so don't include a full abstract", $scope.userWantsFullAbstract)
-          } 
-          else {
-            console.log("nothing to embed, so include a full absract")
-          }
-        },
-        function(resp){
-          console.log("error response from embedding endpoint: ", resp)
+    ProductEmbedMarkup.get(
+      {tiid: product.tiid},
+      function(resp){
+        console.log("successful resp from embedded markup: ", resp)
+        if (resp.html) {
+          $scope.iframeToEmbed = resp.html
+          $scope.hasEmbeddedFile = true
+          $scope.userWantsFullAbstract = false
+          console.log("have something to embed, so don't include a full abstract")
+        } 
+        else {
+          console.log("nothing to embed, so include a full absract")
         }
-      )
-    }
+      },
+      function(resp){
+        console.log("error response from embedding endpoint: ", resp)
+      }
+    )
 
 
     $scope.productHost = parseHostname(product.aliases.best_url)
@@ -5960,7 +5956,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "         <div id=\"resource\">\n" +
     "\n" +
     "\n" +
-    "            <div id=\"file\" ng-show=\"fileUrl\">\n" +
+    "            <div id=\"file\" ng-show=\"hasEmbeddedFile\">\n" +
     "               <div class=\"iframe-wrapper\" dynamic=\"iframeToEmbed\"></div>\n" +
     "            </div>\n" +
     "\n" +

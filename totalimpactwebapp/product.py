@@ -2,6 +2,7 @@ import logging
 import arrow
 import datetime
 import os
+import re
 import boto
 import requests
 from collections import Counter
@@ -55,6 +56,49 @@ def upload_file_and_commit(product, file_to_upload, db):
     commit(db)
     return resp
 
+
+from bs4 import BeautifulSoup
+
+def get_github_embed(github_url):
+    r = requests.get(github_url)
+    soup = BeautifulSoup(r.text)
+    return repr(soup.find(id="readme"))
+
+def wrap_as_image(image_url):
+    return u"<img src='{image_url}' style='width: 550px;' />".format(
+        image_url=image_url)
+
+def get_figshare_embed(figshare_doi):
+    print "hi heather"
+    r = requests.get(u"http://doi.org/" + figshare_doi)
+    soup = BeautifulSoup(r.text)
+
+    # case insensitive on download because figshare does both upper and lower
+    figshare_resource_links = soup.find_all("a", text=re.compile(".ownload"))
+    figshare_resource_links = [link for link in figshare_resource_links if link]  #remove blanks
+    for match in figshare_resource_links:
+        url = match.get("href")
+        file_extension = url.rsplit(".")[-1]
+        if file_extension in ("png", "gif", "jpg"):
+            return wrap_as_image(url)
+        if file_extension in ("pdf"):
+            return get_embedly_markup(url)
+
+    # if got here, just use the last url and give it a shot with embedly
+    if url:
+        return get_embedly_markup(url)
+    return None
+
+
+def get_pdf_embed(url):
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text.lower())
+    try:
+        href = soup.find("a", text="pdf").get("href")
+    except AttributeError:
+        href = None
+    return href
+
 def get_embedly_markup(url):
     client = Embedly(os.getenv("EMBEDLY_API_KEY"))
     # if not client.is_supported(url):
@@ -64,9 +108,29 @@ def get_embedly_markup(url):
     try:
         html = response_dict["html"]
         html = html.replace("http://docs.google", "https://docs.google")
-        return {"html": html}
+        return html
     except (KeyError, AttributeError):
         return None
+
+
+def get_file_embed_markup(product):
+    html = None
+    try:
+        if "github" in product.aliases.best_url:
+            html = get_github_embed(product.aliases.best_url)
+        elif "figshare" in product.aliases.best_url:
+            html = get_figshare_embed(product.aliases.doi[0])
+        else:
+            html = get_embedly_markup(product.aliases.best_url)
+    except TypeError:
+        pass
+        
+    return {"html": html}
+
+
+
+
+
 
 
 class Product(db.Model):
