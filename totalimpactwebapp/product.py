@@ -122,7 +122,7 @@ def get_embedly_markup(url):
 
 
 def get_file_embed_markup(product):
-    if "figshare" in product.aliases.best_url:
+    if product.aliases.get_host() == "figshare":
         html = get_figshare_embed(product.aliases.doi[0])
     # elif "github" in product.aliases.best_url:
     #     html = get_github_embed(product.aliases.best_url)
