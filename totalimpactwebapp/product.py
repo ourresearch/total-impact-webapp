@@ -144,17 +144,20 @@ def get_file_url_to_embed(product):
             arxiv_id=product.aliases.display_arxiv)
 
     if hasattr(product.biblio, "free_fulltext_url") and product.biblio.free_fulltext_url:
-        print "has free full text"
         # just return right away if pdf is in the link
         if "pdf" in product.biblio.free_fulltext_url:
             return product.biblio.free_fulltext_url
 
+        # since link isn't obviously a pdf, try to get pdf link by scraping page
         pdf_link = get_pdf_link_from_html(product.biblio.free_fulltext_url)
         if pdf_link:
+            # got it!
             return pdf_link
         else:
+            # no pdf link, so just use the url anyway
             return product.biblio.free_fulltext_url
 
+    # got here with nothing else?  use the resolved url if it has pdf in it
     if product.aliases.resolved_url and ("pdf" in product.aliases.resolved_url):
         return product.aliases.resolved_url
 
@@ -171,9 +174,9 @@ def get_file_embed_markup(product):
     else:
         url = get_file_url_to_embed(product)
         if not url:
+            # didn't find anything we think is embeddable, but worth trying something anyway
             url = product.aliases.best_url
         html = get_embedly_markup(url)
-        
 
     # logger.debug(u"returning embed html for {tiid}, {html}".format(
     #     tiid=product.tiid, html=html))

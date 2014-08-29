@@ -91,6 +91,8 @@ class Aliases(object):
                     continue
                 elif "ncbi.nlm.nih.gov/" in url:
                     continue
+                elif "europepmc.org" in url:
+                    continue
                 elif "mendeley.com" in url:
                     continue
                 else:
