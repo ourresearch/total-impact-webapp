@@ -273,14 +273,29 @@
                </div>
             </div>
 
-            <!--
-            <div class="upload-cta well" ng-controller="productUploadCtrl">
-               <h4>upload your file</h4>
-              <input type="file" ng-file-select="onFileSelect($files)">
 
-               <a ng-click="openFulltextLocationModal()">embed from url</a>
+            <div class="upload-cta" ng-controller="productUploadCtrl">
+               <h4>Make this {{ genre }} more visible</h4>
+               <h5>
+                  Upload a copy here to make it freely available to everyone&mdash;and get readership stats you can use.
+               </h5>
+               <div class="file-upload-container">
+                  <div class="file-upload-button btn btn-primary"
+                       onclick="document.getElementById('file-upload-button').click();">
+                     <span class="text">Share your {{ genre }}</span>
+                  </div>
+                  <input id="file-upload-button" type="file" ng-file-select="onFileSelect($files)">
+                  <span class="or">or</span>
+                  <a class="embed-from-url" ng-click="openFulltextLocationModal()">embed from url</a>
+               </div>
+
+               <div class="notes">
+                  <span class="sherpa-romeo">
+                     Learn more about your uploading rights and responsibilities at
+                     <a href="http://www.sherpa.ac.uk/romeo/">SHERPA/RoMEO</a>
+                  </span>
+               </div>
             </div>
-            -->
 
             <div id="citation">
                <ul class="aliases">
