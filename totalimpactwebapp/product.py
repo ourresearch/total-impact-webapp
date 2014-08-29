@@ -90,7 +90,7 @@ def get_figshare_embed(figshare_doi):
 
         if file_extension in ["png", "gif", "jpg"]:
             return wrap_as_image(url)
-        if file_extension in ["pdf":
+        if file_extension in ["pdf"]:
             return get_embedly_markup(url)
 
     logger.warning(u"didn't find good figshare url embed html so do default")
