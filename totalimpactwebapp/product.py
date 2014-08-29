@@ -75,20 +75,25 @@ def get_figshare_embed(figshare_doi):
     # case insensitive on download because figshare does both upper and lower
     figshare_resource_links = soup.find_all("a", text=re.compile(".ownload"))
     figshare_resource_links = [link for link in figshare_resource_links if link]  #remove blanks
+    if not figshare_resource_links:
+        return None
+    print figshare_resource_links
     url = None
 
     for match in figshare_resource_links:
         url = match.get("href")
         file_extension = url.rsplit(".")[-1]
+
+        logger.debug(u"figshare url embed html for {url}, {file_extension}".format(
+            url=url, file_extension=file_extension))
+
         if file_extension in ("png", "gif", "jpg"):
             return wrap_as_image(url)
         if file_extension in ("pdf"):
             return get_embedly_markup(url)
 
-    # if got here, just use the last url and give it a shot with embedly
-    if url:
-        return get_embedly_markup(url)
-    return None
+    # if got here, just use the first url and give it a shot with embedly
+    return get_embedly_markup(figshare_resource_links[0].get("href"))
 
 
 def get_pdf_embed(url):
