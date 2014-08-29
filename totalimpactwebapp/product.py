@@ -7,6 +7,7 @@ import requests
 from collections import Counter
 from flask import url_for
 import flask
+from embedly import Embedly
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
@@ -53,6 +54,19 @@ def upload_file_and_commit(product, file_to_upload, db):
     resp = product.upload_file(file_to_upload)
     commit(db)
     return resp
+
+def get_embedly_markup(url):
+    client = Embedly(os.getenv("EMBEDLY_API_KEY"))
+    # if not client.is_supported(url):
+    #     return None
+
+    response_dict = client.oembed(url)
+    try:
+        html = response_dict["html"]
+        html = html.replace("http://docs.google", "https://docs.google")
+        return {"html": html}
+    except (KeyError, AttributeError):
+        return None
 
 
 class Product(db.Model):

@@ -1,3 +1,4 @@
+Embedly==0.5.0
 Flask==0.9
 Flask-Assets==0.8
 Flask-Cache==0.13.1

@@ -38,6 +38,7 @@ from totalimpactwebapp.profile import delete_products_from_profile
 from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.product import get_product
+from totalimpactwebapp.product import get_embedly_markup
 from totalimpactwebapp.product import upload_file_and_commit
 from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.product_markup import MarkupFactory
@@ -580,6 +581,12 @@ def product_pdf(tiid):
         except S3ResponseError:
             abort_json(404, "This product exists, but has no pdf.")
 
+
+@app.route("/product/<tiid>/embed-markup", methods=['GET'])
+def product_embed_markup(tiid):
+    product = get_product(tiid)
+    markup = get_embedly_markup(product.file_url)
+    return json_resp_from_thing(markup)
 
 
 @app.route("/product/<tiid>/interaction", methods=["POST"])

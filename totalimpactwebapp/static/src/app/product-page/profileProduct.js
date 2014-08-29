@@ -1,7 +1,7 @@
 angular.module("productPage", [
     'resources.users',
     'resources.products',
-    'resources.embedly',
+    'resources.productEmbedMarkup',
     'profileAward.profileAward',
     'services.page',
     'profile',
@@ -58,7 +58,7 @@ angular.module("productPage", [
     TiMixpanel,
     ProductBiblio,
     ProductInteraction,
-    Embedly,
+    ProductEmbedMarkup,
     product,
     profileWithoutProducts,
     Page) {
@@ -97,27 +97,23 @@ angular.module("productPage", [
       $scope.hasEmbeddedFile = true
       $scope.userWantsFullAbstract = false
 
-      Embedly.get(
-        {url: product.file_url},
+      ProductEmbedMarkup.get(
+        {tiid: product.tiid},
         function(resp){
-          console.log("successful resp from embedly: ", resp)
+          console.log("successful resp from embedded markup: ", resp)
           if (resp.html) {
-            $scope.iframeToEmbed = resp.html.replace("http://docs.google", "https://docs.google")
+            $scope.iframeToEmbed = resp.html
             $scope.userWantsFullAbstract = false
             $scope.hasEmbeddedFile = true
             console.log("have something to embed, so don't include a full abstract", $scope.userWantsFullAbstract)
           } 
           else {
-            console.log("no iframe to embed, so include a full absract")
+            console.log("nothing to embed, so include a full absract")
             $scope.hasEmbeddedFile = false
-
-            // $scope.iframeToEmbed = "nothing to embed.  here's the link: " + resp.url
-          //   $scope.iframeToEmbed = '<iframe src="' + resp.thumbnail_url + '">' + resp.thumbnail_url + '</iframe>'   
-          //   // http://api.embed.ly/1/oembed?url=https%3A%2F%2Fgithub.com%2Fhpiwowar%2FKira&maxwidth=500                 
           }
         },
         function(resp){
-          console.log("error response from embedly: ", resp)
+          console.log("error response from embedding endpoint: ", resp)
         }
       )
     }
