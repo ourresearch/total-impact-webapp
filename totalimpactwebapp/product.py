@@ -77,21 +77,23 @@ def get_figshare_embed(figshare_doi):
     figshare_resource_links = [link for link in figshare_resource_links if link]  #remove blanks
     if not figshare_resource_links:
         return None
-    print figshare_resource_links
+    logger.warning(u"got figshare url embed htmls {figshare_resource_links}".format(
+        figshare_resource_links=figshare_resource_links))
     url = None
 
     for match in figshare_resource_links:
         url = match.get("href")
         file_extension = url.rsplit(".")[-1]
 
-        logger.debug(u"figshare url embed html for {url}, {file_extension}".format(
+        logger.warning(u"figshare url embed html for {url}, {file_extension}".format(
             url=url, file_extension=file_extension))
 
-        if file_extension in ("png", "gif", "jpg"):
+        if file_extension in ["png", "gif", "jpg"]:
             return wrap_as_image(url)
-        if file_extension in ("pdf"):
+        if file_extension in ["pdf":
             return get_embedly_markup(url)
 
+    logger.warning(u"didn't find good figshare url embed html so do default")
     # if got here, just use the first url and give it a shot with embedly
     return get_embedly_markup(figshare_resource_links[0].get("href"))
 
@@ -120,10 +122,10 @@ def get_embedly_markup(url):
 
 
 def get_file_embed_markup(product):
-    if "github" in product.aliases.best_url:
-        html = get_github_embed(product.aliases.best_url)
-    elif "figshare" in product.aliases.best_url:
+    if "figshare" in product.aliases.best_url:
         html = get_figshare_embed(product.aliases.doi[0])
+    # elif "github" in product.aliases.best_url:
+    #     html = get_github_embed(product.aliases.best_url)
     else:
         if product.file_url:
             url = product.file_url
