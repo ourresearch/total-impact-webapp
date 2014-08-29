@@ -239,14 +239,17 @@ class Product(db.Model):
 
     @cached_property
     def host(self):
-        if self.genre == "article":
-            # don't return repositories for articles
-            return "unknown"
-
+        host = None
         if self.biblio.calculated_host is not None:
-            return self.biblio.calculated_host
+            host = self.biblio.calculated_host
         else:
-            return self.aliases.get_host()
+            host = self.aliases.get_host()
+
+        if self.genre == "article" and host != "figshare":
+            # don't return repositories for articles
+            host = "unknown"
+        return host
+
 
     @cached_property
     def mendeley_discipline(self):
