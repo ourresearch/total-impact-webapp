@@ -585,8 +585,8 @@ def product_pdf(tiid):
 @app.route("/product/<tiid>/embed-markup", methods=['GET'])
 def product_embed_markup(tiid):
     product = get_product(tiid)
-    markup = get_file_embed_markup(product)
-    return json_resp_from_thing(markup)
+    html_markup = get_file_embed_markup(product)
+    return json_resp_from_thing({"html": html_markup})
 
 
 @app.route("/product/<tiid>/interaction", methods=["POST"])

@@ -201,26 +201,28 @@ def build_refsets(save_after_every_profile=False):
 
 
 def collect_embed():
-    print "in embed"
     q = db.session.query(Product).filter(Product.profile_id != None)
-    print "in embed after q"
-    number_considered = 0.0
     start_time = datetime.datetime.utcnow()
-    number_of_embeds = 0.0
-    print "before loop"
+    number_considered = 0.0
+    number_markups = 0.0
     for product in windowed_query(q, Product.tiid, 25):
-        if product.host in ["slideshare", "dryad", "figshare", "github"]:
-            print number_considered, product.tiid, product.host, product.aliases.best_url
-            embed_markup = get_file_embed_markup(product)
-            if embed_markup["html"]:            
-                product.embed_markup = embed_markup["html"]
-                db.session.add(product)
-                commit(db)
-            number_of_embeds += 1
-            elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
-            print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/elapsed_seconds
-
         number_considered += 1
+
+        if product.genre=="unknown" or product.removed:
+            continue
+
+        embed_markup = get_file_embed_markup(product)
+        if embed_markup:
+            print number_considered, number_markups, product.tiid, product.host, product.aliases.best_url
+            # print "  got an embed for", product.genre, "!"
+            product.embed_markup = embed_markup
+            db.session.add(product)
+            commit(db)
+
+        number_markups += 1
+        elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+        print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/elapsed_seconds
+
 
 
 

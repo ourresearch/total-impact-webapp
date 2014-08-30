@@ -7,7 +7,6 @@ import boto
 import requests
 from bs4 import BeautifulSoup
 from collections import Counter
-from flask import url_for
 import flask
 from urlparse import urljoin
 from embedly import Embedly
@@ -71,23 +70,22 @@ def wrap_as_image(class_name, image_url):
 def get_github_embed(github_url):
     r = requests.get(github_url)
     soup = BeautifulSoup(r.text)
-    html = repr(soup.find(id="readme"))
-    if html:
-        return wrap_as_div(u"embed-github", html)
+    match = soup.find(id="readme")
+    if match:
+        return wrap_as_div(u"embed-github", repr(match))
     return None
 
 def get_dryad_embed(dryad_url):
     r = requests.get(dryad_url)
     soup = BeautifulSoup(r.text)
     html = "".join([repr(tag) for tag in soup.find_all(attrs={'class': "package-file-description"})])  #because class is reserved
-    print html
     if html:
         html = html.replace('href="/', 'href="http://datadryad.org/')
         return wrap_as_div(u"embed-dryad", html)
     return None
 
-def get_figshare_embed_html(figshare_doi):
-    r = requests.get(u"http://doi.org/" + figshare_doi)
+def get_figshare_embed_html(figshare_doi_url):
+    r = requests.get(figshare_doi_url)
     soup = BeautifulSoup(r.text)
 
     # case insensitive on download because figshare does both upper and lower
@@ -144,13 +142,14 @@ def get_pdf_url_to_embed(product):
         this_host = "https://impactstory.org"
 
     if product.has_file:
-        return this_host + url_for("product_pdf", tiid=product.tiid)
+        return u"{this_host}/product/{tiid}/pdf".format(
+            this_host=this_host, tiid=product.tiid)
 
     if product.aliases.display_pmc:
         # workaround for google docs viewer not supporting localhost urls
         this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
-
-        return this_host + url_for("product_pdf", tiid=product.tiid)
+        return u"{this_host}/product/{tiid}/pdf".format(
+            this_host=this_host, tiid=product.tiid)
 
     if product.aliases.display_arxiv:
         url = "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
@@ -158,6 +157,7 @@ def get_pdf_url_to_embed(product):
         return url
 
     if hasattr(product.biblio, "free_fulltext_url") and product.biblio.free_fulltext_url:
+        # print "trying free fulltext url!"
         # just return right away if pdf is in the link
         if "pdf" in product.biblio.free_fulltext_url:
             return product.biblio.free_fulltext_url
@@ -175,8 +175,13 @@ def get_pdf_url_to_embed(product):
 
 
 def get_file_embed_markup(product):
-    html = None
+    try:
+        if not product.aliases.best_url:
+            return None
+    except AttributeError:
+        return None
 
+    html = None
     if "github" in product.aliases.best_url:
         html = get_github_embed(product.aliases.best_url)
 
@@ -184,7 +189,7 @@ def get_file_embed_markup(product):
         html = get_dryad_embed(product.aliases.best_url)
 
     elif "figshare" in product.aliases.best_url:
-        html = get_figshare_embed_html(product.aliases.display_doi)
+        html = get_figshare_embed_html(product.aliases.best_url)
 
     else:
         url = get_pdf_url_to_embed(product)
@@ -193,22 +198,20 @@ def get_file_embed_markup(product):
                     url=url)
         else:
             if url:
-                html = """<iframe src="https://docs.google.com/viewer?url={url}&embedded=true" 
-                            width="600" height="780" style="border: none;"></iframe>""".format(
-                                url=url)
-            else:
-                # didn't find a pdf, try free text
-                if hasattr(product.biblio, "free_fulltext_url") and product.biblio.free_fulltext_url:
-                    url = product.biblio.free_fulltext_url
-                else:
-                    # this is also how slides, videos, etc get embedded
-                    url = product.aliases.best_url
-                html = get_embedly_markup(url)
+                try:
+                    html = u"""<iframe src="https://docs.google.com/viewer?url={url}&embedded=true" 
+                                width="600" height="780" style="border: none;"></iframe>""".format(
+                                    url=url)
+                except UnicodeEncodeError:
+                    pass
+            elif product.genre not in ["article", "unknown"]:
+                # this is how we embed slides, videos, etc
+                html = get_embedly_markup(product.aliases.best_url)
 
     # logger.debug(u"returning embed html for {tiid}, {html}".format(
     #     tiid=product.tiid, html=html))
 
-    return {"html": html}
+    return html
 
 
 
