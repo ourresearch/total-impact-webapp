@@ -180,7 +180,7 @@ def get_file_embed_markup(product):
 
     else:
         url = get_file_url_to_embed(product)
-        if "localhost" in url:
+        if url and "localhost" in url:
             html = u"<p>Can't view uploaded file on localhost.  View it at <a href='{url}'>{url}</a>.</p>".format(
                     url=url)
         
