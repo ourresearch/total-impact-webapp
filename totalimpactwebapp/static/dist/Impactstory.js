@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-29
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-30
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5976,7 +5976,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "            </div>\n" +
     "\n" +
     "\n" +
-    "            <div class=\"upload-cta\" ng-controller=\"productUploadCtrl\">\n" +
+    "<!--             <div class=\"upload-cta\" ng-controller=\"productUploadCtrl\">\n" +
     "               <h4>Make this {{ genre }} more visible</h4>\n" +
     "               <h5>\n" +
     "                  Upload a copy here to make it freely available to everyone&mdash;and get readership stats you can use.\n" +
@@ -5997,7 +5997,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                     <a href=\"http://www.sherpa.ac.uk/romeo/\">SHERPA/RoMEO</a>\n" +
     "                  </span>\n" +
     "               </div>\n" +
-    "            </div>\n" +
+    "            </div> -->\n" +
     "\n" +
     "            <div id=\"citation\">\n" +
     "               <ul class=\"aliases\">\n" +
