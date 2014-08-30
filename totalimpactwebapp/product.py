@@ -61,7 +61,7 @@ def upload_file_and_commit(product, file_to_upload, db):
 
 def wrap_as_div(class_name, div_contents):
     return u"<div class='{class_name}'>{div_contents}</div>".format(
-        class_name=class_name, div_contents=div_contents)
+        class_name=class_name, div_contents=div_contents.decode("utf8"))
 
 def wrap_as_image(class_name, image_url):
     return u"<img src='{image_url}' class='{class_name}' style='width: 550px;' />".format(
@@ -73,10 +73,18 @@ def get_github_embed(github_url):
     soup = BeautifulSoup(r.text)
     html = repr(soup.find(id="readme"))
     if html:
-        return wrap_as_div("embed-github-readme", html)
+        return wrap_as_div(u"embed-github", html)
     return None
 
-
+def get_dryad_embed(dryad_url):
+    r = requests.get(dryad_url)
+    soup = BeautifulSoup(r.text)
+    html = "".join([repr(tag) for tag in soup.find_all(attrs={'class': "package-file-description"})])  #because class is reserved
+    print html
+    if html:
+        html = html.replace('href="/', 'href="http://datadryad.org/')
+        return wrap_as_div(u"embed-dryad", html)
+    return None
 
 def get_figshare_embed_html(figshare_doi):
     r = requests.get(u"http://doi.org/" + figshare_doi)
@@ -174,6 +182,9 @@ def get_file_embed_markup(product):
 
     if "github" in product.aliases.best_url:
         html = get_github_embed(product.aliases.best_url)
+
+    elif "dryad" in product.aliases.best_url:
+        html = get_dryad_embed(product.aliases.best_url)
 
     elif "figshare" in product.aliases.best_url:
         html = get_figshare_embed_html(product.aliases.display_doi)

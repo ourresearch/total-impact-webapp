@@ -7898,23 +7898,37 @@ div.product-page div.main-content #resource {
   margin-top: 20px;
   width: 700px;
 }
-div.product-page div.main-content #resource .embed-github-readme {
+div.product-page div.main-content #resource .embed-picture {
+  width: 90%;
+}
+div.product-page div.main-content #resource .embed-dryad {
+  min-height: 70px;
+  padding: 0 20px;
+  margin-top: 50px;
+  width: 90%;
+  border: 1px solid #eee;  
+  font-size: 14px; 
+}
+div.product-page div.main-content #resource .embed-dryad table {
+  padding-top: 20px;
+}
+div.product-page div.main-content #resource .embed-github {
   min-height: 70px;
   padding: 0 20px;
   margin-top: 50px;
   width: 90%;
   border: 1px solid #eee;  
 }
-div.product-page div.main-content #resource .embed-github-readme h1 {
+div.product-page div.main-content #resource .embed-github h1 {
   font-size: 20px; 
 }
-div.product-page div.main-content #resource .embed-github-readme h2 {
+div.product-page div.main-content #resource .embed-github h2 {
   font-size: 20px; 
 }
-div.product-page div.main-content #resource .embed-github-readme h3 {
+div.product-page div.main-content #resource .embed-github h3 {
   font-size: 20px; 
 }
-div.product-page div.main-content #resource .embed-github-readme h4 {
+div.product-page div.main-content #resource .embed-github h4 {
   font-size: 20px; 
 }
 div.product-page div.main-content #resource .upload-cta {
