@@ -137,7 +137,7 @@ def get_embedly_markup(url):
         return None
 
 
-def get_file_url_to_embed(product):
+def get_pdf_url_to_embed(product):
     try:
         this_host = flask.request.url_root.strip("/")
     except RuntimeError:  # when running as a script
@@ -146,9 +146,6 @@ def get_file_url_to_embed(product):
     if product.has_file:
         return this_host + url_for("product_pdf", tiid=product.tiid)
 
-    if product.genre in ["slides", "video", "dataset"]:
-        return product.aliases.best_url
-
     if product.aliases.display_pmc:
         # workaround for google docs viewer not supporting localhost urls
         this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
@@ -156,8 +153,9 @@ def get_file_url_to_embed(product):
         return this_host + url_for("product_pdf", tiid=product.tiid)
 
     if product.aliases.display_arxiv:
-        return "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
+        url = "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
             arxiv_id=product.aliases.display_arxiv)
+        return url
 
     if hasattr(product.biblio, "free_fulltext_url") and product.biblio.free_fulltext_url:
         # just return right away if pdf is in the link
@@ -167,11 +165,7 @@ def get_file_url_to_embed(product):
         # since link isn't obviously a pdf, try to get pdf link by scraping page
         pdf_link = get_pdf_link_from_html(product.biblio.free_fulltext_url)
         if pdf_link:
-            # got it!
-            return pdf_link
-        else:
-            # no pdf link, so just use the url anyway
-            return product.biblio.free_fulltext_url
+            return pdf_link # got it!
 
     # got here with nothing else?  use the resolved url if it has pdf in it
     if product.aliases.resolved_url and ("pdf" in product.aliases.resolved_url):
@@ -193,17 +187,23 @@ def get_file_embed_markup(product):
         html = get_figshare_embed_html(product.aliases.display_doi)
 
     else:
-        url = get_file_url_to_embed(product)
+        url = get_pdf_url_to_embed(product)
         if url and "localhost" in url:
             html = u"<p>Can't view uploaded file on localhost.  View it at <a href='{url}'>{url}</a>.</p>".format(
                     url=url)
-        
-        if not url:
-            # didn't find anything we think is embeddable, but worth trying something anyway
-            url = product.aliases.best_url
-
-        if url and not html:
-            html = get_embedly_markup(url)
+        else:
+            if url:
+                html = """<iframe src="https://docs.google.com/viewer?url={url}&embedded=true" 
+                            width="600" height="780" style="border: none;"></iframe>""".format(
+                                url=url)
+            else:
+                # didn't find a pdf, try free text
+                if hasattr(product.biblio, "free_fulltext_url") and product.biblio.free_fulltext_url:
+                    url = product.biblio.free_fulltext_url
+                else:
+                    # this is also how slides, videos, etc get embedded
+                    url = product.aliases.best_url
+                html = get_embedly_markup(url)
 
     # logger.debug(u"returning embed html for {tiid}, {html}".format(
     #     tiid=product.tiid, html=html))
