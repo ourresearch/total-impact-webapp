@@ -201,7 +201,7 @@ def build_refsets(save_after_every_profile=False):
 
 
 def collect_embed():
-    q = db.session.query(Product).filter(Product.profile_id != None)
+    q = db.session.query(Product).filter(Product.profile_id != None).filter(Product.embed_markup != None)
     start_time = datetime.datetime.utcnow()
     number_considered = 0.0
     number_markups = 0.0
@@ -216,7 +216,7 @@ def collect_embed():
         except Exception:
             print "got an exception, skipping", product.aliases.best_url
             continue
-            
+
         if embed_markup:
             print number_considered, number_markups, product.tiid, product.host, product.aliases.best_url
             # print "  got an embed for", product.genre, "!"
@@ -227,7 +227,7 @@ def collect_embed():
             number_markups += 1
             elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
             print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/elapsed_seconds
-
+        print "."
 
 
 
