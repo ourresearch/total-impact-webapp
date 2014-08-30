@@ -211,7 +211,12 @@ def collect_embed():
         if product.genre=="unknown" or product.removed:
             continue
 
-        embed_markup = get_file_embed_markup(product)
+        try:
+            embed_markup = get_file_embed_markup(product)
+        except Exception:
+            print "got an exception, skipping", product.aliases.best_url
+            continue
+            
         if embed_markup:
             print number_considered, number_markups, product.tiid, product.host, product.aliases.best_url
             # print "  got an embed for", product.genre, "!"
