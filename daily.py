@@ -219,9 +219,9 @@ def collect_embed():
             db.session.add(product)
             commit(db)
 
-        number_markups += 1
-        elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
-        print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/elapsed_seconds
+            number_markups += 1
+            elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+            print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/elapsed_seconds
 
 
 
