@@ -138,7 +138,10 @@ def get_embedly_markup(url):
 
 
 def get_file_url_to_embed(product):
-    this_host = flask.request.url_root.strip("/")
+    try:
+        this_host = flask.request.url_root.strip("/")
+    except RuntimeError:  # when running as a script
+        this_host = "https://impactstory.org"
 
     if product.has_file:
         return this_host + url_for("product_pdf", tiid=product.tiid)
@@ -225,6 +228,7 @@ class Product(db.Model):
     last_refresh_status = db.Column(db.Text) #ALTER TABLE item ADD last_refresh_status text
     last_refresh_failure_message = db.Column(json_sqlalchemy.JSONAlchemy(db.Text)) #ALTER TABLE item ADD last_refresh_failure_message text
     has_file = db.Column(db.Boolean, default=False)  # alter table item add has_file bool; alter table item alter has_file SET DEFAULT false;
+    embed_markup = db.Column(db.Text)  # alter table item add embed_markup text
 
 
     alias_rows = db.relationship(
