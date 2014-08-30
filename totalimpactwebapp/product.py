@@ -68,7 +68,10 @@ def wrap_as_image(class_name, image_url):
 
 
 def get_github_embed(github_url):
-    r = requests.get(github_url)
+    try:
+        r = requests.get(github_url, timeout=10)
+    except requests.exceptions.Timeout:
+        return None
     soup = BeautifulSoup(r.text)
     match = soup.find(id="readme")
     if match:
@@ -76,7 +79,10 @@ def get_github_embed(github_url):
     return None
 
 def get_dryad_embed(dryad_url):
-    r = requests.get(dryad_url)
+    try:
+        r = requests.get(dryad_url, timeout=10)
+    except requests.exceptions.Timeout:
+        return None        
     soup = BeautifulSoup(r.text)
     html = "".join([repr(tag) for tag in soup.find_all(attrs={'class': "package-file-description"})])  #because class is reserved
     if html:
@@ -85,7 +91,11 @@ def get_dryad_embed(dryad_url):
     return None
 
 def get_figshare_embed_html(figshare_doi_url):
-    r = requests.get(figshare_doi_url)
+    try:
+        r = requests.get(figshare_doi_url, timeout=10)
+    except requests.exceptions.Timeout:
+        return None
+
     soup = BeautifulSoup(r.text)
 
     # case insensitive on download because figshare does both upper and lower
@@ -109,7 +119,11 @@ def get_figshare_embed_html(figshare_doi_url):
 
 
 def get_pdf_link_from_html(url):
-    r = requests.get(url)
+    try:
+        r = requests.get(url, timeout=10)
+    except requests.exceptions.Timeout:
+        return None
+
     soup = BeautifulSoup(r.text)
     try:
         href = soup.find("a", text=re.compile("pdf", re.IGNORECASE)).get("href")
@@ -434,9 +448,9 @@ class Product(db.Model):
             if self.aliases.pmc:
                 pdf_url = "http://ukpmc.ac.uk/articles/{pmcid}?pdf=render".format(
                     pmcid=self.aliases.pmc[0])
-                r = requests.get(pdf_url)
+                r = requests.get(pdf_url, timeout=10)
                 return r.content
-        except AttributeError:
+        except (AttributeError, requests.exceptions.Timeout):
             return None
 
 
