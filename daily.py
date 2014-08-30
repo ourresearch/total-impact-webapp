@@ -201,7 +201,7 @@ def build_refsets(save_after_every_profile=False):
 
 
 def collect_embed():
-    q = db.session.query(Product).filter(Product.profile_id != None).filter(Product.embed_markup != None)
+    q = db.session.query(Product).filter(Product.profile_id != None).filter(Product.embed_markup==None)
     start_time = datetime.datetime.utcnow()
     number_considered = 0.0
     number_markups = 0.0
@@ -223,10 +223,10 @@ def collect_embed():
             product.embed_markup = embed_markup
             db.session.add(product)
             commit(db)
-
             number_markups += 1
             elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
             print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
+
         print "."
 
 
