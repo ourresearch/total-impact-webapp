@@ -127,14 +127,13 @@ div.product-page {
          }
 
          div.biblio-line.abstract {
+            font-size: 16px;
             margin-top: 15px;
             span.value {
-               font-size: 16px;
             }
             textarea {
                width: 630px;
                height: 200px;
-               font-size: 16px;
             }
 
             .more-abstract {
@@ -153,6 +152,10 @@ div.product-page {
             }
             span.value {
                font-weight: bold;
+               &.editable-empty {
+                  font-weight: normal;
+               }
+
             }
          }
 

@@ -7869,15 +7869,12 @@ div.product-page div.main-content #biblio div.biblio-line.date-and-source span.r
   margin-left: 10px;
 }
 div.product-page div.main-content #biblio div.biblio-line.abstract {
-  margin-top: 15px;
-}
-div.product-page div.main-content #biblio div.biblio-line.abstract span.value {
   font-size: 16px;
+  margin-top: 15px;
 }
 div.product-page div.main-content #biblio div.biblio-line.abstract textarea {
   width: 630px;
   height: 200px;
-  font-size: 16px;
 }
 div.product-page div.main-content #biblio div.biblio-line.abstract .more-abstract {
   font-size: 14px;
@@ -7893,6 +7890,9 @@ div.product-page div.main-content #biblio div.biblio-line.keywords input.editabl
 }
 div.product-page div.main-content #biblio div.biblio-line.keywords span.value {
   font-weight: bold;
+}
+div.product-page div.main-content #biblio div.biblio-line.keywords span.value.editable-empty {
+  font-weight: normal;
 }
 div.product-page div.main-content #resource {
   margin-top: 20px;

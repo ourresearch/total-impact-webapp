@@ -291,7 +291,11 @@
                <div class="file-upload-container">
                   <div class="file-upload-button btn btn-primary"
                        onclick="document.getElementById('file-upload-button').click();">
-                     <span class="text">Share your {{ genre }}</span>
+                     <span class="text" ng-show="loading.is('productUpload')">Share your {{ genre }}</span>
+                     <span class="text" ng-show="!loading.is('productUpload')">
+                        <i class="icon-refresh icon-spin"></i>
+                        Uploading your {{ genre }}&hellip;
+                     </span>
                   </div>
                   <input id="file-upload-button" type="file" ng-file-select="onFileSelect($files)">
                   <span class="or">or</span>
@@ -365,7 +369,7 @@
                         target="_blank"
                         tooltip-placement="left"
                         tooltip="{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.">
-                        <img src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
+                        <img ng-src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
                         <span class="raw-value">{{ metric.display_count }}</span>
                         <span class="environment">{{ metric.display_provider }}</span>
                         <span class="interaction">{{ metric.display_interaction }}</span>

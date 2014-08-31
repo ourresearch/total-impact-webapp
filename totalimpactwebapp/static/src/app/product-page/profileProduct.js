@@ -63,60 +63,13 @@ angular.module("productPage", [
     profileWithoutProducts,
     Page) {
 
+
+
     Page.setHeaderFullName(profileWithoutProducts.full_name)
     Page.setProfileUrl(profileWithoutProducts.url_slug)
-
     var slug = $routeParams.url_slug
-    window.scrollTo(0,0)  // hack. not sure why this is needed.
-
     UserProfile.useCache(true)
-
-    console.log("got profileWithoutProducts:", profileWithoutProducts)
-    console.log("got product:", product)
-    $scope.profileWithoutProducts = profileWithoutProducts
-    $scope.userSlug = slug
-    $scope.loading = Loading
-    $scope.aliases = product.aliases
-    $scope.biblio = product.biblio
-    $scope.metrics = product.metrics
-    $scope.displayGenrePlural = product.display_genre_plural
-    $scope.genre = product.genre
-    $scope.hasEmbeddedFile = false
-    $scope.userWantsFullAbstract = true
-
-    ProductEmbedMarkup.get(
-      {tiid: product.tiid},
-      function(resp){
-        console.log("successful resp from embedded markup: ", resp)
-        if (resp.html) {
-          $scope.iframeToEmbed = resp.html
-          $scope.hasEmbeddedFile = true
-          $scope.userWantsFullAbstract = false
-          console.log("have something to embed, so don't include a full abstract")
-        } 
-        else {
-          console.log("nothing to embed, so include a full absract")
-        }
-      },
-      function(resp){
-        console.log("error response from embedding endpoint: ", resp)
-      }
-    )
-
-
-    $scope.productHost = parseHostname(product.aliases.resolved_url)
-    $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
-
-
-    // this should really be a directive...
-    // from http://stackoverflow.com/a/21516924
-    function parseHostname(url){
-      var urlParser = document.createElement('a')
-      urlParser.href = url
-      console.log("hostname", urlParser.hostname)
-      return urlParser.hostname.replace("www.", "")
-    }
-
+    console.log("product page controller loaded. Profile:", profileWithoutProducts)
 
     security.isLoggedInPromise(slug).then(
       function(resp){
@@ -135,6 +88,92 @@ angular.module("productPage", [
         event: "views"
       }
     )
+    renderProduct()
+
+
+
+
+
+
+
+
+    /**********************************************
+     *
+     *  functions
+     *
+     **********************************************/
+
+
+
+    function renderProduct(){
+      console.log("rendering product", product)
+
+      Page.setTitle(product.biblio.display_title)
+      Loading.clear()
+      window.scrollTo(0,0)  // hack. not sure why this is needed.
+      $scope.profileWithoutProducts = profileWithoutProducts
+      $scope.userSlug = slug
+      $scope.loading = Loading
+      $scope.aliases = product.aliases
+      $scope.biblio = product.biblio
+      $scope.metrics = product.metrics
+      $scope.displayGenrePlural = product.display_genre_plural
+      $scope.genre = product.genre
+      $scope.hasEmbeddedFile = false
+      $scope.userWantsFullAbstract = true
+      $scope.productHost = parseHostname(product.aliases.resolved_url)
+      $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
+
+      // this part will go away once thi product comes with this already...
+      ProductEmbedMarkup.get(
+        {tiid: product.tiid},
+        function(resp){
+          console.log("successful resp from embedded markup: ", resp)
+          if (resp.html) {
+            $scope.iframeToEmbed = resp.html
+            $scope.hasEmbeddedFile = true
+            $scope.userWantsFullAbstract = false
+            console.log("have something to embed, so don't include a full abstract")
+          }
+          else {
+            console.log("nothing to embed, so include a full absract")
+          }
+        },
+        function(resp){
+          console.log("error response from embedding endpoint: ", resp)
+        }
+      )
+    }
+
+
+
+
+    // this should really be a directive...
+    // from http://stackoverflow.com/a/21516924
+    function parseHostname(url){
+      var urlParser = document.createElement('a')
+      urlParser.href = url
+      console.log("hostname", urlParser.hostname)
+      return urlParser.hostname.replace("www.", "")
+    }
+
+
+
+    $scope.reRenderProduct = function(){
+      UsersProduct.get({
+        tiid: $routeParams.tiid
+      },
+      function(data){
+        console.log("re-rendered the product")
+        renderProduct()
+      },
+      function(data){
+        $location.path("/"+slug) // replace this with "product not found" message...
+      }
+      )
+    }
+
+
 
 
     $scope.openInfoModal = function(){
@@ -152,7 +191,7 @@ angular.module("productPage", [
           TiMixpanel.track("added free fulltext url",{
             url: resp.product.biblio.free_fulltext_url
           })
-          renderProduct()
+          $scope.reRenderProduct()
       })
     }
 
@@ -180,7 +219,7 @@ angular.module("productPage", [
         updateObj,
         function(resp){
           console.log("updated product biblio; re-rendering", resp)
-          renderProduct()
+          $scope.reRenderProduct()
         }
       )
     }
@@ -221,7 +260,7 @@ angular.module("productPage", [
       .result.then(
         function(resp){
           console.log("closed the editProduct modal; re-rendering product")
-          renderProduct()
+          $scope.reRenderProduct()
         }
       )
     }
@@ -237,32 +276,6 @@ angular.module("productPage", [
     }
 
 
-    var renderProduct = function(){
-      $scope.product = UsersProduct.get({
-        id: $routeParams.url_slug,
-        tiid: $routeParams.tiid
-      },
-      function(data){
-        Loading.finish('productPage')
-        Page.setTitle(data.biblio.title)
-
-        $scope.biblioMarkup = data.markups_dict.biblio
-        $scope.metricsMarkup = data.markups_dict.metrics
-
-        $scope.aliases = data.aliases
-        $scope.biblio = data.biblio
-
-        console.log("loaded a product", data)
-        window.scrollTo(0,0)  // hack. not sure why this is needed.
-        Loading.clear() // hack for now, should do in promise...
-
-
-      },
-      function(data){
-        $location.path("/"+slug) // replace this with "product not found" message...
-      }
-      )
-    }
   })
 
 
@@ -294,9 +307,11 @@ angular.module("productPage", [
 
 
 
-.controller("productUploadCtrl", function($scope, $upload, $routeParams){
+.controller("productUploadCtrl", function($scope, $upload, $routeParams, Loading){
     $scope.onFileSelect = function($files){
       console.log("trying to upload files", $files)
+      Loading.start("productUpload")
+
 
       $scope.upload = $upload.upload({
         url: "/product/"+ $routeParams.tiid +"/file",
@@ -304,6 +319,9 @@ angular.module("productPage", [
       })
       .success(function(data){
         console.log("success on upload", data)
+      })
+      .error(function(data){
+        alert("Sorry, there was an error uploading your file!")
       })
 
     }
