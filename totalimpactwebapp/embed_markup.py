@@ -19,7 +19,7 @@ def wrap_as_image(class_name, image_url):
 def wrap_in_pdf_reader(class_name, url):
     return u"""<iframe class="{class_name}" src="https://docs.google.com/viewer?url={url}&embedded=true" 
                 width="600" height="780" style="border: none;"></iframe>""".format(
-        url=url)
+        class_name=class_name, url=url)
 
 def wrap_with_embedly(url):
     logger.debug(u"calling embedly for {url}".format(
