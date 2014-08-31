@@ -323,7 +323,7 @@ class Product(db.Model):
         length = k.set_contents_from_file(file_to_upload)
 
         self.has_file = True  #alters an attribute, so caller should commit
-        self.embed_markup = self.get_pdf_url() #alters an attribute, so caller should commit
+        self.embed_markup = self.get_embed_markup() #alters an attribute, so caller should commit
 
         return length
 
