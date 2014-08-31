@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-30
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-31
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1223,6 +1223,7 @@ angular.module("productPage", [
                                           $upload,
                                           $routeParams,
                                           security,
+                                          UserProfile,
                                           Loading){
     $scope.onFileSelect = function($files){
       console.log("trying to upload files", $files)
@@ -1236,10 +1237,7 @@ angular.module("productPage", [
       .success(function(data){
         console.log("success on upload", data)
         $scope.reRenderProduct() // calls parent scope function
-        // this is called in parallel w reRenderProduct, so is not
-        // always going to finish first. but is not relevant until user
-        // returns to the profile page, so should be fine.
-        security.refreshCurrentUser()
+        UserProfile.useCache(false)
 
       })
       .error(function(data){
