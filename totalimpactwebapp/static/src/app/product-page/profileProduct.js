@@ -1,7 +1,6 @@
 angular.module("productPage", [
     'resources.users',
     'resources.products',
-    'resources.productEmbedMarkup',
     'profileAward.profileAward',
     'services.page',
     'profile',
@@ -58,7 +57,6 @@ angular.module("productPage", [
     TiMixpanel,
     ProductBiblio,
     ProductInteraction,
-    ProductEmbedMarkup,
     product,
     profileWithoutProducts,
     Page) {
@@ -139,26 +137,6 @@ angular.module("productPage", [
         console.log("nothing to embed, so include a full absract")
       }
       
-
-      // this part will go away once thi product comes with this already...
-      // ProductEmbedMarkup.get(
-      //   {tiid: product.tiid},
-      //   function(resp){
-      //     console.log("successful resp from embedded markup: ", resp)
-      //     if (resp.html) {
-      //       $scope.iframeToEmbed = resp.html
-      //       $scope.hasEmbeddedFile = true
-      //       $scope.userWantsFullAbstract = false
-      //       console.log("have something to embed, so don't include a full abstract")
-      //     }
-      //     else {
-      //       console.log("nothing to embed, so include a full absract")
-      //     }
-      //   },
-      //   function(resp){
-      //     console.log("error response from embedding endpoint: ", resp)
-      //   }
-      // )
     }
 
 
