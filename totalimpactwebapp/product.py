@@ -323,6 +323,7 @@ class Product(db.Model):
         length = k.set_contents_from_file(file_to_upload)
 
         self.has_file = True  #alters an attribute, so caller should commit
+        self.embed_markup = self.get_pdf_url() #alters an attribute, so caller should commit
 
         return length
 
@@ -377,6 +378,7 @@ class Product(db.Model):
             return None
 
         html = None
+
         if "github" in self.aliases.best_url:
             html = embed_markup.get_github_embed_html(self.aliases.best_url)
 
@@ -394,9 +396,7 @@ class Product(db.Model):
             else:
                 if url:
                     try:
-                        html = u"""<iframe src="https://docs.google.com/viewer?url={url}&embedded=true" 
-                                    width="600" height="780" style="border: none;"></iframe>""".format(
-                                        url=url)
+                        html = embed_markup.wrap_in_pdf_reader(url)
                     except UnicodeEncodeError:
                         pass
                 elif self.genre not in ["article", "unknown"]:

@@ -16,6 +16,11 @@ def wrap_as_image(class_name, image_url):
     return u"<img src='{image_url}' class='{class_name}' style='width: 550px;' />".format(
         class_name=class_name, image_url=image_url)
 
+def wrap_in_pdf_reader(class_name, url):
+    return u"""<iframe src="https://docs.google.com/viewer?url={url}&embedded=true" 
+                width="600" height="780" style="border: none;"></iframe>""".format(
+        url=url)
+
 def wrap_with_embedly(url):
     logger.debug(u"calling embedly for {url}".format(
         url=url))
@@ -31,6 +36,7 @@ def wrap_with_embedly(url):
         return html
     except (KeyError, AttributeError):
         return None
+
 
 def get_github_embed_html(github_url):
     try:
