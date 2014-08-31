@@ -1,7 +1,10 @@
+from totalimpactwebapp.product import Product
+from totalimpactwebapp.product import get_file_embed_markup
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp.product_deets import populate_product_deets
+from totalimpactwebapp.util import commit
 from totalimpactwebapp import db
 import tasks
 
@@ -197,6 +200,38 @@ def build_refsets(save_after_every_profile=False):
 
 
 
+def collect_embed(min_tiid=None):
+    if min_tiid:
+        q = db.session.query(Product).filter(Product.profile_id != None).filter(Product.tiid>min_tiid)
+    else:
+        q = db.session.query(Product).filter(Product.profile_id != None)
+
+    start_time = datetime.datetime.utcnow()
+    number_considered = 0.0
+    number_markups = 0.0
+    for product in windowed_query(q, Product.tiid, 25):
+        number_considered += 1
+
+        if product.genre=="unknown" or product.removed:
+            continue
+
+        try:
+            embed_markup = get_file_embed_markup(product)
+        except Exception:
+            print "got an exception, skipping", product.aliases.best_url
+            continue
+
+        if embed_markup:
+            print number_considered, number_markups, product.tiid, product.host, product.aliases.best_url
+            # print "  got an embed for", product.genre, "!"
+            product.embed_markup = embed_markup
+            db.session.add(product)
+            commit(db)
+            number_markups += 1
+            elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+            print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
+
+
 def main(function, args):
     if function=="emailreports":
         if "url_slug" in args and args["url_slug"]:
@@ -209,6 +244,8 @@ def main(function, args):
         add_product_deets_for_everyone(args["url_slug"], args["skip_until_url_slug"])
     elif function=="refsets":
         build_refsets(args["save_after_every_profile"])
+    elif function=="embed":
+        collect_embed(args["min_tiid"])
 
 
 
@@ -223,6 +260,7 @@ if __name__ == "__main__":
     parser.add_argument('--save_after_every_profile', action='store_true', help="use to debug refsets, saves refsets to db after every profile.  slow.")
     parser.add_argument('--skip_until_url_slug', default=None, help="when looping don't process till past this url_slug")
     parser.add_argument('--max_emails', default=None, type=int, help="max number of emails to send")
+    parser.add_argument('--min_tiid', default=None, type=str, help="min_tiid")
 
     args = vars(parser.parse_args())
     print args

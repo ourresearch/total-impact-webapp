@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-31
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-29
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6028,32 +6028,28 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "            </div>\n" +
     "\n" +
     "\n" +
-    "            <div class=\"upload-cta\"\n" +
-    "                 ng-show=\"!hasEmbeddedFile && userOwnsThisProfile\"\n" +
-    "                 ng-controller=\"productUploadCtrl\">\n" +
-    "\n" +
-    "               <div class=\"not-uploaded-yet\" ng-show=\"!loading.is('productUpload')\">\n" +
-    "                  <h4>Make this {{ genre }} more visible</h4>\n" +
-    "                  <h5>\n" +
-    "                     Upload a copy here to make it freely available to everyone&mdash;and get readership stats you can use.\n" +
-    "                  </h5>\n" +
-    "                  <div class=\"file-upload-container\">\n" +
-    "                     <div class=\"file-upload-button btn btn-primary\"\n" +
-    "                          onclick=\"document.getElementById('file-upload-button').click();\">\n" +
-    "                        <span class=\"text\">Share your {{ genre }}</span>\n" +
-    "                     </div>\n" +
-    "                     <input id=\"file-upload-button\" type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
-    "                     <span class=\"or\">or</span>\n" +
-    "                     <a class=\"embed-from-url\" ng-click=\"openFulltextLocationModal()\">embed from url</a>\n" +
+    "            <div class=\"upload-cta\" ng-controller=\"productUploadCtrl\">\n" +
+    "               <h4>Make this {{ genre }} more visible</h4>\n" +
+    "               <h5>\n" +
+    "                  Upload a copy here to make it freely available to everyone&mdash;and get readership stats you can use.\n" +
+    "               </h5>\n" +
+    "               <div class=\"file-upload-container\">\n" +
+    "                  <div class=\"file-upload-button btn btn-primary\"\n" +
+    "                       onclick=\"document.getElementById('file-upload-button').click();\">\n" +
+    "                     <span class=\"text\">Share your {{ genre }}</span>\n" +
     "                  </div>\n" +
-    "\n" +
-    "                  <div class=\"notes\">\n" +
-    "                     <span class=\"sherpa-romeo\">\n" +
-    "                        Learn more about your uploading rights and responsibilities at\n" +
-    "                        <a href=\"http://www.sherpa.ac.uk/romeo/\">SHERPA/RoMEO</a>\n" +
-    "                     </span>\n" +
-    "                  </div>\n" +
+    "                  <input id=\"file-upload-button\" type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
+    "                  <span class=\"or\">or</span>\n" +
+    "                  <a class=\"embed-from-url\" ng-click=\"openFulltextLocationModal()\">embed from url</a>\n" +
     "               </div>\n" +
+    "\n" +
+    "               <div class=\"notes\">\n" +
+    "                  <span class=\"sherpa-romeo\">\n" +
+    "                     Learn more about your uploading rights and responsibilities at\n" +
+    "                     <a href=\"http://www.sherpa.ac.uk/romeo/\">SHERPA/RoMEO</a>\n" +
+    "                  </span>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
     "\n" +
     "               <div class=\"uploading-now\" ng-show=\"loading.is('productUpload')\">\n" +
     "                  <div class=\"content\">\n" +
