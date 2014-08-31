@@ -63,12 +63,17 @@ angular.module("productPage", [
     profileWithoutProducts,
     Page) {
 
+    console.log("product.host", product.host)
+
 
 
     Page.setHeaderFullName(profileWithoutProducts.full_name)
     Page.setProfileUrl(profileWithoutProducts.url_slug)
     var slug = $routeParams.url_slug
     UserProfile.useCache(true)
+    $scope.uploadableHost = !_.contains(["dryad", "github", "figshare"], product.host)
+
+
     console.log("product page controller loaded. Profile:", profileWithoutProducts)
 
     security.isLoggedInPromise(slug).then(
@@ -190,6 +195,7 @@ angular.module("productPage", [
         }
       );
     }
+
 
 
     $scope.openInfoModal = function(){

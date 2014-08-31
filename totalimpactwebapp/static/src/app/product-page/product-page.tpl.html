@@ -303,7 +303,7 @@
 
 
             <div class="upload-cta"
-                 ng-show="!hasEmbeddedFile && userOwnsThisProfile"
+                 ng-show="!hasEmbeddedFile && userOwnsThisProfile && uploadableHost"
                  ng-controller="productUploadCtrl">
 
                <div class="not-uploaded-yet" ng-show="!loading.is('productUpload')">

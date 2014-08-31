@@ -972,12 +972,17 @@ angular.module("productPage", [
     profileWithoutProducts,
     Page) {
 
+    console.log("product.host", product.host)
+
 
 
     Page.setHeaderFullName(profileWithoutProducts.full_name)
     Page.setProfileUrl(profileWithoutProducts.url_slug)
     var slug = $routeParams.url_slug
     UserProfile.useCache(true)
+    $scope.uploadableHost = !_.contains(["dryad", "github", "figshare"], product.host)
+
+
     console.log("product page controller loaded. Profile:", profileWithoutProducts)
 
     security.isLoggedInPromise(slug).then(
@@ -1099,6 +1104,7 @@ angular.module("productPage", [
         }
       );
     }
+
 
 
     $scope.openInfoModal = function(){
@@ -6052,7 +6058,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "            <div class=\"upload-cta\"\n" +
-    "                 ng-show=\"!hasEmbeddedFile && userOwnsThisProfile\"\n" +
+    "                 ng-show=\"!hasEmbeddedFile && userOwnsThisProfile && uploadableHost\"\n" +
     "                 ng-controller=\"productUploadCtrl\">\n" +
     "\n" +
     "               <div class=\"not-uploaded-yet\" ng-show=\"!loading.is('productUpload')\">\n" +

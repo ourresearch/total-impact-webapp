@@ -7926,21 +7926,24 @@ div.product-page div.main-content #resource .embed-dryad table {
 }
 div.product-page div.main-content #resource .embed-github {
   min-height: 70px;
-  padding: 0 20px;
   margin-top: 50px;
   width: 90%;
   border: 1px solid #eee;
 }
-div.product-page div.main-content #resource .embed-github h1 {
+div.product-page div.main-content #resource .embed-github h3:first-child {
+  background: #eee;
+  font-family: Consolas, Monaco, monospace;
+  margin: 0;
   font-size: 20px;
+  padding: 15px 15px 10px;
 }
-div.product-page div.main-content #resource .embed-github h2 {
-  font-size: 20px;
+div.product-page div.main-content #resource .embed-github article {
+  padding: 15px;
 }
-div.product-page div.main-content #resource .embed-github h3 {
-  font-size: 20px;
-}
-div.product-page div.main-content #resource .embed-github h4 {
+div.product-page div.main-content #resource .embed-github article h1,
+div.product-page div.main-content #resource .embed-github article h2,
+div.product-page div.main-content #resource .embed-github article h3,
+div.product-page div.main-content #resource .embed-github article h4 {
   font-size: 20px;
 }
 div.product-page div.main-content #resource .upload-cta {
