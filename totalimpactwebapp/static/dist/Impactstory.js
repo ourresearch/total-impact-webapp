@@ -1240,16 +1240,14 @@ angular.module("productPage", [
       console.log("trying to upload files", $files)
       Loading.start("productUpload")
 
-
       $scope.upload = $upload.upload({
         url: "/product/"+ $routeParams.tiid +"/file",
         file: $files[0]
       })
       .success(function(data){
         console.log("success on upload", data)
-        $scope.reRenderProduct() // calls parent scope function
         UserProfile.useCache(false)
-
+        $scope.reRenderProduct() // calls parent scope function
       })
       .error(function(data){
         alert("Sorry, there was an error uploading your file!")
