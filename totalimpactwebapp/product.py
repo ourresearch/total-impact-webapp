@@ -396,7 +396,7 @@ class Product(db.Model):
             else:
                 if url:
                     try:
-                        html = embed_markup.wrap_in_pdf_reader(url)
+                        html = embed_markup.wrap_in_pdf_reader("embed-pdf", url)
                     except UnicodeEncodeError:
                         pass
                 elif self.genre not in ["article", "unknown"]:
