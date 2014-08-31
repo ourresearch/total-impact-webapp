@@ -345,9 +345,8 @@ class Product(db.Model):
                 this_host=this_host, tiid=self.tiid)
 
         if self.aliases.display_arxiv:
-            url = "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
+            return "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
                 arxiv_id=self.aliases.display_arxiv)
-            return url
 
         if hasattr(self.biblio, "free_fulltext_url") and self.biblio.free_fulltext_url:
             # print "trying free fulltext url!"

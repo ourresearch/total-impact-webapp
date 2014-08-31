@@ -21,6 +21,12 @@ def wrap_in_pdf_reader(class_name, url):
                 width="600" height="780" style="border: none;"></iframe>""".format(
         class_name=class_name, url=url)
 
+    # return u"""<iframe class="viewer {class_name}" id="viewerBox" 
+    #             allowfullscreen="true" height="780" width="600" frameborder="0" 
+    #             src="http://connect.ajaxdocumentviewer.com/?key=P4082014082914&viewertype=html5&document={url}&viewerheight=780&viewerwidth=600&printButton=Yes&toolbarColor=CCCCCC"
+    #             allowtransparency="true"></iframe>""".format(
+    #                 class_name=class_name, url=url)                
+
 def wrap_with_embedly(url):
     logger.debug(u"calling embedly for {url}".format(
         url=url))
@@ -83,9 +89,9 @@ def get_figshare_embed_html(figshare_doi_url):
         if file_extension in ["png", "gif", "jpg"]:
             return wrap_as_image("embed-picture", url)
         if file_extension in ["pdf"]:
-            return wrap_with_embedly(url)
+            return wrap_in_pdf_reader("embed-pdf", url)
 
-    # if got here, just use the first url and give it a shot with embedly
+    # if got here, just use the first matching url and give it a shot with embedly
     return wrap_with_embedly(figshare_resource_links[0].get("href"))
 
 
