@@ -111,6 +111,10 @@ angular.module("services.page")
        return profileUrl
      },
 
+     getUrl: function(){
+       return window.location.href
+     },
+
 
      'setNotificationsLoc': function(loc){
          notificationsLoc = loc;

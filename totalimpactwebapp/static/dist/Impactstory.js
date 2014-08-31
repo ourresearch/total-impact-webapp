@@ -1082,7 +1082,22 @@ angular.module("productPage", [
       )
     }
 
-
+    $scope.fbShare = function(){
+      console.log("trying to share", Page.getUrl())
+      FB.ui(
+        {
+          method: 'share',
+          href: Page.getUrl()
+        },
+        function(response) {
+          if (response && !response.error_code) {
+            alert('Posting completed.');
+          } else {
+            alert('Error while posting.');
+          }
+        }
+      );
+    }
 
 
     $scope.openInfoModal = function(){
@@ -4189,6 +4204,10 @@ angular.module("services.page")
        return profileUrl
      },
 
+     getUrl: function(){
+       return window.location.href
+     },
+
 
      'setNotificationsLoc': function(loc){
          notificationsLoc = loc;
@@ -6077,6 +6096,12 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "         </div>\n" +
     "\n" +
     "\n" +
+    "         <div class=\"share-buttons\">\n" +
+    "            <a class=\"facebook\"\n" +
+    "               ng-click=\"fbShare()\">\n" +
+    "                  facebook\n" +
+    "               </a>\n" +
+    "         </div>\n" +
     "\n" +
     "\n" +
     "\n" +

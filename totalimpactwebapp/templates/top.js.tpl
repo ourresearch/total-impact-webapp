@@ -40,3 +40,21 @@ var globalCurrentUser = {{ current_user | tojson | safe }}
 
 // set the Stripe publishable key. Different on staging and prod
 var stripePublishableKey = "{{ stripe_publishable_key }}"
+
+
+// facebook sdk
+window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '843711688986838',
+    xfbml      : true,
+    version    : 'v2.0'
+  });
+};
+
+(function(d, s, id){
+   var js, fjs = d.getElementsByTagName(s)[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement(s); js.id = id;
+   js.src = "//connect.facebook.net/en_US/sdk.js";
+   fjs.parentNode.insertBefore(js, fjs);
+ }(document, 'script', 'facebook-jssdk'));

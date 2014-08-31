@@ -173,7 +173,22 @@ angular.module("productPage", [
       )
     }
 
-
+    $scope.fbShare = function(){
+      console.log("trying to share", Page.getUrl())
+      FB.ui(
+        {
+          method: 'share',
+          href: Page.getUrl()
+        },
+        function(response) {
+          if (response && !response.error_code) {
+            alert('Posting completed.');
+          } else {
+            alert('Error while posting.');
+          }
+        }
+      );
+    }
 
 
     $scope.openInfoModal = function(){
