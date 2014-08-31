@@ -1067,7 +1067,7 @@ angular.module("productPage", [
         tiid: $routeParams.tiid
       },
       function(data){
-        console.log("re-rendered the product")
+        console.log("re-rendering the product")
         renderProduct()
       },
       function(data){
@@ -3091,7 +3091,7 @@ angular.module('resources.users',['ngResource'])
       {
         query:{
           method: "GET",
-          cache: true,
+          cache: false,
           params: {hide: "biblio,metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
         },
         patch:{

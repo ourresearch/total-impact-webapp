@@ -158,7 +158,7 @@ angular.module("productPage", [
         tiid: $routeParams.tiid
       },
       function(data){
-        console.log("re-rendered the product")
+        console.log("re-rendering the product")
         renderProduct()
       },
       function(data){

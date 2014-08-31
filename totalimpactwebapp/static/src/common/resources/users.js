@@ -8,7 +8,7 @@ angular.module('resources.users',['ngResource'])
       {
         query:{
           method: "GET",
-          cache: true,
+          cache: false,
           params: {hide: "biblio,metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
         },
         patch:{
