@@ -7894,6 +7894,19 @@ div.product-page div.main-content #biblio div.biblio-line.keywords span.value {
 div.product-page div.main-content #biblio div.biblio-line.keywords span.value.editable-empty {
   font-weight: normal;
 }
+div.product-page div.main-content #biblio div.share-buttons {
+  margin-top: 5px;
+}
+div.product-page div.main-content #biblio div.share-buttons .tooltip-inner {
+  background: #000;
+}
+div.product-page div.main-content #biblio div.share-buttons .tooltip-arrow {
+  border-color: transparent;
+  border-top-color: #000;
+}
+div.product-page div.main-content #biblio div.share-buttons a img {
+  height: 16px;
+}
 div.product-page div.main-content #resource {
   margin-top: 20px;
   width: 700px;
@@ -7906,20 +7919,29 @@ div.product-page div.main-content #resource .embed-dryad {
   padding: 0 20px;
   margin-top: 50px;
   width: 90%;
-  border: 1px solid #eee;  
-  font-size: 14px; 
+  border: 1px solid #eee;
 }
-div.product-page div.main-content #resource .embed-github-readme h1 {
-  font-size: 20px; 
+div.product-page div.main-content #resource .embed-dryad table {
+  padding-top: 20px;
 }
-div.product-page div.main-content #resource .embed-github-readme h2 {
-  font-size: 20px; 
+div.product-page div.main-content #resource .embed-github {
+  min-height: 70px;
+  padding: 0 20px;
+  margin-top: 50px;
+  width: 90%;
+  border: 1px solid #eee;
 }
-div.product-page div.main-content #resource .embed-github-readme h3 {
-  font-size: 20px; 
+div.product-page div.main-content #resource .embed-github h1 {
+  font-size: 20px;
 }
-div.product-page div.main-content #resource .embed-github-readme h4 {
-  font-size: 20px; 
+div.product-page div.main-content #resource .embed-github h2 {
+  font-size: 20px;
+}
+div.product-page div.main-content #resource .embed-github h3 {
+  font-size: 20px;
+}
+div.product-page div.main-content #resource .embed-github h4 {
+  font-size: 20px;
 }
 div.product-page div.main-content #resource .upload-cta {
   text-align: center;

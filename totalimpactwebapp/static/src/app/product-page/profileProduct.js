@@ -173,6 +173,7 @@ angular.module("productPage", [
       )
     }
 
+    // not used right now...
     $scope.fbShare = function(){
       console.log("trying to share", Page.getUrl())
       FB.ui(
@@ -182,9 +183,9 @@ angular.module("productPage", [
         },
         function(response) {
           if (response && !response.error_code) {
-            alert('Posting completed.');
+            console.log('Posting completed.');
           } else {
-            alert('Error while posting.');
+            console.log('Error while posting.');
           }
         }
       );

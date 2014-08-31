@@ -238,6 +238,24 @@
 
                </div>
             </div>
+
+
+            <div class="share-buttons">
+               <!--
+               <a class="facebook"
+                  ng-click="fbShare()">
+                     facebook
+                  </a>
+               -->
+               <a class="twitter"
+                  tooltip="Share this {{ genre }} on Twitter"
+                  href="https://twitter.com/share?text={{ biblio.display_title }}&url={{ page.getUrl() }}"
+                  target="_blank">
+                  <img ng-src="/static/img/favicons/twitter.ico" />
+               </a>
+            </div>
+
+
          </div><!-- end biblio section -->
 
 
@@ -341,21 +359,12 @@
 
          </div>
 
-
-         <div class="share-buttons">
-            <a class="facebook"
-               ng-click="fbShare()">
-                  facebook
-               </a>
-         </div>
-
-
-
-
-
-
-
       </div><!-- end main-content -->
+
+
+
+
+
 
       <div id="sidebar">
 
