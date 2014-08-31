@@ -6026,12 +6026,22 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                     <a href=\"{{ aliases.resolved_url }}\" class=\"product-host\">\n" +
     "                        {{ productHost }}\n" +
     "                     </a>\n" +
+    "                     <span class=\"locked-icon\" ng-show=\"!biblio.free_fulltext_url\">\n" +
+    "                        <i class=\"icon-lock\"\n" +
+    "                           ng-show=\"!userOwnsThisProfile\"\n" +
+    "                           tooltip=\"{{ genre }} may be paywalled.\"></i>\n" +
+    "\n" +
+    "                        <i class=\"icon-lock\"\n" +
+    "                           ng-show=\"userOwnsThisProfile\"\n" +
+    "                           tooltip=\"{{ genre }} may be paywalled. To improve visibility, consider uploading a freely-readable copy.\"></i>\n" +
+    "                     </span>\n" +
     "                  </h3>\n" +
     "                  <a class=\"full-url\" href=\"{{ aliases.resolved_url }}\">\n" +
     "                     {{ aliases.resolved_url }}\n" +
     "                  </a>\n" +
     "                  <div class=\"oa-version\" ng-show=\"biblio.free_fulltext_url\">\n" +
     "                     <div class=\"oa-version-label\">\n" +
+    "                        <i class=\"icon-unlock-alt\"></i>\n" +
     "                        Open access version via\n" +
     "                        <a href=\"{{ biblio.free_fulltext_url }}\">{{ freeFulltextHost }}</a>\n" +
     "                     </div>\n" +

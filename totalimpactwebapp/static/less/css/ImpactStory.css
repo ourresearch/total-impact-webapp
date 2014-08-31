@@ -8050,6 +8050,10 @@ div.product-page div.main-content #resource #linkout .content div.oa-version {
   margin-top: 10px;
   font-weight: 300;
 }
+div.product-page div.main-content #resource #linkout .content div.oa-version i {
+  color: #777;
+  margin-right: 5px;
+}
 div.product-page div.main-content #resource #linkout .content div.oa-version a {
   font-weight: normal;
 }
