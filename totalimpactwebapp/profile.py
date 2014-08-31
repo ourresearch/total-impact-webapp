@@ -806,6 +806,13 @@ def get_profiles():
     res = Profile.query.all()
     return res
 
+def finish_profile_insertion(profile_id):
+    profile = Profile.query.get(profile_id)
+    db.session.merge(profile)
+    for product in profile.products_not_removed:
+        product.embed_markup = product.get_embed_markup()
+    commit(db)
+
 
 def make_products_for_linked_account(profile_id, importer_name, importer_value, analytics_credentials={}, existing_tiids={}):
     query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
@@ -826,6 +833,7 @@ def make_products_for_linked_account(profile_id, importer_name, importer_value, 
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
     if r.status_code==200:
+        finish_profile_insertion(profile_id)
         return r.json()
     else:
         logger.warning(u"make_products_for_linked_account returned status={status}".format(
@@ -852,6 +860,7 @@ def make_products_for_product_id_strings(profile_id, product_id_type, product_id
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
     if r.status_code==200:
+        finish_profile_insertion(profile_id)        
         return r.json()
     else:
         logger.warning(u"make_products_for_product_id_strings returned status={status}".format(

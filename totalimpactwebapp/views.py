@@ -38,7 +38,6 @@ from totalimpactwebapp.profile import delete_products_from_profile
 from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.product import get_product
-from totalimpactwebapp.product import get_file_embed_markup
 from totalimpactwebapp.product import upload_file_and_commit
 from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.product_markup import MarkupFactory
@@ -585,7 +584,7 @@ def product_pdf(tiid):
 @app.route("/product/<tiid>/embed-markup", methods=['GET'])
 def product_embed_markup(tiid):
     product = get_product(tiid)
-    html_markup = get_file_embed_markup(product)
+    html_markup = product.get_embed_markup()
     return json_resp_from_thing({"html": html_markup})
 
 
