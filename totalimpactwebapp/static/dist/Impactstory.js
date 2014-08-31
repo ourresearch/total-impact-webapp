@@ -3091,7 +3091,7 @@ angular.module('resources.users',['ngResource'])
       {
         query:{
           method: "GET",
-          cache: false,
+          cache: true,
           params: {hide: "biblio,metrics,awards,aliases", include_headings: true, embedded: "@embedded"}
         },
         patch:{
@@ -3117,7 +3117,9 @@ angular.module('resources.users',['ngResource'])
 
     return $resource(
      "/profile/:id/product/:tiid",
-     {}
+     {
+          cache: false      
+     }
     )
   })
 
