@@ -193,6 +193,9 @@ angular.module("productPage", [
           })
           $scope.reRenderProduct()
       })
+      .then(function(resp){
+        security.refreshCurrentUser()
+      })
     }
 
     $scope.deleteProduct = function(){
@@ -307,7 +310,11 @@ angular.module("productPage", [
 
 
 
-.controller("productUploadCtrl", function($scope, $upload, $routeParams, Loading){
+.controller("productUploadCtrl", function($scope,
+                                          $upload,
+                                          $routeParams,
+                                          security,
+                                          Loading){
     $scope.onFileSelect = function($files){
       console.log("trying to upload files", $files)
       Loading.start("productUpload")
@@ -319,6 +326,12 @@ angular.module("productPage", [
       })
       .success(function(data){
         console.log("success on upload", data)
+        $scope.reRenderProduct() // calls parent scope function
+        // this is called in parallel w reRenderProduct, so is not
+        // always going to finish first. but is not relevant until user
+        // returns to the profile page, so should be fine.
+        security.refreshCurrentUser()
+
       })
       .error(function(data){
         alert("Sorry, there was an error uploading your file!")

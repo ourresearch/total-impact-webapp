@@ -1102,6 +1102,9 @@ angular.module("productPage", [
           })
           $scope.reRenderProduct()
       })
+      .then(function(resp){
+        security.refreshCurrentUser()
+      })
     }
 
     $scope.deleteProduct = function(){
@@ -1216,7 +1219,11 @@ angular.module("productPage", [
 
 
 
-.controller("productUploadCtrl", function($scope, $upload, $routeParams, Loading){
+.controller("productUploadCtrl", function($scope,
+                                          $upload,
+                                          $routeParams,
+                                          security,
+                                          Loading){
     $scope.onFileSelect = function($files){
       console.log("trying to upload files", $files)
       Loading.start("productUpload")
@@ -1228,6 +1235,12 @@ angular.module("productPage", [
       })
       .success(function(data){
         console.log("success on upload", data)
+        $scope.reRenderProduct() // calls parent scope function
+        // this is called in parallel w reRenderProduct, so is not
+        // always going to finish first. but is not relevant until user
+        // returns to the profile page, so should be fine.
+        security.refreshCurrentUser()
+
       })
       .error(function(data){
         alert("Sorry, there was an error uploading your file!")
@@ -6002,30 +6015,36 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                 ng-show=\"!hasEmbeddedFile && userOwnsThisProfile\"\n" +
     "                 ng-controller=\"productUploadCtrl\">\n" +
     "\n" +
-    "               <h4>Make this {{ genre }} more visible</h4>\n" +
-    "               <h5>\n" +
-    "                  Upload a copy here to make it freely available to everyone&mdash;and get readership stats you can use.\n" +
-    "               </h5>\n" +
-    "               <div class=\"file-upload-container\">\n" +
-    "                  <div class=\"file-upload-button btn btn-primary\"\n" +
-    "                       onclick=\"document.getElementById('file-upload-button').click();\">\n" +
-    "                     <span class=\"text\" ng-show=\"loading.is('productUpload')\">Share your {{ genre }}</span>\n" +
-    "                     <span class=\"text\" ng-show=\"!loading.is('productUpload')\">\n" +
-    "                        <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "                        Uploading your {{ genre }}&hellip;\n" +
+    "               <div class=\"not-uploaded-yet\" ng-show=\"!loading.is('productUpload')\">\n" +
+    "                  <h4>Make this {{ genre }} more visible</h4>\n" +
+    "                  <h5>\n" +
+    "                     Upload a copy here to make it freely available to everyone&mdash;and get readership stats you can use.\n" +
+    "                  </h5>\n" +
+    "                  <div class=\"file-upload-container\">\n" +
+    "                     <div class=\"file-upload-button btn btn-primary\"\n" +
+    "                          onclick=\"document.getElementById('file-upload-button').click();\">\n" +
+    "                        <span class=\"text\">Share your {{ genre }}</span>\n" +
+    "                     </div>\n" +
+    "                     <input id=\"file-upload-button\" type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
+    "                     <span class=\"or\">or</span>\n" +
+    "                     <a class=\"embed-from-url\" ng-click=\"openFulltextLocationModal()\">embed from url</a>\n" +
+    "                  </div>\n" +
+    "\n" +
+    "                  <div class=\"notes\">\n" +
+    "                     <span class=\"sherpa-romeo\">\n" +
+    "                        Learn more about your uploading rights and responsibilities at\n" +
+    "                        <a href=\"http://www.sherpa.ac.uk/romeo/\">SHERPA/RoMEO</a>\n" +
     "                     </span>\n" +
     "                  </div>\n" +
-    "                  <input id=\"file-upload-button\" type=\"file\" ng-file-select=\"onFileSelect($files)\">\n" +
-    "                  <span class=\"or\">or</span>\n" +
-    "                  <a class=\"embed-from-url\" ng-click=\"openFulltextLocationModal()\">embed from url</a>\n" +
     "               </div>\n" +
     "\n" +
-    "               <div class=\"notes\">\n" +
-    "                  <span class=\"sherpa-romeo\">\n" +
-    "                     Learn more about your uploading rights and responsibilities at\n" +
-    "                     <a href=\"http://www.sherpa.ac.uk/romeo/\">SHERPA/RoMEO</a>\n" +
-    "                  </span>\n" +
+    "               <div class=\"uploading-now\" ng-show=\"loading.is('productUpload')\">\n" +
+    "                  <div class=\"content\">\n" +
+    "                     <i class=\"icon-refresh icon-spin left\"></i>\n" +
+    "                     Uploading {{ genre }}&hellip;\n" +
+    "                  </div>\n" +
     "               </div>\n" +
+    "\n" +
     "            </div>\n" +
     "\n" +
     "            <div id=\"citation\">\n" +
