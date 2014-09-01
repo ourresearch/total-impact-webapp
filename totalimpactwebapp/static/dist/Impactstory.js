@@ -6079,7 +6079,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <div class=\"notes\">\n" +
     "                     <span class=\"sherpa-romeo\">\n" +
     "                        Learn more about your uploading rights and responsibilities at\n" +
-    "                        <a href=\"http://www.sherpa.ac.uk/romeo/\">SHERPA/RoMEO</a>\n" +
+    "                        <a href=\"http://www.sherpa.ac.uk/romeo/\" target=\"_blank\">SHERPA/RoMEO</a>\n" +
     "                     </span>\n" +
     "                  </div>\n" +
     "               </div>\n" +
