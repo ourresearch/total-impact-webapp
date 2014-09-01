@@ -39,6 +39,7 @@ from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import upload_file_and_commit
+from totalimpactwebapp.product import add_product_embed_markup
 from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.product_markup import MarkupFactory
 
@@ -687,6 +688,8 @@ def product_biblio_modify(tiid):
         headers={'Content-type': 'application/json', 'Accept': 'application/json'}
     )
 
+    # has to be after database call above
+    add_product_embed_markup(tiid)
     local_sleep(1)
 
     return json_resp_from_thing(r.json())

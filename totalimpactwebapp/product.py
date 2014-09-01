@@ -55,6 +55,12 @@ def upload_file_and_commit(product, file_to_upload, db):
     commit(db)
     return resp
 
+def add_product_embed_markup(tiid):
+    product = get_product(tiid)
+    product.embed_markup = product.get_embed_markup() #alters an attribute, so caller should commit
+    db.session.add(product)
+    commit(db)
+
 
 class Product(db.Model):
 
