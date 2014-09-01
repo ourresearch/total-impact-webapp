@@ -59,6 +59,7 @@ angular.module("productPage", [
     ProductInteraction,
     product,
     profileWithoutProducts,
+    ProductWithoutProfile,
     Page) {
 
     console.log("product.host", product.host)
@@ -91,7 +92,7 @@ angular.module("productPage", [
         event: "views"
       }
     )
-    renderProduct()
+    renderProduct(product)
 
 
 
@@ -108,27 +109,27 @@ angular.module("productPage", [
 
 
 
-    function renderProduct(){
-      console.log("rendering product", product)
+    function renderProduct(myProduct){
+      console.log("rendering this product", myProduct)
 
-      Page.setTitle(product.biblio.display_title)
+      Page.setTitle(myProduct.biblio.display_title)
       Loading.clear()
       window.scrollTo(0,0)  // hack. not sure why this is needed.
       $scope.profileWithoutProducts = profileWithoutProducts
       $scope.userSlug = slug
       $scope.loading = Loading
-      $scope.aliases = product.aliases
-      $scope.biblio = product.biblio
-      $scope.metrics = product.metrics
-      $scope.displayGenrePlural = product.display_genre_plural
-      $scope.genre = product.genre
-      $scope.productHost = parseHostname(product.aliases.resolved_url)
-      $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
+      $scope.aliases = myProduct.aliases
+      $scope.biblio = myProduct.biblio
+      $scope.metrics = myProduct.metrics
+      $scope.displayGenrePlural = myProduct.display_genre_plural
+      $scope.genre = myProduct.genre
+      $scope.productHost = parseHostname(myProduct.aliases.resolved_url)
+      $scope.freeFulltextHost = parseHostname(myProduct.biblio.free_fulltext_url)
       $scope.hasEmbeddedFile = false
       $scope.userWantsFullAbstract = true
 
-      if (product.all_embed_markup) {
-        $scope.iframeToEmbed = product.all_embed_markup
+      if (myProduct.all_embed_markup) {
+        $scope.iframeToEmbed = myProduct.all_embed_markup
         $scope.hasEmbeddedFile = true
         $scope.userWantsFullAbstract = false
         console.log("have something to embed, so don't include a full abstract")
@@ -154,12 +155,12 @@ angular.module("productPage", [
 
 
     $scope.reRenderProduct = function(){
-      UsersProduct.get({
+      ProductWithoutProfile.get({
         tiid: $routeParams.tiid
       },
       function(data){
-        console.log("re-rendering the product")
-        renderProduct()
+        console.log("re-rendering the product", data)
+        renderProduct(data)
       },
       function(data){
         $location.path("/"+slug) // replace this with "product not found" message...
