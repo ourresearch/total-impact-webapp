@@ -122,12 +122,19 @@ class OAAward(ProfileAward):
 
         oa_articles = [p for p in article_products if p.is_free_to_read]
         oa_article_count = len(oa_articles)
+
+
         self.extra["oa_articles_count"] = oa_article_count
 
         try:
             oa_proportion = oa_article_count / article_count
         except ZeroDivisionError:
             oa_proportion = 0
+
+
+
+        # @todo this is dummy data for testing!
+        oa_article_count = 10
 
         self.extra["oa_articles_proportion"] = oa_proportion
         
@@ -159,27 +166,29 @@ class OAAward(ProfileAward):
 
             fulltext_urls_needed = oa_articles_in_next_level - oa_article_count
 
-            self.needed_for_next_level = "You're just {needed} freely-readable articles away from {next_level} level.".format(
-                needed=fulltext_urls_needed,
-                next_level=self.next_level_name
-            )
+            #self.needed_for_next_level = "You're just {needed} freely-readable articles away from {next_level} level.".format(
+            #    needed=fulltext_urls_needed,
+            #    next_level=self.next_level_name
+            #)
 
             if self.is_bottom_level:
                 thing_you_want = "Get the Open Access badge"
             else:
-                thing_you_want = "Advance to the {next_level}-level Open Access badge".format(
+                thing_you_want = "advance to the {next_level}-level Open Access badge".format(
                     next_level=self.next_level_name
                 )
 
-            self.extra["needed_for_next_level_product_page"] = "{thing_you_want} by uploading free fulltext to this and {more_needed} more articles.".format(
-                thing_you_want=thing_you_want,
-                more_needed=fulltext_urls_needed-1
+            #self.extra["needed_for_next_level_product_page"] = "{thing_you_want} by uploading free fulltext to this and {more_needed} more articles.".format(
+            #    thing_you_want=thing_you_want,
+            #    more_needed=fulltext_urls_needed-1
+            #)
+
+            self.call_to_action = "Upload more articles to {thing_you_want}".format(
+                thing_you_want=thing_you_want
             )
 
-            self.call_to_action = "To add more, click any article missing the <i class='icon-unlock-alt'></i> icon and upload free fulltext."
-
         else:
-            self.needed_for_next_level = "Congrats, that's the highest level we've got--you're one of the OA elite!"
+            self.call_to_action = "Congrats, that's the highest level we've got--you're one of the OA elite!"
 
 
 
