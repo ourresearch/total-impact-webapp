@@ -13,10 +13,20 @@
          href="/{{ profile.url_slug }}/product/{{ tiid }}">
 
          {{biblio.display_title}}
+
       </a>
+      {% if embed_markup %}
+      <a class="has-fulltext"
+         href="/{{ profile.url_slug }}/product/{{ tiid }}"
+         title="Free fulltext available"
+         data-toggle='tooltip'>
+         <i class="icon-file-text-alt"></i>
+      </a>
+      {% endif %}
 
 
       {% if aliases.best_url %}
+      <!--
       <a class="linkout url title"
          target="_blank"
          title="Click to view on publisher site"
@@ -24,16 +34,7 @@
          href="{{ aliases.best_url }}">
          <i class="icon-external-link-sign"></i>
       </a>
-      {% endif %}
-
-      {% if biblio.free_fulltext_url %}
-      <a class="linkout free-fulltext-url"
-         target="_blank"
-         title="Free fulltext available at {{ biblio.free_fulltext_host }}"
-         data-toggle='tooltip'
-         href="{{ biblio.free_fulltext_url }}">
-         <i class="icon-unlock-alt"></i>
-      </a>
+      -->
       {% endif %}
    </h5>
 
