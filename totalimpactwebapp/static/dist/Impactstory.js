@@ -1037,8 +1037,8 @@ angular.module("productPage", [
       $scope.hasEmbeddedFile = false
       $scope.userWantsFullAbstract = true
 
-      if (myProduct.all_embed_markup) {
-        $scope.iframeToEmbed = myProduct.all_embed_markup
+      if (myProduct.embed_markup) {
+        $scope.iframeToEmbed = myProduct.embed_markup
         $scope.hasEmbeddedFile = true
         $scope.userWantsFullAbstract = false
         console.log("have something to embed, so don't include a full abstract")

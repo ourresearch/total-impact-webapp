@@ -7526,12 +7526,11 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   color: #000;
   text-decoration: underline;
 }
-.product .biblio h5 a.linkout {
-  color: #ddd;
-  margin-right: 5px;
+.product .biblio h5 a.has-fulltext {
+  color: #777;
 }
-.product .biblio h5 a.linkout:hover {
-  color: #000;
+.product .biblio h5 a.has-fulltext:hover {
+  color: #ff4000;
   text-decoration: none;
 }
 .product .biblio div.optional-biblio {

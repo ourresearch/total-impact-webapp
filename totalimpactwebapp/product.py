@@ -120,18 +120,6 @@ class Product(db.Model):
         return True
 
     @cached_property
-    def all_embed_markup(self):
-        return self.embed_markup
-        # if self.embed_markup:
-        #     return self.embed_markup
-        # else:
-        #     self.embed_markup = self.get_embed_markup()
-        #     #delete these later once db has everything
-        #     db.session.add(self)
-        #     commit(db)
-        #     return self.embed_markup 
-
-    @cached_property
     def is_refreshing(self):
         REFRESH_TIMEOUT_IN_SECONDS = 120
         if self.last_refresh_started and not self.last_refresh_finished:
