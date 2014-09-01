@@ -34,7 +34,9 @@ angular.module('resources.users',['ngResource'])
 
     return $resource(
      "/profile/:id/product/:tiid",
-     {}
+     {
+          cache: false      
+     }
     )
   })
 

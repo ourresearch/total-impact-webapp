@@ -5,11 +5,8 @@ import os
 import re
 import boto
 import requests
-from bs4 import BeautifulSoup
 from collections import Counter
 import flask
-from urlparse import urljoin
-from embedly import Embedly
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
@@ -19,6 +16,7 @@ from totalimpactwebapp import interaction
 from totalimpactwebapp import reference_set
 
 # regular ol' imports
+from totalimpactwebapp import embed_markup
 from totalimpactwebapp.metric import make_metrics_list
 from totalimpactwebapp.metric import make_mendeley_metric
 from totalimpactwebapp.biblio import Biblio
@@ -56,179 +54,6 @@ def upload_file_and_commit(product, file_to_upload, db):
     resp = product.upload_file(file_to_upload)
     commit(db)
     return resp
-
-
-def wrap_as_div(class_name, div_contents):
-    return u"<div class='{class_name}'>{div_contents}</div>".format(
-        class_name=class_name, div_contents=div_contents.decode("utf8"))
-
-def wrap_as_image(class_name, image_url):
-    return u"<img src='{image_url}' class='{class_name}' style='width: 550px;' />".format(
-        class_name=class_name, image_url=image_url)
-
-
-def get_github_embed(github_url):
-    try:
-        r = requests.get(github_url, timeout=10)
-    except requests.exceptions.Timeout:
-        return None
-    soup = BeautifulSoup(r.text)
-    match = soup.find(id="readme")
-    if match:
-        return wrap_as_div(u"embed-github", repr(match))
-    return None
-
-def get_dryad_embed(dryad_url):
-    try:
-        r = requests.get(dryad_url, timeout=10)
-    except requests.exceptions.Timeout:
-        return None        
-    soup = BeautifulSoup(r.text)
-    html = "".join([repr(tag) for tag in soup.find_all(attrs={'class': "package-file-description"})])  #because class is reserved
-    if html:
-        html = html.replace('href="/', 'href="http://datadryad.org/')
-        return wrap_as_div(u"embed-dryad", html)
-    return None
-
-def get_figshare_embed_html(figshare_doi_url):
-    try:
-        r = requests.get(figshare_doi_url, timeout=10)
-    except requests.exceptions.Timeout:
-        return None
-
-    soup = BeautifulSoup(r.text)
-
-    # case insensitive on download because figshare does both upper and lower
-    figshare_resource_links = soup.find_all("a", text=re.compile(".ownload", re.IGNORECASE))
-    figshare_resource_links = [link for link in figshare_resource_links if link]  #remove blanks
-    if not figshare_resource_links:
-        return None
-    url = None
-
-    for match in figshare_resource_links:
-        url = match.get("href")
-        file_extension = url.rsplit(".")[-1]
-
-        if file_extension in ["png", "gif", "jpg"]:
-            return wrap_as_image("embed-picture", url)
-        if file_extension in ["pdf"]:
-            return get_embedly_markup(url)
-
-    # if got here, just use the first url and give it a shot with embedly
-    return get_embedly_markup(figshare_resource_links[0].get("href"))
-
-
-def get_pdf_link_from_html(url):
-    try:
-        r = requests.get(url, timeout=10)
-    except requests.exceptions.Timeout:
-        return None
-
-    soup = BeautifulSoup(r.text)
-    try:
-        href = soup.find("a", text=re.compile("pdf", re.IGNORECASE)).get("href")
-    except AttributeError:
-        href = None
-
-    if href and href.startswith("/"):
-        href = urljoin(r.url, href)  # see https://docs.python.org/2/library/urlparse.html#urlparse.urljoin
-
-    return href
-
-def get_embedly_markup(url):
-    client = Embedly(os.getenv("EMBEDLY_API_KEY"))
-    # if not client.is_supported(url):
-    #     return None
-
-    response_dict = client.oembed(url)
-    try:
-        html = response_dict["html"]
-        html = html.replace("http://docs.google", "https://docs.google")
-        return html
-    except (KeyError, AttributeError):
-        return None
-
-
-def get_pdf_url_to_embed(product):
-    try:
-        this_host = flask.request.url_root.strip("/")
-    except RuntimeError:  # when running as a script
-        this_host = "https://impactstory.org"
-
-    if product.has_file:
-        return u"{this_host}/product/{tiid}/pdf".format(
-            this_host=this_host, tiid=product.tiid)
-
-    if product.aliases.display_pmc:
-        # workaround for google docs viewer not supporting localhost urls
-        this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
-        return u"{this_host}/product/{tiid}/pdf".format(
-            this_host=this_host, tiid=product.tiid)
-
-    if product.aliases.display_arxiv:
-        url = "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
-            arxiv_id=product.aliases.display_arxiv)
-        return url
-
-    if hasattr(product.biblio, "free_fulltext_url") and product.biblio.free_fulltext_url:
-        # print "trying free fulltext url!"
-        # just return right away if pdf is in the link
-        if "pdf" in product.biblio.free_fulltext_url:
-            return product.biblio.free_fulltext_url
-
-        # since link isn't obviously a pdf, try to get pdf link by scraping page
-        pdf_link = get_pdf_link_from_html(product.biblio.free_fulltext_url)
-        if pdf_link:
-            return pdf_link # got it!
-
-    # got here with nothing else?  use the resolved url if it has pdf in it
-    if product.aliases.resolved_url and ("pdf" in product.aliases.resolved_url):
-        return product.aliases.resolved_url
-
-    return None
-
-
-def get_file_embed_markup(product):
-    try:
-        if not product.aliases.best_url:
-            return None
-    except AttributeError:
-        return None
-
-    html = None
-    if "github" in product.aliases.best_url:
-        html = get_github_embed(product.aliases.best_url)
-
-    elif "dryad" in product.aliases.best_url:
-        html = get_dryad_embed(product.aliases.best_url)
-
-    elif "figshare" in product.aliases.best_url:
-        html = get_figshare_embed_html(product.aliases.best_url)
-
-    else:
-        url = get_pdf_url_to_embed(product)
-        if url and "localhost" in url:
-            html = u"<p>Can't view uploaded file on localhost.  View it at <a href='{url}'>{url}</a>.</p>".format(
-                    url=url)
-        else:
-            if url:
-                try:
-                    html = u"""<iframe src="https://docs.google.com/viewer?url={url}&embedded=true" 
-                                width="600" height="780" style="border: none;"></iframe>""".format(
-                                    url=url)
-                except UnicodeEncodeError:
-                    pass
-            elif product.genre not in ["article", "unknown"]:
-                # this is how we embed slides, videos, etc
-                html = get_embedly_markup(product.aliases.best_url)
-
-    # logger.debug(u"returning embed html for {tiid}, {html}".format(
-    #     tiid=product.tiid, html=html))
-
-    return html
-
-
-
 
 
 class Product(db.Model):
@@ -293,6 +118,18 @@ class Product(db.Model):
     @cached_property
     def is_true_product(self):
         return True
+
+    @cached_property
+    def all_embed_markup(self):
+        return self.embed_markup
+        # if self.embed_markup:
+        #     return self.embed_markup
+        # else:
+        #     self.embed_markup = self.get_embed_markup()
+        #     #delete these later once db has everything
+        #     db.session.add(self)
+        #     commit(db)
+        #     return self.embed_markup 
 
     @cached_property
     def is_refreshing(self):
@@ -486,9 +323,86 @@ class Product(db.Model):
         length = k.set_contents_from_file(file_to_upload)
 
         self.has_file = True  #alters an attribute, so caller should commit
+        self.embed_markup = self.get_embed_markup() #alters an attribute, so caller should commit
 
         return length
 
+
+    def get_pdf_url(self):
+        try:
+            this_host = flask.request.url_root.strip("/")
+        except RuntimeError:  # when running as a script
+            this_host = "https://impactstory.org"
+
+        if self.has_file:
+            return u"{this_host}/product/{tiid}/pdf".format(
+                this_host=this_host, tiid=self.tiid)
+
+        if self.aliases.display_pmc:
+            # workaround for google docs viewer not supporting localhost urls
+            this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
+            return u"{this_host}/product/{tiid}/pdf".format(
+                this_host=this_host, tiid=self.tiid)
+
+        if self.aliases.display_arxiv:
+            return "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
+                arxiv_id=self.aliases.display_arxiv)
+
+        if hasattr(self.biblio, "free_fulltext_url") and self.biblio.free_fulltext_url:
+            # print "trying free fulltext url!"
+            # just return right away if pdf is in the link
+            if "pdf" in self.biblio.free_fulltext_url:
+                return self.biblio.free_fulltext_url
+
+            # since link isn't obviously a pdf, try to get pdf link by scraping page
+            pdf_link = embed_markup.extract_pdf_link_from_html(self.biblio.free_fulltext_url)
+            if pdf_link:
+                return pdf_link # got it!
+
+        # got here with nothing else?  use the resolved url if it has pdf in it
+        if self.aliases.resolved_url and ("pdf" in self.aliases.resolved_url):
+            return self.aliases.resolved_url
+
+        return None
+
+
+    def get_embed_markup(self):
+        logger.debug(u"in get_embed_markup for {tiid}".format(
+            tiid=self.tiid))
+
+        try:
+            if not self.aliases.best_url:
+                return None
+        except AttributeError:
+            return None
+
+        html = None
+
+        if "github" in self.aliases.best_url:
+            html = embed_markup.get_github_embed_html(self.aliases.best_url)
+
+        elif "dryad" in self.aliases.best_url:
+            html = embed_markup.get_dryad_embed_html(self.aliases.best_url)
+
+        elif "figshare" in self.aliases.best_url:
+            html = embed_markup.get_figshare_embed_html(self.aliases.best_url)
+
+        else:
+            url = self.get_pdf_url()
+            if url and "localhost" in url:
+                html = u"<p>Can't view uploaded file on localhost.  View it at <a href='{url}'>{url}</a>.</p>".format(
+                        url=url)
+            else:
+                if url:
+                    try:
+                        html = embed_markup.wrap_in_pdf_reader("embed-pdf", url)
+                    except UnicodeEncodeError:
+                        pass
+                elif self.genre not in ["article", "unknown"]:
+                    # this is how we embed slides, videos, etc
+                    html = embed_markup.wrap_with_embedly(self.aliases.best_url)
+
+        return html
 
 
 

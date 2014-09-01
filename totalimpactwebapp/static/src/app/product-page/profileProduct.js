@@ -1,7 +1,6 @@
 angular.module("productPage", [
     'resources.users',
     'resources.products',
-    'resources.productEmbedMarkup',
     'profileAward.profileAward',
     'services.page',
     'profile',
@@ -58,7 +57,6 @@ angular.module("productPage", [
     TiMixpanel,
     ProductBiblio,
     ProductInteraction,
-    ProductEmbedMarkup,
     product,
     profileWithoutProducts,
     Page) {
@@ -124,30 +122,21 @@ angular.module("productPage", [
       $scope.metrics = product.metrics
       $scope.displayGenrePlural = product.display_genre_plural
       $scope.genre = product.genre
-      $scope.hasEmbeddedFile = false
-      $scope.userWantsFullAbstract = true
       $scope.productHost = parseHostname(product.aliases.resolved_url)
       $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
+      $scope.hasEmbeddedFile = false
+      $scope.userWantsFullAbstract = true
 
-      // this part will go away once thi product comes with this already...
-      ProductEmbedMarkup.get(
-        {tiid: product.tiid},
-        function(resp){
-          console.log("successful resp from embedded markup: ", resp)
-          if (resp.html) {
-            $scope.iframeToEmbed = resp.html
-            $scope.hasEmbeddedFile = true
-            $scope.userWantsFullAbstract = false
-            console.log("have something to embed, so don't include a full abstract")
-          }
-          else {
-            console.log("nothing to embed, so include a full absract")
-          }
-        },
-        function(resp){
-          console.log("error response from embedding endpoint: ", resp)
-        }
-      )
+      if (product.all_embed_markup) {
+        $scope.iframeToEmbed = product.all_embed_markup
+        $scope.hasEmbeddedFile = true
+        $scope.userWantsFullAbstract = false
+        console.log("have something to embed, so don't include a full abstract")
+      }
+      else {
+        console.log("nothing to embed, so include a full absract")
+      }
+      
     }
 
 
@@ -169,7 +158,7 @@ angular.module("productPage", [
         tiid: $routeParams.tiid
       },
       function(data){
-        console.log("re-rendered the product")
+        console.log("re-rendering the product")
         renderProduct()
       },
       function(data){
@@ -342,16 +331,14 @@ angular.module("productPage", [
       console.log("trying to upload files", $files)
       Loading.start("productUpload")
 
-
       $scope.upload = $upload.upload({
         url: "/product/"+ $routeParams.tiid +"/file",
         file: $files[0]
       })
       .success(function(data){
         console.log("success on upload", data)
-        $scope.reRenderProduct() // calls parent scope function
         UserProfile.useCache(false)
-
+        $scope.reRenderProduct() // calls parent scope function
       })
       .error(function(data){
         alert("Sorry, there was an error uploading your file!")

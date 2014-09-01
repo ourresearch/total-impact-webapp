@@ -910,7 +910,6 @@ angular.module('passwordReset', [
 angular.module("productPage", [
     'resources.users',
     'resources.products',
-    'resources.productEmbedMarkup',
     'profileAward.profileAward',
     'services.page',
     'profile',
@@ -967,7 +966,6 @@ angular.module("productPage", [
     TiMixpanel,
     ProductBiblio,
     ProductInteraction,
-    ProductEmbedMarkup,
     product,
     profileWithoutProducts,
     Page) {
@@ -1033,30 +1031,21 @@ angular.module("productPage", [
       $scope.metrics = product.metrics
       $scope.displayGenrePlural = product.display_genre_plural
       $scope.genre = product.genre
-      $scope.hasEmbeddedFile = false
-      $scope.userWantsFullAbstract = true
       $scope.productHost = parseHostname(product.aliases.resolved_url)
       $scope.freeFulltextHost = parseHostname(product.biblio.free_fulltext_url)
+      $scope.hasEmbeddedFile = false
+      $scope.userWantsFullAbstract = true
 
-      // this part will go away once thi product comes with this already...
-      ProductEmbedMarkup.get(
-        {tiid: product.tiid},
-        function(resp){
-          console.log("successful resp from embedded markup: ", resp)
-          if (resp.html) {
-            $scope.iframeToEmbed = resp.html
-            $scope.hasEmbeddedFile = true
-            $scope.userWantsFullAbstract = false
-            console.log("have something to embed, so don't include a full abstract")
-          }
-          else {
-            console.log("nothing to embed, so include a full absract")
-          }
-        },
-        function(resp){
-          console.log("error response from embedding endpoint: ", resp)
-        }
-      )
+      if (product.all_embed_markup) {
+        $scope.iframeToEmbed = product.all_embed_markup
+        $scope.hasEmbeddedFile = true
+        $scope.userWantsFullAbstract = false
+        console.log("have something to embed, so don't include a full abstract")
+      }
+      else {
+        console.log("nothing to embed, so include a full absract")
+      }
+      
     }
 
 
@@ -1078,7 +1067,7 @@ angular.module("productPage", [
         tiid: $routeParams.tiid
       },
       function(data){
-        console.log("re-rendered the product")
+        console.log("re-rendering the product")
         renderProduct()
       },
       function(data){
@@ -1251,16 +1240,14 @@ angular.module("productPage", [
       console.log("trying to upload files", $files)
       Loading.start("productUpload")
 
-
       $scope.upload = $upload.upload({
         url: "/product/"+ $routeParams.tiid +"/file",
         file: $files[0]
       })
       .success(function(data){
         console.log("success on upload", data)
-        $scope.reRenderProduct() // calls parent scope function
         UserProfile.useCache(false)
-
+        $scope.reRenderProduct() // calls parent scope function
       })
       .error(function(data){
         alert("Sorry, there was an error uploading your file!")
@@ -3035,16 +3022,6 @@ angular.module('directives.forms', ["services.loading"])
     }
   }
 })
-angular.module('resources.productEmbedMarkup',['ngResource'])
-
-.factory('ProductEmbedMarkup', function ($resource) {
-
-  return $resource(
-    "/product/:tiid/embed-markup",
-    {}
-  )
-})
-
 angular.module('resources.products',['ngResource'])
 
 .factory('Products', function ($resource) {
@@ -3103,6 +3080,7 @@ angular.module('resources.products',['ngResource'])
 
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -3139,7 +3117,9 @@ angular.module('resources.users',['ngResource'])
 
     return $resource(
      "/profile/:id/product/:tiid",
-     {}
+     {
+          cache: false      
+     }
     )
   })
 
@@ -4098,6 +4078,7 @@ angular.module("services.loading")
     }
   }
 })
+angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
