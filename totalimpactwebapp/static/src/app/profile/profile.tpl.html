@@ -84,9 +84,9 @@
 <div class="genres">
    <div class="wrapper">
       <ul class="genre-list">
-         <li ng-repeat="genre in genres" class="genre-{{ genre.genre }}">
+         <li ng-repeat="genre in genres" class="genre-{{ genre.name }}">
             <h3 class="genre-name">
-               {{ genre.genre }}
+               {{ genre.name }}
             </h3>
             <ul class="genre-cards">
                <li class="genre-card" ng-repeat="card in genre.cards">
