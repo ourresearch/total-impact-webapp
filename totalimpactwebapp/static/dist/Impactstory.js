@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-08-31
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-02
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1730,6 +1730,7 @@ angular.module("profile", [
           $scope.products = resp.products
           $scope.profileAwards = resp.awards
           $scope.doneLoading = true
+          $scope.genres = resp.genres
 
           // got user back with products. if still refreshing, show update modal
           console.log("here's the is_refreshing before checking it", resp.is_refreshing)
@@ -3081,7 +3082,6 @@ angular.module('resources.products',['ngResource'])
 
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4079,7 +4079,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -6433,31 +6432,24 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"products\" ng-show=\"userExists\">\n" +
+    "<div class=\"genres\">\n" +
     "   <div class=\"wrapper\">\n" +
-    "      <ul class=\"products-list\">\n" +
-    "         <li class=\"product genre-{{ product.genre }}\"\n" +
-    "             ng-class=\"{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}\"\n" +
-    "             ng-repeat=\"product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title']) | filter: productFilter\"\n" +
-    "             id=\"{{ product.tiid }}\"\n" +
-    "             on-repeat-finished>\n" +
-    "\n" +
-    "\n" +
-    "            <!-- users must be logged in, and product can't be a heading product -->\n" +
-    "            <div class=\"product-margin\" ng-show=\"security.isLoggedIn(url_slug) && !product.is_heading\">\n" +
-    "               <span class=\"single-product-controls\">\n" +
-    "                  <a class=\"remove-product\"\n" +
-    "                     tooltip=\"Delete this product\"\n" +
-    "                     ng-click=\"removeProduct(product)\">\n" +
-    "                     <i class=\"icon-trash icon\"></i>\n" +
-    "                  </a>\n" +
-    "               </span>\n" +
-    "            </div>\n" +
-    "            <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "      <ul class=\"genre-list\">\n" +
+    "         <li ng-repeat=\"genre in genres\" class=\"genre-{{ genre.genre }}\">\n" +
+    "            <h3 class=\"genre-name\">\n" +
+    "               {{ genre.genre }}\n" +
+    "            </h3>\n" +
+    "            <ul class=\"genre-cards\">\n" +
+    "               <li class=\"genre-card\" ng-repeat=\"card in genre.cards\">\n" +
+    "                  <pre>{{ card|json }}</pre>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
     "</div>\n" +
+    "\n" +
+    "\n" +
     "\n" +
     "<div class=\"user-does-not-exist no-page\" ng-show=\"!userExists\">\n" +
     "   <h2>Whoops!</h2>\n" +
