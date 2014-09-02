@@ -127,46 +127,8 @@ angular.module("profile", [
     Timer.start("profileViewRender.load")
 
 
-    // filtering stuff
-    $scope.productFilter = {
-      has_diff: undefined,
-      has_metrics: undefined
-    }
-
-    if ($location.search().filter == "has_diff") {
-      $scope.productFilter.has_diff = true
-    }
 
 
-    $scope.setProductFilter = function(setting){
-
-      if (setting == "all") {
-        $scope.productFilter.has_diff = undefined
-        $scope.productFilter.has_metrics = undefined
-        $location.search("filter", null)
-      }
-      else if (setting == "has_metrics"){
-        $scope.productFilter.has_diff = undefined
-        $scope.productFilter.has_metrics = true
-        $location.search("filter", null)
-      }
-      else if (setting == "has_diff"){
-        $scope.productFilter.has_diff = true
-        $scope.productFilter.has_metrics = true
-        $location.search("filter", "has_diff")
-      }
-
-      console.log($scope.productFilter)
-
-    }
-
-    $scope.$on('$locationChangeStart', function(event, next, current){
-      if ($location.search().filter == "has_diff"){
-        console.log("filter=has_diff")
-        $scope.productFilter.has_diff = true
-        $scope.productFilter.has_metrics = true
-      }
-    })
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
@@ -196,14 +158,11 @@ angular.module("profile", [
       return loadingProducts
     }
     $scope.userExists = true;
-    $scope.filterProducts =  UserProfile.filterProducts;
 
     $scope.hideSignupBannerNow = function(){
       $scope.hideSignupBanner = true
 
     }
-
-
 
     $scope.refresh = function(){
       var url = "/profile/"+ url_slug +"/products?action=refresh"
@@ -227,8 +186,6 @@ angular.module("profile", [
     }
 
 
-
-
     $scope.openProfileEmbedModal = function(){
       $modal.open({
         templateUrl: "profile/profile-embed-modal.tpl.html",
@@ -242,31 +199,6 @@ angular.module("profile", [
     }
 
 
-    $scope.removeProduct = function(product){
-//      alert("Sorry! Product deletion is temporarily disabled. It'll be back soon.")
-      console.log("removing product: ", product)
-      $scope.products.splice($scope.products.indexOf(product),1)
-      UserMessage.set(
-        "profile.removeProduct.success",
-        false,
-        {title: product.display_title}
-      )
-
-      // do the deletion in the background, without a progress spinner...
-      Product.delete(
-        {user_id: url_slug, tiid: product._tiid},
-        function(){
-          console.log("finished deleting", product.display_title)
-          TiMixpanel.track("delete product", {
-            tiid: product._tiid,
-            title: product.display_title
-          })
-        }
-      )
-    }
-
-
-
     // render the profile
 
     if (UserProfile.useCache() === false){
@@ -274,22 +206,6 @@ angular.module("profile", [
       // and we set it back to false either way once this function
       // has run once.
       $httpDefaultCache.removeAll()
-    }
-
-    $scope.dedup = function(){
-      console.log("dedup!")
-      UsersProducts.dedup(
-        {id: url_slug},
-        {}
-      )
-      .$promise.then(
-        function(resp){
-          console.log("dedup success:", resp)
-        },
-        function(resp){
-          console.log("dedup failure:", resp)
-        }
-      )
     }
 
 
@@ -312,7 +228,6 @@ angular.module("profile", [
           // put our stuff in the scope
           $scope.profile = resp.about
           Page.setTitle(resp.about.given_name + " " + resp.about.surname)
-          $scope.products = resp.products
           $scope.profileAwards = resp.awards
           $scope.doneLoading = true
           $scope.genres = resp.genres
@@ -346,13 +261,6 @@ angular.module("profile", [
           )
 
           Timer.start("profileViewRender.render")
-
-          // scroll to any hash-specified anchors on page. in a timeout because
-          // must happen after page is totally rendered.
-          $timeout(function(){
-            UserProfile.scrollToCorrectLocation()
-          }, 0)
-
         },
         function(resp){
           console.log("problem loading the profile!", resp)
