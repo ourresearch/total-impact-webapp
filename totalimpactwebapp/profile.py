@@ -5,7 +5,7 @@ from totalimpactwebapp import util
 from totalimpactwebapp import configs
 from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.product_markup import MarkupFactory
-from totalimpactwebapp.genre import make_genres_dict
+from totalimpactwebapp.genre import make_genres_list
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import commit
 
@@ -189,7 +189,7 @@ class Profile(db.Model):
 
     @cached_property
     def genres(self):
-        return make_genres_dict(self.id, self.products_not_removed)
+        return make_genres_list(self.id, self.products_not_removed)
 
     @cached_property
     def display_products(self):

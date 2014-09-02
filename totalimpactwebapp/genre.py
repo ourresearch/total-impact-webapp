@@ -7,7 +7,7 @@ from totalimpactwebapp.util import dict_from_dir
 logger = logging.getLogger("tiwebapp.genre")
 
 
-def make_genres_dict(profile_id, products):
+def make_genres_list(profile_id, products):
     genres = {}
 
     for product in products:
