@@ -3,8 +3,8 @@ import os
 
 def get_all_cards(profile):
     cards = []
-    cards += make_product_new_metrics_cards(profile)
-    cards += make_profile_new_metrics_cards(profile)
+    cards += make_product_new_metrics_cards(profile.products_not_removed, url_slug=profile.url_slug)
+    cards += make_profile_new_metrics_cards(profile.products_not_removed, url_slug=profile.url_slug)
     return cards
 
 

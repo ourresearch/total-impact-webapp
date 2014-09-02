@@ -70,9 +70,10 @@ class Card(object):
 
 class ProductNewMetricCard(Card):
 
-    def __init__(self, profile, product, metric, timestamp=None):
+    def __init__(self, products, product, metric, url_slug=None, timestamp=None):
+        self.url_slug = url_slug
+        self.products = products
         self.product = product
-        self.profile = profile
         self.metric = metric
         super(ProductNewMetricCard, self).__init__(timestamp=timestamp)
 
@@ -85,8 +86,7 @@ class ProductNewMetricCard(Card):
     @property
     def num_profile_products_this_good(self):
         ret = 0
-        for product in self.profile.products_not_removed:
-
+        for product in self.products:
             if product.has_metric_this_good(
                     self.metric.provider,
                     self.metric.interaction,
@@ -144,44 +144,84 @@ class ProductNewMetricCard(Card):
 
 
 
+
+
 class ProfileNewMetricCard(Card):
 
-    def __init__(self, profile, provider, interaction, timestamp=None):
-        self.profile = profile
+    def __init__(self, products, provider, interaction, url_slug=None, timestamp=None):
+        self.url_slug = url_slug
+        self.products = products
         self.provider = provider
         self.interaction = interaction
 
         # this card doesn't have a solo metric object, but it helps to 
         # save an exemplar metric so that it can be used to access relevant display properies
         try:
-            self.exemplar_metric = profile.get_metrics_by_name(provider, interaction)[0] #exemplar metric 
+            self.exemplar_metric = self.get_metrics_by_name(self.products, provider, interaction)[0] #exemplar metric 
         except IndexError:
             pass
         super(ProfileNewMetricCard, self).__init__(timestamp=timestamp)
 
 
     @classmethod
-    def would_generate_a_card(cls, profile, provider, interaction):
-        return profile.metric_milestone_just_reached(provider, interaction) is not None
+    def would_generate_a_card(cls, products, provider, interaction):
+        return cls.metric_accumulations(products, provider, interaction) is not None
+
+    @classmethod
+    def get_metrics_by_name(cls, products, provider, interaction):
+        matching_metrics = []
+        for product in products:
+            metric = product.get_metric_by_name(provider, interaction)
+            if metric:
+                matching_metrics.append(metric)
+        return matching_metrics
+
+
+    @classmethod
+    def metric_accumulations(cls, products, provider, interaction):
+        matching_metrics = cls.get_metrics_by_name(products, provider, interaction)
+
+        metrics_with_diffs = [m for m in matching_metrics if m.can_diff]
+
+         # quit if there's no matching metrics or they dont' have no diffs
+        if not len(metrics_with_diffs):
+            return None
+
+        accumulated_diff_start_value = sum([m.diff_window_start_value for m in metrics_with_diffs])
+        accumulated_diff_end_value = sum([m.diff_window_end_value for m in metrics_with_diffs])
+        accumulated_diff = accumulated_diff_end_value - accumulated_diff_start_value
+
+        # milestones will be the same in all the metrics so just grab the first one
+        milestones = matching_metrics[0].config["milestones"]
+
+        # see if we just passed any of them
+        for milestone in sorted(milestones, reverse=True):
+            if accumulated_diff_start_value < milestone <= accumulated_diff_end_value:
+                return ({
+                    "milestone": milestone, 
+                    "accumulated_diff_end_value": accumulated_diff_end_value,
+                    "accumulated_diff": accumulated_diff
+                    })
+        return None
 
     @property
     def milestone_awarded(self):
         try:
-            return self.profile.metric_milestone_just_reached(self.provider, self.interaction)["milestone"]
+            return self.metric_accumulations(self.products, self.provider, self.interaction)["milestone"]
         except KeyError:
             return None
 
     @property
     def current_value(self):
         try:
-            return self.profile.metric_milestone_just_reached(self.provider, self.interaction)["accumulated_diff_end_value"]
+            return self.metric_accumulations(self.products, self.provider, self.interaction)["accumulated_diff_end_value"]
         except KeyError:
             return None
 
     @property
     def diff_value(self):
         try:
-            return self.profile.metric_milestone_just_reached(self.provider, self.interaction)["accumulated_diff"]
+            return self.metric_accumulations(self.products, self.provider, self.interaction)["accumulated_diff"]
         except KeyError:
             return None                        
 
@@ -196,19 +236,50 @@ class ProfileNewMetricCard(Card):
 
     def to_dict(self):
         # ignore some properties to keep dict small.   
-        properties_to_ignore = ["profile", "exemplar_metric"]
+        properties_to_ignore = [
+            "exemplar_metric", 
+            "products"]
         ret = util.dict_from_dir(self, properties_to_ignore)
-
-        # add to help with debugging
-        try:
-            ret["url_slug"] = self.profile.url_slug
-        except AttributeError:
-            pass
-
         return ret
 
 
 
+
+class GenreMetricCard(ProfileNewMetricCard):
+
+    #override
+    def get_template_name(self):
+        return "card-genre"
+
+
+    @classmethod
+    #override with a version that returns all cards, not just ones that freshly pass milestones
+    def metric_accumulations(cls, products, provider, interaction):
+        matching_metrics = cls.get_metrics_by_name(products, provider, interaction)
+
+        accumulated_diff_start_value = sum([m.diff_window_start_value for m in matching_metrics 
+            if m.diff_window_start_value])
+        accumulated_diff_end_value = sum([m.diff_window_end_value for m in matching_metrics 
+            if m.diff_window_end_value])
+        accumulated_diff = accumulated_diff_end_value - accumulated_diff_start_value
+
+        if not accumulated_diff_end_value:
+            return None
+
+        # milestones will be the same in all the metrics so just grab the first one
+        milestones = matching_metrics[0].config["milestones"]
+
+        # see if we just passed any of them
+        for milestone in sorted(milestones, reverse=True):
+            if accumulated_diff_start_value < milestone <= accumulated_diff_end_value:
+                milestone = milestone
+                break
+
+        return ({
+            "milestone": milestone, 
+            "accumulated_diff_end_value": accumulated_diff_end_value,
+            "accumulated_diff": accumulated_diff
+            })
 
 
 

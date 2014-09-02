@@ -318,41 +318,6 @@ class Profile(db.Model):
     def get_refresh_status(self):
         return RefreshStatus(self.products_not_removed)
 
-    def get_metrics_by_name(self, provider, interaction):
-        matching_metrics = []
-        for product in self.products_not_removed:
-            metric = product.get_metric_by_name(provider, interaction)
-            if metric:
-                matching_metrics.append(metric)
-        return matching_metrics
-
-    def metric_milestone_just_reached(self, provider, interaction):
-        matching_metrics = self.get_metrics_by_name(provider, interaction)
-
-        metrics_with_diffs = [m for m in matching_metrics if m.can_diff]
-
-         # quit if there's no matching metrics or they dont' have no diffs
-        if not len(metrics_with_diffs):
-            return None
-
-        accumulated_diff_start_value = sum([m.diff_window_start_value for m in metrics_with_diffs])
-        accumulated_diff_end_value = sum([m.diff_window_end_value for m in metrics_with_diffs])
-        accumulated_diff = accumulated_diff_end_value - accumulated_diff_start_value
-
-        # milestones will be the same in all the metrics so just grab the first one
-        milestones = matching_metrics[0].config["milestones"]
-
-        # see if we just passed any of them
-        for milestone in sorted(milestones, reverse=True):
-            if accumulated_diff_start_value < milestone <= accumulated_diff_end_value:
-                return ({
-                    "milestone": milestone, 
-                    "accumulated_diff_end_value": accumulated_diff_end_value,
-                    "accumulated_diff": accumulated_diff
-                    })
-        return None
-
-
     def add_products(self, product_id_dict):
         try:
             analytics_credentials = self.get_analytics_credentials()
