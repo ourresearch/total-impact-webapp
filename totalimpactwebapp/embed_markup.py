@@ -80,8 +80,13 @@ def get_figshare_embed_html(figshare_doi_url):
 
     soup = BeautifulSoup(r.text)
 
+    logger.debug("soup!  {soup}".format(
+        soup=r.text))
+
     # case insensitive on download because figshare does both upper and lower
     figshare_resource_links = soup.find_all("a", text=re.compile(".ownload", re.IGNORECASE))
+    logger.debug(u"figshare_resource_links before filter in get_figshare_embed_html {figshare_doi_url}".format(
+        figshare_doi_url=figshare_doi_url))
     figshare_resource_links = [link for link in figshare_resource_links if link]  #remove blanks
     if not figshare_resource_links:
         logger.debug(u"no figshare_resource_links in get_figshare_embed_html for {figshare_doi_url}".format(
