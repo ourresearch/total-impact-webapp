@@ -15,7 +15,7 @@ def make_genres_dict(profile_id, products):
             genres[product.genre] = Genre(profile_id=profile_id, genre=product.genre)
         genres[product.genre].add_product(product)
 
-    return genres
+    return genres.values()
 
 
 class Genre(object):
