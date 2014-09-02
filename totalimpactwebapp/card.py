@@ -3,7 +3,13 @@ from totalimpactwebapp import util
 import datetime
 import jinja2
 
-
+def get_metrics_by_name(products, provider, interaction):
+    matching_metrics = []
+    for product in products:
+        metric = product.get_metric_by_name(provider, interaction)
+        if metric:
+            matching_metrics.append(metric)
+    return matching_metrics
 
 class Card(object):
 
@@ -144,9 +150,7 @@ class ProductNewMetricCard(Card):
 
 
 
-
-
-class ProfileNewMetricCard(Card):
+class AbstractProductsAccumulationCard(Card):
 
     def __init__(self, products, provider, interaction, url_slug=None, timestamp=None):
         self.url_slug = url_slug
@@ -157,29 +161,59 @@ class ProfileNewMetricCard(Card):
         # this card doesn't have a solo metric object, but it helps to 
         # save an exemplar metric so that it can be used to access relevant display properies
         try:
-            self.exemplar_metric = self.get_metrics_by_name(self.products, provider, interaction)[0] #exemplar metric 
+            self.exemplar_metric = get_metrics_by_name(self.products, provider, interaction)[0] #exemplar metric 
         except IndexError:
             pass
-        super(ProfileNewMetricCard, self).__init__(timestamp=timestamp)
+        super(AbstractProductsAccumulationCard, self).__init__(timestamp=timestamp)
 
 
     @classmethod
     def would_generate_a_card(cls, products, provider, interaction):
         return cls.metric_accumulations(products, provider, interaction) is not None
 
-    @classmethod
-    def get_metrics_by_name(cls, products, provider, interaction):
-        matching_metrics = []
-        for product in products:
-            metric = product.get_metric_by_name(provider, interaction)
-            if metric:
-                matching_metrics.append(metric)
-        return matching_metrics
+    @property
+    def milestone_awarded(self):
+        try:
+            return self.metric_accumulations(self.products, self.provider, self.interaction)["milestone"]
+        except KeyError:
+            return None
 
+    @property
+    def current_value(self):
+        try:
+            return self.metric_accumulations(self.products, self.provider, self.interaction)["accumulated_diff_end_value"]
+        except KeyError:
+            return None
+
+    @property
+    def diff_value(self):
+        try:
+            return self.metric_accumulations(self.products, self.provider, self.interaction)["accumulated_diff"]
+        except KeyError:
+            return None                        
+
+    @property
+    def sort_by(self):
+        score = super(AbstractProductsAccumulationCard, self).sort_by
+        return score + 1000
+
+    def to_dict(self):
+        # ignore some properties to keep dict small.   
+        properties_to_ignore = [
+            "exemplar_metric", 
+            "products"]
+        ret = util.dict_from_dir(self, properties_to_ignore)
+        return ret
+
+
+class ProfileNewMetricCard(AbstractProductsAccumulationCard):
+
+    def get_template_name(self):
+        return "card-profile"
 
     @classmethod
     def metric_accumulations(cls, products, provider, interaction):
-        matching_metrics = cls.get_metrics_by_name(products, provider, interaction)
+        matching_metrics = get_metrics_by_name(products, provider, interaction)
 
         metrics_with_diffs = [m for m in matching_metrics if m.can_diff]
 
@@ -203,6 +237,71 @@ class ProfileNewMetricCard(Card):
                     "accumulated_diff": accumulated_diff
                     })
         return None
+
+
+
+
+class GenreAccumulationCard(AbstractProductsAccumulationCard):
+
+    @classmethod
+    #override with a version that returns all cards, not just ones that freshly pass milestones
+    def metric_accumulations(cls, products, provider, interaction):
+        matching_metrics = get_metrics_by_name(products, provider, interaction)
+
+        accumulated_diff_start_value = sum([m.diff_window_start_value for m in matching_metrics 
+            if m.diff_window_start_value])
+        accumulated_diff_end_value = sum([m.diff_window_end_value for m in matching_metrics 
+            if m.diff_window_end_value])
+        accumulated_diff = accumulated_diff_end_value - accumulated_diff_start_value
+
+        if not accumulated_diff_end_value:
+            return None
+
+        # milestones will be the same in all the metrics so just grab the first one
+        milestones = matching_metrics[0].config["milestones"]
+
+        # see if we just passed any of them
+        for milestone in sorted(milestones, reverse=True):
+            if accumulated_diff_start_value < milestone <= accumulated_diff_end_value:
+                milestone = milestone
+                break
+
+        return ({
+            "milestone": milestone, 
+            "accumulated_diff_end_value": accumulated_diff_end_value,
+            "accumulated_diff": accumulated_diff
+            })
+
+    def to_dict(self):
+        # ignore some properties to keep dict small.   
+        properties_to_ignore = [
+            "url_slug", 
+            "exemplar_metric", 
+            "products"]
+        ret = util.dict_from_dir(self, properties_to_ignore)
+        return ret
+
+
+
+class GenreProductsWithMoreThanCard(Card):
+
+    def __init__(self, products, provider, interaction):
+        self.products = products
+        self.provider = provider
+        self.interaction = interaction
+
+        # this card doesn't have a solo metric object, but it helps to 
+        # save an exemplar metric so that it can be used to access relevant display properies
+        try:
+            self.exemplar_metric = get_metrics_by_name(self.products, provider, interaction)[0] #exemplar metric 
+        except IndexError:
+            pass
+        super(ProfileNewMetricCard, self).__init__(timestamp=timestamp)
+
+
+    @classmethod
+    def would_generate_a_card(cls, products, provider, interaction):
+        return len(products) > 3
 
     @property
     def milestone_awarded(self):
@@ -230,10 +329,6 @@ class ProfileNewMetricCard(Card):
         score = super(ProfileNewMetricCard, self).sort_by
         return score + 1000
 
-    def get_template_name(self):
-        return "card-profile"
-
-
     def to_dict(self):
         # ignore some properties to keep dict small.   
         properties_to_ignore = [
@@ -241,45 +336,6 @@ class ProfileNewMetricCard(Card):
             "products"]
         ret = util.dict_from_dir(self, properties_to_ignore)
         return ret
-
-
-
-
-class GenreMetricCard(ProfileNewMetricCard):
-
-    #override
-    def get_template_name(self):
-        return "card-genre"
-
-
-    @classmethod
-    #override with a version that returns all cards, not just ones that freshly pass milestones
-    def metric_accumulations(cls, products, provider, interaction):
-        matching_metrics = cls.get_metrics_by_name(products, provider, interaction)
-
-        accumulated_diff_start_value = sum([m.diff_window_start_value for m in matching_metrics 
-            if m.diff_window_start_value])
-        accumulated_diff_end_value = sum([m.diff_window_end_value for m in matching_metrics 
-            if m.diff_window_end_value])
-        accumulated_diff = accumulated_diff_end_value - accumulated_diff_start_value
-
-        if not accumulated_diff_end_value:
-            return None
-
-        # milestones will be the same in all the metrics so just grab the first one
-        milestones = matching_metrics[0].config["milestones"]
-
-        # see if we just passed any of them
-        for milestone in sorted(milestones, reverse=True):
-            if accumulated_diff_start_value < milestone <= accumulated_diff_end_value:
-                milestone = milestone
-                break
-
-        return ({
-            "milestone": milestone, 
-            "accumulated_diff_end_value": accumulated_diff_end_value,
-            "accumulated_diff": accumulated_diff
-            })
 
 
 
