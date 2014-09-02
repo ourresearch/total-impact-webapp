@@ -153,7 +153,10 @@ class ProfileNewMetricCard(Card):
 
         # this card doesn't have a solo metric object, but it helps to 
         # save an exemplar metric so that it can be used to access relevant display properies
-        self.exemplar_metric = profile.get_metrics_by_name(provider, interaction)[0] #exemplar metric 
+        try:
+            self.exemplar_metric = profile.get_metrics_by_name(provider, interaction)[0] #exemplar metric 
+        except IndexError:
+            pass
         super(ProfileNewMetricCard, self).__init__(timestamp=timestamp)
 
 
@@ -197,7 +200,10 @@ class ProfileNewMetricCard(Card):
         ret = util.dict_from_dir(self, properties_to_ignore)
 
         # add to help with debugging
-        ret["url_slug"] = self.profile.url_slug
+        try:
+            ret["url_slug"] = self.profile.url_slug
+        except AttributeError:
+            pass
 
         return ret
 

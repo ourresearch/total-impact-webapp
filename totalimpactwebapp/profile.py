@@ -189,7 +189,7 @@ class Profile(db.Model):
 
     @cached_property
     def genres(self):
-        return make_genres_dict(self.id, self.products)
+        return make_genres_dict(self.id, self.products_not_removed)
 
     @cached_property
     def display_products(self):

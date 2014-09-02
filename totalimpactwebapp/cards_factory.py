@@ -8,7 +8,6 @@ import datetime
 
 def make_product_new_metrics_cards(profile, timestamp=None):
 
-
     if not timestamp:
         timestamp = datetime.datetime.utcnow()
 
