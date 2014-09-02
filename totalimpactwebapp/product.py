@@ -406,7 +406,8 @@ class Product(db.Model):
             "alias_rows",
             "biblio_rows",
             "percentile_snaps",
-            "snaps"
+            "snaps",
+            "snaps_including_interactions"
         ]
 
         ret = dict_from_dir(self, attributes_to_ignore)

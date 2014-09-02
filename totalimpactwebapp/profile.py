@@ -3,6 +3,9 @@ from totalimpactwebapp import heading_product
 from totalimpactwebapp import profile_award
 from totalimpactwebapp import util
 from totalimpactwebapp import configs
+from totalimpactwebapp.product_markup import Markup
+from totalimpactwebapp.product_markup import MarkupFactory
+from totalimpactwebapp.genre import make_genres_dict
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import commit
 
@@ -34,7 +37,7 @@ logger = logging.getLogger("tiwebapp.profile")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
 
 free_trial_timedelta = datetime.timedelta(days=30)
-trial_for_old_free_users_started_on = datetime.datetime(year=2014, month=8, day=16)
+trial_for_old_free_users_started_on = datetime.datetime(year=2014, month=8, day=1)
 
 
 
@@ -87,7 +90,6 @@ class RefreshStatus(object):
             precise = 100
 
         return int(precise)
-
 
     def to_dict(self):
         return util.dict_from_dir(self, "products")
@@ -184,6 +186,10 @@ class Profile(db.Model):
     @cached_property
     def products_not_removed(self):
         return [p for p in self.products if not p.removed]
+
+    @cached_property
+    def genres(self):
+        return make_genres_dict(self.id, self.products)
 
     @cached_property
     def display_products(self):
@@ -567,6 +573,28 @@ class Profile(db.Model):
     def __repr__(self):
         return u'<Profile {name} (id {id})>'.format(name=self.full_name, id=self.id)
 
+
+def build_profile_dict(profile, hide_keys, embed):
+    markup = Markup(profile.id, embed=embed)
+
+    profile_dict = {
+        "products": profile.get_products_markup(
+            markup=markup,
+            hide_keys=hide_keys,
+            add_heading_products=True
+        )
+    }
+
+    # things that would be in about, but require products
+    profile_dict["is_refreshing"] = profile.is_refreshing
+    profile_dict["product_count"] = profile.product_count
+    profile_dict["genres"] = profile.genres
+
+    if not "about" in hide_keys:
+        profile_dict["about"] = profile.dict_about(show_secrets=False)
+        profile_dict["awards"] = profile.awards
+
+    return profile_dict
 
 
 def delete_products_from_profile(profile, tiids_to_delete):

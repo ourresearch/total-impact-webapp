@@ -37,11 +37,10 @@ from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.profile import delete_products_from_profile
 from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
+from totalimpactwebapp.profile import build_profile_dict
 from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import upload_file_and_commit
 from totalimpactwebapp.product import add_product_embed_markup
-from totalimpactwebapp.product_markup import Markup
-from totalimpactwebapp.product_markup import MarkupFactory
 
 from totalimpactwebapp.interaction import log_interaction_event
 
@@ -358,30 +357,15 @@ def get_user_profile(profile_id):
     )
 
     hide_keys = request.args.get("hide", "").split(",")
+    embed = request.args.get("embed")
 
-    markup = Markup(g.user_id, embed=request.args.get("embed"))
-
-    resp = {
-        "products": profile.get_products_markup(
-            markup=markup,
-            hide_keys=hide_keys,
-            add_heading_products=True
-        )
-    }
-
-    # things that would be in about, but require products
-    resp["is_refreshing"] = profile.is_refreshing
-    resp["product_count"] = profile.product_count
-
-    if not "about" in hide_keys:
-        resp["about"] = profile.dict_about(show_secrets=False)
-        resp["awards"] = profile.awards
+    profile_dict = build_profile_dict(profile, hide_keys, embed)
 
     logger.debug(u"/profile/{slug} built the response; took {elapsed}ms".format(
         slug=profile.url_slug,
         elapsed=resp_constr_timer.elapsed()
     ))
-    return resp
+    return profile_dict
 
 
 @app.route("/profile/<profile_id>", methods=['GET'])
