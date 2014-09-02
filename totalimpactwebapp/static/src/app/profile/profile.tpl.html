@@ -116,31 +116,24 @@
    </div>
 </div>
 
-<div class="products" ng-show="userExists">
+<div class="genres">
    <div class="wrapper">
-      <ul class="products-list">
-         <li class="product genre-{{ product.genre }}"
-             ng-class="{'heading': product.is_heading, 'real-product': !product.is_heading, first: $first}"
-             ng-repeat="product in filteredProducts = (products | orderBy:['genre', 'is_heading', '-awardedness_score', '-metric_raw_sum', 'biblio.title']) | filter: productFilter"
-             id="{{ product.tiid }}"
-             on-repeat-finished>
-
-
-            <!-- users must be logged in, and product can't be a heading product -->
-            <div class="product-margin" ng-show="security.isLoggedIn(url_slug) && !product.is_heading">
-               <span class="single-product-controls">
-                  <a class="remove-product"
-                     tooltip="Delete this product"
-                     ng-click="removeProduct(product)">
-                     <i class="icon-trash icon"></i>
-                  </a>
-               </span>
-            </div>
-            <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
+      <ul class="genre-list">
+         <li ng-repeat="genre in genres" class="genre-{{ genre.genre }}">
+            <h3 class="genre-name">
+               {{ genre.genre }}
+            </h3>
+            <ul class="genre-cards">
+               <li class="genre-card" ng-repeat="card in genre.cards">
+                  <pre>{{ card|json }}</pre>
+               </li>
+            </ul>
          </li>
       </ul>
    </div>
 </div>
+
+
 
 <div class="user-does-not-exist no-page" ng-show="!userExists">
    <h2>Whoops!</h2>

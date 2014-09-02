@@ -315,6 +315,7 @@ angular.module("profile", [
           $scope.products = resp.products
           $scope.profileAwards = resp.awards
           $scope.doneLoading = true
+          $scope.genres = resp.genres
 
           // got user back with products. if still refreshing, show update modal
           console.log("here's the is_refreshing before checking it", resp.is_refreshing)
