@@ -7,7 +7,7 @@ from totalimpactwebapp.util import dict_from_dir
 logger = logging.getLogger("tiwebapp.genre")
 
 
-def make_genres_dict(profile_id, products):
+def make_genres_list(profile_id, products):
     genres = {}
 
     for product in products:
@@ -21,7 +21,7 @@ def make_genres_dict(profile_id, products):
 class Genre(object):
     def __init__(self, profile_id, genre):
         self.profile_id = profile_id
-        self.genre = genre
+        self.name = genre
         self.products = []
 
     def add_product(self, product):
@@ -30,6 +30,10 @@ class Genre(object):
     @cached_property
     def num_products(self):
         return len(self.products)
+
+    @cached_property
+    def num_products_with_new_metrics(self):
+        return len([p for p in self.products if p.has_diff])
 
     @cached_property
     def cards(self):

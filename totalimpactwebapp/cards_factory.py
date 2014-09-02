@@ -1,6 +1,7 @@
 from totalimpactwebapp.card import ProductNewMetricCard
 from totalimpactwebapp.card import ProfileNewMetricCard
-from totalimpactwebapp.card import GenreMetricCard
+from totalimpactwebapp.card import GenreAccumulationCard
+from totalimpactwebapp.card import GenreProductsWithMoreThanCard
 import configs
 
 import datetime
@@ -41,7 +42,8 @@ def make_profile_new_metrics_cards(products, url_slug):
 
 
 def make_genre_cards(products):
-    return make_product_list_cards(products, GenreMetricCard)
+    return make_product_list_cards(products, GenreAccumulationCard)
+    return make_product_list_cards(products, GenreProductsWithMoreThanCard)
 
 
 
