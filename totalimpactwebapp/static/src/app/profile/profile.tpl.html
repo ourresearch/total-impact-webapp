@@ -54,41 +54,6 @@
 
 <div class="product-controls" ng-show="userExists && doneLoading">
    <div class="wrapper">
-      <div class="products-info">
-
-         <div class="products-done-updating">
-
-            <!-- filter products -->
-            <div class="filters">
-
-               <div class="filter" ng-class="{active: !productFilter.has_metrics && !productFilter.has_diff}">
-                  <a ng-click="setProductFilter('all')">
-                     Products
-                     <span class="count">({{ (products|filter:{is_true_product:true}).length }})</span>
-                  </a>
-               </div>
-
-               <div class="filter" ng-class="{active: (productFilter.has_metrics && !productFilter.has_diff)}">
-                  <i class="icon-chevron-right left"></i>
-                  <a ng-click="setProductFilter('has_metrics')">
-                     with metrics
-                     <span class="count">({{ (products|filter:{is_true_product:true, has_metrics: true}).length }})</span>
-                  </a>
-               </div>
-               <div class="filter this-week"
-                    ng-show="(products|filter:{has_diff: true}).length > 0"
-                    ng-class="{active: productFilter.has_diff}">
-                  <i class="icon-chevron-right left"></i>
-                  <a ng-click="setProductFilter('has_diff')">
-                     this week
-                     <span class="count">({{ (products|filter:{is_true_product:true, has_diff: true}).length }})</span>
-
-                  </a>
-               </div>
-            </div>
-         </div>
-
-      </div>
       <div class="view-controls">
          <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
          <div class="admin-controls" ng-show="security.isLoggedIn(url_slug) && !page.isEmbedded()">
@@ -119,9 +84,9 @@
 <div class="genres">
    <div class="wrapper">
       <ul class="genre-list">
-         <li ng-repeat="genre in genres" class="genre-{{ genre.genre }}">
+         <li ng-repeat="genre in genres" class="genre-{{ genre.name }}">
             <h3 class="genre-name">
-               {{ genre.genre }}
+               {{ genre.name }}
             </h3>
             <ul class="genre-cards">
                <li class="genre-card" ng-repeat="card in genre.cards">
