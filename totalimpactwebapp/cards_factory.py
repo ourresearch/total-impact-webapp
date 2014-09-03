@@ -42,8 +42,10 @@ def make_profile_new_metrics_cards(products, url_slug):
 
 
 def make_genre_cards(products):
-    return make_product_list_cards(products, GenreAccumulationCard)
-    return make_product_list_cards(products, GenreProductsWithMoreThanCard)
+    cards = []
+    cards += make_product_list_cards(products, GenreAccumulationCard)
+    cards += make_product_list_cards(products, GenreProductsWithMoreThanCard)
+    return cards
 
 
 

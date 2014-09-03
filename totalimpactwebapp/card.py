@@ -14,7 +14,7 @@ def get_metrics_by_name(products, provider, interaction):
 class Card(object):
 
     def __init__(self, **kwargs):
-        if not "timestamp" in kwargs:
+        if "timestamp" in kwargs:
             self.timestamp = kwargs["timestamp"]
         else:
             self.timestamp = datetime.datetime.utcnow()
@@ -201,7 +201,8 @@ class AbstractProductsAccumulationCard(Card):
         # ignore some properties to keep dict small.   
         properties_to_ignore = [
             "exemplar_metric", 
-            "products"]
+            "products"
+            ]
         ret = util.dict_from_dir(self, properties_to_ignore)
         return ret
 
@@ -277,7 +278,8 @@ class GenreAccumulationCard(AbstractProductsAccumulationCard):
         properties_to_ignore = [
             "url_slug", 
             "exemplar_metric", 
-            "products"]
+            "products"
+            ]
         ret = util.dict_from_dir(self, properties_to_ignore)
         return ret
 
@@ -285,10 +287,11 @@ class GenreAccumulationCard(AbstractProductsAccumulationCard):
 
 class GenreProductsWithMoreThanCard(Card):
 
-    def __init__(self, products, provider, interaction):
+    def __init__(self, products, provider, interaction, url_slug=None):
         self.products = products
         self.provider = provider
         self.interaction = interaction
+        self.threshold = 75
 
         # this card doesn't have a solo metric object, but it helps to 
         # save an exemplar metric so that it can be used to access relevant display properies
@@ -296,44 +299,41 @@ class GenreProductsWithMoreThanCard(Card):
             self.exemplar_metric = get_metrics_by_name(self.products, provider, interaction)[0] #exemplar metric 
         except IndexError:
             pass
-        super(ProfileNewMetricCard, self).__init__(timestamp=timestamp)
+        super(GenreProductsWithMoreThanCard, self).__init__()
 
 
     @classmethod
     def would_generate_a_card(cls, products, provider, interaction):
-        return len(products) > 3
+        matching_metrics = get_metrics_by_name(products, provider, interaction)
+        return len(matching_metrics)>=3
+
 
     @property
-    def milestone_awarded(self):
-        try:
-            return self.metric_accumulations(self.products, self.provider, self.interaction)["milestone"]
-        except KeyError:
-            return None
+    def metric_threshold_value(self):
+        matching_metrics = get_metrics_by_name(self.products, self.provider, self.interaction)
+        values = [m.most_recent_snap.raw_value_int for m in matching_metrics]
+        return 2
 
     @property
-    def current_value(self):
-        try:
-            return self.metric_accumulations(self.products, self.provider, self.interaction)["accumulated_diff_end_value"]
-        except KeyError:
-            return None
+    def number_products_this_good(self):
+        value = self.metric_threshold_value
+        matching_metrics = get_metrics_by_name(self.products, self.provider, self.interaction)
 
-    @property
-    def diff_value(self):
-        try:
-            return self.metric_accumulations(self.products, self.provider, self.interaction)["accumulated_diff"]
-        except KeyError:
-            return None                        
+        large_enough_metrics = [m for m in matching_metrics 
+            if m.most_recent_snap.raw_value_int >= value]
+        
+        return len(large_enough_metrics)                      
 
     @property
     def sort_by(self):
-        score = super(ProfileNewMetricCard, self).sort_by
-        return score + 1000
+        return (1000 + self.number_products_this_good)
 
     def to_dict(self):
         # ignore some properties to keep dict small.   
         properties_to_ignore = [
             "exemplar_metric", 
-            "products"]
+            "products"
+            ]
         ret = util.dict_from_dir(self, properties_to_ignore)
         return ret
 
