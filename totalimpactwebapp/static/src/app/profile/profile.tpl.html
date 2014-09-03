@@ -85,20 +85,29 @@
    <div class="wrapper">
       <ul class="genre-list">
          <li ng-repeat="genre in genres" class="genre genre-{{ genre.name }}">
-            <h3 class="genre-name">
-               {{ genre.name }}
-            </h3>
-            <div class="genre-vitals">
-               <span class="total-products">
-                  <span class="val">{{ genre.num_products }}</span>
-                  <span class="key">products</span>
-               </span>
+            <div class="genre-header">
+               <h3 class="genre-name">
+                  {{ genre.name }}
+               </h3>
+               <div class="genre-vitals">
+                  <span class="num-products">
+                     <span class="value">{{ genre.num_products }}</span>
+                     <span class="key">products</span>
+                  </span>
+                  <span class="num-products-with-new-metrics"
+                        ng-show="genre.num_products_with_new_metrics">
+                     <span class="value">{{ genre.num_products_with_new_metrics }}</span>
+                     <span class="key">with new metrics</span>
+                  </span>
+               </div>
             </div>
-            <ul class="genre-cards">
-               <li class="genre-card" ng-repeat="card in genre.cards">
-                  <pre>{{ card|json }}</pre>
-               </li>
-            </ul>
+            <div class="genre-body">
+               <ul class="genre-cards">
+                  <li class="genre-card" ng-repeat="card in genre.cards">
+                     <pre>{{ card|json }}</pre>
+                  </li>
+               </ul>
+            </div>
          </li>
       </ul>
    </div>

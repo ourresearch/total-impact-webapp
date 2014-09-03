@@ -440,7 +440,41 @@ div.genres {
    div.wrapper {
       ul.genre-list {
          li.genre {
+            border: 2px solid #eee;
+            margin-top: 50px;
+            position: relative;
+            div.genre-header {
+               background: #eee;
+               h3 {
+                  margin: 0;
+                  padding: 10px;
+               }
+               div.genre-vitals {
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                  margin: 10px;
+                  color: #555;
+                  span.num-products-with-new-metrics {
+                     color: @publicColor;
+                  }
+                  span.value {
+                     font-size: 30px;
+                     font-weight: bold;
+                  }
+                  span.key {
+                     font-size: 13px;
+                     font-weight: 300;
+                     width: 68px;
+                     display: inline-block;
+                     line-height: 1;
+                     margin-left: 5px;
+                  }
+               }
+            }
+            div.genre-body{
 
+            }
          }
       }
    }
