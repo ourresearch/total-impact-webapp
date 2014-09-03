@@ -39,6 +39,13 @@ class Genre(object):
     def cards(self):
         return make_genre_cards(self.products)
 
+    @cached_property
+    def journals(self):
+        if self.name == "article":
+            return ["Nature", "Cell", "Science", "First Monday", "PLOS ONE", "PeerJ"]
+        else:
+            return []
+
 
     def to_dict(self):
         attributes_to_ignore = [
