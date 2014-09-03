@@ -209,8 +209,10 @@ angular.module("profile", [
     }
 
 
-    $scope.bestCards = function(cards){
-      return _.sortBy(cards, "sort_by")
+    $scope.sliceSortedCards = function(cards, startIndex, endIndex){
+      var sorted = _.sortBy(cards, "sort_by")
+      var reversed = sorted.concat([]).reverse()
+      return reversed.slice(startIndex, endIndex)
     }
 
 
