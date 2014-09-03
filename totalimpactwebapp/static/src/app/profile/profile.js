@@ -209,6 +209,9 @@ angular.module("profile", [
     }
 
 
+    $scope.bestCards = function(cards){
+      return _.sortBy(cards, "sort_by")
+    }
 
 
     var renderProducts = function(){
@@ -231,6 +234,8 @@ angular.module("profile", [
           $scope.profileAwards = resp.awards
           $scope.doneLoading = true
           $scope.genres = resp.genres
+
+
 
           // got user back with products. if still refreshing, show update modal
           console.log("here's the is_refreshing before checking it", resp.is_refreshing)

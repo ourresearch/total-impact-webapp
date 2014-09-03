@@ -1624,6 +1624,9 @@ angular.module("profile", [
     }
 
 
+    $scope.bestCards = function(cards){
+      return _.sortBy(cards, "sort_by")
+    }
 
 
     var renderProducts = function(){
@@ -1646,6 +1649,8 @@ angular.module("profile", [
           $scope.profileAwards = resp.awards
           $scope.doneLoading = true
           $scope.genres = resp.genres
+
+
 
           // got user back with products. if still refreshing, show update modal
           console.log("here's the is_refreshing before checking it", resp.is_refreshing)
@@ -6327,7 +6332,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            </div>\n" +
     "            <div class=\"genre-body\">\n" +
     "               <ul class=\"genre-cards\">\n" +
-    "                  <li class=\"genre-card\" ng-repeat=\"card in genre.cards\">\n" +
+    "                  <li class=\"genre-card\" ng-repeat=\"card in bestCards(genre.cards)\">\n" +
     "                     <pre>{{ card|json }}</pre>\n" +
     "                  </li>\n" +
     "               </ul>\n" +
