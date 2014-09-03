@@ -66,29 +66,6 @@ award_configs = {
 
 
 
-#***************************************************************************
-#*
-#*                           Award Configs
-#*
-#***************************************************************************
-genre_icons = {
-    'article': "icon-file-text-alt",
-    'blog': "icon-comments",
-    'dataset': "icon-table",
-    'figure': "icon-bar-chart",
-    'poster': "icon-picture",
-    'slides': "icon-desktop",
-    'software': "icon-save",
-    'twitter': "icon-twitter",
-    'video': "icon-facetime-video",
-    'webpage': "icon-globe",
-    'other': "icon-ellipsis-horizontal",
-    'unknown': "icon-ellipsis-horizontal"
-}
-
-
-
-
 
 
 
@@ -937,6 +914,30 @@ def metrics(this_key_only=None):
 
     return ret
 
+
+
+
+
+#***************************************************************************
+#*
+#*                           Genres
+#*
+#***************************************************************************
+
+genre_icons = {
+    'article': "icon-file-text-alt",
+    'blog': "icon-comments",
+    'dataset': "icon-table",
+    'figure': "icon-bar-chart",
+    'poster': "icon-picture",
+    'slides': "icon-desktop",
+    'software': "icon-save",
+    'twitter': "icon-twitter",
+    'video': "icon-facetime-video",
+    'webpage': "icon-globe",
+    'other': "icon-ellipsis-horizontal",
+    'unknown': "icon-ellipsis-horizontal"
+}
 
 
 

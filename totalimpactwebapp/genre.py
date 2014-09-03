@@ -3,6 +3,8 @@ from totalimpactwebapp.cards_factory import make_genre_cards
 from totalimpactwebapp.cards_factory import make_genre_new_metrics_cards
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import dict_from_dir
+from totalimpactwebapp.configs import pluralize_genre
+from totalimpactwebapp.configs import genre_icons
 
 
 logger = logging.getLogger("tiwebapp.genre")
@@ -35,6 +37,17 @@ class Genre(object):
     @cached_property
     def num_products_with_new_metrics(self):
         return len([p for p in self.products if p.has_diff])
+
+    @cached_property
+    def plural_name(self):
+        return pluralize_genre(self.name)
+
+    @cached_property
+    def icon(self):
+        try:
+            return genre_icons[self.name]
+        except KeyError:
+            return genre_icons["other"]
 
     @cached_property
     def cards(self):
