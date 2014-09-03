@@ -7420,6 +7420,7 @@ div.genres div.wrapper ul.genre-list li.genre div.genre-header div.genre-vitals 
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body {
   clear: both;
+  padding: 20px;
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body:before,
 div.genres div.wrapper ul.genre-list li.genre div.genre-body:after {
@@ -7460,7 +7461,6 @@ div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-second-best {
   float: right;
-  margin: 20px 0;
   width: 25%;
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-second-best li.genre-card {
