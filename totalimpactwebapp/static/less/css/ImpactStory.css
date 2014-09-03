@@ -7420,7 +7420,7 @@ div.genres div.wrapper ul.genre-list li.genre div.genre-header div.genre-vitals 
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body {
   clear: both;
-  padding: 20px;
+  padding: 30px 0;
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body:before,
 div.genres div.wrapper ul.genre-list li.genre div.genre-body:after {
@@ -7443,21 +7443,44 @@ div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card {
   float: left;
+  margin-left: 40px;
+}
+div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card img.icon {
+  margin-top: -10px;
+  margin-right: 5px;
+  width: 26px;
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.value {
-  font-size: 50px;
+  font-size: 34px;
   font-weight: bold;
-  margin-left: 40px;
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.key {
   display: inline-block;
   line-height: 1;
-  font-size: 16px;
+  font-size: 15px;
   margin-left: 10px;
   color: #555;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.key span.provider {
+div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-accumulation span.key span.provider {
   display: block;
+}
+div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key {
+  vertical-align: -10px;
+}
+div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key span.genre-name {
+  display: block;
+  margin-bottom: 3px;
+  color: #777;
+  font-size: 12px;
+}
+div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key span.more-than {
+  display: block;
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 3px;
+}
+div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key span.threshold {
+  font-weight: bold;
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-second-best {
   float: right;
@@ -7465,6 +7488,9 @@ div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-seco
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-second-best li.genre-card {
   font-size: 16px;
+}
+div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-second-best li.genre-card img {
+  width: 16px;
 }
 div.profile-subpage .profile-subpage-header {
   background: #555;

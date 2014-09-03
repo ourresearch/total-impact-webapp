@@ -104,26 +104,31 @@
             <div class="genre-body">
                <ul class="genre-cards-best">
                   <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3)">
-
+                     <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >
                      <span class="card-accumulation" ng-show="card.card_type=='GenreAccumulationCard'">
-                        <span class="value">{{ card.current_value }}</span>
+                        <span class="value">{{ nFormat(card.current_value) }}</span>
                         <span class="key">
                            <span class="provider">{{ card.provider }}</span>
                            <span class="interaction">{{ card.interaction }}</span>
                         </span>
                      </span>
 
-                     <span class="card-accumulation" ng-show="card.card_type=='GenreProductsWithMoreThanCard'">
+                     <span class="card-products-with-more-than-this" ng-show="card.card_type=='GenreProductsWithMoreThanCard'">
                         <span class="value">{{ card.number_products_this_good }}</span>
                         <span class="key">
-                           <span class="explanation">
-                              {{ genre.plural_name }} with more than
-                              <span class="threshold-value">
-                                 {{ card.metric_threshold_value }}
-                              </span>
+                           <span class="genre-name">
+                              {{ genre.plural_name }}
                            </span>
-                           <span class="provider">{{ card.provider }}</span>
-                           <span class="interaction">{{ card.interaction }}</span>
+                           <span class="more-than">
+                              with more than
+                           </span>
+                           <span class="threshold">
+                              <span class="threshold-value">
+                                 {{ nFormat(card.metric_threshold_value) }}
+                              </span>
+                              <span class="provider">{{ card.provider }}</span>
+                              <span class="interaction">{{ card.interaction }}</span>
+                           </span>
                         </span>
                      </span>
 
@@ -134,8 +139,9 @@
                   <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 3, 6)">
 
                      <!-- all this is copy/pasted from above -->
+                     <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >
                      <span class="card-accumulation" ng-show="card.card_type=='GenreAccumulationCard'">
-                        <span class="value">{{ card.current_value }}</span>
+                        <span class="value">{{ nFormat(card.current_value) }}</span>
                         <span class="key">
                            <span class="provider">{{ card.provider }}</span>
                            <span class="interaction">{{ card.interaction }}</span>
@@ -148,7 +154,7 @@
                            <span class="explanation">
                               {{ genre.plural_name }} with more than
                               <span class="threshold-value">
-                                 {{ card.metric_threshold_value }}
+                                 {{ nFormat(card.metric_threshold_value) }}
                               </span>
                            </span>
                            <span class="provider">{{ card.provider }}</span>

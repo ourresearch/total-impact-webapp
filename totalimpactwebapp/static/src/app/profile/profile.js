@@ -215,6 +215,17 @@ angular.module("profile", [
       return reversed.slice(startIndex, endIndex)
     }
 
+    $scope.nFormat = function(num) {
+      // from http://stackoverflow.com/a/14994860/226013
+      if (num >= 1000000) {
+          return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      }
+      if (num >= 1000) {
+          return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+      }
+      return num;
+    }
+
 
     var renderProducts = function(){
       console.log("rendering products")

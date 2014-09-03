@@ -474,24 +474,55 @@ div.genres {
             }
             div.genre-body{
                .clearfix();
-               padding: 20px;
+               padding: 30px 0;
                ul.genre-cards-best {
                   width:70%;
                   li.genre-card {
+                     img.icon {
+                        margin-top: -10px;
+                        margin-right: 5px;
+                        width: 26px;
+                     }
                      float:left;
+                     margin-left: 40px;
                      span.value {
-                        font-size: 50px;
+                        font-size: 34px;
                         font-weight: bold;
-                        margin-left: 40px;
                      }
                      span.key {
                         display:inline-block;
                         line-height: 1;
-                        font-size: 16px;
+                        font-size: 15px;
                         margin-left: 10px;
                         color: #555;
-                        span.provider {
-                           display:block;
+                     }
+                     span.card-accumulation {
+                        span.key {
+                           span.provider {
+                              display:block;
+                           }
+                        }
+                     }
+
+                     span.card-products-with-more-than-this {
+                        span.key {
+                           vertical-align: -10px;
+                           span.genre-name {
+                              display:block;
+                              margin-bottom: 3px;
+                              color: #777;
+                              font-size: 12px;
+                           }
+                           span.more-than {
+                              display: block;
+                              font-size: 12px;
+                              color: #777;
+                              margin-bottom: 3px;
+                           }
+                           span.threshold {
+                              font-weight: bold;
+                           }
+
                         }
                      }
                   }
@@ -501,7 +532,11 @@ div.genres {
                   float:right;
                   width: 25%;
                   li.genre-card {
+                     img {
+                        width: 16px;
+                     }
                      font-size: 16px;
+
                   }
                }
 

@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-02
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-03
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1628,6 +1628,17 @@ angular.module("profile", [
       var sorted = _.sortBy(cards, "sort_by")
       var reversed = sorted.concat([]).reverse()
       return reversed.slice(startIndex, endIndex)
+    }
+
+    $scope.nFormat = function(num) {
+      // from http://stackoverflow.com/a/14994860/226013
+      if (num >= 1000000) {
+          return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      }
+      if (num >= 1000) {
+          return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+      }
+      return num;
     }
 
 
@@ -6335,26 +6346,31 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <div class=\"genre-body\">\n" +
     "               <ul class=\"genre-cards-best\">\n" +
     "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3)\">\n" +
-    "\n" +
+    "                     <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >\n" +
     "                     <span class=\"card-accumulation\" ng-show=\"card.card_type=='GenreAccumulationCard'\">\n" +
-    "                        <span class=\"value\">{{ card.current_value }}</span>\n" +
+    "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
     "                        <span class=\"key\">\n" +
     "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
     "                           <span class=\"interaction\">{{ card.interaction }}</span>\n" +
     "                        </span>\n" +
     "                     </span>\n" +
     "\n" +
-    "                     <span class=\"card-accumulation\" ng-show=\"card.card_type=='GenreProductsWithMoreThanCard'\">\n" +
+    "                     <span class=\"card-products-with-more-than-this\" ng-show=\"card.card_type=='GenreProductsWithMoreThanCard'\">\n" +
     "                        <span class=\"value\">{{ card.number_products_this_good }}</span>\n" +
     "                        <span class=\"key\">\n" +
-    "                           <span class=\"explanation\">\n" +
-    "                              {{ genre.plural_name }} with more than\n" +
-    "                              <span class=\"threshold-value\">\n" +
-    "                                 {{ card.metric_threshold_value }}\n" +
-    "                              </span>\n" +
+    "                           <span class=\"genre-name\">\n" +
+    "                              {{ genre.plural_name }}\n" +
     "                           </span>\n" +
-    "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
-    "                           <span class=\"interaction\">{{ card.interaction }}</span>\n" +
+    "                           <span class=\"more-than\">\n" +
+    "                              with more than\n" +
+    "                           </span>\n" +
+    "                           <span class=\"threshold\">\n" +
+    "                              <span class=\"threshold-value\">\n" +
+    "                                 {{ nFormat(card.metric_threshold_value) }}\n" +
+    "                              </span>\n" +
+    "                              <span class=\"provider\">{{ card.provider }}</span>\n" +
+    "                              <span class=\"interaction\">{{ card.interaction }}</span>\n" +
+    "                           </span>\n" +
     "                        </span>\n" +
     "                     </span>\n" +
     "\n" +
@@ -6365,8 +6381,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 3, 6)\">\n" +
     "\n" +
     "                     <!-- all this is copy/pasted from above -->\n" +
+    "                     <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >\n" +
     "                     <span class=\"card-accumulation\" ng-show=\"card.card_type=='GenreAccumulationCard'\">\n" +
-    "                        <span class=\"value\">{{ card.current_value }}</span>\n" +
+    "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
     "                        <span class=\"key\">\n" +
     "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
     "                           <span class=\"interaction\">{{ card.interaction }}</span>\n" +
@@ -6379,7 +6396,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                           <span class=\"explanation\">\n" +
     "                              {{ genre.plural_name }} with more than\n" +
     "                              <span class=\"threshold-value\">\n" +
-    "                                 {{ card.metric_threshold_value }}\n" +
+    "                                 {{ nFormat(card.metric_threshold_value) }}\n" +
     "                              </span>\n" +
     "                           </span>\n" +
     "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
