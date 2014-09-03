@@ -84,10 +84,16 @@
 <div class="genres">
    <div class="wrapper">
       <ul class="genre-list">
-         <li ng-repeat="genre in genres" class="genre-{{ genre.name }}">
+         <li ng-repeat="genre in genres" class="genre genre-{{ genre.name }}">
             <h3 class="genre-name">
                {{ genre.name }}
             </h3>
+            <div class="genre-vitals">
+               <span class="total-products">
+                  <span class="val">{{ genre.num_products }}</span>
+                  <span class="key">products</span>
+               </span>
+            </div>
             <ul class="genre-cards">
                <li class="genre-card" ng-repeat="card in genre.cards">
                   <pre>{{ card|json }}</pre>

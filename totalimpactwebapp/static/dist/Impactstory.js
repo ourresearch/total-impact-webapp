@@ -6308,10 +6308,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "<div class=\"genres\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <ul class=\"genre-list\">\n" +
-    "         <li ng-repeat=\"genre in genres\" class=\"genre-{{ genre.name }}\">\n" +
+    "         <li ng-repeat=\"genre in genres\" class=\"genre genre-{{ genre.name }}\">\n" +
     "            <h3 class=\"genre-name\">\n" +
     "               {{ genre.name }}\n" +
     "            </h3>\n" +
+    "            <div class=\"genre-vitals\">\n" +
+    "               <span class=\"total-products\">\n" +
+    "                  <span class=\"val\">{{ genre.num_products }}</span>\n" +
+    "                  <span class=\"key\">products</span>\n" +
+    "               </span>\n" +
+    "            </div>\n" +
     "            <ul class=\"genre-cards\">\n" +
     "               <li class=\"genre-card\" ng-repeat=\"card in genre.cards\">\n" +
     "                  <pre>{{ card|json }}</pre>\n" +
