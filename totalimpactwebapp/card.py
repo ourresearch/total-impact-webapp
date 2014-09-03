@@ -12,10 +12,11 @@ def get_metrics_by_name(products, provider, interaction):
             matching_metrics.append(metric)
     return matching_metrics
 
+
 class Card(object):
 
     def __init__(self, **kwargs):
-        if "timestamp" in kwargs:
+        if "timestamp" in kwargs and kwargs["timestamp"]:
             self.timestamp = kwargs["timestamp"]
         else:
             self.timestamp = datetime.datetime.utcnow()
@@ -208,7 +209,7 @@ class AbstractProductsAccumulationCard(Card):
         return ret
 
 
-class ProfileNewMetricCard(AbstractProductsAccumulationCard):
+class AbstractNewMetricCard(AbstractProductsAccumulationCard):
 
     def get_template_name(self):
         return "card-profile"
@@ -241,6 +242,13 @@ class ProfileNewMetricCard(AbstractProductsAccumulationCard):
         return None
 
 
+class ProfileNewMetricCard(AbstractNewMetricCard):
+    def get_template_name(self):
+        return "card-profile"
+
+
+class GenreNewMetricCard(AbstractNewMetricCard):
+    pass
 
 
 class GenreAccumulationCard(AbstractProductsAccumulationCard):
@@ -308,7 +316,7 @@ class GenreProductsWithMoreThanCard(Card):
     def would_generate_a_card(cls, products, provider, interaction):
         matching_metrics = get_metrics_by_name(products, provider, interaction)
         matching_metrics = [m for m in matching_metrics if m.is_int]        
-        return len(matching_metrics)>=3
+        return len(matching_metrics)>=5
 
     @property
     def metric_threshold_value(self):

@@ -1,5 +1,6 @@
 from totalimpactwebapp.card import ProductNewMetricCard
 from totalimpactwebapp.card import ProfileNewMetricCard
+from totalimpactwebapp.card import GenreNewMetricCard
 from totalimpactwebapp.card import GenreAccumulationCard
 from totalimpactwebapp.card import GenreProductsWithMoreThanCard
 import configs
@@ -47,7 +48,10 @@ def make_genre_cards(products):
     cards += make_product_list_cards(products, GenreProductsWithMoreThanCard)
     return cards
 
-
+def make_genre_new_metrics_cards(products):
+    cards = []
+    cards += make_product_list_cards(products, ProfileNewMetricCard)
+    return cards
 
 
 
