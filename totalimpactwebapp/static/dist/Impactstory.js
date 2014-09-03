@@ -6315,10 +6315,10 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "<div class=\"genres\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <ul class=\"genre-list\">\n" +
-    "         <li ng-repeat=\"genre in genres\" class=\"genre genre-{{ genre.name }}\">\n" +
+    "         <li ng-repeat=\"genre in genres\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
     "            <div class=\"genre-header\">\n" +
     "               <h3 class=\"genre-name\">\n" +
-    "                  {{ genre.name }}\n" +
+    "                  {{ genre.plural_name }}\n" +
     "               </h3>\n" +
     "               <div class=\"genre-vitals\">\n" +
     "                  <span class=\"num-products\">\n" +
@@ -6335,13 +6335,58 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <div class=\"genre-body\">\n" +
     "               <ul class=\"genre-cards-best\">\n" +
     "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3)\">\n" +
-    "                     <pre>{{ card|json }}</pre>\n" +
+    "\n" +
+    "                     <span class=\"card-accumulation\" ng-show=\"card.card_type=='GenreAccumulationCard'\">\n" +
+    "                        <span class=\"value\">{{ card.current_value }}</span>\n" +
+    "                        <span class=\"key\">\n" +
+    "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
+    "                           <span class=\"interaction\">{{ card.interaction }}</span>\n" +
+    "                        </span>\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <span class=\"card-accumulation\" ng-show=\"card.card_type=='GenreProductsWithMoreThanCard'\">\n" +
+    "                        <span class=\"value\">{{ card.number_products_this_good }}</span>\n" +
+    "                        <span class=\"key\">\n" +
+    "                           <span class=\"explanation\">\n" +
+    "                              {{ genre.plural_name }} with more than\n" +
+    "                              <span class=\"threshold-value\">\n" +
+    "                                 {{ card.metric_threshold_value }}\n" +
+    "                              </span>\n" +
+    "                           </span>\n" +
+    "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
+    "                           <span class=\"interaction\">{{ card.interaction }}</span>\n" +
+    "                        </span>\n" +
+    "                     </span>\n" +
+    "\n" +
     "                  </li>\n" +
     "               </ul>\n" +
-    "               <h4>second best!</h4>\n" +
+    "\n" +
     "               <ul class=\"genre-cards-second-best\">\n" +
     "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 3, 6)\">\n" +
-    "                     <pre>{{ card|json }}</pre>\n" +
+    "\n" +
+    "                     <!-- all this is copy/pasted from above -->\n" +
+    "                     <span class=\"card-accumulation\" ng-show=\"card.card_type=='GenreAccumulationCard'\">\n" +
+    "                        <span class=\"value\">{{ card.current_value }}</span>\n" +
+    "                        <span class=\"key\">\n" +
+    "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
+    "                           <span class=\"interaction\">{{ card.interaction }}</span>\n" +
+    "                        </span>\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <span class=\"card-accumulation\" ng-show=\"card.card_type=='GenreProductsWithMoreThanCard'\">\n" +
+    "                        <span class=\"value\">{{ card.number_products_this_good }}</span>\n" +
+    "                        <span class=\"key\">\n" +
+    "                           <span class=\"explanation\">\n" +
+    "                              {{ genre.plural_name }} with more than\n" +
+    "                              <span class=\"threshold-value\">\n" +
+    "                                 {{ card.metric_threshold_value }}\n" +
+    "                              </span>\n" +
+    "                           </span>\n" +
+    "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
+    "                           <span class=\"interaction\">{{ card.interaction }}</span>\n" +
+    "                        </span>\n" +
+    "                     </span>\n" +
+    "\n" +
     "                  </li>\n" +
     "               </ul>\n" +
     "            </div>\n" +

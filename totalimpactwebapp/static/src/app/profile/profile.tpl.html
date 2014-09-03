@@ -84,10 +84,10 @@
 <div class="genres">
    <div class="wrapper">
       <ul class="genre-list">
-         <li ng-repeat="genre in genres" class="genre genre-{{ genre.name }}">
+         <li ng-repeat="genre in genres" class="genre genre-{{ genre.plural_name }}">
             <div class="genre-header">
                <h3 class="genre-name">
-                  {{ genre.name }}
+                  {{ genre.plural_name }}
                </h3>
                <div class="genre-vitals">
                   <span class="num-products">
@@ -104,13 +104,58 @@
             <div class="genre-body">
                <ul class="genre-cards-best">
                   <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3)">
-                     <pre>{{ card|json }}</pre>
+
+                     <span class="card-accumulation" ng-show="card.card_type=='GenreAccumulationCard'">
+                        <span class="value">{{ card.current_value }}</span>
+                        <span class="key">
+                           <span class="provider">{{ card.provider }}</span>
+                           <span class="interaction">{{ card.interaction }}</span>
+                        </span>
+                     </span>
+
+                     <span class="card-accumulation" ng-show="card.card_type=='GenreProductsWithMoreThanCard'">
+                        <span class="value">{{ card.number_products_this_good }}</span>
+                        <span class="key">
+                           <span class="explanation">
+                              {{ genre.plural_name }} with more than
+                              <span class="threshold-value">
+                                 {{ card.metric_threshold_value }}
+                              </span>
+                           </span>
+                           <span class="provider">{{ card.provider }}</span>
+                           <span class="interaction">{{ card.interaction }}</span>
+                        </span>
+                     </span>
+
                   </li>
                </ul>
-               <h4>second best!</h4>
+
                <ul class="genre-cards-second-best">
                   <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 3, 6)">
-                     <pre>{{ card|json }}</pre>
+
+                     <!-- all this is copy/pasted from above -->
+                     <span class="card-accumulation" ng-show="card.card_type=='GenreAccumulationCard'">
+                        <span class="value">{{ card.current_value }}</span>
+                        <span class="key">
+                           <span class="provider">{{ card.provider }}</span>
+                           <span class="interaction">{{ card.interaction }}</span>
+                        </span>
+                     </span>
+
+                     <span class="card-accumulation" ng-show="card.card_type=='GenreProductsWithMoreThanCard'">
+                        <span class="value">{{ card.number_products_this_good }}</span>
+                        <span class="key">
+                           <span class="explanation">
+                              {{ genre.plural_name }} with more than
+                              <span class="threshold-value">
+                                 {{ card.metric_threshold_value }}
+                              </span>
+                           </span>
+                           <span class="provider">{{ card.provider }}</span>
+                           <span class="interaction">{{ card.interaction }}</span>
+                        </span>
+                     </span>
+
                   </li>
                </ul>
             </div>
