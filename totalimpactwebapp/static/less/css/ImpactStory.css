@@ -7430,8 +7430,9 @@ div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best
   margin-left: 40px;
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card img.icon {
+  margin-top: -10px;
   margin-right: 5px;
-  width: 16px;
+  width: 30px;
   opacity: .9;
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.value {
