@@ -2,6 +2,7 @@ from totalimpactwebapp import db
 from totalimpactwebapp import util
 import datetime
 import jinja2
+import numpy
 
 def get_metrics_by_name(products, provider, interaction):
     matching_metrics = []
@@ -248,6 +249,7 @@ class GenreAccumulationCard(AbstractProductsAccumulationCard):
     #override with a version that returns all cards, not just ones that freshly pass milestones
     def metric_accumulations(cls, products, provider, interaction):
         matching_metrics = get_metrics_by_name(products, provider, interaction)
+        matching_metrics = [m for m in matching_metrics if m.is_int]
 
         accumulated_diff_start_value = sum([m.diff_window_start_value for m in matching_metrics 
             if m.diff_window_start_value])
@@ -291,7 +293,7 @@ class GenreProductsWithMoreThanCard(Card):
         self.products = products
         self.provider = provider
         self.interaction = interaction
-        self.threshold = 75
+        self.percentile_threshold = 75
 
         # this card doesn't have a solo metric object, but it helps to 
         # save an exemplar metric so that it can be used to access relevant display properies
@@ -305,22 +307,26 @@ class GenreProductsWithMoreThanCard(Card):
     @classmethod
     def would_generate_a_card(cls, products, provider, interaction):
         matching_metrics = get_metrics_by_name(products, provider, interaction)
+        matching_metrics = [m for m in matching_metrics if m.is_int]        
         return len(matching_metrics)>=3
-
 
     @property
     def metric_threshold_value(self):
         matching_metrics = get_metrics_by_name(self.products, self.provider, self.interaction)
-        values = [m.most_recent_snap.raw_value_int for m in matching_metrics]
-        return 2
+        matching_metrics = [m for m in matching_metrics if m.is_int]        
+        values = [m.current_value for m in matching_metrics]
+        if not values:
+            return None
+        return numpy.percentile(values, self.percentile_threshold)
 
     @property
     def number_products_this_good(self):
-        value = self.metric_threshold_value
         matching_metrics = get_metrics_by_name(self.products, self.provider, self.interaction)
+        matching_metrics = [m for m in matching_metrics if m.is_int]        
 
+        value = self.metric_threshold_value
         large_enough_metrics = [m for m in matching_metrics 
-            if m.most_recent_snap.raw_value_int >= value]
+            if m.current_value >= value]
         
         return len(large_enough_metrics)                      
 
