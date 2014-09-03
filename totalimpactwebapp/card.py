@@ -248,8 +248,16 @@ class ProfileNewMetricCard(AbstractNewMetricCard):
 
 
 class GenreNewMetricCard(AbstractNewMetricCard):
-    pass
-
+    def to_dict(self):
+        # ignore some properties to keep dict small.   
+        properties_to_ignore = [
+            "url_slug", 
+            "exemplar_metric", 
+            "products"
+            ]
+        ret = util.dict_from_dir(self, properties_to_ignore)
+        return ret
+        
 
 class GenreAccumulationCard(AbstractProductsAccumulationCard):
 

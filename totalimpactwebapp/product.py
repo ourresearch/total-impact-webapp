@@ -407,6 +407,7 @@ class Product(db.Model):
             "biblio_rows",
             "percentile_snaps",
             "snaps",
+            "interactions",
             "snaps_including_interactions"
         ]
 

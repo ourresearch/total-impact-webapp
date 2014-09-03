@@ -50,7 +50,7 @@ def make_genre_cards(products):
 
 def make_genre_new_metrics_cards(products):
     cards = []
-    cards += make_product_list_cards(products, ProfileNewMetricCard)
+    cards += make_product_list_cards(products, GenreNewMetricCard)
     return cards
 
 
