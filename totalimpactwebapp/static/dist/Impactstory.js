@@ -6308,15 +6308,30 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "<div class=\"genres\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <ul class=\"genre-list\">\n" +
-    "         <li ng-repeat=\"genre in genres\" class=\"genre-{{ genre.name }}\">\n" +
-    "            <h3 class=\"genre-name\">\n" +
-    "               {{ genre.name }}\n" +
-    "            </h3>\n" +
-    "            <ul class=\"genre-cards\">\n" +
-    "               <li class=\"genre-card\" ng-repeat=\"card in genre.cards\">\n" +
-    "                  <pre>{{ card|json }}</pre>\n" +
-    "               </li>\n" +
-    "            </ul>\n" +
+    "         <li ng-repeat=\"genre in genres\" class=\"genre genre-{{ genre.name }}\">\n" +
+    "            <div class=\"genre-header\">\n" +
+    "               <h3 class=\"genre-name\">\n" +
+    "                  {{ genre.name }}\n" +
+    "               </h3>\n" +
+    "               <div class=\"genre-vitals\">\n" +
+    "                  <span class=\"num-products\">\n" +
+    "                     <span class=\"value\">{{ genre.num_products }}</span>\n" +
+    "                     <span class=\"key\">products</span>\n" +
+    "                  </span>\n" +
+    "                  <span class=\"num-products-with-new-metrics\"\n" +
+    "                        ng-show=\"genre.num_products_with_new_metrics\">\n" +
+    "                     <span class=\"value\">{{ genre.num_products_with_new_metrics }}</span>\n" +
+    "                     <span class=\"key\">with new metrics</span>\n" +
+    "                  </span>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"genre-body\">\n" +
+    "               <ul class=\"genre-cards\">\n" +
+    "                  <li class=\"genre-card\" ng-repeat=\"card in genre.cards\">\n" +
+    "                     <pre>{{ card|json }}</pre>\n" +
+    "                  </li>\n" +
+    "               </ul>\n" +
+    "            </div>\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
