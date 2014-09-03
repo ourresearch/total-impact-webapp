@@ -6329,19 +6329,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <li ng-repeat=\"genre in genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
     "            <div class=\"genre-header\">\n" +
     "               <h3 class=\"genre-name\">\n" +
-    "                  {{ genre.plural_name }}\n" +
+    "                  <span class=\"total-products\">\n" +
+    "                     {{ genre.num_products }}\n" +
+    "                  </span>\n" +
+    "                  <span class=\"name\">\n" +
+    "                     {{ genre.plural_name }}\n" +
+    "                  </span>\n" +
+    "                  <span class=\"num-products-with-new-metrics\" ng-show=\"genre.num_products_with_new_metrics\">\n" +
+    "                     ({{ genre.num_products_with_new_metrics }} have new impacts this week)\n" +
+    "                  </span>\n" +
     "               </h3>\n" +
-    "               <div class=\"genre-vitals\">\n" +
-    "                  <span class=\"num-products\">\n" +
-    "                     <span class=\"value\">{{ genre.num_products }}</span>\n" +
-    "                     <span class=\"key\">total products</span>\n" +
-    "                  </span>\n" +
-    "                  <span class=\"num-products-with-new-metrics\"\n" +
-    "                        ng-show=\"genre.num_products_with_new_metrics\">\n" +
-    "                     <span class=\"value\">{{ genre.num_products_with_new_metrics }}</span>\n" +
-    "                     <span class=\"key\">with new metrics</span>\n" +
-    "                  </span>\n" +
-    "               </div>\n" +
     "            </div>\n" +
     "            <div class=\"genre-body\">\n" +
     "               <ul class=\"genre-cards-best\">\n" +

@@ -448,33 +448,17 @@ div.genres {
                h3 {
                   margin: 0;
                   padding: 10px;
-               }
-               div.genre-vitals {
-                  position: absolute;
-                  top: 0;
-                  right: 0;
-                  margin: 5px 10px;
-                  color: #555;
                   span.num-products-with-new-metrics {
-                     color: @publicColor;
-                  }
-                  span.value {
-                     font-size: 30px;
-                     font-weight: 800;
-                  }
-                  span.key {
-                     font-size: 13px;
-                     font-weight: 300;
-                     width: 68px;
-                     display: inline-block;
-                     line-height: 1;
                      margin-left: 5px;
+                     color: @publicColor;
+                     font-size: 50%;
+                     font-weight: normal;
                   }
                }
             }
             div.genre-body{
                .clearfix();
-               padding: 30px 0;
+               padding: 30px 10px 30px 0;
                ul.genre-cards-best {
                   width:70%;
                   li.genre-card {
@@ -531,6 +515,8 @@ div.genres {
                   float:right;
                   width: 25%;
                   li.genre-card {
+                     line-height: 1;
+                     margin-bottom: 8px;
                      img {
                         width: 16px;
                      }

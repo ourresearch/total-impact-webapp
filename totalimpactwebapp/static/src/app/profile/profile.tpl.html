@@ -87,19 +87,16 @@
          <li ng-repeat="genre in genres | orderBy:'name'" class="genre genre-{{ genre.plural_name }}">
             <div class="genre-header">
                <h3 class="genre-name">
-                  {{ genre.plural_name }}
+                  <span class="total-products">
+                     {{ genre.num_products }}
+                  </span>
+                  <span class="name">
+                     {{ genre.plural_name }}
+                  </span>
+                  <span class="num-products-with-new-metrics" ng-show="genre.num_products_with_new_metrics">
+                     ({{ genre.num_products_with_new_metrics }} have new impacts this week)
+                  </span>
                </h3>
-               <div class="genre-vitals">
-                  <span class="num-products">
-                     <span class="value">{{ genre.num_products }}</span>
-                     <span class="key">total products</span>
-                  </span>
-                  <span class="num-products-with-new-metrics"
-                        ng-show="genre.num_products_with_new_metrics">
-                     <span class="value">{{ genre.num_products_with_new_metrics }}</span>
-                     <span class="key">with new metrics</span>
-                  </span>
-               </div>
             </div>
             <div class="genre-body">
                <ul class="genre-cards-best">
