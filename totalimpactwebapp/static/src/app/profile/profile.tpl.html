@@ -84,7 +84,7 @@
 <div class="genres">
    <div class="wrapper">
       <ul class="genre-list">
-         <li ng-repeat="genre in genres" class="genre genre-{{ genre.plural_name }}">
+         <li ng-repeat="genre in genres | orderBy:'name'" class="genre genre-{{ genre.plural_name }}">
             <div class="genre-header">
                <h3 class="genre-name">
                   {{ genre.plural_name }}
@@ -92,7 +92,7 @@
                <div class="genre-vitals">
                   <span class="num-products">
                      <span class="value">{{ genre.num_products }}</span>
-                     <span class="key">products</span>
+                     <span class="key">total products</span>
                   </span>
                   <span class="num-products-with-new-metrics"
                         ng-show="genre.num_products_with_new_metrics">
@@ -117,14 +117,11 @@
                         <span class="value">{{ card.number_products_this_good }}</span>
                         <span class="key">
                            <span class="genre-name">
-                              {{ genre.plural_name }}
-                           </span>
-                           <span class="more-than">
-                              with more than
+                              {{ genre.plural_name }} with
                            </span>
                            <span class="threshold">
                               <span class="threshold-value">
-                                 {{ nFormat(card.metric_threshold_value) }}
+                                 {{ nFormat(card.metric_threshold_value) }}+
                               </span>
                               <span class="provider">{{ card.provider }}</span>
                               <span class="interaction">{{ card.interaction }}</span>
@@ -152,9 +149,9 @@
                         <span class="value">{{ card.number_products_this_good }}</span>
                         <span class="key">
                            <span class="explanation">
-                              {{ genre.plural_name }} with more than
+                              {{ genre.plural_name }} with
                               <span class="threshold-value">
-                                 {{ nFormat(card.metric_threshold_value) }}
+                                 {{ nFormat(card.metric_threshold_value) }}+
                               </span>
                            </span>
                            <span class="provider">{{ card.provider }}</span>

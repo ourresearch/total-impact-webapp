@@ -453,14 +453,14 @@ div.genres {
                   position: absolute;
                   top: 0;
                   right: 0;
-                  margin: 10px;
+                  margin: 5px 10px;
                   color: #555;
                   span.num-products-with-new-metrics {
                      color: @publicColor;
                   }
                   span.value {
                      font-size: 30px;
-                     font-weight: bold;
+                     font-weight: 800;
                   }
                   span.key {
                      font-size: 13px;
@@ -479,45 +479,44 @@ div.genres {
                   width:70%;
                   li.genre-card {
                      img.icon {
-                        margin-top: -10px;
+//                        margin-top: -10px;
                         margin-right: 5px;
-                        width: 26px;
+                        width: 16px;
+                        opacity: .9;
                      }
                      float:left;
                      margin-left: 40px;
                      span.value {
-                        font-size: 34px;
+                        font-size: 30px;
                         font-weight: bold;
                      }
                      span.key {
                         display:inline-block;
                         line-height: 1;
                         font-size: 15px;
-                        margin-left: 10px;
+                        margin-left: 4px;
                         color: #555;
                      }
                      span.card-accumulation {
                         span.key {
                            span.provider {
                               display:block;
+                              font-size: 12px;
+                           }
+                           span.interaction {
+                              font-weight: bold;
                            }
                         }
                      }
 
                      span.card-products-with-more-than-this {
+                        color: #d9534f;
                         span.key {
-                           vertical-align: -10px;
+                           color: #d9534f;
                            span.genre-name {
                               display:block;
                               margin-bottom: 3px;
-                              color: #777;
                               font-size: 12px;
-                           }
-                           span.more-than {
-                              display: block;
-                              font-size: 12px;
-                              color: #777;
-                              margin-bottom: 3px;
                            }
                            span.threshold {
                               font-weight: bold;

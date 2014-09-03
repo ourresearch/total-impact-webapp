@@ -6326,7 +6326,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "<div class=\"genres\">\n" +
     "   <div class=\"wrapper\">\n" +
     "      <ul class=\"genre-list\">\n" +
-    "         <li ng-repeat=\"genre in genres\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
+    "         <li ng-repeat=\"genre in genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
     "            <div class=\"genre-header\">\n" +
     "               <h3 class=\"genre-name\">\n" +
     "                  {{ genre.plural_name }}\n" +
@@ -6334,7 +6334,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <div class=\"genre-vitals\">\n" +
     "                  <span class=\"num-products\">\n" +
     "                     <span class=\"value\">{{ genre.num_products }}</span>\n" +
-    "                     <span class=\"key\">products</span>\n" +
+    "                     <span class=\"key\">total products</span>\n" +
     "                  </span>\n" +
     "                  <span class=\"num-products-with-new-metrics\"\n" +
     "                        ng-show=\"genre.num_products_with_new_metrics\">\n" +
@@ -6359,14 +6359,11 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                        <span class=\"value\">{{ card.number_products_this_good }}</span>\n" +
     "                        <span class=\"key\">\n" +
     "                           <span class=\"genre-name\">\n" +
-    "                              {{ genre.plural_name }}\n" +
-    "                           </span>\n" +
-    "                           <span class=\"more-than\">\n" +
-    "                              with more than\n" +
+    "                              {{ genre.plural_name }} with\n" +
     "                           </span>\n" +
     "                           <span class=\"threshold\">\n" +
     "                              <span class=\"threshold-value\">\n" +
-    "                                 {{ nFormat(card.metric_threshold_value) }}\n" +
+    "                                 {{ nFormat(card.metric_threshold_value) }}+\n" +
     "                              </span>\n" +
     "                              <span class=\"provider\">{{ card.provider }}</span>\n" +
     "                              <span class=\"interaction\">{{ card.interaction }}</span>\n" +
@@ -6394,9 +6391,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                        <span class=\"value\">{{ card.number_products_this_good }}</span>\n" +
     "                        <span class=\"key\">\n" +
     "                           <span class=\"explanation\">\n" +
-    "                              {{ genre.plural_name }} with more than\n" +
+    "                              {{ genre.plural_name }} with\n" +
     "                              <span class=\"threshold-value\">\n" +
-    "                                 {{ nFormat(card.metric_threshold_value) }}\n" +
+    "                                 {{ nFormat(card.metric_threshold_value) }}+\n" +
     "                              </span>\n" +
     "                           </span>\n" +
     "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
