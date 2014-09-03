@@ -257,7 +257,7 @@ class GenreNewMetricCard(AbstractNewMetricCard):
             ]
         ret = util.dict_from_dir(self, properties_to_ignore)
         return ret
-        
+
 
 class GenreAccumulationCard(AbstractProductsAccumulationCard):
 
@@ -333,7 +333,7 @@ class GenreProductsWithMoreThanCard(Card):
         values = [m.current_value for m in matching_metrics]
         if not values:
             return None
-        return numpy.percentile(values, self.percentile_threshold)
+        return int(numpy.percentile(values, self.percentile_threshold))
 
     @property
     def number_products_this_good(self):
@@ -348,7 +348,19 @@ class GenreProductsWithMoreThanCard(Card):
 
     @property
     def sort_by(self):
-        return (1000 + self.number_products_this_good)
+        score = 2000
+        if self.provider in ["citeulike", "delicious", "impactstory", "plossearch"]:
+            score -= 500
+
+        if self.provider in ["scopus", "delicious", "impactstory", "plossearch"]:
+            score += 500
+
+        if self.provider in ["scopus", "delicious", "impactstory", "plossearch"]:
+            score += 500
+
+        score += self.metric_threshold_value
+        score += self.number_products_this_good
+        return score
 
     def to_dict(self):
         # ignore some properties to keep dict small.   
