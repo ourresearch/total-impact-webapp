@@ -103,7 +103,7 @@
             </div>
             <div class="genre-body">
                <ul class="genre-cards">
-                  <li class="genre-card" ng-repeat="card in genre.cards">
+                  <li class="genre-card" ng-repeat="card in bestCards(genre.cards)">
                      <pre>{{ card|json }}</pre>
                   </li>
                </ul>
