@@ -1624,8 +1624,10 @@ angular.module("profile", [
     }
 
 
-    $scope.bestCards = function(cards){
-      return _.sortBy(cards, "sort_by")
+    $scope.sliceSortedCards = function(cards, startIndex, endIndex){
+      var sorted = _.sortBy(cards, "sort_by")
+      var reversed = sorted.concat([]).reverse()
+      return reversed.slice(startIndex, endIndex)
     }
 
 
@@ -6331,8 +6333,14 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </div>\n" +
     "            </div>\n" +
     "            <div class=\"genre-body\">\n" +
-    "               <ul class=\"genre-cards\">\n" +
-    "                  <li class=\"genre-card\" ng-repeat=\"card in bestCards(genre.cards)\">\n" +
+    "               <ul class=\"genre-cards-best\">\n" +
+    "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3)\">\n" +
+    "                     <pre>{{ card|json }}</pre>\n" +
+    "                  </li>\n" +
+    "               </ul>\n" +
+    "               <h4>second best!</h4>\n" +
+    "               <ul class=\"genre-cards-second-best\">\n" +
+    "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 3, 6)\">\n" +
     "                     <pre>{{ card|json }}</pre>\n" +
     "                  </li>\n" +
     "               </ul>\n" +
