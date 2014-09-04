@@ -11,7 +11,6 @@ logger = logging.getLogger("tiwebapp.metric_snap")
 def make_list(metrics):
     """
     Factory to make a list of Award objects from a list of Metric objects.
-    Works the same way as heading_product.make_list()
     """
     awards = []
     for engagement_type in configs.award_configs["engagement_types"].keys():

@@ -12,7 +12,6 @@ angular.module('accounts.account', [
     $q,
     Loading,
     Products,
-    UsersProducts,
     UsersLinkedAccounts,
     Users){
 
@@ -133,7 +132,6 @@ angular.module('accounts.account', [
     Products,
     GoogleScholar,
     UserProfile,
-    UsersProducts,
     Account,
     security,
     Loading,

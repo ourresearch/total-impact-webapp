@@ -1,5 +1,4 @@
 from totalimpactwebapp import db
-from totalimpactwebapp import heading_product
 from totalimpactwebapp import profile_award
 from totalimpactwebapp import util
 from totalimpactwebapp import configs
@@ -389,18 +388,13 @@ class Profile(db.Model):
         return self
 
 
-    def get_products_markup(self, markup, hide_keys=None, add_heading_products=True):
+    def get_products_markup(self, markup, hide_keys=None):
 
         markup.set_template("product.html")
         markup.context["profile"] = self
 
         product_dicts = [p.to_markup_dict(markup, hide_keys)
                 for p in self.display_products]
-
-        if add_heading_products:
-            headings = heading_product.make_list(self.display_products)
-            markup.set_template("heading-product.html")
-            product_dicts += [hp.to_markup_dict(markup) for hp in headings]
 
         return product_dicts
 
@@ -545,8 +539,7 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict = {
         "products": profile.get_products_markup(
             markup=markup,
-            hide_keys=hide_keys,
-            add_heading_products=True
+            hide_keys=hide_keys
         )
     }
 

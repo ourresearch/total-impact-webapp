@@ -103,7 +103,6 @@ angular.module("profile", [
     $window,
     $sce,
     Users,
-    UsersProducts,
     Product,
     TiMixpanel,
     UserProfile,

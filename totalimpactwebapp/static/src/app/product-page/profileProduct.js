@@ -50,7 +50,6 @@ angular.module("productPage", [
     $sce,
     security,
     UsersProduct,
-    UsersProducts,
     UserProfile,
     Product,
     Loading,
