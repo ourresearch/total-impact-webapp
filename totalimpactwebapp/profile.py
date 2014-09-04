@@ -202,8 +202,6 @@ class Profile(db.Model):
         for product in self.products_not_removed:
             if product.is_account_product:
                 products_to_return.append(product)
-            except AttributeError:
-                pass
 
         return products_to_return
 
