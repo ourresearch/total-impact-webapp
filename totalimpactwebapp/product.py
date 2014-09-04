@@ -123,6 +123,11 @@ class Product(db.Model):
 
     @cached_property
     def is_true_product(self):
+        try:
+            if self.biblio.is_account:
+                return False
+        except AttributeError:
+            pass
         return True
 
     @cached_property
@@ -250,6 +255,14 @@ class Product(db.Model):
     def awardedness_score(self):
         return sum([a.sort_score for a in self.awards])
 
+    @cached_property
+    def is_account_product(self):
+        try:
+            if self.biblio.is_account:
+                return True
+        except AttributeError:
+            pass
+        return False
 
     @cached_property
     def latest_diff_timestamp(self):
@@ -363,6 +376,9 @@ class Product(db.Model):
     def get_embed_markup(self):
         logger.debug(u"in get_embed_markup for {tiid}".format(
             tiid=self.tiid))
+
+        if self.is_account_product:
+            return None
 
         try:
             if not self.aliases.best_url:

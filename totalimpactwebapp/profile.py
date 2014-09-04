@@ -34,7 +34,7 @@ logger = logging.getLogger("tiwebapp.profile")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
 
 free_trial_timedelta = datetime.timedelta(days=30)
-trial_for_old_free_users_started_on = datetime.datetime(year=2014, month=8, day=15)
+trial_for_old_free_users_started_on = datetime.datetime(year=2014, month=8, day=16)
 
 
 
@@ -187,7 +187,24 @@ class Profile(db.Model):
 
     @cached_property
     def display_products(self):
-        return self.products_not_removed
+        #temporary till we figure out a better way to do this
+        products_to_return = []
+        for product in self.products_not_removed:
+            if not product.is_account_product:
+                products_to_return.append(product)
+
+        return products_to_return
+
+    @cached_property
+    def account_products(self):
+        #temporary till we figure out a better way to do this
+        products_to_return = []
+        for product in self.products_not_removed:
+            if product.is_account_product:
+                products_to_return.append(product)
+
+        return products_to_return
+
 
     @cached_property
     def tiids(self):

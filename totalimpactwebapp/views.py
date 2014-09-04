@@ -372,6 +372,7 @@ def get_user_profile(profile_id):
     # things that would be in about, but require products
     resp["is_refreshing"] = profile.is_refreshing
     resp["product_count"] = profile.product_count
+    resp["account_products"] = profile.account_products
 
     if not "about" in hide_keys:
         resp["about"] = profile.dict_about(show_secrets=False)
@@ -580,6 +581,17 @@ def product_pdf(tiid):
             abort_json(404, "That product doesn't exist.")
         except S3ResponseError:
             abort_json(404, "This product exists, but has no pdf.")
+
+
+@app.route("/pdf/<path:pdf_url>", methods=['GET'])
+def pdf_proxy(pdf_url):
+    r = requests.get(pdf_url, timeout=30)
+    pdf = r.content
+    resp = make_response(pdf, 200)
+    resp.mimetype = "application/pdf"
+    resp.headers.add("Content-Disposition",
+                     "attachment; filename=impactstory.pdf")   
+    return resp
 
 
 @app.route("/product/<tiid>/embed-markup", methods=['GET'])
