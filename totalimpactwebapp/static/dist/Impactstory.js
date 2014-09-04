@@ -450,6 +450,7 @@ angular.module('app', [
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
+  'services.breadcrumbs',
   'services.tiMixpanel',
   'security',
   'directives.crud',
@@ -526,6 +527,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $location,
                                                      Loading,
                                                      Page,
+                                                     Breadcrumbs,
                                                      security,
                                                      $rootScope,
                                                      TiMixpanel,
@@ -556,6 +558,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.page = Page;
+  $scope.breadcrumbs = Breadcrumbs;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
   $scope.isAuthenticated =  security.isAuthenticated
@@ -584,7 +587,7 @@ angular.module('app').controller('AppCtrl', function($scope,
     Page.showHeader(true)
     Page.showFooter(true)
     Page.setProfileUrl(false)
-    Page.setHeaderFullName(false)
+    Breadcrumbs.clear()
     Page.setUservoiceTabLoc("right")
     Loading.clear()
   })
@@ -669,6 +672,7 @@ angular.module("genrePage", [
     Tour,
     Timer,
     security,
+    Breadcrumbs,
     Page) {
 
     var $httpDefaultCache = $cacheFactory.get('$http')
@@ -688,6 +692,7 @@ angular.module("genrePage", [
     var url_slug = $routeParams.url_slug;
     var loadingProducts = true
     $scope.url_slug = url_slug
+
 
 
 
@@ -747,10 +752,25 @@ angular.module("genrePage", [
 
           // put our stuff in the scope
           Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
+
+
+          Breadcrumbs.set(0, {
+            text: resp.about.full_name,
+            url: "/" + url_slug
+          })
+
+
           $scope.products = _.filter(resp.products, function(product){
             return product.genre == $routeParams.genre_name
           })
+          $scope.about = resp.about
           $scope.doneLoading = true
+          if ($scope.products){
+            $scope.genreNamePlural = $scope.products[0].display_genre_plural
+          }
+          else {
+            $scope.genreNamePlural = $routeParams.genre_name
+          }
 
 
           Timer.start("genreViewRender.render")
@@ -1077,6 +1097,7 @@ angular.module("productPage", [
     'resources.products',
     'profileAward.profileAward',
     'services.page',
+    'services.breadcrumbs',
     'profile',
     'services.loading',
     'ui.bootstrap',
@@ -1133,14 +1154,21 @@ angular.module("productPage", [
     product,
     profileWithoutProducts,
     ProductWithoutProfile,
+    Breadcrumbs,
     Page) {
 
     console.log("product.host", product.host)
+    Breadcrumbs.set(0, {
+      text: profileWithoutProducts.full_name,
+      url: "/" + profileWithoutProducts.url_slug
+    })
+    Breadcrumbs.set(1, {
+      text: product.display_genre_plural,
+      url: "/" + profileWithoutProducts.url_slug + "/products/" + product.genre
+    })
 
 
 
-    Page.setHeaderFullName(profileWithoutProducts.full_name)
-    Page.setProfileUrl(profileWithoutProducts.url_slug)
     var slug = $routeParams.url_slug
     UserProfile.useCache(true)
     $scope.uploadableHost = !_.contains(["dryad", "github", "figshare"], product.host)
@@ -1647,8 +1675,8 @@ angular.module("profile", [
         $anchorScroll()
       }
       else {
-        var lastScrollPos = Page.getLastScrollPosition($location.path())
-        $window.scrollTo(0, lastScrollPos)
+//        var lastScrollPos = Page.getLastScrollPosition($location.path())
+//        $window.scrollTo(0, lastScrollPos)
       }
     },
     makeSlug: function(){
@@ -3841,37 +3869,31 @@ angular.module('services.userMessage', [])
   })
 
 angular.module('services.breadcrumbs', []);
-angular.module('services.breadcrumbs').factory('breadcrumbs', ['$rootScope', '$location', function($rootScope, $location){
+angular.module('services.breadcrumbs').factory('Breadcrumbs', ['$rootScope', '$location', function($rootScope, $location){
 
-  var breadcrumbs = [];
-  var breadcrumbsService = {};
+  var levels = []
 
-  //we want to update breadcrumbs only when a route is actually changed
-  //as $location.path() will get updated imediatelly (even if route change fails!)
-  $rootScope.$on('$routeChangeSuccess', function(event, current){
-
-    var pathElements = $location.path().split('/'), result = [], i;
-    var breadcrumbPath = function (index) {
-      return '/' + (pathElements.slice(0, index + 1)).join('/');
-    };
-
-    pathElements.shift();
-    for (i=0; i<pathElements.length; i++) {
-      result.push({name: pathElements[i], path: breadcrumbPath(i)});
+  return {
+    set: function(level,obj){ // {text: foo, url: bar}
+      levels[level] = obj
+    },
+    get: function(level, key){ // key is "text" or "url"
+      var myLevel = levels[level]
+      if (myLevel) {
+        return myLevel[key]
+      }
+      else {
+        return undefined
+      }
+    },
+    hasLevel: function(level){
+      return !!levels[level]
+    },
+    clear: function(){
+      levels.length = 0
     }
 
-    breadcrumbs = result;
-  });
-
-  breadcrumbsService.getAll = function() {
-    return breadcrumbs;
-  };
-
-  breadcrumbsService.getFirst = function() {
-    return breadcrumbs[0] || {};
-  };
-
-  return breadcrumbsService;
+  }
 }]);
 angular.module('services.charge', [])
   .factory("Charge", function(){
@@ -4917,7 +4939,21 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "   <div class=\"loading\" ng-show=\"!doneLoading\">\n" +
     "      <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
     "   </div>\n" +
-    "   <div class=\"content wrapper\" ng-show=\"doneLoading\">\n" +
+    "   <div class=\"wrapper\" ng-show=\"doneLoading\">\n" +
+    "      <div class=\"header\">\n" +
+    "         <h2>\n" +
+    "            <span class=\"return-to-profile-link-container\">\n" +
+    "               <a class=\"return-to-profile\"\n" +
+    "                  tooltip=\"return to {{ about.given_name }}'s profile\"\n" +
+    "                  href=\"/{{ about.url_slug }}\">\n" +
+    "                  <i class=\"icon-chevron-left\"></i>\n" +
+    "               </a>\n" +
+    "            </span>\n" +
+    "            <span class=\"text\">\n" +
+    "               {{ genreNamePlural }}\n" +
+    "            </span>\n" +
+    "         </h2>\n" +
+    "      </div>\n" +
     "      <div class=\"products\">\n" +
     "         <ul class=\"products-list\">\n" +
     "            <li class=\"product genre-{{ product.genre }}\"\n" +
@@ -5871,8 +5907,8 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "            <h2 class=\"title\">\n" +
     "               <span class=\"return-to-profile-link-container\">\n" +
     "                  <a class=\"return-to-profile\"\n" +
-    "                     tooltip=\"return to {{ profileWithoutProducts.given_name }}'s profile\"\n" +
-    "                     href=\"{{ profileWithoutProducts.url_slug }}\">\n" +
+    "                     tooltip=\"return to {{ profileWithoutProducts.given_name }}'s {{ genre }} list\"\n" +
+    "                     href=\"/{{ profileWithoutProducts.url_slug }}/products/{{ genre }}\">\n" +
     "                     <i class=\"icon-chevron-left\"></i>\n" +
     "                  </a>\n" +
     "               </span>\n" +

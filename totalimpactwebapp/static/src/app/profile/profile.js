@@ -68,8 +68,8 @@ angular.module("profile", [
         $anchorScroll()
       }
       else {
-        var lastScrollPos = Page.getLastScrollPosition($location.path())
-        $window.scrollTo(0, lastScrollPos)
+//        var lastScrollPos = Page.getLastScrollPosition($location.path())
+//        $window.scrollTo(0, lastScrollPos)
       }
     },
     makeSlug: function(){

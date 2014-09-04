@@ -6337,7 +6337,7 @@ div.main-header div.wrapper a.brand {
 div.main-header div.wrapper a.brand img {
   height: 50px;
 }
-div.main-header div.wrapper span.profile-owner-name {
+div.main-header div.wrapper div.breadcrumbs {
   font-weight: 300;
   font-size: 25px;
   position: absolute;
@@ -6345,10 +6345,15 @@ div.main-header div.wrapper span.profile-owner-name {
   left: 231px;
   color: #333;
 }
-div.main-header div.wrapper span.profile-owner-name a {
+div.main-header div.wrapper div.breadcrumbs i {
+  vertical-align: middle;
+  font-size: 70%;
+  color: #ccc;
+}
+div.main-header div.wrapper div.breadcrumbs span.breadcrumb-level a {
   color: #333;
 }
-div.main-header div.wrapper span.profile-owner-name a:hover {
+div.main-header div.wrapper div.breadcrumbs span.breadcrumb-level a:hover {
   color: #ff4000;
 }
 div.main-header div.wrapper ul.main-nav {
@@ -9178,6 +9183,32 @@ div.password-reset form.password-reset div.submit {
 .product.heading div.category-heading div.category-heading-main div.category-metrics ul li.category-metric .metric-descr {
   font-size: 80%;
   cursor: help;
+}
+div.genre-page div.header h2 {
+  font-size: 35px;
+  line-height: 1.3;
+  margin: 0 0 5px;
+  text-transform: capitalize;
+  color: #333;
+}
+div.genre-page div.header h2 span.return-to-profile-link-container .tooltip-inner {
+  background: #000;
+}
+div.genre-page div.header h2 span.return-to-profile-link-container .tooltip-arrow {
+  border-color: transparent;
+  border-top-color: #000;
+}
+div.genre-page div.header h2 span.return-to-profile-link-container a.return-to-profile {
+  color: #999;
+  margin-left: -45px;
+  padding-right: 15px;
+  font-size: 30px;
+  width: 40px;
+  display: inline-block;
+  text-align: right;
+}
+div.genre-page div.header h2 span.return-to-profile-link-container a.return-to-profile:hover {
+  color: #ff4000;
 }
 div.genre-page div.products {
   margin-top: 0;

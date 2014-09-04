@@ -77,16 +77,26 @@
             <a class="brand" href="/">
                <img src="/static/img/impactstory-logo-sideways.png" alt="Impactstory" />
             </a>
-            <span class="profile-owner-name"
-               ng-show="page.getHeaderFullName()">
-
-               <span class="sep">/</span>
-               <a href="{{ page.getProfileUrl() }}">
-                  <span class="name">
-                     {{ page.getHeaderFullName() }}
+            <div class="breadcrumbs">
+               <span class="breadcrumb-level level-0" ng-if="breadcrumbs.hasLevel(0)">
+                  <span class="sep">
+                     <i class="icon-chevron-right"></i>
                   </span>
-               </a>
-            </span>
+                  <a href="{{ breadcrumbs.get(0, 'url') }}">
+                     {{ breadcrumbs.get(0, 'text') }}
+                  </a>
+               </span>
+               <span class="breadcrumb-level level-1" ng-if="breadcrumbs.hasLevel(1)">
+                  <span class="sep">
+                     <i class="icon-chevron-right"></i>
+                  </span>
+                  <a href="{{ breadcrumbs.get(1, 'url') }}">
+                     {{ breadcrumbs.get(1, 'text') }}
+                  </a>
+               </span>
+
+
+            </div>
             <login-toolbar></login-toolbar>
          </div>
       </div>

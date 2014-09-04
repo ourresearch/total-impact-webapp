@@ -2,7 +2,21 @@
    <div class="loading" ng-show="!doneLoading">
       <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
    </div>
-   <div class="content wrapper" ng-show="doneLoading">
+   <div class="wrapper" ng-show="doneLoading">
+      <div class="header">
+         <h2>
+            <span class="return-to-profile-link-container">
+               <a class="return-to-profile"
+                  tooltip="return to {{ about.given_name }}'s profile"
+                  href="/{{ about.url_slug }}">
+                  <i class="icon-chevron-left"></i>
+               </a>
+            </span>
+            <span class="text">
+               {{ genreNamePlural }}
+            </span>
+         </h2>
+      </div>
       <div class="products">
          <ul class="products-list">
             <li class="product genre-{{ product.genre }}"

@@ -55,6 +55,7 @@ angular.module("genrePage", [
     Tour,
     Timer,
     security,
+    Breadcrumbs,
     Page) {
 
     var $httpDefaultCache = $cacheFactory.get('$http')
@@ -74,6 +75,7 @@ angular.module("genrePage", [
     var url_slug = $routeParams.url_slug;
     var loadingProducts = true
     $scope.url_slug = url_slug
+
 
 
 
@@ -133,10 +135,25 @@ angular.module("genrePage", [
 
           // put our stuff in the scope
           Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
+
+
+          Breadcrumbs.set(0, {
+            text: resp.about.full_name,
+            url: "/" + url_slug
+          })
+
+
           $scope.products = _.filter(resp.products, function(product){
             return product.genre == $routeParams.genre_name
           })
+          $scope.about = resp.about
           $scope.doneLoading = true
+          if ($scope.products){
+            $scope.genreNamePlural = $scope.products[0].display_genre_plural
+          }
+          else {
+            $scope.genreNamePlural = $routeParams.genre_name
+          }
 
 
           Timer.start("genreViewRender.render")

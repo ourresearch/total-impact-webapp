@@ -13,8 +13,8 @@
             <h2 class="title">
                <span class="return-to-profile-link-container">
                   <a class="return-to-profile"
-                     tooltip="return to {{ profileWithoutProducts.given_name }}'s profile"
-                     href="{{ profileWithoutProducts.url_slug }}">
+                     tooltip="return to {{ profileWithoutProducts.given_name }}'s {{ genre }} list"
+                     href="/{{ profileWithoutProducts.url_slug }}/products/{{ genre }}">
                      <i class="icon-chevron-left"></i>
                   </a>
                </span>

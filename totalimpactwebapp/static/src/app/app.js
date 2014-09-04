@@ -16,6 +16,7 @@ angular.module('app', [
   'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
+  'services.breadcrumbs',
   'services.tiMixpanel',
   'security',
   'directives.crud',
@@ -92,6 +93,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $location,
                                                      Loading,
                                                      Page,
+                                                     Breadcrumbs,
                                                      security,
                                                      $rootScope,
                                                      TiMixpanel,
@@ -122,6 +124,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.page = Page;
+  $scope.breadcrumbs = Breadcrumbs;
   $scope.loading = Loading;
   UservoiceWidget.insertTabs()
   $scope.isAuthenticated =  security.isAuthenticated
@@ -150,7 +153,7 @@ angular.module('app').controller('AppCtrl', function($scope,
     Page.showHeader(true)
     Page.showFooter(true)
     Page.setProfileUrl(false)
-    Page.setHeaderFullName(false)
+    Breadcrumbs.clear()
     Page.setUservoiceTabLoc("right")
     Loading.clear()
   })
