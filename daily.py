@@ -244,9 +244,12 @@ def linked_accounts(account_type, url_slug=None):
     for profile in windowed_query(q, Profile.url_slug, 25):
         number_considered += 1
         print profile.url_slug, "previous number of account products:", len(profile.account_products)
-        tiids = profile.update_products_from_linked_account(account_type, update_even_removed_products=False)
-        if tiids:
-            print "  got a tiid!"
+        if profile.account_products:
+            print "  has an account product, skipping"
+        else:
+            tiids = profile.update_products_from_linked_account(account_type, update_even_removed_products=False)
+            if tiids:
+                print "  got a tiid!"
 
 
 
