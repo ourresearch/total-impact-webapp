@@ -187,7 +187,30 @@ class Profile(db.Model):
 
     @cached_property
     def display_products(self):
-        return self.products_not_removed
+        #temporary till we figure out a better way to do this
+        products_to_return = []
+        for product in self.products_not_removed:
+            try:
+                if not product.biblio.is_account:
+                    products_to_return.append(product)
+            except AttributeError:
+                products_to_return.append(product)
+
+        return products_to_return
+
+    @cached_property
+    def account_products(self):
+        #temporary till we figure out a better way to do this
+        products_to_return = []
+        for product in self.products_not_removed:
+            try:
+                if product.biblio.is_account:
+                    products_to_return.append(product)
+            except AttributeError:
+                pass
+
+        return products_to_return
+
 
     @cached_property
     def tiids(self):

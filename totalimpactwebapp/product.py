@@ -123,6 +123,11 @@ class Product(db.Model):
 
     @cached_property
     def is_true_product(self):
+        try:
+            if self.biblio.is_account:
+                return False
+        except AttributeError:
+            pass
         return True
 
     @cached_property

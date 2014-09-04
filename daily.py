@@ -1,5 +1,4 @@
 from totalimpactwebapp.product import Product
-from totalimpactwebapp.product import get_file_embed_markup
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
@@ -216,7 +215,7 @@ def collect_embed(min_tiid=None):
             continue
 
         try:
-            embed_markup = get_file_embed_markup(product)
+            embed_markup = product.get_embed_markup()
         except Exception:
             print "got an exception, skipping", product.aliases.best_url
             continue
@@ -230,6 +229,25 @@ def collect_embed(min_tiid=None):
             number_markups += 1
             elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
             print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
+
+
+def linked_accounts(account_type, url_slug=None):
+    column_name = account_type+"_id"
+    if url_slug:
+        q = db.session.query(Profile).filter(getattr(Profile, column_name) != None).filter(Profile.url_slug==url_slug)
+    else:
+        q = db.session.query(Profile).filter(getattr(Profile, column_name) != None)
+
+    start_time = datetime.datetime.utcnow()
+    number_considered = 0.0
+    number_markups = 0.0
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        number_considered += 1
+        print profile.url_slug, "previous number of account products:", len(profile.account_products)
+        tiids = profile.update_products_from_linked_account(account_type, update_even_removed_products=False)
+        if tiids:
+            print "  got a tiid!"
+
 
 
 def main(function, args):
@@ -246,6 +264,8 @@ def main(function, args):
         build_refsets(args["save_after_every_profile"])
     elif function=="embed":
         collect_embed(args["min_tiid"])
+    elif function=="linked-accounts":
+        linked_accounts("twitter", args["url_slug"])
 
 
 
