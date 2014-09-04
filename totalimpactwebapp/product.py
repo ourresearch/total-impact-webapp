@@ -377,9 +377,9 @@ class Product(db.Model):
         logger.debug(u"in get_embed_markup for {tiid}".format(
             tiid=self.tiid))
 
-        if product.is_account_product:
+        if self.is_account_product:
             return None
-            
+
         try:
             if not self.aliases.best_url:
                 return None
