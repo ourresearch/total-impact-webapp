@@ -190,10 +190,7 @@ class Profile(db.Model):
         #temporary till we figure out a better way to do this
         products_to_return = []
         for product in self.products_not_removed:
-            try:
-                if not product.biblio.is_account:
-                    products_to_return.append(product)
-            except AttributeError:
+            if not product.is_account_product:
                 products_to_return.append(product)
 
         return products_to_return
@@ -203,9 +200,8 @@ class Profile(db.Model):
         #temporary till we figure out a better way to do this
         products_to_return = []
         for product in self.products_not_removed:
-            try:
-                if product.biblio.is_account:
-                    products_to_return.append(product)
+            if product.is_account_product:
+                products_to_return.append(product)
             except AttributeError:
                 pass
 
