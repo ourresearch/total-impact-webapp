@@ -1,4 +1,5 @@
 import logging
+from collections import Counter
 from totalimpactwebapp.cards_factory import make_genre_cards
 from totalimpactwebapp.cards_factory import make_genre_new_metrics_cards
 from totalimpactwebapp.util import cached_property
@@ -60,7 +61,14 @@ class Genre(object):
     @cached_property
     def journals(self):
         if self.name == "article":
-            return ["Nature", "Cell", "Science", "First Monday", "PLOS ONE", "PeerJ"]
+            journals = Counter()
+            for product in self.products:
+                try:
+                    if product.biblio.journal:
+                        journals[product.biblio.journal] += 1
+                except AttributeError:
+                    pass
+            return dict(journals)
         else:
             return []
 

@@ -1,6 +1,6 @@
-from totalimpactwebapp.card import ProductNewMetricCard
-from totalimpactwebapp.card import ProfileNewMetricCard
-from totalimpactwebapp.card import GenreNewMetricCard
+from totalimpactwebapp.card import ProductNewDiffCard
+from totalimpactwebapp.card import ProfileNewDiffCard
+from totalimpactwebapp.card import GenreNewDiffCard
 from totalimpactwebapp.card import GenreAccumulationCard
 from totalimpactwebapp.card import GenreProductsWithMoreThanCard
 import configs
@@ -14,8 +14,8 @@ def make_product_new_metrics_cards(products, url_slug):
     for product in products:
 
         for metric in product.metrics:
-            if ProductNewMetricCard.would_generate_a_card(metric):
-                new_card = ProductNewMetricCard(products, product, metric, url_slug)
+            if ProductNewDiffCard.would_generate_a_card(metric):
+                new_card = ProductNewDiffCard(products, product, metric, url_slug)
                 cards.append(new_card)
 
     return cards
@@ -39,18 +39,19 @@ def make_product_list_cards(products, card_class, url_slug=None):
     return cards
 
 def make_profile_new_metrics_cards(products, url_slug):
-    return make_product_list_cards(products, ProfileNewMetricCard, url_slug)
+    return make_product_list_cards(products, ProfileNewDiffCard, url_slug)
 
 
 def make_genre_cards(products):
     cards = []
     cards += make_product_list_cards(products, GenreAccumulationCard)
     cards += make_product_list_cards(products, GenreProductsWithMoreThanCard)
+    cards.sort(key=lambda x: x.sort_by, reverse=True)
     return cards
 
 def make_genre_new_metrics_cards(products):
     cards = []
-    cards += make_product_list_cards(products, GenreNewMetricCard)
+    cards += make_product_list_cards(products, GenreNewDiffCard)
     return cards
 
 
