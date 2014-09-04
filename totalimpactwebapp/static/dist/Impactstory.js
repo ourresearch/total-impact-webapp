@@ -6325,16 +6325,21 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div class=\"genres\">\n" +
     "   <div class=\"wrapper\">\n" +
+    "      <div class=\"sidebar\">\n" +
+    "      </div>\n" +
     "      <ul class=\"genre-list\">\n" +
     "         <li ng-repeat=\"genre in genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
     "            <div class=\"genre-header\">\n" +
     "               <h3 class=\"genre-name\">\n" +
-    "                  <span class=\"total-products\">\n" +
-    "                     {{ genre.num_products }}\n" +
-    "                  </span>\n" +
-    "                  <span class=\"name\">\n" +
-    "                     {{ genre.plural_name }}\n" +
-    "                  </span>\n" +
+    "                  <a href=\"/{{ profile.url_slug }}/products/{{ genre.name }}\"\n" +
+    "                     tooltip=\"view all {{ genre.num_products }} {{ genre.plural_name }}\">\n" +
+    "                     <span class=\"total-products\">\n" +
+    "                        {{ genre.num_products }}\n" +
+    "                     </span>\n" +
+    "                     <span class=\"name\">\n" +
+    "                        {{ genre.plural_name }}\n" +
+    "                     </span>\n" +
+    "                  </a>\n" +
     "                  <span class=\"num-products-with-new-metrics\" ng-show=\"genre.num_products_with_new_metrics\">\n" +
     "                     ({{ genre.num_products_with_new_metrics }} have new impacts this week)\n" +
     "                  </span>\n" +

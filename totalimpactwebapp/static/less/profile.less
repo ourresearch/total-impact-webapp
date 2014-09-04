@@ -438,7 +438,14 @@ div.products {
 
 div.genres {
    div.wrapper {
+      div.sidebar {
+         float: left;
+         width: 200px;
+         height: 500px;
+         margin-top: 50px;
+      }
       ul.genre-list {
+         float:left;
          li.genre {
             border: 2px solid #eee;
             margin-top: 50px;
@@ -448,6 +455,10 @@ div.genres {
                h3 {
                   margin: 0;
                   padding: 10px;
+                  a {
+                     color: #555;
+                     &:hover {color: #000;}
+                  }
                   span.num-products-with-new-metrics {
                      margin-left: 5px;
                      color: @publicColor;

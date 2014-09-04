@@ -83,16 +83,21 @@
 
 <div class="genres">
    <div class="wrapper">
+      <div class="sidebar">
+      </div>
       <ul class="genre-list">
          <li ng-repeat="genre in genres | orderBy:'name'" class="genre genre-{{ genre.plural_name }}">
             <div class="genre-header">
                <h3 class="genre-name">
-                  <span class="total-products">
-                     {{ genre.num_products }}
-                  </span>
-                  <span class="name">
-                     {{ genre.plural_name }}
-                  </span>
+                  <a href="/{{ profile.url_slug }}/products/{{ genre.name }}"
+                     tooltip="view all {{ genre.num_products }} {{ genre.plural_name }}">
+                     <span class="total-products">
+                        {{ genre.num_products }}
+                     </span>
+                     <span class="name">
+                        {{ genre.plural_name }}
+                     </span>
+                  </a>
                   <span class="num-products-with-new-metrics" ng-show="genre.num_products_with_new_metrics">
                      ({{ genre.num_products_with_new_metrics }} have new impacts this week)
                   </span>

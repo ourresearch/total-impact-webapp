@@ -7384,6 +7384,15 @@ div.products .wrapper ul.products-list:after {
 div.products .wrapper ul.products-list li.product {
   position: relative;
 }
+div.genres div.wrapper div.sidebar {
+  float: left;
+  width: 200px;
+  height: 500px;
+  margin-top: 50px;
+}
+div.genres div.wrapper ul.genre-list {
+  float: left;
+}
 div.genres div.wrapper ul.genre-list li.genre {
   border: 2px solid #eee;
   margin-top: 50px;
@@ -7395,6 +7404,12 @@ div.genres div.wrapper ul.genre-list li.genre div.genre-header {
 div.genres div.wrapper ul.genre-list li.genre div.genre-header h3 {
   margin: 0;
   padding: 10px;
+}
+div.genres div.wrapper ul.genre-list li.genre div.genre-header h3 a {
+  color: #555;
+}
+div.genres div.wrapper ul.genre-list li.genre div.genre-header h3 a:hover {
+  color: #000;
 }
 div.genres div.wrapper ul.genre-list li.genre div.genre-header h3 span.num-products-with-new-metrics {
   margin-left: 5px;
