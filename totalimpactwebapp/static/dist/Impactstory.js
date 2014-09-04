@@ -462,6 +462,7 @@ angular.module('app', [
   'signup',
   'passwordReset',
   'productPage',
+  'genrePage',
   'profile',
   'settings',
   'xeditable'
@@ -612,6 +613,33 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
     return httpRequestTracker.hasPendingRequests();
   };
 }]);
+
+angular.module("genrePage", [
+  'resources.users',
+  'services.page',
+  'ui.bootstrap',
+  'security',
+  'services.loading',
+  'services.timer',
+  'services.userMessage'
+])
+
+.config(['$routeProvider', function ($routeProvider, security) {
+
+  $routeProvider.when("/:url_slug/products/:genre_name", {
+    templateUrl:'genre-page/genre-page.tpl.html',
+    controller:'GenrePageCtrl'
+  })
+
+}])
+
+
+
+.controller('GenrePageCtrl', function (){
+  console.log("genre page controller loaded.")
+
+
+})
 
 angular.module("googleScholar", [
  "security",
@@ -4544,7 +4572,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -4747,6 +4775,14 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
     "   </div>\n" +
     "</div> <!-- end footer -->\n" +
     "");
+}]);
+
+angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("genre-page/genre-page.tpl.html",
+    "<div class=\"genre-page\">\n" +
+    "   <div class=\"content wrapper\">\n" +
+    "   </div>\n" +
+    "</div>");
 }]);
 
 angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -5661,39 +5697,6 @@ angular.module("product-page/percentilesInfoModal.tpl.html", []).run(["$template
 angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product-page/product-page.tpl.html",
     "<div class=\"product-page\">\n" +
-    "\n" +
-    "   <!--\n" +
-    "   <div class=\"header profile-subpage-header product-page-header\">\n" +
-    "      <div class=\"wrapper\">\n" +
-    "         <a back-to-profile></a>\n" +
-    "         <div class=\"product-page-controls\" ng-show=\"userOwnsThisProfile && !loading.is()\">\n" +
-    "            <a class=\"edit-product\"\n" +
-    "               ng-click=\"editProduct()\"\n" +
-    "               tooltip=\"Make changes to this product's title or authors\"\n" +
-    "               tooltip-placement=\"bottom\">\n" +
-    "               <span class=\"ready\">\n" +
-    "                  <i class=\"icon-edit\"></i>\n" +
-    "                  Edit\n" +
-    "               </span>\n" +
-    "               <span class=\"working\" ng-show=\"loading.is('deleteProduct')\">\n" +
-    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "                  Removing...\n" +
-    "               </span>\n" +
-    "            </a>\n" +
-    "\n" +
-    "            <a class=\"delete-product\"\n" +
-    "               ng-click=\"deleteProduct()\"\n" +
-    "               tooltip=\"Remove this product from your profile.\"\n" +
-    "               tooltip-placement=\"bottom\">\n" +
-    "               <span class=\"ready\">\n" +
-    "                  <i class=\"icon-trash\"></i>\n" +
-    "                  Remove\n" +
-    "               </span>\n" +
-    "            </a>\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "   -->\n" +
     "\n" +
     "   <div class=\"content wrapper\">\n" +
     "      <!--<div class=\"working\" ng-show=\"loading.is('productPage')\">\n" +

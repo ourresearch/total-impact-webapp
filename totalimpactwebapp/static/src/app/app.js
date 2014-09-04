@@ -26,6 +26,7 @@ angular.module('app', [
   'signup',
   'passwordReset',
   'productPage',
+  'genrePage',
   'profile',
   'settings',
   'xeditable'
