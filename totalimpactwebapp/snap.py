@@ -40,6 +40,8 @@ class Snap(db.Model):
     def to_dict(self):
         return {
             "collected_date": self.last_collected_date,
+            "provider": self.provider,
+            "interaction": self.interaction,
             "value": self.raw_value,
             "drilldown_url": self.drilldown_url,
             "percentile": self.percentile
