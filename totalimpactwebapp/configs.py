@@ -247,6 +247,28 @@ providers = [
         "url": "http://www.slideshare.net/"
     },
 
+    # *************************************************************************
+    #                             Slideshare account
+    # *************************************************************************
+    {
+        "descr": "The best way to share presentations, documents and professional videos.",
+        "metrics": {
+            "followers": {
+                "description": "The number of people who follow this account",
+                "display_name": "followers",
+                "icon": "http://www.slideshare.net/favicon.ico",
+                "provider_name": "SlideShare",
+                "provider_url": "http://www.slideshare.net/",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            }
+        },
+        "name": "slideshare_account",
+        "provides_aliases": True,
+        "provides_metrics": True,
+        "url": "http://www.slideshare.net/"
+    },
 
 
 
@@ -872,7 +894,7 @@ providers = [
     #                             Twitter account
     # *************************************************************************
     {
-        "descr": "An international repository of data underlying peer-reviewed articles in the basic and applied biology.",
+        "descr": "Social networking and microblogging service",
         "metrics": {
             "followers": {
                 "description": "Twitter followers: the number of people who follow this twitter account",
