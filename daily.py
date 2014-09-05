@@ -246,8 +246,11 @@ def linked_accounts(account_type, url_slug=None):
     number_markups = 0.0
     for profile in windowed_query(q, Profile.url_slug, 25):
         number_considered += 1
-        print profile.url_slug, "previous number of account products:", len(profile.account_products)
-        print profile.account_products
+        try:
+            print profile.url_slug, "previous number of account products:", len(profile.account_products)
+            print profile.account_products
+        except UnicodeEncodeError:
+            pass
         tiids = profile.update_products_from_linked_account(account_type, update_even_removed_products=False)
         if tiids:
             print "  ", profile.url_slug, account_type, "got a tiid!"
