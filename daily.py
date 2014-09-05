@@ -472,7 +472,7 @@ def refresh_twitter(min_tiid=None):
     if min_tiid:
         q = db.session.query(Product).filter(Product.profile_id != None).filter(Product.tiid>min_tiid)
     else:
-        q = db.session.query(Product).filter(Product.profile_id != None).filter(User.id.in_(tiids_that_need_twitter))
+        q = db.session.query(Product).filter(Product.profile_id != None).filter(Product.tiid.in_(tiids_that_need_twitter))
 
     start_time = datetime.datetime.utcnow()
     number_considered = 0.0
