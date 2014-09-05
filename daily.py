@@ -472,15 +472,13 @@ def refresh_twitter(min_tiid=None):
     if min_tiid:
         q = db.session.query(Product).filter(Product.profile_id != None).filter(Product.tiid>min_tiid)
     else:
-        q = db.session.query(Product).filter(Product.profile_id != None)
+        q = db.session.query(Product).filter(Product.profile_id != None).filter(User.id.in_(tiids_that_need_twitter))
 
     start_time = datetime.datetime.utcnow()
     number_considered = 0.0
     number_refreshed = 0
     for product in windowed_query(q, Product.tiid, 25):
         number_considered += 1
-        if not product.tiid in tiids_that_need_twitter:
-            continue
         try:
             if product.biblio.repository=="Twitter" and len(product.metrics)==0:
                 print "refreshing", product.tiid, number_refreshed
