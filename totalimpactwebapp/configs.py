@@ -868,7 +868,48 @@ providers = [
 
 
 
-
+    # *************************************************************************
+    #                             Twitter account
+    # *************************************************************************
+    {
+        "descr": "An international repository of data underlying peer-reviewed articles in the basic and applied biology.",
+        "metrics": {
+            "followers": {
+                "description": "Twitter followers: the number of people who follow this twitter account",
+                "display_name": "package views",
+                "icon": "http:\\/\\/twitter.com\\/favicon.ico",
+                "provider_name": "Twitter",
+                "provider_url": "http:\\/\\/twitter.com\\/",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            },
+            "lists": {
+                "description": "Twitter lists:  the number of lists that include this twitter account",
+                "display_name": "lists",
+                "icon": "http:\\/\\/twitter.com\\/favicon.ico",
+                "provider_name": "Twitter",
+                "provider_url": "http:\\/\\/twitter.com\\/",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            },
+            "number_tweets": {
+                "description": "Twitter number of tweets: the number of tweets sent by this twitter account",
+                "display_name": "number of tweets",
+                "icon": "http:\\/\\/twitter.com\\/favicon.ico",
+                "provider_name": "Twitter",
+                "provider_url": "http:\\/\\/twitter.com\\/",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            }        
+        },
+        "name": "twitter",
+        "provides_aliases": True,
+        "provides_metrics": True,
+        "url": "http://twitter.com"
+    },
 
 
 

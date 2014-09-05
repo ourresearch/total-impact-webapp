@@ -1,5 +1,6 @@
 from totalimpactwebapp.product import Product
 from totalimpactwebapp.profile import Profile
+from totalimpactwebapp.profile import refresh_products_from_tiids
 from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp.product_deets import populate_product_deets
@@ -9,6 +10,8 @@ import tasks
 
 from sqlalchemy import and_, func
 import datetime
+import os
+import requests
 import argparse
 import logging
 
@@ -253,6 +256,24 @@ def linked_accounts(account_type, url_slug=None):
 
 
 
+def refresh_twitter(min_tiid=None):
+    if min_tiid:
+        q = db.session.query(Product).filter(Product.profile_id != None).filter(Product.tiid>min_tiid)
+    else:
+        q = db.session.query(Product).filter(Product.profile_id != None)
+
+    start_time = datetime.datetime.utcnow()
+    number_considered = 0.0
+    for product in windowed_query(q, Product.tiid, 25):
+        number_considered += 1
+        try:
+            if product.biblio.repository=="Twitter" and len(product.metrics)==0:
+                print "refreshing", product.tiid
+                refresh_products_from_tiids([product.tiid], source="scheduled")
+        except AttributeError:
+            pass
+
+
 def main(function, args):
     if function=="emailreports":
         if "url_slug" in args and args["url_slug"]:
@@ -269,6 +290,8 @@ def main(function, args):
         collect_embed(args["min_tiid"])
     elif function=="linked-accounts":
         linked_accounts("twitter", args["url_slug"])
+    elif function=="twitter":
+        refresh_twitter()
 
 
 

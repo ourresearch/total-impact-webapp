@@ -825,6 +825,9 @@ def get_profiles():
 
 
 def make_products_for_linked_account(profile_id, importer_name, importer_value, analytics_credentials={}, existing_tiids={}):
+    logger.info(u"in make_products_for_linked_account with account_name={account_name}".format(
+        account_name=account_name))
+
     query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
         core_api_root=os.getenv("API_ROOT"),
         importer_name=importer_name,
