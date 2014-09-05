@@ -258,27 +258,6 @@ angular.module("productPage", [
     }
 
 
-    $scope.editProduct = function(field){
-      UserProfile.useCache(false)
-      $modal.open({
-        templateUrl: "product-page/edit-product-modal.tpl.html",
-        controller: "editProductModalCtrl",
-        resolve: {
-          product: function(){
-            return $scope.product
-          },
-          fieldToEdit: function(){
-            return field
-          }
-        }
-      })
-      .result.then(
-        function(resp){
-          console.log("closed the editProduct modal; re-rendering product")
-          $scope.reRenderProduct()
-        }
-      )
-    }
 
     $scope.downloadFile = function(){
       ProductInteraction.save(
