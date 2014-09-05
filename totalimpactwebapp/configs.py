@@ -250,7 +250,7 @@ providers = [
     # *************************************************************************
     #                             Slideshare account
     # *************************************************************************
-{
+    {
         "descr": "The best way to share presentations, documents and professional videos.",
         "metrics": {
             "followers": {
