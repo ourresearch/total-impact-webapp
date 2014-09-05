@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-03
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-04
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -350,18 +350,18 @@ angular.module('accounts.allTheAccounts', [
     }
 
 
-//    ,twitter: {
-//      displayName: "Twitter",
-//      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
-//      url:'http://twitter.com',
-//      descr: "Twitter is a social networking site for sharing short messages.",
-//      extra: "We don't import your tweets right now -- stay tuned!",
-//      username: {
-//          inputNeeded: "username",
-//          placeholder: "@example",
-//          help: "Your Twitter username is often written starting with @."
-//      }
-//    }
+   ,twitter: {
+     displayName: "Twitter",
+     sync: true,     
+     usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
+     url:'http://twitter.com',
+     descr: "Twitter is a social networking site for sharing short messages.",
+     username: {
+         inputNeeded: "username",
+         placeholder: "@example",
+         help: "Your Twitter username is often written starting with @."
+     }
+   }
 
   }
 
@@ -1359,27 +1359,6 @@ angular.module("productPage", [
     }
 
 
-    $scope.editProduct = function(field){
-      UserProfile.useCache(false)
-      $modal.open({
-        templateUrl: "product-page/edit-product-modal.tpl.html",
-        controller: "editProductModalCtrl",
-        resolve: {
-          product: function(){
-            return $scope.product
-          },
-          fieldToEdit: function(){
-            return field
-          }
-        }
-      })
-      .result.then(
-        function(resp){
-          console.log("closed the editProduct modal; re-rendering product")
-          $scope.reRenderProduct()
-        }
-      )
-    }
 
     $scope.downloadFile = function(){
       ProductInteraction.save(
@@ -3198,6 +3177,7 @@ angular.module('resources.products',['ngResource'])
 
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4189,6 +4169,7 @@ angular.module("services.loading")
     }
   }
 })
+angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])

@@ -47,7 +47,7 @@ def deduplicate_by_url_slug(url_slug, webapp_api_endpoint):
 def import_products_by_url_slug(url_slug, webapp_api_endpoint):
     profile_dict = get_profile(url_slug, webapp_api_endpoint)
 
-    for account_type in ["github", "slideshare", "figshare", "orcid"]:
+    for account_type in ["github", "slideshare", "figshare", "orcid", "twitter"]:
         user_account_value = profile_dict["about"][account_type+"_id"]
         if user_account_value:
             url = u"{webapp_api_endpoint}/profile/{url_slug}/linked-accounts/{account_type}?action=update&source=scheduled".format(
