@@ -28,7 +28,8 @@ angular.module('app', [
   'passwordReset',
   'productPage',
   'genrePage',
-  'profile',
+  'services.profileService',
+  'profileSidebar',
   'settings',
   'xeditable'
 ]);

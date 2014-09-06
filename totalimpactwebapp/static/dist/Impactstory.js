@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-05
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-06
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -462,7 +462,8 @@ angular.module('app', [
   'passwordReset',
   'productPage',
   'genrePage',
-  'profile',
+  'services.profileService',
+  'profileSidebar',
   'settings',
   'xeditable'
 ]);
@@ -1530,6 +1531,19 @@ angular.module('profileLinkedAccounts', [
 
 
   })
+angular.module('profileSidebar', [
+    'security',
+    'resources.users',
+    'services.profileService'
+])
+  .controller("profileSidebarCtrl", function($scope, ProfileService, security){
+    console.log("profileSidebarCtrl ran")
+
+    $scope.profile = ProfileService
+
+
+
+  })
 angular.module('profileSingleProducts', [
   'services.page',
   'resources.users',
@@ -1716,6 +1730,7 @@ angular.module("profile", [
     UserMessage,
     Update,
     Loading,
+    ProfileService,
     Tour,
     Timer,
     security,
@@ -1853,6 +1868,9 @@ angular.module("profile", [
           $scope.profileAwards = resp.awards
           $scope.doneLoading = true
           $scope.genres = resp.genres
+
+          ProfileService.about = resp.about
+          ProfileService.products = resp.products
 
 
 
@@ -4386,6 +4404,22 @@ angular.module("services.page")
 
 
 
+angular.module('services.profileService', [
+  'resources.users'
+])
+  .factory("ProfileService", function(){
+
+    var products
+    var about
+
+
+    return {
+      products: products,
+      about: about
+    }
+
+
+  })
 angular.module('services.routeChangeErrorHandler', [
   'security'
 ])
@@ -4728,7 +4762,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-sidebar/profile-sidebar.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -6347,6 +6381,19 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "   </div>\n" +
     "\n" +
     "</div>");
+}]);
+
+angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-sidebar/profile-sidebar.tpl.html",
+    "<div class=\"profile-sidebar\" ng-controller=\"profileSidebarCtrl\">\n" +
+    "   <h1>\n" +
+    "      <a href=\"/{{ profile.about.url_slug }}\">\n" +
+    "         <span class=\"given-name\">{{ profile.about.given_name }}</span>\n" +
+    "         <span class=\"surname\">{{ profile.about.surname }}</span>\n" +
+    "      </a>\n" +
+    "   </h1>\n" +
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("profile-single-products/profile-single-products.tpl.html", []).run(["$templateCache", function($templateCache) {

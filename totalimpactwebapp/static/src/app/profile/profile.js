@@ -109,6 +109,7 @@ angular.module("profile", [
     UserMessage,
     Update,
     Loading,
+    ProfileService,
     Tour,
     Timer,
     security,
@@ -246,6 +247,9 @@ angular.module("profile", [
           $scope.profileAwards = resp.awards
           $scope.doneLoading = true
           $scope.genres = resp.genres
+
+          ProfileService.about = resp.about
+          ProfileService.products = resp.products
 
 
 

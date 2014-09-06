@@ -6324,9 +6324,11 @@ div.no-page p span.slug {
   border-right: 1px solid #999;
   z-index: 100;
   margin-left: -500px;
+  padding: 20px;
 }
 #sidebar h1 {
   font-size: 30px;
+  margin: 0;
 }
 @media all and (max-width: 1000px) {
   #sidebar {
@@ -6337,24 +6339,26 @@ div.no-page p span.slug {
 #not-sidebar {
   margin: 0 0 0 200px;
   width: 800px;
+  clear: both;
+}
+#not-sidebar:before,
+#not-sidebar:after {
+  content: " ";
+  display: table;
+}
+#not-sidebar:after {
+  clear: both;
+}
+#not-sidebar:before,
+#not-sidebar:after {
+  content: " ";
+  display: table;
+}
+#not-sidebar:after {
+  clear: both;
+}
+#not-sidebar #main-view-container {
   padding: 0 0 0 30px;
-  clear: both;
-}
-#not-sidebar:before,
-#not-sidebar:after {
-  content: " ";
-  display: table;
-}
-#not-sidebar:after {
-  clear: both;
-}
-#not-sidebar:before,
-#not-sidebar:after {
-  content: " ";
-  display: table;
-}
-#not-sidebar:after {
-  clear: both;
 }
 #wrapper {
   width: 1000px;
@@ -7030,6 +7034,12 @@ a.refresh {
   text-indent: -1000px;
   top: 20px;
   left: 0;
+}
+div.profile-sidebar h1 a {
+  color: #333;
+}
+div.profile-sidebar h1 a:hover {
+  color: #ff4000;
 }
 div.profile-header {
   margin-top: 30px;

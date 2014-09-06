@@ -106,10 +106,10 @@
       -->
 
          <div id="sidebar">
-            <h1>Heather Piwowar</h1>
+            <div ng-include="'profile-sidebar/profile-sidebar.tpl.html'"></div>
          </div>
          <div id="not-sidebar">
-            <div class="main-view-container">
+            <div id="main-view-container">
                <div ng-view class="main-view"></div>
             </div>
             <div ng-include="'footer.tpl.html'" id="page-footer"></div>
