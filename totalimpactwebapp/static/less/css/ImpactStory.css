@@ -6024,11 +6024,6 @@ body a:link {
   text-decoration: none;
   cursor: pointer;
 }
-.wrapper {
-  margin: 0 auto;
-  display: block;
-  width: 1100px;
-}
 .clearfix,
 .container,
 .container-fluid,
@@ -6328,11 +6323,13 @@ div#sidebar {
   bottom: 0;
   left: 0;
   border-right: 1px solid #999;
-  background: #333;
+}
+div#sidebar h1 {
+  font-size: 30px;
 }
 div#not-sidebar {
   margin-left: 200px;
-  background: cornflowerblue;
+  padding-left: 30px;
   clear: both;
 }
 div#not-sidebar:before,
@@ -6356,7 +6353,6 @@ div#wrapper {
   margin: 0 auto;
   width: 1100px;
   clear: both;
-  background: #eee;
 }
 div#wrapper:before,
 div#wrapper:after {
@@ -6373,10 +6369,6 @@ div#wrapper:after {
 }
 div#wrapper:after {
   clear: both;
-}
-.clearfloat {
-  clear: both;
-  float: left;
 }
 /* navbar
 *****************************************************************************
@@ -6493,7 +6485,7 @@ div#footer {
   font-size: 100%;
   clear: both;
   color: #777;
-  padding: 60px 0 80px;
+  padding: 60px 20px 80px;
   width: 100%;
   border-top: 1px solid #aaa;
   background: #ddd;
@@ -6512,11 +6504,7 @@ div#footer a {
 div#footer a:hover {
   color: #444444;
 }
-div#footer div.wrapper {
-  margin-top: 30px;
-  margin: 0 auto;
-}
-div#footer div.wrapper div.footer-col {
+div#footer div.footer-col {
   float: left;
   width: 125px;
   padding-right: 0;
@@ -6525,39 +6513,39 @@ div#footer div.wrapper div.footer-col {
   min-height: 150px;
   font-weight: 300;
 }
-div#footer div.wrapper div.footer-col h3 {
+div#footer div.footer-col h3 {
   font-weight: 500;
   margin-top: 0;
   font-size: 16px;
   color: #777;
 }
-div#footer div.wrapper div.footer-col ul li {
+div#footer div.footer-col ul li {
   line-height: 1.6;
 }
-div#footer div.wrapper div.footer-col ul a {
+div#footer div.footer-col ul a {
   font-size: 15px;
 }
-div#footer div.wrapper div.footer-col#footer-help {
+div#footer div.footer-col#footer-help {
   border-right: none;
 }
-div#footer div.wrapper div.footer-col#footer-funders {
+div#footer div.footer-col#footer-funders {
   width: 200px;
   border-right: none;
   padding-right: none;
   float: right;
   text-align: right;
 }
-div#footer div.wrapper div.footer-col#footer-funders h3 {
+div#footer div.footer-col#footer-funders h3 {
   margin: 0 20px 15px 40px;
   text-align: left;
   font-size: 14px;
 }
-div#footer div.wrapper div.footer-col#footer-funders img {
+div#footer div.footer-col#footer-funders img {
   margin: 0 5px;
   height: 35px;
   opacity: .6;
 }
-div#footer div.wrapper div.footer-col#footer-funders #footer-nsf-link img {
+div#footer div.footer-col#footer-funders #footer-nsf-link img {
   height: 40px;
   margin-top: -2px;
 }
@@ -7054,9 +7042,7 @@ a.refresh {
   left: 0;
 }
 div.profile-header {
-  margin-bottom: 35px;
-  margin-top: -20px;
-  height: 150px;
+  margin-top: 30px;
   clear: both;
 }
 div.profile-header:before,
@@ -7077,15 +7063,13 @@ div.profile-header:after {
 }
 div.profile-header div.my-picture {
   float: left;
-  background: #eee;
+}
+div.profile-header div.my-picture img {
   height: 110px;
-  width: 110px;
-  background: #ddd;
+  padding: 0 20px 20px 0;
 }
 div.profile-header div.my-vitals {
-  width: 600px;
-  margin-left: 40px;
-  float: left;
+  margin-bottom: 20px;
 }
 div.profile-header div.my-vitals h2.editable-name {
   font-family: Lato, Helvetica, Arial, sans-serif;
@@ -7096,9 +7080,14 @@ div.profile-header div.my-vitals h2.editable-name {
   padding-top: 0;
   float: left;
 }
+div.profile-header div.my-vitals div.bio {
+  width: 700px;
+}
 div.profile-header div.my-vitals div.connected-accounts {
-  float: left;
   clear: left;
+}
+div.profile-header div.my-vitals div.connected-accounts div.add-connected-account {
+  clear: both;
 }
 div.profile-header div.my-vitals div.connected-accounts div.add-connected-account a {
   margin-top: 5px;
@@ -7115,41 +7104,41 @@ div.profile-header div.my-vitals div.connected-accounts li a img {
   height: 16px;
   margin-top: -3px;
 }
-div.profile-header div.my-metrics {
-  float: left;
+div.profile-header div.my-vitals div.my-metrics {
+  float: right;
 }
-div.profile-header div.my-metrics div.advisor {
+div.profile-header div.my-vitals div.my-metrics div.advisor {
   margin-bottom: 20px;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container:hover iframe {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container:hover iframe {
   display: inline;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container iframe {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container iframe {
   vertical-align: -4px;
   display: none;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container div.popover {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container div.popover {
   font-size: 15px;
   font-weight: 400;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container div.popover h3 {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container div.popover h3 {
   color: #fff;
   text-align: center;
   font-family: Lato;
   font-weight: normal;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container div.popover .call-to-action {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container div.popover .call-to-action {
   color: #46b8da;
   font-style: italic;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award {
   color: #fff;
   font-size: 14px;
   font-weight: normal;
   cursor: default;
   margin-right: 5px;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award span.text {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award span.text {
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
   -webkit-border-bottom-left-radius: 0px;
@@ -7169,7 +7158,7 @@ div.profile-header div.my-metrics ul.profile-award-list li.profile-award-contain
   background: #555;
   border: 1px solid #555;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container span.icon {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container span.icon {
   -webkit-border-top-right-radius: 0px;
   -webkit-border-bottom-right-radius: 0px;
   -webkit-border-bottom-left-radius: 3px;
@@ -7188,33 +7177,33 @@ div.profile-header div.my-metrics ul.profile-award-list li.profile-award-contain
   padding: 4px 9px;
   border: 1px solid;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-1 span.icon {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container.level-1 span.icon {
   background: gold;
   border-color: gold;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-1 div.popover h3 {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container.level-1 div.popover h3 {
   background: gold;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-2 span.icon {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container.level-2 span.icon {
   background: silver;
   border-color: silver;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-2 div.popover h3 {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container.level-2 div.popover h3 {
   background: silver;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-3 span.icon {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container.level-3 span.icon {
   background: #CD7F32;
   border-color: #CD7F32;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-3 div.popover h3 {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container.level-3 div.popover h3 {
   background: #CD7F32;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-4 span.icon {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container.level-4 span.icon {
   background: #fff;
   border-color: #555;
   color: #555;
 }
-div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-4 div.popover h3 {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container.level-4 div.popover h3 {
   display: none;
 }
 div.modal-body.embed label {
@@ -7263,56 +7252,42 @@ div.modal-body.embed div.code h3 {
   margin-top: 30px;
   text-align: center;
 }
-div.product-controls {
-  font-size: 16px;
-  border-bottom: 5px solid #eee;
-  color: #777;
+div.view-controls {
+  float: none;
+  margin-top: 50px;
   clear: both;
-  position: relative;
 }
-div.product-controls:before,
-div.product-controls:after {
+div.view-controls:before,
+div.view-controls:after {
   content: " ";
   display: table;
 }
-div.product-controls:after {
+div.view-controls:after {
   clear: both;
 }
-div.product-controls:before,
-div.product-controls:after {
+div.view-controls:before,
+div.view-controls:after {
   content: " ";
   display: table;
 }
-div.product-controls:after {
+div.view-controls:after {
   clear: both;
 }
-div.product-controls a {
-  font-size: 16px;
-}
-div.product-controls a:hover {
-  color: #333;
-}
-div.product-controls div.view-controls {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  margin: 0 30px 0 0;
-}
-div.product-controls div.view-controls div.admin-controls {
+div.view-controls div.admin-controls {
   float: left;
 }
-div.product-controls div.view-controls div.everyone-controls {
+div.view-controls div.everyone-controls {
   float: left;
 }
-div.product-controls div.view-controls a {
-  margin-left: 15px;
+div.view-controls a {
   color: #777;
+  margin-right: 20px;
   display: inline-block;
 }
-div.product-controls div.view-controls a i {
+div.view-controls a i {
   margin-right: 5px;
 }
-div.product-controls div.view-controls span.dropdown ul.dropdown-menu {
+div.view-controls span.dropdown ul.dropdown-menu {
   border: none;
   -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
@@ -7337,18 +7312,18 @@ div.product-controls div.view-controls span.dropdown ul.dropdown-menu {
   top: 22px;
   min-width: 120px;
 }
-div.product-controls div.view-controls span.dropdown ul.dropdown-menu a {
+div.view-controls span.dropdown ul.dropdown-menu a {
   margin: 0;
   width: 100%;
 }
-div.product-controls div.view-controls span.dropdown ul.dropdown-menu a:hover {
+div.view-controls span.dropdown ul.dropdown-menu a:hover {
   color: #fff;
 }
-div.product-controls div.view-controls span.dropdown ul.dropdown-menu i {
+div.view-controls span.dropdown ul.dropdown-menu i {
   font-style: normal;
   margin-right: 5px;
 }
-div.product-controls div.view-controls span.dropdown ul.dropdown-menu i.json {
+div.view-controls span.dropdown ul.dropdown-menu i.json {
   font-weight: 900;
   font-size: 14px;
 }
@@ -7359,11 +7334,12 @@ div.genres div.sidebar {
   margin-top: 50px;
 }
 div.genres ul.genre-list {
-  float: left;
+  clear: both;
+  margin-top: 20px;
 }
 div.genres ul.genre-list li.genre {
   border: 2px solid #eee;
-  margin-top: 50px;
+  margin-bottom: 50px;
   position: relative;
 }
 div.genres ul.genre-list li.genre div.genre-header {
@@ -9262,27 +9238,27 @@ div.genre-page div.header h2 span.return-to-profile-link-container a.return-to-p
 div.genre-page div.products {
   margin-top: 0;
 }
-div.genre-page div.products .wrapper ul.products-list {
+div.genre-page div.products ul.products-list {
   clear: both;
   margin-bottom: 70px;
 }
-div.genre-page div.products .wrapper ul.products-list:before,
-div.genre-page div.products .wrapper ul.products-list:after {
+div.genre-page div.products ul.products-list:before,
+div.genre-page div.products ul.products-list:after {
   content: " ";
   display: table;
 }
-div.genre-page div.products .wrapper ul.products-list:after {
+div.genre-page div.products ul.products-list:after {
   clear: both;
 }
-div.genre-page div.products .wrapper ul.products-list:before,
-div.genre-page div.products .wrapper ul.products-list:after {
+div.genre-page div.products ul.products-list:before,
+div.genre-page div.products ul.products-list:after {
   content: " ";
   display: table;
 }
-div.genre-page div.products .wrapper ul.products-list:after {
+div.genre-page div.products ul.products-list:after {
   clear: both;
 }
-div.genre-page div.products .wrapper ul.products-list li.product {
+div.genre-page div.products ul.products-list li.product {
   position: relative;
 }
 /*****************************************************

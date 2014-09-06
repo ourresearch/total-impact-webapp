@@ -74,21 +74,17 @@ a.refresh {
 
 
 div.profile-header {
-   margin-bottom: 35px;
-   margin-top: -20px;
-   height: 150px;
+   margin-top: 30px;
    .clearfix();
    div.my-picture {
       float:left;
-      background: #eee;
-      height: 110px;
-      width: 110px;
-      background: #ddd;
+      img {
+         height: 110px;
+         padding: 0 20px 20px 0;
+      }
    }
    div.my-vitals {
-      width:  600px;
-      margin-left: 40px;
-      float:left;
+      margin-bottom: 20px;
       h2.editable-name {
          font-family: Lato, Helvetica, Arial, sans-serif;
          font-weight: bolder;
@@ -98,10 +94,13 @@ div.profile-header {
          padding-top: 0;
          float:left;
       }
+      div.bio {
+         width: 700px;
+      }
       div.connected-accounts {
-         float:left;
          clear:left;
          div.add-connected-account {
+            clear:both;
             a {
                margin-top: 5px;
             }
@@ -121,115 +120,114 @@ div.profile-header {
 
          }
       }
+      div.my-metrics {
+         float:right;
+         div.advisor {
+            margin-bottom: 20px;
+         }
+         ul.profile-award-list {
 
-   }
-   div.my-metrics {
-      float:left;
-      div.advisor {
-         margin-bottom: 20px;
-      }
-      ul.profile-award-list {
+            li.profile-award-container {
 
-         li.profile-award-container {
-
-            &:hover {
-               iframe {display:inline;}
-            }
+               &:hover {
+                  iframe {display:inline;}
+               }
 
 
-            // stuff that shows up on hover
-            iframe {
-               vertical-align: -4px;
-               display:none;
-            }
+               // stuff that shows up on hover
+               iframe {
+                  vertical-align: -4px;
+                  display:none;
+               }
 
-            div.popover {
-               font-size: 15px;
-               font-weight: 400;
-               h3 {
+               div.popover {
+                  font-size: 15px;
+                  font-weight: 400;
+                  h3 {
+                     color: #fff;
+                     text-align: center;
+                     font-family: Lato;
+                     font-weight: normal;
+                  }
+                  .call-to-action {
+                     color: @btn-info-border;
+                     font-style: italic;
+                  }
+               }
+
+               // the profile award proper
+               span.profile-award {
                   color: #fff;
-                  text-align: center;
-                  font-family: Lato;
+                  font-size: 14px;
                   font-weight: normal;
-               }
-               .call-to-action {
-                  color: @btn-info-border;
-                  font-style: italic;
-               }
-            }
+                  cursor: default;
+                  margin-right: 5px;
 
-            // the profile award proper
-            span.profile-award {
-               color: #fff;
-               font-size: 14px;
-               font-weight: normal;
-               cursor: default;
-               margin-right: 5px;
+                  span.text {
+                     .border-radius(3px, 3px, 0px, 0px);
+                     padding: 4px 9px;
+                     background: #555;
+                     border: 1px solid #555;
+                  }
 
-               span.text {
-                  .border-radius(3px, 3px, 0px, 0px);
+               }
+
+
+               // this should be inside the div.profile-award. here because
+               // easier to override for levels this way.
+               span.icon {
+                  .border-radius(0px, 0px, 3px, 3px);
                   padding: 4px 9px;
-                  background: #555;
-                  border: 1px solid #555;
+                  border: 1px solid;
                }
 
-            }
 
-
-            // this should be inside the div.profile-award. here because
-            // easier to override for levels this way.
-            span.icon {
-               .border-radius(0px, 0px, 3px, 3px);
-               padding: 4px 9px;
-               border: 1px solid;
-            }
-
-
-            // level colors
-            &.level-1 {
-               span.icon {
-                  background: gold;
-                  border-color: gold;
-               }
-               div.popover {
-                  h3 {
+               // level colors
+               &.level-1 {
+                  span.icon {
                      background: gold;
-//                        color: #333;
+                     border-color: gold;
+                  }
+                  div.popover {
+                     h3 {
+                        background: gold;
+   //                        color: #333;
+                     }
                   }
                }
-            }
-            &.level-2 {
-               span.icon {
-                  background: silver;
-                  border-color: silver;
-               }
-               div.popover {
-                  h3 {
+               &.level-2 {
+                  span.icon {
                      background: silver;
+                     border-color: silver;
+                  }
+                  div.popover {
+                     h3 {
+                        background: silver;
+                     }
                   }
                }
-            }
 
-            &.level-3 {
-               span.icon {
-                  background: #CD7F32;
-                  border-color: #CD7F32;
-               }
-               div.popover {
-                  h3 {
+               &.level-3 {
+                  span.icon {
                      background: #CD7F32;
+                     border-color: #CD7F32;
+                  }
+                  div.popover {
+                     h3 {
+                        background: #CD7F32;
+                     }
                   }
                }
-            }
-            &.level-4 {
-               span.icon {
-                  background: #fff;
-                  border-color: #555;
-                  color: #555;
-               }
-               div.popover {
-                  h3 {
-                     display:none;
+               &.level-4 {
+                  span.icon {
+                     background: #fff;
+                     border-color: #555;
+                     color: #555;
+                  }
+                  div.popover {
+                     h3 {
+                        display:none;
+                     }
                   }
                }
             }
@@ -279,64 +277,51 @@ div.modal-body.embed {
 
 
 
-
-div.product-controls {
-   font-size:  16px;
-   border-bottom:  5px solid #eee;
-   color: #777;
+div.view-controls {
+   float:none;
+   margin-top: 50px;
+   clear:both;
    .clearfix();
-
-   position:relative;
-   a {
-      &:hover {color: #333;}
-      font-size: 16px;
+   div.admin-controls {
+      float:left;
    }
-   div.view-controls {
-      position: absolute;
-      right:0;
-      bottom: 0;
-      margin: 0 30px 0 0;
-      div.admin-controls {
-         float:left;
+   div.everyone-controls{
+      float:left;
+   }
+   a {
+      color: #777;
+      margin-right: 20px;
+      display:inline-block;
+      i {
+         margin-right:5px;
       }
-      div.everyone-controls{
-         float:left;
-      }
-      a {
-         margin-left: 15px;
-         color: #777;
-         display:inline-block;
+   }
+   span.dropdown {
+      ul.dropdown-menu {
+         border: none;
+         .drop-shadow(0, 0, 0, 0);
+         .border-radius(0, 3px, 3px, 0);
+         padding: 0;
+         background: #eee;
+         top: 22px;
+         min-width:  120px;
+         a {
+            margin: 0;
+            width: 100%;
+            &:hover {
+               color: #fff;
+            }
+         }
          i {
-            margin-right:5px;
+            font-style: normal;
+            margin-right: 5px;
+         }
+         i.json {
+            font-weight: 900;
+            font-size: 14px;
          }
       }
-      span.dropdown {
-         ul.dropdown-menu {
-            border: none;
-            .drop-shadow(0, 0, 0, 0);
-            .border-radius(0, 3px, 3px, 0);
-            padding: 0;
-            background: #eee;
-            top: 22px;
-            min-width:  120px;
-            a {
-               margin: 0;
-               width: 100%;
-               &:hover {
-                  color: #fff;
-               }
-            }
-            i {
-               font-style: normal;
-               margin-right: 5px;
-            }
-            i.json {
-               font-weight: 900;
-               font-size: 14px;
-            }
-         }
 
-      }
    }
 }
 
@@ -350,10 +335,11 @@ div.genres {
       margin-top: 50px;
    }
    ul.genre-list {
-      float:left;
+      clear:both;
+      margin-top: 20px;
       li.genre {
          border: 2px solid #eee;
-         margin-top: 50px;
+         margin-bottom: 50px;
          position: relative;
          div.genre-header {
             background: #eee;

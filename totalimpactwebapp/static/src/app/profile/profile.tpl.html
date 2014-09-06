@@ -4,17 +4,34 @@
       </div>
 
       <div class="profile-header-loaded" ng-show="doneLoading">
-         <div class="my-picture" ng-show="profile.id">
-            <a href="http://www.gravatar.com" >
-               <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
-            </a>
-         </div>
 
          <div class="my-vitals">
+            <div class="my-picture" ng-show="profile.id">
+               <a href="http://www.gravatar.com" >
+                  <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
+               </a>
+            </div>
+            <!--
             <h2 class='page-title editable-name' id="profile-owner-name">
                <span class="given-name editable" data-name="given_name">{{ profile.given_name }}</span>
                <span class="surname editable" data-name="surname">{{ profile.surname }}</span>
             </h2>
+            -->
+            <div class="my-metrics">
+               <!-- advisor badge -->
+               <div class="advisor" ng-show="profile.is_advisor">
+                  <img src="/static/img/advisor-badge.png">
+               </div>
+               <ul class="profile-award-list">
+                  <li class="profile-award-container level-{{ profileAward.level }}"
+                      ng-include="'profile-award/profile-award.tpl.html'"
+                      ng-repeat="profileAward in profileAwards">
+                  </li>
+               </ul>
+            </div>
+            <div class="bio">
+               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </div>
             <div class="connected-accounts">
                <ul>
                   <li ng-repeat="linkedAccount in filteredLinkedAccounts = (profile.linked_accounts | filter: {profile_url: '!!'})">
@@ -33,18 +50,6 @@
                   </a>
                </div>
             </div>
-         </div>
-         <div class="my-metrics">
-            <!-- advisor badge -->
-            <div class="advisor" ng-show="profile.is_advisor">
-               <img src="/static/img/advisor-badge.png">
-            </div>
-            <ul class="profile-award-list">
-               <li class="profile-award-container level-{{ profileAward.level }}"
-                   ng-include="'profile-award/profile-award.tpl.html'"
-                   ng-repeat="profileAward in profileAwards">
-               </li>
-            </ul>
          </div>
 
          <div class="view-controls">

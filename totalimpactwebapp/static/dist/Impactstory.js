@@ -6445,17 +6445,34 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "\n" +
     "      <div class=\"profile-header-loaded\" ng-show=\"doneLoading\">\n" +
-    "         <div class=\"my-picture\" ng-show=\"profile.id\">\n" +
-    "            <a href=\"http://www.gravatar.com\" >\n" +
-    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
-    "            </a>\n" +
-    "         </div>\n" +
     "\n" +
     "         <div class=\"my-vitals\">\n" +
+    "            <div class=\"my-picture\" ng-show=\"profile.id\">\n" +
+    "               <a href=\"http://www.gravatar.com\" >\n" +
+    "                  <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "               </a>\n" +
+    "            </div>\n" +
+    "            <!--\n" +
     "            <h2 class='page-title editable-name' id=\"profile-owner-name\">\n" +
     "               <span class=\"given-name editable\" data-name=\"given_name\">{{ profile.given_name }}</span>\n" +
     "               <span class=\"surname editable\" data-name=\"surname\">{{ profile.surname }}</span>\n" +
     "            </h2>\n" +
+    "            -->\n" +
+    "            <div class=\"my-metrics\">\n" +
+    "               <!-- advisor badge -->\n" +
+    "               <div class=\"advisor\" ng-show=\"profile.is_advisor\">\n" +
+    "                  <img src=\"/static/img/advisor-badge.png\">\n" +
+    "               </div>\n" +
+    "               <ul class=\"profile-award-list\">\n" +
+    "                  <li class=\"profile-award-container level-{{ profileAward.level }}\"\n" +
+    "                      ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +
+    "                      ng-repeat=\"profileAward in profileAwards\">\n" +
+    "                  </li>\n" +
+    "               </ul>\n" +
+    "            </div>\n" +
+    "            <div class=\"bio\">\n" +
+    "               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n" +
+    "            </div>\n" +
     "            <div class=\"connected-accounts\">\n" +
     "               <ul>\n" +
     "                  <li ng-repeat=\"linkedAccount in filteredLinkedAccounts = (profile.linked_accounts | filter: {profile_url: '!!'})\">\n" +
@@ -6474,18 +6491,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </a>\n" +
     "               </div>\n" +
     "            </div>\n" +
-    "         </div>\n" +
-    "         <div class=\"my-metrics\">\n" +
-    "            <!-- advisor badge -->\n" +
-    "            <div class=\"advisor\" ng-show=\"profile.is_advisor\">\n" +
-    "               <img src=\"/static/img/advisor-badge.png\">\n" +
-    "            </div>\n" +
-    "            <ul class=\"profile-award-list\">\n" +
-    "               <li class=\"profile-award-container level-{{ profileAward.level }}\"\n" +
-    "                   ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +
-    "                   ng-repeat=\"profileAward in profileAwards\">\n" +
-    "               </li>\n" +
-    "            </ul>\n" +
     "         </div>\n" +
     "\n" +
     "         <div class=\"view-controls\">\n" +
