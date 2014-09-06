@@ -13,7 +13,6 @@
          Overview
       </a>
       <div class="nav-group genres">
-         <h4 class="nav-group-title">Products</h4>
          <ul>
             <li ng-repeat="genre in profile.genres | orderBy: 'name'">
                <a href="/{{ profile.about.url_slug }}/products/{{ genre.name }}">
@@ -31,7 +30,9 @@
       <!--
       <login-toolbar></login-toolbar>
       -->
-      <img src="static/img/impactstory-logo-sideways.png" alt=""/>
+      <a href="/">
+         <img src="static/img/impactstory-logo-sideways.png" alt=""/>
+      </a>
    </div>
 
 </div>

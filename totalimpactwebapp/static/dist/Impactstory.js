@@ -6407,7 +6407,6 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "         Overview\n" +
     "      </a>\n" +
     "      <div class=\"nav-group genres\">\n" +
-    "         <h4 class=\"nav-group-title\">Products</h4>\n" +
     "         <ul>\n" +
     "            <li ng-repeat=\"genre in profile.genres | orderBy: 'name'\">\n" +
     "               <a href=\"/{{ profile.about.url_slug }}/products/{{ genre.name }}\">\n" +
@@ -6425,7 +6424,9 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "      <!--\n" +
     "      <login-toolbar></login-toolbar>\n" +
     "      -->\n" +
-    "      <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
+    "      <a href=\"/\">\n" +
+    "         <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
+    "      </a>\n" +
     "   </div>\n" +
     "\n" +
     "</div>\n" +
