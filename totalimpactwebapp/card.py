@@ -76,14 +76,14 @@ class Card(object):
 
 
 
-class ProductNewMetricCard(Card):
+class ProductNewDiffCard(Card):
 
     def __init__(self, products, product, metric, url_slug=None, timestamp=None):
         self.url_slug = url_slug
         self.products = products
         self.product = product
         self.metric = metric
-        super(ProductNewMetricCard, self).__init__(timestamp=timestamp)
+        super(ProductNewDiffCard, self).__init__(timestamp=timestamp)
 
     @classmethod
     def would_generate_a_card(cls, metric):
@@ -116,7 +116,7 @@ class ProductNewMetricCard(Card):
 
     @property
     def sort_by(self):
-        score = super(ProductNewMetricCard, self).sort_by
+        score = super(ProductNewDiffCard, self).sort_by
 
         if self.metric.percentile and self.metric.percentile["value"] > 50:
             top_half = self.metric.percentile["value"] - 50
@@ -140,7 +140,7 @@ class ProductNewMetricCard(Card):
         return "card-product"
 
     def to_dict(self):
-        mydict = super(ProductNewMetricCard, self).to_dict()
+        mydict = super(ProductNewDiffCard, self).to_dict()
         mydict.update({
             "tiid": self.product.tiid,
             })
@@ -209,7 +209,7 @@ class AbstractProductsAccumulationCard(Card):
         return ret
 
 
-class AbstractNewMetricCard(AbstractProductsAccumulationCard):
+class AbstractNewDiffCard(AbstractProductsAccumulationCard):
 
     def get_template_name(self):
         return "card-profile"
@@ -242,12 +242,12 @@ class AbstractNewMetricCard(AbstractProductsAccumulationCard):
         return None
 
 
-class ProfileNewMetricCard(AbstractNewMetricCard):
+class ProfileNewDiffCard(AbstractNewDiffCard):
     def get_template_name(self):
         return "card-profile"
 
 
-class GenreNewMetricCard(AbstractNewMetricCard):
+class GenreNewDiffCard(AbstractNewDiffCard):
     def to_dict(self):
         # ignore some properties to keep dict small.   
         properties_to_ignore = [
@@ -260,6 +260,20 @@ class GenreNewMetricCard(AbstractNewMetricCard):
 
 
 class GenreAccumulationCard(AbstractProductsAccumulationCard):
+
+    @property
+    def sort_by(self):
+        score = 1000
+        if self.provider in ["citeulike", "delicious", "impactstory", "plossearch"]:
+            score -= 10000
+
+        if self.provider in ["mendeley"]:
+            score += 500
+
+        if self.provider in ["scopus"]:
+            score += 5000
+
+        return score
 
     @classmethod
     #override with a version that returns all cards, not just ones that freshly pass milestones
@@ -350,13 +364,13 @@ class GenreProductsWithMoreThanCard(Card):
     def sort_by(self):
         score = 2000
         if self.provider in ["citeulike", "delicious", "impactstory", "plossearch"]:
-            score -= 500
+            score -= 10000
 
-        if self.provider in ["scopus", "delicious", "impactstory", "plossearch"]:
+        if self.provider in ["mendeley"]:
             score += 500
 
-        if self.provider in ["scopus", "delicious", "impactstory", "plossearch"]:
-            score += 500
+        if self.provider in ["scopus"]:
+            score += 10000
 
         score += self.metric_threshold_value
         score += self.number_products_this_good

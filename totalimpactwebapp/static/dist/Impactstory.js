@@ -350,18 +350,18 @@ angular.module('accounts.allTheAccounts', [
     }
 
 
-//    ,twitter: {
-//      displayName: "Twitter",
-//      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
-//      url:'http://twitter.com',
-//      descr: "Twitter is a social networking site for sharing short messages.",
-//      extra: "We don't import your tweets right now -- stay tuned!",
-//      username: {
-//          inputNeeded: "username",
-//          placeholder: "@example",
-//          help: "Your Twitter username is often written starting with @."
-//      }
-//    }
+   ,twitter: {
+     displayName: "Twitter",
+     sync: true,     
+     usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
+     url:'http://twitter.com',
+     descr: "Twitter is a social networking site for sharing short messages.",
+     username: {
+         inputNeeded: "username",
+         placeholder: "@example",
+         help: "Your Twitter username is often written starting with @."
+     }
+   }
 
   }
 
@@ -1311,27 +1311,6 @@ angular.module("productPage", [
     }
 
 
-    $scope.editProduct = function(field){
-      UserProfile.useCache(false)
-      $modal.open({
-        templateUrl: "product-page/edit-product-modal.tpl.html",
-        controller: "editProductModalCtrl",
-        resolve: {
-          product: function(){
-            return $scope.product
-          },
-          fieldToEdit: function(){
-            return field
-          }
-        }
-      })
-      .result.then(
-        function(resp){
-          console.log("closed the editProduct modal; re-rendering product")
-          $scope.reRenderProduct()
-        }
-      )
-    }
 
     $scope.downloadFile = function(){
       ProductInteraction.save(
@@ -6552,7 +6531,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div class=\"genres\">\n" +
     "      <ul class=\"genre-list\">\n" +
-    "         <li ng-repeat=\"genre in profile.genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
+    "         <li ng-repeat=\"genre in genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
     "            <div class=\"genre-header\">\n" +
     "               <h3 class=\"genre-name\">\n" +
     "                  <a href=\"/{{ profile.about.url_slug }}/products/{{ genre.name }}\"\n" +

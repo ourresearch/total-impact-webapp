@@ -118,18 +118,18 @@ angular.module('accounts.allTheAccounts', [
     }
 
 
-//    ,twitter: {
-//      displayName: "Twitter",
-//      usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
-//      url:'http://twitter.com',
-//      descr: "Twitter is a social networking site for sharing short messages.",
-//      extra: "We don't import your tweets right now -- stay tuned!",
-//      username: {
-//          inputNeeded: "username",
-//          placeholder: "@example",
-//          help: "Your Twitter username is often written starting with @."
-//      }
-//    }
+   ,twitter: {
+     displayName: "Twitter",
+     sync: true,     
+     usernameCleanupFunction: function(x) {return('@'+x.replace('@', ''))},
+     url:'http://twitter.com',
+     descr: "Twitter is a social networking site for sharing short messages.",
+     username: {
+         inputNeeded: "username",
+         placeholder: "@example",
+         help: "Your Twitter username is often written starting with @."
+     }
+   }
 
   }
 
