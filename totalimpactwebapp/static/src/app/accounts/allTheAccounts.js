@@ -57,16 +57,16 @@ angular.module('accounts.allTheAccounts', [
       }
     },
 
-   linkedin: {
-     displayName: "LinkedIn",
-     usernameCleanupFunction: function(x){return x},
-     url:'http://linkedin.com',
-     descr: "LinkedIn is a social networking site for professional networking.",
-     username: {
-       inputNeeded: "profile URL",
-         placeholder: "http://www.linkedin.com/in/your_username"
-     }
-   },
+   // linkedin: {
+   //   displayName: "LinkedIn",
+   //   usernameCleanupFunction: function(x){return x},
+   //   url:'http://linkedin.com',
+   //   descr: "LinkedIn is a social networking site for professional networking.",
+   //   username: {
+   //     inputNeeded: "profile URL",
+   //       placeholder: "http://www.linkedin.com/in/your_username"
+   //   }
+   // },
 
 //    mendeley: {
 //      displayName: "Mendeley",
