@@ -6324,7 +6324,7 @@ div.no-page p span.slug {
   border-right: 1px solid #999;
   z-index: 100;
   margin-left: -500px;
-  padding: 20px;
+  padding: 20px 0 20px;
 }
 #sidebar h1 {
   font-size: 30px;
@@ -6363,6 +6363,37 @@ div.no-page p span.slug {
 #wrapper {
   width: 1000px;
   margin: 0 auto;
+}
+div.profile-sidebar h1 a {
+  color: #333;
+}
+div.profile-sidebar h1 a:hover {
+  color: #ff4000;
+}
+div.profile-sidebar div.nav {
+  margin-top: 100px;
+  font-size: 20px;
+}
+div.profile-sidebar div.nav h4 {
+  font-size: 20px;
+  font-weight: normal;
+  margin-left: 15px;
+}
+div.profile-sidebar div.nav a {
+  color: #777;
+  display: inline-block;
+  width: 100%;
+  margin-left: 1px;
+  padding: 4px 0 4px 15px;
+}
+div.profile-sidebar div.nav a:hover {
+  color: #000;
+}
+div.profile-sidebar div.nav a.active {
+  font-weight: 900;
+}
+div.profile-sidebar div.nav div.nav-group li {
+  margin-left: 20px;
 }
 /* navbar
 *****************************************************************************
@@ -7034,12 +7065,6 @@ a.refresh {
   text-indent: -1000px;
   top: 20px;
   left: 0;
-}
-div.profile-sidebar h1 a {
-  color: #333;
-}
-div.profile-sidebar h1 a:hover {
-  color: #ff4000;
 }
 div.profile-header {
   margin-top: 30px;

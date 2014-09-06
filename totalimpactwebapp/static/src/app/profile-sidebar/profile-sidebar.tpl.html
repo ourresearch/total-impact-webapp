@@ -1,8 +1,30 @@
-<div class="profile-sidebar" ng-controller="profileSidebarCtrl">
+<div class="profile-sidebar"
+     ng-show="profile.about.given_name"
+     ng-controller="profileSidebarCtrl">
    <h1>
       <a href="/{{ profile.about.url_slug }}">
          <span class="given-name">{{ profile.about.given_name }}</span>
          <span class="surname">{{ profile.about.surname }}</span>
       </a>
    </h1>
+
+   <div class="nav">
+      <a href="/{{ profile.about.url_slug }}" class="active">
+         Overview
+      </a>
+      <div class="nav-group genres">
+         <h4 class="nav-group-title">Products</h4>
+         <ul>
+            <li ng-repeat="genre in profile.genres | orderBy: 'name'">
+               <a href="/{{ profile.about.url_slug }}/products/{{ genre.name }}">
+                  <i class="{{ genre.icon }} left"></i>
+                  <span class="text">
+                     {{ genre.plural_name }}
+                  </span>
+               </a>
+            </li>
+         </ul>
+      </div>
+   </div>
+
 </div>

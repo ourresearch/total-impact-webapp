@@ -1536,10 +1536,14 @@ angular.module('profileSidebar', [
     'resources.users',
     'services.profileService'
 ])
-  .controller("profileSidebarCtrl", function($scope, ProfileService, security){
+  .controller("profileSidebarCtrl", function($scope, $routeParams, ProfileService, security){
     console.log("profileSidebarCtrl ran")
 
+    console.log("route params", $routeParams)
+
     $scope.profile = ProfileService
+    $scope.isCurrent = function(menuString){
+    }
 
 
 
@@ -1871,6 +1875,7 @@ angular.module("profile", [
 
           ProfileService.about = resp.about
           ProfileService.products = resp.products
+          ProfileService.genres = resp.genres
 
 
 
@@ -4411,10 +4416,12 @@ angular.module('services.profileService', [
 
     var products
     var about
+    var genres
 
 
     return {
       products: products,
+      genres: genres,
       about: about
     }
 
@@ -6385,13 +6392,35 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
 
 angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-sidebar/profile-sidebar.tpl.html",
-    "<div class=\"profile-sidebar\" ng-controller=\"profileSidebarCtrl\">\n" +
+    "<div class=\"profile-sidebar\"\n" +
+    "     ng-show=\"profile.about.given_name\"\n" +
+    "     ng-controller=\"profileSidebarCtrl\">\n" +
     "   <h1>\n" +
     "      <a href=\"/{{ profile.about.url_slug }}\">\n" +
     "         <span class=\"given-name\">{{ profile.about.given_name }}</span>\n" +
     "         <span class=\"surname\">{{ profile.about.surname }}</span>\n" +
     "      </a>\n" +
     "   </h1>\n" +
+    "\n" +
+    "   <div class=\"nav\">\n" +
+    "      <a href=\"/{{ profile.about.url_slug }}\" class=\"active\">\n" +
+    "         Overview\n" +
+    "      </a>\n" +
+    "      <div class=\"nav-group genres\">\n" +
+    "         <h4 class=\"nav-group-title\">Products</h4>\n" +
+    "         <ul>\n" +
+    "            <li ng-repeat=\"genre in profile.genres | orderBy: 'name'\">\n" +
+    "               <a href=\"/{{ profile.about.url_slug }}/products/{{ genre.name }}\">\n" +
+    "                  <i class=\"{{ genre.icon }} left\"></i>\n" +
+    "                  <span class=\"text\">\n" +
+    "                     {{ genre.plural_name }}\n" +
+    "                  </span>\n" +
+    "               </a>\n" +
+    "            </li>\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);

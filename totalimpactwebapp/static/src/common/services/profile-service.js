@@ -5,10 +5,12 @@ angular.module('services.profileService', [
 
     var products
     var about
+    var genres
 
 
     return {
       products: products,
+      genres: genres,
       about: about
     }
 

@@ -250,6 +250,7 @@ angular.module("profile", [
 
           ProfileService.about = resp.about
           ProfileService.products = resp.products
+          ProfileService.genres = resp.genres
 
 
 

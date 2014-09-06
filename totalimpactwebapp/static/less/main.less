@@ -456,7 +456,7 @@ div.no-page {
    border-right: 1px solid #999;
    z-index: 100;
    margin-left: -500px;
-   padding: 20px;
+   padding: 20px 0 20px;
    h1 {
       font-size: 30px;
       margin: 0;
@@ -490,6 +490,49 @@ div.no-page {
 }
 
 
+div.profile-sidebar {
+   h1 {
+      a {
+         color: #333;
+         &:hover {color: @linkColor;}
+      }
+   }
+   div.nav {
+      margin-top: 100px;
+      font-size: 20px;
+      h4 {
+         font-size: 20px;
+         font-weight: normal;
+         margin-left: 15px;
+      }
+      a {
+         color: #777;
+         display:inline-block;
+         width: 100%;
+         margin-left: 1px;
+         padding: 4px 0 4px 15px;
+         &:hover {color: #000;}
+         i {
+         }
+         &.active {
+//            color: #333;
+//            .border-radius(0, 0, 20px, 20px);
+//            border: 1px solid #999;
+//            border-right: 1px solid #fff;
+//            background: transparents;
+            font-weight: 900;
+
+         }
+      }
+      div.nav-group {
+
+         li {
+            margin-left: 20px;
+
+         }
+      }
+   }
+}
 
 
 
