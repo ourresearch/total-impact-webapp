@@ -44,6 +44,10 @@ class Genre(object):
         return pluralize_genre(self.name)
 
     @cached_property
+    def url_representation(self):
+        return self.plural_name.replace(" ", "-")
+
+    @cached_property
     def icon(self):
         try:
             return genre_icons[self.name]

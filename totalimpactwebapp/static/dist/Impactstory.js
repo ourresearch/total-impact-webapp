@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-04
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-06
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6508,10 +6508,10 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"sidebar\">\n" +
     "      </div>\n" +
     "      <ul class=\"genre-list\">\n" +
-    "         <li ng-repeat=\"genre in genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
+    "         <li ng-repeat=\"genre in genres | orderBy:'name'\" class=\"genre genre-{{ genre.url_representation }}\">\n" +
     "            <div class=\"genre-header\">\n" +
     "               <h3 class=\"genre-name\">\n" +
-    "                  <a href=\"/{{ profile.url_slug }}/products/{{ genre.name }}\"\n" +
+    "                  <a href=\"/{{ profile.url_slug }}/products/{{ genre.url_representation }}\"\n" +
     "                     tooltip=\"view all {{ genre.num_products }} {{ genre.plural_name }}\">\n" +
     "                     <span class=\"total-products\">\n" +
     "                        {{ genre.num_products }}\n" +

@@ -86,10 +86,10 @@
       <div class="sidebar">
       </div>
       <ul class="genre-list">
-         <li ng-repeat="genre in genres | orderBy:'name'" class="genre genre-{{ genre.plural_name }}">
+         <li ng-repeat="genre in genres | orderBy:'name'" class="genre genre-{{ genre.url_representation }}">
             <div class="genre-header">
                <h3 class="genre-name">
-                  <a href="/{{ profile.url_slug }}/products/{{ genre.name }}"
+                  <a href="/{{ profile.url_slug }}/products/{{ genre.url_representation }}"
                      tooltip="view all {{ genre.num_products }} {{ genre.plural_name }}">
                      <span class="total-products">
                         {{ genre.num_products }}
