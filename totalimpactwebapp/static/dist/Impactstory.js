@@ -766,6 +766,7 @@ angular.module("genrePage", [
           $scope.about = resp.about
           $scope.doneLoading = true
           if ($scope.products){
+            console.log("$scope.products[0]", $scope.products)
             $scope.genreNamePlural = $scope.products[0].display_genre_plural
           }
           else {
@@ -6511,7 +6512,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <li ng-repeat=\"genre in genres | orderBy:'name'\" class=\"genre genre-{{ genre.url_representation }}\">\n" +
     "            <div class=\"genre-header\">\n" +
     "               <h3 class=\"genre-name\">\n" +
-    "                  <a href=\"/{{ profile.url_slug }}/products/{{ genre.url_representation }}\"\n" +
+    "                  <a href=\"/{{ profile.url_slug }}/products/{{ genre.name }}\"\n" +
     "                     tooltip=\"view all {{ genre.num_products }} {{ genre.plural_name }}\">\n" +
     "                     <span class=\"total-products\">\n" +
     "                        {{ genre.num_products }}\n" +

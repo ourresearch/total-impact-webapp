@@ -149,6 +149,7 @@ angular.module("genrePage", [
           $scope.about = resp.about
           $scope.doneLoading = true
           if ($scope.products){
+            console.log("$scope.products[0]", $scope.products)
             $scope.genreNamePlural = $scope.products[0].display_genre_plural
           }
           else {

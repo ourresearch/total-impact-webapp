@@ -187,10 +187,6 @@ class Profile(db.Model):
         return [p for p in self.products if not p.removed]
 
     @cached_property
-    def genres(self):
-        return make_genres_list(self.id, self.products_not_removed)
-
-    @cached_property
     def display_products(self):
         #temporary till we figure out a better way to do this
         products_to_return = []
@@ -199,6 +195,10 @@ class Profile(db.Model):
                 products_to_return.append(product)
 
         return products_to_return
+
+    @cached_property
+    def genres(self):
+        return make_genres_list(self.id, self.display_products)
 
     @cached_property
     def account_products(self):
