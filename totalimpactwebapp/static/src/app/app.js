@@ -100,19 +100,15 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      TiMixpanel,
                                                      RouteChangeErrorHandler) {
 
-
   $scope.userMessage = UserMessage
   $rootScope.security = security
 
   security.requestCurrentUser().then(function(currentUser){
 
-    console.log("got the current user: ", currentUser)
-
     if (!currentUser){
       // ain't no one logged in.
     }
     else if (!currentUser.is_live){
-      console.log("deadbeat!")
     }
     else if (currentUser.is_trialing){
       UserMessage.set(

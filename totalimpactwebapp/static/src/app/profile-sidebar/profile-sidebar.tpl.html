@@ -1,6 +1,7 @@
 <div class="profile-sidebar"
      ng-show="profile.about.given_name"
      ng-controller="profileSidebarCtrl">
+
    <h1>
       <a href="/{{ profile.about.url_slug }}">
          <span class="given-name">{{ profile.about.given_name }}</span>
@@ -19,6 +20,9 @@
                   <i class="{{ genre.icon }} left"></i>
                   <span class="text">
                      {{ genre.plural_name }}
+                  </span>
+                  <span class="count value">
+                     ({{ genre.num_products }})
                   </span>
                </a>
             </li>

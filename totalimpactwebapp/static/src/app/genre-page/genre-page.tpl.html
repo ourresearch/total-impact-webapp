@@ -1,8 +1,11 @@
 <div class="genre-page">
-   <div class="loading" ng-show="!doneLoading">
+
+   <pre>{{ foo }}</pre>
+
+   <div class="loading" ng-show="isRendering()">
       <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
    </div>
-   <div class="wrapper" ng-show="doneLoading">
+   <div class="wrapper" ng-show="!isRendering()">
       <div class="header">
          <h2>
             <span class="return-to-profile-link-container">

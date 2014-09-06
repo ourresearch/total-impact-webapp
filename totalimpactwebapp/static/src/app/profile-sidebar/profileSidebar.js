@@ -3,14 +3,15 @@ angular.module('profileSidebar', [
     'resources.users',
     'services.profileService'
 ])
-  .controller("profileSidebarCtrl", function($scope, $routeParams, ProfileService, security){
-    console.log("profileSidebarCtrl ran")
+  .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, security){
 
-    console.log("route params", $routeParams)
+    ProfileService.getCached().then(
+      function(resp){
+        $scope.profile = resp
+      }
+    )
 
-    $scope.profile = ProfileService
-    $scope.isCurrent = function(menuString){
-    }
+
 
 
 

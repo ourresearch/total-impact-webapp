@@ -511,6 +511,10 @@ div.profile-sidebar {
          &:hover {color: #000;}
          i {
          }
+         span.count {
+            font-size: 70%;
+            font-weight: 300;
+         }
          &.active {
 //            color: #333;
 //            .border-radius(0, 0, 20px, 20px);
@@ -540,8 +544,10 @@ div.profile-sidebar {
             width: 130px;
             margin-bottom: 15px;
             -webkit-filter: grayscale(100%);
+            opacity: .5;
             &:hover {
                -webkit-filter: grayscale(0%);
+               opacity: 1;
             }
          }
       }

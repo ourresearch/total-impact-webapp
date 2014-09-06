@@ -6386,6 +6386,10 @@ div.profile-sidebar div.nav a {
 div.profile-sidebar div.nav a:hover {
   color: #000;
 }
+div.profile-sidebar div.nav a span.count {
+  font-size: 70%;
+  font-weight: 300;
+}
 div.profile-sidebar div.nav a.active {
   font-weight: 900;
 }
@@ -6400,9 +6404,11 @@ div.profile-sidebar div.footer a img {
   width: 130px;
   margin-bottom: 15px;
   -webkit-filter: grayscale(100%);
+  opacity: .5;
 }
 div.profile-sidebar div.footer a img:hover {
   -webkit-filter: grayscale(0%);
+  opacity: 1;
 }
 /* navbar
 *****************************************************************************

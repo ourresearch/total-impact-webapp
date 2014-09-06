@@ -534,19 +534,15 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      TiMixpanel,
                                                      RouteChangeErrorHandler) {
 
-
   $scope.userMessage = UserMessage
   $rootScope.security = security
 
   security.requestCurrentUser().then(function(currentUser){
 
-    console.log("got the current user: ", currentUser)
-
     if (!currentUser){
       // ain't no one logged in.
     }
     else if (!currentUser.is_live){
-      console.log("deadbeat!")
     }
     else if (currentUser.is_trialing){
       UserMessage.set(
@@ -673,44 +669,53 @@ angular.module("genrePage", [
     Tour,
     Timer,
     security,
-    Breadcrumbs,
+    ProfileService,
     Page) {
 
-    var $httpDefaultCache = $cacheFactory.get('$http')
-
-    $scope.doneLoading = false
-    $scope.doneRendering = false
 
     Timer.start("genreViewRender")
     Timer.start("genreViewRender.load")
+    $scope.url_slug = $routeParams.url_slug
+    var rendering = true
 
-    if (UserProfile.useCache() === false){
-      // generally this will happen, since the default is false
-      // and we set it back to false either way once this function
-      // has run once.
-      $httpDefaultCache.removeAll()
+    $scope.isRendering = function(){
+      return rendering
     }
-    var url_slug = $routeParams.url_slug;
-    var loadingProducts = true
-    $scope.url_slug = url_slug
+
+    ProfileService.get($routeParams.url_slug).then(
+      function(resp){
+        console.log("genre page loaded products", resp)
+        Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
+
+        $scope.about = resp.about
+        $scope.products = _.filter(resp.products, function(product){
+          return product.genre == $routeParams.genre_name
+        })
+
+//        $scope.genreNamePlural = ProfileService.getGenreProperty($routeParams.genre_name, "plural_name")
+        $scope.genreNamePlural = "stuffs"
+
+        // scroll to the last place we were on this page. in a timeout because
+        // must happen after page is totally rendered.
+        $timeout(function(){
+          var lastScrollPos = Page.getLastScrollPosition($location.path())
+          $window.scrollTo(0, lastScrollPos)
+        }, 0)
+      },
+      function(resp){
+        console.log("ProfileService failed in genrePage.js...", resp)
+      }
+    )
 
 
 
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
-      $scope.doneRendering = true
-      console.log(
-        "finished rendering genre products in "
-          + Timer.elapsed("genreViewRender.render")
-          + "ms"
+      rendering = false
+      console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
       )
     });
-
-    $scope.loadingProducts = function(){
-      return loadingProducts
-    }
-//    $scope.filterProducts =  UserProfile.filterProducts;
 
 
 
@@ -726,7 +731,7 @@ angular.module("genrePage", [
 
       // do the deletion in the background, without a progress spinner...
       Product.delete(
-        {user_id: url_slug, tiid: product._tiid},
+        {user_id: $routeParams.url_slug, tiid: product._tiid},
         function(){
           console.log("finished deleting", product.display_title)
           TiMixpanel.track("delete product", {
@@ -737,60 +742,6 @@ angular.module("genrePage", [
       )
     }
 
-    var renderProducts = function(){
-      console.log("rendering products")
-      Users.query({
-        id: url_slug,
-        embedded: false
-      },
-        function(resp){
-          console.log("got /profile resp back in "
-            + Timer.elapsed("profileViewRender.load")
-            + "ms: ", resp)
-
-          // we only cache things one time
-          UserProfile.useCache(false)
-
-          // put our stuff in the scope
-          Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
-
-
-          Breadcrumbs.set(0, {
-            text: resp.about.full_name,
-            url: "/" + url_slug
-          })
-
-
-          $scope.products = _.filter(resp.products, function(product){
-            return product.genre == $routeParams.genre_name
-          })
-          $scope.about = resp.about
-          $scope.doneLoading = true
-          if ($scope.products){
-            $scope.genreNamePlural = $scope.products[0].display_genre_plural
-          }
-          else {
-            $scope.genreNamePlural = $routeParams.genre_name
-          }
-
-
-          Timer.start("genreViewRender.render")
-
-          // scroll to the last place we were on this page. in a timeout because
-          // must happen after page is totally rendered.
-          $timeout(function(){
-            var lastScrollPos = Page.getLastScrollPosition($location.path())
-            $window.scrollTo(0, lastScrollPos)
-          }, 0)
-
-        },
-        function(resp){
-          console.log("problem loading the genre products!", resp)
-        }
-      );
-    }
-
-    renderProducts()
 })
 
 
@@ -1536,14 +1487,15 @@ angular.module('profileSidebar', [
     'resources.users',
     'services.profileService'
 ])
-  .controller("profileSidebarCtrl", function($scope, $routeParams, ProfileService, security){
-    console.log("profileSidebarCtrl ran")
+  .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, security){
 
-    console.log("route params", $routeParams)
+    ProfileService.getCached().then(
+      function(resp){
+        $scope.profile = resp
+      }
+    )
 
-    $scope.profile = ProfileService
-    $scope.isCurrent = function(menuString){
-    }
+
 
 
 
@@ -1739,49 +1691,18 @@ angular.module("profile", [
     Timer,
     security,
     Page) {
-    if (Page.isEmbedded()){
-      // do embedded stuff. i don't think we're using this any more?
-    }
 
-    var $httpDefaultCache = $cacheFactory.get('$http')
-
-    $scope.doneLoading = false
-    $scope.doneRendering = false
 
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
-
-
-
-
-
-    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-      // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
-
-      $scope.doneRendering = true
-
-      console.log(
-        "finished rendering products in "
-          + Timer.elapsed("profileViewRender.render")
-          + "ms"
-      )
-
-      // twttr is a GLOBAL VAR loaded by the twitter widget script called in
-      //    bottom.js. it will break in unit tests, so fix before then.
-        twttr.widgets.load()
-
-    });
-
     var url_slug = $routeParams.url_slug;
-    var loadingProducts = true
 
+    $timeout(function(){
+        twttr.widgets.load()
+    }, 1000)
 
-
-
+    $scope.profileLoading =  ProfileService.isLoading
     $scope.url_slug = url_slug
-    $scope.loadingProducts = function(){
-      return loadingProducts
-    }
     $scope.userExists = true;
 
     $scope.hideSignupBannerNow = function(){
@@ -1824,15 +1745,6 @@ angular.module("profile", [
     }
 
 
-    // render the profile
-
-    if (UserProfile.useCache() === false){
-      // generally this will happen, since the default is false
-      // and we set it back to false either way once this function
-      // has run once.
-      $httpDefaultCache.removeAll()
-    }
-
 
     $scope.sliceSortedCards = function(cards, startIndex, endIndex){
       var sorted = _.sortBy(cards, "sort_by")
@@ -1852,71 +1764,31 @@ angular.module("profile", [
     }
 
 
-    var renderProducts = function(){
-      console.log("rendering products")
-      Users.query({
-        id: url_slug,
-        embedded: Page.isEmbedded()
+    ProfileService.get(url_slug).then(
+      function(resp){
+        // put our stuff in the scope
+        $scope.profile = resp
+        Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+        security.isLoggedInPromise(url_slug).then(
+          function(){
+            var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
+            TiMixpanel.track("viewed own profile", {
+              "Number of products": numTrueProducts
+            })
+            if (resp.products.length == 0){
+              console.log("logged-in user looking at own profile with no products. showing tour.")
+              Tour.start(resp.about)
+            }
+          }
+        )
       },
-        function(resp){
-          console.log("got /profile resp back in "
-            + Timer.elapsed("profileViewRender.load")
-            + "ms: ", resp)
-
-          // we only cache things one time
-          UserProfile.useCache(false)
-
-          // put our stuff in the scope
-          $scope.profile = resp.about
-          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
-          $scope.profileAwards = resp.awards
-          $scope.doneLoading = true
-          $scope.genres = resp.genres
-
-          ProfileService.about = resp.about
-          ProfileService.products = resp.products
-          ProfileService.genres = resp.genres
+      function(resp){
+        console.log("problem loading the profile!", resp)
+        $scope.userExists = false
+      }
+    )
 
 
-
-          // got user back with products. if still refreshing, show update modal
-          console.log("here's the is_refreshing before checking it", resp.is_refreshing)
-          Update.showUpdateModal(url_slug, resp.is_refreshing).then(
-            function(msg){
-              console.log("updater (resolved):", msg)
-              $httpDefaultCache.removeAll()
-              renderProducts()
-            },
-            function(msg){
-              console.log("updater (rejected):", msg)
-            }
-          )
-
-          // do this async, in case security is taking a long time to load,
-          // and the products load first.
-          security.isLoggedInPromise(url_slug).then(
-            function(){
-              var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
-              TiMixpanel.track("viewed own profile", {
-                "Number of products": numTrueProducts
-              })
-              if (resp.products.length == 0){
-                console.log("logged-in user looking at own profile with no products. showing tour.")
-                Tour.start(resp.about)
-              }
-            }
-          )
-
-          Timer.start("profileViewRender.render")
-        },
-        function(resp){
-          console.log("problem loading the profile!", resp)
-          $scope.userExists = false
-        }
-      );
-    }
-
-    renderProducts()
 })
 
 
@@ -3231,8 +3103,7 @@ angular.module('resources.users',['ngResource'])
       {
         query:{
           method: "GET",
-          cache: true,
-          params: {hide: "biblio,metrics,awards,aliases", embedded: "@embedded"}
+          params: {embedded: "@embedded"}
         },
         patch:{
           method: "POST",
@@ -4412,17 +4283,83 @@ angular.module("services.page")
 angular.module('services.profileService', [
   'resources.users'
 ])
-  .factory("ProfileService", function(){
+  .factory("ProfileService", function($q, $timeout, Update, Page, Users){
 
-    var products
-    var about
-    var genres
+    var profileObj
+    var loading = true
 
+    function get(url_slug){
+
+      if (profileObj){
+        return $q.when(profileObj)
+      }
+
+      // we're gonna refresh our profile data
+      else {
+        loading = true
+        return Users.get(
+          {id: url_slug, embedded: Page.isEmbedded()},
+          function(resp){
+            console.log("ProfileService got a response", resp)
+            profileObj = resp  // cache for future use
+            loading = false
+
+            // got the new stuff. but does the server say it's
+            // actually still updating there? if so, show
+            // updating modal
+            Update.showUpdateModal(url_slug, resp.is_refreshing).then(
+              function(msg){
+                console.log("updater (resolved):", msg)
+                get(url_slug)
+              },
+              function(msg){
+                // great, everything's all up-to-date.
+              }
+            )
+          },
+
+          function(resp){
+            console.log("ProfileService got a failure response", resp)
+            profileObj = null
+            loading = false
+          }
+        ).$promise
+      }
+    }
+
+
+    function getCached(){
+      return $timeout(function(){
+        if (loading){
+          return getCached()
+        }
+        else {
+          return profileObj
+        }
+      })
+    }
+
+    function isLoading(){
+      return loading
+    }
+
+    function getGenreProperty(genreName, genreProperty){
+      if (typeof profileObj.genres == "undefined"){
+        return undefined
+      }
+      var genreObj = _.find(profileObj.genres, function(genre){
+        return genre[name] == genreName
+      })
+      return genreObj[genreProperty]
+    }
 
     return {
-      products: products,
-      genres: genres,
-      about: about
+      profile: profileObj,
+      loading: loading,
+      isLoading: isLoading,
+      get: get,
+      getCached: getCached,
+      getGenreProperty: getGenreProperty
     }
 
 
@@ -4977,10 +4914,13 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("genre-page/genre-page.tpl.html",
     "<div class=\"genre-page\">\n" +
-    "   <div class=\"loading\" ng-show=\"!doneLoading\">\n" +
+    "\n" +
+    "   <pre>{{ foo }}</pre>\n" +
+    "\n" +
+    "   <div class=\"loading\" ng-show=\"isRendering()\">\n" +
     "      <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
     "   </div>\n" +
-    "   <div class=\"wrapper\" ng-show=\"doneLoading\">\n" +
+    "   <div class=\"wrapper\" ng-show=\"!isRendering()\">\n" +
     "      <div class=\"header\">\n" +
     "         <h2>\n" +
     "            <span class=\"return-to-profile-link-container\">\n" +
@@ -6395,6 +6335,7 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "<div class=\"profile-sidebar\"\n" +
     "     ng-show=\"profile.about.given_name\"\n" +
     "     ng-controller=\"profileSidebarCtrl\">\n" +
+    "\n" +
     "   <h1>\n" +
     "      <a href=\"/{{ profile.about.url_slug }}\">\n" +
     "         <span class=\"given-name\">{{ profile.about.given_name }}</span>\n" +
@@ -6413,6 +6354,9 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "                  <i class=\"{{ genre.icon }} left\"></i>\n" +
     "                  <span class=\"text\">\n" +
     "                     {{ genre.plural_name }}\n" +
+    "                  </span>\n" +
+    "                  <span class=\"count value\">\n" +
+    "                     ({{ genre.num_products }})\n" +
     "                  </span>\n" +
     "               </a>\n" +
     "            </li>\n" +
@@ -6524,33 +6468,33 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile.tpl.html",
     "<div class=\"profile-header\" ng-show=\"userExists\">\n" +
-    "      <div class=\"loading\" ng-show=\"!doneLoading\">\n" +
+    "      <div class=\"loading\" ng-show=\"profileLoading()\">\n" +
     "         <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"profile-header-loaded\" ng-show=\"doneLoading\">\n" +
+    "      <div class=\"profile-header-loaded\" ng-show=\"!profileLoading()\">\n" +
     "\n" +
     "         <div class=\"my-vitals\">\n" +
-    "            <div class=\"my-picture\" ng-show=\"profile.id\">\n" +
+    "            <div class=\"my-picture\" ng-show=\"profile.about.id\">\n" +
     "               <a href=\"http://www.gravatar.com\" >\n" +
-    "                  <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "                  <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "               </a>\n" +
     "            </div>\n" +
     "            <!--\n" +
     "            <h2 class='page-title editable-name' id=\"profile-owner-name\">\n" +
-    "               <span class=\"given-name editable\" data-name=\"given_name\">{{ profile.given_name }}</span>\n" +
-    "               <span class=\"surname editable\" data-name=\"surname\">{{ profile.surname }}</span>\n" +
+    "               <span class=\"given-name editable\" data-name=\"given_name\">{{ profile.about.given_name }}</span>\n" +
+    "               <span class=\"surname editable\" data-name=\"surname\">{{ profile.about.surname }}</span>\n" +
     "            </h2>\n" +
     "            -->\n" +
     "            <div class=\"my-metrics\">\n" +
     "               <!-- advisor badge -->\n" +
-    "               <div class=\"advisor\" ng-show=\"profile.is_advisor\">\n" +
+    "               <div class=\"advisor\" ng-show=\"profile.about.is_advisor\">\n" +
     "                  <img src=\"/static/img/advisor-badge.png\">\n" +
     "               </div>\n" +
     "               <ul class=\"profile-award-list\">\n" +
     "                  <li class=\"profile-award-container level-{{ profileAward.level }}\"\n" +
     "                      ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +
-    "                      ng-repeat=\"profileAward in profileAwards\">\n" +
+    "                      ng-repeat=\"profileAward in profile.awards\">\n" +
     "                  </li>\n" +
     "               </ul>\n" +
     "            </div>\n" +
@@ -6559,7 +6503,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            </div>\n" +
     "            <div class=\"connected-accounts\">\n" +
     "               <ul>\n" +
-    "                  <li ng-repeat=\"linkedAccount in filteredLinkedAccounts = (profile.linked_accounts | filter: {profile_url: '!!'})\">\n" +
+    "                  <li ng-repeat=\"linkedAccount in filteredLinkedAccounts = (profile.about.linked_accounts | filter: {profile_url: '!!'})\">\n" +
     "                     <a href=\"{{ linkedAccount.profile_url }}\" target=\"_blank\">\n" +
     "                        <img ng-src=\"/static/img/favicons/{{ linkedAccount.service }}.ico\">\n" +
     "                        <span class=\"service\">{{ linkedAccount.display_service }}</span>\n" +
@@ -6568,7 +6512,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </ul>\n" +
     "\n" +
     "               <div class=\"add-connected-account\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
-    "                  <a href=\"/{{ profile.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
+    "                  <a href=\"/{{ profile.about.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
     "                     <span ng-show=\"filteredLinkedAccounts.length==0\" class=\"first\">Import from accounts</span>\n" +
     "                     <span ng-show=\"filteredLinkedAccounts.length>0\" class=\"more\">Connect more accounts</span>\n" +
@@ -6580,7 +6524,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <div class=\"view-controls\">\n" +
     "            <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "            <div class=\"admin-controls\" ng-show=\"security.isLoggedIn(url_slug) && !page.isEmbedded()\">\n" +
-    "               <a href=\"/{{ profile.url_slug }}/products/add\">\n" +
+    "               <a href=\"/{{ profile.about.url_slug }}/products/add\">\n" +
     "                  <i class=\"icon-upload\"></i>Import individual products\n" +
     "               </a>\n" +
     "               <!--<a ng-click=\"dedup()\">\n" +
@@ -6595,8 +6539,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <span class=\"dropdown download\">\n" +
     "                  <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
     "                  <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "                     <li><a tabindex=\"-1\" href=\"/profile/{{ profile.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "                     <li><a tabindex=\"-1\" href=\"/profile/{{ profile.url_slug }}?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "                     <li><a tabindex=\"-1\" href=\"/profile/{{ profile.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "                     <li><a tabindex=\"-1\" href=\"/profile/{{ profile.about.url_slug }}?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
     "                  </ul>\n" +
     "               </span>\n" +
     "            </div>\n" +
@@ -6608,10 +6552,10 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div class=\"genres\">\n" +
     "      <ul class=\"genre-list\">\n" +
-    "         <li ng-repeat=\"genre in genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
+    "         <li ng-repeat=\"genre in profile.genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
     "            <div class=\"genre-header\">\n" +
     "               <h3 class=\"genre-name\">\n" +
-    "                  <a href=\"/{{ profile.url_slug }}/products/{{ genre.name }}\"\n" +
+    "                  <a href=\"/{{ profile.about.url_slug }}/products/{{ genre.name }}\"\n" +
     "                     tooltip=\"view all {{ genre.num_products }} {{ genre.plural_name }}\">\n" +
     "                     <span class=\"total-products\">\n" +
     "                        {{ genre.num_products }}\n" +
@@ -6694,7 +6638,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div class=\"user-does-not-exist no-page\" ng-show=\"!userExists\">\n" +
     "   <h2>Whoops!</h2>\n" +
-    "   <p>We don't have a user account for <span class=\"slug\">'{{ url_slug }}.'</span><br> Would you like to <a href=\"/signup\">make one?</a></p>\n" +
+    "   <p>We don't have a user account for <span class=\"slug\">'{{ profile.about.url_slug }}.'</span><br> Would you like to <a href=\"/signup\">make one?</a></p>\n" +
     "\n" +
     "</div>\n" +
     "\n" +
@@ -6702,7 +6646,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "     ng-show=\"userExists && !isAuthenticated()\"\n" +
     "     ng-if=\"!hideSignupBanner\">\n" +
     "\n" +
-    "   <span class=\"msg\">Join {{ profile.given_name }} and thousands of other scientists:</span>\n" +
+    "   <span class=\"msg\">Join {{ profile.about.given_name }} and thousands of other scientists:</span>\n" +
     "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Try Impactstory for free</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>\n" +

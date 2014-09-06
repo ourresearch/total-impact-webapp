@@ -55,44 +55,53 @@ angular.module("genrePage", [
     Tour,
     Timer,
     security,
-    Breadcrumbs,
+    ProfileService,
     Page) {
 
-    var $httpDefaultCache = $cacheFactory.get('$http')
-
-    $scope.doneLoading = false
-    $scope.doneRendering = false
 
     Timer.start("genreViewRender")
     Timer.start("genreViewRender.load")
+    $scope.url_slug = $routeParams.url_slug
+    var rendering = true
 
-    if (UserProfile.useCache() === false){
-      // generally this will happen, since the default is false
-      // and we set it back to false either way once this function
-      // has run once.
-      $httpDefaultCache.removeAll()
+    $scope.isRendering = function(){
+      return rendering
     }
-    var url_slug = $routeParams.url_slug;
-    var loadingProducts = true
-    $scope.url_slug = url_slug
+
+    ProfileService.get($routeParams.url_slug).then(
+      function(resp){
+        console.log("genre page loaded products", resp)
+        Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
+
+        $scope.about = resp.about
+        $scope.products = _.filter(resp.products, function(product){
+          return product.genre == $routeParams.genre_name
+        })
+
+//        $scope.genreNamePlural = ProfileService.getGenreProperty($routeParams.genre_name, "plural_name")
+        $scope.genreNamePlural = "stuffs"
+
+        // scroll to the last place we were on this page. in a timeout because
+        // must happen after page is totally rendered.
+        $timeout(function(){
+          var lastScrollPos = Page.getLastScrollPosition($location.path())
+          $window.scrollTo(0, lastScrollPos)
+        }, 0)
+      },
+      function(resp){
+        console.log("ProfileService failed in genrePage.js...", resp)
+      }
+    )
 
 
 
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
-      $scope.doneRendering = true
-      console.log(
-        "finished rendering genre products in "
-          + Timer.elapsed("genreViewRender.render")
-          + "ms"
+      rendering = false
+      console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
       )
     });
-
-    $scope.loadingProducts = function(){
-      return loadingProducts
-    }
-//    $scope.filterProducts =  UserProfile.filterProducts;
 
 
 
@@ -108,7 +117,7 @@ angular.module("genrePage", [
 
       // do the deletion in the background, without a progress spinner...
       Product.delete(
-        {user_id: url_slug, tiid: product._tiid},
+        {user_id: $routeParams.url_slug, tiid: product._tiid},
         function(){
           console.log("finished deleting", product.display_title)
           TiMixpanel.track("delete product", {
@@ -119,60 +128,6 @@ angular.module("genrePage", [
       )
     }
 
-    var renderProducts = function(){
-      console.log("rendering products")
-      Users.query({
-        id: url_slug,
-        embedded: false
-      },
-        function(resp){
-          console.log("got /profile resp back in "
-            + Timer.elapsed("profileViewRender.load")
-            + "ms: ", resp)
-
-          // we only cache things one time
-          UserProfile.useCache(false)
-
-          // put our stuff in the scope
-          Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
-
-
-          Breadcrumbs.set(0, {
-            text: resp.about.full_name,
-            url: "/" + url_slug
-          })
-
-
-          $scope.products = _.filter(resp.products, function(product){
-            return product.genre == $routeParams.genre_name
-          })
-          $scope.about = resp.about
-          $scope.doneLoading = true
-          if ($scope.products){
-            $scope.genreNamePlural = $scope.products[0].display_genre_plural
-          }
-          else {
-            $scope.genreNamePlural = $routeParams.genre_name
-          }
-
-
-          Timer.start("genreViewRender.render")
-
-          // scroll to the last place we were on this page. in a timeout because
-          // must happen after page is totally rendered.
-          $timeout(function(){
-            var lastScrollPos = Page.getLastScrollPosition($location.path())
-            $window.scrollTo(0, lastScrollPos)
-          }, 0)
-
-        },
-        function(resp){
-          console.log("problem loading the genre products!", resp)
-        }
-      );
-    }
-
-    renderProducts()
 })
 
 

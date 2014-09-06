@@ -114,49 +114,18 @@ angular.module("profile", [
     Timer,
     security,
     Page) {
-    if (Page.isEmbedded()){
-      // do embedded stuff. i don't think we're using this any more?
-    }
 
-    var $httpDefaultCache = $cacheFactory.get('$http')
-
-    $scope.doneLoading = false
-    $scope.doneRendering = false
 
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
-
-
-
-
-
-    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-      // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
-
-      $scope.doneRendering = true
-
-      console.log(
-        "finished rendering products in "
-          + Timer.elapsed("profileViewRender.render")
-          + "ms"
-      )
-
-      // twttr is a GLOBAL VAR loaded by the twitter widget script called in
-      //    bottom.js. it will break in unit tests, so fix before then.
-        twttr.widgets.load()
-
-    });
-
     var url_slug = $routeParams.url_slug;
-    var loadingProducts = true
 
+    $timeout(function(){
+        twttr.widgets.load()
+    }, 1000)
 
-
-
+    $scope.profileLoading =  ProfileService.isLoading
     $scope.url_slug = url_slug
-    $scope.loadingProducts = function(){
-      return loadingProducts
-    }
     $scope.userExists = true;
 
     $scope.hideSignupBannerNow = function(){
@@ -199,15 +168,6 @@ angular.module("profile", [
     }
 
 
-    // render the profile
-
-    if (UserProfile.useCache() === false){
-      // generally this will happen, since the default is false
-      // and we set it back to false either way once this function
-      // has run once.
-      $httpDefaultCache.removeAll()
-    }
-
 
     $scope.sliceSortedCards = function(cards, startIndex, endIndex){
       var sorted = _.sortBy(cards, "sort_by")
@@ -227,71 +187,31 @@ angular.module("profile", [
     }
 
 
-    var renderProducts = function(){
-      console.log("rendering products")
-      Users.query({
-        id: url_slug,
-        embedded: Page.isEmbedded()
+    ProfileService.get(url_slug).then(
+      function(resp){
+        // put our stuff in the scope
+        $scope.profile = resp
+        Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+        security.isLoggedInPromise(url_slug).then(
+          function(){
+            var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
+            TiMixpanel.track("viewed own profile", {
+              "Number of products": numTrueProducts
+            })
+            if (resp.products.length == 0){
+              console.log("logged-in user looking at own profile with no products. showing tour.")
+              Tour.start(resp.about)
+            }
+          }
+        )
       },
-        function(resp){
-          console.log("got /profile resp back in "
-            + Timer.elapsed("profileViewRender.load")
-            + "ms: ", resp)
-
-          // we only cache things one time
-          UserProfile.useCache(false)
-
-          // put our stuff in the scope
-          $scope.profile = resp.about
-          Page.setTitle(resp.about.given_name + " " + resp.about.surname)
-          $scope.profileAwards = resp.awards
-          $scope.doneLoading = true
-          $scope.genres = resp.genres
-
-          ProfileService.about = resp.about
-          ProfileService.products = resp.products
-          ProfileService.genres = resp.genres
+      function(resp){
+        console.log("problem loading the profile!", resp)
+        $scope.userExists = false
+      }
+    )
 
 
-
-          // got user back with products. if still refreshing, show update modal
-          console.log("here's the is_refreshing before checking it", resp.is_refreshing)
-          Update.showUpdateModal(url_slug, resp.is_refreshing).then(
-            function(msg){
-              console.log("updater (resolved):", msg)
-              $httpDefaultCache.removeAll()
-              renderProducts()
-            },
-            function(msg){
-              console.log("updater (rejected):", msg)
-            }
-          )
-
-          // do this async, in case security is taking a long time to load,
-          // and the products load first.
-          security.isLoggedInPromise(url_slug).then(
-            function(){
-              var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
-              TiMixpanel.track("viewed own profile", {
-                "Number of products": numTrueProducts
-              })
-              if (resp.products.length == 0){
-                console.log("logged-in user looking at own profile with no products. showing tour.")
-                Tour.start(resp.about)
-              }
-            }
-          )
-
-          Timer.start("profileViewRender.render")
-        },
-        function(resp){
-          console.log("problem loading the profile!", resp)
-          $scope.userExists = false
-        }
-      );
-    }
-
-    renderProducts()
 })
 
 

@@ -43,6 +43,7 @@ var stripePublishableKey = "{{ stripe_publishable_key }}"
 
 
 // facebook sdk
+/*
 window.fbAsyncInit = function() {
   FB.init({
     appId      : '843711688986838',
@@ -58,3 +59,5 @@ window.fbAsyncInit = function() {
    js.src = "//connect.facebook.net/en_US/sdk.js";
    fjs.parentNode.insertBefore(js, fjs);
  }(document, 'script', 'facebook-jssdk'));
+
+*/

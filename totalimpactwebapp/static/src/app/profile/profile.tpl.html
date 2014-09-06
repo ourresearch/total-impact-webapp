@@ -1,31 +1,31 @@
 <div class="profile-header" ng-show="userExists">
-      <div class="loading" ng-show="!doneLoading">
+      <div class="loading" ng-show="profileLoading()">
          <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
       </div>
 
-      <div class="profile-header-loaded" ng-show="doneLoading">
+      <div class="profile-header-loaded" ng-show="!profileLoading()">
 
          <div class="my-vitals">
-            <div class="my-picture" ng-show="profile.id">
+            <div class="my-picture" ng-show="profile.about.id">
                <a href="http://www.gravatar.com" >
-                  <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
+                  <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
                </a>
             </div>
             <!--
             <h2 class='page-title editable-name' id="profile-owner-name">
-               <span class="given-name editable" data-name="given_name">{{ profile.given_name }}</span>
-               <span class="surname editable" data-name="surname">{{ profile.surname }}</span>
+               <span class="given-name editable" data-name="given_name">{{ profile.about.given_name }}</span>
+               <span class="surname editable" data-name="surname">{{ profile.about.surname }}</span>
             </h2>
             -->
             <div class="my-metrics">
                <!-- advisor badge -->
-               <div class="advisor" ng-show="profile.is_advisor">
+               <div class="advisor" ng-show="profile.about.is_advisor">
                   <img src="/static/img/advisor-badge.png">
                </div>
                <ul class="profile-award-list">
                   <li class="profile-award-container level-{{ profileAward.level }}"
                       ng-include="'profile-award/profile-award.tpl.html'"
-                      ng-repeat="profileAward in profileAwards">
+                      ng-repeat="profileAward in profile.awards">
                   </li>
                </ul>
             </div>
@@ -34,7 +34,7 @@
             </div>
             <div class="connected-accounts">
                <ul>
-                  <li ng-repeat="linkedAccount in filteredLinkedAccounts = (profile.linked_accounts | filter: {profile_url: '!!'})">
+                  <li ng-repeat="linkedAccount in filteredLinkedAccounts = (profile.about.linked_accounts | filter: {profile_url: '!!'})">
                      <a href="{{ linkedAccount.profile_url }}" target="_blank">
                         <img ng-src="/static/img/favicons/{{ linkedAccount.service }}.ico">
                         <span class="service">{{ linkedAccount.display_service }}</span>
@@ -43,7 +43,7 @@
                </ul>
 
                <div class="add-connected-account" ng-show="security.isLoggedIn(url_slug)">
-                  <a href="/{{ profile.url_slug }}/accounts" class="btn btn-xs btn-info">
+                  <a href="/{{ profile.about.url_slug }}/accounts" class="btn btn-xs btn-info">
                      <i class="icon-link left"></i>
                      <span ng-show="filteredLinkedAccounts.length==0" class="first">Import from accounts</span>
                      <span ng-show="filteredLinkedAccounts.length>0" class="more">Connect more accounts</span>
@@ -55,7 +55,7 @@
          <div class="view-controls">
             <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
             <div class="admin-controls" ng-show="security.isLoggedIn(url_slug) && !page.isEmbedded()">
-               <a href="/{{ profile.url_slug }}/products/add">
+               <a href="/{{ profile.about.url_slug }}/products/add">
                   <i class="icon-upload"></i>Import individual products
                </a>
                <!--<a ng-click="dedup()">
@@ -70,8 +70,8 @@
                <span class="dropdown download">
                   <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>
                   <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
-                     <li><a tabindex="-1" href="/profile/{{ profile.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
-                     <li><a tabindex="-1" href="/profile/{{ profile.url_slug }}?hide=markup,awards" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
+                     <li><a tabindex="-1" href="/profile/{{ profile.about.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
+                     <li><a tabindex="-1" href="/profile/{{ profile.about.url_slug }}?hide=markup,awards" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
                   </ul>
                </span>
             </div>
@@ -83,10 +83,10 @@
 
 <div class="genres">
       <ul class="genre-list">
-         <li ng-repeat="genre in genres | orderBy:'name'" class="genre genre-{{ genre.plural_name }}">
+         <li ng-repeat="genre in profile.genres | orderBy:'name'" class="genre genre-{{ genre.plural_name }}">
             <div class="genre-header">
                <h3 class="genre-name">
-                  <a href="/{{ profile.url_slug }}/products/{{ genre.name }}"
+                  <a href="/{{ profile.about.url_slug }}/products/{{ genre.name }}"
                      tooltip="view all {{ genre.num_products }} {{ genre.plural_name }}">
                      <span class="total-products">
                         {{ genre.num_products }}
@@ -169,7 +169,7 @@
 
 <div class="user-does-not-exist no-page" ng-show="!userExists">
    <h2>Whoops!</h2>
-   <p>We don't have a user account for <span class="slug">'{{ url_slug }}.'</span><br> Would you like to <a href="/signup">make one?</a></p>
+   <p>We don't have a user account for <span class="slug">'{{ profile.about.url_slug }}.'</span><br> Would you like to <a href="/signup">make one?</a></p>
 
 </div>
 
@@ -177,7 +177,7 @@
      ng-show="userExists && !isAuthenticated()"
      ng-if="!hideSignupBanner">
 
-   <span class="msg">Join {{ profile.given_name }} and thousands of other scientists:</span>
+   <span class="msg">Join {{ profile.about.given_name }} and thousands of other scientists:</span>
    <a class="signup-button btn btn-primary btn-sm" ng-click="clickSignupLink()" href="/signup">Try Impactstory for free</a>
    <a class="close-link" ng-click="hideSignupBannerNow()">&times;</a>
 </div>
