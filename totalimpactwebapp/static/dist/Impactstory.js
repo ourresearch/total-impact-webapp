@@ -545,11 +545,11 @@ angular.module('app').controller('AppCtrl', function($scope,
     else if (!currentUser.is_live){
     }
     else if (currentUser.is_trialing){
-      UserMessage.set(
-        'subscription.trialing',
-        true,
-        {daysLeft: currentUser.days_left_in_trial}
-      );
+//      UserMessage.set(
+//        'subscription.trialing',
+//        true,
+//        {daysLeft: currentUser.days_left_in_trial}
+//      );
     }
 
   })
@@ -1746,6 +1746,7 @@ angular.module("profile", [
     ProfileService.get(url_slug).then(
       function(resp){
         // put our stuff in the scope
+        console.log("putting resp in profile from controller", resp)
         $scope.profile = resp
         Page.setTitle(resp.about.given_name + " " + resp.about.surname)
         security.isLoggedInPromise(url_slug).then(
@@ -6531,7 +6532,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div class=\"genres\">\n" +
     "      <ul class=\"genre-list\">\n" +
-    "         <li ng-repeat=\"genre in genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
+    "         <li ng-repeat=\"genre in profile.genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
     "            <div class=\"genre-header\">\n" +
     "               <h3 class=\"genre-name\">\n" +
     "                  <a href=\"/{{ profile.about.url_slug }}/products/{{ genre.name }}\"\n" +

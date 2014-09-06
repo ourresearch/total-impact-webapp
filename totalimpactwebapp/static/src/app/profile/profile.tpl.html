@@ -83,7 +83,7 @@
 
 <div class="genres">
       <ul class="genre-list">
-         <li ng-repeat="genre in genres | orderBy:'name'" class="genre genre-{{ genre.plural_name }}">
+         <li ng-repeat="genre in profile.genres | orderBy:'name'" class="genre genre-{{ genre.plural_name }}">
             <div class="genre-header">
                <h3 class="genre-name">
                   <a href="/{{ profile.about.url_slug }}/products/{{ genre.name }}"

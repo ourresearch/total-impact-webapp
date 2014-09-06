@@ -111,11 +111,11 @@ angular.module('app').controller('AppCtrl', function($scope,
     else if (!currentUser.is_live){
     }
     else if (currentUser.is_trialing){
-      UserMessage.set(
-        'subscription.trialing',
-        true,
-        {daysLeft: currentUser.days_left_in_trial}
-      );
+//      UserMessage.set(
+//        'subscription.trialing',
+//        true,
+//        {daysLeft: currentUser.days_left_in_trial}
+//      );
     }
 
   })

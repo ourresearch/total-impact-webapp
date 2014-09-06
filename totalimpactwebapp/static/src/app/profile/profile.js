@@ -190,6 +190,7 @@ angular.module("profile", [
     ProfileService.get(url_slug).then(
       function(resp){
         // put our stuff in the scope
+        console.log("putting resp in profile from controller", resp)
         $scope.profile = resp
         Page.setTitle(resp.about.given_name + " " + resp.about.surname)
         security.isLoggedInPromise(url_slug).then(
