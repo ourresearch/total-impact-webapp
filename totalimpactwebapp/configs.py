@@ -224,6 +224,28 @@ providers = [
         "url": "http://www.slideshare.net/"
     },
 
+    # *************************************************************************
+    #                             Slideshare account
+    # *************************************************************************
+    {
+        "descr": "The best way to share presentations, documents and professional videos.",
+        "metrics": {
+            "followers": {
+                "description": "The number of people who follow this account",
+                "display_name": "followers",
+                "icon": "http://www.slideshare.net/favicon.ico",
+                "provider_name": "SlideShare",
+                "provider_url": "http://www.slideshare.net/",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            }
+        },
+        "name": "slideshare_account",
+        "provides_aliases": True,
+        "provides_metrics": True,
+        "url": "http://www.slideshare.net/"
+    },
 
 
 
@@ -845,7 +867,48 @@ providers = [
 
 
 
-
+    # *************************************************************************
+    #                             Twitter account
+    # *************************************************************************
+    {
+        "descr": "Social networking and microblogging service",
+        "metrics": {
+            "followers": {
+                "description": "Twitter followers: the number of people who follow this twitter account",
+                "display_name": "package views",
+                "icon": "http:\\/\\/twitter.com\\/favicon.ico",
+                "provider_name": "Twitter",
+                "provider_url": "http:\\/\\/twitter.com\\/",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            },
+            "lists": {
+                "description": "Twitter lists:  the number of lists that include this twitter account",
+                "display_name": "lists",
+                "icon": "http:\\/\\/twitter.com\\/favicon.ico",
+                "provider_name": "Twitter",
+                "provider_url": "http:\\/\\/twitter.com\\/",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            },
+            "number_tweets": {
+                "description": "Twitter number of tweets: the number of tweets sent by this twitter account",
+                "display_name": "number of tweets",
+                "icon": "http:\\/\\/twitter.com\\/favicon.ico",
+                "provider_name": "Twitter",
+                "provider_url": "http:\\/\\/twitter.com\\/",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            }        
+        },
+        "name": "twitter",
+        "provides_aliases": True,
+        "provides_metrics": True,
+        "url": "http://twitter.com"
+    },
 
 
 

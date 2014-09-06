@@ -415,6 +415,9 @@ class Product(db.Model):
         return html
 
 
+    def __repr__(self):
+        return u'<Product {tiid} {best_url}>'.format(
+            tiid=self.tiid, best_url=self.aliases.best_url)
 
     def to_dict(self):
         attributes_to_ignore = [
