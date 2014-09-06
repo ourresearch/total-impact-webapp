@@ -6325,6 +6325,7 @@ div.no-page p span.slug {
   z-index: 100;
   margin-left: -500px;
   padding: 20px 0 20px;
+  background: #fff;
 }
 #sidebar h1 {
   font-size: 30px;
