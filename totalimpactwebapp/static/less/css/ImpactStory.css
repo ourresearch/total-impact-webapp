@@ -5888,7 +5888,6 @@ Some of my own mixins
 -----------------------------------------------------*/
 body {
   color: #333;
-  min-width: 1159px;
   font-family: Lato, Helvetica, Arial, sans-serif;
   font-size: 18px;
 }
@@ -6316,59 +6315,50 @@ div.no-page p span.slug {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div#sidebar {
-  width: 200px;
-  position: absolute;
+#sidebar {
+  position: fixed;
   top: 0;
   bottom: 0;
-  left: 0;
+  left: 50%;
+  width: 200px;
   border-right: 1px solid #999;
+  z-index: 100;
+  margin-left: -500px;
 }
-div#sidebar h1 {
+#sidebar h1 {
   font-size: 30px;
 }
-div#not-sidebar {
-  margin-left: 200px;
-  padding-left: 30px;
+@media all and (max-width: 1000px) {
+  #sidebar {
+    left: 0;
+    margin-left: 0;
+  }
+}
+#not-sidebar {
+  margin: 0 0 0 200px;
+  width: 800px;
+  padding: 0 0 0 30px;
   clear: both;
 }
-div#not-sidebar:before,
-div#not-sidebar:after {
+#not-sidebar:before,
+#not-sidebar:after {
   content: " ";
   display: table;
 }
-div#not-sidebar:after {
+#not-sidebar:after {
   clear: both;
 }
-div#not-sidebar:before,
-div#not-sidebar:after {
+#not-sidebar:before,
+#not-sidebar:after {
   content: " ";
   display: table;
 }
-div#not-sidebar:after {
+#not-sidebar:after {
   clear: both;
 }
-div#wrapper {
-  position: relative;
+#wrapper {
+  width: 1000px;
   margin: 0 auto;
-  width: 1100px;
-  clear: both;
-}
-div#wrapper:before,
-div#wrapper:after {
-  content: " ";
-  display: table;
-}
-div#wrapper:after {
-  clear: both;
-}
-div#wrapper:before,
-div#wrapper:after {
-  content: " ";
-  display: table;
-}
-div#wrapper:after {
-  clear: both;
 }
 /* navbar
 *****************************************************************************
@@ -8177,70 +8167,70 @@ div.modal-body.free-fulltext-url div.archive-this a.btn {
 div.modal-body.free-fulltext-url div.archive-this a.btn span {
   margin-right: 5px;
 }
-#sidebar {
+#product-page-sidebar {
   width: 400px;
   float: right;
   padding-left: 20px;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail {
   font-size: 15px;
   margin-bottom: 20px;
   clear: both;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail:before,
-#sidebar #metrics ul.metric-details-list li.metric-detail:after {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail:before,
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail:after {
   content: " ";
   display: table;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail:after {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail:after {
   clear: both;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail:before,
-#sidebar #metrics ul.metric-details-list li.metric-detail:after {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail:before,
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail:after {
   content: " ";
   display: table;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail:after {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail:after {
   clear: both;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail .product-page-badge-container {
   width: 250px;
   float: left;
   margin-top: 8px;
   display: inline-block;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text {
   float: left;
   margin-left: 10px;
   padding-top: 5px;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name {
   color: #333;
   display: inline-block;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover {
   text-decoration: none;
   color: #ff4000;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover i {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name:hover i {
   color: #ff4000;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name span.raw-value {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name span.raw-value {
   margin-left: 2px;
   display: inline-block;
   text-align: right;
   font-weight: bold;
   font-size: 25px;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name img {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name img {
   height: 16px;
   margin: 0 3px 0 3px;
   vertical-align: 0;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name i {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text a.value-and-name i {
   color: #ddd;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text span.new-metrics {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text span.new-metrics {
   background: #5cb85c;
   color: #fff;
   font-size: 12px;
@@ -8263,29 +8253,29 @@ div.modal-body.free-fulltext-url div.archive-this a.btn span {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile {
   display: block;
   float: left;
   color: #555;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.value {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.value {
   font-weight: bold;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.unit {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.unit {
   font-weight: 300;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.upper,
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.lower {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.upper,
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values span.lower {
   font-size: 16px;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values i {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values i {
   opacity: .5;
   cursor: pointer;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values i:hover {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.values i:hover {
   opacity: .8;
 }
-#sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.descr {
+#product-page-sidebar #metrics ul.metric-details-list li.metric-detail span.metric-text .percentile span.descr {
   font-weight: 100;
 }
 div.signup-page {

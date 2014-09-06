@@ -6237,7 +6237,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "\n" +
-    "      <div id=\"sidebar\">\n" +
+    "      <div id=\"product-page-sidebar\">\n" +
     "\n" +
     "         <!--\n" +
     "         <div class=\"download-button-container\">\n" +

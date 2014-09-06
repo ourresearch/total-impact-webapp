@@ -1,6 +1,5 @@
 body {
    color:  #333;
-   min-width:1159px;
    font-family: Lato, Helvetica, Arial, sans-serif;
    font-size: 18px;
 
@@ -448,31 +447,44 @@ div.no-page {
 *****************************************************************************
 *****************************************************************************/
 
-div#sidebar {
-   width: 200px;
-   position:absolute;
+#sidebar {
+   position:fixed;
    top: 0;
    bottom: 0;
-   left: 0;
+   left: 50%;
+   width: 200px;
    border-right: 1px solid #999;
+   z-index: 100;
+   margin-left: -500px;
    h1 {
       font-size: 30px;
    }
 }
 
-div#not-sidebar {
-   margin-left: 200px;
-   padding-left: 30px;
-   .clearfix();
+@media all and (max-width: 1000px) {
+   #sidebar {
+      left: 0;
+      margin-left: 0;
+   }
+//   #not-sidebar {
+//      width: 800px;
+//      margin-left: 200px !important;
+//   }
 }
 
 
-div#wrapper {
-   position:relative;
+#not-sidebar {
+   margin: 0 0 0 200px;
+   width: 800px;
+   padding: 0 0 0 30px;
+   .clearfix();
+}
+
+#wrapper {
+   width: 1000px;
    margin: 0 auto;
-   width: 1100px;
-   .clearfix();
 }
+
 
 
 
