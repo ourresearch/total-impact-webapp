@@ -6372,19 +6372,20 @@ div.profile-sidebar h1 a:hover {
 }
 div.profile-sidebar div.nav {
   margin-top: 100px;
-  font-size: 20px;
+  font-size: 16px;
 }
 div.profile-sidebar div.nav h4 {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: normal;
   margin-left: 15px;
 }
 div.profile-sidebar div.nav a {
   color: #777;
+  font-size: 16px;
   display: inline-block;
   width: 100%;
   margin-left: 1px;
-  padding: 4px 0 4px 15px;
+  padding: 4px 15px 4px 15px;
 }
 div.profile-sidebar div.nav a:hover {
   color: #000;
@@ -6394,6 +6395,14 @@ div.profile-sidebar div.nav a.active {
 }
 div.profile-sidebar div.nav div.nav-group li {
   margin-left: 20px;
+}
+div.profile-sidebar div.footer img {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 130px;
+  margin-bottom: 15px;
 }
 /* navbar
 *****************************************************************************
