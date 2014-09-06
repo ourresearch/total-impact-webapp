@@ -1,5 +1,4 @@
 <div class="profile-header" ng-show="userExists">
-   <div class="wrapper">
       <div class="loading" ng-show="!doneLoading">
          <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
       </div>
@@ -47,44 +46,37 @@
                </li>
             </ul>
          </div>
-      </div>
 
-   </div>
+         <div class="view-controls">
+            <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
+            <div class="admin-controls" ng-show="security.isLoggedIn(url_slug) && !page.isEmbedded()">
+               <a href="/{{ profile.url_slug }}/products/add">
+                  <i class="icon-upload"></i>Import individual products
+               </a>
+               <!--<a ng-click="dedup()">
+                  <i class="icon-copy"></i>dedup
+               </a>-->
+            </div>
+            <div class="everyone-controls">
+               <a ng-click="openProfileEmbedModal()" ng-show="!page.isEmbedded()">
+                  <i class="icon-suitcase"></i>
+                  Embed
+               </a>
+               <span class="dropdown download">
+                  <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
+                     <li><a tabindex="-1" href="/profile/{{ profile.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
+                     <li><a tabindex="-1" href="/profile/{{ profile.url_slug }}?hide=markup,awards" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
+                  </ul>
+               </span>
+            </div>
+         </div>
+
+      </div>
 </div>
 
-<div class="product-controls" ng-show="userExists && doneLoading">
-   <div class="wrapper">
-      <div class="view-controls">
-         <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
-         <div class="admin-controls" ng-show="security.isLoggedIn(url_slug) && !page.isEmbedded()">
-            <a href="/{{ profile.url_slug }}/products/add">
-               <i class="icon-upload"></i>Import individual products
-            </a>
-            <!--<a ng-click="dedup()">
-               <i class="icon-copy"></i>dedup
-            </a>-->
-         </div>
-         <div class="everyone-controls">
-            <a ng-click="openProfileEmbedModal()" ng-show="!page.isEmbedded()">
-               <i class="icon-suitcase"></i>
-               Embed
-            </a>
-            <span class="dropdown download">
-               <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>
-               <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
-                  <li><a tabindex="-1" href="/profile/{{ profile.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
-                  <li><a tabindex="-1" href="/profile/{{ profile.url_slug }}?hide=markup,awards" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
-               </ul>
-            </span>
-         </div>
-      </div>
-   </div>
-</div>
 
 <div class="genres">
-   <div class="wrapper">
-      <div class="sidebar">
-      </div>
       <ul class="genre-list">
          <li ng-repeat="genre in genres | orderBy:'name'" class="genre genre-{{ genre.plural_name }}">
             <div class="genre-header">
@@ -166,7 +158,6 @@
             </div>
          </li>
       </ul>
-   </div>
 </div>
 
 
@@ -179,7 +170,7 @@
 
 <div class="signup-banner animated fadeOutDown"
      ng-show="userExists && !isAuthenticated()"
-     ng-if="!hideSignupBanner"
+     ng-if="!hideSignupBanner">
 
    <span class="msg">Join {{ profile.given_name }} and thousands of other scientists:</span>
    <a class="signup-button btn btn-primary btn-sm" ng-click="clickSignupLink()" href="/signup">Try Impactstory for free</a>

@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-03
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-05
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6440,7 +6440,6 @@ angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache"
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile.tpl.html",
     "<div class=\"profile-header\" ng-show=\"userExists\">\n" +
-    "   <div class=\"wrapper\">\n" +
     "      <div class=\"loading\" ng-show=\"!doneLoading\">\n" +
     "         <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
     "      </div>\n" +
@@ -6488,44 +6487,37 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </li>\n" +
     "            </ul>\n" +
     "         </div>\n" +
-    "      </div>\n" +
     "\n" +
-    "   </div>\n" +
+    "         <div class=\"view-controls\">\n" +
+    "            <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
+    "            <div class=\"admin-controls\" ng-show=\"security.isLoggedIn(url_slug) && !page.isEmbedded()\">\n" +
+    "               <a href=\"/{{ profile.url_slug }}/products/add\">\n" +
+    "                  <i class=\"icon-upload\"></i>Import individual products\n" +
+    "               </a>\n" +
+    "               <!--<a ng-click=\"dedup()\">\n" +
+    "                  <i class=\"icon-copy\"></i>dedup\n" +
+    "               </a>-->\n" +
+    "            </div>\n" +
+    "            <div class=\"everyone-controls\">\n" +
+    "               <a ng-click=\"openProfileEmbedModal()\" ng-show=\"!page.isEmbedded()\">\n" +
+    "                  <i class=\"icon-suitcase\"></i>\n" +
+    "                  Embed\n" +
+    "               </a>\n" +
+    "               <span class=\"dropdown download\">\n" +
+    "                  <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
+    "                  <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
+    "                     <li><a tabindex=\"-1\" href=\"/profile/{{ profile.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
+    "                     <li><a tabindex=\"-1\" href=\"/profile/{{ profile.url_slug }}?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
+    "                  </ul>\n" +
+    "               </span>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "      </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"product-controls\" ng-show=\"userExists && doneLoading\">\n" +
-    "   <div class=\"wrapper\">\n" +
-    "      <div class=\"view-controls\">\n" +
-    "         <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
-    "         <div class=\"admin-controls\" ng-show=\"security.isLoggedIn(url_slug) && !page.isEmbedded()\">\n" +
-    "            <a href=\"/{{ profile.url_slug }}/products/add\">\n" +
-    "               <i class=\"icon-upload\"></i>Import individual products\n" +
-    "            </a>\n" +
-    "            <!--<a ng-click=\"dedup()\">\n" +
-    "               <i class=\"icon-copy\"></i>dedup\n" +
-    "            </a>-->\n" +
-    "         </div>\n" +
-    "         <div class=\"everyone-controls\">\n" +
-    "            <a ng-click=\"openProfileEmbedModal()\" ng-show=\"!page.isEmbedded()\">\n" +
-    "               <i class=\"icon-suitcase\"></i>\n" +
-    "               Embed\n" +
-    "            </a>\n" +
-    "            <span class=\"dropdown download\">\n" +
-    "               <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
-    "               <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "                  <li><a tabindex=\"-1\" href=\"/profile/{{ profile.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "                  <li><a tabindex=\"-1\" href=\"/profile/{{ profile.url_slug }}?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
-    "               </ul>\n" +
-    "            </span>\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "</div>\n" +
     "\n" +
     "<div class=\"genres\">\n" +
-    "   <div class=\"wrapper\">\n" +
-    "      <div class=\"sidebar\">\n" +
-    "      </div>\n" +
     "      <ul class=\"genre-list\">\n" +
     "         <li ng-repeat=\"genre in genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
     "            <div class=\"genre-header\">\n" +
@@ -6607,7 +6599,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            </div>\n" +
     "         </li>\n" +
     "      </ul>\n" +
-    "   </div>\n" +
     "</div>\n" +
     "\n" +
     "\n" +
@@ -6620,7 +6611,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div class=\"signup-banner animated fadeOutDown\"\n" +
     "     ng-show=\"userExists && !isAuthenticated()\"\n" +
-    "     ng-if=\"!hideSignupBanner\"\n" +
+    "     ng-if=\"!hideSignupBanner\">\n" +
     "\n" +
     "   <span class=\"msg\">Join {{ profile.given_name }} and thousands of other scientists:</span>\n" +
     "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Try Impactstory for free</a>\n" +

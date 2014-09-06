@@ -4,6 +4,7 @@ body {
    font-family: Lato, Helvetica, Arial, sans-serif;
    font-size: 18px;
 
+
    &.modal-open {
       margin-right:0; // wierd. have to override margin-right: 15px coming from...bootstrap, i guess?
    }
@@ -444,6 +445,48 @@ div.no-page {
 
 
 
+
+
+
+/* sidebar
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+
+div#sidebar {
+   width: 200px;
+   position:absolute;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   border-right: 1px solid #999;
+   background: #333;
+}
+
+div#not-sidebar {
+   margin-left: 200px;
+   background: cornflowerblue;
+   .clearfix();
+}
+
+
+div#wrapper {
+   position:relative;
+   margin: 0 auto;
+   width: 1100px;
+   .clearfix();
+   background: #eee;
+}
+
+.clearfloat {
+   clear:both;
+   float:left;
+}
+
+
+
+
+
 /* navbar
 *****************************************************************************
 *****************************************************************************
@@ -455,105 +498,103 @@ div.main-header {
    padding: 15px 0 20px;
    height: 140px;
 
-   div.wrapper {
-      position:relative;
-      margin-top:0;
-      margin-bottom:0;
-      a.brand {
-         margin-top: 10px;
-         img {
-            height: 50px;
+   position:relative;
+   margin-top:0;
+   margin-bottom:0;
+   a.brand {
+      margin-top: 10px;
+      img {
+         height: 50px;
+      }
+   }
+   div.breadcrumbs {
+      font-weight: 300;
+      font-size: 25px;
+      position: absolute;
+      top: 7px;
+      left: 231px;
+      color: #333;
+      i {
+         vertical-align: middle;
+         font-size: 70%;
+         color: #ccc;
+      }
+      span.breadcrumb-level {
+         a {
+            color: #333;
+            &:hover {
+               color: @linkColor;
+            }
          }
       }
-      div.breadcrumbs {
-         font-weight: 300;
-         font-size: 25px;
-         position: absolute;
-         top: 7px;
-         left: 231px;
-         color: #333;
-         i {
-            vertical-align: middle;
-            font-size: 70%;
-            color: #ccc;
+
+   }
+
+
+
+   ul.main-nav {
+      position: absolute;
+      bottom:-7px;
+      right: 10px;
+      li.nav-item {
+         display:block;
+         float:left;
+         font-size: 15px;
+         span.context {
+            font-size: 14px;
+            display:inline-block;
+            color:  #aaaaaa;
+            margin-right: 5px;
+            font-weight: 300;
          }
-         span.breadcrumb-level {
+         span.or {
+            font-size: 70%;
+            margin:0 4px;
+            border-left: 1px solid #ddd;
+         }
+
+         &.login-and-signup {
             a {
-               color: #333;
-               &:hover {
+               margin: 0 5px;
+
+               &.signup {
+                  font-weight: 900;
+                  &:hover {color: darken(@linkColor, 10%)}
+               }
+               &.login {
+                  color: #777;
+                  display:inline-block;
+                  i {margin-left: 5px;}
+                  &:hover {color: #333;}
+               }
+            }
+         }
+         &.logged-in-user {
+            a{
+               color: #999;
+               &:hover{color: #333;}
+               padding: 5px;
+               margin: 0 3px;
+            }
+         }
+         &.controls {
+            a {
+               color: #999;
+               padding: 5px;
+               &:hover {color: #333;}
+               &.new-metrics.has-new-metrics i {
                   color: @linkColor;
                }
-            }
-         }
-
-      }
-
-
-
-      ul.main-nav {
-         position: absolute;
-         bottom:-7px;
-         right: 10px;
-         li.nav-item {
-            display:block;
-            float:left;
-            font-size: 15px;
-            span.context {
-               font-size: 14px;
-               display:inline-block;
-               color:  #aaaaaa;
-               margin-right: 5px;
-               font-weight: 300;
-            }
-            span.or {
-               font-size: 70%;
-               margin:0 4px;
-               border-left: 1px solid #ddd;
-            }
-
-            &.login-and-signup {
-               a {
-                  margin: 0 5px;
-
-                  &.signup {
-                     font-weight: 900;
-                     &:hover {color: darken(@linkColor, 10%)}
-                  }
-                  &.login {
-                     color: #777;
-                     display:inline-block;
-                     i {margin-left: 5px;}
-                     &:hover {color: #333;}
-                  }
+               &.preferences {
+                  padding: 2px 0;
+                  margin: 0 2px;
+                  font-size: 16px;
                }
-            }
-            &.logged-in-user {
-               a{
-                  color: #999;
-                  &:hover{color: #333;}
-                  padding: 5px;
-                  margin: 0 3px;
-               }
-            }
-            &.controls {
-               a {
-                  color: #999;
-                  padding: 5px;
-                  &:hover {color: #333;}
-                  &.new-metrics.has-new-metrics i {
-                     color: @linkColor;
-                  }
-                  &.preferences {
-                     padding: 2px 0;
-                     margin: 0 2px;
-                     font-size: 16px;
-                  }
-                  &.logout { font-size: 15px;}
+               &.logout { font-size: 15px;}
 
-               }
-               span.new-metrics {
-                  color: #999;
-               }
+            }
+            span.new-metrics {
+               color: #999;
             }
          }
       }

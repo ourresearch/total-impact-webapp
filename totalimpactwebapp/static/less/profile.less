@@ -78,167 +78,163 @@ div.profile-header {
    margin-top: -20px;
    height: 150px;
    .clearfix();
-   div.wrapper {
-      div.my-picture {
+   div.my-picture {
+      float:left;
+      background: #eee;
+      height: 110px;
+      width: 110px;
+      background: #ddd;
+   }
+   div.my-vitals {
+      width:  600px;
+      margin-left: 40px;
+      float:left;
+      h2.editable-name {
+         font-family: Lato, Helvetica, Arial, sans-serif;
+         font-weight: bolder;
+         font-size:  45px;
+         color:  #555;
+         margin: 0;
+         padding-top: 0;
          float:left;
-         background: #eee;
-         height: 110px;
-         width: 110px;
-         background: #ddd;
       }
-      div.my-vitals {
-         width:  600px;
-         margin-left: 40px;
+      div.connected-accounts {
          float:left;
-         h2.editable-name {
-            font-family: Lato, Helvetica, Arial, sans-serif;
-            font-weight: bolder;
-            font-size:  45px;
-            color:  #555;
-            margin: 0;
-            padding-top: 0;
-            float:left;
-         }
-         div.connected-accounts {
-            float:left;
-            clear:left;
-            div.add-connected-account {
-               a {
-                  margin-top: 5px;
-               }
+         clear:left;
+         div.add-connected-account {
+            a {
+               margin-top: 5px;
             }
-            li {
-               float:left;
-               margin: 0 10px 0 2px;
-               a {
-                  font-size: 14px;
-                  color:  #555;
-                  img {
-                     height: 16px;
-                     margin-top: -3px;
-                  }
-
+         }
+         li {
+            float:left;
+            margin: 0 10px 0 2px;
+            a {
+               font-size: 14px;
+               color:  #555;
+               img {
+                  height: 16px;
+                  margin-top: -3px;
                }
 
             }
-         }
 
+         }
       }
-      div.my-metrics {
-         float:left;
-         div.advisor {
-            margin-bottom: 20px;
-         }
-         ul.profile-award-list {
 
-            li.profile-award-container {
+   }
+   div.my-metrics {
+      float:left;
+      div.advisor {
+         margin-bottom: 20px;
+      }
+      ul.profile-award-list {
 
-               &:hover {
-                  iframe {display:inline;}
-               }
+         li.profile-award-container {
+
+            &:hover {
+               iframe {display:inline;}
+            }
 
 
-               // stuff that shows up on hover
-               iframe {
-                  vertical-align: -4px;
-                  display:none;
-               }
+            // stuff that shows up on hover
+            iframe {
+               vertical-align: -4px;
+               display:none;
+            }
 
-               div.popover {
-                  font-size: 15px;
-                  font-weight: 400;
-                  h3 {
-                     color: #fff;
-                     text-align: center;
-                     font-family: Lato;
-                     font-weight: normal;
-                  }
-                  .call-to-action {
-                     color: @btn-info-border;
-                     font-style: italic;
-                  }
-               }
-
-               // the profile award proper
-               span.profile-award {
+            div.popover {
+               font-size: 15px;
+               font-weight: 400;
+               h3 {
                   color: #fff;
-                  font-size: 14px;
+                  text-align: center;
+                  font-family: Lato;
                   font-weight: normal;
-                  cursor: default;
-                  margin-right: 5px;
-
-                  span.text {
-                     .border-radius(3px, 3px, 0px, 0px);
-                     padding: 4px 9px;
-                     background: #555;
-                     border: 1px solid #555;
-                  }
-
                }
+               .call-to-action {
+                  color: @btn-info-border;
+                  font-style: italic;
+               }
+            }
 
+            // the profile award proper
+            span.profile-award {
+               color: #fff;
+               font-size: 14px;
+               font-weight: normal;
+               cursor: default;
+               margin-right: 5px;
 
-               // this should be inside the div.profile-award. here because
-               // easier to override for levels this way.
-               span.icon {
-                  .border-radius(0px, 0px, 3px, 3px);
+               span.text {
+                  .border-radius(3px, 3px, 0px, 0px);
                   padding: 4px 9px;
-                  border: 1px solid;
-               }
-
-
-               // level colors
-               &.level-1 {
-                  span.icon {
-                     background: gold;
-                     border-color: gold;
-                  }
-                  div.popover {
-                     h3 {
-                        background: gold;
-//                        color: #333;
-                     }
-                  }
-               }
-               &.level-2 {
-                  span.icon {
-                     background: silver;
-                     border-color: silver;
-                  }
-                  div.popover {
-                     h3 {
-                        background: silver;
-                     }
-                  }
-               }
-
-               &.level-3 {
-                  span.icon {
-                     background: #CD7F32;
-                     border-color: #CD7F32;
-                  }
-                  div.popover {
-                     h3 {
-                        background: #CD7F32;
-                     }
-                  }
-               }
-               &.level-4 {
-                  span.icon {
-                     background: #fff;
-                     border-color: #555;
-                     color: #555;
-                  }
-                  div.popover {
-                     h3 {
-                        display:none;
-                     }
-                  }
+                  background: #555;
+                  border: 1px solid #555;
                }
 
             }
+
+
+            // this should be inside the div.profile-award. here because
+            // easier to override for levels this way.
+            span.icon {
+               .border-radius(0px, 0px, 3px, 3px);
+               padding: 4px 9px;
+               border: 1px solid;
+            }
+
+
+            // level colors
+            &.level-1 {
+               span.icon {
+                  background: gold;
+                  border-color: gold;
+               }
+               div.popover {
+                  h3 {
+                     background: gold;
+//                        color: #333;
+                  }
+               }
+            }
+            &.level-2 {
+               span.icon {
+                  background: silver;
+                  border-color: silver;
+               }
+               div.popover {
+                  h3 {
+                     background: silver;
+                  }
+               }
+            }
+
+            &.level-3 {
+               span.icon {
+                  background: #CD7F32;
+                  border-color: #CD7F32;
+               }
+               div.popover {
+                  h3 {
+                     background: #CD7F32;
+                  }
+               }
+            }
+            &.level-4 {
+               span.icon {
+                  background: #fff;
+                  border-color: #555;
+                  color: #555;
+               }
+               div.popover {
+                  h3 {
+                     display:none;
+                  }
+               }
+            }
          }
       }
-
    }
 }
 
@@ -290,58 +286,56 @@ div.product-controls {
    color: #777;
    .clearfix();
 
-   div.wrapper {
-      position:relative;
-      a {
-         &:hover {color: #333;}
-         font-size: 16px;
+   position:relative;
+   a {
+      &:hover {color: #333;}
+      font-size: 16px;
+   }
+   div.view-controls {
+      position: absolute;
+      right:0;
+      bottom: 0;
+      margin: 0 30px 0 0;
+      div.admin-controls {
+         float:left;
       }
-      div.view-controls {
-         position: absolute;
-         right:0;
-         bottom: 0;
-         margin: 0 30px 0 0;
-         div.admin-controls {
-            float:left;
+      div.everyone-controls{
+         float:left;
+      }
+      a {
+         margin-left: 15px;
+         color: #777;
+         display:inline-block;
+         i {
+            margin-right:5px;
          }
-         div.everyone-controls{
-            float:left;
-         }
-         a {
-            margin-left: 15px;
-            color: #777;
-            display:inline-block;
+      }
+      span.dropdown {
+         ul.dropdown-menu {
+            border: none;
+            .drop-shadow(0, 0, 0, 0);
+            .border-radius(0, 3px, 3px, 0);
+            padding: 0;
+            background: #eee;
+            top: 22px;
+            min-width:  120px;
+            a {
+               margin: 0;
+               width: 100%;
+               &:hover {
+                  color: #fff;
+               }
+            }
             i {
-               margin-right:5px;
+               font-style: normal;
+               margin-right: 5px;
+            }
+            i.json {
+               font-weight: 900;
+               font-size: 14px;
             }
          }
-         span.dropdown {
-            ul.dropdown-menu {
-               border: none;
-               .drop-shadow(0, 0, 0, 0);
-               .border-radius(0, 3px, 3px, 0);
-               padding: 0;
-               background: #eee;
-               top: 22px;
-               min-width:  120px;
-               a {
-                  margin: 0;
-                  width: 100%;
-                  &:hover {
-                     color: #fff;
-                  }
-               }
-               i {
-                  font-style: normal;
-                  margin-right: 5px;
-               }
-               i.json {
-                  font-weight: 900;
-                  font-size: 14px;
-               }
-            }
 
-         }
       }
    }
 }
@@ -349,106 +343,104 @@ div.product-controls {
 
 
 div.genres {
-   div.wrapper {
-      div.sidebar {
-         float: left;
-         width: 200px;
-         height: 500px;
+   div.sidebar {
+      float: left;
+      width: 200px;
+      height: 500px;
+      margin-top: 50px;
+   }
+   ul.genre-list {
+      float:left;
+      li.genre {
+         border: 2px solid #eee;
          margin-top: 50px;
-      }
-      ul.genre-list {
-         float:left;
-         li.genre {
-            border: 2px solid #eee;
-            margin-top: 50px;
-            position: relative;
-            div.genre-header {
-               background: #eee;
-               h3 {
-                  margin: 0;
-                  padding: 10px;
-                  a {
-                     color: #555;
-                     &:hover {color: #000;}
-                  }
-                  span.num-products-with-new-metrics {
-                     margin-left: 5px;
-                     color: @publicColor;
-                     font-size: 50%;
-                     font-weight: normal;
-                  }
+         position: relative;
+         div.genre-header {
+            background: #eee;
+            h3 {
+               margin: 0;
+               padding: 10px;
+               a {
+                  color: #555;
+                  &:hover {color: #000;}
+               }
+               span.num-products-with-new-metrics {
+                  margin-left: 5px;
+                  color: @publicColor;
+                  font-size: 50%;
+                  font-weight: normal;
                }
             }
-            div.genre-body{
-               .clearfix();
-               padding: 30px 10px 30px 0;
-               ul.genre-cards-best {
-                  width:70%;
-                  li.genre-card {
-                     img.icon {
-                        margin-top: -10px;
-                        margin-right: 5px;
-                        width: 30px;
-                        opacity: .9;
-                     }
-                     float:left;
-                     margin-left: 40px;
-                     span.value {
-                        font-size: 30px;
-                        font-weight: bold;
-                     }
-                     span.key {
-                        display:inline-block;
-                        line-height: 1;
-                        font-size: 15px;
-                        margin-left: 4px;
-                        color: #555;
-                     }
-                     span.card-accumulation {
-                        span.key {
-                           span.provider {
-                              display:block;
-                              font-size: 12px;
-                           }
-                           span.interaction {
-                              font-weight: bold;
-                           }
-                        }
-                     }
-
-                     span.card-products-with-more-than-this {
-                        color: #d9534f;
-                        span.key {
-                           color: #d9534f;
-                           span.genre-name {
-                              display:block;
-                              margin-bottom: 3px;
-                              font-size: 12px;
-                           }
-                           span.threshold {
-                              font-weight: bold;
-                           }
-
-                        }
-                     }
+         }
+         div.genre-body{
+            .clearfix();
+            padding: 30px 10px 30px 0;
+            ul.genre-cards-best {
+               width:70%;
+               li.genre-card {
+                  img.icon {
+                     margin-top: -10px;
+                     margin-right: 5px;
+                     width: 30px;
+                     opacity: .9;
                   }
-               }
-
-               ul.genre-cards-second-best {
-                  float:right;
-                  width: 25%;
-                  li.genre-card {
+                  float:left;
+                  margin-left: 40px;
+                  span.value {
+                     font-size: 30px;
+                     font-weight: bold;
+                  }
+                  span.key {
+                     display:inline-block;
                      line-height: 1;
-                     margin-bottom: 8px;
-                     img {
-                        width: 16px;
+                     font-size: 15px;
+                     margin-left: 4px;
+                     color: #555;
+                  }
+                  span.card-accumulation {
+                     span.key {
+                        span.provider {
+                           display:block;
+                           font-size: 12px;
+                        }
+                        span.interaction {
+                           font-weight: bold;
+                        }
                      }
-                     font-size: 16px;
+                  }
 
+                  span.card-products-with-more-than-this {
+                     color: #d9534f;
+                     span.key {
+                        color: #d9534f;
+                        span.genre-name {
+                           display:block;
+                           margin-bottom: 3px;
+                           font-size: 12px;
+                        }
+                        span.threshold {
+                           font-weight: bold;
+                        }
+
+                     }
                   }
                }
-
             }
+
+            ul.genre-cards-second-best {
+               float:right;
+               width: 25%;
+               li.genre-card {
+                  line-height: 1;
+                  margin-bottom: 8px;
+                  img {
+                     width: 16px;
+                  }
+                  font-size: 16px;
+
+               }
+            }
+
          }
       }
    }

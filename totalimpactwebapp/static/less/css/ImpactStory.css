@@ -6317,6 +6317,67 @@ div.no-page p {
 div.no-page p span.slug {
   font-weight: bold;
 }
+/* sidebar
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div#sidebar {
+  width: 200px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-right: 1px solid #999;
+  background: #333;
+}
+div#not-sidebar {
+  margin-left: 200px;
+  background: cornflowerblue;
+  clear: both;
+}
+div#not-sidebar:before,
+div#not-sidebar:after {
+  content: " ";
+  display: table;
+}
+div#not-sidebar:after {
+  clear: both;
+}
+div#not-sidebar:before,
+div#not-sidebar:after {
+  content: " ";
+  display: table;
+}
+div#not-sidebar:after {
+  clear: both;
+}
+div#wrapper {
+  position: relative;
+  margin: 0 auto;
+  width: 1100px;
+  clear: both;
+  background: #eee;
+}
+div#wrapper:before,
+div#wrapper:after {
+  content: " ";
+  display: table;
+}
+div#wrapper:after {
+  clear: both;
+}
+div#wrapper:before,
+div#wrapper:after {
+  content: " ";
+  display: table;
+}
+div#wrapper:after {
+  clear: both;
+}
+.clearfloat {
+  clear: both;
+  float: left;
+}
 /* navbar
 *****************************************************************************
 *****************************************************************************
@@ -6325,19 +6386,17 @@ div.main-header {
   text-align: left;
   padding: 15px 0 20px;
   height: 140px;
-}
-div.main-header div.wrapper {
   position: relative;
   margin-top: 0;
   margin-bottom: 0;
 }
-div.main-header div.wrapper a.brand {
+div.main-header a.brand {
   margin-top: 10px;
 }
-div.main-header div.wrapper a.brand img {
+div.main-header a.brand img {
   height: 50px;
 }
-div.main-header div.wrapper div.breadcrumbs {
+div.main-header div.breadcrumbs {
   font-weight: 300;
   font-size: 25px;
   position: absolute;
@@ -6345,85 +6404,85 @@ div.main-header div.wrapper div.breadcrumbs {
   left: 231px;
   color: #333;
 }
-div.main-header div.wrapper div.breadcrumbs i {
+div.main-header div.breadcrumbs i {
   vertical-align: middle;
   font-size: 70%;
   color: #ccc;
 }
-div.main-header div.wrapper div.breadcrumbs span.breadcrumb-level a {
+div.main-header div.breadcrumbs span.breadcrumb-level a {
   color: #333;
 }
-div.main-header div.wrapper div.breadcrumbs span.breadcrumb-level a:hover {
+div.main-header div.breadcrumbs span.breadcrumb-level a:hover {
   color: #ff4000;
 }
-div.main-header div.wrapper ul.main-nav {
+div.main-header ul.main-nav {
   position: absolute;
   bottom: -7px;
   right: 10px;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item {
+div.main-header ul.main-nav li.nav-item {
   display: block;
   float: left;
   font-size: 15px;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item span.context {
+div.main-header ul.main-nav li.nav-item span.context {
   font-size: 14px;
   display: inline-block;
   color: #aaaaaa;
   margin-right: 5px;
   font-weight: 300;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item span.or {
+div.main-header ul.main-nav li.nav-item span.or {
   font-size: 70%;
   margin: 0 4px;
   border-left: 1px solid #ddd;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a {
+div.main-header ul.main-nav li.nav-item.login-and-signup a {
   margin: 0 5px;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.signup {
+div.main-header ul.main-nav li.nav-item.login-and-signup a.signup {
   font-weight: 900;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.signup:hover {
+div.main-header ul.main-nav li.nav-item.login-and-signup a.signup:hover {
   color: #cc3300;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.login {
+div.main-header ul.main-nav li.nav-item.login-and-signup a.login {
   color: #777;
   display: inline-block;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.login i {
+div.main-header ul.main-nav li.nav-item.login-and-signup a.login i {
   margin-left: 5px;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.login-and-signup a.login:hover {
+div.main-header ul.main-nav li.nav-item.login-and-signup a.login:hover {
   color: #333;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.logged-in-user a {
+div.main-header ul.main-nav li.nav-item.logged-in-user a {
   color: #999;
   padding: 5px;
   margin: 0 3px;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.logged-in-user a:hover {
+div.main-header ul.main-nav li.nav-item.logged-in-user a:hover {
   color: #333;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.controls a {
+div.main-header ul.main-nav li.nav-item.controls a {
   color: #999;
   padding: 5px;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.controls a:hover {
+div.main-header ul.main-nav li.nav-item.controls a:hover {
   color: #333;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.controls a.new-metrics.has-new-metrics i {
+div.main-header ul.main-nav li.nav-item.controls a.new-metrics.has-new-metrics i {
   color: #ff4000;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.controls a.preferences {
+div.main-header ul.main-nav li.nav-item.controls a.preferences {
   padding: 2px 0;
   margin: 0 2px;
   font-size: 16px;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.controls a.logout {
+div.main-header ul.main-nav li.nav-item.controls a.logout {
   font-size: 15px;
 }
-div.main-header div.wrapper ul.main-nav li.nav-item.controls span.new-metrics {
+div.main-header ul.main-nav li.nav-item.controls span.new-metrics {
   color: #999;
 }
 /* footer
@@ -6580,21 +6639,19 @@ div.infopage.landing div.top-screen div#tagline {
   display: table-cell;
   vertical-align: middle;
   width: 100%;
-}
-div.infopage.landing div.top-screen div#tagline div.wrapper {
   margin-top: -150px;
 }
-div.infopage.landing div.top-screen div#tagline div.wrapper img.big-logo {
+div.infopage.landing div.top-screen div#tagline img.big-logo {
   height: 100px;
 }
-div.infopage.landing div.top-screen div#tagline div.wrapper h1 {
+div.infopage.landing div.top-screen div#tagline h1 {
   color: #ff4000;
   font-size: 60px;
   font-family: 'lato', helvetica, arial, sans-serif;
   font-weight: 900;
   margin: 20px auto 30px;
 }
-div.infopage.landing div.top-screen div#tagline div.wrapper h2 {
+div.infopage.landing div.top-screen div#tagline h2 {
   margin-top: -20px;
   font-weight: 300;
   color: #555;
@@ -6604,13 +6661,13 @@ div.infopage.landing div.top-screen div#tagline div.wrapper h2 {
   text-align: center;
   margin: 0 auto;
 }
-div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action {
+div.infopage.landing div.top-screen div#tagline #call-to-action {
   margin: 40px auto;
 }
-div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action #signup-button {
+div.infopage.landing div.top-screen div#tagline #call-to-action #signup-button {
   font-weight: bold;
 }
-div.infopage.landing div.top-screen div#tagline div.wrapper #call-to-action #secondary-cta-button {
+div.infopage.landing div.top-screen div#tagline #call-to-action #secondary-cta-button {
   margin-left: 30px;
   color: #777;
 }
@@ -6762,13 +6819,7 @@ div#sources {
   text-align: center;
   margin-bottom: -20px;
 }
-div#sources div.wrapper {
-  padding-top: 15px;
-  width: 1100px;
-  margin: 0 auto;
-  background: #fff;
-}
-div#sources div.wrapper h2 {
+div#sources h2 {
   color: #ccc;
   font-size: 16px;
   font-family: Lato, Helvetica, arial, sans-serif;
@@ -6779,12 +6830,12 @@ div#sources div.wrapper h2 {
   width: 440px;
   padding: 0 20px;
 }
-div#sources div.wrapper ul#source-logos li {
+div#sources ul#source-logos li {
   margin: 0 20px 20px 0;
   display: inline;
   line-height: 3.5;
 }
-div#sources div.wrapper ul#source-logos li img {
+div#sources ul#source-logos li img {
   height: 22px;
   opacity: 0.5;
   filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
@@ -7024,19 +7075,19 @@ div.profile-header:after {
 div.profile-header:after {
   clear: both;
 }
-div.profile-header div.wrapper div.my-picture {
+div.profile-header div.my-picture {
   float: left;
   background: #eee;
   height: 110px;
   width: 110px;
   background: #ddd;
 }
-div.profile-header div.wrapper div.my-vitals {
+div.profile-header div.my-vitals {
   width: 600px;
   margin-left: 40px;
   float: left;
 }
-div.profile-header div.wrapper div.my-vitals h2.editable-name {
+div.profile-header div.my-vitals h2.editable-name {
   font-family: Lato, Helvetica, Arial, sans-serif;
   font-weight: bolder;
   font-size: 45px;
@@ -7045,60 +7096,60 @@ div.profile-header div.wrapper div.my-vitals h2.editable-name {
   padding-top: 0;
   float: left;
 }
-div.profile-header div.wrapper div.my-vitals div.connected-accounts {
+div.profile-header div.my-vitals div.connected-accounts {
   float: left;
   clear: left;
 }
-div.profile-header div.wrapper div.my-vitals div.connected-accounts div.add-connected-account a {
+div.profile-header div.my-vitals div.connected-accounts div.add-connected-account a {
   margin-top: 5px;
 }
-div.profile-header div.wrapper div.my-vitals div.connected-accounts li {
+div.profile-header div.my-vitals div.connected-accounts li {
   float: left;
   margin: 0 10px 0 2px;
 }
-div.profile-header div.wrapper div.my-vitals div.connected-accounts li a {
+div.profile-header div.my-vitals div.connected-accounts li a {
   font-size: 14px;
   color: #555;
 }
-div.profile-header div.wrapper div.my-vitals div.connected-accounts li a img {
+div.profile-header div.my-vitals div.connected-accounts li a img {
   height: 16px;
   margin-top: -3px;
 }
-div.profile-header div.wrapper div.my-metrics {
+div.profile-header div.my-metrics {
   float: left;
 }
-div.profile-header div.wrapper div.my-metrics div.advisor {
+div.profile-header div.my-metrics div.advisor {
   margin-bottom: 20px;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container:hover iframe {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container:hover iframe {
   display: inline;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container iframe {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container iframe {
   vertical-align: -4px;
   display: none;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container div.popover {
   font-size: 15px;
   font-weight: 400;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover h3 {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container div.popover h3 {
   color: #fff;
   text-align: center;
   font-family: Lato;
   font-weight: normal;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container div.popover .call-to-action {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container div.popover .call-to-action {
   color: #46b8da;
   font-style: italic;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award {
   color: #fff;
   font-size: 14px;
   font-weight: normal;
   cursor: default;
   margin-right: 5px;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award span.text {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award span.text {
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
   -webkit-border-bottom-left-radius: 0px;
@@ -7118,7 +7169,7 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-a
   background: #555;
   border: 1px solid #555;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container span.icon {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container span.icon {
   -webkit-border-top-right-radius: 0px;
   -webkit-border-bottom-right-radius: 0px;
   -webkit-border-bottom-left-radius: 3px;
@@ -7137,33 +7188,33 @@ div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-a
   padding: 4px 9px;
   border: 1px solid;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-1 span.icon {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-1 span.icon {
   background: gold;
   border-color: gold;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-1 div.popover h3 {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-1 div.popover h3 {
   background: gold;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-2 span.icon {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-2 span.icon {
   background: silver;
   border-color: silver;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-2 div.popover h3 {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-2 div.popover h3 {
   background: silver;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-3 span.icon {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-3 span.icon {
   background: #CD7F32;
   border-color: #CD7F32;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-3 div.popover h3 {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-3 div.popover h3 {
   background: #CD7F32;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-4 span.icon {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-4 span.icon {
   background: #fff;
   border-color: #555;
   color: #555;
 }
-div.profile-header div.wrapper div.my-metrics ul.profile-award-list li.profile-award-container.level-4 div.popover h3 {
+div.profile-header div.my-metrics ul.profile-award-list li.profile-award-container.level-4 div.popover h3 {
   display: none;
 }
 div.modal-body.embed label {
@@ -7217,53 +7268,51 @@ div.product-controls {
   border-bottom: 5px solid #eee;
   color: #777;
   clear: both;
-}
-div.product-controls:before,
-div.product-controls:after {
-  content: " ";
-  display: table;
-}
-div.product-controls:after {
-  clear: both;
-}
-div.product-controls:before,
-div.product-controls:after {
-  content: " ";
-  display: table;
-}
-div.product-controls:after {
-  clear: both;
-}
-div.product-controls div.wrapper {
   position: relative;
 }
-div.product-controls div.wrapper a {
+div.product-controls:before,
+div.product-controls:after {
+  content: " ";
+  display: table;
+}
+div.product-controls:after {
+  clear: both;
+}
+div.product-controls:before,
+div.product-controls:after {
+  content: " ";
+  display: table;
+}
+div.product-controls:after {
+  clear: both;
+}
+div.product-controls a {
   font-size: 16px;
 }
-div.product-controls div.wrapper a:hover {
+div.product-controls a:hover {
   color: #333;
 }
-div.product-controls div.wrapper div.view-controls {
+div.product-controls div.view-controls {
   position: absolute;
   right: 0;
   bottom: 0;
   margin: 0 30px 0 0;
 }
-div.product-controls div.wrapper div.view-controls div.admin-controls {
+div.product-controls div.view-controls div.admin-controls {
   float: left;
 }
-div.product-controls div.wrapper div.view-controls div.everyone-controls {
+div.product-controls div.view-controls div.everyone-controls {
   float: left;
 }
-div.product-controls div.wrapper div.view-controls a {
+div.product-controls div.view-controls a {
   margin-left: 15px;
   color: #777;
   display: inline-block;
 }
-div.product-controls div.wrapper div.view-controls a i {
+div.product-controls div.view-controls a i {
   margin-right: 5px;
 }
-div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-menu {
+div.product-controls div.view-controls span.dropdown ul.dropdown-menu {
   border: none;
   -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
@@ -7288,129 +7337,129 @@ div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-men
   top: 22px;
   min-width: 120px;
 }
-div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-menu a {
+div.product-controls div.view-controls span.dropdown ul.dropdown-menu a {
   margin: 0;
   width: 100%;
 }
-div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-menu a:hover {
+div.product-controls div.view-controls span.dropdown ul.dropdown-menu a:hover {
   color: #fff;
 }
-div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-menu i {
+div.product-controls div.view-controls span.dropdown ul.dropdown-menu i {
   font-style: normal;
   margin-right: 5px;
 }
-div.product-controls div.wrapper div.view-controls span.dropdown ul.dropdown-menu i.json {
+div.product-controls div.view-controls span.dropdown ul.dropdown-menu i.json {
   font-weight: 900;
   font-size: 14px;
 }
-div.genres div.wrapper div.sidebar {
+div.genres div.sidebar {
   float: left;
   width: 200px;
   height: 500px;
   margin-top: 50px;
 }
-div.genres div.wrapper ul.genre-list {
+div.genres ul.genre-list {
   float: left;
 }
-div.genres div.wrapper ul.genre-list li.genre {
+div.genres ul.genre-list li.genre {
   border: 2px solid #eee;
   margin-top: 50px;
   position: relative;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-header {
+div.genres ul.genre-list li.genre div.genre-header {
   background: #eee;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-header h3 {
+div.genres ul.genre-list li.genre div.genre-header h3 {
   margin: 0;
   padding: 10px;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-header h3 a {
+div.genres ul.genre-list li.genre div.genre-header h3 a {
   color: #555;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-header h3 a:hover {
+div.genres ul.genre-list li.genre div.genre-header h3 a:hover {
   color: #000;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-header h3 span.num-products-with-new-metrics {
+div.genres ul.genre-list li.genre div.genre-header h3 span.num-products-with-new-metrics {
   margin-left: 5px;
   color: #4daf4a;
   font-size: 50%;
   font-weight: normal;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body {
+div.genres ul.genre-list li.genre div.genre-body {
   clear: both;
   padding: 30px 10px 30px 0;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body:before,
-div.genres div.wrapper ul.genre-list li.genre div.genre-body:after {
+div.genres ul.genre-list li.genre div.genre-body:before,
+div.genres ul.genre-list li.genre div.genre-body:after {
   content: " ";
   display: table;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body:after {
+div.genres ul.genre-list li.genre div.genre-body:after {
   clear: both;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body:before,
-div.genres div.wrapper ul.genre-list li.genre div.genre-body:after {
+div.genres ul.genre-list li.genre div.genre-body:before,
+div.genres ul.genre-list li.genre div.genre-body:after {
   content: " ";
   display: table;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body:after {
+div.genres ul.genre-list li.genre div.genre-body:after {
   clear: both;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best {
   width: 70%;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card {
   float: left;
   margin-left: 40px;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card img.icon {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card img.icon {
   margin-top: -10px;
   margin-right: 5px;
   width: 30px;
   opacity: .9;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.value {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.value {
   font-size: 30px;
   font-weight: bold;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.key {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.key {
   display: inline-block;
   line-height: 1;
   font-size: 15px;
   margin-left: 4px;
   color: #555;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-accumulation span.key span.provider {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-accumulation span.key span.provider {
   display: block;
   font-size: 12px;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-accumulation span.key span.interaction {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-accumulation span.key span.interaction {
   font-weight: bold;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this {
   color: #d9534f;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key {
   color: #d9534f;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key span.genre-name {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key span.genre-name {
   display: block;
   margin-bottom: 3px;
   font-size: 12px;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key span.threshold {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key span.threshold {
   font-weight: bold;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-second-best {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-second-best {
   float: right;
   width: 25%;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-second-best li.genre-card {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-second-best li.genre-card {
   line-height: 1;
   margin-bottom: 8px;
   font-size: 16px;
 }
-div.genres div.wrapper ul.genre-list li.genre div.genre-body ul.genre-cards-second-best li.genre-card img {
+div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-second-best li.genre-card img {
   width: 16px;
 }
 div.profile-subpage .profile-subpage-header {
@@ -7459,23 +7508,23 @@ div.profile-subpage.profile-single-products div.profile-single-products-body {
   min-height: 600px;
   padding-top: 100px;
 }
-div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper form {
+div.profile-subpage.profile-single-products div.profile-single-products-body form {
   width: 50%;
   float: left;
   margin-right: 5%;
 }
-div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper form textarea {
+div.profile-subpage.profile-single-products div.profile-single-products-body form textarea {
   height: 300px;
 }
-div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper form div.buttons-group {
+div.profile-subpage.profile-single-products div.profile-single-products-body form div.buttons-group {
   text-align: right;
   margin-top: 20px;
 }
-div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources {
+div.profile-subpage.profile-single-products div.profile-single-products-body .id-sources {
   width: 45%;
   float: left;
 }
-div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources h3 {
+div.profile-subpage.profile-single-products div.profile-single-products-body .id-sources h3 {
   margin: -5px 0 20px 50px;
   padding-bottom: 5px;
   width: 300px;
@@ -7484,10 +7533,10 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   border-bottom: 1px solid #ccc;
   font-size: 22px;
 }
-div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources ul li {
+div.profile-subpage.profile-single-products div.profile-single-products-body .id-sources ul li {
   margin-bottom: 5px;
 }
-div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources ul li span.id-type {
+div.profile-subpage.profile-single-products div.profile-single-products-body .id-sources ul li span.id-type {
   font-weight: 300;
   width: 200px;
   display: inline-block;
@@ -7495,7 +7544,7 @@ div.profile-subpage.profile-single-products div.profile-single-products-body div
   padding-right: 10px;
   font-size: 16px;
 }
-div.profile-subpage.profile-single-products div.profile-single-products-body div.wrapper .id-sources ul li img {
+div.profile-subpage.profile-single-products div.profile-single-products-body .id-sources ul li img {
   height: 25px;
   margin: 5px;
 }
