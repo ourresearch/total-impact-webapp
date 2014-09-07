@@ -998,8 +998,8 @@ genre_icons = {
     'twitter': "icon-twitter",
     'video': "icon-facetime-video",
     'webpage': "icon-globe",
-    'other': "icon-ellipsis-horizontal",
-    'unknown': "icon-ellipsis-horizontal"
+    'other': "icon-file-alt",
+    'unknown': "icon-file-alt"
 }
 
 

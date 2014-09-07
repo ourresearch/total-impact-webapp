@@ -6400,15 +6400,20 @@ div.profile-sidebar div.nav a.active span.text::after {
   background-position: 0 -69px;
   background-repeat: no-repeat;
   position: absolute;
-  top: 1px;
-  bottom: 1px;
+  top: 50%;
   right: 0;
   width: 17px;
   display: block;
   content: "";
+  height: 28px;
+  margin-top: -14px;
 }
 div.profile-sidebar div.nav div.nav-group {
   border-top: 1px solid #eee;
+}
+div.profile-sidebar div.nav div.nav-group li {
+  margin: 0;
+  padding: 0;
 }
 div.profile-sidebar div.footer a img {
   position: absolute;

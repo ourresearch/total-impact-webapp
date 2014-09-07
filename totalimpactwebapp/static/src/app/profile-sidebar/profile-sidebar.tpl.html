@@ -10,7 +10,7 @@
    </h1>
 
    <div class="nav">
-      <a href="/{{ profile.about.url_slug }}" class="active">
+      <a href="/{{ profile.about.url_slug }}" ng-class="{active: page.isNamed('overview')}">
          <i class="icon-user left"></i>
          <span class="text">
             Overview
@@ -20,7 +20,8 @@
       <div class="nav-group genres">
          <ul>
             <li ng-repeat="genre in profile.genres | orderBy: 'name'">
-               <a href="/{{ profile.about.url_slug }}/products/{{ genre.url_representation }}">
+               <a href="/{{ profile.about.url_slug }}/products/{{ genre.url_representation }}"
+                  ng-class="{active: page.isNamed(genre.url_representation)}">
                   <i class="{{ genre.icon }} left"></i>
                   <span class="text">
                      {{ genre.plural_name }}

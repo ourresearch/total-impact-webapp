@@ -675,6 +675,7 @@ angular.module("genrePage", [
 
     Timer.start("genreViewRender")
     Timer.start("genreViewRender.load")
+    Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
     var rendering = true
 
@@ -1462,8 +1463,9 @@ angular.module('profileSidebar', [
     'resources.users',
     'services.profileService'
 ])
-  .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, security){
+  .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
 
+    $scope.page = Page
     ProfileService.getCached().then(
       function(resp){
         $scope.profile = resp
@@ -1670,6 +1672,7 @@ angular.module("profile", [
 
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
+    Page.setName('overview')
     var url_slug = $routeParams.url_slug;
 
     $timeout(function(){
@@ -4071,6 +4074,7 @@ angular.module("services.page")
    var isEmbedded =  _($location.path()).startsWith("/embed/")
    var headerFullName
    var profileUrl
+   var pageName
 
    var showHeaderNow = true
    var showFooterNow = true
@@ -4220,6 +4224,14 @@ angular.module("services.page")
      isProfile:function(){
        var path = $location.path()
        return (path != "/") && (path != "/faq") && (path != "/about")
+     },
+
+     setName: function(name){
+       pageName = name
+     },
+
+     isNamed: function(name){
+       return name === pageName
      },
 
      setLastScrollPosition: function(pos, path){
@@ -6330,7 +6342,7 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "   </h1>\n" +
     "\n" +
     "   <div class=\"nav\">\n" +
-    "      <a href=\"/{{ profile.about.url_slug }}\" class=\"active\">\n" +
+    "      <a href=\"/{{ profile.about.url_slug }}\" ng-class=\"{active: page.isNamed('overview')}\">\n" +
     "         <i class=\"icon-user left\"></i>\n" +
     "         <span class=\"text\">\n" +
     "            Overview\n" +
@@ -6340,7 +6352,8 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "      <div class=\"nav-group genres\">\n" +
     "         <ul>\n" +
     "            <li ng-repeat=\"genre in profile.genres | orderBy: 'name'\">\n" +
-    "               <a href=\"/{{ profile.about.url_slug }}/products/{{ genre.url_representation }}\">\n" +
+    "               <a href=\"/{{ profile.about.url_slug }}/products/{{ genre.url_representation }}\"\n" +
+    "                  ng-class=\"{active: page.isNamed(genre.url_representation)}\">\n" +
     "                  <i class=\"{{ genre.icon }} left\"></i>\n" +
     "                  <span class=\"text\">\n" +
     "                     {{ genre.plural_name }}\n" +

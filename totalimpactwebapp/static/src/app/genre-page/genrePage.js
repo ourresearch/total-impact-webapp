@@ -61,6 +61,7 @@ angular.module("genrePage", [
 
     Timer.start("genreViewRender")
     Timer.start("genreViewRender.load")
+    Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
     var rendering = true
 

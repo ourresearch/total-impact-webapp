@@ -118,6 +118,7 @@ angular.module("profile", [
 
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
+    Page.setName('overview')
     var url_slug = $routeParams.url_slug;
 
     $timeout(function(){

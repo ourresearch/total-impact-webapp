@@ -10,6 +10,7 @@ angular.module("services.page")
    var isEmbedded =  _($location.path()).startsWith("/embed/")
    var headerFullName
    var profileUrl
+   var pageName
 
    var showHeaderNow = true
    var showFooterNow = true
@@ -159,6 +160,14 @@ angular.module("services.page")
      isProfile:function(){
        var path = $location.path()
        return (path != "/") && (path != "/faq") && (path != "/about")
+     },
+
+     setName: function(name){
+       pageName = name
+     },
+
+     isNamed: function(name){
+       return name === pageName
      },
 
      setLastScrollPosition: function(pos, path){
