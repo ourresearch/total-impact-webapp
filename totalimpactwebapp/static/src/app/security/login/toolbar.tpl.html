@@ -1,14 +1,11 @@
-<ul class="main-nav">
+<ul class="account-nav">
    <li ng-show="currentUser" class="logged-in-user nav-item">
       <a class="current-user"
          href="/{{ currentUser.url_slug }}"
-         tooltip="View your profile"
-         tooltip-placement="bottom">
-         {{currentUser.given_name}}
-         {{currentUser.surname}}
+         tooltip="View your profile">
+         <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
       </a>
    </li>
-
    <li ng-show="currentUser" class="controls nav-item">
 
       <span class="or"></span>
@@ -32,21 +29,28 @@
 
       <span class="or"></span>
       -->
+      <span class="or"></span>
+      <a class="logout control"
+         ng-click="logout()"
+         tooltip="Log out">
+         <i class="icon-signout"></i>
+      </a>
+
 
       <a class="preferences control"
          href="/settings/profile"
-         tooltip="Change profile settings"
-         tooltip-placement="bottom">
+         tooltip="Change profile settings">
          <i class="icon-cog"></i>
       </a>
 
       <span class="or"></span>
 
+
       <a class="logout control"
+         href="{{ currentUser.url_slug }}/accounts"
          ng-click="logout()"
-         tooltip="Log out"
-         tooltip-placement="bottom">
-         <i class="icon-signout"></i>
+         tooltip="Add accounts or products">
+         <i class="icon-plus"></i>
       </a>
    </li>
 

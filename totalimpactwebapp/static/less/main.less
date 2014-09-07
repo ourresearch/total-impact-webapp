@@ -547,16 +547,46 @@ div.profile-sidebar {
    }
 
    div.footer {
-      a {
+      ul.account-nav {
+         position:absolute;
+         bottom: 50px;
+         right: 0;
+         width: 100%;
+         padding-top: 15px;
+         padding-left: 10px;
+         padding-bottom: 10px;
+         border-top: 1px solid #ddd;
+         border-bottom: 1px solid #ddd;
+         border-left: 1px solid #ddd;
+         img.gravatar {
+            height: 32px;
+            .border-radius(16px, 16px, 16px, 16px);
+         }
+         li {
+            display:inline-block;
+            a {
+               color: #999;
+               i {
+                  font-size: 24px;
+                  vertical-align: -5px;
+                  padding: 7px;
+               }
+               &:hover {
+                  color: @linkColor;
+               }
+            }
+         }
+      }
+      a.logo {
          img {
             position: absolute;
             bottom: 0;
             right: 0;
             left: 0;
-            width: 130px;
-            margin-bottom: 15px;
+            width: 100px;
+            margin-left: 15px;
+            margin-bottom: 25px;
             -webkit-filter: grayscale(100%);
-            opacity: .5;
             &:hover {
                -webkit-filter: grayscale(0%);
                opacity: 1;

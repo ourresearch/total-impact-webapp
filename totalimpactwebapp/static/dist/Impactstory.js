@@ -1815,6 +1815,429 @@ angular.module("profile", [
 
 
 
+// Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
+angular.module('security', [
+  'security.service',
+  'security.login'
+]);
+
+angular.module('security.login.form', [
+    'directives.forms',
+    'services.page',
+    'services.loading',
+    'services.userMessage',
+    'security.login.resetPassword',
+    'ui.bootstrap'
+  ])
+
+// The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
+// This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
+.controller('LoginFormController', function($scope, security, $modalInstance, $modal, UserMessage, Page, Loading) {
+  var reportError = function(status){
+    var key
+    if (status == 401) {
+      UserMessage.set("login.error.invalidPassword")
+    }
+    else if (status == 404) {
+      UserMessage.set("login.error.invalidUser")
+    }
+    else {
+      UserMessage.set("login.error.serverError")
+    }
+
+  }
+  var dismissModal = function(){
+    UserMessage.remove()
+    UserMessage.showOnTop(true)
+    $modalInstance.dismiss('cancel');
+    Loading.finish('login')
+  }
+
+  UserMessage.showOnTop(false)
+  $scope.user = {};
+  $scope.loading = Loading
+  $scope.userMessage = UserMessage
+
+
+
+  $scope.login = function () {
+    // Clear any previous security errors
+    Loading.start('login')
+
+    // Try to login
+    security.login($scope.user.email, $scope.user.password)
+      .success(function(data, status){
+        dismissModal()
+        security.redirectToProfile()
+      })
+      .error(function(data, status){
+        console.log("login error!", status)
+        Loading.finish('login')
+        reportError(status)
+      })
+  };
+  $scope.showForgotPasswordModal = function(){
+    console.log("launching the forgot password modal.")
+    dismissModal()
+
+    var forgotPasswordModal = $modal.open({
+      templateUrl: "security/login/reset-password-modal.tpl.html",
+      controller: "ResetPasswordModalCtrl",
+      windowClass: "creds forgot-password"
+    })
+  }
+
+  $scope.cancel = function () {
+    dismissModal()
+  };
+
+
+});
+angular.module('security.login', [
+  'security.login.form',
+  'security.login.toolbar'
+]);
+angular.module('security.login.resetPassword',
+  ['ui.bootstrap']
+)
+.controller('ResetPasswordModalCtrl', function($scope, $http, security, $modalInstance) {
+  $scope.user = {}
+  var emailSubmittedBool = false
+  $scope.emailSubmitted = function(){
+    return emailSubmittedBool
+  }
+  $scope.sendEmail = function(){
+    emailSubmittedBool = true
+    var url = "/profile/" + $scope.user.email + "/password?id_type=email"
+    $http.get(url).then(function(resp){
+      console.log("response!", resp)
+    })
+
+  }
+
+  $scope.close = function(){
+    $modalInstance.close()
+  }
+})
+
+angular.module('security.login.toolbar', [
+  'ui.bootstrap',
+  'services.page',
+  'security',
+  'resources.users'
+  ])
+
+// The loginToolbar directive is a reusable widget that can show login or logout buttons
+// and information the current authenticated user
+.directive('loginToolbar', function($http, Page, security) {
+  var directive = {
+    templateUrl: 'security/login/toolbar.tpl.html',
+    restrict: 'E',
+    replace: true,
+    scope: true,
+    link: function($scope, $element, $attrs, $controller) {
+      $scope.login = security.showLogin;
+      $scope.logout = security.logout;
+      $scope.page = Page  // so toolbar can change when you're on  landing page.
+
+      $scope.illuminateNotificationIcon = function(){
+
+        var user = security.getCurrentUser()
+        if (user){
+          var dismissed = user.new_metrics_notification_dismissed
+          var latestMetrics = user.latest_diff_timestamp
+          if (!dismissed && latestMetrics) {
+            return true // never hit dismissed before
+          }
+          else if (dismissed && latestMetrics && latestMetrics > dismissed) {
+            return true // new stuff since they last dismissed
+          }
+          else {
+            return false // brand new profile, or no new metrics since dismissal
+          }
+
+        }
+        else {
+          return false
+        }
+
+      }
+
+      $scope.dismissProfileNewProductsNotification = function(){
+
+        $http.get("/profile/current/notifications/new_metrics_notification_dismissed?action=dismiss").success(function(data, status){
+          console.log("new metrics notification dismissed", data.user)
+          security.setCurrentUser(data.user)
+        })
+
+      }
+
+      $scope.$watch(function() {
+        return security.getCurrentUser();
+      }, function(currentUser) {
+        $scope.currentUser = currentUser;
+      });
+    }
+  };
+  return directive;
+});
+// Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
+angular.module('security.service', [
+    'services.userMessage',
+    'services.tiMixpanel',
+    'security.login',         // Contains the login form template and controller
+    'ui.bootstrap'     // Used to display the login form as a modal dialog.
+  ])
+
+  .factory('security', function($http,
+                                $q,
+                                $location,
+                                $modal,
+                                TiMixpanel,
+                                UserMessage) {
+    var useCachedUser = true
+    var currentUser = globalCurrentUser || null
+    console.log("logging in from object: ", currentUser)
+    TiMixpanel.registerFromUserObject(currentUser)
+
+
+
+    // Redirect to the given url (defaults to '/')
+    function redirect(url) {
+      url = url || '/';
+      $location.path(url);
+    }
+
+    // Login form dialog stuff
+    var loginDialog = null;
+    function openLoginDialog() {
+      console.log("openLoginDialog() fired.")
+      loginDialog = $modal.open({
+        templateUrl: "security/login/form.tpl.html",
+        controller: "LoginFormController",
+        windowClass: "creds"
+      });
+      loginDialog.result.then();
+    }
+
+
+
+    var currentUrlSlug = function(){
+      var m = /^(\/signup)?\/([-\w\.]+)\//.exec($location.path())
+      var current_slug = (m) ? m[2] : false;
+      console.log("current slug is", current_slug)
+      return current_slug
+    }
+
+
+    // The public API of the service
+    var service = {
+
+      showLogin: function() {
+        openLoginDialog();
+      },
+
+      login: function(email, password) {
+        return $http.post('/profile/current/login', {email: email, password: password})
+          .success(function(data, status) {
+            console.log("user just logged in: ", currentUser)
+            currentUser = data.user;
+            TiMixpanel.identify(currentUser.id)
+            TiMixpanel.registerFromUserObject(currentUser)
+          })
+      },
+
+      currentUserOwnsProfile: function(profileSlug){
+        var deferred = $q.defer()
+
+        service.requestCurrentUser().then(
+          function(user){
+            if (user && user.url_slug && user.url_slug == profileSlug){
+              deferred.resolve(true)
+            }
+            else {
+              deferred.resolve(false)
+            }
+          }
+        )
+
+        return deferred.promise
+      },
+
+      testUserAuthenticationLevel: function(level, falseToNegate){
+
+        var negateIfToldTo  = function(arg){
+          return (falseToNegate === false) ? !arg : arg
+        }
+
+        var makeErrorMsg = function(msg){
+          if (falseToNegate === false) { // it was supposed to NOT be this level, but it was.
+            return msg
+          }
+          return "not" + _.capitalize(level) // it was supposed to be this level, but wasn't.
+        }
+
+        var levelRules = {
+          anon: function(user){
+            return !user
+          },
+          partlySignedUp: function(user){
+            return (user && user.url_slug && !user.email)
+          },
+          loggedIn: function(user){
+            return (user && user.url_slug && user.email)
+          },
+          ownsThisProfile: function(user){
+//          return true
+
+            return (user && user.url_slug && user.url_slug == currentUrlSlug())
+
+          }
+        }
+
+
+        var deferred = $q.defer()
+        service.requestCurrentUser().then(
+          function(user){
+            var shouldResolve = negateIfToldTo(levelRules[level](user))
+
+            if (shouldResolve){
+              deferred.resolve(level)
+            }
+            else {
+              deferred.reject(makeErrorMsg(level))
+            }
+
+          }
+        )
+        return deferred.promise
+      },
+
+      // Ask the backend to see if a user is already authenticated - this may be from a previous session.
+      requestCurrentUser: function() {
+        if (useCachedUser) {
+          return $q.when(currentUser);
+
+        } else {
+          return service.refreshCurrentUser()
+        }
+      },
+
+      refreshCurrentUser: function(){
+        console.log("logging in from cookie")
+        return $http.get('/profile/current')
+          .success(function(data, status, headers, config) {
+            useCachedUser = true
+            currentUser = data.user;
+            console.log("successfully logged in from cookie.")
+            TiMixpanel.identify(currentUser.id)
+            TiMixpanel.registerFromUserObject(currentUser)
+          })
+          .then(function(){return currentUser})
+      },
+
+
+      logout: function() {
+        console.log("logging out user.", currentUser)
+        currentUser = null;
+        $http.get('/profile/current/logout').success(function(data, status, headers, config) {
+          UserMessage.set("logout.success")
+          TiMixpanel.clearCookie()
+        });
+      },
+
+
+
+
+      userIsLoggedIn: function(){
+        var deferred = $q.defer();
+
+        service.requestCurrentUser().then(
+          function(user){
+            if (!user){
+              deferred.reject("userNotLoggedIn")
+              deferred.reject("userNotLoggedIn")
+            }
+            else {
+              deferred.resolve(user)
+            }
+          }
+        )
+        return deferred.promise
+      },
+
+
+      hasNewMetrics: function(){
+        return currentUser && currentUser.has_diff
+      },
+
+
+      redirectToProfile: function(){
+        service.requestCurrentUser().then(function(user){
+          redirect("/" + user.url_slug)
+        })
+      },
+
+      clearCachedUser: function(){
+        currentUser = null
+        useCachedUser = false
+      },
+
+      isLoggedIn: function(url_slug){
+        return currentUser && currentUser.url_slug && currentUser.url_slug==url_slug
+      },
+
+      isLoggedInPromise: function(url_slug){
+        var deferred = $q.defer();
+
+        service.requestCurrentUser().then(
+          function(userObj){
+            if (!userObj){
+              deferred.reject("user not logged in")
+            }
+            else if (userObj.url_slug == url_slug ) {
+              deferred.resolve("user is logged in!")
+            }
+            else {
+              deferred.reject("user not logged in")
+            }
+          }
+        )
+        return deferred.promise
+      },
+
+      getCurrentUser: function(attr){
+        if (currentUser && attr) {
+          return currentUser[attr]
+        }
+        else {
+          return currentUser
+        }
+
+      },
+
+      getCurrentUserSlug: function() {
+        if (currentUser) {
+          return currentUser.url_slug
+        }
+        else {
+          return null
+        }
+      },
+
+      setCurrentUser: function(user){
+        currentUser = user
+      },
+
+      // Is the current user authenticated?
+      isAuthenticated: function(){
+        return !!currentUser;
+      }
+
+    };
+
+    return service;
+  });
 angular.module("settings.pageDescriptions", [])
 angular.module('settings.pageDescriptions')
 .factory('SettingsPageDescriptions', function(){
@@ -3229,429 +3652,6 @@ angular.module('resources.users',['ngResource'])
 
 
 
-// Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
-angular.module('security', [
-  'security.service',
-  'security.login'
-]);
-
-angular.module('security.login.form', [
-    'directives.forms',
-    'services.page',
-    'services.loading',
-    'services.userMessage',
-    'security.login.resetPassword',
-    'ui.bootstrap'
-  ])
-
-// The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
-// This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
-.controller('LoginFormController', function($scope, security, $modalInstance, $modal, UserMessage, Page, Loading) {
-  var reportError = function(status){
-    var key
-    if (status == 401) {
-      UserMessage.set("login.error.invalidPassword")
-    }
-    else if (status == 404) {
-      UserMessage.set("login.error.invalidUser")
-    }
-    else {
-      UserMessage.set("login.error.serverError")
-    }
-
-  }
-  var dismissModal = function(){
-    UserMessage.remove()
-    UserMessage.showOnTop(true)
-    $modalInstance.dismiss('cancel');
-    Loading.finish('login')
-  }
-
-  UserMessage.showOnTop(false)
-  $scope.user = {};
-  $scope.loading = Loading
-  $scope.userMessage = UserMessage
-
-
-
-  $scope.login = function () {
-    // Clear any previous security errors
-    Loading.start('login')
-
-    // Try to login
-    security.login($scope.user.email, $scope.user.password)
-      .success(function(data, status){
-        dismissModal()
-        security.redirectToProfile()
-      })
-      .error(function(data, status){
-        console.log("login error!", status)
-        Loading.finish('login')
-        reportError(status)
-      })
-  };
-  $scope.showForgotPasswordModal = function(){
-    console.log("launching the forgot password modal.")
-    dismissModal()
-
-    var forgotPasswordModal = $modal.open({
-      templateUrl: "security/login/reset-password-modal.tpl.html",
-      controller: "ResetPasswordModalCtrl",
-      windowClass: "creds forgot-password"
-    })
-  }
-
-  $scope.cancel = function () {
-    dismissModal()
-  };
-
-
-});
-angular.module('security.login', [
-  'security.login.form',
-  'security.login.toolbar'
-]);
-angular.module('security.login.resetPassword',
-  ['ui.bootstrap']
-)
-.controller('ResetPasswordModalCtrl', function($scope, $http, security, $modalInstance) {
-  $scope.user = {}
-  var emailSubmittedBool = false
-  $scope.emailSubmitted = function(){
-    return emailSubmittedBool
-  }
-  $scope.sendEmail = function(){
-    emailSubmittedBool = true
-    var url = "/profile/" + $scope.user.email + "/password?id_type=email"
-    $http.get(url).then(function(resp){
-      console.log("response!", resp)
-    })
-
-  }
-
-  $scope.close = function(){
-    $modalInstance.close()
-  }
-})
-
-angular.module('security.login.toolbar', [
-  'ui.bootstrap',
-  'services.page',
-  'security',
-  'resources.users'
-  ])
-
-// The loginToolbar directive is a reusable widget that can show login or logout buttons
-// and information the current authenticated user
-.directive('loginToolbar', function($http, Page, security) {
-  var directive = {
-    templateUrl: 'security/login/toolbar.tpl.html',
-    restrict: 'E',
-    replace: true,
-    scope: true,
-    link: function($scope, $element, $attrs, $controller) {
-      $scope.login = security.showLogin;
-      $scope.logout = security.logout;
-      $scope.page = Page  // so toolbar can change when you're on  landing page.
-
-      $scope.illuminateNotificationIcon = function(){
-
-        var user = security.getCurrentUser()
-        if (user){
-          var dismissed = user.new_metrics_notification_dismissed
-          var latestMetrics = user.latest_diff_timestamp
-          if (!dismissed && latestMetrics) {
-            return true // never hit dismissed before
-          }
-          else if (dismissed && latestMetrics && latestMetrics > dismissed) {
-            return true // new stuff since they last dismissed
-          }
-          else {
-            return false // brand new profile, or no new metrics since dismissal
-          }
-
-        }
-        else {
-          return false
-        }
-
-      }
-
-      $scope.dismissProfileNewProductsNotification = function(){
-
-        $http.get("/profile/current/notifications/new_metrics_notification_dismissed?action=dismiss").success(function(data, status){
-          console.log("new metrics notification dismissed", data.user)
-          security.setCurrentUser(data.user)
-        })
-
-      }
-
-      $scope.$watch(function() {
-        return security.getCurrentUser();
-      }, function(currentUser) {
-        $scope.currentUser = currentUser;
-      });
-    }
-  };
-  return directive;
-});
-// Based loosely around work by Witold Szczerba - https://github.com/witoldsz/angular-http-auth
-angular.module('security.service', [
-    'services.userMessage',
-    'services.tiMixpanel',
-    'security.login',         // Contains the login form template and controller
-    'ui.bootstrap'     // Used to display the login form as a modal dialog.
-  ])
-
-  .factory('security', function($http,
-                                $q,
-                                $location,
-                                $modal,
-                                TiMixpanel,
-                                UserMessage) {
-    var useCachedUser = true
-    var currentUser = globalCurrentUser || null
-    console.log("logging in from object: ", currentUser)
-    TiMixpanel.registerFromUserObject(currentUser)
-
-
-
-    // Redirect to the given url (defaults to '/')
-    function redirect(url) {
-      url = url || '/';
-      $location.path(url);
-    }
-
-    // Login form dialog stuff
-    var loginDialog = null;
-    function openLoginDialog() {
-      console.log("openLoginDialog() fired.")
-      loginDialog = $modal.open({
-        templateUrl: "security/login/form.tpl.html",
-        controller: "LoginFormController",
-        windowClass: "creds"
-      });
-      loginDialog.result.then();
-    }
-
-
-
-    var currentUrlSlug = function(){
-      var m = /^(\/signup)?\/([-\w\.]+)\//.exec($location.path())
-      var current_slug = (m) ? m[2] : false;
-      console.log("current slug is", current_slug)
-      return current_slug
-    }
-
-
-    // The public API of the service
-    var service = {
-
-      showLogin: function() {
-        openLoginDialog();
-      },
-
-      login: function(email, password) {
-        return $http.post('/profile/current/login', {email: email, password: password})
-          .success(function(data, status) {
-            console.log("user just logged in: ", currentUser)
-            currentUser = data.user;
-            TiMixpanel.identify(currentUser.id)
-            TiMixpanel.registerFromUserObject(currentUser)
-          })
-      },
-
-      currentUserOwnsProfile: function(profileSlug){
-        var deferred = $q.defer()
-
-        service.requestCurrentUser().then(
-          function(user){
-            if (user && user.url_slug && user.url_slug == profileSlug){
-              deferred.resolve(true)
-            }
-            else {
-              deferred.resolve(false)
-            }
-          }
-        )
-
-        return deferred.promise
-      },
-
-      testUserAuthenticationLevel: function(level, falseToNegate){
-
-        var negateIfToldTo  = function(arg){
-          return (falseToNegate === false) ? !arg : arg
-        }
-
-        var makeErrorMsg = function(msg){
-          if (falseToNegate === false) { // it was supposed to NOT be this level, but it was.
-            return msg
-          }
-          return "not" + _.capitalize(level) // it was supposed to be this level, but wasn't.
-        }
-
-        var levelRules = {
-          anon: function(user){
-            return !user
-          },
-          partlySignedUp: function(user){
-            return (user && user.url_slug && !user.email)
-          },
-          loggedIn: function(user){
-            return (user && user.url_slug && user.email)
-          },
-          ownsThisProfile: function(user){
-//          return true
-
-            return (user && user.url_slug && user.url_slug == currentUrlSlug())
-
-          }
-        }
-
-
-        var deferred = $q.defer()
-        service.requestCurrentUser().then(
-          function(user){
-            var shouldResolve = negateIfToldTo(levelRules[level](user))
-
-            if (shouldResolve){
-              deferred.resolve(level)
-            }
-            else {
-              deferred.reject(makeErrorMsg(level))
-            }
-
-          }
-        )
-        return deferred.promise
-      },
-
-      // Ask the backend to see if a user is already authenticated - this may be from a previous session.
-      requestCurrentUser: function() {
-        if (useCachedUser) {
-          return $q.when(currentUser);
-
-        } else {
-          return service.refreshCurrentUser()
-        }
-      },
-
-      refreshCurrentUser: function(){
-        console.log("logging in from cookie")
-        return $http.get('/profile/current')
-          .success(function(data, status, headers, config) {
-            useCachedUser = true
-            currentUser = data.user;
-            console.log("successfully logged in from cookie.")
-            TiMixpanel.identify(currentUser.id)
-            TiMixpanel.registerFromUserObject(currentUser)
-          })
-          .then(function(){return currentUser})
-      },
-
-
-      logout: function() {
-        console.log("logging out user.", currentUser)
-        currentUser = null;
-        $http.get('/profile/current/logout').success(function(data, status, headers, config) {
-          UserMessage.set("logout.success")
-          TiMixpanel.clearCookie()
-        });
-      },
-
-
-
-
-      userIsLoggedIn: function(){
-        var deferred = $q.defer();
-
-        service.requestCurrentUser().then(
-          function(user){
-            if (!user){
-              deferred.reject("userNotLoggedIn")
-              deferred.reject("userNotLoggedIn")
-            }
-            else {
-              deferred.resolve(user)
-            }
-          }
-        )
-        return deferred.promise
-      },
-
-
-      hasNewMetrics: function(){
-        return currentUser && currentUser.has_diff
-      },
-
-
-      redirectToProfile: function(){
-        service.requestCurrentUser().then(function(user){
-          redirect("/" + user.url_slug)
-        })
-      },
-
-      clearCachedUser: function(){
-        currentUser = null
-        useCachedUser = false
-      },
-
-      isLoggedIn: function(url_slug){
-        return currentUser && currentUser.url_slug && currentUser.url_slug==url_slug
-      },
-
-      isLoggedInPromise: function(url_slug){
-        var deferred = $q.defer();
-
-        service.requestCurrentUser().then(
-          function(userObj){
-            if (!userObj){
-              deferred.reject("user not logged in")
-            }
-            else if (userObj.url_slug == url_slug ) {
-              deferred.resolve("user is logged in!")
-            }
-            else {
-              deferred.reject("user not logged in")
-            }
-          }
-        )
-        return deferred.promise
-      },
-
-      getCurrentUser: function(attr){
-        if (currentUser && attr) {
-          return currentUser[attr]
-        }
-        else {
-          return currentUser
-        }
-
-      },
-
-      getCurrentUserSlug: function() {
-        if (currentUser) {
-          return currentUser.url_slug
-        }
-        else {
-          return null
-        }
-      },
-
-      setCurrentUser: function(user){
-        currentUser = user
-      },
-
-      // Is the current user authenticated?
-      isAuthenticated: function(){
-        return !!currentUser;
-      }
-
-    };
-
-    return service;
-  });
 angular.module('services.userMessage', [])
   .factory('UserMessage', function ($interpolate, $rootScope) {
 
@@ -4707,7 +4707,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-sidebar/profile-sidebar.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-sidebar/profile-sidebar.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -6368,10 +6368,8 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "   </div>\n" +
     "   \n" +
     "   <div class=\"footer\">\n" +
-    "      <!--\n" +
     "      <login-toolbar></login-toolbar>\n" +
-    "      -->\n" +
-    "      <a href=\"/\">\n" +
+    "      <a href=\"/\" class=\"logo\">\n" +
     "         <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
     "      </a>\n" +
     "   </div>\n" +
@@ -6480,7 +6478,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <div class=\"my-vitals\">\n" +
     "            <div class=\"my-picture\" ng-show=\"profile.about.id\">\n" +
     "               <a href=\"http://www.gravatar.com\" >\n" +
-    "                  <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "                  <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" /> \n" +
     "               </a>\n" +
     "            </div>\n" +
     "            <!--\n" +
@@ -6685,6 +6683,167 @@ angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", f
     "\n" +
     "</div>\n" +
     "\n" +
+    "");
+}]);
+
+angular.module("security/login/form.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("security/login/form.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Sign in</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"cancel()\">&times;</a>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"modal-body\">\n" +
+    "   <div id=\"user-message-modal\">\n" +
+    "      <div class=\"animated fadeInDown fadeOutUp\"\n" +
+    "           ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
+    "           ng-if=\"userMessage.get().message\">\n" +
+    "             <span class=\"text\" ng-bind-html=\"userMessage.get().message\"></span>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\" autocomplete=\"off\">\n" +
+    "      <div class=\"form-group\" >\n" +
+    "         <label class=\"sr-only\">E-mail</label>\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
+    "            <span class=\"input-group-addon\"><i class=\"icon-envelope-alt\"></i></span>\n" +
+    "            <input name=\"login\" required autofocus\n" +
+    "                   autocomplete=\"off\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   type=\"username\"\n" +
+    "                   ng-model=\"user.email\"\n" +
+    "                   placeholder=\"email\" >\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"sr-only\">Password</label>\n" +
+    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.pass.$valid}\">\n" +
+    "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
+    "            <input name=\"pass\" required\n" +
+    "                   autocomplete=\"off\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   type=\"password\"\n" +
+    "                   ng-model=\"user.password\"\n" +
+    "                   placeholder=\"password\">\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"modal-footer\">\n" +
+    "         <button class=\"btn btn-primary login\"\n" +
+    "            ng-disabled='loginForm.$invalid'\n" +
+    "            ng-click=\"login()\"\n" +
+    "            ng-hide=\"loading.is('login')\">Sign in</button>\n" +
+    "\n" +
+    "         <div class=\"working\" ng-show=\"loading.is('login')\">\n" +
+    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "            <span class=\"text\">logging in...</span>\n" +
+    "         </div>\n" +
+    "         <a class=\"forgot-login-details\" ng-click=\"showForgotPasswordModal()\">\n" +
+    "            <i class=\"icon-question-sign\"></i>\n" +
+    "            Forgot your login details?\n" +
+    "         </a>\n" +
+    "      </div>\n" +
+    "   </form>\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
+angular.module("security/login/reset-password-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("security/login/reset-password-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Reset password</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"close()\">&times;</a>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"modal-body\">\n" +
+    "   <form name=\"form\" ng-show=\"!emailSubmitted()\" novalidate class=\"reset-password creds form-inline\">\n" +
+    "      <div class=\"inst\">Enter your email and we'll send you instructions on how to reset your password.</div>\n" +
+    "      <div class=\"form-group\">\n" +
+    "         <label class=\"sr-only\">E-mail</label>\n" +
+    "         <input name=\"login\" class=\"form-control\" type=\"email\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
+    "      </div>\n" +
+    "      <div class=\"modal-footer\">\n" +
+    "         <button class=\"btn btn-primary login\" ng-click=\"sendEmail()\" ng-disabled='form.$invalid'>Reset password</button>\n" +
+    "      </div>\n" +
+    "   </form>\n" +
+    "   <div ng-show=\"emailSubmitted()\" class=\"email-submitted\">\n" +
+    "      <div class=\"inst\">\n" +
+    "         We've sent you password reset email. It should arrive in a few minutes\n" +
+    "         (don't forget to check your spam folder).\n" +
+    "      </div>\n" +
+    "      <div class=\"modal-footer\">\n" +
+    "         <button class=\"btn btn-primary cancel\" ng-click=\"close()\">OK</button>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
+angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("security/login/toolbar.tpl.html",
+    "<ul class=\"account-nav\">\n" +
+    "   <li ng-show=\"currentUser\" class=\"logged-in-user nav-item\">\n" +
+    "      <a class=\"current-user\"\n" +
+    "         href=\"/{{ currentUser.url_slug }}\"\n" +
+    "         tooltip=\"View your profile\">\n" +
+    "         <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "      </a>\n" +
+    "   </li>\n" +
+    "   <li ng-show=\"currentUser\" class=\"controls nav-item\">\n" +
+    "\n" +
+    "      <span class=\"or\"></span>\n" +
+    "\n" +
+    "      <!-- made security load too slow.\n" +
+    "\n" +
+    "      <span class=\"new-metrics control no-new-metrics\"\n" +
+    "         tooltip=\"No new metrics.\"\n" +
+    "         tooltip-placement=\"bottom\"\n" +
+    "         ng-show=\"!illuminateNotificationIcon()\">\n" +
+    "         <i class=\"icon-bell\"></i>\n" +
+    "      </span>\n" +
+    "      <a class=\"new-metrics control has-new-metrics\"\n" +
+    "         tooltip=\"You've got new metrics!\"\n" +
+    "         tooltip-placement=\"bottom\"\n" +
+    "         ng-show=\"illuminateNotificationIcon()\"\n" +
+    "         ng-click=\"dismissProfileNewProductsNotification()\"\n" +
+    "         href=\"/{{ currentUser.url_slug }}?filter=has_diff\">\n" +
+    "         <i class=\"icon-bell-alt\"></i>\n" +
+    "      </a>\n" +
+    "\n" +
+    "      <span class=\"or\"></span>\n" +
+    "      -->\n" +
+    "      <span class=\"or\"></span>\n" +
+    "      <a class=\"logout control\"\n" +
+    "         ng-click=\"logout()\"\n" +
+    "         tooltip=\"Log out\">\n" +
+    "         <i class=\"icon-signout\"></i>\n" +
+    "      </a>\n" +
+    "\n" +
+    "\n" +
+    "      <a class=\"preferences control\"\n" +
+    "         href=\"/settings/profile\"\n" +
+    "         tooltip=\"Change profile settings\">\n" +
+    "         <i class=\"icon-cog\"></i>\n" +
+    "      </a>\n" +
+    "\n" +
+    "      <span class=\"or\"></span>\n" +
+    "\n" +
+    "\n" +
+    "      <a class=\"logout control\"\n" +
+    "         href=\"{{ currentUser.url_slug }}/accounts\"\n" +
+    "         ng-click=\"logout()\"\n" +
+    "         tooltip=\"Add accounts or products\">\n" +
+    "         <i class=\"icon-plus\"></i>\n" +
+    "      </a>\n" +
+    "   </li>\n" +
+    "\n" +
+    "   <li ng-show=\"!currentUser\" class=\"login-and-signup nav-item\">\n" +
+    "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup\">Sign up</a>\n" +
+    "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
+    "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
+    "   </li>\n" +
+    "</ul>\n" +
     "");
 }]);
 
@@ -7421,7 +7580,7 @@ angular.module("user-message.tpl.html", []).run(["$templateCache", function($tem
     "");
 }]);
 
-angular.module('templates.common', ['forms/save-buttons.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html']);
+angular.module('templates.common', ['forms/save-buttons.tpl.html']);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",
@@ -7445,161 +7604,4 @@ angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", functio
     "   </div>\n" +
     "\n" +
     "</div>");
-}]);
-
-angular.module("security/login/form.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("security/login/form.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "   <h4>Sign in</h4>\n" +
-    "   <a class=\"dismiss\" ng-click=\"cancel()\">&times;</a>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"modal-body\">\n" +
-    "   <div id=\"user-message-modal\">\n" +
-    "      <div class=\"animated fadeInDown fadeOutUp\"\n" +
-    "           ng-class=\"['alert', 'alert-'+userMessage.get().type]\"\n" +
-    "           ng-if=\"userMessage.get().message\">\n" +
-    "             <span class=\"text\" ng-bind-html=\"userMessage.get().message\"></span>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <form name=\"loginForm\" novalidate class=\"login-form form-inline\" autocomplete=\"off\">\n" +
-    "      <div class=\"form-group\" >\n" +
-    "         <label class=\"sr-only\">E-mail</label>\n" +
-    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.login.$valid}\">\n" +
-    "            <span class=\"input-group-addon\"><i class=\"icon-envelope-alt\"></i></span>\n" +
-    "            <input name=\"login\" required autofocus\n" +
-    "                   autocomplete=\"off\"\n" +
-    "                   class=\"form-control\"\n" +
-    "                   type=\"username\"\n" +
-    "                   ng-model=\"user.email\"\n" +
-    "                   placeholder=\"email\" >\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"sr-only\">Password</label>\n" +
-    "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.pass.$valid}\">\n" +
-    "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
-    "            <input name=\"pass\" required\n" +
-    "                   autocomplete=\"off\"\n" +
-    "                   class=\"form-control\"\n" +
-    "                   type=\"password\"\n" +
-    "                   ng-model=\"user.password\"\n" +
-    "                   placeholder=\"password\">\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"modal-footer\">\n" +
-    "         <button class=\"btn btn-primary login\"\n" +
-    "            ng-disabled='loginForm.$invalid'\n" +
-    "            ng-click=\"login()\"\n" +
-    "            ng-hide=\"loading.is('login')\">Sign in</button>\n" +
-    "\n" +
-    "         <div class=\"working\" ng-show=\"loading.is('login')\">\n" +
-    "            <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "            <span class=\"text\">logging in...</span>\n" +
-    "         </div>\n" +
-    "         <a class=\"forgot-login-details\" ng-click=\"showForgotPasswordModal()\">\n" +
-    "            <i class=\"icon-question-sign\"></i>\n" +
-    "            Forgot your login details?\n" +
-    "         </a>\n" +
-    "      </div>\n" +
-    "   </form>\n" +
-    "</div>\n" +
-    "\n" +
-    "");
-}]);
-
-angular.module("security/login/reset-password-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("security/login/reset-password-modal.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "   <h4>Reset password</h4>\n" +
-    "   <a class=\"dismiss\" ng-click=\"close()\">&times;</a>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"modal-body\">\n" +
-    "   <form name=\"form\" ng-show=\"!emailSubmitted()\" novalidate class=\"reset-password creds form-inline\">\n" +
-    "      <div class=\"inst\">Enter your email and we'll send you instructions on how to reset your password.</div>\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"sr-only\">E-mail</label>\n" +
-    "         <input name=\"login\" class=\"form-control\" type=\"email\" ng-model=\"user.email\" placeholder=\"email\" required autofocus>\n" +
-    "      </div>\n" +
-    "      <div class=\"modal-footer\">\n" +
-    "         <button class=\"btn btn-primary login\" ng-click=\"sendEmail()\" ng-disabled='form.$invalid'>Reset password</button>\n" +
-    "      </div>\n" +
-    "   </form>\n" +
-    "   <div ng-show=\"emailSubmitted()\" class=\"email-submitted\">\n" +
-    "      <div class=\"inst\">\n" +
-    "         We've sent you password reset email. It should arrive in a few minutes\n" +
-    "         (don't forget to check your spam folder).\n" +
-    "      </div>\n" +
-    "      <div class=\"modal-footer\">\n" +
-    "         <button class=\"btn btn-primary cancel\" ng-click=\"close()\">OK</button>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "</div>\n" +
-    "\n" +
-    "");
-}]);
-
-angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("security/login/toolbar.tpl.html",
-    "<ul class=\"main-nav\">\n" +
-    "   <li ng-show=\"currentUser\" class=\"logged-in-user nav-item\">\n" +
-    "      <a class=\"current-user\"\n" +
-    "         href=\"/{{ currentUser.url_slug }}\"\n" +
-    "         tooltip=\"View your profile\"\n" +
-    "         tooltip-placement=\"bottom\">\n" +
-    "         {{currentUser.given_name}}\n" +
-    "         {{currentUser.surname}}\n" +
-    "      </a>\n" +
-    "   </li>\n" +
-    "\n" +
-    "   <li ng-show=\"currentUser\" class=\"controls nav-item\">\n" +
-    "\n" +
-    "      <span class=\"or\"></span>\n" +
-    "\n" +
-    "      <!-- made security load too slow.\n" +
-    "\n" +
-    "      <span class=\"new-metrics control no-new-metrics\"\n" +
-    "         tooltip=\"No new metrics.\"\n" +
-    "         tooltip-placement=\"bottom\"\n" +
-    "         ng-show=\"!illuminateNotificationIcon()\">\n" +
-    "         <i class=\"icon-bell\"></i>\n" +
-    "      </span>\n" +
-    "      <a class=\"new-metrics control has-new-metrics\"\n" +
-    "         tooltip=\"You've got new metrics!\"\n" +
-    "         tooltip-placement=\"bottom\"\n" +
-    "         ng-show=\"illuminateNotificationIcon()\"\n" +
-    "         ng-click=\"dismissProfileNewProductsNotification()\"\n" +
-    "         href=\"/{{ currentUser.url_slug }}?filter=has_diff\">\n" +
-    "         <i class=\"icon-bell-alt\"></i>\n" +
-    "      </a>\n" +
-    "\n" +
-    "      <span class=\"or\"></span>\n" +
-    "      -->\n" +
-    "\n" +
-    "      <a class=\"preferences control\"\n" +
-    "         href=\"/settings/profile\"\n" +
-    "         tooltip=\"Change profile settings\"\n" +
-    "         tooltip-placement=\"bottom\">\n" +
-    "         <i class=\"icon-cog\"></i>\n" +
-    "      </a>\n" +
-    "\n" +
-    "      <span class=\"or\"></span>\n" +
-    "\n" +
-    "      <a class=\"logout control\"\n" +
-    "         ng-click=\"logout()\"\n" +
-    "         tooltip=\"Log out\"\n" +
-    "         tooltip-placement=\"bottom\">\n" +
-    "         <i class=\"icon-signout\"></i>\n" +
-    "      </a>\n" +
-    "   </li>\n" +
-    "\n" +
-    "   <li ng-show=\"!currentUser\" class=\"login-and-signup nav-item\">\n" +
-    "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup\">Sign up</a>\n" +
-    "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
-    "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
-    "   </li>\n" +
-    "</ul>\n" +
-    "");
 }]);
