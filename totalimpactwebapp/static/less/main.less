@@ -8,9 +8,6 @@ body {
       margin-right:0; // wierd. have to override margin-right: 15px coming from...bootstrap, i guess?
    }
 
-   .main-view-container {
-      min-height: 500px;
-   }
 
    &.show-tab-on-right {
       .uv-tab.uv-slide-bottom {
@@ -482,6 +479,7 @@ div.no-page {
    .clearfix();
    #main-view-container {
       padding: 0 0 0 30px;
+      min-height: 600px;
    }
 }
 
@@ -503,26 +501,38 @@ div.profile-sidebar {
       font-size: 16px;
       a {
          color: #777;
+         position: relative;
          font-size: 16px;
          display:inline-block;
          width: 100%;
          margin-left: 1px;
          padding: 4px 15px 4px 15px;
          &:hover {color: #000;}
-         i {
-         }
          span.count {
             font-size: 70%;
             font-weight: 300;
          }
-         &.active {
-//            color: #333;
-//            .border-radius(0, 0, 20px, 20px);
-//            border: 1px solid #999;
-//            border-right: 1px solid #fff;
-//            background: transparents;
+         &.active{
+            color: #000;
             font-weight: 900;
 
+            color: @linkColor;
+            font-weight: normal;
+            span.text::after {
+               background-image: url(http://i.imgur.com/60o1JnH.png);
+               background-position: 0 -69px;
+               background-repeat: no-repeat;
+               position: absolute;
+               top:1px;
+               bottom: 1px;
+               right: 0;
+               width: 17px;
+               display:block;
+               content: "";
+
+//               background: @linkColor;
+//               width: 3px;
+            }
          }
       }
       div.nav-group {

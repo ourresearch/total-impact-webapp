@@ -61,15 +61,27 @@ angular.module('services.profileService', [
       return loading
     }
 
-    function getGenreProperty(genreName, genreProperty){
+    function genreLookup(url_representation){
       if (typeof profileObj.genres == "undefined"){
         return undefined
       }
-      var genreObj = _.find(profileObj.genres, function(genre){
-        return genre[name] == genreName
-      })
-      return genreObj[genreProperty]
+      else {
+        var res = _.findWhere(profileObj.genres, {url_representation: url_representation})
+        return res
+      }
     }
+
+    function productsByGenre(url_representation){
+      if (typeof profileObj.products == "undefined"){
+        return undefined
+      }
+      else {
+        var genreCanonicalName = genreLookup(url_representation).name
+        var res = _.where(profileObj.products, {genre: genreCanonicalName})
+        return res
+      }
+    }
+
 
     return {
       profile: profileObj,
@@ -77,7 +89,8 @@ angular.module('services.profileService', [
       isLoading: isLoading,
       get: get,
       getCached: getCached,
-      getGenreProperty: getGenreProperty
+      productsByGenre: productsByGenre,
+      genreLookup: genreLookup
     }
 
 

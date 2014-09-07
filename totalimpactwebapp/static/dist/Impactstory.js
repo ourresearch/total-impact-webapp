@@ -688,12 +688,8 @@ angular.module("genrePage", [
         Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
 
         $scope.about = resp.about
-        $scope.products = _.filter(resp.products, function(product){
-          return product.genre == $routeParams.genre_name
-        })
-
-//        $scope.genreNamePlural = ProfileService.getGenreProperty($routeParams.genre_name, "plural_name")
-        $scope.genreNamePlural = "stuffs"
+        $scope.products = ProfileService.productsByGenre($routeParams.genre_name)
+        $scope.genreNamePlural = ProfileService.genreLookup($routeParams.genre_name).plural_name
 
         // scroll to the last place we were on this page. in a timeout because
         // must happen after page is totally rendered.
@@ -4323,15 +4319,27 @@ angular.module('services.profileService', [
       return loading
     }
 
-    function getGenreProperty(genreName, genreProperty){
+    function genreLookup(url_representation){
       if (typeof profileObj.genres == "undefined"){
         return undefined
       }
-      var genreObj = _.find(profileObj.genres, function(genre){
-        return genre[name] == genreName
-      })
-      return genreObj[genreProperty]
+      else {
+        var res = _.findWhere(profileObj.genres, {url_representation: url_representation})
+        return res
+      }
     }
+
+    function productsByGenre(url_representation){
+      if (typeof profileObj.products == "undefined"){
+        return undefined
+      }
+      else {
+        var genreCanonicalName = genreLookup(url_representation).name
+        var res = _.where(profileObj.products, {genre: genreCanonicalName})
+        return res
+      }
+    }
+
 
     return {
       profile: profileObj,
@@ -4339,7 +4347,8 @@ angular.module('services.profileService', [
       isLoading: isLoading,
       get: get,
       getCached: getCached,
-      getGenreProperty: getGenreProperty
+      productsByGenre: productsByGenre,
+      genreLookup: genreLookup
     }
 
 
@@ -4894,9 +4903,6 @@ angular.module("footer.tpl.html", []).run(["$templateCache", function($templateC
 angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("genre-page/genre-page.tpl.html",
     "<div class=\"genre-page\">\n" +
-    "\n" +
-    "   <pre>{{ foo }}</pre>\n" +
-    "\n" +
     "   <div class=\"loading\" ng-show=\"isRendering()\">\n" +
     "      <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
     "   </div>\n" +
@@ -6325,12 +6331,16 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "\n" +
     "   <div class=\"nav\">\n" +
     "      <a href=\"/{{ profile.about.url_slug }}\" class=\"active\">\n" +
-    "         Overview\n" +
+    "         <i class=\"icon-user left\"></i>\n" +
+    "         <span class=\"text\">\n" +
+    "            Overview\n" +
+    "         </span>\n" +
+    "         <div class=\"arrow\"></div>\n" +
     "      </a>\n" +
     "      <div class=\"nav-group genres\">\n" +
     "         <ul>\n" +
     "            <li ng-repeat=\"genre in profile.genres | orderBy: 'name'\">\n" +
-    "               <a href=\"/{{ profile.about.url_slug }}/products/{{ genre.name }}\">\n" +
+    "               <a href=\"/{{ profile.about.url_slug }}/products/{{ genre.url_representation }}\">\n" +
     "                  <i class=\"{{ genre.icon }} left\"></i>\n" +
     "                  <span class=\"text\">\n" +
     "                     {{ genre.plural_name }}\n" +

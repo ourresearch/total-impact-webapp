@@ -11,12 +11,16 @@
 
    <div class="nav">
       <a href="/{{ profile.about.url_slug }}" class="active">
-         Overview
+         <i class="icon-user left"></i>
+         <span class="text">
+            Overview
+         </span>
+         <div class="arrow"></div>
       </a>
       <div class="nav-group genres">
          <ul>
             <li ng-repeat="genre in profile.genres | orderBy: 'name'">
-               <a href="/{{ profile.about.url_slug }}/products/{{ genre.name }}">
+               <a href="/{{ profile.about.url_slug }}/products/{{ genre.url_representation }}">
                   <i class="{{ genre.icon }} left"></i>
                   <span class="text">
                      {{ genre.plural_name }}

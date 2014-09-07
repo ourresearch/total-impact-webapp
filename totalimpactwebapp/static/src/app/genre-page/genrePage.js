@@ -74,12 +74,8 @@ angular.module("genrePage", [
         Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
 
         $scope.about = resp.about
-        $scope.products = _.filter(resp.products, function(product){
-          return product.genre == $routeParams.genre_name
-        })
-
-//        $scope.genreNamePlural = ProfileService.getGenreProperty($routeParams.genre_name, "plural_name")
-        $scope.genreNamePlural = "stuffs"
+        $scope.products = ProfileService.productsByGenre($routeParams.genre_name)
+        $scope.genreNamePlural = ProfileService.genreLookup($routeParams.genre_name).plural_name
 
         // scroll to the last place we were on this page. in a timeout because
         // must happen after page is totally rendered.

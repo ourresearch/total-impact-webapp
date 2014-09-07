@@ -5894,9 +5894,6 @@ body {
 body.modal-open {
   margin-right: 0;
 }
-body .main-view-container {
-  min-height: 500px;
-}
 body.show-tab-on-right .uv-tab.uv-slide-bottom {
   display: none !important;
 }
@@ -6360,6 +6357,7 @@ div.no-page p span.slug {
 }
 #not-sidebar #main-view-container {
   padding: 0 0 0 30px;
+  min-height: 600px;
 }
 #wrapper {
   width: 1000px;
@@ -6377,6 +6375,7 @@ div.profile-sidebar div.nav {
 }
 div.profile-sidebar div.nav a {
   color: #777;
+  position: relative;
   font-size: 16px;
   display: inline-block;
   width: 100%;
@@ -6391,7 +6390,22 @@ div.profile-sidebar div.nav a span.count {
   font-weight: 300;
 }
 div.profile-sidebar div.nav a.active {
+  color: #000;
   font-weight: 900;
+  color: #ff4000;
+  font-weight: normal;
+}
+div.profile-sidebar div.nav a.active span.text::after {
+  background-image: url(http://i.imgur.com/60o1JnH.png);
+  background-position: 0 -69px;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  right: 0;
+  width: 17px;
+  display: block;
+  content: "";
 }
 div.profile-sidebar div.nav div.nav-group {
   border-top: 1px solid #eee;
