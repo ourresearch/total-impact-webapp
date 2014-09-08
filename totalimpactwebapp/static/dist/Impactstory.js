@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-06
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-07
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6832,7 +6832,6 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "      <a class=\"logout control\"\n" +
     "         href=\"{{ currentUser.url_slug }}/accounts\"\n" +
-    "         ng-click=\"logout()\"\n" +
     "         tooltip=\"Add accounts or products\">\n" +
     "         <i class=\"icon-plus\"></i>\n" +
     "      </a>\n" +

@@ -6380,7 +6380,7 @@ div.profile-sidebar div.nav a {
   display: inline-block;
   width: 100%;
   margin-left: 1px;
-  padding: 4px 15px 4px 15px;
+  padding: 4px 15px 4px 5px;
 }
 div.profile-sidebar div.nav a:hover {
   color: #000;
@@ -6416,16 +6416,18 @@ div.profile-sidebar div.nav div.nav-group li {
   padding: 0;
 }
 div.profile-sidebar div.footer ul.account-nav {
-  position: absolute;
-  bottom: 50px;
-  right: 0;
+  bottom: 0px;
   width: 100%;
-  padding-top: 15px;
-  padding-left: 10px;
-  padding-bottom: 10px;
+  position: absolute;
+  margin: 0;
+  padding: 10px;
   border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  border-left: 1px solid #ddd;
+  top: 0;
+  right: 0;
+  width: 50px;
+  text-align: right;
+  position: fixed;
+  padding: 10px 10px 0 0;
 }
 div.profile-sidebar div.footer ul.account-nav img.gravatar {
   height: 32px;
@@ -6449,24 +6451,34 @@ div.profile-sidebar div.footer ul.account-nav li {
   display: inline-block;
 }
 div.profile-sidebar div.footer ul.account-nav li a {
-  color: #999;
+  color: #777;
+  padding: 5px 7px;
 }
 div.profile-sidebar div.footer ul.account-nav li a i {
   font-size: 24px;
   vertical-align: -5px;
-  padding: 7px;
 }
 div.profile-sidebar div.footer ul.account-nav li a:hover {
   color: #ff4000;
 }
-div.profile-sidebar div.footer a.logo img {
+div.profile-sidebar div.footer ul.account-nav li a {
+  opacity: .7;
+  display: block;
+  padding: 5px;
+  text-align: center;
+}
+div.profile-sidebar div.footer a.logo {
   position: absolute;
-  bottom: 0;
+  bottom: 20px;
   right: 0;
   left: 0;
-  width: 100px;
-  margin-left: 15px;
-  margin-bottom: 25px;
+  height: 30px;
+  text-align: center;
+  margin-left: -20px;
+}
+div.profile-sidebar div.footer a.logo img {
+  width: 150px;
+  opacity: .7;
   -webkit-filter: grayscale(100%);
 }
 div.profile-sidebar div.footer a.logo img:hover {
