@@ -13,7 +13,6 @@ angular.module('app', [
   'emguo.poller',
   'services.loading',
   'services.userMessage',
-  'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
   'services.breadcrumbs',
@@ -90,7 +89,6 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $route,
                                                      $sce,
                                                      UserMessage,
-                                                     UservoiceWidget,
                                                      $location,
                                                      Loading,
                                                      Page,
@@ -123,7 +121,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.page = Page;
   $scope.breadcrumbs = Breadcrumbs;
   $scope.loading = Loading;
-  UservoiceWidget.insertTabs()
   $scope.isAuthenticated =  security.isAuthenticated
   $scope.tiMixpanel = TiMixpanel
   $scope.modalOpen = function(){
@@ -151,7 +148,6 @@ angular.module('app').controller('AppCtrl', function($scope,
     Page.showFooter(true)
     Page.setProfileUrl(false)
     Breadcrumbs.clear()
-    Page.setUservoiceTabLoc("right")
     Loading.clear()
   })
 

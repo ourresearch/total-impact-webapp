@@ -447,7 +447,6 @@ angular.module('app', [
   'emguo.poller',
   'services.loading',
   'services.userMessage',
-  'services.uservoiceWidget',
   'services.routeChangeErrorHandler',
   'services.page',
   'services.breadcrumbs',
@@ -524,7 +523,6 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      $route,
                                                      $sce,
                                                      UserMessage,
-                                                     UservoiceWidget,
                                                      $location,
                                                      Loading,
                                                      Page,
@@ -557,7 +555,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.page = Page;
   $scope.breadcrumbs = Breadcrumbs;
   $scope.loading = Loading;
-  UservoiceWidget.insertTabs()
   $scope.isAuthenticated =  security.isAuthenticated
   $scope.tiMixpanel = TiMixpanel
   $scope.modalOpen = function(){
@@ -585,7 +582,6 @@ angular.module('app').controller('AppCtrl', function($scope,
     Page.showFooter(true)
     Page.setProfileUrl(false)
     Breadcrumbs.clear()
-    Page.setUservoiceTabLoc("right")
     Loading.clear()
   })
 
@@ -6830,14 +6826,24 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
     "\n" +
-    "      <span class=\"or\"></span>\n" +
-    "\n" +
-    "\n" +
-    "      <a class=\"logout control\"\n" +
+    "      <a class=\"add-products control\"\n" +
     "         href=\"{{ currentUser.url_slug }}/accounts\"\n" +
     "         tooltip-placement=\"left\"\n" +
     "         tooltip=\"Add accounts or products\">\n" +
     "         <i class=\"icon-plus\"></i>\n" +
+    "      </a>\n" +
+    "\n" +
+    "      <a class=\"help control\"\n" +
+    "         href=\"javascript:void(0)\"\n" +
+    "         data-uv-lightbox=\"classic_widget\"\n" +
+    "         data-uv-mode=\"full\"\n" +
+    "         data-uv-primary-color=\"#cc6d00\"\n" +
+    "         data-uv-link-color=\"#007dbf\"\n" +
+    "         data-uv-default-mode=\"support\"\n" +
+    "         data-uv-forum-id=\"166950\"\n" +
+    "         tooltip-placement=\"left\"\n" +
+    "         tooltip=\"Get help or report bug\">\n" +
+    "         <i class=\"icon-question\"></i>\n" +
     "      </a>\n" +
     "   </li>\n" +
     "\n" +
