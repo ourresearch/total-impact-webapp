@@ -9,35 +9,12 @@
    </li>
    <li ng-show="currentUser" class="controls nav-item">
 
-      <span class="or"></span>
-
-      <!-- made security load too slow.
-
-      <span class="new-metrics control no-new-metrics"
-         tooltip="No new metrics."
-         tooltip-placement="bottom"
-         ng-show="!illuminateNotificationIcon()">
-         <i class="icon-bell"></i>
-      </span>
-      <a class="new-metrics control has-new-metrics"
-         tooltip="You've got new metrics!"
-         tooltip-placement="bottom"
-         ng-show="illuminateNotificationIcon()"
-         ng-click="dismissProfileNewProductsNotification()"
-         href="/{{ currentUser.url_slug }}?filter=has_diff">
-         <i class="icon-bell-alt"></i>
-      </a>
-
-      <span class="or"></span>
-      -->
-      <span class="or"></span>
       <a class="logout control"
          tooltip-placement="left"
          ng-click="logout()"
          tooltip="Log out">
          <i class="icon-signout"></i>
       </a>
-
 
       <a class="preferences control"
          href="/settings/profile"
@@ -69,7 +46,18 @@
 
    <li ng-show="!currentUser" class="login-and-signup nav-item">
       <a ng-show="!page.isLandingPage()" class="signup" href="/signup">Sign up</a>
-      <span ng-show="!page.isLandingPage()" class="or"></span>
       <a class="login" ng-click="login()">Log in<i class="icon-signin"></i></a>
+      <a class="help control"
+         href="javascript:void(0)"
+         data-uv-lightbox="classic_widget"
+         data-uv-mode="full"
+         data-uv-primary-color="#cc6d00"
+         data-uv-link-color="#007dbf"
+         data-uv-default-mode="support"
+         data-uv-forum-id="166950"
+         tooltip-placement="left"
+         tooltip="Get help or report bug">
+         <i class="icon-question"></i>
+      </a>
    </li>
 </ul>

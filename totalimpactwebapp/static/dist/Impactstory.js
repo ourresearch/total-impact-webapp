@@ -6789,35 +6789,12 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   </li>\n" +
     "   <li ng-show=\"currentUser\" class=\"controls nav-item\">\n" +
     "\n" +
-    "      <span class=\"or\"></span>\n" +
-    "\n" +
-    "      <!-- made security load too slow.\n" +
-    "\n" +
-    "      <span class=\"new-metrics control no-new-metrics\"\n" +
-    "         tooltip=\"No new metrics.\"\n" +
-    "         tooltip-placement=\"bottom\"\n" +
-    "         ng-show=\"!illuminateNotificationIcon()\">\n" +
-    "         <i class=\"icon-bell\"></i>\n" +
-    "      </span>\n" +
-    "      <a class=\"new-metrics control has-new-metrics\"\n" +
-    "         tooltip=\"You've got new metrics!\"\n" +
-    "         tooltip-placement=\"bottom\"\n" +
-    "         ng-show=\"illuminateNotificationIcon()\"\n" +
-    "         ng-click=\"dismissProfileNewProductsNotification()\"\n" +
-    "         href=\"/{{ currentUser.url_slug }}?filter=has_diff\">\n" +
-    "         <i class=\"icon-bell-alt\"></i>\n" +
-    "      </a>\n" +
-    "\n" +
-    "      <span class=\"or\"></span>\n" +
-    "      -->\n" +
-    "      <span class=\"or\"></span>\n" +
     "      <a class=\"logout control\"\n" +
     "         tooltip-placement=\"left\"\n" +
     "         ng-click=\"logout()\"\n" +
     "         tooltip=\"Log out\">\n" +
     "         <i class=\"icon-signout\"></i>\n" +
     "      </a>\n" +
-    "\n" +
     "\n" +
     "      <a class=\"preferences control\"\n" +
     "         href=\"/settings/profile\"\n" +
@@ -6849,8 +6826,19 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "   <li ng-show=\"!currentUser\" class=\"login-and-signup nav-item\">\n" +
     "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup\">Sign up</a>\n" +
-    "      <span ng-show=\"!page.isLandingPage()\" class=\"or\"></span>\n" +
     "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
+    "      <a class=\"help control\"\n" +
+    "         href=\"javascript:void(0)\"\n" +
+    "         data-uv-lightbox=\"classic_widget\"\n" +
+    "         data-uv-mode=\"full\"\n" +
+    "         data-uv-primary-color=\"#cc6d00\"\n" +
+    "         data-uv-link-color=\"#007dbf\"\n" +
+    "         data-uv-default-mode=\"support\"\n" +
+    "         data-uv-forum-id=\"166950\"\n" +
+    "         tooltip-placement=\"left\"\n" +
+    "         tooltip=\"Get help or report bug\">\n" +
+    "         <i class=\"icon-question\"></i>\n" +
+    "      </a>\n" +
     "   </li>\n" +
     "</ul>\n" +
     "");
