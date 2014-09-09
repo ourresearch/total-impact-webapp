@@ -4950,7 +4950,9 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
     "                     </span>\n" +
     "                     <span class=\"key\">\n" +
+    "                        <!--\n" +
     "                        <span class=\"provider\">{{ card.provider }}</span>\n" +
+    "                        -->\n" +
     "                        <span class=\"interaction\">{{ card.interaction }}</span>\n" +
     "                     </span>\n" +
     "                  </li>\n" +

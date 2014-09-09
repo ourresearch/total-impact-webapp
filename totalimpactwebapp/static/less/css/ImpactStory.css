@@ -9222,7 +9222,7 @@ div.genre-page {
   margin-top: 20px;
 }
 div.genre-page div.header {
-  padding: 0 10px 0 30px;
+  padding: 0 10px 10px 30px;
   margin: 0 0 50px -30px;
   border-bottom: 1px solid #eee;
   position: relative;
@@ -9245,7 +9245,7 @@ div.genre-page div.header h2 {
   float: left;
 }
 div.genre-page div.header h2 span.count {
-  font-weight: 300;
+  font-weight: normal;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top {
   margin-bottom: 20px;
@@ -9268,26 +9268,27 @@ div.genre-page div.header div.genre-summary div.genre-summary-top .modal-footer 
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li {
   float: right;
-  margin: 4px 20px 0 40px;
+  margin: 10px 20px 0 40px;
   line-height: 1;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li img.icon {
   height: 20px;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li span.img-and-value {
-  margin: 0 10px 0 0;
+  margin: 0 5px 0 0;
   float: left;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   display: inline-block;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li span.img-and-value img {
   height: 16px;
-  vertical-align: middle;
+  vertical-align: 0;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li span.key {
   display: inline-block;
-  font-size: 12px;
+  margin-top: 4px;
+  font-size: 16px;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li span.key span.provider {
   display: block;
