@@ -443,16 +443,18 @@ div.no-page {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+@contentWidth: 1100px;
+@sidebarWidth: 200px;
 
 #sidebar {
    position:fixed;
    top: 0;
    bottom: 0;
    left: 50%;
-   width: 200px;
+   width: @sidebarWidth;
    border-right: 1px solid #999;
    z-index: 100;
-   margin-left: -500px;
+   margin-left: -@contentWidth / 2;
    padding: 20px 0 20px;
    background: #fff;
    h1 {
@@ -461,7 +463,7 @@ div.no-page {
    }
 }
 
-@media all and (max-width: 1000px) {
+@media all and (max-width: @contentWidth) {
    #sidebar {
       left: 0;
       margin-left: 0;
@@ -474,8 +476,8 @@ div.no-page {
 
 
 #not-sidebar {
-   margin: 0 0 0 200px;
-   width: 800px;
+   margin: 0 0 0 @sidebarWidth;
+   width: @contentWidth - @sidebarWidth;
    .clearfix();
    #main-view-container {
       padding: 0 0 0 30px;
@@ -484,7 +486,7 @@ div.no-page {
 }
 
 #wrapper {
-   width: 1000px;
+   width: @contentWidth;
    margin: 0 auto;
 }
 
@@ -621,122 +623,6 @@ div.profile-sidebar {
 }
 
 
-
-
-
-/* navbar
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-
-
-div.main-header {
-   text-align: left;
-   padding: 15px 0 20px;
-   height: 140px;
-
-   position:relative;
-   margin-top:0;
-   margin-bottom:0;
-   a.brand {
-      margin-top: 10px;
-      img {
-         height: 50px;
-      }
-   }
-   div.breadcrumbs {
-      font-weight: 300;
-      font-size: 25px;
-      position: absolute;
-      top: 7px;
-      left: 231px;
-      color: #333;
-      i {
-         vertical-align: middle;
-         font-size: 70%;
-         color: #ccc;
-      }
-      span.breadcrumb-level {
-         a {
-            color: #333;
-            &:hover {
-               color: @linkColor;
-            }
-         }
-      }
-
-   }
-
-
-
-   ul.main-nav {
-      position: absolute;
-      bottom:-7px;
-      right: 10px;
-      li.nav-item {
-         display:block;
-         float:left;
-         font-size: 15px;
-         span.context {
-            font-size: 14px;
-            display:inline-block;
-            color:  #aaaaaa;
-            margin-right: 5px;
-            font-weight: 300;
-         }
-         span.or {
-            font-size: 70%;
-            margin:0 4px;
-            border-left: 1px solid #ddd;
-         }
-
-         &.login-and-signup {
-            a {
-               margin: 0 5px;
-
-               &.signup {
-                  font-weight: 900;
-                  &:hover {color: darken(@linkColor, 10%)}
-               }
-               &.login {
-                  color: #777;
-                  display:inline-block;
-                  i {margin-left: 5px;}
-                  &:hover {color: #333;}
-               }
-            }
-         }
-         &.logged-in-user {
-            a{
-               color: #999;
-               &:hover{color: #333;}
-               padding: 5px;
-               margin: 0 3px;
-            }
-         }
-         &.controls {
-            a {
-               color: #999;
-               padding: 5px;
-               &:hover {color: #333;}
-               &.new-metrics.has-new-metrics i {
-                  color: @linkColor;
-               }
-               &.preferences {
-                  padding: 2px 0;
-                  margin: 0 2px;
-                  font-size: 16px;
-               }
-               &.logout { font-size: 15px;}
-
-            }
-            span.new-metrics {
-               color: #999;
-            }
-         }
-      }
-   }
-}
 
 
 

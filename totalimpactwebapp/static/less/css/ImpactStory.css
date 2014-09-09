@@ -6320,7 +6320,7 @@ div.no-page p span.slug {
   width: 200px;
   border-right: 1px solid #999;
   z-index: 100;
-  margin-left: -500px;
+  margin-left: -550px;
   padding: 20px 0 20px;
   background: #fff;
 }
@@ -6328,7 +6328,7 @@ div.no-page p span.slug {
   font-size: 30px;
   margin: 0;
 }
-@media all and (max-width: 1000px) {
+@media all and (max-width: 1100px) {
   #sidebar {
     left: 0;
     margin-left: 0;
@@ -6336,7 +6336,7 @@ div.no-page p span.slug {
 }
 #not-sidebar {
   margin: 0 0 0 200px;
-  width: 800px;
+  width: 900px;
   clear: both;
 }
 #not-sidebar:before,
@@ -6360,7 +6360,7 @@ div.no-page p span.slug {
   min-height: 600px;
 }
 #wrapper {
-  width: 1000px;
+  width: 1100px;
   margin: 0 auto;
 }
 div.profile-sidebar h1 a {
@@ -6484,113 +6484,6 @@ div.profile-sidebar div.footer a.logo img {
 div.profile-sidebar div.footer a.logo img:hover {
   -webkit-filter: grayscale(0%);
   opacity: 1;
-}
-/* navbar
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-div.main-header {
-  text-align: left;
-  padding: 15px 0 20px;
-  height: 140px;
-  position: relative;
-  margin-top: 0;
-  margin-bottom: 0;
-}
-div.main-header a.brand {
-  margin-top: 10px;
-}
-div.main-header a.brand img {
-  height: 50px;
-}
-div.main-header div.breadcrumbs {
-  font-weight: 300;
-  font-size: 25px;
-  position: absolute;
-  top: 7px;
-  left: 231px;
-  color: #333;
-}
-div.main-header div.breadcrumbs i {
-  vertical-align: middle;
-  font-size: 70%;
-  color: #ccc;
-}
-div.main-header div.breadcrumbs span.breadcrumb-level a {
-  color: #333;
-}
-div.main-header div.breadcrumbs span.breadcrumb-level a:hover {
-  color: #ff4000;
-}
-div.main-header ul.main-nav {
-  position: absolute;
-  bottom: -7px;
-  right: 10px;
-}
-div.main-header ul.main-nav li.nav-item {
-  display: block;
-  float: left;
-  font-size: 15px;
-}
-div.main-header ul.main-nav li.nav-item span.context {
-  font-size: 14px;
-  display: inline-block;
-  color: #aaaaaa;
-  margin-right: 5px;
-  font-weight: 300;
-}
-div.main-header ul.main-nav li.nav-item span.or {
-  font-size: 70%;
-  margin: 0 4px;
-  border-left: 1px solid #ddd;
-}
-div.main-header ul.main-nav li.nav-item.login-and-signup a {
-  margin: 0 5px;
-}
-div.main-header ul.main-nav li.nav-item.login-and-signup a.signup {
-  font-weight: 900;
-}
-div.main-header ul.main-nav li.nav-item.login-and-signup a.signup:hover {
-  color: #cc3300;
-}
-div.main-header ul.main-nav li.nav-item.login-and-signup a.login {
-  color: #777;
-  display: inline-block;
-}
-div.main-header ul.main-nav li.nav-item.login-and-signup a.login i {
-  margin-left: 5px;
-}
-div.main-header ul.main-nav li.nav-item.login-and-signup a.login:hover {
-  color: #333;
-}
-div.main-header ul.main-nav li.nav-item.logged-in-user a {
-  color: #999;
-  padding: 5px;
-  margin: 0 3px;
-}
-div.main-header ul.main-nav li.nav-item.logged-in-user a:hover {
-  color: #333;
-}
-div.main-header ul.main-nav li.nav-item.controls a {
-  color: #999;
-  padding: 5px;
-}
-div.main-header ul.main-nav li.nav-item.controls a:hover {
-  color: #333;
-}
-div.main-header ul.main-nav li.nav-item.controls a.new-metrics.has-new-metrics i {
-  color: #ff4000;
-}
-div.main-header ul.main-nav li.nav-item.controls a.preferences {
-  padding: 2px 0;
-  margin: 0 2px;
-  font-size: 16px;
-}
-div.main-header ul.main-nav li.nav-item.controls a.logout {
-  font-size: 15px;
-}
-div.main-header ul.main-nav li.nav-item.controls span.new-metrics {
-  color: #999;
 }
 /* footer
 *****************************************************************************
@@ -7680,7 +7573,8 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
 }
 .product .biblio {
   float: left;
-  width: 700px;
+  width: 420px;
+  width: 520px;
 }
 .product .biblio h5 {
   margin-top: 0;
@@ -7733,7 +7627,7 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   color: #555;
 }
 .product .awards {
-  width: 360px;
+  width: 330px;
   margin-left: 20px;
   float: left;
 }

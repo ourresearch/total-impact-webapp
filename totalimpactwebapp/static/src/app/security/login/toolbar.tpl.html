@@ -2,6 +2,7 @@
    <li ng-show="currentUser" class="logged-in-user nav-item">
       <a class="current-user"
          href="/{{ currentUser.url_slug }}"
+         tooltip-placement="left"
          tooltip="View your profile">
          <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
       </a>
@@ -31,6 +32,7 @@
       -->
       <span class="or"></span>
       <a class="logout control"
+         tooltip-placement="left"
          ng-click="logout()"
          tooltip="Log out">
          <i class="icon-signout"></i>
@@ -39,6 +41,7 @@
 
       <a class="preferences control"
          href="/settings/profile"
+         tooltip-placement="left"
          tooltip="Change profile settings">
          <i class="icon-cog"></i>
       </a>
@@ -48,6 +51,7 @@
 
       <a class="logout control"
          href="{{ currentUser.url_slug }}/accounts"
+         tooltip-placement="left"
          tooltip="Add accounts or products">
          <i class="icon-plus"></i>
       </a>

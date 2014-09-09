@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-07
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-08
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6786,6 +6786,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "   <li ng-show=\"currentUser\" class=\"logged-in-user nav-item\">\n" +
     "      <a class=\"current-user\"\n" +
     "         href=\"/{{ currentUser.url_slug }}\"\n" +
+    "         tooltip-placement=\"left\"\n" +
     "         tooltip=\"View your profile\">\n" +
     "         <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "      </a>\n" +
@@ -6815,6 +6816,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      -->\n" +
     "      <span class=\"or\"></span>\n" +
     "      <a class=\"logout control\"\n" +
+    "         tooltip-placement=\"left\"\n" +
     "         ng-click=\"logout()\"\n" +
     "         tooltip=\"Log out\">\n" +
     "         <i class=\"icon-signout\"></i>\n" +
@@ -6823,6 +6825,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "      <a class=\"preferences control\"\n" +
     "         href=\"/settings/profile\"\n" +
+    "         tooltip-placement=\"left\"\n" +
     "         tooltip=\"Change profile settings\">\n" +
     "         <i class=\"icon-cog\"></i>\n" +
     "      </a>\n" +
@@ -6832,6 +6835,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "      <a class=\"logout control\"\n" +
     "         href=\"{{ currentUser.url_slug }}/accounts\"\n" +
+    "         tooltip-placement=\"left\"\n" +
     "         tooltip=\"Add accounts or products\">\n" +
     "         <i class=\"icon-plus\"></i>\n" +
     "      </a>\n" +
