@@ -76,7 +76,7 @@ angular.module("genrePage", [
 
         $scope.about = resp.about
         $scope.products = ProfileService.productsByGenre($routeParams.genre_name)
-        $scope.genreNamePlural = ProfileService.genreLookup($routeParams.genre_name).plural_name
+        $scope.genre = ProfileService.genreLookup($routeParams.genre_name)
 
         // scroll to the last place we were on this page. in a timeout because
         // must happen after page is totally rendered.
@@ -100,6 +100,23 @@ angular.module("genrePage", [
       )
     });
 
+    $scope.sliceSortedCards = function(cards, startIndex, endIndex){
+      var genreAccumulationCards = _.where(cards, {card_type: "GenreAccumulationCard"}) // temp hack?
+      var sorted = _.sortBy(genreAccumulationCards, "sort_by")
+      var reversed = sorted.concat([]).reverse()
+      return reversed.slice(startIndex, endIndex)
+    }
+
+    $scope.nFormat = function(num) {
+      // from http://stackoverflow.com/a/14994860/226013
+      if (num >= 1000000) {
+          return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      }
+      if (num >= 1000) {
+          return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+      }
+      return num;
+    }
 
 
     $scope.removeProduct = function(product){

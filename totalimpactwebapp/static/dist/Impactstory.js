@@ -686,7 +686,7 @@ angular.module("genrePage", [
 
         $scope.about = resp.about
         $scope.products = ProfileService.productsByGenre($routeParams.genre_name)
-        $scope.genreNamePlural = ProfileService.genreLookup($routeParams.genre_name).plural_name
+        $scope.genre = ProfileService.genreLookup($routeParams.genre_name)
 
         // scroll to the last place we were on this page. in a timeout because
         // must happen after page is totally rendered.
@@ -710,6 +710,23 @@ angular.module("genrePage", [
       )
     });
 
+    $scope.sliceSortedCards = function(cards, startIndex, endIndex){
+      var genreAccumulationCards = _.where(cards, {card_type: "GenreAccumulationCard"}) // temp hack?
+      var sorted = _.sortBy(genreAccumulationCards, "sort_by")
+      var reversed = sorted.concat([]).reverse()
+      return reversed.slice(startIndex, endIndex)
+    }
+
+    $scope.nFormat = function(num) {
+      // from http://stackoverflow.com/a/14994860/226013
+      if (num >= 1000000) {
+          return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      }
+      if (num >= 1000) {
+          return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+      }
+      return num;
+    }
 
 
     $scope.removeProduct = function(product){
@@ -4917,17 +4934,37 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "   <div class=\"wrapper\" ng-show=\"!isRendering()\">\n" +
     "      <div class=\"header\">\n" +
     "         <h2>\n" +
-    "            <span class=\"return-to-profile-link-container\">\n" +
-    "               <a class=\"return-to-profile\"\n" +
-    "                  tooltip=\"return to {{ about.given_name }}'s profile\"\n" +
-    "                  href=\"/{{ about.url_slug }}\">\n" +
-    "                  <i class=\"icon-chevron-left\"></i>\n" +
-    "               </a>\n" +
+    "            <span class=\"count\">\n" +
+    "               {{ filteredProducts.length }}\n" +
     "            </span>\n" +
     "            <span class=\"text\">\n" +
-    "               {{ genreNamePlural }}\n" +
+    "               {{ genre.plural_name }}\n" +
     "            </span>\n" +
     "         </h2>\n" +
+    "         <div class=\"genre-summary\">\n" +
+    "            <div class=\"genre-summary-top\">\n" +
+    "               <ul class=\"genre-cards-best\">\n" +
+    "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3)\">\n" +
+    "                     <span class=\"img-and-value\">\n" +
+    "                        <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >\n" +
+    "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
+    "                     </span>\n" +
+    "                     <span class=\"key\">\n" +
+    "                        <span class=\"provider\">{{ card.provider }}</span>\n" +
+    "                        <span class=\"interaction\">{{ card.interaction }}</span>\n" +
+    "                     </span>\n" +
+    "                  </li>\n" +
+    "               </ul>\n" +
+    "               <div class=\"clearfix\"></div>\n" +
+    "            </div>\n" +
+    "            <div class=\"genre-summary-more\">\n" +
+    "\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "         <span class=\"more-button\">\n" +
+    "            <span class=\"more\"><i class=\"icon-caret-down left\"></i>more stats</span>\n" +
+    "         </span>\n" +
+    "\n" +
     "      </div>\n" +
     "      <div class=\"products\">\n" +
     "         <ul class=\"products-list\">\n" +

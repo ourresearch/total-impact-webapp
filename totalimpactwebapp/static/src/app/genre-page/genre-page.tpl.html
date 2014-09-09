@@ -5,17 +5,37 @@
    <div class="wrapper" ng-show="!isRendering()">
       <div class="header">
          <h2>
-            <span class="return-to-profile-link-container">
-               <a class="return-to-profile"
-                  tooltip="return to {{ about.given_name }}'s profile"
-                  href="/{{ about.url_slug }}">
-                  <i class="icon-chevron-left"></i>
-               </a>
+            <span class="count">
+               {{ filteredProducts.length }}
             </span>
             <span class="text">
-               {{ genreNamePlural }}
+               {{ genre.plural_name }}
             </span>
          </h2>
+         <div class="genre-summary">
+            <div class="genre-summary-top">
+               <ul class="genre-cards-best">
+                  <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3)">
+                     <span class="img-and-value">
+                        <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >
+                        <span class="value">{{ nFormat(card.current_value) }}</span>
+                     </span>
+                     <span class="key">
+                        <span class="provider">{{ card.provider }}</span>
+                        <span class="interaction">{{ card.interaction }}</span>
+                     </span>
+                  </li>
+               </ul>
+               <div class="clearfix"></div>
+            </div>
+            <div class="genre-summary-more">
+
+            </div>
+         </div>
+         <span class="more-button">
+            <span class="more"><i class="icon-caret-down left"></i>more stats</span>
+         </span>
+
       </div>
       <div class="products">
          <ul class="products-list">

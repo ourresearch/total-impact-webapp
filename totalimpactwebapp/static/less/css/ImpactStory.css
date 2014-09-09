@@ -9221,34 +9221,76 @@ div.password-reset form.password-reset div.submit {
 div.genre-page {
   margin-top: 20px;
 }
+div.genre-page div.header {
+  padding: 0 10px 0 30px;
+  margin: 0 0 50px -30px;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+div.genre-page div.header .more-button {
+  font-size: 14px;
+  background: #fff;
+  padding: 0 10px 2px;
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  color: #777;
+}
 div.genre-page div.header h2 {
   font-size: 28px;
   line-height: 1.3;
-  margin: 0 0 5px;
+  margin: 0 20px 0 5px;
   text-transform: capitalize;
   color: #333;
+  float: left;
 }
-div.genre-page div.header h2 span.return-to-profile-link-container {
-  display: none;
+div.genre-page div.header h2 span.count {
+  font-weight: 300;
 }
-div.genre-page div.header h2 span.return-to-profile-link-container .tooltip-inner {
-  background: #000;
+div.genre-page div.header div.genre-summary div.genre-summary-top {
+  margin-bottom: 20px;
 }
-div.genre-page div.header h2 span.return-to-profile-link-container .tooltip-arrow {
-  border-color: transparent;
-  border-top-color: #000;
+div.genre-page div.header div.genre-summary div.genre-summary-top .clearfix,
+div.genre-page div.header div.genre-summary div.genre-summary-top .container,
+div.genre-page div.header div.genre-summary div.genre-summary-top .container-fluid,
+div.genre-page div.header div.genre-summary div.genre-summary-top .row,
+div.genre-page div.header div.genre-summary div.genre-summary-top .form-horizontal .form-group,
+div.genre-page div.header div.genre-summary div.genre-summary-top .btn-toolbar,
+div.genre-page div.header div.genre-summary div.genre-summary-top .btn-group-vertical > .btn-group,
+div.genre-page div.header div.genre-summary div.genre-summary-top .nav,
+div.genre-page div.header div.genre-summary div.genre-summary-top .navbar,
+div.genre-page div.header div.genre-summary div.genre-summary-top .navbar-header,
+div.genre-page div.header div.genre-summary div.genre-summary-top .navbar-collapse,
+div.genre-page div.header div.genre-summary div.genre-summary-top .pager,
+div.genre-page div.header div.genre-summary div.genre-summary-top .panel-body,
+div.genre-page div.header div.genre-summary div.genre-summary-top .modal-footer {
+  clear: both;
 }
-div.genre-page div.header h2 span.return-to-profile-link-container a.return-to-profile {
-  color: #999;
-  margin-left: -45px;
-  padding-right: 15px;
-  font-size: 30px;
-  width: 40px;
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li {
+  float: right;
+  margin: 4px 20px 0 40px;
+  line-height: 1;
+}
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li img.icon {
+  height: 20px;
+}
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li span.img-and-value {
+  margin: 0 10px 0 0;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
   display: inline-block;
-  text-align: right;
 }
-div.genre-page div.header h2 span.return-to-profile-link-container a.return-to-profile:hover {
-  color: #ff4000;
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li span.img-and-value img {
+  height: 16px;
+  vertical-align: middle;
+}
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li span.key {
+  display: inline-block;
+  font-size: 12px;
+}
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li span.key span.provider {
+  display: block;
 }
 div.genre-page div.products {
   margin-top: 0;
