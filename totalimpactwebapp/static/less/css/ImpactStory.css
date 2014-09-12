@@ -7335,12 +7335,40 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   font-weight: 900;
   font-size: 14px;
 }
+#pinboard ul.pinboard-col {
+  width: 415px;
+  float: left;
+  min-height: 300px;
+  margin-left: 20px;
+  -webkit-border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  -moz-border-radius-topleft: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  padding: 0 10px;
+}
+#pinboard ul.pinboard-col.empty-true {
+  border: 1px dashed #ddd;
+}
+#pinboard ul.pinboard-col.col-1 {
+  padding-right: 20px;
+}
 #pinboard li.pin {
-  width: 400px;
+  width: 100%;
   border: 1px solid #eee;
   background: #fff;
   clear: both;
-  margin: 20px 0;
+  margin: 0 0 20px 0;
   position: relative;
   cursor: move;
 }

@@ -119,6 +119,9 @@ angular.module("profile", [
     Page) {
 
     $scope.pinboardService = PinboardService
+    $scope.sortableOptions = {
+      connectWith: ".pinboard-col"
+    }
 
 
 

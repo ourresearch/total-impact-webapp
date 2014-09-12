@@ -52,15 +52,12 @@
             </div>
          </div>
 
+         <!--
          <div class="view-controls">
-            <!--<a><i class="icon-refresh"></i>Refresh metrics</a>-->
             <div class="admin-controls" ng-show="security.isLoggedIn(url_slug) && !page.isEmbedded()">
                <a href="/{{ profile.about.url_slug }}/products/add">
                   <i class="icon-upload"></i>Import individual products
                </a>
-               <!--<a ng-click="dedup()">
-                  <i class="icon-copy"></i>dedup
-               </a>-->
             </div>
             <div class="everyone-controls">
                <a ng-click="openProfileEmbedModal()" ng-show="!page.isEmbedded()">
@@ -76,13 +73,16 @@
                </span>
             </div>
          </div>
+         -->
 
       </div>
 </div>
 
 <div id="pinboard">
-   <ul class="col-1" ui-sortable ng-model="pinboardService.pins">
-      <li class="pin" ng-repeat="pin in pinboardService.pins">
+   <ul class="pinboard-col col-1 empty-{{ !pinboardService.cols[0].length }}"
+       ui-sortable="sortableOptions"
+       ng-model="pinboardService.cols[0]">
+      <li class="pin" ng-repeat="pin in pinboardService.cols[0]">
          <div class="pin-header">
             <a class="delete-pin" ng-click="pinboardService.unPin(pin.id)">
                <i class="icon-remove"></i>
@@ -91,9 +91,21 @@
          <div class="pin-body product-pin" ng-if="pin.type=='product'">
             <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pin.id.tiid).markup)"></div>
          </div>
+      </li>
+   </ul>
 
-
-
+   <ul class="pinboard-col col-2 empty-{{ !pinboardService.cols[1].length }}"
+       ui-sortable="sortableOptions"
+       ng-model="pinboardService.cols[1]">
+      <li class="pin" ng-repeat="pin in pinboardService.cols[1]">
+         <div class="pin-header">
+            <a class="delete-pin" ng-click="pinboardService.unPin(pin.id)">
+               <i class="icon-remove"></i>
+            </a>
+         </div>
+         <div class="pin-body product-pin" ng-if="pin.type=='product'">
+            <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pin.id.tiid).markup)"></div>
+         </div>
       </li>
    </ul>
 

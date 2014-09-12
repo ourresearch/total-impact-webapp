@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-11
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-12
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1695,6 +1695,9 @@ angular.module("profile", [
     Page) {
 
     $scope.pinboardService = PinboardService
+    $scope.sortableOptions = {
+      connectWith: ".pinboard-col"
+    }
 
 
 
@@ -4318,7 +4321,7 @@ angular.module('services.pinboardService', [
   'resources.users'
 ])
   .factory("PinboardService", function(ProfilePinboard, security){
-    var pins = []
+    var cols = [[], []]
 
     function pin(type, id){
       console.log("pin this here thing:", type, id)
@@ -4327,7 +4330,7 @@ angular.module('services.pinboardService', [
         id: id,
         timestamp: moment.utc().toISOString()
       }
-      pins.push(myPin)
+      cols[0].push(myPin)
 
       // every time we change the pins arr, we save.
 
@@ -4344,16 +4347,16 @@ angular.module('services.pinboardService', [
 //      )
     }
 
-    function unPin(id){
+    function removeIdFromList(id, list){
       console.log("unpin this ID: ", id)
       var indexToRemove = -1
-      for (var i=0; i<pins.length; i++){
-        if (_.isEqual(pins[i].id, id)) {
+      for (var i=0; i<list.length; i++){
+        if (_.isEqual(list[i].id, id)) {
           indexToRemove = i
         }
       }
       if (indexToRemove > -1){
-        pins.splice(indexToRemove, 1)
+        list.splice(indexToRemove, 1)
         return true
       }
       else {
@@ -4361,15 +4364,31 @@ angular.module('services.pinboardService', [
       }
     }
 
-    function idIsPinned(pinId){
-      return !!_.find(pins, function(myPin){
+    function idIsInList(pinId, list){
+      return !!_.find(list, function(myPin){
         return _.isEqual(myPin.id, pinId)
       })
     }
 
+    function unPin(pinId){
+      _.each(cols, function(colList){
+        removeIdFromList(pinId, colList)
+      })
+    }
+
+    function idIsPinned(pinId){
+      var isInCols = false
+      _.each(cols, function(colList){
+        if (idIsInList(pinId, colList)){
+          isInCols = true
+        }
+      })
+      return isInCols
+    }
+
 
     return {
-      pins: pins,
+      cols: cols,
       pin: pin,
       unPin: unPin,
       idIsPinned: idIsPinned
@@ -6701,15 +6720,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            </div>\n" +
     "         </div>\n" +
     "\n" +
+    "         <!--\n" +
     "         <div class=\"view-controls\">\n" +
-    "            <!--<a><i class=\"icon-refresh\"></i>Refresh metrics</a>-->\n" +
     "            <div class=\"admin-controls\" ng-show=\"security.isLoggedIn(url_slug) && !page.isEmbedded()\">\n" +
     "               <a href=\"/{{ profile.about.url_slug }}/products/add\">\n" +
     "                  <i class=\"icon-upload\"></i>Import individual products\n" +
     "               </a>\n" +
-    "               <!--<a ng-click=\"dedup()\">\n" +
-    "                  <i class=\"icon-copy\"></i>dedup\n" +
-    "               </a>-->\n" +
     "            </div>\n" +
     "            <div class=\"everyone-controls\">\n" +
     "               <a ng-click=\"openProfileEmbedModal()\" ng-show=\"!page.isEmbedded()\">\n" +
@@ -6725,13 +6741,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </span>\n" +
     "            </div>\n" +
     "         </div>\n" +
+    "         -->\n" +
     "\n" +
     "      </div>\n" +
     "</div>\n" +
     "\n" +
     "<div id=\"pinboard\">\n" +
-    "   <ul class=\"col-1\" ui-sortable ng-model=\"pinboardService.pins\">\n" +
-    "      <li class=\"pin\" ng-repeat=\"pin in pinboardService.pins\">\n" +
+    "   <ul class=\"pinboard-col col-1 empty-{{ !pinboardService.cols[0].length }}\"\n" +
+    "       ui-sortable=\"sortableOptions\"\n" +
+    "       ng-model=\"pinboardService.cols[0]\">\n" +
+    "      <li class=\"pin\" ng-repeat=\"pin in pinboardService.cols[0]\">\n" +
     "         <div class=\"pin-header\">\n" +
     "            <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pin.id)\">\n" +
     "               <i class=\"icon-remove\"></i>\n" +
@@ -6740,9 +6759,21 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <div class=\"pin-body product-pin\" ng-if=\"pin.type=='product'\">\n" +
     "            <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pin.id.tiid).markup)\"></div>\n" +
     "         </div>\n" +
+    "      </li>\n" +
+    "   </ul>\n" +
     "\n" +
-    "\n" +
-    "\n" +
+    "   <ul class=\"pinboard-col col-2 empty-{{ !pinboardService.cols[1].length }}\"\n" +
+    "       ui-sortable=\"sortableOptions\"\n" +
+    "       ng-model=\"pinboardService.cols[1]\">\n" +
+    "      <li class=\"pin\" ng-repeat=\"pin in pinboardService.cols[1]\">\n" +
+    "         <div class=\"pin-header\">\n" +
+    "            <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pin.id)\">\n" +
+    "               <i class=\"icon-remove\"></i>\n" +
+    "            </a>\n" +
+    "         </div>\n" +
+    "         <div class=\"pin-body product-pin\" ng-if=\"pin.type=='product'\">\n" +
+    "            <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pin.id.tiid).markup)\"></div>\n" +
+    "         </div>\n" +
     "      </li>\n" +
     "   </ul>\n" +
     "\n" +

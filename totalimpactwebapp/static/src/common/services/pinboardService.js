@@ -2,7 +2,7 @@ angular.module('services.pinboardService', [
   'resources.users'
 ])
   .factory("PinboardService", function(ProfilePinboard, security){
-    var pins = []
+    var cols = [[], []]
 
     function pin(type, id){
       console.log("pin this here thing:", type, id)
@@ -11,7 +11,7 @@ angular.module('services.pinboardService', [
         id: id,
         timestamp: moment.utc().toISOString()
       }
-      pins.push(myPin)
+      cols[0].push(myPin)
 
       // every time we change the pins arr, we save.
 
@@ -28,16 +28,16 @@ angular.module('services.pinboardService', [
 //      )
     }
 
-    function unPin(id){
+    function removeIdFromList(id, list){
       console.log("unpin this ID: ", id)
       var indexToRemove = -1
-      for (var i=0; i<pins.length; i++){
-        if (_.isEqual(pins[i].id, id)) {
+      for (var i=0; i<list.length; i++){
+        if (_.isEqual(list[i].id, id)) {
           indexToRemove = i
         }
       }
       if (indexToRemove > -1){
-        pins.splice(indexToRemove, 1)
+        list.splice(indexToRemove, 1)
         return true
       }
       else {
@@ -45,15 +45,31 @@ angular.module('services.pinboardService', [
       }
     }
 
-    function idIsPinned(pinId){
-      return !!_.find(pins, function(myPin){
+    function idIsInList(pinId, list){
+      return !!_.find(list, function(myPin){
         return _.isEqual(myPin.id, pinId)
       })
     }
 
+    function unPin(pinId){
+      _.each(cols, function(colList){
+        removeIdFromList(pinId, colList)
+      })
+    }
+
+    function idIsPinned(pinId){
+      var isInCols = false
+      _.each(cols, function(colList){
+        if (idIsInList(pinId, colList)){
+          isInCols = true
+        }
+      })
+      return isInCols
+    }
+
 
     return {
-      pins: pins,
+      cols: cols,
       pin: pin,
       unPin: unPin,
       idIsPinned: idIsPinned

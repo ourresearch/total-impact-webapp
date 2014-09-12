@@ -327,12 +327,28 @@ div.view-controls {
 }
 
 #pinboard {
+   ul.pinboard-col {
+      width: 415px;
+      float:left;
+      min-height: 300px;
+      margin-left: 20px;
+      .border-radius(5px, 5px, 5px, 5px);
+      padding: 0 10px;
+      &.empty-true {
+         border: 1px dashed #ddd;
+      }
+      &.col-1 {
+         padding-right: 20px;
+      }
+      &.col-2{
+      }
+   }
    li.pin {
-      width: 400px;
+      width: 100%;
       border: 1px solid #eee;
       background: #fff;
       .clearfix();
-      margin: 20px 0;
+      margin: 0 0 20px 0;
       position: relative;
       cursor: move;
       div.pin-header {
