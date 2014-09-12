@@ -38,7 +38,7 @@ angular.module('services.profileService', [
           Update.showUpdateModal(url_slug, resp.is_refreshing).then(
             function(msg){
               console.log("updater (resolved):", msg)
-              get(url_slug)
+              get(url_slug, true)
             },
             function(msg){
               // great, everything's all up-to-date.
