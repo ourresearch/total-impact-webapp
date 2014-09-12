@@ -9,6 +9,11 @@ angular.module('services.profileService', [
 
     function get(url_slug){
       console.log("calling ProfileService.get()")
+
+      if (data && !loading){
+        return $q.when(data)
+      }
+
       loading = true
       return Users.get(
         {id: url_slug, embedded: Page.isEmbedded()},
