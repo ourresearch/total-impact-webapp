@@ -9,6 +9,7 @@ angular.module("profile", [
   'profileSingleProducts',
   'profileLinkedAccounts',
   'services.userMessage',
+  'services.pinboardService',
   'services.tour',
   'directives.jQueryTools',
   'update.update'
@@ -111,14 +112,14 @@ angular.module("profile", [
     Loading,
     ProfileService,
     ProfileAboutService,
+    PinboardService,
     Tour,
     Timer,
     security,
     Page) {
 
+    $scope.pinboardService = PinboardService
 
-
-    $scope.foo = [{val: 1}, {val: 2}, {val: 3}]
 
 
     Timer.start("profileViewRender")

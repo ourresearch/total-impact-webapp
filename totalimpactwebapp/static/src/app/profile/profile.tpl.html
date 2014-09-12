@@ -81,10 +81,14 @@
 </div>
 
 <div id="pinboard">
-   <ul class="col-1" ui-sortable ng-model="foo">
-      <li ng-repeat="pin in foo">val: {{ pin.val }}</li>
+   <ul class="col-1" ui-sortable ng-model="pinboardService.pins">
+      <li ng-repeat="pin in pinboardService.pins">({{ $index }}) type: {{ pin.type }}, id: {{ pin.id }}</li>
    </ul>
 
+   <div ng-click="pinboardService.pin('test', 123)">add a pin</div>
+
+   <h2>pinboard service:</h2>
+   <pre>{{ pinboardService.pins | json }}</pre>
 </div>
 
 

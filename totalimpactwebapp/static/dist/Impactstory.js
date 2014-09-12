@@ -1587,6 +1587,7 @@ angular.module("profile", [
   'profileSingleProducts',
   'profileLinkedAccounts',
   'services.userMessage',
+  'services.pinboardService',
   'services.tour',
   'directives.jQueryTools',
   'update.update'
@@ -1689,14 +1690,14 @@ angular.module("profile", [
     Loading,
     ProfileService,
     ProfileAboutService,
+    PinboardService,
     Tour,
     Timer,
     security,
     Page) {
 
+    $scope.pinboardService = PinboardService
 
-
-    $scope.foo = [{val: 1}, {val: 2}, {val: 3}]
 
 
     Timer.start("profileViewRender")
@@ -4308,6 +4309,29 @@ angular.module("services.page")
 
 
 
+angular.module('services.pinboardService', [
+  'resources.users'
+])
+  .factory("PinboardService", function($q, $timeout, Update, Page, Users){
+    var pins = []
+
+    function pin(type, id){
+      var myPin = {
+        type: type,
+        id: id,
+        timestamp: moment.utc().toISOString()
+      }
+      pins.push(myPin)
+    }
+
+
+    return {
+      pins: pins,
+      pin: pin
+    }
+
+
+  })
 angular.module('services.profileAboutService', [
   'resources.users'
 ])
@@ -6637,10 +6661,14 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "</div>\n" +
     "\n" +
     "<div id=\"pinboard\">\n" +
-    "   <ul class=\"col-1\" ui-sortable ng-model=\"foo\">\n" +
-    "      <li ng-repeat=\"pin in foo\">val: {{ pin.val }}</li>\n" +
+    "   <ul class=\"col-1\" ui-sortable ng-model=\"pinboardService.pins\">\n" +
+    "      <li ng-repeat=\"pin in pinboardService.pins\">({{ $index }}) type: {{ pin.type }}, id: {{ pin.id }}</li>\n" +
     "   </ul>\n" +
     "\n" +
+    "   <div ng-click=\"pinboardService.pin('test', 123)\">add a pin</div>\n" +
+    "\n" +
+    "   <h2>pinboard service:</h2>\n" +
+    "   <pre>{{ pinboardService.pins | json }}</pre>\n" +
     "</div>\n" +
     "\n" +
     "\n" +
